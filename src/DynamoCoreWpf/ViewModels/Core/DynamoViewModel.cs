@@ -1521,7 +1521,6 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        // MAGN-8237
         public void GoHome(object _)
         {
             model.CurrentWorkspace = HomeSpace;
@@ -1922,11 +1921,7 @@ namespace Dynamo.ViewModels
             {
                 foreach (var file in openFileDialog.FileNames)
                 {
-                    // todo: magn-8237 ensure all libraries are loaded into each workspace
-                    foreach (var hws in Model.Workspaces.OfType<IHomeWorkspaceModel>())
-                    {
-                        hws.EngineController.ImportLibrary(file);
-                    }
+                    Model.LibraryServices.ImportLibrary(file);
                 }
                 SearchViewModel.SearchAndUpdateResults();
             }

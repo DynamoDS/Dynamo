@@ -645,10 +645,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 case "CurrentWorkspace":
                     OnClear();
 
+                    if (!(model.CurrentWorkspace is HomeWorkspaceModel)) return;
+
+                    // Because node geometry is not currently cached, we need to 
+                    // request an update of all node geometry
                     foreach (var node in model.CurrentWorkspace.Nodes)
                     {
-                        // TODO: magn-8237 why is this necessary?
-                        //node.IsUpdated = true;
                         node.RequestVisualUpdateAsync(scheduler, EngineController, renderPackageFactory);
                     }
                     break;

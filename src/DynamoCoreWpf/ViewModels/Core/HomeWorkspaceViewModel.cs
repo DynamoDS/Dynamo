@@ -29,6 +29,16 @@ namespace Dynamo.Wpf.ViewModels.Core
 
         #endregion
 
+        #region Public properties
+
+        public HomeWorkspaceModel HomeWorkspaceModel
+        {
+            get
+            {
+                return Model as HomeWorkspaceModel;
+            }
+        }
+
         public NotificationLevel CurrentNotificationLevel
         {
             get { return curentNotificationLevel; }
@@ -48,6 +58,8 @@ namespace Dynamo.Wpf.ViewModels.Core
                 RaisePropertyChanged("CurrentNotificationMessage");
             }
         }
+
+        #endregion
 
         public HomeWorkspaceViewModel(HomeWorkspaceModel model, DynamoViewModel dynamoViewModel)
             : base(model, dynamoViewModel)
@@ -80,9 +92,8 @@ namespace Dynamo.Wpf.ViewModels.Core
         /// <param name="obj">The object.</param>
         public override void OnNodeModified(NodeModel obj)
         {
-            // TODO: MAGN-8237
-            if (DynamoViewModel.HomeSpace.RunSettings.RunType == RunType.Manual)
-                DynamoViewModel.HomeSpace.GetExecutingNodes(DynamoViewModel.ShowRunPreview);
+            if (HomeWorkspaceModel.RunSettings.RunType == RunType.Manual)
+                HomeWorkspaceModel.GetExecutingNodes(DynamoViewModel.ShowRunPreview);
         }
 
         private void hwm_SetNodeDeltaState(object sender, DeltaComputeStateEventArgs e)
