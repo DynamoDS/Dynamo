@@ -551,20 +551,15 @@ namespace Dynamo.Models
 
                 foreach (var ext in extensions)
                 {
-                    var logSource = ext as ILogSource;
-                    if (logSource != null)
-                        logSource.MessageLogged += LogMessage;
-
                     try
                     {
+                        ExtensionManager.Add(ext);
                         ext.Startup(startupParams);
                     }
                     catch (Exception ex)
                     {
                         Logger.Log(ex.Message);                       
                     }
-
-                    ExtensionManager.Add(ext);
                 }
             }
 
@@ -583,16 +578,6 @@ namespace Dynamo.Models
                     Logger.Log(ex.Message);
                 }
             }
-        }
-           
-        // TODO: MAGN-8237 Why is this unused
-        private void RemoveExtension(IExtension ext)
-        {
-            ExtensionManager.Remove(ext);
-
-            var logSource = ext as ILogSource;
-            if (logSource != null)
-                logSource.MessageLogged -= LogMessage;
         }
 
         void UpdateManager_Log(LogEventArgs args)
@@ -619,6 +604,8 @@ namespace Dynamo.Models
         /// <filterpriority>2</filterpriority>
         public void Dispose()
         {
+
+
             ExtensionManager.Dispose();
             extensionManager.MessageLogged -= LogMessage;
 
