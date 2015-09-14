@@ -146,7 +146,9 @@ namespace Dynamo.UI.Views
             var searchElementVM = dataContext as NodeSearchElementViewModel;
 
             if (searchElementVM != null)
+            {
                 dragDropHelper.HandleMouseDown(position, searchElementVM);
+            }
         }
 
         private void OnButtonPreviewMouseMove(object sender, MouseEventArgs e)
