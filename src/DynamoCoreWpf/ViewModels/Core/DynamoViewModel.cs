@@ -988,8 +988,7 @@ namespace Dynamo.ViewModels
                 var vm = new HomeWorkspaceViewModel(ws as HomeWorkspaceModel, this);
                 workspaces.Add(vm);
 
-                // MAGN-8237
-                HomeSpaceViewModel = vm; // kill this
+                HomeSpaceViewModel = vm;
                 
                 // The RunSettings control is a child of the DynamoView, 
                 // but has its DataContext set to the RunSettingsViewModel 
