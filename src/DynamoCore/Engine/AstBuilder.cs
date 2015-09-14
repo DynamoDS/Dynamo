@@ -40,6 +40,7 @@ namespace Dynamo.Engine
             None,
             DeltaExecution,
             NodeToCode,
+            PreviewGraph,
         }
 
         private readonly IAstNodeContainer nodeContainer;

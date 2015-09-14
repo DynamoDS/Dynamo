@@ -260,7 +260,7 @@ namespace Dynamo.Engine
             var activeNodes = updatedNodes.Where(n => n.State != ElementState.Error);
             if (activeNodes.Any())
             {
-                astBuilder.CompileToAstNodes(activeNodes, AstBuilder.CompilationContext.DeltaExecution, verboseLogging);
+                astBuilder.CompileToAstNodes(activeNodes, AstBuilder.CompilationContext.PreviewGraph, verboseLogging);
             }
 
             GraphSyncData graphSyncdata = syncDataManager.GetSyncData();
