@@ -7,6 +7,15 @@ using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
 
 namespace Dynamo.ViewModels
 {
+    public class MakeNewHomeWorkspaceCommandOptions
+    {
+        /// <summary>
+        /// Identifies whether a new home workspace should be created
+        /// if there already is an fresh home workspace open
+        /// </summary>
+        public bool ForceNewHomeWorkspace { get; set; }
+    }
+
     partial class DynamoViewModel
     {
         private void InitializeDelegateCommands()

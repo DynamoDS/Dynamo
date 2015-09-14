@@ -1543,13 +1543,30 @@ namespace Dynamo.ViewModels
 
         public void MakeNewHomeWorkspace(object parameter)
         {
-            this.model.AddHomeWorkspace();
-            this.ShowStartPage = false;
+            var options = parameter as MakeNewHomeWorkspaceCommandOptions;
+
+            var firstWorkspace = this.model.Workspaces.FirstOrDefault();
+
+            // if the first workspace is empty and unsaved, it is essentially a new workspace
+            if (options != null && 
+                !options.ForceNewHomeWorkspace &&
+                firstWorkspace is HomeWorkspaceModel && 
+                String.IsNullOrEmpty(firstWorkspace.FileName) && 
+                !firstWorkspace.Nodes.Any())
+            {
+                // thus we simply hide the startpage if visible
+                this.ShowStartPage = false;
+            }
+            else
+            {
+                this.model.AddHomeWorkspace();
+                this.ShowStartPage = false;
+            }
         }
 
         internal bool CanMakeNewHomeWorkspace(object parameter)
         {
-            return HomeSpace.RunSettings.RunEnabled;
+            return true;
         }
 
         public void Exit(object allowCancel)

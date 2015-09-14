@@ -395,7 +395,10 @@ namespace Dynamo.UI.Controls
             switch (item.ContextData)
             {
                 case ButtonNames.NewWorkspace:
-                    dvm.NewHomeWorkspaceCommand.Execute(null);
+                    dvm.NewHomeWorkspaceCommand.Execute(new MakeNewHomeWorkspaceCommandOptions()
+                    {
+                        ForceNewHomeWorkspace = false
+                    });
                     break;
 
                 case ButtonNames.OpenWorkspace:
