@@ -3199,27 +3199,24 @@ r = Equals(x, {41, 42});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void TestExecution()
         {
             List<string> codes = new List<string>() 
             {
-                "class JPoint{ X:int; Y:int; Z:int; constructor ByCoord(a:int,b:int,c:int){X = a; Y = b; Z = c;}}",
-                "a=10;b=20;c=30;",
-                "p = JPoint.ByCoord(a,b,c);",
+                @"import(""FFITarget.dll"");a=10;b=20;c=30;",
+                "p = DummyPoint.ByCoordinates(a,b,c);",
                 "x = p.X; "
             };
 
             Guid guid1 = System.Guid.NewGuid();
             Guid guid2 = System.Guid.NewGuid();
             Guid guid3 = System.Guid.NewGuid();
-            Guid guid4 = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
             added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
             added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[2]));
-            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, codes[3]));
 
             var syncData = new GraphSyncData(null, added, null);
             liveRunner.UpdateGraph(syncData);
