@@ -117,8 +117,14 @@ namespace Dynamo.Tests
             Assert.AreEqual(ViewModel.CurrentSpace.Connectors.Count(), 17);
             AssertGraphLayoutLayers(new List<int> { 1, 1, 2, 1, 1, 2, 2, 2, 1, 2 });
 
+            var prevX = (nodes.Min(n => n.X) + nodes.Max(n => n.X + n.Width)) / 2;
+            var prevY = (nodes.Min(n => n.Y) + nodes.Max(n => n.Y + n.Height)) / 2;
+
             AssertNoOverlap();
             AssertMaxCrossings(2);
+
+            Assert.Less(Math.Abs((nodes.Min(n => n.X) + nodes.Max(n => n.X + n.Width)) / 2 - prevX), 10);
+            Assert.Less(Math.Abs((nodes.Min(n => n.Y) + nodes.Max(n => n.Y + n.Height)) / 2 - prevY), 10);
         }
 
         [Test]
