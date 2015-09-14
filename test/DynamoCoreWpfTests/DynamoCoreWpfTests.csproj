@@ -192,6 +192,10 @@
       <Name>PythonNodeModelsWpf</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\PythonNodeModels\PythonNodeModels.csproj">
+      <Project>{8872ca17-c10d-43b9-8393-5c5a57065eb0}</Project>
+      <Name>PythonNodeModels</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\UnitsUI\UnitsUI.csproj">
       <Project>{c67a7e80-73e6-4bbf-9d3f-dcd86ce306be}</Project>
       <Name>UnitsUI</Name>
