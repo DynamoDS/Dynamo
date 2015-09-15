@@ -55,12 +55,15 @@ namespace DSCore
             [ArbitraryDimensionArrayImport] IList list,
             [ArbitraryDimensionArrayImport] IList keys)
         {
-            return
-                list.Cast<object>()
-                    .Zip(keys.Cast<IComparable>(), (item, key) => new {item, key})
+            var sortedPairs = list.Cast<object>()
+                    .Zip(keys.Cast<IComparable>(), (item, key) => new { item, key })
                     .OrderBy(x => x.key)
-                    .Select(x => x.item)
                     .ToList();
+
+            var sortedList = sortedPairs.Select(x => x.item);
+            var sortedKeys = sortedPairs.Select(x => x.key);
+
+            return new ArrayList { sortedList, sortedKeys };
         }
 
         public static IList groupByKey(IList list, IList keys)

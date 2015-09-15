@@ -312,11 +312,6 @@
 			<param name="lists"></param>
             <search>reduce</search>
         </member>
-		<member name="SortByKey">
-			<param name="list">list of values</param>
-			<param name="keyProjector"></param>
-            <search>sort,key</search>
-        </member>
 		<member name="GroupByKey">
 			<param name="list">list of values</param>
 			<param name="keyProjector"></param>

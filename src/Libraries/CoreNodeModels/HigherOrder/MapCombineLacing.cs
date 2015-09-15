@@ -487,6 +487,47 @@ namespace DSCore
         }
     }
 
+    [NodeName("SortByKey")]
+    [NodeCategory(BuiltinNodeCategories.BUILT_IN)]
+    [IsDesignScriptCompatible]
+    public class SortByKey : NodeModel
+    {
+        public SortByKey()
+        {
+            InPortData.Add(new PortData("list", ""));
+            InPortData.Add(new PortData("keys", ""));
+
+            OutPortData.Add(new PortData("sorted list", Resources.FilterPortDataResultInToolTip));
+            OutPortData.Add(new PortData("sorted keys", Resources.FilterPortDataResultOutToolTip));
+
+            RegisterAllPorts();
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(
+            List<AssociativeNode> inputAstNodes)
+        {
+            var packedId = "__temp" + GUID.ToString().Replace("-", "");
+            return new[]
+            {
+                AstFactory.BuildAssignment(
+                    AstFactory.BuildIdentifier(packedId),
+                    AstFactory.BuildFunctionCall("__SortByKey", inputAstNodes)),
+                AstFactory.BuildAssignment(
+                    GetAstIdentifierForOutputIndex(0),
+                    new IdentifierNode(packedId)
+                    {
+                        ArrayDimensions = new ArrayNode { Expr = AstFactory.BuildIntNode(0) }
+                    }),
+                AstFactory.BuildAssignment(
+                    GetAstIdentifierForOutputIndex(1),
+                    new IdentifierNode(packedId)
+                    {
+                        ArrayDimensions = new ArrayNode { Expr = AstFactory.BuildIntNode(1) }
+                    })
+            };
+        }
+    }
+
     [NodeName("ReplaceByCondition")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
     [NodeDescription("ReplaceByConditionDescription", typeof(DSCoreNodesUI.Properties.Resources))]

@@ -458,28 +458,29 @@ def __Reduce(accumulator : _FunctionObject, seed: var[]..[], lists : var[]..[])
     };
 }
 
-def SortByKey(list : var[]..[], keyProjector:_FunctionObject)
+def __SortByKey(list : var[]..[], keys : var[]..[])
 {
     return = [Imperative]
     {
-        if (list == null)
+        if (list == null || keys == null)
         {
             return = null;
         }
 
-        _count = Count(list);
-        _keys = { };
+		_countList = Count(list);
+		_countKeys = Count(keys);
 
-        if (_count == 0)
+		if (_countList != _countKeys)
         {
-            return = _keys;
+            return = null;
         }
 
-        for (_index in 0..(_count - 1))
-        {
-            _keys[_index] = __Apply(keyProjector, list[_index]);
-        }
-        return = Sorting.sortByKey(list, _keys);
+		sortItems = Sorting.sortByKey(list, keys);
+
+		_sortedList = sortItems[0];
+		_sortedKeys = sortItems[1];
+
+        return = { _sortedList, _sortedKeys };
     };
 }
 
