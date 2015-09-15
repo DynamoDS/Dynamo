@@ -142,8 +142,12 @@ namespace Dynamo.Core.Threading
 
             if (graphSyncData == null)
                 return other.graphSyncData == null;
-            else
-                return other.graphSyncData == null ? true : other.graphSyncData.NodeIDs.All(graphSyncData.NodeIDs.Contains);
+            else if (other.graphSyncData == null)
+                return true;
+
+            return other.graphSyncData.AddedNodeIDs.All(graphSyncData.AddedNodeIDs.Contains) &&
+                   other.graphSyncData.ModifiedNodeIDs.All(graphSyncData.ModifiedNodeIDs.Contains) &&
+                   other.graphSyncData.DeletedNodeIDs.All(graphSyncData.DeletedNodeIDs.Contains);
         }
 
         protected override AsyncTask.TaskMergeInstruction CanMergeWithCore(AsyncTask otherTask)
