@@ -901,7 +901,7 @@ namespace DSCoreNodesTests
             var lengths = new ArrayList { 0, 2 };
 
             var output = List.Chop(list, lengths);
-            var expected = new ArrayList { new ArrayList { }, new ArrayList { 1, 2 } };
+            var expected = new ArrayList { new ArrayList { }, new ArrayList { 1, 2 }, new ArrayList { 3, 4 } };
             Assert.AreEqual(expected, output);
         }
 
@@ -925,7 +925,7 @@ namespace DSCoreNodesTests
             var lengths = new ArrayList { 2, 5 };
 
             var output = List.Chop(list, lengths);
-            var expected = new ArrayList { new ArrayList { 1, 2 }, new ArrayList { 3 } };
+            var expected = new ArrayList { new ArrayList { 1, 2 } };
             Assert.AreEqual(expected, output);
         }
 
@@ -934,7 +934,7 @@ namespace DSCoreNodesTests
         public static void Chop5()
         {
             var list = new ArrayList { 1, "a", 3 };
-            var lengths = new ArrayList { 2, 5 };
+            var lengths = new ArrayList { 2, 1 };
 
             var output = List.Chop(list, lengths);
             var expected = new ArrayList { new ArrayList { 1, "a" }, new ArrayList { 3 } };

@@ -535,10 +535,9 @@ namespace DSCore
                 {
                     finalList.Add(currList);
                     currList = new ArrayList();
-                    lengthIndex++;
-                    if (lengthIndex >= lengths.Count)
+                    if (lengthIndex < lengths.Count - 1)
                     {
-                        break;
+                        lengthIndex++;
                     }
                     count = 0;
                 }
@@ -547,7 +546,7 @@ namespace DSCore
                 count++;
             }
 
-            if (currList.Count > 0)
+            if (currList.Count == (int)lengths[lengthIndex])
                 finalList.Add(currList);
 
             return finalList;
