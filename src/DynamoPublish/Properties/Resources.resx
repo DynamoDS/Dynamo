@@ -205,10 +205,10 @@
     <value>Request Invite</value>
   </data>
   <data name="InviteRequestStart" xml:space="preserve">
-    <value>Sending Request...</value>
+    <value>Sending request...</value>
   </data>
   <data name="InviteRequestSuccess" xml:space="preserve">
-    <value>Request sent successfuly - invite will be addressed to :</value>
+    <value>Request sent successfuly - your invitation will be addressed to :</value>
   </data>
   <data name="InviteRequestFailed" xml:space="preserve">
     <value>Failed to send the request. Try again later</value>
@@ -259,7 +259,7 @@
     <value>Your request is already approved.</value>
   </data>
   <data name="RequestOnPendingState" xml:space="preserve">
-    <value>Request pending...</value>
+    <value>Your request is pending.</value>
   </data>
   <data name="UploadedMessage" xml:space="preserve">
     <value>Your workspace has been successfully published!</value>
