@@ -221,7 +221,7 @@ namespace Dynamo.Engine
             if (node.State == ElementState.Error)
                 Log("Error in Node. Not sent for building and compiling");
 
-            if (context == CompilationContext.DeltaExecution)
+            if (context == CompilationContext.DeltaExecution || context == CompilationContext.PreviewGraph)
                 OnAstNodeBuilding(node.GUID);
 
 #if DEBUG
@@ -245,7 +245,7 @@ namespace Dynamo.Engine
 
             if(null == astNodes)
                 resultList.AddRange(new AssociativeNode[0]);
-            else if (context == CompilationContext.DeltaExecution)
+            else if (context == CompilationContext.DeltaExecution || context == CompilationContext.PreviewGraph)
             {
                 OnAstNodeBuilt(node.GUID, astNodes);
                 resultList.AddRange(astNodes);

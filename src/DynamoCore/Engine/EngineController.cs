@@ -45,7 +45,7 @@ namespace Dynamo.Engine
         private readonly LibraryServices libraryServices;
         private CodeCompletionServices codeCompletionServices;
         private readonly AstBuilder astBuilder;
-        private readonly SyncDataManager syncDataManager;
+        private SyncDataManager syncDataManager;
         private readonly Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
         private readonly Queue<List<Guid>> previewGraphQueue = new Queue<List<Guid>>();
         public bool VerboseLogging;
@@ -257,6 +257,7 @@ namespace Dynamo.Engine
             if (updatedNodes == null)
                 return null;
 
+            var tempSyncDataManager = syncDataManager.Clone();
             var activeNodes = updatedNodes.Where(n => n.State != ElementState.Error);
             if (activeNodes.Any())
             {
@@ -265,6 +266,7 @@ namespace Dynamo.Engine
 
             GraphSyncData graphSyncdata = syncDataManager.GetSyncData();
             List<Guid> previewGraphData = this.liveRunnerServices.PreviewGraph(graphSyncdata, verboseLogging);
+            syncDataManager = tempSyncDataManager;
 
              lock (previewGraphQueue)
              {
