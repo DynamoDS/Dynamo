@@ -509,48 +509,13 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Chop a list into a set of lists each containing the given amount of items.
-        /// </summary>
-        /// <param name="list">List to chop up.</param>
-        /// <param name="subLength">Length of each new sub-list.</param>
-        /// <returns name="lists">List of lists.</returns>
-        /// <search>sublists,build sublists,slices,partitions,cut,listcontains</search>
-        public static IList Chop(IList list, int subLength)
-        {
-            if (list.Count < subLength)
-                return list;
-
-            var finalList = new ArrayList();
-            var currList = new ArrayList();
-            int count = 0;
-
-            foreach (object v in list)
-            {
-                count++;
-                currList.Add(v);
-
-                if (count == subLength)
-                {
-                    finalList.Add(currList);
-                    currList = new ArrayList();
-                    count = 0;
-                }
-            }
-
-            if (currList.Count > 0)
-                finalList.Add(currList);
-
-            return finalList;
-        }
-
-        /// <summary>
         ///     Chop a list into a set of consecutive sublists with the specified lengths. List division begins at the top of the list.
         /// </summary>
         /// <param name="list">List to chop into sublists</param>
         /// <param name="lengths">Lengths of consecutive sublists to be created from the input list</param>
         /// <returns name="lists">Sublists created from the list</returns>
         /// <search>chop</search>
-        public static IList ChopByLengths(IList list, IList lengths)
+        public static IList Chop(IList list, IList lengths)
         {
             var finalList = new ArrayList();
             var currList = new ArrayList();
