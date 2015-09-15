@@ -462,7 +462,7 @@ namespace DSCoreNodesTests
         {
             Assert.AreEqual(
                 new ArrayList { new ArrayList { 0, 1 }, new ArrayList { 2, 3 } },
-                List.Chop(new ArrayList { 0, 1, 2, 3 }, new ArrayList { 2, 2 }));
+                List.Chop(new ArrayList { 0, 1, 2, 3 }, new ArrayList { 2 }));
         }
 
         [Test]
