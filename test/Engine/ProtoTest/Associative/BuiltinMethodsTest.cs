@@ -405,7 +405,7 @@ namespace ProtoTest.Associative
         public void BIM30_RemoveDuplicate()
         {
             String code =
-@"import(""FFITarget.dll"");a = {null,20,30,null,20,15,true,true,5,false};b = {1,2,3,4,9,4,2,5,6,7,8,7,1,0,2};rda = RemoveDuplicates(a);rdb = RemoveDuplicates(b);rdd = RemoveDuplicates({{1,2,{5,{6}}}, {1,2,{5,6}}, {1,2,{5,{6}}}});rde = RemoveDuplicates({""hello2"", ""hello"", 'r', ""hello2"", 's', 's', ""hello"", ' '});rdf = RemoveDuplicates({});rdg = RemoveDuplicates(1);p = rda[3];q = rdb[4];m2 = rdd[0][2][0];m3 = rde[4];res1 = Count(rda);res2 = Count(rdb);res3 = Count(rdc);res4 = Count(rdd);res5 = Count(rde);res6 = Count(rdf);";
+@"import(""FFITarget.dll"");a = {null,20,30,null,20,15,true,true,5,false};b = {1,2,3,4,9,4,2,5,6,7,8,7,1,0,2};rda = RemoveDuplicates(a);rdb = RemoveDuplicates(b);rdd = RemoveDuplicates({{1,2,{5,{6}}}, {1,2,{5,6}}, {1,2,{5,{6}}}});rde = RemoveDuplicates({""hello2"", ""hello"", 'r', ""hello2"", 's', 's', ""hello"", ' '});rdf = RemoveDuplicates({});p = rda[3];q = rdb[4];m2 = rdd[0][2][0];m3 = rde[4];res1 = Count(rda);res2 = Count(rdb);res4 = Count(rdd);res5 = Count(rde);res6 = Count(rdf);";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Assert.IsTrue((Int64)mirror.GetValue("p").Payload == 15);
             Assert.IsTrue((Int64)mirror.GetValue("q").Payload == 9);
@@ -413,7 +413,6 @@ namespace ProtoTest.Associative
             thisTest.Verify("m3", ' ');
             thisTest.Verify("res1", 7);
             thisTest.Verify("res2", 10);
-            thisTest.Verify("res3", 2);
             thisTest.Verify("res4", 2);
             thisTest.Verify("res5", 5);
             thisTest.Verify("res6", 0);
