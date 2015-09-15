@@ -14,6 +14,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using System.Linq;
 using Reach;
+using Reach.Data;
 
 namespace Dynamo.Publish.ViewModels
 {
@@ -223,7 +224,7 @@ namespace Dynamo.Publish.ViewModels
                 }
             }
 
-            UploadStateMessage = Resources.ReadyForPublishMessage;
+            UploadStateMessage = (model.State == PublishModel.UploadState.Succeeded) ? Resources.UploadedMessage : Resources.ReadyForPublishMessage;
             IsReadyToUpload = true;
             return true;
         }

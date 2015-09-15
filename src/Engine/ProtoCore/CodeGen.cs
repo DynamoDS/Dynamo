@@ -965,7 +965,11 @@ namespace ProtoCore
                         else
                         {
                             string message = String.Format(Resources.kUnboundIdentifierMsg, identnode.Value);
-                            buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kIdUnboundIdentifier, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
+                            var unboundSymbol = new SymbolNode
+                            {
+                                name = identnode.Value
+                            };
+                            buildStatus.LogUnboundVariableWarning(unboundSymbol, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
                         }
 
                         if (depth == 0)

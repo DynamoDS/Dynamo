@@ -42,6 +42,11 @@ namespace Dynamo.Engine
         ///     Function name.
         /// </summary>
         string FunctionName { get; }
+
+        /// <summary>
+        ///     Return Type
+        /// </summary>
+        ProtoCore.Type ReturnType { get; }
     }
 
     public class FunctionDescriptorParams
@@ -110,12 +115,7 @@ namespace Dynamo.Engine
             }
 
             InputParameters = inputParameters;
-            
-            //Not sure why returnType for constructors are var[]..[], use UnqualifiedClassName
-            ReturnType = (type == FunctionType.Constructor) ?
-                UnqualifedClassName :
-                funcDescParams.ReturnType.ToShortString();
-
+            ReturnType =  funcDescParams.ReturnType;
             Type = type;
             ReturnKeys = funcDescParams.ReturnKeys;
             IsVarArg = funcDescParams.IsVarArg;
@@ -151,7 +151,7 @@ namespace Dynamo.Engine
         /// <summary>
         ///     Function return type.
         /// </summary>
-        public string ReturnType { get; private set; }
+        public ProtoCore.Type ReturnType { get; private set; }
 
         /// <summary>
         ///     If the function returns a dictionary, ReturnKeys is the key collection
@@ -285,8 +285,9 @@ namespace Dynamo.Engine
                 else if (FunctionType.InstanceProperty != Type && FunctionType.StaticProperty != Type)
                     descBuf.Append(" ( )");
 
-                if (!string.IsNullOrEmpty(ReturnType))
-                    descBuf.Append(": " + ReturnType);
+                var typeName = ReturnType.ToShortString();
+                if (!string.IsNullOrEmpty(typeName))
+                    descBuf.Append(": " + typeName);
 
                 return descBuf.ToString();
             }

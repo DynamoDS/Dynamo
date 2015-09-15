@@ -1,0 +1,26 @@
+<Workspace Version="0.8.2.2173" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <DSCoreNodesUI.NumberRange guid="b2b256b2-ab76-428c-93be-3ad03fd8e527" type="DSCoreNodesUI.NumberRange" nickname="Number Range" x="610.5" y="174" isVisible="true" isUpstreamVisible="true" lacing="Longest" isSelectedInput="False" />
+    <Dynamo.Nodes.DoubleInput guid="f0d12b5d-1d2b-4824-9606-7b4a9d67aab9" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="364" y="172" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput guid="eab724e4-347d-4022-9e2a-7df030600182" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="367" y="246" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True">
+      <System.Double value="5" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput guid="f234f724-4ff8-419d-9d58-40bc6aa73214" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="369" y="322" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="f0d12b5d-1d2b-4824-9606-7b4a9d67aab9" start_index="0" end="b2b256b2-ab76-428c-93be-3ad03fd8e527" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="eab724e4-347d-4022-9e2a-7df030600182" start_index="0" end="b2b256b2-ab76-428c-93be-3ad03fd8e527" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f234f724-4ff8-419d-9d58-40bc6aa73214" start_index="0" end="b2b256b2-ab76-428c-93be-3ad03fd8e527" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+</Workspace>

@@ -13,6 +13,7 @@ Looking to learn or download Dynamo?  Check out [dynamobim.org](http://dynamobim
 ### Create a Node Library for Dynamo ###
 If you're interested in developing a Node library for Dynamo, the easiest place to start is by browsing the [DynamoSamples](https://github.com/DynamoDS/DynamoSamples).  
 These samples use the [Dynamo NuGet packages](https://www.nuget.org/packages?q=DynamoVisualProgramming) which can be installed using the NuGet package manager in Visual Studio.
+[![NuGet](https://img.shields.io/nuget/v/DynamoVisualProgramming.ZeroTouchLibrary.svg)]()
 
 You can learn more about developing libraries for Dynamo on the [Dynamo wiki](https://github.com/DynamoDS/Dynamo/wiki/Zero-Touch-Plugin-Development).
 
@@ -56,7 +57,8 @@ Search/Browse
 -	Tooltips and search algorithm improvements for in canvas search (via right click)
 
 Localization 
--	fit and finish
+- Now localized to 12 languages (Dynamo for Revit and Dynamo standalone)
+- Define the localization for Dynamo standalone [Instructions here](http://dynamobim.com/multilingual-dynamo/)
 
 Documentation
 - 4 New Chapters for the [Dynamo Primer](http://dynamobim.com/learn/)

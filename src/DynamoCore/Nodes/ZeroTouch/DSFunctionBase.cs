@@ -67,6 +67,11 @@ namespace Dynamo.Nodes
         {
             return Controller.BuildAst(this, inputAstNodes);
         }
+
+        public override ProtoCore.Type GetTypeHintForOutput(int index)
+        {
+            return Controller.Definition.ReturnType;
+        } 
     }
     
 
@@ -170,9 +175,7 @@ namespace Dynamo.Nodes
             }
             else
             {
-                string displayReturnType = IsConstructor()
-                    ? Definition.UnqualifedClassName
-                    : Definition.ReturnType;
+                string displayReturnType = Definition.ReturnType.ToShortString();
 
                 var returns = Definition.Returns;
 
