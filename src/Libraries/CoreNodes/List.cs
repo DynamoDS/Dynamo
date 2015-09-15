@@ -519,7 +519,7 @@ namespace DSCore
         {
             var finalList = new ArrayList();
             var currList = new ArrayList();
-            int index = 0;
+            int count = 0;
             int lengthIndex = 0;
 
             // If there is no any lengths more than 0,
@@ -531,7 +531,7 @@ namespace DSCore
 
             foreach (object obj in list)
             {
-                if (index == ((int)lengths[lengthIndex]) || ((int)lengths[lengthIndex] <= 0))
+                if (count == ((int)lengths[lengthIndex]) || ((int)lengths[lengthIndex] <= 0))
                 {
                     finalList.Add(currList);
                     currList = new ArrayList();
@@ -540,11 +540,11 @@ namespace DSCore
                     {
                         break;
                     }
-                    index = 0;
+                    count = 0;
                 }
 
                 currList.Add(obj);
-                index++;
+                count++;
             }
 
             if (currList.Count > 0)
