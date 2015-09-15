@@ -1099,8 +1099,25 @@ namespace Dynamo.ViewModels
                 models.Add(edge, UndoRedoRecorder.UserAction.Modification);
             }
 
+            // Link a note to the nearest node
+            foreach (NoteModel note in Model.Notes)
+            {
+                try
+                {
+                    NodeModel nd = Model.Nodes.OrderBy(node =>
+                        Math.Pow(node.X + node.Width / 2 - note.X - note.Width / 2, 2) +
+                        Math.Pow(node.Y + node.Height / 2 - note.Y - note.Height / 2, 2)).FirstOrDefault();
+
+                    graph.FindNode(nd.GUID).LinkedNotes.Add(note);
+                }
+                catch { }
+            }
+
             // Support undo for graph layout command
-            WorkspaceModel.RecordModelsForModification(new List<ModelBase>(Model.Nodes), Model.UndoRecorder);
+            List<ModelBase> undoItems = new List<ModelBase>();
+            undoItems.AddRange(Model.Nodes);
+            undoItems.AddRange(Model.Notes);
+            WorkspaceModel.RecordModelsForModification(undoItems, Model.UndoRecorder);
             graph.RecordInitialPosition();
 
             // Sugiyama algorithm steps
@@ -1132,10 +1149,20 @@ namespace Dynamo.ViewModels
                 var n = graph.FindNode(node.GUID);
                 if (n != null)
                 {
+                    double deltaX = n.X - node.X;
+                    double deltaY = n.Y - node.Y;
+
                     node.X = n.X;
                     node.Y = n.Y;
                     node.ReportPosition();
                     node.OnNodeModified();
+
+                    foreach (NoteModel note in n.LinkedNotes)
+                    {
+                        note.X += deltaX;
+                        note.Y += deltaY;
+                        note.ReportPosition();
+                    }
                 }
             }
 
