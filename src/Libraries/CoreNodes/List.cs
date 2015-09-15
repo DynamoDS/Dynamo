@@ -546,7 +546,7 @@ namespace DSCore
                 count++;
             }
 
-            if (currList.Count == (int)lengths[lengthIndex])
+            if (currList.Count > 0)
                 finalList.Add(currList);
 
             return finalList;
