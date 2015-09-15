@@ -598,6 +598,11 @@ namespace GraphLayout
         /// </summary>
         public HashSet<Edge> RightEdges = new HashSet<Edge>();
 
+        /// <summary>
+        /// A list of note models which has this node as the closest node.
+        /// </summary>
+        public List<Object> LinkedNotes = new List<Object>();
+
         public Node(Guid guid, double width, double height, double x, double y, Graph ownerGraph)
         {
             Id = guid;
