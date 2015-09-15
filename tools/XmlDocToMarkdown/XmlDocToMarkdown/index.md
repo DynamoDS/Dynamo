@@ -1,6 +1,6 @@
-# Welcome to MkDocs
+# Welcome to Dynamo Documentation
 
-For full documentation visit [mkdocs.org](http://mkdocs.org).
+For full documentation visit [Dynamo Documentation]http://ramramps.github.io/DocumentTesting/
 
 ## Commands
 
@@ -9,9 +9,3 @@ For full documentation visit [mkdocs.org](http://mkdocs.org).
 * `mkdocs build` - Build the documentation site.
 * `mkdocs help` - Print this help message.
 
-## Project layout
-
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.

@@ -23,7 +23,7 @@ namespace Dynamo.DocumentationTestLibrary
         /// Testing property
         /// </summary>
         public int property1 { get; set; }
-
+      
         #endregion
 
         #region events
@@ -44,7 +44,7 @@ namespace Dynamo.DocumentationTestLibrary
         /// <search> Testing Search Tag </search>          
         /// <remarks>Testing remarks tag</remarks>        
         /// <typeparam name="T">The element type of the array</typeparam>
-        /// <api_stability>2</api_stability>
+        /// <api_stability>2</api_stability>       
         public T[] TestingGenerics<T>(int n)
         {
             return new T[n];
