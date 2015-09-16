@@ -97,7 +97,7 @@ namespace ProtoScript.Runners
         {
             get
             {
-                return AddedSubtrees == null ? Enumerable.Empty<Guid>() : AddedSubtrees.Select(ts => ts.GUID);
+                return AddedSubtrees.Select(ts => ts.GUID);
             }
         }
 
@@ -108,7 +108,7 @@ namespace ProtoScript.Runners
         {
             get
             {
-                return ModifiedSubtrees == null ? Enumerable.Empty<Guid>() : ModifiedSubtrees.Select(ts => ts.GUID);
+                return ModifiedSubtrees.Select(ts => ts.GUID);
             }
         }
 
@@ -119,7 +119,7 @@ namespace ProtoScript.Runners
         {
             get
             {
-                return DeletedSubtrees == null ? Enumerable.Empty<Guid>() : DeletedSubtrees.Select(ts => ts.GUID);
+                return DeletedSubtrees.Select(ts => ts.GUID);
             }
         }
 
@@ -136,9 +136,9 @@ namespace ProtoScript.Runners
 
         public GraphSyncData(List<Subtree> deleted, List<Subtree> added, List<Subtree> modified)
         {
-            DeletedSubtrees = deleted;
-            AddedSubtrees = added;
-            ModifiedSubtrees = modified;
+            DeletedSubtrees = deleted ?? new List<Subtree>();
+            AddedSubtrees = added ?? new List<Subtree>();
+            ModifiedSubtrees = modified ?? new List<Subtree>();
         }
 
         public override string ToString()

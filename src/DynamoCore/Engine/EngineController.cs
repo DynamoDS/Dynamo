@@ -381,7 +381,7 @@ namespace Dynamo.Engine
                 nodes.Where(n => n.NeedsForceExecution)
                      .Select(n => n.GUID));
 
-            if (reExecuteNodesIds.Any() && graphSyncdata.ModifiedSubtrees != null)
+            if (reExecuteNodesIds.Any())
             {
                 for (int i = 0; i < graphSyncdata.ModifiedSubtrees.Count; ++i)
                 {
@@ -395,9 +395,7 @@ namespace Dynamo.Engine
                 }
             }
 
-            if ((graphSyncdata.AddedSubtrees != null && graphSyncdata.AddedSubtrees.Count > 0) ||
-                (graphSyncdata.ModifiedSubtrees != null && graphSyncdata.ModifiedSubtrees.Count > 0) ||
-                (graphSyncdata.DeletedSubtrees != null && graphSyncdata.DeletedSubtrees.Count > 0))
+            if (graphSyncdata.AddedSubtrees.Any() || graphSyncdata.ModifiedSubtrees.Any() || graphSyncdata.DeletedSubtrees.Any())
             {
                 lock (graphSyncDataQueue)
                 {
