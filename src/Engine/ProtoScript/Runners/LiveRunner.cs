@@ -63,42 +63,83 @@ namespace ProtoScript.Runners
     /// </summary>
     public class GraphSyncData
     {
+        /// <summary>
+        /// Deleted sub trees.
+        /// </summary>
         public List<Subtree> DeletedSubtrees
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Added sub trees.
+        /// </summary>
         public List<Subtree> AddedSubtrees
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Modified sub trees.
+        /// </summary>
         public List<Subtree> ModifiedSubtrees
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Newly added nodes' IDs.
+        /// </summary>
+        public IEnumerable<Guid> AddedNodeIDs
+        {
+            get
+            {
+                return AddedSubtrees.Select(ts => ts.GUID);
+            }
+        }
+
+        /// <summary>
+        /// Modified nodes' IDs.
+        /// </summary>
+        public IEnumerable<Guid> ModifiedNodeIDs
+        {
+            get
+            {
+                return ModifiedSubtrees.Select(ts => ts.GUID);
+            }
+        }
+
+        /// <summary>
+        /// Deleted nodes' IDs.
+        /// </summary>
+        public IEnumerable<Guid> DeletedNodeIDs 
+        {
+            get
+            {
+                return DeletedSubtrees.Select(ts => ts.GUID);
+            }
+        }
+
+        /// <summary>
+        /// All node IDs in this graph sync data.
+        /// </summary>
         public IEnumerable<Guid> NodeIDs
         {
-            get;
-            private set;
+            get
+            {
+                return AddedNodeIDs.Concat(ModifiedNodeIDs).Concat(DeletedNodeIDs);
+            }
         }
 
         public GraphSyncData(List<Subtree> deleted, List<Subtree> added, List<Subtree> modified)
         {
-            DeletedSubtrees = deleted;
-            AddedSubtrees = added;
-            ModifiedSubtrees = modified;
-
-            NodeIDs = Enumerable.Empty<Guid>()
-                                .Concat(deleted == null ? Enumerable.Empty<Guid>() : deleted.Select(t => t.GUID))
-                                .Concat(added == null ? Enumerable.Empty<Guid>() : added.Select(t => t.GUID))
-                                .Concat(modified == null ? Enumerable.Empty<Guid>() : modified.Select(t => t.GUID));
+            DeletedSubtrees = deleted ?? new List<Subtree>();
+            AddedSubtrees = added ?? new List<Subtree>();
+            ModifiedSubtrees = modified ?? new List<Subtree>();
         }
-
 
         public override string ToString()
         {
