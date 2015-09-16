@@ -1080,7 +1080,11 @@ namespace ProtoImperative
                 else
                 {
                     string message = String.Format(ProtoCore.Properties.Resources.kUnboundIdentifierMsg, t.Value);
-                    buildStatus.LogWarning(WarningID.kIdUnboundIdentifier, message, core.CurrentDSFileName, t.line, t.col, graphNode);
+                    var unboundSymbol = new SymbolNode
+                    {
+                        name = t.Value
+                    };
+                    buildStatus.LogUnboundVariableWarning(unboundSymbol, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                 }
 
                 inferedType.UID = (int)ProtoCore.PrimitiveType.kTypeNull;

@@ -1,0 +1,18 @@
+<Workspace Version="0.8.3.2501" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap>
+    <ClassMap partialName="Math" resolvedName="DSCore.Math" assemblyName="DSCoreNodes.dll" />
+  </NamespaceResolutionMap>
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="7a43565a-9914-4739-9523-1dedf394b035" type="Dynamo.Nodes.DSFunction" nickname="Math.Sin" x="489.5" y="269" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="DSCoreNodes.dll" function="DSCore.Math.Sin@double" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="2bae3fbd-a9f7-44c5-8f8b-2b0ffa8b3295" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="282" y="233" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" CodeText="3;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="2bae3fbd-a9f7-44c5-8f8b-2b0ffa8b3295" start_index="0" end="7a43565a-9914-4739-9523-1dedf394b035" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>

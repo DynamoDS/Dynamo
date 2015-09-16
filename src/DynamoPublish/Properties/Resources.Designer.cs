@@ -232,24 +232,6 @@ namespace Dynamo.Publish.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 1. Make a graph          2. Publish to the web          3. Share.
-        /// </summary>
-        public static string InviteDescription {
-            get {
-                return ResourceManager.GetString("InviteDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to We&apos;re working on a new way to share your work done in Dynamo: &lt;Bold&gt;Customizers&lt;/Bold&gt; - simple websites that allow anyone to interact with your graph. This is new territory for us and we need your help. Would like to try it out?.
-        /// </summary>
-        public static string InviteDescription2 {
-            get {
-                return ResourceManager.GetString("InviteDescription2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Not all nodes are allowed in customizers, including Revit nodes. Your data could be lost or corrupted at any time during the beta period. Your data could be exposed to other users during the beta period..
         /// </summary>
         public static string InviteIntegrity {
@@ -286,7 +268,7 @@ namespace Dynamo.Publish.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sending Request....
+        ///   Looks up a localized string similar to Sending request....
         /// </summary>
         public static string InviteRequestStart {
             get {
@@ -295,7 +277,7 @@ namespace Dynamo.Publish.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Request sent successfully..
+        ///   Looks up a localized string similar to Request sent successfuly - your invitation will be addressed to :.
         /// </summary>
         public static string InviteRequestSuccess {
             get {
@@ -466,7 +448,7 @@ namespace Dynamo.Publish.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Request pending....
+        ///   Looks up a localized string similar to Your request is pending..
         /// </summary>
         public static string RequestOnPendingState {
             get {
@@ -489,6 +471,15 @@ namespace Dynamo.Publish.Properties {
         public static string UnknownServerErrorMessage {
             get {
                 return ResourceManager.GetString("UnknownServerErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your workspace has been successfully published!.
+        /// </summary>
+        public static string UploadedMessage {
+            get {
+                return ResourceManager.GetString("UploadedMessage", resourceCulture);
             }
         }
         
