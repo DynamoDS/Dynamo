@@ -106,6 +106,7 @@ namespace Dynamo.Services
                     DynamoModel.OnRequestDispatcherInvoke(
                         () =>
                         {
+                            //@TODO(Luke): The vagueness of this instrumentation call may be exacerbated by the presence of multiple home workspaces.
                             string workspace =
                                 dynamoModel.CurrentWorkspace
                                     .GetStringRepOfWorkspace();

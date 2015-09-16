@@ -132,7 +132,10 @@ limitations under the License.
     <Compile Include="Interfaces\IWorkspaceModel.cs" />
     <Compile Include="Logging\LogMessage.cs" />
     <Compile Include="Logging\LogSource.cs" />
+    <Compile Include="Interfaces\ISchedulerFactory.cs" />
+    <Compile Include="Core\Threading\MultiThreadedSchedulerFactory.cs" />
     <Compile Include="Models\NodeLoaders\InputNodeLoader.cs" />
+    <Compile Include="Core\Threading\SingleThreadedSchedulerFactory.cs" />
     <Compile Include="Nodes\Attributes.cs" />
     <Compile Include="Rendering\DefaultRenderPackageFactory.cs" />
     <Compile Include="Extensions\ExtensionDefinition.cs" />

@@ -9,6 +9,8 @@ using System.Xml;
 
 using Dynamo.Core;
 using Dynamo.Core.Threading;
+using Dynamo.Interfaces;
+using Dynamo.Nodes;
 using Dynamo.Engine;
 
 using ProtoCore;
@@ -16,17 +18,43 @@ using ProtoCore.Namespace;
 
 namespace Dynamo.Models
 {
-    public class HomeWorkspaceModel : WorkspaceModel
+    public interface IEngineControllerManager
+    {
+        EngineController EngineController { get; }
+    }
+
+    public interface IHomeWorkspaceModel : IWorkspaceModel, IEngineControllerManager
+    {
+        IScheduler Scheduler { get; }
+        event EventHandler<EvaluationStartedEventArgs> EvaluationStarted;
+        event EventHandler<EvaluationCompletedEventArgs> EvaluationCompleted;
+        event EventHandler<EvaluationCompletedEventArgs> RefreshCompleted;
+    }
+
+    public class HomeWorkspaceModel : WorkspaceModel, IHomeWorkspaceModel, ITraceReconciliationProcessor
     {
         #region Class Data Members and Properties
 
-        private readonly DynamoScheduler scheduler;
         private PulseMaker pulseMaker;
         private readonly bool verboseLogging;
         private bool graphExecuted;
         private IEnumerable<KeyValuePair<Guid, List<string>>> historicalTraceData;
 
+        /// <summary>
+        /// For handling the results of a trace reconciliation. Can be set for testing purposes.
+        /// </summary>
+        internal ITraceReconciliationProcessor TraceReconciliationProcessor { get; set; }
+
+        /// <summary>
+        /// The EngineController for this particular home workspace.
+        /// </summary>
         public EngineController EngineController { get; private set; }
+
+        /// <summary>
+        /// The Scheduler for this particular 
+        /// </summary>
+        private DynamoScheduler scheduler;
+        public IScheduler Scheduler { get { return scheduler;  } }
 
         /// <summary>
         ///     Flag specifying if this workspace is operating in "test mode".
@@ -81,16 +109,8 @@ namespace Dynamo.Models
         }
         private IEnumerable<KeyValuePair<Guid, List<string>>> preloadedTraceData;
 
-        internal bool IsEvaluationPending
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public event EventHandler<EventArgs> EvaluationStarted;
-        public virtual void OnEvaluationStarted(EventArgs e)
+        public event EventHandler<EvaluationStartedEventArgs> EvaluationStarted;
+        public virtual void OnEvaluationStarted(EvaluationStartedEventArgs e)
         {
             this.HasRunWithoutCrash = false;
 
@@ -174,7 +194,11 @@ namespace Dynamo.Models
             this.scheduler = scheduler;
             this.verboseLogging = verboseLogging;
             IsTestMode = isTestMode;
-            EngineController = engine;
+            this.EngineController = engine;
+            this.EngineController.MessageLogged += Log;
+            this.EngineController.TraceReconciliationComplete += EngineControllerTraceReconciliationComplete;
+
+            TraceReconciliationProcessor = this;
 
             // The first time the preloaded trace data is set, we cache
             // the data as historical. This will be used after the initial
@@ -190,6 +214,14 @@ namespace Dynamo.Models
             }
             historicalTraceData = copiedData;
 
+            if (this.RunSettings.RunType == RunType.Periodic)
+            {
+                this.StartPeriodicEvaluation();
+            }
+            else if (RunSettings.RunType == RunType.Automatic)
+            {
+                Run();
+            }
         }
 
         #endregion
@@ -199,9 +231,17 @@ namespace Dynamo.Models
             base.Dispose();
             if (EngineController != null)
             {
+                EngineController.TraceReconciliationComplete -= EngineControllerTraceReconciliationComplete;
                 EngineController.MessageLogged -= Log;
                 EngineController.LibraryServices.LibraryLoaded -= LibraryLoaded;
                 EngineController.Dispose();
+                EngineController = null;
+            }
+
+            if (scheduler != null)
+            {
+                scheduler.Shutdown();
+                scheduler = null;
             }
 
             if (pulseMaker == null) return;
@@ -245,6 +285,12 @@ namespace Dynamo.Models
             {
                 RequestRun();
             }
+        }
+
+        private void PulseMakerRunStarted()
+        {
+            var nodesToUpdate = Nodes.Where(n => n.CanUpdatePeriodically);
+            MarkNodesAsModifiedAndRequestRun(nodesToUpdate, true);
         }
 
         #region Public Operational Methods
@@ -313,45 +359,42 @@ namespace Dynamo.Models
             return true;
         }
 
-        private void PulseMakerRunStarted()
-        {
-            var nodesToUpdate = Nodes.Where(n => n.CanUpdatePeriodically);
-            MarkNodesAsModifiedAndRequestRun(nodesToUpdate, true);
-        }
-
-
-        #region evaluation
+        #region Evaluation
 
         /// <summary>
-        /// Call this method to reset the virtual machine, avoiding a race 
-        /// condition by using a thread join inside the vm executive.
-        /// TODO(Luke): Push this into a resync call with the engine controller
+        /// Completely reset the runtime state of the EngineController and reload all loaded libraries
+        /// excluding custom nodes.
         /// </summary>
-        /// <param name="controller"></param>
-        /// <param name="markNodesAsDirty">Set this parameter to true to force 
-        ///     reset of the execution substrait. Note that setting this parameter 
-        ///     to true will have a negative performance impact.</param>
-        public void ResetEngine(EngineController controller, bool markNodesAsDirty = false)
+        internal void ResetEngine(LibraryServices libraryServices, string geometryFactoryPath, bool markNodesAsDirty = false )
         {
             if (EngineController != null)
             {
                 EngineController.MessageLogged -= Log;
+                EngineController.TraceReconciliationComplete -= EngineControllerTraceReconciliationComplete;
                 EngineController.LibraryServices.LibraryLoaded -= LibraryLoaded;
+                EngineController.Dispose();
+                EngineController = null;
             }
 
-            EngineController = controller;
-            controller.MessageLogged += Log;
-            controller.LibraryServices.LibraryLoaded += LibraryLoaded;
-            
+            EngineController = new EngineController(
+                libraryServices,
+                geometryFactoryPath,
+                this.verboseLogging);
+
+            EngineController.MessageLogged += Log;
+            EngineController.TraceReconciliationComplete += EngineControllerTraceReconciliationComplete;
+            EngineController.LibraryServices.LibraryLoaded += LibraryLoaded;
+
             if (markNodesAsDirty)
             {
                 // Mark all nodes as dirty so that AST for the whole graph will be
                 // regenerated.
-                MarkNodesAsModifiedAndRequestRun(Nodes); 
-            }
-
-            if (RunSettings.RunType == RunType.Automatic)
+                MarkNodesAsModifiedAndRequestRun(Nodes);
+            } 
+            else if (RunSettings.RunType == RunType.Automatic)
+            {
                 Run();
+            }
         }
 
         /// <summary>
@@ -425,8 +468,8 @@ namespace Dynamo.Models
             // Dispatch the failure message display for execution on UI thread.
             // 
             EvaluationCompletedEventArgs e = task.Exception == null || IsTestMode
-                ? new EvaluationCompletedEventArgs(true)
-                : new EvaluationCompletedEventArgs(true, task.Exception);
+                ? new EvaluationCompletedEventArgs(this, true, task.ExecutionEndTime.TickCount - task.ExecutionStartTime.TickCount)
+                : new EvaluationCompletedEventArgs(this, true, task.ExecutionEndTime.TickCount - task.ExecutionStartTime.TickCount, task.Exception);
 
             EvaluationCount ++;
 
@@ -497,13 +540,13 @@ namespace Dynamo.Models
                 // The workspace has been built for the first time
                 silenceNodeModifications = false;
 
-                OnEvaluationStarted(EventArgs.Empty);
+                OnEvaluationStarted(new EvaluationStartedEventArgs(this));
                 scheduler.ScheduleForExecution(task);
             }
             else
             {
                 // Notify handlers that evaluation did not take place.
-                var e = new EvaluationCompletedEventArgs(false);
+                var e = new EvaluationCompletedEventArgs(this, false, 0);
                 OnEvaluationCompleted(e);
             }
         }
@@ -548,6 +591,108 @@ namespace Dynamo.Models
        
         #endregion
 
+        #region Trace 
+
+        /// <summary>
+        /// Add trace data to the document before being saved
+        /// </summary>
+        /// <param name="document">The XmlDocument being saved</param>
+        protected override void SaveCustomData(XmlDocument document)
+        {
+            var runtimeCore = EngineController.LiveRunnerRuntimeCore;
+
+            if (document.DocumentElement == null)
+            {
+                const string message = "Workspace should have been saved before this";
+                throw new InvalidOperationException(message);
+            }
+
+            try
+            {
+                if (runtimeCore == null) // No execution yet as of this point.
+                    return;
+
+                // Selecting all nodes that are either a DSFunction,
+                // a DSVarArgFunction or a CodeBlockNodeModel into a list.
+                var nodeGuids =
+                    Nodes.Where(
+                        n => n is DSFunction || n is DSVarArgFunction || n is CodeBlockNodeModel)
+                        .Select(n => n.GUID);
+
+                var nodeTraceDataList = runtimeCore.RuntimeData.GetTraceDataForNodes(nodeGuids, runtimeCore.DSExecutable);
+
+                if (nodeTraceDataList.Any())
+                    Dynamo.Nodes.Utilities.SaveTraceDataToXmlDocument(document, nodeTraceDataList);
+            }
+            catch (Exception exception)
+            {
+                // We'd prefer file saving process to not crash Dynamo,
+                // otherwise user will lose the last hope in retaining data.
+                Log(exception.Message);
+                Log(exception.StackTrace);
+            }
+        }
+
+        private void EngineControllerTraceReconciliationComplete(TraceReconciliationEventArgs obj)
+        {
+            Debug.WriteLine("TRACE RECONCILIATION: {0} total serializables were orphaned.", obj.CallsiteToOrphanMap.SelectMany(kvp => kvp.Value).Count());
+
+            // The orphans will come back here as a dictionary of lists of ISerializables jeyed by their callsite id.
+            // This dictionary gets redistributed into a dictionary keyed by the workspace id.
+
+            var workspaceOrphanMap = new Dictionary<Guid, List<ISerializable>>();
+
+            // Get the orphaned serializables to this workspace
+            var wsOrphans = this.GetOrphanedSerializablesAndClearHistoricalTraceData().ToList();
+
+            if (wsOrphans.Any())
+            {
+                if (!workspaceOrphanMap.ContainsKey(this.Guid))
+                {
+                    workspaceOrphanMap.Add(this.Guid, wsOrphans);
+                }
+                else
+                {
+                    workspaceOrphanMap[this.Guid].AddRange(wsOrphans);
+                }
+            }
+
+            foreach (var kvp in obj.CallsiteToOrphanMap)
+            {
+                if (!kvp.Value.Any()) continue;
+
+                var nodeGuid = this.EngineController.LiveRunnerRuntimeCore.RuntimeData.CallSiteToNodeMap[kvp.Key];
+
+                // TODO: MAGN-7314
+                // Find the owning workspace for a node.
+                var ownedNode = this.Nodes.Any(n => n.GUID == nodeGuid);
+                if (!ownedNode) continue;
+
+                // Add the node's orphaned serializables to the workspace
+                // orphan map.
+                if (workspaceOrphanMap.ContainsKey(this.Guid))
+                {
+                    workspaceOrphanMap[this.Guid].AddRange(kvp.Value);
+                }
+                else
+                {
+                    workspaceOrphanMap.Add(this.Guid, kvp.Value);
+                }
+            }
+
+            this.TraceReconciliationProcessor.OnPostTraceReconciliationComplete(workspaceOrphanMap);
+        }
+
+        public event PostTraceReconciliationCompleteHandler PostTraceReconciliationComplete;
+
+        public void OnPostTraceReconciliationComplete(Dictionary<Guid, List<ISerializable>> orphanedSerializables)
+        {
+            if (this.PostTraceReconciliationComplete != null)
+            {
+                this.PostTraceReconciliationComplete(new PostTraceReconciliationCompleteEventArgs(orphanedSerializables));
+            }
+        }
+
         /// <summary>
         /// Returns a list of ISerializable items which exist in the preloaded 
         /// trace data but do not exist in the current CallSite data.
@@ -581,6 +726,9 @@ namespace Dynamo.Models
             historicalTraceData = null;
 
             return orphans;
-        } 
+        }
+
+        #endregion
+
     }
 }

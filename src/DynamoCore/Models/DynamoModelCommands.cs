@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Core;
+using Dynamo.Engine;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
@@ -352,7 +353,17 @@ namespace Dynamo.Models
 
         private void ConvertNodesToCodeImpl(ConvertNodesToCodeCommand command)
         {
-            CurrentWorkspace.ConvertNodesToCodeInternal(EngineController);
+            EngineController engineController;
+            if (this.CurrentWorkspace is HomeWorkspaceModel)
+            {
+                engineController = this.GetCurrentEngineController();
+            }
+            else
+            {
+                engineController = this.GetFirstEngineController();
+            }
+
+            CurrentWorkspace.ConvertNodesToCodeInternal(engineController);
 
             CurrentWorkspace.HasUnsavedChanges = true;
         }

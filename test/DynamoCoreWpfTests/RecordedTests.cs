@@ -2275,7 +2275,7 @@ namespace DynamoCoreWpfTests
             preloadGeometry = true;
             RunCommandsFromFile("TestCallsiteMapModifyFunctionParamValue.xml", (commandTag) =>
             {
-                ProtoCore.RuntimeCore core = ViewModel.Model.EngineController.LiveRunnerRuntimeCore;
+                ProtoCore.RuntimeCore core = ViewModel.Model.GetCurrentEngineController().LiveRunnerRuntimeCore;
                 if (commandTag == "ModifyX_FirstTime")
                 {
                     // There must only be 1 callsite at this point
@@ -2373,7 +2373,7 @@ namespace DynamoCoreWpfTests
             preloadGeometry = true;
             RunCommandsFromFile("TestCallsiteMapModifyModifyInputConnection.xml", (commandTag) =>
             {
-                ProtoCore.RuntimeCore core = ViewModel.Model.EngineController.LiveRunnerRuntimeCore;
+                ProtoCore.RuntimeCore core = ViewModel.Model.GetCurrentEngineController().LiveRunnerRuntimeCore;
                 if (commandTag == "ModifyX_FirstTime")
                 {
                     // There must only be 1 callsite at this point
@@ -2541,7 +2541,7 @@ namespace DynamoCoreWpfTests
 
             Assert.AreNotEqual(ElementState.Warning, nodeModel.State);
 
-            Assert.IsNotNull(nodeModel.GetCachedValueFromEngine(ViewModel.Model.EngineController).Data);
+            Assert.IsNotNull(nodeModel.GetCachedValueFromEngine(ViewModel.Model.GetCurrentEngineController()).Data);
 
             AssertPreviewValue("3f309016-7b00-4487-9b68-f0640e892d39", 11);
 
@@ -3289,12 +3289,12 @@ namespace DynamoCoreWpfTests
                 if (commandTag == "BeforeRun")
                 {
                     AssertNullValues();
-                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerRuntimeCore.CancellationPending);
+                    Assert.AreEqual(false, ViewModel.Model.GetCurrentEngineController().LiveRunnerRuntimeCore.CancellationPending);
                     Assert.AreEqual(false, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterRun")
                 {
-                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerRuntimeCore.CancellationPending);
+                    Assert.AreEqual(false, ViewModel.Model.GetCurrentEngineController().LiveRunnerRuntimeCore.CancellationPending);
                     Assert.AreEqual(true, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterCancel")
@@ -3319,12 +3319,12 @@ namespace DynamoCoreWpfTests
                 if (commandTag == "BeforeRun")
                 {
                     AssertNullValues();
-                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerRuntimeCore.CancellationPending);
+                    Assert.AreEqual(false, ViewModel.Model.GetCurrentEngineController().LiveRunnerRuntimeCore.CancellationPending);
                     Assert.AreEqual(false, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterRun")
                 {
-                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerRuntimeCore.CancellationPending);
+                    Assert.AreEqual(false, ViewModel.Model.GetCurrentEngineController().LiveRunnerRuntimeCore.CancellationPending);
                     Assert.AreEqual(true, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterCancel")

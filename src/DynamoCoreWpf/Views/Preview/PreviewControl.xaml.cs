@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media.Animation;
 using Dynamo.Extensions;
+using Dynamo.Models;
 
 namespace Dynamo.UI.Controls
 {
@@ -76,7 +77,11 @@ namespace Dynamo.UI.Controls
 
         public PreviewControl(NodeViewModel nodeViewModel)
         {
-            this.scheduler = nodeViewModel.DynamoViewModel.Model.Scheduler;
+            var ws = nodeViewModel.DynamoViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+            if (ws == null) throw new InvalidOperationException("Cannot create a PreviewControl outside of a HomeWorkspaceModel");
+
+            this.scheduler = ws.Scheduler;
+            
             this.nodeViewModel = nodeViewModel;
             InitializeComponent();
             Loaded += OnPreviewControlLoaded;

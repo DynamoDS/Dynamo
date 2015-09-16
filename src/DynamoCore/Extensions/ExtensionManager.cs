@@ -26,6 +26,10 @@ namespace Dynamo.Extensions
                 extensions.Add(extension);
                 Log(fullName + " extension is added");
 
+                var logSource = extension as ILogSource;
+                if (logSource != null)
+                    logSource.MessageLogged += Log;
+
                 if (ExtensionAdded != null)
                 {
                     ExtensionAdded(extension);
@@ -50,6 +54,10 @@ namespace Dynamo.Extensions
             try
             {
                 extension.Dispose();
+
+                var logSource = extension as ILogSource;
+                if (logSource != null)
+                    logSource.MessageLogged -= Log;
             }
             catch (Exception ex)
             {

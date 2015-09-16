@@ -2017,7 +2017,7 @@ namespace Dynamo.Tests
             OpenModel(oldPath);
 
             var newPath = this.GetNewFileNameOnTempPath("dyn");
-            var res = CurrentDynamoModel.CurrentWorkspace.SaveAs(newPath, model.EngineController.LiveRunnerRuntimeCore);
+            var res = CurrentDynamoModel.CurrentWorkspace.SaveAs(newPath);
 
             Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));
@@ -2057,7 +2057,7 @@ namespace Dynamo.Tests
             OpenModel(oldPath);
 
             var newPath = this.GetNewFileNameOnTempPath("dyn");
-            var res = CurrentDynamoModel.CurrentWorkspace.SaveAs(newPath, model.EngineController.LiveRunnerRuntimeCore);
+            var res = CurrentDynamoModel.CurrentWorkspace.SaveAs(newPath);
 
             Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));

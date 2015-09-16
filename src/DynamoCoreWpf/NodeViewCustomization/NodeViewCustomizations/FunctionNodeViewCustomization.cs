@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Windows.Controls;
 using Dynamo.Controls;
 using Dynamo.Models;
@@ -91,7 +92,7 @@ namespace Dynamo.Wpf
                 ws.SetInfo(args.Name, args.Category, args.Description);
                 
                 if (!string.IsNullOrEmpty(ws.FileName))
-                    ws.Save(model.EngineController.LiveRunnerRuntimeCore);
+                    ws.Save();
             }
         }
 

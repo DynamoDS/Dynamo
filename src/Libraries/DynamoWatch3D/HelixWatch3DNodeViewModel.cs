@@ -58,7 +58,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             watchNode.VisibleUpstreamNodes(gathered);
 
             gathered.ForEach(n => n.IsUpdated = true);
-            gathered.ForEach(n => n.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory));
+            gathered.ForEach(n => n.RequestVisualUpdateAsync(scheduler, EngineController, renderPackageFactory));
         }
 
         protected override void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e)

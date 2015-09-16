@@ -1,6 +1,7 @@
 ﻿using Dynamo.Models;
 using System;
 using System.Collections.Generic;
+using System.Xml;
 
 namespace Dynamo.Interfaces
 {
@@ -21,5 +22,6 @@ namespace Dynamo.Interfaces
         event Action NodesCleared;
         event Action<ConnectorModel> ConnectorAdded;
         event Action<ConnectorModel> ConnectorDeleted;
+        event Action<XmlDocument> Saving;
     }
 }

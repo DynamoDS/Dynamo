@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -308,7 +309,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             get
             {
-                return canNavigateBackground || navigationKeyIsDown; 
+                return canNavigateBackground || navigationKeyIsDown;
             }
             set
             {
@@ -321,14 +322,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public bool NavigationKeyIsDown
         {
             get { return navigationKeyIsDown; }
-            set 
-            { 
+            set
+            {
                 navigationKeyIsDown = value;
                 RaisePropertyChanged("NavigationKeyIsDown");
                 RaisePropertyChanged("CanNavigateBackground");
             }
         }
-        
+
         #endregion
 
         protected HelixWatch3DViewModel(Watch3DViewModelStartupParams parameters) : base(parameters)
@@ -553,27 +554,26 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 case "IsUpdated":
                     // Only request updates when this is true. All nodes are marked IsUpdated=false
                     // before an evaluation occurs.
-
                     if (node.IsUpdated)
                     {
-                        node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
+                        node.RequestVisualUpdateAsync(scheduler, EngineController, renderPackageFactory);
                     }
                     break;
 
                 case "DisplayLabels":
-                    node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
+                    node.RequestVisualUpdateAsync(scheduler, EngineController, renderPackageFactory);
                     break;
 
                 case "IsVisible":
                     var geoms = FindAllGeometryModel3DsForNode(node.AstIdentifierBase);
-                    foreach(var g in geoms)
+                    foreach (var g in geoms)
                     {
                         g.Value.Visibility = node.IsVisible ? Visibility.Visible : Visibility.Hidden;
                         //RaisePropertyChanged("SceneItems");
                     }
 
                     node.IsUpdated = true;
-                    node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
+                    node.RequestVisualUpdateAsync(scheduler, EngineController, renderPackageFactory);
 
                     break;
             }
@@ -644,10 +644,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 case "CurrentWorkspace":
                     OnClear();
+
+                    if (!(model.CurrentWorkspace is HomeWorkspaceModel)) return;
+
+                    // Because node geometry is not currently cached, we need to 
+                    // request an update of all node geometry
                     foreach (var node in model.CurrentWorkspace.Nodes)
                     {
-                        node.IsUpdated = true;
-                        node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
+                        node.RequestVisualUpdateAsync(scheduler, EngineController, renderPackageFactory);
                     }
                     break;
             }
@@ -1297,12 +1301,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 tw.WriteLine("solid {0}", model.CurrentWorkspace.Name);
                 foreach (var g in geoms)
                 {
-                    var n = ((MeshGeometry3D) g.Geometry).Normals.ToList();
+                    var n = ((MeshGeometry3D)g.Geometry).Normals.ToList();
                     var t = ((MeshGeometry3D)g.Geometry).Triangles.ToList();
 
-                    for (var i = 0; i < t.Count(); i ++)
+                    for (var i = 0; i < t.Count(); i++)
                     {
-                        var nCount = i*3;
+                        var nCount = i * 3;
                         tw.WriteLine("\tfacet normal {0} {1} {2}", n[nCount].X, n[nCount].Y, n[nCount].Z);
                         tw.WriteLine("\t\touter loop");
                         tw.WriteLine("\t\t\tvertex {0} {1} {2}", t[i].P0.X, t[i].P0.Y, t[i].P0.Z);

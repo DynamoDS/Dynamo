@@ -8,6 +8,7 @@ using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Core;
 using Dynamo.Core.Threading;
+using Dynamo.Engine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
@@ -21,25 +22,24 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public IScheduler Scheduler { get; set; }
         public ILogger Logger { get; set; }
         public IPreferences Preferences { get; set; }
-        public IEngineControllerManager EngineControllerManager { get; set; }
         public IRenderPackageFactory RenderPackageFactory { get; set; }
         public IDynamoViewModel ViewModel { get; set; }
-        public INotifyPropertyChanged RenderPackageFactoryViewModel { get;set; }
+        public INotifyPropertyChanged RenderPackageFactoryViewModel { get; set; }
         public bool IsActiveAtStart { get; set; }
         public string Name { get; set; }
 
         public Watch3DViewModelStartupParams()
         {
-            
+
         }
 
         public Watch3DViewModelStartupParams(DynamoModel model, DynamoViewModel viewModel, string name)
         {
             Model = model;
-            Scheduler = model.Scheduler;
+            var ws = model.CurrentWorkspace as IHomeWorkspaceModel;
+            Scheduler = ws.Scheduler;
             Logger = model.Logger;
             Preferences = model.PreferenceSettings;
-            EngineControllerManager = model;
             RenderPackageFactory = viewModel.RenderPackageFactoryViewModel.Factory;
             ViewModel = viewModel;
             RenderPackageFactoryViewModel = viewModel.RenderPackageFactoryViewModel;
@@ -60,7 +60,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         protected readonly IScheduler scheduler;
         protected readonly IPreferences preferences;
         protected readonly ILogger logger;
-        protected readonly IEngineControllerManager engineManager;
         protected readonly IRenderPackageFactory renderPackageFactory;
         protected readonly IDynamoViewModel viewModel;
         protected readonly INotifyPropertyChanged renderPackageFactoryViewModel;
@@ -100,7 +99,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <summary>
         /// A flag which indicates whether this view model is used for a background preview.
         /// </summary>
-        public virtual bool IsBackgroundPreview 
+        public virtual bool IsBackgroundPreview
         {
             get { return true; }
         }
@@ -113,13 +112,21 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        protected EngineController EngineController
+        {
+            get
+            {
+                var ws = this.CurrentSpaceViewModel.Model as IHomeWorkspaceModel;
+                return ws != null ? ws.EngineController : null;
+            }
+        }
+
         protected Watch3DViewModelBase(Watch3DViewModelStartupParams parameters)
         {
             model = parameters.Model;
             scheduler = parameters.Scheduler;
             preferences = parameters.Preferences;
             logger = parameters.Logger;
-            engineManager = parameters.EngineControllerManager;
             renderPackageFactory = parameters.RenderPackageFactory;
             viewModel = parameters.ViewModel;
             renderPackageFactoryViewModel = parameters.RenderPackageFactoryViewModel;
@@ -268,12 +275,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     break;
             }
 
-            model.CurrentWorkspace.Nodes.Select(n => n.IsUpdated = true);
-
-            foreach (var node in
-                model.CurrentWorkspace.Nodes)
+            foreach (var node in model.CurrentWorkspace.Nodes)
             {
-                node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController,
+                node.RequestVisualUpdateAsync(scheduler, EngineController,
                         renderPackageFactory);
             }
         }

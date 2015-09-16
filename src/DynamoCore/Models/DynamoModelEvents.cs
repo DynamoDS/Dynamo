@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using Dynamo.Annotations;
 using Dynamo.Core;
-
+using Dynamo.Core.Threading;
+using Dynamo.Properties;
+using Dynamo.Services;
 using DynamoServices;
 
 namespace Dynamo.Models
@@ -197,6 +200,19 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// An event trigger when a graph evaluation begins.
+        /// </summary>
+        public event EventHandler<EvaluationStartedEventArgs> EvaluationStarted;
+        public virtual void OnEvaluationStarted(object sender, EvaluationStartedEventArgs e)
+        {
+            ExecutionEvents.OnGraphPreExecution();
+            if (EvaluationStarted != null)
+            {
+                EvaluationStarted(sender, e);
+            }
+        }
+
+        /// <summary>
         /// An event triggered when a single graph evaluation completes.
         /// </summary>
         public event EventHandler<EvaluationCompletedEventArgs> EvaluationCompleted;
@@ -210,6 +226,17 @@ namespace Dynamo.Models
 
             if (EvaluationCompleted != null)
                 EvaluationCompleted(sender, e);
+
+            if (!e.EvaluationTookPlace) return;
+
+            var evalTimespan = new TimeSpan(e.EvaluationTimeElapsed);
+
+            InstrumentationLogger.LogAnonymousTimedEvent(
+                                "Perf",
+                                typeof (UpdateGraphAsyncTask).Name,
+                                evalTimespan);
+
+            Debug.WriteLine(String.Format(Resources.EvaluationCompleted, evalTimespan));
         }
 
         /// <summary>

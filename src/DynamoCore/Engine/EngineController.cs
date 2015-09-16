@@ -32,12 +32,12 @@ namespace Dynamo.Engine
     {
         public event AstBuiltEventHandler AstBuilt;
 
-        public event Action<TraceReconciliationEventArgs> TraceReconcliationComplete;
+        public event Action<TraceReconciliationEventArgs> TraceReconciliationComplete;
         private void OnTraceReconciliationComplete(TraceReconciliationEventArgs e)
         {
-            if (TraceReconcliationComplete != null)
+            if (TraceReconciliationComplete != null)
             {
-                TraceReconcliationComplete(e);
+                TraceReconciliationComplete(e);
             }
         }
 
@@ -639,6 +639,16 @@ namespace Dynamo.Engine
         }
     }
 
+    public class PostTraceReconciliationCompleteEventArgs : EventArgs
+    {
+        public Dictionary<Guid, List<ISerializable>> OrphanedSerializables { get; private set; }
+
+        public PostTraceReconciliationCompleteEventArgs(Dictionary<Guid, List<ISerializable>> orphanedSerializables)
+        {
+            OrphanedSerializables = orphanedSerializables;
+        }
+    }
+
     public class TraceReconciliationEventArgs : EventArgs
     {
         /// <summary>
@@ -652,8 +662,10 @@ namespace Dynamo.Engine
         }
     }
 
+    public delegate void PostTraceReconciliationCompleteHandler(PostTraceReconciliationCompleteEventArgs model);
     public interface ITraceReconciliationProcessor
     {
-        void PostTraceReconciliation(Dictionary<Guid, List<ISerializable>> orphanedSerializables);
+        event PostTraceReconciliationCompleteHandler PostTraceReconciliationComplete;
+        void OnPostTraceReconciliationComplete(Dictionary<Guid, List<ISerializable>> orphanedSerializables);
     }
 }

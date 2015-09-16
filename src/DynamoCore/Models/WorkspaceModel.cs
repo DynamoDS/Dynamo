@@ -720,17 +720,16 @@ namespace Dynamo.Models
         ///     If successful, the CurrentWorkspace.FilePath field is updated as a side effect
         /// </summary>
         /// <param name="newPath">The path to save to</param>
-        /// <param name="core"></param>
         /// <param name="isBackup">Indicates whether saved workspace is backup or not. If it's not backup,
         /// we should add it to recent files. Otherwise leave it.</param>
-        public virtual bool SaveAs(string newPath, ProtoCore.RuntimeCore runtimeCore, bool isBackup = false)
+        public virtual bool SaveAs(string newPath, bool isBackup = false)
         {
             if (String.IsNullOrEmpty(newPath)) return false;
 
             Log(String.Format(Resources.SavingInProgress, newPath));
             try
             {
-                if (SaveInternal(newPath, runtimeCore) && !isBackup)
+                if (SaveInternal(newPath) && !isBackup)
                     OnWorkspaceSaved();
             }
             catch (Exception ex)
@@ -975,9 +974,9 @@ namespace Dynamo.Models
         /// <summary>
         /// Save assuming that the Filepath attribute is set.
         /// </summary>
-        public virtual bool Save(ProtoCore.RuntimeCore runtimeCore)
+        public virtual bool Save()
         {
-            return SaveAs(FileName, runtimeCore);
+            return SaveAs(FileName);
         }
 
         internal void ResetWorkspace()
@@ -1106,7 +1105,7 @@ namespace Dynamo.Models
 
         #region private/internal methods
 
-        private bool SaveInternal(string targetFilePath, ProtoCore.RuntimeCore runtimeCore)
+        private bool SaveInternal(string targetFilePath)
         {
             // Create the xml document to write to.
             var document = new XmlDocument();
@@ -1118,7 +1117,7 @@ namespace Dynamo.Models
             if (!PopulateXmlDocument(document))
                 return false;
 
-            SerializeSessionData(document, runtimeCore);
+            SaveCustomData(document);
 
             try
             {
@@ -1241,40 +1240,14 @@ namespace Dynamo.Models
             }
         }
 
-        // TODO(Ben): Documentation to come before pull request.
-        // TODO(Steve): This probably only belongs on HomeWorkspaceModel. -- MAGN-5715
-        protected virtual void SerializeSessionData(XmlDocument document, ProtoCore.RuntimeCore runtimeCore)
+        /// <summary>
+        /// Allows a subclass of WorkspaceModel to attach custom data to the workspace being
+        /// saved. If WorkspaceModel.Save is overriden and not invoked, this will not be called.
+        /// </summary>
+        /// <param name="document">The XmlDocument being saved to, before serialization</param>
+        protected virtual void SaveCustomData(XmlDocument document)
         {
-            if (document.DocumentElement == null)
-            {
-                const string message = "Workspace should have been saved before this";
-                throw new InvalidOperationException(message);
-            }
-
-            try
-            {
-                if (runtimeCore == null) // No execution yet as of this point.
-                    return;
-
-                // Selecting all nodes that are either a DSFunction,
-                // a DSVarArgFunction or a CodeBlockNodeModel into a list.
-                var nodeGuids =
-                    Nodes.Where(
-                        n => n is DSFunction || n is DSVarArgFunction || n is CodeBlockNodeModel)
-                        .Select(n => n.GUID);
-
-                var nodeTraceDataList = runtimeCore.RuntimeData.GetTraceDataForNodes(nodeGuids, runtimeCore.DSExecutable);
-
-                if (nodeTraceDataList.Any())
-                    Utils.SaveTraceDataToXmlDocument(document, nodeTraceDataList);
-            }
-            catch (Exception exception)
-            {
-                // We'd prefer file saving process to not crash Dynamo,
-                // otherwise user will lose the last hope in retaining data.
-                Log(exception.Message);
-                Log(exception.StackTrace);
-            }
+            
         }
 
         internal void SendModelEvent(Guid modelGuid, string eventName)

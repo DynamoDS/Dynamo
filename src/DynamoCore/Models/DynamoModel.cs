@@ -33,33 +33,29 @@ using ProtoCore;
 using ProtoCore.Exceptions;
 using ProtoCore.Runtime;
 using Compiler = ProtoAssociative.Compiler;
-// Dynamo package manager
 using Utils = Dynamo.Nodes.Utilities;
 using DefaultUpdateManager = Dynamo.UpdateManager.UpdateManager;
 using FunctionGroup = Dynamo.Engine.FunctionGroup;
 
 namespace Dynamo.Models
 {
-    public interface IEngineControllerManager
-    {
-        EngineController EngineController { get; }
-    }
-
     /// <summary>
-    /// The core model of Dynamo.
+    /// The core application model for Dynamo. Amongst various responsibilities, DynamoModel 
+    /// primarily manages creation and removal of Workspaces.
     /// </summary>
-    public partial class DynamoModel : IDynamoModel, IDisposable, IEngineControllerManager, ITraceReconciliationProcessor // : ModelBase
+    public partial class DynamoModel : IDynamoModel, IDisposable
     {
-        #region private members
+        #region Private Fields
 
         private readonly string geometryFactoryPath;
         private readonly PathManager pathManager;
         private WorkspaceModel currentWorkspace;
         private Timer backupFilesTimer;
         private Dictionary<Guid, string> backupFilesDict = new Dictionary<Guid, string>();
+
         #endregion
 
-        #region events
+        #region Public Events
 
         internal delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
         internal event FunctionNamePromptRequestHandler RequestsFunctionNamePrompt;
@@ -129,13 +125,14 @@ namespace Dynamo.Models
        
         #endregion
 
-        #region static properties
+        #region Public Static Properties
 
         /// <summary>
         /// Testing flag is used to defer calls to run in the idle thread
         /// with the assumption that the entire test will be wrapped in an
         /// idle thread call.
         /// </summary>
+        private static bool isTestMode;
         public static bool IsTestMode
         {
             get { return isTestMode; }
@@ -145,8 +142,6 @@ namespace Dynamo.Models
                 InstrumentationLogger.IsTestMode = value;
             }
         }
-
-        private static bool isTestMode;
 
         /// <summary>
         ///     Specifies whether or not Dynamo is in a crash-state.
@@ -161,12 +156,7 @@ namespace Dynamo.Models
 
         #endregion
 
-        #region public properties
-
-        /// <summary>
-        ///     DesignScript VM EngineController, used for this instance of Dynamo.
-        /// </summary>
-        public EngineController EngineController { get; set; }
+        #region Public Properties
 
         /// <summary>
         ///     Manages all loaded ZeroTouch libraries.
@@ -226,12 +216,6 @@ namespace Dynamo.Models
         public readonly DynamoLogger Logger;
 
         /// <summary>
-        ///     The Dynamo Scheduler, handles scheduling of asynchronous tasks on different
-        ///     threads.
-        /// </summary>
-        public DynamoScheduler Scheduler { get; private set; }
-
-        /// <summary>
         ///     The Dynamo Node Library, complete with Search.
         /// </summary>
         public readonly NodeSearchModel SearchModel;
@@ -262,6 +246,11 @@ namespace Dynamo.Models
         ///     Node Factory, used for creating and intantiating loaded Dynamo nodes.
         /// </summary>
         public readonly NodeFactory NodeFactory;
+
+        /// <summary>
+        ///     A Scheduler Factory, used for creating new Schedulers for use in workspaces
+        /// </summary>
+        public readonly ISchedulerFactory SchedulerFactory;
 
         /// <summary>
         ///     Migration Manager, upgrades old Dynamo file formats to the current version.
@@ -323,12 +312,6 @@ namespace Dynamo.Models
             get { return _workspaces; } 
         }
 
-        /// <summary>
-        /// An object which implements the ITraceReconciliationProcessor interface,
-        /// and is used for handlling the results of a trace reconciliation.
-        /// </summary>
-        public ITraceReconciliationProcessor TraceReconciliationProcessor { get; set; }
-
         public AuthenticationManager AuthenticationManager { get; set; }
 
         #endregion
@@ -376,13 +359,6 @@ namespace Dynamo.Models
 
             DynamoSelection.DestroyInstance();
             InstrumentationLogger.End();
-
-            if (Scheduler != null)
-            {
-                Scheduler.Shutdown();
-                Scheduler.TaskStateChanged -= OnAsyncTaskStateChanged;
-                Scheduler = null;
-            }
         }
 
         protected virtual void PostShutdownCore(bool shutdownHost)
@@ -397,7 +373,7 @@ namespace Dynamo.Models
             IPathResolver PathResolver { get; set; }
             bool StartInTestMode { get; set; }
             IUpdateManager UpdateManager { get; set; }
-            ISchedulerThread SchedulerThread { get; set; }
+            ISchedulerFactory SchedulerFactory { get; set; }
             string GeometryFactoryPath { get; set; }
             IAuthProvider AuthProvider { get; set; }
             IEnumerable<IExtension> Extensions { get; set; }
@@ -414,7 +390,7 @@ namespace Dynamo.Models
             public IPathResolver PathResolver { get; set; }
             public bool StartInTestMode { get; set; }
             public IUpdateManager UpdateManager { get; set; }
-            public ISchedulerThread SchedulerThread { get; set; }
+            public ISchedulerFactory SchedulerFactory { get; set; }
             public string GeometryFactoryPath { get; set; }
             public IAuthProvider AuthProvider { get; set; }
             public IEnumerable<IExtension> Extensions { get; set; }
@@ -471,9 +447,7 @@ namespace Dynamo.Models
             MigrationManager.MessageLogged += LogMessage;
             MigrationManager.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
-            var thread = config.SchedulerThread ?? new DynamoSchedulerThread();
-            Scheduler = new DynamoScheduler(thread, IsTestMode);
-            Scheduler.TaskStateChanged += OnAsyncTaskStateChanged;
+            this.SchedulerFactory = config.SchedulerFactory ?? new MultiThreadedSchedulerFactory(IsTestMode);
 
             geometryFactoryPath = config.GeometryFactoryPath;
 
@@ -551,7 +525,7 @@ namespace Dynamo.Models
             LibraryServices.MessageLogged += LogMessage;
             LibraryServices.LibraryLoaded += LibraryLoaded;
 
-            ResetEngineInternal();
+            ResetEngine();
 
             AddHomeWorkspace();
 
@@ -577,20 +551,15 @@ namespace Dynamo.Models
 
                 foreach (var ext in extensions)
                 {
-                    var logSource = ext as ILogSource;
-                    if (logSource != null)
-                        logSource.MessageLogged += LogMessage;
-
                     try
                     {
+                        ExtensionManager.Add(ext);
                         ext.Startup(startupParams);
                     }
                     catch (Exception ex)
                     {
                         Logger.Log(ex.Message);                       
                     }
-
-                    ExtensionManager.Add(ext);
                 }
             }
 
@@ -598,8 +567,6 @@ namespace Dynamo.Models
 
             StartBackupFilesTimer();
 
-            TraceReconciliationProcessor = this; 
-            
             foreach (var ext in ExtensionManager.Extensions)
             {
                 try
@@ -611,78 +578,6 @@ namespace Dynamo.Models
                     Logger.Log(ex.Message);
                 }
             }
-        }
-            
-        private void RemoveExtension(IExtension ext)
-        {
-            ExtensionManager.Remove(ext);
-
-            var logSource = ext as ILogSource;
-            if (logSource != null)
-                logSource.MessageLogged -= LogMessage;
-        }
-
-        private void EngineController_TraceReconcliationComplete(TraceReconciliationEventArgs obj)
-        {
-            Debug.WriteLine("TRACE RECONCILIATION: {0} total serializables were orphaned.", obj.CallsiteToOrphanMap.SelectMany(kvp=>kvp.Value).Count());
-            
-            // The orphans will come back here as a dictionary of lists of ISerializables jeyed by their callsite id.
-            // This dictionary gets redistributed into a dictionary keyed by the workspace id.
-
-            var workspaceOrphanMap = new Dictionary<Guid, List<ISerializable>>();
-
-            foreach (var ws in Workspaces.OfType<HomeWorkspaceModel>())
-            {
-                // Get the orphaned serializables to this workspace
-                var wsOrphans = ws.GetOrphanedSerializablesAndClearHistoricalTraceData().ToList();
-
-                if (!wsOrphans.Any())
-                    continue;
-
-                if (!workspaceOrphanMap.ContainsKey(ws.Guid))
-                {
-                    workspaceOrphanMap.Add(ws.Guid, wsOrphans);
-                }
-                else
-                {
-                    workspaceOrphanMap[ws.Guid].AddRange(wsOrphans);
-                }
-            }
-
-            foreach (var kvp in obj.CallsiteToOrphanMap)
-            {
-                if (!kvp.Value.Any()) continue;
-
-                var nodeGuid = EngineController.LiveRunnerRuntimeCore.RuntimeData.CallSiteToNodeMap[kvp.Key];
-
-                // TODO: MAGN-7314
-                // Find the owning workspace for a node.
-                var nodeSpace =
-                    Workspaces.FirstOrDefault(
-                        ws =>
-                            ws.Nodes.FirstOrDefault(n => n.GUID == nodeGuid)
-                                != null);
-
-                if (nodeSpace == null) continue;
-
-                // Add the node's orphaned serializables to the workspace
-                // orphan map.
-                if (workspaceOrphanMap.ContainsKey(nodeSpace.Guid))
-                {
-                    workspaceOrphanMap[nodeSpace.Guid].AddRange(kvp.Value);
-                }
-                else
-                {
-                    workspaceOrphanMap.Add(nodeSpace.Guid, kvp.Value);  
-                }
-            }
-
-            TraceReconciliationProcessor.PostTraceReconciliation(workspaceOrphanMap);
-        }
-
-        public virtual void PostTraceReconciliation(Dictionary<Guid, List<ISerializable>> orphanedSerializables)
-        {
-            // Override in derived classes to deal with orphaned serializables.
         }
 
         void UpdateManager_Log(LogEventArgs args)
@@ -702,52 +597,14 @@ namespace Dynamo.Models
             // Load all functions defined in that library.
             AddZeroTouchNodesToSearch(LibraryServices.GetFunctionGroups(newLibrary));
         }
-
-        /// <summary>
-        /// This event handler is invoked when DynamoScheduler changes the state 
-        /// of an AsyncTask object. See TaskStateChangedEventArgs.State for more 
-        /// details of these state changes.
-        /// </summary>
-        /// <param name="sender">The scheduler which raised the event.</param>
-        /// <param name="e">Task state changed event argument.</param>
-        /// 
-        private void OnAsyncTaskStateChanged(DynamoScheduler sender, TaskStateChangedEventArgs e)
-        {
-            switch (e.CurrentState)
-            {
-                case TaskStateChangedEventArgs.State.ExecutionStarting:
-                    if (e.Task is UpdateGraphAsyncTask)
-                        ExecutionEvents.OnGraphPreExecution();
-                    break;
-
-                case TaskStateChangedEventArgs.State.ExecutionCompleted:
-                    if (e.Task is UpdateGraphAsyncTask)
-                    {
-                        // Record execution time for update graph task.
-                        long start = e.Task.ExecutionStartTime.TickCount;
-                        long end = e.Task.ExecutionEndTime.TickCount;
-                        var executionTimeSpan = new TimeSpan(end - start);
-
-                        InstrumentationLogger.LogAnonymousTimedEvent(
-                            "Perf",
-                            e.Task.GetType().Name,
-                            executionTimeSpan);
-
-                        Debug.WriteLine(String.Format(Resources.EvaluationCompleted, executionTimeSpan));
-
-                        ExecutionEvents.OnGraphPostExecution();
-                    }
-                    break;
-            }
-        }
-
+        
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         /// <filterpriority>2</filterpriority>
         public void Dispose()
         {
-            EngineController.TraceReconcliationComplete -= EngineController_TraceReconcliationComplete;
+
 
             ExtensionManager.Dispose();
             extensionManager.MessageLogged -= LogMessage;
@@ -757,9 +614,6 @@ namespace Dynamo.Models
             
             UpdateManager.Log -= UpdateManager_Log;
             Logger.Dispose();
-
-            EngineController.Dispose();
-            EngineController = null;
 
             if (backupFilesTimer != null)
             {
@@ -1003,9 +857,6 @@ namespace Dynamo.Models
         /// Responds to property update notifications on the preferences,
         /// and synchronizes with the Units Manager.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        //TODO(Steve): See if we can't just do this in PreferenceSettings by making the properties directly access BaseUnit
         private void PreferenceSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
@@ -1022,19 +873,21 @@ namespace Dynamo.Models
         /// <param name="args"></param>
         private void LogWarningMessage(LogWarningMessageEventArgs args)
         {
-            Validity.Assert(EngineController.LiveRunnerRuntimeCore != null);
-            EngineController.LiveRunnerRuntimeCore.RuntimeStatus.LogWarning(WarningID.kDefault, args.message);
+            foreach (var ws in Workspaces.OfType<IHomeWorkspaceModel>())
+            {
+                Validity.Assert(ws.EngineController.LiveRunnerRuntimeCore != null);
+                ws.EngineController.LiveRunnerRuntimeCore.RuntimeStatus.LogWarning(WarningID.kDefault, args.message);
+            }
         }
 
         #endregion
 
-        #region engine management
+        #region Engine Management
 
         /// <summary>
         ///     Register custom node defintion and execute all custom node 
         ///     instances.
         /// </summary>
-        /// <param name="?"></param>
         private void UpdateCustomNodeDefinition(CustomNodeDefinition definition)
         {
             RegisterCustomNodeDefinitionWithEngine(definition);
@@ -1045,11 +898,18 @@ namespace Dynamo.Models
         ///     Registers (or re-registers) a Custom Node definition with the DesignScript VM,
         ///     so that instances of the custom node can be evaluated.
         /// </summary>
-        /// <param name="definition"></param>
         private void RegisterCustomNodeDefinitionWithEngine(CustomNodeDefinition definition)
         {
-            EngineController.GenerateGraphSyncDataForCustomNode(
-                Workspaces.OfType<HomeWorkspaceModel>().SelectMany(ws => ws.Nodes),
+            foreach (var workspace in Workspaces.OfType<HomeWorkspaceModel>())
+            {
+                RegisterCustomNodeDefinitionWithWorkspace(definition, workspace);
+            }
+        }
+
+        private void RegisterCustomNodeDefinitionWithWorkspace(CustomNodeDefinition definition, HomeWorkspaceModel workspace)
+        {
+            workspace.EngineController.GenerateGraphSyncDataForCustomNode(
+                workspace.Nodes,
                 definition,
                 DebugSettings.VerboseLogging);
         }
@@ -1059,8 +919,6 @@ namespace Dynamo.Models
         /// specified function definition and mark them as modified so that 
         /// their values will be re-queryed.
         /// </summary>
-        /// <param name="functionId"></param>
-        /// <returns></returns>
         private void MarkAllDependenciesAsModified(CustomNodeDefinition def)
         {
             var homeWorkspace = Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
@@ -1083,33 +941,15 @@ namespace Dynamo.Models
         ///     to true will have a negative performance impact.</param>
         public virtual void ResetEngine(bool markNodesAsDirty = false)
         {
-            ResetEngineInternal();
-            foreach (var workspaceModel in Workspaces.OfType<HomeWorkspaceModel>())
+            foreach (var ws in this.Workspaces.OfType<HomeWorkspaceModel>())
             {
-                workspaceModel.ResetEngine(EngineController, markNodesAsDirty);
+                ws.ResetEngine(this.LibraryServices, this.geometryFactoryPath, DebugSettings.VerboseLogging);
             }
-        }
-
-        protected void ResetEngineInternal()
-        {
-            if (EngineController != null)
-            {
-                EngineController.TraceReconcliationComplete -= EngineController_TraceReconcliationComplete;
-                EngineController.MessageLogged -= LogMessage;
-                EngineController.Dispose();
-                EngineController = null;
-            }
-
-            EngineController = new EngineController(
-                LibraryServices,
-                geometryFactoryPath,
-                DebugSettings.VerboseLogging);
-            
-            EngineController.MessageLogged += LogMessage;
-            EngineController.TraceReconcliationComplete += EngineController_TraceReconcliationComplete;
 
             foreach (var def in CustomNodeManager.LoadedDefinitions)
+            {
                 RegisterCustomNodeDefinitionWithEngine(def);
+            }
         }
 
         /// <summary>
@@ -1147,42 +987,8 @@ namespace Dynamo.Models
                     WorkspaceModel ws;
                     if (OpenFile(workspaceInfo, xmlDoc, out ws))
                     {
-                        // TODO: #4258
-                        // The logic to remove all other home workspaces from the model
-                        // was moved from the ViewModel. When #4258 is implemented, we will need to
-                        // remove this step.
-                        var currentHomeSpaces = Workspaces.OfType<HomeWorkspaceModel>().ToList();
-                        if (currentHomeSpaces.Any())
-                        {
-                            // If the workspace we're opening is a home workspace,
-                            // then remove all the other home workspaces. Otherwise,
-                            // Remove all but the first home workspace.
-                            var end = ws is HomeWorkspaceModel ? 0 : 1;
-
-                            for (var i = currentHomeSpaces.Count - 1; i >= end; i--)
-                            {
-                                RemoveWorkspace(currentHomeSpaces[i]);
-                            }
-                        }
-
                         AddWorkspace(ws);
-
                         OnWorkspaceOpening(xmlDoc);
-
-                        // TODO: #4258
-                        // Remove this ResetEngine call when multiple home workspaces is supported.
-                        // This call formerly lived in DynamoViewModel
-                        ResetEngine();
-
-                        // TODO: #4258
-                        // The following logic to start periodic evaluation will need to be moved
-                        // inside of the HomeWorkspaceModel's constructor.  It cannot be there today
-                        // as it causes an immediate crash due to the above ResetEngine call.
-                        var hws = ws as HomeWorkspaceModel;
-                        if (hws != null && hws.RunSettings.RunType == RunType.Periodic)
-                        {
-                            hws.StartPeriodicEvaluation();
-                        }
 
                         CurrentWorkspace = ws;
                         return;
@@ -1213,10 +1019,12 @@ namespace Dynamo.Models
             XmlDocument xmlDoc, WorkspaceInfo workspaceInfo, out WorkspaceModel workspace)
         {
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
-            
+
+            var scheduler = SchedulerFactory.Build();
+
             var newWorkspace = new HomeWorkspaceModel(
-                EngineController,
-                Scheduler,
+                new EngineController(LibraryServices, geometryFactoryPath, false),
+                scheduler,
                 NodeFactory,
                 Utils.LoadTraceDataFromXmlDocument(xmlDoc),
                 nodeGraph.Nodes,
@@ -1229,6 +1037,11 @@ namespace Dynamo.Models
                 IsTestMode
                );
 
+            foreach (var def in CustomNodeManager.LoadedDefinitions)
+            {
+                RegisterCustomNodeDefinitionWithEngine(def);
+            }
+
             RegisterHomeWorkspace(newWorkspace);
 
             workspace = newWorkspace;            
@@ -1238,11 +1051,13 @@ namespace Dynamo.Models
         private void RegisterHomeWorkspace(HomeWorkspaceModel newWorkspace)
         {
             newWorkspace.EvaluationCompleted += OnEvaluationCompleted;
+            newWorkspace.EvaluationStarted += OnEvaluationStarted;
             newWorkspace.RefreshCompleted += OnRefreshCompleted;
 
             newWorkspace.Disposed += () =>
             {
                 newWorkspace.EvaluationCompleted -= OnEvaluationCompleted;
+                newWorkspace.EvaluationStarted -= OnEvaluationStarted;
                 newWorkspace.RefreshCompleted -= OnRefreshCompleted;
             };
         }
@@ -1283,7 +1098,7 @@ namespace Dynamo.Models
                     var savePath = pathManager.GetBackupFilePath(workspace);
                     var oldFileName = workspace.FileName;
                     var oldName = workspace.Name;
-                    workspace.SaveAs(savePath, null, true);
+                    workspace.SaveAs(savePath, true);
                     workspace.FileName = oldFileName;
                     workspace.Name = oldName;
                     backupFilesDict.Add(workspace.Guid, savePath);
@@ -1315,7 +1130,7 @@ namespace Dynamo.Models
 
         #endregion
 
-        #region internal methods
+        #region Internal Methods
 
         internal void PostUIActivation(object parameter)
         {
@@ -1443,16 +1258,21 @@ namespace Dynamo.Models
         /// <api_stability>1</api_stability>
         public void AddHomeWorkspace()
         {
-            var defaultWorkspace = new HomeWorkspaceModel(
-                EngineController,
-                Scheduler,
+            var ws = new HomeWorkspaceModel(
+                new EngineController(this.LibraryServices, geometryFactoryPath, DebugSettings.VerboseLogging),
+                SchedulerFactory.Build(),
                 NodeFactory,
                 DebugSettings.VerboseLogging,
                 IsTestMode,string.Empty);
 
-            RegisterHomeWorkspace(defaultWorkspace);
-            AddWorkspace(defaultWorkspace);
-            CurrentWorkspace = defaultWorkspace;
+            foreach (var def in CustomNodeManager.LoadedDefinitions)
+            {
+                RegisterCustomNodeDefinitionWithEngine(def);
+            }
+
+            RegisterHomeWorkspace(ws);
+            AddWorkspace(ws);
+            CurrentWorkspace = ws;
         }
 
         /// <summary>
@@ -1498,6 +1318,69 @@ namespace Dynamo.Models
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Obtain the first workspace of a specific type.
+        /// </summary>
+        /// <typeparam name="T">The type of workspace to obtain</typeparam>
+        /// <exception cref="InvalidOperationException">If there is no Workspace of the specified type</exception>
+        public T GetFirstWorkspaceOfType<T>() where T : IWorkspaceModel
+        {
+            var ws = Workspaces.OfType<T>().FirstOrDefault();
+            if (ws == null)
+            {
+                throw new InvalidOperationException(
+                    String.Format("There is no open workspace of type {0} ", typeof(T).Name));
+            }
+            return ws;
+        }
+
+        /// <summary>
+        /// Obtain an active EngineController from the current DynamoModel session
+        /// </summary>
+        /// <exception cref="InvalidOperationException">If there are no active EngineControllers</exception>
+        public EngineController GetFirstEngineController()
+        {
+            try
+            {
+                return GetFirstWorkspaceOfType<IHomeWorkspaceModel>().EngineController;
+            }
+            catch (InvalidOperationException e)
+            {
+                throw new InvalidOperationException(
+                   String.Format("There is no active ", typeof(EngineController).Name), e);
+            }
+        }
+
+        /// <summary>
+        /// Get an EngineController from the current workspace assuming it has one
+        /// </summary>
+        /// <exception cref="InvalidOperationException">The current workspace does not have an EngineController</exception>
+        public EngineController GetCurrentEngineController()
+        {
+            var ws = this.CurrentWorkspace as IHomeWorkspaceModel;
+            if (ws == null)
+            {
+                throw new InvalidOperationException(String.Format("The current workspace is not a {0} so it is not possible to get a {1} from it",
+                    typeof(HomeWorkspaceModel).Name, typeof(EngineController).Name));
+            }
+            return ws.EngineController;
+        }
+
+        /// <summary>
+        /// Get a Scheduler from the current workspace assuming it has one
+        /// </summary>
+        /// <exception cref="InvalidOperationException">The current workspace does not have a Scheduler</exception>
+        public IScheduler GetCurrentScheduler()
+        {
+            var ws = this.CurrentWorkspace as IHomeWorkspaceModel;
+            if (ws == null)
+            {
+                throw new InvalidOperationException(String.Format("The current workspace is not a {0} so it is not possible to get a {1} from it",
+                    typeof(HomeWorkspaceModel).Name, typeof(IScheduler).Name));
+            }
+            return ws.Scheduler;
         }
 
         /// <summary>
