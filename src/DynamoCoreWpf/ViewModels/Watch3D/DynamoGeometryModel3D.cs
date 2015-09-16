@@ -13,7 +13,7 @@ using MapFlags = SharpDX.Direct3D11.MapFlags;
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
     [StructLayout(LayoutKind.Sequential, Pack = 4)]
-    public struct DynamoVertex
+    public struct DynamoMeshVertex
     {
         public Vector4 Position;
         public Color4 Color;
@@ -27,7 +27,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// 0 - IsSelected
         /// 1 - RequiresPerVertexColoration
         /// </summary>
-        public Vector4 DynamoParams;
+        public Vector4 Parameters;
 
         public const int SizeInBytes = 4 * (4 + 4 + 2 + 3 + 3 + 3 + 4);
     }
@@ -41,6 +41,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             renderTechniqueInternal = renderTechnique;
         }
 
+        public static readonly DependencyProperty RequiresPerVertexColorationProperty =
+            DependencyProperty.Register("RequiresPerVertexColoration", typeof(bool), typeof(GeometryModel3D), new UIPropertyMetadata(false));
+
         public bool RequiresPerVertexColoration
         {
             get
@@ -50,8 +53,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             set { SetValue(RequiresPerVertexColorationProperty, value); }
         }
 
-        public static readonly DependencyProperty RequiresPerVertexColorationProperty =
-            DependencyProperty.Register("RequiresPerVertexColoration", typeof(bool), typeof(GeometryModel3D), new UIPropertyMetadata(false));
+        public override int VertexSizeInBytes
+        {
+            get
+            {
+                return DynamoMeshVertex.SizeInBytes;
+            }
+        }
 
         protected override void OnRasterStateChanged(int depthBias)
         {
@@ -92,7 +100,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             if (Geometry == null)
                 return;
 
-            vertexLayout = EffectsManager.Instance.GetLayout(renderTechnique);
+            vertexLayout = host.EffectsManager.GetLayout(renderTechnique);
             effectTechnique = effect.GetTechniqueByName(renderTechnique.Name);
 
             effectTransforms = new EffectTransformVariables(effect);
@@ -106,7 +114,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 throw new Exception("Geometry must not be null");
             }
 
-            vertexBuffer = Device.CreateBuffer(BindFlags.VertexBuffer, DynamoVertex.SizeInBytes, CreateDynamoVertexArray());
+            vertexBuffer = Device.CreateBuffer(BindFlags.VertexBuffer, VertexSizeInBytes, CreateVertexArray());
             indexBuffer = Device.CreateBuffer(BindFlags.IndexBuffer, sizeof(int),Geometry.Indices.ToArray());
 
             hasInstances = (Instances != null) && (Instances.Any());
@@ -232,7 +240,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 /// --- INSTANCING: need to set 2 buffers            
                 Device.ImmediateContext.InputAssembler.SetVertexBuffers(0, new[] 
                 {
-                    new VertexBufferBinding(vertexBuffer, DynamoVertex.SizeInBytes, 0),
+                    new VertexBufferBinding(vertexBuffer, DynamoMeshVertex.SizeInBytes, 0),
                     new VertexBufferBinding(instanceBuffer, Matrix.SizeInBytes, 0),
                 });
 
@@ -244,7 +252,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             else
             {
                 /// --- bind buffer                
-                Device.ImmediateContext.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(vertexBuffer, DynamoVertex.SizeInBytes, 0));
+                Device.ImmediateContext.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(vertexBuffer, DynamoMeshVertex.SizeInBytes, 0));
                 /// --- render the geometry
                 effectTechnique.GetPassByIndex(0).Apply(Device.ImmediateContext);
                 /// --- draw
@@ -257,7 +265,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             Detach();
         }
 
-        private DynamoVertex[] CreateDynamoVertexArray()
+        private DynamoMeshVertex[] CreateVertexArray()
         {
             var geometry = (MeshGeometry3D)Geometry;
             var colors = geometry.Colors != null ? geometry.Colors.ToArray() : null;
@@ -268,11 +276,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var bitangents = geometry.BiTangents != null ? geometry.BiTangents.ToArray() : null;
             var positions = geometry.Positions.ToArray();
             var vertexCount = geometry.Positions.Count;
-            var result = new DynamoVertex[vertexCount];
+            var result = new DynamoMeshVertex[vertexCount];
 
             for (var i = 0; i < vertexCount; i++)
             {
-                result[i] = new DynamoVertex
+                result[i] = new DynamoMeshVertex
                 {
                     Position = new Vector4(positions[i], 1f),
                     Color = colors != null ? colors[i] : Color4.White,
@@ -280,7 +288,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     Normal = normals != null ? normals[i] : Vector3.Zero,
                     Tangent = tangents != null ? tangents[i] : Vector3.Zero,
                     BiTangent = bitangents != null ? bitangents[i] : Vector3.Zero,
-                    DynamoParams = new Vector4(IsSelected?1:0, RequiresPerVertexColoration?1:0,0,0)
+                    Parameters = new Vector4(IsSelected?1:0, RequiresPerVertexColoration?1:0,0,0)
                 };
             }
 

@@ -47,16 +47,16 @@
     <Reference Include="Greg">
       <HintPath>..\..\extern\greg\Greg.dll</HintPath>
     </Reference>
-    <Reference Include="HelixToolkit, Version=2015.1.595.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
-      <HintPath>..\packages\HelixToolkit.2015.1.595\lib\portable-net4+sl4+wp71+win8\HelixToolkit.dll</HintPath>
+    <Reference Include="HelixToolkit, Version=2015.1.621.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
+      <HintPath>..\packages\HelixToolkit.2015.1.621\lib\portable-net4+sl4+wp71+win8\HelixToolkit.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="HelixToolkit.Wpf, Version=2015.1.595.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
-      <HintPath>..\packages\HelixToolkit.Wpf.2015.1.595\lib\net45\HelixToolkit.Wpf.dll</HintPath>
+    <Reference Include="HelixToolkit.Wpf, Version=2015.1.621.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
+      <HintPath>..\packages\HelixToolkit.Wpf.2015.1.621\lib\net45\HelixToolkit.Wpf.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="HelixToolkit.Wpf.SharpDX, Version=2015.1.595.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
-      <HintPath>..\packages\HelixToolkit.Wpf.SharpDX.2015.1.595\lib\net45\HelixToolkit.Wpf.SharpDX.dll</HintPath>
+    <Reference Include="HelixToolkit.Wpf.SharpDX, Version=2015.1.621.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
+      <HintPath>..\packages\HelixToolkit.Wpf.SharpDX.2015.1.621\lib\net45\HelixToolkit.Wpf.SharpDX.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="ICSharpCode.AvalonEdit, Version=4.3.1.9429, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
@@ -279,6 +279,7 @@
     <Compile Include="ViewModels\Search\SelectionNavigator.cs" />
     <Compile Include="ViewModels\RenderPackageFactoryViewModel.cs" />
     <Compile Include="ViewModels\Watch3D\DynamoGeometryModel3D.cs" />
+    <Compile Include="ViewModels\Watch3D\DynamoLineGeometryModel3D.cs" />
     <Compile Include="ViewModels\Watch3D\DynamoPointGeometryModel3D.cs" />
     <Compile Include="ViewModels\Watch3D\HelixWatch3DViewModel.cs" />
     <Compile Include="ViewModels\Watch3D\Watch3DViewModelBase.cs" />
@@ -295,6 +296,9 @@
     <Compile Include="Views\PackageManager\TermsOfUseView.xaml.cs">
       <DependentUpon>TermsOfUseView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\Watch3D\AttachedProperties.cs" />
+    <Compile Include="ViewModels\Watch3D\DynamoEffectsManager.cs" />
+    <Compile Include="ViewModels\Watch3D\DynamoRenderTechniquesManager.cs" />
     <Compile Include="Views\Preview\Watch3DSettingsControl.xaml.cs">
       <DependentUpon>Watch3DSettingsControl.xaml</DependentUpon>
     </Compile>
@@ -477,6 +481,8 @@
     <None Include="UI\Fonts\OpenSans-SemiboldItalic.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="ViewModels\Watch3D\Resources\_dynamo.bfx" />
+    <None Include="ViewModels\Watch3D\Shaders\CompileShaders.bat" />
     <Resource Include="UI\Images\cursors.psd" />
     <Resource Include="UI\Images\cursors1.psd" />
   </ItemGroup>
@@ -1238,9 +1244,27 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="sharpdx_direct3d11_effects_x64.dll" />
-    <Content Include="sharpdx_direct3d11_effects_x86.dll" />
+    <Content Include="sharpdx_direct3d11_1_effects_x64.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sharpdx_direct3d11_1_effects_x86.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sharpdx_direct3d11_effects_x64.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sharpdx_direct3d11_effects_x86.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ViewModels\Watch3D\Shaders\BillboardText.fx" />
+    <Content Include="ViewModels\Watch3D\Shaders\Common.fx" />
+    <Content Include="ViewModels\Watch3D\Shaders\Custom.fx" />
+    <Content Include="ViewModels\Watch3D\Shaders\Default.fx" />
+    <Content Include="ViewModels\Watch3D\Shaders\Lines.fx" />
+    <Content Include="ViewModels\Watch3D\Shaders\Material.fx" />
+    <Content Include="ViewModels\Watch3D\Shaders\Points.fx" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />

@@ -310,7 +310,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             get
             {
-                return canNavigateBackground || navigationKeyIsDown; 
+                return canNavigateBackground || navigationKeyIsDown;
             }
             set
             {
@@ -323,14 +323,20 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public bool NavigationKeyIsDown
         {
             get { return navigationKeyIsDown; }
-            set 
-            { 
+            set
+            {
                 navigationKeyIsDown = value;
                 RaisePropertyChanged("NavigationKeyIsDown");
                 RaisePropertyChanged("CanNavigateBackground");
             }
         }
-        
+
+        public IEffectsManager EffectsManager { get; private set; }
+
+        public IRenderTechniquesManager RenderTechniquesManager { get; private set; }
+
+        public bool SupportDeferredRender { get; private set; }
+
         #endregion
 
         protected HelixWatch3DViewModel(Watch3DViewModelStartupParams parameters) : base(parameters)
@@ -340,6 +346,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             TogglePanCommand = new DelegateCommand(TogglePan, CanTogglePan);
             ToggleOrbitCommand = new DelegateCommand(ToggleOrbit, CanToggleOrbit);
             ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
+
+            RenderTechniquesManager = new DynamoRenderTechniquesManager();
+            EffectsManager = new DynamoEffectsManager(RenderTechniquesManager);
         }
 
         public static HelixWatch3DViewModel Start(Watch3DViewModelStartupParams parameters)
@@ -786,8 +795,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private void SetupScene()
         {
-            RenderTechnique = new RenderTechnique("RenderDynamo");
-            EffectsManager.Instance.InitializingEffects += Instance_InitializingEffects;
+            RenderTechnique = new RenderTechnique("RenderCustom");
 
             WhiteMaterial = new PhongMaterial
             {
@@ -817,32 +825,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             SetCameraData(new CameraData());
 
             DrawGrid();
-        }
-
-        void Instance_InitializingEffects(EffectInitializationEventArgs args)
-        {
-            EffectsManager.Instance.RegisterEffect(args.ShaderEffectBytecode, new[] { RenderTechnique });
-
-            var dynamoInputLayout = new InputLayout(args.Device, EffectsManager.Instance.GetEffect(RenderTechnique).GetTechniqueByName(RenderTechnique.Name).GetPassByIndex(0).Description.Signature, new[]
-            {
-                new InputElement("POSITION", 0, Format.R32G32B32A32_Float, InputElement.AppendAligned, 0),
-                new InputElement("COLOR",    0, Format.R32G32B32A32_Float, InputElement.AppendAligned, 0),
-                new InputElement("TEXCOORD", 0, Format.R32G32_Float,       InputElement.AppendAligned, 0),
-                new InputElement("NORMAL",   0, Format.R32G32B32_Float,    InputElement.AppendAligned, 0),             
-                new InputElement("TANGENT",  0, Format.R32G32B32_Float,    InputElement.AppendAligned, 0),             
-                new InputElement("BINORMAL", 0, Format.R32G32B32_Float,    InputElement.AppendAligned, 0),  
-                new InputElement("COLOR", 1, Format.R32G32B32A32_Float,    InputElement.AppendAligned, 0),  
-                //new InputElement("REQUIRES_PER_VERTEX_COLORATION", 0, Format.R32_UInt,    InputElement.AppendAligned, 0),  
-
-                //INSTANCING: die 4 texcoords sind die matrix, die mit jedem buffer reinwandern
-                new InputElement("TEXCOORD", 2, Format.R32G32B32A32_Float, InputElement.AppendAligned, 1, InputClassification.PerInstanceData, 1),                 
-                new InputElement("TEXCOORD", 3, Format.R32G32B32A32_Float, InputElement.AppendAligned, 1, InputClassification.PerInstanceData, 1),
-                new InputElement("TEXCOORD", 4, Format.R32G32B32A32_Float, InputElement.AppendAligned, 1, InputClassification.PerInstanceData, 1),
-                new InputElement("TEXCOORD", 5, Format.R32G32B32A32_Float, InputElement.AppendAligned, 1, InputClassification.PerInstanceData, 1),
-            });
-            dynamoInputLayout.DebugName = "Dynamo";
-
-            EffectsManager.Instance.RegisterLayout(new[] { RenderTechnique }, dynamoInputLayout);
         }
 
         /// <summary>
@@ -1162,10 +1144,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     mesh.TextureCoordinates.AddRange(m.TextureCoordinates);
                     mesh.Indices.AddRange(m.Indices.Select(i => i + idxCount));
 
-                    if (mesh.Colors.Any(c => c.Alpha < 1.0))
-                    {
-                        meshGeometry3D.HasTransparency = true;
-                    }
+                    //if (mesh.Colors.Any(c => c.Alpha < 1.0))
+                    //{
+                    //    meshGeometry3D.HasTransparency = true;
+                    //}
 
                     if (rp.DisplayLabels)
                     {
@@ -1239,14 +1221,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     Console.WriteLine(ex.StackTrace);
                 }
             }
-            ((MaterialGeometryModel3D)meshGeometry3D).SelectionColor = defaultSelectionColor;
+            //((MaterialGeometryModel3D)meshGeometry3D).SelectionColor = defaultSelectionColor;
 
             return meshGeometry3D;
         }
 
-        private LineGeometryModel3D CreateLineGeometryModel3D(HelixRenderPackage rp)
+        private DynamoLineGeometryModel3D CreateLineGeometryModel3D(HelixRenderPackage rp)
         {
-            var lineGeometry3D = new LineGeometryModel3D()
+            var lineGeometry3D = new DynamoLineGeometryModel3D()
             {
                 Geometry = HelixRenderPackage.InitLineGeometry(),
                 Transform = Model1Transform,
@@ -1258,9 +1240,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             return lineGeometry3D;
         }
 
-        private PointGeometryModel3D CreatePointGeometryModel3D(HelixRenderPackage rp)
+        private DynamoPointGeometryModel3D CreatePointGeometryModel3D(HelixRenderPackage rp)
         {
-            var pointGeometry3D = new PointGeometryModel3D
+            var pointGeometry3D = new DynamoPointGeometryModel3D
             {
                 Geometry = HelixRenderPackage.InitPointGeometry(),
                 Transform = Model1Transform,
