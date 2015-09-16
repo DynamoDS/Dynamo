@@ -143,7 +143,11 @@ namespace Dynamo.Publish.Models
 
                 if (response.ErrorException == null && response.StatusCode == HttpStatusCode.OK)
                 {
-                    OnUpdateStatusMessage(Resources.InviteRequestSuccess, false);
+                    var target = JsonConvert.DeserializeObject<dynamic>(response.Content)["target"].Value;
+                    if (!String.IsNullOrEmpty(target))
+                    {
+                        OnUpdateStatusMessage(Resources.InviteRequestSuccess + target, false);
+                    }                    
                 }
                 else
                 {

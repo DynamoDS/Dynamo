@@ -289,6 +289,22 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        public void TestInOutPorts_ForChainedExpression()
+        {
+            // Create the initial code block node.
+            var codeBlockNode = CreateCodeBlockNode();
+
+            // Before code changes, there should be no in/out ports.
+            Assert.AreEqual(0, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(0, codeBlockNode.OutPortData.Count);
+
+            // After code changes, there should be input & output ports.
+            UpdateCodeBlockNodeContent(codeBlockNode, "Flatten(l.Explode()).Area;");
+            Assert.AreEqual(1, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(1, codeBlockNode.OutPortData.Count);
+        }
+
+        [Test]
         public void TestOutportConnectors_OnAssigningVariables_ToRetainConnections()
         {
             string openPath = Path.Combine(TestDirectory,

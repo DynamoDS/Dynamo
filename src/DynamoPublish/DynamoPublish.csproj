@@ -142,6 +142,6 @@
     <ItemGroup>
       <ExtensionDefinition Include="DynamoPublishExtension_ViewExtensionDefinition.xml" />
     </ItemGroup>
-    <!--<Copy SourceFiles="@(ExtensionDefinition)" DestinationFolder="$(OutputPath)\viewExtensions\" />-->
+    <Copy SourceFiles="@(ExtensionDefinition)" DestinationFolder="$(OutputPath)\viewExtensions\" />
   </Target>
 </Project>
