@@ -251,16 +251,18 @@ namespace Dynamo.Migration
                 string typeName = elNode.Attributes["type"].Value;
                 typeName = Nodes.Utilities.PreprocessTypeName(typeName);
 
+                string nickName = elNode.Attributes["nickname"].Value;
+                typeName = Nodes.Utilities.PreprocessTypeName(typeName);
+
                 // If we try to migrate Function node, then use its' nickname as type.
-                if (typeName == "Dynamo.Nodes.DSFunction")
+                if (typeName == "Dynamo.Nodes.DSFunction" && nodeMigrationLookup.ContainsKey(nickName))
                 {
-                    typeName = elNode.Attributes["nickname"].Value;
-                    typeName = Nodes.Utilities.PreprocessTypeName(typeName);
+                    typeName = nickName;
                 }
 
                 Type type;
-                if (!nodeFactory.ResolveType(typeName, out type)
-                    && !nodeMigrationLookup.TryGetValue(typeName, out type))
+                if (!nodeMigrationLookup.TryGetValue(typeName, out type)
+                    && !nodeFactory.ResolveType(typeName, out type))
                 {
                     // If we are not able to resolve the type given its name, 
                     // turn it into a deprecated node so that user is aware.
