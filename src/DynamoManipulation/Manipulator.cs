@@ -22,7 +22,8 @@ namespace DynamoManipulation
 
     public abstract class Manipulator : IManipulator
     {
-        
+        protected const string ManipulatorKey = "_manipulator";
+
         public abstract void Dispose();
 
         public abstract void Tessellate(IRenderPackage package, TessellationParameters parameters);
@@ -31,6 +32,8 @@ namespace DynamoManipulation
         {
             
         }
+
+        public abstract IEnumerable<IRenderPackage> BuildRenderPackage();
     }
 
     public class CompositeManipulator : Manipulator
@@ -49,6 +52,16 @@ namespace DynamoManipulation
         public override void Tessellate(IRenderPackage package, TessellationParameters parameters)
         {
             subManipulators.ForEach(x => x.Tessellate(package, parameters));
+        }
+
+        public override IEnumerable<IRenderPackage> BuildRenderPackage()
+        {
+            var packages = new List<IRenderPackage>();
+            foreach (var subManipulator in subManipulators)
+            {
+                packages.AddRange(subManipulator.BuildRenderPackage());
+            }
+            return packages;
         }
     }
 }

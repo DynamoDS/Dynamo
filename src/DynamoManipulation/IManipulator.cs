@@ -33,5 +33,6 @@ namespace DynamoManipulation
 
     public interface IManipulator : IDisposable, IGraphicItem
     {
+        IEnumerable<IRenderPackage> BuildRenderPackage();
     }
 }

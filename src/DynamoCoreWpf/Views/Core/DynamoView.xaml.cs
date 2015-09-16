@@ -688,7 +688,9 @@ namespace Dynamo.Controls
                 if (e.OldItems != null)
                 {
                     foreach (var nm in e.OldItems.OfType<NodeModel>())
+                    {
                         manipulatorDaemon.KillManipulators(nm);
+                    }
                 }
             }
 
