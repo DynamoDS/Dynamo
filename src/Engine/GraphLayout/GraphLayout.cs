@@ -44,9 +44,9 @@ namespace GraphLayout
         /// <param name="endId">The guid of the ending node.</param>
         /// <param name="startY">The y coordinate of the connector's left end point.</param>
         /// <param name="endY">The y coordinate of the connector's right end point.</param>
-        public void AddEdge(Guid startId, Guid endId, double startY, double endY)
+        public void AddEdge(Guid startId, Guid endId, double startX, double startY, double endX, double endY)
         {
-            var edge = new Edge(startId, endId, startY, endY, this);
+            var edge = new Edge(startId, endId, startX, startY, endX, endY, this);
             Edges.Add(edge);
         }
 
@@ -486,13 +486,10 @@ namespace GraphLayout
         /// </summary>
         public void NormalizeGraphPosition()
         {
-            List<List<Node>> ReversedLayers = Layers;
-            ReversedLayers.Reverse();
-
             double previousLayerX = 0;
             double offsetY = -Nodes.OrderBy(x => x.Y).First().Y;
 
-            foreach (List<Node> layer in Layers)
+            foreach (List<Node> layer in Layers.AsEnumerable().Reverse())
             {
                 double layerWidth = layer.Max(x => x.Width);
 
@@ -603,6 +600,10 @@ namespace GraphLayout
         /// </summary>
         public Node EndNode;
 
+        public double StartX;
+        public double StartY;
+        public double EndX;
+
         /// <summary>
         /// The y coordinate of the edge's right end.
         /// </summary>
@@ -623,8 +624,11 @@ namespace GraphLayout
         /// </summary>
         public bool Active = true;
 
-        public Edge(Guid startId, Guid endId, double startY, double endY, Graph ownerGraph)
+        public Edge(Guid startId, Guid endId, double startX, double startY, double endX, double endY, Graph ownerGraph)
         {
+            StartX = startX;
+            StartY = startY;
+            EndX = endX;
             EndY = endY;
             OwnerGraph = ownerGraph;
 

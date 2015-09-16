@@ -63,29 +63,82 @@ namespace ProtoScript.Runners
     /// </summary>
     public class GraphSyncData
     {
+        /// <summary>
+        /// Deleted sub trees.
+        /// </summary>
         public List<Subtree> DeletedSubtrees
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Added sub trees.
+        /// </summary>
         public List<Subtree> AddedSubtrees
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Modified sub trees.
+        /// </summary>
         public List<Subtree> ModifiedSubtrees
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Newly added nodes' IDs.
+        /// </summary>
+        public IEnumerable<Guid> AddedNodeIDs
+        {
+            get
+            {
+                return AddedSubtrees.Select(ts => ts.GUID);
+            }
+        }
+
+        /// <summary>
+        /// Modified nodes' IDs.
+        /// </summary>
+        public IEnumerable<Guid> ModifiedNodeIDs
+        {
+            get
+            {
+                return ModifiedSubtrees.Select(ts => ts.GUID);
+            }
+        }
+
+        /// <summary>
+        /// Deleted nodes' IDs.
+        /// </summary>
+        public IEnumerable<Guid> DeletedNodeIDs 
+        {
+            get
+            {
+                return DeletedSubtrees.Select(ts => ts.GUID);
+            }
+        }
+
+        /// <summary>
+        /// All node IDs in this graph sync data.
+        /// </summary>
+        public IEnumerable<Guid> NodeIDs
+        {
+            get
+            {
+                return AddedNodeIDs.Concat(ModifiedNodeIDs).Concat(DeletedNodeIDs);
+            }
+        }
+
         public GraphSyncData(List<Subtree> deleted, List<Subtree> added, List<Subtree> modified)
         {
-            DeletedSubtrees = deleted;
-            AddedSubtrees = added;
-            ModifiedSubtrees = modified;
+            DeletedSubtrees = deleted ?? new List<Subtree>();
+            AddedSubtrees = added ?? new List<Subtree>();
+            ModifiedSubtrees = modified ?? new List<Subtree>();
         }
 
         public override string ToString()
@@ -317,6 +370,34 @@ namespace ProtoScript.Runners
             this.core = core;
             this.runtimeCore = runtimeCore;
             currentSubTreeList = new Dictionary<Guid, Subtree>();
+        }
+
+        /// <summary>
+        /// Deep clone the change set computer
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public ChangeSetComputer Clone()
+        {
+            ChangeSetComputer comp = new ChangeSetComputer(this.core, this.runtimeCore);
+
+            comp.currentSubTreeList = new Dictionary<Guid, Subtree>();
+            foreach (var subTreePairs in currentSubTreeList)
+            {
+                comp.currentSubTreeList.Add(subTreePairs.Key, subTreePairs.Value); 
+            }
+
+            comp.csData = new ChangeSetData();
+            comp.csData.ContainsDeltaAST = csData.ContainsDeltaAST;
+            comp.csData.DeletedBinaryExprASTNodes = new List<AssociativeNode>(csData.DeletedBinaryExprASTNodes);
+            comp.csData.DeletedFunctionDefASTNodes = new List<AssociativeNode>(csData.DeletedFunctionDefASTNodes);
+            comp.csData.RemovedBinaryNodesFromModification = new List<AssociativeNode>(csData.RemovedBinaryNodesFromModification);
+            comp.csData.ModifiedNodesForRuntimeSetValue = new List<AssociativeNode>(csData.ModifiedNodesForRuntimeSetValue);
+            comp.csData.RemovedFunctionDefNodesFromModification = new List<AssociativeNode>(csData.RemovedFunctionDefNodesFromModification);
+            comp.csData.ForceExecuteASTList = new List<AssociativeNode>(csData.ForceExecuteASTList);
+            comp.csData.ModifiedFunctions = new List<AssociativeNode>(csData.ModifiedFunctions);
+            comp.csData.ModifiedNestedLangBlock = new List<AssociativeNode>(csData.ModifiedNestedLangBlock);
+            return comp;
         }
 
         /// <summary>
@@ -1792,11 +1873,12 @@ namespace ProtoScript.Runners
 
         private List<Guid> PreviewInternal(GraphSyncData syncData)
         {
+            var previewChangeSetComputer = changeSetComputer.Clone();
             // Get the list of ASTs that will be affected by syncData
-            var previewAstList = changeSetComputer.GetDeltaASTList(syncData);
+            var previewAstList = previewChangeSetComputer.GetDeltaASTList(syncData);
 
             // Get the list of guid's affected by the astlist
-            List<Guid> cbnGuidList = changeSetComputer.EstimateNodesAffectedByASTList(previewAstList);
+            List<Guid> cbnGuidList = previewChangeSetComputer.EstimateNodesAffectedByASTList(previewAstList);
             return cbnGuidList;
         }
 

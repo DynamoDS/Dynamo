@@ -1039,8 +1039,8 @@ namespace ProtoImperative
             //bool allocatedExternally = isAllocated && core.runtimeTableIndex > localAllocBlock;
             //bool isVisible = isAllocated && core.runtimeTableIndex >= localAllocBlock;
             bool isAccessible = false;
-
-            if (null == t.ArrayDimensions)
+            bool isAllocated = VerifyAllocation(t.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
+            if (!isAllocated && null == t.ArrayDimensions)
             {
                 //check if it is a function instance
                 ProtoCore.DSASM.ProcedureNode procNode = null;
@@ -1067,7 +1067,6 @@ namespace ProtoImperative
                 }
             }
 
-            bool isAllocated = VerifyAllocation(t.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
             if (!isAllocated || !isAccessible)
             {
                 if (isAllocated)
@@ -1081,7 +1080,11 @@ namespace ProtoImperative
                 else
                 {
                     string message = String.Format(ProtoCore.Properties.Resources.kUnboundIdentifierMsg, t.Value);
-                    buildStatus.LogWarning(WarningID.kIdUnboundIdentifier, message, core.CurrentDSFileName, t.line, t.col, graphNode);
+                    var unboundSymbol = new SymbolNode
+                    {
+                        name = t.Value
+                    };
+                    buildStatus.LogUnboundVariableWarning(unboundSymbol, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                 }
 
                 inferedType.UID = (int)ProtoCore.PrimitiveType.kTypeNull;
@@ -2111,25 +2114,15 @@ namespace ProtoImperative
                 }
                 else
                 {
+                    // check whether the variable name is a function name
+                    if (globalClassIndex != ProtoCore.DSASM.Constants.kGlobalScope)
                     {
-                        // check whether the variable name is a function name
                         bool isAccessibleFp;
                         int realType;
-                        ProtoCore.DSASM.ProcedureNode procNode = null;
-                        if (globalClassIndex != ProtoCore.DSASM.Constants.kGlobalScope)
+                        var procNode = core.ClassTable.ClassNodes[globalClassIndex].GetMemberFunction(t.Name, null, globalClassIndex, out isAccessibleFp, out realType);
+                        if (procNode != null && procNode.procId != Constants.kInvalidIndex && emitDebugInfo)
                         {
-                            procNode = core.ClassTable.ClassNodes[globalClassIndex].GetMemberFunction(t.Name, null, globalClassIndex, out isAccessibleFp, out realType);
-                        }
-                        if (procNode == null)
-                        {
-                            procNode = CoreUtils.GetFirstVisibleProcedure(t.Name, null, codeBlock);
-                        }
-                        if (procNode != null)
-                        {
-                            if (ProtoCore.DSASM.Constants.kInvalidIndex != procNode.procId && emitDebugInfo)
-                            {
-                                buildStatus.LogSemanticError(String.Format(Resources.FunctionAsVaribleError,t.Name), core.CurrentDSFileName, t.line, t.col);
-                            }
+                            buildStatus.LogSemanticError(String.Format(Resources.FunctionAsVaribleError, t.Name), core.CurrentDSFileName, t.line, t.col);
                         }
                     }
 

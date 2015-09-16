@@ -162,20 +162,20 @@
   <data name="ComposeFunctionPortDataResultToolTip" xml:space="preserve">
     <value>Composed function: g(f(x))</value>
   </data>
-  <data name="NumberRangePortDataAmountToolTip" xml:space="preserve">
+  <data name="RangePortDataAmountToolTip" xml:space="preserve">
     <value>Amount of numbers in the sequence</value>
   </data>
-  <data name="NumberRangePortDataEndToolTip" xml:space="preserve">
-    <value>Number to end the sequence at</value>
+  <data name="RangePortDataEndToolTip" xml:space="preserve">
+    <value>Number or letter to end the sequence at</value>
   </data>
-  <data name="NumberRangePortDataSeqToolTip" xml:space="preserve">
+  <data name="RangePortDataSeqToolTip" xml:space="preserve">
     <value>New sequence</value>
   </data>
-  <data name="NumberRangePortDataStartToolTip" xml:space="preserve">
-    <value>Number to start the sequence at</value>
+  <data name="RangePortDataStartToolTip" xml:space="preserve">
+    <value>Number or letter to start the sequence at</value>
   </data>
-  <data name="NumberRangePortDataStepToolTip" xml:space="preserve">
-    <value>Space between numbers</value>
+  <data name="RangePortDataStepToolTip" xml:space="preserve">
+    <value>Space between numbers or letters</value>
   </data>
   <data name="PortDataParameterToolTip" xml:space="preserve">
     <value>parameter</value>

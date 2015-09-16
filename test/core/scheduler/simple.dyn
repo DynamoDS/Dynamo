@@ -1,0 +1,16 @@
+<Workspace Version="0.8.3.2490" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="fd360dbc-7f71-4327-8e4e-7f6ddb99b9de" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="62" y="135" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" CodeText="-21;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction guid="b8bd31d0-ae09-4940-985a-708567ab5d02" type="Dynamo.Nodes.DSFunction" nickname="Math.Abs" x="233.5" y="142" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="DSCoreNodes.dll" function="DSCore.Math.Abs@int" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="fd360dbc-7f71-4327-8e4e-7f6ddb99b9de" start_index="0" end="b8bd31d0-ae09-4940-985a-708567ab5d02" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>

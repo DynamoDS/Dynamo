@@ -46,7 +46,7 @@ namespace Dynamo.Engine
         private readonly LibraryServices libraryServices;
         private CodeCompletionServices codeCompletionServices;
         private readonly AstBuilder astBuilder;
-        private readonly SyncDataManager syncDataManager;
+        private SyncDataManager syncDataManager;
         private readonly Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
         private readonly Queue<List<Guid>> previewGraphQueue = new Queue<List<Guid>>();
         public bool VerboseLogging;
@@ -258,14 +258,16 @@ namespace Dynamo.Engine
             if (updatedNodes == null)
                 return null;
 
+            var tempSyncDataManager = syncDataManager.Clone();
             var activeNodes = updatedNodes.Where(n => n.State != ElementState.Error);
             if (activeNodes.Any())
             {
-                astBuilder.CompileToAstNodes(activeNodes, AstBuilder.CompilationContext.DeltaExecution, verboseLogging);
+                astBuilder.CompileToAstNodes(activeNodes, AstBuilder.CompilationContext.PreviewGraph, verboseLogging);
             }
 
             GraphSyncData graphSyncdata = syncDataManager.GetSyncData();
             List<Guid> previewGraphData = this.liveRunnerServices.PreviewGraph(graphSyncdata, verboseLogging);
+            syncDataManager = tempSyncDataManager;
 
              lock (previewGraphQueue)
              {
@@ -382,7 +384,7 @@ namespace Dynamo.Engine
                 nodes.Where(n => n.NeedsForceExecution)
                      .Select(n => n.GUID));
 
-            if (reExecuteNodesIds.Any() && graphSyncdata.ModifiedSubtrees != null)
+            if (reExecuteNodesIds.Any())
             {
                 for (int i = 0; i < graphSyncdata.ModifiedSubtrees.Count; ++i)
                 {
@@ -396,9 +398,7 @@ namespace Dynamo.Engine
                 }
             }
 
-            if ((graphSyncdata.AddedSubtrees != null && graphSyncdata.AddedSubtrees.Count > 0) ||
-                (graphSyncdata.ModifiedSubtrees != null && graphSyncdata.ModifiedSubtrees.Count > 0) ||
-                (graphSyncdata.DeletedSubtrees != null && graphSyncdata.DeletedSubtrees.Count > 0))
+            if (graphSyncdata.AddedSubtrees.Any() || graphSyncdata.ModifiedSubtrees.Any() || graphSyncdata.DeletedSubtrees.Any())
             {
                 lock (graphSyncDataQueue)
                 {
