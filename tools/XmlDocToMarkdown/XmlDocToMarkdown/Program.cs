@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Text;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 // modified from : https://gist.github.com/lontivero/593fc51f1208555112e0
 
@@ -18,6 +19,10 @@ namespace Dynamo.Docs
 {
     class Program
     {
+        private static string[] separators = new string[] { "``", "`","(",")"};
+        private const string lt = "<*";
+        private const string gt = "*>"; 
+        //private static string replaceString = "[``1``0`1`0 ]";
         static void Main(string[] args)
         {
             var asm = Assembly.LoadFrom(args[0]);
@@ -75,8 +80,10 @@ namespace Dynamo.Docs
             using (var tw = File.CreateText(ymlPath))
             {
                 tw.WriteLine("site_name: Dynamo");
-                tw.WriteLine("pages:");
-                tw.WriteLine("- Home: index.md");
+                tw.WriteLine("repo_url: http://ramramps.github.io/DocumentTesting/");
+                tw.WriteLine("site_author: Dynamo");
+                tw.WriteLine("pages:");               
+                tw.WriteLine("- Home: index.md");                
                 tw.WriteLine("- API:");
 
                 foreach (var dirPath in Directory.GetDirectories(DocRootPath()))
@@ -105,18 +112,16 @@ namespace Dynamo.Docs
         }
 
         private static void GenerateMarkdownDocumentForType(Type t, string folder, XDocument xml)
-        {
-           var typeName = t.Name.Replace("``1", "").Replace("``0", "").Replace("`1", "").Replace("`0", "");
-            
-            var members = xml.Root.Element("members").Elements("member");
+        {          
+           string[] temp = t.Name.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+            var typeName = temp[0];
+           var members = xml.Root.Element("members").Elements("member");
 
             //get all the generic members. Generic methods in XML has special characters 
             // List<T> in xml is List``1. So, replace them with correct values. Here, instead
             // of angular brackets we use [ ]             
-            var genericMembers = members.Where(x => x.Attribute("name").Value.Contains("``1") ||
-                                                    x.Attribute("name").Value.Contains("``0") ||
-                                                    x.Attribute("name").Value.Contains("`1") ||
-                                                    x.Attribute("name").Value.Contains("`0"));
+            var genericMembers = members.Where(x => x.Attribute("name").Value.Contains("``") ||
+                                                    x.Attribute("name").Value.Contains("`"));                                                   
             foreach (var genericMember in genericMembers)
             {
                 if (genericMember.Element("typeparam") != null)
@@ -191,14 +196,50 @@ namespace Dynamo.Docs
             System.IO.File.WriteAllText(filePath, sb.ToString());
         }
 
+        /// <summary>
+        /// Converts the name of the generic parameter.
+        /// There are four options here.
+        ///  1. ISource
+        ///  2. ISource`` or ISource`. 
+        ///  3. ISource``.Properties
+        ///  4. ISource``(Int).
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <param name="typeParamName">Name of the type parameter.</param>
+        /// <returns> converted parameter </returns>
         private static string ConvertGenericParameterName(string text , string typeParamName = "T")
         {
-           text = text.Replace("``1", "<*" + typeParamName + "*>");
-           text = text.Replace("``0", "<*" + typeParamName + "*>");
-           text = text.Replace("`1", "<*" + typeParamName + "*>");
-           text = text.Replace("`0", "<*" + typeParamName + "*>");
+            string toReplace = lt + typeParamName + gt;
+            var returnText = string.Empty;
 
-            return text;
+            if (!text.Contains("``")
+                && !text.Contains("`"))
+            {
+                return text;
+            }
+                                             
+            string[] temp = text.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+                                
+            for (int i = 0; i < temp.Count(); i++)
+            {
+                switch (i)
+                {
+                    case 0:
+                        returnText = temp[0] + toReplace;
+                        break;
+                    case 1:                        
+                        if (temp[1].Contains("."))
+                        {
+                            returnText = returnText + "." + temp[1].Split('.')[1];
+                        }
+                        break;
+                    case 2:
+                        returnText = returnText + "(" + temp[2] + ")";
+                        break;
+                }
+            }
+                       
+            return returnText;
         }
         private static string GetMarkdownForMethod(IEnumerable<XElement> members, string methodName)
         {
@@ -241,7 +282,7 @@ namespace Dynamo.Docs
     {
         private static string ApiStabilityTag = "api_stability";
         internal static string ApiStabilityStub = "stability=";
-        internal static string ApiStabilityTemplate = "<sup>" + ApiStabilityStub + "{0}" + "</sup>";
+        internal static string ApiStabilityTemplate = "<sup>" + "{0}" + "</sup>";
 
         private static Dictionary<string, string> templates =
             new Dictionary<string, string>
@@ -298,8 +339,9 @@ namespace Dynamo.Docs
                 
                 return new[]
                 {
-                    convertedMethodName.Contains("(")? methodName : methodName + "()", 
-                    node.Nodes().ToMarkDown()
+                   // convertedMethodName.Contains("(")? methodName : methodName + "()", 
+                   convertedMethodName,
+                    node.Nodes().ToMarkDown(),
                 };
             });
 
@@ -310,11 +352,11 @@ namespace Dynamo.Docs
             {
                 methodName = node.Elements("api_stability").Select(stabilityTag => stabilityTag.Value)
                     .Aggregate(methodName, (current, value) =>
-                        current + string.Format(XmlToMarkdown.ApiStabilityTemplate + "\n", value));
+                        current + string.Format(" " + XmlToMarkdown.ApiStabilityTemplate + "\n", value));
             }
             else
             {
-                methodName = methodName + string.Format(XmlToMarkdown.ApiStabilityTemplate + "\n", 1);
+                methodName = methodName + string.Format(" " + XmlToMarkdown.ApiStabilityTemplate + "\n", 1);
             }
 
             return methodName;

@@ -8,7 +8,7 @@ environment:
   dynamo_solution: src/Dynamo.All.2013.sln
   xmlDocs_solution: tools/XmlDocToMarkdown/XmlDocToMarkdown.sln
   access_token:
-    secure:x40nmLGNUppqgk5aeRD2qsLgr8GtURVQXlCEHiy08hlFOT+Ptyj1BmLB8apcdyEe
+    secure:352c7137ef4c577b4f5c701e0639673c7c5f00cb
 build_script:
   - msbuild %dynamo_solution%
   - msbuild %xmlDocs_solution%
