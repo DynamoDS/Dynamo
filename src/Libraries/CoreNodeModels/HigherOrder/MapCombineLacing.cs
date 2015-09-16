@@ -517,7 +517,7 @@ namespace DSCore
         }
     }
 
-    [NodeName("List.GroupByKey")]
+    [NodeName("GroupByKey")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
     [NodeDescription("ListGroupByKeyDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeSearchTags("ListGroupByKeySearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
