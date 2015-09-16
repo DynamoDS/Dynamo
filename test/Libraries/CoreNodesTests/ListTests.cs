@@ -913,7 +913,7 @@ namespace DSCoreNodesTests
             var lengths = new ArrayList { -1, -1 };
 
             var output = List.Chop(list, lengths);
-            var expected = new ArrayList { };
+            var expected = new ArrayList { 1, 2, 3, 4, 5 };
             Assert.AreEqual(expected, output);
         }
 

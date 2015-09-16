@@ -514,7 +514,7 @@ namespace DSCore
         /// <param name="list">List to chop into sublists</param>
         /// <param name="lengths">Lengths of consecutive sublists to be created from the input list</param>
         /// <returns name="lists">Sublists created from the list</returns>
-        /// <search>chop</search>
+        /// <search>sublists,build sublists,slices,partitions,cut,listcontains,chop</search>
         public static IList Chop(IList list, IList lengths)
         {
             var finalList = new ArrayList();
@@ -522,15 +522,18 @@ namespace DSCore
             int count = 0;
             int lengthIndex = 0;
 
-            // If there is no any lengths more than 0,
-            // we return empty list.
+            // If there are not any lengths more than 0,
+            // we return incoming list.
             if (lengths.Cast<int>().All(x => x <= 0))
             {
-                return finalList;
+                return list;
             }
 
             foreach (object obj in list)
             {
+                // If number of items in current list equals length in list of lengths,
+                // we should add current list in final list.
+                // Or if length in list of lengths <= 0, we should process this length and move further.
                 if (count == ((int)lengths[lengthIndex]) || ((int)lengths[lengthIndex] <= 0))
                 {
                     finalList.Add(currList);
