@@ -23,6 +23,12 @@ $docDest = "C:\projects\dynamo\DocumentTesting"
 
 Copy-Item $docLocation  $docDest -recurse
 
+Write-Host "Copying Themes folder"
+$themeLoc = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\Theme"
+$themeDest = "C:\projects\dynamo\DocumentTesting"
+
+Copy-Item $themeLoc  $themeDest -recurse
+
 Write-Host "Running MkDocs"
 $mkDocsLoc = "C:\projects\dynamo\DocumentTesting"
 

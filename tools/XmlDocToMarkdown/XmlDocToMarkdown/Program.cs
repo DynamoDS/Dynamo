@@ -123,7 +123,7 @@ namespace Dynamo.Docs
                     }
                 }
 
-                tw.WriteLine("theme: readthedocs");
+                tw.WriteLine("theme_dir: Theme");
                 tw.Flush();
             }
         }
