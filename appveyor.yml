@@ -20,7 +20,7 @@ on_success:
   - git config --global credential.helper store
   - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
   - ps: $env:USERPROFILE
-  - ps: git config user.name
+  - git config user.name
   - git clone https://ramramps:352c7137ef4c577b4f5c701e0639673c7c5f00cb@github.com/ramramps/DocumentTesting.git 
   - ps: tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/PublishDocs.ps1  
 test: off
