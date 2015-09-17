@@ -29,6 +29,7 @@ namespace GraphLayout
         /// <param name="guid">The guid as a unique identifier of the node.</param>
         /// <param name="width">The width of the node view.</param>
         /// <param name="height">The height of the node view.</param>
+        /// <param name="x">The x coordinate of the node view.</param>
         /// <param name="y">The y coordinate of the node view.</param>
         /// <param name="inPortCount">The number of input ports of the node.</param>
         public void AddNode(Guid guid, double width, double height, double x, double y)
@@ -483,13 +484,26 @@ namespace GraphLayout
 
         #region Graph positioning methods
 
-        private double CenterX;
-        private double CenterY;
+        private double InitialGraphCenterX;
+        private double InitialGraphCenterY;
 
+        public double GraphCenterX
+        {
+            get { return (Nodes.Min(n => n.X) + Nodes.Max(n => n.X + n.Width)) / 2; }
+        }
+
+        public double GraphCenterY
+        {
+            get { return (Nodes.Min(n => n.Y) + Nodes.Max(n => n.Y + n.Height)) / 2; }
+        }
+
+        /// <summary>
+        /// To save the initial center position of the graph.
+        /// </summary>
         public void RecordInitialPosition()
         {
-            CenterX = (Nodes.Min(n => n.X) + Nodes.Max(n => n.X + n.Width)) / 2;
-            CenterY = (Nodes.Min(n => n.Y) + Nodes.Max(n => n.Y + n.Height)) / 2;
+            InitialGraphCenterX = GraphCenterX;
+            InitialGraphCenterY = GraphCenterY;
         }
 
         /// <summary>
@@ -534,8 +548,8 @@ namespace GraphLayout
         /// </summary>
         public void SetGraphPosition()
         {
-            double moveX = CenterX - (Nodes.Max(n => n.X + n.Width) - Nodes.Min(n => n.X)) / 2;
-            double moveY = CenterY - (Nodes.Max(n => n.Y + n.Height) - Nodes.Min(n => n.Y)) / 2;
+            double moveX = InitialGraphCenterX - GraphCenterX;
+            double moveY = InitialGraphCenterY - GraphCenterY;
 
             foreach (Node n in Nodes)
             {
