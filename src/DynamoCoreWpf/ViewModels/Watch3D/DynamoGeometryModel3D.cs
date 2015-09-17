@@ -32,6 +32,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public const int SizeInBytes = 4 * (4 + 4 + 2 + 3 + 3 + 3 + 4);
     }
 
+    /// <summary>
+    /// A Dynamo mesh class which supports the RenderCustom technique.
+    /// </summary>
     public class DynamoGeometryModel3D : MaterialGeometryModel3D
     {
         private readonly RenderTechnique renderTechniqueInternal;
@@ -288,7 +291,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     Normal = normals != null ? normals[i] : Vector3.Zero,
                     Tangent = tangents != null ? tangents[i] : Vector3.Zero,
                     BiTangent = bitangents != null ? bitangents[i] : Vector3.Zero,
-                    Parameters = new Vector4(IsSelected?1:0, RequiresPerVertexColoration?1:0,0,0)
+                    Parameters = new Vector4((bool)GetValue(AttachedProperties.ShowSelectedProperty) ? 1 : 0, RequiresPerVertexColoration ? 1 : 0,0,0)
                 };
             }
 

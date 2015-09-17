@@ -8,6 +8,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     {
         public DynamoEffectsManager(IRenderTechniquesManager renderTechniquesManager) : base(renderTechniquesManager) { }
 
+        ~DynamoEffectsManager()
+        {
+            Dispose();
+        }
+
         protected override void InitEffects()
         {
             var custom = renderTechniquesManager.RenderTechniques["RenderCustom"];

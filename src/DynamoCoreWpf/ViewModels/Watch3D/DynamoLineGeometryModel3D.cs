@@ -18,6 +18,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public const int SizeInBytes = 4 * (4 + 4 + 4);
     }
 
+    /// <summary>
+    /// A Dynamo line class which supports the RenderCustom technique.
+    /// </summary>
     public class DynamoLineGeometryModel3D : LineGeometryModel3D
     {
         public override int VertexSizeInBytes

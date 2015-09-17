@@ -523,7 +523,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 case NotifyCollectionChangedAction.Reset:
                     Model3DDictionary.Values.
                         Where(v => v is GeometryModel3D).
-                        Cast<GeometryModel3D>().ToList().ForEach(g => g.IsSelected = false);
+                        Cast<GeometryModel3D>().ToList().ForEach(g => g.SetValue(AttachedProperties.ShowSelectedProperty, false));
                     return;
 
                 case NotifyCollectionChangedAction.Remove:
@@ -734,7 +734,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
 
                 var modelValues = geometryModels.Select(x => x.Value);
-                modelValues.Cast<GeometryModel3D>().ToList().ForEach(g => g.IsSelected = isSelected);
+
+                foreach(GeometryModel3D g in modelValues)
+                {
+                    g.SetValue(AttachedProperties.ShowSelectedProperty, isSelected);
+                }
             }
         }
 
@@ -866,7 +870,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Model3DDictionary.Add(DefaultGridName, gridModel3D);
             }
 
-            var axesModel3D = new LineGeometryModel3D
+            var axesModel3D = new DynamoLineGeometryModel3D
             {
                 Geometry = Axes,
                 Transform = Model1Transform,

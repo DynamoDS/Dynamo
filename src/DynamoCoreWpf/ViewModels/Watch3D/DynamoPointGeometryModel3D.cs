@@ -15,6 +15,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public const int SizeInBytes = 4 * (4 + 4 + 4);
     }
 
+    /// <summary>
+    /// A Dynamo point class which supports the RenderCustom technique.
+    /// </summary>
     public class DynamoPointGeometryModel3D : PointGeometryModel3D
     {
         public override int VertexSizeInBytes
