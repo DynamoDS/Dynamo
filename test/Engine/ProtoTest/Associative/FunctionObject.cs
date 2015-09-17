@@ -351,7 +351,7 @@ t4 = __Map(getPointKey, r6);
 
         [Test]
         [Category("DSDefinedClass")]
-        public void TestGroupByKey()
+        public void TestGroupByFunction()
         {
             string code =
     @"
@@ -379,7 +379,7 @@ def getCoordinateValue(p : Point)
 }
 
 getPointKey = _SingleFunctionObject(getCoordinateValue, 1, { }, { }, true);
-r = GroupByKey({ p1, p2, p3 }, getPointKey);
+r = GroupByFunction({ p1, p2, p3 }, getPointKey);
 t1 = __Map(getPointKey, r[0]);
 t2 = __Map(getPointKey, r[1]);
 ";
@@ -457,7 +457,7 @@ v2 = __Reduce(acc2, 0, 1..10);
 
         [Test]
         [Category("DSDefinedClass")]
-        public void TestGroupByKeyByString()
+        public void TestGroupByFunctionByString()
         {
             string code =
     @"
@@ -488,7 +488,7 @@ a2 = A(2, ""foo"");
 a3 = A(3, ""bar""); 
 a4 = A(4, ""bar""); 
 as = {a1, a2, a3, a4};
-ls = GroupByKey(as, so);
+ls = GroupByFunction(as, so);
 
 foos = ls[0].x;
 bars = ls[1].x;
