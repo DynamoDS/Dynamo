@@ -21,8 +21,10 @@ on_success:
  - ps: $env:APPVEYOR_REPO_BRANCH
  - ps: $env:APPVEYOR_REPO_NAME
  - ps: >-
-    if($env:APPVEYOR_REPO_BRANCH -eq 'master') {
-      $env:APPVEYOR_REPO_COMMIT_AUTHOR 
+    if($env:APPVEYOR_REPO_BRANCH -eq 'master') {	  
+      $env:APPVEYOR_REPO_COMMIT_AUTHOR
+      $env:APPVEYOR_PULL_REQUEST_NUMBER
+      $env:APPVEYOR_REPO_COMMIT 
       git config --global user.name $env:APPVEYOR_REPO_COMMIT_AUTHOR
       git config --global credential.helper store
       Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n" 
