@@ -17,8 +17,6 @@ namespace Dynamo.Nodes
     /// </summary>
     public static class BuiltinNodeCategories
     {
-        public const string BUILT_IN = "BuiltIn";
-
         public const string CORE = "Core";
         public const string CORE_INPUT = "Core.Input";
         public const string CORE_STRINGS = "Core.Strings";

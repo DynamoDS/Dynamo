@@ -458,6 +458,31 @@ def __Reduce(accumulator : _FunctionObject, seed: var[]..[], lists : var[]..[])
     };
 }
 
+def SortByFunction(list : var[]..[], func:_FunctionObject)
+{
+    return = [Imperative]
+    {
+        if (list == null)
+        {
+            return = null;
+        }
+
+        _count = Count(list);
+        _keys = { };
+
+        if (_count == 0)
+        {
+            return = _keys;
+        }
+
+        for (_index in 0..(_count - 1))
+        {
+            _keys[_index] = __Apply(func, list[_index]);
+        }
+        return = Sorting.sortByKey(list, _keys)[0];
+    };
+}
+
 def __SortByKey(list : var[]..[], keys : var[]..[])
 {
     return = [Imperative]

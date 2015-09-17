@@ -488,7 +488,7 @@ namespace DSCore
     }
 
     [NodeName("SortByKey")]
-    [NodeCategory(BuiltinNodeCategories.BUILT_IN)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
     [IsDesignScriptCompatible]
     public class SortByKey : NodeModel
     {
