@@ -1,4 +1,19 @@
-Write-Host "Install MkDocs"
+Write-Host "Copying the markdown file"
+$mdFile = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\index.md"
+$docsDir = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\bin\Release\docs"
+If(-not(Test-Path -path $docsDir))
+  {  
+	 $docsDir  
+     Write-Host "File does not exists, Cannot copy item"
+     exit	 
+  }
+ Else
+  {
+	 Copy-Item $mdFile  $docsDir
+	 Write-Host "Markdown file copied"
+  } 
+	
+Write-Host "Installing MkDocs"
 $pip = "C:\Python27\Scripts\pip.exe"
 $pipArg1 = "install"
 $pipArg2 ="mkdocs"
@@ -11,13 +26,20 @@ $mkDocsDest = "C:\projects\dynamo\DocumentTesting"
 
 Copy-Item $mkDocs  $mkDocsDest
 
-Write-Host "Copying yml"
+Write-Host "Copying mkdocs.yml"
 $ymlLocation = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\bin\Release\mkdocs.yml"
 $ymlDest = "C:\projects\dynamo\DocumentTesting"
 
+If(-not(Test-Path -path $ymlLocation))
+  {  
+	 $ymlLocation  
+     Write-Host "File does not exists, Cannot copy item"
+     exit	 
+  }
+
 Copy-Item $ymlLocation  $ymlDest
 
-Write-Host "Copying Docs folder"
+Write-Host "Copying the docs folder"
 $docLocation = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\bin\Release\docs"
 $docDest = "C:\projects\dynamo\DocumentTesting"
 
@@ -26,6 +48,13 @@ Copy-Item $docLocation  $docDest -recurse
 Write-Host "Copying Themes folder"
 $themeLoc = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\Theme"
 $themeDest = "C:\projects\dynamo\DocumentTesting"
+
+If(-not(Test-Path -path $themeLoc))
+  {  
+	 $themeLoc  
+     Write-Host "File does not exists, Cannot copy item"
+     exit	 
+  }
 
 Copy-Item $themeLoc  $themeDest -recurse
 

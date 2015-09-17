@@ -16,11 +16,11 @@ build_script:
 after_build:
   - ps: tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/BuildScript.ps1
   
-on_success:
-  -ps: Write-Host "Checking the branch. If the branch is master then document will be deployed"
-  -ps: $env:APPVEYOR_REPO_NAME
-  -ps: $env:APPVEYOR_REPO_BRANCH 
-  - ps: >-
+on_success: 
+ - ps: Write-Host "Checking the branch. If the branch is master then document will be deployed"
+ - ps: $env:APPVEYOR_REPO_BRANCH
+ - ps: $env:APPVEYOR_REPO_NAME
+ - ps: >-
     if($env:APPVEYOR_REPO_BRANCH -eq 'master') {
      - ps: $env:APPVEYOR_REPO_COMMIT_AUTHOR 
      - ps: git config --global user.name $env:APPVEYOR_REPO_COMMIT_AUTHOR

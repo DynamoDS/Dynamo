@@ -25,21 +25,6 @@ If(-not(Test-Path -path $app))
 & $app $arg1 $arg2
 Write-Host "XMLMarkdown ran successfully"
 
-Write-Host "copying the markdown file"
-
-$mdFile = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\index.md"
-$docsDir = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\bin\Release\docs"
-
-If(-not(Test-Path -path $docsDir))
-  {  
-	 $docsDir  
-     Write-Host "File does not exists, Cannot copy item"	
-  }
- Else
-	{
-		Copy-Item $mdFile  $docsDir
-		Write-Host "Markdown file copied"
-	}
 
 
   
