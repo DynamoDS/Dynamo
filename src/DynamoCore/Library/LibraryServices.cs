@@ -228,12 +228,7 @@ namespace Dynamo.Engine
                 newName = priorNameHints[qualifiedFunction].UpgradeName;
             }
 
-            splitted = newName.Split('.');
-
-            if (splitted.Length < 2)
-                return null;
-
-            return splitted[splitted.Length - 2] + "." + splitted[splitted.Length - 1];
+            return newName;
         }
 
         public string FunctionSignatureFromFunctionSignatureHint(string functionSignature)
@@ -476,13 +471,10 @@ namespace Dynamo.Engine
         {
             string fullLibraryName = library;
 
-            if (!pathManager.ResolveLibraryPath(ref fullLibraryName))
-                return;
-
             string migrationsXMLFile = Path.Combine(Path.GetDirectoryName(fullLibraryName),
                 Path.GetFileNameWithoutExtension(fullLibraryName) + ".Migrations.xml");
 
-            if (!File.Exists(migrationsXMLFile))
+            if (!pathManager.ResolveDocumentPath(ref migrationsXMLFile))
                 return;
 
             var foundPriorNameHints = new Dictionary<string, UpgradeHint>();
@@ -668,6 +660,7 @@ namespace Dynamo.Engine
                                                             });
 
             AddBuiltinFunctions(functions);
+            LoadLibraryMigrations("BuiltIn");
         }
 
         private static IEnumerable<TypedParameter> GetBinaryFuncArgs()
