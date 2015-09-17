@@ -140,7 +140,7 @@ namespace Dynamo.Nodes
 
             // If there is key, migrate to FunctionObject.ds SortByKey
             MigrationManager.SetFunctionSignature(newNode, "",
-                "SortByKey", "SortByKey@var[]..[],var[]..[]");
+                "SortByKey", "SortByKey@var[]..[],_FunctionObject");
 
             // Update connectors
             data.ReconnectToPort(connector0, inPort1);
