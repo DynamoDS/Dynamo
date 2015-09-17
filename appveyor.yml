@@ -18,7 +18,7 @@ after_build:
   
 on_success:
   - ps: $env:APPVEYOR_REPO_COMMIT_AUTHOR
-  - git config --global user.name $env:APPVEYOR_REPO_COMMIT_AUTHOR
+  - git config --global user.name "$env:APPVEYOR_REPO_COMMIT_AUTHOR"
   - git config --global credential.helper store
   - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"  
   - ps: Get-Content C:\Users\appveyor\.gitconfig
