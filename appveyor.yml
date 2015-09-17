@@ -17,9 +17,10 @@ after_build:
   - ps: tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/BuildScript.ps1
   
 on_success:
+  - ps: $env:APPVEYOR_REPO_COMMIT_AUTHOR
+  - git config --global user.name $env:APPVEYOR_REPO_COMMIT_AUTHOR
   - git config --global credential.helper store
-  - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
-  - ps: $env:USERPROFILE
+  - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"  
   - ps: Get-Content C:\Users\appveyor\.gitconfig
   - git clone https://ramramps:352c7137ef4c577b4f5c701e0639673c7c5f00cb@github.com/ramramps/DocumentTesting.git 
   - ps: tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/PublishDocs.ps1  
