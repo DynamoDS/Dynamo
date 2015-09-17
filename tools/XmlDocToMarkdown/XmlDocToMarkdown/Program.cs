@@ -22,7 +22,7 @@ namespace Dynamo.Docs
         private static string[] separators = new string[] { "``", "`","(",")"};
         private const string lt = "<*";
         private const string gt = "*>"; 
-        //private static string replaceString = "[``1``0`1`0 ]";
+       
         static void Main(string[] args)
         {
             var asm = Assembly.LoadFrom(args[0]);
@@ -30,39 +30,56 @@ namespace Dynamo.Docs
 
             var docsFolder = CreateDocsFolder();
 
-            var xml = XDocument.Load(args[1]);
-
-            foreach (var ns in namespaces)
+            if (docsFolder != null)
             {
-                var cleanNamespace = ns.Replace('.', '_');
-                var outputDir = Path.Combine(Path.GetFullPath(docsFolder.FullName), cleanNamespace);
-                if (!Directory.Exists(outputDir))
-                {
-                    Directory.CreateDirectory(outputDir);
-                }
-                var publicTypes = asm.GetTypes().Where(t => t.Namespace == ns).Where(t => t.IsPublic);
 
-                foreach (var t in publicTypes)
+                var xml = XDocument.Load(args[1]);
+
+                foreach (var ns in namespaces)
                 {
-                    GenerateMarkdownDocumentForType(t, outputDir, xml);
+                    var cleanNamespace = ns.Replace('.', '_');
+                    var outputDir = Path.Combine(Path.GetFullPath(docsFolder.FullName), cleanNamespace);
+                    if (!Directory.Exists(outputDir))
+                    {
+                        Directory.CreateDirectory(outputDir);
+                    }
+                    var publicTypes = asm.GetTypes().Where(t => t.Namespace == ns).Where(t => t.IsPublic);
+
+                    foreach (var t in publicTypes)
+                    {
+                        GenerateMarkdownDocumentForType(t, outputDir, xml);
+                    }
                 }
+
+                GenerateDocYaml();
             }
-
-            GenerateDocYaml();
+            else
+            {
+                Console.WriteLine("Cannot create docs folder.");
+            }
         }
 
         private static DirectoryInfo CreateDocsFolder()
         {
-            var folderPath = DocRootPath();
-
-            if (Directory.Exists(folderPath))
+            try
             {
-                Directory.Delete(folderPath, true);
+                var folderPath = DocRootPath();
+
+                if (Directory.Exists(folderPath))
+                {
+                    Directory.Delete(folderPath, true);
+                }
+
+                var docsFolder = Directory.CreateDirectory(folderPath);
+
+                return docsFolder;
             }
 
-            var docsFolder = Directory.CreateDirectory(folderPath);
-
-            return docsFolder;
+            catch (Exception ex)
+            {
+                Console.WriteLine("Cannot create docs folder." + ex.Message);
+                return null;
+            }
         }
 
         private static string DocRootPath()
@@ -399,10 +416,15 @@ namespace Dynamo.Docs
                     }
                     i++;
                 }
+                //case 1: Param tag on the method.
                 if (stringList.Count > 0)
                 {
-                    methodName = methodName + "(" + stringList.ToString() + ")";
-
+                    methodName = methodName + "(" + stringList + ")";
+                }
+                //case 1: No Param tag on the method.        
+                else
+                {
+                    methodName = methodName + "(" + methodParams[0] + ")";
                 }
 
                 //add api_stability as super script. If there is no stability tag

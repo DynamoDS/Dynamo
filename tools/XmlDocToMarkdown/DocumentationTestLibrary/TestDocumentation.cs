@@ -33,7 +33,6 @@ namespace Dynamo.DocumentationTestLibrary
     public class TestDocumentation
     {
 
-
         #region properties
 
         /// <summary>
@@ -75,6 +74,14 @@ namespace Dynamo.DocumentationTestLibrary
         public Person TestHyperLink(Person p)
         {
             return null;
+        }
+
+         //<summary>
+         //Tests the method that has no param set.
+         //</summary>       
+        public void TestObject(object o)
+        {
+            
         }
     }
 
