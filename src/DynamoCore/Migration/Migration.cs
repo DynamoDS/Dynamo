@@ -251,9 +251,6 @@ namespace Dynamo.Migration
                 string typeName = elNode.Attributes["type"].Value;
                 typeName = Nodes.Utilities.PreprocessTypeName(typeName);
 
-                string nickName = elNode.Attributes["nickname"].Value;
-                typeName = Nodes.Utilities.PreprocessTypeName(typeName);
-
                 Type type;
                 if (!nodeFactory.ResolveType(typeName, out type)
                     && !nodeMigrationLookup.TryGetValue(typeName, out type))

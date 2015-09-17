@@ -796,16 +796,6 @@ namespace Dynamo.Nodes
         }
     }
 
-    public class GroupByKey : MigrationNode
-    {
-        [NodeMigration(from: "0.8.2.0", to: "0.8.3.0")]
-        public static NodeMigrationData Migrate_0820_to_0830(NodeMigrationData data)
-        {
-            return MigrateToDsFunction(data, "GroupByFunction",
-               "GroupByFunction@var[]..[],_FunctionObject");
-        }
-    }
-
     public class SliceList : MigrationNode
     {
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
