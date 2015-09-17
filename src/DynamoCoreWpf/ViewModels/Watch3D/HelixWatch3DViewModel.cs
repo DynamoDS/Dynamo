@@ -851,7 +851,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Model3DDictionary.Add(DefaultLightName, directionalLight);
             }
 
-            var gridModel3D = new LineGeometryModel3D
+            var gridModel3D = new DynamoLineGeometryModel3D
             {
                 Geometry = Grid,
                 Transform = Model1Transform,
