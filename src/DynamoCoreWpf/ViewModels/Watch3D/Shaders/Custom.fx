@@ -244,7 +244,7 @@ technique11 RenderCustom
 {
 	pass P0
 	{
-		//SetRasterizerState	( RSSolid );
+		SetRasterizerState	( RSSolidNone );
 		SetDepthStencilState(DSSDepthLess, 0);
 		SetBlendState(BSBlending, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
 		SetVertexShader(CompileShader(vs_4_0, VShaderCustom()));
