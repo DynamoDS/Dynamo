@@ -36,6 +36,30 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
+        ///     Return a clone of current SyncDataManager.
+        /// </summary>
+        /// <returns></returns>
+        public SyncDataManager Clone()
+        {
+            SyncDataManager clone = new SyncDataManager();
+            foreach (var key in states.Keys)
+            {
+                clone.states.Add(key, states[key]);
+            }
+
+            foreach (var key in nodes.GetKeys())
+            {
+                var asts = nodes.GetItems(key);
+                foreach (var ast in asts)
+                {
+                    clone.nodes.AddItem(key, ast);
+                }
+            }
+            
+            return clone;
+        }
+
+        /// <summary>
         ///     Reset states of all nodes to State.NoChange. It should be called
         ///     before each running.
         /// </summary>

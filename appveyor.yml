@@ -15,7 +15,7 @@ build_script:
 
 after_build:
   - ps: tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/BuildScript.ps1
-  
+
 on_success:  
  - ps: >-
     Write-Host "Publishing Documentation" 
