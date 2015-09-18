@@ -1911,6 +1911,13 @@ namespace Dynamo.Tests
             Assert.AreEqual("test", File.ReadAllText(fullPath));
         }
 
+        [Test]
+        public void TestMigration_GroupByKey()
+        {
+            TestMigration("TestMigration_GroupByKey.dyn");
+        }
+
+
         #endregion
 
         #region Dynamo Libraries Node Migration Tests
