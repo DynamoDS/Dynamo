@@ -91,7 +91,7 @@
                 Margin="5"
                 Grid.Row="1">
             <Grid Name="SearchTextBoxGrid"
-                  Height="25"
+                  Height="28"
                   VerticalAlignment="Center"
                   MouseEnter="OnSearchTextBoxGridMouseEnter"
                   MouseLeave="OnSearchTextBoxGridMouseLeave">
