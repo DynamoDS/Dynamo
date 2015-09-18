@@ -39,6 +39,7 @@ struct GSInputLS
 {
 	float4 p	: POSITION;
 	float4 c	: COLOR;
+	float4 parameters  : COLOR1;
 };
 
 struct PSInputLS
@@ -47,6 +48,7 @@ struct PSInputLS
 	noperspective
 		float3 t	: TEXCOORD;
 	float4 c	: COLOR;
+	float4 parameters : COLOR1;
 };
 
 
@@ -72,7 +74,6 @@ float4 windowToProj(in float2 pos, in float z, in float w)
 		((pos.y * 2.0 / vViewport.y) - 1.0) * -w,
 		z, w);
 }
-
 
 
 //--------------------------------------------------------------------------------------
@@ -102,7 +103,6 @@ void makeLine(out float4 points[4], in float4 posA, in float4 posB, in float wid
 	points[3] = windowToProj(B2w, posB.z, posB.w);
 }
 
-
 //--------------------------------------------------------------------------------------
 // LINES SHADER
 //-------------------------------------------------------------------------------------
@@ -110,6 +110,7 @@ GSInputLS VShaderLines(VSInputLS input)
 {
 	GSInputLS output = (GSInputLS)0;
 	output.p = input.p;
+	output.parameters = input.parameters;
 
 	// compose instance matrix
 	if (bHasInstances)
@@ -153,7 +154,7 @@ void GSPassThru(line GSInputLS input[2], inout LineStream<PSInputLS> outStream)
 	{
 		output.p = input[i].p;
 		output.c = input[i].c;
-
+		output.parameters = input[i].parameters;
 		outStream.Append(output);
 	}
 	outStream.RestartStrip();
@@ -164,8 +165,15 @@ void GShaderLines(line GSInputLS input[2], inout TriangleStream<PSInputLS> outSt
 {
 	PSInputLS output = (PSInputLS)0;
 
+	// If the line is selected, scale it.
+	bool isSelected = input[0].parameters.x;
+	float scale = 1.0;
+	if (isSelected) {
+		scale = 2.0;
+	}
+
 	float4 lineCorners[4];
-	makeLine(lineCorners, input[0].p, input[1].p, vLineParams.x);
+	makeLine(lineCorners, input[0].p, input[1].p, vLineParams.x * scale);
 
 	output.p = lineCorners[0];
 	output.c = input[0].c;

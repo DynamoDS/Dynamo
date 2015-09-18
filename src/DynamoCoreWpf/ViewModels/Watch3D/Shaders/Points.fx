@@ -22,6 +22,7 @@ struct PSInputPS
 	noperspective
 		float3 t	: TEXCOORD;
 	float4 c	: COLOR;
+	float4 parameters : COLOR1;
 };
 
 void makeQuad(out float4 points[4], in float4 posA, in float w, in float h)
@@ -90,6 +91,7 @@ void GShaderPoints(point GSInputPS input[1], inout TriangleStream<PSInputLS> out
 	output.t[0] = +1;
 	output.t[1] = +1;
 	output.t[2] = 1;
+	output.parameters = input[0].parameters;
 	outStream.Append(output);
 
 	output.p = spriteCorners[1];
@@ -97,6 +99,7 @@ void GShaderPoints(point GSInputPS input[1], inout TriangleStream<PSInputLS> out
 	output.t[0] = +1;
 	output.t[1] = -1;
 	output.t[2] = 1;
+	output.parameters = input[0].parameters;
 	outStream.Append(output);
 
 	output.p = spriteCorners[2];
@@ -104,6 +107,7 @@ void GShaderPoints(point GSInputPS input[1], inout TriangleStream<PSInputLS> out
 	output.t[0] = -1;
 	output.t[1] = +1;
 	output.t[2] = 1;
+	output.parameters = input[0].parameters;
 	outStream.Append(output);
 
 	output.p = spriteCorners[3];
@@ -111,6 +115,7 @@ void GShaderPoints(point GSInputPS input[1], inout TriangleStream<PSInputLS> out
 	output.t[0] = -1;
 	output.t[1] = -1;
 	output.t[2] = 1;
+	output.parameters = input[0].parameters;
 	outStream.Append(output);
 
 	outStream.RestartStrip();
