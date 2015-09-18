@@ -228,7 +228,17 @@ namespace Dynamo.Engine
                 newName = priorNameHints[qualifiedFunction].UpgradeName;
             }
 
-            return newName;
+            splitted = newName.Split('.');
+
+            // Case for BuitIn nodes, because they don't have namespace or class.
+            if (splitted.Length == 1)
+                return newName;
+
+            // Other nodes should have at least 2 parameters.
+            if (splitted.Length < 2)
+                return null;
+
+            return splitted[splitted.Length - 2] + "." + splitted[splitted.Length - 1];
         }
 
         public string FunctionSignatureFromFunctionSignatureHint(string functionSignature)
@@ -470,6 +480,13 @@ namespace Dynamo.Engine
         internal void LoadLibraryMigrations(string library)
         {
             string fullLibraryName = library;
+
+            // If library is not found, that doesn't mean there is no migration file.
+            // E.g. built in nodes don't have assembly, but they do have migration file.
+            if (!pathManager.ResolveLibraryPath(ref fullLibraryName))
+            {
+                fullLibraryName = library;
+            }
 
             string migrationsXMLFile = Path.Combine(Path.GetDirectoryName(fullLibraryName),
                 Path.GetFileNameWithoutExtension(fullLibraryName) + ".Migrations.xml");
