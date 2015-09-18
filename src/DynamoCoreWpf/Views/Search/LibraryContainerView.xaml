@@ -85,15 +85,16 @@
             </Button>
         </Grid>
 
-        <Border BorderThickness="0,1,0,1"
-                BorderBrush="#555555"
+        <Border BorderThickness="0"
+                Background="#F1F2F2"
+                CornerRadius="8"
+                Margin="5"
                 Grid.Row="1">
             <Grid Name="SearchTextBoxGrid"
                   Height="25"
                   VerticalAlignment="Center"
                   MouseEnter="OnSearchTextBoxGridMouseEnter"
-                  MouseLeave="OnSearchTextBoxGridMouseLeave"
-                  Background="#444444">
+                  MouseLeave="OnSearchTextBoxGridMouseLeave">
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -110,10 +111,11 @@
 
                     <Image x:Name="SearchIcon"
                            Source="/DynamoCoreWpf;component/UI/Images/search_normal.png"
-                           Width="25"
-                           Height="26"
+                           Width="16"
+                           Height="16"
                            VerticalAlignment="Center"
-                           HorizontalAlignment="Left" />
+                           HorizontalAlignment="Left"
+                           Margin="5,0,0,0" />
 
                     <TextBlock Name="SearchTextBlock"
                                FontSize="14"
@@ -124,14 +126,14 @@
                                                     Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
                                HorizontalAlignment="Center"
                                Height="18"
-                               Margin="3,0,0,0">
+                               Margin="6,0,0,0">
 
                     </TextBlock>
                 </StackPanel>
 
                 <TextBox Name="SearchTextBox"
                          KeyboardNavigation.TabIndex="0"
-                         Foreground="{StaticResource CommonSidebarTextColor}"
+                         Foreground="#231F20"
                          Background="Transparent"
                          BorderThickness="0"
                          FontSize="14"
@@ -161,8 +163,9 @@
                                     <ControlTemplate TargetType="Button">
                                         <Image Name="SearchCancelImage"
                                                Source="/DynamoCoreWpf;component/UI/Images/searchcancel_normal.png"
-                                               Width="20"
-                                               Height="20" />
+                                               Width="16"
+                                               Height="16"
+                                               Margin="0,0,5,0" />
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver"
                                                      Value="True">
