@@ -8,7 +8,7 @@ environment:
   dynamo_solution: src/Dynamo.All.2013.sln
   xmlDocs_solution: tools/XmlDocToMarkdown/XmlDocToMarkdown.sln
   access_token:
-    secure:352c7137ef4c577b4f5c701e0639673c7c5f00cb
+    secure:a53fed0916140fa078b4559a240e740871a0a67f
 build_script:
   - msbuild %dynamo_solution%
   - msbuild %xmlDocs_solution%
@@ -18,11 +18,11 @@ after_build:
 
 on_success:  
  - ps: >- 
-    if($env:APPVEYOR_PULL_REQUEST_NUMBER -eq '') {	
+    if($env:APPVEYOR_PULL_REQUEST_NUMBER) {	
       git config --global user.name $env:APPVEYOR_REPO_COMMIT_AUTHOR
       git config --global credential.helper store
       Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n" 
-      git clone https://ramramps:352c7137ef4c577b4f5c701e0639673c7c5f00cb@github.com/ramramps/DocumentTesting.git  
+      git clone https://DynamoDS:a53fed0916140fa078b4559a240e740871a0a67f@github.com/DynamoDS/DynamoAPI.git  
       tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/PublishDocs.ps1	
     }  
   

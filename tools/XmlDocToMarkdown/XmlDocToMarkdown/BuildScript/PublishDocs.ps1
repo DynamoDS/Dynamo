@@ -22,13 +22,13 @@ $pipArg2 ="mkdocs"
 	
 Write-Host "Copying MkDocs"
 $mkDocs = "C:\Python27\Scripts\mkdocs.exe"
-$mkDocsDest = "C:\projects\dynamo\DocumentTesting"
+$mkDocsDest = "C:\projects\dynamo\DynamoAPI"
 
 Copy-Item $mkDocs  $mkDocsDest
 
 Write-Host "Copying mkdocs.yml"
 $ymlLocation = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\bin\Release\mkdocs.yml"
-$ymlDest = "C:\projects\dynamo\DocumentTesting"
+$ymlDest = "C:\projects\dynamo\DynamoAPI"
 
 If(-not(Test-Path -path $ymlLocation))
   {  
@@ -41,13 +41,13 @@ Copy-Item $ymlLocation  $ymlDest
 
 Write-Host "Copying the docs folder"
 $docLocation = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\bin\Release\docs"
-$docDest = "C:\projects\dynamo\DocumentTesting"
+$docDest = "C:\projects\dynamo\DynamoAPI"
 
 Copy-Item $docLocation  $docDest -recurse
 
 Write-Host "Copying Themes folder"
 $themeLoc = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\Theme"
-$themeDest = "C:\projects\dynamo\DocumentTesting"
+$themeDest = "C:\projects\dynamo\DynamoAPI"
 
 If(-not(Test-Path -path $themeLoc))
   {  
@@ -59,10 +59,10 @@ If(-not(Test-Path -path $themeLoc))
 Copy-Item $themeLoc  $themeDest -recurse
 
 Write-Host "Running MkDocs"
-$mkDocsLoc = "C:\projects\dynamo\DocumentTesting"
+$mkDocsLoc = "C:\projects\dynamo\DynamoAPI"
 
 Set-Location -Path $mkDocsLoc
-$mkDocsFile = "C:\projects\dynamo\DocumentTesting\mkDocs.exe"
+$mkDocsFile = "C:\projects\dynamo\DynamoAPI\mkDocs.exe"
 $mkarg1 = "gh-deploy"
 $mkarg2 = "--clean"
 
