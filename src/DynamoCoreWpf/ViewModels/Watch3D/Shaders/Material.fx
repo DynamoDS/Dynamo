@@ -26,7 +26,7 @@ bool   bHasShadowMap = false;
 float2 vShadowMapSize = float2(1024, 1024);
 float4 vShadowMapInfo = float4(0.005, 1.0, 0.5, 0.0);
 
-float4 vSelectionColor = float4(0.0, 1.0, 0.0, 0.0);
+float4 vSelectionColor = float4(0.0, 0.62, 1.0, 1.0);
 
 
 //--------------------------------------------------------------------------------------
