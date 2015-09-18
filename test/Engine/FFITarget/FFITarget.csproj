@@ -75,6 +75,7 @@
     <Compile Include="TestMessageLog.cs" />
     <Compile Include="TestNamespaceConflict.cs" />
     <Compile Include="TestNamespaceResolution.cs" />
+    <Compile Include="TestObjects.cs" />
     <Compile Include="TestPersistentNodeValues.cs" />
     <Compile Include="TestUpdateCount.cs" />
   </ItemGroup>
