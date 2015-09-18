@@ -51,6 +51,7 @@ GSInputPS VShaderPoints(GSInputPS input)
 {
 	GSInputPS output = (GSInputPS)0;
 	output.p = input.p;
+	output.parameters = input.parameters;
 
 	bool isSelected = input.parameters.x;
 
@@ -74,8 +75,15 @@ void GShaderPoints(point GSInputPS input[1], inout TriangleStream<PSInputLS> out
 {
 	PSInputPS output = (PSInputPS)0;
 
+	float scale = 1.0;
+	bool isSelected = input[0].parameters.x;
+	if (isSelected) 
+	{
+		scale = 1.25;
+	}
+
 	float4 spriteCorners[4];
-	makeQuad(spriteCorners, input[0].p, vPointParams.x, vPointParams.y);
+	makeQuad(spriteCorners, input[0].p, vPointParams.x * scale, vPointParams.y * scale);
 
 	output.p = spriteCorners[0];
 	output.c = input[0].c;
