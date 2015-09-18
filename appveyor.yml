@@ -18,15 +18,14 @@ after_build:
 
 on_success:  
  - ps: >- 
-    if($env:APPVEYOR_PULL_REQUEST_NUMBER -eq '') {     
-    }  
-     else {
+    if($env:APPVEYOR_PULL_REQUEST_NUMBER -eq '') {	
       git config --global user.name $env:APPVEYOR_REPO_COMMIT_AUTHOR
       git config --global credential.helper store
       Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n" 
       git clone https://ramramps:352c7137ef4c577b4f5c701e0639673c7c5f00cb@github.com/ramramps/DocumentTesting.git  
-      tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/PublishDocs.ps1
-    }
+      tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/PublishDocs.ps1	
+    }  
+  
 
 test: off
 
