@@ -8,11 +8,4 @@ build:
   project: src/Dynamo.All.2013.sln
   verbosity: normal
 
-on_success:
- - ps: $env:APPVEYOR_REPO_BRANCH
- - ps: $env:APPVEYOR_REPO_NAME
- - ps: $env:APPVEYOR_REPO_COMMIT_AUTHOR
- - ps: $env:APPVEYOR_PULL_REQUEST_NUMBER
- - ps: $env:APPVEYOR_REPO_COMMIT
-  
 test: off
