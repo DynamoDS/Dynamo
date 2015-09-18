@@ -26,7 +26,6 @@ using Dynamo.Wpf.UI;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Watch3D;
-using DynamoManipulation;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using ISelectable = Dynamo.Selection.ISelectable;
 
@@ -401,8 +400,6 @@ namespace Dynamo.ViewModels
             get { return BackgroundPreviewViewModel.Active; }
         }
 
-        public IManipulatorDaemonInitializer ManipulatorDaemonInitializer { get; set; }
-
         #endregion
 
         public struct StartConfiguration
@@ -417,7 +414,6 @@ namespace Dynamo.ViewModels
             /// at startup in order to be used to pass in host specific resources to DynamoViewModel
             /// </summary>
             public IBrandingResourceProvider BrandingResourceProvider { get; set; }
-            public IManipulatorDaemonInitializer ManipulatorDaemonInitializer { get; set; }
         }
 
         public static DynamoViewModel Start(StartConfiguration startConfiguration = new StartConfiguration())
@@ -450,7 +446,6 @@ namespace Dynamo.ViewModels
             this.ShowStartPage = !DynamoModel.IsTestMode;
 
             this.BrandingResourceProvider = startConfiguration.BrandingResourceProvider ?? new DefaultBrandingResourceProvider();
-            this.ManipulatorDaemonInitializer = startConfiguration.ManipulatorDaemonInitializer;
 
             //add the initial workspace and register for future 
             //updates to the workspaces collection

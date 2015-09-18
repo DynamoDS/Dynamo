@@ -207,8 +207,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoApplications", "Dynam
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoPackages", "DynamoPackages\DynamoPackages.csproj", "{47533B7C-0E1A-44A4-8511-B438645F052A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoManipulation", "DynamoManipulation\DynamoManipulation.csproj", "{C2C358B9-954E-447E-8D82-B63511CF404B}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -467,10 +465,6 @@ Global
 		{47533B7C-0E1A-44A4-8511-B438645F052A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47533B7C-0E1A-44A4-8511-B438645F052A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47533B7C-0E1A-44A4-8511-B438645F052A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C2C358B9-954E-447E-8D82-B63511CF404B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C2C358B9-954E-447E-8D82-B63511CF404B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C2C358B9-954E-447E-8D82-B63511CF404B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C2C358B9-954E-447E-8D82-B63511CF404B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

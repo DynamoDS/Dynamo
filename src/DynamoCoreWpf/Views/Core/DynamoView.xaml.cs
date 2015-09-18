@@ -42,7 +42,6 @@ using System.Collections.Specialized;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Interfaces;
 using Dynamo.Wpf.Views.PackageManager;
-using DynamoManipulation;
 
 namespace Dynamo.Controls
 {
@@ -59,7 +58,6 @@ namespace Dynamo.Controls
         private GalleryView galleryView;
         private readonly LoginService loginService;
         internal ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
-        private readonly ManipulatorDaemon manipulatorDaemon;
 
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
@@ -146,10 +144,6 @@ namespace Dynamo.Controls
                 {
                     Log(ext.Name + ": " + exc.Message);
                 }
-            }
-            if (dynamoViewModel.ManipulatorDaemonInitializer != null)
-            {
-                manipulatorDaemon = ManipulatorDaemon.Create(dynamoViewModel.ManipulatorDaemonInitializer);
             }
         }
 
@@ -675,38 +669,7 @@ namespace Dynamo.Controls
             dynamoViewModel.PasteCommand.RaiseCanExecuteChanged();
             dynamoViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
 
-            UpdateManipulators(e);
         }
-
-        void UpdateManipulators(NotifyCollectionChangedEventArgs e)
-        {
-            if (manipulatorDaemon == null)
-                return;
-
-            if (e.Action != NotifyCollectionChangedAction.Move)
-            {
-                if (e.OldItems != null)
-                {
-                    foreach (var nm in e.OldItems.OfType<NodeModel>())
-                    {
-                        manipulatorDaemon.KillManipulators(nm);
-                    }
-                }
-            }
-
-            if (e.Action == NotifyCollectionChangedAction.Reset)
-            {
-                manipulatorDaemon.KillAll();
-            }
-
-            if (e.NewItems == null)
-                return;
-
-            var manipulatorContext = new NodeManipulatorContext(this);
-            
-            foreach (var nm in e.NewItems.OfType<NodeModel>())
-                manipulatorDaemon.CreateManipulator(nm, manipulatorContext);
-         }
 
         void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
