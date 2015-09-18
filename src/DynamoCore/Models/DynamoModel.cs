@@ -1567,9 +1567,6 @@ namespace Dynamo.Models
             var notes = ClipBoard.OfType<NoteModel>();
             var annotations = ClipBoard.OfType<AnnotationModel>();
 
-            var minX = Double.MaxValue;
-            var minY = Double.MaxValue;
-
             // Create the new NoteModel's
             var newNoteModels = new List<NoteModel>();
             foreach (var note in notes)
@@ -1578,9 +1575,6 @@ namespace Dynamo.Models
                 //Store the old note as Key and newnote as value.
                 modelLookup.Add(note.GUID,noteModel);
                 newNoteModels.Add(noteModel);
-
-                minX = Math.Min(note.X, minX);
-                minY = Math.Min(note.Y, minY);
             }
 
             var xmlDoc = new XmlDocument();
@@ -1613,26 +1607,15 @@ namespace Dynamo.Models
                 modelLookup.Add(node.GUID, newNode);
 
                 newNodeModels.Add( newNode );
-
-                minX = Math.Min(node.X, minX);
-                minY = Math.Min(node.Y, minY);
             }
-
-            // Move all of the notes and nodes such that they are aligned with
-            // the top left of the workspace
-            var workspaceX = -CurrentWorkspace.X / CurrentWorkspace.Zoom;
-            var workspaceY = -CurrentWorkspace.Y / CurrentWorkspace.Zoom;
 
             // Provide a small offset when pasting so duplicate pastes aren't directly on top of each other
             CurrentWorkspace.IncrementPasteOffset();
 
-            var shiftX = workspaceX - minX + CurrentWorkspace.CurrentPasteOffset;
-            var shiftY = workspaceY - minY + CurrentWorkspace.CurrentPasteOffset;
-
             foreach (var model in newNodeModels.Concat<ModelBase>(newNoteModels))
             {
-                model.X = model.X + shiftX;
-                model.Y = model.Y + shiftY;
+                model.X = model.X + (model.Width + CurrentWorkspace.CurrentPasteOffset) / CurrentWorkspace.Zoom;
+                model.Y = model.Y + (model.Height + CurrentWorkspace.CurrentPasteOffset) / CurrentWorkspace.Zoom;
             }
 
             // Add the new NodeModel's to the Workspace
