@@ -23,6 +23,7 @@ using ProtoCore.AST;
 using ProtoCore.Namespace;
 
 using Utils = Dynamo.Nodes.Utilities;
+using Dynamo.Engine.NodeToCode;
 
 namespace Dynamo.Models
 {
@@ -1339,7 +1340,7 @@ namespace Dynamo.Models
             HasUnsavedChanges = true;
         }
 
-        internal void ConvertNodesToCodeInternal(EngineController engineController)
+        internal void ConvertNodesToCodeInternal(EngineController engineController, INamingProvider namingProvider)
         {
             var selectedNodes = DynamoSelection.Instance
                                                .Selection
@@ -1348,7 +1349,7 @@ namespace Dynamo.Models
             if (!selectedNodes.Any())
                 return;
 
-            var cliques = NodeToCodeUtils.GetCliques(selectedNodes).Where(c => !(c.Count == 1 && c.First() is CodeBlockNodeModel));
+            var cliques = NodeToCodeCompiler.GetCliques(selectedNodes).Where(c => !(c.Count == 1 && c.First() is CodeBlockNodeModel));
             var codeBlockNodes = new List<CodeBlockNodeModel>();
 
             //UndoRedo Action Group----------------------------------------------
@@ -1366,7 +1367,7 @@ namespace Dynamo.Models
                     //Also collect the average X and Y co-ordinates of the different nodes
                     int nodeCount = nodeList.Count;
 
-                    var nodeToCodeResult = engineController.ConvertNodesToCode(this.nodes, nodeList);
+                    var nodeToCodeResult = engineController.ConvertNodesToCode(this.nodes, nodeList, namingProvider);
 
                     #region Step I. Delete all nodes and their connections
 
@@ -1420,10 +1421,10 @@ namespace Dynamo.Models
 
                     #region Step II. Create the new code block node
                     var outputVariables = externalOutputConnections.Values;
-                    var newResult = NodeToCodeUtils.ConstantPropagationForTemp(nodeToCodeResult, outputVariables);
+                    var newResult = NodeToCodeCompiler.ConstantPropagationForTemp(nodeToCodeResult, outputVariables);
 
                     // Rewrite the AST using the shortest unique name in case of namespace conflicts
-                    NodeToCodeUtils.ReplaceWithShortestQualifiedName(
+                    NodeToCodeCompiler.ReplaceWithShortestQualifiedName(
                         engineController.LibraryServices.LibraryManagementCore.ClassTable, newResult.AstNodes, ElementResolver);
                     var codegen = new ProtoCore.CodeGenDS(newResult.AstNodes);
                     var code = codegen.GenerateCode();

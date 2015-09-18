@@ -5,6 +5,8 @@ using Dynamo.Core;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.Engine;
+using Dynamo.Engine.NodeToCode;
 
 namespace Dynamo.Models
 {
@@ -352,7 +354,9 @@ namespace Dynamo.Models
 
         private void ConvertNodesToCodeImpl(ConvertNodesToCodeCommand command)
         {
-            CurrentWorkspace.ConvertNodesToCodeInternal(EngineController);
+            var libServices = new LibraryCustomizationServices(pathManager);
+            var namingProvider = new NamingProvider(EngineController.LibraryServices.LibraryManagementCore, libServices);
+            CurrentWorkspace.ConvertNodesToCodeInternal(EngineController, namingProvider);
 
             CurrentWorkspace.HasUnsavedChanges = true;
         }
