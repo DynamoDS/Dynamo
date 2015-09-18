@@ -17,9 +17,10 @@ after_build:
   - ps: tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/BuildScript.ps1
 
 on_success:  
- - ps: >-
-    Write-Host "Publishing Documentation" 
-    if($env:APPVEYOR_PULL_REQUEST_NUMBER) {	        
+ - ps: >- 
+    if($env:APPVEYOR_PULL_REQUEST_NUMBER) {	              
+    }
+    else {	  
       git config --global user.name $env:APPVEYOR_REPO_COMMIT_AUTHOR
       git config --global credential.helper store
       Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n" 
