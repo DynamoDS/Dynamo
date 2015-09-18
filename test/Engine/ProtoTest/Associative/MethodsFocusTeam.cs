@@ -669,6 +669,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
+        [Category("Failure")]
         [Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
         public void T024_DotOp_FuncCall_03()
         {

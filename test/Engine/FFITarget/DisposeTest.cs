@@ -9,6 +9,11 @@ namespace FFITarget
     {
         static public int count { get; set; }
 
+        public static void Reset()
+        {
+            count = 0;
+        }
+
         public DisposeTestClassA()
         {
             count = count + 1;
@@ -23,6 +28,11 @@ namespace FFITarget
     public class DisposeTestClassB : IDisposable
     {
         static public int count { get; set; }
+
+        public static void Reset()
+        {
+            count = 0;
+        }
 
         public DisposeTestClassB()
         {
@@ -39,6 +49,11 @@ namespace FFITarget
     {
         static public int count { get; set; }
 
+        public static void Reset()
+        {
+            count = 0;
+        }
+
         public DisposeTestClassC()
         {
             count = count + 1;
@@ -52,7 +67,12 @@ namespace FFITarget
 
     public class DisposeTestClassD : IDisposable
     {
-        static public int s_dispose { get; set; }
+        static public int count { get; set; }
+
+        public static void Reset()
+        {
+            count = 0;
+        }
 
         public DisposeTestClassD()
         {
@@ -64,7 +84,7 @@ namespace FFITarget
 
         public void Dispose()
         {
-            s_dispose = s_dispose + 1;
+            count = count + 1;
         }
     }
 }
