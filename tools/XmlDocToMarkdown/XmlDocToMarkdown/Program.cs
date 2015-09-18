@@ -336,9 +336,7 @@ namespace Dynamo.Docs
             new Func<string, string, XElement, string[]>((att1,att2,node) =>            
          
             {
-                var methodName = node.Attribute(att1).Value.Split('.').Last();
-                methodName = CheckAndAppendStability(node, methodName);
-
+                var methodName = node.Attribute(att1).Value.Split('.').Last();                
                 var convertedMethodName = ConvertGenericParameters(node, methodName, att2);
 
                 return new[]
