@@ -400,7 +400,7 @@ namespace Dynamo.Docs
                     if (methodParams.Count() > i)
                     {
                         //Extract only the classname , not the entire namespace
-                        var className = string.Empty;
+                        var className = string.Empty;                        
                         if (methodParams[i].Contains("Dynamo"))
                         {
                             className = methodParams[i].Split('.').Last();
@@ -430,6 +430,12 @@ namespace Dynamo.Docs
                 //add api_stability as super script. If there is no stability tag
                 //then add a default value.
                 methodName = CheckAndAppendStability(node, methodName);
+            }
+            else
+            {
+                methodName = methodName.Split('.').Last();
+                methodName = CheckAndAppendStability(node, methodName);
+
             }
 
             return methodName;

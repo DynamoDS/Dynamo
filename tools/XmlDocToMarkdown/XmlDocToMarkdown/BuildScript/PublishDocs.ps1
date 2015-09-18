@@ -24,11 +24,17 @@ Write-Host "Copying MkDocs"
 $mkDocs = "C:\Python27\Scripts\mkdocs.exe"
 $mkDocsDest = "C:\projects\dynamo\DynamoAPI"
 
+If(-not(Test-Path -path $mkDocsDest))
+  {  
+	 $mkDocsDest  
+     Write-Host "File does not exists"
+     exit	 
+  }
+
 Copy-Item $mkDocs  $mkDocsDest
 
 Write-Host "Copying mkdocs.yml"
 $ymlLocation = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\bin\Release\mkdocs.yml"
-$ymlDest = "C:\projects\dynamo\DynamoAPI"
 
 If(-not(Test-Path -path $ymlLocation))
   {  
@@ -37,17 +43,15 @@ If(-not(Test-Path -path $ymlLocation))
      exit	 
   }
 
-Copy-Item $ymlLocation  $ymlDest
+Copy-Item $ymlLocation  $mkDocsDest
 
 Write-Host "Copying the docs folder"
 $docLocation = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\bin\Release\docs"
-$docDest = "C:\projects\dynamo\DynamoAPI"
 
-Copy-Item $docLocation  $docDest -recurse
+Copy-Item $docLocation  $mkDocsDest -recurse
 
 Write-Host "Copying Themes folder"
 $themeLoc = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\Theme"
-$themeDest = "C:\projects\dynamo\DynamoAPI"
 
 If(-not(Test-Path -path $themeLoc))
   {  
@@ -56,12 +60,11 @@ If(-not(Test-Path -path $themeLoc))
      exit	 
   }
 
-Copy-Item $themeLoc  $themeDest -recurse
+Copy-Item $themeLoc  $mkDocsDest -recurse
 
 Write-Host "Running MkDocs"
-$mkDocsLoc = "C:\projects\dynamo\DynamoAPI"
 
-Set-Location -Path $mkDocsLoc
+Set-Location -Path $mkDocsDest
 $mkDocsFile = "C:\projects\dynamo\DynamoAPI\mkDocs.exe"
 $mkarg1 = "gh-deploy"
 $mkarg2 = "--clean"

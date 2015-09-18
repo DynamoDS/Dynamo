@@ -79,7 +79,15 @@ namespace Dynamo.DocumentationTestLibrary
          //<summary>
          //Tests the method that has no param set.
          //</summary>       
-        public void TestObject(object o)
+        public void TestMethodWithNoParaminXML(object o)
+        {
+            
+        }
+
+        /// <summary>
+        /// Tests the method without parameters.
+        /// </summary>
+        public void TestMethodWithoutParameters()
         {
             
         }
