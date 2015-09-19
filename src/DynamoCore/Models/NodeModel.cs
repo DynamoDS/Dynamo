@@ -1668,27 +1668,32 @@ namespace Dynamo.Models
             var task = asyncTask as UpdateRenderPackageAsyncTask;
             if (task.RenderPackages.Any())
             {
-                OnRenderPackagesUpdated(task.RenderPackages);
+                var packages = new List<IRenderPackage>();
+                
+                packages.AddRange(task.RenderPackages);
+                packages.AddRange(OnRequestRenderPackages());
 
-                OnRequestRenderPackages();
+                OnRenderPackagesUpdated(packages);
             }
         }
 
-        public delegate void RequestRenderPackageHandler();
-
-        public event RequestRenderPackageHandler RequestRenderPackages;
+        /// <summary>
+        /// 
+        /// </summary>
+        public event Func<IEnumerable<IRenderPackage>> RequestRenderPackages;
 
         /// <summary>
         /// This event handler is invoked when the render packages (specific to this node)  
         /// become available and in addition the node requests for associated render packages 
         /// if any for example, packages used for associated node manipulators
         /// </summary>
-        private void OnRequestRenderPackages()
+        private IEnumerable<IRenderPackage> OnRequestRenderPackages()
         {
             if (RequestRenderPackages != null)
             {
-                RequestRenderPackages();
+                return RequestRenderPackages();
             }
+            return new List<IRenderPackage>();
         }
 
         /// <summary>
