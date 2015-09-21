@@ -220,13 +220,6 @@ namespace Dynamo.Publish.ViewModels
                 return false;
             }
 
-            if (String.IsNullOrWhiteSpace(Description))
-            {
-                UploadStateMessage = Resources.ProvideWorskspaceDescriptionMessage;
-                IsReadyToUpload = false;
-                return false;
-            }
-
             if (!model.HasAuthProvider)
             {
                 UploadStateMessage = Resources.ProvideAuthProviderMessage;
