@@ -201,6 +201,8 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="20" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
@@ -218,11 +220,21 @@
                      Text="{Binding ShareLink, Mode=OneWay}"
                      Style="{StaticResource SDarkTextBox}" />
 
+
+            <Button Name="buttonVisit"
+                    Content="{x:Static resx:Resources.VisitButtonTitle}"
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Width="80"
+                    Style="{StaticResource SBadgeButton}"
+                    VerticalContentAlignment="Center"
+                    Click="OnButtonVisitClick" />
+            
             <Button Name="buttonCopyLink"
                     Content="{x:Static resx:Resources.CopyLinkButtonTitle}"
                     Grid.Row="1"
-                    Grid.Column="2"
-                    Width="100"
+                    Grid.Column="4"
+                    Width="80"
                     Style="{StaticResource SBadgeButton}"
                     VerticalContentAlignment="Center"
                     Click="OnButtonCopyLinkClick" />
