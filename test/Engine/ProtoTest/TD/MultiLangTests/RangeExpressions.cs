@@ -1898,7 +1898,7 @@ b = 0..10..a;
 
         [Test]
         [Category("SmokeTest")]
-        public void AlphabetSequence()
+        public void AlphabetRange()
         {
             string src = @"a1;a2;a3;a4;a5;a6;a7;a8;
 [Imperative]
@@ -1940,7 +1940,7 @@ b = 0..10..a;
         }
 
         [Test, Category("SmokeTest")]
-        public void AlphabetSequenceNegativeTestCases()
+        public void AlphabetRangeNegativeTestCases()
         {
             string src = @"a1;a2;a3;a4;a5;a6;
 [Imperative]
@@ -1963,6 +1963,54 @@ b = 0..10..a;
             thisTest.Verify("a6", null);
 
             thisTest.VerifyRuntimeWarningCount(6);
+        }
+
+        [Test]
+        [Category("SmokeTest")]
+        public void AlphabetSequence()
+        {
+            string src = @"a1;a2;a3;a4;
+[Imperative]
+{
+	a1 = ""a""..#3..2;
+    a2 = ""A""..#3..2;
+    a3 = ""I""..#4..1;
+    a4 = ""z""..#5..1;
+}";
+            ExecutionMirror mirror = thisTest.RunScriptSource(src);
+            List<Object> result = new List<Object> { "a", "c", "e" };
+            Assert.IsTrue(mirror.CompareArrays("a1", result, typeof(String)));
+
+            result = new List<Object> { "A", "C", "E" };
+            Assert.IsTrue(mirror.CompareArrays("a2", result, typeof(String)));
+
+            result = new List<Object> { "I", "J", "K", "L" };
+            Assert.IsTrue(mirror.CompareArrays("a3", result, typeof(String)));
+
+            result = new List<Object> { "z" };
+            Assert.IsTrue(mirror.CompareArrays("a4", result, typeof(String)));
+        }
+
+        [Test]
+        [Category("SmokeTest")]
+        public void AlphabetSequenceNegativeTestCases()
+        {
+            string src = @"a1;a2;a3;a4;
+[Imperative]
+{
+	a1 = ""л""..#3..2;
+    a2 = ""A""..#3..-1;
+    a3 = ""I""..#-5..1;
+    a4 = ""z""..#0..1;
+}";
+            thisTest.RunScriptSource(src);
+
+            thisTest.Verify("a1", null);
+            thisTest.Verify("a2", null);
+            thisTest.Verify("a3", null);
+            thisTest.Verify("a4", new List<Object>());
+
+            thisTest.VerifyRuntimeWarningCount(3);
         }
     }
 }
