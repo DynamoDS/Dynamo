@@ -133,7 +133,7 @@
 
                 <TextBox Name="SearchTextBox"
                          KeyboardNavigation.TabIndex="0"
-                         Foreground="#231F20"
+                         Foreground="{StaticResource SearchBoxBackgroundColor}"
                          Background="Transparent"
                          BorderThickness="0"
                          FontSize="14"
