@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.Controls;
@@ -21,6 +22,14 @@ namespace Dynamo.Wpf.Extensions
         private readonly DynamoView dynamoView;
         private readonly DynamoViewModel dynamoViewModel;
         public readonly Menu dynamoMenu;
+
+        public Window DynamoWindow
+        {
+            get
+            {
+                return dynamoView;
+            }
+        }
 
         internal ViewLoadedParams(DynamoView dynamoV, DynamoViewModel dynamoVM) :
             base(dynamoVM.Model)
