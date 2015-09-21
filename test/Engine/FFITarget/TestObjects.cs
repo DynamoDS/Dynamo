@@ -86,6 +86,44 @@ namespace FFITarget
         }
     }
 
+    public class TestObjectC : IDisposable
+    {
+        public int z { get; set; }
+
+        public TestObjectC()
+        {
+        }
+
+        public TestObjectC(int x1, int x2)
+        {
+            z = x1 + x2;
+        }
+
+        public void Dispose()
+        {
+            //Don't do anything
+        }
+    }
+
+    public class TestObjectD : IDisposable
+    {
+        public int t { get; set; }
+
+        public TestObjectD()
+        {
+        }
+
+        public TestObjectD(int x1, int x2, double x3)
+        {
+            t = x1 + x2 + (int)x3;
+        }
+
+        public void Dispose()
+        {
+            //Don't do anything
+        }
+    }
+
     public class Integer : IDisposable
     {
         public int value { get; set; }

@@ -6,7 +6,7 @@ using ProtoCore.Lang;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.Associative
 {
-    class ReplicationGuide : ProtoTestBase
+    public class ReplicationGuide : ProtoTestBase
     {
         [Test]
         [Category("Replication")]
@@ -117,12 +117,12 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T0001_Replication_Guide_Function_With_2_Arg_9()
         {
             String code =
-@"class A{    x:int;    constructor A (x1)    {        x = x1;    }}def foo(a:A,b:A){    return = a.x + b.x;}x = A.A({0,1});y = A.A({2,3});test = foo( x<1>,y<2> );";
+@"import(""FFITarget.dll"");def foo(a:TestObjectA, b:TestObjectA){    return = a.a + b.a;}x = TestObjectA.TestObjectA({0,1});y = TestObjectA.TestObjectA({2,3});test = foo( x<1>,y<2> );";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -313,12 +313,12 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T0003_Replication_Guide_Class_Constructor_With_2_Arg_1()
         {
             String code =
-@"class A{    z:int;    constructor A (x1,y1)    {        z = x1 + y1;    }}test = A.A({0,1}<1>,{2,3}<2>).z;";
+@"import(""FFITarget.dll"");test = TestObjectC.TestObjectC({0,1}<1>,{2,3}<2>).z;";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -327,12 +327,12 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T0003_Replication_Guide_Class_Constructor_With_2_Arg_2()
         {
             String code =
-@"class A{    z:int;    constructor A (x1,y1)    {        z = x1 + y1;    }}test = A.A((0..1)<1>,(2..3)<2>).z;";
+@"import(""FFITarget.dll"");test = TestObjectC.TestObjectC((0..1)<1>,(2..3)<2>).z;";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -340,12 +340,12 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T0003_Replication_Guide_Class_Constructor_With_2_Arg_3()
         {
             String code =
-@"class A{    z:int;    constructor A (x1,y1)    {        z = x1 + y1;    }}x = {0,1};y = {2,3};test = A.A(x<1>,y<2>).z;";
+@"import(""FFITarget.dll"");x = {0,1};y = {2,3};test = TestObjectC.TestObjectC(x<1>,y<2>).z;";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -353,13 +353,13 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test] //post R1
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         [Category("Failure")]
         public void T0003_Replication_Guide_Class_Constructor_With_2_Arg_4()
         {
             String code =
-@"class A{    z:int;    constructor A (x1,y1)    {        z = x1 + y1;    }}x = {0,1};y = 2;test = A.A(x<1>,y<2>).z;";
+@"import(""FFITarget.dll"");x = {0,1};y = 2;test = TestObjectC.TestObjectC(x<1>,y<2>).z;";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "DNL-1467459 NotImplemented Exception occurs when replication guides are used on a combination of collection and singleton";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -367,12 +367,12 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T0004_Replication_Guide_Class_Constructor_With_3_Arg()
         {
             String code =
-@"class A{    t:int;    constructor A (x1:var,y1:int,z1:double)    {        t = x1 + y1 + z1;    }}x = {0,1};y = {2,3};z = {4,5};test = A.A(x<1>,y<2>,z<3>).t;";
+@"import(""FFITarget.dll"");x = {0,1};y = {2,3};z = {4,5};test = TestObjectD.TestObjectD(x<1>,y<2>,z<3>).t;";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -381,12 +381,12 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T0004_Replication_Guide_Class_Constructor_With_3_Arg_2()
         {
             String code =
-@"class A{    t:int;    constructor A (x1:var,y1:int,z1:double)    {        t = x1 + y1 + z1;    }}x = {0,1};y = {2,3};z = {4,5};test = A.A(x<1>,y<2>,z<1>).t;";
+@"import(""FFITarget.dll"");x = {0,1};y = {2,3};z = {4,5};test = TestObjectD.TestObjectD(x<1>,y<2>,z<1>).t;";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -396,13 +396,13 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         [Category("Failure")]
         public void T0004_Replication_Guide_Class_Constructor_With_3_Arg_3()
         {
             String code =
-@"class A{    t:int;    constructor A (x1:var,y1:int,z1:double)    {        t = x1 + y1 + z1;    }}x = {0,1};y = {2,3};z = {4,5};test = A.A(x<1>,y<2>,z).t;";
+@"import(""FFITarget.dll"");x = {0,1};y = {2,3};z = {4,5};test = TestObjectD.TestObjectD(x<1>,y<2>,z).t;";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "DNL-1467580 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -433,30 +433,28 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T033_Replication_Guide_1467383()
         {
             String code =
-                @"                class BSplineSurface                    {                            static def ByPoints(pts : Point)                        {                                return = pts;                        }                    }                    class Point                    {                        X;                        Y;                        constructor ByCoordinates(x:double,y:double)                        {                            X = x;                            Y = y;                            }                    }                    p = Point.ByCoordinates((1..2..1)<1>, (3..4..1)<2> );                    test = BSplineSurface.ByPoints(p).X;                                    ";
+@"import(""FFITarget.dll"");def ByPoints(pts : DummyPoint2D){    return = pts;}p = DummyPoint2D.ByCoordinates((1..2..1)<1>, (3..4..1)<2> );test = ByPoints(p).X;";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//1467383 - Validation Required -  [USER MANUAL] Select Trim Method Failure - Requested Coercion not implemented ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.VerifyBuildWarningCount(0);
             thisTest.Verify("test", new Object[] { new Object[] { 1.0, 1.0 }, new Object[] { 2.0, 2.0 } });
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T033_Replication_Guide_1467382()
         {
             String code =
-                @"                                    class Point                    {                        X;                        Y;                        Z;                       constructor ByCoordinates(x1:double,y1:double,z1:double)                        {                            X = x1;                            Y = y1;                            Z = z1;                        }                    }                    class Line                    {                        static def ByStartPointEndPoint(p1:Point, p2:Point)                        {                            return = p1;                        }                       }                    height = 5;                    p1 = Point.ByCoordinates((0..1)<1>, (0..1)<2>,1);                    p2 = Point.ByCoordinates((0..1)<1>, (0..1)<2>,height);                    l = Line.ByStartPointEndPoint(p1, p2);                    test = l.X;                ";
+                @"import(""FFITarget.dll"");def ByStartPointEndPoint(p1:DummyPoint, p2:DummyPoint){    return = p1;}height = 5;p1 = DummyPoint.ByCoordinates((0..1)<1>, (0..1)<2>,1);p2 = DummyPoint.ByCoordinates((0..1)<1>, (0..1)<2>,height);l = ByStartPointEndPoint(p1, p2);test = l.X;                ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.VerifyBuildWarningCount(0);
             thisTest.Verify("test", new Object[] { new Object[] { 0.0, 0.0 }, new Object[] { 1.0, 1.0 } });
         }
 
@@ -565,26 +563,25 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T034_Replication_Guides_Not_On_All_Arguments_6()
         {
             String code =
-@"class A{    x : int;    y : int;    constructor A (a, b)    {        x = a;        y = b;    }}x1 = 1..2;y1 = 1;a = A.A(y1, x1<1>);test = a.y;";
+@"import(""FFITarget.dll"");x1 = 1..2;y1 = 1;a = DummyPoint2D.ByCoordinates(y1, x1<1>);test = a.Y;";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467386 Rev 4247 : WARNING: Replication unbox requested on Singleton warning coming from using replication guides on only some, not all arguments of a function gives incorrect output";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.VerifyBuildWarningCount(0);
             thisTest.Verify("test", new Object[] { 1, 2 });
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T034_Replication_Guides_Not_On_All_Arguments_7()
         {
             String code =
-@"class A{    x : int;    y : int;        def foo ( a, b)    {        x = a;        y = b;        return = x + y;    }}x1 = 1..2;y1 = 1;a = A.A();dummy = a.foo(y1, x1);";
+@"def foo ( a, b){    x = a;    y = b;    return = x + y;}x1 = 1..2;y1 = 1;dummy = foo(y1, x1);";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467386 Rev 4247 : WARNING: Replication unbox requested on Singleton warning coming from using replication guides on only some, not all arguments of a function gives incorrect output";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -593,16 +590,15 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T034_Replication_Guides_Not_On_All_Arguments_8()
         {
             String code =
-@"class A{   z : double;   x : double;   y : double;      constructor A( z1, x1, y1)   {       z = z1;       x = x1;       y = y1;	      }}a = (0..1..#2);//a = { 0, 1}; // fails with this as well//a = 0..1..#2; // fails with this as wellcs = A.A(1, a<1>, a<2>); //cs = A.A(1, { 0, 1 }<1>, { 0, 1 }<2>); //no warnign with this, but expected output : { { 0,0 }, { 1,1} }test = cs.x;";
+@"import(""FFITarget.dll"");a = (0..1..#2);cs = DummyPoint.ByCoordinates(1, a<1>, a<2>); test = cs.X;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "";//DNL-1467386 Rev 4247 : WARNING: Replication unbox requested on Singleton warning coming from using replication guides on only some, not all arguments of a function gives incorrect output";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.VerifyBuildWarningCount(0);
+            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, "");
             thisTest.Verify("test", new Object[] { new Object[] { 0.0, 0.0 }, new Object[] { 1.0, 1.0 } });
         }
 
@@ -621,7 +617,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T034_Replication_Guides_Not_On_All_Arguments_8_a()
         {
@@ -629,21 +625,20 @@ namespace ProtoTest.TD.Associative
             //Analysis: The Rep Guides are being resolved to C0C1, rather than C1C2. This needs to
             //have the fix applied for function calls applied to ctors as well.
             String code =
-@"class A{   z : double;   x : double;   y : double;      constructor A( z1, x1, y1)   {       z = z1;       x = x1;       y = y1;	      }}a = (0..1..#2);b = { 0, 1}; // fails with this as well//a = 0..1..#2; // fails with this as wellcs = A.A(1, a<1>, b<2>); //cs = A.A(1, { 0, 1 }<1>, { 0, 1 }<2>); //no warnign with this, but expected output : { { 0,0 }, { 1,1} }test = cs.x;";
+@"import(""FFITarget.dll"");a = (0..1..#2);b = { 0, 1}; // fails with this as wellcs = DummyPoint.ByCoordinates(1, a<1>, b<2>); test = cs.X;";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "";//DNL-1467386 Rev 4247 : WARNING: Replication unbox requested on Singleton warning coming from using replication guides on only some, not all arguments of a function gives incorrect output";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.VerifyBuildWarningCount(0);
+            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code);
             thisTest.Verify("test", new Object[] { new Object[] { 0.0, 0.0 }, new Object[] { 1.0, 1.0 } });
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T035_Defect_1467317_Replication_Guide_On_Instances()
         {
             String code =
-@"class A{    x : var[];    constructor A()    {        x = {1,2};    }}a = A.A();b = A.A();test = a.x<1> + b.x<2>;";
+@"import(""FFITarget.dll"");a = ArrayMember({1,2});b = ArrayMember({1,2});test = a.X<1> + b.X<2>;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -652,12 +647,13 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T035_Defect_1467317_Replication_Guide_On_Instances_2()
         {
             String code =
-@"class A{    x : var[];    constructor A()    {        x = {1,2};    }}def foo (){    a = A.A();    b = A.A();    test1 = a.x<1> + b.x<2>;    return = test1;}test = foo();";
+@"import(""FFITarget.dll"");def foo (){    a = ArrayMember({1,2});    b = ArrayMember({1,2});    test = a.X<1> + b.X<2>;    return = test;}test = foo();
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -666,12 +662,12 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T035_Defect_1467317_Replication_Guide_On_Instances_3()
         {
             String code =
-@"class A{    x : var[];    constructor A()    {        x = {1,2};    }}test = { { } };test2 = [Associative]{    test2 = { } ;    [Imperative]    {        a = A.A();        b = A.A();        [Associative]        {            test = a.x<1> + b.x<2>;            test2 = a.x + b.x;        }    }    return = test2;}";
+@"import(""FFITarget.dll"");test = { { } };test2 = [Associative]{    test2 = { } ;    [Imperative]    {        a = ArrayMember({1,2});        b = ArrayMember({1,2});        [Associative]        {            test = a.X<1> + b.X<2>;            test2 = a.X + b.X;        }    }    return = test2;}";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -681,12 +677,12 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T036_Defect_1467383_Replication_Guide_On_Collection()
         {
             String code =
-@"class Point{    X;    Y;    constructor ByCoordinates(x:double,y:double)    {        X = x;        Y = y;        }}p = Point.ByCoordinates((1..2..1)<1>, (3..4..1)<2> ).X;";
+@"import(""FFITarget.dll"");p = DummyPoint2DPoint.ByCoordinates((1..2..1)<1>, (3..4..1)<2> ).X;";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -727,22 +723,23 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T037_ReplicationGuidebrackets_1467328_3()
         {
-            string code = @"           class A           {                a;                constructor A(i)                {                    a = i;                }           }            x = (A.A(1..3))[0];            x = (A.A(1..3))[0..2].a<1> +(A.A(1..3))[0..2].a<2> ;";
+            string code = @"import(""FFITarget.dll"");x = (TestObjectA.TestObjectA(1..3))[0];x = (TestObjectA.TestObjectA(1..3))[0..2].a<1> +(A.A(1..3))[0..2].a<2> ;
+";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("x", new object[] { new object[] { 2, 3, 4 }, new object[] { 3, 4, 5 }, new object[] { 4, 5, 6 } });
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T037_ReplicationGuidebrackets_1467328_4()
         {
-            string code = @"            class A            {                a;                constructor A(i)                {                    a = i;                }            }            x = (A.A(1..3))[0];            x = (A.A(1..3))[0..2].a<1> +(A.A(1..3))[0..2].a<2> ;";
+            string code = @"import(""FFITarget.dll"");            x = (TestObjectA.TestObjectA(1..3))[0];            x = (TestObjectA.TestObjectA(1..3))[0..2].a<1> +(A.A(1..3))[0..2].a<2> ;";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("x", new object[] { new object[] { 2, 3, 4 }, new object[] { 3, 4, 5 }, new object[] { 4, 5, 6 } });
