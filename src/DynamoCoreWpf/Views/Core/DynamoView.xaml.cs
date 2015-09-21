@@ -1010,28 +1010,30 @@ namespace Dynamo.Controls
         // passes it to thecurrent workspace
         void DynamoView_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key != Key.Escape || !IsMouseOver || !e.IsRepeat) return;
-
-            dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown = true;
-            e.Handled = true;
+            if (e.Key == Key.Escape && this.IsMouseOver)
+            {
+                dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown = true;
+                e.Handled = true;
+            }
         }
 
         void DynamoView_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key != Key.Escape || !dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground) return;
-
-            dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown = false;
-            dynamoViewModel.EscapeCommand.Execute(null);
-            e.Handled = true;
+            if (e.Key == Key.Escape && dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground)
+            {
+                dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown = false;
+                dynamoViewModel.EscapeCommand.Execute(null);
+                e.Handled = true;
+            }
         }
 
         void DynamoView_LostFocus(object sender, EventArgs e)
         {
-            //if (dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown)
-            //{
-            //    dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown = false;
-            //    dynamoViewModel.EscapeCommand.Execute(null);
-            //}
+            if (dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown)
+            {
+                dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown = false;
+                dynamoViewModel.EscapeCommand.Execute(null);
+            }
         }
 
         private void WorkspaceTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
