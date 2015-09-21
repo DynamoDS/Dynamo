@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Autodesk.DesignScript.Interfaces;
 using Dynamo.Controls;
 using Dynamo.UI.Controls;
 using Dynamo.ViewModels;
@@ -51,6 +52,16 @@ namespace Dynamo.Wpf.Extensions
         {
             if (SelectionCollectionChanged != null)
                 SelectionCollectionChanged(notifyCollectionChangedEventArgs);
+        }
+
+        public void OnRequestCreateModels(IEnumerable<IRenderPackage> packages)
+        {
+            dynamoViewModel.BackgroundPreviewViewModel.OnRequestCreateModels(packages);
+        }
+
+        public void OnRequestDeleteModels(string identifier)
+        {
+            dynamoViewModel.BackgroundPreviewViewModel.DeleteGeometryForIdentifier(identifier);
         }
 
         private void AddItemToMenu(MenuBarType type, Control itemToAdd, int index)

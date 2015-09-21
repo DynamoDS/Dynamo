@@ -60,7 +60,7 @@ namespace Dynamo.Controls
             get { return watch_view; }
         }
 
-        public HelixWatch3DViewModel ViewModel { get; private set; }
+        internal HelixWatch3DViewModel ViewModel { get; private set; }
 
         #endregion
 
