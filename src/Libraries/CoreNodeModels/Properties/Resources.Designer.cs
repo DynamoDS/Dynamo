@@ -862,24 +862,6 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creates a sequence of numbers..
-        /// </summary>
-        internal static string NumberSequenceDescription {
-            get {
-                return ResourceManager.GetString("NumberSequenceDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to numbersequence;.
-        /// </summary>
-        internal static string NumberSequenceSearchTags {
-            get {
-                return ResourceManager.GetString("NumberSequenceSearchTags", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Boolean OR: Returns true if either of the inputs are true. If neither are true, returns false..
         /// </summary>
         internal static string OrDescription {
@@ -1209,6 +1191,24 @@ namespace DSCoreNodesUI.Properties {
         internal static string SelectionPortDataResultToolTip {
             get {
                 return ResourceManager.GetString("SelectionPortDataResultToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creates a sequence of numbers..
+        /// </summary>
+        internal static string SequenceDescription {
+            get {
+                return ResourceManager.GetString("SequenceDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to numbersequence;.
+        /// </summary>
+        internal static string SequenceSearchTags {
+            get {
+                return ResourceManager.GetString("SequenceSearchTags", resourceCulture);
             }
         }
         

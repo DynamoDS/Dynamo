@@ -376,7 +376,7 @@
     <value>Creates a sequence of numbers or letters in the specified range.</value>
     <comment>Description for Number Range</comment>
   </data>
-  <data name="NumberSequenceDescription" xml:space="preserve">
+  <data name="SequenceDescription" xml:space="preserve">
     <value>Creates a sequence of numbers.</value>
     <comment>Description for Number Sequence</comment>
   </data>
@@ -557,7 +557,7 @@
   <data name="RangeSearchTags" xml:space="preserve">
     <value>numberrange;numbersequence;</value>
   </data>
-  <data name="NumberSequenceSearchTags" xml:space="preserve">
+  <data name="SequenceSearchTags" xml:space="preserve">
     <value>numbersequence;</value>
   </data>
   <data name="SelectionEdgeOutputPortName" xml:space="preserve">
