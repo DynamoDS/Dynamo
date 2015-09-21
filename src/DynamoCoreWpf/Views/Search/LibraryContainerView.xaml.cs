@@ -32,11 +32,6 @@ namespace Dynamo.Search
         private BitmapImage searchIconBitmapHover =
             new BitmapImage(new Uri(baseUrl + "search_hover.png"));
 
-        private SolidColorBrush searchForegroundBrushNormal =
-            new SolidColorBrush((Color)ColorConverter.ConvertFromString("#878787"));
-        private SolidColorBrush searchForegroundBrushHover =
-            new SolidColorBrush((Color)ColorConverter.ConvertFromString("#AAAAAA"));
-
         public SearchView(SearchViewModel searchViewModel, DynamoViewModel dynamoViewModel)
         {
             viewModel = searchViewModel;
@@ -58,9 +53,6 @@ namespace Dynamo.Search
                     SearchTextBlock.Text = Properties.Resources.SearchTextBlockText;
                 }
             };
-
-            searchForegroundBrushNormal.Freeze();
-            searchForegroundBrushHover.Freeze();
         }
 
         private void OnSearchViewUnloaded(object sender, EventArgs e)
@@ -311,14 +303,12 @@ namespace Dynamo.Search
         private void OnSearchTextBoxGridMouseEnter(object sender, MouseEventArgs e)
         {
             SearchIcon.Source = searchIconBitmapHover;
-            SearchTextBlock.Foreground = searchForegroundBrushHover;
             SearchTextBlock.Text = Properties.Resources.SearchTextBlockText;
         }
 
         private void OnSearchTextBoxGridMouseLeave(object sender, MouseEventArgs e)
         {
             SearchIcon.Source = searchIconBitmapNormal;
-            SearchTextBlock.Foreground = searchForegroundBrushNormal;
             SearchTextBlock.Text = Properties.Resources.SearchTextBlockText;
         }
 

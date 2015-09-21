@@ -653,7 +653,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     OnClear();
                     foreach (var node in model.CurrentWorkspace.Nodes)
                     {
-                        node.IsUpdated = true;
                         node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
                     }
                     break;
