@@ -1049,49 +1049,35 @@ namespace ProtoCore.Lang
                                                    StackValue svHasAmountOp,
                                                    RuntimeCore runtimeCore)
         {
-            // If start parameter is not the same as end parameter, show warning.
-            if (!((svStart.IsNumeric && svEnd.IsNumeric)
-                  ||
-                  (svStart.IsString && svEnd.IsString)))
-            {
-                runtimeCore.RuntimeStatus.LogWarning(
-                    WarningID.kInvalidArguments, 
-                    Resources.kInvalidArgumentsInRangeExpression);
-                return StackValue.Null;
-            }
-
             bool hasStep = svHasStep.IsBoolean && svHasStep.RawBooleanValue;
             bool hasAmountOp = svHasAmountOp.IsBoolean && svHasAmountOp.RawBooleanValue;
 
-            if (hasAmountOp)
-            {
-                if (!svEnd.IsNumeric)
-                {
-                    runtimeCore.RuntimeStatus.LogWarning(
-                        WarningID.kInvalidArguments, 
-                        Resources.kInvalidAmountInRangeExpression);
-                    return StackValue.Null;
-                }
-                else if (!hasStep)
-                {
-                    runtimeCore.RuntimeStatus.LogWarning(
-                        WarningID.kInvalidArguments, 
-                        Resources.kNoStepSizeInAmountRangeExpression);
-                    return StackValue.Null;
-                }
-            }
-
-            if (svStep.IsNull && hasStep)
+            // If start parameter is not the same as end parameter, show warning.
+            // If start parameter is not number/string and it's not amount op, show warning.
+            if (!((svStart.IsNumeric && svEnd.IsNumeric)
+                  ||
+                  (svStart.IsString && svEnd.IsString))
+                  &&
+                  (!hasAmountOp))
             {
                 runtimeCore.RuntimeStatus.LogWarning(
                     WarningID.kInvalidArguments, 
                     Resources.kInvalidArgumentsInRangeExpression);
                 return StackValue.Null;
             }
-            else if (!svStep.IsNull && !svStep.IsNumeric)
+
+            if (hasAmountOp && !hasStep)
             {
                 runtimeCore.RuntimeStatus.LogWarning(
-                    WarningID.kInvalidArguments, 
+                    WarningID.kInvalidArguments,
+                    Resources.kNoStepSizeInAmountRangeExpression);
+                return StackValue.Null;
+            }
+
+            if ((svStep.IsNull && hasStep) || (!svStep.IsNull && !svStep.IsNumeric))
+            {
+                runtimeCore.RuntimeStatus.LogWarning(
+                    WarningID.kInvalidArguments,
                     Resources.kInvalidArgumentsInRangeExpression);
                 return StackValue.Null;
             }
@@ -1111,13 +1097,22 @@ namespace ProtoCore.Lang
             }
             else
             {
-                if (svStart.IsString)
+                if (svStart.IsString && !hasAmountOp)
                 {
                     range = GenerateAlphabetRange(
                     svStart,
                     svEnd,
                     svStep,                   
                     runtimeCore);
+                }
+                else if (svStart.IsString && hasAmountOp)
+                {
+                    range = GenerateAlphabetSequence(
+                        svStart,
+                        svEnd,
+                        svStep,
+                        svOp,                        
+                        runtimeCore);
                 }
             }
 
@@ -1273,6 +1268,71 @@ namespace ProtoCore.Lang
                 // Create stack values.
                  .Select(x => StackValue.BuildString(Char.ToString((char)x), runtimeCore.Heap))
                  .ToArray();
+
+            return letters;
+        }
+
+        private static StackValue[] GenerateAlphabetSequence(StackValue svStart, StackValue svEnd, StackValue svStep, StackValue svOp, RuntimeCore runtimeCore)
+        {
+            if (!svStart.IsString || !svEnd.IsInteger || !svStep.IsInteger)
+            {
+                runtimeCore.RuntimeStatus.LogWarning(
+                    WarningID.kInvalidArguments,
+                    Resources.kInvalidArgumentsInRangeExpression);
+                return null;
+            }
+
+            var startValue = runtimeCore.Heap.ToHeapObject<DSString>(svStart).Value;
+            var amount = Convert.ToInt32(svEnd.RawIntValue);
+            var step = Convert.ToInt32(svStep.RawIntValue);
+
+            // Start and end values can be just alphabet letters. So their length can't be more than 1.
+            if (startValue.Length != 1)
+            {
+                runtimeCore.RuntimeStatus.LogWarning(
+                    WarningID.kInvalidArguments,
+                    Resources.kInvalidArgumentsInRangeExpression);
+                return null;
+            }
+
+            if (amount < 0)
+            {
+                runtimeCore.RuntimeStatus.LogWarning(
+                   WarningID.kInvalidArguments,
+                   Resources.kInvalidAmountInRangeExpression);
+                return null;
+            }
+
+            if (step <= 0)
+            {
+                runtimeCore.RuntimeStatus.LogWarning(
+                   WarningID.kInvalidArguments,
+                   Resources.kRangeExpressionWithNegativeStepNumber);
+                return null;
+            }
+
+            var startLetter = startValue.ToCharArray().First();
+
+            // Alphabet sequence can be made just from letters (that are not unicode).
+            if (!Char.IsLetter(startLetter) || startLetter > 255)
+            {
+                runtimeCore.RuntimeStatus.LogWarning(
+                    WarningID.kInvalidArguments,
+                    Resources.kInvalidArgumentsInRangeExpression);
+                return null;
+            }
+
+            StackValue[] letters;
+
+            letters = Enumerable.Range(1, amount)
+                // Generate arithmetic progression.
+                 .Select(x => startLetter + (x - 1) * step)
+                // Take just letters.
+                 .Where(x => Char.IsLetter((char)x))
+                // Create stack values.
+                 .Select(x => StackValue.BuildString(Char.ToString((char)x), runtimeCore.Heap))
+                 .ToArray();
+
 
             return letters;
         }
