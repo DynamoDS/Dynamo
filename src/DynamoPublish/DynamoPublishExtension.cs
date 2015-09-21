@@ -75,7 +75,7 @@ namespace Dynamo.Publish
 
         public void Dispose()
         {
-            loadedParams.CurrentWorkspaceChanged += CurrentWorkspaceChanged;
+            loadedParams.CurrentWorkspaceChanged -= CurrentWorkspaceChanged;
 
             ClearMenuItem(extensionMenuItem, inviteMenuItem, manageCustomizersMenuItem, separator);
         }
