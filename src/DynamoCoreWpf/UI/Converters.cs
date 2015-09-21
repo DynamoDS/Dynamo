@@ -2583,40 +2583,7 @@ namespace Dynamo.Controls
             }
 
         }
-
-        /// <summary>
-        /// If the Create, Action, Query has less items, then display only the first character.
-        /// </summary>
-        public class TreeViewListBoxTitleConverter : IMultiValueConverter
-        {
-            public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
-            {
-                var headerStrip = values[0] as HeaderStrip;                
-                var listMembers = values[1] as ListBox;
-                                              
-                if (headerStrip != null && listMembers != null
-                    && headerStrip.HeaderStripItems != null)
-                {
-                    var headerStripItem = headerStrip.HeaderStripItems.FirstOrDefault();
-                    if (headerStripItem != null)
-                    {
-                        if (listMembers.Items.Count < 2)
-                        {
-                            headerStripItem.Text = headerStripItem.Text.Substring(0, 1);                           
-                        }
-                    }
-                }
-               
-                return new Thickness(0, 0, 0, 0);
-            }
-
-            public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
-            {
-                throw new NotImplementedException();
-            }
-
-        }
-
+       
         /// <summary>
         /// This converter sets the margin for inner elements. Inner elements (e.g Core - File)
         /// should have the margin close to the expander. 
