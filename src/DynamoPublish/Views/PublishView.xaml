@@ -225,7 +225,7 @@
                     Content="{x:Static resx:Resources.VisitButtonTitle}"
                     Grid.Row="1"
                     Grid.Column="2"
-                    Width="80"
+                    Width="50"
                     Style="{StaticResource SBadgeButton}"
                     VerticalContentAlignment="Center"
                     Command="{Binding VisitCommand}" />
@@ -234,7 +234,7 @@
                     Content="{x:Static resx:Resources.CopyLinkButtonTitle}"
                     Grid.Row="1"
                     Grid.Column="4"
-                    Width="80"
+                    Width="70"
                     Style="{StaticResource SBadgeButton}"
                     VerticalContentAlignment="Center"
                     Command="{Binding CopyLinkCommand}"
