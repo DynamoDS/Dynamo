@@ -175,7 +175,16 @@
 
             </Grid>
 
-            <ListBox Name="SearchResultsListBox" ItemsSource="{Binding Path=SearchResults}" ScrollViewer.VerticalScrollBarVisibility="Visible" BorderThickness="0" Padding="0" Background="Black" Grid.Column="0" Grid.Row="1" SelectedIndex="{Binding Path=SelectedIndex}">
+            <ListBox Name="SearchResultsListBox"
+                     ItemsSource="{Binding Path=SearchResults}"
+                     ScrollViewer.VerticalScrollBarVisibility="Visible"
+                     BorderThickness="0"
+                     Padding="0"
+                     Background="Black"
+                     Grid.Column="0"
+                     Grid.Row="1"
+                     SelectedIndex="{Binding Path=SelectedIndex}"
+                     VirtualizingPanel.ScrollUnit="Pixel">
 
                 <ListBox.Resources>
                     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
@@ -324,18 +333,8 @@
 
                                     <StackPanel Orientation="Horizontal" Margin="10,10,0,10">
                                         <TextBlock FontSize="11" FontWeight="Bold" Text="{x:Static p:Resources.PackageSearchViewVersions}" Foreground="WhiteSmoke"  Padding="0,0,5,0"/>
-                                        <ListBox Name="Versions" ItemsSource="{Binding Path=Versions}" BorderThickness="0" Padding="0" Margin="10,0,0,0" Background="Transparent" >
-
-                                            <ListBox.ItemContainerStyle>
-                                                <Style TargetType="ListBoxItem">
-                                                    <Style.Resources>
-                                                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#000"/>
-                                                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#000" />
-                                                    </Style.Resources>
-                                                </Style>
-                                            </ListBox.ItemContainerStyle>
-
-                                            <ListBox.ItemTemplate >
+                                        <ItemsControl Name="Versions" ItemsSource="{Binding Path=Versions}" BorderThickness="0" Padding="0" Margin="10,0,0,0" Background="Transparent" >
+                                            <ItemsControl.ItemTemplate >
                                                 <DataTemplate>
                                                     <StackPanel Orientation="Horizontal">
                                                         <TextBlock Text="{Binding Path=Item1.version}" MinWidth="50" Margin="5"  Foreground="WhiteSmoke" />
@@ -370,9 +369,9 @@
 
                                                     </StackPanel>
                                                 </DataTemplate>
-                                            </ListBox.ItemTemplate>
+                                            </ItemsControl.ItemTemplate>
 
-                                        </ListBox>
+                                        </ItemsControl>
                                     </StackPanel>
 
                                     <Button Name="SiteButton" Content="{x:Static p:Resources.PackageSearchViewVisitWebSiteButton}" Visibility="{Binding Path=Model.SiteUrl, Converter={StaticResource EmptyStringToCollapsedConverter}}" Command="{Binding Path=VisitSiteCommand}" Style="{StaticResource SBadgeButton}" />

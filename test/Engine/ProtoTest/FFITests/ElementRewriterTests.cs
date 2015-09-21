@@ -573,6 +573,34 @@ namespace ProtoTest.FFITests
         }
 
         [Test]
+        public void LookupResolvedName_ForAssociativeBlock_RewriteAst()
+        {
+            var code =
+                "c = [Associative]" +
+                "{" +
+                "   a = {1, 2, 3, 4};" +
+                "   b = Autodesk.Point.ByCoordinates(a);" +
+                "   return = b;" +
+                "}";
+
+            var elementResolver = new ElementResolver();
+            elementResolver.AddToResolutionMap("Autodesk.Point", "Autodesk.DesignScript.Geometry.Point", 
+                "Protogeometry.dll");
+
+            var astNodes = CoreUtils.BuildASTList(core, code);
+            var newNodes = ElementRewriter.RewriteElementNames(core.ClassTable, elementResolver, astNodes).ToList();
+
+            var lbn = ((BinaryExpressionNode)newNodes[0]).RightNode as LanguageBlockNode;
+            Assert.IsNotNull(lbn);
+
+            var cbn = lbn.CodeBlockNode as CodeBlockNode;
+            Assert.IsNotNull(cbn);
+
+            Assert.AreEqual("b = Autodesk.DesignScript.Geometry.Point.ByCoordinates(a);\n",
+                cbn.Body[1].ToString());
+        }
+
+        [Test]
         public void SkipResolvingName_ForPrimitiveTypedIdentifier_RetainAst()
         {
             var astNodes = CoreUtils.BuildASTList(core, "p : int;");

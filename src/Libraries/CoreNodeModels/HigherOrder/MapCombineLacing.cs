@@ -557,4 +557,47 @@ namespace DSCore
             };
         }
     }
+
+    [NodeName("GroupByKey")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
+    [NodeDescription("ListGroupByKeyDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("ListGroupByKeySearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [IsDesignScriptCompatible]
+    public class GroupByKey : NodeModel
+    {
+        public GroupByKey()
+        {
+            InPortData.Add(new PortData("list", Resources.ListGroupByKeyListTooltip));
+            InPortData.Add(new PortData("keys", Resources.ListGroupByKeyKeysTooltip));
+
+            OutPortData.Add(new PortData("groups", Resources.ListGroupByKeyGroupsTooltip));
+            OutPortData.Add(new PortData("unique keys", Resources.ListGroupByKeyUniqueKeysTooltip));
+
+            RegisterAllPorts();
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(
+            List<AssociativeNode> inputAstNodes)
+        {
+            var packedId = "__temp" + GUID.ToString().Replace("-", "");
+            return new[]
+            {
+                AstFactory.BuildAssignment(
+                    AstFactory.BuildIdentifier(packedId),
+                    AstFactory.BuildFunctionCall("__GroupByKey", inputAstNodes)),
+                AstFactory.BuildAssignment(
+                    GetAstIdentifierForOutputIndex(0),
+                    new IdentifierNode(packedId)
+                    {
+                        ArrayDimensions = new ArrayNode { Expr = AstFactory.BuildIntNode(0) }
+                    }),
+                AstFactory.BuildAssignment(
+                    GetAstIdentifierForOutputIndex(1),
+                    new IdentifierNode(packedId)
+                    {
+                        ArrayDimensions = new ArrayNode { Expr = AstFactory.BuildIntNode(1) }
+                    })
+            };
+        }
+    }
 }
