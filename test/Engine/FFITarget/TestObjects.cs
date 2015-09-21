@@ -61,6 +61,11 @@ namespace FFITarget
             a = a1;
         }
 
+        public void Set(int a1)
+        {
+            a = a1;
+        }
+
         public void Dispose()
         {
             //Don't do anything
