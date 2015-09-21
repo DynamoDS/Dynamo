@@ -6,6 +6,9 @@ using SharpDX.Direct3D11;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
+    /// <summary>
+    /// A struct describing the layout of a point vertex for Dynamo.
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 4)]
     public struct DynamoPointVertex
     {

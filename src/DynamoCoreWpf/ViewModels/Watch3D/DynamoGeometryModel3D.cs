@@ -12,6 +12,9 @@ using MapFlags = SharpDX.Direct3D11.MapFlags;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
+    /// <summary>
+    /// A struct describing the layout of a mesh vertex for Dynamo.
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 4)]
     public struct DynamoMeshVertex
     {

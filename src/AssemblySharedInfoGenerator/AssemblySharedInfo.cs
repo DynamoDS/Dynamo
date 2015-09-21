@@ -45,15 +45,7 @@ using System.Runtime.InteropServices;
 // to distinguish one build from another. AssemblyFileVersion is specified
 // in AssemblyVersionInfo.cs so that it can be easily incremented by the
 // automated build process.
-<<<<<<< HEAD
-<<<<<<< HEAD
-[assembly: AssemblyVersion("0.8.3.2631")]
-=======
-[assembly: AssemblyVersion("0.8.3.2534")]
->>>>>>> parent of 99416f6... Remove libg_219 defaults and copy steps.
-=======
-[assembly: AssemblyVersion("0.8.3.2606")]
->>>>>>> parent of bf57373... Fix MAGN-8328
+[assembly: AssemblyVersion("0.8.3.2636")]
 
 
 // By default, the "Product version" shown in the file properties window is
@@ -72,12 +64,4 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-<<<<<<< HEAD
-<<<<<<< HEAD
-[assembly: AssemblyFileVersion("0.8.3.2631")]
-=======
-[assembly: AssemblyFileVersion("0.8.3.2534")]
->>>>>>> parent of 99416f6... Remove libg_219 defaults and copy steps.
-=======
-[assembly: AssemblyFileVersion("0.8.3.2606")]
->>>>>>> parent of bf57373... Fix MAGN-8328
+[assembly: AssemblyFileVersion("0.8.3.2636")]

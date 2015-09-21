@@ -4,8 +4,16 @@ using HelixToolkit.Wpf.SharpDX;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
+    /// <summary>
+    /// The AttachedProperties class includes a number of Dependency
+    /// Properties used by Dynamo to extend the capabilities of 
+    /// GeometryModel3D objects. 
+    /// </summary>
     public static class AttachedProperties
     {
+        /// <summary>
+        /// A flag indicating whether the geometry renders as selected.
+        /// </summary>
         public static readonly DependencyProperty ShowSelectedProperty = DependencyProperty.RegisterAttached(
             "ShowSelected",
             typeof(bool),
@@ -37,6 +45,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        /// <summary>
+        /// A flag indicating whether the geometry has transparency.
+        /// </summary>
         public static readonly DependencyProperty HasTransparencyProperty = DependencyProperty.RegisterAttached(
             "HasTransparency",
             typeof (bool),

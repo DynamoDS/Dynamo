@@ -9,6 +9,9 @@ using Buffer = SharpDX.Direct3D11.Buffer;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
+    /// <summary>
+    /// A struct describing the layout of a line vertex for Dynamo.
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 4)]
     public struct DynamoLineVertex
     {
