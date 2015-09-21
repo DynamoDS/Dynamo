@@ -53,7 +53,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private readonly Vector3D defaultCameraUpDirection = new Vector3D(0, 1, 0);
         private const double defaultNearPlaneDistance = 0.1;
         private const double defaultFarPlaneDistance = 10000000;
-
+         
         public Point3D EyePosition { get; set; }
         public Vector3D UpDirection { get; set; }
         public Vector3D LookDirection { get; set; }
@@ -101,6 +101,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private const string LinesKey = ":lines";
         private const string MeshKey = ":mesh";
         private const string TextKey = ":text";
+
+        private const int FrameUpdateSkipCount = 200;
+        private int currentFrameSkipCount;
 
 #if DEBUG
         private readonly Stopwatch renderTimer = new Stopwatch();
@@ -290,17 +293,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     return new List<Model3D>();
                 }
 
-                var values = Model3DDictionary.
-                    Select(x => x.Value).
-                    ToList();
-
-                values.Sort((a, b) =>
-                {
-                    var aType = a.GetType() == typeof(BillboardTextModel3D);
-                    var bType = b.GetType() == typeof(BillboardTextModel3D);
-                    return aType.CompareTo(bType);
-                });
-
+                var values = Model3DDictionary.Values.ToList();
+                values.Sort(new Model3DComparer(Camera.Position));
                 return values;
             }
         }
@@ -696,6 +690,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 directionalLight.Direction = v;
             }
+
+            // Occasional update of scene items, including
+            // distance-based transparency sorting.
+
+            if (currentFrameSkipCount == FrameUpdateSkipCount)
+            {
+                RaisePropertyChanged("SceneItems");
+                currentFrameSkipCount = 0;
+            }
+
+            currentFrameSkipCount++;
         }
 
         #endregion
@@ -1029,11 +1034,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        private void AggregateRenderPackages(IEnumerable<HelixRenderPackage> pacakges)
+        private void AggregateRenderPackages(IEnumerable<HelixRenderPackage> packages)
         {
             lock (Model3DDictionaryMutex)
             {
-                foreach (var rp in pacakges)
+                foreach (var rp in packages)
                 {
                     // Each node can produce multiple render packages. We want all the geometry of the
                     // same kind stored inside a RenderPackage to be pushed into one GeometryModel3D object.
@@ -1150,10 +1155,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     mesh.TextureCoordinates.AddRange(m.TextureCoordinates);
                     mesh.Indices.AddRange(m.Indices.Select(i => i + idxCount));
 
-                    //if (mesh.Colors.Any(c => c.Alpha < 1.0))
-                    //{
-                    //    meshGeometry3D.HasTransparency = true;
-                    //}
+                    if (mesh.Colors.Any(c => c.Alpha < 1.0))
+                    {
+                        meshGeometry3D.SetValue(AttachedProperties.HasTransparencyProperty, true);
+                    }
 
                     if (rp.DisplayLabels)
                     {
@@ -1387,6 +1392,61 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         #endregion
+    }
+
+    public class Model3DComparer : IComparer<Model3D>
+    {
+        private readonly Vector3 cameraPosition;
+
+        public Model3DComparer(Point3D cameraPosition)
+        {
+            this.cameraPosition = cameraPosition.ToVector3();
+        }
+
+        public int Compare(Model3D x, Model3D y)
+        {
+            var a = x as GeometryModel3D;
+            var b = y as GeometryModel3D;
+
+            if (a == null && b == null)
+            {
+                return 0;
+            }
+
+            if (a == null)
+            {
+                return -1;
+            }
+
+            if (b == null)
+            {
+                return 1;
+            }
+
+            var textA = a.GetType() == typeof(BillboardTextModel3D);
+            var textB = b.GetType() == typeof(BillboardTextModel3D);
+            var result = textA.CompareTo(textB);
+
+            if (result == 0 && textA)
+            {
+                return result;
+            }
+
+            var transA = (bool) a.GetValue(AttachedProperties.HasTransparencyProperty);
+            var transB = (bool) b.GetValue(AttachedProperties.HasTransparencyProperty);
+            result = transA.CompareTo(transB);
+
+            if (result != 0 || !transA) return result;
+
+            // compare distance
+            var boundsA = a.Bounds;
+            var boundsB = b.Bounds;
+            var cpA = (boundsA.Maximum + boundsA.Minimum)/2;
+            var cpB = (boundsB.Maximum + boundsB.Minimum)/2;
+            var dA = Vector3.DistanceSquared(cpA, cameraPosition);
+            var dB = Vector3.DistanceSquared(cpB, cameraPosition);
+            return -dA.CompareTo(dB);
+        }
     }
 
     internal static class CameraExtensions

@@ -36,5 +36,21 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
             }
         }
+
+        public static readonly DependencyProperty HasTransparencyProperty = DependencyProperty.RegisterAttached(
+            "HasTransparency",
+            typeof (bool),
+            typeof (GeometryModel3D),
+            new PropertyMetadata(false));
+
+        public static void SetHasTransparencyProperty(UIElement element, bool value)
+        {
+            element.SetValue(HasTransparencyProperty, value);
+        }
+
+        public static bool GetHasTransparencyProperty(UIElement element)
+        {
+            return (bool) element.GetValue(HasTransparencyProperty);
+        }
     }
 }
