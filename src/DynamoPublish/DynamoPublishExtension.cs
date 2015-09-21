@@ -9,16 +9,16 @@ using System.Linq;
 using System.Windows;
 using Dynamo.Models;
 using Dynamo.Publish.Properties;
+using Greg;
+using Reach.Upload;
 
 namespace Dynamo.Publish
 {
     public class DynamoPublishExtension : IViewExtension, ILogSource
     {
-        private PublishViewModel publishViewModel;
-        private PublishModel publishModel;
-        private InviteViewModel inviteViewModel;
-        private InviteModel inviteModel;
-        private Window dynamoWindow;
+        private ViewStartupParams startupParams;
+        private ViewLoadedParams loadedParams;
+
         private Menu dynamoMenu;
         private MenuItem extensionMenuItem; 
         private MenuItem inviteMenuItem; 
@@ -39,23 +39,12 @@ namespace Dynamo.Publish
 
         public void Startup(ViewStartupParams p)
         {
-            publishModel = new PublishModel(p.AuthProvider, p.CustomNodeManager);
-            publishViewModel = new PublishViewModel(publishModel);
-           
-            inviteModel = new InviteModel(p.AuthProvider);
-            inviteModel.MessageLogged += this.OnMessageLogged;
-            inviteViewModel = new InviteViewModel(inviteModel);            
+            this.startupParams = p;
         }
 
         public void Loaded(ViewLoadedParams p)
         {
-            if (publishViewModel == null || inviteViewModel == null)
-                return;
-
-            this.dynamoWindow = p.DynamoWindow;
-
-            publishViewModel.Workspaces = p.WorkspaceModels;
-            publishViewModel.CurrentWorkspaceModel = p.CurrentWorkspaceModel;
+            this.loadedParams = p;
 
             dynamoMenu = p.dynamoMenu;
             extensionMenuItem = GenerateMenuItem();
@@ -69,14 +58,14 @@ namespace Dynamo.Publish
 
             p.AddSeparator(MenuBarType.File, separator, 14);
 
-            p.CurrentWorkspaceChanged += (ws) =>
-            {
-                publishViewModel.CurrentWorkspaceModel = ws;
+            p.CurrentWorkspaceChanged += CurrentWorkspaceChanged;
 
-                var isEnabled = ws is HomeWorkspaceModel && publishModel.HasAuthProvider;
-                extensionMenuItem.IsEnabled = isEnabled;
-            };
+        }
 
+        private void CurrentWorkspaceChanged(IWorkspaceModel ws)
+        {
+            var isEnabled = ws is HomeWorkspaceModel && startupParams.AuthProvider != null;
+            extensionMenuItem.IsEnabled = isEnabled;
         }
 
         public void Shutdown()
@@ -86,6 +75,8 @@ namespace Dynamo.Publish
 
         public void Dispose()
         {
+            loadedParams.CurrentWorkspaceChanged += CurrentWorkspaceChanged;
+
             ClearMenuItem(extensionMenuItem, inviteMenuItem, manageCustomizersMenuItem, separator);
         }
 
@@ -109,22 +100,29 @@ namespace Dynamo.Publish
 
         private MenuItem GenerateMenuItem()
         {
-            MenuItem item = new MenuItem();
+            var item = new MenuItem();
             item.Header = Resources.DynamoViewMenuItemPublishTitle;
 
-            var isEnabled = publishViewModel.CurrentWorkspaceModel is HomeWorkspaceModel && publishModel.HasAuthProvider;
-
+            var isEnabled = loadedParams.CurrentWorkspaceModel is HomeWorkspaceModel && startupParams.AuthProvider != null;
             item.IsEnabled = isEnabled;
 
             item.Click += (sender, args) =>
             {
-                var publishWindow = new PublishView(publishViewModel)
+                var model = new PublishModel(startupParams.AuthProvider, startupParams.CustomNodeManager);
+
+                var viewModel = new PublishViewModel(model)
                 {
-                    Owner = this.dynamoWindow,
+                    Workspaces = loadedParams.WorkspaceModels,
+                    CurrentWorkspaceModel = loadedParams.CurrentWorkspaceModel
+                };
+
+                var window = new PublishView(viewModel)
+                {
+                    Owner = loadedParams.DynamoWindow,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
 
-                publishWindow.ShowDialog();                    
+                window.ShowDialog();                    
             };
 
             return item;
@@ -136,36 +134,41 @@ namespace Dynamo.Publish
         /// <returns></returns>
         private MenuItem GenerateInviteMenuItem()
         {
-            MenuItem item = new MenuItem();
+            var item = new MenuItem();
             item.Header = Resources.InviteViewMenuTitle;
 
-            var isEnabled = inviteModel.HasAuthProvider;
-
+            var isEnabled = startupParams.AuthProvider != null;
             item.IsEnabled = isEnabled;
 
             item.Click += (sender, args) =>
             {
-                var inviteWindow = new InviteView(inviteViewModel)
+                var model = new InviteModel(startupParams.AuthProvider);
+                model.MessageLogged += this.OnMessageLogged;
+
+                var viewModel = new InviteViewModel(model);
+
+                var view = new InviteView(viewModel)
                 {
-                    Owner = this.dynamoWindow,
+                    Owner = loadedParams.DynamoWindow,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
 
-                inviteWindow.ShowDialog();
+                view.ShowDialog();
+
+                model.MessageLogged -= this.OnMessageLogged;
             };
 
             return item;
-
         }
 
         private MenuItem GenerateManageCustomizersMenuItem()
         {
-            MenuItem item = new MenuItem();
+            var item = new MenuItem();
             item.Header = Resources.ManageButtonTitle;
 
             item.Click += (sender, args) =>
             {
-                System.Diagnostics.Process.Start(publishViewModel.ManagerURL);
+                System.Diagnostics.Process.Start(PublishModel.ManagerURL);
             };
 
             return item;
