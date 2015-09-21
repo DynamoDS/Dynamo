@@ -23,6 +23,10 @@ namespace Dynamo.Wpf.Extensions
         private readonly DynamoViewModel dynamoViewModel;
         public readonly Menu dynamoMenu;
 
+        /// <summary>
+        /// A reference to the Dynamo Window object. Useful for correctly setting the parent of a 
+        /// newly created window.
+        /// </summary>
         public Window DynamoWindow
         {
             get
