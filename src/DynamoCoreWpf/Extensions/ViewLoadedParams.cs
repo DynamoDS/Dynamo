@@ -1,19 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
 using System.Windows.Controls;
-using System.Windows.Input;
-using Autodesk.DesignScript.Interfaces;
 using Dynamo.Controls;
-using Dynamo.UI.Controls;
 using Dynamo.ViewModels;
 using Dynamo.Utilities;
-using Dynamo.Interfaces;
 using Dynamo.Extensions;
 using Dynamo.Selection;
-using Dynamo.Wpf.ViewModels.Watch3D;
 using Dynamo.Wpf.Views.Preview;
 
 namespace Dynamo.Wpf.Extensions
