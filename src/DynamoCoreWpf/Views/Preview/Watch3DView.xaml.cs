@@ -216,5 +216,17 @@ namespace Dynamo.Controls
         }
 
         #endregion
+
+        #region public methods
+
+        public Ray3D GetClickRay(MouseEventArgs mouseButtonEventArgs)
+        {
+            var mousePos = mouseButtonEventArgs.GetPosition(this);
+
+            return View.Point2DToRay3D(new Point(mousePos.X, mousePos.Y));
+        }
+
+
+        #endregion
     }
 }
