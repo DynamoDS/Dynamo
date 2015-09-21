@@ -1917,6 +1917,12 @@ namespace Dynamo.Tests
             TestMigration("TestMigration_GroupByKey.dyn");
         }
 
+        [Test]
+        public void TestMigration_SortByKey()
+        {
+            TestMigration("TestMigration_SortByKey.dyn");
+        }
+
 
         #endregion
 

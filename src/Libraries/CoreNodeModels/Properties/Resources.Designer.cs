@@ -835,6 +835,24 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sort list based on its keys.
+        /// </summary>
+        internal static string ListSortByKeyDescription {
+            get {
+                return ResourceManager.GetString("ListSortByKeyDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to sort;key.
+        /// </summary>
+        internal static string ListSortByKeySearchTags {
+            get {
+                return ResourceManager.GetString("ListSortByKeySearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The procedure used to map element.
         /// </summary>
         internal static string MapPortDataFxToolTip {

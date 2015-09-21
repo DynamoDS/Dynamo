@@ -130,6 +130,7 @@
     <member name="SortByFunction">
             <summary>Use a function to determine how list items should be sorted</summary>
             <param name="list">list of values</param>
+            <param name="function"></param>
             <search>sort,order</search>
     </member>
 		<member name="SortIndexByValue">

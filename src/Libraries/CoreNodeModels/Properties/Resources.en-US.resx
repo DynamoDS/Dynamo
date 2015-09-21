@@ -602,4 +602,10 @@
   <data name="ListGroupByKeyUniqueKeysTooltip" xml:space="preserve">
     <value>key value corresponding to each group</value>
   </data>
+  <data name="ListSortByKeyDescription" xml:space="preserve">
+    <value>Sort list based on its keys</value>
+  </data>
+  <data name="ListSortByKeySearchTags" xml:space="preserve">
+    <value>sort;key</value>
+  </data>
 </root>

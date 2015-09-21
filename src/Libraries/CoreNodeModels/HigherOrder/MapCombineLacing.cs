@@ -489,6 +489,8 @@ namespace DSCore
 
     [NodeName("SortByKey")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
+    [NodeDescription("ListSortByKeyDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("ListSortByKeySearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class SortByKey : NodeModel
     {
