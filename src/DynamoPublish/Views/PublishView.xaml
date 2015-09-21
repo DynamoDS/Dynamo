@@ -218,8 +218,8 @@
             <TextBox Name="textBoxShareLink"
                      Grid.Row="1"
                      Text="{Binding ShareLink, Mode=OneWay}"
+                     IsReadOnly="True"
                      Style="{StaticResource SDarkTextBox}" />
-
 
             <Button Name="buttonVisit"
                     Content="{x:Static resx:Resources.VisitButtonTitle}"
@@ -228,7 +228,7 @@
                     Width="80"
                     Style="{StaticResource SBadgeButton}"
                     VerticalContentAlignment="Center"
-                    Click="OnButtonVisitClick" />
+                    Command="{Binding VisitCommand}" />
             
             <Button Name="buttonCopyLink"
                     Content="{x:Static resx:Resources.CopyLinkButtonTitle}"
@@ -237,7 +237,8 @@
                     Width="80"
                     Style="{StaticResource SBadgeButton}"
                     VerticalContentAlignment="Center"
-                    Click="OnButtonCopyLinkClick" />
+                    Command="{Binding CopyLinkCommand}"
+                    />
 
         </Grid>
 
