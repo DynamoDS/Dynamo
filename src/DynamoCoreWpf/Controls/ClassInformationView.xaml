@@ -115,10 +115,10 @@
                      Grid.Row="1"
                      Grid.Column="1"
                      Background="Transparent"
-                     BorderBrush="#CCCCCC"
+                     BorderBrush="#7B9F2D"
                      ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
                      ItemTemplate="{StaticResource MemberTemplate}"
-                     BorderThickness="1,0,0,0"   
+                     BorderThickness="2,0,0,0"   
                      Padding ="0,-10,0,0"
                      />
             <Border x:Name="secondaryBorder" Grid.Row="2" 
@@ -148,11 +148,11 @@
                      Grid.Row="3"
                      Grid.Column ="1"
                      Background="Transparent"
-                     BorderBrush="#CCCCCC"
+                     BorderBrush="#D56867"
                      ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                      ItemTemplate="{StaticResource MemberTemplate}"
-                     BorderThickness="1,0,0,0"
+                     BorderThickness="2,0,0,0"
                      Padding ="0,-10,0,0"
                      >
                 <ListBox.Visibility>
@@ -187,11 +187,11 @@
                      Grid.Row="5"
                      Grid.Column ="1"
                      Background="Transparent"
-                     BorderBrush="#CCCCCC"
+                     BorderBrush="#65999A"
                      ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                      ItemTemplate="{StaticResource MemberTemplate}"
-                     BorderThickness="1,0,0,0"
+                     BorderThickness="2,0,0,0"
                      Padding ="0,-10,0,0"
                      >
                 <ListBox.Visibility>
