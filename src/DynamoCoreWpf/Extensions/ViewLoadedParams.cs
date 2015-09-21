@@ -13,6 +13,8 @@ using Dynamo.Utilities;
 using Dynamo.Interfaces;
 using Dynamo.Extensions;
 using Dynamo.Selection;
+using Dynamo.Wpf.ViewModels.Watch3D;
+using Dynamo.Wpf.Views.Preview;
 
 namespace Dynamo.Wpf.Extensions
 {
@@ -25,7 +27,7 @@ namespace Dynamo.Wpf.Extensions
         private readonly DynamoViewModel dynamoViewModel;
         public readonly Menu dynamoMenu;
 
-        public Watch3DView BackgroundPreView { get { return dynamoView.BackgroundPreview; } }
+        public IWatch3DView BackgroundPreView { get { return dynamoView.BackgroundPreview; } }
 
         internal ViewLoadedParams(DynamoView dynamoV, DynamoViewModel dynamoVM) :
             base(dynamoVM.Model)
@@ -52,16 +54,6 @@ namespace Dynamo.Wpf.Extensions
         {
             if (SelectionCollectionChanged != null)
                 SelectionCollectionChanged(notifyCollectionChangedEventArgs);
-        }
-
-        public void OnRequestCreateModels(IEnumerable<IRenderPackage> packages)
-        {
-            dynamoViewModel.BackgroundPreviewViewModel.OnRequestCreateModels(packages);
-        }
-
-        public void OnRequestDeleteModels(string identifier)
-        {
-            dynamoViewModel.BackgroundPreviewViewModel.DeleteGeometryForIdentifier(identifier);
         }
 
         private void AddItemToMenu(MenuBarType type, Control itemToAdd, int index)

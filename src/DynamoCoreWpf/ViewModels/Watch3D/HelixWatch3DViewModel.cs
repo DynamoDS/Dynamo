@@ -610,7 +610,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             OnRequestViewRefresh();
         }
 
-        public override void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
+        internal override void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
         {
             lock (Model3DDictionaryMutex)
             {

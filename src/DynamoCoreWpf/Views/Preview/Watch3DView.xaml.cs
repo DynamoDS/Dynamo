@@ -26,6 +26,7 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Rendering;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Watch3D;
+using Dynamo.Wpf.Views.Preview;
 using DynamoUtilities;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
@@ -45,7 +46,7 @@ namespace Dynamo.Controls
     /// <summary>
     /// Interaction logic for WatchControl.xaml
     /// </summary>
-    public partial class Watch3DView
+    public partial class Watch3DView : IWatch3DView
     {
         #region private members
 
@@ -217,7 +218,7 @@ namespace Dynamo.Controls
 
         #endregion
 
-        #region public methods
+        #region interface methods
 
         public Ray3D GetClickRay(MouseEventArgs mouseButtonEventArgs)
         {
@@ -226,6 +227,15 @@ namespace Dynamo.Controls
             return View.Point2DToRay3D(new Point(mousePos.X, mousePos.Y));
         }
 
+        public void AddGeometryFromRenderPackages(IEnumerable<IRenderPackage> packages)
+        {
+            ViewModel.OnRequestCreateModels(packages);
+        }
+
+        public void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
+        {
+            ViewModel.DeleteGeometryForIdentifier(identifier, requestUpdate);
+        }
 
         #endregion
     }
