@@ -121,7 +121,7 @@ namespace Dynamo.Publish.ViewModels
         {
             get
             {
-                return model.ManagerURL;
+                return PublishModel.ManagerURL;
             }
         }
 
