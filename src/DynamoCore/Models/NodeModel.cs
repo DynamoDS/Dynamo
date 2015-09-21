@@ -172,7 +172,7 @@ namespace Dynamo.Models
         /// Input nodes are used in Customizer and Presets. Input nodes can be numbers, number sliders,
         /// strings, bool, code blocks and custom nodes, which don't specify path.
         /// </summary>
-        public virtual bool IsInputNode
+        public bool IsInputNode
         {
             get
             {
