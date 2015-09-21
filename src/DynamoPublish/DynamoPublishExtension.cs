@@ -6,6 +6,7 @@ using Dynamo.Wpf.Extensions;
 using System;
 using System.Windows.Controls;
 using System.Linq;
+using System.Windows;
 using Dynamo.Models;
 using Dynamo.Publish.Properties;
 
@@ -17,6 +18,7 @@ namespace Dynamo.Publish
         private PublishModel publishModel;
         private InviteViewModel inviteViewModel;
         private InviteModel inviteModel;
+        private Window dynamoWindow;
         private Menu dynamoMenu;
         private MenuItem extensionMenuItem; 
         private MenuItem inviteMenuItem; 
@@ -49,6 +51,8 @@ namespace Dynamo.Publish
         {
             if (publishViewModel == null || inviteViewModel == null)
                 return;
+
+            this.dynamoWindow = p.DynamoWindow;
 
             publishViewModel.Workspaces = p.WorkspaceModels;
             publishViewModel.CurrentWorkspaceModel = p.CurrentWorkspaceModel;
@@ -113,10 +117,15 @@ namespace Dynamo.Publish
             item.IsEnabled = isEnabled;
 
             item.Click += (sender, args) =>
+            {
+                var publishWindow = new PublishView(publishViewModel)
                 {
-                    PublishView publishWindow = new PublishView(publishViewModel);
-                    publishWindow.ShowDialog();                    
+                    Owner = this.dynamoWindow,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
+
+                publishWindow.ShowDialog();                    
+            };
 
             return item;
         }
@@ -136,7 +145,12 @@ namespace Dynamo.Publish
 
             item.Click += (sender, args) =>
             {
-                InviteView inviteWindow = new InviteView(inviteViewModel);
+                var inviteWindow = new InviteView(inviteViewModel)
+                {
+                    Owner = this.dynamoWindow,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
+
                 inviteWindow.ShowDialog();
             };
 
