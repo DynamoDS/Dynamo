@@ -6,7 +6,7 @@ using ProtoCore.Lang;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.Associative
 {
-    public class ReplicationGuide : ProtoTestBase
+    class ReplicationGuide : ProtoTestBase
     {
         [Test]
         [Category("Replication")]
