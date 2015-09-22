@@ -20,6 +20,8 @@ namespace DSCoreNodesUI
     [NodeCategory("Core.Color.Create")]
     [NodeDescription("ColorRangeDescription",typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeSearchTags("ColorRangeSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [InputParameters("colors", "indices", "value")]
+    [OutputParameters("color")]
     public class ColorRange : NodeModel
     {
         public event Action RequestChangeColorRange;

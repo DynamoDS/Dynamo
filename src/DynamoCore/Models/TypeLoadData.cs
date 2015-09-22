@@ -72,6 +72,11 @@ namespace Dynamo.Models
                 Type.GetCustomAttributes<NodeDescriptionAttribute>(false)
                     .Select(x => x.ElementDescription)
                     .FirstOrDefault() ?? "";
+
+            InputParameters = Type.GetCustomAttributes<InputParametersAttribute>(false)
+                .SelectMany(x => x.Values);
+            OutputParameters = Type.GetCustomAttributes<OutputParametersAttribute>(false)
+                .SelectMany(x => x.Values);
         }
 
         /// <summary>
@@ -133,5 +138,15 @@ namespace Dynamo.Models
         ///     Indicates if the type is loaded from a package.
         /// </summary>
         public bool IsPackageMember;
+
+        /// <summary>
+        /// Indicates input parameters.
+        /// </summary>
+        public readonly IEnumerable<string> InputParameters;
+
+        /// <summary>
+        /// Indicates output parameters.
+        /// </summary>
+        public readonly IEnumerable<string> OutputParameters;
     }
 }

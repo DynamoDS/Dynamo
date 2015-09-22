@@ -208,4 +208,26 @@ namespace Dynamo.Nodes
             }
         }
     }
+
+    [AttributeUsage(AttributeTargets.Class)]
+    public class InputParametersAttribute : Attribute
+    {
+        public InputParametersAttribute(params string[] values)
+        {
+            Values = values;
+        }
+
+        public string[] Values { get; set; }
+    }
+
+    [AttributeUsage(AttributeTargets.Class)]
+    public class OutputParametersAttribute : Attribute
+    {
+        public OutputParametersAttribute(params string[] values)
+        {
+            Values = values;
+        }
+
+        public string[] Values { get; set; }
+    }
 }
