@@ -59,6 +59,11 @@ namespace Dynamo.Publish.ViewModels
             {
                 shareLink = value;
                 RaisePropertyChanged("ShareLink");
+                BeginInvoke(() =>
+                {
+                    VisitCommand.RaiseCanExecuteChanged();
+                    CopyLinkCommand.RaiseCanExecuteChanged();
+                });
             }
         }
 
@@ -130,6 +135,8 @@ namespace Dynamo.Publish.ViewModels
         #region Click commands
 
         public DelegateCommand PublishCommand { get; private set; }
+        public DelegateCommand VisitCommand { get; private set; }
+        public DelegateCommand CopyLinkCommand { get; private set; }
 
         #endregion
 
@@ -140,6 +147,8 @@ namespace Dynamo.Publish.ViewModels
             this.model = model;
 
             PublishCommand = new DelegateCommand(OnPublish, CanPublish);
+            VisitCommand = new DelegateCommand(Visit, CanVisit);
+            CopyLinkCommand = new DelegateCommand(CopyLink, CanCopyLink);
             model.UploadStateChanged += OnModelStateChanged;
             model.CustomizerURLChanged += OnCustomizerURLChanged;
         }
@@ -163,6 +172,33 @@ namespace Dynamo.Publish.ViewModels
             model.SendAsynchronously(Workspaces, workspaceProperties);
         }
 
+        private void Visit(object _)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(ShareLink);
+            }
+            catch (Exception e)
+            {
+                model.AsLogger().Log(e);
+            }
+        }
+
+        private bool CanVisit(object _)
+        {
+            return !String.IsNullOrEmpty(ShareLink);
+        }
+
+        private void CopyLink(object _)
+        {
+            System.Windows.Clipboard.SetText(ShareLink);
+        }
+
+        private bool CanCopyLink(object _)
+        {
+            return !String.IsNullOrEmpty(ShareLink);
+        }
+
         private void OnModelStateChanged(PublishModel.UploadState state)
         {
             IsUploading = state == PublishModel.UploadState.Uploading;
@@ -180,13 +216,6 @@ namespace Dynamo.Publish.ViewModels
             if (String.IsNullOrWhiteSpace(Name))
             {
                 UploadStateMessage = Resources.ProvideWorskspaceNameMessage;
-                IsReadyToUpload = false;
-                return false;
-            }
-
-            if (String.IsNullOrWhiteSpace(Description))
-            {
-                UploadStateMessage = Resources.ProvideWorskspaceDescriptionMessage;
                 IsReadyToUpload = false;
                 return false;
             }

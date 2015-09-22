@@ -264,4 +264,7 @@
   <data name="UploadedMessage" xml:space="preserve">
     <value>Your workspace has been successfully published!</value>
   </data>
+  <data name="VisitButtonTitle" xml:space="preserve">
+    <value>Visit</value>
+  </data>
 </root>
