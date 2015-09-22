@@ -72,5 +72,39 @@ namespace ProtoTest.FFITests
             node = new DSFunction(fucDescriptor);
             Assert.AreEqual(fucDescriptor.Signature, node.Description);
         }
+
+        [Test]
+        public void InputParametersTest()
+        {
+            var assembly = Assembly.UnsafeLoadFrom("FFITarget.dll");
+            var testClass = assembly.GetType("FFITarget.DummyZeroTouchClass1");
+
+            var attributes = testClass.GetCustomAttributes(typeof(InputParametersAttribute), false);
+            Assert.IsNotNull(attributes);
+            Assert.Greater(attributes.Length, 0);
+            Assert.IsTrue(attributes[0] is InputParametersAttribute);
+
+            var parameters = (attributes[0] as InputParametersAttribute).Values;
+            var expected = new[] { "par1", "par2" };
+
+            Assert.AreEqual(expected, parameters);
+        }
+
+        [Test]
+        public void OutputParametersTest()
+        {
+            var assembly = Assembly.UnsafeLoadFrom("FFITarget.dll");
+            var testClass = assembly.GetType("FFITarget.DummyZeroTouchClass1");
+
+            var attributes = testClass.GetCustomAttributes(typeof(OutputParametersAttribute), false);
+            Assert.IsNotNull(attributes);
+            Assert.Greater(attributes.Length, 0);
+            Assert.IsTrue(attributes[0] is OutputParametersAttribute);
+
+            var parameters = (attributes[0] as OutputParametersAttribute).Values;
+            var expected = new [] { "item1", "item2", "item3" };
+
+            Assert.AreEqual(expected, parameters);
+        }
     }
 }
