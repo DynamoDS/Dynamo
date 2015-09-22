@@ -34,6 +34,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        /// <summary>
+        /// Override LineGeometryModel3D's Attach method to 
+        /// provide a buffer of DynamoLineVertices
+        /// </summary>
+        /// <param name="host"></param>
         public override void Attach(IRenderHost host)
         {
             renderTechnique = host.RenderTechniquesManager.RenderTechniques[DefaultRenderTechniqueNames.Lines];

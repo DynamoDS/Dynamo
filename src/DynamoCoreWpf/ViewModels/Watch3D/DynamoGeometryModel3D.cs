@@ -97,6 +97,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        /// <summary>
+        /// Override MaterialGeometryModel3D's Attach method to 
+        /// provide a buffer of DynamoMeshVertices
+        /// </summary>
         public override void Attach(IRenderHost host)
         {
             base.Attach(host);

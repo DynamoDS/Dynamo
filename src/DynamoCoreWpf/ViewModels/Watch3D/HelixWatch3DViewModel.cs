@@ -1391,6 +1391,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         #endregion
     }
 
+    /// <summary>
+    /// The Model3DComparer is used to sort arrays of Model3D objects. 
+    /// After sorting, the target array's objects will be organized
+    /// as follows:
+    /// 1. All opaque geometry.
+    /// 2. All text.
+    /// 3. All transparent geometry, ordered by distance from
+    /// the camera.
+    /// </summary>
     public class Model3DComparer : IComparer<Model3D>
     {
         private readonly Vector3 cameraPosition;

@@ -31,6 +31,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        /// <summary>
+        /// Override PointGeometryModel3D's Attach method to 
+        /// provide a buffer of DynamoPointVertices
+        /// </summary>
         public override void Attach(IRenderHost host)
         {
             var techManager = host.RenderTechniquesManager;
