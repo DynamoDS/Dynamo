@@ -1188,7 +1188,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SEARCH LIBRARY.
+        ///   Looks up a localized string similar to Search.
         /// </summary>
         public static string SearchTextBlockText {
             get {
