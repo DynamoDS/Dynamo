@@ -71,6 +71,11 @@ namespace DSCore
                     .Select(x => x.Select(y => y.item).ToList())
                     .ToList();
         }
+
+        public static IList uniqueItems(IList list)
+        {
+            return list.Cast<object>().Distinct().ToList();
+        }
     }
     // ReSharper restore InconsistentNaming
 }

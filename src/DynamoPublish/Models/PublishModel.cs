@@ -44,12 +44,20 @@ namespace Dynamo.Publish.Models
 
         private readonly IAuthProvider authenticationProvider;
         private readonly ICustomNodeManager customNodeManager;
+        private IWorkspaceStorageClient reachClient;
 
-        private readonly string serverUrl;
-        private readonly string page;
+        private static string serverUrl;
+        private static string page;
         private readonly Regex serverResponceRegex;
 
-        private IWorkspaceStorageClient reachClient;
+        private static string managerURL;
+        public static string ManagerURL
+        {
+            get
+            {
+                return managerURL;
+            }
+        }
 
         public bool IsLoggedIn
         {
@@ -138,15 +146,6 @@ namespace Dynamo.Publish.Models
             }
         }
 
-        private readonly string managerURL;
-        public string ManagerURL
-        {
-            get
-            {
-                return managerURL;
-            }
-        }
-
         internal event Action<UploadState> UploadStateChanged;
         private void OnUploadStateChanged(UploadState state)
         {
@@ -163,22 +162,29 @@ namespace Dynamo.Publish.Models
 
         #region Initialization
 
-        internal PublishModel(IAuthProvider dynamoAuthenticationProvider, ICustomNodeManager dynamoCustomNodeManager)
+        static PublishModel()
         {
             // Open the configuration file using the dll location.
-            var config = ConfigurationManager.OpenExeConfiguration(this.GetType().Assembly.Location);
+            var config = ConfigurationManager.OpenExeConfiguration(typeof(PublishModel).Assembly.Location);
             // Get the appSettings section.
             var appSettings = (AppSettingsSection)config.GetSection("appSettings");
 
+            // set the static fields
             serverUrl = appSettings.Settings["ServerUrl"].Value;
+            page = appSettings.Settings["Page"].Value;
+            managerURL = appSettings.Settings["ManagerPage"].Value;
+        }
+
+        internal PublishModel(IAuthProvider dynamoAuthenticationProvider, ICustomNodeManager dynamoCustomNodeManager)
+        {
+            // Here we throw exceptions if any of the required static fields are not set
+            // This prevents these exceptions from being thrown in the static constructor.
             if (String.IsNullOrWhiteSpace(serverUrl))
                 throw new Exception(Resources.ServerNotFoundMessage);
 
-            page = appSettings.Settings["Page"].Value;
             if (String.IsNullOrWhiteSpace(page))
                 throw new Exception(Resources.PageErrorMessage);
 
-            managerURL = appSettings.Settings["ManagerPage"].Value;
             if (String.IsNullOrWhiteSpace(managerURL))
                 throw new Exception(Resources.ManagerErrorMessage);
 
