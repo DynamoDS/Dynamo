@@ -35,6 +35,16 @@ namespace FFITarget
             IntVal = i1 + i2 + i3;
         }
 
+        public void Set(int intVal)
+        {
+            this.IntVal = intVal;
+        }
+
+        public int SetAndReturn(int intVal)
+        {
+            return this.IntVal = intVal;
+        }
+
         public bool IsEqualTo(ClassFunctionality cf)
         {
             return this.IntVal == cf.IntVal;
