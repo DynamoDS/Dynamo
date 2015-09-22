@@ -1057,13 +1057,18 @@ namespace Dynamo.ViewModels
 
             Model.LayoutGraph = new GraphLayout.Graph();
             var graph = Model.LayoutGraph;
-            var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
+            
+            GenerateLayoutGraph(graph);
+            RunLayoutGraph(graph);
+            SaveLayoutGraph(graph);
+        }
 
+        private void GenerateLayoutGraph(GraphLayout.Graph graph)
+        {
             foreach (AnnotationModel group in Model.Annotations)
             {
                 // Treat a group as a graph layout node/vertex
-                graph.AddNode(group.GUID, group.Width, group.Height, group.Y);
-                models.Add(group, UndoRedoRecorder.UserAction.Modification);
+                graph.AddNode(group.GUID, group.Width, group.Height, group.X, group.Y);
             }
 
             foreach (NodeModel node in Model.Nodes)
@@ -1074,8 +1079,7 @@ namespace Dynamo.ViewModels
                 // Do not process nodes within groups
                 if (group == null)
                 {
-                    graph.AddNode(node.GUID, node.Width, node.Height, node.Y);
-                    models.Add(node, UndoRedoRecorder.UserAction.Modification);
+                    graph.AddNode(node.GUID, node.Width, node.Height, node.X, node.Y);
                 }
             }
 
@@ -1095,31 +1099,61 @@ namespace Dynamo.ViewModels
                         endGroup == null ? edge.End.Owner.GUID : endGroup.GUID,
                         edge.Start.Center.X, edge.Start.Center.Y, edge.End.Center.X, edge.End.Center.Y);
                 }
-
-                models.Add(edge, UndoRedoRecorder.UserAction.Modification);
             }
 
+            // Link a note to the nearest node
+            foreach (NoteModel note in Model.Notes)
+            {
+                GraphLayout.Node nd = graph.Nodes.OrderBy(node =>
+                    Math.Pow(node.X + node.Width / 2 - note.X - note.Width / 2, 2) +
+                    Math.Pow(node.Y + node.Height / 2 - note.Y - note.Height / 2, 2)).FirstOrDefault();
+
+                if (nd != null)
+                {
+                    nd.LinkedNotes.Add(note);
+                }
+            }
+        }
+
+        private void RunLayoutGraph(GraphLayout.Graph graph)
+        {
             // Support undo for graph layout command
-            WorkspaceModel.RecordModelsForModification(new List<ModelBase>(Model.Nodes), Model.UndoRecorder);
+            List<ModelBase> undoItems = new List<ModelBase>();
+            undoItems.AddRange(Model.Nodes);
+            undoItems.AddRange(Model.Notes);
+            WorkspaceModel.RecordModelsForModification(undoItems, Model.UndoRecorder);
+            graph.RecordInitialPosition();
 
             // Sugiyama algorithm steps
             graph.RemoveCycles();
             graph.AssignLayers();
             graph.OrderNodes();
 
-            graph.NormalizeGraphPosition();
+            // Node and graph positioning
+            graph.DistributeNodePosition();
+            graph.SetGraphPosition();
+        }
 
+        private void SaveLayoutGraph(GraphLayout.Graph graph)
+        {
             // Assign coordinates to nodes inside groups
             foreach (var group in Model.Annotations)
             {
                 var g = graph.FindNode(group.GUID);
                 double deltaX = g.X - group.X;
                 double deltaY = g.Y - group.Y;
-                foreach (var node in group.SelectedModels)
+                foreach (var node in group.SelectedModels.OfType<NodeModel>())
                 {
                     node.X += deltaX;
                     node.Y += deltaY;
                     node.ReportPosition();
+                }
+
+                foreach (NoteModel note in g.LinkedNotes)
+                {
+                    note.X += deltaX;
+                    note.Y += deltaY;
+                    note.ReportPosition();
                 }
             }
 
@@ -1129,9 +1163,20 @@ namespace Dynamo.ViewModels
                 var n = graph.FindNode(node.GUID);
                 if (n != null)
                 {
+                    double deltaX = n.X - node.X;
+                    double deltaY = n.Y - node.Y;
+
                     node.X = n.X;
                     node.Y = n.Y;
                     node.ReportPosition();
+                    HasUnsavedChanges = true;
+
+                    foreach (NoteModel note in n.LinkedNotes)
+                    {
+                        note.X += deltaX;
+                        note.Y += deltaY;
+                        note.ReportPosition();
+                    }
                 }
             }
 
