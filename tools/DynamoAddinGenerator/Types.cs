@@ -183,7 +183,8 @@ namespace DynamoAddinGenerator
             {
                 if (prod.VersionString == RevitVersion.Revit2011.ToString() ||
                     prod.VersionString == RevitVersion.Revit2012.ToString() ||
-                    prod.VersionString == RevitVersion.Revit2013.ToString())
+                    prod.VersionString == RevitVersion.Revit2013.ToString() || 
+                    prod.VersionString == RevitVersion.Revit2014.ToString())
                 {
                     continue;
                 }
