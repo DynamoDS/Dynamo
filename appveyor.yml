@@ -5,8 +5,8 @@ platform: Any CPU
 configuration: Release
 
 before_build:
-  - nuget restore
-  
+  - nuget restore .\src\Dynamo.All.2013.sln
+
 build:
   project: src/Dynamo.All.2013.sln
   verbosity: normal
