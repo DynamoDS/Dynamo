@@ -46,4 +46,10 @@ robocopy %cwd%\Extra\DirectX %cwd%\temp\DirectX
 robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\gallery %cwd%\temp\gallery /s
 
 "C:\Program Files (x86)\Inno Setup 5\iscc.exe" %cwd%\DynamoInstaller.iss
+
+if not errorlevel 0 (
+   echo "C:\Program Files (x86)\Inno Setup 5\iscc.exe %cwd%\DynamoInstaller.iss return error, exiting"
+   rmdir /Q /S %cwd%\temp & exit /b %errorlevel%
+)
+
 rmdir /Q /S %cwd%\temp
