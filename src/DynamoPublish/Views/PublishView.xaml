@@ -201,6 +201,8 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="20" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
@@ -216,16 +218,27 @@
             <TextBox Name="textBoxShareLink"
                      Grid.Row="1"
                      Text="{Binding ShareLink, Mode=OneWay}"
+                     IsReadOnly="True"
                      Style="{StaticResource SDarkTextBox}" />
 
+            <Button Name="buttonVisit"
+                    Content="{x:Static resx:Resources.VisitButtonTitle}"
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Width="50"
+                    Style="{StaticResource SBadgeButton}"
+                    VerticalContentAlignment="Center"
+                    Command="{Binding VisitCommand}" />
+            
             <Button Name="buttonCopyLink"
                     Content="{x:Static resx:Resources.CopyLinkButtonTitle}"
                     Grid.Row="1"
-                    Grid.Column="2"
-                    Width="100"
+                    Grid.Column="4"
+                    Width="70"
                     Style="{StaticResource SBadgeButton}"
                     VerticalContentAlignment="Center"
-                    Click="OnButtonCopyLinkClick" />
+                    Command="{Binding CopyLinkCommand}"
+                    />
 
         </Grid>
 

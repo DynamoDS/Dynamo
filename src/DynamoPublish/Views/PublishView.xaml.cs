@@ -37,16 +37,10 @@ namespace Dynamo.Publish.Views
             Closed += OnPublishViewClosed;
         }
 
-        private void OnButtonCopyLinkClick(object sender, RoutedEventArgs e)
-        {
-            System.Windows.Clipboard.SetText(textBoxShareLink.Text);
-        }
-
         private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             System.Diagnostics.Process.Start(viewModel.ManagerURL);
         }
-
 
         private void OnPublishViewClosed(object sender, EventArgs e)
         {

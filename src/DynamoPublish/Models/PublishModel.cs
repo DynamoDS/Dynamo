@@ -15,13 +15,14 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Dynamo.Logging;
 using Reach.Data;
 using Reach.Exceptions;
 using Reach.Upload;
 
 namespace Dynamo.Publish.Models
 {
-    public class PublishModel
+    public class PublishModel : LogSourceBase
     {
 
         public enum UploadState
@@ -322,6 +323,7 @@ namespace Dynamo.Publish.Models
             State = UploadState.Uninitialized;
             Error = UploadErrorType.None;
         }
+
     }
 
 }
