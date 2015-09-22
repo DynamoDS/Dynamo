@@ -6,6 +6,7 @@ using Dynamo.Controls;
 using Dynamo.ViewModels;
 using Dynamo.Utilities;
 using Dynamo.Extensions;
+using Dynamo.Interfaces;
 using Dynamo.Selection;
 using Dynamo.Wpf.Views.Preview;
 
@@ -21,6 +22,14 @@ namespace Dynamo.Wpf.Extensions
         public readonly Menu dynamoMenu;
 
         public IWatch3DView BackgroundPreView { get { return dynamoView.BackgroundPreview; } }
+
+        public IRenderPackageFactory RenderPackageFactory 
+        {
+            get
+            {
+                return dynamoViewModel.RenderPackageFactoryViewModel.Factory;
+            } 
+        }
 
         internal ViewLoadedParams(DynamoView dynamoV, DynamoViewModel dynamoVM) :
             base(dynamoVM.Model)
