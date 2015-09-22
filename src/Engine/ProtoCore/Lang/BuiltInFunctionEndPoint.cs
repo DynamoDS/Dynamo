@@ -1053,7 +1053,7 @@ namespace ProtoCore.Lang
             bool hasAmountOp = svHasAmountOp.IsBoolean && svHasAmountOp.RawBooleanValue;
 
             // If start parameter is not the same as end parameter, show warning.
-            // If start parameter is not number/string and it's not amount op, show warning.
+            // If start parameter is not number/string and there is no amount op, show warning.
             if (!((svStart.IsNumeric && svEnd.IsNumeric)
                   ||
                   (svStart.IsString && svEnd.IsString))
@@ -1074,7 +1074,7 @@ namespace ProtoCore.Lang
                 return StackValue.Null;
             }
 
-            if ((svStep.IsNull && hasStep) || (!svStep.IsNull && !svStep.IsNumeric))
+            if ((svStep.IsNull && hasStep) || (hasAmountOp && !svStep.IsNumeric) || (!svStep.IsNull && !svStep.IsNumeric))
             {
                 runtimeCore.RuntimeStatus.LogWarning(
                     WarningID.kInvalidArguments,
