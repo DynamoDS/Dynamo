@@ -1055,14 +1055,15 @@ a1;b1;b2;c;c1;c2;
                     [Imperative]{
                
                     
-                    a:A=A.A(1);
+              a:A=A.A(1);
                     a1=a.a;
                     b:A=B.B(2);
                     b1=b.b;
                     b2=b.a;
-                    c:B=B.B(3);
+                    c:B=A.A(3);
                     c1=c.b;
-                    c2=c.a;}";
+                    c2=c.a;
+}";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a1", 1);
             thisTest.Verify("b1", 2);
