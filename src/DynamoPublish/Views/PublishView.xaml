@@ -6,6 +6,7 @@
         xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
         Title="{x:Static resx:Resources.PublishViewTitle}"
         SizeToContent="Height"  
+        ResizeMode="NoResize"
         Width="605">
     <Window.Resources>
         <ResourceDictionary>
@@ -247,13 +248,13 @@
                     Grid.Column="0"
                     Grid.ColumnSpan="3"
                     Background="{Binding IsReadyToUpload, Converter={StaticResource BooleanToBrushConverter}}"
-                    Height="30">
+                    >
             <TextBlock Name="UploadStateTextBlock"
                        Text="{Binding UploadStateMessage}"
                        Foreground="White"
                        TextWrapping="Wrap"
                        VerticalAlignment="Center"
-                       Margin="10,7,0,0" />
+                       Margin="10" />
         </StackPanel>
 
     </Grid>
