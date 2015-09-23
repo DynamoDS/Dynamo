@@ -493,6 +493,15 @@ namespace Dynamo.Publish.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Visit.
+        /// </summary>
+        public static string VisitButtonTitle {
+            get {
+                return ResourceManager.GetString("VisitButtonTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to /customize-[0-9,a-z]*.
         /// </summary>
         public static string WorkspacesSendSucceededServerResponse {

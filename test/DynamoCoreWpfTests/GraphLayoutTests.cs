@@ -51,14 +51,17 @@ namespace Dynamo.Tests
             var y = ViewModel.CurrentSpace.Y;
             var zoom = ViewModel.CurrentSpace.Zoom;
 
+            var prevX = nodes.ElementAt(0).X;
+            var prevY = nodes.ElementAt(0).Y;
+
             ViewModel.DoGraphAutoLayout(null);
 
             Assert.AreEqual(ViewModel.CurrentSpace.Nodes.Count(), 1);
             Assert.AreEqual(ViewModel.CurrentSpace.Connectors.Count(), 0);
             AssertGraphLayoutLayers(new List<int> { 1 });
 
-            Assert.AreEqual(nodes.ElementAt(0).X, 0);
-            Assert.AreEqual(nodes.ElementAt(0).Y, 0);
+            Assert.AreEqual(nodes.ElementAt(0).X, prevX);
+            Assert.AreEqual(nodes.ElementAt(0).Y, prevY);
 
             Assert.Inconclusive("RequestZoomToFitView is null");
 
@@ -80,9 +83,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(ViewModel.CurrentSpace.Connectors.Count(), 1);
             AssertGraphLayoutLayers(new List<int> { 1, 1 });
 
-            Assert.AreEqual(nodes.ElementAt(0).Y, 0);
-            Assert.AreEqual(nodes.ElementAt(1).X, 0);
-
             Assert.Greater(nodes.ElementAt(0).X, nodes.ElementAt(1).X);
             Assert.Less(nodes.ElementAt(0).Y, nodes.ElementAt(1).Y);
 
@@ -100,11 +100,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(ViewModel.CurrentSpace.Connectors.Count(), 0);
             AssertGraphLayoutLayers(new List<int> { 3 });
 
-            Assert.AreEqual(nodes.ElementAt(0).X, 0);
-            Assert.AreEqual(nodes.ElementAt(1).X, 0);
-            Assert.AreEqual(nodes.ElementAt(2).X, 0);
-
-            Assert.AreEqual(nodes.ElementAt(0).Y, 0);
             Assert.Greater(nodes.ElementAt(2).Y, nodes.ElementAt(0).Y);
             Assert.Greater(nodes.ElementAt(1).Y, nodes.ElementAt(2).Y);
 
@@ -122,15 +117,14 @@ namespace Dynamo.Tests
             Assert.AreEqual(ViewModel.CurrentSpace.Connectors.Count(), 17);
             AssertGraphLayoutLayers(new List<int> { 1, 1, 2, 1, 1, 2, 2, 2, 1, 2 });
 
-            Assert.AreEqual(nodes.ElementAt(5).X, 0);  // "put"
-
-            Assert.AreEqual(nodes.ElementAt(8).X, 0);  // "come"
-            Assert.Greater(nodes.ElementAt(8).Y, 0);
-
-            Assert.Greater(nodes.ElementAt(3).X, 0);   // rightmost Watch node
+            var prevX = (nodes.Min(n => n.X) + nodes.Max(n => n.X + n.Width)) / 2;
+            var prevY = (nodes.Min(n => n.Y) + nodes.Max(n => n.Y + n.Height)) / 2;
 
             AssertNoOverlap();
             AssertMaxCrossings(2);
+
+            Assert.Less(Math.Abs((nodes.Min(n => n.X) + nodes.Max(n => n.X + n.Width)) / 2 - prevX), 10);
+            Assert.Less(Math.Abs((nodes.Min(n => n.Y) + nodes.Max(n => n.Y + n.Height)) / 2 - prevY), 10);
         }
 
         [Test]
@@ -271,7 +265,7 @@ namespace Dynamo.Tests
                 9, 9, 9, 4, 3, 5, 4, 3, 1, 2, 3, 1, 3, 7, 7, 1, 1, 2, 4, 3, 2, 3 });
 
             AssertNoOverlap();
-            AssertMaxCrossings(198);
+            AssertMaxCrossings(200);
         }
 
         [Test]
