@@ -25,7 +25,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public IRenderPackageFactory RenderPackageFactory { get; set; }
         public IDynamoViewModel ViewModel { get; set; }
         public INotifyPropertyChanged RenderPackageFactoryViewModel { get;set; }
-        public bool IsActiveAtStart { get; set; }
         public string Name { get; set; }
 
         public Watch3DViewModelStartupParams()
@@ -43,7 +42,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             RenderPackageFactory = viewModel.RenderPackageFactoryViewModel.Factory;
             ViewModel = viewModel;
             RenderPackageFactoryViewModel = viewModel.RenderPackageFactoryViewModel;
-            IsActiveAtStart = true;
             Name = name;
         }
     }
@@ -84,6 +82,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
 
                 active = value;
+                preferences.IsBackgroundPreviewActive = active;
 
                 RaisePropertyChanged("Active");
 
@@ -124,7 +123,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             viewModel = parameters.ViewModel;
             renderPackageFactoryViewModel = parameters.RenderPackageFactoryViewModel;
 
-            Active = parameters.IsActiveAtStart;
+            Active = parameters.Preferences.IsBackgroundPreviewActive;
             Name = parameters.Name;
             logger = parameters.Logger;
 
