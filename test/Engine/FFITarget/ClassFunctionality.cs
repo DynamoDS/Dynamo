@@ -100,4 +100,35 @@ namespace FFITarget
 
         public int SomeValue { get; set; }
     }
+
+
+    /// <summary>
+    /// A class that contains the same IntVal member as ClassFunctionality
+    /// </summary>
+    public class ClassFunctionalityMirror : IDisposable
+    {
+        private int intVal;
+        public int IntVal
+        {
+            get { return intVal; }
+            set
+            {
+                this.intVal = value;
+            }
+        }
+
+        public ClassFunctionalityMirror()
+        {
+
+        }
+
+        public ClassFunctionalityMirror(int intVal)
+        {
+            this.IntVal = intVal;
+        }
+
+        public void Dispose()
+        {
+        }
+    }
 }
