@@ -17,7 +17,7 @@ namespace Dynamo.DocumentationTestLibrary
 {
     #region Interface
     /// <summary>
-    ///  Has an event that produces items.
+    /// Interface with generics
     /// </summary>
     /// <typeparam name="TItem">Type of items produced.</typeparam>
     public interface ISource<out TItem>
@@ -26,6 +26,17 @@ namespace Dynamo.DocumentationTestLibrary
         ///     Produces items, potentially asynchronously.
         /// </summary>
         event Action<TItem> ItemProduced;
+    }
+
+    ///// <summary>
+    ///// Interface without generics
+    ///// </summary>
+    public interface IPackage
+    {
+        /// <summary>
+        /// Tests the method in interface.
+        /// </summary>
+        void TestMethodInInterface();
     }
 
     #endregion
@@ -43,6 +54,11 @@ namespace Dynamo.DocumentationTestLibrary
         #endregion
 
         #region events
+        /// <summary>
+        /// Delegate
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         public delegate void ChangedEventHandler(object sender, EventArgs e);
 
         /// <summary>
@@ -51,6 +67,23 @@ namespace Dynamo.DocumentationTestLibrary
         public event ChangedEventHandler Changed;
 
         #endregion
+
+        /// <summary>
+        /// Testing Constructor without params.
+        /// </summary>
+        public TestDocumentation()
+        {
+
+        }
+
+        /// <summary>
+        /// Testing Constructor with params.
+        /// </summary>
+        /// <param name="test">The test.</param>
+        public TestDocumentation(int test)
+        {
+
+        }
 
         /// <summary> 
         /// Mks the array.
@@ -76,12 +109,12 @@ namespace Dynamo.DocumentationTestLibrary
             return null;
         }
 
-         //<summary>
-         //Tests the method that has no param set.
-         //</summary>       
+        //<summary>
+        //Tests the method that has no param set.
+        //</summary>       
         public void TestMethodWithNoParaminXML(object o)
         {
-            
+
         }
 
         /// <summary>
@@ -89,7 +122,7 @@ namespace Dynamo.DocumentationTestLibrary
         /// </summary>
         public void TestMethodWithoutParameters()
         {
-            
+
         }
     }
 
@@ -110,5 +143,22 @@ namespace Dynamo.DocumentationTestLibrary
         /// The age.
         /// </value>
         public int age { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Person"/> class.
+        /// </summary>
+        public Person()
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Person"/> class.
+        /// </summary>
+        /// <param name="anothertest">The anothertest.</param>
+        public Person(int anothertest)
+        {
+
+        }
     }
 }

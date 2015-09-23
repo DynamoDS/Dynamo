@@ -12,6 +12,8 @@ using System.Text;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Remoting.Messaging;
+using XmlDocToMarkdown;
 
 // modified from : https://gist.github.com/lontivero/593fc51f1208555112e0
 
@@ -21,7 +23,19 @@ namespace Dynamo.Docs
     {
         private static string[] separators = new string[] { "``", "`","(",")"};
         private const string lt = "<*";
-        private const string gt = "*>"; 
+        private const string gt = "*>";
+        private static readonly string[] repoHeader =
+        {
+            "site_name: Dynamo",
+            "repo_url: http://dynamods.github.io/DynamoAPI/",
+            "site_author: Dynamo",
+            "pages:",
+            "- Home: index.md",
+            "- API:"
+        };
+
+        private const string themedir = "theme_dir: Theme";
+        private static string returnType;
        
         static void Main(string[] args)
         {
@@ -32,8 +46,10 @@ namespace Dynamo.Docs
 
             if (docsFolder != null)
             {
-
                 var xml = XDocument.Load(args[1]);
+
+                HandleConstructors(xml);
+                HandleGenerics(xml);
 
                 foreach (var ns in namespaces)
                 {
@@ -44,7 +60,7 @@ namespace Dynamo.Docs
                         Directory.CreateDirectory(outputDir);
                     }
                     var publicTypes = asm.GetTypes().Where(t => t.Namespace == ns).Where(t => t.IsPublic);
-
+                   
                     foreach (var t in publicTypes)
                     {
                         GenerateMarkdownDocumentForType(t, outputDir, xml);
@@ -96,12 +112,10 @@ namespace Dynamo.Docs
             var ymlPath = Path.Combine(Directory.GetParent(DocRootPath()).FullName, "mkdocs.yml");
             using (var tw = File.CreateText(ymlPath))
             {
-                tw.WriteLine("site_name: Dynamo");
-                tw.WriteLine("repo_url: http://ramramps.github.io/DocumentTesting/");
-                tw.WriteLine("site_author: Dynamo");
-                tw.WriteLine("pages:");               
-                tw.WriteLine("- Home: index.md");                
-                tw.WriteLine("- API:");
+                foreach (var str in repoHeader)
+                {
+                    tw.WriteLine(str);
+                }                
 
                 foreach (var dirPath in Directory.GetDirectories(DocRootPath()))
                 {
@@ -123,22 +137,50 @@ namespace Dynamo.Docs
                     }
                 }
 
-                tw.WriteLine("theme_dir: Theme");
+                tw.WriteLine(themedir);
                 tw.Flush();
             }
         }
 
-        private static void GenerateMarkdownDocumentForType(Type t, string folder, XDocument xml)
-        {          
-           string[] temp = t.Name.Split(separators, StringSplitOptions.RemoveEmptyEntries);
-            var typeName = temp[0];
-           var members = xml.Root.Element("members").Elements("member");
+        /// <summary>
+        /// Replace the ctor with appropriate class name
+        /// </summary>
+        /// <param name="xml">The XML.</param>
+        private static void HandleConstructors(XDocument xml)
+        {
+            var members = xml.Root.Element("members").Elements("member");
+
+            //get all the constructors from xml.
+            var constructors = members.Where(x => x.Attribute("name").Value.Contains("#ctor"));           
+            try
+            {
+                foreach (var constructor in constructors)
+                {
+                    var text = constructor.Attribute("name").Value;
+                    var name = text.Split(".").ToArray();
+                    text = new StringBuilder(text).Replace("#ctor", name[2]).ToString();                    
+                    constructor.Attribute("name").Value = text;
+                }
+            }
+            catch (Exception ex)
+            {
+               Console.WriteLine(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Replace the special characters in generics.
+        /// </summary>
+        /// <param name="xml">The XML.</param>
+        private static void HandleGenerics(XDocument xml)
+        {
+            var members = xml.Root.Element("members").Elements("member");
 
             //get all the generic members. Generic methods in XML has special characters 
             // List<T> in xml is List``1. So, replace them with correct values. Here, instead
             // of angular brackets we use [ ]             
             var genericMembers = members.Where(x => x.Attribute("name").Value.Contains("``") ||
-                                                    x.Attribute("name").Value.Contains("`"));                                                   
+                                                    x.Attribute("name").Value.Contains("`"));
             foreach (var genericMember in genericMembers)
             {
                 if (genericMember.Element("typeparam") != null)
@@ -147,7 +189,7 @@ namespace Dynamo.Docs
                     if (typeParamelem != null)
                     {
                         var typeParamName = typeParamelem.Attribute("name").Value;
-                        var text = ConvertGenericParameterName(genericMember.Attribute("name").Value, typeParamName);                    
+                        var text = ConvertGenericParameterName(genericMember.Attribute("name").Value, typeParamName);
                         genericMember.Attribute("name").Value = text;
                     }
                 }
@@ -155,14 +197,40 @@ namespace Dynamo.Docs
                 //if there is no typeparam (possible if it is not documented correctly, then just replace it by T.
                 else
                 {
-                    var text = ConvertGenericParameterName(genericMember.Attribute("name").Value);                    
+                    var text = ConvertGenericParameterName(genericMember.Attribute("name").Value);
                     genericMember.Attribute("name").Value = text;
                 }
             }
-            var sb = new StringBuilder();
+        }
+
+        private static void GenerateMarkdownDocumentForType(Type t, string folder, XDocument xml)
+        {          
+           string[] temp = t.Name.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+            var typeName = temp[0];
+           var members = xml.Root.Element("members").Elements("member");
+                      
+           var sb = new StringBuilder();
 
             sb.AppendLine("#" + typeName);
             sb.Append(GetMarkdownForType(members, t.FullName));
+            sb.AppendLine("---");
+
+            sb.AppendLine("##Constructors ");
+
+            foreach (var method in t.GetConstructors(BindingFlags.FlattenHierarchy |
+                BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static))
+            {
+                var methodParams = method.GetParameters();
+                var methodName = method.Name.Replace("ctor", t.Name);
+
+                var fullMethodName = methodParams.Any() ?
+               methodName + "(" + string.Join(",", methodParams.Select(pi => pi.ParameterType.FullName)) + ")" :
+               methodName;
+
+                var current = GetMarkdownForMethod(members, t.FullName + fullMethodName);
+                sb.Append(current);
+            }            
+            
             sb.AppendLine("---");
 
             sb.AppendLine("##Methods  ");
@@ -170,6 +238,7 @@ namespace Dynamo.Docs
             {
                 var methodParams = method.GetParameters();
                 var methodName = method.Name;
+                XmlToMarkdown.returnType = method.ReturnType.Name;                
                 //If the method is List<T,T>
                 if (method.IsGenericMethod)
                 {
@@ -184,7 +253,7 @@ namespace Dynamo.Docs
                     methodName;
 
                 Debug.WriteLine(t.FullName + "." + fullMethodName);
-             
+
                 var current = GetMarkdownForMethod(members, t.FullName + "." + fullMethodName);
                 sb.Append(current);
             }
@@ -192,7 +261,8 @@ namespace Dynamo.Docs
 
             sb.AppendLine("##Properties  ");
             foreach (var property in t.GetProperties())
-            {
+            {                
+                XmlToMarkdown.returnType  = property.PropertyType.Name;
                 var propertyNameSpace = ConvertGenericParameterName(t.FullName);
                 var current = GetMarkdownForProperty(members, propertyNameSpace + "." + property.Name);               
                 sb.Append(current);
@@ -202,6 +272,7 @@ namespace Dynamo.Docs
             sb.AppendLine("##Events  ");
             foreach (var e in t.GetEvents())
             {
+                XmlToMarkdown.returnType = string.Empty;
                 var eventNameSpace = ConvertGenericParameterName(t.FullName);                
                 var current = GetMarkdownForEvent(members, eventNameSpace + "." + e.Name);                
                 sb.Append(current);
@@ -259,7 +330,7 @@ namespace Dynamo.Docs
             return returnText;
         }
         private static string GetMarkdownForMethod(IEnumerable<XElement> members, string methodName)
-        {
+        {          
             return GetMarkdownForMember(members, string.Format("M:{0}", methodName));
         }
 
@@ -300,6 +371,7 @@ namespace Dynamo.Docs
         private static string ApiStabilityTag = "api_stability";
         internal static string ApiStabilityStub = "stability=";
         internal static string ApiStabilityTemplate = "<sup>" + "{0}" + "</sup>";
+        internal static string returnType;
 
         private static Dictionary<string, string> templates =
             new Dictionary<string, string>
@@ -311,13 +383,13 @@ namespace Dynamo.Docs
                     {"method", "##### {0}\n\n{1}\n"},
                     {"event", "##### {0}\n\n{1}\n"},
                     {"summary", "{0}\n\n"},
-                    {"remarks", "\n\n>{0}\n\n"},
+                    {"remarks", "\n\n{0}\n\n"},
                     {"example", "_C# code_\n\n```c#\n{0}\n```\n\n"},
                     {"seePage", "[[{1}|{0}]]"},
                     {"seeAnchor", "[{1}]({0})"},
-                    {"param", "|Name | Description |\n|-----|------|\n|{0}: |{1}|\n" },
+                    {"param", "|Name | Description |\n|-----||\n|{0} |{1}|\n" },
                     {"exception", "[[{0}|{0}]]: {1}\n\n" },
-                    {"returns", "Returns: {0}\n\n"},
+                    {"returns", "\n\n Returns {0}\n\n"},
                     {"none", ""},
                     {"typeparam", ""},
                     {"c", "`{0}`"},                   
@@ -338,7 +410,7 @@ namespace Dynamo.Docs
             {
                 var methodName = node.Attribute(att1).Value.Split('.').Last();                
                 var convertedMethodName = ConvertGenericParameters(node, methodName, att2);
-
+                convertedMethodName = string.Join(" ", returnType, convertedMethodName);
                 return new[]
                 {
                     convertedMethodName,
@@ -351,10 +423,10 @@ namespace Dynamo.Docs
             {              
                 var methodName = node.Attribute(att1).Value.Split(':').Last();
                 var convertedMethodName = ConvertGenericParameters(node, methodName, att2);
-                
+                convertedMethodName = string.Join(" ", returnType, convertedMethodName);
+               
                 return new[]
-                {
-                   // convertedMethodName.Contains("(")? methodName : methodName + "()", 
+                {                   
                    convertedMethodName,
                     node.Nodes().ToMarkDown(),
                 };
@@ -432,8 +504,8 @@ namespace Dynamo.Docs
             else
             {
                 methodName = methodName.Split('.').Last();
+                methodName = methodName + "( )";                      
                 methodName = CheckAndAppendStability(node, methodName);
-
             }
 
             return methodName;
@@ -496,11 +568,16 @@ namespace Dynamo.Docs
                     name = anchor ? "seeAnchor" : "seePage";
                 }
 
-                if (!methods.ContainsKey(name))
+                if (name == "type")
                 {
                     return "";
                 }
 
+                if (!methods.ContainsKey(name))
+                {
+                    return "";
+                }
+               
                 var vals = methods[name](el).ToArray();
 
                 string str = "";
