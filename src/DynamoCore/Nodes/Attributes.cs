@@ -214,10 +214,22 @@ namespace Dynamo.Nodes
     {
         public InputParametersAttribute(params string[] values)
         {
-            Values = values;
+            Values = new List<Tuple<string, string>>();
+
+            foreach (var value in values)
+            {
+                var parameters = value.Split(',');
+                if (parameters.Length != 2)
+                    continue;
+
+                var name = parameters[0];
+                var type = parameters[1];
+
+                Values.Add(Tuple.Create(name, type));
+            }
         }
 
-        public string[] Values { get; set; }
+        public List<Tuple<string, string>> Values { get; private set; }
     }
 
     [AttributeUsage(AttributeTargets.Class)]
@@ -228,6 +240,6 @@ namespace Dynamo.Nodes
             Values = values;
         }
 
-        public string[] Values { get; set; }
+        public string[] Values { get; private set; }
     }
 }

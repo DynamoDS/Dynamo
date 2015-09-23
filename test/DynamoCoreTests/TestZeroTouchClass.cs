@@ -1,4 +1,6 @@
-﻿using Dynamo.Engine;
+﻿using System;
+
+using Dynamo.Engine;
 using Dynamo.Library;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -85,7 +87,7 @@ namespace ProtoTest.FFITests
             Assert.IsTrue(attributes[0] is InputParametersAttribute);
 
             var parameters = (attributes[0] as InputParametersAttribute).Values;
-            var expected = new[] { "par1", "par2" };
+            var expected = new[] { Tuple.Create("par1", "int"), Tuple.Create("par2", "double") };
 
             Assert.AreEqual(expected, parameters);
         }

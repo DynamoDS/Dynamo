@@ -20,8 +20,8 @@ namespace DSCoreNodesUI
     [NodeCategory("Core.Color.Create")]
     [NodeDescription("ColorRangeDescription",typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeSearchTags("ColorRangeSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
-    [InputParameters("colors", "indices", "value")]
-    [OutputParameters("color")]
+    [InputParameters("colors,Color[]", "indices,double[]", "value,double[]")]
+    [OutputParameters("Color")]
     public class ColorRange : NodeModel
     {
         public event Action RequestChangeColorRange;
@@ -200,6 +200,12 @@ namespace DSCoreNodesUI
             {
                 return false;
             }
+        }
+
+
+        private static object Tuple(string p1, string p2)
+        {
+            throw new NotImplementedException();
         }
     }
 }

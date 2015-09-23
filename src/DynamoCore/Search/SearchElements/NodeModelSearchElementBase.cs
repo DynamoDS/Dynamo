@@ -22,7 +22,7 @@ namespace Dynamo.Search.SearchElements
             FullCategoryName = typeLoadData.Category;
             Description = typeLoadData.Description;
             Assembly = typeLoadData.Assembly.Location;
-            inputParameters = typeLoadData.InputParameters.Select(x => Tuple.Create(x, "")).ToList();
+            inputParameters = typeLoadData.InputParameters.ToList();
             outputParameters = typeLoadData.OutputParameters.ToList();
             iconName = typeLoadData.Type.FullName;
             ElementType = ElementTypes.ZeroTouch;

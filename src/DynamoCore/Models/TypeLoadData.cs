@@ -142,7 +142,7 @@ namespace Dynamo.Models
         /// <summary>
         /// Indicates input parameters.
         /// </summary>
-        public readonly IEnumerable<string> InputParameters;
+        public readonly IEnumerable<Tuple<string, string>> InputParameters;
 
         /// <summary>
         /// Indicates output parameters.
