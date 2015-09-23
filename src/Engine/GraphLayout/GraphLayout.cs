@@ -19,6 +19,11 @@ namespace GraphLayout
         public HashSet<Node> Nodes = new HashSet<Node>();
         public HashSet<Edge> Edges = new HashSet<Edge>();
 
+        public Graph ParentGraph;
+
+        public HashSet<Edge> AnchorLeftEdges = new HashSet<Edge>();
+        public HashSet<Edge> AnchorRightEdges = new HashSet<Edge>();
+
         public List<List<Node>> Layers = new List<List<Node>>();
 
         #region Helper methods
@@ -31,10 +36,10 @@ namespace GraphLayout
         /// <param name="height">The height of the node view.</param>
         /// <param name="x">The x coordinate of the node view.</param>
         /// <param name="y">The y coordinate of the node view.</param>
-        /// <param name="inPortCount">The number of input ports of the node.</param>
-        public void AddNode(Guid guid, double width, double height, double x, double y)
+        /// <param name="isSelected">True if the node is selected in the workspace.</param>
+        public void AddNode(Guid guid, double width, double height, double x, double y, bool isSelected)
         {
-            var node = new Node(guid, width, height, x, y, this);
+            var node = new Node(guid, width, height, x, y, isSelected, this);
             Nodes.Add(node);
         }
 
@@ -253,98 +258,48 @@ namespace GraphLayout
         {
             RemoveTransitiveEdges();
 
-            // The rightmost layer is ordered based on the original vertical
-            // position of the nodes.
-            if (Edges.Count > 0)
+            foreach (var n in Nodes)
             {
-                AddToLayer(Nodes.Where(x => x.RightEdges.Count == 0
-                    && x.LeftEdges.Count > 0).OrderBy(x => x.Y).ToList(), 0);
-            }
-            else
-            {
-                AddToLayer(Nodes.OrderBy(x => x.Y).ToList(), 0);
+                AddToLayer(n.RightEdges.Where(e => !e.EndNode.IsSelected).Select(e => e.EndNode).ToList(), 0);
             }
 
-            // Label the rest of the nodes based on the number of incoming edges.
-            List<Node> OrderedNodes = Nodes.Where(x => x.LeftEdges.Count > 0)
-                .OrderByDescending(x => x.LeftEdges.Count).ToList();
+            int currentLayer = 1;
+            int processed = 0;
 
-            bool isFinalLayer = false;
-            int currentLayer = 0;
-            int processed = Layers.Count > 0 ? Layers.First().Count : 0;
-
-            double layerWidth = 0;
-
-            while (processed < OrderedNodes.Count)
+            while (processed < Nodes.Count)
             {
                 // Choose a node with the highest priority (leftmost in the list)
                 // such that all the right edges of the is node connected to U.
-                
-                List<Node> selected = OrderedNodes.Where(x => x.Layer < 0 &&
-                    x.RightEdges.All(e => e.EndNode.Layer >= 0)).ToList();
+
+                List<Node> selected = Nodes.Where(x => x.Layer < 0 &&
+                    x.RightEdges.All(e => e.EndNode.Layer >= 0)).OrderBy(x => x.Y).ToList();
 
                 Node n = null;
 
                 if (selected.Count > 0)
                 {
-                    n = selected.FirstOrDefault(x =>
-                        x.RightEdges.All(e => e.EndNode.Layer < currentLayer) &&
-                        x.LeftEdges.Count(e => e.Active) > 0);
-
-                    if (n == null)
-                    {
-                        n = selected.OrderByDescending(x => x.LeftEdges.Count).First();
-                    }
-
-                    if (n.LeftEdges.Count == 0)
-                    {
-                        Node temp = OrderedNodes.FirstOrDefault(x => x.Layer < 0 && x.LeftEdges.Count > 0);
-                        if (temp != null)
-                        {
-                            n = temp;
-                        }
-                    }
+                    n = selected.FirstOrDefault(
+                        x => x.RightEdges.All(e => e.EndNode.Layer < currentLayer))
+                        ?? selected.OrderByDescending(x => x.LeftEdges.Count).First();
                 }
                 else
                 {
                     // For cyclic subgraphs
-                    n = OrderedNodes.Where(x => x.Layer < 0).OrderByDescending(
+                    n = Nodes.Where(x => x.Layer < 0).OrderByDescending(
                         x => x.RightEdges.Count(e => e.EndNode.Layer >= 0)).First();
                     currentLayer = 0;
                 }
 
                 // Add a new layer when needed
-                if ((Layers.Count > 0 && Layers[currentLayer].Count >= MaxLayerHeight) ||
-                    !n.RightEdges.All(e => e.EndNode.Layer < currentLayer) ||
-                    (currentLayer > 0 && n.LeftEdges.Count == 0 && !isFinalLayer))
+                if ((Layers.Count > 1 && Layers[currentLayer].Count >= MaxLayerHeight) ||
+                    !n.RightEdges.All(e => e.EndNode.Layer < currentLayer))
                 {
                     currentLayer++;
-
-                    layerWidth = 0;
-
-                    if (n.LeftEdges.Count == 0)
-                    {
-                        isFinalLayer = true;
-                    }
                 }
 
                 AddToLayer(n, currentLayer);
                 processed++;
-
-                if (n.Width > layerWidth)
-                {
-                    layerWidth = n.Width;
-                }
             }
-
-            // Put all isolated nodes on the leftmost layer
-            AddToLayer(Nodes.Where(x => (x.Layer < 0 &&
-                x.LeftEdges.Count == 0 && x.RightEdges.Count == 0)).ToList(), Layers.Count);
-
-            // Assign nodes with unconnected input ports right behind its next layer
-            foreach (Node n in Nodes.Where(x => x.LeftEdges.Count == 0 && x.RightEdges.Count > 0))
-                AddToLayer(n, n.RightEdges.Max(x => x.EndNode.Layer) + 1);
-
         }
 
         /// <summary>
@@ -356,56 +311,87 @@ namespace GraphLayout
         public void OrderNodes()
         {
             // Assign temporary vertical indices for further processing
-            foreach (List<Node> layer in Layers)
+            foreach (List<Node> layer in Layers.Skip(1))
             {
                 foreach (Node node in layer)
                     node.Y = Infinite;
             }
-            double y = 0;
-            foreach (Node node in Layers.First())
-            {
-                node.Y = y;
-                y += 80;
-            }
             
-            foreach (List<Node> layer in Layers)
+            foreach (List<Node> layer in Layers.Skip(1))
             {
                 double prevY = -10;
+                bool changed = false;
 
                 foreach (Node n in layer)
                 {
                     // Get the vertical coordinates from each node's median
                     // outgoing edge
 
-                    if (layer.First().Layer > 0)
+                    List<Edge> neighborEdges = n.RightEdges
+                        .Where(x => x.EndNode.Y < Infinite).OrderBy(x => x.EndY).ToList();
+
+                    if (neighborEdges.Count > 1 && neighborEdges.Count % 2 == 0)
                     {
-                        List<Edge> neighborEdges = n.RightEdges
-                            .Where(x => x.EndNode.Y < Infinite).OrderBy(x => x.EndY).ToList();
+                        Edge median1 = neighborEdges[(neighborEdges.Count - 1) / 2];
+                        Edge median2 = neighborEdges[(neighborEdges.Count) / 2];
+
+                        n.Y = (median1.EndNode.Y + median1.EndOffsetY +
+                            median2.EndNode.Y + median2.EndOffsetY -
+                            median1.StartOffsetY - median2.StartOffsetY) / 2;
+                        prevY = n.Y;
+                        changed = true;
+                    }
+                    else if (neighborEdges.Count > 0)
+                    {
+                        Edge median = neighborEdges[(neighborEdges.Count - 1) / 2];
+
+                        n.Y = median.EndNode.Y + median.EndOffsetY - median.StartOffsetY;
+                        prevY = n.Y;
+                        changed = true;
+                    }
+                    else if (n.LeftEdges.Count > 0 && AnchorRightEdges.Count == 0)
+                    {
+                        n.Y = prevY + 10;
+                        prevY = n.Y;
+                        changed = true;
+                    }
+                }
+
+                if (changed)
+                    AssignCoordinates(layer);
+            }
+
+            // Assign left-anchored nodes
+            foreach (List<Node> layer in Layers.Skip(1))
+            {
+                bool changed = false;
+                foreach (Node n in layer)
+                {
+                    if (n.Y >= Infinite)
+                    {
+                        List<Edge> neighborEdges = n.LeftEdges
+                            .Where(x => x.StartNode.Y < Infinite).OrderBy(x => x.EndY).ToList();
 
                         if (neighborEdges.Count > 1 && neighborEdges.Count % 2 == 0)
                         {
                             Edge median1 = neighborEdges[(neighborEdges.Count - 1) / 2];
                             Edge median2 = neighborEdges[(neighborEdges.Count) / 2];
 
-                            n.Y = (median1.EndNode.Y + median1.EndOffsetY +
-                                median2.EndNode.Y + median2.EndOffsetY -
-                                median1.StartOffsetY - median2.StartOffsetY) / 2;
+                            n.Y = (median1.StartNode.Y + median1.StartOffsetY +
+                                median2.StartNode.Y + median2.StartOffsetY -
+                                median1.EndOffsetY - median2.EndOffsetY) / 2;
                         }
                         else if (neighborEdges.Count > 0)
                         {
                             Edge median = neighborEdges[(neighborEdges.Count - 1) / 2];
 
-                            n.Y = median.EndNode.Y + median.EndOffsetY - median.StartOffsetY;
+                            n.Y = median.StartNode.Y + median.StartOffsetY - median.EndOffsetY;
                         }
-                        else if (n.LeftEdges.Count > 0)
-                        {
-                            n.Y = prevY + 10;
-                            prevY = n.Y;
-                        }
+                        changed = true;
                     }
                 }
-
-                AssignCoordinates(layer);
+                if (changed)
+                    AssignCoordinates(layer);
             }
         }
 
@@ -467,17 +453,6 @@ namespace GraphLayout
                 n.Y = lastY;
                 lastY += n.Height + VerticalNodeDistance;
             }
-
-            foreach (Node n in layer)
-            {
-                // Assign dummy coordinates to node incoming edges
-                int b = 1;
-                foreach (Edge e in n.LeftEdges.OrderBy(x => x.EndY))
-                {
-                    e.EndY = n.Y + b;
-                    b++;
-                }
-            }
         }
 
         #endregion
@@ -486,6 +461,7 @@ namespace GraphLayout
 
         private double InitialGraphCenterX;
         private double InitialGraphCenterY;
+        public double OffsetY = 0;
 
         public double GraphCenterX
         {
@@ -514,8 +490,10 @@ namespace GraphLayout
             double previousLayerX = 0;
             double offsetY = -Nodes.OrderBy(x => x.Y).First().Y;
 
-            foreach (List<Node> layer in Layers.AsEnumerable().Reverse())
+            foreach (List<Node> layer in Layers.Skip(1).AsEnumerable().Reverse())
             {
+                if (layer.Count == 0) continue;
+
                 double layerWidth = layer.Max(x => x.Width);
 
                 foreach (Node x in layer)
@@ -548,8 +526,52 @@ namespace GraphLayout
         /// </summary>
         public void SetGraphPosition()
         {
-            double moveX = InitialGraphCenterX - GraphCenterX;
-            double moveY = InitialGraphCenterY - GraphCenterY;
+            double moveX = 0;
+            double moveY = 0;
+
+            // If this is a separate subgraph then retain original position
+            if (AnchorLeftEdges.Count + AnchorRightEdges.Count == 0)
+            {
+                moveX = InitialGraphCenterX - GraphCenterX;
+                moveY = InitialGraphCenterY - GraphCenterY;
+            }
+            else
+            {
+                double outsideY = AnchorLeftEdges.Select(e => e.StartY)
+                    .Union(AnchorRightEdges.Select(e => e.EndY)).Average();
+                double insideY = AnchorLeftEdges.Select(e => e.EndNode.Y + e.EndOffsetY)
+                    .Union(AnchorRightEdges.Select(e => e.StartNode.Y + e.StartOffsetY)).Average();
+                moveY = outsideY - insideY;
+                //moveY = InitialGraphCenterY - GraphCenterY;
+
+                if (AnchorRightEdges.Count == 0)
+                {
+                    // Anchored to the left
+                    double outsideX = AnchorLeftEdges.Max(e => e.StartX);
+                    double insideX = Nodes.Min(n => n.X);
+                    moveX = outsideX - insideX + HorizontalNodeDistance;
+
+                    moveX = Math.Max(HorizontalNodeDistance - AnchorLeftEdges.Min(e => e.EndX - e.StartX),
+                        InitialGraphCenterX - GraphCenterX);
+                }
+                else if (AnchorLeftEdges.Count == 0)
+                {
+                    // Anchored to the right
+                    double outsideX = AnchorRightEdges.Min(e => e.EndNode.X);
+                    double insideX = Nodes.Max(n => n.X + n.Width);
+                    moveX = outsideX - insideX - HorizontalNodeDistance;
+
+                    moveX = Math.Min(AnchorRightEdges.Min(e => e.EndX - e.StartX) - HorizontalNodeDistance,
+                        InitialGraphCenterX - GraphCenterX);
+                }
+                else
+                {
+                    // Anchored to both sides
+                    double outsideX = (AnchorLeftEdges.Max(e => e.StartX) +
+                        AnchorRightEdges.Min(e => e.EndNode.X)) / 2;
+                    moveX = outsideX - GraphCenterX;
+                }
+            }
 
             foreach (Node n in Nodes)
             {
@@ -617,13 +639,16 @@ namespace GraphLayout
         /// </summary>
         public List<Object> LinkedNotes = new List<Object>();
 
-        public Node(Guid guid, double width, double height, double x, double y, Graph ownerGraph)
+        public bool IsSelected;
+
+        public Node(Guid guid, double width, double height, double x, double y, bool isSelected, Graph ownerGraph)
         {
             Id = guid;
             Width = width;
             Height = height;
             X = x;
             Y = y;
+            IsSelected = isSelected;
             OwnerGraph = ownerGraph;
         }
     }
@@ -648,14 +673,22 @@ namespace GraphLayout
         /// </summary>
         public Node EndNode;
 
-        public double StartX;
-        public double StartY;
-        public double EndX;
-
-        /// <summary>
-        /// The y coordinate of the edge's right end.
-        /// </summary>
-        public double EndY;
+        public double StartX
+        {
+            get { return StartNode.X + StartNode.Width;  }
+        }
+        public double StartY
+        {
+            get { return StartNode.Y + StartOffsetY; }
+        }
+        public double EndX
+        {
+            get { return EndNode.X; }
+        }
+        public double EndY
+        {
+            get { return EndNode.Y + EndOffsetY; }
+        }
 
         /// <summary>
         /// The y distance between the edge's left end and the start node's top-right corner.
@@ -674,10 +707,6 @@ namespace GraphLayout
 
         public Edge(Guid startId, Guid endId, double startX, double startY, double endX, double endY, Graph ownerGraph)
         {
-            StartX = startX;
-            StartY = startY;
-            EndX = endX;
-            EndY = endY;
             OwnerGraph = ownerGraph;
 
             StartNode = OwnerGraph.FindNode(startId);

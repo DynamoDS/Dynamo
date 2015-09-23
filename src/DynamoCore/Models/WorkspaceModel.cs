@@ -384,7 +384,7 @@ namespace Dynamo.Models
             } 
         }
 
-        public GraphLayout.Graph LayoutGraph;
+        public List<GraphLayout.Graph> LayoutSubgraphs;
 
         private void AddNode(NodeModel node)
         {

@@ -1055,20 +1055,25 @@ namespace Dynamo.ViewModels
             if (Model.Nodes.Count() == 0)
                 return;
 
-            Model.LayoutGraph = new GraphLayout.Graph();
-            var graph = Model.LayoutGraph;
-            
-            GenerateLayoutGraph(graph);
-            RunLayoutGraph(graph);
-            SaveLayoutGraph(graph);
+            GenerateCombinedGraph();
+            GenerateSeparateSubgraphs();
+            Model.LayoutSubgraphs.Skip(1).ToList().ForEach(g => RunLayoutSubgraph(g));
+            AvoidSubgraphOverlap();
+            SaveLayoutGraph();
         }
 
-        private void GenerateLayoutGraph(GraphLayout.Graph graph)
+        private void GenerateCombinedGraph()
         {
+            Model.LayoutSubgraphs = new List<GraphLayout.Graph>();
+            Model.LayoutSubgraphs.Add(new GraphLayout.Graph());
+
+            GraphLayout.Graph combinedGraph = Model.LayoutSubgraphs.First();
+
             foreach (AnnotationModel group in Model.Annotations)
             {
                 // Treat a group as a graph layout node/vertex
-                graph.AddNode(group.GUID, group.Width, group.Height, group.X, group.Y);
+                combinedGraph.AddNode(group.GUID, group.Width, group.Height, group.X, group.Y,
+                    group.IsSelected || DynamoSelection.Instance.Selection.Count == 0);
             }
 
             foreach (NodeModel node in Model.Nodes)
@@ -1079,7 +1084,8 @@ namespace Dynamo.ViewModels
                 // Do not process nodes within groups
                 if (group == null)
                 {
-                    graph.AddNode(node.GUID, node.Width, node.Height, node.X, node.Y);
+                    combinedGraph.AddNode(node.GUID, node.Width, node.Height, node.X, node.Y,
+                        node.IsSelected || DynamoSelection.Instance.Selection.Count == 0);
                 }
             }
 
@@ -1094,17 +1100,17 @@ namespace Dynamo.ViewModels
                 // Treat a group as a node, but do not process edges within a group
                 if (startGroup == null || endGroup == null || startGroup != endGroup)
                 {
-                    graph.AddEdge(
+                    combinedGraph.AddEdge(
                         startGroup == null ? edge.Start.Owner.GUID : startGroup.GUID,
                         endGroup == null ? edge.End.Owner.GUID : endGroup.GUID,
                         edge.Start.Center.X, edge.Start.Center.Y, edge.End.Center.X, edge.End.Center.Y);
                 }
             }
 
-            // Link a note to the nearest node
             foreach (NoteModel note in Model.Notes)
             {
-                GraphLayout.Node nd = graph.Nodes.OrderBy(node =>
+                // Link a note to the nearest node
+                GraphLayout.Node nd = combinedGraph.Nodes.OrderBy(node =>
                     Math.Pow(node.X + node.Width / 2 - note.X - note.Width / 2, 2) +
                     Math.Pow(node.Y + node.Height / 2 - note.Y - note.Height / 2, 2)).FirstOrDefault();
 
@@ -1115,7 +1121,55 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void RunLayoutGraph(GraphLayout.Graph graph)
+        public void GenerateSeparateSubgraphs()
+        {
+            int processed = 0;
+            var combinedGraph = Model.LayoutSubgraphs.First();
+            GraphLayout.Graph graph = graph = new GraphLayout.Graph();
+            Queue<GraphLayout.Node> queue = new Queue<GraphLayout.Node>();
+
+            while (combinedGraph.Nodes.Count(n => n.IsSelected) > 0)
+            {
+                GraphLayout.Node currentNode;
+
+                if (queue.Count == 0)
+                {
+                    if (graph.Nodes.Count > 0)
+                    {
+                        graph.ParentGraph = combinedGraph;
+                        Model.LayoutSubgraphs.Add(graph);
+                        combinedGraph.Nodes.ExceptWith(graph.Nodes);
+                        graph = new GraphLayout.Graph();
+                    }
+                    if (combinedGraph.Nodes.Count(n => n.IsSelected) == 0) break;
+
+                    currentNode = combinedGraph.Nodes.FirstOrDefault(n => n.IsSelected);
+                    graph.Nodes.Add(currentNode);
+                }
+                else
+                {
+                    currentNode = queue.Dequeue();
+                }
+
+                var selectedNodes = currentNode.RightEdges.Select(e => e.EndNode)
+                    .Union(currentNode.LeftEdges.Select(e => e.StartNode))
+                    .Except(graph.Nodes).ToList();
+                graph.Nodes.UnionWith(selectedNodes.Where(n => n.IsSelected));
+                graph.Edges.UnionWith(currentNode.RightEdges);
+                graph.Edges.UnionWith(currentNode.LeftEdges);
+
+                graph.AnchorRightEdges.UnionWith(currentNode.RightEdges.Where(e => !e.EndNode.IsSelected));
+                graph.AnchorLeftEdges.UnionWith(currentNode.LeftEdges.Where(e => !e.StartNode.IsSelected));
+
+                foreach (var node in selectedNodes.Where(n => n.IsSelected))
+                {
+                    queue.Enqueue(node);
+                    processed++;
+                }
+            }
+        }
+
+        private void RunLayoutSubgraph(GraphLayout.Graph graph)
         {
             // Support undo for graph layout command
             List<ModelBase> undoItems = new List<ModelBase>();
@@ -1134,56 +1188,111 @@ namespace Dynamo.ViewModels
             graph.SetGraphPosition();
         }
 
-        private void SaveLayoutGraph(GraphLayout.Graph graph)
+        private void AvoidSubgraphOverlap()
+        {
+            var VerticalGraphDistance = 30;
+            var HorizontalGraphDistance = 70;
+
+            bool boleh = true;
+
+            do
+            {
+                boleh = true;
+
+                foreach (var g1 in Model.LayoutSubgraphs.Skip(1)) foreach (var g2 in Model.LayoutSubgraphs.Skip(1)) if (!g1.Equals(g2)) if (g1.GraphCenterY + g1.OffsetY <= g2.GraphCenterY + g2.OffsetY)
+                {
+                    var g1n = g1.Nodes.OrderBy(n => n.Y + n.Height);
+                    var g2n = g2.Nodes.OrderBy(n => n.Y);
+
+                    foreach (var g1node in g1n)
+                    {
+                        foreach (var g2node in g2n)
+                        {
+                            if ((g1node.Y + g1node.Height + VerticalGraphDistance + g1.OffsetY > g2node.Y + g2.OffsetY) &&
+                                (((g1node.X <= g2node.X) && (g1node.X + g1node.Width + HorizontalGraphDistance > g2node.X)) ||
+                                ((g2node.X <= g1node.X) && (g2node.X + g2node.Width + HorizontalGraphDistance > g1node.X))))
+                            {
+                                g1.OffsetY -= 5;
+                                g2.OffsetY += 5;
+                                boleh = false;
+                                break;
+                            }
+                        }
+                        if (!boleh) break;
+                    }
+                }
+            } while (!boleh);
+        }
+
+        private void SaveLayoutGraph()
         {
             // Assign coordinates to nodes inside groups
             foreach (var group in Model.Annotations)
             {
-                var g = graph.FindNode(group.GUID);
-                double deltaX = g.X - group.X;
-                double deltaY = g.Y - group.Y;
-                foreach (var node in group.SelectedModels.OfType<NodeModel>())
+                GraphLayout.Node g = null;
+                double offsetY = 0;
+                foreach (GraphLayout.Graph graph in Model.LayoutSubgraphs)
                 {
-                    node.X += deltaX;
-                    node.Y += deltaY;
-                    node.ReportPosition();
+                    g = graph.FindNode(group.GUID);
+                    offsetY = graph.OffsetY;
+                    if (g != null) break;
                 }
 
-                foreach (NoteModel note in g.LinkedNotes)
+                if (g != null)
                 {
-                    note.X += deltaX;
-                    note.Y += deltaY;
-                    note.ReportPosition();
+                    double deltaX = g.X - group.X;
+                    double deltaY = g.Y - group.Y ;
+                    foreach (var node in group.SelectedModels.OfType<NodeModel>())
+                    {
+                        node.X += deltaX;
+                        node.Y += deltaY + offsetY;
+                        node.ReportPosition();
+                    }
+
+                    foreach (NoteModel note in g.LinkedNotes)
+                    {
+                        if (note.IsSelected || DynamoSelection.Instance.Selection.Count == 0)
+                        {
+                            note.X += deltaX;
+                            note.Y += deltaY + offsetY;
+                            note.ReportPosition();
+                        }
+                    }
                 }
             }
 
             // Assign coordinates to nodes outside groups
             foreach (var node in Model.Nodes)
             {
-                var n = graph.FindNode(node.GUID);
+                GraphLayout.Node n = null;
+                double offsetY = 0;
+                foreach (GraphLayout.Graph graph in Model.LayoutSubgraphs)
+                {
+                    n = graph.FindNode(node.GUID);
+                    offsetY = graph.OffsetY;
+                    if (n != null) break;
+                }
                 if (n != null)
                 {
                     double deltaX = n.X - node.X;
                     double deltaY = n.Y - node.Y;
 
                     node.X = n.X;
-                    node.Y = n.Y;
+                    node.Y = n.Y + offsetY;
                     node.ReportPosition();
                     HasUnsavedChanges = true;
 
                     foreach (NoteModel note in n.LinkedNotes)
                     {
-                        note.X += deltaX;
-                        note.Y += deltaY;
-                        note.ReportPosition();
+                        if (note.IsSelected || DynamoSelection.Instance.Selection.Count == 0)
+                        {
+                            note.X += deltaX;
+                            note.Y += deltaY + offsetY;
+                            note.ReportPosition();
+                        }
                     }
                 }
             }
-
-            // Fit view to the new graph layout
-            DynamoSelection.Instance.ClearSelection();
-            ResetFitViewToggle(null);
-            FitViewInternal();
         }
 
         private static bool CanDoGraphAutoLayout(object o)
