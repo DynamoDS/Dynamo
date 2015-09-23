@@ -201,11 +201,5 @@ namespace DSCoreNodesUI
                 return false;
             }
         }
-
-
-        private static object Tuple(string p1, string p2)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
