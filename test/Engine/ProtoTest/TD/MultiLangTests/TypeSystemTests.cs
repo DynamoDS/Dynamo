@@ -2963,15 +2963,15 @@ import(""FFITarget.dll"");
                             }
                     }
                    
-                   
-                    a:A[]=A.A(1);
-                    a1=a.a;
-                    b:A[]=B.B(2);
-                    b1=b.b;
-                    b2=b.b;
-                    c:B[]=A.A(3);
-                    c1=c.b;
-                    c2=c.b;
+                    a:A[]=A.A(1); 
+                    a1=a.a; 
+                    b:A[]=B.B(2); 
+                    b1=b.b; 
+                    b2=b.a; 
+                    c:B[]=A.A(3); 
+                    c1=c.b; 
+                    c2=c.a;
+
                     ";
             string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
             thisTest.RunScriptSource(code, error);
