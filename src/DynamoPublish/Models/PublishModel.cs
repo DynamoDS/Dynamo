@@ -257,6 +257,19 @@ namespace Dynamo.Publish.Models
         /// <returns>String which is response from server.</returns>
         internal string Send(IEnumerable<IWorkspaceModel> workspaces, WorkspaceProperties workspaceProperties = null)
         {
+            var homeWorkspaces = workspaces.OfType<HomeWorkspaceModel>().ToList();
+            if (!homeWorkspaces.Any())
+            {
+                throw new InvalidOperationException("No " + typeof(HomeWorkspaceModel) + " provided");
+            }
+
+            if (homeWorkspaces.Count > 1)
+            {
+                throw new InvalidOperationException("Too many " + typeof(HomeWorkspaceModel) + "'s provided");
+            }
+
+            HomeWorkspace = homeWorkspaces.First();
+
             if (String.IsNullOrWhiteSpace(serverUrl))
             {
                 Error = UploadErrorType.ServerNotFound;
@@ -278,13 +291,15 @@ namespace Dynamo.Publish.Models
             if (reachClient == null)
                 reachClient = new WorkspaceStorageClient(authenticationProvider, serverUrl);
 
-            HomeWorkspace = workspaces.OfType<HomeWorkspaceModel>().First();
-            var functionNodes = HomeWorkspace.Nodes.OfType<Function>();
-
-            List<CustomNodeDefinition> dependencies = new List<CustomNodeDefinition>();
-            foreach (var node in functionNodes)
+            // collect all dependencies
+            var dependencies = new HashSet<CustomNodeDefinition>();
+            foreach (var node in HomeWorkspace.Nodes.OfType<Function>())
             {
-                dependencies.AddRange(node.Definition.Dependencies);
+                dependencies.Add(node.Definition);
+                foreach (var dep in node.Definition.Dependencies)
+                {
+                    dependencies.Add(dep);
+                }
             }
 
             CustomNodeWorkspaces = new List<ICustomNodeWorkspaceModel>();
