@@ -270,4 +270,7 @@
   <data name="CustomNodeDefinitionNotFoundErrorMessage" xml:space="preserve">
     <value>Custom node workspace {0} is not available to be published.</value>
   </data>
+  <data name="LinkCopied" xml:space="preserve">
+    <value>Link copied to clipboard.</value>
+  </data>
 </root>
