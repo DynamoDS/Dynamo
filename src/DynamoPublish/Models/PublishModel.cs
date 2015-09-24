@@ -78,8 +78,7 @@ namespace Dynamo.Publish.Models
 
                     if (!workspaceExists)
                     {
-                        throw new InvalidOperationException("Custom node workspace " +
-                            dependency.FunctionName + " is not available to be published.");
+                        throw new InvalidOperationException(String.Format(Resources.CustomNodeDefinitionNotFoundErrorMessage, dependency.FunctionName));
                     }
 
                     if (!customNodeWorkspaces.Contains(customNodeWs))

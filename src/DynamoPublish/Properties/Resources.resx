@@ -267,4 +267,7 @@
   <data name="VisitButtonTitle" xml:space="preserve">
     <value>Visit</value>
   </data>
+  <data name="CustomNodeDefinitionNotFoundErrorMessage" xml:space="preserve">
+    <value>Custom node workspace {0} is not available to be published.</value>
+  </data>
 </root>
