@@ -41,7 +41,10 @@ namespace Dynamo.Models
         private int currentPasteOffset = 0;
         internal int CurrentPasteOffset
         {
-            get { return currentPasteOffset; }
+            get
+            {
+                return currentPasteOffset == 0 ? PASTE_OFFSET_STEP : currentPasteOffset;
+            }
         }
 
         /// <summary>
