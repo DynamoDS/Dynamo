@@ -9,7 +9,7 @@ namespace Dynamo.Wpf.Views.Preview
     {
         Viewport3DX View { get; } 
 
-        void AddGeometryFromRenderPackages(IEnumerable<IRenderPackage> packages);
+        void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages);
 
         void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true);
 

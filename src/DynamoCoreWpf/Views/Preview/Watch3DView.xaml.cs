@@ -138,7 +138,9 @@ namespace Dynamo.Controls
         private void RequestCreateModelsHandler(IEnumerable<IRenderPackage> packages)
         {
             if (CheckAccess())
+            {
                 ViewModel.GenerateViewGeometryFromRenderPackagesAndRequestUpdate(packages);
+            }
             else
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => ViewModel.GenerateViewGeometryFromRenderPackagesAndRequestUpdate(packages)));
@@ -227,7 +229,7 @@ namespace Dynamo.Controls
             return View.Point2DToRay3D(new Point(mousePos.X, mousePos.Y));
         }
 
-        public void AddGeometryFromRenderPackages(IEnumerable<IRenderPackage> packages)
+        public void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages)
         {
             ViewModel.OnRequestCreateModels(packages);
         }

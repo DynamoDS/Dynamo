@@ -55,17 +55,17 @@ namespace Dynamo.Wpf.Extensions
         private void OnSelectionCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (SelectionCollectionChanged != null)
+            {
                 SelectionCollectionChanged(notifyCollectionChangedEventArgs);
+            }
         }
 
         private void AddItemToMenu(MenuBarType type, Control itemToAdd, int index)
         {
-            if (dynamoMenu == null)
-                return;
+            if (dynamoMenu == null) return;
 
             var dynamoItem = SearchForMenuItem(type);
-            if (dynamoItem == null)
-                return;
+            if (dynamoItem == null) return;
 
             if (index >= 0 && index < dynamoItem.Items.Count)
             {
