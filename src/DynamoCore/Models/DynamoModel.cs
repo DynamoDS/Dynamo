@@ -1579,8 +1579,8 @@ namespace Dynamo.Models
                 modelLookup.Add(note.GUID,noteModel);
                 newNoteModels.Add(noteModel);
 
-                minXY = Math.Min(note.CenterX + note.CenterY, minXY);
-                maxXY = Math.Max(note.CenterX + note.CenterY, maxXY);
+                minXY = Math.Round(Math.Min(note.CenterX + note.CenterY, minXY), 3);
+                maxXY = Math.Round(Math.Max(note.CenterX + note.CenterY, maxXY), 3);
             }
 
             var xmlDoc = new XmlDocument();
@@ -1615,10 +1615,10 @@ namespace Dynamo.Models
 
                 modelLookup.Add(node.GUID, newNode);
 
-                newNodeModels.Add( newNode );
+                newNodeModels.Add(newNode);
 
-                minXY = Math.Min(node.CenterX + node.CenterY, minXY);
-                maxXY = Math.Max(node.CenterX + node.CenterY, maxXY);
+                minXY = Math.Round(Math.Min(node.CenterX + node.CenterY, minXY), 3);
+                maxXY = Math.Round(Math.Max(node.CenterX + node.CenterY, maxXY), 3);
             }
 
             // Provide a small offset when pasting so duplicate pastes aren't directly on top of each other
@@ -1627,10 +1627,10 @@ namespace Dynamo.Models
             var newItems = newNodeModels.Concat<ModelBase>(newNoteModels);
 
             // Search for the rightmost item. It's item with the biggest X, Y coordinates of center.
-            var rightMostItem = newItems.FirstOrDefault(item => (item.CenterX + item.CenterY) == maxXY);
+            var rightMostItem = newItems.FirstOrDefault(item => Math.Round((item.CenterX + item.CenterY), 3) == maxXY);
 
             // Search for the leftmost item. It's item with the smallest X, Y coordinates of center.
-            var leftMostItem = newItems.FirstOrDefault(item => (item.CenterX + item.CenterY) == minXY);
+            var leftMostItem = newItems.FirstOrDefault(item => Math.Round((item.CenterX + item.CenterY), 3) == minXY);
 
             var oldCoordinateX = leftMostItem.X;
             var oldCoordinateY = leftMostItem.Y;
