@@ -192,6 +192,7 @@ namespace Dynamo.Publish.ViewModels
         private void CopyLink(object _)
         {
             System.Windows.Clipboard.SetText(ShareLink);
+            UploadStateMessage = Resources.LinkCopied;
         }
 
         private bool CanCopyLink(object _)
