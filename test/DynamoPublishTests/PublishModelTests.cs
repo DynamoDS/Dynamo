@@ -62,8 +62,6 @@ namespace DynamoPublishTests
             AssertNumberOfDeps(0);
         }
 
-
-
         [Test]
         public void WorkspaceDependencies_Collect_ShouldWorkCorrectlyForWorkspaceWithOneDep()
         {
