@@ -41,12 +41,8 @@ namespace DynamoPublishTests
                 CurrentDynamoModel.CustomNodeManager, client.Object);            
         }
 
-        [Test]
-        public void WorkspaceDependencies_Collect_ShouldWorkCorrectlyForWorkspaceWithNoDeps()
+        private void AssertNumberOfDeps(int numDeps)
         {
-            string openPath = Path.Combine(TestDirectory, @"Libraries\DynamoPublishTests\PublishWorkspaceTestNoDeps.dyn");
-            OpenModel(openPath);
-
             var hws = CurrentDynamoModel.CurrentWorkspace as HomeWorkspaceModel;
 
             Assert.NotNull(hws, "The current workspace is not a " + typeof(HomeWorkspaceModel).FullName);
@@ -54,8 +50,19 @@ namespace DynamoPublishTests
             var deps = PublishModel.WorkspaceDependencies.Collect(hws, CurrentDynamoModel.CustomNodeManager);
 
             Assert.IsNotNull(deps.HomeWorkspace);
-            Assert.AreEqual(0, deps.CustomNodeWorkspaces.Count());
+            Assert.AreEqual(numDeps, deps.CustomNodeWorkspaces.Count());
         }
+
+        [Test]
+        public void WorkspaceDependencies_Collect_ShouldWorkCorrectlyForWorkspaceWithNoDeps()
+        {
+            string openPath = Path.Combine(TestDirectory, @"Libraries\DynamoPublishTests\PublishWorkspaceTestNoDeps.dyn");
+            OpenModel(openPath);
+
+            AssertNumberOfDeps(0);
+        }
+
+
 
         [Test]
         public void WorkspaceDependencies_Collect_ShouldWorkCorrectlyForWorkspaceWithOneDep()
@@ -63,14 +70,7 @@ namespace DynamoPublishTests
             string openPath = Path.Combine(TestDirectory, @"Libraries\DynamoPublishTests\PublishWorkspaceTestOneDep.dyn");
             OpenModel(openPath);
 
-            var hws = CurrentDynamoModel.CurrentWorkspace as HomeWorkspaceModel;
-
-            Assert.NotNull(hws, "The current workspace is not a " + typeof(HomeWorkspaceModel).FullName);
-
-            var deps = PublishModel.WorkspaceDependencies.Collect(hws, CurrentDynamoModel.CustomNodeManager);
-
-            Assert.IsNotNull(deps.HomeWorkspace);
-            Assert.AreEqual(1, deps.CustomNodeWorkspaces.Count());
+            AssertNumberOfDeps(1);
         }
 
         [Test]
@@ -79,13 +79,7 @@ namespace DynamoPublishTests
             string openPath = Path.Combine(TestDirectory, @"Libraries\DynamoPublishTests\PublishWorkspaceTestTwoDeps.dyn");
             OpenModel(openPath);
 
-            var hws = CurrentDynamoModel.CurrentWorkspace as HomeWorkspaceModel;
-            Assert.NotNull(hws, "The current workspace is not a " + typeof(HomeWorkspaceModel).FullName);
-
-            var deps = PublishModel.WorkspaceDependencies.Collect(hws, CurrentDynamoModel.CustomNodeManager);
-
-            Assert.IsNotNull(deps.HomeWorkspace);
-            Assert.AreEqual(2, deps.CustomNodeWorkspaces.Count());
+            AssertNumberOfDeps(2);
         }
 
         [Test]
