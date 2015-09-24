@@ -119,7 +119,6 @@ namespace Dynamo.Publish.ViewModels
 
         internal Dispatcher UIDispatcher { get; set; }
 
-        public IEnumerable<IWorkspaceModel> Workspaces { get; set; }
         public IWorkspaceModel CurrentWorkspaceModel { get; set; }
 
         public string ManagerURL
@@ -160,16 +159,29 @@ namespace Dynamo.Publish.ViewModels
         private void OnPublish(object obj)
         {
             if (!model.IsLoggedIn)
+            {
                 model.Authenticate();
+            }
 
             if (!model.IsLoggedIn)
+            {
                 return;
+            }
 
-            var workspaceProperties = new WorkspaceProperties();
-            workspaceProperties.Name = Name;
-            workspaceProperties.Description = Description;
+            var workspaceProperties = new WorkspaceProperties
+            {
+                Name = Name,
+                Description = Description
+            };
 
-            model.SendAsynchronously(Workspaces, workspaceProperties);
+            var workspace = CurrentWorkspaceModel as HomeWorkspaceModel;
+
+            if (workspace == null)
+            {
+                throw new InvalidOperationException("The CurrentWorkspaceModel must be of type " + typeof(HomeWorkspaceModel).Name);
+            }
+
+            model.SendAsynchronously(workspace, workspaceProperties);
         }
 
         private void Visit(object _)
