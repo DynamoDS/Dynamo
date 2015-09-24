@@ -267,4 +267,7 @@
   <data name="VisitButtonTitle" xml:space="preserve">
     <value>Visit</value>
   </data>
+  <data name="LinkCopied" xml:space="preserve">
+    <value>Link copied to clipboard.</value>
+  </data>
 </root>
