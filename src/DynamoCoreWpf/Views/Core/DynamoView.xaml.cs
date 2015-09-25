@@ -38,6 +38,7 @@ using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views.Gallery;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Interfaces;
 using Dynamo.Wpf.Views.PackageManager;
@@ -51,18 +52,18 @@ namespace Dynamo.Controls
     {
         private readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
         private DynamoViewModel dynamoViewModel;
-        private Stopwatch _timer;
+        private readonly Stopwatch _timer;
         private StartPageViewModel startPage;
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
         private GalleryView galleryView;
-        private LoginService loginService;
+        private readonly LoginService loginService;
         internal ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
 
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
         private bool isPSSCalledOnViewModelNoCancel = false;
 
-        DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
+        private readonly DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
 
         public DynamoView(DynamoViewModel dynamoViewModel)
         {
@@ -144,7 +145,6 @@ namespace Dynamo.Controls
                     Log(ext.Name + ": " + exc.Message);
                 }
             }
-
         }
 
         #region NodeViewCustomization
@@ -663,16 +663,17 @@ namespace Dynamo.Controls
             }
         }
 
-        void Selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void Selection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             dynamoViewModel.CopyCommand.RaiseCanExecuteChanged();
             dynamoViewModel.PasteCommand.RaiseCanExecuteChanged();
             dynamoViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
+
         }
 
         void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
-            var prompt = new CrashPrompt(args,dynamoViewModel);
+            var prompt = new CrashPrompt(args, dynamoViewModel);
             prompt.ShowDialog();
         }
 
@@ -1545,6 +1546,7 @@ namespace Dynamo.Controls
 
             e.Handled = true;
         }
+
 
         private void Log(ILogMessage obj)
         {

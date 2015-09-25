@@ -735,7 +735,10 @@ namespace Dynamo.ViewModels
             }
 
             if (nodes.Count() == 0)
+            {
+                selectionNavigator.UpdateRootCategories(SearchRootCategories);
                 return;
+            }
 
             // Clone top node.
             NodeSearchElementViewModel topNode;

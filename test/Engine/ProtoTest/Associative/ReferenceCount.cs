@@ -1,3 +1,4 @@
+/*
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +16,11 @@ namespace ProtoTest.Associative
         public void TestReferenceCount01_NoFunctionCall_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();as = {a1, a2, a3};bs = {b1, b2, b3};a = DisposeTestClassA.DisposeTestClassA();b = DisposeTestClassB.DisposeTestClassB();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();as = {a1, a2, a3};bs = {b1, b2, b3};a = DisposeTestClassA.DisposeTestClassA();b = DisposeTestClassB.DisposeTestClassB();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
@@ -27,7 +32,11 @@ namespace ProtoTest.Associative
         public void TestReferenceCount02_FunctionNonArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClass.DisposeTestClassA.count = 0;DisposeTestClass.DisposeTestClassB.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();as = {a1, a2, a3};bs = {b1, b2, b3};a = DisposeTestClassA.DisposeTestClassA();b = DisposeTestClassB.DisposeTestClassB();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();as = {a1, a2, a3};bs = {b1, b2, b3};a = DisposeTestClassA.DisposeTestClassA();b = DisposeTestClassB.DisposeTestClassB();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
@@ -39,7 +48,11 @@ namespace ProtoTest.Associative
         public void TestReferenceCount03_FunctionReplication_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();as = {a1, a2, a3};bs = {b1, b2, b3};a = DisposeTestClassA.DisposeTestClassA();b = DisposeTestClassB.DisposeTestClassB();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();as = {a1, a2, a3};bs = {b1, b2, b3};a = DisposeTestClassA.DisposeTestClassA();b = DisposeTestClassB.DisposeTestClassB();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
@@ -51,7 +64,11 @@ namespace ProtoTest.Associative
         public void TestReferenceCount04_FunctionArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();as = {a1, a2, a3};bs = {b1, b2, b3};a = DisposeTestClassA.DisposeTestClassA();b = DisposeTestClassB.DisposeTestClassB();r = bar(bs);}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();as = {a1, a2, a3};bs = {b1, b2, b3};a = DisposeTestClassA.DisposeTestClassA();b = DisposeTestClassB.DisposeTestClassB();r = bar(bs);}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
@@ -63,19 +80,27 @@ namespace ProtoTest.Associative
         public void TestReferenceCount05_StaticFunctionNonArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();as = {a1, a2, a3};bs = {b1, b2, b3};a = DisposeTestClassA.DisposeTestClassA();b = DisposeTestClassB.DisposeTestClassB();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();as = {a1, a2, a3};bs = {b1, b2, b3};a = DisposeTestClassA.DisposeTestClassA();b = DisposeTestClassB.DisposeTestClassB();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
         }
 
-     
+
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount06_StaticFunctionReplication_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();as = {a1, a2, a3};bs = {b1, b2, b3};a = DisposeTestClassA.DisposeTestClassA();b = DisposeTestClassB.DisposeTestClassB();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();as = {a1, a2, a3};bs = {b1, b2, b3};a = DisposeTestClassA.DisposeTestClassA();b = DisposeTestClassB.DisposeTestClassB();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
@@ -87,58 +112,78 @@ namespace ProtoTest.Associative
         public void TestReferenceCount07_StaticFunctionArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();as = {a1, a2, a3};bs = {b1, b2, b3};a = DisposeTestClassA.DisposeTestClassA();b = DisposeTestClassB.DisposeTestClassB();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();as = {a1, a2, a3};bs = {b1, b2, b3};a = DisposeTestClassA.DisposeTestClassA();b = DisposeTestClassB.DisposeTestClassB();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
         }
 
-      
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount08_MemFunctionNonArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();as = {a1, a2, a3};bs = {b1, b2, b3};a = DisposeTestClassA.DisposeTestClassA();b = DisposeTestClassB.DisposeTestClassB();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();as = {a1, a2, a3};bs = {b1, b2, b3};a = DisposeTestClassA.DisposeTestClassA();b = DisposeTestClassB.DisposeTestClassB();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
         }
 
-      
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount09_MemFunctionReplication_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();as = {a1, a2, a3};bs = {b1, b2, b3};a = DisposeTestClassA.DisposeTestClassA();b = DisposeTestClassB.DisposeTestClassB();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();as = {a1, a2, a3};bs = {b1, b2, b3};a = DisposeTestClassA.DisposeTestClassA();b = DisposeTestClassB.DisposeTestClassB();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
         }
 
-      
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount10_MemFunctionArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();as = {a1, a2, a3};bs = {b1, b2, b3};a = DisposeTestClassA.DisposeTestClassA();b = DisposeTestClassB.DisposeTestClassB();r = a.bar(bs);}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();as = {a1, a2, a3};bs = {b1, b2, b3};a = DisposeTestClassA.DisposeTestClassA();b = DisposeTestClassB.DisposeTestClassB();r = a.bar(bs);}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
         }
 
-     
+
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount11_ReplicationNonArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();as = {a1, a2, a3};bs = {b1, b2, b3};a = DisposeTestClassA.DisposeTestClassA();b = DisposeTestClassB.DisposeTestClassB();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();as = {a1, a2, a3};bs = {b1, b2, b3};a = DisposeTestClassA.DisposeTestClassA();b = DisposeTestClassB.DisposeTestClassB();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
@@ -150,7 +195,11 @@ namespace ProtoTest.Associative
         public void TestReferenceCount12_ReplicationReplication_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();as = {a1, a2, a3};bs = {b1, b2, b3};a = DisposeTestClassA.DisposeTestClassA();b = DisposeTestClassB.DisposeTestClassB();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();as = {a1, a2, a3};bs = {b1, b2, b3};a = DisposeTestClassA.DisposeTestClassA();b = DisposeTestClassB.DisposeTestClassB();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
@@ -162,109 +211,145 @@ namespace ProtoTest.Associative
         public void TestReferenceCount13_ReplicationArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();as = {a1, a2, a3};bs = {b1, b2, b3};a = DisposeTestClassA.DisposeTestClassA();b = DisposeTestClassB.DisposeTestClassB();r = as.bar(bs);}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();as = {a1, a2, a3};bs = {b1, b2, b3};a = DisposeTestClassA.DisposeTestClassA();b = DisposeTestClassB.DisposeTestClassB();r = as.bar(bs);}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
         }
 
-    
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount14_GlobalFunctionTwoArguments_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
         }
 
-      
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount15_GlobalFunctionTwoArguments_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b = DisposeTestClassB.DisposeTestClassB();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b = DisposeTestClassB.DisposeTestClassB();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
         }
 
-    
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount16_GlobalFunctionTwoArguments_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
         }
 
-       
+
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount17_StaticFunctionTwoArguments_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
         }
 
-      
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount18_StaticFunctionTwoArguments_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b = DisposeTestClassB.DisposeTestClassB();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b = DisposeTestClassB.DisposeTestClassB();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
         }
 
-      
+
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount19_StaticFunctionTwoArguments_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
         }
 
-      
+
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount20_MemberFunctionTwoArguments_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};a = DisposeTestClassA.DisposeTestClassA();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};a = DisposeTestClassA.DisposeTestClassA();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-       
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount21_MemberFunctionTwoArguments_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};a = DisposeTestClassA.DisposeTestClassA();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};a = DisposeTestClassA.DisposeTestClassA();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
@@ -277,600 +362,776 @@ namespace ProtoTest.Associative
         public void TestReferenceCount22_MemberFunctionTwoArguments_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};a = DisposeTestClassA.DisposeTestClassA();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};a = DisposeTestClassA.DisposeTestClassA();}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-       
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount23_MemberFunctionTwoArguments_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-      
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount24_MemberFunctionTwoArguments_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-       
+
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount25_MemberFunctionTwoArguments_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-      
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount26_GlobalFunctionReturnArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-       
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount27_GlobalFunctionReturnArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-      
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount28_GlobalFunctionReturnArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-       
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount29_MemberFunctionReturnArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-      
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount30_MemberFunctionReturnArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-       
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount31_MemberFunctionReturnArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-      
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount32_StaticFunctionReturnArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-     
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount33_StaticFunctionReturnArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-      
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount34_StaticFunctionReturnArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-       
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount35_StaticFunctionReturnObject_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-       
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount36_StaticFunctionReturnObject_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-      
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount37_MemberFunctionReturnObject_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-      
+
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount38_MemberFunctionReturnObject_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-       
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount39_GlobalFunctionReturnObject_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-       
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount40_GlobalFunctionReturnObject_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-      
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount41_MemberFunctionReturnArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-       
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount42_MemberFunctionReturnArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-       
+
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount43_MemberFunctionReturnArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-        
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount44_MemberFunctionReturnObject_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-       
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount45_MemberFunctionReturnObject_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-      
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount46_GlobalFunctionReturnNewArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-       
+
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount47_GlobalFunctionReturnNewArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-       
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount48_GlobalFunctionReturnNewArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-       
+
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount49_MemberFunctionReturnNewArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-      
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount50_MemberFunctionReturnNewArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-       
+
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount51_MemberFunctionReturnNewArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-       
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount52_StaticFunctionReturnNewArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-     
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount53_StaticFunctionReturnNewArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-       
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount54_StaticFunctionReturnNewArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-       
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount55_StaticFunctionReturnNewObject_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-     
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount56_StaticFunctionReturnNewObject_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-      
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount57_MemberFunctionReturnNewObject_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-      
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount58_MemberFunctionReturnNewObject_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-       
+
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount59_GlobalFunctionReturnNewObject_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-       
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount60_GlobalFunctionReturnNewObject_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-       
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount61_MemberFunctionReturnNewArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-      
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount62_MemberFunctionReturnNewArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-       
+
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount63_MemberFunctionReturnNewArray_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-       
+
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount64_MemberFunctionReturnNewObject_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
             thisTest.Verify("cDispose", 0);
         }
 
-       
+
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount65_MemberFunctionReturnNewObject_Dispose()
         {
             string code =
+<<<<<<< HEAD
                 @"import(""FFITarget.dll"");DisposeTestClassDisposeTestClassA.count = 0;DisposeTestClassDisposeTestClassB.count = 0;DisposeTestClassDisposeTestClassC.count = 0;[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+=======
+                @"import(""FFITarget.dll"");DisposeTestClassA.Reset();DisposeTestClassB.Reset();DisposeTestClassC.Reset();[Associative]{a1 = DisposeTestClassA.DisposeTestClassA();a2 = DisposeTestClassA.DisposeTestClassA();a3 = DisposeTestClassA.DisposeTestClassA();as = {a1, a2, a3};b1 = DisposeTestClassB.DisposeTestClassB();b2 = DisposeTestClassB.DisposeTestClassB();b3 = DisposeTestClassB.DisposeTestClassB();bs = {b1, b2, b3};c1 = DisposeTestClassC.DisposeTestClassC();c2 = DisposeTestClassC.DisposeTestClassC();c3 = DisposeTestClassC.DisposeTestClassC();cs = {c1, c2, c3};}__GC();aDispose = DisposeTestClassA.count;bDispose = DisposeTestClassB.count;cDispose = DisposeTestClassC.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("aDispose", 0);
             thisTest.Verify("bDispose", 0);
@@ -881,7 +1142,11 @@ namespace ProtoTest.Associative
         [Category("DSDefinedClass_Ignore_DisposeWithinDSClass")]
         public void TestReferenceCount66_DID1467277()
         {
+<<<<<<< HEAD
             string code = @"class A{    x;    static s_dispose = 0;    constructor A(i)    {        x = i;    }    def _Dispose()    {        s_dispose = s_dispose + 1;        return = null;    }}class B{    def CreateA(i)    {        return = DisposeTestClassA.DisposeTestClassA(i);    }}b = DisposeTestClassB.DisposeTestClassB();t = A.s_dispose;";
+=======
+            string code = @"class A{    x;    static s_dispose = 0;    constructor A(i)    {        x = i;    }    def _Dispose()    {        s_dispose = s_dispose + 1;        return = null;    }}class B{    def CreateA(i)    {        return = DisposeTestClassA.DisposeTestClassA(i);    }}b = DisposeTestClassB.DisposeTestClassB();t = A.s_dispose;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             // SSA'd transforms will not GC the temps until end of block
             // However, they must be GC's after every line when in debug step over
@@ -903,7 +1168,11 @@ namespace ProtoTest.Associative
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount68_TemporaryArrayIndexing01()
         {
+<<<<<<< HEAD
             string code = @"import(""FFITarget.dll"");DisposeTestClassD.s_dispose = 0;[Associative]{    a = {DisposeTestClassD.DisposeTestClassD(), DisposeTestClassD.DisposeTestClassD(), DisposeTestClassD.DisposeTestClassD()}[1];}__GC();d = DisposeTestClassD.s_dispose;";
+=======
+            string code = @"import(""FFITarget.dll"");DisposeTestClassD.Reset();[Associative]{    a = {DisposeTestClassD.DisposeTestClassD(), DisposeTestClassD.DisposeTestClassD(), DisposeTestClassD.DisposeTestClassD()}[1];}__GC();d = DisposeTestClassD.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             string errorString = "";
             thisTest.RunScriptSource(code, errorString);
             thisTest.Verify("d", 3);
@@ -913,7 +1182,11 @@ namespace ProtoTest.Associative
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount69_TemporaryArrayIndexing02()
         {
+<<<<<<< HEAD
             string code = @"import(""FFITarget.dll"");DisposeTestClassD.s_dispose = 0;[Associative]{    a = {DisposeTestClassD.DisposeTestClassD(), DisposeTestClassD.DisposeTestClassD(), DisposeTestClassD.DisposeTestClassD()}[1];}__GC();d = DisposeTestClassD.s_dispose;
+=======
+            string code = @"import(""FFITarget.dll"");DisposeTestClassD.Reset();[Associative]{    a = {DisposeTestClassD.DisposeTestClassD(), DisposeTestClassD.DisposeTestClassD(), DisposeTestClassD.DisposeTestClassD()}[1];}__GC();d = DisposeTestClassD.count;
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
 ";
             string errorString = "";
             thisTest.RunScriptSource(code, errorString);
@@ -924,8 +1197,13 @@ namespace ProtoTest.Associative
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount70_TemporaryArrayIndexing03()
         {
+<<<<<<< HEAD
             string code = @"import(""FFITarget.dll"");DisposeTestClassD.s_dispose = 0;t = [Associative]{    def foo()    {        return = {DisposeTestClassD.DisposeTestClassD(), DisposeTestClassD.DisposeTestClassD(), DisposeTestClassD.DisposeTestClassD()};    }    a = (foo())[1];    return = a;}__GC();
 d = DisposeTestClassD.s_dispose;
+=======
+            string code = @"import(""FFITarget.dll"");DisposeTestClassD.Reset();t = [Associative]{    def foo()    {        return = {DisposeTestClassD.DisposeTestClassD(), DisposeTestClassD.DisposeTestClassD(), DisposeTestClassD.DisposeTestClassD()};    }    a = (foo())[1];    return = a;}__GC();
+d = DisposeTestClassD.count;
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
 ";
             string errorString = "";
             thisTest.RunScriptSource(code, errorString);
@@ -936,8 +1214,13 @@ d = DisposeTestClassD.s_dispose;
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount71_TemporaryArrayIndexing04()
         {
+<<<<<<< HEAD
             string code = @"import(""FFITarget.dll"");DisposeTestClassD.s_dispose = 0;t = [Associative]{    a = (DisposeTestClassD.DisposeTestClassD(0..4))[1];    return = a;}__GC();
 d = DisposeTestClassD.s_dispose;
+=======
+            string code = @"import(""FFITarget.dll"");DisposeTestClassD.Reset();t = [Associative]{    a = (DisposeTestClassD.DisposeTestClassD(0..4))[1];    return = a;}__GC();
+d = DisposeTestClassD.count;
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
 ";
             string errorString = "";
             thisTest.RunScriptSource(code, errorString);
@@ -948,8 +1231,13 @@ d = DisposeTestClassD.s_dispose;
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount72_TemporaryDefaultArgument()
         {
+<<<<<<< HEAD
             string code = @"import(""FFITarget.dll"");DisposeTestClassD.s_dispose = 0;def foo(a = DisposeTestClassD.DisposeTestClassD()){}t = foo();__GC();
 d = DisposeTestClassD.s_dispose;
+=======
+            string code = @"import(""FFITarget.dll"");DisposeTestClassD.Reset();def foo(a = DisposeTestClassD.DisposeTestClassD()){}t = foo();__GC();
+d = DisposeTestClassD.count;
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
 ";
             string errorString = "";
             thisTest.RunScriptSource(code, errorString);
@@ -960,7 +1248,11 @@ d = DisposeTestClassD.s_dispose;
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount73_FunctionPointer()
         {
+<<<<<<< HEAD
             string code = @"import(""FFITarget.dll"");DisposeTestClassD.s_dispose = 0;def foo(a = DisposeTestClassD.DisposeTestClassD()){    return = null;}t = foo; def bar(f:function){    return = f();}[Associative]{    r = bar(t);}__GC();d = DisposeTestClassD.s_dispose;";
+=======
+            string code = @"import(""FFITarget.dll"");DisposeTestClassD.Reset();def foo(a = DisposeTestClassD.DisposeTestClassD()){    return = null;}t = foo; def bar(f:function){    return = f();}[Associative]{    r = bar(t);}__GC();d = DisposeTestClassD.count;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             string errorString = "";
             thisTest.RunScriptSource(code, errorString);
             thisTest.Verify("d", 1);
@@ -970,7 +1262,11 @@ d = DisposeTestClassD.s_dispose;
         [Category("DSDefinedClass_Ignored_Redundant")]
         public void T074_DG1465049()
         {
+<<<<<<< HEAD
             string code = @"class Obj{    static s_dispose = 0;    mi : int;    constructor Obj(i:int)    {        mi = i;    }        def _Dispose()    {        s_dispose = s_dispose + 1;    }    def Translate(i)    {        newi = mi + i;        return = Obj.Obj(newi);    }}as = {Obj.Obj(2), Obj.Obj(3), Obj.Obj(5)};as[1] = as[1].Translate(100);as = null;__GC();d = Obj.s_dispose;";
+=======
+            string code = @"class Obj{    static s_dispose = 0;    mi : int;    constructor Obj(i:int)    {        mi = i;    }        def _Dispose()    {        s_dispose = s_dispose + 1;    }    def Translate(i)    {        newi = mi + i;        return = Obj.Obj(newi);    }}as = {Obj.Obj(2), Obj.Obj(3), Obj.Obj(5)};as[1] = as[1].Translate(100);as = null;__GC();d = Obj.s_dispose;";
+>>>>>>> 8f427921a49a29a4282d89a3c0352bb81dff1117
             thisTest.RunScriptSource(code);
 
             // IT gc's the line where it calls translate when variable as is nullified
@@ -1006,3 +1302,5 @@ d = DisposeTestClassD.s_dispose;
         }
     }
 }
+
+*/
