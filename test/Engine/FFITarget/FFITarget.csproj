@@ -54,6 +54,7 @@
     <Compile Include="ClassWithRefParams.cs" />
     <Compile Include="CodeCompletionClass.cs" />
     <Compile Include="DefaultArguments.cs" />
+    <Compile Include="DisposeTest.cs" />
     <Compile Include="DummyMath.cs" />
     <Compile Include="DummyZeroTouchClass.cs" />
     <Compile Include="ElementResolverTarget.cs" />
