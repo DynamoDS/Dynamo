@@ -50,7 +50,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arduino", "Libraries\Dynamo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watch3D", "Libraries\DynamoWatch3D\Watch3D.csproj", "{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronPythonUI", "Libraries\IronPython\IronPythonUI.csproj", "{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PythonNodeModelsWpf", "Libraries\PythonNodeModelsWpf\PythonNodeModelsWpf.csproj", "{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoServices", "NodeServices\DynamoServices.csproj", "{EF879A10-041D-4C68-83E7-3192685F1BAE}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -85,7 +85,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCoreWpfTests", "..\te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronPythonTests", "..\test\Libraries\DynamoPythonTests\IronPythonTests.csproj", "{773988FE-EDF6-45CB-A63F-482955EB3553}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronPythonEval", "Libraries\DSIronPython\IronPythonEval.csproj", "{9EEF4F42-6B3B-4358-9A8A-C2701539A822}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSIronPython", "Libraries\DSIronPython\DSIronPython.csproj", "{9EEF4F42-6B3B-4358-9A8A-C2701539A822}"
 	ProjectSection(ProjectDependencies) = postProject
 		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
 	EndProjectSection
@@ -206,6 +206,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoApplications", "DynamoApplications\DynamoApplications.csproj", "{AA782772-FE61-4226-BAA4-EB529FA1646B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoPackages", "DynamoPackages\DynamoPackages.csproj", "{47533B7C-0E1A-44A4-8511-B438645F052A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PythonNodeModels", "Libraries\PythonNodeModels\PythonNodeModels.csproj", "{8872CA17-C10D-43B9-8393-5C5A57065EB0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -465,6 +467,10 @@ Global
 		{47533B7C-0E1A-44A4-8511-B438645F052A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47533B7C-0E1A-44A4-8511-B438645F052A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47533B7C-0E1A-44A4-8511-B438645F052A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8872CA17-C10D-43B9-8393-5C5A57065EB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8872CA17-C10D-43B9-8393-5C5A57065EB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8872CA17-C10D-43B9-8393-5C5A57065EB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8872CA17-C10D-43B9-8393-5C5A57065EB0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -527,5 +533,6 @@ Global
 		{F8D2E3E5-4505-4463-9367-2EB2629D7DCD} = {0E492D35-2310-4849-9694-A2A53C09F21B}
 		{2A70F3B5-7AEA-42FE-8DD5-8427C28D0025} = {0E492D35-2310-4849-9694-A2A53C09F21B}
 		{3E84B41E-F229-4BF7-8A0F-3D65BA2D00D1} = {0E492D35-2310-4849-9694-A2A53C09F21B}
+		{8872CA17-C10D-43B9-8393-5C5A57065EB0} = {FA7BE306-A3B0-45FA-9D87-0C69E6932C13}
 	EndGlobalSection
 EndGlobal

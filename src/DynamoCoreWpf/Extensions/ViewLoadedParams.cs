@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Text;
+using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Controls;
 using Dynamo.ViewModels;
@@ -23,12 +25,21 @@ namespace Dynamo.Wpf.Extensions
 
         public IWatch3DView BackgroundPreView { get { return dynamoView.BackgroundPreview; } }
 
-        public IRenderPackageFactory RenderPackageFactory 
+        public IRenderPackageFactory RenderPackageFactory
+        {
+            get { return dynamoViewModel.RenderPackageFactoryViewModel.Factory; }
+        }
+
+        /// <summary>
+        /// A reference to the Dynamo Window object. Useful for correctly setting the parent of a 
+        /// newly created window.
+        /// </summary>
+        public Window DynamoWindow
         {
             get
             {
-                return dynamoViewModel.RenderPackageFactoryViewModel.Factory;
-            } 
+                return dynamoView;
+            }
         }
 
         internal ViewLoadedParams(DynamoView dynamoV, DynamoViewModel dynamoVM) :

@@ -33,13 +33,6 @@ rem required for translation tool to even open up localizable resource assemblie
 robocopy "%binroot%"                          "%wwlroot%"                           *.dll *.exe -XF *tests.dll *.customization.dll 
 robocopy "%binroot%\nodes"                    "%wwlroot%\nodes"                     *.dll
 
-IF EXIST "%binroot%\Revit_2014" (
-robocopy "%binroot%\Revit_2014"               "%wwlroot%\Revit_2014"                *.dll *.exe -XF *tests.dll *.customization.dll 
-robocopy "%binroot%\Revit_2014\en-US"         "%wwlroot%\Revit_2014\en-US"          *.resources.dll *.xml
-robocopy "%binroot%\Revit_2014\nodes"         "%wwlroot%\Revit_2014\nodes"          *.dll
-robocopy "%binroot%\Revit_2014\nodes\en-US"   "%wwlroot%\Revit_2014\nodes\en-US"    *.resources.dll *.xml
-)
-
 IF EXIST "%binroot%\Revit_2015" (
 robocopy "%binroot%\Revit_2015"               "%wwlroot%\Revit_2015"                *.dll *.exe -XF *tests.dll *.customization.dll 
 robocopy "%binroot%\Revit_2015\en-US"         "%wwlroot%\Revit_2015\en-US"          *.resources.dll *.xml

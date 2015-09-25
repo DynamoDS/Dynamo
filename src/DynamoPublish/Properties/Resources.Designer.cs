@@ -304,6 +304,15 @@ namespace Dynamo.Publish.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Link copied to clipboard..
+        /// </summary>
+        public static string LinkCopied {
+            get {
+                return ResourceManager.GetString("LinkCopied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Manage Customizers....
         /// </summary>
         public static string ManageButtonTitle {
@@ -489,6 +498,15 @@ namespace Dynamo.Publish.Properties {
         public static string UploadingMessage {
             get {
                 return ResourceManager.GetString("UploadingMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Visit.
+        /// </summary>
+        public static string VisitButtonTitle {
+            get {
+                return ResourceManager.GetString("VisitButtonTitle", resourceCulture);
             }
         }
         

@@ -12,9 +12,95 @@ using ProtoCore.Mirror;
 using ProtoCore.Utils;
 using Dynamo.Core;
 using ProtoCore.Namespace;
+using Dynamo.Interfaces;
 
-namespace Dynamo.Engine
+namespace Dynamo.Engine.NodeToCode
 {
+    /// <summary>
+    /// Node to code will create some variables, and if it is able to know the
+    /// type of expression, it could give a more meaningful variable prefix. 
+    /// </summary>
+    public interface INamingProvider
+    {
+        /// <summary>
+        /// Get a name for specified type. This name will be used as the prefix
+        /// for variable that created in node to code. It should return a empty
+        /// string if fails to generate one.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        string GetTypeDependentName(ProtoCore.Type type);
+    }
+
+    internal class NamingProvider : INamingProvider 
+    {
+        private ProtoCore.Core core;
+        private ILibraryCustomizationServices libCustomizationServices;
+
+        public NamingProvider(ProtoCore.Core core, ILibraryCustomizationServices libServices)
+        {
+            this.core = core;
+            this.libCustomizationServices = libServices;
+        }
+
+        public string GetTypeDependentName(ProtoCore.Type type)
+        {
+            string prefix = String.Empty;
+            if (type.UID >= 0 && type.UID < core.ClassTable.ClassNodes.Count())
+            {
+                // If class provides short name, then use it.
+                var classNode = core.ClassTable.ClassNodes[type.UID];
+                prefix = GetShortName(classNode);
+
+                // Otherwise change class name to its lower case
+                if (String.IsNullOrEmpty(prefix) && (type.UID > (int)ProtoCore.PrimitiveType.kMaxPrimitives))
+                {
+                    prefix = type.ToShortString();
+                    if (!String.IsNullOrEmpty(prefix))
+                        prefix = prefix.ToLower();
+                }
+            }
+
+            return prefix;
+        }
+
+        private string GetShortName(ClassNode classNode)
+        {
+            var shortName = string.Empty;
+            var assembly = classNode.ExternLib;
+            var customization = assembly == null ?  null : libCustomizationServices.GetLibraryCustomization(assembly);
+
+            while (classNode != null)
+            {
+                if (customization != null)
+                {
+                    shortName = customization.GetShortName(classNode.name);
+                    if (!String.IsNullOrEmpty(shortName))
+                        break;
+                }
+
+                if (classNode.ClassAttributes != null)
+                {
+                    shortName = classNode.ClassAttributes.PreferredShortName;
+                    if (!String.IsNullOrEmpty(shortName))
+                        break;
+                }
+
+                if (classNode.baseList.Any())
+                {
+                    var baseIndex = classNode.baseList[0];
+                    classNode = core.ClassTable.ClassNodes[baseIndex];
+                }
+                else
+                {
+                    classNode = null;
+                }
+            }
+
+            return shortName;
+        }
+    }
+
     /// <summary>
     /// The result of converting nodes to code. As when a node is converted to 
     /// code, its inputs and outputs may be renamed to avoid confliction, the
@@ -126,338 +212,338 @@ namespace Dynamo.Engine
         }
     }
 
-    internal class NodeToCodeUtils
+    /// <summary>
+    /// Traverse all identifiers in depth-first order and for each 
+    /// identifier apply a function to it.
+    /// </summary>
+    internal class IdentifierVisitor : AssociativeAstVisitor
     {
-        /// <summary>
-        /// Traverse all identifiers in depth-first order and for each 
-        /// identifier apply a function to it.
-        /// </summary>
-        private class IdentifierVisitor : AssociativeAstVisitor 
+        private Action<IdentifierNode> identFunc;
+        private ProtoCore.Core core;
+
+        public IdentifierVisitor(Action<IdentifierNode> func, ProtoCore.Core core)
         {
-            private Action<IdentifierNode> identFunc;
-            private ProtoCore.Core core;
+            identFunc = func;
+            this.core = core;
+        }
 
-            public IdentifierVisitor(Action<IdentifierNode> func, ProtoCore.Core core)
-            {
-                identFunc = func;
-                this.core = core;
-            }
+        public override void VisitIdentifierNode(IdentifierNode node)
+        {
+            identFunc(node);
+            if (node.ArrayDimensions != null)
+                node.ArrayDimensions.Accept(this);
+        }
 
-            public override void VisitIdentifierNode(IdentifierNode node)
+        public override void VisitIdentifierListNode(IdentifierListNode node)
+        {
+            if (node.LeftNode is IdentifierNode || node.LeftNode is IdentifierListNode)
             {
-                identFunc(node);
-                if (node.ArrayDimensions != null)
-                    node.ArrayDimensions.Accept(this);
-            }
-
-            public override void VisitIdentifierListNode(IdentifierListNode node)
-            {
-                if (node.LeftNode is IdentifierNode || node.LeftNode is IdentifierListNode)
+                if (node.RightNode is FunctionCallNode || node.RightNode is IdentifierNode)
                 {
-                    if (node.RightNode is FunctionCallNode || node.RightNode is IdentifierNode)
+                    var lhs = node.LeftNode.ToString();
+                    if (core.ClassTable.IndexOf(lhs) < 0)
                     {
-                        var lhs = node.LeftNode.ToString();
-                        if (core.ClassTable.IndexOf(lhs) < 0)
-                        {
-                            node.LeftNode.Accept(this);
-                        }
-
-                        if (!(node.RightNode is IdentifierNode))
-                            node.RightNode.Accept(this);
-
-                        return;
+                        node.LeftNode.Accept(this);
                     }
+
+                    if (!(node.RightNode is IdentifierNode))
+                        node.RightNode.Accept(this);
+
+                    return;
                 }
-                base.VisitIdentifierListNode(node);
             }
+            base.VisitIdentifierListNode(node);
+        }
+    }
+
+    /// <summary>
+    /// Replace an identifier with a constant value.
+    /// </summary>
+    internal class IdentifierReplacer : AstReplacer
+    {
+        private string variableName;
+        private AssociativeNode constantValue;
+
+        public IdentifierReplacer(string variable, AssociativeNode newValue)
+        {
+            variableName = variable;
+            constantValue = newValue;
         }
 
-        /// <summary>
-        /// Replace an identifier with a constant value.
-        /// </summary>
-        private class IdentifierReplacer : AstReplacer 
+        public override AssociativeNode VisitIdentifierNode(IdentifierNode node)
         {
-            private string variableName;
-            private AssociativeNode constantValue;
-
-            public IdentifierReplacer(string variable, AssociativeNode newValue)
-            {
-                variableName = variable;
-                constantValue = newValue;
-            }
-
-            public override AssociativeNode VisitIdentifierNode(IdentifierNode node)
-            {
-                if (node.Value.Equals(variableName))
-                    return constantValue;
-                else
-                    return node;
-            }
-
-            public override AssociativeNode VisitBinaryExpressionNode(BinaryExpressionNode node)
-            {
-                if (node.Optr != Operator.assign)
-                {
-                    var newLeftNode = node.LeftNode.Accept(this);
-                    if (node.LeftNode != newLeftNode)
-                        node.LeftNode = newLeftNode;
-                }
-
-                var newRightNode = node.RightNode.Accept(this);
-                if (newRightNode != node.RightNode)
-                    node.RightNode = newRightNode;
-
+            if (node.Value.Equals(variableName))
+                return constantValue;
+            else
                 return node;
-           }
         }
 
-        /// <summary>
-        /// Replace a fully qualified function call with short name. 
-        /// </summary>
-        private class ShortestQualifiedNameReplacer : AstReplacer
+        public override AssociativeNode VisitBinaryExpressionNode(BinaryExpressionNode node)
         {
-            private readonly ClassTable classTable;
-            private readonly ElementResolver resolver;
-
-            public ShortestQualifiedNameReplacer(ClassTable classTable, ElementResolver resolver)
+            if (node.Optr != Operator.assign)
             {
-                this.classTable = classTable;
-                this.resolver = resolver;
+                var newLeftNode = node.LeftNode.Accept(this);
+                if (node.LeftNode != newLeftNode)
+                    node.LeftNode = newLeftNode;
             }
 
-            public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
+            var newRightNode = node.RightNode.Accept(this);
+            if (newRightNode != node.RightNode)
+                node.RightNode = newRightNode;
+
+            return node;
+        }
+    }
+
+    /// <summary>
+    /// Replace a fully qualified function call with short name. 
+    /// </summary>
+    internal class ShortestQualifiedNameReplacer : AstReplacer
+    {
+        private readonly ClassTable classTable;
+        private readonly ElementResolver resolver;
+
+        public ShortestQualifiedNameReplacer(ClassTable classTable, ElementResolver resolver)
+        {
+            this.classTable = classTable;
+            this.resolver = resolver;
+        }
+
+        public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
+        {
+            // First pass attempt to resolve the node class name 
+            // and shorten it before traversing it deeper
+            AssociativeNode shortNameNode;
+            if (TryShortenClassName(node, out shortNameNode))
+                return shortNameNode;
+
+            var rightNode = node.RightNode;
+            var leftNode = node.LeftNode;
+
+            rightNode = rightNode.Accept(this);
+            var newLeftNode = leftNode.Accept(this);
+
+            node = new IdentifierListNode
             {
-                // First pass attempt to resolve the node class name 
-                // and shorten it before traversing it deeper
-                AssociativeNode shortNameNode;
-                if (TryShortenClassName(node, out shortNameNode))
-                    return shortNameNode;
+                LeftNode = newLeftNode,
+                RightNode = rightNode,
+                Optr = Operator.dot
+            };
+            return leftNode != newLeftNode ? node : RewriteNodeWithShortName(node);
+        }
 
-                var rightNode = node.RightNode;
-                var leftNode = node.LeftNode;
+        private bool TryShortenClassName(IdentifierListNode node, out AssociativeNode shortNameNode)
+        {
+            shortNameNode = null;
 
-                rightNode = rightNode.Accept(this);
-                var newLeftNode = leftNode.Accept(this);
+            string qualifiedName = CoreUtils.GetIdentifierExceptMethodName(node);
 
-                node = new IdentifierListNode
-                {
-                    LeftNode = newLeftNode,
-                    RightNode = rightNode,
-                    Optr = Operator.dot
-                };
-                return leftNode != newLeftNode ? node : RewriteNodeWithShortName(node);
-            }
+            // if it is a global method with no class
+            if (string.IsNullOrEmpty(qualifiedName))
+                return false;
 
-            private bool TryShortenClassName(IdentifierListNode node, out AssociativeNode shortNameNode)
+            // Make sure qualifiedName is not a property
+            var matchingClasses = classTable.GetAllMatchingClasses(qualifiedName);
+            if (matchingClasses.Length == 0)
+                return false;
+
+            string className = qualifiedName.Split('.').Last();
+
+            var symbol = new ProtoCore.Namespace.Symbol(qualifiedName);
+            if (!symbol.Matches(node.ToString()))
+                return false;
+
+            shortNameNode = CreateNodeFromShortName(className, qualifiedName);
+            return shortNameNode != null;
+        }
+
+        private IdentifierListNode RewriteNodeWithShortName(IdentifierListNode node)
+        {
+            // Get class name from AST
+            string qualifiedName = CoreUtils.GetIdentifierExceptMethodName(node);
+
+            // if it is a global method
+            if (string.IsNullOrEmpty(qualifiedName))
+                return node;
+
+            // Make sure qualifiedName is not a property
+            var lNode = node.LeftNode;
+            var matchingClasses = classTable.GetAllMatchingClasses(qualifiedName);
+            while (matchingClasses.Length == 0 && lNode is IdentifierListNode)
             {
-                shortNameNode = null;
-                
-                string qualifiedName = CoreUtils.GetIdentifierExceptMethodName(node);
-
-                // if it is a global method with no class
-                if (string.IsNullOrEmpty(qualifiedName))
-                    return false;
-
-                // Make sure qualifiedName is not a property
-                var matchingClasses = classTable.GetAllMatchingClasses(qualifiedName);
-                if (matchingClasses.Length == 0)
-                    return false;
-
-                string className = qualifiedName.Split('.').Last();
-
-                var symbol = new ProtoCore.Namespace.Symbol(qualifiedName);
-                if (!symbol.Matches(node.ToString()))
-                    return false;
-
-                shortNameNode = CreateNodeFromShortName(className, qualifiedName);
-                return shortNameNode != null;
-            }
-
-            private IdentifierListNode RewriteNodeWithShortName(IdentifierListNode node)
-            {
-                // Get class name from AST
-                string qualifiedName = CoreUtils.GetIdentifierExceptMethodName(node);
-
-                // if it is a global method
-                if (string.IsNullOrEmpty(qualifiedName))
-                    return node;
-
-                // Make sure qualifiedName is not a property
-                var lNode = node.LeftNode;
-                var matchingClasses = classTable.GetAllMatchingClasses(qualifiedName);
-                while (matchingClasses.Length == 0 && lNode is IdentifierListNode)
-                {
-                    qualifiedName = lNode.ToString();
-                    matchingClasses = classTable.GetAllMatchingClasses(qualifiedName);
-                    lNode = ((IdentifierListNode)lNode).LeftNode;
-                }
                 qualifiedName = lNode.ToString();
-                string className = qualifiedName.Split('.').Last();
+                matchingClasses = classTable.GetAllMatchingClasses(qualifiedName);
+                lNode = ((IdentifierListNode)lNode).LeftNode;
+            }
+            qualifiedName = lNode.ToString();
+            string className = qualifiedName.Split('.').Last();
 
-                var newIdentList = CreateNodeFromShortName(className, qualifiedName);
-                if (newIdentList == null)
-                    return node;
-
-                // Replace class name in input node with short name (newIdentList)
-                node = new IdentifierListNode
-                {
-                    LeftNode = newIdentList,
-                    RightNode = node.RightNode,
-                    Optr = Operator.dot
-                };
+            var newIdentList = CreateNodeFromShortName(className, qualifiedName);
+            if (newIdentList == null)
                 return node;
-            }
 
-            private AssociativeNode CreateNodeFromShortName(string className, string qualifiedName)
+            // Replace class name in input node with short name (newIdentList)
+            node = new IdentifierListNode
             {
-                // Get the list of conflicting namespaces that contain the same class name
-                var matchingClasses = CoreUtils.GetResolvedClassName(classTable, AstFactory.BuildIdentifier(className));
-                if (matchingClasses.Length == 0)
-                    return null;
-
-                string shortName;
-                // if there is no class conflict simply use the class name as the shortest name
-                if (matchingClasses.Length == 1)
-                {
-                    shortName = className;
-                }
-                else
-                {
-                    shortName = resolver != null ? resolver.LookupShortName(qualifiedName) : null;
-
-                    if (string.IsNullOrEmpty(shortName))
-                    {
-                        // Use the namespace list as input to derive the list of shortest unique names
-                        var symbolList =
-                            matchingClasses.Select(matchingClass => new ProtoCore.Namespace.Symbol(matchingClass))
-                                .ToList();
-                        var shortNames = ProtoCore.Namespace.Symbol.GetShortestUniqueNames(symbolList);
-
-                        // Get the shortest name corresponding to the fully qualified name
-                        shortName = shortNames[new ProtoCore.Namespace.Symbol(qualifiedName)];
-                    }
-                }
-                // Rewrite the AST using the shortest name
-                var newIdentList = CoreUtils.CreateNodeFromString(shortName);
-                return newIdentList;
-
-            }
+                LeftNode = newIdentList,
+                RightNode = node.RightNode,
+                Optr = Operator.dot
+            };
+            return node;
         }
 
-        /// <summary>
-        /// Check if an identifier is used.
-        /// </summary>
-        private class IdentifierFinder : AssociativeAstVisitor<bool>
+        private AssociativeNode CreateNodeFromShortName(string className, string qualifiedName)
         {
-            private string identifier = string.Empty;
-            private bool forDefinition = false;
+            // Get the list of conflicting namespaces that contain the same class name
+            var matchingClasses = CoreUtils.GetResolvedClassName(classTable, AstFactory.BuildIdentifier(className));
+            if (matchingClasses.Length == 0)
+                return null;
 
-            public IdentifierFinder(string identifier, bool isForDefinition)
+            string shortName;
+            // if there is no class conflict simply use the class name as the shortest name
+            if (matchingClasses.Length == 1)
             {
-                this.identifier = identifier;
-                this.forDefinition = isForDefinition;
+                shortName = className;
             }
-
-            public override bool VisitIdentifierNode(IdentifierNode node)
+            else
             {
-                if (node.Value.Equals(identifier))
-                    return true;
+                shortName = resolver != null ? resolver.LookupShortName(qualifiedName) : null;
 
-                if (forDefinition)
-                    return false;
+                if (string.IsNullOrEmpty(shortName))
+                {
+                    // Use the namespace list as input to derive the list of shortest unique names
+                    var symbolList =
+                        matchingClasses.Select(matchingClass => new ProtoCore.Namespace.Symbol(matchingClass))
+                            .ToList();
+                    var shortNames = ProtoCore.Namespace.Symbol.GetShortestUniqueNames(symbolList);
 
-                return node.ArrayDimensions != null ? node.ArrayDimensions.Accept(this) : false;
+                    // Get the shortest name corresponding to the fully qualified name
+                    shortName = shortNames[new ProtoCore.Namespace.Symbol(qualifiedName)];
+                }
             }
+            // Rewrite the AST using the shortest name
+            var newIdentList = CoreUtils.CreateNodeFromString(shortName);
+            return newIdentList;
 
-            public override bool VisitGroupExpressionNode(GroupExpressionNode node)
-            {
-                if (forDefinition)
-                    return false;
+        }
+    }
 
-                return node.Expression.Accept(this);
-            }
+    /// <summary>
+    /// Check if an identifier is used.
+    /// </summary>
+    internal class IdentifierFinder : AssociativeAstVisitor<bool>
+    {
+        private string identifier = string.Empty;
+        private bool forDefinition = false;
 
-            public override bool VisitIdentifierListNode(IdentifierListNode node)
-            {
-                if (forDefinition)
-                    return false;
-
-                return node.LeftNode.Accept(this) || node.RightNode.Accept(this);
-            }
-
-            public override bool VisitFunctionCallNode(FunctionCallNode node)
-            {
-                if (forDefinition)
-                    return false;
-
-                if (node.FormalArguments.Any(f => f.Accept(this)))
-                    return true;
-
-                return node.ArrayDimensions != null ? node.ArrayDimensions.Accept(this) : false;
-            }
-
-            public override bool VisitInlineConditionalNode(InlineConditionalNode node)
-            {
-                if (forDefinition)
-                    return false;
-
-                return node.ConditionExpression.Accept(this) ||
-                       node.TrueExpression.Accept(this) ||
-                       node.FalseExpression.Accept(this);
-            }
-
-            public override bool VisitBinaryExpressionNode(BinaryExpressionNode node)
-            {
-                if (forDefinition && node.Optr == Operator.assign)
-                    return node.LeftNode.Accept(this);
-
-                return node.Optr == Operator.assign 
-                    ? node.RightNode.Accept(this)
-                    : node.LeftNode.Accept(this) || node.RightNode.Accept(this);
-            }
-
-            public override bool VisitUnaryExpressionNode(UnaryExpressionNode node)
-            {
-                if (forDefinition)
-                    return false;
-
-                return node.Expression.Accept(this);
-            }
-
-            public override bool VisitRangeExprNode(RangeExprNode node)
-            {
-                if (forDefinition)
-                    return false;
-
-                if (node.FromNode.Accept(this) || node.ToNode.Accept(this))
-                    return true;
-
-                return node.StepNode != null ? node.StepNode.Accept(this) : false;
-            }
-
-            public override bool VisitExprListNode(ExprListNode node)
-            {
-                if (forDefinition)
-                    return false;
-
-                if (node.list.Any(e => e.Accept(this)))
-                    return true;
-
-                return node.ArrayDimensions != null ? node.ArrayDimensions.Accept(this) : false;
-            }
-
-            public override bool VisitArrayNode(ArrayNode node)
-            {
-                if (forDefinition)
-                    return false;
-
-                if (node.Expr.Accept(this))
-                    return true;
-
-                return node.Type != null ? node.Type.Accept(this) : false;
-            }
+        public IdentifierFinder(string identifier, bool isForDefinition)
+        {
+            this.identifier = identifier;
+            this.forDefinition = isForDefinition;
         }
 
+        public override bool VisitIdentifierNode(IdentifierNode node)
+        {
+            if (node.Value.Equals(identifier))
+                return true;
+
+            if (forDefinition)
+                return false;
+
+            return node.ArrayDimensions != null ? node.ArrayDimensions.Accept(this) : false;
+        }
+
+        public override bool VisitGroupExpressionNode(GroupExpressionNode node)
+        {
+            if (forDefinition)
+                return false;
+
+            return node.Expression.Accept(this);
+        }
+
+        public override bool VisitIdentifierListNode(IdentifierListNode node)
+        {
+            if (forDefinition)
+                return false;
+
+            return node.LeftNode.Accept(this) || node.RightNode.Accept(this);
+        }
+
+        public override bool VisitFunctionCallNode(FunctionCallNode node)
+        {
+            if (forDefinition)
+                return false;
+
+            if (node.FormalArguments.Any(f => f.Accept(this)))
+                return true;
+
+            return node.ArrayDimensions != null ? node.ArrayDimensions.Accept(this) : false;
+        }
+
+        public override bool VisitInlineConditionalNode(InlineConditionalNode node)
+        {
+            if (forDefinition)
+                return false;
+
+            return node.ConditionExpression.Accept(this) ||
+                   node.TrueExpression.Accept(this) ||
+                   node.FalseExpression.Accept(this);
+        }
+
+        public override bool VisitBinaryExpressionNode(BinaryExpressionNode node)
+        {
+            if (forDefinition && node.Optr == Operator.assign)
+                return node.LeftNode.Accept(this);
+
+            return node.Optr == Operator.assign
+                ? node.RightNode.Accept(this)
+                : node.LeftNode.Accept(this) || node.RightNode.Accept(this);
+        }
+
+        public override bool VisitUnaryExpressionNode(UnaryExpressionNode node)
+        {
+            if (forDefinition)
+                return false;
+
+            return node.Expression.Accept(this);
+        }
+
+        public override bool VisitRangeExprNode(RangeExprNode node)
+        {
+            if (forDefinition)
+                return false;
+
+            if (node.FromNode.Accept(this) || node.ToNode.Accept(this))
+                return true;
+
+            return node.StepNode != null ? node.StepNode.Accept(this) : false;
+        }
+
+        public override bool VisitExprListNode(ExprListNode node)
+        {
+            if (forDefinition)
+                return false;
+
+            if (node.list.Any(e => e.Accept(this)))
+                return true;
+
+            return node.ArrayDimensions != null ? node.ArrayDimensions.Accept(this) : false;
+        }
+
+        public override bool VisitArrayNode(ArrayNode node)
+        {
+            if (forDefinition)
+                return false;
+
+            if (node.Expr.Accept(this))
+                return true;
+
+            return node.Type != null ? node.Type.Accept(this) : false;
+        }
+    }
+
+    internal class NodeToCodeCompiler
+    {
         /// <summary>
         /// The numbering state of a variable.
         /// </summary>
@@ -509,15 +595,17 @@ namespace Dynamo.Engine
         /// <summary>
         /// Generate type-dependent short variable name in format: type+ID.
         /// </summary>
-        private class ShortNameGenerator
+        private class TypeDependentNameGenetrator
         {
             private ProtoCore.Core core;
+            private INamingProvider namingProvider;
             private Dictionary<ProtoCore.Type, NumberingState> prefixNumberingMap = new Dictionary<ProtoCore.Type, NumberingState>();
             private NumberingState defaultNS = new NumberingState(AstBuilder.StringConstants.ShortVarPrefix);
 
-            public ShortNameGenerator(ProtoCore.Core core)
+            public TypeDependentNameGenetrator(ProtoCore.Core core, INamingProvider namingProvider)
             {
                 this.core = core;
+                this.namingProvider = namingProvider;
             }
 
             public string GetName(ProtoCore.Type? typeHint)
@@ -533,39 +621,15 @@ namespace Dynamo.Engine
                 if (prefixNumberingMap.TryGetValue(type, out ns))
                     return ns;
 
-                if (type.UID >= 0 && type.UID < core.ClassTable.ClassNodes.Count())
+                var shortName = string.Empty;
+                if (namingProvider != null)
+                    shortName = namingProvider.GetTypeDependentName(type);
+
+                if (!string.IsNullOrEmpty(shortName)) 
                 {
-                    // If class provides short name, then use it.
-                    var classNode = core.ClassTable.ClassNodes[type.UID];
-                    var preferredShortName = String.Empty;
-                    if (classNode.ClassAttributes != null)
-                        preferredShortName = classNode.ClassAttributes.PreferredShortName;
-
-                    // Otherwise check if its base class provides a short name.
-                    var baseClass = classNode;
-                    while (String.IsNullOrEmpty(preferredShortName) && baseClass.baseList.Any())
-                    {
-                        var baseIndex = baseClass.baseList[0];
-                        baseClass = core.ClassTable.ClassNodes[baseIndex];
-
-                        if (baseClass.ClassAttributes != null)
-                            preferredShortName = baseClass.ClassAttributes.PreferredShortName;
-                    }
-
-                    // Otherwise change class name to its lower case
-                    if (String.IsNullOrEmpty(preferredShortName) && (type.UID > (int)ProtoCore.PrimitiveType.kMaxPrimitives))
-                    {
-                        preferredShortName = type.ToShortString();
-                        if (!String.IsNullOrEmpty(preferredShortName)) 
-                            preferredShortName = preferredShortName.ToLower();
-                    }
-
-                    if (!string.IsNullOrEmpty(preferredShortName)) 
-                    {
-                        var newNS = new NumberingState(preferredShortName);
-                        prefixNumberingMap[type] = newNS;
-                        return newNS;
-                    }
+                    ns = new NumberingState(shortName);
+                    prefixNumberingMap[type] = ns;
+                    return ns;
                 }
 
                 return defaultNS;
@@ -955,7 +1019,7 @@ namespace Dynamo.Engine
             ProtoCore.Core core,
             AssociativeNode astNode,
             Dictionary<string, string> shortNameMap,
-            ShortNameGenerator nameGenerator,
+            TypeDependentNameGenetrator nameGenerator,
             HashSet<string> mappedVariables,
             Dictionary<string, ProtoCore.Type> typeHints)
         {
@@ -986,7 +1050,7 @@ namespace Dynamo.Engine
         /// <param name="varName"></param>
         /// <returns></returns>
         private static string GetNextShortName(
-            ShortNameGenerator generator, 
+            TypeDependentNameGenetrator generator, 
             Dictionary<string, ProtoCore.Type> typeHints, 
             HashSet<string> mappedVariables,
             string varName)
@@ -1126,15 +1190,15 @@ namespace Dynamo.Engine
         ///    order in the final code block node.
         /// </summary>
         /// <param name="core">Library core</param>
-        /// <param name="astBuilder">Ast builder</param>
         /// <param name="workspaceNodes">The whole workspace nodes</param>
         /// <param name="nodes">Selected node that can be converted to a single code block node</param>
+        /// <param name="namingProvider"></param>
         /// <returns></returns>
         internal static NodeToCodeResult NodeToCode(
             ProtoCore.Core core,
-            AstBuilder astBuilder, 
             IEnumerable<NodeModel> workspaceNodes,
-            IEnumerable<NodeModel> nodes)
+            IEnumerable<NodeModel> nodes,
+            INamingProvider namingProvider)
         {
             // The basic worflow is:
             //   1. Compile each node to get its cde in AST format
@@ -1157,10 +1221,10 @@ namespace Dynamo.Engine
             //   5. Do constant progation to optimize the generated code.
             #region Step 1 AST compilation
 
+            AstBuilder builder = new AstBuilder(null);
             var sortedGraph = AstBuilder.TopologicalSortForGraph(workspaceNodes);
             var sortedNodes = sortedGraph.Where(nodes.Contains);
-
-            var allAstNodes = astBuilder.CompileToAstNodes(sortedNodes, AstBuilder.CompilationContext.NodeToCode, false);
+            var allAstNodes = builder.CompileToAstNodes(sortedNodes, AstBuilder.CompilationContext.NodeToCode, false);
 
             #endregion
 
@@ -1225,7 +1289,7 @@ namespace Dynamo.Engine
             #endregion
 
             #region Step 4 Generate short name
-            var nameGenerator = new ShortNameGenerator(core);
+            var nameGenerator = new TypeDependentNameGenetrator(core, namingProvider);
 
             // temporary variables are double mapped.
             foreach (var key in outputMap.Keys.ToList())

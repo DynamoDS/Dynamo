@@ -48,7 +48,7 @@ namespace TestServices
             if (!File.Exists(configPath))
             {
                 DynamoCorePath = dynamoCoreDirectory;
-                RequestedLibraryVersion = LibraryVersion.Version219;
+                RequestedLibraryVersion = LibraryVersion.Version220;
                 return;
             }
 
@@ -64,7 +64,7 @@ namespace TestServices
 
             LibraryVersion version;
             RequestedLibraryVersion = LibraryVersion.TryParse(versionStr, out version) ? 
-                version : LibraryVersion.Version219;
+                version : LibraryVersion.Version220;
             
         }
 
