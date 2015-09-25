@@ -26,6 +26,7 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Rendering;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Watch3D;
+using Dynamo.Wpf.Views.Preview;
 using DynamoUtilities;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
@@ -45,12 +46,11 @@ namespace Dynamo.Controls
     /// <summary>
     /// Interaction logic for WatchControl.xaml
     /// </summary>
-    public partial class Watch3DView
+    public partial class Watch3DView : IWatch3DView
     {
         #region private members
 
         private Point rightMousePoint;
-        internal HelixWatch3DViewModel viewModel;
 
         #endregion
 
@@ -60,6 +60,8 @@ namespace Dynamo.Controls
         {
             get { return watch_view; }
         }
+
+        internal HelixWatch3DViewModel ViewModel { get; private set; }
 
         #endregion
 
@@ -82,7 +84,7 @@ namespace Dynamo.Controls
 
             CompositionTarget.Rendering -= CompositionTargetRenderingHandler;
 
-            viewModel.RequestAttachToScene -= ViewModelRequestAttachToSceneHandler;
+            ViewModel.RequestAttachToScene -= ViewModelRequestAttachToSceneHandler;
         }
 
         private void RegisterButtonHandlers()
@@ -112,20 +114,20 @@ namespace Dynamo.Controls
 
         private void ViewLoadedHandler(object sender, RoutedEventArgs e)
         {
-            viewModel = DataContext as HelixWatch3DViewModel;
+            ViewModel = DataContext as HelixWatch3DViewModel;
 
             CompositionTarget.Rendering += CompositionTargetRenderingHandler;
 
             RegisterButtonHandlers();
 
-            if (viewModel == null)
+            if (ViewModel == null)
             {
                 return;
             }
 
-            viewModel.RequestAttachToScene += ViewModelRequestAttachToSceneHandler;
-            viewModel.RequestCreateModels += RequestCreateModelsHandler;
-            viewModel.RequestViewRefresh += RequestViewRefreshHandler;
+            ViewModel.RequestAttachToScene += ViewModelRequestAttachToSceneHandler;
+            ViewModel.RequestCreateModels += RequestCreateModelsHandler;
+            ViewModel.RequestViewRefresh += RequestViewRefreshHandler;
         }
 
         void RequestViewRefreshHandler()
@@ -136,10 +138,12 @@ namespace Dynamo.Controls
         private void RequestCreateModelsHandler(IEnumerable<IRenderPackage> packages)
         {
             if (CheckAccess())
-                viewModel.GenerateViewGeometryFromRenderPackagesAndRequestUpdate(packages);
+            {
+                ViewModel.GenerateViewGeometryFromRenderPackagesAndRequestUpdate(packages);
+            }
             else
             {
-                Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => viewModel.GenerateViewGeometryFromRenderPackagesAndRequestUpdate(packages)));
+                Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => ViewModel.GenerateViewGeometryFromRenderPackagesAndRequestUpdate(packages)));
             }
         }
 
@@ -182,9 +186,9 @@ namespace Dynamo.Controls
         private void CompositionTargetRenderingHandler(object sender, EventArgs e)
         {
             var sceneBounds = watch_view.FindBounds();
-            viewModel.UpdateNearClipPlaneForSceneBounds(sceneBounds);
+            ViewModel.UpdateNearClipPlaneForSceneBounds(sceneBounds);
 
-            viewModel.ComputeFrameUpdate();
+            ViewModel.ComputeFrameUpdate();
         }
 
         private void OnZoomToFitClickedHandler(object sender, RoutedEventArgs e)
@@ -212,6 +216,27 @@ namespace Dynamo.Controls
             {
                 e.Handled = true;
             }
+        }
+
+        #endregion
+
+        #region interface methods
+
+        public Ray3D GetClickRay(MouseEventArgs mouseButtonEventArgs)
+        {
+            var mousePos = mouseButtonEventArgs.GetPosition(this);
+
+            return View.Point2DToRay3D(new Point(mousePos.X, mousePos.Y));
+        }
+
+        public void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages)
+        {
+            ViewModel.OnRequestCreateModels(packages);
+        }
+
+        public void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
+        {
+            ViewModel.DeleteGeometryForIdentifier(identifier, requestUpdate);
         }
 
         #endregion

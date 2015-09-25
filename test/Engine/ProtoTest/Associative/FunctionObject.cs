@@ -1,4 +1,5 @@
-﻿using System;
+
+using System;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
 using ProtoTest.TD;

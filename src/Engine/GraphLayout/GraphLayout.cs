@@ -29,11 +29,12 @@ namespace GraphLayout
         /// <param name="guid">The guid as a unique identifier of the node.</param>
         /// <param name="width">The width of the node view.</param>
         /// <param name="height">The height of the node view.</param>
+        /// <param name="x">The x coordinate of the node view.</param>
         /// <param name="y">The y coordinate of the node view.</param>
         /// <param name="inPortCount">The number of input ports of the node.</param>
-        public void AddNode(Guid guid, double width, double height, double y)
+        public void AddNode(Guid guid, double width, double height, double x, double y)
         {
-            var node = new Node(guid, width, height, y, this);
+            var node = new Node(guid, width, height, x, y, this);
             Nodes.Add(node);
         }
 
@@ -481,10 +482,34 @@ namespace GraphLayout
 
         #endregion
 
+        #region Graph positioning methods
+
+        private double InitialGraphCenterX;
+        private double InitialGraphCenterY;
+
+        public double GraphCenterX
+        {
+            get { return (Nodes.Min(n => n.X) + Nodes.Max(n => n.X + n.Width)) / 2; }
+        }
+
+        public double GraphCenterY
+        {
+            get { return (Nodes.Min(n => n.Y) + Nodes.Max(n => n.Y + n.Height)) / 2; }
+        }
+
         /// <summary>
-        /// To align the top and left bound of the graph at x = 0 and y = 0.
+        /// To save the initial center position of the graph.
         /// </summary>
-        public void NormalizeGraphPosition()
+        public void RecordInitialPosition()
+        {
+            InitialGraphCenterX = GraphCenterX;
+            InitialGraphCenterY = GraphCenterY;
+        }
+
+        /// <summary>
+        /// To set spaces between the nodes based on the default node distance.
+        /// </summary>
+        public void DistributeNodePosition()
         {
             double previousLayerX = 0;
             double offsetY = -Nodes.OrderBy(x => x.Y).First().Y;
@@ -517,6 +542,23 @@ namespace GraphLayout
                 }
             }
         }
+
+        /// <summary>
+        /// To shift the whole graph back to its original position.
+        /// </summary>
+        public void SetGraphPosition()
+        {
+            double moveX = InitialGraphCenterX - GraphCenterX;
+            double moveY = InitialGraphCenterY - GraphCenterY;
+
+            foreach (Node n in Nodes)
+            {
+                n.X += moveX;
+                n.Y += moveY;
+            }
+        }
+
+        #endregion
 
     }
 
@@ -570,11 +612,17 @@ namespace GraphLayout
         /// </summary>
         public HashSet<Edge> RightEdges = new HashSet<Edge>();
 
-        public Node(Guid guid, double width, double height, double y, Graph ownerGraph)
+        /// <summary>
+        /// A list of note models which has this node as the closest node.
+        /// </summary>
+        public List<Object> LinkedNotes = new List<Object>();
+
+        public Node(Guid guid, double width, double height, double x, double y, Graph ownerGraph)
         {
             Id = guid;
             Width = width;
             Height = height;
+            X = x;
             Y = y;
             OwnerGraph = ownerGraph;
         }

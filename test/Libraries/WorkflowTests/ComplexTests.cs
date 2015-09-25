@@ -484,7 +484,7 @@ namespace Dynamo.Tests
         }
 
 
-        [Test]
+        [Test, Category("Failure")]
         public void Test_Basket2()
         {
             // Create automation for Dynamo file : Basket2.dyn

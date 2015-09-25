@@ -509,32 +509,44 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Chop a list into a set of lists each containing the given amount of items.
+        ///     Chop a list into a set of consecutive sublists with the specified lengths. List division begins at the top of the list.
         /// </summary>
-        /// <param name="list">List to chop up.</param>
-        /// <param name="subLength">Length of each new sub-list.</param>
-        /// <returns name="lists">List of lists.</returns>
-        /// <search>sublists,build sublists,slices,partitions,cut,listcontains</search>
-        public static IList Chop(IList list, int subLength)
+        /// <param name="list">List to chop into sublists</param>
+        /// <param name="lengths">Lengths of consecutive sublists to be created from the input list</param>
+        /// <returns name="lists">Sublists created from the list</returns>
+        /// <search>sublists,build sublists,slices,partitions,cut,listcontains,chop</search>
+        public static IList Chop(IList list, IList lengths)
         {
-            if (list.Count < subLength)
-                return list;
-
             var finalList = new ArrayList();
             var currList = new ArrayList();
             int count = 0;
+            int lengthIndex = 0;
 
-            foreach (object v in list)
+            // If there are not any lengths more than 0,
+            // we return incoming list.
+            if (lengths.Cast<int>().All(x => x <= 0))
             {
-                count++;
-                currList.Add(v);
+                return list;
+            }
 
-                if (count == subLength)
+            foreach (object obj in list)
+            {
+                // If number of items in current list equals length in list of lengths,
+                // we should add current list in final list.
+                // Or if length in list of lengths <= 0, we should process this length and move further.
+                if (count == ((int)lengths[lengthIndex]) || ((int)lengths[lengthIndex] <= 0))
                 {
                     finalList.Add(currList);
                     currList = new ArrayList();
+                    if (lengthIndex < lengths.Count - 1)
+                    {
+                        lengthIndex++;
+                    }
                     count = 0;
                 }
+
+                currList.Add(obj);
+                count++;
             }
 
             if (currList.Count > 0)
