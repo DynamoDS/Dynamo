@@ -4,18 +4,17 @@ using SharpDX.DXGI;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
+    /// <summary>
+    /// The DynamoEffectsManager is loads Effects
+    /// from shader byte code, and defines data layouts for rendering. 
+    /// By extending the DefaultEffectsManager, the DynamoEffectsManager 
+    /// makes available effects like Blinn rendering, and adds custom
+    /// Dynamo rendering effects for points, lines, and meshes.
+    /// For more information on DirectX Effects, see 
+    /// https://msdn.microsoft.com/en-us/library/windows/desktop/ff476136(v=vs.85).aspx
+    /// </summary>
     public class DynamoEffectsManager : DefaultEffectsManager
     {
-        /// <summary>
-        /// The DynamoEffectsManager is loads Effects
-        /// from shader byte code, and defines data layouts for rendering. 
-        /// By extending the DefaultEffectsManager, the DynamoEffectsManager 
-        /// makes available effects like Blinn rendering, and adds custom
-        /// Dynamo rendering effects for points, lines, and meshes.
-        /// For more information on DirectX Effects, see 
-        /// https://msdn.microsoft.com/en-us/library/windows/desktop/ff476136(v=vs.85).aspx
-        /// </summary>
-        /// <param name="renderTechniquesManager">An IRenderTechniquesManager object.</param>
         public DynamoEffectsManager(IRenderTechniquesManager renderTechniquesManager) : base(renderTechniquesManager) { }
 
         /// <summary>
@@ -31,7 +30,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// effects used by Dynamo for rendering. Custom input layouts are
         /// created which specify extra COLOR components used to hold data 
         /// about the selection state and vertex coloration of objects.
-        /// See DynamoMeshVertex, DynamoPointVertex, and DynamoLineVertex
+        /// See <see cref="T:DynamoMeshVertex"/>, <see cref="T:DynamoPointVertex"/>, and <see cref="T:DynamoLineVertex"/>
         /// for examples of how these layouts are used.
         /// </summary>
         protected override void InitEffects()

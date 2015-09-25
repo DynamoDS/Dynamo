@@ -688,9 +688,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 directionalLight.Direction = v;
             }
 
-            // Occasional update of scene items, including
-            // distance-based transparency sorting.
-
+            // Raising a property change notification for
+            // the SceneItems collections causes a full
+            // re-render including sorting for transparency.
+            // We don't want to do this every frame, so we
+            // do this update only at a fixed interval.
             if (currentFrameSkipCount == FrameUpdateSkipCount)
             {
                 RaisePropertyChanged("SceneItems");

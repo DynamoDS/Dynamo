@@ -64,7 +64,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
 
             vViewport = effect.GetVariableByName("vViewport").AsVector();
-            //this.vFrustum = effect.GetVariableByName("vFrustum").AsVector();
             vPointParams = effect.GetVariableByName("vPointParams").AsVector();
 
             var pointParams = new Vector4((float)Size.Width, (float)Size.Height, (float)Figure, (float)FigureRatio);
