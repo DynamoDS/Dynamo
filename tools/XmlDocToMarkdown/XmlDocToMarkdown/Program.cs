@@ -377,7 +377,7 @@ namespace Dynamo.Docs
             new Dictionary<string, string>
                 {
                     {"doc", "## {0} ##\n\n{1}\n\n"},
-                    {"type", "# {0}\n\n{1}\n"},
+                    {"type", "# {0}\n\n"},
                     {"field", "##### {0}\n\n{1}\n"},
                     {"property", "##### {0}\n\n{1}\n"},
                     {"method", "##### {0}\n\n{1}\n"},
@@ -391,7 +391,7 @@ namespace Dynamo.Docs
                     {"exception", "[[{0}|{0}]]: {1}\n\n" },
                     {"returns", "\n\n Returns {0}\n\n"},
                     {"none", ""},
-                    {"typeparam", ""},
+                    {"typeparam", "|Name | Description |\n|-----||\n|{0} |{1}|\n"},
                     {"c", "`{0}`"},                   
                     {ApiStabilityTag, ApiStabilityTemplate}
                 };
@@ -403,7 +403,11 @@ namespace Dynamo.Docs
                     node.Nodes().ToMarkDown()
                 });
 
-
+        private static Func<string, XElement, string[]> tType =
+            new Func<string, XElement, string[]>((att, node) => new[]
+                {
+                    node.Nodes().ToMarkDown()                  
+                });
         private static Func<string, string, XElement,string[]> dType =
             new Func<string, string, XElement, string[]>((att1,att2,node) =>            
          
@@ -518,7 +522,7 @@ namespace Dynamo.Docs
                         x.Element("assembly").Element("name").Value,
                         x.Element("members").Elements("member").ToMarkDown()
                     }},
-                    {"type", x=>dType("name","param", x)},
+                    {"type", x=>tType("name", x)},
                     {"field", x=> d("name", x)},
                     {"property", x=> dType("name","param", x)},
                     {"method",x=>mType("name", "param", x)},
@@ -567,12 +571,7 @@ namespace Dynamo.Docs
                     var anchor = el.Attribute("cref").Value.StartsWith("!:#");
                     name = anchor ? "seeAnchor" : "seePage";
                 }
-
-                if (name == "type")
-                {
-                    return "";
-                }
-
+              
                 if (!methods.ContainsKey(name))
                 {
                     return "";

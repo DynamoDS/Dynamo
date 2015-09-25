@@ -28,9 +28,9 @@ namespace Dynamo.DocumentationTestLibrary
         event Action<TItem> ItemProduced;
     }
 
-    ///// <summary>
-    ///// Interface without generics
-    ///// </summary>
+    /// <summary>
+    /// Interface without generics
+    /// </summary>
     public interface IPackage
     {
         /// <summary>

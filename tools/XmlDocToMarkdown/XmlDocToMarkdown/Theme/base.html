@@ -55,15 +55,19 @@
 </head>
 
 <body class="wy-body-for-nav" role="document">
-
+   <div class="wy-side-nav-search">
+   <div style="white-space:nowrap">
+    <div  style="display:inline;">
+        <img src="/img/DynamoIcon.png/"/>
+    </div>   
+	</div>   
+        {% include "searchbox.html" %}
+   </div>
   <div class="wy-grid-for-nav">
 
     {# SIDE NAV, TOGGLES ON MOBILE #}
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
-      <div class="wy-side-nav-search">
-        <a href="{{ homepage_url }}" class="icon icon-home"> {{ site_name }}</a>
-        {% include "searchbox.html" %}
-      </div>
+     
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
         <ul class="current">
@@ -100,8 +104,6 @@
     </section>
 
   </div>
-
-{% include "versions.html" %}
 
 </body>
 </html>
