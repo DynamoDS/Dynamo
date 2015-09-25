@@ -2634,79 +2634,66 @@ namespace Dynamo.Controls
 
         public class ClassViewMarginConverter : IValueConverter
         {
-            private const int levelmargin = 45;
-            private const int marginTop = -10;
-            private const int marginLeft = -10;
-            private const int viewMarginLeft = -30;
-            private const int factor = 10;
+            private const int LevelMargin = 45;
+            private const int MarginTop = -10;
+            private const int MarginLeft = -10;
+            private const int ViewMarginLeft = -30;
+            private const int Factor = 10;
 
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
             {
                 var grid = value as Grid;
-                
-                //Outerbuttongrid has two different child.
-                if (grid != null && grid.Children.Count > 0)
-                {
-                    //first Child is a border
-                    var child1 = grid.Children[0] as Border;
-                    if (child1 != null)
-                    {
-                        //Grid inside the border. get all the children
-                        //from that grid.
-                        var innerChild = child1.Child as Grid;
-                        if (innerChild != null)
-                        {
-                            if (innerChild.Children.Count > 0)
-                            {
-                                var toggle = innerChild.Children[2] as ToggleButton;
-                                //second child is a border
-                                var child2 = grid.Children[1] as Border;
-                                if (child2 != null && toggle != null)
-                                {
-                                    //its the actual item presenter
-                                    var items = child2.Child as ItemsPresenter;
-                                    if (items != null && items.DataContext is NodeCategoryViewModel)
-                                    {
-                                        var dc = (NodeCategoryViewModel)items.DataContext;
-                                        var classInfoView = WpfUtilities.ChildOfType<ClassInformationView>(items);
-                                        if (dc.IsClassButton && classInfoView != null)
-                                        {
-                                            //Expander margin increases in 20. First level it is 5,
-                                            //second level it is 25, then 45 and then 65. set the content
-                                            //presenter margin only to level > 1.  For level 2, set the margin
-                                            // to 15.
-                                            var left = 0.0;
-                                            if (toggle.Margin.Left <= levelmargin)
-                                            {
-                                                //for level 1
-                                                if (toggle.Margin.Left - factor >= 35)
-                                                {
-                                                    left = toggle.Margin.Left - factor;
-                                                    classInfoView.Margin = new Thickness(viewMarginLeft, 0, 0, 0);
-                                                }
-                                                //for level 0
-                                                else
-                                                {
-                                                    left =  items.Margin.Left;
-                                                    classInfoView.Margin = new Thickness(marginLeft, 0, 0, 0);
-                                                }                                               
-                                            }                                            
-                                            else
-                                            {
-                                                left = toggle.Margin.Left - factor;
-                                                classInfoView.Margin = new Thickness(marginLeft, 0, 0, 0);
-                                            }
+                if (grid == null || grid.Children.Count <= 0) return new Thickness();               
+               
+                var child1 = grid.Children[0] as Border;
+                if (child1 == null) return new Thickness();               
 
-                                            items.Margin = new Thickness(left, marginTop, 0, 0);                                           
-                                        }
-                                    }
-                                }
-                            }
+                var innerChild = child1.Child as Grid;
+                if (innerChild == null || innerChild.Children.Count <= 0) return new Thickness();              
+
+                var toggle = innerChild.Children[2] as ToggleButton;
+                //second child is a border
+                var child2 = grid.Children[1] as Border;
+                if (child2 == null || toggle == null) return new Thickness();               
+
+                //its the actual item presenter
+                var items = child2.Child as ItemsPresenter;
+                if (items == null || !(items.DataContext is NodeCategoryViewModel)) return new Thickness();
+               
+
+                var dc = (NodeCategoryViewModel)items.DataContext;
+                var classInfoView = WpfUtilities.ChildOfType<ClassInformationView>(items);
+                if (dc.IsClassButton && classInfoView != null)
+                {
+                    //Expander margin increases in 20. First level it is 5,
+                    //second level it is 25, then 45 and then 65. set the content
+                    //presenter margin only to level > 1.  For level 2, set the margin
+                    // to 15.
+                    var left = 0.0;
+                    if (toggle.Margin.Left <= LevelMargin)
+                    {
+                        //for level 1
+                        if (toggle.Margin.Left - Factor >= 35)
+                        {
+                            left = toggle.Margin.Left - Factor;
+                            classInfoView.Margin = new Thickness(ViewMarginLeft, 0, 0, 0);
+                        }
+                        //for level 0
+                        else
+                        {
+                            left = items.Margin.Left;
+                            classInfoView.Margin = new Thickness(MarginLeft, 0, 0, 0);
                         }
                     }
+                    else
+                    {
+                        left = toggle.Margin.Left - Factor;
+                        classInfoView.Margin = new Thickness(MarginLeft, 0, 0, 0);
+                    }
 
+                    items.Margin = new Thickness(left, MarginTop, 0, 0);
                 }
-                
+
                 return new Thickness();
             }
 
