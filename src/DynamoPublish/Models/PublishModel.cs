@@ -53,7 +53,7 @@ namespace Dynamo.Publish.Models
             /// </summary>
             /// <param name="workspace">The workspace to read the dependencies from</param>
             /// <param name="customNodeManager">A custom node manager to look up dependencies</param>
-            /// <returns></returns>
+            /// <returns>A WorkspaceDependencies object containing the workspace and its CustomNodeWorkspaceModel dependencies</returns>
             public static WorkspaceDependencies Collect(HomeWorkspaceModel workspace, ICustomNodeManager customNodeManager)
             {
                 if (workspace == null) throw new ArgumentNullException("workspace");
