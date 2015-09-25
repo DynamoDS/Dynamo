@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Controls;
@@ -23,8 +22,15 @@ namespace Dynamo.Wpf.Extensions
         private readonly DynamoViewModel dynamoViewModel;
         public readonly Menu dynamoMenu;
 
+        /// <summary>
+        /// A reference to the background preview (geometry view) for geometry selection,
+        /// hit testing, mouse and keyboard events, etc. by the extension 
+        /// </summary>
         public IWatch3DView BackgroundPreView { get { return dynamoView.BackgroundPreview; } }
 
+        /// <summary>
+        /// A reference to the factory for creating render packages in the extension
+        /// </summary>
         public IRenderPackageFactory RenderPackageFactory
         {
             get { return dynamoViewModel.RenderPackageFactoryViewModel.Factory; }
@@ -62,6 +68,10 @@ namespace Dynamo.Wpf.Extensions
             AddItemToMenu(type, separatorObj, index);
         }
 
+        /// <summary>
+        /// Event raised when there's a change in selection of nodes in the workspace.
+        /// This event is subscribed to in the extension for any callback necessary for this event
+        /// </summary>
         public event Action<NotifyCollectionChangedEventArgs> SelectionCollectionChanged;
         private void OnSelectionCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
