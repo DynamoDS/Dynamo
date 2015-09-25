@@ -22,8 +22,74 @@ using Reach.Upload;
 
 namespace Dynamo.Publish.Models
 {
+    /// <summary>
+    /// Core data model for publishing a customizer
+    /// </summary>
     public class PublishModel : LogSourceBase
     {
+        /// <summary>
+        /// A Workspace and its dependencies
+        /// </summary>
+        internal sealed class WorkspaceDependencies
+        {
+            /// <summary>
+            /// The Workspace for which the dependencies are to be collected.
+            /// </summary>
+            public readonly HomeWorkspaceModel HomeWorkspace;
+
+            /// <summary>
+            /// The full collection of workspaces representing the dependencies
+            /// </summary>
+            public readonly IEnumerable<CustomNodeWorkspaceModel> CustomNodeWorkspaces;
+
+            private WorkspaceDependencies(HomeWorkspaceModel homeWorkspace, IEnumerable<ICustomNodeWorkspaceModel> customNodeWorkspaces)
+            {
+                this.HomeWorkspace = homeWorkspace;
+                this.CustomNodeWorkspaces = customNodeWorkspaces.OfType<CustomNodeWorkspaceModel>();
+            }
+
+            /// <summary>
+            /// Get all of the dependencies from a workspace
+            /// </summary>
+            /// <param name="workspace">The workspace to read the dependencies from</param>
+            /// <param name="customNodeManager">A custom node manager to look up dependencies</param>
+            /// <returns>A WorkspaceDependencies object containing the workspace and its CustomNodeWorkspaceModel dependencies</returns>
+            public static WorkspaceDependencies Collect(HomeWorkspaceModel workspace, ICustomNodeManager customNodeManager)
+            {
+                if (workspace == null) throw new ArgumentNullException("workspace");
+                if (customNodeManager == null) throw new ArgumentNullException("customNodeManager");
+
+                // collect all dependencies
+                var dependencies = new HashSet<CustomNodeDefinition>();
+                foreach (var node in workspace.Nodes.OfType<Function>())
+                {
+                    dependencies.Add(node.Definition);
+                    foreach (var dep in node.Definition.Dependencies)
+                    {
+                        dependencies.Add(dep);
+                    }
+                }
+
+                var customNodeWorkspaces = new List<ICustomNodeWorkspaceModel>();
+                foreach (var dependency in dependencies)
+                {
+                    ICustomNodeWorkspaceModel customNodeWs;
+                    var workspaceExists = customNodeManager.TryGetFunctionWorkspace(dependency.FunctionId, false, out customNodeWs);
+
+                    if (!workspaceExists)
+                    {
+                        throw new InvalidOperationException(String.Format(Resources.CustomNodeDefinitionNotFoundErrorMessage, dependency.FunctionName));
+                    }
+
+                    if (!customNodeWorkspaces.Contains(customNodeWs))
+                    {
+                        customNodeWorkspaces.Add(customNodeWs);
+                    }
+                }
+
+                return new WorkspaceDependencies(workspace, customNodeWorkspaces);
+            }
+        }
 
         public enum UploadState
         {
@@ -66,18 +132,6 @@ namespace Dynamo.Publish.Models
             {
                 return authenticationProvider.LoginState == LoginState.LoggedIn;
             }
-        }
-
-        public HomeWorkspaceModel HomeWorkspace
-        {
-            get;
-            private set;
-        }
-
-        public List<ICustomNodeWorkspaceModel> CustomNodeWorkspaces
-        {
-            get;
-            private set;
         }
 
         public bool HasAuthProvider
@@ -222,13 +276,13 @@ namespace Dynamo.Publish.Models
             }
         }
 
-        internal void SendAsynchronously(IEnumerable<IWorkspaceModel> workspaces, WorkspaceProperties workspaceProperties = null)
+        internal void SendAsynchronously(HomeWorkspaceModel workspace, WorkspaceProperties workspaceProperties = null)
         {
             State = UploadState.Uploading;
 
             Task.Factory.StartNew(() =>
                 {
-                    var result = this.Send(workspaces, workspaceProperties);
+                    var result = this.Send(workspace, workspaceProperties);
                     var serverResponce = serverResponceRegex.Match(result);
 
                     if (serverResponce.Success)
@@ -255,7 +309,7 @@ namespace Dynamo.Publish.Models
         /// Sends workspace and its' dependencies to Flood.
         /// </summary>
         /// <returns>String which is response from server.</returns>
-        internal string Send(IEnumerable<IWorkspaceModel> workspaces, WorkspaceProperties workspaceProperties = null)
+        internal string Send(HomeWorkspaceModel workspace, WorkspaceProperties workspaceProperties = null)
         {
             if (String.IsNullOrWhiteSpace(serverUrl))
             {
@@ -276,32 +330,18 @@ namespace Dynamo.Publish.Models
             }
 
             if (reachClient == null)
+            {
                 reachClient = new WorkspaceStorageClient(authenticationProvider, serverUrl);
-
-            HomeWorkspace = workspaces.OfType<HomeWorkspaceModel>().First();
-            var functionNodes = HomeWorkspace.Nodes.OfType<Function>();
-
-            List<CustomNodeDefinition> dependencies = new List<CustomNodeDefinition>();
-            foreach (var node in functionNodes)
-            {
-                dependencies.AddRange(node.Definition.Dependencies);
             }
 
-            CustomNodeWorkspaces = new List<ICustomNodeWorkspaceModel>();
-            foreach (var dependency in dependencies)
-            {
-                ICustomNodeWorkspaceModel customNodeWs;
-                var isWorkspaceCreated = customNodeManager.TryGetFunctionWorkspace(dependency.FunctionId, false, out customNodeWs);
-                if (isWorkspaceCreated && !CustomNodeWorkspaces.Contains(customNodeWs))
-                    CustomNodeWorkspaces.Add(customNodeWs);
-            }
+            var dependencies = WorkspaceDependencies.Collect(workspace, customNodeManager);
 
             string result;
             try
             {
                 result = reachClient.Send(
-                    HomeWorkspace,
-                    CustomNodeWorkspaces.OfType<CustomNodeWorkspaceModel>(), 
+                    workspace,
+                    dependencies.CustomNodeWorkspaces,
                     workspaceProperties);
                 InvalidNodeNames = null;
             }
