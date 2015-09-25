@@ -1193,35 +1193,41 @@ namespace Dynamo.ViewModels
             var VerticalGraphDistance = 30;
             var HorizontalGraphDistance = 70;
 
-            bool boleh = true;
+            bool done;
 
             do
             {
-                boleh = true;
+                done = true;
 
-                foreach (var g1 in Model.LayoutSubgraphs.Skip(1)) foreach (var g2 in Model.LayoutSubgraphs.Skip(1)) if (!g1.Equals(g2)) if (g1.GraphCenterY + g1.OffsetY <= g2.GraphCenterY + g2.OffsetY)
+                foreach (var g1 in Model.LayoutSubgraphs.Skip(1))
                 {
-                    var g1n = g1.Nodes.OrderBy(n => n.Y + n.Height);
-                    var g2n = g2.Nodes.OrderBy(n => n.Y);
-
-                    foreach (var g1node in g1n)
+                    foreach (var g2 in Model.LayoutSubgraphs.Skip(1))
                     {
-                        foreach (var g2node in g2n)
+                        if (!g1.Equals(g2) && (g1.GraphCenterY + g1.OffsetY <= g2.GraphCenterY + g2.OffsetY))
                         {
-                            if ((g1node.Y + g1node.Height + VerticalGraphDistance + g1.OffsetY > g2node.Y + g2.OffsetY) &&
-                                (((g1node.X <= g2node.X) && (g1node.X + g1node.Width + HorizontalGraphDistance > g2node.X)) ||
-                                ((g2node.X <= g1node.X) && (g2node.X + g2node.Width + HorizontalGraphDistance > g1node.X))))
+                            var g1nodes = g1.Nodes.OrderBy(n => n.Y + n.Height);
+                            var g2nodes = g2.Nodes.OrderBy(n => n.Y);
+
+                            foreach (var node1 in g1nodes)
                             {
-                                g1.OffsetY -= 5;
-                                g2.OffsetY += 5;
-                                boleh = false;
-                                break;
+                                foreach (var node2 in g2nodes)
+                                {
+                                    if ((node1.Y + node1.Height + VerticalGraphDistance + g1.OffsetY > node2.Y + g2.OffsetY) &&
+                                        (((node1.X <= node2.X) && (node1.X + node1.Width + HorizontalGraphDistance > node2.X)) ||
+                                        ((node2.X <= node1.X) && (node2.X + node2.Width + HorizontalGraphDistance > node1.X))))
+                                    {
+                                        g1.OffsetY -= 5;
+                                        g2.OffsetY += 5;
+                                        done = false;
+                                    }
+                                    if (!done) break;
+                                }
+                                if (!done) break;
                             }
                         }
-                        if (!boleh) break;
                     }
                 }
-            } while (!boleh);
+            } while (!done);
         }
 
         private void SaveLayoutGraph()

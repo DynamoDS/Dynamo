@@ -19,12 +19,27 @@ namespace GraphLayout
         public HashSet<Node> Nodes = new HashSet<Node>();
         public HashSet<Edge> Edges = new HashSet<Edge>();
 
-        public Graph ParentGraph;
+        /// <summary>
+        /// Layers 1 and onwards list the nodes in this graph ordered by layer,
+        /// with smaller numbers to the right part of the graph.
+        /// Layer 0 refers to outside nodes connected to the right of the first layer.
+        /// </summary>
+        public List<List<Node>> Layers = new List<List<Node>>();
 
+        /// <summary>
+        /// Edges connected to outside nodes to the left of this graph.
+        /// </summary>
         public HashSet<Edge> AnchorLeftEdges = new HashSet<Edge>();
+
+        /// <summary>
+        /// Edges connected to outside nodes to the right of this graph.
+        /// </summary>
         public HashSet<Edge> AnchorRightEdges = new HashSet<Edge>();
 
-        public List<List<Node>> Layers = new List<List<Node>>();
+        /// <summary>
+        /// The graph object which refers to the whole workspace.
+        /// </summary>
+        public Graph ParentGraph;
 
         #region Helper methods
 
@@ -48,7 +63,9 @@ namespace GraphLayout
         /// </summary>
         /// <param name="startId">The guid of the starting node.</param>
         /// <param name="endId">The guid of the ending node.</param>
+        /// <param name="startX">The x coordinate of the connector's left end point.</param>
         /// <param name="startY">The y coordinate of the connector's left end point.</param>
+        /// <param name="endX">The x coordinate of the connector's right end point.</param>
         /// <param name="endY">The y coordinate of the connector's right end point.</param>
         public void AddEdge(Guid startId, Guid endId, double startX, double startY, double endX, double endY)
         {
@@ -247,21 +264,16 @@ namespace GraphLayout
         
         /// <summary>
         /// Sugiyama step 2: Layering
-        /// This method implements Coffman-Graham layering algorithm.  All
-        /// output nodes will be put on the rightmost layer and they will be
-        /// ordered based on their original vertical positions.  All input
-        /// nodes will be put on the leftmost layer, and all isolated nodes
-        /// will be put below the input nodes.  This includes an implementation
-        /// to avoid horizontal node overlapping.
+        /// This method implements Coffman-Graham layering algorithm.
+        /// Unconnected output nodes will be put on the rightmost layer and
+        /// they will be ordered based on their original vertical positions.
         /// </summary>
         public void AssignLayers()
         {
             RemoveTransitiveEdges();
 
             foreach (var n in Nodes)
-            {
                 AddToLayer(n.RightEdges.Where(e => !e.EndNode.IsSelected).Select(e => e.EndNode).ToList(), 0);
-            }
 
             int currentLayer = 1;
             int processed = 0;
@@ -305,8 +317,7 @@ namespace GraphLayout
         /// <summary>
         /// Sugiyama step 3: Node Ordering
         /// This method uses Median heuristic to determine the vertical node
-        /// order for each layer.  This includes an implementation to avoid
-        /// vertical node overlapping.
+        /// order for each layer.
         /// </summary>
         public void OrderNodes()
         {
@@ -320,12 +331,12 @@ namespace GraphLayout
             foreach (List<Node> layer in Layers.Skip(1))
             {
                 double prevY = -10;
-                bool changed = false;
+                bool layerUpdated = false;
 
                 foreach (Node n in layer)
                 {
-                    // Get the vertical coordinates from each node's median
-                    // outgoing edge
+                    // Get the vertical coordinates of each node's right edge
+                    // and get the median from these values
 
                     List<Edge> neighborEdges = n.RightEdges
                         .Where(x => x.EndNode.Y < Infinite).OrderBy(x => x.EndY).ToList();
@@ -339,7 +350,7 @@ namespace GraphLayout
                             median2.EndNode.Y + median2.EndOffsetY -
                             median1.StartOffsetY - median2.StartOffsetY) / 2;
                         prevY = n.Y;
-                        changed = true;
+                        layerUpdated = true;
                     }
                     else if (neighborEdges.Count > 0)
                     {
@@ -347,18 +358,20 @@ namespace GraphLayout
 
                         n.Y = median.EndNode.Y + median.EndOffsetY - median.StartOffsetY;
                         prevY = n.Y;
-                        changed = true;
+                        layerUpdated = true;
                     }
                     else if (n.LeftEdges.Count > 0 && AnchorRightEdges.Count == 0)
                     {
                         n.Y = prevY + 10;
                         prevY = n.Y;
-                        changed = true;
+                        layerUpdated = true;
                     }
                 }
 
-                if (changed)
+                if (layerUpdated)
+                {
                     AssignCoordinates(layer);
+                }
             }
 
             // Assign left-anchored nodes
@@ -398,7 +411,7 @@ namespace GraphLayout
         /// <summary>
         /// Sugiyama step 4: Assign Coordinates
         /// Vertical coordinates for the nodes in a layer is assigned right after the
-        /// order of nodes in that particular layer is determined.
+        /// ordering of nodes in that particular layer is determined.
         /// </summary>
         /// <param name="layer">The nodes in a layer to be assigned their coordinates.</param>
         public void AssignCoordinates(List<Node> layer)
@@ -537,39 +550,30 @@ namespace GraphLayout
             }
             else
             {
+                // If the subgraph is anchored to any side then adjust the Y position
                 double outsideY = AnchorLeftEdges.Select(e => e.StartY)
                     .Union(AnchorRightEdges.Select(e => e.EndY)).Average();
                 double insideY = AnchorLeftEdges.Select(e => e.EndNode.Y + e.EndOffsetY)
                     .Union(AnchorRightEdges.Select(e => e.StartNode.Y + e.StartOffsetY)).Average();
                 moveY = outsideY - insideY;
-                //moveY = InitialGraphCenterY - GraphCenterY;
 
                 if (AnchorRightEdges.Count == 0)
                 {
                     // Anchored to the left
-                    double outsideX = AnchorLeftEdges.Max(e => e.StartX);
-                    double insideX = Nodes.Min(n => n.X);
-                    moveX = outsideX - insideX + HorizontalNodeDistance;
-
                     moveX = Math.Max(HorizontalNodeDistance - AnchorLeftEdges.Min(e => e.EndX - e.StartX),
                         InitialGraphCenterX - GraphCenterX);
                 }
                 else if (AnchorLeftEdges.Count == 0)
                 {
                     // Anchored to the right
-                    double outsideX = AnchorRightEdges.Min(e => e.EndNode.X);
-                    double insideX = Nodes.Max(n => n.X + n.Width);
-                    moveX = outsideX - insideX - HorizontalNodeDistance;
-
                     moveX = Math.Min(AnchorRightEdges.Min(e => e.EndX - e.StartX) - HorizontalNodeDistance,
                         InitialGraphCenterX - GraphCenterX);
                 }
                 else
                 {
                     // Anchored to both sides
-                    double outsideX = (AnchorLeftEdges.Max(e => e.StartX) +
-                        AnchorRightEdges.Min(e => e.EndNode.X)) / 2;
-                    moveX = outsideX - GraphCenterX;
+                    moveX = (AnchorLeftEdges.Max(e => e.StartX) +
+                        AnchorRightEdges.Min(e => e.EndNode.X)) / 2 - GraphCenterX;
                 }
             }
 
@@ -639,6 +643,9 @@ namespace GraphLayout
         /// </summary>
         public List<Object> LinkedNotes = new List<Object>();
 
+        /// <summary>
+        /// True if the node is selected in the workspace.
+        /// </summary>
         public bool IsSelected;
 
         public Node(Guid guid, double width, double height, double x, double y, bool isSelected, Graph ownerGraph)
@@ -673,18 +680,33 @@ namespace GraphLayout
         /// </summary>
         public Node EndNode;
 
+        /// <summary>
+        /// Returns the x coordinate of the connector's start point.
+        /// </summary>
         public double StartX
         {
-            get { return StartNode.X + StartNode.Width;  }
+            get { return StartNode.X + StartNode.Width; }
         }
+
+        /// <summary>
+        /// Returns the y coordinate of the connector's start point.
+        /// </summary>
         public double StartY
         {
             get { return StartNode.Y + StartOffsetY; }
         }
+
+        /// <summary>
+        /// Returns the x coordinate of the connector's end point.
+        /// </summary>
         public double EndX
         {
             get { return EndNode.X; }
         }
+
+        /// <summary>
+        /// Returns the y coordinate of the connector's end point.
+        /// </summary>
         public double EndY
         {
             get { return EndNode.Y + EndOffsetY; }
