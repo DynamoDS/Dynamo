@@ -48,7 +48,8 @@ namespace ProtoTest
         {
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(
-@"class foo{	m : var;	constructor Create(a1 : int)	{		m = a1;	}}x;y;[Imperative]{	p = foo.Create(16);    x = p.m;    p.m = 32;    y = p.m;}"
+@"
+import(""FFITarget.dll"");x;y;[Imperative]{	p = ClassFunctionality.ClassFunctionality(16);    x = p.IntVal;    p.IntVal = 32;    y = p.IntVal;}"
     , core, out runtimeCore);
             Assert.IsTrue((Int64)mirror.GetValue("x", 0).Payload == 16);
             Assert.IsTrue((Int64)mirror.GetValue("y", 0).Payload == 32);
