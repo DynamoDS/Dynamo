@@ -439,7 +439,7 @@ namespace DSCore.IO
                     {
                         writer.Write(entry);
                         if (++count < line.Length)
-                            writer.Write(", ");
+                            writer.Write(",");
                     }
                     writer.WriteLine();
                 }

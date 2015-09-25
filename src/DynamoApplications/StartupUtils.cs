@@ -149,7 +149,6 @@ namespace Dynamo.Applications
 
             var versions = new[]
             {
-                LibraryVersion.Version219,
                 LibraryVersion.Version220,
                 LibraryVersion.Version221
             };

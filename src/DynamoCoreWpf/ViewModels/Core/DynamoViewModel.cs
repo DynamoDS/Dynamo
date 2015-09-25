@@ -411,7 +411,7 @@ namespace Dynamo.ViewModels
 
             /// <summary>
             /// This property is initialized if there is an external host application
-            /// at startup in order to be used to pass in host specific resources to DynamoModel
+            /// at startup in order to be used to pass in host specific resources to DynamoViewModel
             /// </summary>
             public IBrandingResourceProvider BrandingResourceProvider { get; set; }
         }
