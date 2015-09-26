@@ -96,6 +96,8 @@
             SpinReleaseTime="0" 
             ItemsSource="{Binding SceneItems}"
             ShowFieldOfView="False" 
+            EffectsManager="{Binding EffectsManager}"
+            RenderTechniquesManager="{Binding RenderTechniquesManager}"
             BackgroundColor="{Binding Path=DataContext.ViewingHomespace, RelativeSource={RelativeSource AncestorType={x:Type controls:DynamoView}}, Converter={StaticResource Watch3DBackgroundColorConverter}}">
             <hx:Viewport3DX.InputBindings>
                 <KeyBinding Command="hx:ViewportCommands.ZoomExtents" Gesture="Ctrl+E"/>

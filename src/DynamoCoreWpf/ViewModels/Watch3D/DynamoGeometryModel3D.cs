@@ -76,7 +76,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var rasterStateDesc = new RasterizerStateDescription()
             {
                 FillMode = FillMode.Solid,
-                CullMode = CullMode.Back,
+                CullMode = CullMode.None,
                 DepthBias = depthBias,
                 DepthBiasClamp = -1000,
                 SlopeScaledDepthBias = +0,

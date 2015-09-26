@@ -50,6 +50,9 @@ float4 PShaderCustom(PSInputCustom input) : SV_Target
 	// get per pixel vector to eye-position
 	float3 eye = normalize(vEyePos - input.wp.xyz);
 
+	// To support two-sided surface lighting, we flip 
+	// the normal of the surface if it's facing
+	// away from us.
 	if (dot(input.n, eye) < 0)
 	{
 		input.n = -input.n;
@@ -88,57 +91,14 @@ float4 PShaderCustom(PSInputCustom input) : SV_Target
 		vMaterialTexture = texDiffuseMap.Sample(LinearSampler, input.t);
 	}
 
+	// Headlamp lighting
 	// loop over lights
 	for (int i = 0; i < LIGHTS; i++)
 	{
-		// This framework calculates lighting in world space.
-		// For every light type, you should calculate the input values to the
-		// calcPhongLighting function, namely light direction and the reflection vector.
-		// For computuation of attenuation and the spot light factor, use the
-		// model from the DirectX documentation:
-		// http://msdn.microsoft.com/en-us/library/windows/desktop/bb172279(v=vs.85).aspx
-
-		if (iLightType[i] == 1) // directional
-		{
-			float3 d = normalize((float3)vLightDir[i]);
-			float3 r = reflect(-d, input.n);
-			I += s * calcPhongLighting(vLightColor[i], vMaterialTexture, input.n, d, eye, r);
-		}
-		else if (iLightType[i] == 2)  // point
-		{
-			float3 d = (float3)(vLightPos[i] - input.wp);	 // light dir	
-			float dl = length(d);
-			d = normalize(d);
-			float3 r = reflect(-d, input.n);
-			float att = 1.0f / (vLightAtt[i].x + vLightAtt[i].y * dl + vLightAtt[i].z * dl * dl);
-			I += att * calcPhongLighting(vLightColor[i], vMaterialTexture, input.n, d, eye, r);
-		}
-		else if (iLightType[i] == 3)  // spot
-		{
-			float3 d = (float3)(vLightPos[i] - input.wp);	 // light dir
-			float dl = length(d);
-			d = normalize(d);
-			float3 r = reflect(-d, input.n);
-			float3 sd = normalize((float3)vLightDir[i]);	// missuse the vLightDir variable for spot-dir
-
-															/* --- this is the OpenGL 1.2 version (not so nice) --- */
-															//float spot = (dot(-d, sd));
-															//if(spot > cos(vLightSpot[i].x))
-															//	spot = pow( spot, vLightSpot[i].y );
-															//else
-															//	spot = 0.0f;	
-															/* --- */
-
-															/* --- this is the  DirectX9 version (better) --- */
-			float rho = dot(-d, sd);
-			float spot = pow(saturate((rho - vLightSpot[i].x) / (vLightSpot[i].y - vLightSpot[i].x)), vLightSpot[i].z);
-			float att = spot / (vLightAtt[i].x + vLightAtt[i].y * dl + vLightAtt[i].z * dl * dl);
-			I += att * calcPhongLighting(vLightColor[i], vMaterialTexture, input.n, d, eye, r);
-		}
-		else
-		{
-			//I += 0;
-		}
+		float3 viewDir = float3(mView[0][2], mView[1][2], mView[2][2]);
+		float3 d = normalize(viewDir);
+		float3 r = reflect(-d, input.n);
+		I += s * calcPhongLighting(vLightColor[i], vMaterialTexture, input.n, d, eye, r);
 	}
 
 	/// set diffuse alpha
@@ -244,7 +204,7 @@ technique11 RenderCustom
 {
 	pass P0
 	{
-		SetRasterizerState	( RSSolidNone );
+		SetRasterizerState	(RSSolidNone);
 		SetDepthStencilState(DSSDepthLess, 0);
 		SetBlendState(BSBlending, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
 		SetVertexShader(CompileShader(vs_4_0, VShaderCustom()));

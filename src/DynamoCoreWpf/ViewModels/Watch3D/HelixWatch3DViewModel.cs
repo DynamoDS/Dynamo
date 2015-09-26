@@ -294,7 +294,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
 
                 var values = Model3DDictionary.Values.ToList();
-                values.Sort(new Model3DComparer(Camera.Position));
+                //values.Sort(new Model3DComparer(Camera.Position));
                 return values;
             }
         }
@@ -669,35 +669,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 renderTimer.Reset();
             }
 #endif
-            if (directionalLight == null)
-            {
-                return;
-            }
-
-            var cf = new Vector3((float)camera.LookDirection.X, (float)camera.LookDirection.Y, (float)camera.LookDirection.Z).Normalized();
-            var cu = new Vector3((float)camera.UpDirection.X, (float)camera.UpDirection.Y, (float)camera.UpDirection.Z).Normalized();
-            var right = Vector3.Cross(cf, cu);
-
-            var qel = Quaternion.RotationAxis(right, (float)((-LightElevationDegrees * Math.PI) / 180));
-            var qaz = Quaternion.RotationAxis(cu, (float)((LightAzimuthDegrees * Math.PI) / 180));
-            var v = Vector3.Transform(cf, qaz * qel);
-            directionalLightDirection = v;
-
-            if (!directionalLight.Direction.Equals(directionalLightDirection))
-            {
-                directionalLight.Direction = v;
-            }
 
             // Raising a property change notification for
             // the SceneItems collections causes a full
             // re-render including sorting for transparency.
             // We don't want to do this every frame, so we
             // do this update only at a fixed interval.
-            if (currentFrameSkipCount == FrameUpdateSkipCount)
-            {
-                RaisePropertyChanged("SceneItems");
-                currentFrameSkipCount = 0;
-            }
+            //if (currentFrameSkipCount == FrameUpdateSkipCount)
+            //{
+            //    RaisePropertyChanged("SceneItems");
+            //    currentFrameSkipCount = 0;
+            //}
 
             currentFrameSkipCount++;
         }
@@ -946,7 +928,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             Axes.Positions = axesPositions;
             Axes.Indices = axesIndices;
             Axes.Colors = axesColors;
-
         }
 
         private static void DrawGridPatch(
@@ -1200,9 +1181,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 Transform = Model1Transform,
                 Material = WhiteMaterial,
-                IsHitTestVisible = true,
+                IsHitTestVisible = false,
                 RequiresPerVertexColoration = rp.RequiresPerVertexColoration,
-                IsSelected = rp.IsSelected,
+                IsSelected = rp.IsSelected
             };
 
             if (rp.Colors != null)
@@ -1244,7 +1225,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Transform = Model1Transform,
                 Color = Color.White,
                 Thickness = 0.5,
-                IsHitTestVisible = true,
+                IsHitTestVisible = false,
                 IsSelected = rp.IsSelected
             };
             return lineGeometry3D;

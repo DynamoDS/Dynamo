@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Runtime.InteropServices;
 using HelixToolkit.Wpf.SharpDX;
+using HelixToolkit.Wpf.SharpDX.Extensions;
 using SharpDX;
 using SharpDX.Direct3D11;
 
@@ -45,12 +46,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             if (Geometry == null)
                 return;
 
-            if (host.SupportDeferredRender)
-            {
-                if (renderHost.RenderTechnique == techManager.RenderTechniques[DeferredRenderTechniqueNames.Deferred] || 
-                    renderHost.RenderTechnique == techManager.RenderTechniques[DeferredRenderTechniqueNames.GBuffer])
-                    return;
-            }
+            if (renderHost.RenderTechnique == host.RenderTechniquesManager.RenderTechniques.Get(DeferredRenderTechniqueNames.Deferred) ||
+                renderHost.RenderTechnique == host.RenderTechniquesManager.RenderTechniques.Get(DeferredRenderTechniqueNames.Deferred))
+                return;
 
             vertexLayout = host.EffectsManager.GetLayout(renderTechnique);
             effectTechnique = effect.GetTechniqueByName(renderTechnique.Name);
