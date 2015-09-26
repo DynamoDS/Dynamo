@@ -1923,4 +1923,13 @@ Do you want to install the latest Dynamo update?</value>
   <data name="_dynamo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\viewmodels\watch3d\resources\_dynamo.bfx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="ActionMember" xml:space="preserve">
+    <value>Action</value>
+  </data>
+  <data name="CreateMember" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="QueryMember" xml:space="preserve">
+    <value>Query</value>
+  </data>
 </root>
