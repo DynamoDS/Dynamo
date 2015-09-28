@@ -151,12 +151,12 @@
     <controls:ElementTypeToShortConverter x:Key="ElementTypeToShortConverter" />
     <controls:GroupTitleVisibilityConverter x:Key="GroupTitleVisibilityConverter"/>
     <controls:LibraryViewModeToBoolConverter x:Key="LibraryViewModeToBoolConverter" />
-    <controls:WorkspaceContextMenuHeightConverter x:Key="WorkspaceContextMenuHeightConverter" />
+    <controls:WorkspaceContextMenuHeightConverter x:Key="WorkspaceContextMenuHeightConverter" />      
     <controls:TreeViewLineConverter x:Key="TreeViewLineConverter" />
     <controls:TreeViewLineMarginConverter x:Key="TreeViewLineMarginConverter" />
     <controls:TreeViewHLineMarginConverter x:Key="TreeViewHLineMarginConverter" />
     <controls:TreeViewVLineMarginConverter x:Key="TreeViewVLineMarginConverter" />
     <controls:TreeViewMarginCheck x:Key="TreeViewMarginCheck"/>   
-    <controls:NestedContentMarginConverter x:Key="NestedContentMarginConverter"/>
-    <controls:ClassViewMarginConverter x:Key ="ClassViewMarginConverter"/>
+    <controls:NestedContentMarginConverter x:Key="NestedContentMarginConverter"/> 
+    <controls:ClassViewMarginConverter x:Key ="ClassViewMarginConverter"/> 
 </ResourceDictionary>

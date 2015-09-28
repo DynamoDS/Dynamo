@@ -212,7 +212,7 @@ namespace Dynamo.Nodes
             WatchHeight = 200;
 
             ShouldDisplayPreviewCore = false;
-
+            IsRendered = true;
         }
 
         #endregion
@@ -311,7 +311,7 @@ namespace Dynamo.Nodes
         public override void RequestVisualUpdateAsync(
             IScheduler scheduler, EngineController engine, IRenderPackageFactory factory)
         {
-            // No visualization update is required for this node type.
+            // No visualization update is required for this node type.            
         }
     }
 }

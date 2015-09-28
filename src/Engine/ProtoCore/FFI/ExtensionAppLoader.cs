@@ -81,7 +81,7 @@ namespace ProtoFFI
                 var app = i.Value as IExtensionApplication;
                 if (null != app)
                 {
-                    app.ShutDown();
+                     app.ShutDown();
                 }  
             }
             mExtensionApps.Clear();

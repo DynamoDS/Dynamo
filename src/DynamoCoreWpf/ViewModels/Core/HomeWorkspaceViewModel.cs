@@ -62,15 +62,17 @@ namespace Dynamo.Wpf.ViewModels.Core
 
             var hwm = (HomeWorkspaceModel)Model;
             hwm.EvaluationStarted += hwm_EvaluationStarted;
-            hwm.EvaluationCompleted += hwm_EvaluationCompleted;
+            hwm.EvaluationCompleted += hwm_EvaluationCompleted;            
+            hwm.RefreshCompleted +=hwm_RefreshCompleted;
             hwm.SetNodeDeltaState +=hwm_SetNodeDeltaState;
 
-            dynamoViewModel.Model.ShutdownStarted += Model_ShutdownStarted;
+            dynamoViewModel.Model.ShutdownStarted += Model_ShutdownStarted;            
         }
 
         void Model_ShutdownStarted(DynamoModel model)
         {
             StopPeriodicTimer(null);
+            StopSpin();
         }
 
         /// <summary>
@@ -130,29 +132,87 @@ namespace Dynamo.Wpf.ViewModels.Core
             }           
         }
 
-        void hwm_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
+        private void hwm_RefreshCompleted(object sender, EvaluationCompletedEventArgs e)
         {
+            //Stop the Spinner here. If the nodes have something to render
+            //then spinner starts again during Rendering
+            StopSpin();       
+        }
+
+        void hwm_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
+        {           
             bool hasWarnings = Model.Nodes.Any(n => n.State == ElementState.Warning);
 
             if (!hasWarnings)
             {
-                SetCurrentWarning(NotificationLevel.Mild, Properties.Resources.RunCompletedMessage);
+                StartSpin(Properties.Resources.EvalCompletedMessage);
             }
             else
             {
-                SetCurrentWarning(NotificationLevel.Moderate, Properties.Resources.RunCompletedWithWarningsMessage); 
+                StopSpin();
+                SetCurrentWarning(NotificationLevel.Moderate, Properties.Resources.EvalCompletedWithWarningsMessage); 
             }
         }
 
         void hwm_EvaluationStarted(object sender, EventArgs e)
-        {
-            SetCurrentWarning(NotificationLevel.Mild, Properties.Resources.RunStartedMessage);
+        {           
+            //StartSpin(Properties.Resources.EvalStartedMessage);            
         }
 
         private void SetCurrentWarning(NotificationLevel level, string message)
         {
             CurrentNotificationLevel = level;
-            CurrentNotificationMessage = message;
+            CurrentNotificationMessage = message;           
+        }
+
+        /// <summary>
+        /// Show the background spinner
+        /// </summary>
+        /// <param name="message">Message to be displayed with the spinner</param>
+        internal override void StartSpin(String message = null)
+        {
+            RunSettingsViewModel.ShowBusyIndicator = true;
+            RunSettingsViewModel.ShowRunMessage = message ?? String.Empty;
+            SetCurrentWarning(NotificationLevel.Mild, message);        
+        }
+
+        /// <summary>
+        /// Collapse the background spinner.
+        /// </summary>
+        /// <param name="message">Message to be displayed with the spinner</param>
+        internal override  void StopSpin(String message = null)
+        {
+            RunSettingsViewModel.ShowBusyIndicator = false;
+            if (message != null)
+            {
+                RunSettingsViewModel.ShowRunMessage = message;
+                SetCurrentWarning(NotificationLevel.Mild, message);
+            }
+            else
+            {
+                ClearWarning();
+            }
+        }
+
+        /// <summary>
+        /// Toggles the background spinner.
+        /// </summary>
+        /// <param name="message">Message to be displayed with the spinner.</param>
+        internal override void ToggleSpin(String message = null)
+        {
+            //If the spinner is not running (e.g during a Watch3D Rendering)
+            //then start the spin 
+            if (!RunSettingsViewModel.ShowBusyIndicator)
+            {
+                StartSpin(message);                
+            }
+            else
+            {
+                //If the spinner is running, then stop and start the spinner again and
+                //update the message.
+                StopSpin();
+                StartSpin(message);               
+            }
         }
 
         public void ClearWarning()
@@ -165,7 +225,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             // If any property changes on the run settings object
             // Raise a property change notification for the RunSettingsViewModel
             // property
-            RaisePropertyChanged("RunSettingsViewModel");
+            RaisePropertyChanged("RunSettingsViewModel");             
         }
 
         private void StartPeriodicTimer(object parameter)
@@ -201,9 +261,11 @@ namespace Dynamo.Wpf.ViewModels.Core
             var hwm = (HomeWorkspaceModel)Model;
             hwm.EvaluationStarted -= hwm_EvaluationStarted;
             hwm.EvaluationCompleted -= hwm_EvaluationCompleted;
+            hwm.RefreshCompleted -= hwm_RefreshCompleted;
             hwm.SetNodeDeltaState -= hwm_SetNodeDeltaState;
 
             DynamoViewModel.Model.ShutdownStarted -= Model_ShutdownStarted;
+            StopSpin();
         }
     }
 

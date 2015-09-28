@@ -1592,7 +1592,10 @@
                 </WrapPanel>
                 
                 <!--NotificationControl for showing run-time notifications-->
-                <controls1:NotificationsControl Grid.Column="1"/>
+                <controls1:NotificationsControl 
+                    Visibility="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.ShowBusyIndicator,                     
+                    Converter={StaticResource InverseBoolToVisibilityConverter}}"
+                    Grid.Column="1"/>
                 
             </Grid>
 

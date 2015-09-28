@@ -22,6 +22,7 @@ using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.UI.Commands;
 using Dynamo.Wpf.Rendering;
+using Dynamo.Wpf.ViewModels.Core;
 using DynamoUtilities;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
@@ -100,9 +101,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private const string MeshKey = ":mesh";
         private const string TextKey = ":text";
 
-#if DEBUG
+ 
         private readonly Stopwatch renderTimer = new Stopwatch();
-#endif
+
 
         #endregion
 
@@ -431,7 +432,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 return;
             }
-
+          
             // Raise request for model objects to be
             // created on the UI thread.
             OnRequestCreateModels(packages);
@@ -591,9 +592,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 return;
             }
 
-#if DEBUG
+ 
             renderTimer.Start();
-#endif
+ 
             var packages = taskPackages
                 .Cast<HelixRenderPackage>().Where(rp => rp.MeshVertexCount % 3 == 0);
 
@@ -601,12 +602,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             AggregateRenderPackages(packages);
 
-#if DEBUG
+ 
             renderTimer.Stop();
+#if DEBUG
             Debug.WriteLine(string.Format("RENDER: {0} ellapsed for compiling assets for rendering.", renderTimer.Elapsed));
+#endif
             renderTimer.Reset();
             renderTimer.Start();
-#endif
+
 
             RaisePropertyChanged("SceneItems");
             OnRequestViewRefresh();
@@ -658,14 +661,22 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         internal void ComputeFrameUpdate()
         {
-#if DEBUG
             if (renderTimer.IsRunning)
             {
                 renderTimer.Stop();
+ #if DEBUG
                 Debug.WriteLine(string.Format("RENDER: {0} ellapsed for setting properties and rendering.", renderTimer.Elapsed));
+ #endif
+                //If all the nodes are Rendered,then stop the spinner.             
+                if (CurrentSpaceViewModel.Model.Nodes.Count(x => !x.IsRendered) <= 0)
+                {
+                    //var vm = CurrentSpaceViewModel as HomeWorkspaceViewModel;
+                    CurrentSpaceViewModel.StopSpin(Wpf.Properties.Resources.RunCompleted);
+                }
+               
                 renderTimer.Reset();
             }
-#endif
+
             if (directionalLight == null)
             {
                 return;
@@ -1015,6 +1026,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private void AggregateRenderPackages(IEnumerable<HelixRenderPackage> pacakges)
         {
+            //Toggle the Spinner. This is used during Watch3D Rendering.
+            CurrentSpaceViewModel.ToggleSpin(Wpf.Properties.Resources.TesselationCompletedMessage + nodeModel.NickName);
+
             lock (Model3DDictionaryMutex)
             {
                 foreach (var rp in pacakges)

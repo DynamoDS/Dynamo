@@ -216,6 +216,36 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
+        private bool showBusyIndicator;
+        public Boolean ShowBusyIndicator
+        {
+            get
+            {
+                return showBusyIndicator;
+                //dynamoViewModel.ShowBusyIndicator;
+            }
+            set
+            {
+                //dynamoViewModel.ShowBusyIndicator = value;
+                showBusyIndicator = value;
+                RaisePropertyChanged("ShowBusyIndicator");            
+            }
+        }
+
+        private string showRunMessage;
+        public string ShowRunMessage
+        {
+            get
+            {
+                return showRunMessage;               
+            }
+            set
+            {              
+                showRunMessage = value;
+                RaisePropertyChanged("ShowRunMessage");
+            }
+        }
+
         #endregion
 
         #region constructors
@@ -237,6 +267,19 @@ namespace Dynamo.Wpf.ViewModels
                 RunTypeItems.Add(new RunTypeItem(val));
             }
             ToggleRunTypeEnabled(RunType.Periodic, false);
+        }
+
+        private void dynamoViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                 case "ShowBusyIndicator":
+                    RaisePropertyChanged("ShowBusyIndicator");
+                    break;
+                 case "ShowRunMessage":
+                    RaisePropertyChanged("ShowRunMessage");
+                    break;
+            }
         }
 
         #endregion
@@ -279,7 +322,7 @@ namespace Dynamo.Wpf.ViewModels
                     RaisePropertyChanged("SelectedRunTypeItem");
                     RaisePropertyChanged("RunButtonVisibility");
                     RunTypeChangedRun(null);
-                    break;
+                    break;                               
             }
         }
 
@@ -362,5 +405,5 @@ namespace Dynamo.Wpf.ViewModels
 
             return parseSuccess ? Math.Abs(ms) : RunSettings.DefaultRunPeriod;
         }
-    }
+    }  
 }

@@ -1229,6 +1229,21 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("AnyNodeUpstreamVisible");
             RaisePropertyChanged("SelectionArgumentLacing");
         }
+
+        internal virtual void StartSpin(String Message = null)
+        {
+            
+        }
+
+        internal virtual void StopSpin(String Message = null)
+        {
+
+        }
+
+        internal virtual void ToggleSpin(String Message)
+        {
+            
+        }
     }
 
     public class ViewModelEventArgs : EventArgs

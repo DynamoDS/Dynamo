@@ -85,6 +85,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
+    <Reference Include="WPFBackgroundProgressIndicator">
+      <HintPath>..\..\extern\Spinner\WPFBackgroundProgressIndicator.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\InCanvasSearchControl.xaml.cs">

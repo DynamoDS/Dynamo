@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Collections.ObjectModel;
+using System.Net.Configuration;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 
@@ -68,7 +69,10 @@ namespace Dynamo.Models
         /// <summary>
         /// The unique name that was created the node by
         /// </summary>
-        public virtual string CreationName { get { return this.Name; } }
+        public virtual string CreationName
+        {
+            get { return this.Name; }
+        }
 
         #endregion
 
@@ -102,7 +106,7 @@ namespace Dynamo.Models
         ///     Definitions for the Input Ports of this NodeModel.
         /// </summary>
         public ObservableCollection<PortData> InPortData { get; private set; }
-        
+
         /// <summary>
         ///     Definitions for the Output Ports of this NodeModel.
         /// </summary>
@@ -113,10 +117,7 @@ namespace Dynamo.Models
         /// </summary>
         public IEnumerable<ConnectorModel> AllConnectors
         {
-            get
-            {
-                return inPorts.Concat(outPorts).SelectMany(port => port.Connectors);
-            }
+            get { return inPorts.Concat(outPorts).SelectMany(port => port.Connectors); }
         }
 
         /// <summary>
@@ -132,10 +133,7 @@ namespace Dynamo.Models
         /// </summary>
         public bool IsVisible
         {
-            get
-            {
-                return isVisible;
-            }
+            get { return isVisible; }
 
             private set // Private setter, see "ArgumentLacing" for details.
             {
@@ -153,10 +151,7 @@ namespace Dynamo.Models
         /// </summary>
         public bool IsUpstreamVisible
         {
-            get
-            {
-                return isUpstreamVisible;
-            }
+            get { return isUpstreamVisible; }
 
             private set // Private setter, see "ArgumentLacing" for details.
             {
@@ -174,13 +169,11 @@ namespace Dynamo.Models
         /// </summary>
         public bool IsInputNode
         {
-            get
-            {
-                return !inPorts.Any() && !(this is DSFunction);
-            }
+            get { return !inPorts.Any() && !(this is DSFunction); }
         }
 
         private bool isSelectedInput = true;
+
         /// <summary>
         /// Specifies whether an input node should be included in a preset. 
         /// By default, this field is set to true.
@@ -195,10 +188,7 @@ namespace Dynamo.Models
                 return isSelectedInput;
             }
 
-            set
-            {
-                isSelectedInput = value;
-            }
+            set { isSelectedInput = value; }
         }
 
         /// <summary>
@@ -226,10 +216,7 @@ namespace Dynamo.Models
         /// </summary>
         public bool IsInErrorState
         {
-            get
-            {
-                return state == ElementState.AstBuildBroken || state == ElementState.Error;
-            }
+            get { return state == ElementState.AstBuildBroken || state == ElementState.Error; }
         }
 
         /// <summary>
@@ -312,10 +299,7 @@ namespace Dynamo.Models
         /// </summary>
         public LacingStrategy ArgumentLacing
         {
-            get
-            {
-                return argumentLacing;
-            }
+            get { return argumentLacing; }
 
             // The property setter is marked as private/protected because it 
             // should not be set from an external component directly. The ability
@@ -356,9 +340,9 @@ namespace Dynamo.Models
             get
             {
                 Type type = GetType();
-                object[] attribs = type.GetCustomAttributes(typeof(NodeNameAttribute), false);
+                object[] attribs = type.GetCustomAttributes(typeof (NodeNameAttribute), false);
                 if (type.Namespace == "Dynamo.Nodes" && !type.IsAbstract && attribs.Length > 0
-                    && type.IsSubclassOf(typeof(NodeModel)))
+                    && type.IsSubclassOf(typeof (NodeModel)))
                 {
                     var elCatAttrib = attribs[0] as NodeNameAttribute;
                     return elCatAttrib.Name;
@@ -392,10 +376,10 @@ namespace Dynamo.Models
         private string GetCategoryStringFromAttributes()
         {
             Type type = GetType();
-            object[] attribs = type.GetCustomAttributes(typeof(NodeCategoryAttribute), false);
-            
+            object[] attribs = type.GetCustomAttributes(typeof (NodeCategoryAttribute), false);
+
             if (type.Namespace != "Dynamo.Nodes" || type.IsAbstract || attribs.Length <= 0
-                || !type.IsSubclassOf(typeof(NodeModel))) 
+                || !type.IsSubclassOf(typeof (NodeModel)))
                 return "";
 
             var elCatAttrib = attribs[0] as NodeCategoryAttribute;
@@ -470,6 +454,13 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the node is rendered.
+        /// During rendering, when all the nodes are rendered successfully
+        /// the background spinner will be collapsed.        
+        /// </summary>        
+        public bool IsRendered { get; set; }
+
+        /// <summary>
         ///     Search tags for this Node.
         /// </summary>
         public List<string> Tags
@@ -478,7 +469,7 @@ namespace Dynamo.Models
             {
                 return
                     GetType()
-                        .GetCustomAttributes(typeof(NodeSearchTagsAttribute), true)
+                        .GetCustomAttributes(typeof (NodeSearchTagsAttribute), true)
                         .Cast<NodeSearchTagsAttribute>()
                         .SelectMany(x => x.Tags)
                         .ToList();
@@ -526,10 +517,7 @@ namespace Dynamo.Models
         /// </summary>
         public virtual bool IsConvertible
         {
-            get
-            {
-                return false;
-            }
+            get { return false; }
         }
 
         /// <summary>
@@ -543,7 +531,7 @@ namespace Dynamo.Models
             get
             {
                 return AstBuilder.StringConstants.VarPrefix
-                    + GUID.ToString().Replace("-", string.Empty);
+                       + GUID.ToString().Replace("-", string.Empty);
             }
         }
 
@@ -555,7 +543,7 @@ namespace Dynamo.Models
             get { return displayLabels; }
             set
             {
-                if (displayLabels == value) 
+                if (displayLabels == value)
                     return;
 
                 displayLabels = value;
@@ -578,9 +566,9 @@ namespace Dynamo.Models
         public string GetDescriptionStringFromAttributes()
         {
             Type t = GetType();
-            object[] rtAttribs = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), true);
+            object[] rtAttribs = t.GetCustomAttributes(typeof (NodeDescriptionAttribute), true);
             return rtAttribs.Length > 0
-                ? ((NodeDescriptionAttribute)rtAttribs[0]).ElementDescription
+                ? ((NodeDescriptionAttribute) rtAttribs[0]).ElementDescription
                 : Properties.Resources.NoDescriptionAvailable;
         }
 
@@ -610,8 +598,9 @@ namespace Dynamo.Models
         /// <returns></returns>
         public virtual ProtoCore.Type GetTypeHintForOutput(int index)
         {
-             return ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeVar);
+            return ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeVar);
         }
+
         #endregion
 
         protected NodeModel()
@@ -646,7 +635,7 @@ namespace Dynamo.Models
 
             RaisesModificationEvents = true;
         }
-     
+
         /// <summary>
         ///     Gets the most recent value of this node stored in an EngineController that has evaluated it.
         /// </summary>
@@ -682,12 +671,13 @@ namespace Dynamo.Models
         ///     Event fired when the node's DesignScript AST should be recompiled
         /// </summary>
         public event Action<NodeModel> Modified;
+
         public virtual void OnNodeModified(bool forceExecute = false)
         {
             if (!RaisesModificationEvents)
                 return;
 
-            MarkNodeAsModified(forceExecute);           
+            MarkNodeAsModified(forceExecute);
             var handler = Modified;
             if (handler != null) handler(this);
         }
@@ -705,10 +695,10 @@ namespace Dynamo.Models
         {
             return
                 OutPortData.Enumerate()
-                           .Select(
-                               output => AstFactory.BuildAssignment(
-                                   GetAstIdentifierForOutputIndex(output.Index),
-                                   new NullNode()));
+                    .Select(
+                        output => AstFactory.BuildAssignment(
+                            GetAstIdentifierForOutputIndex(output.Index),
+                            new NullNode()));
         }
 
         /// <summary>
@@ -716,7 +706,8 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="inputAstNodes"></param>
         /// <param name="context">Compilation context</param>
-        internal virtual IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, AstBuilder.CompilationContext context)
+        internal virtual IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes,
+            AstBuilder.CompilationContext context)
         {
             OnBuilt();
 
@@ -741,10 +732,10 @@ namespace Dynamo.Models
 
                 var fullName = this.GetType().ToString();
                 var astNodeFullName = AstFactory.BuildStringNode(fullName);
-                var arguments = new List<AssociativeNode> { astNodeFullName };
-                var func = AstFactory.BuildFunctionCall(Constants.kNodeAstFailed, arguments); 
+                var arguments = new List<AssociativeNode> {astNodeFullName};
+                var func = AstFactory.BuildFunctionCall(Constants.kNodeAstFailed, arguments);
 
-                return new []
+                return new[]
                 {
                     AstFactory.BuildAssignment(AstIdentifierForPreview, func)
                 };
@@ -756,10 +747,10 @@ namespace Dynamo.Models
                 if (!AstIdentifierForPreview.Equals(firstOuputIdent))
                 {
                     result = result.Concat(
-                    new[]
-                    {
-                        AstFactory.BuildAssignment(AstIdentifierForPreview, firstOuputIdent)
-                    });
+                        new[]
+                        {
+                            AstFactory.BuildAssignment(AstIdentifierForPreview, firstOuputIdent)
+                        });
                 }
                 return result;
             }
@@ -768,20 +759,20 @@ namespace Dynamo.Models
             var previewIdInit = AstFactory.BuildAssignment(AstIdentifierForPreview, emptyList);
 
             return
-                result.Concat(new[] { previewIdInit })
-                      .Concat(
-                          OutPortData.Select(
-                              (outNode, index) =>
-                                  AstFactory.BuildAssignment(
-                                      new IdentifierNode(AstIdentifierForPreview)
-                                      {
-                                          ArrayDimensions =
-                                              new ArrayNode
-                                              {
-                                                  Expr = new StringNode { value = outNode.NickName }
-                                              }
-                                      },
-                                      GetAstIdentifierForOutputIndex(index))));
+                result.Concat(new[] {previewIdInit})
+                    .Concat(
+                        OutPortData.Select(
+                            (outNode, index) =>
+                                AstFactory.BuildAssignment(
+                                    new IdentifierNode(AstIdentifierForPreview)
+                                    {
+                                        ArrayDimensions =
+                                            new ArrayNode
+                                            {
+                                                Expr = new StringNode {value = outNode.NickName}
+                                            }
+                                    },
+                                    GetAstIdentifierForOutputIndex(index))));
         }
 
         /// <summary>
@@ -809,9 +800,9 @@ namespace Dynamo.Models
                     for (int i = 0; i < inputs.Count(); ++i)
                     {
                         inputs[i] = AstFactory.AddReplicationGuide(
-                                                inputs[i],
-                                                new List<int> { 1 },
-                                                true);
+                            inputs[i],
+                            new List<int> {1},
+                            true);
                     }
                     break;
 
@@ -821,14 +812,15 @@ namespace Dynamo.Models
                     for (int i = 0; i < inputs.Count(); ++i)
                     {
                         inputs[i] = AstFactory.AddReplicationGuide(
-                                                inputs[i],
-                                                new List<int> { guide },
-                                                false);
+                            inputs[i],
+                            new List<int> {guide},
+                            false);
                         guide++;
                     }
                     break;
             }
         }
+
         #endregion
 
         #region Input and Output Connections
@@ -837,6 +829,7 @@ namespace Dynamo.Models
         ///     Event fired when a new ConnectorModel has been attached to one of this node's inputs.
         /// </summary>
         public event Action<ConnectorModel> ConnectorAdded;
+
         protected virtual void OnConnectorAdded(ConnectorModel obj)
         {
             var handler = ConnectorAdded;
@@ -861,7 +854,7 @@ namespace Dynamo.Models
                 return true;
             }
         }
-        
+
         internal void ConnectInput(int inputData, int outputData, NodeModel node)
         {
             inputNodes[inputData] = Tuple.Create(outputData, node);
@@ -1015,7 +1008,7 @@ namespace Dynamo.Models
             State = ElementState.Error;
             ToolTipText = p;
         }
-        
+
         /// <summary>
         /// Set a warning on a node. 
         /// </summary>
@@ -1084,7 +1077,7 @@ namespace Dynamo.Models
                 return verticalOffset;
 
             double portHeight = portModel.Height;
-            return verticalOffset + index * portModel.Height;
+            return verticalOffset + index*portModel.Height;
         }
 
         /// <summary>
@@ -1105,7 +1098,7 @@ namespace Dynamo.Models
                 //port.DataContext = this;
 
                 portDataDict[port] = pd;
-                count++;            
+                count++;
             }
 
             if (inPorts.Count > count)
@@ -1143,7 +1136,7 @@ namespace Dynamo.Models
                 //port.DataContext = this;
 
                 portDataDict[port] = pd;
-                count++;              
+                count++;
             }
 
             if (outPorts.Count > count)
@@ -1184,8 +1177,8 @@ namespace Dynamo.Models
                     var query =
                         ports.Where(
                             port => !port.extensionEdges.HasFlag(SnapExtensionEdges.Top | SnapExtensionEdges.Bottom)
-                                && !port.extensionEdges.HasFlag(SnapExtensionEdges.Top)
-                                && !port.extensionEdges.HasFlag(SnapExtensionEdges.Bottom));
+                                    && !port.extensionEdges.HasFlag(SnapExtensionEdges.Top)
+                                    && !port.extensionEdges.HasFlag(SnapExtensionEdges.Bottom));
                     foreach (var port in query)
                         port.extensionEdges = SnapExtensionEdges.None;
                     break;
@@ -1238,7 +1231,7 @@ namespace Dynamo.Models
 
                         InPorts.Add(p);
                     }
-                    
+
                     return p;
 
                 case PortType.Output:
@@ -1363,7 +1356,7 @@ namespace Dynamo.Models
             string name = updateValueParams.PropertyName;
             string value = updateValueParams.PropertyValue;
 
-            switch(name)
+            switch (name)
             {
                 case "NickName":
                     NickName = value;
@@ -1377,7 +1370,7 @@ namespace Dynamo.Models
                     var arr = value.Split(';');
                     for (int i = 0; i < arr.Length; i++)
                     {
-                        var useDef = !bool.Parse(arr[i]); 
+                        var useDef = !bool.Parse(arr[i]);
                         // do not set true, if default value is disabled
                         if (!useDef || InPorts[i].DefaultValueEnabled)
                         {
@@ -1416,7 +1409,9 @@ namespace Dynamo.Models
         /// <summary>
         ///     Called when the node's Workspace has been saved.
         /// </summary>
-        protected internal virtual void OnSave() { }
+        protected internal virtual void OnSave()
+        {
+        }
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
@@ -1436,8 +1431,8 @@ namespace Dynamo.Models
             helper.SetAttribute("isSelectedInput", IsSelectedInput.ToString());
 
             var portsWithDefaultValues =
-                inPorts.Select((port, index) => new { port, index })
-                   .Where(x => x.port.UsingDefaultValue);
+                inPorts.Select((port, index) => new {port, index})
+                    .Where(x => x.port.UsingDefaultValue);
 
             //write port information
             foreach (var port in portsWithDefaultValues)
@@ -1461,8 +1456,8 @@ namespace Dynamo.Models
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            var helper = new XmlElementHelper(nodeElement); 
-            
+            var helper = new XmlElementHelper(nodeElement);
+
             if (context != SaveContext.Copy)
                 GUID = helper.ReadGuid("guid", GUID);
 
@@ -1473,7 +1468,7 @@ namespace Dynamo.Models
             else
             {
                 Type type = GetType();
-                object[] attribs = type.GetCustomAttributes(typeof(NodeNameAttribute), true);
+                object[] attribs = type.GetCustomAttributes(typeof (NodeNameAttribute), true);
                 var attrib = attribs[0] as NodeNameAttribute;
                 if (null != attrib)
                     nickName = attrib.Name;
@@ -1506,7 +1501,7 @@ namespace Dynamo.Models
             //set defaults
             foreach (
                 var port in
-                    inPorts.Select((x, i) => new { x, i }).Where(x => !portInfoProcessed.Contains(x.i)))
+                    inPorts.Select((x, i) => new {x, i}).Where(x => !portInfoProcessed.Contains(x.i)))
                 port.x.UsingDefaultValue = false;
 
             if (context == SaveContext.Undo)
@@ -1535,9 +1530,10 @@ namespace Dynamo.Models
         #endregion
 
         #region Dirty Management
+
         //TODO: Refactor Property into Automatic with private(?) setter
         //TODO: Add RequestRecalc() method to replace setter --steve
-       
+
         /// <summary>
         /// Execution scenarios for a Node to be re-executed
         /// </summary>
@@ -1545,8 +1541,8 @@ namespace Dynamo.Models
         protected enum ExecutionHints
         {
             None = 0,
-            Modified = 1,       // Marks as modified, but execution is optional if AST is unchanged.
-            ForceExecute = 3    // Marks as modified, force execution even if AST is unchanged.
+            Modified = 1, // Marks as modified, but execution is optional if AST is unchanged.
+            ForceExecute = 3 // Marks as modified, force execution even if AST is unchanged.
         }
 
         private ExecutionHints executionHint;
@@ -1565,7 +1561,7 @@ namespace Dynamo.Models
         {
             executionHint = ExecutionHints.Modified;
 
-            if(forceExecute)
+            if (forceExecute)
                 executionHint |= ExecutionHints.ForceExecute;
         }
 
@@ -1578,10 +1574,11 @@ namespace Dynamo.Models
         {
             return executionHint;
         }
+
         #endregion
 
         #region Visualization Related Methods
-        
+
         /// <summary>
         /// Call this method to asynchronously update the cached MirrorData for 
         /// this NodeModel through DynamoScheduler. AstIdentifierForPreview is 
@@ -1647,7 +1644,7 @@ namespace Dynamo.Models
                 DrawableIds = GetDrawableIds(),
                 PreviewIdentifierName = AstIdentifierForPreview.Name
             };
-
+            this.IsRendered = false;
             var task = new UpdateRenderPackageAsyncTask(scheduler);
             if (!task.Initialize(initParams)) return;
 
@@ -1665,6 +1662,7 @@ namespace Dynamo.Models
         /// 
         private void OnRenderPackageUpdateCompleted(AsyncTask asyncTask)
         {
+            IsRendered = true;
             var task = asyncTask as UpdateRenderPackageAsyncTask;
             if (task.RenderPackages.Any())
             {
@@ -1678,169 +1676,192 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        public event Func<IEnumerable<IRenderPackage>> RequestRenderPackages;
+            /// 
+            /// </summary>
+        public event
+            Func<IEnumerable<IRenderPackage>> RequestRenderPackages;
 
-        /// <summary>
-        /// This event handler is invoked when the render packages (specific to this node)  
-        /// become available and in addition the node requests for associated render packages 
-        /// if any for example, packages used for associated node manipulators
-        /// </summary>
-        private IEnumerable<IRenderPackage> OnRequestRenderPackages()
-        {
-            if (RequestRenderPackages != null)
+                /// <summary>
+                /// This event handler is invoked when the render packages (specific to this node)  
+                /// become available and in addition the node requests for associated render packages 
+                /// if any for example, packages used for associated node manipulators
+                /// </summary>
+            private
+            IEnumerable<IRenderPackage> OnRequestRenderPackages 
+            ()
             {
-                return RequestRenderPackages();
-            }
-            return new List<IRenderPackage>();
-        }
-
-        /// <summary>
-        /// Gets list of drawable Ids as registered with visualization manager 
-        /// for all the output port of the given node.
-        /// </summary>
-        /// <returns>List of Drawable Ids</returns>
-        private IEnumerable<string> GetDrawableIds()
-        {
-            var drawables = new List<String>();
-            for (int i = 0; i < OutPortData.Count; ++i)
-            {
-                string id = GetDrawableId(i);
-                if (!string.IsNullOrEmpty(id))
-                    drawables.Add(id);
+                if (RequestRenderPackages != null)
+                {
+                    return RequestRenderPackages();                  
+                }
+                return new List<IRenderPackage>();
             }
 
-            return drawables;
-        }
-
-        /// <summary>
-        /// Gets the drawable Id as registered with visualization manager for
-        /// the given output port on the given node.
-        /// </summary>
-        /// <param name="outPortIndex">Output port index</param>
-        /// <returns>Drawable Id</returns>
-        private string GetDrawableId(int outPortIndex)
-        {
-            var output = GetAstIdentifierForOutputIndex(outPortIndex);
-            return output == null ? null : output.Value;
-        }
-
-        #endregion
-
-        #region Node Migration Helper Methods
-
-        protected static NodeMigrationData MigrateToDsFunction(
-            NodeMigrationData data, string nickname, string funcName)
-        {
-            return MigrateToDsFunction(data, "", nickname, funcName);
-        }
-
-        protected static NodeMigrationData MigrateToDsFunction(
-            NodeMigrationData data, string assembly, string nickname, string funcName)
-        {
-            XmlElement xmlNode = data.MigratedNodes.ElementAt(0);
-            var element = MigrationManager.CreateFunctionNodeFrom(xmlNode);
-            element.SetAttribute("assembly", assembly);
-            element.SetAttribute("nickname", nickname);
-            element.SetAttribute("function", funcName);
-
-            var migrationData = new NodeMigrationData(data.Document);
-            migrationData.AppendNode(element);
-            return migrationData;
-        }
-
-        protected static NodeMigrationData MigrateToDsVarArgFunction(
-            NodeMigrationData data, string assembly, string nickname, string funcName)
-        {
-            XmlElement xmlNode = data.MigratedNodes.ElementAt(0);
-            var element = MigrationManager.CreateVarArgFunctionNodeFrom(xmlNode);
-            element.SetAttribute("assembly", assembly);
-            element.SetAttribute("nickname", nickname);
-            element.SetAttribute("function", funcName);
-
-            var migrationData = new NodeMigrationData(data.Document);
-            migrationData.AppendNode(element);
-            return migrationData;
-        }
-
-        #endregion
-
-        public bool ShouldDisplayPreview
-        {
-            get
+            /// <summary>
+            /// Gets list of drawable Ids as registered with visualization manager 
+            /// for all the output port of the given node.
+            /// </summary>
+            /// <returns>List of Drawable Ids</returns>
+        private
+            IEnumerable<string> GetDrawableIds 
+            ()
             {
-                return ShouldDisplayPreviewCore;
+                var drawables = new List<String>();
+                for (int i = 0; i < OutPortData.Count; ++i)
+                {
+                    string id = GetDrawableId(i);
+                    if (!string.IsNullOrEmpty(id))
+                        drawables.Add(id);
+                }
+
+                return drawables;
+            }
+
+            /// <summary>
+            /// Gets the drawable Id as registered with visualization manager for
+            /// the given output port on the given node.
+            /// </summary>
+            /// <param name="outPortIndex">Output port index</param>
+            /// <returns>Drawable Id</returns>
+        private
+            string GetDrawableId 
+            (int
+            outPortIndex)
+            {
+                var output = GetAstIdentifierForOutputIndex(outPortIndex);
+                return output == null ? null : output.Value;
+            }
+
+            #endregion
+
+            #region Node Migration Helper Methods
+
+        protected static
+            NodeMigrationData MigrateToDsFunction 
+            (
+                NodeMigrationData data, string nickname, string funcName)
+            {
+                return MigrateToDsFunction(data, "", nickname, funcName);
+            }
+
+        protected static
+            NodeMigrationData MigrateToDsFunction 
+            (
+                NodeMigrationData data, string assembly, string nickname, string funcName)
+            {
+                XmlElement xmlNode = data.MigratedNodes.ElementAt(0);
+                var element = MigrationManager.CreateFunctionNodeFrom(xmlNode);
+                element.SetAttribute("assembly", assembly);
+                element.SetAttribute("nickname", nickname);
+                element.SetAttribute("function", funcName);
+
+                var migrationData = new NodeMigrationData(data.Document);
+                migrationData.AppendNode(element);
+                return migrationData;
+            }
+
+        protected static
+            NodeMigrationData MigrateToDsVarArgFunction 
+            (
+                NodeMigrationData data, string assembly, string nickname, string funcName)
+            {
+                XmlElement xmlNode = data.MigratedNodes.ElementAt(0);
+                var element = MigrationManager.CreateVarArgFunctionNodeFrom(xmlNode);
+                element.SetAttribute("assembly", assembly);
+                element.SetAttribute("nickname", nickname);
+                element.SetAttribute("function", funcName);
+
+                var migrationData = new NodeMigrationData(data.Document);
+                migrationData.AppendNode(element);
+                return migrationData;
+            }
+
+            #endregion
+
+        public
+            bool ShouldDisplayPreview 
+            {
+                get
+                {
+                    return ShouldDisplayPreviewCore;
+                }
+            }
+
+        protected
+            bool ShouldDisplayPreviewCore 
+            {
+                get;
+                set;
+            }
+
+        public event
+            Action<NodeModel, IEnumerable<IRenderPackage>> RenderPackagesUpdated;
+
+            private
+            void OnRenderPackagesUpdated 
+            (IEnumerable < IRenderPackage > packages)
+            {
+                if (RenderPackagesUpdated != null)
+                {
+                    RenderPackagesUpdated(this, packages);
+                }
             }
         }
 
-        protected bool ShouldDisplayPreviewCore { get; set; }
-        
-        public event Action<NodeModel, IEnumerable<IRenderPackage>> RenderPackagesUpdated;
-
-        private void OnRenderPackagesUpdated(IEnumerable<IRenderPackage> packages)
+        public enum ElementState
         {
-            if(RenderPackagesUpdated != null)
+            Dead,
+            Active,
+            Warning,
+            PersistentWarning,
+            Error,
+            AstBuildBroken
+        };
+
+        public enum LacingStrategy
+        {
+            Disabled,
+            First,
+            Shortest,
+            Longest,
+            CrossProduct
+        };
+
+        public enum PortEventType
+        {
+            MouseEnter,
+            MouseLeave,
+            MouseLeftButtonDown
+        };
+
+        public enum PortPosition
+        {
+            First,
+            Top,
+            Middle,
+            Last
+        }
+
+        [Flags]
+        public enum SnapExtensionEdges
+        {
+            None,
+            Top = 0x1,
+            Bottom = 0x2
+        }
+
+        public delegate void PortsChangedHandler(object sender, EventArgs e);
+
+        internal delegate void DispatchedToUIThreadHandler(object sender, UIDispatcherEventArgs e);
+
+        public class UIDispatcherEventArgs : EventArgs
+        {
+            public UIDispatcherEventArgs(Action a)
             {
-                RenderPackagesUpdated(this, packages);
+                ActionToDispatch = a;
             }
+
+            public Action ActionToDispatch { get; set; }
+            public List<object> Parameters { get; set; }
         }
-    }
-
-    public enum ElementState
-    {
-        Dead,
-        Active,
-        Warning,
-        PersistentWarning,
-        Error,
-        AstBuildBroken
-    };
-
-    public enum LacingStrategy
-    {
-        Disabled,
-        First,
-        Shortest,
-        Longest,
-        CrossProduct
-    };
-
-    public enum PortEventType
-    {
-        MouseEnter,
-        MouseLeave,
-        MouseLeftButtonDown
-    };
-
-    public enum PortPosition
-    {
-        First,
-        Top,
-        Middle,
-        Last
-    }
-    
-    [Flags]
-    public enum SnapExtensionEdges
-    {
-        None,
-        Top = 0x1,
-        Bottom = 0x2
-    }
-
-    public delegate void PortsChangedHandler(object sender, EventArgs e);
-
-    internal delegate void DispatchedToUIThreadHandler(object sender, UIDispatcherEventArgs e);
-    
-    public class UIDispatcherEventArgs : EventArgs
-    {
-        public UIDispatcherEventArgs(Action a)
-        {
-            ActionToDispatch = a;
-        }
-
-        public Action ActionToDispatch { get; set; }
-        public List<object> Parameters { get; set; }
-    }
 }

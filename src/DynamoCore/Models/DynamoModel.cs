@@ -737,7 +737,7 @@ namespace Dynamo.Models
 
                         ExecutionEvents.OnGraphPostExecution();
                     }
-                    break;
+                    break;              
             }
         }
 

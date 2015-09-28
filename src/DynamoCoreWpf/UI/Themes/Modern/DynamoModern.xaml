@@ -141,6 +141,9 @@
                      Color="#2c2c2c" />
     <SolidColorBrush x:Key="SComboBoxBorder"
                      Color="#444444" />
+    <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#888" />
+    <SolidColorBrush x:Key="DisabledBackgroundBrush" Color="#EEE" />
+    
     <Style x:Key="SComboBox"
            TargetType="{x:Type ComboBox}">
         <Setter Property="SnapsToDevicePixels"
@@ -241,13 +244,17 @@
                                     Value="Visible" />
                             <Setter TargetName="ContentSite"
                                     Property="Visibility"
-                                    Value="Hidden" />
+                                    Value="Hidden" />                          
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Foreground" 
+                                    Value="{StaticResource DisabledForegroundBrush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers>
+        <Style.Triggers>           
         </Style.Triggers>
     </Style>
 

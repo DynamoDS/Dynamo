@@ -1586,14 +1586,17 @@ Do you want to install the latest Dynamo update?</value>
   <data name="RunTypeToolTipPeriodicallyEnabled" xml:space="preserve">
     <value>Run at the specified interval.</value>
   </data>
-  <data name="RunCompletedMessage" xml:space="preserve">
-    <value>Run completed.</value>
+  <data name="EvalCompletedMessage" xml:space="preserve">
+    <value>Tessalating....</value>
   </data>
-  <data name="RunCompletedWithWarningsMessage" xml:space="preserve">
-    <value>Run completed with warnings.</value>
+  <data name="EvalCompletedWithWarningsMessage" xml:space="preserve">
+    <value>Evaluation completed with warnings.</value>
   </data>
-  <data name="RunStartedMessage" xml:space="preserve">
-    <value>Run started...</value>
+  <data name="EvalStartedMessage" xml:space="preserve">
+    <value>Evaluation started...</value>
+  </data>
+  <data name="RunCompleted" xml:space="preserve">
+    <value>Run completed</value>
   </data>
   <data name="GroupDefaultText" xml:space="preserve">
     <value>&lt;Click here to edit the group title&gt;</value>
@@ -1841,7 +1844,10 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="AddButton" xml:space="preserve">
     <value>Add</value>
-  </data>
+  </data> 
+  <data name="TesselationCompletedMessage" xml:space="preserve">
+    <value>Rendering....</value>
+   </data>
   <data name="DynamoViewSettingMenuManagePackagePath" xml:space="preserve">
     <value>Manage Node and Package Paths...</value>
     <comment>Setting menu | Custom node definition and package paths</comment>

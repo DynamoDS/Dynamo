@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -390,14 +391,16 @@ namespace Dynamo.ViewModels
             get
             {
                 var result = Watch3DViewModels.FirstOrDefault(vm => vm is HelixWatch3DViewModel);
-
                 return (HelixWatch3DViewModel) result;
             }
         }
 
         public bool BackgroundPreviewActive
         {
-            get { return BackgroundPreviewViewModel.Active; }
+            get 
+            {
+                return BackgroundPreviewViewModel.Active;
+            }
         }
 
         #endregion
@@ -657,6 +660,10 @@ namespace Dynamo.ViewModels
 
             // Reset workspace state
             this.CurrentSpaceViewModel.CancelActiveState();
+            
+            //Dispose the WS when the Work space is cleared
+            var homeWSViewModel = CurrentSpaceViewModel as HomeWorkspaceViewModel;
+            if (homeWSViewModel != null) homeWSViewModel.Dispose();
         }
 
         public void ReturnFocusToSearch()
@@ -978,7 +985,7 @@ namespace Dynamo.ViewModels
             {
                 var newVm = new HomeWorkspaceViewModel(item as HomeWorkspaceModel, this);
                 workspaces.Insert(0, newVm);
-
+                
                 // The RunSettings control is a child of the DynamoView, 
                 // but has its DataContext set to the RunSettingsViewModel 
                 // on the HomeWorkspaceViewModel. When the home workspace is changed,
@@ -999,7 +1006,7 @@ namespace Dynamo.ViewModels
             var viewModel = workspaces.First(x => x.Model == item);
             if (currentWorkspaceViewModel == viewModel)
                 currentWorkspaceViewModel = null;
-            workspaces.Remove(viewModel);
+            workspaces.Remove(viewModel);           
         }
 
         internal void AddToRecentFiles(string path)
@@ -1349,8 +1356,8 @@ namespace Dynamo.ViewModels
 
             //If there are NO input nodes then show the error message
             if (!selectedNodes.Any())
-            {
-                this.OnRequestPresetWarningPrompt();
+            {                                
+                this.OnRequestPresetWarningPrompt(); 
             }
             else
             {
