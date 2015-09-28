@@ -608,4 +608,16 @@
   <data name="ListSortByKeySearchTags" xml:space="preserve">
     <value>sort;key</value>
   </data>
+  <data name="ListSortByKeyIncomingKeys" xml:space="preserve">
+    <value>list of keys</value>
+  </data>
+  <data name="ListSortByKeyIncomingList" xml:space="preserve">
+    <value>list to be sorted</value>
+  </data>
+  <data name="ListSortByKeyOutKeys" xml:space="preserve">
+    <value>sorted keys</value>
+  </data>
+  <data name="ListSortByKeyOutList" xml:space="preserve">
+    <value>sorted list</value>
+  </data>
 </root>

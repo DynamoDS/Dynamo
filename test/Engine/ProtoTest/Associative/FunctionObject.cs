@@ -173,7 +173,7 @@ fo = getFunctionObject({add, mul});
 r = __Apply(fo, 3);
 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("r", new object[] { 103, 300 });
+            thisTest.Verify("r", new object[] {103, 300});
         }
 
         [Test]
@@ -298,7 +298,8 @@ r = f;
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4037
             string err = "MAGN-4037 Defects with FunctionObject tests";
             string code =
-    @"import(""FFITarget.dll"");
+    @"
+import(""FFITarget.dll"");
 import (""DSCoreNodes.dll"");
 import (""FunctionObject.ds"");
 
@@ -328,10 +329,10 @@ r6 = SortByFunction({ p2, p1 }, getPointKey);
 t4 = __Map(getPointKey, r6);
 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("t1", new object[] { 6 });
+            thisTest.Verify("t1", new object[]{6});
             thisTest.Verify("t2", new object[] { 6, 6, 6 });
             thisTest.Verify("t3", new object[] { 6, 6, 9 });
-            thisTest.Verify("t4", new object[] { 6, 9 });
+            thisTest.Verify("t4", new object[] { 6, 9});
         }
 
         [Test]
@@ -576,5 +577,5 @@ r2 = result[1];
             thisTest.Verify("r1", new object[] { "Neal", "Matt", "Ian", "Zack", "Colin" });
             thisTest.Verify("r2", new object[] { "Burnham", "Jezyk", "Keough", "Kron", "McCrone" });
         }
-    }
+    }  
 }

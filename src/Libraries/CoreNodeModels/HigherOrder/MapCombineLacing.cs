@@ -496,11 +496,11 @@ namespace DSCore
     {
         public SortByKey()
         {
-            InPortData.Add(new PortData("list", ""));
-            InPortData.Add(new PortData("keys", ""));
+            InPortData.Add(new PortData("list", Resources.ListSortByKeyIncomingList));
+            InPortData.Add(new PortData("keys", Resources.ListSortByKeyIncomingKeys));
 
-            OutPortData.Add(new PortData("sorted list", Resources.FilterPortDataResultInToolTip));
-            OutPortData.Add(new PortData("sorted keys", Resources.FilterPortDataResultOutToolTip));
+            OutPortData.Add(new PortData("sorted list", Resources.ListSortByKeyOutList));
+            OutPortData.Add(new PortData("sorted keys", Resources.ListSortByKeyOutKeys));
 
             RegisterAllPorts();
         }

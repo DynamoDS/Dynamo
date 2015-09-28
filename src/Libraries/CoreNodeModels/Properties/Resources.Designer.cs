@@ -844,6 +844,42 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to list of keys.
+        /// </summary>
+        internal static string ListSortByKeyIncomingKeys {
+            get {
+                return ResourceManager.GetString("ListSortByKeyIncomingKeys", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to list to be sorted.
+        /// </summary>
+        internal static string ListSortByKeyIncomingList {
+            get {
+                return ResourceManager.GetString("ListSortByKeyIncomingList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to sorted keys.
+        /// </summary>
+        internal static string ListSortByKeyOutKeys {
+            get {
+                return ResourceManager.GetString("ListSortByKeyOutKeys", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to sorted list.
+        /// </summary>
+        internal static string ListSortByKeyOutList {
+            get {
+                return ResourceManager.GetString("ListSortByKeyOutList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to sort;key.
         /// </summary>
         internal static string ListSortByKeySearchTags {
