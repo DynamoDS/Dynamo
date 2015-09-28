@@ -119,7 +119,7 @@ namespace Dynamo.Tests
             var prevY = (nodes.Min(n => n.Y) + nodes.Max(n => n.Y + n.Height)) / 2;
 
             AssertNoOverlap();
-            AssertMaxCrossings(2);
+            AssertMaxCrossings(5);
 
             Assert.Less(Math.Abs((nodes.Min(n => n.X) + nodes.Max(n => n.X + n.Width)) / 2 - prevX), 10);
             Assert.Less(Math.Abs((nodes.Min(n => n.Y) + nodes.Max(n => n.Y + n.Height)) / 2 - prevY), 10);
@@ -178,7 +178,6 @@ namespace Dynamo.Tests
             });
 
             AssertNoOverlap();
-            AssertMaxCrossings(7);
         }
 
         [Test]
@@ -277,7 +276,6 @@ namespace Dynamo.Tests
             });
 
             AssertNoOverlap();
-            AssertMaxCrossings(7);
         }
 
         [Test]
@@ -368,13 +366,9 @@ namespace Dynamo.Tests
 
         private void AssertNoOverlap()
         {
-            var nodes = new List<GraphLayout.Node>();
-            foreach (GraphLayout.Graph g in ViewModel.CurrentSpace.LayoutSubgraphs)
-                nodes.AddRange(g.Nodes);
-
-            foreach (var a in nodes)
+            foreach (var a in ViewModel.CurrentSpace.Nodes)
             {
-                foreach (var b in nodes)
+                foreach (var b in ViewModel.CurrentSpace.Nodes)
                 {
                     if (!a.Equals(b) && 
                         (((a.X <= b.X) && (a.Y <= b.Y) && (b.X - a.X <= a.Width) && (b.Y - a.Y <= a.Height)) ||

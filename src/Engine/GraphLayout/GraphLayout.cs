@@ -346,10 +346,8 @@ namespace GraphLayout
                         Edge median1 = neighborEdges[(neighborEdges.Count - 1) / 2];
                         Edge median2 = neighborEdges[(neighborEdges.Count) / 2];
 
-                        // X-distance-weighted average of median edges
-                        n.Y = ((median1.EndY - median1.StartOffsetY) * (median2.EndX - n.X - n.Width) +
-                            (median2.EndY - median2.StartOffsetY) * (median1.EndX - n.X - n.Width)) /
-                            (median1.EndX - n.X - n.Width + median2.EndX - n.X - n.Width);
+                        n.Y = (median1.EndY + median2.EndY -
+                            median1.StartOffsetY - median2.StartOffsetY) / 2;
                         prevY = n.Y;
                         layerUpdated = true;
                     }
@@ -421,7 +419,10 @@ namespace GraphLayout
         public void AssignCoordinates(List<Node> layer)
         {
             // Assign vertical coordinates to the main nodes
-            List<Node> nodes = layer.Where(x => x.Y < Infinite).OrderBy(x => x.Y).ToList();
+            // If two nodes have the same Y coordinate,
+            // follow the original ordering before graph layout.
+            List<Node> nodes = layer.Where(x => x.Y < Infinite)
+                .OrderBy(x => x.Y).ThenBy(x => x.InitialY).ToList();
 
             double minDistance = Infinite;
             int minNodeIndex = -1;
@@ -628,6 +629,11 @@ namespace GraphLayout
         public double Y;
 
         /// <summary>
+        /// The initial Y coordinate of the node view.
+        /// </summary>
+        public double InitialY;
+
+        /// <summary>
         /// The layer of the node within the graph, starting from layer 0 for the rightmost layer.
         /// </summary>
         public int Layer = -1;
@@ -659,6 +665,7 @@ namespace GraphLayout
             Height = height;
             X = x;
             Y = y;
+            InitialY = y;
             IsSelected = isSelected;
             OwnerGraph = ownerGraph;
         }
