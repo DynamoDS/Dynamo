@@ -1,0 +1,19 @@
+<Workspace Version="0.8.3.2666" X="-109" Y="-170" zoom="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.DoubleInput guid="13378d2a-dd4b-4135-9927-8e411f2f0503" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="275.5" y="299" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True">
+      <System.Double value="10" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DSFunction guid="d79671ae-2a63-462f-9a7e-3955e2ab5648" type="Dynamo.Nodes.DSFunction" nickname="+" x="430" y="289.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="Operators" function="+@var[]..[],var[]..[]" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="13378d2a-dd4b-4135-9927-8e411f2f0503" start_index="0" end="d79671ae-2a63-462f-9a7e-3955e2ab5648" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="13378d2a-dd4b-4135-9927-8e411f2f0503" start_index="0" end="d79671ae-2a63-462f-9a7e-3955e2ab5648" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>
