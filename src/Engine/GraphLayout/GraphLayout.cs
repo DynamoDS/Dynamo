@@ -346,9 +346,10 @@ namespace GraphLayout
                         Edge median1 = neighborEdges[(neighborEdges.Count - 1) / 2];
                         Edge median2 = neighborEdges[(neighborEdges.Count) / 2];
 
-                        n.Y = (median1.EndNode.Y + median1.EndOffsetY +
-                            median2.EndNode.Y + median2.EndOffsetY -
-                            median1.StartOffsetY - median2.StartOffsetY) / 2;
+                        // X-distance-weighted average of median edges
+                        n.Y = ((median1.EndY - median1.StartOffsetY) * (median2.EndX - n.X - n.Width) +
+                            (median2.EndY - median2.StartOffsetY) * (median1.EndX - n.X - n.Width)) /
+                            (median1.EndX - n.X - n.Width + median2.EndX - n.X - n.Width);
                         prevY = n.Y;
                         layerUpdated = true;
                     }
@@ -356,7 +357,7 @@ namespace GraphLayout
                     {
                         Edge median = neighborEdges[(neighborEdges.Count - 1) / 2];
 
-                        n.Y = median.EndNode.Y + median.EndOffsetY - median.StartOffsetY;
+                        n.Y = median.EndY - median.StartOffsetY;
                         prevY = n.Y;
                         layerUpdated = true;
                     }
@@ -375,9 +376,9 @@ namespace GraphLayout
             }
 
             // Assign left-anchored nodes
-            foreach (List<Node> layer in Layers.Skip(1))
+            foreach (List<Node> layer in Layers.Skip(1).Reverse())
             {
-                bool changed = false;
+                bool layerUpdated = false;
                 foreach (Node n in layer)
                 {
                     if (n.Y >= Infinite)
@@ -393,18 +394,21 @@ namespace GraphLayout
                             n.Y = (median1.StartNode.Y + median1.StartOffsetY +
                                 median2.StartNode.Y + median2.StartOffsetY -
                                 median1.EndOffsetY - median2.EndOffsetY) / 2;
+                            layerUpdated = true;
                         }
                         else if (neighborEdges.Count > 0)
                         {
                             Edge median = neighborEdges[(neighborEdges.Count - 1) / 2];
 
                             n.Y = median.StartNode.Y + median.StartOffsetY - median.EndOffsetY;
+                            layerUpdated = true;
                         }
-                        changed = true;
                     }
                 }
-                if (changed)
+                if (layerUpdated)
+                {
                     AssignCoordinates(layer);
+                }
             }
         }
 

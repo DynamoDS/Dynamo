@@ -291,8 +291,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(ViewModel.CurrentSpace.Connectors.Count(), 217);
             AssertGraphLayoutLayers(new object[] {
                 new int[] { },
-                new int[] { 0, 13, 8, 6, 9, 12, 16, 17,
-                9, 9, 9, 4, 3, 5, 4, 3, 1, 2, 3, 1, 3, 7, 7, 1, 1, 2, 4, 3, 2, 3 }
+                new int[] { 0, 4, 5, 5, 8, 12, 16, 17, 9, 9, 9, 4, 3, 5, 4, 3, 1, 2, 3, 1, 3, 7, 7, 1, 1, 2, 4, 3, 2, 2 }
             });
 
             AssertNoOverlap();
@@ -324,49 +323,46 @@ namespace Dynamo.Tests
 
         private void AssertMaxCrossings(int maxCrossings)
         {
-            foreach (GraphLayout.Graph g in ViewModel.CurrentSpace.LayoutSubgraphs)
+            int crossings = 0;
+
+            var list = ViewModel.CurrentSpace.Connectors;
+
+            var combinations = list.Select((value, index) => new { value, index })
+                .SelectMany(x => list.Skip(x.index + 1), (x, y) => Tuple.Create(x.value, y))
+                .Where(x => !x.Item1.Start.Equals(x.Item2.Start));
+
+            foreach (var pair in combinations)
             {
-                int crossings = 0;
+                var a = pair.Item1.Start.Center;
+                var b = pair.Item1.End.Center;
+                var c = pair.Item2.Start.Center;
+                var d = pair.Item2.End.Center;
 
-                var list = ViewModel.CurrentSpace.Connectors;
+                double denominator = ((b.X - a.X) * (d.Y - c.Y)) - ((b.Y - a.Y) * (d.X - c.X));
+                double numerator1 = ((a.Y - c.Y) * (d.X - c.X)) - ((a.X - c.X) * (d.Y - c.Y));
+                double numerator2 = ((a.Y - c.Y) * (b.X - a.X)) - ((a.X - c.X) * (b.Y - a.Y));
 
-                var combinations = list.Select((value, index) => new { value, index })
-                    .SelectMany(x => list.Skip(x.index + 1), (x, y) => Tuple.Create(x.value, y))
-                    .Where(x => !x.Item1.Start.Equals(x.Item2.Start));
-
-                foreach (var pair in combinations)
+                // Detect coincident lines (has a problem, read below)
+                if (denominator == 0 && numerator1 == 0 && numerator2 == 0)
                 {
-                    var a = pair.Item1.Start.Center;
-                    var b = pair.Item1.End.Center;
-                    var c = pair.Item2.Start.Center;
-                    var d = pair.Item2.End.Center;
+                    crossings++;
+                }
+                else
+                {
+                    double r = numerator1 / denominator;
+                    double s = numerator2 / denominator;
 
-                    double denominator = ((b.X - a.X) * (d.Y - c.Y)) - ((b.Y - a.Y) * (d.X - c.X));
-                    double numerator1 = ((a.Y - c.Y) * (d.X - c.X)) - ((a.X - c.X) * (d.Y - c.Y));
-                    double numerator2 = ((a.Y - c.Y) * (b.X - a.X)) - ((a.X - c.X) * (b.Y - a.Y));
-
-                    // Detect coincident lines (has a problem, read below)
-                    if (denominator == 0 && numerator1 == 0 && numerator2 == 0)
+                    if ((r >= 0 && r <= 1) && (s >= 0 && s <= 1))
                     {
                         crossings++;
                     }
-                    else
-                    {
-                        double r = numerator1 / denominator;
-                        double s = numerator2 / denominator;
-
-                        if ((r >= 0 && r <= 1) && (s >= 0 && s <= 1))
-                        {
-                            crossings++;
-                        }
-                    }
                 }
+            }
 
-                if (crossings > maxCrossings)
-                {
-                    Assert.Fail("Number of edge crossings is " + crossings +
-                        ", more than the specified max " + maxCrossings);
-                }
+            if (crossings > maxCrossings)
+            {
+                Assert.Fail("Number of edge crossings is " + crossings +
+                    ", more than the specified max " + maxCrossings);
             }
         }
 
