@@ -317,8 +317,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public bool NavigationKeyIsDown
         {
             get { return navigationKeyIsDown; }
-            set
+            set 
             {
+                if (navigationKeyIsDown == value) return;
+
                 navigationKeyIsDown = value;
                 RaisePropertyChanged("NavigationKeyIsDown");
                 RaisePropertyChanged("CanNavigateBackground");
