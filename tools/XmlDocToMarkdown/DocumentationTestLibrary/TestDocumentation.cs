@@ -145,6 +145,14 @@ namespace Dynamo.DocumentationTestLibrary
         public int age { get; set; }
 
         /// <summary>
+        /// Gets or sets the list persons.
+        /// </summary>
+        /// <value>
+        /// The list persons.
+        /// </value>
+        public List<Person> ListPersons { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Person"/> class.
         /// </summary>
         public Person()

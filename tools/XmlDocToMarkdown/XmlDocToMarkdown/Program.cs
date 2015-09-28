@@ -288,6 +288,17 @@ namespace Dynamo.Docs
             foreach (var property in t.GetProperties())
             {                
                 XmlToMarkdown.ReturnType  = property.PropertyType.Name;
+                if (property.PropertyType.IsGenericType)
+                {
+                    string[] splitByChar = property.PropertyType.Name.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+                    var tempName = splitByChar[0];
+
+                    var typeParam = property.PropertyType.GetGenericArguments();
+                    //this returns T,T
+                    var genericParamName = string.Join(",", typeParam.Select(ty => ty.Name));
+
+                    XmlToMarkdown.ReturnType = tempName + "<*" + genericParamName + "*>";
+                }
                 var propertyNameSpace = ConvertGenericParameterName(t.FullName);
                 var current = GetMarkdownForProperty(members, propertyNameSpace + "." + property.Name);                
                 sb.Append(current);
