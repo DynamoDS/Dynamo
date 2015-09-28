@@ -113,7 +113,6 @@ namespace Dynamo.Publish
 
                 var viewModel = new PublishViewModel(model)
                 {
-                    Workspaces = loadedParams.WorkspaceModels,
                     CurrentWorkspaceModel = loadedParams.CurrentWorkspaceModel
                 };
 
