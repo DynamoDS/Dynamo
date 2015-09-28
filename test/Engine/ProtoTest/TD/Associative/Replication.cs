@@ -247,43 +247,23 @@ list13 = false || list2; // { true, true, false, false, false }";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T09_Pass_1_single_list_of_class_type()
         {
             string code = @"
-class Point_OnX
-{
-	x : int;
-	
-	constructor Point_3DCtor(p : Point_3D)
-	{
-		x = p.x;
-	}
-}
-class Point_3D
-{
-	x : int;
-	y : int;
-	z : int;
-	
-	constructor ValueCtor(_x : int, _y : int, _z : int)
-	{
-		x = _x;
-		y = _y;
-		z = _z;
-	}
-}
+import(""FFITarget.dll"");
 list =  {
-			Point_3D.ValueCtor(1, 2, 3), 
-			Point_3D.ValueCtor(4, 5, 6),
-			Point_3D.ValueCtor(7, 8, 9)
+			DummyVector.ByCoordinates(1, 2, 3), 
+			DummyVector.ByCoordinates(4, 5, 6),
+			DummyVector.ByCoordinates(7, 8, 9)
 		};
 		
-list2 = Point_OnX.Point_3DCtor(list);
-list2_0_x = list2[0].x; // 1
-list2_1_x = list2[1].x; // 4
-list2_2_x = list2[2].x; // 7";
+list2 = DummyVector.ByVector(list);
+list2_0_x = list2[0].X; // 1
+list2_1_x = list2[1].X; // 4
+list2_2_x = list2[2].X; // 7
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("list2_0_x", 1
 , 0);
@@ -293,72 +273,33 @@ list2_2_x = list2[2].x; // 7";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T10_Pass_2_Lists_Different_Length_2_Integers()
         {
             string code = @"
-class Point_4D
-{
-	x : var;
-	y : var;
-	z : var;
-	w : var;
-	
-	constructor ValueCtor(_x : int, _y : int, _z : int, _w : int)
-	{
-		x = _x;
-		y = _y;
-		z = _z;
-		w = _w;
-	}
-	
-	def GetValue : int()
-	{
-		return = x + y + z + w;
-	}
-}
-list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-list2 = { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 };
-pointList = Point_4D.ValueCtor(list1, list2, 66, 88);
-pointList_0_x = pointList[0].GetValue(); // 166
-pointList_5_x = pointList[5].GetValue(); // 176
-pointList_9_x = pointList[9].GetValue(); // 184";
+import(""FFITarget.dll"");
+list1 = { 1, 2 };
+list2 = { 11, 12 };
+pointList = DummyVector.ByCoordinates(list1, list2, 111);
+x0 = pointList[0].X; // 1
+y0 = pointList[0].Y; // 11
+z0 = pointList[0].Z; // 111
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("pointList_0_x", 166, 0);
-            thisTest.Verify("pointList_5_x", 176, 0);
-            thisTest.Verify("pointList_9_x", 184, 0);
+            thisTest.Verify("x0", 1);
+            thisTest.Verify("y0", 11);
+            thisTest.Verify("z0", 111);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T11_Pass_2_lists_of_class_type_same_length_and_1_variable_of_class_type()
         {
             //Assert.Fail("Test crashes NUnit");
             string code = @"
-class Point_1D
-{
-	x : int;
-	
-	constructor ValueCtor(_x : int)
-	{
-		x = _x;
-	}
-}
-class Point_3D
-{
-	x : int;
-	y : int;
-	z : int;
-	
-	constructor Point_1DCtor(px : Point_1D, py : Point_1D, pz : Point_1D)
-	{
-		x = px.x;
-		y = py.x;
-		z = pz.x;
-	}
-}
+import(""FFITarget.dll"");
 p1 = {
 		Point_1D.ValueCtor(1),
 		Point_1D.ValueCtor(2),
@@ -376,27 +317,12 @@ list_2_z = list[2].z; // 4
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T12_Pass_2_Lists_Same_Length_1_Integer()
         {
             string code = @"
-class Point_3D
-{
-	x : var;
-	y : var;
-	z : var;
-	constructor ValueCtor(_x : int, _y : int, _z : int)
-	{
-		x = _x;
-		y = _y;
-		z = _z;
-	}
-	def GetValue : int()
-	{
-		return = x + y + z;
-	}
-}
+import(""FFITarget.dll"");
 list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 list2 = { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
 pointList = Point_3D.ValueCtor(list1, list2, 99);
@@ -410,27 +336,12 @@ pointList_9_x = pointList[9].GetValue(); // 129";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T13_Pass_3_Lists_Different_Length()
         {
             string code = @"
-class Point_3D
-{
-	x : var;
-	y : var;
-	z : var;
-	constructor ValueCtor(_x : int, _y : int, _z : int)
-	{
-		x = _x;
-		y = _y;
-		z = _z;
-	}
-	def GetValue : int()
-	{
-		return = x + y + z;
-	}
-}
+import(""FFITarget.dll"");
 list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 list2 = { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 };
 list3 = { 25, 26, 27, 28, 29, 30 };
@@ -445,27 +356,12 @@ pointList_5_x = pointList[5].GetValue(); // 52";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T14_Pass_3_Lists_Same_Length()
         {
             string code = @"
-class Point_3D
-{
-	x : var;
-	y : var;
-	z : var;
-	constructor ValueCtor(_x : int, _y : int, _z : int)
-	{
-		x = _x;
-		y = _y;
-		z = _z;
-	}
-	def GetValue : int()
-	{
-		return = x + y + z;
-	}
-}
+import(""FFITarget.dll"");
 list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 list2 = { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
 list3 = { 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 };
@@ -480,28 +376,13 @@ pointList_9_x = pointList[9].GetValue(); // 60";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T15_Pass_a_3x3_and_2x4_lists()
         {
             //Assert.Fail("1467075 - Sprint23 : rev 2660 : replication with nested array is not working as expected");
             string code = @"
-class Point_2D
-{
-	x : int;
-	y : int;
-	
-	constructor ValueCtor(x1 : int, y1 : int)
-	{
-		x = x1;
-		y = y1;
-	}
-	
-	def GetValue()
-	{
-		return = x * y;
-	}
-}
+import(""FFITarget.dll"");
 list1 = { { 1, 2, 3 }, { 1, 2, 3 }, { 1, 2, 3 } };
 list2 = { { 1, 2, 3, 4 }, { 1, 2, 3, 4 } };
 list3 = Point_2D.ValueCtor(list1, list2);
@@ -522,25 +403,12 @@ list2_1_2 = list3[1][2].GetValue(); // 9
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T16_Pass_a_3x3_List()
         {
             string code = @"
-class Point_1D
-{
-	x : int;
-	
-	constructor ValueCtor(_x : int)
-	{
-		x = _x;
-	}
-	
-	def GetValue()
-	{
-		return = x * x;
-	}
-}
+import(""FFITarget.dll"");
 list1 = { { 1, 2, 3 }, { 1, 2, 3 }, { 1, 2, 3 } };
 list2 = Point_1D.ValueCtor(list1);
 list2_0_0 = list2[0][0].GetValue(); // 1
@@ -555,38 +423,12 @@ list2_2_2 = list2[2][2].GetValue(); // 9
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T17_Pass_ConstructorCall_Return_List()
         {
             string code = @"
-class Point_1D
-{
-	x : int;
-	
-	constructor ValueCtor(_x : int)
-	{
-		x = _x;
-	}
-}
-class Point_3D
-{
-	x : int;
-	y : int;
-	z : int;
-	
-	constructor PointOnXCtor(p : Point_1D)
-	{
-		x = p.x;
-		y = 0;
-		z = 0;
-	}
-	
-	def GetIndexX()
-	{
-		return = x * x;
-	}
-}
+import(""FFITarget.dll"");
 list1 = { 1, 2, 3, 4, 5 };
 list2 = Point_3D.PointOnXCtor(Point_1D.ValueCtor(list1));
 list2_0 = list2[0].GetIndexX(); // 1
@@ -600,20 +442,12 @@ list2_4 = list2[4].GetIndexX(); // 25
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T18_Pass_ConstructorCall_Return_List_to_Function()
         {
             string code = @"
-class Point_1D
-{
-	x : var;
-	
-	constructor ValueCtor(_x : int)
-	{
-		x = _x;
-	}
-}
+import(""FFITarget.dll"");
 def GetPointIndex : int(p : Point_1D)
 {
 	return = p.x;
@@ -628,28 +462,15 @@ list2 = GetPointIndex(Point_1D.ValueCtor(list1)); // { 1, 2, 3, 4, 5, 6 }
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T19_Pass_FunctionCall_Return_List()
         {
             string code = @"
+import(""FFITarget.dll"");
 def foo : int(a : int)
 {
 	return = a * a;
-}
-class Point_1D
-{
-	x : int;
-	
-	constructor ValueCtor(_x : int)
-	{
-		x = _x;
-	}
-	
-	def GetIndex()
-	{
-		return = x * x;
-	}
 }
 list1 = { 1, 2, 3, 4, 5 };
 list2 = Point_1D.ValueCtor(foo(foo(list1)));
@@ -663,23 +484,12 @@ list2_4 = list2[4].GetIndex(); // 390625";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T20_Pass_Single_List()
         {
             string code = @"
-class Point_1D
-{
-	x : var;
-	constructor ValueCtor(_x : int)
-	{
-		x = _x;
-	}
-	def GetValue : int()
-	{
-		return = x * x;
-	}
-}
+import(""FFITarget.dll"");
 list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 pointList = Point_1D.ValueCtor(list1);
 pointList_0_x = pointList[0].GetValue(); // 1
@@ -692,27 +502,12 @@ pointList_9_x = pointList[9].GetValue(); // 100";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T21_Pass_Single_List_2_Integer()
         {
             string code = @"
-class Point_3D
-{
-	x : var;
-	y : var;
-	z : var;
-	constructor ValueCtor(_x : int, _y : int, _z : int)
-	{
-		x = _x;
-		y = _y;
-		z = _z;
-	}
-	def GetValue : int()
-	{
-		return = x + y + z;
-	}
-}
+import(""FFITarget.dll"");
 list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 pointList = Point_3D.ValueCtor(list1, 66, 88);
 pointList_0_x = pointList[0].GetValue(); // 155
@@ -725,25 +520,12 @@ pointList_9_x = pointList[9].GetValue(); // 164";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T22_Pass_1_single_list_of_class_type_and_1_variable_of_class_type()
         {
             string code = @"
-class Integer
-{
-	value : int;
-	
-	constructor ValueCtor(_value : int)
-	{
-		value = _value;
-	}
-	
-	def Mul : int(i1 : Integer, i2 : Integer)
-	{
-		return = i1.value * value * i2.value;
-	}
-}
+import(""FFITarget.dll"");
 list = {
 			Integer.ValueCtor(4),
 			Integer.ValueCtor(5),
@@ -757,25 +539,12 @@ m = i.Mul(list, i); // { 16, 20, 28 }";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T23_Pass_2_lists_of_class_type_with_different_length()
         {
             string code = @"
-class Integer
-{
-	value : int;
-	
-	constructor ValueCtor(_value : int)
-	{
-		value = _value;
-	}
-	
-	def Mul : int(i1 : Integer, i2 : Integer)
-	{
-		return = i1.value * value * i2.value;
-	}
-}
+import(""FFITarget.dll"");
 list1 = {
 			Integer.ValueCtor(4),
 			Integer.ValueCtor(5),
@@ -794,27 +563,14 @@ m = i.Mul(list1, list2); // { 8, 20 }";
         }
 
         [Ignore]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T24_Pass_3x3_List_And_2x4_List()
         {
             string code = @"
-class Math
-{
-	a : int;
-	
-	constructor ValueCtor(_a : int)
-	{	
-		a = _a;
-	}
-	
-	def Div : int(num1 : int, num2 : int)
-	{
-		return = (num1 + num2) / a;
-	}
-}
+import(""FFITarget.dll"");
 list1 = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
 list2 = { { 1, 2, 3, 4 }, { 5, 6, 7, 8 } };
-m = Math.ValueCtor(2);
+m = DummyMath.ValueCtor(2);
 list3 = m.Div(list1, list2);  // { { 1, 2, 3 }, { 4, 5, 6 } }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -823,88 +579,50 @@ list3 = m.Div(list1, list2);  // { { 1, 2, 3 }, { 4, 5, 6 } }
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T25_Pass_3_List_Different_Length()
         {
             string code = @"
-class Math
-{
-	a : int;
-	
-	constructor ValueCtor(_a : int)
-	{	
-		a = _a;
-	}
-	
-	def Div : int(num1 : int, num2 : int, num3 : int)
-	{
-		return = (num1 + num2 + num3) / a;
-	}
-}
+import(""FFITarget.dll"");
 list1 = { 1, 2, 3, 4, 5, 6, 7 };
 list2 = { 1, 2, 3, 4, 5 };
 list3 = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-m = Math.ValueCtor( 2 ); 
-list4 = m.Div(list1, list2, list3); // { 1.5,3.0,4.5,6.0,7.5} }";
+m = DummyMath.ValueCtor( 2 ); 
+list4 = m.Div(list1, list2, list3);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            //Assert.Fail("1467229 - Sprint25 : REGRESSION : rev 3398 : replication over class method causes type conversion issue");
-            thisTest.Verify("list4", new object[] { 2, 3, 5, 6, 8 });
+            thisTest.Verify("list4", new object[] { 1, 3, 4, 6, 7 });
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T26_Pass_3_List_Different_Length_2_Integers()
         {
-            string src = @"class Math
-{
-	a : int;
-	
-	constructor ValueCtor(_a : int)
-	{	
-		a = _a;
-	}
-	
-	def Div : int(num1 : int, num2 : int, num3 : int, num4 : int, num5 : int)
-	{
-		return = (num1 + num2 + num3 + num4 + num5) / a;
-	}
-}
+            string src = @"
+import(""FFITarget.dll"");
 list1 = { 10, 11, 12, 13, 14, 15, 16 };
 list2 = { 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 };
 list3 = { 30, 31, 32, 33, 34 };
-m = Math.ValueCtor(4); 
-listX2 = m.Div(list1, list2, list3, 15, 25); // { 25, 25, 26, 27, 28 }";
+m = DummyMath.ValueCtor(4); 
+listX2 = m.Div(list1, list2, list3, 15, 25); // { 25, 25, 26, 27, 28 }
+";
             thisTest.RunScriptSource(src);
-            //Assert.Fail("1467229 - Sprint25 : REGRESSION : rev 3398 : replication over class method causes type conversion issue");
-            thisTest.Verify("listX2", new object[] { 25, 26, 27, 27, 28 });
+            thisTest.Verify("listX2", new object[] { 25, 25, 26, 27, 28 });
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T27_Pass_3_List_Same_Length()
         {
             string code = @"
-class Math
-{
-	a : int;
-	
-	constructor ValueCtor(_a : int)
-	{	
-		a = _a;
-	}
-	
-	def Mul : int(num1 : int, num2 : int, num3 : int)
-	{
-		return = (num1 + num2 + num3) * a;
-	}
-}
+import(""FFITarget.dll"");
 list1 = { 31, 32, 33, 34, 35, 36, 37, 38, 39, 40 };
 list2 = { 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 };
 list3 = { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
-m = Math.ValueCtor(4); 
+m = DummyMath.ValueCtor(4); 
 list4 = m.Mul(list1, list2, list3); // { 252, 264, 276, 288, 300, 312, 324, 336, 348, 360 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list4 = new List<Object> { 252, 264, 276, 288, 300, 312, 324, 336, 348, 360 };
@@ -912,56 +630,31 @@ list4 = m.Mul(list1, list2, list3); // { 252, 264, 276, 288, 300, 312, 324, 336,
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T28_Pass_3_List_Same_Length_2_Integers()
         {
-            string src = @"class Math
-{
-	a : int;
-	
-	constructor ValueCtor(_a : int)
-	{	
-		a = _a;
-	}
-	
-	def Div : int(num1 : int, num2 : int, num3 : int, num4 : int, num5 : int)
-	{
-		return = (num1 + num2 + num3 + num4 + num5) / a;
-	}
-}
+            string src = @"
+import(""FFITarget.dll"");
 list1 = { 10, 11, 12, 13, 14 };
 list2 = { 20, 21, 22, 23, 24 };
 list3 = { 30, 31, 32, 33, 34 };
-m = Math.ValueCtor(4); 
-list2 = m.Div(list1, list2, list3, 15, 25);";
+m = DummyMath.ValueCtor(4); 
+list2 = m.Div(list1, list2, list3, 15, 25);
+";
             thisTest.RunScriptSource(src);
-            //Assert.Fail("1467229 - Sprint25 : REGRESSION : rev 3398 : replication over class method causes type conversion issue");
-            thisTest.Verify("list2", new object[] { 25, 26, 27, 27, 28 });
+            thisTest.Verify("list2", new object[] { 25, 25, 26, 27, 28 });
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T29_Pass_FunctionCall_Reutrn_List001()
         {
             string code = @"
-class Math
-{
-	a : int;
-	
-	constructor ValueCtor(_a : int)
-	{	
-		a = _a;
-	}
-	
-	def Mul : int(num : int)
-	{
-		return = num * a;
-	}
-}
+import(""FFITarget.dll"");
 list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-m = Math.ValueCtor(10);
+m = DummyMath.ValueCtor(10);
 list2 = m.Mul(m.Mul(list1));  // { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list2 = new List<Object> { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 };
@@ -969,31 +662,18 @@ list2 = m.Mul(m.Mul(list1));  // { 100, 200, 300, 400, 500, 600, 700, 800, 900, 
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T30_Pass_FunctionCall_Reutrn_List002()
         {
             string code = @"
-class Math
-{
-	a : int;
-	
-	constructor ValueCtor(_a : int)
-	{	
-		a = _a;
-	}
-	
-	def Mul : int(num : int)
-	{
-		return = num * a;
-	}
-}
+import(""FFITarget.dll"");
 def foo : int (a : int)
 {
 	return = a * a;
 }
 list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-m = Math.ValueCtor(10);
+m = DummyMath.ValueCtor(10);
 list2 = m.Mul(foo(list1));  // { 10, 40, 90, 160, 250, 360, 490, 640, 810, 1000 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list2 = new List<Object> { 10, 40, 90, 160, 250, 360, 490, 640, 810, 1000 };
@@ -1001,31 +681,18 @@ list2 = m.Mul(foo(list1));  // { 10, 40, 90, 160, 250, 360, 490, 640, 810, 1000 
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T31_Pass_FunctionCall_Reutrn_List003()
         {
             string code = @"
-class Math
-{
-	a : int;
-	
-	constructor ValueCtor(_a : int)
-	{	
-		a = _a;
-	}
-	
-	def Mul : int(num : int)
-	{
-		return = num * a;
-	}
-}
+import(""FFITarget.dll"");
 def foo : int (a : int)
 {
 	return = a * a;
 }
 list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-m = Math.ValueCtor(10);
+m = DummyMath.ValueCtor(10);
 list2 = foo(m.Mul(list1));  // { 100, 400, 900, 1600, 2500, 3600, 4900, 6400, 8100, 10000 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list2 = new List<Object> { 100, 400, 900, 1600, 2500, 3600, 4900, 6400, 8100, 10000 };
@@ -1033,27 +700,14 @@ list2 = foo(m.Mul(list1));  // { 100, 400, 900, 1600, 2500, 3600, 4900, 6400, 81
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T32_Pass_Single_3x3_List()
         {
             string code = @"
-class Math
-{
-	a : int;
-	
-	constructor ValueCtor(_a : int)
-	{	
-		a = _a;
-	}
-	
-	def Mul : int(num : int)
-	{
-		return = num * a;
-	}
-}
+import(""FFITarget.dll"");
 list1 = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
-m = Math.ValueCtor(10);
+m = DummyMath.ValueCtor(10);
 list2 = m.Mul(list1);  // { { 10, 20, 30 }, { 40, 50, 60 }, { 70, 80, 90 } }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             // List<List<Object>> _list2 = new List<List<Object>>() { { 10, 20, 30 }, { 40, 50, 60 }, { 70, 80, 90 } };
@@ -1061,27 +715,14 @@ list2 = m.Mul(list1);  // { { 10, 20, 30 }, { 40, 50, 60 }, { 70, 80, 90 } }";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T33_Pass_Single_List()
         {
             string code = @"
-class Math
-{
-	a : double;
-	
-	constructor ValueCtor(_a : double)
-	{	
-		a = _a;
-	}
-	
-	def Mul : double(num : double)
-	{
-		return = num * a;
-	}
-}
+import(""FFITarget.dll"");
 list1 = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0 };
-m = Math.ValueCtor(10.0);
+m = DummyMath.ValueCtor(10.0);
 list2 = m.Mul(list1);  // { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list2 = new List<Object> { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
@@ -1089,27 +730,14 @@ list2 = m.Mul(list1);  // { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 }";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T34_Pass_Single_List_2_Integers()
         {
             string code = @"
-class Math
-{
-	a : int;
-	
-	constructor ValueCtor(_a : int)
-	{	
-		a = _a;
-	}
-	
-	def Mul : int(num1 : int, num2 : int, num3 : int)
-	{
-		return = (num1 + num2 + num3) * a;
-	}
-}
+import(""FFITarget.dll"");
 list1 = { 31, 32, 33, 34, 35, 36, 37, 38, 39, 40 };
-m = Math.ValueCtor(5);
+m = DummyMath.ValueCtor(5);
 list2 = m.Mul(list1, 12, 17); // {300,305,310,315,320,325,330,335,340,345}";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list2 = new List<Object> { 300, 305, 310, 315, 320, 325, 330, 335, 340, 345 };
@@ -1117,30 +745,13 @@ list2 = m.Mul(list1, 12, 17); // {300,305,310,315,320,325,330,335,340,345}";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T35_Pass_1_list_of_class_type_and_1_variable_of_class_type()
         {
             //Assert.Fail("1467194 - Sprint 25 - rev Regressions created by array copy constructions ");
             string code = @"
-class Point_3D
-{
-	x : int;
-	y : int;
-	z : int;
-	
-	constructor ValueCtor(_x : int, _y : int, _z : int)
-	{
-		x = _x;
-		y = _y;
-		z = _z;
-	}
-	
-	def GetCoor(type : int)
-	{
-		return = type == 1 ? x : type == 2 ? y : z;
-	}
-}
+import(""FFITarget.dll"");
 def GetMidPoint : Point_3D(p1 : Point_3D, p2 : Point_3D)
 {
 	return = Point_3D.ValueCtor(	
@@ -1167,20 +778,12 @@ list3_2_z = list3[2].GetCoor(3); // 19
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T36_Pass_1_single_list_of_class_type()
         {
             string code = @"
-class Integer
-{
-	value : int;
-	
-	constructor ValueCtor(_value : int)
-	{
-		value = _value;
-	}
-}
+import(""FFITarget.dll"");
 def Square : int(i : Integer)
 {
 	return = i.value * i.value;
@@ -1199,29 +802,12 @@ list2 = Square(list); // { 4, 9, 16, 25 }";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T37_Pass_2_lists_of_class_type_different_length()
         {
             string code = @"
-class Point_3D
-{
-	x : int;
-	y : int;
-	z : int;
-	
-	constructor ValueCtor(_x : int, _y : int, _z : int)
-	{
-		x = _x;
-		y = _y;
-		z = _z;
-	}
-	
-	def GetCoor(type : int)
-	{
-		return = type == 1 ? x : type == 2 ? y : z;
-	}
-}
+import(""FFITarget.dll"");
 def GetMidPoint : Point_3D(p1 : Point_3D, p2 : Point_3D)
 {
 	return = Point_3D.ValueCtor(	
@@ -1249,19 +835,12 @@ list3_1_y = list3[1].GetCoor(2); // 25
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T38_Pass_2_lists_of_class_type_different_length_and_1_integer()
         {
             string code = @"
-class Integer
-{
-	value : int;
-	constructor ValueCtor(_value : int)
-	{
-		value =  _value;
-	}
-}
+import(""FFITarget.dll"");
 def Sum : int(i1 : Integer, i2 : Integer, i3 : int)
 {
 	return = i1.value + i2.value + i3;
@@ -1284,19 +863,12 @@ list3 = Sum(list1, list2, 10); // { 15, 21, 27 }";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T39_Pass_2_lists_of_class_type_same_length_and_1_variable_of_class_type()
         {
             string code = @"
-class Integer
-{
-	value : int;
-	constructor ValueCtor(_value : int)
-	{
-		value =  _value;
-	}
-}
+import(""FFITarget.dll"");
 def Sum : int(i1 : Integer, i2 : Integer, i3 : Integer)
 {
 	return = i1.value + i2.value + i3.value;
@@ -1318,29 +890,12 @@ list3 = Sum(list1, list2, Integer.ValueCtor(10)); // { 15, 21, 27 }";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T40_Pass_2_List_of_class_type_Same_Length()
         {
             string code = @"
-class Point_3D
-{
-	x : var;
-	y : var;
-	z : var;
-	
-	constructor ValueCtor(_x : int, _y : int, _z : int)
-	{
-		x = _x;
-		y = _y;
-		z = _z;
-	}
-	
-	def GetCoor(type : int)
-	{
-		return = type == 1 ? x : type == 2 ? y : z;
-	}
-}
+import(""FFITarget.dll"");
 def GetMidPoint : Point_3D(p1 : Point_3D, p2 : Point_3D)
 {
 	return = Point_3D.ValueCtor(	
@@ -1759,50 +1314,42 @@ test;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void ArraySimpleCall02()
         {
             String code =
 @"
-class Tuple4
+
+def f(arr : double[])
 {
-    mx : var;
-    constructor ByCoordinates3(arr : double[])
-    {
-        mx = arr[2];      
-    }
+    return = arr[2];      
 }
+
     
 a = {12.0,13.0,14.0};
-t = Tuple4.ByCoordinates3(a);
-x = t.mx;
+x = f(a);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Assert.IsTrue((double)mirror.GetValue("x").Payload == 14);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void ArraySimpleCall03()
         {
             String code =
 @"
-class Tuple4
+def f(arr : double)
 {
-    mx : var;
-    constructor ByCoordinates3(arr : double)
-    {
-        mx = arr;      
-    }
+    return = arr;      
 }
-    
 a = {12.0,13.0,14.0};
-t = Tuple4.ByCoordinates3(a);
-x1 = t[0].mx;
-x2 = t[1].mx;
-x3 = t[2].mx;
+t = f(a);
+x1 = t[0];
+x2 = t[1];
+x3 = t[2];
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Assert.IsTrue((double)mirror.GetValue("x1").Payload == 12);
@@ -2011,21 +1558,16 @@ a = fun({{1.0}, {2.0}});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TestIncompatibleTypes()
         {
             String code =
 @"def fun : double(arg: int) { return = 4; }
-class A 
-{
-    x : int;
-    constructor A(_x : int) { x = _i; }
-}
-v1 = A.A(0);
+v1 = Integer.ValueCtor(0);
 v2 = fun(4);
 v3 = fun ({0, 1});
-v4 = fun ({A.A(0), A.A(1)});
+v4 = fun ({Integer.ValueCtor(0), Integer.ValueCtor(1)});
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             TestFrameWork fx = new TestFrameWork();
@@ -2033,29 +1575,27 @@ v4 = fun ({A.A(0), A.A(1)});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TestOverloadDispatchWithTypeConversion()
         {
             String code =
-@"class TestDefect
+@"
+def foo(val : double)
 {
-        def foo(val : double)
-        {
-                return = val;
-        }
-        def foo(arr : double[])
-        {
-                return = -123;
-        }
-    def sqr(val : int)
-        {
-                return = val * val;
-        }
+    return = val;
 }
-test = TestDefect.TestDefect();
+def foo(arr : double[])
+{
+    return = -123;
+}
+def sqr(val : int)
+{
+    return = val * val;
+}
+
 arr = 5..25;
-s = test.foo(arr);
+s = foo(arr);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             TestFrameWork fx = new TestFrameWork();
@@ -2106,16 +1646,13 @@ z = xdata - ydata;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T09_Defect_1456568_Replication_On_Operators_4()
         {
             String code =
 @"
-class A
-{
-}
-a1 = A.A();
+a1 = Integer.ValueCtor(0);
 xdata = {null, 0, true, a1 };
 ydata = {1,1,1,1};
 z = xdata + ydata;
@@ -2147,34 +1684,22 @@ y = z[1];
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T09_Defect_1456568_Replication_On_Operators_6()
         {
             String code =
 @"
-class A
+def foo ( a : var[], b : var[] )
 {
-    c : var[];
-    constructor A ( a : var[], b : var[] )
-    {
-        c = a + b;
-    }
-    def foo ( a : var[], b : var[] )
-    {
-        c = a - b ;
-        return = c;
-    }
+    return = a - b;
 }
-a1 = A.A( xdata, ydata);
 xdata = { 1, 2 };
 ydata = { 3, 4 };
-z1 = a1.c;
-z2 = a1.foo ( xdata, ydata );
+z2 = foo ( xdata, ydata );
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v2 = new Object[] { -2, -2 };
-            thisTest.Verify("z1", v2);
             thisTest.Verify("z2", v2);
         }
 
@@ -2202,26 +1727,23 @@ xdata = { 1.5, 2 };
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T57_Defect_1467004_Replication_With_Method_Overload()
         {
             String code =
                             @"
-                            class TestDefect
+                            def foo(val : double)
                             {
-                                def foo(val : double)
-                                {
-                                    return = val;
-                                }
-                                def foo(arr : double[])
-                                {
-                                    return = -123;
-                                }
+                                return = val;
                             }
-                            test = TestDefect.TestDefect();
+                            def foo(arr : double[])
+                            {
+                                return = -123;
+                            }
+                            
                             arr = 5..25;
-                            s = test.foo(arr); 
+                            s = foo(arr); 
                             ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("s", -123);
@@ -2285,16 +1807,14 @@ xdata = { 1.5, 2 };
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T57_Defect_1467004_Replication_With_Method_Overload_4()
         {
             String code =
                             @"
-                                class A
-                                {
-                                }
-                                a1 = A.A();
+                                import(""FFITarget.dll"");
+                                a1 = Integer.ValueCtor(1);
                                 def foo(val : int[])
                                 {
                                     return = 1;
@@ -2313,7 +1833,7 @@ xdata = { 1.5, 2 };
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignore_DSClassInheritance")]
         [Category("SmokeTest")]
         public void T57_Defect_1467004_Replication_With_Method_Overload_5()
         {
@@ -2354,7 +1874,7 @@ xdata = { 1.5, 2 };
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
         [Category("SmokeTest")]
         public void T57_Defect_1467004_Replication_With_Method_Overload_6()
         {
@@ -2565,62 +2085,48 @@ y;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Update")]
         public void T58_Defect_1456115_Replication_Over_Collections_7()
         {
             String code =
 @"
-class A
+def foo : int ( a : int, b : int )
 {
-    x : var;
-    
-    def foo : int ( a : int, b : int )
-    {
-        x = a + b;
-        return = x;
-    }
+    x = a + b;
+    return = x;
 }
-a1 = A.A();
-test = a1.x;
+
 x1 = { 3, 4 };
 x2 =  { null, 1 };
-y = a1.foo( {3, 4 }, { null, 1} );
+y = foo( {3, 4 }, { null, 1} );
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { null, 5 };
             thisTest.Verify("y", v1);
-            thisTest.Verify("test", 5);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Update")]
         public void T58_Defect_1456115_Replication_Over_Collections_8()
         {
             String code =
 @"
-class A
+def foo : int ( a : int, b : int )
 {
-    x : var;
-    
-    def foo : int ( a : int, b : int )
-    {
-        x = a + b;
-        return = x;
-    }
+    x = a + b;
+    return = x;
 }
 a1 = A.A();
-test = a1.x;
 x1 = { 3, 4 };
 x2 =  { null, 1 };
-y = a1.foo( x1, x2 );
+y = foo( x1, x2 );
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] v1 = new Object[] { null, 5 };
             thisTest.Verify("y", v1);
-            thisTest.Verify("test", 5);
         }
 
         [Test]
@@ -2667,16 +2173,14 @@ list2 = !list1;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T59_Defect_1463351_Replication_Over_Unary_Operators_4()
         {
             String code =
 @"
-class A
-{
-}
-a1 = A.A();
+import(""FFITarget.dll"");
+a1 = Integer.ValueCtor(0);
 b1 = { true, a1 };
 b = !b1;
 ";
@@ -2687,29 +2191,16 @@ b = !b1;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T60_Defect_1455247_Replication_Over_Class_Instances()
         {
             String code =
 @"
-class Point
-{
-x : var;
-y : var;
-constructor Create(xx : int, yy : int)
-{
-x = xx;
-y = yy;
-}
-}
-y;
-[Associative]
-{
+import(""FFITarget.dll"");
 coords = {0,1,2,3,4,5,6,7,8,9};
-pts = Point.Create(coords, coords);
+pts = DummyPoint.ByCoordinates(coords, coords, 1);
 y = Count ( pts );
-}
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -2717,69 +2208,35 @@ y = Count ( pts );
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T60_Defect_1455247_Replication_Over_Class_Instances_2()
         {
             String code =
 @"
-class Point
-{
-x : var;
-y : var;
-z : var;
-constructor Create(xx : double)
-{
-x = xx;
-}
-}
-class Circle
-{
-centerPt : var;
-radius : var;
-constructor Create(cp : Point, rad : double)
-{
-centerPt = cp;
-radius = rad;
-}
-}
-c1;
-[Associative]
-{
-coords = {0.0,1,2,3,4,5,6,7,8,9};
-pts = Point.Create(coords);
-circs = Circle.Create(pts, 5.0); 
-c1 = Count ( circs );
-}
+import(""FFITarget.dll"");
+coords = {0,1,2,3,4,5,6,7,8,9};
+vList1 = DummyVector.ByCoordinates(coords,10,20);
+vList2 = DummyVector.ByVector(vList1); 
+v = Count ( vList2 );
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("c1", 10);
+            thisTest.Verify("v", 10);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T60_Defect_1455247_Replication_Over_Class_Instances_3()
         {
             String code =
 @"
-class Point
-{
-    x : var;
-    y : var;
-    z : var;
-    constructor Create(xx : double, yy: double, zz: double)
-    {
-        x = xx;
-        y = yy;
-        z = zz;
-    }
-}
+import(""FFITarget.dll"");
 x1 = { 0.0, 1 };
 y1 = { 0, 2.0, 3 };
 z1 = { 0, 1 };
-pts = Point.Create(x1, y1, z1);
+pts = DummyPoint.ByCoordinates(x1, y1, z1);
 c1 = Count ( pts );
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -2788,28 +2245,17 @@ c1 = Count ( pts );
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T60_Defect_1455247_Replication_Over_Class_Instances_4()
         {
             String code =
 @"
-class Point
-{
-    x : var;
-    y : var;
-    z : var;
-    constructor Create(xx : double, yy: double, zz: double)
-    {
-        x = xx;
-        y = yy;
-        z = zz;
-    }
-}
+import(""FFITarget.dll"");
 x1 = { { 0.0, 1 } };
 y1 = { 0, 2.0, 3 };
 z1 = { 0, 1 };
-pts = Point.Create(x1, y1, z1);
+pts = DummyPoint.ByCoordinates(x1, y1, z1);
 c1 = Count ( pts );
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -2819,28 +2265,17 @@ c1 = Count ( pts );
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T60_Defect_1455247_Replication_Over_Class_Instances_5()
         {
             String code =
 @"
-class Point
-{
-    x : var;
-    y : var;
-    z : var;
-    constructor Create(xx : double, yy: double, zz: double)
-    {
-        x = xx;
-        y = yy;
-        z = zz;
-    }
-}
+import(""FFITarget.dll"");
 x1 = { 0, 0.0, 1  };
 y1 = 3;
 z1 = { 0, 1 };
-pts = Point.Create(x1, y1, z1);
+pts = DummyPoint.ByCoordinates(x1, y1, z1);
 c1 = Count ( pts );
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -2849,26 +2284,16 @@ c1 = Count ( pts );
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T60_Defect_1455247_Replication_Over_Class_Instances_6()
         {
             String code =
 @"
-class Point
-{
-    x : var;
-    y : var;    
-    constructor Create(xx : double, yy: double)
-    {
-        x = xx;
-        y = yy;
-        
-    }
-}
+import(""FFITarget.dll"");
 x1 = { 0, 0.0, 1  };
 y1 = 3;
-pts = Point.Create(x1, y1);
+pts = DummyPoint.ByCoordinates(x1, y1);
 c1 = Count ( pts );
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -2877,26 +2302,13 @@ c1 = Count ( pts );
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T61_Defect_1463338_Replication_CallSite_Assertion()
         {
             String code =
 @"
-class Point_2D
-{
-    x : int;
-    y : int;
-    constructor ValueCtor(x1 : int, y1 : int)
-    {
-    x = x1;
-    y = y1;
-    }
-    def GetValue()
-    {
-        return = x * y;
-    }
-}
+import(""FFITarget.dll"");
 list1 = { { 1, 2, 3 }, { 1, 2, 3 }, { 1, 2, 3 } };
 list2 = { { 1, 2, 3, 4 }, { 1, 2, 3, 4 } };
 list3 = Point_2D.ValueCtor(list1, list2);
@@ -2909,18 +2321,11 @@ list2_0_0 = list3[0][0].GetValue();
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T50_Defect_1456738_Replication_Race_Condition()
         {
             string code = @"
-
-class Math
-{
-   static def Sin ( x1 : double)
-   {
-       return = x1;
-   }
-}
+import(""FFITarget.dll"");
 // dimensions of the roof in each direction
 //
 xSize = 10;
@@ -2950,12 +2355,12 @@ y180ToUse = yWaves==1?yWaves:(yWaves*2)-1;
 //
 xCount = xPointsPerWave*xWaves;
 yCount = yPointsPerWave*yWaves;
-xHighFrequency = Math.Sin(0..(180*x180ToUse)..#xCount)*highFrequencyAmpitude;
-xLowFrequency = Math.Sin(-5..185..#xCount)*lowFrequencyAmpitude;
-yHighFrequency = Math.Sin(0..(180*y180ToUse)..#yCount)*highFrequencyAmpitude;
-yLowFrequency = Math.Sin(-5..185..#yCount)*lowFrequencyAmpitude;
+xHighFrequency = DummyMath.Sin(0..(180*x180ToUse)..#xCount)*highFrequencyAmpitude;
+xLowFrequency = DummyMath.Sin(-5..185..#xCount)*lowFrequencyAmpitude;
+yHighFrequency = DummyMath.Sin(0..(180*y180ToUse)..#yCount)*highFrequencyAmpitude;
+yLowFrequency = DummyMath.Sin(-5..185..#yCount)*lowFrequencyAmpitude;
 sinRange = {0.0, 10, 20, 30, 40 ,50, 60 ,70 ,80 , 90 ,100, 110 ,120, 130, 140, 150, 160, 170};
-xHighFrequency = Math.Sin(sinRange) * highFrequencyAmpitude;
+xHighFrequency = DummyMath.Sin(sinRange) * highFrequencyAmpitude;
 y = Count(xHighFrequency);";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("y", 18);
@@ -3197,7 +2602,7 @@ rad = foo(a, d);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_ReplicationWithinDSClass")]
         public void Array_Ranks_Match_argumentdefinition_1467190()
         {
             String code =
@@ -3257,114 +2662,78 @@ x = a < b ? 1 : 0;";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T67_Defect_1460965_Replication_On_Dot_Operator()
         {
             String code =
-@"class A
-{
-    a : int;
-    constructor A ( a1 : int )
-    {
-        a = a1;
-    }
-}
-c1 = { A.A(1), A.A(2) };
+@"
+import(""FFITarget.dll"");
+c1 = { TestObjectA.TestObjectA(1), TestObjectA.TestObjectA(2) };
 c2 = c1.a; 
-// Expected : { 1,2 }; Recieved : null";
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("c2", new Object[] { 1, 2 });
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T67_Defect_1460965_Replication_On_Dot_Operator_2()
         {
             String code =
-@"class Point
-{
-    x : var;
-    constructor Create(xx : int)
-    {
-        x = xx;
-    }
-}
-xs;
-[Associative]
-{
+@"
+    import(""FFITarget.dll"");
     coords = {0,1,2,3,4,5,6,7,8,9};
-    pts = Point.Create(coords);
-    xs = pts.x;
-}";
+    pts = DummyPoint.ByCoordinates(coords, 20, 30);
+    xs = pts.X;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("xs", new Object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T67_Defect_1460965_Replication_On_Dot_Operator_3()
         {
             String code =
-@"class MyPoint 
-{ 
-    X: var;
-    Y: var;
-    constructor CreateXY(x : double, y : double)
-    {
-        X = x;
-        Y = y;
-    } 
-}
-p2 = MyPoint.CreateXY(-20.0,-30.0).X;";
+@"
+import(""FFITarget.dll"");
+p2 = DummyPoint.ByCoordinates(-20.0,-30.0,-40.0).X;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("p2", -20.0);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T67_Defect_1460965_Replication_On_Dot_Operator_4()
         {
             String code =
-@"class MyPoint 
-{ 
-    X: var;
-    Y: var;
-    constructor CreateXY(x : double, y : double)
-    {
-        X = x;
-        Y = y;
-    } 
-}
-p2 = MyPoint.CreateXY(0..2,-30.0).X;";
+@"
+import(""FFITarget.dll"");
+p2 = DummyPoint.ByCoordinates(0..2,-30.0, -40.0).X;";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("p2", new Object[] { 0.0, 1.0, 2.0 });
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T67_Defect_1460965_Replication_On_Dot_Operator_5()
         {
             String code =
-@"class A
-{
-    X : var;
-    constructor  A ( t1 : var )
-    {
-        X = t1;
-    }
-}
-a1 = A.A(1);
-b1 = A.A(2);
-test = { a1, b1}.X ;
+@"
+import(""FFITarget.dll"");
+a1 = TestObjectA.TestObjectA(1);
+b1 = TestObjectA.TestObjectA(2);
+test = {a1, b1}.a;
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -3372,20 +2741,14 @@ test = { a1, b1}.X ;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T67_Defect_1460965_Replication_On_Dot_Operator_6()
         {
             String code =
-@"class A
-{
-    X : var[];
-    constructor  A ( t1 : var[] )
-    {
-        X = t1;
-    }
-}
-a1 = { A.A(1..2), A.A(2..3) };
+@"
+import(""FFITarget.dll"");
+a1 = {ArrayMember.Ctor(1..2), ArrayMember.Ctor(2..3) };
 test = a1.X ;
 test2 = a1.X[0];
 test3 = a1.X[1];
@@ -3400,20 +2763,15 @@ test4 = a1[0].X[0];
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T67_Defect_1460965_Replication_On_Dot_Operator_8()
         {
             String code =
-@"class A
-{
-    X : var[];
-    constructor  A ( t1 : var[] )
-    {
-        X = t1;
-    }
-}
-a1 = { A.A(1..2), A.A(2..3) };
+@"
+
+import(""FFITarget.dll"");
+a1 = { ArrayMember.Ctor(1..2), ArrayMember.Ctor(2..3) };
 test = a1.X ;
 test2 = a1.X[0];
 test3 = a1.X[1];
@@ -3430,20 +2788,14 @@ test4 = a1[0].X[0][1];
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T67_Defect_1460965_Replication_On_Dot_Operator_9()
         {
             String code =
-@"class A
-{
-    X : var[];
-    constructor  A ( t1 : var[] )
-    {
-        X = t1;
-    }
-}
-a1 = { A.A(1..2), A.A(2..3) };
+@"
+import(""FFITarget.dll"");
+a1 = { ArrayMember.Ctor(1..2), ArrayMember.Ctor(2..3) };
 test1 = a1.X;
 test2 = a1.X[0];
 test3 = (a1.X[0])[0];
@@ -3456,20 +2808,14 @@ test3 = (a1.X[0])[0];
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T67_Defect_1460965_Replication_On_Dot_Operator_10()
         {
             String code =
-@"class A
-{
-    X : var[];
-    constructor  A ( t1 : var[] )
-    {
-        X = t1;
-    }
-}
-a1 = { A.A(1..2), A.A(2..3) };
+@"
+import(""FFITarget.dll"");
+a1 = { ArrayMember.Ctor(1..2), ArrayMember.Ctor(2..3) };
 test1 = a1.X;
 test2 = a1.X[0];
 test3 = a1.X[0][0];
@@ -3504,34 +2850,17 @@ x1;x2;x3;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T67_Defect_1460965_ExpressionInParenthesis02()
         {
             string code = @"
-class A
-{
-    x:int[];
-    constructor A(val:int[])
-    {
-        x = val;
-    }
-    def foo()
-    {
-        return = 0..10;
-    }
-    def foo2()
-    {
-        return = {{1,2}, {3,4}};
-    }
-}
-t1;t2;t3;
-[Imperative]
-{
-    a = A.A({1,2,3,4,5});
-    t1 = (a.x)[3];
-    t2 = (a.foo())[4];
-    t3 = (a.foo2())[1][1];
-}";
+import(""FFITarget.dll"");
+a = ArrayMember.Ctor({1,2,3,4,5});
+t1 = (a.X)[3];
+t2 = (a.foo())[4];
+t3 = (a.foo2())[1][1];
+
+";
             thisTest.RunScriptSource(code);
             thisTest.Verify("t1", 4);
             thisTest.Verify("t2", 4);
@@ -3539,56 +2868,32 @@ t1;t2;t3;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T67_Defect_1460965_ExpressionInParenthesis03()
         {
             string code = @"
-class A
-{
-    x:int[];
-    constructor A(val:int[])
-    {
-        x = val;
-    }
-    def foo()
-    {
-        return = 0..10;
-    }
-    def foo2()
-    {
-        return = {{1,2}, {3,4}};
-    }
-}
-t2;t3;
-[Imperative]
-{
-    a = A.A({1,2,3,4,5});
-    t2 = a.foo()[4];
-    t3 = (a.foo2()[1])[1];
-}";
+import(""FFITarget.dll"");
+a = ArrayMember.Ctor({1,2,3,4,5});
+t2 = a.foo()[4];
+t3 = (a.foo2()[1])[1];
+";
             thisTest.RunScriptSource(code);
             thisTest.Verify("t2", 4);
             thisTest.Verify("t3", 4);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T68_Defect_1460965_Replication_On_Dot_Operator_7()
         {
             String code =
-@"class A 
-{
-    x : int;
-    t : int;
-    constructor A( y)
-    {
-        x = y;
-    }
-}
-a1 = { A.A(1), A.A(2) };
-a1.t = 5;
-test = a1.t;
+@"
+
+import(""FFITarget.dll"");
+a1 = { DummyVector.ByCoordinates(1,11,111), DummyVector.ByCoordinates(2,22,222) };
+a1.X = 5;
+test = a1.X;
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -3616,7 +2921,7 @@ test = a1.t;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
         [Category("Replication")]
         [Category("Failure")]
         public void T68_Defect_1460965_Replication_On_Dot_Operator_8()
@@ -3651,7 +2956,7 @@ test = a1.x; //expected :  { 1, { 2, { 0, 1 } } }
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
         [Category("Replication")]
         [Category("Failure")]
         public void T68_Defect_1460965_Replication_On_Dot_Operator_9()
@@ -3714,7 +3019,7 @@ x = { };
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassTypeSemantics")]
         [Category("Replication")]
         public void T70_Defect_1467266()
         {
@@ -3748,22 +3053,16 @@ test3 = a1.a.X[0][0];
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T71_Defect_1467209()
         {
             String code =
-@"class A
-{
-    X : var;
-    constructor  A ( t1 : var )
-    {
-        X = t1;
-    }
-}
-a1 = A.A(1);
-b1 = A.A(2);
-test = { a1, b1}.X ;
+@"
+import(""FFITarget.dll"");
+a1 = DummyVector.ByCoordinates(1,11,111);
+b1 = DummyVector.ByCoordinates(2,22,222);
+test = {a1, b1}.X;
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
@@ -3773,20 +3072,14 @@ test = { a1, b1}.X ;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T71_Defect_1467209_2()
         {
             String code =
-@"class A
-{
-    X : var[];
-    constructor  A ( t1 : var[] )
-    {
-        X = t1;
-    }
-}
-a = { A.A(1..2), A.A(4..5) } ;
+@"
+import(""FFITarget.dll"");
+a = { ArrayMember.Ctor(1..2), ArrayMember.Ctor(4..5) } ;
 test1 = a.X;
 test2 = a.X[0];
 test3 = (a.X)[0];
@@ -3799,7 +3092,7 @@ test3 = (a.X)[0];
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassTypeSemantics")]
         [Category("Replication")]
         public void T71_Defect_1467209_3()
         {
@@ -3831,7 +3124,7 @@ a1 = t1[0];
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassTypeSemantics")]
         [Category("Replication")]
         public void T71_Defect_1467209_4()
         {
@@ -3878,23 +3171,16 @@ b = a[i] > 0? 1 : 0;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T72_Defect_1467169_2()
         {
             String code =
 @"
-class A
-{
-    a : int;
-    constructor A ( x )
-    {
-        a = x;
-    }
-}
+import(""FFITarget.dll"");
 a = { 1, 2 } ;
 i = 0..1; 
-b = a[i] > 0? A.A(i) : 0;
+b = a[i] > 0? TestObjectA.TestObjectA(i) : 0;
 test = b.a; 
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -3904,24 +3190,17 @@ test = b.a;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T72_Defect_1467169_3()
         {
             String code =
 @"
-class A
-{
-    a : int[];
-    constructor A ( x:int[] )
-    {
-        a = x;
-    }
-}
+import(""FFITarget.dll"");
 a = { 1, 2 } ;
 i = 0..1; 
-b = a[i] > 0? A.A(a[i]) : 0;
-test = b.a; 
+b = a[i] > 0? ArrayMember.Ctor(a[i]) : 0;
+test = b.X; 
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
@@ -4063,37 +3342,22 @@ y = x + 1;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
-        public void T73_Defect_1467069_4()
+        public void IndexingWithArray()
         {
             String code =
 @"
-class A
-{
-    x : int[]..[];
-    constructor A()
-    {
-        a = {3,1,2,10};
-        x = {10,11,12,13,14,15};
-        x[a] = 2;
-    }
-    def foo ()
-    {
-        x[-1..-3] = 0;
-        return = x;
-    }
-}
-a1 = A.A();
-y1 = a1.x + 1;
-y2 = a1.foo();
+a = {1,2};
+x = {10,11,12,13,14,15};
+x[a] = 2;
+y1 = x;
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
-            thisTest.Verify("y1", new Object[] { 11, 3, 3, 3, 15, 16, null, null, 1, 1, 1 });
-            thisTest.Verify("y2", new Object[] { 10, 2, 2, 2, 14, 15, null, null, 0, 0, 0 });
+            thisTest.Verify("y1", new Object[] { 10, 2, 2, 13, 14, 15});
         }
         [Test]
         [Category("Replication")]
@@ -4151,25 +3415,20 @@ c = even(x);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T75_Defect_1467282()
         {
             String code =
 @"
-class A
+def sum (a : int, b : int)
 {
-    c : int;
-    constructor A(a : int, b : int)
-    {
-        c = a + b;
-    }
-    
+    return = a + b;
 }
 a = { 5, 6 };
 b = { 0, 1 };
-x = A.A(a<1>, b<2> ).c;
-y = A.A(a, b).c;
+x = sum(a<1>, b<2> );
+y = sum(a, b);
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//1467282 - Replication guides not working in constructor of class";
@@ -4179,25 +3438,20 @@ y = A.A(a, b).c;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
-        public void T75_Defect_1467282_2()
+        public void ReplicationGuideOnFunction()
         {
             String code =
 @"
-class A
+def sum (a : int, b : int)
 {
-    c : int;
-    constructor A(a : int, b : int)
-    {
-        c = a + b;
-    }
-    
+    return = a + b;
 }
 a = { {5, 6}, {5,6} };
 b = { {0, 1}, {0,1} };
-x = A.A(a<1><2>, b<3><4> ).c;
-y = A.A(a, b).c;
+x = sum(a<1><2>, b<3><4> );
+y = sum(a, b);
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467315 rev 3830 : System.NotImplementedException : only <1> and <2> are supported as replication guides";
@@ -4247,26 +3501,19 @@ x = a[(0..1)<1>][(0..1)<2>];
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T75_Defect_1467282_5()
         {
             String code =
 @"
+import(""FFITarget.dll"");
 def sum(a, b)
 {
     return = a + b;
 }
-class A
-{
-    X : var[];
-    constructor A( x1 : var[] )
-    {
-        X = x1;
-    }
-}
-a = { A.A(0..2), A.A(3..5) };
-b = { A.A(0..2), A.A(3..5) };
+a = { ArrayMember.Ctor(0..2), ArrayMember.Ctor(3..5) };
+b = { ArrayMember.Ctor(0..2), ArrayMember.Ctor(3..5) };
 test = a.X<1> + b.X<2>;
 test2 = sum ( a.X<1>, b.X<2>);
 ";
@@ -4279,27 +3526,22 @@ test2 = sum ( a.X<1>, b.X<2>);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T75_Defect_1467282_6()
         {
             String code =
 @"
+def sum(a, b)
+{
+    return = a + b;
+}
 def foo()
 {
     a = { 5, 6 };
     b = { 0, 1 };
-    x = A.A(a<1>, b<2> ).c;
+    x = sum(a<1>, b<2>);
     return = x;
-}
-class A
-{
-    c : int;
-    constructor A(a : int, b : int)
-    {
-        c = a + b;
-    }
-    
 }
 test = foo();
 ";
@@ -4335,7 +3577,7 @@ test2 = sum ( (0..1)<1>, (2..3)<2>);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_NoReplication")]
         [Category("Replication")]
         public void T76_Defect_1467254()
         {
@@ -4364,7 +3606,7 @@ a.x = 4;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_NoReplication")]
         [Category("Replication")]
         public void T76_Defect_1467254_2()
         {
@@ -4432,7 +3674,7 @@ y = x [ {0,1} ][{0,1}];
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassTypeSemantics")]
         [Category("Replication")]
         public void T77_Defect_1467081_3()
         {
@@ -4608,24 +3850,17 @@ b = -a[i];
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T79_Defect_1467096_3()
         {
             String code =
 @"
-class A
-{
-    a :int[];
-    constructor A ()
-    {
-        a = { 1, 2, 3};
-    }
-}
-a1 = A.A();
+import(""FFITarget.dll"");
+a1 = ArrayMember.Ctor({ 1, 2, 3});
 i = 0..1;
-c = a1.a;
-b = a1.a[i];
+c = a1.X;
+b = a1.X[i];
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467296 rev 3769 : Replication over array indices not working for class properties";
@@ -4634,24 +3869,17 @@ b = a1.a[i];
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T79_Defect_1467096_4()
         {
             String code =
 @"
-class A
-{
-    a :int[];
-    constructor A ()
-    {
-        a = { 1, 2, 3};
-    }
-}
-a1 = A.A();
+import(""FFITarget.dll"");
+a1 = ArrayMember.Ctor({ 1, 2, 3});
 i = 0..1;
-c = a1.a;
-b = a1.a[i];
+c = a1.X;
+b = a1.X[i];
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467296 rev 3769 : Replication over array indices not working for class properties";
@@ -4660,23 +3888,16 @@ b = a1.a[i];
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T80_Defect_1467297()
         {
             String code =
 @"
-class A
-{
-    a :int[];
-    constructor A ()
-    {
-        a = { 1, 2, 3};
-    }
-}
-a1 = A.A();
+import(""FFITarget.dll"");
+a1 = ArrayMember.Ctor({ 1, 2, 3});
 i = 0..1;
-b = -a1.a[i];
+b = -a1.X[i];
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467297 rev 3769 : parser issue over negating a property of an instance";
@@ -4686,23 +3907,16 @@ b = -a1.a[i];
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T80_Defect_1467297_2()
         {
             String code =
 @"
-class A
-{
-    a :int[];
-    constructor A ()
-    {
-        a = { 1, 2, 3};
-    }
-}
-a1 = A.A();
+import(""FFITarget.dll"");
+a1 = ArrayMember.Ctor({ 1, 2, 3});
 i = 0..1;
-b = -a1.a[0];
+b = -a1.X[0];
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467297 rev 3769 : parser issue over negating a property of an instance";
@@ -4712,23 +3926,16 @@ b = -a1.a[0];
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T80_Defect_1467297_3()
         {
             String code =
 @"
-class A
-{
-    a :int[];
-    constructor A ()
-    {
-        a = { 1, 2, 3};
-    }
-}
-a1 = A.A();
+import(""FFITarget.dll"");
+a1 = ArrayMember.Ctor({ 1, 2, 3});
 i = 0..1;
-b = -a1.a;
+b = -a1.X;
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467297 rev 3769 : parser issue over negating a property of an instance";
@@ -4738,22 +3945,15 @@ b = -a1.a;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T80_Defect_1467297_4()
         {
             String code =
 @"
-class A
-{
-    a :int;
-    constructor A ()
-    {
-        a = 1;
-    }
-}
-a1 = A.A();
-b = -a1.a;
+import(""FFITarget.dll"");
+a1 = DummyVector.ByCoordinates(1,2,3);
+b = -a1.X;
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467297 rev 3769 : parser issue over negating a property of an instance";
@@ -4763,21 +3963,14 @@ b = -a1.a;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T80_Defect_1467297_5()
         {
             String code =
 @"
-class A
-{
-    a :int;
-    constructor A ()
-    {
-        a = 1;
-    }
-}
-b = -A.A().a;
+import(""FFITarget.dll"");
+b = -DummyVector.ByCoordinates(1,2,3).X;
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467297 rev 3769 : parser issue over negating a property of an instance";
@@ -4787,7 +3980,7 @@ b = -A.A().a;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         [Category("Replication")]
         public void T80_Defect_1467297_6()
         {
@@ -4819,7 +4012,7 @@ b = -A.A().a;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         [Category("Replication")]
         public void T80_Defect_1467297_7()
         {
@@ -4851,7 +4044,7 @@ b = {A.A(), A.A()}.a;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         [Category("Replication")]
         public void T80_Defect_1467297_8()
         {
@@ -5048,24 +4241,22 @@ c1 = add( a<1>, b<2>);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         [Category("Failure")]
         public void T82_Defect_1467244()
         {
             String code =
 @"
-class A
-{
-static def execute(b : A)
- { 
-  return = 100; 
- }
+import(""FFITarget.dll"");
+def execute(b : TestObjectA)
+{ 
+    return = 100; 
 }
-arr = {A.A(), null, 3};
-v1 = A.execute(null);
-v2 = A.execute(3);
-v3 = A.execute(arr);
+arr = {TestObjectA.TestObjectA(), null, 3};
+v1 = execute(null);
+v2 = execute(3);
+v3 = execute(arr);
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1660
@@ -5079,21 +4270,19 @@ v3 = A.execute(arr);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T82_Defect_1467244_2()
         {
             String code =
 @"
-class A
-{
-static def execute(b : A)
- { 
-  return = 100; 
- }
+import(""FFITarget.dll"");
+def execute(b : TestObjectA)
+{ 
+    return = 100; 
 }
 arr = {3,3,3};
-v3 = A.execute(arr);
+v3 = execute(arr);
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467224 Sprint25: rev 3352: method dispatch over heterogeneous array is not correct";
@@ -5103,21 +4292,20 @@ v3 = A.execute(arr);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T82_Defect_1467244_3()
         {
             String code =
 @"
-class A
-{
-static def execute(b : A)
- { 
-  return = 100; 
- }
+
+import(""FFITarget.dll"");
+def execute(b : TestObjectA)
+{ 
+    return = 100; 
 }
 arr = {null, null};
-v3 = A.execute(arr);
+v3 = execute(arr);
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467224 Sprint25: rev 3352: method dispatch over heterogeneous array is not correct";
@@ -5188,22 +4376,19 @@ test = foo ( {arr, arr },  { arr, arr} );
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
-        public void T84_Defect_1467313_3()
+        public void AddArrayFunctionArg01()
         {
             String code =
 @"
-class A
+
+def foo ( a : var[] , b : var[])
 {
-    def foo ( a : var[] , b : var[])
-    {
-        return = a + b;
-    }
+    return = a + b;
 }
 arr = {1, 2};
-t1 = A.A();
-test = t1.foo ( {arr, arr },  { arr, arr} );
+test = foo ( {arr, arr },  { arr, arr} );
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
@@ -5212,7 +4397,7 @@ test = t1.foo ( {arr, arr },  { arr, arr} );
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_DSClassSemantics")]
         [Category("Replication")]
         public void T84_Defect_1467313_4()
         {
@@ -5243,71 +4428,43 @@ test = t1.foo( );
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
-        public void T84_Defect_1467313_5()
+        public void AddArrayFunctionArg02()
         {
             String code =
 @"
-class A
+def foo( a : var, c : var[])
 {
-    a : var;
-    b : var;
-    c : var[];
-    constructor A ( a1 : var , b1 : var)
-    {
-        a = a1;
-        b = b1;        
-    }
-    constructor A2 ( a1 : var , c1 : var[])
-    {
-        a = a1;
-        c = c1;        
-    }
-    def foo ()
-    {
-        return  = a + b;
-    }
-    def foo2 ()
-    {
-        return  = a + c;
-    }
+    return  = a + c;
 }
 arr = {1, 2};
-t1 = A.A({arr, arr },  { arr, arr} );
-test = t1.foo( );
-t2 = A.A2(arr,  { arr, arr} );
-test2 = t2.foo2( );
+test2 = foo(arr,  { arr, arr});
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test", new Object[] { new Object[] { 2, 4 }, new Object[] { 2, 4 } });
             thisTest.Verify("test2", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
-        public void T84_Defect_1467313_6()
+        public void AddArrayFunctionArg03()
         {
             String code =
 @"
-class A
+def foo ( a : var , b : var)
 {
-    def foo ( a : var , b : var)
-    {
-        return = a + b;
-    }
-    def foo2 ( a : var , b : var[])
-    {
-        return = a + b;
-    }
+    return = a + b;
+}
+def foo2 ( a : var , b : var[])
+{
+    return = a + b;
 }
 arr = {1, 2};
-t1 = A.A();
-test = t1.foo ( {arr, arr },  { arr, arr} );
-test2 = t1.foo2 ( arr,  { arr, arr} );
+test = foo ( {arr, arr },  { arr, arr} );
+test2 = foo2 ( arr,  { arr, arr} );
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
@@ -5355,7 +4512,7 @@ test = foo ( arr,  { arr, arr} );
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
         [Category("Replication")]
         public void T85_Defect_1467076()
         {
@@ -5383,7 +4540,7 @@ test = foo ( arr,  { arr, arr} );
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
         [Category("Replication")]
         public void T85_Defect_1467076_a()
         {
@@ -5411,7 +4568,7 @@ test = foo ( arr,  { arr, arr} );
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
         [Category("Replication")]
         public void T85_Defect_1467076_2()
         {
@@ -5441,7 +4598,7 @@ test = foo ( arr,  { arr, arr} );
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
         [Category("Replication")]
         public void T85_Defect_1467076_2b()
         {
@@ -5487,28 +4644,21 @@ x[1..2] = 2 ;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T86_Defect_1467285_2()
         {
             String code =
 @"
-class A
-{
-    x : var[]..[];
-    constructor A()
-    {
-        x = { };
-        x[1..2][1..2] = 2 ;
-    }
-}
-x = A.A().x;
+x = { };
+x[1..2][1..2] = 2 ;
+y = x;
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467284 Sprint25: rev 3705: replication on array indices should follow zipped collection rule";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
-            thisTest.Verify("x", new Object[] { n1, new Object[] { n1, 2 }, new Object[] { n1, n1, 2 } });
+            thisTest.Verify("y", new Object[] { n1, new Object[] { n1, 2 }, new Object[] { n1, n1, 2 } });
         }
 
         [Test]
@@ -5546,7 +4696,7 @@ y = x;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignore_Failing")]
         [Category("Replication")]
         [Category("Failure")]
         public void T87_Defect_1467284()
@@ -5576,24 +4726,17 @@ test = x[0..1][0..1][0..1];
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T88_Defect_1467296()
         {
             String code =
 @"
-class A
-{
-    a :int[];
-    constructor A ()
-    {
-        a = { 1, 2, 3};
-    }
-}
-a1 = A.A();
+import(""FFITarget.dll"");
+a1 = ArrayMember.Ctor({ 1, 2, 3});
 i = 0..1;
-c = a1.a;
-b = A.A().a[i];
+c = a1.X;
+b = ArrayMember.Ctor({ 1, 2, 3}).X[i];
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467296 rev 3769 : Replication over array indices not working for class properties";
@@ -5602,7 +4745,7 @@ b = A.A().a[i];
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         [Category("Replication")]
         public void T88_Defect_1467296_2()
         {
@@ -5635,7 +4778,7 @@ b = A.A(i).a[i];
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         [Category("Replication")]
         public void T88_Defect_1467296_3()
         {
@@ -5668,7 +4811,7 @@ b = { A.A(i).a[i], -A.A(i).a[i] };
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         [Category("Replication")]
         public void T88_Defect_1467296_4()
         {
@@ -5844,26 +4987,19 @@ c = foo(a,b);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T93_Defect_1467315()
         {
             String code =
 @"
-class A
+def foo(a : int, b : int)
 {
-    c : int;
-    
-    def foo(a : int, b : int)
-    {
-        c = a + b;
-        return = c;
-    }
-    
+    return = a + b;
 }
 a = { {5, 6}, {5,6} };
 b = { {0, 1}, {0,1} };
-y = A.A().foo(a<1><2>,b<3><4>);
+y = foo(a<1><2>,b<3><4>);
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467315 rev 3830 : System.NotImplementedException : only <1> and <2> are supported as replication guides";
@@ -5873,7 +5009,7 @@ y = A.A().foo(a<1><2>,b<3><4>);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
         [Category("Replication")]
         public void T93_Defect_1467315_2()
         {
@@ -5906,7 +5042,7 @@ y = A.A().foo(a<1><2>,b<3><4>);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         [Category("Replication")]
         public void T93_Defect_1467315_3()
         {
@@ -6016,21 +5152,14 @@ n = (0..11..#(nums + 2))[1..nums];
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T94_Defect_1467265_2()
         {
             String code =
 @"
-class A
-{
-    X : var[];
-    constructor  A ()
-    {
-        X = {1,2,3};
-    }
-}
-a1 = A.A();
+import(""FFITarget.dll"");
+a1 = ArrayMember.Ctor({ 1, 2, 3});
 test = [Imperative]
 {
     return = (a1.X)[0];
@@ -6043,23 +5172,16 @@ test = [Imperative]
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T94_Defect_1467265_3()
         {
             String code =
 @"
-class A
-{
-    X : var[];
-    constructor  A (t:var[])
-    {
-        X = t;
-    }
-}
+import(""FFITarget.dll"");
 t = { 1,2,3};
 test = [Imperative]
 {
-    return = (A.A(t).X)[0];
+    return = (ArrayMember.Ctor(t).X)[0];
 }
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -6069,7 +5191,7 @@ test = [Imperative]
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T94_Defect_1467265_4()
         {
             String code =
@@ -6093,29 +5215,22 @@ test = (A.A(t1<1>,t1<2>).X)[0][0];
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T94_Defect_1467265_5()
         {
             String code =
 @"
-class B
+def foo(t1:int, t2:int)
 {
-    X : int[];
-    constructor  B (t1:int, t2:int)
-    {
-        X = {t1,t2};
-    }    
-}
-class A
+    return = {t1,t2};
+}    
+def foo()
 {
-    def foo ()
-    {
-        t3 = { 1,2};
-        test1 = B.B(t3<1>,t3<2>);
-        return = test1;
-    }
+    t3 = { 1,2};
+    test1 = foo(t3<1>,t3<2>);
+    return = test1;
 }
-test = (A.A().foo()).X[0][0];
+test = foo()[0][0];
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
@@ -6124,30 +5239,23 @@ test = (A.A().foo()).X[0][0];
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T94_Defect_1467265_6()
         {
             String code =
 @"
-class B
+def foo(t1:int, t2:int)
 {
-    X : int[];
-    constructor  B (t1:int, t2:int)
-    {
-        X = {t1,t2};
-    }    
-}
-class A
+    return = {t1,t2};
+}    
+def foo()
 {
-    def foo ()
-    {
-        t3 = { 1,2};
-        test1 = B.B(t3<1>,t3<2>);
-        return = test1;
-    }
+    t3 = { 1,2};
+    test1 = foo(t3<1>,t3<2>);
+    return = test1;
 }
-test2 = (A.A().foo()).X[0][0];
-test = ((A.A().foo()).X[0])[0];
+test = foo()[0][0];
+test2 = (foo()[0])[0];
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
@@ -6157,26 +5265,17 @@ test = ((A.A().foo()).X[0])[0];
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T95_Defect_1467398_Replication_Guides_On_Collection()
         {
             String code =
 @"
-class A
-{
-    x : var;
-    y : var;
-    constructor A ( x1, y1)
-    {
-        x = x1;
-        y = y1;
-    }
-}
+import(""FFITarget.dll"");
 a = {0,1};
 b = {2,3};
-test = A.A ( a<1>, b<2>).x;
-test1 = A.A ( {0,1}<1>, {2,3}<2>).x;
-test2 = A.A ( (0..1)<1>, (2..3)<2>).x;
+test = DummyPoint2D.ByCoordinates( a<1>, b<2>).X;
+test1 = DummyPoint2D.ByCoordinates( {0,1}<1>, {2,3}<2>).X;
+test2 = DummyPoint2D.ByCoordinates( (0..1)<1>, (2..3)<2>).X;
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467398 Rev 4319 : Replication guides applied directly on collections not giving expected output";
@@ -6187,7 +5286,7 @@ test2 = A.A ( (0..1)<1>, (2..3)<2>).x;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T95_Defect_1467398_Replication_Guides_On_Collection_2()
         {
             String code =
@@ -6349,7 +5448,7 @@ d2 = [Imperative]
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T96_Defect_1467192_Replication_Inline_Condition_3()
         {
             String code =
@@ -6379,27 +5478,18 @@ test2 = a.f2;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
-        [Category("Failure")]
+        [Category("DSDefinedClass_Ported")]
         public void T97_Defect_1467408_Replication_On_Class_Property_Assignment()
         {
             String code =
 @"
-class A
-{
-    x :int;
-    constructor A ( x1 )
-    {
-        x = x1;       
-    }
-}
-a = A.A(0..1);
-test1 = a.x;
-a.x = 2..3;
+import(""FFITarget.dll"");
+a = ArrayMember.Ctor(0..1);
+test1 = a.X;
+a.X = 2..3;
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "MAGN-1682 Rev 4443 :[Design Issue]Replication on class property assignment is not working"; 
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
+            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code);
             Object[] v1 = new Object[] { false, false };
             thisTest.Verify("test1", new Object[] { 2, 3 });
         }
@@ -6426,7 +5516,7 @@ c = { { 3 } } + d;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_01()
         {
             String code =
@@ -6449,7 +5539,7 @@ a = p.f({1,2});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_02()
         {
             String code =
@@ -6477,7 +5567,7 @@ a = p.f({1,2.1});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_03()
         {
             String code =
@@ -6505,7 +5595,7 @@ a = p.f({1,2.1,2});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_04()
         {
             String code =
@@ -6534,7 +5624,7 @@ a = p.f({1});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_05()
         {
             String code =
@@ -6563,7 +5653,7 @@ a = p.f({1, 1.5});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         [Category("Failure")]
         public void T100_Replication_On_Class_Instance_06()
         {
@@ -6598,7 +5688,7 @@ a = p.f({1, 1.5});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_07()
         {
             String code =
@@ -6623,7 +5713,7 @@ a = p.f({1, 2});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_08()
         {
             String code =
@@ -6651,7 +5741,7 @@ a = foo(p);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_09()
         {
             String code =
@@ -6679,7 +5769,7 @@ a = foo(p);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_10()
         {
             String code =
@@ -6707,7 +5797,7 @@ a = foo(p, 1, 2);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_11()
         {
             String code =
@@ -6738,7 +5828,7 @@ y = 1;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_12()
         {
             String code =
@@ -6772,7 +5862,7 @@ y = 3;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_13()
         {
             String code =
@@ -6799,7 +5889,7 @@ y = 3;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_14()
         {
             String code =
@@ -6833,7 +5923,7 @@ y = 3;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_15()
         {
             String code =
@@ -6856,7 +5946,7 @@ a = p.f({0,1,2,3}[1..2]);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_16()
         {
             String code =
@@ -6889,7 +5979,7 @@ y = 4;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_17()
         {
             String code =
@@ -6914,7 +6004,7 @@ d1 = d.a;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_18()
         {
             String code =
@@ -6940,7 +6030,7 @@ y = s.foo(B.B()).b1;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_19()
         {
             String code =
@@ -6967,7 +6057,7 @@ a1.a = 2;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_20()
         {
             String code =
@@ -6996,7 +6086,7 @@ res = ax.foo(1);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_21()
         {
             String code =
@@ -7034,7 +6124,7 @@ res;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_22()
         {
             String code =
@@ -7078,7 +6168,7 @@ def foo ( xx : A[] )
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_23()
         {
             String code =
@@ -7123,7 +6213,7 @@ ax = { A.A(), A.A(), A.A() };
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_24()
         {
             String code =
@@ -7151,7 +6241,7 @@ ax = { A.A(), A.A() , A.A()};
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_25()
         {
             String code =
@@ -7188,7 +6278,7 @@ bx = 2;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_26()
         {
             String code =

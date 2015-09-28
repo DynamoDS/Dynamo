@@ -39,18 +39,20 @@ namespace ProtoTest.TD.MultiLangTests
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS002_IntToUserDefinedTypeConversion_Imperative()
         {
             string code =
                 @"
-                class A {}
+import(""FFITarget.dll"");
 a;b;
-                [Imperative]{
-                
-                a = 1;
-                b : A = a;}";
+[Imperative]
+{                
+    a = 1;
+    b : ClassFunctionality = a;
+}
+";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", 1);
             thisTest.Verify("b", null);
@@ -89,28 +91,25 @@ a;b;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS005_RetTypeArray_return_Singleton_1467196_Imperative()
         {
             string code =
                 @"
-                    class A
-                        {
-                            X : int;
-                        }
+import(""FFITarget.dll"");
                   [Imperative]{
                    //return type class and return an array of class-
                    
-                        def length : A[] (pts : A[])
+                        def length : ClassFunctionality[] (pts : ClassFunctionality[])
                         {
                             return = pts[0];
                         }
-                        pt1 = A.A( );
-                        pt2 = A.A(  );
+                        pt1 = ClassFunctionality.ClassFunctionality( );
+                        pt2 = ClassFunctionality.ClassFunctionality(  );
                         pts = {pt1, pt2};
                         numpts = length(pts); 
-                        a=numpts.X;
+                        a=numpts.IntVal;
                        
                 }";
             //Assert.Fail("1467196 - Sprint 25 - Rev 3216 - [Design Issue] when rank of return type does not match the value returned what is the expected result ");
@@ -119,29 +118,26 @@ a;b;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS006_RetTypeuserdefinedArray_return_double_1467196_Imperative()
         {
             string code =
                 @"
-                class A
-                    {
-                        X : int;
-                    }
+import(""FFITarget.dll"");
 a;
                 [Imperative]{
                    //return type class and return a double
                    
-                    def length : A (pts : A[])
+                    def length : ClassFunctionality (pts : ClassFunctionality[])
                     {
                         return = 1.0;
                     }
-                    pt1 = A.A();
-                    pt2 = A.A();
+                    pt1 = ClassFunctionality.ClassFunctionality();
+                    pt2 = ClassFunctionality.ClassFunctionality();
                     pts = {pt1, pt2};
                     numpts = length(pts); 
-                    a=numpts.X;
+                    a=numpts.IntVal;
                 }";
             //Assert.Fail("1467196 - Sprint 25 - Rev 3216 - [Design Issue] when rank of return type does not match the value returned what is the expected result ");
             thisTest.RunScriptSource(code);
@@ -150,29 +146,27 @@ a;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS007_Return_double_To_int_1467196_Imperative()
         {
             string code =
-                @" class A
-                        {
-                            X : int;
-                        }
+                @" 
+import(""FFITarget.dll"");
                         numpts;
                         a;
                         [Imperative]{
                         //return type int and return a double
                        
-                        def length : int (pts : A[])
+                        def length : int (pts : ClassFunctionality[])
                         {
                               return = 1;
                         }
-                        pt1 = A.A( );
-                        pt2 = A.A( );
+                        pt1 = ClassFunctionality.ClassFunctionality( );
+                        pt2 = ClassFunctionality.ClassFunctionality( );
                         pts = {pt1, pt2};
                         numpts = length(pts); 
-                         a=numpts.X;
+                         a=numpts.IntVal;
                  
                 }";
             //Assert.Fail("1467196 - Sprint 25 - Rev 3216 - [Design Issue] when rank of return type does not match the value returned what is the expected result ");
@@ -336,31 +330,25 @@ a;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS017_Return_BoolArray_ToInt_1467182_Imperative()
         {
             string code =
-                @"          class A
-                            {
-                            id:int;
-                            }
-                            class B
-                            {
-                                id:int;
-                            }
+                @"
+import(""FFITarget.dll"");
 c;
                             [Imperative]{
                        
-                            a = {A.A(),B.B()};
+                            a = {ClassFunctionality.ClassFunctionality(),ClassFunctionalityMirror.ClassFunctionalityMirror()};
                             b=a;
-                            a[0].id = 100;
-                            b[0].id = ""false"";
-                            c=a[0].id;
-                            d=b[0].id;}";
+                            a[0].IntVal = 100;
+                            b[0].IntVal = ""false"";
+                            c=a[0].IntVal;
+                            d=b[0].IntVal;}";
             string error = "1467182 - Sprint 25 - [Design Decision] Rev 3163 - method resolution or type conversion is expected in following cases ";
             thisTest.RunScriptSource(code, error);
-            thisTest.Verify("c", null);// null 
+            thisTest.Verify("c", 100);// null 
         }
 
         [Test]
@@ -471,12 +459,13 @@ A;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS021_OverallPrimitiveConversionTestInt_Imperative()
         {
             string code =
-                @"class A {}
+                @"
+import(""FFITarget.dll"");
 zero_var;
 zero_int;
 zero_double;
@@ -502,14 +491,14 @@ foo3;
                 zero_bool:bool = 0;
                 zero_String:string = 0;
                 zero_char:char = 0;
-                zero_a:A = 0;
+                zero_a:ClassFunctionality = 0;
                  one_var:var = 1;
                  one_int:int = 1;
                  one_double:double = 1;
                  one_bool:bool = 1;
                  one_String:string = 1;
                  one_char:char = 1;
-                 one_a:A = 1;
+                 one_a:ClassFunctionality = 1;
                 foo:int = 32.342;
                 foo2:int = 32.542;
                 foo3:int = 32.5;
@@ -591,27 +580,24 @@ foo3;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS023_Double_To_Int_1467084_3_Imperative()
         {
             string code =
-                @"class twice
+                @"
+                        def twice : int []( a : double )
                         {
-                                def twice : int []( a : double )
-                                {
-                         //      c=(1..a)..5..1;
-                                        //return = c;
-                        return = {{1,1},{1,1}};
-                                }
+                            return = {{1,1},{1,1}};
                         }
+                        
 d;
                         [Imperative]{
                      
                         d=1..4;
-                        a=twice.twice();
-                        d=a.twice(4);
-                        }";
+                        d=twice(4);
+                        }
+";
             //Assert.Fail("1463268 - Sprint 20 : [Design Issue] Rev 1822 : Method resolution fails when implicit type conversion of double to int is expected ");
             thisTest.RunScriptSource(code);
             thisTest.Verify("d", new object[] { null, null });
@@ -712,25 +698,22 @@ d;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS029_Double_ToVar_1467222_Imperative()
         {
             string code =
-                @"class A
-                    {
-                        x:int;
+                @"
                         def foo()
                         {
-                            x : double = 3.5; // x still is int, and 3.5 converted to 4
+                            x : int = 3.5; // x still is int, and 3.5 converted to 4
                             return = x;
                         }
-                    }
+                    
 b;
                     [Imperative]{
                   
-                    a = A.A();
-                    b = a.foo();
+                    b = foo();
  
                         }";
             //Assert.Fail("1467222 - Sprint 26 - rev 3345 - if return type is var it still does type conversion ");
@@ -756,12 +739,13 @@ b;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS030_eachtype_To_var_Imperative()
         {
             string code =
-                @"class A{ a=1; }
+                @"
+import(""FFITarget.dll"");
 a; b; c; d1; e; f;
 [Imperative]{
                   
@@ -774,8 +758,8 @@ a; b; c; d1; e; f;
                         b = foo( 1); 
                         c = foo( ""1.5""); //char to var 
                         //a = foo( '1.5');// char to var 
-                         d = foo( A.A()); // user define to var 
-                        d1=d.a;
+                         d = foo( ClassFunctionality.ClassFunctionality(1)); // user define to var 
+                        d1=d.IntVal;
                         e = foo( false);//bool to var 
                         f = foo( null);//null to var 
                         }";
@@ -789,12 +773,13 @@ a; b; c; d1; e; f;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS031_eachType_To_int_Imperative()
         {
             string code =
-                @" class A{ a=1; }
+                @" 
+import(""FFITarget.dll"");
 a;b;c;d1;e;f;
 [Imperative]{
                  
@@ -807,8 +792,8 @@ a;b;c;d1;e;f;
                         b = foo( 1); 
                         c = foo( ""1.5""); // var to int 
                         //a = foo( '1.5');// var to int
-                         d = foo( A.A()); // user define to var 
-                        d1=d.a;
+                         d = foo( ClassFunctionality.ClassFunctionality(1)); // user define to var 
+                        d1=d.IntVal;
                         e = foo( false);// var to int 
                         f = foo( null);//null to int
                         }";
@@ -822,12 +807,13 @@ a;b;c;d1;e;f;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS031_eachtype_To_double_Imperative()
         {
             string code =
-                @" class A{ a=1; }
+                @" 
+import(""FFITarget.dll"");
 a;b;c;d1;e;f;
 [Imperative]{
                   
@@ -840,8 +826,8 @@ a;b;c;d1;e;f;
                         b = foo( 1); 
                         c = foo( ""1.5""); // var to int 
                         //a = foo( '1.5');// var to int
-                         d = foo( A.A()); // user define to var 
-                        d1=d.a;
+                         d = foo( ClassFunctionality.ClassFunctionality(1)); // user define to var 
+                        d1=d.IntVal;
                         e = foo( false);// var to int 
                         f = foo( null);//null to int
                         }";
@@ -855,12 +841,13 @@ a;b;c;d1;e;f;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS032_eachType_To_bool_Imperative()
         {
             string code =
-                @"class A{ a=1; }
+                @"
+import(""FFITarget.dll"");
 a;b;c;c1;d;e;e1;
 [Imperative]{
                     
@@ -869,7 +856,7 @@ a;b;c;c1;d;e;e1;
                         c:bool=""1.5""; //true
                         c1:bool= """"; //false
                         //d:bool='1.5';
-                        d:bool= A.A(); // user def to bool - > if not null true
+                        d:bool= ClassFunctionality.ClassFunctionality(1); // user def to bool - > if not null true
                        
                         e:bool= true;
                         e1:bool=null;
@@ -885,12 +872,13 @@ a;b;c;c1;d;e;e1;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS033_eachType_To_string_Imperative()
         {
             string code =
-                @"class A{ a=1; }
+                @"
+import(""FFITarget.dll"");
 a;b;c;d1;e;f;
                     [Imperative]{
                     
@@ -903,8 +891,8 @@ a;b;c;d1;e;f;
                           b = foo( 1); // int to  string
                           c = foo( ""1.5"");//char to string  
                           c1 = foo( '1');// char to string 
-                          d = foo( A.A()); // user define to string
-                          d1=d.a;
+                          d = foo( ClassFunctionality.ClassFunctionality(1)); // user define to string
+                          d1=d.IntVal;
                           e = foo( false);//bool to string
                           f = foo( null);//null to string
                     }";
@@ -919,12 +907,13 @@ a;b;c;d1;e;f;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS034_eachType_To_char_Imperative()
         {
             string code =
-                @"class A{ a=1; }
+                @"
+import(""FFITarget.dll"");
 a;b;c;d1;c1;e;f;
                     [Imperative]{
                      
@@ -937,8 +926,8 @@ a;b;c;d1;c1;e;f;
                           b = foo( 1); // int to  char
                           c = foo( ""1.5"");//char to char
                           c1 = foo( '1');// char to char  
-                          d = foo( A.A()); // user define to char
-                          d1=d.a;
+                          d = foo( ClassFunctionality.ClassFunctionality(1)); // user define to char
+                          d1=d.IntVal;
                           e = foo( false);//bool to char
                           f = foo( null);//null to char
                     }";
@@ -991,24 +980,17 @@ a;b;c;d1;c1;e;f;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS37_userdefinedTobool_1467240_Imperative()
         {
             string code =
-                @"class A
-                    {
-	                    a:int;
-	                    constructor A (b:int)
-	                    {
-		                    a=b;
-                        }
-                    }
+                @"
+import(""FFITarget.dll"");
 d;
                     [Imperative]{
                 
-                    //d:bool='1.5';
-                    d:bool=A.A(5); // user def to bool - > if not null true
+                    d:bool=ClassFunctionality.ClassFunctionality(5); // user def to bool - > if not null true
                     }";
             string error = "1467287 Sprint 26 - 3721 user defined to bool conversion does not happen in imperative ";
             thisTest.RunScriptSource(code, error);
@@ -1017,33 +999,25 @@ d;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS038_eachType_To_Userdefined_Imperative()
         {
             string code =
-                @"          class B{ b=1; }
-                            class A
-                            {
-	                            a:int;
-	                            constructor A (b:int)
-	                            {
-		                            a=b;
-                                }
-                            }
+                @"
+import(""FFITarget.dll"");
 a;b;c;d;e1;f;g;
                             [Imperative]{
                     
-                            a:A= 1;//
-                            b:A= -0.1; //
-                            c:A= ""1.5""; //false
-                            d:A=true;
-                            //d:bool='1.5';
-                            d:A= B.B(); // user def to bool - > if not null true
-                            e:A=A.A(1);
-                            e1=e.a;
-                            f:A= true;
-                            g:A=null;
+                            a:ClassFunctionality = 1;//
+                            b:ClassFunctionality = -0.1; //
+                            c:ClassFunctionality = ""1.5""; //false
+                            d:ClassFunctionality =true;
+                            d:ClassFunctionality = ClassFunctionalityMirror.ClassFunctionalityMirror(); // user def to bool - > if not null true
+                            e:ClassFunctionality = ClassFunctionality.ClassFunctionality(1);
+                            e1=e.IntVal;
+                            f:ClassFunctionality = true;
+                            g:ClassFunctionality = null;
                           }";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", null);
@@ -1056,7 +1030,7 @@ a;b;c;d;e1;f;g;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         public void TS039_userdefined_covariance_Imperative()
         {
@@ -1081,14 +1055,15 @@ a1;b1;b2;c;c1;c2;
                     [Imperative]{
                
                     
-                    a:A=A.A(1);
+              a:A=A.A(1);
                     a1=a.a;
                     b:A=B.B(2);
                     b1=b.b;
                     b2=b.a;
                     c:B=A.A(3);
                     c1=c.b;
-                    c2=c.a;}";
+                    c2=c.a;
+}";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a1", 1);
             thisTest.Verify("b1", 2);
@@ -1166,15 +1141,13 @@ a1;b1;b2;c;c1;c2;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS44_any_toNull_Imperative()
         {
             string code =
-                @"class test
-                    {
-                    
-                    }
+                @"
+import(""FFITarget.dll"");
 a;b;c;d;e;f;g;
                     [Imperative]{
                 
@@ -1182,7 +1155,7 @@ a;b;c;d;e;f;g;
                     b:int =  null; 
                     c:string=null; 
                     d:char = null;
-                    e:test = null;
+                    e:ClassFunctionality = null;
                     f:bool = null;
                     g = null;}"; //expected :true, received : null
             thisTest.RunScriptSource(code);
@@ -1211,15 +1184,13 @@ a;b;c;d;e;f;g;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS46_typedassignment_To_array_1467206_Imperative()
         {
             string code =
-                @" class test
-                    {
-                        x;
-                    }
+                @"
+import(""FFITarget.dll"");
 a;b;c;d;e1;f;g;
                     [Imperative]{
               
@@ -1228,11 +1199,11 @@ a;b;c;d;e1;f;g;
                     b:int[] =  {1,2,3}; 
                     c:string[]={""a"",""b"",""c""}; 
                     d:char []= {'c','d','e'};
-                    x1= test.test();
-                    y1= test.test();
-                    z1= test.test();
-                    e:test []= {x1,y1,z1};
-                    e1 = { e[0].x, e[1].x, e[2].x };
+                    x1= ClassFunctionality.ClassFunctionality();
+                    y1= ClassFunctionality.ClassFunctionality();
+                    z1= ClassFunctionality.ClassFunctionality();
+                    e:ClassFunctionality []= {x1,y1,z1};
+                    e1 = { e[0].IntVal, e[1].IntVal, e[2].IntVal };
                     f:bool []= {true,false,null};
                     g ={ null,null,null};
                 }";
@@ -1241,23 +1212,20 @@ a;b;c;d;e1;f;g;
             thisTest.Verify("b", new object[] { 1, 2, 3 });
             thisTest.Verify("c", new object[] { "a", "b", "c" });
             thisTest.Verify("d", new object[] { 'c', 'd', 'e' });
-            thisTest.Verify("e1", new object[] { null, null, null });
+            thisTest.Verify("e1", new object[] { 0, 0, 0 });
             thisTest.Verify("f", new object[] { true, false, null });
             thisTest.Verify("g", new object[] { null, null, null });
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS46_typedassignment_To_array_1467294_2()
         {
             string code =
                 @"
-               class test
-                    {
-                        x=1;
-                    }
+import(""FFITarget.dll"");
 a;b;c;d;e1;f;g;
                 [Imperative]
                 {
@@ -1265,9 +1233,9 @@ a;b;c;d;e1;f;g;
                     
                     b:int[] =  1.1;                     
                     d:char []= 'c';
-                    x1= test.test();
-                    e:test []= x1;
-                    e1=e.x;
+                    x1= ClassFunctionality.ClassFunctionality();
+                    e:ClassFunctionality []= x1;
+                    e1=e.IntVal;
                     f:bool []= true;
                     g []=null;
                 }";
@@ -1285,17 +1253,14 @@ a;b;c;d;e1;f;g;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS46_typedassignment_To_array_1467294_3()
         {
             string code =
                 @"
-               class test
-                    {
-                        x=1;
-                    }
+import(""FFITarget.dll"");
 a;b;c;d;e1;f;g;
                     [Imperative]
                     {
@@ -1304,9 +1269,9 @@ a;b;c;d;e1;f;g;
                     b:int[][] =  {1.1}; 
                     c:string[][]={""a""}; 
                     d:char [][]= {'c'};
-                    x1= test.test();
-                    e:test [][]= {x1};
-                    e1=e.x;
+                    x1= ClassFunctionality.ClassFunctionality();
+                    e:ClassFunctionality [][]= {x1};
+                    e1=e.IntVal;
                     f:bool [][]= {true};
                     g [][]={null};
                     }
@@ -1325,17 +1290,14 @@ a;b;c;d;e1;f;g;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS46_typedassignment_To_Vararray_1467294_4()
         {
             string code =
                 @"
-               class test
-                    {
-                        x=1;
-                    }
+import(""FFITarget.dll"");
 a;b;c;d;e1;f;g;
                     [Imperative]
                     {
@@ -1344,9 +1306,9 @@ a;b;c;d;e1;f;g;
                     b:var[][] =  1.1; 
                     c:var[][]=""a""; 
                     d:var[][]= 'c';
-                    x1= test.test();
+                    x1= ClassFunctionality.ClassFunctionality(1);
                     e:var[][]= x1;
-                    e1=e.x;
+                    e1=e.IntVal;
                     f:var[][]= true;
                     g :var[][]=null;
                     }";
@@ -1405,13 +1367,14 @@ a;b;c;d;e1;f;g;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS048_Param_eachType_To_varArray_Imperative()
         {
             string code =
-                @"class A{ a=1; }
+                @"
+import(""FFITarget.dll"");
 a;b;c;d1;e;f;
                     [Imperative]{
                   
@@ -1423,8 +1386,8 @@ a;b;c;d1;e;f;
                         a = foo( 1.5); 
                         b = foo( 1); 
                         c = foo( ""1.5""); //char to var 
-                         d = foo( A.A()); // user define to var
-                          d1={d[0].a};
+                         d = foo( ClassFunctionality.ClassFunctionality(1)); // user define to var
+                          d1={d[0].IntVal};
                         e = foo( false);//bool to var 
                         f = foo( null);//null to var 
                         }";
@@ -1441,13 +1404,14 @@ a;b;c;d1;e;f;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS049_Return_eachType_To_varArray_Imperative()
         {
             string code =
-                @"class A{ a=1; }
+                @"
+import(""FFITarget.dll"");
 a;b;c;d1;e;f;
                         [Imperative]{
                    
@@ -1458,8 +1422,8 @@ a;b;c;d1;e;f;
                         }
                         a = foo( 1.5); 
                         b = foo( 1); 
-                        d = foo( A.A()); // user define to var
-                         d1 =  {d[0].a };
+                        d = foo( ClassFunctionality.ClassFunctionality(1)); // user define to var
+                         d1 =  {d[0].IntVal };
                         e = foo( false); 
                         f = foo( null); 
                         }";
@@ -1474,14 +1438,15 @@ a;b;c;d1;e;f;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS050_Return_eachType_To_intArray_Imperative()
         {
             //  
             string code =
-                @" class A{ a=1; }
+                @"
+import(""FFITarget.dll"");
 a;a1;b;c;d1;e;f;
                     [Imperative]{
                  
@@ -1495,8 +1460,8 @@ a;a1;b;c;d1;e;f;
                         a1=foo(z);
                         b = foo( 1); 
                         c = foo( ""1.5""); 
-                        d = foo( A.A()); // user define to var
-                         d1 =  {d[0].a} ;
+                        d = foo( ClassFunctionality.ClassFunctionality(1)); // user define to var
+                         d1 =  {d[0].IntVal} ;
                         e = foo( false); 
                         f = foo( null); 
                         }";
@@ -1514,12 +1479,13 @@ a;a1;b;c;d1;e;f;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS051_Param_eachType_To_intArray_Imperative()
         {
             string code =
-                @"class A{ a=1; }
+                @"
+import(""FFITarget.dll"");
 a;a1;b;c;d1;e;f;
                     [Imperative]{
                  
@@ -1534,8 +1500,8 @@ a;a1;b;c;d1;e;f;
                         b = foo( 1); 
                         c = foo( ""1.5""); 
                         //a = foo( '1.5');
-                       d = foo( A.A()); // user define to var
-                         d1 = d[0].a ;
+                       d = foo( ClassFunctionality.ClassFunctionality(1)); // user define to var
+                         d1 = d[0].IntVal ;
                         e = foo( false); 
                         f = foo( null);
                         }";
@@ -1551,13 +1517,14 @@ a;a1;b;c;d1;e;f;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS052_Return_AllTypeTo_doubleArray_Imperative()
         {
             //  
             string code =
-                @"class A{ a=1; }
+                @"
+import(""FFITarget.dll"");
 a;a1;b;c;d1;e;f;
                 [Imperative]{
                   
@@ -1572,8 +1539,8 @@ a;a1;b;c;d1;e;f;
                         b = foo( 1); 
                         c = foo( ""1.5""); 
                         //a = foo( '1.5');
-                        d = foo( A.A()); // user define to var
-                         d1 =  d[0].a ;
+                        d = foo( ClassFunctionality.ClassFunctionality(1)); // user define to var
+                         d1 =  d[0].IntVal ;
                         e = foo( false); 
                         f = foo( null); 
                         }";
@@ -1589,13 +1556,14 @@ a;a1;b;c;d1;e;f;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS053_Param_AlltypeTo_doubleArray_Imperative()
         {
             //  
             string code =
-                @"class A{ a=1; }
+                @"
+import(""FFITarget.dll"");
 a;b;c;d1;e;f;
                 [Imperative]{
                   
@@ -1610,8 +1578,8 @@ a;b;c;d1;e;f;
                         b = foo( 1); 
                         c = foo( ""1.5"");  
                         //a = foo( '1.5');
-                        d = foo( A.A()); // user define to var
-                        d1=d.a;
+                        d = foo( ClassFunctionality.ClassFunctionality(1)); // user define to var
+                        d1=d.IntVal;
                         e = foo( false);
                         f = foo( null);
                         }";
@@ -1627,12 +1595,13 @@ a;b;c;d1;e;f;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS055_Param_AlltypeTo_BoolArray_Imperative()
         {
             string code =
-                @"class A{ a=1; }
+                @"
+import(""FFITarget.dll"");
 a;a1;b;c;d;e;e1;
                 [Imperative]{
                     
@@ -1647,7 +1616,7 @@ a;a1;b;c;d;e;e1;
                         b = foo({ 1, 0 });
                         c = foo({ ""1.5"" ,""""});
                         c1 = foo( {'1','0'});
-                        d = foo({ A.A(),A.A() });
+                        d = foo({ ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1) });
                         e = foo({ false,true });
                         f = foo({ null, null });}";
             string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
@@ -1663,12 +1632,13 @@ a;a1;b;c;d;e;e1;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS056_Return_AlltypeTo_BoolArray_Imperative()
         {
             string code =
-                @"class A{ a=1; }
+                @"
+import(""FFITarget.dll"");
 a;a1;b;c;d;e;f;g;
                 [Imperative]{
                    
@@ -1683,7 +1653,7 @@ a;a1;b;c;d;e;f;g;
                         b = foo({ 1, 0 });
                         c = foo({ ""1.5"" ,""""});
                         d = foo({ '1','0'});
-                        e = d = foo({ A.A(),A.A() });
+                        e = d = foo({ ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1) });
                         f = foo({ false,true });
                         g = foo({ null, null });
                                                   }";
@@ -1700,12 +1670,13 @@ a;a1;b;c;d;e;f;g;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS056_Return_BoolArray_1467258_Imperative()
         {
             string code =
-                @"class A{ a=1; }
+                @"
+import(""FFITarget.dll"");
 a;a1;b;c;d;e;
                 [Imperative]{
                    
@@ -1719,7 +1690,7 @@ a;a1;b;c;d;e;
                     b = foo({ 1, 0 });
                     c = foo({ ""1.5"" ,""""});
                     d = foo({ '1', '0' });
-                     e = d = foo({ A.A(),A.A() });
+                     e = d = foo({ ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1) });
                                                   }";
             string error = "1467258 - sprint 26 - Rev 3541 if the return type is bool array , type conversion does not happen for some cases  ";
             thisTest.RunScriptSource(code, error);
@@ -1732,25 +1703,22 @@ a;a1;b;c;d;e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
-        public void TS058_setter_Typeconversion_1467262_Imperative()
+        public void SetWrongTypeInFFIClass()
         {
             string code =
-                @"class A
-                    {
-                        id : int;
-                    }
-a;
-                    [Imperative]{
+                @"
+import(""FFITarget.dll"");
+                    d = [Imperative]{
                    
-                    a = A.A();
-                    a.id = false;
-                    c = a.id;
-                }";
-            string error = "1467262 - Sprint 26 - Rev 3543 , setter method does not do type conversion correctly";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code, error);
-            thisTest.VerifyProperty(mirror, "a", "id", null, 0);
+                    a = ClassFunctionality.ClassFunctionality();
+                    a.IntVal = true;
+                    return = a.IntVal;
+                }
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("d", 0);
         }
 
         [Test]
@@ -1926,12 +1894,13 @@ a;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS068_Param_singleton_AlltypeTo_BoolArray_Imperative()
         {
             string code =
-                @"class A{ a=1; }
+                @"
+import(""FFITarget.dll"");
 a;a1;b;c;d;e;e1;
                 [Imperative]{
                     
@@ -1946,7 +1915,7 @@ a;a1;b;c;d;e;e1;
                         b = foo( 1);
                         c = foo( ""1.5"" );
                         c1 = foo( '1');
-                        d = foo(A.A() );
+                        d = foo(ClassFunctionality.ClassFunctionality(1) );
                         e = foo( false );
                         f = foo( null );}";
             string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
@@ -1962,12 +1931,13 @@ a;a1;b;c;d;e;e1;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS069_Return_singleton_AlltypeTo_BoolArray_Imperative()
         {
             string code =
-                @"class A{ a=1; }
+                @"
+import(""FFITarget.dll"");
 a;a1;b;c;c1;d;e;e1;
                 [Imperative]{
                     
@@ -1982,7 +1952,7 @@ a;a1;b;c;c1;d;e;e1;
                         b = foo( 1);
                         c = foo( ""1.5"" );
                         c1 = foo( '1');
-                        d = foo(A.A() );
+                        d = foo(ClassFunctionality.ClassFunctionality(1) );
                         e = foo( false );
                         f = foo( null );}";
             string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
@@ -1998,12 +1968,13 @@ a;a1;b;c;c1;d;e;e1;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS070_Param_singleton_AlltypeTo_StringArray_Imperative()
         {
             string code =
-                @" class A{ a=1; }
+                @" 
+import(""FFITarget.dll"");
 a;a1;b;c;c1;d;e;e1;
                     [Imperative]{
                    
@@ -2018,7 +1989,7 @@ a;a1;b;c;c1;d;e;e1;
                         b = foo(1);
                         c = foo( ""1.5"" );
                         c1 = foo( '1');
-                        d = foo( A.A() );
+                        d = foo( ClassFunctionality.ClassFunctionality(1) );
                         e = foo(false);
                         f = foo( null );}";
             string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
@@ -2034,12 +2005,13 @@ a;a1;b;c;c1;d;e;e1;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS071_return_singleton_AlltypeTo_StringArray_Imperative()
         {
             string code =
-                @"class A{ a=1; }
+                @"
+import(""FFITarget.dll"");
 a;a1;b;c;c1;d;e;f;
                 [Imperative]{
                     
@@ -2054,7 +2026,7 @@ a;a1;b;c;c1;d;e;f;
                         b = foo(1);
                         c = foo( ""1.5"" );
                         c1 = foo( '1');
-                        d = foo( A.A() );
+                        d = foo( ClassFunctionality.ClassFunctionality(1) );
                         e = foo(false);
                         f = foo( null );}";
             string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
@@ -2070,12 +2042,13 @@ a;a1;b;c;c1;d;e;f;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS072_Param_singleton_AlltypeTo_CharArray_Imperative()
         {
             string code =
-                @" class A{ a=1; }
+                @" 
+import(""FFITarget.dll"");
 a;a1;b;c;c1;d;e;f;
                    [Imperative]{
                    
@@ -2090,7 +2063,7 @@ a;a1;b;c;c1;d;e;f;
                         b = foo(1);
                         c = foo( ""1.5"" );
                         c1 = foo( '1');
-                        d = foo( A.A() );
+                        d = foo( ClassFunctionality.ClassFunctionality(1) );
                         e = foo(false);
                         f = foo( null );}";
             string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
@@ -2106,12 +2079,13 @@ a;a1;b;c;c1;d;e;f;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS073_return_singleton_AlltypeTo_CharArray_Imperative()
         {
             string code =
-                @"class A{ a=1; }
+                @"
+import(""FFITarget.dll"");
 a;a1;b;c;c1;d;e;f;
                     [Imperative]{
                     
@@ -2126,7 +2100,7 @@ a;a1;b;c;c1;d;e;f;
                         b = foo(1);
                         c = foo( ""1.5"" );
                         c1 = foo( '1');
-                        d = foo( A.A() );
+                        d = foo( ClassFunctionality.ClassFunctionality(1) );
                         e = foo(false);
                         f = foo( null );}";
             string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
@@ -2142,19 +2116,19 @@ a;a1;b;c;c1;d;e;f;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS074_Param_singleton_AlltypeTo_UserDefinedArray_Imperative()
         {
             string code =
-                @"      class A{ a=1; }
-                        class B{ b = 2.0; }
+                @"      
+import(""FFITarget.dll"");
 a;a1;b;c;c1;d1;e;f;g;
                     [Imperative]{
                     
                         
-                        def foo ( x:B[])
+                        def foo ( x:ClassFunctionalityMirror[])
                         {
 	                        b1= x ;
 	                        return =b1;
@@ -2165,11 +2139,12 @@ a;a1;b;c;c1;d1;e;f;g;
                         b = foo(1);
                         c = foo( ""1.5"" );
                         c1 = foo( '1');
-                        d = foo( B.B() );
+                        d = foo( ClassFunctionalityMirror.ClassFunctionalityMirror(2.0) );
                         d1 = d.b;
-                        e = foo( A.A() );
+                        e = foo( ClassFunctionality.ClassFunctionality(1) );
                         f = foo(false);
-                        g = foo( null );}";
+                        g = foo( null );
+}";
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3971
             string error = "MAGN-3971: Type conversion from var to var array promotion is not happening ";
             thisTest.RunScriptSource(code, error);
@@ -2185,18 +2160,18 @@ a;a1;b;c;c1;d1;e;f;g;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS075_return_singleton_AlltypeTo_UserDefinedArray_Imperative()
         {
             string code =
-                @"class B{ b = 2.0; }
-                        class A{ a=1; }
+                @"
+import(""FFITarget.dll"");
 a;a1;b;c;c1;d1;e;f;g;
                     [Imperative]{
                         
-                        def foo :B[]( x)
+                        def foo :ClassFunctionalityMirror[]( x)
                         {
 	                        b1 = x ;
 	                        return =b1;
@@ -2207,9 +2182,9 @@ a;a1;b;c;c1;d1;e;f;g;
                         b  = foo(1);
                         c = foo( ""1.5"" );
                         c1 = foo('1');
-                        d  = foo(B.B());
+                        d  = foo(ClassFunctionalityMirror.ClassFunctionalityMirror(2.0));
                         d1 = d.b;
-                        e  = foo(A.A());
+                        e  = foo(ClassFunctionality.ClassFunctionality(1));
                         f  = foo(false);
                         g  = foo(null);
                     }
@@ -2252,12 +2227,12 @@ a;a1;b;c;c1;d1;e;f;g;
                      }
                      [Imperative]{
                    
-                     a:A[]=A.A(1);
+                     a:ClassFunctionality[]=ClassFunctionality.ClassFunctionality(1);
                      a1=a.a;
-                     b:A[]=B.B(2);
+                     b:ClassFunctionality[]=B.B(2);
                      b1=b.b;
                      b2=b.a;
-                     c:B[]=A.A(3);
+                     c:B[]=ClassFunctionality.ClassFunctionality(3);
                      c1=c.b;
                      c2=c.a;
                      }";
@@ -2272,25 +2247,19 @@ a;a1;b;c;c1;d1;e;f;g;
          }*/
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS078_userdefinedToUserdefinedArray_Imperative()
         {
             string code =
-                @"class A
-                    {
-                                a:int;
-                                constructor A (b:int)
-                                {
-                                        a=b;
-                            }
-                    }
+                @"
+import(""FFITarget.dll"");
 a1;
                 [Imperative]
                 {
-                        a : A[] =  A.A(1) ;
-                        a1 = a.a;
+                        a : ClassFunctionality[] =  ClassFunctionality.ClassFunctionality(1) ;
+                        a1 = a.IntVal;
                 }";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3943
             thisTest.RunScriptSource(code);
@@ -2399,7 +2368,7 @@ d;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("Type System")]
         public void TS0189_TypeConversion_class_member_1467599()
         {
@@ -2575,7 +2544,7 @@ myRangeExpressionResult ;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("Type System")]
         public void TS0195_TypeConversion_nested_block_1467568()
         {
@@ -2612,7 +2581,7 @@ t2 = a.x;";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("Type System")]
         public void TS0196_TypeConversion_nested_block_1467568()
         {
