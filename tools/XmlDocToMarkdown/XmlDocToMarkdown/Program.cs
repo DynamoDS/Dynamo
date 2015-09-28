@@ -10,9 +10,6 @@ using System.Xml.Linq;
 using System.Reflection;
 using System.Text;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Runtime.Remoting.Messaging;
 using XmlDocToMarkdown;
 
 // modified from : https://gist.github.com/lontivero/593fc51f1208555112e0
@@ -212,11 +209,27 @@ namespace Dynamo.Docs
            var sb = new StringBuilder();
 
             sb.AppendLine("#" + typeName);
-            sb.Append(GetMarkdownForType(members, t.FullName));
-            sb.AppendLine("---");
-
+            if (t.IsGenericType)
+            {
+                var genericParam = t.GetGenericArguments();
+                var genericParamName = string.Join(",", genericParam.Select(ty => ty.Name));
+                var methodName = typeName + "<*" + genericParamName + "*>";
+                var len = t.FullName.Split('.');
+                methodName = string.Join(".", len.Take(len.Length - 1)) + "." + methodName;
+                sb.Append(GetMarkdownForType(members, methodName));
+                sb.AppendLine("---");
+            }
+            else
+            {
+                sb.Append(GetMarkdownForType(members, t.FullName));
+                sb.AppendLine("---");
+            }
+           
             sb.AppendLine("##Constructors ");
-
+            if (!t.GetConstructors().Any())
+            {
+                sb.AppendLine("####No public constructors defined");
+            }
             foreach (var method in t.GetConstructors(BindingFlags.FlattenHierarchy |
                 BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static))
             {
@@ -229,16 +242,21 @@ namespace Dynamo.Docs
 
                 var current = GetMarkdownForMethod(members, t.FullName + fullMethodName);
                 sb.Append(current);
+                sb.AppendLine();
             }            
             
             sb.AppendLine("---");
 
             sb.AppendLine("##Methods  ");
+            if (!t.GetMethods().Any())
+            {
+                sb.AppendLine("####No public methods defined");
+            }
             foreach (var method in t.GetMethods().Where(m => m.IsPublic))
             {
                 var methodParams = method.GetParameters();
                 var methodName = method.Name;
-                XmlToMarkdown.returnType = method.ReturnType.Name;                
+                XmlToMarkdown.ReturnType = method.ReturnType.Name;                
                 //If the method is List<T,T>
                 if (method.IsGenericMethod)
                 {
@@ -256,26 +274,39 @@ namespace Dynamo.Docs
 
                 var current = GetMarkdownForMethod(members, t.FullName + "." + fullMethodName);
                 sb.Append(current);
+                sb.AppendLine();
             }
             sb.AppendLine("---");
 
             sb.AppendLine("##Properties  ");
+
+            if (!t.GetProperties().Any())
+            {
+                sb.AppendLine("####No public properties defined");
+            }
+
             foreach (var property in t.GetProperties())
             {                
-                XmlToMarkdown.returnType  = property.PropertyType.Name;
+                XmlToMarkdown.ReturnType  = property.PropertyType.Name;
                 var propertyNameSpace = ConvertGenericParameterName(t.FullName);
-                var current = GetMarkdownForProperty(members, propertyNameSpace + "." + property.Name);               
+                var current = GetMarkdownForProperty(members, propertyNameSpace + "." + property.Name);                
                 sb.Append(current);
+                sb.AppendLine();
             }
             sb.AppendLine("---");
 
             sb.AppendLine("##Events  ");
+            if (!t.GetEvents().Any())
+            {
+                sb.AppendLine("No public events defined");
+            }
             foreach (var e in t.GetEvents())
             {
-                XmlToMarkdown.returnType = string.Empty;
+                XmlToMarkdown.ReturnType = string.Empty;
                 var eventNameSpace = ConvertGenericParameterName(t.FullName);                
                 var current = GetMarkdownForEvent(members, eventNameSpace + "." + e.Name);                
                 sb.Append(current);
+                sb.AppendLine();
             }
             sb.AppendLine("---");
 
@@ -336,7 +367,8 @@ namespace Dynamo.Docs
 
         private static string GetMarkdownForType(IEnumerable<XElement> members, string typeName)
         {
-            return GetMarkdownForMember(members, string.Format("T:{0}", typeName));
+            var str = GetMarkdownForMember(members, string.Format("T:{0}", typeName));
+            return str.Replace("|", "");
         }
 
         private static string GetMarkdownForProperty(IEnumerable<XElement> members, string propertyName)
@@ -372,27 +404,39 @@ namespace Dynamo.Docs
         internal static string ApiStabilityStub = "stability=";
         internal static string ApiStabilityTemplate = "<sup>" + "{0}" + "</sup>";
         internal static string returnType;
+        internal static string ReturnType
+        {
+            get
+            {
+                return returnType;
+            }
+            set
+            {
+                if (value == "Void")
+                    returnType = "void";
+            }
+        }
 
         private static Dictionary<string, string> templates =
             new Dictionary<string, string>
                 {
                     {"doc", "## {0} ##\n\n{1}\n\n"},
-                    {"type", "# {0}\n\n"},
-                    {"field", "##### {0}\n\n{1}\n"},
-                    {"property", "##### {0}\n\n{1}\n"},
-                    {"method", "##### {0}\n\n{1}\n"},
-                    {"event", "##### {0}\n\n{1}\n"},
-                    {"summary", "{0}\n\n"},
-                    {"remarks", "\n\n{0}\n\n"},
-                    {"example", "_C# code_\n\n```c#\n{0}\n```\n\n"},
+                    {"type", "{0}\n"},
+                    {"field", "{0}\n\n{1}\n"},
+                    {"property", "| {0}  \n| ------------- | :--------------- | -------------:\n{1}\n"},
+                    {"method", "| {0} | | stability index: \n| ------------- | :--------------- | -------------: \n{1}"},
+                    {"event", "| {0}  \n| ------------- | :--------------- | -------------:\n{1}\n"},
+                    {"summary", "| {0}\n"},
+                    {"remarks", "| **Remarks:** | {0}\n"},
+                    {"example", "| **Example:** | _C# code_\n\n```c#\n{0}\n```\n"},
                     {"seePage", "[[{1}|{0}]]"},
                     {"seeAnchor", "[{1}]({0})"},
-                    {"param", "|Name | Description |\n|-----||\n|{0} |{1}|\n" },
-                    {"exception", "[[{0}|{0}]]: {1}\n\n" },
-                    {"returns", "\n\n Returns {0}\n\n"},
+                    {"param", "| **{0}:** | {1}\n" },
+                    {"exception", "| **[[{0}|{0}]]:** | {1}\n" },
+                    {"returns", "| **Return Value:** {0}\n"},
                     {"none", ""},
-                    {"typeparam", "|Name | Description |\n|-----||\n|{0} |{1}|\n"},
-                    {"c", "`{0}`"},                   
+                    {"typeparam", "| **{0}:** | {1}\n" },
+                    {"c", "| `{0}`\n"},                   
                     {ApiStabilityTag, ApiStabilityTemplate}
                 };
 
@@ -400,13 +444,13 @@ namespace Dynamo.Docs
             new Func<string, XElement, string[]>((att, node) => new[]
                 {
                     node.Attribute(att).Value, 
-                    node.Nodes().ToMarkDown()
+                    node.Nodes().NodeMarkDown()
                 });
 
         private static Func<string, XElement, string[]> tType =
             new Func<string, XElement, string[]>((att, node) => new[]
                 {
-                    node.Nodes().ToMarkDown()                  
+                    node.Nodes().NodeMarkDown()                  
                 });
         private static Func<string, string, XElement,string[]> dType =
             new Func<string, string, XElement, string[]>((att1,att2,node) =>            
@@ -414,27 +458,27 @@ namespace Dynamo.Docs
             {
                 var methodName = node.Attribute(att1).Value.Split('.').Last();                
                 var convertedMethodName = ConvertGenericParameters(node, methodName, att2);
-                convertedMethodName = string.Join(" ", returnType, convertedMethodName);
+                convertedMethodName = string.Join(" ", ReturnType, convertedMethodName);
                 return new[]
                 {
                     convertedMethodName,
-                    node.Nodes().ToMarkDown()
+                    node.Nodes().NodeMarkDown()
                 };
             });         
 
-        private static Func<string, string, XElement, string[]> mType =
-            new Func<string, string,  XElement, string[]>((att1, att2,node) =>
+        private static Func<string, string, XElement, object[]> mType =
+            (att1, att2, node) =>
             {              
                 var methodName = node.Attribute(att1).Value.Split(':').Last();
                 var convertedMethodName = ConvertGenericParameters(node, methodName, att2);
-                convertedMethodName = string.Join(" ", returnType, convertedMethodName);
-               
-                return new[]
+                convertedMethodName = string.Join(" ", ReturnType, convertedMethodName);
+                               
+                return new object[]
                 {                   
-                   convertedMethodName,
-                    node.Nodes().ToMarkDown(),
+                    convertedMethodName,
+                    node.Nodes().NodeMarkDown(),
                 };
-            });
+            };
 
 
         private static string CheckAndAppendStability(XElement node, string methodName)
@@ -443,11 +487,11 @@ namespace Dynamo.Docs
             {
                 methodName = node.Elements("api_stability").Select(stabilityTag => stabilityTag.Value)
                     .Aggregate(methodName, (current, value) =>
-                        current + string.Format(" " + XmlToMarkdown.ApiStabilityTemplate + "\n", value));
+                        current + string.Format(" " + XmlToMarkdown.ApiStabilityTemplate , value));
             }
             else
             {
-                methodName = methodName + string.Format(" " + XmlToMarkdown.ApiStabilityTemplate + "\n", 1);
+                methodName = methodName + string.Format(" " + XmlToMarkdown.ApiStabilityTemplate , 1);
             }
 
             return methodName;
@@ -507,16 +551,19 @@ namespace Dynamo.Docs
             }
             else
             {
-                methodName = methodName.Split('.').Last();
-                methodName = methodName + "( )";                      
+                if (methodName.Contains("."))
+                {
+                    methodName = methodName.Split('.').Last();
+                    methodName = methodName + "( )";
+                }
                 methodName = CheckAndAppendStability(node, methodName);
             }
 
             return methodName;
         }
 
-        private static Dictionary<string, Func<XElement, IEnumerable<string>>> methods =
-            new Dictionary<string, Func<XElement, IEnumerable<string>>>
+        private static Dictionary<string, Func<XElement, IEnumerable<object>>> methods =
+            new Dictionary<string, Func<XElement, IEnumerable<object>>>
                 {
                     {"doc", x=> new[]{
                         x.Element("assembly").Element("name").Value,
@@ -527,14 +574,14 @@ namespace Dynamo.Docs
                     {"property", x=> dType("name","param", x)},
                     {"method",x=>mType("name", "param", x)},
                     {"event", x=>dType("name", "param",  x)},
-                    {"summary", x=> new[]{ x.Nodes().ToMarkDown() }},
-                    {"remarks", x => new[]{x.Nodes().ToMarkDown()}},
+                    {"summary", x=> new[]{ x.Nodes().NodeMarkDown() }},
+                    {"remarks", x => new[]{x.Nodes().NodeMarkDown()}},
                     {"example", x => new[]{x.Value.ToCodeBlock()}},
                     {"seePage", x=> d("cref", x) },
                     {"seeAnchor", x=> { var xx = d("cref", x); xx[0] = xx[0].ToLower(); return xx; }},
                     {"param", x => d("name", x) },
                     {"exception", x => d("cref", x) },
-                    {"returns", x => new[]{x.Nodes().ToMarkDown()}},
+                    {"returns", x => new[]{x.Nodes().NodeMarkDown()}},
                     {"none", x => new string[0]},
                     {"typeparam", x => d("name", x)},
                     {"paramref", x => new string[0]},
@@ -598,6 +645,16 @@ namespace Dynamo.Docs
         }
 
         internal static string ToMarkDown(this IEnumerable<XNode> es)
+        {
+            return es.Aggregate("", (current, x) => current + x.ToMarkDown());
+        }
+
+        internal static string ToTableMarkDown(this IEnumerable<XNode> es)
+        {
+            return es.Aggregate("", (current, x) => current + x.ToMarkDown());
+        }
+       
+        internal static string NodeMarkDown(this IEnumerable<XNode> es)
         {
             return es.Aggregate("", (current, x) => current + x.ToMarkDown());
         }
