@@ -250,6 +250,7 @@
     <Compile Include="ViewModels\Search\SelectionNavigator.cs" />
     <Compile Include="ViewModels\RenderPackageFactoryViewModel.cs" />
     <Compile Include="ViewModels\Watch3D\HelixWatch3DViewModel.cs" />
+    <Compile Include="ViewModels\Watch3D\IWatch3DViewModel.cs" />
     <Compile Include="ViewModels\Watch3D\Watch3DViewModelBase.cs" />
     <Compile Include="Views\About\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>

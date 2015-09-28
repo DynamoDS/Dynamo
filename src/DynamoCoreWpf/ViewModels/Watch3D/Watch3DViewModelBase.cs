@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
@@ -12,6 +13,7 @@ using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.ViewModels;
+using HelixToolkit.Wpf.SharpDX;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -393,6 +395,36 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             IEnumerable<IRenderPackage> taskPackages)
         {
             // Override in derived classes
+        }
+
+        internal event Func<MouseEventArgs, Ray3D> RequestClickRay;
+        public Ray3D GetClickRay(MouseEventArgs args)
+        {
+            if (RequestClickRay != null)
+                return RequestClickRay(args);
+
+            return null;
+        }
+
+        public event Action<object, MouseButtonEventArgs> ViewMouseDown;
+        internal void OnViewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (ViewMouseDown != null)
+                ViewMouseDown(sender, e);
+        }
+
+        public event Action<object, MouseButtonEventArgs> ViewMouseUp;
+        internal void OnViewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (ViewMouseUp != null)
+                ViewMouseUp(sender, e);
+        }
+
+        public event Action<object, MouseEventArgs> ViewMouseMove;
+        internal void OnViewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (ViewMouseMove != null)
+                ViewMouseMove(sender, e);
         }
 
         protected virtual void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)

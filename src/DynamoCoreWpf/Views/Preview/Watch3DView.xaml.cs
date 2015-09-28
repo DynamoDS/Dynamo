@@ -95,6 +95,24 @@ namespace Dynamo.Controls
             PreviewMouseRightButtonDown += view_PreviewMouseRightButtonDown;
         }
 
+        private void RegisterViewEventHandlers()
+        {
+            watch_view.MouseDown += (sender, args) =>
+            {
+                ViewModel.OnViewMouseDown(sender, args);
+            };
+
+            watch_view.MouseUp += (sender, args) =>
+            {
+                ViewModel.OnViewMouseUp(sender, args);
+            };
+
+            watch_view.MouseMove += (sender, args) =>
+            {
+                ViewModel.OnViewMouseMove(sender, args);
+            };
+        }
+
         private void UnregisterButtonHandlers()
         {
             MouseLeftButtonDown -= MouseButtonIgnoreHandler;
@@ -125,9 +143,12 @@ namespace Dynamo.Controls
                 return;
             }
 
+            RegisterViewEventHandlers();
+
             ViewModel.RequestAttachToScene += ViewModelRequestAttachToSceneHandler;
             ViewModel.RequestCreateModels += RequestCreateModelsHandler;
             ViewModel.RequestViewRefresh += RequestViewRefreshHandler;
+            ViewModel.RequestClickRay += GetClickRay;
         }
 
         void RequestViewRefreshHandler()
