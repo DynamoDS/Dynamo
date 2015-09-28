@@ -395,30 +395,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-
-        //private Boolean showBusyIndicator;
-        //public Boolean ShowBusyIndicator
-        //{
-        //    get { return showBusyIndicator; }
-        //    set
-        //    {
-        //        showBusyIndicator = value;
-        //        RaisePropertyChanged("ShowBusyIndicator");               
-        //    }
-        //}
-
-        //private string showRunMessage;
-
-        //public string ShowRunMessage
-        //{
-        //    get { return showRunMessage; }
-        //    set
-        //    {
-        //        showRunMessage = value;
-        //        RaisePropertyChanged("ShowRunMessage");
-        //    }
-        //}
-      
         public bool BackgroundPreviewActive
         {
             get 

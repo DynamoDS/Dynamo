@@ -3993,9 +3993,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-<<<<<<< HEAD
-        ///   Looks up a localized string similar to Run completed.
-=======
         ///   Looks up a localized string similar to Query.
         /// </summary>
         public static string QueryMember {
@@ -4005,7 +4002,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run completed.. 
+        ///   Looks up a localized string similar to Run completed.
         /// </summary>
         public static string RunCompleted {
             get {

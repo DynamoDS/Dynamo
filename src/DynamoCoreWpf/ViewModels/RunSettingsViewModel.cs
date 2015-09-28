@@ -237,12 +237,10 @@ namespace Dynamo.Wpf.ViewModels
         {
             get
             {
-                return showRunMessage;
-                //dynamoViewModel.ShowRunMessage;
+                return showRunMessage;               
             }
             set
-            {
-                //dynamoViewModel.ShowRunMessage = value;
+            {              
                 showRunMessage = value;
                 RaisePropertyChanged("ShowRunMessage");
             }
@@ -259,8 +257,6 @@ namespace Dynamo.Wpf.ViewModels
 
             this.workspaceViewModel = workspaceViewModel;
             this.dynamoViewModel = dynamoViewModel;
-
-            //this.dynamoViewModel.PropertyChanged +=dynamoViewModel_PropertyChanged;
 
             CancelRunCommand = new DelegateCommand(CancelRun, CanCancelRun);
             RunExpressionCommand = new DelegateCommand(RunExpression, CanRunExpression);

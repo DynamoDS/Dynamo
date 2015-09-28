@@ -1888,7 +1888,6 @@ Do you want to install the latest Dynamo update?</value>
     <value>Move the selected path upward</value>
     <comment>Tool-tip for up arrow</comment>
   </data>
->>>>>>> e5327fdf2e677efe295052526068eab37b44a4c6
   <data name="NodeContextMenuIsInput" xml:space="preserve">
     <value>Is Input</value>
   </data>
