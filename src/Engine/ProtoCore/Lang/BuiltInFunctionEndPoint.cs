@@ -1286,12 +1286,13 @@ namespace ProtoCore.Lang
             var amount = Convert.ToInt32(svEnd.RawIntValue);
             var step = Convert.ToInt32(svStep.RawIntValue);
 
-            // Start and end values can be just alphabet letters. So their length can't be more than 1.
+            // Start value can be just alphabet letter. So its length can't be more than 1.
+            // End value must be int. (we checked it before)
             if (startValue.Length != 1)
             {
                 runtimeCore.RuntimeStatus.LogWarning(
                     WarningID.kInvalidArguments,
-                    Resources.kInvalidArgumentsInRangeExpression);
+                    Resources.kInvalidStringArgumentInRangeExpression);
                 return null;
             }
 
@@ -1303,38 +1304,30 @@ namespace ProtoCore.Lang
                 return null;
             }
 
-            if (step <= 0)
-            {
-                runtimeCore.RuntimeStatus.LogWarning(
-                   WarningID.kInvalidArguments,
-                   Resources.kRangeExpressionWithNegativeStepNumber);
-                return null;
-            }
-
             var startLetter = startValue.ToCharArray().First();
 
-            // Alphabet sequence can be made just from letters (that are not unicode).
-            if (!Char.IsLetter(startLetter) || startLetter > 255)
+            // Alphabet sequence can be made just from letters,
+            // that are not unicode, i.e. their code is less than 255.
+            if (!Char.IsLetter(startLetter) || startLetter > Byte.MaxValue)
             {
                 runtimeCore.RuntimeStatus.LogWarning(
                     WarningID.kInvalidArguments,
-                    Resources.kInvalidArgumentsInRangeExpression);
+                    Resources.kInvalidUnicodeArgumentInRangeExpression);
                 return null;
             }
 
-            StackValue[] letters;
+            List<StackValue> letters = new List<StackValue>();
+            for (int i = 0; i < amount; i++)
+            {
+                if (Char.IsLetter(startLetter))
+                {
+                    letters.Add(StackValue.BuildString(Char.ToString(startLetter), runtimeCore.Heap));
+                }
 
-            letters = Enumerable.Range(1, amount)
-                // Generate arithmetic progression.
-                 .Select(x => startLetter + (x - 1) * step)
-                // Take just letters.
-                 .Where(x => Char.IsLetter((char)x))
-                // Create stack values.
-                 .Select(x => StackValue.BuildString(Char.ToString((char)x), runtimeCore.Heap))
-                 .ToArray();
+                startLetter = (char)(startLetter + step);
+            }
 
-
-            return letters;
+            return letters.ToArray();
         }
     }
     internal class ArrayUtilsForBuiltIns

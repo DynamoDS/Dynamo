@@ -1969,13 +1969,15 @@ b = 0..10..a;
         [Category("SmokeTest")]
         public void AlphabetSequence()
         {
-            string src = @"a1;a2;a3;a4;
+            string src = @"a1;a2;a3;a4;a5;a6;
 [Imperative]
 {
 	a1 = ""a""..#3..2;
     a2 = ""A""..#3..2;
     a3 = ""I""..#4..1;
     a4 = ""z""..#5..1;
+    a5 = ""A""..#3..-1;
+    a6 = ""z""..#3..-1;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { "a", "c", "e" };
@@ -1989,28 +1991,32 @@ b = 0..10..a;
 
             result = new List<Object> { "z" };
             Assert.IsTrue(mirror.CompareArrays("a4", result, typeof(String)));
+
+            result = new List<Object> { "A" };
+            Assert.IsTrue(mirror.CompareArrays("a5", result, typeof(String)));
+
+            result = new List<Object> { "z", "y", "x" };
+            Assert.IsTrue(mirror.CompareArrays("a6", result, typeof(String)));
         }
 
         [Test]
         [Category("SmokeTest")]
         public void AlphabetSequenceNegativeTestCases()
         {
-            string src = @"a1;a2;a3;a4;
+            string src = @"a1;a2;a3;
 [Imperative]
 {
-	a1 = ""л""..#3..2;
-    a2 = ""A""..#3..-1;
-    a3 = ""I""..#-5..1;
-    a4 = ""z""..#0..1;
+	a1 = ""л""..#3..2;    
+    a2 = ""I""..#-5..1;
+    a3 = ""z""..#0..1;
 }";
             thisTest.RunScriptSource(src);
 
             thisTest.Verify("a1", null);
             thisTest.Verify("a2", null);
-            thisTest.Verify("a3", null);
-            thisTest.Verify("a4", new List<Object>());
+            thisTest.Verify("a3", new List<Object>());
 
-            thisTest.VerifyRuntimeWarningCount(3);
+            thisTest.VerifyRuntimeWarningCount(2);
         }
     }
 }
