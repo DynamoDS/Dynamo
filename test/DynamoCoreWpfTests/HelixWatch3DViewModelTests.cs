@@ -110,7 +110,7 @@ namespace DynamoCoreWpfTests
             Assert.NotNull(watch3D);
 
             var view = FindFirstWatch3DNodeView();
-            var vm = view.viewModel as HelixWatch3DNodeViewModel;
+            var vm = view.ViewModel as HelixWatch3DNodeViewModel;
             Assert.NotNull(vm);
 
             //flip off the line node's preview upstream
