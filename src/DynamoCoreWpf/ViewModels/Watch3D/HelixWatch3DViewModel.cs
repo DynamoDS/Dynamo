@@ -613,7 +613,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             OnRequestViewRefresh();
         }
 
-        protected override void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
+        internal override void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
         {
             lock (Model3DDictionaryMutex)
             {
@@ -626,10 +626,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                 foreach (var kvp in geometryModels)
                 {
-                    var model = Model3DDictionary[kvp.Key] as GeometryModel3D;
-                    if (model != null)
+                    var model3D = Model3DDictionary[kvp.Key] as GeometryModel3D;
+                    if (model3D != null)
                     {
-                        model.Detach();
+                        model3D.Detach();
                     }
                     Model3DDictionary.Remove(kvp.Key);
                 }
@@ -649,7 +649,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     OnClear();
                     foreach (var node in model.CurrentWorkspace.Nodes)
                     {
-                        node.IsUpdated = true;
                         node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
                     }
                     break;

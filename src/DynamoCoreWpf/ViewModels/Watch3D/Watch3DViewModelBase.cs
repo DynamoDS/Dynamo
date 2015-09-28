@@ -333,7 +333,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             DeleteGeometryForIdentifier(node.AstIdentifierBase);
         }
 
-        protected virtual void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
+        internal virtual void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
         {
             // Override in derived classes.
         }

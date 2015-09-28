@@ -97,6 +97,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Action.
+        /// </summary>
+        public static string ActionMember {
+            get {
+                return ResourceManager.GetString("ActionMember", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add.
         /// </summary>
         public static string AddButton {
@@ -599,6 +608,15 @@ namespace Dynamo.Wpf.Properties {
         public static string CrashPromptDialogTitle {
             get {
                 return ResourceManager.GetString("CrashPromptDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create.
+        /// </summary>
+        public static string CreateMember {
+            get {
+                return ResourceManager.GetString("CreateMember", resourceCulture);
             }
         }
         
@@ -3975,7 +3993,19 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+<<<<<<< HEAD
         ///   Looks up a localized string similar to Run completed.
+=======
+        ///   Looks up a localized string similar to Query.
+        /// </summary>
+        public static string QueryMember {
+            get {
+                return ResourceManager.GetString("QueryMember", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run completed.. 
         /// </summary>
         public static string RunCompleted {
             get {

@@ -1,0 +1,17 @@
+<Project
+    xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
+    ToolsVersion="4.0"
+    DefaultTargets="Build">
+	
+	
+<ItemGroup>
+    <ProjectToBuild Include="Dynamo.All.2013.sln" >
+        <Properties>Configuration=Release;Platform=Any CPU</Properties>
+    </ProjectToBuild>
+</ItemGroup>
+
+<Target Name="Build">
+    <MSBuild Projects="@(ProjectToBuild)"/>
+</Target>
+
+</Project>

@@ -156,8 +156,7 @@
     <controls:TreeViewLineMarginConverter x:Key="TreeViewLineMarginConverter" />
     <controls:TreeViewHLineMarginConverter x:Key="TreeViewHLineMarginConverter" />
     <controls:TreeViewVLineMarginConverter x:Key="TreeViewVLineMarginConverter" />
-    <controls:TreeViewMarginCheck x:Key="TreeViewMarginCheck"/>
-    <controls:TreeViewListBoxTitleConverter x:Key="TreeViewListBoxTitleConverter"/>
-    <controls:NestedContentMarginConverter x:Key="NestedContentMarginConverter"/>
-
+    <controls:TreeViewMarginCheck x:Key="TreeViewMarginCheck"/>   
+    <controls:NestedContentMarginConverter x:Key="NestedContentMarginConverter"/> 
+    <controls:ClassViewMarginConverter x:Key ="ClassViewMarginConverter"/> 
 </ResourceDictionary>
