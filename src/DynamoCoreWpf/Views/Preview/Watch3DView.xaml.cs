@@ -23,6 +23,7 @@ using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.ViewModels;
+using Dynamo.Wpf;
 using Dynamo.Wpf.Rendering;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Watch3D;
