@@ -187,10 +187,15 @@
       <Name>DynamoConversions</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Libraries\IronPython\IronPythonUI.csproj">
+    <ProjectReference Include="..\..\src\Libraries\PythonNodeModelsWpf\PythonNodeModelsWpf.csproj">
       <Project>{01de9b06-0bcb-4d8a-862e-e8170f5d6b4f}</Project>
-      <Name>IronPythonUI</Name>
+      <Name>PythonNodeModelsWpf</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\PythonNodeModels\PythonNodeModels.csproj">
+      <Project>{8872ca17-c10d-43b9-8393-5c5a57065eb0}</Project>
+      <Name>PythonNodeModels</Name>
+	  <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\UnitsUI\UnitsUI.csproj">
       <Project>{c67a7e80-73e6-4bbf-9d3f-dcd86ce306be}</Project>

@@ -352,7 +352,7 @@ namespace Dynamo.Tests
             using (var sr = new StreamReader(pathNode.Value))
             {
                 String line = sr.ReadToEnd();
-                StringAssert.AreEqualIgnoringCase("1, 2, 3, 4, 5\r\n-2, 2.6, 9\r\n0\r\n", line);
+                StringAssert.AreEqualIgnoringCase("1,2,3,4,5\r\n-2,2.6,9\r\n0\r\n", line);
             }
         }
 

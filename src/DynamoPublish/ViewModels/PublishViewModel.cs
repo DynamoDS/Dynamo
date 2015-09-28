@@ -27,6 +27,17 @@ namespace Dynamo.Publish.ViewModels
         /// </summary>
         private bool firstTimeErrorMessage = true;
 
+        internal Dispatcher UIDispatcher { get; set; }
+        
+        private readonly PublishModel model;
+        internal PublishModel Model
+        {
+            get { return model; }
+        }
+        
+        /// <summary>
+        ///     The name of the customizer.
+        /// </summary>
         private string name;
         public string Name
         {
@@ -38,7 +49,10 @@ namespace Dynamo.Publish.ViewModels
                 BeginInvoke(() => PublishCommand.RaiseCanExecuteChanged());
             }
         }
-
+        
+        /// <summary>
+        ///     The description of the customizer.
+        /// </summary>
         private string description;
         public string Description
         {
@@ -51,6 +65,9 @@ namespace Dynamo.Publish.ViewModels
             }
         }
 
+        /// <summary>
+        ///     The URL of the customizer after being published.
+        /// </summary>
         private string shareLink;
         public string ShareLink
         {
@@ -59,9 +76,17 @@ namespace Dynamo.Publish.ViewModels
             {
                 shareLink = value;
                 RaisePropertyChanged("ShareLink");
+                BeginInvoke(() =>
+                {
+                    VisitCommand.RaiseCanExecuteChanged();
+                    CopyLinkCommand.RaiseCanExecuteChanged();
+                });
             }
         }
-
+        
+        /// <summary>
+        ///     A message indicating the state of the publish process.
+        /// </summary>
         private string uploadStateMessage;
         public string UploadStateMessage
         {
@@ -72,7 +97,10 @@ namespace Dynamo.Publish.ViewModels
                 RaisePropertyChanged("UploadStateMessage");
             }
         }
-
+        
+        /// <summary>
+        ///     A boolean flag indicating if the customizer is ready for upload.
+        /// </summary>
         private bool isReadyToUpload;
         public bool IsReadyToUpload
         {
@@ -84,12 +112,10 @@ namespace Dynamo.Publish.ViewModels
             }
         }
 
-        private readonly PublishModel model;
-        internal PublishModel Model
-        {
-            get { return model; }
-        }
-
+        
+        /// <summary>
+        ///     A flag indicating if the customizer is currently being uploaded.
+        /// </summary>
         private bool isUploading;
         public bool IsUploading
         {
@@ -112,16 +138,20 @@ namespace Dynamo.Publish.ViewModels
             }
         }
 
-        internal Dispatcher UIDispatcher { get; set; }
-
-        public IEnumerable<IWorkspaceModel> Workspaces { get; set; }
+        /// <summary>
+        ///     The currently active workspace model in the process of being
+        ///     published as a customizer.
+        /// </summary>
         public IWorkspaceModel CurrentWorkspaceModel { get; set; }
 
+        /// <summary>
+        ///     The URL of the customizer management page.
+        /// </summary>
         public string ManagerURL
         {
             get
             {
-                return model.ManagerURL;
+                return PublishModel.ManagerURL;
             }
         }
 
@@ -129,7 +159,20 @@ namespace Dynamo.Publish.ViewModels
 
         #region Click commands
 
+        /// <summary>
+        ///     A command that causes the upload process to begin.
+        /// </summary>
         public DelegateCommand PublishCommand { get; private set; }
+        
+        /// <summary>
+        ///     A command that opens the customizer's URL in the user's browser.
+        /// </summary>
+        public DelegateCommand VisitCommand { get; private set; }
+        
+        /// <summary>
+        ///     A command that copies the customizer's URL to the user's clipboard.
+        /// </summary>
+        public DelegateCommand CopyLinkCommand { get; private set; }
 
         #endregion
 
@@ -140,6 +183,8 @@ namespace Dynamo.Publish.ViewModels
             this.model = model;
 
             PublishCommand = new DelegateCommand(OnPublish, CanPublish);
+            VisitCommand = new DelegateCommand(Visit, CanVisit);
+            CopyLinkCommand = new DelegateCommand(CopyLink, CanCopyLink);
             model.UploadStateChanged += OnModelStateChanged;
             model.CustomizerURLChanged += OnCustomizerURLChanged;
         }
@@ -151,16 +196,57 @@ namespace Dynamo.Publish.ViewModels
         private void OnPublish(object obj)
         {
             if (!model.IsLoggedIn)
+            {
                 model.Authenticate();
+            }
 
             if (!model.IsLoggedIn)
+            {
                 return;
+            }
 
-            var workspaceProperties = new WorkspaceProperties();
-            workspaceProperties.Name = Name;
-            workspaceProperties.Description = Description;
+            var workspaceProperties = new WorkspaceProperties
+            {
+                Name = Name,
+                Description = Description
+            };
 
-            model.SendAsynchronously(Workspaces, workspaceProperties);
+            var workspace = CurrentWorkspaceModel as HomeWorkspaceModel;
+
+            if (workspace == null)
+            {
+                throw new InvalidOperationException("The CurrentWorkspaceModel must be of type " + typeof(HomeWorkspaceModel).Name);
+            }
+
+            model.SendAsynchronously(workspace, workspaceProperties);
+        }
+
+        private void Visit(object _)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(ShareLink);
+            }
+            catch (Exception e)
+            {
+                model.AsLogger().Log(e);
+            }
+        }
+
+        private bool CanVisit(object _)
+        {
+            return !String.IsNullOrEmpty(ShareLink);
+        }
+
+        private void CopyLink(object _)
+        {
+            System.Windows.Clipboard.SetText(ShareLink);
+            UploadStateMessage = Resources.LinkCopied;
+        }
+
+        private bool CanCopyLink(object _)
+        {
+            return !String.IsNullOrEmpty(ShareLink);
         }
 
         private void OnModelStateChanged(PublishModel.UploadState state)
@@ -180,13 +266,6 @@ namespace Dynamo.Publish.ViewModels
             if (String.IsNullOrWhiteSpace(Name))
             {
                 UploadStateMessage = Resources.ProvideWorskspaceNameMessage;
-                IsReadyToUpload = false;
-                return false;
-            }
-
-            if (String.IsNullOrWhiteSpace(Description))
-            {
-                UploadStateMessage = Resources.ProvideWorskspaceDescriptionMessage;
                 IsReadyToUpload = false;
                 return false;
             }

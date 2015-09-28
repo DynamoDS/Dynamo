@@ -159,6 +159,7 @@ limitations under the License.
     <Compile Include="Search\SearchElements\NodeSearchElement.cs" />
     <Compile Include="Search\SearchElements\ZeroTouchSearchElement.cs" />
     <Compile Include="Core\AuthenticationManager.cs" />
+    <Compile Include="Services\ShapewaysClient.cs" />
     <Compile Include="Models\NodeModelExtensions.cs" />
     <Compile Include="Interfaces\ISource.cs" />
     <Compile Include="Models\RecordableCommands.cs" />
@@ -336,6 +337,9 @@ limitations under the License.
   <ItemGroup>
     <Resource Include="BuiltInAndOperators\BuiltIn.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="BuiltInAndOperators\BuiltIn.Migrations.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild">
     <ItemGroup>
@@ -343,7 +347,6 @@ limitations under the License.
       <ExternProtoGeometryXml Include="$(SolutionDir)..\extern\ProtoGeometry\ProtoGeometry.XML" />
       <ExternProtoGeometryUICulture Include="$(SolutionDir)..\extern\ProtoGeometry\$(UICulture)\*" />
       <ExternProtoGeometryLibGLocale Include="$(SolutionDir)..\extern\ProtoGeometry\libg_locale\**\*.*" />
-      <ExternLibG219 Include="$(SolutionDir)..\extern\LibG_219\*" />
       <ExternLibG220 Include="$(SolutionDir)..\extern\LibG_220\*" />
       <ExternLibG221 Include="$(SolutionDir)..\extern\LibG_221\*" />
       <ExternSimplexNoise Include="$(SolutionDir)..\extern\SimplexNoise\*" />
@@ -360,7 +363,6 @@ limitations under the License.
     <Copy SourceFiles="@(ExternProtoGeometryXml)" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="@(ExternProtoGeometryUICulture)" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="@(ExternProtoGeometryLibGLocale)" DestinationFolder="$(OutputPath)\libg_locale\%(RecursiveDir)" />
-    <Copy SourceFiles="@(ExternLibG219)" DestinationFolder="$(OutputPath)libg_219\" />
     <Copy SourceFiles="@(ExternLibG220)" DestinationFolder="$(OutputPath)libg_220\" />
     <Copy SourceFiles="@(ExternLibG221)" DestinationFolder="$(OutputPath)libg_221\" />
     <Copy SourceFiles="@(ExternSimplexNoise)" DestinationFolder="$(OutputPath)" />
@@ -369,6 +371,7 @@ limitations under the License.
     <Copy SourceFiles="@(LocalizedResources)" DestinationFolder="$(OutputPath)%(RecursiveDir)" />
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\Operators.xml" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\BuiltIn.xml" DestinationFolder="$(OutputPath)\$(UICulture)" />
+    <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\BuiltIn.Migrations.xml" DestinationFolder="$(OutputPath)" />
   </Target>
   <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
     <!-- Get System.Drawing.dll -->

@@ -89,7 +89,11 @@ namespace Dynamo.Engine
 
         public FunctionDescriptor(FunctionDescriptorParams funcDescParams)
         {
-            summary = funcDescParams.Summary;
+            if (!String.IsNullOrEmpty(funcDescParams.Summary))
+            {
+                summary = funcDescParams.Summary;
+            }
+
             pathManager = funcDescParams.PathManager;
             Assembly = funcDescParams.Assembly;
             ClassName = funcDescParams.ClassName;
