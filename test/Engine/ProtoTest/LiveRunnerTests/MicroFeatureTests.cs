@@ -3221,7 +3221,7 @@ r = Equals(x, {41, 42});
             var syncData = new GraphSyncData(null, added, null);
             liveRunner.UpdateGraph(syncData);
 
-            AssertValue("x", 10);
+            AssertValue("x", 10.0);
         }
 
 
