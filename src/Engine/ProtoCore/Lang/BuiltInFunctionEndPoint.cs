@@ -1074,7 +1074,7 @@ namespace ProtoCore.Lang
                 return StackValue.Null;
             }
 
-            if ((svStep.IsNull && hasStep) || (hasAmountOp && !svStep.IsNumeric) || (!svStep.IsNull && !svStep.IsNumeric))
+            if (svStep.IsNull)
             {
                 runtimeCore.RuntimeStatus.LogWarning(
                     WarningID.kInvalidArguments,
@@ -1274,11 +1274,25 @@ namespace ProtoCore.Lang
 
         private static StackValue[] GenerateAlphabetSequence(StackValue svStart, StackValue svEnd, StackValue svStep, StackValue svOp, RuntimeCore runtimeCore)
         {
-            if (!svStart.IsString || !svEnd.IsInteger || !svStep.IsInteger)
+            if (!svStart.IsString)
             {
                 runtimeCore.RuntimeStatus.LogWarning(
                     WarningID.kInvalidArguments,
                     Resources.kInvalidArgumentsInRangeExpression);
+                return null;
+            }
+            if (!svEnd.IsInteger)
+            {
+                runtimeCore.RuntimeStatus.LogWarning(
+                   WarningID.kInvalidArguments,
+                   Resources.kInvalidAmountInRangeExpression);
+                return null;
+            }
+            if (!svStep.IsInteger)
+            {
+                runtimeCore.RuntimeStatus.LogWarning(
+                   WarningID.kInvalidArguments,
+                   Resources.kRangeExpressionWithNonIntegerStepNumber);
                 return null;
             }
 
