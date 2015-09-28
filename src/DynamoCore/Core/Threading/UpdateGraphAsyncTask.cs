@@ -156,9 +156,11 @@ namespace Dynamo.Core.Threading
             if (theOtherTask == null)
                 return base.CanMergeWithCore(otherTask);
 
-            if (theOtherTask.Contains(this))
+            /* Check the creation time of task to ensure a task created later
+               will always be executed. */
+            if ((theOtherTask.CreationTime > this.CreationTime) && theOtherTask.Contains(this))
                 return TaskMergeInstruction.KeepOther;
-            else if (this.Contains(theOtherTask)) 
+            else if ((this.CreationTime > theOtherTask.CreationTime) && this.Contains(theOtherTask))
                 return TaskMergeInstruction.KeepThis;
             else
                 return TaskMergeInstruction.KeepBoth;
