@@ -1919,4 +1919,13 @@ Do you want to install the latest Dynamo update?</value>
   <data name="FolderNotWritableError" xml:space="preserve">
     <value>You do not have write permission to {0}.</value>
   </data>
+  <data name="ActionMember" xml:space="preserve">
+    <value>Action</value>
+  </data>
+  <data name="CreateMember" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="QueryMember" xml:space="preserve">
+    <value>Query</value>
+  </data>
 </root>

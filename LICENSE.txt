@@ -93,3 +93,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 ###Winpthreads###
 http://mingw-w64.sourceforge.net/
 http://www.mingw.org/license
+
+###Fontawesome###
+https://www.nuget.org/packages/FontAwesome.WPF/
+https://github.com/charri/Font-Awesome-WPF/blob/master/LICENSE

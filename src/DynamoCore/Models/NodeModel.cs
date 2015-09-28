@@ -1658,8 +1658,7 @@ namespace Dynamo.Models
         /// <summary>
         /// This event handler is invoked when UpdateRenderPackageAsyncTask is 
         /// completed, at which point the render packages (specific to this node) 
-        /// become available. Since this handler is called off the UI thread, the 
-        /// '_renderPackages' must be guarded against concurrent access.
+        /// become available. 
         /// </summary>
         /// <param name="asyncTask">The instance of UpdateRenderPackageAsyncTask
         /// that was responsible of generating the render packages.</param>
@@ -1669,8 +1668,32 @@ namespace Dynamo.Models
             var task = asyncTask as UpdateRenderPackageAsyncTask;
             if (task.RenderPackages.Any())
             {
-                OnRenderPackagesUpdated(task.RenderPackages);
+                var packages = new List<IRenderPackage>();
+                
+                packages.AddRange(task.RenderPackages);
+                packages.AddRange(OnRequestRenderPackages());
+
+                OnRenderPackagesUpdated(packages);
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public event Func<IEnumerable<IRenderPackage>> RequestRenderPackages;
+
+        /// <summary>
+        /// This event handler is invoked when the render packages (specific to this node)  
+        /// become available and in addition the node requests for associated render packages 
+        /// if any for example, packages used for associated node manipulators
+        /// </summary>
+        private IEnumerable<IRenderPackage> OnRequestRenderPackages()
+        {
+            if (RequestRenderPackages != null)
+            {
+                return RequestRenderPackages();
+            }
+            return new List<IRenderPackage>();
         }
 
         /// <summary>

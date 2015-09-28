@@ -507,6 +507,12 @@
                                     <Setter Property="Visibility"
                                             TargetName="Expander"
                                             Value="Collapsed" />
+                                    <Setter Property="Visibility"
+                                            TargetName="VerLn"
+                                            Value="Collapsed" />
+                                    <Setter Property="Visibility"
+                                            TargetName="HorLn"
+                                            Value="Collapsed" />
                                 </Trigger>
 
                                 <Trigger Property="HasItems"
@@ -542,8 +548,24 @@
                                         </Setter>
                                     </MultiDataTrigger.Setters>
                                 </MultiDataTrigger>
-                                
 
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsExpanded, 
+                                                               RelativeSource={RelativeSource FindAncestor, 
+                                                                                              AncestorType={x:Type TreeViewItem}}}"
+                                                                           Value="True" />
+                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, 
+                                    Converter={StaticResource TreeViewLineConverter}}" 
+                                                                           Value="True" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Margin"  
+                                                Value="{Binding  ElementName=OuterButtongrid,
+                                                        Converter={StaticResource ClassViewMarginConverter}}"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                              
                                 <!--<DataTrigger Binding="{Binding IsChecked, ElementName=Expander}" Value="True" >
                                     <Setter Property="Margin"
                                             TargetName="VerLn"
@@ -612,7 +634,7 @@
             </DataTemplate>
 
             <DataTemplate x:Key="ClassDetailsDataTemplate">
-                <uicontrols:ClassInformationView Margin="15,-10,0,0">
+                <uicontrols:ClassInformationView>                    
                     <uicontrols:ClassInformationView.Width>
                         <Binding Path="ActualWidth"
                                  RelativeSource="{RelativeSource FindAncestor, AncestorType=TreeView}" />
