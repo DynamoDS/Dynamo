@@ -414,6 +414,8 @@ namespace Dynamo.Docs
             {
                 if (value == "Void")
                     returnType = "void";
+                else
+                    returnType = value;
             }
         }
 
