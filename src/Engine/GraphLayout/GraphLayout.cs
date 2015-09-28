@@ -299,7 +299,7 @@ namespace GraphLayout
                     // For cyclic subgraphs
                     n = Nodes.Where(x => x.Layer < 0).OrderByDescending(
                         x => x.RightEdges.Count(e => e.EndNode.Layer >= 0)).First();
-                    currentLayer = 0;
+                    currentLayer = 1;
                 }
 
                 // Add a new layer when needed
