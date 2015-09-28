@@ -15,7 +15,7 @@ namespace ProtoTest.MultiLangTests
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T01_TestGCArray()
         {
             string code = @"
@@ -50,7 +50,7 @@ v4 = DisposeCounter.x;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T02_TestGCEndofIfBlk()
         {
             string code = @"
@@ -73,7 +73,7 @@ v = DisposeCounter.x; // 3";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T03_TestGCEndofLangBlk()
         {
             string code = @"
@@ -100,7 +100,7 @@ v2 = DisposeCounter.x; // 3";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T04_TestGCReturnFromLangBlk()
         {
             string code = @"
@@ -127,7 +127,7 @@ v2 = DisposeCounter.x; // 2";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T05_TestGCReturnFromFunction()
         {
             string code = @"
@@ -156,7 +156,7 @@ v3 = DisposeCounter.x;";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T06_TestGCEndofWhileBlk()
         {
             string code = @"
@@ -194,7 +194,7 @@ v4 = DisposeCounter.x;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T07_TestGCEndofForBlk()
         {
             string code = @"
@@ -231,7 +231,7 @@ v4 = DisposeCounter.x;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T08_TestGCArray02()
         {
             string code = @"
@@ -277,7 +277,7 @@ v8 = DisposeCounter.x;";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T09_TestGCPassingArguments()
         {
             string code = @"
@@ -327,7 +327,7 @@ v6 = DisposeCounter.x; // 9";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T10_TestGCReturnArguments()
         {
             string code = @"
@@ -354,7 +354,7 @@ v3 = DisposeCounter.x;";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T11_TestGCLangBlkInFunction()
         {
             string code = @"
@@ -379,7 +379,7 @@ v1 = DisposeCounter.x; // 2
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T12_TestGCIfElseInFunction()
         {
             string code = @"
@@ -416,7 +416,7 @@ v2 = DisposeCounter.x; // 4";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T13_GCTestComplexCase()
         {
             string code = @"
@@ -448,7 +448,7 @@ v1 = DisposeCounter.x; // 1
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T14_TestGCPointer_AssociativeScope()
         {
             string code = @"
@@ -468,7 +468,7 @@ __GC();
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T15_TestGCArray_AssociativeScope()
         {
             string code = @"
