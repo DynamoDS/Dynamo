@@ -562,7 +562,7 @@ namespace Dynamo.Docs
                 //case 1: Param tag on the method.
                 if (stringList.Count > 0)
                 {
-                    methodName = methodName + "(" + stringList + ")";
+                    methodName = methodName + "(*" + stringList + "*)";
                 }
                 //case 1: No Param tag on the method.        
                 else
