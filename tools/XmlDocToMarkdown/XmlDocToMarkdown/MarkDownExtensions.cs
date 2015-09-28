@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,7 +44,15 @@ namespace XmlDocToMarkdown
                 }
             }
 
+            if (!elements.Any(tr => tr.Key.ToString().Contains("typeparam")))
+            {
+                var ele = new XElement("typeparam", new XAttribute("name", ""));
+                ele.Value = "&nbsp;";
+                elements.Add(ele, 1);
+            }
+
             var ordered = elements.OrderBy(x => x.Value);
+            
             foreach (var kk in ordered)
             {
                 newListOfNodes.Add(kk.Key);
@@ -81,6 +90,18 @@ namespace XmlDocToMarkdown
             }
 
             return returnString;
+        }
+
+        public static string ConstructUrl(this String className,String methodName)
+        {
+            var appSettings = ConfigurationManager.AppSettings["ServerUrl"];
+            var url = appSettings ?? String.Empty;
+            if (url != String.Empty)
+            {
+                var nameSpace = methodName.Split('.');
+                url = url + "/" + string.Join("_", nameSpace.Take(nameSpace.Length - 1));
+            }                       
+            return "[" + className + "]" + "(" + url + "/" + className + ")";
         }
 
     }
