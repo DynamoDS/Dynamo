@@ -59,7 +59,7 @@
     <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>AssemblySharedInfo.cs</Link>
     </Compile>
-	<Compile Include="Properties\Resources.Designer.cs">
+    <Compile Include="Properties\Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -74,7 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="PythonNodeModelsImages.resx" />
-	<EmbeddedResource Include="Properties\Resources.en-US.resx">
+    <EmbeddedResource Include="Properties\Resources.en-US.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
     </EmbeddedResource>
@@ -87,10 +87,12 @@
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
       <Name>ProtoCore</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\DSIronPython\DSIronPython.csproj">
       <Project>{9eef4f42-6b3b-4358-9a8a-c2701539a822}</Project>
