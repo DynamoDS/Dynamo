@@ -43,7 +43,7 @@ namespace ProtoTest
 @"[Associative]{    a = 2;    [Imperative]    {        if(a == 2 )        {            b = a + 5;            a = 20;        }        else         {            b = 4;        }    }    c = a;}", core, out runtimeCore);
         }
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void TestClassUsageInImpeartive()
         {
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
