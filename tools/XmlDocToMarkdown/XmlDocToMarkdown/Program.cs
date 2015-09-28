@@ -32,8 +32,7 @@ namespace Dynamo.Docs
         };
 
         private const string themedir = "theme_dir: Theme";
-        private static string returnType;
-       
+        
         static void Main(string[] args)
         {
             var asm = Assembly.LoadFrom(args[0]);
@@ -154,7 +153,7 @@ namespace Dynamo.Docs
                 foreach (var constructor in constructors)
                 {
                     var text = constructor.Attribute("name").Value;
-                    var name = text.Split(".").ToArray();
+                    var name = text.Split('.').ToArray();
                     text = new StringBuilder(text).Replace("#ctor", name[2]).ToString();                    
                     constructor.Attribute("name").Value = text;
                 }
@@ -413,13 +412,13 @@ namespace Dynamo.Docs
     {
         private static string ApiStabilityTag = "api_stability";
         internal static string ApiStabilityStub = "stability=";
-        internal static string ApiStabilityTemplate = "<sup>" + "{0}" + "</sup>";
+        internal static string ApiStabilityTemplate = "| stability index:" + "{0}";
         internal static string returnType;
         internal static string ReturnType
         {
             get
             {
-                return returnType;
+                return   returnType.MarkDownFormat("Italic");
             }
             set
             {
@@ -436,11 +435,11 @@ namespace Dynamo.Docs
                     {"doc", "## {0} ##\n\n{1}\n\n"},
                     {"type", "{0}\n"},
                     {"field", "{0}\n\n{1}\n"},
-                    {"property", "| {0}  \n| ------------- | :--------------- | -------------:\n{1}\n"},
-                    {"method", "| {0} | | stability index: \n| ------------- | :--------------- | -------------: \n{1}"},
-                    {"event", "| {0}  \n| ------------- | :--------------- | -------------:\n{1}\n"},
+                    {"property", "| {0}  \n| ------------- | :--------------- \n{1}\n"},
+                    {"method", "| {0}  \n| ------------- | :--------------- \n{1}"},
+                    {"event", "| {0}  \n| ------------- | :--------------- \n{1}\n"},
                     {"summary", "| {0}\n"},
-                    {"remarks", "| **Remarks:** | {0}\n"},
+                    {"remarks", "| {0}\n"},
                     {"example", "| **Example:** | _C# code_\n\n```c#\n{0}\n```\n"},
                     {"seePage", "[[{1}|{0}]]"},
                     {"seeAnchor", "[{1}]({0})"},
@@ -465,35 +464,48 @@ namespace Dynamo.Docs
                 {
                     node.Nodes().NodeMarkDown()                  
                 });
-        private static Func<string, string, XElement,string[]> dType =
+        private static Func<string, string, XElement,string[]> pType =
             new Func<string, string, XElement, string[]>((att1,att2,node) =>            
          
             {
                 var methodName = node.Attribute(att1).Value.Split('.').Last();                
                 var convertedMethodName = ConvertGenericParameters(node, methodName, att2);
-                convertedMethodName = string.Join(" ", ReturnType, convertedMethodName);
+                convertedMethodName = string.Join(" ", ReturnType, convertedMethodName.MarkDownFormat("Bold"));                
                 return new[]
                 {
                     convertedMethodName,
                     node.Nodes().NodeMarkDown()
                 };
-            });         
+            });
+
+        private static Func<string, string, XElement, string[]> eType =
+           new Func<string, string, XElement, string[]>((att1, att2, node) =>
+           {
+               var methodName = node.Attribute(att1).Value.Split('.').Last();
+               var convertedMethodName = ConvertGenericParameters(node, methodName, att2);
+               convertedMethodName = string.Join(" ", ReturnType, convertedMethodName.MarkDownFormat("Bold"));
+               return new[]
+                {
+                    convertedMethodName,
+                    node.Nodes().NodeMarkDown()
+                };
+           });
 
         private static Func<string, string, XElement, object[]> mType =
             (att1, att2, node) =>
             {              
                 var methodName = node.Attribute(att1).Value.Split(':').Last();
                 var convertedMethodName = ConvertGenericParameters(node, methodName, att2);
-                convertedMethodName = string.Join(" ", ReturnType, convertedMethodName);
-                               
+                convertedMethodName = string.Join(" ", ReturnType, convertedMethodName.MarkDownFormat("Bold"));
+                var nodes = node.Nodes().ReOrderXMLElements();
                 return new object[]
                 {                   
                     convertedMethodName,
-                    node.Nodes().NodeMarkDown(),
+                    nodes.ToTableMarkDown(),
                 };
             };
 
-
+       
         private static string CheckAndAppendStability(XElement node, string methodName)
         {
             if (node.Elements("api_stability").Any())
@@ -560,6 +572,7 @@ namespace Dynamo.Docs
 
                 //add api_stability as super script. If there is no stability tag
                 //then add a default value.
+                methodName = "&nbsp;&nbsp;" + methodName;
                 methodName = CheckAndAppendStability(node, methodName);
             }
             else
@@ -569,6 +582,7 @@ namespace Dynamo.Docs
                     methodName = methodName.Split('.').Last();
                     methodName = methodName + "( )";
                 }
+                methodName = "&nbsp;&nbsp;" + methodName;
                 methodName = CheckAndAppendStability(node, methodName);
             }
 
@@ -584,9 +598,9 @@ namespace Dynamo.Docs
                     }},
                     {"type", x=>tType("name", x)},
                     {"field", x=> d("name", x)},
-                    {"property", x=> dType("name","param", x)},
+                    {"property", x=> pType("name","param", x)},
                     {"method",x=>mType("name", "param", x)},
-                    {"event", x=>dType("name", "param",  x)},
+                    {"event", x=>eType("name", "param",  x)},
                     {"summary", x=> new[]{ x.Nodes().NodeMarkDown() }},
                     {"remarks", x => new[]{x.Nodes().NodeMarkDown()}},
                     {"example", x => new[]{x.Value.ToCodeBlock()}},
