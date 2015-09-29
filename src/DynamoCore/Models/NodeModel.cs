@@ -12,18 +12,17 @@ using Dynamo.Core.Threading;
 using Dynamo.Migration;
 using Dynamo.Nodes;
 using Dynamo.Engine;
+using Dynamo.Engine.AstCompilation;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Interfaces;
 
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
-using ProtoCore.Namespace;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 using ProtoCore.DSASM;
 using System.Reflection;
-using Autodesk.DesignScript.Runtime;
 
 namespace Dynamo.Models
 {

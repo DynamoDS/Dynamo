@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
-using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
@@ -10,9 +9,9 @@ using ProtoCore.Namespace;
 using ProtoCore.Utils;
 using ProtoCore;
 using ProtoCore.DSASM;
-using DynamoUtilities;
 using Dynamo.Library;
 using Dynamo.Engine;
+using Dynamo.Engine.AstCompilation;
 
 namespace Dynamo.Nodes
 {

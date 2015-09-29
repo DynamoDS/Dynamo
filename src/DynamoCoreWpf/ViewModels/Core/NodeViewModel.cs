@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 using System.Text;
 using System.Text.RegularExpressions;
 
-using Dynamo.Engine;
+using Dynamo.Engine.AstCompilation;
 using Dynamo.Models;
 using Dynamo.Nodes;
 

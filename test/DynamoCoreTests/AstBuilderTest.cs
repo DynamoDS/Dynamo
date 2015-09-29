@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-using Dynamo.Engine;
+using Dynamo.Engine.AstCompilation;
 using Dynamo.Models;
 using NUnit.Framework;
 

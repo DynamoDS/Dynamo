@@ -20,6 +20,7 @@ using Constants = ProtoCore.DSASM.Constants;
 using RuntimeWarning = ProtoCore.Runtime.WarningEntry;
 using ProtoCore.Utils;
 using Dynamo.Engine.NodeToCode;
+using Dynamo.Engine.AstCompilation;
 
 namespace Dynamo.Engine
 {

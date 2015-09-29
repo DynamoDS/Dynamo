@@ -15,7 +15,7 @@ using Type = ProtoCore.Type;
 
 #endregion
 
-namespace Dynamo.Engine
+namespace Dynamo.Engine.AstCompilation
 {
     /// <summary>
     /// Get notification for AST compilation events.                                                 
