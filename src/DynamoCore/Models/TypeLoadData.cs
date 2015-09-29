@@ -73,10 +73,23 @@ namespace Dynamo.Models
                     .Select(x => x.ElementDescription)
                     .FirstOrDefault() ?? "";
 
-            InputParameters = Type.GetCustomAttributes<InputParametersAttribute>(false)
+            OutputParameters = Type.GetCustomAttributes<OutPortNamesAttribute>(false)
                 .SelectMany(x => x.Values);
-            OutputParameters = Type.GetCustomAttributes<OutputParametersAttribute>(false)
-                .SelectMany(x => x.Values);
+
+            var inputNames = Type.GetCustomAttributes<InPortNamesAttribute>(false)
+                .SelectMany(x => x.PortNames).ToList();
+            var inputTypes = Type.GetCustomAttributes<InPortTypesAttribute>(false)
+                .SelectMany(x => x.PortTypes).ToList();
+
+            if (inputNames.Any() && (inputNames.Count == inputTypes.Count))
+            {
+                InputParameters = inputNames.Zip(inputTypes, (name, type) => new Tuple<string, string>(name, type));
+            }
+            else
+            {
+                InputParameters = new List<Tuple<string, string>>();
+            }
+
         }
 
         /// <summary>

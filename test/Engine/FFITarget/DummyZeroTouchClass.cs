@@ -17,8 +17,6 @@ namespace FFITarget
         }
     }
 
-    [InputParameters("par1,int", "par2,double")]
-    [OutputParameters("item1", "item2", "item3")]
     public class DummyZeroTouchClass1
     {
 

@@ -340,6 +340,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You used old style of setting node ports. Please, use new style based on adding port attributes..
+        /// </summary>
+        public static string DeprecatedPortNamingStyleMessage {
+            get {
+                return ResourceManager.GetString("DeprecatedPortNamingStyleMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The virtual machine that powers Dynamo is experiencing some unexpected errors internally and is likely &quot;having great difficulties pulling itself together. It is &quot;recommended that you save your work now and reload the file. Giving the Dynamo VM a new lease of life can potentially make it feel happier and behave better. 
         ///
         ///If you don&apos;t mind, it would be helpful for you to send us your file. That will make it quicker for us to get these issues fixed..
@@ -680,6 +689,24 @@ namespace Dynamo.Properties {
         public static string InputNodeSearchTags {
             get {
                 return ResourceManager.GetString("InputNodeSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Input ports has already been registered..
+        /// </summary>
+        public static string InputPortsHasAlreadyBeenRegisteredMessage {
+            get {
+                return ResourceManager.GetString("InputPortsHasAlreadyBeenRegisteredMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number of input ports name does not equal number of port descriptions..
+        /// </summary>
+        public static string InputPortsNameDescriptionWarningMessage {
+            get {
+                return ResourceManager.GetString("InputPortsNameDescriptionWarningMessage", resourceCulture);
             }
         }
         

@@ -42,6 +42,8 @@ namespace Dynamo.Models
         private string toolTipText = "";
         private string description;
         private string persistentWarning = "";
+        private bool isInputPortsRegistered;
+        private bool isOutputPortsRegistered;
 
         // Data caching related class members. There are multiple parties at
         // play when it comes to caching MirrorData for a NodeModel, this value
@@ -1092,6 +1094,25 @@ namespace Dynamo.Models
         /// </summary>
         public void RegisterInputPorts()
         {
+            if (isInputPortsRegistered)
+            {
+                throw new Exception(Properties.Resources.InputPortsHasAlreadyBeenRegisteredMessage);
+            }
+
+            // Old version of input ports registration.
+            // Used InPortData.
+            if (InPortData.Count > 0)
+            {
+                Warning(Properties.Resources.DeprecatedPortNamingStyleMessage, true);
+            }
+
+            // New version of input ports registration.
+            // Used port Attributes.
+            if (GetType().GetCustomAttributes<PortAttribute>(false).Any())
+            {
+                InPortData.AddRange(GetInputsFromAttributes());
+            }
+
             //read the inputs list and create a number of
             //input ports
             int count = 0;
@@ -1105,7 +1126,7 @@ namespace Dynamo.Models
                 //port.DataContext = this;
 
                 portDataDict[port] = pd;
-                count++;            
+                count++;
             }
 
             if (inPorts.Count > count)
@@ -1122,6 +1143,35 @@ namespace Dynamo.Models
 
             //Configure Snap Edges
             ConfigureSnapEdges(inPorts);
+            isInputPortsRegistered = true;
+        }
+
+        private IEnumerable<PortData> GetInputsFromAttributes()
+        {
+            var type = GetType();
+            var inputNames = type.GetCustomAttributes<InPortNamesAttribute>(false)
+                            .SelectMany(x => x.PortNames)
+                            .ToList();
+            var inputDescriptions = type.GetCustomAttributes<InPortDescriptionsAttribute>(false)
+                            .SelectMany(x => x.PortDescriptions)
+                            .ToList();
+
+            if (inputNames.Count != inputDescriptions.Count)
+            {
+                Warning(Properties.Resources.InputPortsNameDescriptionWarningMessage);
+
+                // Take the same number of descriptions as number of names.
+                inputDescriptions = new List<string>(inputDescriptions.Take(inputNames.Count));
+            }
+
+            List<PortData> ports = new List<PortData>();
+            for (int i = 0; i < inputNames.Count; i++)
+            {
+                var pd = new PortData(inputNames[i], inputDescriptions[i]);
+                ports.Add(pd);
+            }
+
+            return ports;
         }
 
         /// <summary>

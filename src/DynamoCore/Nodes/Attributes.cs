@@ -209,33 +209,118 @@ namespace Dynamo.Nodes
         }
     }
 
+    /// <summary>
+    /// PortAttribute is base class for all attibutes used for ports.
+    /// PortAttribute can process resource file (.resx) and load strings from this file.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public class InputParametersAttribute : Attribute
+    public abstract class PortAttribute : Attribute
     {
-        public InputParametersAttribute(params string[] values)
+        /// <summary>
+        /// Attribute is loaded from resource file.
+        /// </summary>
+        /// <param name="resourceType">type of resource</param>
+        /// <param name="resourceNames">resource titles</param>
+        protected PortAttribute(Type resourceType, params string[] resourceNames)
         {
-            Values = new List<Tuple<string, string>>();
+            if ((resourceType == null) || (resourceNames == null))
+                return;
 
-            foreach (var value in values)
+            List<string> titles = new List<string>();
+            foreach (var resourceName in resourceNames)
             {
-                var parameters = value.Split(',');
-                if (parameters.Length != 2)
-                    continue;
+                var property = resourceType.GetProperty(resourceName, BindingFlags.Public | BindingFlags.Static);
 
-                var name = parameters[0];
-                var type = parameters[1];
-
-                Values.Add(Tuple.Create(name, type));
+                if (property == null)
+                {
+                    throw new InvalidOperationException(string.Format("Resource Type Does Not Have Property"));
+                }
+                if (property.PropertyType != typeof(string))
+                {
+                    throw new InvalidOperationException(string.Format("Resource Property is Not String Type"));
+                }
+                titles.Add((string)property.GetValue(null, null));
             }
+
+            PortTitles = titles;
         }
 
-        public List<Tuple<string, string>> Values { get; private set; }
+        /// <summary>
+        /// Non-localized resource.
+        /// </summary>
+        /// <param name="portTitles">port titles</param>
+        protected PortAttribute(params string[] portTitles)
+        {
+            PortTitles = portTitles;
+        }
+
+        protected IEnumerable<string> PortTitles { get; private set; }
+    }
+
+    /// <summary>
+    /// Indicates ports' names.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class)]
+    public class InPortNamesAttribute : PortAttribute
+    {
+        public InPortNamesAttribute(Type resourceType, params string[] resourceNames)
+            : base(resourceType, resourceNames)
+        { }
+
+        public InPortNamesAttribute(params string[] names)
+            : base(names)
+        { }
+
+        public IEnumerable<string> PortNames
+        {
+            get { return PortTitles; }
+        }
+    }
+
+    /// <summary>
+    /// Indicates ports' description
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class)]
+    public class InPortDescriptionsAttribute : PortAttribute
+    {
+        public InPortDescriptionsAttribute(Type resourceType, params string[] resourceTypes)
+            : base(resourceType, resourceTypes)
+        { }
+
+        public InPortDescriptionsAttribute(params string[] types)
+            : base(types)
+        { }
+
+        public IEnumerable<string> PortDescriptions
+        {
+            get { return PortTitles; }
+        }
+    }
+
+    /// <summary>
+    /// Indicates ports' types
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class)]
+    public class InPortTypesAttribute : PortAttribute
+    {
+        public InPortTypesAttribute(Type resourceType, params string[] resourceTypes)
+            : base(resourceType, resourceTypes)
+        { }
+
+        public InPortTypesAttribute(params string[] types)
+            : base(types)
+        { }
+
+        public IEnumerable<string> PortTypes
+        {
+            get { return PortTitles; }
+        }
     }
 
     [AttributeUsage(AttributeTargets.Class)]
-    public class OutputParametersAttribute : Attribute
+    public class OutPortNamesAttribute : Attribute
     {
-        public OutputParametersAttribute(params string[] values)
+        public OutPortNamesAttribute(params string[] values)
         {
             Values = values;
         }

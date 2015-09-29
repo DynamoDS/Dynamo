@@ -20,8 +20,13 @@ namespace DSCoreNodesUI
     [NodeCategory("Core.Color.Create")]
     [NodeDescription("ColorRangeDescription",typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeSearchTags("ColorRangeSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
-    [InputParameters("colors,Color[]", "indices,double[]", "value,double[]")]
-    [OutputParameters("Color")]
+    [InPortNames("colors", "indices", "value")]
+    [InPortTypes("Color[]", "double[]", "double")]
+    [InPortDescriptionsAttribute(typeof(Resources),
+        "ColorRangePortDataColorsToolTip",
+        "ColorRangePortDataIndicesToolTip",
+        "ColorRangePortDataValueToolTip")]
+
     public class ColorRange : NodeModel
     {
         public event Action RequestChangeColorRange;
@@ -51,9 +56,9 @@ namespace DSCoreNodesUI
 
         protected virtual void InitializePorts()
         {
-            InPortData.Add(new PortData("colors", Resources.ColorRangePortDataColorsToolTip));
+            /*InPortData.Add(new PortData("colors", Resources.ColorRangePortDataColorsToolTip));
             InPortData.Add(new PortData("indices", Resources.ColorRangePortDataIndicesToolTip));
-            InPortData.Add(new PortData("value", Resources.ColorRangePortDataValueToolTip));
+            InPortData.Add(new PortData("value", Resources.ColorRangePortDataValueToolTip));*/
             OutPortData.Add(new PortData("color", Resources.ColorRangePortDataResultToolTip));
 
             RegisterAllPorts();
