@@ -4,9 +4,13 @@ $(document).ready(function(){
 		$(window).scroll(function() {
 			var $myDiv = $('#menuNavigation');
 			var st = $(this).scrollTop();
-			var height = $myDiv.height();
-			$myDiv.height(st );
-        
+			if($(window).scrollTop() + $(window).height() < $(document).height()) {
+			var pageHeight = $(window).scrollTop() + $(window).height();
+			var docHeight = $(document).height();
+			if(docHeight - pageHeight >= 0){				
+			    $myDiv.height(pageHeight);
+			}
+		}			
 		}).scroll();
 	}
 );
