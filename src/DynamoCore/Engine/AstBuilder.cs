@@ -18,33 +18,106 @@ using Type = ProtoCore.Type;
 namespace Dynamo.Engine
 {
     /// <summary>
-    ///     Get notification when AstBuilder starts building node and
-    ///     finishes building node.
+    /// Get notification for AST compilation events.                                                 
     /// </summary>
     public interface IAstNodeContainer
     {
-        void OnAstNodeBuilding(Guid nodeGuid);
-        void OnAstNodeBuilt(Guid nodeGuid, IEnumerable<AssociativeNode> astNodes);
+        /// <summary>
+        /// Indicates to start compiling a NodeModel to AST nodes.
+        /// </summary>
+        /// <param name="nodeGuid"></param>
+        void OnCompiling(Guid nodeGuid);
+
+        /// <summary>
+        /// Indicates a NodeModel has been compiled to AST nodes. 
+        /// </summary>
+        /// <param name="nodeGuid"></param>
+        /// <param name="astNodes"></param>
+        void OnCompiled(Guid nodeGuid, IEnumerable<AssociativeNode> astNodes);
     }
 
     /// <summary>
-    ///     AstBuilder is a factory class to create different kinds of AST nodes.
+    /// This event is triggerred when compiling a NodeModel to AST nodes.
+    /// </summary>
+    public class CompilingEventArgs : EventArgs
+    {
+        /// Construct ASTBuildingEventArgs with NodeModel.
+        public CompilingEventArgs(Guid node)
+        {
+            Node = node;
+        }
+
+        /// <summary>
+        /// Guid of NodeModel that is being compiled to AST.
+        /// </summary>
+        public Guid Node { get; private set; }
+    }
+
+    /// <summary>
+    /// This event is triggered when a NodeModel has been compiled to a list of
+    /// AST nodes.
+    /// </summary>
+    public class CompiledEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Construct ASTBuiltEventArgs with NodeModel and AST nodes.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="astNodes"></param>
+        public CompiledEventArgs(Guid node, IEnumerable<AssociativeNode> astNodes)
+        {
+            Node = node;
+            AstNodes = astNodes;
+        }
+
+        /// <summary>
+        /// Guid of node that has been built to AST nodes.
+        /// </summary>
+        public Guid Node { get; private set; }
+
+        /// <summary>
+        /// Built AST nodes.
+        /// </summary>
+        public IEnumerable<AssociativeNode> AstNodes { get; private set; }
+    }
+
+    /// <summary>
+    /// The context of AST compilation
+    /// </summary>
+    public enum CompilationContext
+    {
+        /// <summary>
+        /// No specific context.
+        /// </summary>
+        None,
+
+        /// <summary>
+        /// Compiled AST nodes finally will be executed.
+        /// </summary>
+        DeltaExecution,
+
+        /// <summary>
+        /// Compiled AST nodes used in node to code.
+        /// </summary>
+        NodeToCode,
+
+        /// <summary>
+        /// Compiled AST nodes used in previwing graph.
+        /// </summary>
+        PreviewGraph,
+    }
+
+    /// <summary>
+    /// AstBuilder is a factory class to create different kinds of AST nodes.
     /// </summary>
     public class AstBuilder : LogSourceBase
     {
-        /// <summary>
-        /// The context of AST compilation
-        /// </summary>
-        public enum CompilationContext
-        {
-            None,
-            DeltaExecution,
-            NodeToCode,
-            PreviewGraph,
-        }
-
         private readonly IAstNodeContainer nodeContainer;
 
+        /// <summary>
+        /// Construct a AstBuilder with AST node contiainer.
+        /// </summary>
+        /// <param name="nodeContainer"></param>
         public AstBuilder(IAstNodeContainer nodeContainer)
         {
             this.nodeContainer = nodeContainer;
@@ -155,7 +228,7 @@ namespace Dynamo.Engine
         /// Their ideal topological order is A -> B -> C. If the input is only {A, B}, 
         /// it may return {B, A} which is not OK in node to code.
         ///
-        /// Note it is much slower thanopologiclSort().
+        /// Note it is much slower than TopologicalSort().
         /// </summary>
         /// <param name="nodes"></param>
         /// <returns></returns>
@@ -406,7 +479,7 @@ namespace Dynamo.Engine
         private void OnAstNodeBuilding(Guid nodeGuid)
         {
             if (nodeContainer != null)
-                nodeContainer.OnAstNodeBuilding(nodeGuid);
+                nodeContainer.OnCompiling(nodeGuid);
         }
 
         /// <summary>
@@ -417,29 +490,7 @@ namespace Dynamo.Engine
         private void OnAstNodeBuilt(Guid nodeGuid, IEnumerable<AssociativeNode> astNodes)
         {
             if (nodeContainer != null)
-                nodeContainer.OnAstNodeBuilt(nodeGuid, astNodes);
-        }
-
-        public class ASTBuildingEventArgs : EventArgs
-        {
-            public ASTBuildingEventArgs(NodeModel node)
-            {
-                Node = node;
-            }
-
-            public NodeModel Node { get; private set; }
-        }
-
-        public class ASTBuiltEventArgs : EventArgs
-        {
-            public ASTBuiltEventArgs(Guid node, ICollection<AssociativeNode> astNodes)
-            {
-                Node = node;
-                AstNodes = astNodes;
-            }
-
-            public Guid Node { get; private set; }
-            public ICollection<AssociativeNode> AstNodes { get; private set; }
+                nodeContainer.OnCompiled(nodeGuid, astNodes);
         }
 
         private enum MarkFlag

@@ -416,7 +416,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void EngineController_AstBuilt(object sender, AstBuilder.ASTBuiltEventArgs e)
+        void EngineController_AstBuilt(object sender, CompiledEventArgs e)
         {
             if (e.Node == nodeLogic.GUID)
             {

@@ -716,7 +716,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="inputAstNodes"></param>
         /// <param name="context">Compilation context</param>
-        internal virtual IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, AstBuilder.CompilationContext context)
+        internal virtual IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, CompilationContext context)
         {
             OnBuilt();
 

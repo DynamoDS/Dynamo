@@ -1224,7 +1224,7 @@ namespace Dynamo.Engine.NodeToCode
             AstBuilder builder = new AstBuilder(null);
             var sortedGraph = AstBuilder.TopologicalSortForGraph(workspaceNodes);
             var sortedNodes = sortedGraph.Where(nodes.Contains);
-            var allAstNodes = builder.CompileToAstNodes(sortedNodes, AstBuilder.CompilationContext.NodeToCode, false);
+            var allAstNodes = builder.CompileToAstNodes(sortedNodes, CompilationContext.NodeToCode, false);
 
             #endregion
 

@@ -281,7 +281,7 @@ namespace Dynamo.Nodes
             ProcessCodeDirect();
         }
 
-        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, AstBuilder.CompilationContext context)
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, CompilationContext context)
         {
             //Do not build if the node is in error.
             if (State == ElementState.Error)
@@ -300,7 +300,7 @@ namespace Dynamo.Nodes
                     (ident, rhs) =>
                     {
                         var identNode = AstFactory.BuildIdentifier(ident);
-                        if (context != AstBuilder.CompilationContext.NodeToCode)
+                        if (context != CompilationContext.NodeToCode)
                             MapIdentifiers(identNode);
                         return AstFactory.BuildAssignment(identNode, rhs);
                     });
@@ -309,7 +309,7 @@ namespace Dynamo.Nodes
 
             foreach (var astNode in codeStatements.Select(stmnt => NodeUtils.Clone(stmnt.AstNode)))
             {
-                if (context != AstBuilder.CompilationContext.NodeToCode)
+                if (context != CompilationContext.NodeToCode)
                     MapIdentifiers(astNode);
                 resultNodes.Add(astNode as AssociativeNode);
             }
