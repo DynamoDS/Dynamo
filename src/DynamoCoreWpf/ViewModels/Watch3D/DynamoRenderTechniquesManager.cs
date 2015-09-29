@@ -14,11 +14,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     {
         protected override void InitTechniques()
         {
-            AddRenderTechnique(DefaultRenderTechniqueNames.Blinn, Properties.Resources._dynamo);
-            AddRenderTechnique(DefaultRenderTechniqueNames.Points, Properties.Resources._dynamo);
-            AddRenderTechnique(DefaultRenderTechniqueNames.Lines, Properties.Resources._dynamo);
-            AddRenderTechnique(DefaultRenderTechniqueNames.BillboardText, Properties.Resources._dynamo);
-            AddRenderTechnique("RenderCustom", Properties.Resources._dynamo);
+            var source = Properties.Resources._dynamo;
+            AddRenderTechnique(DefaultRenderTechniqueNames.Blinn, source);
+            AddRenderTechnique(DefaultRenderTechniqueNames.Points, source);
+            AddRenderTechnique(DefaultRenderTechniqueNames.Lines, source);
+            AddRenderTechnique(DefaultRenderTechniqueNames.BillboardText, source);
+            AddRenderTechnique("RenderCustom", source);
         }
     }
 }
