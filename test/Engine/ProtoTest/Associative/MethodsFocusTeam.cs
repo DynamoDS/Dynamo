@@ -1455,6 +1455,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Method Resolution")]
+        [Category("Failure")]
         public void T052_Defect_ReplicationMethodOverloading_2()
         {
             String code =
