@@ -13,10 +13,6 @@ build_script:
   - msbuild %dynamo_solution%
   - msbuild %xmlDocs_solution%
 
-before_build:
-  - nuget restore .\src\Dynamo.All.2013.sln
-
-
 after_build:
   - ps: tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/BuildScript.ps1
 
