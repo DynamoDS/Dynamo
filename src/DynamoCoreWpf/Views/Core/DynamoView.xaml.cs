@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -37,7 +38,6 @@ using Dynamo.Logging;
 using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views.Gallery;
-using System.Collections.Generic;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Interfaces;
 using Dynamo.Wpf.Views.PackageManager;
@@ -51,18 +51,18 @@ namespace Dynamo.Controls
     {
         private readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
         private DynamoViewModel dynamoViewModel;
-        private Stopwatch _timer;
+        private readonly Stopwatch _timer;
         private StartPageViewModel startPage;
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
         private GalleryView galleryView;
-        private LoginService loginService;
+        private readonly LoginService loginService;
         internal ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
 
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
         private bool isPSSCalledOnViewModelNoCancel = false;
 
-        DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
+        private readonly DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
 
         public DynamoView(DynamoViewModel dynamoViewModel)
         {
@@ -144,7 +144,6 @@ namespace Dynamo.Controls
                     Log(ext.Name + ": " + exc.Message);
                 }
             }
-
         }
 
         #region NodeViewCustomization
@@ -663,16 +662,17 @@ namespace Dynamo.Controls
             }
         }
 
-        void Selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void Selection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             dynamoViewModel.CopyCommand.RaiseCanExecuteChanged();
             dynamoViewModel.PasteCommand.RaiseCanExecuteChanged();
             dynamoViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
+
         }
 
         void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
-            var prompt = new CrashPrompt(args,dynamoViewModel);
+            var prompt = new CrashPrompt(args, dynamoViewModel);
             prompt.ShowDialog();
         }
 
@@ -1011,30 +1011,19 @@ namespace Dynamo.Controls
         // passes it to thecurrent workspace
         void DynamoView_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Escape && this.IsMouseOver)
-            {
-                dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown = true;
-                e.Handled = true;
-            }
+            if (e.Key != Key.Escape || !IsMouseOver || !e.IsRepeat) return;
+
+            dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown = true;
+            e.Handled = true;
         }
 
         void DynamoView_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Escape && dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground)
-            {
-                dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown = false;
-                dynamoViewModel.EscapeCommand.Execute(null);
-                e.Handled = true;
-            }
-        }
+            if (e.Key != Key.Escape || !dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground) return;
 
-        void DynamoView_LostFocus(object sender, EventArgs e)
-        {
-            if (dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown)
-            {
-                dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown = false;
-                dynamoViewModel.EscapeCommand.Execute(null);
-            }
+            dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown = false;
+            dynamoViewModel.EscapeCommand.Execute(null);
+            e.Handled = true;
         }
 
         private void WorkspaceTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1545,6 +1534,7 @@ namespace Dynamo.Controls
 
             e.Handled = true;
         }
+
 
         private void Log(ILogMessage obj)
         {

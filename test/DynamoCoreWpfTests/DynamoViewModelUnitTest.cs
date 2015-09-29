@@ -15,7 +15,7 @@ using TestServices;
 
 namespace Dynamo.Tests
 {
-    /// <summary>
+    /// <summary>ix
     /// 
     ///     The DynamoViewModelUnitTests constructs the DynamoModel
     ///     and the DynamoViewModel, but does not construct the view.

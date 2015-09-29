@@ -109,10 +109,10 @@ namespace Dynamo.Publish
             item.Click += (sender, args) =>
             {
                 var model = new PublishModel(startupParams.AuthProvider, startupParams.CustomNodeManager);
+                model.MessageLogged += this.OnMessageLogged;
 
                 var viewModel = new PublishViewModel(model)
                 {
-                    Workspaces = loadedParams.WorkspaceModels,
                     CurrentWorkspaceModel = loadedParams.CurrentWorkspaceModel
                 };
 
@@ -122,7 +122,9 @@ namespace Dynamo.Publish
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
 
-                window.ShowDialog();                    
+                window.ShowDialog();
+
+                model.MessageLogged -= this.OnMessageLogged;
             };
 
             return item;

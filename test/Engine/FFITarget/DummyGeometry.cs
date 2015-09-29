@@ -6,6 +6,28 @@ using System.Text;
 
 namespace FFITarget
 {
+    public class DummyPoint2D : IDisposable
+    {
+        public double X { get; set; }
+        public double Y { get; set; }
+
+        public static DummyPoint2D ByCoordinates(double x, double y)
+        {
+            DummyPoint2D ret = new DummyPoint2D()
+                {
+                    X = x,
+                    Y = y,
+                };
+
+            return ret;
+        }
+
+        public void Dispose()
+        {
+            //Don't do anything
+        }
+    }
+
     public class DummyPoint : IDisposable
     {
         public double X { get; set; }
@@ -91,6 +113,18 @@ namespace FFITarget
             return ret;
         }
 
+        public static DummyVector ByVector(DummyVector rhs)
+        {
+            DummyVector ret = new DummyVector()
+            {
+                X = rhs.X,
+                Y = rhs.Y,
+                Z = rhs.Z
+            };
+
+            return ret;
+        }
+
         public DummyVector Scale(double value)
         {
             return DummyVector.ByCoordinates(X * value, Y * value, Z * value);
@@ -170,6 +204,5 @@ namespace FFITarget
         }
         
     }
-
 
 }

@@ -41,25 +41,55 @@ namespace DynamoPublishTests
                 CurrentDynamoModel.CustomNodeManager, client.Object);            
         }
 
-        [Test]
-        public void SendWorkspaceTest()
+        private void AssertNumberOfDeps(int numDeps)
         {
-            string openPath = Path.Combine(TestDirectory, @"Libraries\DynamoPublishTests\PublishWorkspaceTest.dyn");
+            var hws = CurrentDynamoModel.CurrentWorkspace as HomeWorkspaceModel;
+
+            Assert.NotNull(hws, "The current workspace is not a " + typeof(HomeWorkspaceModel).FullName);
+
+            var deps = PublishModel.WorkspaceDependencies.Collect(hws, CurrentDynamoModel.CustomNodeManager);
+
+            Assert.IsNotNull(deps.HomeWorkspace);
+            Assert.AreEqual(numDeps, deps.CustomNodeWorkspaces.Count());
+        }
+
+        [Test]
+        public void WorkspaceDependencies_Collect_ShouldWorkCorrectlyForWorkspaceWithNoDeps()
+        {
+            string openPath = Path.Combine(TestDirectory, @"Libraries\DynamoPublishTests\PublishWorkspaceTestNoDeps.dyn");
             OpenModel(openPath);
 
-            publishModel.Send(CurrentDynamoModel.Workspaces);
+            AssertNumberOfDeps(0);
+        }
 
-            Assert.IsNotNull(publishModel.HomeWorkspace);
-            Assert.AreEqual(1, publishModel.CustomNodeWorkspaces.Count);
+        [Test]
+        public void WorkspaceDependencies_Collect_ShouldWorkCorrectlyForWorkspaceWithOneDep()
+        {
+            string openPath = Path.Combine(TestDirectory, @"Libraries\DynamoPublishTests\PublishWorkspaceTestOneDep.dyn");
+            OpenModel(openPath);
+
+            AssertNumberOfDeps(1);
+        }
+
+        [Test]
+        public void WorkspaceDependencies_Collect_ShouldWorkCorrectlyForWorkspaceWithNestedDeps()
+        {
+            string openPath = Path.Combine(TestDirectory, @"Libraries\DynamoPublishTests\PublishWorkspaceTestTwoDeps.dyn");
+            OpenModel(openPath);
+
+            AssertNumberOfDeps(2);
         }
 
         [Test]
         public void PublishModelStateTest()
         {
-            string openPath = Path.Combine(TestDirectory, @"Libraries\DynamoPublishTests\PublishWorkspaceTest.dyn");
+            string openPath = Path.Combine(TestDirectory, @"Libraries\DynamoPublishTests\PublishWorkspaceTestTwoDeps.dyn");
             OpenModel(openPath);
 
-            publishModel.SendAsynchronously(CurrentDynamoModel.Workspaces);
+            var hws = CurrentDynamoModel.CurrentWorkspace as HomeWorkspaceModel;
+            Assert.NotNull(hws, "The current workspace is not a " + typeof(HomeWorkspaceModel).FullName);
+
+            publishModel.SendAsynchronously(hws);
             Assert.AreEqual(PublishModel.UploadState.Uploading, publishModel.State);
 
             var startTime = DateTime.Now;
