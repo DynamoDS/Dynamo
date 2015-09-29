@@ -410,7 +410,7 @@ o = {0.800000,0.810000}
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T11_RangeExpressionUsingClasses()
         {
@@ -529,7 +529,7 @@ a1;a2;a3;a4;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T14_RangeExpressionUsingClassMethods()
         {
@@ -853,7 +853,7 @@ b;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T22_RangeExpressionsUsingClassMethods_2()
         {
@@ -884,7 +884,7 @@ d;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T23_RangeExpressionsUsingClassMethods_3()
         {
             //string err = "1467069 - Sprint 23: rev 2634: 328588 An array cannot be used to index into an array, must throw warning";
@@ -1277,40 +1277,32 @@ num = length(arr);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TA21_Defect_1454692_3()
         {
             string code = @"
-class A
+
+def length (pts : double[] )
 {
-	Pts : var[];
-	constructor A ( pts : double[] )
+	numPts = [Imperative]
 	{
-	    Pts = pts;
-	}
-	def length ()
-	{
-		numPts = [Imperative]
+		counter = 0;
+		for(pt in pts)
 		{
-			counter = 0;
-			for(pt in Pts)
-			{
-				counter = counter + 1;
-			}
-			
-			return = counter;
+			counter = counter + 1;
 		}
-		return = numPts;
+			
+		return = counter;
 	}
+	return = numPts;
 }
     
-arr = 0.0..3.0;//{0.0,1.0,2.0,3.0};
-a1 = A.A(arr);
-num = a1.length();
+arr = 0.0..3.0;
+len = length(arr);
 	";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("num", 4, 0);
+            thisTest.Verify("len", 4, 0);
         }
 
 
@@ -1612,7 +1604,7 @@ c=twice(4);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T27_RangeExpression_class_return_1463472_2()
         {
             string code = @"
@@ -1773,21 +1765,14 @@ c = 5;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void IndexingIntoClassInstanceByRangeExpr()
         {
             string code = @"
-class A
-{
-    x;
-    constructor A(i)
-    {
-        x = i;
-    }
-}
-x = (A.A(1..3))[0];
-z = x.x;
+import(""FFITarget.dll"");
+x = (ClassFunctionality.ClassFunctionality(1..3))[0];
+z = x.IntVal;
 ";
             thisTest.VerifyRunScriptSource(code, "DNL-1467618 Regression : Use of the array index after replicated constructor yields complier error now");
             thisTest.Verify("z", 1);

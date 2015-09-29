@@ -15,7 +15,7 @@
     <ModelGuid>38c0a969-27ff-41b1-86a4-a9b9fe2f1205</ModelGuid>
   </UpdateModelValueCommand>
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
-    <DSIronPythonNode.PythonNode guid="30c44e0a-dae2-4cb2-b871-ca13954fc41b" type="DSIronPythonNode.PythonNode" nickname="Python Script" x="182.5" y="89.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="2">
+    <PythonNodeModels.PythonNode guid="30c44e0a-dae2-4cb2-b871-ca13954fc41b" type="PythonNodeModels.PythonNode" nickname="Python Script" x="182.5" y="89.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="2">
       <Script>import clr
 clr.AddReference('ProtoGeometry')
 from Autodesk.DesignScript.Geometry import *
@@ -24,7 +24,7 @@ dataEnteringNode = IN
 
 #Assign your output to the OUT variable
 OUT = 0</Script>
-    </DSIronPythonNode.PythonNode>
+    </PythonNodeModels.PythonNode>
   </CreateNodeCommand>
   <ModelEventCommand ModelGuid="30c44e0a-dae2-4cb2-b871-ca13954fc41b" EventName="AddInPort" />
   <SelectModelCommand ModelGuid="30c44e0a-dae2-4cb2-b871-ca13954fc41b" Modifiers="0" />
@@ -69,7 +69,7 @@ OUT = 0</Script>
   <DragSelectionCommand X="224.742712880193" Y="108.57555010845" DragOperation="0" />
   <DragSelectionCommand X="224.742712880193" Y="108.57555010845" DragOperation="1" />
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
-    <DSIronPythonNode.PythonNode guid="3617330e-a33d-4fd6-b13d-b3eee9da5f18" type="DSIronPythonNode.PythonNode" nickname="Python Script" x="131.718372443533" y="396.529539669599" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="2">
+    <PythonNodeModels.PythonNode guid="3617330e-a33d-4fd6-b13d-b3eee9da5f18" type="PythonNodeModels.PythonNode" nickname="Python Script" x="131.718372443533" y="396.529539669599" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="2">
       <Script># Python script to find add or subtract a series of numbers. 
 
 # Boiler-plate import statments included out-of-the-box
@@ -101,7 +101,7 @@ for index in range(len(nums)):
 OUT = []
 OUT.append(result)
 OUT.append(partials)</Script>
-    </DSIronPythonNode.PythonNode>
+    </PythonNodeModels.PythonNode>
   </CreateNodeCommand>
   <SelectModelCommand ModelGuid="3617330e-a33d-4fd6-b13d-b3eee9da5f18" Modifiers="0" />
   <DragSelectionCommand X="195.766896232472" Y="296.381769121454" DragOperation="0" />

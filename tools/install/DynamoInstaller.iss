@@ -12,7 +12,7 @@
 [Setup]
 AppName={#ProductName}
 AppPublisher={#ProductName}
-AppID={{24113174-8C13-4FA5-8010-772C9144AC41}
+AppID={{86B8C99A-85CE-45e1-8149-0A22AAAB3792}
 AppCopyright=
 AppPublisherURL=http://www.dynamobim.org
 AppSupportURL=http://www.dynamobim.org

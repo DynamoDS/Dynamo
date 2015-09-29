@@ -33,34 +33,18 @@ namespace ProtoTest.TD.Associative
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T002_Inline_Using_Math_Lib_Functions()
         {
-            string src = @"    class Math
-	{
-	    static def Sqrt ( a : var ) 
-		{
-		    return = a/2.0;
-		}
-	}
-	
-	def fo1 :int(a1 : int)
-	{
-		return = a1 * a1;
-	}
-	a	=	10;				
-	b	=	20;
-				
-	smallest1   =   a	<   b   ?   a	:	b; //10
-	largest1	=   a	>   b   ?   a	:	b; //20
-	smallest2   =   Math.Sqrt(fo1(a))	<   Math.Sqrt(fo1(b))  ?   Math.Sqrt(fo1(a))	:	Math.Sqrt(fo1(a));	//50.0
-	largest2	=   Math.Sqrt(fo1(a)) >   Math.Sqrt(fo1(b))  ?   Math.Sqrt(fo1(a))	:	Math.Sqrt(fo1(b)); //200.0
+            string src = @"    
+import(""DSCoreNodes.dll"");
+	a	=	9;				
+	b	=	25;
+	smallest   =   Math.Sqrt(b)	< a  ?   Math.Sqrt(a)	:	Math.Sqrt(b);	
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            // expected "StatementUsedInAssignment" warning
-            Assert.IsTrue((Double)mirror.GetValue("smallest2").Payload == 50.0);
-            Assert.IsTrue((Double)mirror.GetValue("largest2").Payload == 200.0);
+            Assert.IsTrue((Double)mirror.GetValue("smallest").Payload == 3);
         }
 
 
@@ -183,11 +167,10 @@ namespace ProtoTest.TD.Associative
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_InlineInDSClass")]
         [Category("Replication")]
         public void T004_Inline_Inside_Class_Constructor_and_replication()
         {
-            //Assert.Fail("1456751 - Sprint16 : Rev 990 : Inline conditions not working with replication over collections"); 
             string src = @"class MyClass
 {
     positive : var;
@@ -376,7 +359,7 @@ a = c > 1 ? a : a + 1;
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_InlineInDSClass")]
         public void T012_Defect_1467288_2()
         {
             string code =
@@ -401,38 +384,28 @@ a1 = x.a;
 
 
         [Test]
-        [Category("DSDefinedClass")]
-        public void T012_Defect_1467288_3()
+        [Category("DSDefinedClass_Ported")]
+        public void TestInlineArrayInFunction()
         {
             string code =
 @"
-class A
+def foo (c)
 {
-    a:var[]..[];
-    constructor A( c )
-    {
-        a = { 0, 1, 2 };
-        a = c > 1 ? a : a + 1;
-    }
-    def foo (c)
-    {
-        a = c == 4 ? a : a + 1;
-        return = a;
-    }
+    a = c == 4 ? c : c + 1;
+    return = a;
 }
-x = { A.A(0), A.A(2)};
-a1 = x.a;
-test = a1.foo(5);
+
+test = foo({1,2});
 ";
             string errmsg = "";
 
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("a1", new Object[] { new Object[] { 1, 2, 3 }, new Object[] { 0, 1, 2 } });
+            thisTest.Verify("test", new Object[] { 2, 3 });
         }
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_InlineDSClassConstructor")]
         public void T012_Defect_1467288_4()
         {
             string code =
@@ -458,7 +431,7 @@ a = x.a;
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_InlineDSClassConstructor")]
         public void T012_Defect_1467288_5()
         {
             string code =
@@ -482,7 +455,7 @@ a = x.a;
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_InlineDSClassConstructor")]
         public void T012_Defect_1467288_6()
         {
             string code =
@@ -631,20 +604,19 @@ test = foo();
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T014_InlineConditionContainUndefinedType_3()
         {
             string code = @"
-class A
+
+def foo ()
 {
-    static def foo ()
-    {
-        x = C==1 ? 1 : 0;
-        C = 1;
-        return  = x;
-    }
+    x = C==1 ? 1 : 0;
+    C = 1;
+    return  = x;
 }
-test = A.foo();
+
+test = foo();
 ";
             string errmsg = "1467449 - Rev 4596 : REGRESSION : Undefined variables in inline condition causes Compiler Error";
             thisTest.VerifyRunScriptSource(code, errmsg);
@@ -925,22 +897,18 @@ d;
 
 
         [Test]
-        [Category("DSDefinedClass")]
-        public void T019_conditionequalto_1467469()
+        [Category("DSDefinedClass_Ported")]
+        public void TestObjectEquality()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1692
             string code = @"
-            e;
-            class A{ a1 = 1; }
-            class B{ b2 = 2; }
-            a = A.A();
-            b = B.B();
-            c = 1 == 2;
-            d = a == b;
+            import(""FFITarget.dll"");
+            a = DummyPoint.ByCoordinates(1,2,3);
+            b = DummyVector.ByCoordinates(4,5,6);
+            c = a == b;
         ";
-            string errmsg = "MAGN-1692 equal to with user defined always returns true";
-            thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("d", false);
+            thisTest.VerifyRunScriptSource(code);
+            thisTest.Verify("c", false);
             thisTest.VerifyRuntimeWarningCount(0);
         }
 
@@ -1008,7 +976,7 @@ test = foo();
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_InlineDSClassConstructor")]
         public void T021_1467442_4()
         {
             string code = @"
@@ -1087,23 +1055,22 @@ z = foo ( a > 0 ? 1.4 : false  );
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T021_1467442_8()
         {
             string code = @"
-class A
+
+def foo ( x : double)
 {
-    static def foo ( x : double)
-    {
-        return = 0;
-    }
-    static def foo ( x : bool)
-    {
-        return = 1;
-    }
+    return = 0;
 }
+def foo ( x : bool)
+{
+    return = 1;
+}
+
 a = {-1, 1};
-z = A.foo ( a > 0 ? 1.4 : false  );
+z = foo ( a > 0 ? 1.4 : false );
 ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);

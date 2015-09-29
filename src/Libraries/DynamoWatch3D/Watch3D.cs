@@ -309,7 +309,7 @@ namespace Dynamo.Nodes
         }
 
         public override void RequestVisualUpdateAsync(
-            IScheduler scheduler, EngineController engine, IRenderPackageFactory factory)
+            IScheduler scheduler, EngineController engine, IRenderPackageFactory factory, bool forceUpdate = false)
         {
             // No visualization update is required for this node type.
         }

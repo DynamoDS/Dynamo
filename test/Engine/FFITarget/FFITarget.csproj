@@ -54,6 +54,7 @@
     <Compile Include="ClassWithRefParams.cs" />
     <Compile Include="CodeCompletionClass.cs" />
     <Compile Include="DefaultArguments.cs" />
+    <Compile Include="DisposeTest.cs" />
     <Compile Include="DummyMath.cs" />
     <Compile Include="DummyZeroTouchClass.cs" />
     <Compile Include="ElementResolverTarget.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="TestMessageLog.cs" />
     <Compile Include="TestNamespaceConflict.cs" />
     <Compile Include="TestNamespaceResolution.cs" />
+    <Compile Include="TestObjects.cs" />
     <Compile Include="TestPersistentNodeValues.cs" />
     <Compile Include="TestUpdateCount.cs" />
   </ItemGroup>
