@@ -472,7 +472,7 @@ namespace Dynamo.Models
             MigrationManager.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
             var thread = config.SchedulerThread ?? new DynamoSchedulerThread();
-            Scheduler = new DynamoScheduler(thread, IsTestMode);
+            Scheduler = new DynamoScheduler(thread, IsTestMode ? TaskProcessMode.Immediately : TaskProcessMode.BySchedule);
             Scheduler.TaskStateChanged += OnAsyncTaskStateChanged;
 
             geometryFactoryPath = config.GeometryFactoryPath;

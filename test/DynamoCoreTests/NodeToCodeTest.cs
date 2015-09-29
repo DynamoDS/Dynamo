@@ -1235,17 +1235,6 @@ namespace Dynamo.Tests
     [Category("NodeToCode")]
     class NodeToCodeSystemTest : DynamoModelTestBase
     {
-        protected override DynamoModel.IStartConfiguration CreateStartConfiguration(IPreferences settings)
-        {
-            return new DynamoModel.DefaultStartConfiguration()
-            {
-                PathResolver = pathResolver,
-                StartInTestMode = false,
-                GeometryFactoryPath = preloader.GeometryFactoryPath,
-                Preferences = settings
-            };
-        }
-
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
@@ -1302,6 +1291,8 @@ namespace Dynamo.Tests
         /// <param name="dynFilePath"></param>
         protected void MutationTest(string dynFilePath)
         {
+            CurrentDynamoModel.Scheduler.ProcessMode = Core.Threading.TaskProcessMode.BySchedule;
+
             RunModel(dynFilePath);
             // Block until all tasks are executed
             while (CurrentDynamoModel.Scheduler.Tasks.Any());
@@ -1324,7 +1315,6 @@ namespace Dynamo.Tests
 
                 var command = new DynamoModel.ConvertNodesToCodeCommand();
                 CurrentDynamoModel.ExecuteCommand(command);
-                CurrentDynamoModel.ForceRun();
                 // Block until all tasks are executed
                 while (CurrentDynamoModel.Scheduler.Tasks.Any());
 
@@ -1339,7 +1329,6 @@ namespace Dynamo.Tests
 
                 var undo = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo);
                 CurrentDynamoModel.ExecuteCommand(undo);
-                CurrentDynamoModel.ForceRun();
                 // Block until all tasks are executed
                 while (CurrentDynamoModel.Scheduler.Tasks.Any()) ;
 
