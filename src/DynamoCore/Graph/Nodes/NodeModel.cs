@@ -1681,6 +1681,19 @@ namespace Dynamo.Graph.Nodes
                     NickName = value;
                     return true;
 
+                case "Position":
+                    var pos = value.Split(';');
+                    double xPos, yPos;
+                    if (pos.Length == 2 && double.TryParse(pos[0], out xPos)
+                        && double.TryParse(pos[1], out yPos))
+                    {
+                        X = xPos;
+                        Y = yPos;
+                        ReportPosition();
+                    }
+
+                    return true;
+
                 case "UsingDefaultValue":
                     if (string.IsNullOrWhiteSpace(value))
                         return true;
