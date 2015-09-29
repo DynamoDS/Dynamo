@@ -621,8 +621,8 @@ import(""FFITarget.dll"");
 	
 	
 	x1 = test1.a;
-	y1 = test1.b;
-	x2 = test2.a;
+	x2 = test1.b;
+	y1 = test2.a;
 	y2 = test2.b;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -2503,7 +2503,7 @@ import(""FFITarget.dll"");
 pt1 = DummyPoint.ByCoordinates(3.1,2.1,1.1);
 pt2 = DummyPoint.ByCoordinates(31.1,21.1,11.1);
 l = DummyLine.ByStartPointEndPoint(pt1, pt2);               
-l_startPoint_X = l.Start.X();
+l_startPoint_X = l.Start.X;
   ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("l_startPoint_X", 3.1, 0);
@@ -3191,7 +3191,7 @@ z11 = 2;
 import(""FFITarget.dll"");
 a1 = ClassFunctionality.ClassFunctionality(1);
 a2 = a1.foo();
-a3 = a1.IntVal();
+a3 = a1.IntVal;
 a4 = 2;
 a5 = foo();
 a6 = 3;
