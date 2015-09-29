@@ -11,11 +11,11 @@ namespace XmlDocToMarkdown
     public static class MarkDownExtensions
     {
         private static Dictionary<string, int> nodeDictionary = new Dictionary<string, int>()
-        {
-            {"typeparam", 1},
-            {"returns", 2},
-            {"summary", 3},
-            {"param", 4},
+        {            
+            {"returns", 1},
+            {"summary", 2},
+            {"param", 3},
+            {"typeparam", 4},
             {"remarks", 5},
             {"example", 6},
             {"exception",7},
@@ -28,6 +28,12 @@ namespace XmlDocToMarkdown
             {"notranslation",14}
         };
 
+        /// <summary>
+        /// Reorder the xml nodes as per the design.
+        /// see nodeDictionary for the order.
+        /// </summary>
+        /// <param name="listOfNodes">The list of nodes.</param>
+        /// <returns></returns>
         public static IEnumerable<XNode> ReOrderXMLElements(this IEnumerable<XNode> listOfNodes)
         {
             var newListOfNodes = new List<XNode>();
@@ -39,15 +45,23 @@ namespace XmlDocToMarkdown
                 {
                     if (nodeDictionary.ContainsKey(element.Name.LocalName))
                     {
+                        if (element.Name.LocalName == "returns")
+                        {
+                            if (element.Value == string.Empty || element.Value == "")
+                            {
+                                element.Value = "none";
+                            }
+                        }
                         elements.Add(element, nodeDictionary[element.Name.LocalName]);
                     }
                 }
             }
 
-            if (!elements.Any(tr => tr.Key.ToString().Contains("typeparam")))
+            //for css table design, always have the first row empty if there 
+            //are no type returns tags.
+            if (!elements.Any(tr => tr.Key.ToString().Contains("returns")))
             {
-                var ele = new XElement("typeparam", new XAttribute("name", ""));
-                ele.Value = "&nbsp;";
+                var ele = new XElement("returns", new XAttribute("name", "")) { Value = "none" };
                 elements.Add(ele, 1);
             }
 
@@ -69,7 +83,7 @@ namespace XmlDocToMarkdown
                 case "Bold" :
                     //string can be Test or Test | stability.
                     var splits = name.Split('|');
-                    if (splits.Any())
+                    if (splits.Count() > 1)
                     {
                         returnString = "**" + splits[0].Trim() + "**";
                         returnString = returnString + " | " + splits[1];

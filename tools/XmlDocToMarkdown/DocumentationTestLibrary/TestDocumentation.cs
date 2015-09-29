@@ -49,7 +49,10 @@ namespace Dynamo.DocumentationTestLibrary
         /// <summary>
         /// Testing property
         /// </summary>
-        public int property1 { get; set; }
+        public int property1
+        {
+            get { return 0; }
+        }
 
         #endregion
 

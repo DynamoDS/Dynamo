@@ -190,8 +190,16 @@ namespace XmlDocToMarkdown
 
                     XmlToMarkdown.ReturnType = tempName + "<*" + genericParamName + "*>";
                 }
+                if (property.GetMethod != null)
+                {
+                    XmlToMarkdown.PropertySetType = "get;";
+                }
+                 if (property.SetMethod != null)
+                 {
+                     XmlToMarkdown.PropertySetType += "set;";
+                 }
                 var propertyNameSpace = ConvertGenericParameterName(t.FullName);
-                var current = GetMarkdownForProperty(members, propertyNameSpace + "." + property.Name);
+                var current = GetMarkdownForProperty(members, propertyNameSpace + "." + property.Name);               
                 sb.Append(current);
                 sb.AppendLine();
             }
@@ -210,7 +218,7 @@ namespace XmlDocToMarkdown
         {
             if (!t.GetEvents().Any())
             {
-                sb.AppendLine("No public events defined");
+                sb.AppendLine("####No public events defined");
             }
             foreach (var e in t.GetEvents())
             {

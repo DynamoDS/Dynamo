@@ -23,12 +23,10 @@ namespace XmlDocToMarkdown
         internal static string ApiStabilityStub = "stability=";
         internal static string ApiStabilityTemplate = "| stability index:" + "{0}";
         internal static string returnType;
+
         internal static string ReturnType
         {
-            get
-            {
-                return returnType.MarkDownFormat("Italic");
-            }
+            get { return returnType.MarkDownFormat("Italic"); }
             set
             {
                 if (value == "Void")
@@ -38,7 +36,21 @@ namespace XmlDocToMarkdown
             }
         }
 
-        private static Dictionary<string, string> templates =
+        private static string propertySetType;
+
+        internal static string PropertySetType
+        {
+            get
+            {
+                return "{" + propertySetType + "}";
+            }
+            set
+            {
+                propertySetType = value;
+            }
+        }
+
+    private static Dictionary<string, string> templates =
             new Dictionary<string, string>
                 {
                     {"doc", "## {0} ##\n\n{1}\n\n"},
@@ -77,7 +89,8 @@ namespace XmlDocToMarkdown
             new Func<string, string, XElement, string[]>((att1, att2, node) =>
             {
                 var methodName = node.Attribute(att1).Value.Split('.').Last();
-                var convertedMethodName = ConvertGenericParameters(node, methodName, att2);
+                methodName = methodName + " " + XmlToMarkdown.PropertySetType;
+                var convertedMethodName = ConvertGenericParameters(node, methodName, att2);               
                 convertedMethodName = string.Join(" ", ReturnType, convertedMethodName.MarkDownFormat("Bold"));
                 return new[]
                 {
@@ -162,14 +175,14 @@ namespace XmlDocToMarkdown
                             className = methodParams[i].Split('.').Last();
                         }
 
-                        stringList.Add(className + " " + param.Attribute("name").Value);
+                        stringList.Add(className.MarkDownFormat("Italic") + " " + param.Attribute("name").Value);
                     }
                     i++;
                 }
                 //case 1: Param tag on the method.
                 if (stringList.Count > 0)
                 {
-                    methodName = methodName + "(*" + stringList + "*)";
+                    methodName = methodName + "(" + stringList + ")";
                 }
                 //case 1: No Param tag on the method.        
                 else
