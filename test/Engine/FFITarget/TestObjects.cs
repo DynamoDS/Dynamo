@@ -42,6 +42,35 @@ namespace FFITarget
             return new List<List<int>>() { d1, d2 };
         }
 
+        public int Add()
+        {
+            int sum = 0;
+            foreach (int n in X)
+            {
+                sum = sum + n;
+            }
+            return sum;
+        }
+
+        public void Dispose()
+        {
+            //Don't do anything
+        }
+    }
+
+    public class BooleanMember : IDisposable
+    {
+        public bool a { get; set; }
+
+        public BooleanMember()
+        {
+        }
+
+        public BooleanMember(bool b)
+        {
+            a = b;
+        }
+
         public void Dispose()
         {
             //Don't do anything
@@ -278,4 +307,154 @@ namespace FFITarget
             //Don't do anything
         }
     }
+
+
+    public class TestSamePropertyName : IDisposable
+    {
+        public TestObjectA a { get; set; }
+
+        public TestSamePropertyName()
+        {
+            a = null;
+        }
+
+        public TestSamePropertyName(TestObjectA obj)
+        {
+            a = obj;
+        }
+
+        public void Dispose()
+        {
+            //Don't do anything
+        }
+    }
+
+    public class TestDefaultArgument : IDisposable
+    {
+        public int a { get; set; }
+        public int b { get; set; }
+
+        public TestDefaultArgument()
+        {
+            a = 0;
+        }
+
+        public TestDefaultArgument(int m = 1)
+        {
+            a = m;
+        }
+
+        public TestDefaultArgument(int m, int n = 2)
+        {
+            a = m;
+            b = n;
+        }
+
+        public void Dispose()
+        {
+            //Don't do anything
+        }
+    }
+
+    public class DummyTuple4 : IDisposable
+    {
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Z { get; set; }
+        public double H { get; set; }
+
+        public DummyTuple4()
+        {
+        }
+
+        public static DummyTuple4 ByCoordinates3(List<double> coordinates)
+        {
+            return new DummyTuple4()
+            {
+                X = coordinates[0],
+                Y = coordinates[1],
+                Z = coordinates[2],
+                H = 1.0       
+            };
+        }
+
+        public static DummyTuple4 XYZH(double xValue, double yValue, double zValue, double hValue)
+        {
+            return new DummyTuple4()
+            {
+                X = xValue,
+                Y = yValue,
+                Z = zValue,
+                H = hValue
+            };
+        }
+
+        public static DummyTuple4 XYZ(double xValue, double yValue, double zValue)
+        {
+            return new DummyTuple4()
+            {
+                X = xValue,
+                Y = yValue,
+                Z = zValue,
+                H = 1.0
+            };
+        }
+
+        public double Multiply(DummyTuple4 other)
+        {
+            return X * other.X + Y * other.Y + Z * other.Z + H * other.H;
+        }
+
+        
+        public List<double> Coordinates3()
+        {
+            return new List<double>(){ X, Y, Z };
+        }
+
+        public void Dispose()
+        {
+            //Don't do anything
+        }
+    }
+
+    public class TestOverloadConstructor : IDisposable
+    {
+        public int a { get; set; }
+        public int b { get; set; }
+        public int c { get; set; }
+
+        public TestOverloadConstructor()
+        {
+            a = 0;
+            b = 0;
+            c = 0;
+        }
+
+        public TestOverloadConstructor(int x)
+        {
+            a = x;
+            b = 0;
+            c = 0;
+        }
+
+        public TestOverloadConstructor(int x, int y)
+        {
+            a = x;
+            b = y;
+            c = 0;
+        }
+
+        public TestOverloadConstructor(int x, int y, int z)
+        {
+            a = x;
+            b = y;
+            c = z;
+        }
+
+        public void Dispose()
+        {
+            //Don't do anything
+        }
+    }
+
 }
