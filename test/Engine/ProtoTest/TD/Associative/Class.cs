@@ -3189,7 +3189,7 @@ z11 = 2;
         {
             string code = @"
 import(""FFITarget.dll"");
-a1 = ClassFunctionality.ClassFunctionality(1);
+a1 = ClassFunctionality.ClassFunctionality(""1"");
 a2 = a1.foo();
 a3 = a1.IntVal;
 a4 = 2;
