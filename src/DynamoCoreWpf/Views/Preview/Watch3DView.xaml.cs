@@ -1,45 +1,17 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Media.Media3D;
 using System.Windows.Threading;
-using System.Xml;
 using Autodesk.DesignScript.Interfaces;
-using Dynamo.Core;
-using Dynamo.Core.Threading;
-using Dynamo.Interfaces;
-using Dynamo.Models;
-using Dynamo.Selection;
-using Dynamo.UI;
-using Dynamo.ViewModels;
-using Dynamo.Wpf.Rendering;
-using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using Dynamo.Wpf.Views.Preview;
-using DynamoUtilities;
 using HelixToolkit.Wpf.SharpDX;
-using HelixToolkit.Wpf.SharpDX.Core;
-using SharpDX;
-using Color = System.Windows.Media.Color;
-using ColorConverter = System.Windows.Media.ColorConverter;
 using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
-using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
-using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using Point = System.Windows.Point;
-using Quaternion = SharpDX.Quaternion;
-using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
 
 namespace Dynamo.Controls
 {
