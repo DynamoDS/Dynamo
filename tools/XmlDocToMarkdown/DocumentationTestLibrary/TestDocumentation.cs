@@ -127,6 +127,17 @@ namespace Dynamo.DocumentationTestLibrary
         {
 
         }
+
+        /// <summary>
+        /// Tests the with multiple parameters.
+        /// </summary>
+        /// <param name="test1">The test1.</param>
+        /// <param name="test2">The test2.</param>
+        /// <param name="test3">The test3.</param>
+        public void TestWithMultipleParameters(int test1, int test2, int test3)
+        {
+            
+        }
     }
 
     public class Person

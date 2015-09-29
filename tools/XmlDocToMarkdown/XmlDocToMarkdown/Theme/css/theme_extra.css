@@ -172,3 +172,94 @@ code.cs, code.c {
  .wy-side-nav-search img {
   background : none
 }
+
+.rst-content table.docutils {
+    border-collapse: separate;
+    border-radius: 10px;
+    border-spacing: 0;
+    -webkit-border-radius: 10px;
+    -moz-border-radus: 10px;
+    overflow: hidden;
+}
+
+.rst-content table.docutils strong {
+    font-size: 100%;
+}
+
+.rst-content table.docutils em {
+    font-weight: normal;
+    color: #939598;
+}
+.rst-content table.docutils tr:nth-child(2) strong {
+    color: #939598;
+}
+.rst-content table.docutils strong em {
+    font-weight: normal;    
+}
+.rst-content table.docutils thead {
+    background-color: #E6E7E8!important;
+}
+
+.rst-content table.docutils tr th {
+    padding: 20px;
+}
+
+.rst-content table.docutils th:first-child {
+    font-size: 100%;
+    color: #000000;
+}
+
+.rst-content table.docutils thead th:last-child {
+    font-weight: normal;
+    text-align: right;
+}
+
+.rst-content table.docutils tr td {
+    border-right-color: rgba(0,0,0,0);
+    border-left-color: rgba(0,0,0,0);
+    border-bottom-color:rgba(0,0,0,0);
+    background-color: rgba(0,0,0,0)!important;
+}
+
+.rst-content table.docutils tbody tr:first-child td strong {
+    font-weight: normal;
+    color: #939598;
+}
+
+.rst-content table.docutils tr:nth-child(2n+3) td {
+    padding-top: 15px;
+}
+
+.rst-content table.docutils tr:nth-child(n+3) td {
+    text-indent: 30px;
+    background-color: #F7F7F7!important;
+}
+
+.rst-content table.docutils tr:nth-child(2n+4) td {
+    text-indent: 30px;
+    line-height: 0px;
+}
+
+.rst-content table.docutils tr:last-child td {
+    padding-bottom: 30px;
+}
+
+.wy-side-nav-search {
+    color: #BBB;
+    margin-bottom:0px;
+}
+nav.stickynav {
+    background-color:white;
+    height: 100%;
+    position: absolute
+}
+
+.wy-body-for-nav {
+    background-image: none;  
+}
+
+wy-menu wy-menu-vertical {
+    position: absolute;
+    height:100%
+}
+

@@ -64,11 +64,11 @@ namespace XmlDocToMarkdown
                     {"example", "| **Example:** | _C# code_\n\n```c#\n{0}\n```\n"},
                     {"seePage", "[[{1}|{0}]]"},
                     {"seeAnchor", "[{1}]({0})"},
-                    {"param", "| **{0}:**\n| {1}\n" },
+                    {"param", "| **{0}**\n|*Desc* : {1}\n" },
                     {"exception", "| **[[{0}|{0}]]:** | {1}\n" },
                     {"returns", "| **Return Value:** {0}\n"},
                     {"none", ""},
-                    {"typeparam", "| **TypeParam : {0} =** | {1}\n" },
+                    {"typeparam", "| **TypeParam : {0} =** {1}\n" },
                     {"c", "| `{0}`\n"},                   
                     {ApiStabilityTag, ApiStabilityTemplate}
                 };

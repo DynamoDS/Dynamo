@@ -34,6 +34,7 @@
   <script src="{{ base_url }}/js/modernizr-2.8.3.min.js"></script>
   <script type="text/javascript" src="{{ base_url }}/js/highlight.pack.js"></script>
   <script src="{{ base_url }}/js/theme.js"></script>
+  <script src="{{ base_url }}/js/DocJquery.js"></script>
 
   {%- block extrahead %} {% endblock %}
 
@@ -66,7 +67,7 @@
   <div class="wy-grid-for-nav">
 
     {# SIDE NAV, TOGGLES ON MOBILE #}
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav"  id="menuNavigation">
      
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
@@ -88,7 +89,7 @@
       </nav>
 
       {# PAGE CONTENT #}
-      <div class="wy-nav-content">
+      <div id = "navigationContent" class="wy-nav-content">
         <div class="rst-content">
           {% include "breadcrumbs.html" %}
           <div role="main">
