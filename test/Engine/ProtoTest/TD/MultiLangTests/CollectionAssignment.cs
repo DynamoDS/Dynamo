@@ -2359,7 +2359,7 @@ s=c[0].IntVal[0];// access non array variable as if its array ";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T61_Assign_Non_Existent_Array_Properties_1467082_4()
         {
@@ -2367,20 +2367,26 @@ s=c[0].IntVal[0];// access non array variable as if its array ";
 
             //thisTest.VerifyWarning(ProtoCore.BuildData.WarningID.kIdUnboundIdentifier);    
             string errmsg = "1467235 - Sprint25: rev 3411 : When class property is a collection and a single value is passed to it, it should be coerced to a collection";
-            string code = @"
-import(""FFITarget.dll"");
-c = { ArrayMember.Ctor({0,1}), ArrayMember.Ctor({2}) };
-d = { ArrayMember.Ctor({0,1}), ArrayMember.Ctor({2}) };
-e = { ArrayMember.Ctor({0,1}), ArrayMember.Ctor({2}) };
-f = { ArrayMember.Ctor({0,1}), ArrayMember.Ctor({2}) };
-c[1].X=5;// wrong index 
-d[1].X={0,1}; // entire row 
-e[1][1].X=5;// non existing index 
-f[1][0].X=5;// correct one 
-p = c[1].X; 
-q = d[1].X;
-r = e[1][1].X;
-s = f[1][0].X;
+            string code = @"class A  
+{
+   x : var [];
+    constructor A ( y : var )
+    {
+        x = y;
+    }
+}
+c = { A.A({0,1}), A.A({2}) };
+d = { A.A({0,1}), A.A({2}) };
+e = { A.A({0,1}), A.A({2}) };
+f = { A.A({0,1}), A.A({2}) };
+c[1].x=5;// wrong index 
+d[1].x={0,1}; // entire row 
+e[1][1].x=5;// non existing index 
+f[1][0].x=5;// correct one 
+p = c[1].x; 
+q = d[1].x;
+r = e[1][1].x;
+s = f[1][0].x;
 ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
 
@@ -2389,7 +2395,7 @@ s = f[1][0].X;
             thisTest.Verify("p", new Object[] { new Object[] { 5 } });
             thisTest.Verify("q", new Object[] { new Object[] { 0, 1 } });
             thisTest.Verify("r", a);
-            thisTest.Verify("s", a);
+            thisTest.Verify("s", new Object[] { 5 });
         }
 
         [Test]
