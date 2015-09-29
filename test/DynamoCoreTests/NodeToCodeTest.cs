@@ -1252,12 +1252,13 @@ namespace Dynamo.Tests
             base.GetLibrariesToPreload(libraries);
         }
 
-        private void SelectAll()
+        private void SelectAll(IEnumerable<Guid> nodes)
         {
             DynamoSelection.Instance.ClearSelection();
             foreach (var node in CurrentDynamoModel.CurrentWorkspace.Nodes)
             {
-                DynamoSelection.Instance.Selection.Add(node); 
+                if (nodes.Contains(node.GUID))
+                    DynamoSelection.Instance.Selection.Add(node); 
             }
         }
 
@@ -1301,47 +1302,56 @@ namespace Dynamo.Tests
         /// <param name="dynFilePath"></param>
         protected void MutationTest(string dynFilePath)
         {
-            Dictionary<Guid, string> previewMap = new Dictionary<Guid, string>();
             RunModel(dynFilePath);
+            // Block until all tasks are executed
+            while (CurrentDynamoModel.Scheduler.Tasks.Any());
 
-            foreach (var node in CurrentDynamoModel.CurrentWorkspace.Nodes)
-            {
-                previewMap[node.GUID] = GetStringData(node.GUID);
-            }
+            var allNodes = CurrentDynamoModel.CurrentWorkspace.Nodes.Select(n => n.GUID).ToList();
+            int nodeCount = allNodes.Count();
+            var previewMap = allNodes.ToDictionary(n => n, n => GetStringData(n));
 
-            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes.Select(n => n.GUID).ToList();
-            int nodeCount = CurrentDynamoModel.CurrentWorkspace.Nodes.Count();
+            var convertibleNodes = CurrentDynamoModel.CurrentWorkspace.Nodes
+                                                                      .Where(node => node.IsConvertible)
+                                                                      .Select(n => n.GUID).ToList();
             int connectorCount = CurrentDynamoModel.CurrentWorkspace.Connectors.Count();
 
-            foreach (var node in nodes)
+            for (int i = 1; i <= convertibleNodes.Count(); ++i)
             {
-                SelectAllExcept(node);
+                var toBeConvertedNodes = convertibleNodes.Take(i);
+                var otherNodes = allNodes.Except(toBeConvertedNodes);
+
+                SelectAll(toBeConvertedNodes);
+
                 var command = new DynamoModel.ConvertNodesToCodeCommand();
                 CurrentDynamoModel.ExecuteCommand(command);
                 CurrentDynamoModel.ForceRun();
+                // Block until all tasks are executed
                 while (CurrentDynamoModel.Scheduler.Tasks.Any());
 
-                // Verify after converting remaining nodes to code, the value
-                // of node that is not converted should remain same.
-                var preValue = previewMap[node];
-                var currentValue = GetStringData(node);
-                Assert.AreEqual(preValue, currentValue);
- 
+                foreach (var node in otherNodes)
+                {
+                    // Verify after converting remaining nodes to code, the value
+                    // of node that is not converted should remain same.
+                    var preValue = previewMap[node];
+                    var currentValue = GetStringData(node);
+                    Assert.AreEqual(preValue, currentValue);
+                }
+
                 var undo = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo);
                 CurrentDynamoModel.ExecuteCommand(undo);
                 CurrentDynamoModel.ForceRun();
-
-                while (CurrentDynamoModel.Scheduler.Tasks.Any());
+                // Block until all tasks are executed
+                while (CurrentDynamoModel.Scheduler.Tasks.Any()) ;
 
                 // Verify after undo everything is OK
                 Assert.AreEqual(nodeCount, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
                 Assert.AreEqual(connectorCount, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
-                foreach (var otherNode in CurrentDynamoModel.CurrentWorkspace.Nodes)
+                foreach (var node in CurrentDynamoModel.CurrentWorkspace.Nodes)
                 {
-                    Assert.IsTrue(previewMap.ContainsKey(otherNode.GUID));
-                    preValue = previewMap[otherNode.GUID];
-                    currentValue = GetStringData(otherNode.GUID);
+                    Assert.IsTrue(previewMap.ContainsKey(node.GUID));
+                    var preValue = previewMap[node.GUID];
+                    var currentValue = GetStringData(node.GUID);
                     Assert.AreEqual(preValue, currentValue);
                 }
             }
