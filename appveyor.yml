@@ -9,9 +9,14 @@ environment:
   xmlDocs_solution: tools/XmlDocToMarkdown/XmlDocToMarkdown.sln
   access_token:
     secure:f8907a86c9f054013e4aabba5fb0f39264a55aae
+	
 build_script:
   - msbuild %dynamo_solution%
   - msbuild %xmlDocs_solution%
+
+before_build:
+  - nuget restore .\src\Dynamo.All.2013.sln
+
 
 after_build:
   - ps: tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/BuildScript.ps1

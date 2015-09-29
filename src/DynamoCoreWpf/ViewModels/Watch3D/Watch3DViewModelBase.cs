@@ -65,7 +65,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         protected readonly IDynamoViewModel viewModel;
         protected readonly INotifyPropertyChanged renderPackageFactoryViewModel;
 
-        protected int renderingTier;
         protected List<NodeModel> recentlyAddedNodes = new List<NodeModel>();
         protected bool active;
         private readonly List<IRenderPackage> currentTaggedPackages = new List<IRenderPackage>();
@@ -190,7 +189,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private void LogVisualizationCapabilities()
         {
-            renderingTier = (RenderCapability.Tier >> 16);
+            var renderingTier = (RenderCapability.Tier >> 16);
             var pixelShader3Supported = RenderCapability.IsPixelShaderVersionSupported(3, 0);
             var pixelShader4Supported = RenderCapability.IsPixelShaderVersionSupported(4, 0);
             var softwareEffectSupported = RenderCapability.IsShaderEffectSoftwareRenderingSupported;
@@ -268,13 +267,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     break;
             }
 
-            model.CurrentWorkspace.Nodes.Select(n => n.IsUpdated = true);
-
             foreach (var node in
                 model.CurrentWorkspace.Nodes)
             {
                 node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController,
-                        renderPackageFactory);
+                        renderPackageFactory, true);
             }
         }
 

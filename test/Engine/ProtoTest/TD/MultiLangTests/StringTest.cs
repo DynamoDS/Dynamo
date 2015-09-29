@@ -175,7 +175,7 @@ result =
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T03_Defect_UndefinedType()
         {
@@ -185,29 +185,10 @@ def foo(x:S)
 	return = x;
 }
 b = foo(1);
-class C 
-{
-	fx:M;
-	constructor C(x :N)
-	{
-		fx = x;
-	}
-	
-	def foo(fy : M)
-	{
-		fx = fy;
-		return = fx;
-	}
-	
-}
-c = C.C(1);
-r1 = c.fx;
-r2 = c.foo(2);";
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             object v1 = null;
-            TestFrameWork.Verify(mirror, "r1", v1, 0);
-            TestFrameWork.Verify(mirror, "r2", v1, 0);
-            TestFrameWork.Verify(mirror, "c", v1, 0);
+            TestFrameWork.Verify(mirror, "b", v1, 0);
         }
 
         [Test]
@@ -275,7 +256,7 @@ r =
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T06_String_Class()
         {
@@ -606,18 +587,19 @@ m = m+n;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("ConcatenationString")]
         public void TV_ADD_StringPointer_1()
         {
             String code =
-                @"                class A {}                a  = A.A();                b = ""a"" + a;                    ";
+                @"
+import(""FFITarget.dll"");                a  = ClassFunctionality.ClassFunctionality();                b = ""a"" + a;                    ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("b", "aA{}");
+            thisTest.Verify("b", "aFFITarget.ClassFunctionality");
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("ConcatenationString")]
         public void TV_ADD_StringPointer_2()
         {
@@ -628,16 +610,17 @@ m = m+n;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("ConcatenationString")]
         public void TV_ADD_StringArr()
         {
             String code =
-                @"                class A {                    fx:int = 1;                }                a  = A.A();                arr1 = {1,2};                arr2 = {1,a};                b1 = ""a"" + __ToStringFromArray(arr1);                b2 = ""a"" + __ToStringFromArray(arr2);                ";
+                @"
+import(""FFITarget.dll"");                a  = ClassFunctionality.ClassFunctionality(1);                arr1 = {1,2};                arr2 = {1,a};                b1 = ""a"" + __ToStringFromArray(arr1);                b2 = ""a"" + __ToStringFromArray(arr2);                ";
             thisTest.RunScriptSource(code);
             thisTest.SetErrorMessage("1467263 - Concatenating a string with an integer throws method resolution error");
             thisTest.Verify("b1", "a{1,2}");
-            thisTest.Verify("b2", "a{1,A{fx = 1}}");
+            thisTest.Verify("b2", "a{1,FFITarget.ClassFunctionality}");
         }
 
         [Test]
