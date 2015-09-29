@@ -590,12 +590,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             recentlyAddedNodes.Clear();
 
-            // Don't render if the user's system is incapable.
-            if (renderingTier == 0)
-            {
-                return;
-            }
-
 #if DEBUG
             renderTimer.Start();
 #endif
