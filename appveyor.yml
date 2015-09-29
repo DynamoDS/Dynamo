@@ -9,7 +9,6 @@ environment:
   xmlDocs_solution: tools/XmlDocToMarkdown/XmlDocToMarkdown.sln
   access_token:
     secure:f8907a86c9f054013e4aabba5fb0f39264a55aae
-	
 build_script:
   - msbuild %dynamo_solution%
   - msbuild %xmlDocs_solution%
