@@ -451,11 +451,9 @@ namespace Dynamo.Engine
 
         internal class StringConstants
         {
-            public const string ParamPrefix = @"p_";
             public const string FunctionPrefix = @"__func_";
             public const string VarPrefix = @"var_";
             public const string ShortVarPrefix = @"t";
-            public const string CustomNodeReturnVariable = @"%arr";
         }
     }
 }
