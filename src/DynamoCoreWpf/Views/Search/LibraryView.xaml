@@ -825,7 +825,7 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         PreviewMouseUp="OnAddButtonPreviewMouseDown"
-                        Content="Add">
+                        Content="{x:Static p:Resources.AddToLibraryButton}">
                     <Button.Template>
                         <ControlTemplate>
                             <Border x:Name="container"
