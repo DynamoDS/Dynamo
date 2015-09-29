@@ -86,7 +86,7 @@ namespace ProtoTest.FFITests
             Assert.Greater(attributes.Length, 0);
             Assert.IsTrue(attributes[0] is OutPortNamesAttribute);
 
-            var parameters = (attributes[0] as OutPortNamesAttribute).Values;
+            var parameters = (attributes[0] as OutPortNamesAttribute).PortNames;
             var expected = new[] { Tuple.Create("par1", "int"), Tuple.Create("par2", "double") };
 
             Assert.AreEqual(expected, parameters);
@@ -103,7 +103,7 @@ namespace ProtoTest.FFITests
             Assert.Greater(attributes.Length, 0);
             Assert.IsTrue(attributes[0] is OutPortNamesAttribute);
 
-            var parameters = (attributes[0] as OutPortNamesAttribute).Values;
+            var parameters = (attributes[0] as OutPortNamesAttribute).PortNames;
             var expected = new [] { "item1", "item2", "item3" };
 
             Assert.AreEqual(expected, parameters);

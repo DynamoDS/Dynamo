@@ -73,9 +73,6 @@ namespace Dynamo.Models
                     .Select(x => x.ElementDescription)
                     .FirstOrDefault() ?? "";
 
-            OutputParameters = Type.GetCustomAttributes<OutPortNamesAttribute>(false)
-                .SelectMany(x => x.Values);
-
             var inputNames = Type.GetCustomAttributes<InPortNamesAttribute>(false)
                 .SelectMany(x => x.PortNames).ToList();
             var inputTypes = Type.GetCustomAttributes<InPortTypesAttribute>(false)
@@ -90,6 +87,9 @@ namespace Dynamo.Models
                 InputParameters = new List<Tuple<string, string>>();
             }
 
+
+            OutputParameters = Type.GetCustomAttributes<OutPortTypesAttribute>(false)
+                .SelectMany(x => x.PortTypes);
         }
 
         /// <summary>

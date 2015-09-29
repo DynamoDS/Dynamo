@@ -258,7 +258,7 @@ namespace Dynamo.Nodes
     }
 
     /// <summary>
-    /// Indicates ports' names.
+    /// Indicates input ports' names.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
     public class InPortNamesAttribute : PortAttribute
@@ -278,7 +278,7 @@ namespace Dynamo.Nodes
     }
 
     /// <summary>
-    /// Indicates ports' description
+    /// Indicates input ports' description
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
     public class InPortDescriptionsAttribute : PortAttribute
@@ -298,7 +298,7 @@ namespace Dynamo.Nodes
     }
 
     /// <summary>
-    /// Indicates ports' types
+    /// Indicates input ports' types
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
     public class InPortTypesAttribute : PortAttribute
@@ -317,14 +317,64 @@ namespace Dynamo.Nodes
         }
     }
 
-    [AttributeUsage(AttributeTargets.Class)]
-    public class OutPortNamesAttribute : Attribute
-    {
-        public OutPortNamesAttribute(params string[] values)
-        {
-            Values = values;
-        }
 
-        public string[] Values { get; private set; }
+    /// <summary>
+    /// Indicates output ports' names.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class)]
+    public class OutPortNamesAttribute : PortAttribute
+    {
+        public OutPortNamesAttribute(Type resourceType, params string[] resourceNames)
+            : base(resourceType, resourceNames)
+        { }
+
+        public OutPortNamesAttribute(params string[] names)
+            : base(names)
+        { }
+
+        public IEnumerable<string> PortNames
+        {
+            get { return PortTitles; }
+        }
+    }
+
+    /// <summary>
+    /// Indicates output ports' description
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class)]
+    public class OutPortDescriptionsAttribute : PortAttribute
+    {
+        public OutPortDescriptionsAttribute(Type resourceType, params string[] resourceTypes)
+            : base(resourceType, resourceTypes)
+        { }
+
+        public OutPortDescriptionsAttribute(params string[] types)
+            : base(types)
+        { }
+
+        public IEnumerable<string> PortDescriptions
+        {
+            get { return PortTitles; }
+        }
+    }
+
+    /// <summary>
+    /// Indicates output ports' types
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class)]
+    public class OutPortTypesAttribute : PortAttribute
+    {
+        public OutPortTypesAttribute(Type resourceType, params string[] resourceTypes)
+            : base(resourceType, resourceTypes)
+        { }
+
+        public OutPortTypesAttribute(params string[] types)
+            : base(types)
+        { }
+
+        public IEnumerable<string> PortTypes
+        {
+            get { return PortTitles; }
+        }
     }
 }
