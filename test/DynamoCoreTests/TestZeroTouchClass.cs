@@ -76,24 +76,58 @@ namespace ProtoTest.FFITests
         }
 
         [Test]
-        public void InputParametersTest()
+        public void InPortNamesAttributeTest()
         {
             var assembly = Assembly.UnsafeLoadFrom("FFITarget.dll");
             var testClass = assembly.GetType("FFITarget.DummyZeroTouchClass1");
 
-            var attributes = testClass.GetCustomAttributes(typeof(OutPortNamesAttribute), false);
+            var attributes = testClass.GetCustomAttributes(typeof(InPortNamesAttribute), false);
             Assert.IsNotNull(attributes);
             Assert.Greater(attributes.Length, 0);
-            Assert.IsTrue(attributes[0] is OutPortNamesAttribute);
+            Assert.IsTrue(attributes[0] is InPortNamesAttribute);
 
-            var parameters = (attributes[0] as OutPortNamesAttribute).PortNames;
-            var expected = new[] { Tuple.Create("par1", "int"), Tuple.Create("par2", "double") };
+            var parameters = (attributes[0] as InPortNamesAttribute).PortNames;
+            var expected = new[] { "par1", "par2" };
 
             Assert.AreEqual(expected, parameters);
         }
 
         [Test]
-        public void OutputParametersTest()
+        public void InPortTypesAttributeTest()
+        {
+            var assembly = Assembly.UnsafeLoadFrom("FFITarget.dll");
+            var testClass = assembly.GetType("FFITarget.DummyZeroTouchClass1");
+
+            var attributes = testClass.GetCustomAttributes(typeof(InPortTypesAttribute), false);
+            Assert.IsNotNull(attributes);
+            Assert.Greater(attributes.Length, 0);
+            Assert.IsTrue(attributes[0] is InPortTypesAttribute);
+
+            var parameters = (attributes[0] as InPortTypesAttribute).PortTypes;
+            var expected = new[] { "int", "double" };
+
+            Assert.AreEqual(expected, parameters);
+        }
+
+        [Test]
+        public void InPortDescriptionsAttributeTest()
+        {
+            var assembly = Assembly.UnsafeLoadFrom("FFITarget.dll");
+            var testClass = assembly.GetType("FFITarget.DummyZeroTouchClass1");
+
+            var attributes = testClass.GetCustomAttributes(typeof(InPortDescriptionsAttribute), false);
+            Assert.IsNotNull(attributes);
+            Assert.Greater(attributes.Length, 0);
+            Assert.IsTrue(attributes[0] is InPortDescriptionsAttribute);
+
+            var parameters = (attributes[0] as InPortDescriptionsAttribute).PortDescriptions;
+            var expected = new[] { "some description" };
+
+            Assert.AreEqual(expected, parameters);
+        }
+
+        [Test]
+        public void OutPortNamesAttributeTest()
         {
             var assembly = Assembly.UnsafeLoadFrom("FFITarget.dll");
             var testClass = assembly.GetType("FFITarget.DummyZeroTouchClass1");
@@ -104,7 +138,41 @@ namespace ProtoTest.FFITests
             Assert.IsTrue(attributes[0] is OutPortNamesAttribute);
 
             var parameters = (attributes[0] as OutPortNamesAttribute).PortNames;
-            var expected = new [] { "item1", "item2", "item3" };
+            var expected = new[] { "out1", "out2", "out3" };
+
+            Assert.AreEqual(expected, parameters);
+        }
+
+        [Test]
+        public void OutPortTypesAttributeTest()
+        {
+            var assembly = Assembly.UnsafeLoadFrom("FFITarget.dll");
+            var testClass = assembly.GetType("FFITarget.DummyZeroTouchClass1");
+
+            var attributes = testClass.GetCustomAttributes(typeof(OutPortTypesAttribute), false);
+            Assert.IsNotNull(attributes);
+            Assert.Greater(attributes.Length, 0);
+            Assert.IsTrue(attributes[0] is OutPortTypesAttribute);
+
+            var parameters = (attributes[0] as OutPortTypesAttribute).PortTypes;
+            var expected = new[] { "1", "2", "3" };
+
+            Assert.AreEqual(expected, parameters);
+        }
+
+        [Test]
+        public void OutPortDescriptionsAttributeTest()
+        {
+            var assembly = Assembly.UnsafeLoadFrom("FFITarget.dll");
+            var testClass = assembly.GetType("FFITarget.DummyZeroTouchClass1");
+
+            var attributes = testClass.GetCustomAttributes(typeof(OutPortDescriptionsAttribute), false);
+            Assert.IsNotNull(attributes);
+            Assert.Greater(attributes.Length, 0);
+            Assert.IsTrue(attributes[0] is OutPortDescriptionsAttribute);
+
+            var parameters = (attributes[0] as OutPortDescriptionsAttribute).PortDescriptions;
+            var expected = new[] { "desc" };
 
             Assert.AreEqual(expected, parameters);
         }

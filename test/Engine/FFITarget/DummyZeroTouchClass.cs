@@ -1,5 +1,6 @@
 ﻿using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Properties;
 
 namespace FFITarget
 {
@@ -17,6 +18,13 @@ namespace FFITarget
         }
     }
 
+    [InPortNames("par1", "par2")]
+    [InPortTypes("int", "double")]
+    [InPortDescriptions(typeof(Resources), "DescriptionResource1")]
+
+    [OutPortNames("out1", "out2", "out3")]
+    [OutPortTypes("1", "2", "3")]
+    [OutPortDescriptions("desc")]
     public class DummyZeroTouchClass1
     {
 

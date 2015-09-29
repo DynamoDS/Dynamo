@@ -633,4 +633,7 @@ value : bool = false</value>
   <data name="InputPortsNameDescriptionWarningMessage" xml:space="preserve">
     <value>Number of input ports name does not equal number of port descriptions.</value>
   </data>
+  <data name="DescriptionResource1" xml:space="preserve">
+    <value>some description</value>
+  </data>
 </root>

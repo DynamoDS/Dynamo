@@ -1146,14 +1146,14 @@ namespace Dynamo.Models
         /// </summary>
         public void RegisterOutputPorts()
         {
-            // Old version of input ports registration.
-            // Used InPortData.
+            // Old version of output ports registration.
+            // Used OutPortData.
             if (OutPortData.Count > 0 && !isOutputPortsRegistered)
             {
                 Warning(Properties.Resources.DeprecatedPortNamingStyleMessage, true);
             }
 
-            // New version of input ports registration.
+            // New version of output ports registration.
             // Used port Attributes.
             if (!isOutputPortsRegistered)
             {

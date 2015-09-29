@@ -43,7 +43,7 @@ namespace DSCoreNodesUI
 
         public ColorRange()
         {
-            InitializePorts();
+            RegisterAllPorts();
 
             this.PropertyChanged += ColorRange_PropertyChanged;
             foreach (var port in InPorts)
@@ -57,11 +57,6 @@ namespace DSCoreNodesUI
         void Connectors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             OnRequestChangeColorRange();
-        }
-
-        protected virtual void InitializePorts()
-        {
-            RegisterAllPorts();
         }
 
         void ColorRange_PropertyChanged(object sender, PropertyChangedEventArgs e)
