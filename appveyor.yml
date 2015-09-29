@@ -8,10 +8,14 @@ environment:
   dynamo_solution: src/Dynamo.All.2013.sln
   xmlDocs_solution: tools/XmlDocToMarkdown/XmlDocToMarkdown.sln
   access_token:
-    secure:f8907a86c9f054013e4aabba5fb0f39264a55aae
+    secure:xZfJWIsA3MM8aPUw2wx2tqvgwzwTIa9JNGNCL5GhEH+NyNoktjHWzxO/mGBrioyz
 build_script:
   - msbuild %dynamo_solution%
   - msbuild %xmlDocs_solution%
+
+before_build:
+  - nuget restore .\src\Dynamo.All.2013.sln
+
 
 after_build:
   - ps: tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/BuildScript.ps1
@@ -22,7 +26,7 @@ on_success:
       git config --global user.name $env:APPVEYOR_REPO_COMMIT_AUTHOR
       git config --global credential.helper store
       Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n" 
-      git clone https://DynamoDS:f8907a86c9f054013e4aabba5fb0f39264a55aae@github.com/DynamoDS/DynamoAPI.git  
+      git clone https://DynamoDS:xZfJWIsA3MM8aPUw2wx2tqvgwzwTIa9JNGNCL5GhEH+NyNoktjHWzxO/mGBrioyz@github.com/DynamoDS/DynamoAPI.git  
       tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/PublishDocs.ps1	
     }  
   
