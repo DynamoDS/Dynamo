@@ -1066,15 +1066,25 @@ namespace ProtoCore.Lang
                 return StackValue.Null;
             }
 
-            if (hasAmountOp && !hasStep)
+            if (hasAmountOp)
             {
-                runtimeCore.RuntimeStatus.LogWarning(
-                    WarningID.kInvalidArguments,
-                    Resources.kNoStepSizeInAmountRangeExpression);
-                return StackValue.Null;
+                if (!svEnd.IsNumeric)
+                {
+                    runtimeCore.RuntimeStatus.LogWarning(
+                        WarningID.kInvalidArguments,
+                        Resources.kInvalidAmountInRangeExpression);
+                    return StackValue.Null;
+                }
+                if (!hasStep)
+                {
+                    runtimeCore.RuntimeStatus.LogWarning(
+                        WarningID.kInvalidArguments,
+                        Resources.kNoStepSizeInAmountRangeExpression);
+                    return StackValue.Null;
+                }
             }
 
-            if (svStep.IsNull)
+            if ((svStep.IsNull && hasStep) || (!svStep.IsNull && !svStep.IsNumeric))
             {
                 runtimeCore.RuntimeStatus.LogWarning(
                     WarningID.kInvalidArguments,
