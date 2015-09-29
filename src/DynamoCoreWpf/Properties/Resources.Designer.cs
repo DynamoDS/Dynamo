@@ -143,6 +143,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add.
+        /// </summary>
+        public static string AddToLibraryButton {
+            get {
+                return ResourceManager.GetString("AddToLibraryButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sign in to Autodesk A360 to access online services that integrate with your desktop software..
         /// </summary>
         public static string Autodesk360SignInButtonContentToolTip {
