@@ -173,7 +173,7 @@ code.cs, code.c {
   background : none
 }
 
-..rst-content table.docutils {
+.rst-content table.docutils {
     border-collapse: separate;
     border-radius: 10px;
     border-spacing: 0;
