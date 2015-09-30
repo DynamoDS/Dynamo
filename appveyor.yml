@@ -12,10 +12,17 @@ environment:
     secure:0PErQuO48GtaEbNfKrd+6w==
   access_token:
     secure:wkS2ziu5U1kz43NT7E/iNNHHe5hEXAIb1cVTDo7t+B/y+ioR/pFZbRScl1cCKI+U
+  priv_key:
+    secure:secure: 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
 build_script:
   - msbuild %dynamo_solution%
   - msbuild %xmlDocs_solution%
-
+install:
+  - ps: $fileContent = "-----BEGIN RSA PRIVATE KEY-----`n"
+  - ps: $fileContent += $env:priv_key.Replace(' ', "`n")
+  - ps: $fileContent += "`n-----END RSA PRIVATE KEY-----`n"
+  - ps: Set-Content c:\users\appveyor\.ssh\id_rsa $fileContent
+  - git submodule update --init --recursive
 before_build:
   - nuget restore .\src\Dynamo.All.2013.sln
 
@@ -27,11 +34,11 @@ on_success:
  - ps: >- 
     if($env:APPVEYOR_PULL_REQUEST_NUMBER) {	
       git config --global user.name $env:APPVEYOR_REPO_COMMIT_AUTHOR
-      git config --global credential.helper store
-      Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n" 
-      git clone https://%GithubUsername%:%GithubPassword%@github.com/ramramps/DyanmoAPI.git C:\projects\dynamo\DynamoAPI
+      git config --global credential.helper store      
+      git clone  git@github.com:ramramps/DynamoAPI.git C:\projects\dynamo\DynamoAPI
       tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/PublishDocs.ps1	
     }  
   
 
 test: off
+
