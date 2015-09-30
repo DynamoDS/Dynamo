@@ -2083,14 +2083,21 @@ a;b;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T72_Function_Name_Checking()
         {
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 string code = @"
-import(""FFITarget.dll"");
+class foo
+{
+    a : int;
+	constructor foo ( b : int )
+	{
+	    a = b;
+	}
+}
 [Associative]
 {
     def foo : int ( a : int )
@@ -2100,11 +2107,9 @@ import(""FFITarget.dll"");
 	}
 	foo = 1;
 	x = foo(foo);
-	y = ClassFunctionality.ClassFunctionality(foo);
-	z = y.IntVal;
-}
-	 
-	 
+	y = foo.foo(foo);
+	z = y.a;
+} 
 ";
                 ExecutionMirror mirror = thisTest.RunScriptSource(code);
             });
@@ -4299,7 +4304,7 @@ b2 = add_2( b );
             object[] expectedResult2 = { 2.0, 3.0, 4.0 };
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             // b1 is updated as well. 
-            thisTest.Verify("a1", expectedResult2, 0);
+            thisTest.Verify("c", expectedResult2, 0);
             thisTest.Verify("b2", expectedResult2, 0);
         }
 
@@ -7610,7 +7615,7 @@ def foo ( p: DummyPoint)
 {
 	return = DummyPoint.ByCoordinates( (p.X), (p.Y), (p.Z) );
 }
-def func1(p1 : DummyPoint, p2 : DummyPoint)
+def func1()
 {
 	p1 = foo(p2);
 	return = null;
@@ -7618,9 +7623,9 @@ def func1(p1 : DummyPoint, p2 : DummyPoint)
 p1 =  DummyPoint.ByCoordinates( 0,0,0);
 p2 =  DummyPoint.ByCoordinates( 1, 1, 1 );
 dummy = func1();
-xx = p1.X; // expected 0, received 0
-yy = p1.Y; // expected 0, received 0
-zz = p1.Z; // expected 0, received 0
+xx = p1.X; 
+yy = p1.Y; 
+zz = p1.Z; 
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("xx", 1);
