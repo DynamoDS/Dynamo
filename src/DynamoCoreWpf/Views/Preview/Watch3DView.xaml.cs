@@ -33,7 +33,7 @@ namespace Dynamo.Controls
             get { return watch_view; }
         }
 
-        internal HelixWatch3DViewModel ViewModel { get; private set; }
+        internal Watch3DViewModelBase ViewModel { get; private set; }
 
         #endregion
 
@@ -56,7 +56,9 @@ namespace Dynamo.Controls
 
             CompositionTarget.Rendering -= CompositionTargetRenderingHandler;
 
-            ViewModel.RequestAttachToScene -= ViewModelRequestAttachToSceneHandler;
+            var helixVm = ViewModel as HelixWatch3DViewModel;
+            if (helixVm == null) return;
+            helixVm.RequestAttachToScene -= ViewModelRequestAttachToSceneHandler;
         }
 
         private void RegisterButtonHandlers()
@@ -86,20 +88,18 @@ namespace Dynamo.Controls
 
         private void ViewLoadedHandler(object sender, RoutedEventArgs e)
         {
-            ViewModel = DataContext as HelixWatch3DViewModel;
+            ViewModel = DataContext as Watch3DViewModelBase;
 
             CompositionTarget.Rendering += CompositionTargetRenderingHandler;
 
             RegisterButtonHandlers();
 
-            if (ViewModel == null)
-            {
-                return;
-            }
+            var helixVM = ViewModel as HelixWatch3DViewModel;
+            if (helixVM == null) return;
 
-            ViewModel.RequestAttachToScene += ViewModelRequestAttachToSceneHandler;
-            ViewModel.RequestCreateModels += RequestCreateModelsHandler;
-            ViewModel.RequestViewRefresh += RequestViewRefreshHandler;
+            helixVM.RequestAttachToScene += ViewModelRequestAttachToSceneHandler;
+            helixVM.RequestCreateModels += RequestCreateModelsHandler;
+            helixVM.RequestViewRefresh += RequestViewRefreshHandler;
         }
 
         void RequestViewRefreshHandler()
@@ -158,9 +158,12 @@ namespace Dynamo.Controls
         private void CompositionTargetRenderingHandler(object sender, EventArgs e)
         {
             var sceneBounds = watch_view.FindBounds();
-            ViewModel.UpdateNearClipPlaneForSceneBounds(sceneBounds);
 
-            ViewModel.ComputeFrameUpdate();
+            var helixVm = ViewModel as HelixWatch3DViewModel;
+            if (helixVm == null) return;
+
+            helixVm.UpdateNearClipPlaneForSceneBounds(sceneBounds);
+            helixVm.ComputeFrameUpdate();
         }
 
         private void OnZoomToFitClickedHandler(object sender, RoutedEventArgs e)
@@ -203,7 +206,9 @@ namespace Dynamo.Controls
 
         public void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages)
         {
-            ViewModel.OnRequestCreateModels(packages);
+            var helixVm = ViewModel as HelixWatch3DViewModel;
+            if (helixVm == null) return;
+            helixVm.OnRequestCreateModels(packages);
         }
 
         public void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
