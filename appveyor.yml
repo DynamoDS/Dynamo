@@ -14,12 +14,12 @@ environment:
 build_script:
   - msbuild %dynamo_solution%
   - msbuild %xmlDocs_solution%
-install:
-  - git submodule add git@github.com:ramramps/DynamoAPI.git
+install:  
   - ps: $fileContent = "-----BEGIN RSA PRIVATE KEY-----`n"
   - ps: $fileContent += $env:priv_key.Replace(' ', "`n")
   - ps: $fileContent += "`n-----END RSA PRIVATE KEY-----`n"
   - ps: Set-Content c:\users\appveyor\.ssh\id_rsa $fileContent
+  - git submodule add git@github.com:ramramps/DynamoAPI.git
   - git submodule update --init --recursive
 before_build:
   - nuget restore .\src\Dynamo.All.2013.sln
