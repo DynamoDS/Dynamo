@@ -1,6 +1,5 @@
 ﻿using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Properties;
 
 namespace FFITarget
 {

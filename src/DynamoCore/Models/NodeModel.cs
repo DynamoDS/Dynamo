@@ -1148,27 +1148,29 @@ namespace Dynamo.Models
 
         /// <summary>
         ///     Reads outputs list and adds ports for each output
-        /// </summary>       
+        /// </summary>
         public void RegisterOutputPorts()
         {
+            var outputs = new List<PortData>();
             // Old version of output ports registration.
             // Used OutPortData.
-            if (OutPortData.Count > 0 && !areOutputPortsRegistered)
+            if (OutPortData.Count > 0)
             {
                 Warning(Properties.Resources.DeprecatedPortNamingStyleMessage, true);
+                outputs.AddRange(OutPortData);
             }
 
             // New version of output ports registration.
             // Used port Attributes.
             if (!areOutputPortsRegistered)
             {
-                OutPortData.AddRange(GetPortsDataFromAttributes(PortType.Output));
+                outputs.AddRange(GetPortsDataFromAttributes(PortType.Output));
             }
 
             //read the inputs list and create a number of
             //input ports
             int count = 0;
-            foreach (PortData pd in OutPortData)
+            foreach (PortData pd in outputs)
             {
                 //add a port for each input
                 //distribute the ports along the 
