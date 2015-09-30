@@ -15,6 +15,7 @@ build_script:
   - msbuild %dynamo_solution%
   - msbuild %xmlDocs_solution%
 install:
+  - git submodule add git@github.com:ramramps/DynamoAPI.git
   - ps: $fileContent = "-----BEGIN RSA PRIVATE KEY-----`n"
   - ps: $fileContent += $env:priv_key.Replace(' ', "`n")
   - ps: $fileContent += "`n-----END RSA PRIVATE KEY-----`n"
