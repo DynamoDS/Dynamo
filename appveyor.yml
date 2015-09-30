@@ -7,6 +7,9 @@ configuration: Release
 environment:
   dynamo_solution: src/Dynamo.All.2013.sln
   xmlDocs_solution: tools/XmlDocToMarkdown/XmlDocToMarkdown.sln
+  Github_Username  :  ramramps
+  GithubPassword:
+    secure:0PErQuO48GtaEbNfKrd+6w==
   access_token:
     secure:wkS2ziu5U1kz43NT7E/iNNHHe5hEXAIb1cVTDo7t+B/y+ioR/pFZbRScl1cCKI+U
 build_script:
@@ -26,7 +29,7 @@ on_success:
       git config --global user.name $env:APPVEYOR_REPO_COMMIT_AUTHOR
       git config --global credential.helper store
       Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n" 
-      git clone https://github.com/ramramps/DynamoAPI
+      git clone https://%GithubUsername%:%GithubPassword%@github.com/ramramps/DyanmoAPI.git C:\projects\dynamo\DynamoAPI
       tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/PublishDocs.ps1	
     }  
   
