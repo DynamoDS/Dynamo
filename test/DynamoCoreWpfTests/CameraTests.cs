@@ -7,6 +7,7 @@ using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
 {
+    //TODO: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-8735
     [TestFixture, Category("Failure")]
     public class CameraTests : SystemTestBase
     {

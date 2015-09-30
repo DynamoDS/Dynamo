@@ -474,6 +474,7 @@ namespace Dynamo.ViewModels
             
             var backgroundPreviewParams = new Watch3DViewModelStartupParams(Model, this, Resources.BackgroundPreviewName);
 
+            // TODO: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-8736
             Watch3DViewModelBase watch3DViewModel;
             try
             {
