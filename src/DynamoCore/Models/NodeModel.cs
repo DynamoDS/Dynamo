@@ -1103,7 +1103,7 @@ namespace Dynamo.Models
             if (InPortData.Count > 0)
             {
                 inputs.AddRange(InPortData);
-                Warning(Properties.Resources.DeprecatedPortNamingStyleMessage, true);
+                Log(String.Concat(Name, ": ", Properties.Resources.DeprecatedPortNamingStyleMessage));
             }
 
             // New version of input ports registration.
@@ -1152,11 +1152,12 @@ namespace Dynamo.Models
         public void RegisterOutputPorts()
         {
             var outputs = new List<PortData>();
+
             // Old version of output ports registration.
             // Used OutPortData.
             if (OutPortData.Count > 0)
             {
-                Warning(Properties.Resources.DeprecatedPortNamingStyleMessage, true);
+                Log(String.Concat(Name, ": ", Properties.Resources.DeprecatedPortNamingStyleMessage));
                 outputs.AddRange(OutPortData);
             }
 
@@ -1241,7 +1242,10 @@ namespace Dynamo.Models
 
             if (names.Count != descriptions.Count)
             {
-                Warning(Properties.Resources.PortsNameDescriptionDoNotEqualWarningMessage);
+                Log(String.Concat(
+                        Name,
+                        ": ",
+                        Properties.Resources.PortsNameDescriptionDoNotEqualWarningMessage));
 
                 // Take the same number of descriptions as number of names.
                 descriptions = new List<string>(descriptions.Take(names.Count));
