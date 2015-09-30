@@ -19,8 +19,7 @@ install:
   - ps: $fileContent += $env:priv_key.Replace(' ', "`n")
   - ps: $fileContent += "`n-----END RSA PRIVATE KEY-----`n"
   - ps: Set-Content c:\users\appveyor\.ssh\id_rsa $fileContent
-  - git submodule add git@github.com:ramramps/DynamoAPI.git
-  - git submodule update --init --recursive
+  
 before_build:
   - nuget restore .\src\Dynamo.All.2013.sln
 
@@ -33,10 +32,12 @@ on_success:
     if($env:APPVEYOR_PULL_REQUEST_NUMBER) {	
       git config --global user.name $env:APPVEYOR_REPO_COMMIT_AUTHOR
       git config --global credential.helper store      
-      git clone git@github.com:ramramps/DynamoAPI.git C:\projects\dynamo\DynamoAPI
+      git submodule add git@github.com:ramramps/DynamoAPI.git
+      git submodule update --init --recursive
       tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/PublishDocs.ps1	
     }  
   
 
 test: off
+
 
