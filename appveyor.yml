@@ -30,7 +30,7 @@ on_success:
     if($env:APPVEYOR_PULL_REQUEST_NUMBER) {	
       git config --global user.name $env:APPVEYOR_REPO_COMMIT_AUTHOR
       git config --global credential.helper store      
-      git clone  git@github.com:ramramps/DynamoAPI.git C:\projects\dynamo\DynamoAPI
+      git clone  https://ramramps@github.com/ramramps/DynamoAPI
       tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/PublishDocs.ps1	
     }  
   
