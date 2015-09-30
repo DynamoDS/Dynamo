@@ -711,15 +711,6 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Number of input ports name does not equal number of port descriptions..
-        /// </summary>
-        public static string InputPortsNameDescriptionWarningMessage {
-            get {
-                return ResourceManager.GetString("InputPortsNameDescriptionWarningMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The folder &apos;{0}&apos; does not exist.
         /// </summary>
         public static string InvalidCustomNodeFolderWarning {
@@ -1067,6 +1058,15 @@ namespace Dynamo.Properties {
         public static string PortDataVariableToolTip {
             get {
                 return ResourceManager.GetString("PortDataVariableToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number of port names does not equal number of port descriptions..
+        /// </summary>
+        public static string PortsNameDescriptionDoNotEqualWarningMessage {
+            get {
+                return ResourceManager.GetString("PortsNameDescriptionDoNotEqualWarningMessage", resourceCulture);
             }
         }
         

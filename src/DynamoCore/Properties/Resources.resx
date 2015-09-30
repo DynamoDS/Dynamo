@@ -630,8 +630,8 @@ value : bool = false</value>
   <data name="InputPortsHasAlreadyBeenRegisteredMessage" xml:space="preserve">
     <value>Input ports have already been registered.</value>
   </data>
-  <data name="InputPortsNameDescriptionWarningMessage" xml:space="preserve">
-    <value>Number of input ports name does not equal number of port descriptions.</value>
+  <data name="PortsNameDescriptionDoNotEqualWarningMessage" xml:space="preserve">
+    <value>Number of port names does not equal number of port descriptions.</value>
   </data>
   <data name="DescriptionResource1" xml:space="preserve">
     <value>some description</value>

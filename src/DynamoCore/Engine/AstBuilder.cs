@@ -194,7 +194,7 @@ namespace Dynamo.Engine
         {
 
             var inputAstNodes = new List<AssociativeNode>();
-            foreach (int index in Enumerable.Range(0, node.InPortData.Count))
+            foreach (int index in Enumerable.Range(0, node.InPorts.Count))
             {
                 Tuple<int, NodeModel> inputTuple;
 

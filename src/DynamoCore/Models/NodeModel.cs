@@ -572,7 +572,7 @@ namespace Dynamo.Models
         /// </summary>
         public bool IsPartiallyApplied //TODO(Steve): Move to Graph level -- MAGN-5710
         {
-            get { return !Enumerable.Range(0, InPortData.Count).All(HasInput); }
+            get { return !Enumerable.Range(0, InPorts.Count).All(HasInput); }
         }
 
         /// <summary>
@@ -1094,13 +1094,15 @@ namespace Dynamo.Models
         /// <summary>
         ///     Reads inputs list and adds ports for each input.
         /// </summary>
-        [Obsolete("RegisterInputPorts is deprecated, please use the InPortNamesAttribute, InPortDescriptionsAttribute, and InPortTypesAttribute instead.")]
         public void RegisterInputPorts()
         {
+            var inputs = new List<PortData>();
+
             // Old version of input ports registration.
             // Used InPortData.
-            if (InPortData.Count > 0 && !areInputPortsRegistered)
+            if (InPortData.Count > 0)
             {
+                inputs.AddRange(InPortData);
                 Warning(Properties.Resources.DeprecatedPortNamingStyleMessage, true);
             }
 
@@ -1108,13 +1110,13 @@ namespace Dynamo.Models
             // Used port Attributes.
             if (!areInputPortsRegistered)
             {
-                InPortData.AddRange(GetPortsDataFromAttributes(PortType.Input));
+                inputs.AddRange(GetPortsDataFromAttributes(PortType.Input));
             }
 
             //read the inputs list and create a number of
             //input ports
             int count = 0;
-            foreach (PortData pd in InPortData)
+            foreach (PortData pd in inputs)
             {
                 //add a port for each input
                 //distribute the ports along the 
@@ -1146,8 +1148,7 @@ namespace Dynamo.Models
 
         /// <summary>
         ///     Reads outputs list and adds ports for each output
-        /// </summary>
-        [Obsolete("RegisterOutputPorts is deprecated, please use the OutPortNamesAttribute, OutPortDescriptionsAttribute and OutPortTypesAttribute instead.")]
+        /// </summary>       
         public void RegisterOutputPorts()
         {
             // Old version of output ports registration.
@@ -1236,15 +1237,15 @@ namespace Dynamo.Models
                 return new List<PortData>();
             }
 
-            if ((names.Count != descriptions.Count))
+            if (names.Count != descriptions.Count)
             {
-                Warning(Properties.Resources.InputPortsNameDescriptionWarningMessage);
+                Warning(Properties.Resources.PortsNameDescriptionDoNotEqualWarningMessage);
 
                 // Take the same number of descriptions as number of names.
                 descriptions = new List<string>(descriptions.Take(names.Count));
             }
 
-            List<PortData> ports = new List<PortData>();
+            var ports = new List<PortData>();
             for (int i = 0; i < names.Count; i++)
             {
                 string descr = i < descriptions.Count ? descriptions[i] : String.Empty;
@@ -1287,7 +1288,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     Updates UI so that all ports reflect current state of InPortData and OutPortData.
+        ///     Updates UI so that all ports reflect current state of node ports.
         /// </summary>
         public void RegisterAllPorts()
         {
@@ -1401,16 +1402,15 @@ namespace Dynamo.Models
         {
             string nick = NickName.Replace(' ', '_');
 
-            if (!Enumerable.Range(0, InPortData.Count).Any(HasInput))
+            if (!Enumerable.Range(0, InPorts.Count).Any(HasInput))
                 return nick;
 
             string s = "";
 
-            if (Enumerable.Range(0, InPortData.Count).All(HasInput))
+            if (Enumerable.Range(0, InPorts.Count).All(HasInput))
             {
-                s += "(" + nick;
-                //for (int i = 0; i < InPortData.Count; i++)
-                foreach (int data in Enumerable.Range(0, InPortData.Count))
+                s += "(" + nick;                
+                foreach (int data in Enumerable.Range(0, InPorts.Count))
                 {
                     Tuple<int, NodeModel> input;
                     TryGetInput(data, out input);
@@ -1420,17 +1420,16 @@ namespace Dynamo.Models
             }
             else
             {
-                s += "(lambda (" + string.Join(" ", InPortData.Where((_, i) => !HasInput(i)).Select(x => x.NickName))
-                     + ") (" + nick;
-                //for (int i = 0; i < InPortData.Count; i++)
-                foreach (int data in Enumerable.Range(0, InPortData.Count))
+                s += "(lambda (" + string.Join(" ", InPorts.Where((_, i) => !HasInput(i)).Select(x => x.PortName))
+                     + ") (" + nick;                
+                foreach (int data in Enumerable.Range(0, InPorts.Count))
                 {
                     s += " ";
                     Tuple<int, NodeModel> input;
                     if (TryGetInput(data, out input))
                         s += input.Item2.PrintExpression();
                     else
-                        s += InPortData[data].NickName;
+                        s += InPorts[data].PortName;
                 }
                 s += "))";
             }
