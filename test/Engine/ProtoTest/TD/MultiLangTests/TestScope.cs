@@ -1807,28 +1807,22 @@ a = 10;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T051_Test_Identifier_Scope_01()
         {
             String code =
-  @"class A
-{
-  @a : var;
-  constructor A(@b:var)
-    {
-        @a = @b;
-    }
+  @"
+
   def foo(@c:var)
   {
     @a = @c;
     return = @a;
   }
-}
+
   @a = 1;
-  p = A.A(2);
   @t = 3;
-  @a = p.foo(@t);
+  @a = foo(@t);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Assert.IsTrue((Int64)mirror.GetValue("@a").Payload == 3);
@@ -1959,31 +1953,29 @@ def foo(@a:var)
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T052_DNL_1467464()
         {
             string code = @"
-class test
+def test()
 {
     f;
-    constructor test()
-    {
     [Associative]
+    {
+        i;
+        [Imperative]
         {
-            [Imperative]
-            {
-                i = 3;
-            }
-            f = i;
+            i = 3;
         }
+        f = i;
     }
+    return = f;
 }
-a = test.test();
-b = a.f;
+b = test();
 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("b", null);
+            thisTest.Verify("b", 3);
         }
     }
 }

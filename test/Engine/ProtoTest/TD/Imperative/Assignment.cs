@@ -196,23 +196,14 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T11_TestInClassScope()
         {
             string src = @"
-                                 class A 
-                                 {
-                                      
-                                      P1:int;
-                                      constructor A(p1:int)
-                                      {
-                                          P1 = p1;
-                                      }
-          
-                                 }
-                                 a1 = A.A(2);
-                                 b1 = a1.P1;
+                                import (""FFITarget.dll"");
+                                 a1 = ClassFunctionality.ClassFunctionality(2);
+                                 b1 = a1.IntVal;
                             
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -1015,28 +1006,12 @@ a;b;c;d;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T48_MultipleAssignments()
         {
             string code = @"
-class A
-{
-    i : int;
-	constructor A ( a : int)
-	{
-	     t1 = t2 = 2;
-		 i = t1 + t2 + a ;
-	}
-	
-	def foo : int ( )
-	{
-	    t1 = t2 = 2;
-		t3 = t1 + t2 + i;
-        return  = t3;		
-	}
-	
-}
+
 a;
 b;
 x;
@@ -1051,9 +1026,7 @@ b1;
 	}
 	a = b = 4;
     x = y = foo(1);
-	a1 = A.A(1);
-	b1 = a1.foo();
-	
+	b1= a+x;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1146,29 +1119,16 @@ d;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T53_Defect_1454691()
         {
             string code = @"
-class A
-{
-	a : var;
-	constructor CreateA ( a1 : int )
-	{
-		a = add_1(a1);
-	}
-	
-	def add_1 ( x )
-	{
-	    return  = x + 1;
-	}
-	
-}
+import (""FFITarget.dll"");
 [Imperative]
 {
-	A1 = A.CreateA(1);
-	a = A1.a;
+	A1 = ClassFunctionality.ClassFunctionality(1);
+	a = A1.IntVal;
 }
 a;
 x;
@@ -1176,14 +1136,14 @@ b;
 [Associative]
 {
     x = 3;
-	A1 = A.CreateA(x);
-	a = A1.a;
+	A1 = ClassFunctionality.ClassFunctionality(x);
+	a = A1.IntVal+1;
 	b = [Imperative]
 	{
 	    if ( a < 10 )
 		{
-		    B1 = A.CreateA(a);
-			return = B1.a;
+		    B1 = ClassFunctionality.ClassFunctionality(a);
+			return = B1.IntVal+1;
 		}
 	}
 }
@@ -1195,13 +1155,14 @@ b;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_Inheritance")]
         [Category("SmokeTest")]
         public void T54_Defect_1454691()
         {
             object[] expectedResult = { 6, 5 };
             string code = @"
-class A
+
+			class A
 {
 	a : var;
 	constructor CreateA ( a1 : int )
@@ -1274,22 +1235,13 @@ c=[Associative]
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T55_Defect_1454691()
         {
 
             string code = @"
-class A
-{
-	a : var;
-	constructor CreateA ( a1 : int )
-	{
-		a = a1;
-	}
-	
-	
-}
+import(""FFITarget.dll"");
 y1;
 y2;
 y3;
@@ -1300,8 +1252,8 @@ y4;
 	x = 1;
 	while ( x != 2 )
 	{
-	    t1 = A.CreateA(x);
-		y1 = y1 + t1.a;
+	    t1 = ClassFunctionality.ClassFunctionality(x);
+		y1 = y1 + t1.IntVal;
 		x = x + 1;	    
 	}
 	
@@ -1309,8 +1261,8 @@ y4;
 	c = { 3, 4 };
 	for ( i in c )
 	{
-	    t1 = A.CreateA(i);
-		y2 = y2 + t1.a;
+	    t1 = ClassFunctionality.ClassFunctionality(i);
+		y2 = y2 + t1.IntVal;
 	}
 	
 	y3 = 1;
@@ -1318,8 +1270,8 @@ y4;
 	{
 	    while ( y3 <= 2 )
 		{
-			t1 = A.CreateA(y3);
-			y3 = y3 + t1.a;			    
+			t1 = ClassFunctionality.ClassFunctionality(y3);
+			y3 = y3 + t1.IntVal;			    
 		}
 	}
 	
@@ -1330,8 +1282,8 @@ y4;
 	}
 	else
 	{
-	    t1 = A.CreateA(y4);
-		y4 = y4 + t1.a;
+	    t1 = ClassFunctionality.ClassFunctionality(y4);
+		y4 = y4 + t1.IntVal;
 	}
 	
 }
@@ -1345,68 +1297,49 @@ y4;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T56_Defect_1454691()
         {
             string code = @"
-class A
-{
-	a : var;
-	constructor CreateA ( a1 : int )
-	{
-		a = add_1(a1);
-	}
-	
-	def add_1 ( x )
-	{
-		return  = x + 1;
-	}
-}
+import(""FFITarget.dll"");
 b;
 [Associative]
 {
     x = 3;
-	A1 = A.CreateA(x);
-	a1 = A1.a;
+	A1 = ClassFunctionality.ClassFunctionality(x);
+	a1 = A1.IntVal;
 	b = [Imperative]
 	{
 		if ( a1 < 10 )
 		{
-			return = A1.a;
+			return = A1.IntVal;;
 		}
-	return = A1.a + 1;
+	return = A1.IntVal + 1;
 	}
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("b", 4);
+            thisTest.Verify("b", 3);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T57_Defect_1454691_2()
         {
             string code = @"
-class A
-{
-	a : var;
-	constructor CreateA ( a1 : int )
-	{
-		a = a1 + 1;
-	}
-}
+import(""FFITarget.dll"");
 def foo ( )
 {
-    x = A.CreateA(1);
- 	a1 = x.a; 
+    x = ClassFunctionality.ClassFunctionality(1);
+ 	a1 = x.IntVal; 
 	
 	y = [Imperative]
 	{
 		if ( a1  < 10 )
 		{
-			x1 = A.CreateA(2);
-			a2 = x1.a; 
+			x1 = ClassFunctionality.ClassFunctionality(2);
+			a2 = x1.IntVal; 
 			return = a2;
 		}
 		return = a1; 
@@ -1419,40 +1352,34 @@ x2;
 	x2 = foo(); 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("x2", 5);
+            thisTest.Verify("x2", 3);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T58_Defect_1454691_3()
         {
             string code = @"
-class A
-{
-	a : var;
-	constructor CreateA ( a1 : int )
-	{
-		a = a1;
-	}
-	
+import (""FFITarget.dll"");
+	a=1;
 	def CreateNewVal ( )
 	{
 		y = [Imperative]
 		{
 			if ( a  < 10 )
 			{
-				x1 = A.CreateA(10);
-				y1 = x1.a;
+				x1 = ClassFunctionality.ClassFunctionality(10);
+				y1 = x1.IntVal;
  				return = y1;
 			}
 			return = a;
 		}
 		return = a + y;
 	}
-}
-    a1 = A.CreateA(1);
-	b1 = a1.CreateNewVal(); 
+
+   
+	b1 = CreateNewVal(); 
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b1", 11);
@@ -1656,137 +1583,162 @@ a = null + 1;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T67_DNL_1467458()
         {
             String code =
             @"
-            class A
-{
-    x:int;
-    def foo(a : int)
-    {
-        x = a;
-        return = x;
-    }
-}
-b;
-[Imperative]
-{
-    p = A.A();
-    p.foo(9);
-    b = p.x;
-}
+x;  
+    def foo(a : int) 
+    { 
+        x = a; 
+         return = x; 
+    } 
+
+ b; 
+ [Imperative] 
+ { 
+      
+     foo(9); 
+      
+ } 
             ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("b", 9);
+            thisTest.Verify("x", 9);
         }
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored")]
         [Category("Failure")]
         public void T67_DNL_1467458_3()
         {
             String code =
             @"
-            class A
-{
-    a;
-    def foo()
-    {
-        a = 1;
-        return = a;
-    }
-}
-c;
-class B{
-    b;
-    def foo()
-    {
-        b = 5;
-        return = b;
-    }
-}
-[Imperative]
-{
-    p = { A.A(),B.B() };
-    {p[0].foo(),p[1].foo()};  // compilation error
-    c = { p[0].a, p[1].b };
-}
+ 
+    class A 
+ { 
+    a; 
+    def foo() 
+     { 
+         a = 1; 
+         return = a; 
+     } 
+ } 
+ c; 
+ class B{ 
+    b; 
+     def foo() 
+     { 
+         b = 5; 
+         return = b; 
+     } 
+ } 
+ [Imperative] 
+ { 
+    p = { A.A(),B.B() }; 
+     {p[0].foo(),p[1].foo()};  
+     c = { p[0].a, p[1].b }; 
+ } 
             ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("c", new object[] { 1, 5 });
+            thisTest.Verify("a", new object[] { 1, 5 });
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored")]
         public void T67_DNL_1467458_4()
         {
             String code =
             @"
- class B{ a = 1; }
-class A
-{
-    b;
-    c;
-    def foo()
-    {
-        b = 1;
-        [Imperative]
-        {
-            p = B.B();
-            p.foo();
-            c =  p.a;
-        }
-        return = c;
-    }
-}
-z = A.A();
-y =z.foo();
+
+  class B{ a = 1; } 
+ class A 
+ { 
+     b; 
+     c; 
+     def foo() 
+     { 
+        b = 1; 
+         [Imperative] 
+         { 
+            p = B.B(); 
+            p.foo(); 
+             c =  p.a; 
+         } 
+         return = c; 
+     } 
+ } 
+ z = A.A(); 
+ y =z.foo();
             ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("y", 1);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T68_DNL_1467523()
         {
             String code =
             @"
-class A
-{
-}
+import(""FFITarget.dll"");
 [Imperative]
+
 {
+
     arr1 : double[] ;
+
     arr2 : double[] = null;
+
     arr3 : double[]..[];
+
     arr4 : double[]..[] = null;
+
     arr5 : double[]  = { };
+
     arr6 : double[]..[]  = { };
+
     arr11 : int[] ;
+
     arr12 : int[] = null;
+
     arr13 : int[]..[];
+
     arr14 : int[]..[] = null;
+
     arr15 : int[]  = { };
+
     arr16 : int[]..[]  = { };
+
     arr111 : bool[] ;
+
     arr112 : bool[] = null;
+
     arr113 : bool[]..[];
+
     arr114 : bool[]..[] = null;
+
     arr115 : bool[]  = { };
+
     arr116 : bool[]..[]  = { };
-    arr1111 : A[] ;
-    arr1112 : A[] = null;
-    arr1113 : A[]..[];
-    arr1114 : A[]..[] = null;
-    arr1115 : A[]  = { };
-    arr1116 : A[]..[]  = { };
-   
+
+    arr1111 : ClassFunctionality[] ;
+
+    arr1112 : ClassFunctionality[] = null;
+
+    arr1113 : ClassFunctionality[]..[];
+
+    arr1114 : ClassFunctionality[]..[] = null;
+
+    arr1115 : ClassFunctionality[]  = { };
+
+    arr1116 : ClassFunctionality[]..[]  = { };
+
 }
+
 dummy = 1;
+
             ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("dummy", 1);
