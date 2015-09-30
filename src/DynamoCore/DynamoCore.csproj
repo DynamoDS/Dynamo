@@ -269,6 +269,7 @@ limitations under the License.
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Search\SearchDictionary.cs" />
+    <Compile Include="Utilities\ResourceLoader.cs" />
     <EmbeddedResource Include="BuiltInAndOperators\BuiltInImages.resx">
       <LastGenOutput>OperatorsImages.Designer.cs</LastGenOutput>
     </EmbeddedResource>

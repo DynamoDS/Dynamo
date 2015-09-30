@@ -109,7 +109,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Definitions for the Output Ports of this NodeModel.
         /// </summary>
-        [Obsolete("OutPortData is deprecated, please use the InPortNamesAttribute, InPortDescriptionsAttribute, and InPortTypesAttribute instead.")]
+        [Obsolete("OutPortData is deprecated, please use the OutPortNamesAttribute, OutPortDescriptionsAttribute, and OutPortTypesAttribute instead.")]
         public ObservableCollection<PortData> OutPortData { get; private set; }
 
         /// <summary>

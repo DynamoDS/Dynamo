@@ -5,6 +5,8 @@ using System.Text;
 using System.Reflection;
 using Autodesk.DesignScript.Runtime;
 
+using Dynamo.Utilities;
+
 namespace Dynamo.Nodes
 {
     [AttributeUsage(AttributeTargets.All)]
@@ -210,70 +212,38 @@ namespace Dynamo.Nodes
     }
 
     /// <summary>
-    /// PortAttribute is base class for all attibutes used for ports.
-    /// PortAttribute can process resource file (.resx) and load strings from this file.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Class)]
-    public abstract class PortAttribute : Attribute
-    {
-        /// <summary>
-        /// Attribute is loaded from resource file.
-        /// </summary>
-        /// <param name="resourceType">type of resource</param>
-        /// <param name="resourceNames">resource titles</param>
-        protected PortAttribute(Type resourceType, params string[] resourceNames)
-        {
-            if ((resourceType == null) || (resourceNames == null))
-                return;
-
-            List<string> titles = new List<string>();
-            foreach (var resourceName in resourceNames)
-            {
-                var property = resourceType.GetProperty(resourceName, BindingFlags.Public | BindingFlags.Static);
-
-                if (property == null)
-                {
-                    throw new InvalidOperationException(string.Format("Resource Type Does Not Have Property"));
-                }
-                if (property.PropertyType != typeof(string))
-                {
-                    throw new InvalidOperationException(string.Format("Resource Property is Not String Type"));
-                }
-                titles.Add((string)property.GetValue(null, null));
-            }
-
-            PortTitles = titles;
-        }
-
-        /// <summary>
-        /// Non-localized resource.
-        /// </summary>
-        /// <param name="portTitles">port titles</param>
-        protected PortAttribute(params string[] portTitles)
-        {
-            PortTitles = portTitles;
-        }
-
-        protected IEnumerable<string> PortTitles { get; private set; }
-    }
-
-    /// <summary>
     /// Indicates input ports' names.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public class InPortNamesAttribute : PortAttribute
+    public class InPortNamesAttribute : Attribute
     {
+        /// <summary>
+        /// Loads ports names from resource.
+        /// </summary>
+        /// <param name="resourceType">resource type, i.e. type of resource class specified in .resx file</param>
+        /// <param name="resourceNames">resource names</param>
         public InPortNamesAttribute(Type resourceType, params string[] resourceNames)
-            : base(resourceType, resourceNames)
-        { }
+        {
+            portNames = ResourceLoader.Load(resourceType, resourceNames);
+        }
 
+        /// <summary>
+        /// Loads ports names, that are specified directly in Attribute.
+        /// </summary>
+        /// <param name="names"></param>
         public InPortNamesAttribute(params string[] names)
-            : base(names)
-        { }
+        {
+            portNames = names;
+        }
 
+        private readonly IEnumerable<string> portNames;
+
+        /// <summary>
+        /// Port titles, that are shown in Dynamo.
+        /// </summary>
         public IEnumerable<string> PortNames
         {
-            get { return PortTitles; }
+            get { return portNames; }
         }
     }
 
@@ -281,19 +251,35 @@ namespace Dynamo.Nodes
     /// Indicates input ports' description
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public class InPortDescriptionsAttribute : PortAttribute
+    public class InPortDescriptionsAttribute : Attribute
     {
-        public InPortDescriptionsAttribute(Type resourceType, params string[] resourceTypes)
-            : base(resourceType, resourceTypes)
-        { }
+        /// <summary>
+        /// Loads ports descriptions from resource.
+        /// </summary>
+        /// <param name="resourceType">resource type, i.e. type of resource class specified in .resx file</param>
+        /// <param name="resourceNames">resource names</param>
+        public InPortDescriptionsAttribute(Type resourceType, params string[] resourceNames)
+        {
+            portDescriptions = ResourceLoader.Load(resourceType, resourceNames);
+        }
 
-        public InPortDescriptionsAttribute(params string[] types)
-            : base(types)
-        { }
+        /// <summary>
+        /// Loads ports descriptions, that are specified directly in Attribute.
+        /// </summary>
+        /// <param name="descriptions"></param>
+        public InPortDescriptionsAttribute(params string[] descriptions)
+        {
+            portDescriptions = descriptions;
+        }
 
+        private readonly IEnumerable<string> portDescriptions;
+
+        /// <summary>
+        /// Port descriptions, that are shown in Dynamo.
+        /// </summary>
         public IEnumerable<string> PortDescriptions
         {
-            get { return PortTitles; }
+            get { return portDescriptions; }
         }
     }
 
@@ -301,19 +287,35 @@ namespace Dynamo.Nodes
     /// Indicates input ports' types
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public class InPortTypesAttribute : PortAttribute
+    public class InPortTypesAttribute : Attribute
     {
-        public InPortTypesAttribute(Type resourceType, params string[] resourceTypes)
-            : base(resourceType, resourceTypes)
-        { }
+        /// <summary>
+        /// Loads ports types from resource.
+        /// </summary>
+        /// <param name="resourceType">resource type, i.e. type of resource class specified in .resx file</param>
+        /// <param name="resourceNames">resource names</param>
+        public InPortTypesAttribute(Type resourceType, params string[] resourceNames)
+        {
+            portTypes = ResourceLoader.Load(resourceType, resourceNames);
+        }
 
+        /// <summary>
+        /// Loads ports types, that are specified directly in Attribute.
+        /// </summary>
+        /// <param name="types"></param>
         public InPortTypesAttribute(params string[] types)
-            : base(types)
-        { }
+        {
+            portTypes = types;
+        }
 
+        private readonly IEnumerable<string> portTypes;
+
+        /// <summary>
+        /// Port types, that are shown in Dynamo tooltips.
+        /// </summary>
         public IEnumerable<string> PortTypes
         {
-            get { return PortTitles; }
+            get { return portTypes; }
         }
     }
 
@@ -322,19 +324,35 @@ namespace Dynamo.Nodes
     /// Indicates output ports' names.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public class OutPortNamesAttribute : PortAttribute
+    public class OutPortNamesAttribute : Attribute
     {
+        /// <summary>
+        /// Loads ports names from resource.
+        /// </summary>
+        /// <param name="resourceType">resource type, i.e. type of resource class specified in .resx file</param>
+        /// <param name="resourceNames">resource names</param>
         public OutPortNamesAttribute(Type resourceType, params string[] resourceNames)
-            : base(resourceType, resourceNames)
-        { }
+        {
+            portNames = ResourceLoader.Load(resourceType, resourceNames);
+        }
 
+        /// <summary>
+        /// Loads ports names, that are specified directly in Attribute.
+        /// </summary>
+        /// <param name="names"></param>
         public OutPortNamesAttribute(params string[] names)
-            : base(names)
-        { }
+        {
+            portNames = names;
+        }
 
+        private readonly IEnumerable<string> portNames;
+
+        /// <summary>
+        /// Port titles, that are shown in Dynamo.
+        /// </summary>
         public IEnumerable<string> PortNames
         {
-            get { return PortTitles; }
+            get { return portNames; }
         }
     }
 
@@ -342,19 +360,35 @@ namespace Dynamo.Nodes
     /// Indicates output ports' description
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public class OutPortDescriptionsAttribute : PortAttribute
+    public class OutPortDescriptionsAttribute : Attribute
     {
-        public OutPortDescriptionsAttribute(Type resourceType, params string[] resourceTypes)
-            : base(resourceType, resourceTypes)
-        { }
+        /// <summary>
+        /// Loads ports descriptions from resource.
+        /// </summary>
+        /// <param name="resourceType">resource type, i.e. type of resource class specified in .resx file</param>
+        /// <param name="resourceNames">resource names</param>
+        public OutPortDescriptionsAttribute(Type resourceType, params string[] resourceNames)
+        {
+            portDescriptions = ResourceLoader.Load(resourceType, resourceNames);
+        }
 
-        public OutPortDescriptionsAttribute(params string[] types)
-            : base(types)
-        { }
+        /// <summary>
+        /// Loads ports descriptions, that are specified directly in Attribute.
+        /// </summary>
+        /// <param name="descriptions"></param>
+        public OutPortDescriptionsAttribute(params string[] descriptions)
+        {
+            portDescriptions = descriptions;
+        }
 
+        private readonly IEnumerable<string> portDescriptions;
+
+        /// <summary>
+        /// Port descriptions, that are shown in Dynamo.
+        /// </summary>
         public IEnumerable<string> PortDescriptions
         {
-            get { return PortTitles; }
+            get { return portDescriptions; }
         }
     }
 
@@ -362,19 +396,35 @@ namespace Dynamo.Nodes
     /// Indicates output ports' types
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public class OutPortTypesAttribute : PortAttribute
+    public class OutPortTypesAttribute : Attribute
     {
-        public OutPortTypesAttribute(Type resourceType, params string[] resourceTypes)
-            : base(resourceType, resourceTypes)
-        { }
+        /// <summary>
+        /// Loads ports types from resource.
+        /// </summary>
+        /// <param name="resourceType">resource type, i.e. type of resource class specified in .resx file</param>
+        /// <param name="resourceNames">resource names</param>
+        public OutPortTypesAttribute(Type resourceType, params string[] resourceNames)
+        {
+            portTypes = ResourceLoader.Load(resourceType, resourceNames);
+        }
 
+        /// <summary>
+        /// Loads ports types, that are specified directly in Attribute.
+        /// </summary>
+        /// <param name="types"></param>
         public OutPortTypesAttribute(params string[] types)
-            : base(types)
-        { }
+        {
+            portTypes = types;
+        }
 
+        private readonly IEnumerable<string> portTypes;
+
+        /// <summary>
+        /// Port types, that are shown in Dynamo tooltips.
+        /// </summary>
         public IEnumerable<string> PortTypes
         {
-            get { return PortTitles; }
+            get { return portTypes; }
         }
     }
 }
