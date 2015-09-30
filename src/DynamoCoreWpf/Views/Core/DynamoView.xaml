@@ -823,11 +823,7 @@
                 </Canvas.Background>
             </Canvas>
 
-            <controls:Watch3DView x:Name="BackgroundPreview" 
-                                  DataContext="{Binding BackgroundPreviewViewModel}"
-                                  Margin="0,20,0,0"
-                                  Visibility="{Binding Active, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}">
-            </controls:Watch3DView>
+            <!-- The BackgroundPreview is now created in the DynamoView_Loaded method.-->
             
         </Grid>
 

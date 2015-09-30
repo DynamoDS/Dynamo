@@ -12,15 +12,11 @@ namespace ProtoTest.TD.MultiLangTests
     class BuiltinFunction_FromOldLang : ProtoTestBase
     {
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T80580_BuiltinFunc_1()
         {
             string code = @"
-class TestClass
-{
-	constructor TestClass()
-	{
-	}
+
         def testFlatten()
 	{
 		index = Flatten({1..4,0});
@@ -79,18 +75,17 @@ class TestClass
 		index = NormalizeDepth({{1.1},{{2.3,3}},""5"",{{{{true}}}}},2);
 		return = index;
 	}
-}
-test = TestClass.TestClass();
-t1 = test.testFlatten();
-t2 = test.testCount();
-t3 = test.testContains();
-t4 = test.testCountFalse();
-t5 = test.testCountTrue();
-t6 = test.testSomeFalse();
-t7 = test.testSomeTrue();
-t8 = test.testToString();
-t9 = test.testTranspose();
-t15 = test.testNormalizeDepth();
+
+t1 = testFlatten();
+t2 = testCount();
+t3 = testContains();
+t4 = testCountFalse();
+t5 = testCountTrue();
+t6 = testSomeFalse();
+t7 = testSomeTrue();
+t8 = testToString();
+t9 = testTranspose();
+t15 = testNormalizeDepth();
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 1, 2, 3, 4, 0 };
@@ -115,12 +110,11 @@ t15 = test.testNormalizeDepth();
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T80581_BuiltinFunc_2()
         {
             string code = @"
-class TestClass
-{
+
 	b;
 	b1;
 	b2;
@@ -136,7 +130,7 @@ class TestClass
 	b12;
 	b13;
 	b14;
-	constructor TestClass()
+	def TestBuiltIn()
 	{
 		b = Flatten({1..4,0});
 	
@@ -164,18 +158,17 @@ class TestClass
 		b14 = NormalizeDepth({{1.1},{{2.3,3}},""5"",{{{{true}}}}},2);
 		
 	}
-}
-test = TestClass.TestClass();
-t0 = test.b;
-t1 = test.b1;
-t2 = test.b2;
-t3 = test.b3;
-t4 = test.b4;
-t5 = test.b5;
-t6 = test.b6;
-t7 = test.b7;
-t8 = test.b8;
-t14 = test.b14;
+test = TestBuiltIn();
+t0 = b;
+t1 = b1;
+t2 = b2;
+t3 = b3;
+t4 = b4;
+t5 = b5;
+t6 = b6;
+t7 = b7;
+t8 = b8;
+t14 = b14;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 1, 2, 3, 4, 0 };

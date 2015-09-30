@@ -479,6 +479,7 @@ namespace Dynamo.ViewModels
 
             RenderPackageFactoryViewModel = new RenderPackageFactoryViewModel(Model.PreferenceSettings);
 
+            if (DynamoModel.IsTestMode) return;
             var backgroundPreviewParams = new Watch3DViewModelStartupParams(Model, this, Resources.BackgroundPreviewName);
 
             var watch3DViewModel = HelixWatch3DViewModel.Start(backgroundPreviewParams);

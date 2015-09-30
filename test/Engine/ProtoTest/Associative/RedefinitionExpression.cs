@@ -96,7 +96,7 @@ import(""FFITarget.dll"");p = 10;p = DummyPoint.ByCoordinates(11.0, 20.0, 30.0
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void RedefineWithExpressionLists04()
         {
             String code =
