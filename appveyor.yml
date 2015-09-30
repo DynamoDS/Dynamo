@@ -3,41 +3,27 @@ version: 1.0.{build}
 platform: Any CPU
 
 configuration: Release
-init:
-- ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-- ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 environment:
   dynamo_solution: src/Dynamo.All.2013.sln
   xmlDocs_solution: tools/XmlDocToMarkdown/XmlDocToMarkdown.sln
-  priv_key: MIIEogIBAAKCAQEAtw6v26ECGlVAKIcpXQz3/UhthvgSw6rP6EkogqXlcDdwp88o eg8eqdI6OOuNzEw6Mo5oDfQOSDOD1bcJAkD2BeDXzWnVZn+XlkjX/Tb1yVFRlEqW yosAdkJrak9SbknXhUpwNze4EoVVeqG/f6mcwyEDHnuR9k73cZCSxC2+YNdx1F2g zSpcBFDhx02gAzuoAbLAjjleJv5zURxQ9tR5xMbncs0Cv5Mkw39mxgcMiWtQKjJD C32GCd56wmXxZtwMW+HNGlgSxDmy+zgIMz0pX9KD2QGoaAxP+eGZf4fQYCb0htZF vU6BShUCSs8RCGj4XcxCAjQmZAMEftOGuR+uqQIDAQABAoIBAE1nqHT2YC1CXx7E CHmQQkyXk7i+rTCPydovFTIpdBs/ViOfNT5npk+o1XW8JPl+Qh2emeFMkb12CwkT nHuXfHB/4sC5P8NXsIGby7kGxGecOyK5Z4m9vTREYadSY0i/cKKsF0dCCFPMjZiN TKxuzBq2mtsI5W+BdKBQwb6ymQ3ZVH4V3rUFhOl0D6+PgmPCkgYZ9RkytIRyYbQH BXK+A7bJA2eMOfzy9VeoAfzrCjuTokJS6c2RU8+2LudGhUPWwRwKn9YXqwN4iAab 7A/vW5k2FmCKkd9Cy2Fgn1sNET+95kVciQJiMcV+HXBma8KzxFm5OprWuOnuoZjb sEpgsQECgYEA6Hmu22rBs8P2yt/+Lz24WhIqj163C/aaHCP+wp97CXy8CUK00G1k ugFTuoh/atl0IHUKBAW1tTCBhHLk+Me3NANQTnbFBajNT1iY1ovpJHSGRRgn0HAW 31LmlJPWFod6MVI6Vr81dleTkkz7JbUrvjGWf1IoUC2Qw18eHQIIhisCgYEAyZTS kdjpAkZUPZhjrAL0UpXZ00yz229LKB1eD0kgxO4PD2bvF6GU006cXBWAeIlClmC2 UtL68acESpVdrXDFBWamOcE2z15+nGaTfhuLyIj9w5HXA1UuZRW5YvcbvK8mNBlj CxXwW5QPAi90eNbKdvGzgOBd1Z2Lkg1n4MpxqHsCgYBHx0Jo9vZl1cy+aRinZ2wj S1aeu8TSycpdg/OmDe3ESSIZzeHcNNqT39MFVh3ZVNjZKKn2AflPv3FN/teZxLhZ M+i4wU0l6S+zHwzZuYs7uUq3zLSGVAWL4KHXICpK/HuK/POMUy9jobirxF8LDnw6 Fj98glZ2Iwt+d0Dp/fW5zwKBgDVzswpdfBvQTlIu8G8SMXscpS/0bNTJBCLU9rYS 7A+MGI46+zdG71HAzJFWWkScEP4TEwWPUF93rBmi1b5B4tx1xaoW49PE+Mm8IWwV HdHFEZUkPOFzWuQPCKOHZuF3iCfUe4DbBmsiLYCk2LuaKQG1QaXw2LDmH7ZQu7TN uam1AoGAPZR+vCPNv6Qekt6lHN3/YpIdZDes0txXDTCVEsc5mS8VPTTIhIGvHGsO bCZBBOfc+U3pOsoiQ1etGWaNNkBIWTVvZPhJuIpgeV1vnqD0Y70ICIQ9W/QifcJZ 5ugbuhZk3YoaejuTcV48ol2yGi+bP48FWc/7Q9sk0M7ijsWUxLI=
+  access_token:
+    secure:f8907a86c9f054013e4aabba5fb0f39264a55aae
 build_script:
   - msbuild %dynamo_solution%
   - msbuild %xmlDocs_solution%
-install:  
-  - ps: $fileContent = "-----BEGIN RSA PRIVATE KEY-----`n"
-  - ps: $fileContent += $env:priv_key.Replace(' ', "`n")
-  - ps: $fileContent += "`n-----END RSA PRIVATE KEY-----`n"
-  - ps: Set-Content c:\users\appveyor\.ssh\id_rsa $fileContent
-  
-before_build:
-  - nuget restore .\src\Dynamo.All.2013.sln
-
 
 after_build:
   - ps: tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/BuildScript.ps1
 
 on_success:  
  - ps: >- 
-    if($env:APPVEYOR_PULL_REQUEST_NUMBER) {	
+    if($env:APPVEYOR_PULL_REQUEST_NUMBER -eq '') {	
       git config --global user.name $env:APPVEYOR_REPO_COMMIT_AUTHOR
-      git config --global credential.helper store      
-      git submodule add git@github.com:ramramps/DynamoAPI.git
-      git submodule update --init --recursive
+      git config --global credential.helper store
+      Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n" 
+      git clone https://DynamoDS:f8907a86c9f054013e4aabba5fb0f39264a55aae@github.com/DynamoDS/DynamoAPI.git  
       tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/PublishDocs.ps1	
     }  
   
-
 test: off
-
-
