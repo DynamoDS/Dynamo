@@ -79,11 +79,11 @@ namespace Dynamo.Core.Threading
         /// <summary>
         /// Scheduled task will be processed immediately
         /// </summary>
-        Immediately,
+        Synchronous,
         /// <summary>
         /// Scheduled task will be processed by schedule
         /// </summary>
-        BySchedule
+        Asynchronous
     }
 
     public partial class DynamoScheduler : IScheduler
@@ -158,7 +158,7 @@ namespace Dynamo.Core.Threading
             // case (in a regular headless test case this is the unit test 
             // background thread; in a recorded test this is the main ui thread).
             // 
-            if (ProcessMode == TaskProcessMode.Immediately)
+            if (ProcessMode == TaskProcessMode.Synchronous)
             {
                 asyncTask.MarkTaskAsScheduled();
                 NotifyTaskStateChanged(asyncTask, TaskState.Scheduled);

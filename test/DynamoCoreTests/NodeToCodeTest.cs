@@ -1291,7 +1291,7 @@ namespace Dynamo.Tests
         /// <param name="dynFilePath"></param>
         protected void MutationTest(string dynFilePath)
         {
-            CurrentDynamoModel.Scheduler.ProcessMode = Core.Threading.TaskProcessMode.BySchedule;
+            CurrentDynamoModel.Scheduler.ProcessMode = Core.Threading.TaskProcessMode.Asynchronous;
 
             RunModel(dynFilePath);
             // Block until all tasks are executed
