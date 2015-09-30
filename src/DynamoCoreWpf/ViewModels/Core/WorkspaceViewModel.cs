@@ -1062,6 +1062,13 @@ namespace Dynamo.ViewModels
             SaveLayoutGraph();
         }
 
+        private const double VerticalGraphDistance = 30;
+        private const double HorizontalGraphDistance = 70;
+
+        /// <summary>
+        /// This method extracts all models from the workspace and puts them
+        /// into the combined graph object, Model.LayoutSubgraphs.First()
+        /// </summary>
         private void GenerateCombinedGraph()
         {
             Model.LayoutSubgraphs = new List<GraphLayout.Graph>();
@@ -1121,11 +1128,16 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// This method repeatedly takes a selected node in the combined graph and
+        /// uses breadth-first search to find all other nodes in the same subgraph
+        /// until all selected nodes have been processed.
+        /// </summary>
         public void GenerateSeparateSubgraphs()
         {
             int processed = 0;
             var combinedGraph = Model.LayoutSubgraphs.First();
-            GraphLayout.Graph graph = graph = new GraphLayout.Graph();
+            GraphLayout.Graph graph = new GraphLayout.Graph();
             Queue<GraphLayout.Node> queue = new Queue<GraphLayout.Node>();
 
             while (combinedGraph.Nodes.Count(n => n.IsSelected) > 0)
@@ -1136,6 +1148,8 @@ namespace Dynamo.ViewModels
                 {
                     if (graph.Nodes.Count > 0)
                     {
+                        // Save the subgraph and subtract these nodes from the combined graph
+
                         graph.ParentGraph = combinedGraph;
                         Model.LayoutSubgraphs.Add(graph);
                         combinedGraph.Nodes.ExceptWith(graph.Nodes);
@@ -1151,12 +1165,18 @@ namespace Dynamo.ViewModels
                     currentNode = queue.Dequeue();
                 }
 
+                // Find all nodes in the selection which are connected directly
+                // to the left or to the right to the currentNode
+
                 var selectedNodes = currentNode.RightEdges.Select(e => e.EndNode)
                     .Union(currentNode.LeftEdges.Select(e => e.StartNode))
                     .Except(graph.Nodes).ToList();
                 graph.Nodes.UnionWith(selectedNodes.Where(n => n.IsSelected));
                 graph.Edges.UnionWith(currentNode.RightEdges);
                 graph.Edges.UnionWith(currentNode.LeftEdges);
+
+                // If any of the incident edges are connected to unselected (outside) nodes
+                // then mark these edges as anchors.
 
                 graph.AnchorRightEdges.UnionWith(currentNode.RightEdges.Where(e => !e.EndNode.IsSelected));
                 graph.AnchorLeftEdges.UnionWith(currentNode.LeftEdges.Where(e => !e.StartNode.IsSelected));
@@ -1188,11 +1208,12 @@ namespace Dynamo.ViewModels
             graph.SetGraphPosition();
         }
 
+        /// <summary>
+        /// This method repeatedly shifts subgraphs away vertically from each other
+        /// when there are any two nodes from different subgraphs overlapping.
+        /// </summary>
         private void AvoidSubgraphOverlap()
         {
-            var VerticalGraphDistance = 30;
-            var HorizontalGraphDistance = 70;
-
             bool done;
 
             do
@@ -1203,6 +1224,7 @@ namespace Dynamo.ViewModels
                 {
                     foreach (var g2 in Model.LayoutSubgraphs.Skip(1))
                     {
+                        // The first subgraph's center point must be higher than the second subgraph
                         if (!g1.Equals(g2) && (g1.GraphCenterY + g1.OffsetY <= g2.GraphCenterY + g2.OffsetY))
                         {
                             var g1nodes = g1.Nodes.OrderBy(n => n.Y + n.Height);
@@ -1212,10 +1234,12 @@ namespace Dynamo.ViewModels
                             {
                                 foreach (var node2 in g2nodes)
                                 {
+                                    // If any two nodes from these two different subgraphs overlap
                                     if ((node1.Y + node1.Height + VerticalGraphDistance + g1.OffsetY > node2.Y + g2.OffsetY) &&
                                         (((node1.X <= node2.X) && (node1.X + node1.Width + HorizontalGraphDistance > node2.X)) ||
                                         ((node2.X <= node1.X) && (node2.X + node2.Width + HorizontalGraphDistance > node1.X))))
                                     {
+                                        // Shift the first subgraph to the top and the second subgraph to the bottom
                                         g1.OffsetY -= 5;
                                         g2.OffsetY += 5;
                                         done = false;
@@ -1230,24 +1254,25 @@ namespace Dynamo.ViewModels
             } while (!done);
         }
 
+        /// <summary>
+        /// This method pushes changes from the GraphLayout.Graph objects
+        /// back to the workspace models.
+        /// </summary>
         private void SaveLayoutGraph()
         {
             // Assign coordinates to nodes inside groups
             foreach (var group in Model.Annotations)
             {
-                GraphLayout.Node g = null;
-                double offsetY = 0;
-                foreach (GraphLayout.Graph graph in Model.LayoutSubgraphs)
-                {
-                    g = graph.FindNode(group.GUID);
-                    offsetY = graph.OffsetY;
-                    if (g != null) break;
-                }
+                GraphLayout.Graph graph = Model.LayoutSubgraphs
+                    .FirstOrDefault(g => g.FindNode(group.GUID) != null);
 
-                if (g != null)
+                if (graph != null)
                 {
-                    double deltaX = g.X - group.X;
-                    double deltaY = g.Y - group.Y ;
+                    GraphLayout.Node n = graph.FindNode(group.GUID);
+                    double offsetY = graph.OffsetY;
+
+                    double deltaX = n.X - group.X;
+                    double deltaY = n.Y - group.Y ;
                     foreach (var node in group.SelectedModels.OfType<NodeModel>())
                     {
                         node.X += deltaX;
@@ -1255,7 +1280,7 @@ namespace Dynamo.ViewModels
                         node.ReportPosition();
                     }
 
-                    foreach (NoteModel note in g.LinkedNotes)
+                    foreach (NoteModel note in n.LinkedNotes)
                     {
                         if (note.IsSelected || DynamoSelection.Instance.Selection.Count == 0)
                         {
@@ -1270,16 +1295,14 @@ namespace Dynamo.ViewModels
             // Assign coordinates to nodes outside groups
             foreach (var node in Model.Nodes)
             {
-                GraphLayout.Node n = null;
-                double offsetY = 0;
-                foreach (GraphLayout.Graph graph in Model.LayoutSubgraphs)
+                GraphLayout.Graph graph = Model.LayoutSubgraphs
+                    .FirstOrDefault(g => g.FindNode(node.GUID) != null);
+
+                if (graph != null)
                 {
-                    n = graph.FindNode(node.GUID);
-                    offsetY = graph.OffsetY;
-                    if (n != null) break;
-                }
-                if (n != null)
-                {
+                    GraphLayout.Node n = graph.FindNode(node.GUID);
+                    double offsetY = graph.OffsetY;
+
                     double deltaX = n.X - node.X;
                     double deltaY = n.Y - node.Y;
 
