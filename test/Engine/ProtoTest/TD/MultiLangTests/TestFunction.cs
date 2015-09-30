@@ -7829,8 +7829,9 @@ def foo : var[][][] (  X : var[][])
     return = X; 
 }
                 a = { 3, { 0, 1} ,  2  };
-                b = A.A ( a);
-                c = foo(b);";
+                b = Create ( a);
+                c = foo(b);
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467183 - Sprint24: rev 3163 : replication on nested array is outputting extra brackets in some cases");
