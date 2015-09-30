@@ -4,11 +4,24 @@ platform: Any CPU
 
 configuration: Release
 
+environment:
+  access_token:
+    secure:WlBH06AD2+KPP2EmpDsoMLW5b4HL1D34AnfNjFz6lDtPXaTYSaPgfnOVMV1ULbNy
+
 before_build:
   - nuget restore .\src\Dynamo.All.2013.sln
 
 build:
   project: src/Dynamo.All.2013.sln
   verbosity: normal
+  
+on_success:  
+ - ps: >- 
+    if($env:APPVEYOR_PULL_REQUEST_NUMBER -eq '') {	
+      git config --global user.name $env:APPVEYOR_REPO_COMMIT_AUTHOR
+      git config --global credential.helper store
+      Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n" 
+      git clone https://ramramps:$($env:access_token)@github.com/ramramps/DynamoAPI.git      
+    }
 
 test: off
