@@ -1636,8 +1636,10 @@ namespace Dynamo.Models
         /// <param name="scheduler">An IScheduler on which the task will be scheduled.</param>
         /// <param name="engine">The EngineController which will be used to get MirrorData for the node.</param>
         /// <param name="factory">An IRenderPackageFactory which will be used to generate IRenderPackage objects.</param>
+        /// <param name="forceUpdate">Normally, render packages are only generated when the node's IsUpdated parameter is true.
+        /// By setting forceUpdate to true, the render packages will be updated.</param>
         public virtual void
-            RequestVisualUpdateAsync(IScheduler scheduler, EngineController engine, IRenderPackageFactory factory)
+            RequestVisualUpdateAsync(IScheduler scheduler, EngineController engine, IRenderPackageFactory factory, bool forceUpdate = false)
         {
             var initParams = new UpdateRenderPackageParams()
             {
@@ -1645,7 +1647,8 @@ namespace Dynamo.Models
                 RenderPackageFactory = factory,
                 EngineController = engine,
                 DrawableIds = GetDrawableIds(),
-                PreviewIdentifierName = AstIdentifierForPreview.Name
+                PreviewIdentifierName = AstIdentifierForPreview.Name,
+                ForceUpdate = forceUpdate
             };
 
             var task = new UpdateRenderPackageAsyncTask(scheduler);

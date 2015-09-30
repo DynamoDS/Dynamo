@@ -56,6 +56,8 @@ namespace DynamoServicesTests
             // to ensure we're in a clean state for the next run. 
             WorkspaceEvents.WorkspaceAdded -= WorkspacesModified;
             WorkspaceEvents.WorkspaceRemoved -= WorkspacesModified;
+
+            base.TearDown();
         }
 
         private void WorkspacesModified(WorkspacesModificationEventArgs args)

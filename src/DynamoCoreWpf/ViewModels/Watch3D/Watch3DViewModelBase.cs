@@ -267,13 +267,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     break;
             }
 
-            model.CurrentWorkspace.Nodes.Select(n => n.IsUpdated = true);
-
             foreach (var node in
                 model.CurrentWorkspace.Nodes)
             {
                 node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController,
-                        renderPackageFactory);
+                        renderPackageFactory, true);
             }
         }
 

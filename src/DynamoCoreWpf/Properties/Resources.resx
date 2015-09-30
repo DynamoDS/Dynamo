@@ -1932,4 +1932,7 @@ Do you want to install the latest Dynamo update?</value>
   <data name="QueryMember" xml:space="preserve">
     <value>Query</value>
   </data>
+  <data name="AddToLibraryButton" xml:space="preserve">
+    <value>Add</value>
+  </data>
 </root>

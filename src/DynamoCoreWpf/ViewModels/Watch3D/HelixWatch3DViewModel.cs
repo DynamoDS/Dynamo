@@ -442,6 +442,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             OnRequestCreateModels(packages);
         }
 
+        protected override void OnShutdown()
+        {
+            EffectsManager = null;
+            RenderTechniquesManager = null;
+        }
+
         protected override void OnClear()
         {
             lock (Model3DDictionaryMutex)
@@ -568,7 +574,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     break;
 
                 case "DisplayLabels":
-                    node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
+                    node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory, true);
                     break;
 
                 case "IsVisible":
@@ -579,8 +585,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         //RaisePropertyChanged("SceneItems");
                     }
 
-                    node.IsUpdated = true;
-                    node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
+                    node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory, true);
 
                     break;
             }
@@ -647,7 +652,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     OnClear();
                     foreach (var node in model.CurrentWorkspace.Nodes)
                     {
-                        node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
+                        node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory, true);
                     }
                     break;
             }
