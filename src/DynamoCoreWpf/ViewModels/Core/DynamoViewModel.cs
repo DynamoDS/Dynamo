@@ -478,13 +478,26 @@ namespace Dynamo.ViewModels
             SubscribeDispatcherHandlers();
 
             RenderPackageFactoryViewModel = new RenderPackageFactoryViewModel(Model.PreferenceSettings);
-
+            RenderPackageFactoryViewModel.PropertyChanged += RenderPackageFactoryViewModel_PropertyChanged;
             if (DynamoModel.IsTestMode) return;
             var backgroundPreviewParams = new Watch3DViewModelStartupParams(Model, this, Resources.BackgroundPreviewName);
 
             var watch3DViewModel = HelixWatch3DViewModel.Start(backgroundPreviewParams);
             Watch3DViewModels.Add(watch3DViewModel);
             watch3DViewModel.PropertyChanged += HelixWatch3DViewModelPropertyChanged;
+        }
+
+        private void RenderPackageFactoryViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "ShowEdges":
+                    var factoryVm = (RenderPackageFactoryViewModel)sender;
+                    model.PreferenceSettings.ShowEdges = factoryVm.Factory.TessellationParameters.ShowEdges;
+                    break;
+                default:
+                    return;
+            }
         }
 
         void HelixWatch3DViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)

@@ -260,13 +260,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private void OnRenderPackageFactoryViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            switch (e.PropertyName)
-            {
-                case "ShowEdges":
-                    preferences.ShowEdges = renderPackageFactory.TessellationParameters.ShowEdges;
-                    break;
-            }
-
             foreach (var node in
                 model.CurrentWorkspace.Nodes)
             {
