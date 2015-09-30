@@ -1,16 +1,25 @@
-$(document).ready(function(){
-		$("td:contains('TypeParam :')").css("border-top","1px #939598 solid");
-		$("td:contains('TypeParam :')").next().css("border-top","1px #939598 solid");		
-		$(window).scroll(function() {
-			var $myDiv = $('#menuNavigation');
-			var st = $(this).scrollTop();
-			if($(window).scrollTop() + $(window).height() < $(document).height()) {
-			var pageHeight = $(window).scrollTop() + $(window).height();
-			var docHeight = $(document).height();
-			if(docHeight - pageHeight >= 0){				
-			    $myDiv.height(pageHeight);
+$('.docutils').each(function(){
+	var testparam = $(this).find("td:contains('TypeParam :')").first().parent().prev().index();
+	$(this).find('tbody').children().each(function(index){
+		if (index >=2 && index<=testparam){
+			console.log(index);
+			$(this).addClass("params");
+			if(index%2 == false){
+				$(this).children().addClass("paramstitle");
+			}else{
+				$(this).children().addClass("paramsdesc");
 			}
-		}			
-		}).scroll();
-	}
-);
+			if(index==testparam){
+				$(this).children().addClass("lastparam");
+			}
+		}else{
+			$(this).addClass("nonparams");
+			
+			if(index == 1){
+				$(this).children().addClass("desc");
+			}else if(index == testparam +1){
+				$(this).children().addClass("firstnonparam");
+			}
+		}
+	});
+});
