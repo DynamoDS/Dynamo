@@ -1198,7 +1198,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Tries to load ports names and description from attributes.
+        /// Tries to load ports names and descriptions from attributes.
         /// </summary>
         /// <param name="portType">Input or Output port type</param>
         private IEnumerable<PortData> GetPortsDataFromAttributes(PortType portType)

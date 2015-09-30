@@ -628,12 +628,18 @@ value : bool = false</value>
     <value>You used old style of setting node ports. Please, use new style based on adding port attributes.</value>
   </data>
   <data name="InputPortsHasAlreadyBeenRegisteredMessage" xml:space="preserve">
-    <value>Input ports has already been registered.</value>
+    <value>Input ports have already been registered.</value>
   </data>
   <data name="InputPortsNameDescriptionWarningMessage" xml:space="preserve">
     <value>Number of input ports name does not equal number of port descriptions.</value>
   </data>
   <data name="DescriptionResource1" xml:space="preserve">
     <value>some description</value>
+  </data>
+  <data name="ResourcePropertyIsNotStringTypeMessage" xml:space="preserve">
+    <value>Resource Property is not String Type</value>
+  </data>
+  <data name="ResourceTypeDoesNotHavePropertyMessage" xml:space="preserve">
+    <value>Resource Type does not have Property</value>
   </data>
 </root>

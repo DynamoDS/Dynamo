@@ -702,7 +702,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Input ports has already been registered..
+        ///   Looks up a localized string similar to Input ports have already been registered..
         /// </summary>
         public static string InputPortsHasAlreadyBeenRegisteredMessage {
             get {
@@ -1175,6 +1175,24 @@ namespace Dynamo.Properties {
         public static string RequestingVersionUpdate {
             get {
                 return ResourceManager.GetString("RequestingVersionUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resource Property is not String Type.
+        /// </summary>
+        public static string ResourcePropertyIsNotStringTypeMessage {
+            get {
+                return ResourceManager.GetString("ResourcePropertyIsNotStringTypeMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resource Type does not have Property.
+        /// </summary>
+        public static string ResourceTypeDoesNotHavePropertyMessage {
+            get {
+                return ResourceManager.GetString("ResourceTypeDoesNotHavePropertyMessage", resourceCulture);
             }
         }
         

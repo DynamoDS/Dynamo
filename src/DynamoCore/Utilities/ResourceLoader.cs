@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Reflection;
 
+using Dynamo.Properties;
+
 namespace Dynamo.Utilities
 {
     static internal class ResourceLoader
@@ -23,11 +25,11 @@ namespace Dynamo.Utilities
 
             if (property == null)
             {
-                throw new InvalidOperationException("Resource Type does not have Property");
+                throw new InvalidOperationException(Resources.ResourceTypeDoesNotHavePropertyMessage);
             }
             if (property.PropertyType != typeof(string))
             {
-                throw new InvalidOperationException("Resource Property is not String Type");
+                throw new InvalidOperationException(Resources.ResourcePropertyIsNotStringTypeMessage);
             }
             return (string)property.GetValue(null, null);
         }
@@ -52,11 +54,11 @@ namespace Dynamo.Utilities
 
                 if (property == null)
                 {
-                    throw new InvalidOperationException("Resource Type Does Not Have Property");
+                    throw new InvalidOperationException(Resources.ResourceTypeDoesNotHavePropertyMessage);
                 }
                 if (property.PropertyType != typeof(string))
                 {
-                    throw new InvalidOperationException("Resource Property is Not String Type");
+                    throw new InvalidOperationException(Resources.ResourcePropertyIsNotStringTypeMessage);
                 }
                 titles.Add((string)property.GetValue(null, null));
             }
