@@ -42,8 +42,8 @@ namespace Dynamo.Models
         private string toolTipText = "";
         private string description;
         private string persistentWarning = "";
-        private bool isInputPortsRegistered;
-        private bool isOutputPortsRegistered;
+        private bool areInputPortsRegistered;
+        private bool areOutputPortsRegistered;
 
         // Data caching related class members. There are multiple parties at
         // play when it comes to caching MirrorData for a NodeModel, this value
@@ -103,11 +103,13 @@ namespace Dynamo.Models
         /// <summary>
         ///     Definitions for the Input Ports of this NodeModel.
         /// </summary>
+        [Obsolete("InPortData is deprecated, please use the InPortNamesAttribute, InPortDescriptionsAttribute, and InPortTypesAttribute instead.")]
         public ObservableCollection<PortData> InPortData { get; private set; }
         
         /// <summary>
         ///     Definitions for the Output Ports of this NodeModel.
         /// </summary>
+        [Obsolete("OutPortData is deprecated, please use the InPortNamesAttribute, InPortDescriptionsAttribute, and InPortTypesAttribute instead.")]
         public ObservableCollection<PortData> OutPortData { get; private set; }
 
         /// <summary>
@@ -1092,18 +1094,19 @@ namespace Dynamo.Models
         /// <summary>
         ///     Reads inputs list and adds ports for each input.
         /// </summary>
+        [Obsolete("RegisterInputPorts is deprecated, please use the InPortNamesAttribute, InPortDescriptionsAttribute, and InPortTypesAttribute instead.")]
         public void RegisterInputPorts()
         {
             // Old version of input ports registration.
             // Used InPortData.
-            if (InPortData.Count > 0 && !isInputPortsRegistered)
+            if (InPortData.Count > 0 && !areInputPortsRegistered)
             {
                 Warning(Properties.Resources.DeprecatedPortNamingStyleMessage, true);
             }
 
             // New version of input ports registration.
             // Used port Attributes.
-            if (!isInputPortsRegistered)
+            if (!areInputPortsRegistered)
             {
                 InPortData.AddRange(GetPortsDataFromAttributes(PortType.Input));
             }
@@ -1138,24 +1141,25 @@ namespace Dynamo.Models
 
             //Configure Snap Edges
             ConfigureSnapEdges(inPorts);
-            isInputPortsRegistered = true;
+            areInputPortsRegistered = true;
         }
 
         /// <summary>
         ///     Reads outputs list and adds ports for each output
         /// </summary>
+        [Obsolete("RegisterOutputPorts is deprecated, please use the OutPortNamesAttribute, OutPortDescriptionsAttribute and OutPortTypesAttribute instead.")]
         public void RegisterOutputPorts()
         {
             // Old version of output ports registration.
             // Used OutPortData.
-            if (OutPortData.Count > 0 && !isOutputPortsRegistered)
+            if (OutPortData.Count > 0 && !areOutputPortsRegistered)
             {
                 Warning(Properties.Resources.DeprecatedPortNamingStyleMessage, true);
             }
 
             // New version of output ports registration.
             // Used port Attributes.
-            if (!isOutputPortsRegistered)
+            if (!areOutputPortsRegistered)
             {
                 OutPortData.AddRange(GetPortsDataFromAttributes(PortType.Output));
             }
@@ -1190,7 +1194,7 @@ namespace Dynamo.Models
 
             //configure snap edges
             ConfigureSnapEdges(outPorts);
-            isOutputPortsRegistered = true;
+            areOutputPortsRegistered = true;
         }
 
         /// <summary>
@@ -1228,7 +1232,9 @@ namespace Dynamo.Models
             }
 
             if (names == null)
+            {
                 return new List<PortData>();
+            }
 
             if ((names.Count != descriptions.Count))
             {
