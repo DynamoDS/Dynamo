@@ -1306,7 +1306,7 @@ namespace Dynamo.Tests
                                                                       .Select(n => n.GUID).ToList();
             int connectorCount = CurrentDynamoModel.CurrentWorkspace.Connectors.Count();
 
-            for (int i = 1; i <= convertibleNodes.Count(); ++i)
+            for (int i = 1; i <= Math.Min(convertibleNodes.Count(), 10); ++i)
             {
                 var toBeConvertedNodes = convertibleNodes.Take(i);
                 var otherNodes = allNodes.Except(toBeConvertedNodes);
