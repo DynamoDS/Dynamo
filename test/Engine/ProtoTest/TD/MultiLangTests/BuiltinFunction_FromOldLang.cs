@@ -12,7 +12,7 @@ namespace ProtoTest.TD.MultiLangTests
     class BuiltinFunction_FromOldLang : ProtoTestBase
     {
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T80580_BuiltinFunc_1()
         {
             string code = @"
