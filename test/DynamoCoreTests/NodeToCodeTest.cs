@@ -1247,7 +1247,9 @@ namespace Dynamo.Tests
             foreach (var node in CurrentDynamoModel.CurrentWorkspace.Nodes)
             {
                 if (nodes.Contains(node.GUID))
-                    DynamoSelection.Instance.Selection.Add(node); 
+                {
+                    DynamoSelection.Instance.Selection.Add(node);
+                }
             }
         }
 
@@ -1257,7 +1259,9 @@ namespace Dynamo.Tests
             foreach (var node in CurrentDynamoModel.CurrentWorkspace.Nodes)
             {
                 if (node.GUID != excludedNode)
+                {
                     DynamoSelection.Instance.Selection.Add(node);
+                }
             }
         }
 
@@ -1295,7 +1299,7 @@ namespace Dynamo.Tests
 
             RunModel(dynFilePath);
             // Block until all tasks are executed
-            while (CurrentDynamoModel.Scheduler.Tasks.Any());
+            while (CurrentDynamoModel.Scheduler.HasPendingTasks);
 
             var allNodes = CurrentDynamoModel.CurrentWorkspace.Nodes.Select(n => n.GUID).ToList();
             int nodeCount = allNodes.Count();
@@ -1316,7 +1320,7 @@ namespace Dynamo.Tests
                 var command = new DynamoModel.ConvertNodesToCodeCommand();
                 CurrentDynamoModel.ExecuteCommand(command);
                 // Block until all tasks are executed
-                while (CurrentDynamoModel.Scheduler.Tasks.Any());
+                while (CurrentDynamoModel.Scheduler.HasPendingTasks);
 
                 foreach (var node in otherNodes)
                 {
@@ -1330,7 +1334,7 @@ namespace Dynamo.Tests
                 var undo = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo);
                 CurrentDynamoModel.ExecuteCommand(undo);
                 // Block until all tasks are executed
-                while (CurrentDynamoModel.Scheduler.Tasks.Any()) ;
+                while (CurrentDynamoModel.Scheduler.HasPendingTasks) ;
 
                 // Verify after undo everything is OK
                 Assert.AreEqual(nodeCount, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());

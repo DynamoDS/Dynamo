@@ -150,20 +150,20 @@ namespace Dynamo.Core.Threading
                    other.graphSyncData.DeletedNodeIDs.All(graphSyncData.DeletedNodeIDs.Contains);
         }
 
-        private bool IsAfter(UpdateGraphAsyncTask other)
+        private bool IsScheduledAfter(UpdateGraphAsyncTask other)
         {
-            return this.CreationTime > other.CreationTime;
+            return CreationTime > other.CreationTime;
         }
 
-        protected override AsyncTask.TaskMergeInstruction CanMergeWithCore(AsyncTask otherTask)
+        protected override TaskMergeInstruction CanMergeWithCore(AsyncTask otherTask)
         {
             var theOtherTask = otherTask as UpdateGraphAsyncTask;
             if (theOtherTask == null)
                 return base.CanMergeWithCore(otherTask);
 
-            if (theOtherTask.IsAfter(this) && theOtherTask.Contains(this))
+            if (theOtherTask.IsScheduledAfter(this) && theOtherTask.Contains(this))
                 return TaskMergeInstruction.KeepOther;
-            else if (this.IsAfter(theOtherTask) && this.Contains(theOtherTask))
+            else if (this.IsScheduledAfter(theOtherTask) && this.Contains(theOtherTask))
                 return TaskMergeInstruction.KeepThis;
             else
                 return TaskMergeInstruction.KeepBoth;
