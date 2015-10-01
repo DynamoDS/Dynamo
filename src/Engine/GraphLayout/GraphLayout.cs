@@ -9,37 +9,81 @@ namespace GraphLayout
     /// <summary>
     /// Represents the graph object (a set of nodes and edges) in the GraphLayout algorithm.
     /// </summary>
-    public class Graph
+    internal class Graph
     {
+
+        #region Graph properties
+
         private const int MaxLayerHeight = 20;
         private const double HorizontalNodeDistance = 100;
         private const double VerticalNodeDistance = 30;
         private const double Infinite = 1000000;
 
-        public HashSet<Node> Nodes = new HashSet<Node>();
-        public HashSet<Edge> Edges = new HashSet<Edge>();
+        /// <summary>
+        /// Set of nodes in this graph.
+        /// </summary>
+        internal HashSet<Node> Nodes = new HashSet<Node>();
+
+        /// <summary>
+        /// Set of edges relevant to this graph.
+        /// </summary>
+        internal HashSet<Edge> Edges = new HashSet<Edge>();
 
         /// <summary>
         /// Layers 1 and onwards list the nodes in this graph ordered by layer,
         /// with smaller numbers to the right part of the graph.
         /// Layer 0 refers to outside nodes connected to the right of the first layer.
         /// </summary>
-        public List<List<Node>> Layers = new List<List<Node>>();
+        internal List<List<Node>> Layers = new List<List<Node>>();
 
         /// <summary>
         /// Edges connected to outside nodes to the left of this graph.
         /// </summary>
-        public HashSet<Edge> AnchorLeftEdges = new HashSet<Edge>();
+        internal HashSet<Edge> AnchorLeftEdges = new HashSet<Edge>();
 
         /// <summary>
         /// Edges connected to outside nodes to the right of this graph.
         /// </summary>
-        public HashSet<Edge> AnchorRightEdges = new HashSet<Edge>();
+        internal HashSet<Edge> AnchorRightEdges = new HashSet<Edge>();
 
         /// <summary>
         /// The graph object which refers to the whole workspace.
         /// </summary>
-        public Graph ParentGraph;
+        internal Graph ParentGraph;
+
+        /// <summary>
+        /// Stores the GraphCenterX value before layout algorithm.
+        /// </summary>
+        private double InitialGraphCenterX;
+
+        /// <summary>
+        /// Stores the GraphCenterY value before layout algorithm.
+        /// </summary>
+        private double InitialGraphCenterY;
+
+        /// <summary>
+        /// Stores the vertical offset value to avoid subgraph overlap
+        /// after running the layout algorithm.
+        /// </summary>
+        internal double OffsetY = 0;
+
+        /// <summary>
+        /// Returns the x coordinate of the graph's center point.
+        /// </summary>
+        internal double GraphCenterX
+        {
+            get { return (Nodes.Min(n => n.X) + Nodes.Max(n => n.X + n.Width)) / 2; }
+        }
+
+        /// <summary>
+        /// Returns the y coordinate of the graph's center point.
+        /// </summary>
+        internal double GraphCenterY
+        {
+            get { return (Nodes.Min(n => n.Y) + Nodes.Max(n => n.Y + n.Height)) / 2; }
+        }
+
+        #endregion
 
         #region Helper methods
 
@@ -52,7 +96,7 @@ namespace GraphLayout
         /// <param name="x">The x coordinate of the node view.</param>
         /// <param name="y">The y coordinate of the node view.</param>
         /// <param name="isSelected">True if the node is selected in the workspace.</param>
-        public void AddNode(Guid guid, double width, double height, double x, double y, bool isSelected)
+        internal void AddNode(Guid guid, double width, double height, double x, double y, bool isSelected)
         {
             var node = new Node(guid, width, height, x, y, isSelected, this);
             Nodes.Add(node);
@@ -67,7 +111,7 @@ namespace GraphLayout
         /// <param name="startY">The y coordinate of the connector's left end point.</param>
         /// <param name="endX">The x coordinate of the connector's right end point.</param>
         /// <param name="endY">The y coordinate of the connector's right end point.</param>
-        public void AddEdge(Guid startId, Guid endId, double startX, double startY, double endX, double endY)
+        internal void AddEdge(Guid startId, Guid endId, double startX, double startY, double endX, double endY)
         {
             var edge = new Edge(startId, endId, startX, startY, endX, endY, this);
             Edges.Add(edge);
@@ -78,7 +122,7 @@ namespace GraphLayout
         /// </summary>
         /// <param name="guid">The node's guid.</param>
         /// <returns>The node object.</returns>
-        public Node FindNode(Guid guid)
+        internal Node FindNode(Guid guid)
         {
             foreach (Node node in Nodes)
             {
@@ -96,7 +140,7 @@ namespace GraphLayout
         /// <param name="start">Start node.</param>
         /// <param name="end">End node.</param>
         /// <returns>The edge object.</returns>
-        public Edge FindEdge(Node start, Node end)
+        internal Edge FindEdge(Node start, Node end)
         {
             foreach (Edge edge in Edges)
             {
@@ -113,7 +157,7 @@ namespace GraphLayout
         /// </summary>
         /// <param name="n">The node.</param>
         /// <param name="currentLayer">The number of the layer, starting from 0 for the rightmost layer.</param>
-        public void AddToLayer(Node n, int currentLayer)
+        internal void AddToLayer(Node n, int currentLayer)
         {
             while (Layers.Count <= currentLayer)
                 Layers.Add(new List<Node>());
@@ -127,7 +171,7 @@ namespace GraphLayout
         /// </summary>
         /// <param name="list">The list of nodes.</param>
         /// <param name="currentLayer">The number of the layer, starting from 0 for the rightmost layer.</param>
-        public void AddToLayer(List<Node> list, int currentLayer)
+        internal void AddToLayer(List<Node> list, int currentLayer)
         {
             foreach (Node n in list)
                 AddToLayer(n, currentLayer);
@@ -136,7 +180,7 @@ namespace GraphLayout
         /// <summary>
         /// Removes any transitive edges in the graph.
         /// </summary>
-        public void RemoveTransitiveEdges()
+        internal void RemoveTransitiveEdges()
         {
             // Check for transitive edges using an adjacency matrix.
             // For the matrix cells, 1 implies that there exists a path between
@@ -199,7 +243,7 @@ namespace GraphLayout
         /// proposed by Eades et al, 1993.
         /// http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.47.7745
         /// </summary>
-        public void RemoveCycles()
+        internal void RemoveCycles()
         {
             HashSet<Node> RemainingNodes = new HashSet<Node>(Nodes);
             HashSet<Edge> AcyclicEdges = new HashSet<Edge>();
@@ -268,7 +312,7 @@ namespace GraphLayout
         /// Unconnected output nodes will be put on the rightmost layer and
         /// they will be ordered based on their original vertical positions.
         /// </summary>
-        public void AssignLayers()
+        internal void AssignLayers()
         {
             RemoveTransitiveEdges();
 
@@ -319,7 +363,7 @@ namespace GraphLayout
         /// This method uses Median heuristic to determine the vertical node
         /// order for each layer.
         /// </summary>
-        public void OrderNodes()
+        internal void OrderNodes()
         {
             // Assign temporary vertical indices for further processing
             foreach (List<Node> layer in Layers.Skip(1))
@@ -416,7 +460,7 @@ namespace GraphLayout
         /// ordering of nodes in that particular layer is determined.
         /// </summary>
         /// <param name="layer">The nodes in a layer to be assigned their coordinates.</param>
-        public void AssignCoordinates(List<Node> layer)
+        internal void AssignCoordinates(List<Node> layer)
         {
             // Assign vertical coordinates to the main nodes
             // If two nodes have the same Y coordinate,
@@ -477,24 +521,10 @@ namespace GraphLayout
 
         #region Graph positioning methods
 
-        private double InitialGraphCenterX;
-        private double InitialGraphCenterY;
-        public double OffsetY = 0;
-
-        public double GraphCenterX
-        {
-            get { return (Nodes.Min(n => n.X) + Nodes.Max(n => n.X + n.Width)) / 2; }
-        }
-
-        public double GraphCenterY
-        {
-            get { return (Nodes.Min(n => n.Y) + Nodes.Max(n => n.Y + n.Height)) / 2; }
-        }
-
         /// <summary>
         /// To save the initial center position of the graph.
         /// </summary>
-        public void RecordInitialPosition()
+        internal void RecordInitialPosition()
         {
             InitialGraphCenterX = GraphCenterX;
             InitialGraphCenterY = GraphCenterY;
@@ -503,7 +533,7 @@ namespace GraphLayout
         /// <summary>
         /// To set spaces between the nodes based on the default node distance.
         /// </summary>
-        public void DistributeNodePosition()
+        internal void DistributeNodePosition()
         {
             double previousLayerX = 0;
             double offsetY = -Nodes.OrderBy(x => x.Y).First().Y;
@@ -542,7 +572,7 @@ namespace GraphLayout
         /// <summary>
         /// To shift the whole graph back to its original position.
         /// </summary>
-        public void SetGraphPosition()
+        internal void SetGraphPosition()
         {
             double moveX = 0;
             double moveY = 0;
@@ -596,7 +626,7 @@ namespace GraphLayout
     /// <summary>
     /// Represents a node/vertex object in the GraphLayout algorithm.
     /// </summary>
-    public class Node
+    internal class Node
     {
         /// <summary>
         /// The graph object which owns the node.
@@ -606,59 +636,59 @@ namespace GraphLayout
         /// <summary>
         /// The unique identifier of the node.
         /// </summary>
-        public Guid Id;
+        internal Guid Id;
 
         /// <summary>
         /// The width of the node view.
         /// </summary>
-        public double Width;
+        internal double Width;
 
         /// <summary>
         /// The height of the node view.
         /// </summary>
-        public double Height;
+        internal double Height;
 
         /// <summary>
         /// The x coordinate of the node view.
         /// </summary>
-        public double X;
+        internal double X;
 
         /// <summary>
         /// The y coordinate of the node view.
         /// </summary>
-        public double Y;
+        internal double Y;
 
         /// <summary>
         /// The initial Y coordinate of the node view.
         /// </summary>
-        public double InitialY;
+        internal double InitialY;
 
         /// <summary>
         /// The layer of the node within the graph, starting from layer 0 for the rightmost layer.
         /// </summary>
-        public int Layer = -1;
+        internal int Layer = -1;
 
         /// <summary>
         /// The set of edges connected to the input ports the node.
         /// </summary>
-        public HashSet<Edge> LeftEdges = new HashSet<Edge>();
+        internal HashSet<Edge> LeftEdges = new HashSet<Edge>();
 
         /// <summary>
         /// The set of edges connected to the output ports of the node.
         /// </summary>
-        public HashSet<Edge> RightEdges = new HashSet<Edge>();
+        internal HashSet<Edge> RightEdges = new HashSet<Edge>();
 
         /// <summary>
         /// A list of note models which has this node as the closest node.
         /// </summary>
-        public List<Object> LinkedNotes = new List<Object>();
+        internal List<Object> LinkedNotes = new List<Object>();
 
         /// <summary>
         /// True if the node is selected in the workspace.
         /// </summary>
-        public bool IsSelected;
+        internal bool IsSelected;
 
-        public Node(Guid guid, double width, double height, double x, double y, bool isSelected, Graph ownerGraph)
+        internal Node(Guid guid, double width, double height, double x, double y, bool isSelected, Graph ownerGraph)
         {
             Id = guid;
             Width = width;
@@ -674,7 +704,7 @@ namespace GraphLayout
     /// <summary>
     /// Represents an edge/link object in the GraphLayout algorithm.
     /// </summary>
-    public class Edge
+    internal class Edge
     {
         /// <summary>
         /// The graph object which owns the edge.
@@ -684,17 +714,17 @@ namespace GraphLayout
         /// <summary>
         /// The node connected to the edge's left end.
         /// </summary>
-        public Node StartNode;
+        internal Node StartNode;
 
         /// <summary>
         /// The node connected to the edge's right end.
         /// </summary>
-        public Node EndNode;
+        internal Node EndNode;
 
         /// <summary>
         /// Returns the x coordinate of the connector's start point.
         /// </summary>
-        public double StartX
+        internal double StartX
         {
             get { return StartNode.X + StartNode.Width; }
         }
@@ -702,7 +732,7 @@ namespace GraphLayout
         /// <summary>
         /// Returns the y coordinate of the connector's start point.
         /// </summary>
-        public double StartY
+        internal double StartY
         {
             get { return StartNode.Y + StartOffsetY; }
         }
@@ -710,7 +740,7 @@ namespace GraphLayout
         /// <summary>
         /// Returns the x coordinate of the connector's end point.
         /// </summary>
-        public double EndX
+        internal double EndX
         {
             get { return EndNode.X; }
         }
@@ -718,7 +748,7 @@ namespace GraphLayout
         /// <summary>
         /// Returns the y coordinate of the connector's end point.
         /// </summary>
-        public double EndY
+        internal double EndY
         {
             get { return EndNode.Y + EndOffsetY; }
         }
@@ -726,19 +756,19 @@ namespace GraphLayout
         /// <summary>
         /// The y distance between the edge's left end and the start node's top-right corner.
         /// </summary>
-        public double StartOffsetY;
+        internal double StartOffsetY;
 
         /// <summary>
         /// The y distance between the edge's right end and the end node's top-left corner.
         /// </summary>
-        public double EndOffsetY;
+        internal double EndOffsetY;
 
         /// <summary>
         /// A flag for the GraphLayout algorithm.
         /// </summary>
-        public bool Active = true;
+        internal bool Active = true;
 
-        public Edge(Guid startId, Guid endId, double startX, double startY, double endX, double endY, Graph ownerGraph)
+        internal Edge(Guid startId, Guid endId, double startX, double startY, double endX, double endY, Graph ownerGraph)
         {
             OwnerGraph = ownerGraph;
 
