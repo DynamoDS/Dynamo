@@ -75,6 +75,14 @@ namespace Dynamo.Core
 
         #region virtual properties
 
+        protected virtual string UserDataDirectory
+        {
+            get
+            {
+                return pathManager.UserDataDirectory;
+            }
+        }
+
         protected virtual string PackagesDirectory
         {
             get
@@ -142,8 +150,10 @@ namespace Dynamo.Core
             using (var fs = new FileStream(this.PreferenceSettingsFilePath, FileMode.Open, FileAccess.Read))
             {
                 settings = serializer.Deserialize(fs) as PreferenceSettings;
+
                 fs.Close(); // Release file lock
             }
+            
             return settings;
         }
 
@@ -160,6 +170,18 @@ namespace Dynamo.Core
             Copy(sourceMigrator.DefinitionsDirectory, this.DefinitionsDirectory);
 
             this.PreferenceSettings = sourceMigrator.PreferenceSettings;
+            if (this.PreferenceSettings == null) return this;
+
+            // All preference settings are copied over including custom package folders
+            // However if one of the custom folder locations points to the user data directory
+            // of the previous version, it needs to be replaced with that of the current version
+            var indexToreplace = this.PreferenceSettings.CustomPackageFolders.FindIndex(f => f.Contains(sourceMigrator.UserDataDirectory));
+            
+            if (indexToreplace <= -1) return this;
+            
+            this.PreferenceSettings.CustomPackageFolders.RemoveAt(indexToreplace);
+            this.PreferenceSettings.CustomPackageFolders.Insert(indexToreplace, this.UserDataDirectory);
+            
             return this;
         }
 
