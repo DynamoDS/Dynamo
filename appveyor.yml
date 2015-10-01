@@ -10,5 +10,5 @@ before_build:
 build:
   project: src/Dynamo.All.2013.sln
   verbosity: normal
-
+  
 test: off
