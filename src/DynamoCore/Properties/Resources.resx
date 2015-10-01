@@ -624,12 +624,6 @@ value : bool = false</value>
   <data name="CustomNodeFolderLoadFailure" xml:space="preserve">
     <value>Failed to load custom node directory. Do you have permission to access {0}?</value>
   </data>
-  <data name="DeprecatedPortNamingStyleMessage" xml:space="preserve">
-    <value>You used old style of setting node ports. Please, use new style based on adding port attributes.</value>
-  </data>
-  <data name="InputPortsHasAlreadyBeenRegisteredMessage" xml:space="preserve">
-    <value>Input ports have already been registered.</value>
-  </data>
   <data name="PortsNameDescriptionDoNotEqualWarningMessage" xml:space="preserve">
     <value>Number of port names does not equal number of port descriptions.</value>
   </data>

@@ -50,17 +50,7 @@ namespace Dynamo.Utilities
             var titles = new List<string>();
             foreach (var resourceName in resourceNames)
             {
-                var property = resourceType.GetProperty(resourceName, BindingFlags.Public | BindingFlags.Static);
-
-                if (property == null)
-                {
-                    throw new InvalidOperationException(Resources.ResourceTypeDoesNotHavePropertyMessage);
-                }
-                if (property.PropertyType != typeof(string))
-                {
-                    throw new InvalidOperationException(Resources.ResourcePropertyIsNotStringTypeMessage);
-                }
-                titles.Add((string)property.GetValue(null, null));
+                titles.Add(Load(resourceType, resourceName));
             }
 
             return titles;

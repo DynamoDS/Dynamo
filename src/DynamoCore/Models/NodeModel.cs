@@ -1094,6 +1094,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Reads inputs list and adds ports for each input.
         /// </summary>
+        [Obsolete("RegisterInputPorts is deprecated, please use the InPortNamesAttribute, InPortDescriptionsAttribute, and InPortTypesAttribute instead.")]
         public void RegisterInputPorts()
         {
             var inputs = new List<PortData>();
@@ -1103,14 +1104,13 @@ namespace Dynamo.Models
             if (InPortData.Count > 0)
             {
                 inputs.AddRange(InPortData);
-                Log(String.Concat(Name, ": ", Properties.Resources.DeprecatedPortNamingStyleMessage));
             }
 
             // New version of input ports registration.
             // Used port Attributes.
             if (!areInputPortsRegistered)
             {
-                inputs.AddRange(GetPortsDataFromAttributes(PortType.Input));
+                inputs.AddRange(GetPortDataFromAttributes(PortType.Input));
             }
 
             //read the inputs list and create a number of
@@ -1149,6 +1149,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Reads outputs list and adds ports for each output
         /// </summary>
+        [Obsolete("RegisterOutputPorts is deprecated, please use the OutPortNamesAttribute, OutPortDescriptionsAttribute, and OutPortTypesAttribute instead.")]
         public void RegisterOutputPorts()
         {
             var outputs = new List<PortData>();
@@ -1157,7 +1158,6 @@ namespace Dynamo.Models
             // Used OutPortData.
             if (OutPortData.Count > 0)
             {
-                Log(String.Concat(Name, ": ", Properties.Resources.DeprecatedPortNamingStyleMessage));
                 outputs.AddRange(OutPortData);
             }
 
@@ -1165,7 +1165,7 @@ namespace Dynamo.Models
             // Used port Attributes.
             if (!areOutputPortsRegistered)
             {
-                outputs.AddRange(GetPortsDataFromAttributes(PortType.Output));
+                outputs.AddRange(GetPortDataFromAttributes(PortType.Output));
             }
 
             //read the inputs list and create a number of
@@ -1205,7 +1205,7 @@ namespace Dynamo.Models
         /// Tries to load ports names and descriptions from attributes.
         /// </summary>
         /// <param name="portType">Input or Output port type</param>
-        private IEnumerable<PortData> GetPortsDataFromAttributes(PortType portType)
+        private IEnumerable<PortData> GetPortDataFromAttributes(PortType portType)
         {
             var type = GetType();
             List<string> names = null;

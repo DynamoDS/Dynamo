@@ -340,15 +340,6 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You used old style of setting node ports. Please, use new style based on adding port attributes..
-        /// </summary>
-        public static string DeprecatedPortNamingStyleMessage {
-            get {
-                return ResourceManager.GetString("DeprecatedPortNamingStyleMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to some description.
         /// </summary>
         public static string DescriptionResource1 {
@@ -698,15 +689,6 @@ namespace Dynamo.Properties {
         public static string InputNodeSearchTags {
             get {
                 return ResourceManager.GetString("InputNodeSearchTags", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Input ports have already been registered..
-        /// </summary>
-        public static string InputPortsHasAlreadyBeenRegisteredMessage {
-            get {
-                return ResourceManager.GetString("InputPortsHasAlreadyBeenRegisteredMessage", resourceCulture);
             }
         }
         
