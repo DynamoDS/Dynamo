@@ -274,7 +274,7 @@ namespace DynamoUtilitiesTests
             string name;
             Tuple<int, int, int, int> version;
                         
-            var lookUp = new Mock<InstalledProductLookUp>(new object[]{"XYZ", "some.dll"});
+            var lookUp = new Mock<InstalledProductLookUp>(new object[] { "XYZ", "some.dll" }) { CallBase = true };
             lookUp.Setup(l => l.ExistsAtPath(It.IsAny<string>()))
                 .Returns<string>(
                     (s) =>

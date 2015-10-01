@@ -64,6 +64,8 @@ namespace Dynamo.Controls
 
         private readonly DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
 
+        internal Watch3DView BackgroundPreview { get; private set; }
+
         public DynamoView(DynamoViewModel dynamoViewModel)
         {
             // The user's choice to enable hardware acceleration is now saved in
@@ -466,6 +468,23 @@ namespace Dynamo.Controls
                 }
             }
 
+            // For everything but a small number of tests,
+            // we do not want to create the 3D view when we
+            // are in test mode.
+            if (DynamoModel.IsTestMode) return;
+
+            BackgroundPreview = new Watch3DView();
+            background_grid.Children.Add(BackgroundPreview);
+            BackgroundPreview.DataContext = dynamoViewModel.BackgroundPreviewViewModel;
+            BackgroundPreview.Margin = new System.Windows.Thickness(0,20,0,0);
+            var vizBinding = new Binding
+            {
+                Source = dynamoViewModel.BackgroundPreviewViewModel,
+                Path = new PropertyPath("Active"),
+                Mode = BindingMode.TwoWay,
+                Converter = new BooleanToVisibilityConverter()
+            };
+            BackgroundPreview.SetBinding(VisibilityProperty, vizBinding);
         }
 
         /// <summary>
