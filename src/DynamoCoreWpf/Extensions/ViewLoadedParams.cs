@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using Dynamo.Controls;
-using Dynamo.UI.Controls;
 using Dynamo.ViewModels;
 using Dynamo.Utilities;
-using Dynamo.Interfaces;
 using Dynamo.Extensions;
+using Dynamo.Interfaces;
+using Dynamo.Selection;
+using Dynamo.Wpf.Views.Preview;
 
 namespace Dynamo.Wpf.Extensions
 {
@@ -22,6 +21,20 @@ namespace Dynamo.Wpf.Extensions
         private readonly DynamoView dynamoView;
         private readonly DynamoViewModel dynamoViewModel;
         public readonly Menu dynamoMenu;
+
+        /// <summary>
+        /// A reference to the background preview (geometry view) for geometry selection,
+        /// hit testing, mouse and keyboard events, etc. by the extension 
+        /// </summary>
+        public IWatch3DView BackgroundPreView { get { return dynamoView.BackgroundPreview; } }
+
+        /// <summary>
+        /// A reference to the factory for creating render packages in the extension
+        /// </summary>
+        public IRenderPackageFactory RenderPackageFactory
+        {
+            get { return dynamoViewModel.RenderPackageFactoryViewModel.Factory; }
+        }
 
         /// <summary>
         /// A reference to the Dynamo Window object. Useful for correctly setting the parent of a 
@@ -41,6 +54,8 @@ namespace Dynamo.Wpf.Extensions
             dynamoView = dynamoV;
             dynamoViewModel = dynamoVM;
             dynamoMenu = dynamoView.titleBar.ChildOfType<Menu>();
+
+            DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
         }
 
         public void AddMenuItem(MenuBarType type, MenuItem menuItem, int index = -1)
@@ -53,14 +68,25 @@ namespace Dynamo.Wpf.Extensions
             AddItemToMenu(type, separatorObj, index);
         }
 
+        /// <summary>
+        /// Event raised when there's a change in selection of nodes in the workspace.
+        /// This event is subscribed to in the extension for any callback necessary for this event
+        /// </summary>
+        public event Action<NotifyCollectionChangedEventArgs> SelectionCollectionChanged;
+        private void OnSelectionCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            if (SelectionCollectionChanged != null)
+            {
+                SelectionCollectionChanged(notifyCollectionChangedEventArgs);
+            }
+        }
+
         private void AddItemToMenu(MenuBarType type, Control itemToAdd, int index)
         {
-            if (dynamoMenu == null)
-                return;
+            if (dynamoMenu == null) return;
 
             var dynamoItem = SearchForMenuItem(type);
-            if (dynamoItem == null)
-                return;
+            if (dynamoItem == null) return;
 
             if (index >= 0 && index < dynamoItem.Items.Count)
             {
@@ -82,6 +108,7 @@ namespace Dynamo.Wpf.Extensions
             var dynamoMenuItems = dynamoMenu.Items.OfType<MenuItem>();
             return dynamoMenuItems.First(item => item.Header.ToString() == "_" + type);
         }
+
     }
 
     public enum MenuBarType

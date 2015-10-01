@@ -25,7 +25,8 @@ using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 
 namespace DynamoCoreWpfTests
 {
-    [TestFixture]
+    // TODO: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-8735
+    [TestFixture, Category("Failure")]
     public class HelixWatch3DViewModelTests : SystemTestBase
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
@@ -110,7 +111,7 @@ namespace DynamoCoreWpfTests
             Assert.NotNull(watch3D);
 
             var view = FindFirstWatch3DNodeView();
-            var vm = view.viewModel as HelixWatch3DNodeViewModel;
+            var vm = view.ViewModel as HelixWatch3DNodeViewModel;
             Assert.NotNull(vm);
 
             //flip off the line node's preview upstream

@@ -5,7 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300"
@@ -84,10 +86,7 @@
     </UserControl.Visibility>
     <Border Margin="25,-10,10,0"
         Padding="0,10,0,3">
-        <!--<Border.Background>
-            <Binding Path="IsRootCategoryDetails"
-                     Converter="{StaticResource BooleanToBrushConverter}" />
-        </Border.Background>-->
+        
         <Grid Name="GridData"  DataContextChanged="GridDataContextChanged"
               KeyDown="OnMainGridKeyDown" Margin="-10,10,0,0">
             <Grid.RowDefinitions>
@@ -102,23 +101,22 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-
-            <uicontrols:HeaderStrip x:Name="createHeaderStrip" Grid.Row="1" Grid.Column="0">
-                <uicontrols:HeaderStrip.Padding>
-                    <MultiBinding Converter="{StaticResource TreeViewListBoxTitleConverter}">
-                         <Binding  ElementName="createHeaderStrip"/>
-                        <Binding  ElementName="primaryMembers"/>
-                </MultiBinding>
-                </uicontrols:HeaderStrip.Padding>
-            </uicontrols:HeaderStrip>
+            
+            <Grid Grid.Row="1" Grid.Column="0"
+                  Width="20" Margin="-35,0,0,0" ToolTip="{x:Static p:Resources.CreateMember}">
+                <Rectangle Fill="Transparent" />
+                <fa:ImageAwesome Icon="plus" Foreground="#7B9F2D"                              
+                             VerticalAlignment="Top" HorizontalAlignment="Center" />
+            </Grid>
+            
             <ListBox x:Name="primaryMembers"
                      Grid.Row="1"
                      Grid.Column="1"
                      Background="Transparent"
-                     BorderBrush="#CCCCCC"
+                     BorderBrush="#7B9F2D"
                      ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
                      ItemTemplate="{StaticResource MemberTemplate}"
-                     BorderThickness="1,0,0,0"   
+                     BorderThickness="2,0,0,0"   
                      Padding ="0,-10,0,0"
                      />
             <Border x:Name="secondaryBorder" Grid.Row="2" 
@@ -135,24 +133,22 @@
                     <Binding Path="AreSecondaryHeadersVisible"
                              Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
                 </Border.Visibility>
-                <uicontrols:HeaderStrip x:Name="actionHeaderStrip">
-                    <uicontrols:HeaderStrip.Padding>
-                        <MultiBinding Converter="{StaticResource TreeViewListBoxTitleConverter}">
-                            <Binding  ElementName="actionHeaderStrip"/>
-                            <Binding  ElementName="secondaryMembers"/>                            
-                        </MultiBinding>
-                    </uicontrols:HeaderStrip.Padding>
-                </uicontrols:HeaderStrip>
+
+                <Grid  Width="12" Margin="-40,0,0,0" ToolTip="{x:Static p:Resources.ActionMember}">
+                    <Rectangle Fill="Transparent" />
+                    <fa:ImageAwesome Icon="LightningBolt" Foreground="#D56867"                               
+                             VerticalAlignment="Top" HorizontalAlignment="Center" />
+                </Grid>
             </Border>           
             <ListBox x:Name="secondaryMembers"
                      Grid.Row="3"
                      Grid.Column ="1"
                      Background="Transparent"
-                     BorderBrush="#CCCCCC"
+                     BorderBrush="#D56867"
                      ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                      ItemTemplate="{StaticResource MemberTemplate}"
-                     BorderThickness="1,0,0,0"
+                     BorderThickness="2,0,0,0"
                      Padding ="0,-10,0,0"
                      >
                 <ListBox.Visibility>
@@ -174,24 +170,22 @@
                     <Binding Path="AreQueryHeadersVisible"
                              Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
                 </Border.Visibility>
-                <uicontrols:HeaderStrip x:Name="queryHeaderStrip">
-                    <uicontrols:HeaderStrip.Padding>
-                        <MultiBinding Converter="{StaticResource TreeViewListBoxTitleConverter}">
-                            <Binding  ElementName="queryHeaderStrip"/>
-                            <Binding  ElementName="queryMembers"/>
-                        </MultiBinding>
-                    </uicontrols:HeaderStrip.Padding>
-                </uicontrols:HeaderStrip>  
-              </Border>
+
+                <Grid  Width="12" Margin="-40,0,0,0" ToolTip="{x:Static p:Resources.QueryMember}">
+                    <Rectangle Fill="Transparent" />
+                    <fa:ImageAwesome Icon="Question" Foreground="#65999A"                             
+                             VerticalAlignment="Top" HorizontalAlignment="Center" />
+                </Grid>
+            </Border>
                 <ListBox x:Name="queryMembers"
                      Grid.Row="5"
                      Grid.Column ="1"
                      Background="Transparent"
-                     BorderBrush="#CCCCCC"
+                     BorderBrush="#65999A"
                      ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                      ItemTemplate="{StaticResource MemberTemplate}"
-                     BorderThickness="1,0,0,0"
+                     BorderThickness="2,0,0,0"
                      Padding ="0,-10,0,0"
                      >
                 <ListBox.Visibility>

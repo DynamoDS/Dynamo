@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 
@@ -45,12 +46,23 @@ namespace DynamoCoreWpfTests
             var response = GetPreviewValue(webRequestNode.GUID.ToString()).ToString();
             Assert.True(response.Contains("Search the world's information"));
 
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+
             // Switch to periodic mode
             ws.RunSettings.RunPeriod = 100;
             ws.RunSettings.RunType = RunType.Periodic;
-            System.Threading.Thread.Sleep(1000);
 
-            Assert.Greater(ws.EvaluationCount, 1);
+            var startCount = ws.EvaluationCount;
+            while (ws.EvaluationCount - startCount < 5)
+            {
+                if (stopWatch.Elapsed.Seconds > 20)
+                {
+                    Assert.Fail("There were not enough web requests made to pass. Either the run periodic functionality does not work for this node, or the internet connection is slow.");
+                }
+            }
+
+            Assert.Pass("There were {0} evaluations.", ws.EvaluationCount);
         }
 
         public static bool CheckForInternetConnection()
