@@ -1018,7 +1018,6 @@ namespace Dynamo.Models
                     {
                         // Save the subgraph and subtract these nodes from the combined graph
 
-                        graph.ParentGraph = combinedGraph;
                         LayoutSubgraphs.Add(graph);
                         combinedGraph.Nodes.ExceptWith(graph.Nodes);
                         graph = new GraphLayout.Graph();
