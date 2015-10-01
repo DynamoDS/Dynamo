@@ -1,6 +1,10 @@
 $(document).ready(function(){
+	//adding break line to menu
+	$(".home").first().css("border-bottom","1px solid #E6E7E8");
+	//styling the class pages
 	$('.docutils').each(function(){
-		var testparam = $(this).find("td:contains('Test Param :')").first().parent().prev().index();
+		var testparam = $(this).find("td:contains('TypeParam :')").first().parent().prev().index();
+		console.log(testparam);
 		$(this).find('tbody').children().each(function(index){
 			if(testparam != -1){
 				if (index >=2 && index<=testparam){
@@ -45,4 +49,3 @@ $(document).ready(function(){
 	
 	$("#menuNavigation").height($(document).height());
 });
-

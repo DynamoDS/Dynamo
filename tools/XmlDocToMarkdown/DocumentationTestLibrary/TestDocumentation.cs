@@ -169,6 +169,24 @@ namespace Dynamo.DocumentationTestLibrary
         {
             
         }
+
+        /// <summary>
+        /// Tests the method with collections.
+        /// </summary>
+        /// <returns>List of items</returns>
+        public List<Person> TestMethodWithCollections()
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Tests the type of the method with dictionary return.
+        /// </summary>
+        /// <returns>Key value pair</returns>
+        public Dictionary<Person, String> TestMethodWithDictReturnType()
+        {
+            return null;
+        }
     }
 
     public class Person
@@ -223,5 +241,5 @@ namespace Dynamo.DocumentationTestLibrary
 
         }
 
-    }
+    }    
 }

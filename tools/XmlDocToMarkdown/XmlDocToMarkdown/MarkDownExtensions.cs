@@ -75,6 +75,42 @@ namespace XmlDocToMarkdown
             return newListOfNodes;
         }
 
+
+        public static string ConstructReturnType(this Type T)
+        {
+            string[] separators = new string[] { "``", "`", "(", ")" }; 
+            var list = new List<String>();
+            if (!T.IsGenericType)
+            {
+                if (T.FullName != null && T.FullName.Contains("Dynamo") && !T.IsEnum)
+                {
+                    var className = T.FullName.ReplaceSpecialCharacters("+", ".").Split('.').Last();                
+                    return className.ConstructUrl(
+                        T.FullName).ReplaceSpecialCharacters("+", "/");                    
+                }
+                return T.Name;
+            }
+
+            //for generic type
+            string[] splitByChar = T.Name.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+            var tempName = splitByChar[0];
+
+            var typeParam = T.GetGenericArguments();
+            //this returns T,T           
+            if (typeParam.Any())
+            {
+                list.AddRange(typeParam.Select(ConstructReturnType));
+            }
+
+            if (list.Any())
+            {
+                var genericParamName = string.Join(",", list);
+                return tempName + "<*" + genericParamName + "*>";
+            }
+
+            return string.Empty;
+        }
+
         public static string MarkDownFormat(this string name, string format)
         {
             var returnString = String.Empty;
@@ -120,8 +156,8 @@ namespace XmlDocToMarkdown
 
         public static string ReplaceSpecialCharacters(this string className, string toReplace, string delimiter)
         {
-            if (className.Length == 0)
-                return className;
+            if (string.IsNullOrEmpty(className))
+                return string.Empty;
 
             var returnString =  className.Replace(toReplace, delimiter);
             return returnString;

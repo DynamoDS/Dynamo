@@ -68,7 +68,7 @@ namespace XmlDocToMarkdown
                     {"exception", "| **[[{0}|{0}]]:** | {1}\n" },
                     {"returns", "| **Return Value:** {0}\n"},
                     {"none", ""},
-                    {"typeparam", "| **TypeParam : {0} =** {1}\n" },
+                    {"typeparam", "| **TypeParam : *{0}* =** {1}\n" },
                     {"c", "| `{0}`\n"},                   
                     {ApiStabilityTag, ApiStabilityTemplate}
                 };

@@ -52,7 +52,7 @@ b, strong {
 .wy-side-nav-search {
     background: #000000;
     text-align: left;
-    display: flex;
+    display: block;
     height:70px
 }
 
@@ -177,6 +177,10 @@ code.cs, code.c {
 	background: none
 }
 
+.wy-page-title { 
+ left:45%; 
+}
+
 .rst-content table.docutils {
     border-collapse: separate;
     border-radius: 10px;
@@ -235,7 +239,7 @@ code.cs, code.c {
     padding-bottom: 30px;
 }
 
-.rst-content, h1, h2, h3 {
+.rst-content, h1, h2, h3, h4, h5, h6 {
     font-family: 'Open Sans', sans-serif;
 }
 
@@ -250,6 +254,10 @@ code.cs, code.c {
     font-weight: normal;
     font-size:125%;
     padding: 10px;
+}
+
+.rst-content h4{
+    padding-left:25px
 }
 
 .rst-content table.docutils .params{
@@ -276,9 +284,6 @@ code.cs, code.c {
 }
 .rst-content table.docutils .desc{
 	padding-bottom:20px;
-}
-.home{
-    border-bottom: 1px solid #E6E7E8;
 }
 .home a{
 	line-height: 18px;

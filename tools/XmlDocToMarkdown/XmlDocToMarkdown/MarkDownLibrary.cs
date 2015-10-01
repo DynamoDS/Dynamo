@@ -48,22 +48,22 @@ namespace XmlDocToMarkdown
             sb.AppendLine("##Constructors ");
             sb = GenerateMarkDownForConstructors(t, members, sb);
 
-            sb.AppendLine("---");
+            sb.AppendLine();
 
             sb.AppendLine("##Methods  ");
             sb = GenerateMarkDownForMethods(t, members, sb);
 
-            sb.AppendLine("---");
+            sb.AppendLine();
 
             sb.AppendLine("##Properties  ");
             sb = GenerateMarkDownForProperties(t, members, sb);
             
-            sb.AppendLine("---");
+            sb.AppendLine();
 
             sb.AppendLine("##Events  ");
             sb = GenerateMarkDownForEvents(t, members, sb);
 
-            sb.AppendLine("---");
+            sb.AppendLine();
 
             var fileName = typeName + ".md";
             var filePath = Path.Combine(folder, fileName);
@@ -118,26 +118,18 @@ namespace XmlDocToMarkdown
             {
                 var methodParams = method.GetParameters();
                 var methodName = method.Name;
-                if (method.ReturnType.FullName != null
-                    && method.ReturnType.FullName.Contains("Dynamo"))
-                {
-                    var className = method.ReturnType.FullName.Split('.').Last();
-                    XmlToMarkdown.ReturnType = className.ConstructUrl(method.ReturnType.FullName);
-                    XmlToMarkdown.ReturnType = XmlToMarkdown.ReturnType.ReplaceSpecialCharacters("+", "/");
-                }
-                else
-                {
-                    XmlToMarkdown.ReturnType = method.ReturnType.Name;
-                }
+                XmlToMarkdown.ReturnType = method.ReturnType.ConstructReturnType();               
+                
                 //If the method is List<T,T>
                 if (method.IsGenericMethod)
-                {
+                {                    
                     var typeParam = method.GetGenericArguments();
                     //this returns T,T
                     var genericParamName = string.Join(",", typeParam.Select(ty => ty.Name));
                     //this returns List<T,T>
-                    methodName = methodName + "<*" + genericParamName + "*>";
+                    methodName = methodName + "<*" + genericParamName + "*>";                   
                 }
+                
                 var fullMethodName = methodParams.Any() ?
                     methodName + "(" + string.Join(",", methodParams.Select(pi => pi.ParameterType.FullName)) + ")" :
                     methodName;
@@ -170,31 +162,7 @@ namespace XmlDocToMarkdown
             //If the Type is enum, then no URL is constructed
             foreach (var property in t.GetProperties())
             {
-                if (property.PropertyType.FullName != null
-                    && property.PropertyType.FullName.Contains("Dynamo")
-                    && !property.PropertyType.IsEnum)
-                {                    
-                    var className = property.PropertyType.FullName.ReplaceSpecialCharacters("+",".").Split('.').Last();
-                    XmlToMarkdown.ReturnType = className.ConstructUrl(
-                        property.PropertyType.FullName);
-                    XmlToMarkdown.ReturnType = XmlToMarkdown.ReturnType.ReplaceSpecialCharacters("+", "/");
-                }
-                else
-                {
-                    XmlToMarkdown.ReturnType = property.PropertyType.Name;
-                }
-
-                if (property.PropertyType.IsGenericType)
-                {
-                    string[] splitByChar = property.PropertyType.Name.Split(separators, StringSplitOptions.RemoveEmptyEntries);
-                    var tempName = splitByChar[0];
-
-                    var typeParam = property.PropertyType.GetGenericArguments();
-                    //this returns T,T
-                    var genericParamName = string.Join(",", typeParam.Select(ty => ty.Name));
-
-                    XmlToMarkdown.ReturnType = tempName + "<*" + genericParamName + "*>";
-                }
+                XmlToMarkdown.ReturnType = property.PropertyType.ConstructReturnType();               
                 if (property.GetMethod != null)
                 {
                     XmlToMarkdown.PropertySetType = "get;";
