@@ -105,7 +105,7 @@
             <Grid Grid.Row="1" Grid.Column="0"
                   Width="20" Margin="-35,0,0,0" ToolTip="{x:Static p:Resources.CreateMember}">
                 <Rectangle Fill="Transparent" />
-                <fa:ImageAwesome Icon="Magic" Foreground="#7B9F2D"                              
+                <fa:ImageAwesome Icon="plus" Foreground="#7B9F2D"                              
                              VerticalAlignment="Top" HorizontalAlignment="Center" />
             </Grid>
             

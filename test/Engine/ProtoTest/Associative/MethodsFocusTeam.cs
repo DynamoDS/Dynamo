@@ -644,7 +644,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T022_DotOp_CallFunc_01()
         {
             String code =

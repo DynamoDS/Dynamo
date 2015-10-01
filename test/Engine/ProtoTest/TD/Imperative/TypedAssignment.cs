@@ -7,29 +7,25 @@ namespace ProtoTest.TD.Imperative
     class TypedAssignment : ProtoTestBase
     {
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T01_TestVariousTypes()
         {
 
             string code = @"
-class A
+def Create ( a : int)
 {
-    i : int;
-	constructor A ( a : int)
-	{
-	     x : int  = 2;
-		 i = x + a ;
-	}
-	
-	def foo : int ( )
-	{
-	    x : int = 2;
-		t3 = x + i;
-        return  = t3;		
-	}
-	
+	    x : int  = 2;
+		return = x + a ;
 }
+	
+def foo : int ( )
+{
+	x : int = 2;
+	t3 = x + i;
+    return  = t3;		
+}
+	
 def foo : int ( a : int )
 {
     x : int = 2;
@@ -50,8 +46,8 @@ y1;y2;
     isTrue1 : bool = true;
     isFalse1 :bool = false;
 	x1 = foo(1);
-	a1 = A.A(1);
-	b1 = a1.foo();
+	a1 = Create(1);
+	b1 = foo(a1);
 	x11:int = 2.3;
 	y1:double = 2;
     
@@ -63,8 +59,8 @@ y1;y2;
     isTrue2 : bool = true;
     isFalse2 :bool = false;
 	x2 = foo(1);
-	a2 = A.A(1);
-	b2 = a2.foo();
+	a2 = Create(1);
+	b2 = foo(a2);
 	x12:int = 2.3;
 	y2:double = 2;
     
