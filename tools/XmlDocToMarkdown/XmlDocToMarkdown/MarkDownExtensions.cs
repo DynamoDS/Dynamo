@@ -118,5 +118,14 @@ namespace XmlDocToMarkdown
             return "[" + className + "]" + "(" + url + "/" + className + ")";
         }
 
+        public static string ReplaceSpecialCharacters(this string className, string toReplace, string delimiter)
+        {
+            if (className.Length == 0)
+                return className;
+
+            var returnString =  className.Replace(toReplace, delimiter);
+            return returnString;
+        }
+
     }
 }

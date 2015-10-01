@@ -173,6 +173,10 @@ code.cs, code.c {
   background : none
 }
 
+.wy-nav-content-wrap {
+	background: none
+}
+
 .rst-content table.docutils {
     border-collapse: separate;
     border-radius: 10px;
@@ -307,7 +311,7 @@ code.cs, code.c {
 nav.stickynav {
     background-color:white;
 }
-li.toctree-l1 a:hover{
+li.home a:hover{
 	background-color: #939598;
 	color:white;
 }

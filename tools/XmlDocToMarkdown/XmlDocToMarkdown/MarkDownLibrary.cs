@@ -123,6 +123,7 @@ namespace XmlDocToMarkdown
                 {
                     var className = method.ReturnType.FullName.Split('.').Last();
                     XmlToMarkdown.ReturnType = className.ConstructUrl(method.ReturnType.FullName);
+                    XmlToMarkdown.ReturnType = XmlToMarkdown.ReturnType.ReplaceSpecialCharacters("+", "/");
                 }
                 else
                 {
@@ -166,13 +167,17 @@ namespace XmlDocToMarkdown
                 sb.AppendLine("####No public properties defined");
             }
 
+            //If the Type is enum, then no URL is constructed
             foreach (var property in t.GetProperties())
             {
                 if (property.PropertyType.FullName != null
-                    && property.PropertyType.FullName.Contains("Dynamo"))
-                {
-                    var className = property.PropertyType.FullName.Split('.').Last();
-                    XmlToMarkdown.ReturnType = className.ConstructUrl(property.PropertyType.FullName);
+                    && property.PropertyType.FullName.Contains("Dynamo")
+                    && !property.PropertyType.IsEnum)
+                {                    
+                    var className = property.PropertyType.FullName.ReplaceSpecialCharacters("+",".").Split('.').Last();
+                    XmlToMarkdown.ReturnType = className.ConstructUrl(
+                        property.PropertyType.FullName);
+                    XmlToMarkdown.ReturnType = XmlToMarkdown.ReturnType.ReplaceSpecialCharacters("+", "/");
                 }
                 else
                 {
@@ -196,7 +201,7 @@ namespace XmlDocToMarkdown
                 }
                  if (property.SetMethod != null)
                  {
-                     XmlToMarkdown.PropertySetType += "set;";
+                     XmlToMarkdown.PropertySetType  = "get;set;";
                  }
                 var propertyNameSpace = ConvertGenericParameterName(t.FullName);
                 var current = GetMarkdownForProperty(members, propertyNameSpace + "." + property.Name);               

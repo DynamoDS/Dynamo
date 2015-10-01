@@ -41,8 +41,13 @@ namespace Dynamo.DocumentationTestLibrary
 
     #endregion
 
-    public class TestDocumentation
+    public abstract class TestDocumentation
     {
+        public enum TaskPriority
+        {
+            Critical,
+            Highest,          
+        }
 
         #region properties
 
@@ -53,6 +58,19 @@ namespace Dynamo.DocumentationTestLibrary
         {
             get { return 0; }
         }
+
+        /// <summary>
+        /// Gets the priority.
+        /// </summary>       
+        public abstract TaskPriority Priority { get; }
+
+        /// <summary>
+        /// Gets or sets the abstract property.
+        /// </summary>
+        /// <value>
+        /// The abstract property.
+        /// </value>
+        public abstract string AbstractProperty { get; set; }
 
         #endregion
 
@@ -138,6 +156,19 @@ namespace Dynamo.DocumentationTestLibrary
         {
             
         }
+
+        /// <summary>
+        /// Testings the abstract method.
+        /// </summary>
+        public abstract void TestingAbstractMethod();
+
+        /// <summary>
+        /// Testings the virtual method.
+        /// </summary>
+        public virtual void TestingVirtualMethod()
+        {
+            
+        }
     }
 
     public class Person
@@ -167,6 +198,15 @@ namespace Dynamo.DocumentationTestLibrary
         public List<Person> ListPersons { get; set; }
 
         /// <summary>
+        /// Gets or sets the virtual property.
+        /// </summary>
+        /// <value>
+        /// The virtual property.
+        /// </value>
+        public virtual int VirtualProperty { get; set; }
+
+        
+        /// <summary>
         /// Initializes a new instance of the <see cref="Person"/> class.
         /// </summary>
         public Person()
@@ -182,5 +222,6 @@ namespace Dynamo.DocumentationTestLibrary
         {
 
         }
+
     }
 }
