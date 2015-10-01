@@ -214,6 +214,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected virtual void OnActiveStateChanged()
         {
+            preferences.IsBackgroundPreviewActive = active;
+
             UnregisterEventHandlers();
             OnClear();
         }
