@@ -182,6 +182,7 @@ namespace Dynamo.Applications
             var config = new DynamoModel.DefaultStartConfiguration()
                   {
                       GeometryFactoryPath = geometryFactoryPath,
+                      ProcessMode = Core.Threading.TaskProcessMode.Asynchronous
                   };
 
             config.UpdateManager = CLImode ? null : InitializeUpdateManager();

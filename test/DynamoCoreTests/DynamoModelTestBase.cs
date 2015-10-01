@@ -100,7 +100,8 @@ namespace Dynamo
                 PathResolver = pathResolver,
                 StartInTestMode = true,
                 GeometryFactoryPath = preloader.GeometryFactoryPath,
-                Preferences = settings
+                Preferences = settings,
+                ProcessMode = Core.Threading.TaskProcessMode.Synchronous
             };
         }
 
