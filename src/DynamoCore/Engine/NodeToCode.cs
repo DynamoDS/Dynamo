@@ -46,10 +46,11 @@ namespace Dynamo.Engine.NodeToCode
         public string GetTypeDependentName(ProtoCore.Type type)
         {
             string prefix = String.Empty;
-            if (type.UID >= 0 && type.UID < core.ClassTable.ClassNodes.Count())
+
+            int classIndex = core.ClassTable.IndexOf(type.Name);
+            if (classIndex != Constants.kInvalidIndex)
             {
-                // If class provides short name, then use it.
-                var classNode = core.ClassTable.ClassNodes[type.UID];
+                var classNode = core.ClassTable.ClassNodes[classIndex];
                 prefix = GetShortName(classNode);
 
                 // Otherwise change class name to its lower case
