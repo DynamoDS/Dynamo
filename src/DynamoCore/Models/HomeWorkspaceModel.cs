@@ -147,15 +147,15 @@ namespace Dynamo.Models
             DynamoScheduler scheduler, 
             NodeFactory factory,
             IEnumerable<KeyValuePair<Guid, List<string>>> traceData, 
-            IEnumerable<NodeModel> e, 
-            IEnumerable<NoteModel> n, 
-            IEnumerable<AnnotationModel> a,
+            IEnumerable<NodeModel> nodes, 
+            IEnumerable<NoteModel> notes, 
+            IEnumerable<AnnotationModel> annotations,
             IEnumerable<PresetModel> presets,
             ElementResolver resolver,
             WorkspaceInfo info, 
             bool verboseLogging,
             bool isTestMode)
-            : base(e, n,a, info, factory,presets, resolver)
+            : base(nodes, notes,annotations, info, factory,presets, resolver)
         {
             EvaluationCount = 0;
 
@@ -190,9 +190,17 @@ namespace Dynamo.Models
             }
             historicalTraceData = copiedData;
 
+            this.NodeAdded += (x) => x.RequestSilenceNodeModifiedEvents += (_, v) => this.silenceNodeModifications = v;
+
+            foreach (var node in nodes)
+            {
+                node.RequestSilenceNodeModifiedEvents += (_, v) => this.silenceNodeModifications = v;
+            }
+
         }
 
         #endregion
+
 
         public override void Dispose()
         {

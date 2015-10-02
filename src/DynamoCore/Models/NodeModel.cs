@@ -411,6 +411,15 @@ namespace Dynamo.Models
                     return cachedMirrorData;
                 }
             }
+            private set
+            {
+                lock (cachedMirrorDataMutex)
+                {
+                    cachedMirrorData = value;
+                }
+
+                RaisePropertyChanged("CachedValue");
+            }
         }
 
         /// <summary>
@@ -690,6 +699,16 @@ namespace Dynamo.Models
             MarkNodeAsModified(forceExecute);           
             var handler = Modified;
             if (handler != null) handler(this);
+        }
+
+        internal event Action<NodeModel, bool> RequestSilenceNodeModifiedEvents;
+
+        internal void OnRequestSilenceModifiedEvents(bool silence)
+        {
+            if (RequestSilenceNodeModifiedEvents != null)
+            {
+                RequestSilenceNodeModifiedEvents(this, silence);
+            }
         }
 
         #endregion
@@ -1619,13 +1638,11 @@ namespace Dynamo.Models
 
         private void OnNodeValueQueried(AsyncTask asyncTask)
         {
-            lock (cachedMirrorDataMutex)
+            var task = asyncTask as QueryMirrorDataAsyncTask;
+            if (asyncTask != null)
             {
-                var task = asyncTask as QueryMirrorDataAsyncTask;
-                cachedMirrorData = task.MirrorData;
+                this.CachedValue = task.MirrorData;
             }
-
-            RaisePropertyChanged("IsUpdated");
         }
 
         /// <summary>

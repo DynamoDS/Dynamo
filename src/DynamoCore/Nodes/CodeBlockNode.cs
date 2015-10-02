@@ -180,6 +180,8 @@ namespace Dynamo.Nodes
             private set { code = value; }
         }
 
+
+
         public void SetCodeContent(string newCode, ElementResolver workspaceElementResolver)
         {
             if (code != null && code.Equals(newCode))
@@ -194,6 +196,10 @@ namespace Dynamo.Nodes
 
                 var inportConnections = new OrderedDictionary();
                 var outportConnections = new OrderedDictionary();
+
+                // disable node modification evnets while mutating the code
+                this.OnRequestSilenceModifiedEvents(true);
+
                 //Save the connectors so that we can recreate them at the correct positions
                 SaveAndDeleteConnectors(inportConnections, outportConnections);
 
@@ -212,6 +218,8 @@ namespace Dynamo.Nodes
                     Error(errorMessage);
                 else if (!string.IsNullOrEmpty(warningMessage))
                     Warning(warningMessage);
+
+                this.OnRequestSilenceModifiedEvents(false);
 
                 // Mark node for update
                 OnNodeModified();

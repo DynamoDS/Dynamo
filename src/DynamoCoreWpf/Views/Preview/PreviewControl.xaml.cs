@@ -6,6 +6,8 @@ using Dynamo.ViewModels;
 using ProtoCore.Mirror;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -128,6 +130,11 @@ namespace Dynamo.UI.Controls
         /// 
         internal void BindToDataSource(MirrorData mirrorData)
         {
+            var m = mirrorData != null ? mirrorData.ToString() : "null";
+
+
+            Debug.WriteLine("BindToDataSource" + this.nodeViewModel.NodeModel.GUID + " " + m);
+
             // First detach the bound data from its view.
             ResetContentViews();
 
@@ -205,6 +212,8 @@ namespace Dynamo.UI.Controls
 
         private void BeginNextTransition()
         {
+            Debug.WriteLine("BeginNextTransition");
+
             // A run completed while in transition, we must refresh
             if (queuedRefresh)
             {
@@ -277,6 +286,12 @@ namespace Dynamo.UI.Controls
             var task = new DelegateBasedAsyncTask(scheduler, a);
             task.ThenPost(h, DispatcherSynchronizationContext.Current);
             scheduler.ScheduleForExecution(task);
+
+            //while (scheduler.Tasks.Count() != 0)
+            //{
+            //    scheduler.ProcessNextTask(false);
+            //}
+
         }
 
         /// <summary>
@@ -454,6 +469,10 @@ namespace Dynamo.UI.Controls
 
         private void UpdateAnimatorTargetSize(SizeAnimator animator, Size targetSize)
         {
+            Debug.WriteLine("UpdateAnimatorTargetSize" + this.nodeViewModel.NodeModel.GUID);
+            Debug.WriteLine(targetSize.Width);
+            Debug.WriteLine(targetSize.Height);
+
             string widthAnimator = string.Empty;
             string heightAnimator = string.Empty;
 
@@ -490,6 +509,8 @@ namespace Dynamo.UI.Controls
 
         private void BeginFadeInTransition()
         {
+            Debug.WriteLine("BeginFadeInTransition");
+
             if (this.IsHidden == false)
                 throw new InvalidOperationException();
 
@@ -518,6 +539,8 @@ namespace Dynamo.UI.Controls
 
         private void BeginFadeOutTransition()
         {
+            Debug.WriteLine("BeginFadeOutTransition");
+
             if (this.IsCondensed == false)
                 throw new InvalidOperationException();
 
@@ -527,6 +550,8 @@ namespace Dynamo.UI.Controls
 
         private void BeginCondenseTransition()
         {
+            Debug.WriteLine("BeginCondenseTransition");
+
             if (this.IsExpanded == false)
                 throw new InvalidOperationException();
 
@@ -549,6 +574,8 @@ namespace Dynamo.UI.Controls
 
         private void BeginExpandTransition()
         {
+            Debug.WriteLine("BeginExpandTransition");
+
             if (this.IsCondensed == false)
                 throw new InvalidOperationException();
 
@@ -571,6 +598,8 @@ namespace Dynamo.UI.Controls
 
         private void BeginViewSizeTransition(Size targetSize)
         {
+            Debug.WriteLine("BeginViewSizeTransition");
+
             UpdateAnimatorTargetSize(SizeAnimator.Resizing, targetSize);
             resizingStoryboard.Begin(this, true);
         }
@@ -655,3 +684,33 @@ namespace Dynamo.UI.Controls
         #endregion
     }
 }
+
+// types of transitions
+
+// hidden -> condensed
+// condensed -> expanded
+// expanded -> condensed
+// condensed -> hidden
+// condensed -> condensed (changing size)
+// expanded -> expanded (changing size)
+
+// potential issues - target size changes during transition
+
+// states
+
+// condensed
+// expanded
+// hidden
+
+// schedulers
+
+// dynamo scheduler
+// dispatcher
+
+// transitions can take time to complete, during which time another run may take place
+
+// many happen async, so we can't know when anything is done!
+
+
+// In response to setting IsUpdated = true, the cached mirror data is invalidated
+// cachedMirrorData = null;

@@ -608,9 +608,9 @@ namespace Dynamo.Models
         #region constructors
 
         protected WorkspaceModel(
-            IEnumerable<NodeModel> e, 
-            IEnumerable<NoteModel> n,
-            IEnumerable<AnnotationModel> a,
+            IEnumerable<NodeModel> nodes, 
+            IEnumerable<NoteModel> notes,
+            IEnumerable<AnnotationModel> annotations,
             WorkspaceInfo info, 
             NodeFactory factory,
             IEnumerable<PresetModel> presets,
@@ -618,10 +618,10 @@ namespace Dynamo.Models
         {
             guid = Guid.NewGuid();
 
-            nodes = new List<NodeModel>(e);
-            notes = new List<NoteModel>(n);
+            this.nodes = new List<NodeModel>(nodes);
+            this.notes = new List<NoteModel>(notes);
 
-            annotations = new List<AnnotationModel>(a);         
+            this.annotations = new List<AnnotationModel>(annotations);         
 
             // Set workspace info from WorkspaceInfo object
             Name = info.Name;
@@ -642,7 +642,7 @@ namespace Dynamo.Models
             this.presets = new List<PresetModel>(presets);
             ElementResolver = resolver;
 
-            foreach (var node in nodes)
+            foreach (var node in this.nodes)
                 RegisterNode(node);
 
             foreach (var connector in Connectors)
