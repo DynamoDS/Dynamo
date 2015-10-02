@@ -1,4 +1,4 @@
-<Workspace Version="0.8.2.1957" X="28.4311891972171" Y="53.9823689575513" zoom="0.683620527631289" Name="Home" RunType="Manual" RunPeriod="100" HasRunWithoutCrash="False">
+<Workspace Version="0.9.0.2712" X="28.4311891972171" Y="53.9823689575513" zoom="0.683620527631289" Name="Home" Description="" RunType="Automatic" RunPeriod="100" HasRunWithoutCrash="True">
   <NamespaceResolutionMap />
   <Elements>
     <DSCore.File.Filename guid="ea0babea-4ab0-4aae-9a89-5cd423f67885" type="DSCore.File.Filename" nickname="File Path" x="69.9951477050781" y="128.525" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True">
@@ -22,6 +22,6 @@
   <Annotations />
   <Presets />
   <Cameras>
-    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+    <Camera Name="Background Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
   </Cameras>
 </Workspace>

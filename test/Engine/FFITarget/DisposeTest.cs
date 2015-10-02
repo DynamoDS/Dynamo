@@ -5,6 +5,33 @@ using System.Text;
 
 namespace FFITarget
 {
+    public class DisposeCounter : IDisposable
+    {
+        static public int x { get; set; }
+
+        public static void Reset(int num)
+        {
+            x = num;
+        }
+        public void Dispose()
+        {
+        }
+    }
+
+    public class DisposeCounterTest : IDisposable
+    {
+        public int x { get; set; }
+
+        public DisposeCounterTest()
+        {
+            x = 10;
+        }
+        public void Dispose()
+        {
+            DisposeCounter.x = DisposeCounter.x + 1;
+        }
+    }
+
     public class DisposeTestClassA : IDisposable
     {
         static public int count { get; set; }
