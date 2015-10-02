@@ -68,7 +68,7 @@ namespace Dynamo.Engine.NodeToCode
         {
             var shortName = string.Empty;
             var assembly = classNode.ExternLib;
-            var customization = assembly == null ?  null : libCustomizationServices.GetLibraryCustomization(assembly);
+            var customization = String.IsNullOrEmpty(assembly) ?  null : libCustomizationServices.GetLibraryCustomization(assembly);
 
             while (classNode != null)
             {

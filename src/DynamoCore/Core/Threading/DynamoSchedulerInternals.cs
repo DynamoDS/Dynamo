@@ -40,6 +40,19 @@ namespace Dynamo.Core.Threading
             }
         }
 
+        /// <summary>
+        /// Return true if task queue is not empty.
+        /// </summary>
+        public bool HasPendingTasks
+        {
+            get
+            {
+                lock (taskQueue)
+                {
+                    return taskQueue.Any();
+                }
+            }
+        }
         #endregion
 
         #region Private Class Helper Methods

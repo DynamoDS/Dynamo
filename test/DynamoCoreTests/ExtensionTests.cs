@@ -28,7 +28,8 @@ namespace Dynamo.Tests
                 new DynamoModel.DefaultStartConfiguration()
                 {
                     StartInTestMode = true,
-                    Extensions = new List<IExtension> { extMock.Object }
+                    Extensions = new List<IExtension> { extMock.Object },
+                    ProcessMode = Core.Threading.TaskProcessMode.Synchronous
                 });
         }
 
