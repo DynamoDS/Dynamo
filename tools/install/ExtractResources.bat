@@ -47,5 +47,12 @@ robocopy "%binroot%\Revit_2016\nodes"         "%wwlroot%\Revit_2016\nodes"      
 robocopy "%binroot%\Revit_2016\nodes\en-US"   "%wwlroot%\Revit_2016\nodes\en-US"    *.resources.dll *.xml
 )
 
+IF EXIST "%binroot%\Revit_2017" (
+robocopy "%binroot%\Revit_2017"               "%wwlroot%\Revit_2017"                *.dll *.exe -XF *tests.dll *.customization.dll 
+robocopy "%binroot%\Revit_2017\en-US"         "%wwlroot%\Revit_2017\en-US"          *.resources.dll *.xml
+robocopy "%binroot%\Revit_2017\nodes"         "%wwlroot%\Revit_2017\nodes"          *.dll
+robocopy "%binroot%\Revit_2017\nodes\en-US"   "%wwlroot%\Revit_2017\nodes\en-US"    *.resources.dll *.xml
+)
+
 rem Reset error codes of "1" returned from "robocopy" for downstream scripts.
 if %ERRORLEVEL% equ 1 ( set errorlevel=0 ) else if %ERRORLEVEL% equ 3 ( set errorlevel=0 )

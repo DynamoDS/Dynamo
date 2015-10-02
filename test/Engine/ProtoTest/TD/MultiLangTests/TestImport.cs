@@ -77,7 +77,7 @@ c = Scale(a,b);";
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T007_BasicImport_TestClassConstructorAndProperties()
         {
@@ -86,7 +86,7 @@ import (""basicImport.ds"");
 x = 10.1;
 y = 20.2;
 z = 30.3;
-myPoint = Point.ByCoordinates(10.1, 20.2, 30.3);
+myPoint = DummyPoint.ByCoordinates(10.1, 20.2, 30.3);
 myPointX = myPoint.X;
 myPointY = myPoint.Y;
 myPointZ = myPoint.Z;
@@ -101,7 +101,7 @@ myPointZ = myPoint.Z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T008_BasicImport_TestClassConstructorAndProperties_UserDefinedClass()
         {
@@ -113,11 +113,11 @@ z1 = 30.3;
 x2 = 110.1;
 y2 = 120.2;
 z2 = 130.3;
-myPoint1 = Point.ByCoordinates(x1, y1, z1);
-myPoint2 = Point.ByCoordinates(x2, y2, z2);
-myLine = Line.ByStartPointEndPoint(myPoint1, myPoint2);
-startPt = myLine.StartPoint;
-endPt = myLine.EndPoint;
+myPoint1 = DummyPoint.ByCoordinates(x1, y1, z1);
+myPoint2 = DummyPoint.ByCoordinates(x2, y2, z2);
+myLine = DummyLine.ByStartPointEndPoint(myPoint1, myPoint2);
+startPt = myLine.Start;
+endPt = myLine.End;
 startPtX = startPt.X;
 startPtY = startPt.Y;
 startPtZ = startPt.Z;
@@ -140,7 +140,7 @@ endPtZ = endPt.Z;";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void T009_BasicImport_TestClassInstanceMethod()
         {
@@ -157,7 +157,7 @@ midValue = myPoint.MidValue();";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void T010_BaseImportWithVariableClassInstance_top()
         {
@@ -214,7 +214,7 @@ import (""BaseImportImperative.ds"");";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T014_BasicImport_BeforeImperative()
         {
@@ -223,8 +223,8 @@ import (""basicImport.ds"");
 arr;
 [Imperative]
 {
-	myPoint = Point.ByCoordinates(10.1, 20.2, 30.3);
-	midValue = myPoint.MidValue();
+	myPoint = DummyPoint.ByCoordinates(10.1, 20.2, 30.3);
+	midValue = MidValue(myPoint);
 	
 	arr =  Scale(midValue, 4.0);
 }";
@@ -246,8 +246,8 @@ import (""BasicImport.ds"");
 x = 10.1;
 y = 20.2;
 z = 30.3;
-myPoint = Point.ByCoordinates(10.1, 20.2, 30.3);
-midValue = myPoint.MidValue();
+myPoint =  DummyPoint.ByCoordinates(10.1, 20.2, 30.3);
+midValue = MidValue(myPoint);
 ";
                 ExecutionMirror mirror = thisTest.RunScriptSource(code, "", importPath);
             });
@@ -284,7 +284,7 @@ a = 10;";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void T018_MultipleImport()
         {
@@ -294,7 +294,8 @@ import (""basicImport2.ds"");
 myPoint = Point.ByCoordinates(10.1, 20.2, 30.3);
 z = myPoint.Z;
 midValue = myPoint.MidValue();
-arr = Scale(midValue, 4.0);";
+arr = Scale(midValue, 4.0);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", importPath);
             object z = 30.3;
             object[] arr = { 20.2, 40.4, 60.6 };
@@ -303,7 +304,7 @@ arr = Scale(midValue, 4.0);";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void T019_MultipleImport_ClashFunctionClassRedifinition()
         {
@@ -314,7 +315,7 @@ import (""basicImport.ds"");
 import (""basicImport2.ds"");
 myPoint = Point.ByCoordinates(10.1, 20.2, 30.3);
 z = myPoint.Z;
-midValue = myPoint.MidValue();
+midValue = myPoint.MidValue(myPoint);
 arr = Scale(midValue, 4.0);";
                 ExecutionMirror mirror = thisTest.RunScriptSource(code, "", importPath);
             });

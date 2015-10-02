@@ -74,6 +74,18 @@ namespace Dynamo.Core.Threading
         IEnumerable<AsyncTask> Tasks { get; }
     }
 
+    public enum TaskProcessMode
+    {
+        /// <summary>
+        /// Scheduled task will be processed immediately
+        /// </summary>
+        Synchronous,
+        /// <summary>
+        /// Scheduled task will be processed by schedule
+        /// </summary>
+        Asynchronous
+    }
+
     public partial class DynamoScheduler : IScheduler
     {
         #region Class Events, Properties
@@ -97,10 +109,10 @@ namespace Dynamo.Core.Threading
 
         #region Public Class Operational Methods
 
-        internal DynamoScheduler(ISchedulerThread schedulerThread, bool isTestMode)
+        internal DynamoScheduler(ISchedulerThread schedulerThread, TaskProcessMode processMode)
         {
             this.schedulerThread = schedulerThread;
-            IsTestMode = isTestMode;
+            this.ProcessMode = processMode;
 
             // The host implementation of ISchedulerThread can begin access the 
             // scheduler as soon as this method is invoked. It is important for 
@@ -146,7 +158,7 @@ namespace Dynamo.Core.Threading
             // case (in a regular headless test case this is the unit test 
             // background thread; in a recorded test this is the main ui thread).
             // 
-            if (IsTestMode)
+            if (ProcessMode == TaskProcessMode.Synchronous)
             {
                 asyncTask.MarkTaskAsScheduled();
                 NotifyTaskStateChanged(asyncTask, TaskState.Scheduled);
@@ -170,9 +182,10 @@ namespace Dynamo.Core.Threading
         }
 
         /// <summary>
-        ///     Flag determining whether or not the scheduler is operating in Test Mode.
+        /// Flag determining whether or not the scheduleed task will be
+        /// processed immediately or not. 
         /// </summary>
-        public bool IsTestMode { get; private set; }
+        public TaskProcessMode ProcessMode { get; set; }
 
         /// <summary>
         /// An ISchedulerThread implementation calls this method so scheduler 

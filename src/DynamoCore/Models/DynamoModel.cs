@@ -401,6 +401,7 @@ namespace Dynamo.Models
             string GeometryFactoryPath { get; set; }
             IAuthProvider AuthProvider { get; set; }
             IEnumerable<IExtension> Extensions { get; set; }
+            TaskProcessMode ProcessMode { get; set; }
         }
 
         /// <summary>
@@ -418,6 +419,7 @@ namespace Dynamo.Models
             public string GeometryFactoryPath { get; set; }
             public IAuthProvider AuthProvider { get; set; }
             public IEnumerable<IExtension> Extensions { get; set; }
+            public TaskProcessMode ProcessMode { get; set; }
         }
 
         /// <summary>
@@ -426,7 +428,7 @@ namespace Dynamo.Models
         /// <returns></returns>
         public static DynamoModel Start()
         {
-            return Start(new DefaultStartConfiguration());
+            return Start(new DefaultStartConfiguration() { ProcessMode = TaskProcessMode.Asynchronous });
         }
 
         /// <summary>
@@ -472,7 +474,7 @@ namespace Dynamo.Models
             MigrationManager.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
             var thread = config.SchedulerThread ?? new DynamoSchedulerThread();
-            Scheduler = new DynamoScheduler(thread, IsTestMode);
+            Scheduler = new DynamoScheduler(thread, IsTestMode ? TaskProcessMode.Synchronous : TaskProcessMode.Asynchronous);
             Scheduler.TaskStateChanged += OnAsyncTaskStateChanged;
 
             geometryFactoryPath = config.GeometryFactoryPath;

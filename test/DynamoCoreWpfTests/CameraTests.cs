@@ -7,7 +7,8 @@ using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
 {
-    [TestFixture]
+    //TODO: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-8735
+    [TestFixture, Category("Failure")]
     public class CameraTests : SystemTestBase
     {
         private Watch3DView BackgroundPreview

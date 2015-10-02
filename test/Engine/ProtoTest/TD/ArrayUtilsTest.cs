@@ -29,22 +29,15 @@ namespace ProtoTest.UtilsTests
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void StackValueDiffTestUserDefined()
         {
             String code =
 @"
-class A
-{
-    x : var;
-    constructor A()
-    {
-        x = 20;
-    }
-}
+import(""FFITarget.dll"");
 [Imperative]
 {
-	a = A.A();
+	a = ClassFunctionality.ClassFunctionality(20);
     b = 1.0;
 }
 ";
@@ -57,22 +50,15 @@ class A
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void StackValueDiffTestProperty01()
         {
             String code =
 @"
-class A
-{
-    x : var;
-    constructor A()
-    {
-        x = 20;
-    }
-}
+import(""FFITarget.dll"");
 [Imperative]
 {
-	a = A.A();
+	a = ClassFunctionality.ClassFunctionality(20);
     b = 1.0;
 }
 ";
@@ -85,23 +71,16 @@ class A
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void StackValueDiffTestProperty02()
         {
             String code =
 @"
-class A
-{
-    x : var;
-    constructor A()
-    {
-        x = 20;
-    }
-}
+import(""FFITarget.dll"");
 [Imperative]
 {
-	a = A.A();
-    b = a.x;
+	a = ClassFunctionality.ClassFunctionality(20);
+    b = a.IntVal;
     c = 1.0;
 }
 ";
@@ -215,7 +194,7 @@ a;b;c;d;e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void TestArrayGetCommonSuperType()
         {
             String code =
@@ -342,7 +321,7 @@ tCCC = {C.C(), C.C(), C.C()};
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void Defect_TestArrayGetCommonSuperType()
         {
             String code =
@@ -351,7 +330,7 @@ class A{};
 class B extends A{};
 class C extends A{};
 class D extends C{};
-a = A.A();
+a =A.A();
 b = B.B();
 c = C.C();
 d = D.D();
@@ -402,7 +381,7 @@ tCD = { c, d };
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Method Resolution")]
         public void Defect_TestArrayGetCommonSuperType_2_EmptyArray()
         {
@@ -448,7 +427,7 @@ tE = {};//empty array
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Method Resolution")]
         public void Defect_TestArrayGetCommonSuperType_3()
         {

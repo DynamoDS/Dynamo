@@ -93,27 +93,28 @@ t6 = cartesian_sum[2][0];
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T00004_Geometry_002_line_by_points_replication_simple()
         {
             //Assert.Fail("1463477 - Sprint 20 : rev 2112 : replication guides throwing MethodResolutionException ");
 
             string code = @"
-import (""GeometryLibForLanguageTesting.ds"");
-startPt = Point.ByCartesianCoordinates( 1, 1, 0 );
-endPt   = Point.ByCartesianCoordinates( 1, 5, 0 );
-line_0  = Line.ByStartPointEndPoint( startPt, endPt ); 	// create line_0
-line_0_StartPoint_X = line_0.StartPoint.X;
-startPt = Point.ByCartesianCoordinates( (1..5..1), 1, 0 ); // with range expression
-endPt   = Point.ByCartesianCoordinates( (1..5..1), 5, 0 ); // with range expression.. but line does not replicate
-line_0  = Line.ByStartPointEndPoint( startPt<1>, endPt<2> ); 	// add replication guides <1> <2>
-line_0  = Line.ByStartPointEndPoint( startPt, endPt ); 		// remove replication guides
-t1 = line_0[0].StartPoint.X;
-t2 = line_0[1].StartPoint.X;
-t3 = line_0[2].StartPoint.X;
-t4 = line_0[3].StartPoint.X;
-t5 = line_0[4].StartPoint.X;";
+import (""FFITarget.dll"");
+startPt = DummyPoint.ByCoordinates( 1, 1, 0 );
+endPt   = DummyPoint.ByCoordinates( 1, 5, 0 );
+line_0  = DummyLine.ByStartPointEndPoint( startPt, endPt ); 	// create line_0
+line_0_StartPoint_X = line_0.Start.X;
+startPt = DummyPoint.ByCoordinates( (1..5..1), 1, 0 ); // with range expression
+endPt   = DummyPoint.ByCoordinates( (1..5..1), 5, 0 ); // with range expression.. but line does not replicate
+line_0  = DummyLine.ByStartPointEndPoint( startPt<1>, endPt<2> ); 	// add replication guides <1> <2>
+line_0  = DummyLine.ByStartPointEndPoint( startPt, endPt ); 		// remove replication guides
+t1 = line_0[0].Start.X;
+t2 = line_0[1].Start.X;
+t3 = line_0[2].Start.X;
+t4 = line_0[3].Start.X;
+t5 = line_0[4].Start.X;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", importPath);
 
             //Object[] v1 = new Object[] { 1, 2, 3, 4, 5 };
@@ -126,31 +127,30 @@ t5 = line_0[4].StartPoint.X;";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T00005_Geometry_002_line_by_points_replication_simple_correction()
         {
             //Assert.Fail("1463477 - Sprint 20 : rev 2112 : replication guides throwing MethodResolutionException ");
 
             string code = @"
-import (""GeometryLibForLanguageTesting.ds"");
-//#include ""GeometryLibForLanguageTesting.ds""
-startPt = Point.ByCartesianCoordinates( 1, 1, 0 );
-endPt   = Point.ByCartesianCoordinates( 1, 5, 0 );
+import (""FFITarget.dll"");
+startPt = DummyPoint.ByCoordinates( 1, 1, 0 );
+endPt   = DummyPoint.ByCoordinates( 1, 5, 0 );
 line_0  = Line.ByStartPointEndPoint(startPt, endPt); 	// create line_0
-line_0_StartPoint_X = line_0.StartPoint.X;
-startPt = Point.ByCartesianCoordinates( (1..5..1), 1, 0 ); // with range expression
-endPt   = Point.ByCartesianCoordinates( (1..5..1), 5, 0 ); // with range expression
-line_0  = Line.ByStartPointEndPoint(startPt, endPt); 		// no replication guides
-line_0  = Line.ByStartPointEndPoint(startPt<1>, endPt<1>); 	// add replication guides <1> <1>
-line_0  = Line.ByStartPointEndPoint(startPt<1>, endPt<2>); 	// add replication guides <1> <2>
-line_0  = Line.ByStartPointEndPoint(startPt<1>, endPt<1>); 	// add replication guides <1> <1>
-line_0  = Line.ByStartPointEndPoint(startPt, endPt); 		// remove replication guides
-t1 = line_0[0].StartPoint.X;
-t2 = line_0[1].StartPoint.X;
-t3 = line_0[2].StartPoint.X;
-t4 = line_0[3].StartPoint.X;
-t5 = line_0[4].StartPoint.X;";
+line_0_StartPoint_X = line_0.Start.X;
+startPt = DummyPoint.ByCoordinates( (1..5..1), 1, 0 ); // with range expression
+endPt   = DummyPoint.ByCoordinates( (1..5..1), 5, 0 ); // with range expression
+line_0  = DummyLine.ByStartPointEndPoint(startPt, endPt); 		// no replication guides
+line_0  = DummyLine.ByStartPointEndPoint(startPt<1>, endPt<1>); 	// add replication guides <1> <1>
+line_0  = DummyLine.ByStartPointEndPoint(startPt<1>, endPt<2>); 	// add replication guides <1> <2>
+line_0  = DummyLine.ByStartPointEndPoint(startPt<1>, endPt<1>); 	// add replication guides <1> <1>
+line_0  = DummyLine.ByStartPointEndPoint(startPt, endPt); 		// remove replication guides
+t1 = line_0[0].Start.X;
+t2 = line_0[1].Start.X;
+t3 = line_0[2].Start.X;
+t4 = line_0[3].Start.X;
+t5 = line_0[4].Start.X;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", importPath);
             Object[] v1 = new Object[] { 1.0, 2.0, 3.0, 4.0, 5.0 };
 
@@ -163,31 +163,31 @@ t5 = line_0[4].StartPoint.X;";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T00006_Geometry_003_line_by_points_replication_array()
         {
             //Assert.Fail("1463477 - Sprint 20 : rev 2112 : replication guides throwing MethodResolutionException ");
             string errmsg = "DNL-1467298 rev 3769 : replication guides with partial array indexing is not supported by parser";
-            string code = @"import (""GeometryLibForLanguageTesting.ds"");
-//#include ""GeometryLibForLanguageTesting.ds""
-startPt = Point.ByCartesianCoordinates( 1, 1, 0 );
-endPt   = Point.ByCartesianCoordinates( 1, 5, 5 );
-line_0  = Line.ByStartPointEndPoint(startPt, endPt ); 	// create line_0
-line_0_StartPoint_X = line_0.StartPoint.X;
+            string code = @"
+import (""FFITarget.dll"");
+startPt = DummyPoint.ByCoordinates( 1, 1, 0 );
+endPt   = DummyPoint.ByCoordinates( 1, 5, 5 );
+line_0  = DummyLine.ByStartPointEndPoint(startPt, endPt ); 	// create line_0
+line_0_StartPoint_X = line_0.Start.X;
 startPt = Point.ByCartesianCoordinates( (1..5..1), 1, 0 ); // replicate in X
 startPt = Point.ByCartesianCoordinates( (1..5..1), (1..5..1), 0 ); // replicate in X and Y
 startPt = Point.ByCartesianCoordinates( (1..5..1)<1>, (1..5..1)<2>, 0 ); // replicate in X and Y with replication guides
 line_0  = Line.ByStartPointEndPoint(startPt[2], endPt); // create line_0, select from startPt
-startPt = Point.ByCartesianCoordinates( (1..5..1)<2>, (1..5..1)<1>, 0 ); // replicate in X and Y with replication guides
-line_0  = Line.ByStartPointEndPoint(startPt, endPt); // create line_0, select from startPt
-startPt = Point.ByCartesianCoordinates( (1..5..1), (1..5..1), 0 ); // replicate in X and Y with replication guides
-startPt = Point.ByCartesianCoordinates( (1..5..1)<1>, (1..5..1)<1>, 0 ); // replicate in X and Y with replication guides
-startPt = Point.ByCartesianCoordinates( (1..5..1)<1>, (1..5..1)<2>, 0 ); // replicate in X and Y with replication guides
-startPt = Point.ByCartesianCoordinates( (1..8..1)<1>, (1..8..1)<2>, 0 ); // replicate in X and Y with replication guides
-startPt = Point.ByCartesianCoordinates( (1..8..2)<1>, (1..8..2)<2>, 0 ); // replicate in X and Y with replication guides
-startPt = Point.ByCartesianCoordinates( (1..5..1)<1>, (1..5..1)<2>, 0 ); // replicate in X and Y with replication guides
-startPt = Point.ByCartesianCoordinates( 2, 1, 0 );
+startPt = DummyPoint.ByCoordinates( (1..5..1)<2>, (1..5..1)<1>, 0 ); // replicate in X and Y with replication guides
+line_0  = DummyLine.ByStartPointEndPoint(startPt, endPt); // create line_0, select from startPt
+startPt = DummyPoint.ByCoordinates( (1..5..1), (1..5..1), 0 ); // replicate in X and Y with replication guides
+startPt = DummyPoint.ByCoordinates( (1..5..1)<1>, (1..5..1)<1>, 0 ); // replicate in X and Y with replication guides
+startPt = DummyPoint.ByCoordinates( (1..5..1)<1>, (1..5..1)<2>, 0 ); // replicate in X and Y with replication guides
+startPt = DummyPoint.ByCoordinates( (1..8..1)<1>, (1..8..1)<2>, 0 ); // replicate in X and Y with replication guides
+startPt = DummyPoint.ByCoordinates( (1..8..2)<1>, (1..8..2)<2>, 0 ); // replicate in X and Y with replication guides
+startPt = DummyPoint.ByCoordinates( (1..5..1)<1>, (1..5..1)<2>, 0 ); // replicate in X and Y with replication guides
+startPt = DummyPoint.ByCoordinates( 2, 1, 0 );
 ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg, importPath);
 
@@ -197,22 +197,22 @@ startPt = Point.ByCartesianCoordinates( 2, 1, 0 );
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T00007_Geometry_004_circle_all_combinations()
         {
             //Assert.Fail("1456568 - Sprint 16 : Rev 982 : Replication does not work on operators ");
             string errmsg = "";//DNL-1467282 Replication guides not working in constructor of class";
-            string code = @"import (""GeometryLibForLanguageTesting.ds"");
+            string code = @"
+import(""FFITarget.dll"");
 import(""DSCoreNodes.dll"");
-//#include ""GeometryLibForLanguageTesting.ds""
-//circlePoint = Point.ByCartesianCoordinates(10.0*cos(0..(360)..#21), 10.0*sin(0..(360)..#21), 0.0);
-circlePoint = Point.ByCartesianCoordinates( 10.0 * Math.Cos(0..(360)..#4), 10.0 * Math.Sin(0..(360)..#4), 0.0);
-lines = Line.ByStartPointEndPoint(circlePoint<1>,circlePoint<2>);
-lines_StartPoint_X = lines.StartPoint.X; 
-t1 = lines[0][0].StartPoint.X;
-t2 = lines[1][0].StartPoint.X;
-t3 = lines[2][0].StartPoint.X;
-t4 = lines[3][0].StartPoint.X;";
+circlePoint = DummyPoint.ByCoordinates( 10.0 * Math.Cos(0..(360)..#4), 10.0 * Math.Sin(0..(360)..#4), 0.0);
+lines = DummyLine.ByStartPointEndPoint(circlePoint<1>,circlePoint<2>);
+lines_StartPoint_X = lines.Start.X; 
+t1 = lines[0][0].Start.X;
+t2 = lines[1][0].Start.X;
+t3 = lines[2][0].Start.X;
+t4 = lines[3][0].Start.X;
+";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg, importPath);
 
             //Object[] v1 = new Object[] { new Object[] { 10.000, 10.000, 10.000, 10.000 }, new Object[] { -5.000, -5.000, -5.000, -5.000 }, new Object[] { -5.000, -5.000, -5.000, -5.000 }, new Object[] { 10.000, 10.000, 10.000, 10.000 } };
@@ -225,7 +225,7 @@ t4 = lines[3][0].StartPoint.X;";
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_WorkflowTest")]
         public void T00008_Geometry_005_circle_adjacent_pairs_externalised()
         {
             //Assert.Fail("1456568 - Sprint 16 : Rev 982 : Replication does not work on operators "); 
@@ -244,6 +244,8 @@ numPoints = 3;
 t1 = lines[0].StartPoint.X;
 t2 = lines[1].StartPoint.X;
 t3 = lines[2].StartPoint.X;";
+
+
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", importPath);
 
             //Object[] v1 = new Object[] { 10.000, 10.000, -10.000 };
@@ -255,7 +257,7 @@ t3 = lines[2].StartPoint.X;";
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T00009_Geometry_006_circle_all_unique_combinations()
         {
@@ -264,20 +266,20 @@ t3 = lines[2].StartPoint.X;";
             //Assert.Fail("1467174 sprint24 : rev 3150 : warning:Function 'get_X' not Found");
 
             string code = @"
-import (""GeometryLibForLanguageTesting.ds"");
-def drawUniqueLines (points : Point[], start : int, end : int) = Line.ByStartPointEndPoint(points[(0..start..1)],points[end]); 
-circlePoints = Point.ByCartesianCoordinates( 10..13, 4..7, 0.0 );
+import(""FFITarget.dll"");
+def drawUniqueLines (points : DummyPoint[], start : int, end : int) = DummyLine.ByStartPointEndPoint(points[(0..start..1)],points[end]); 
+circlePoints = DummyPoint.ByCoordinates( 10..13, 4..7, 0.0 );
 lines = drawUniqueLines(circlePoints, (1..(Count(circlePoints)-2)..1), (2..(Count(circlePoints)-1)..1));
-lines_StartPoint_X = lines.StartPoint.X; 
-t1 = lines[0][0].StartPoint.X;
-t2 = lines[1][2].StartPoint.X;";
+lines_StartPoint_X = lines.Start.X; 
+t1 = lines[0][0].Start.X;
+t2 = lines[1][2].Start.X;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", importPath);
             thisTest.Verify("t1", 10.0, 0);
             thisTest.Verify("t2", 12.0, 0);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_TestAsWorkflow")]
         [Category("Failure")]
         public void T00010_Geometry_007_specialPoint_2()
         {
@@ -354,7 +356,7 @@ a 		= a.incrementRadius(0.2); 				// [POINT does not updates]
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_TestAsWorkflow")]
         [Category("Replication")]
         [Category("Failure")]
         public void T00011_Geometry_008_trim_then_tube_4()
@@ -393,7 +395,7 @@ t5 = tubes[4].EndPoint.X;";
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_TestAsWorkflow")]
         [Category("Failure")]
         public void T00012_Geometry_008a_alternative_method_invocations_1()
         {
@@ -461,7 +463,7 @@ x8 = tube_3.StartPoint.X;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_TestAsWorkflow")]
         [Category("SmokeTest")]
         public void T00013_Geometry_009_nested_user_defined_feature_2b()
         {
@@ -543,7 +545,7 @@ x3 = triangle0002.Side_b_c.MidPoint.X;
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_TestAsWorkflow")]
         [Category("Replication")]
         public void T00014_Geometry_010_nested_user_defined_feature_rand_2()
         {
@@ -624,7 +626,7 @@ x3 = MyTriangle0001[2].side_c_a.midPoint.X;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_TestAsWorkflow")]
         [Category("Feature")]
         public void T00015_Geometry_011_nested_user_defined_feature_with_partial_class_1()
         {
@@ -669,13 +671,12 @@ x3 = side_c_a.MidPoint.X;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Feature")]
         public void T00016_Geometry_012_centroid_1()
         {
             string code = @"
-import (""GeometryLibForLanguageTesting.ds"");
-// [1] create functions to calculate the centroid of a collection of points 
+import(""FFITarget.dll"");
 def sumCollection(arr : double[]) = sumCollectionInternal(arr, Count(arr)-1);
 def sumCollectionInternal(arr : double[], i : int ) 
 {
@@ -693,18 +694,18 @@ def sumCollectionInternal(arr : double[], i : int )
 }
 
 def average(arr : double[]) = sumCollection(arr) / Count(arr);
-def centroid(points : Point[]) = Point.ByCartesianCoordinates( average(points.X), average(points.Y),  average(points.Z) );
+def centroid(points : DummyPoint[]) = DummyPoint.ByCoordinates( average(points.X), average(points.Y),  average(points.Z) );
 // [2] create some points
-point_1 = Point.ByCartesianCoordinates( 30.0, 80.0, 0.0 );
-point_2 = Point.ByCartesianCoordinates( 10.0, 50.0, 0.0 );
-point_3 = Point.ByCartesianCoordinates( 50.0, 50.0, 0.0 );
+point_1 = DummyPoint.ByCoordinates( 30.0, 80.0, 0.0 );
+point_2 = DummyPoint.ByCoordinates( 10.0, 50.0, 0.0 );
+point_3 = DummyPoint.ByCoordinates( 50.0, 50.0, 0.0 );
 // [3] create centrePoint
 centrePoint = centroid( {point_1, point_2, point_3} );
 // [4] test with lines
-lineTest  = Line.ByStartPointEndPoint( centrePoint, { point_1, point_2, point_3 } );
+lineTest  = DummyLine.ByStartPointEndPoint( centrePoint, { point_1, point_2, point_3 } );
 // [5] move a point
-point_1 = Point.ByCartesianCoordinates( 40.0, 80.0, 0.0 );
-x1 = lineTest[2].EndPoint.X;
+point_1 = DummyPoint.ByCoordinates( 40.0, 80.0, 0.0 );
+x1 = lineTest[2].End.X;
 
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", importPath);
