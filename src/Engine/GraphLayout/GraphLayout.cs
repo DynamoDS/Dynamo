@@ -631,17 +631,17 @@ namespace GraphLayout
         /// <summary>
         /// The unique identifier of the node.
         /// </summary>
-        public Guid Id;
+        public Guid Id { get; private set; }
 
         /// <summary>
         /// The width of the node view.
         /// </summary>
-        public double Width;
+        public double Width { get; private set; }
 
         /// <summary>
         /// The height of the node view.
         /// </summary>
-        public double Height;
+        public double Height { get; private set; }
 
         /// <summary>
         /// The x coordinate of the node view.
@@ -656,7 +656,7 @@ namespace GraphLayout
         /// <summary>
         /// The initial Y coordinate of the node view.
         /// </summary>
-        public double InitialY;
+        public double InitialY { get; private set; }
 
         /// <summary>
         /// The layer of the node within the graph, starting from layer 0 for the rightmost layer.
@@ -709,12 +709,12 @@ namespace GraphLayout
         /// <summary>
         /// The node connected to the edge's left end.
         /// </summary>
-        public Node StartNode;
+        public Node StartNode { get; private set; }
 
         /// <summary>
         /// The node connected to the edge's right end.
         /// </summary>
-        public Node EndNode;
+        public Node EndNode { get; private set; }
 
         /// <summary>
         /// Returns the x coordinate of the connector's start point.
@@ -751,12 +751,12 @@ namespace GraphLayout
         /// <summary>
         /// The y distance between the edge's left end and the start node's top-right corner.
         /// </summary>
-        public double StartOffsetY;
+        public double StartOffsetY { get; private set; }
 
         /// <summary>
         /// The y distance between the edge's right end and the end node's top-left corner.
         /// </summary>
-        public double EndOffsetY;
+        public double EndOffsetY { get; private set; }
 
         /// <summary>
         /// A flag for the GraphLayout algorithm.
