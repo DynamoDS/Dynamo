@@ -2164,6 +2164,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cleanup Node Layout.
+        /// </summary>
+        public static string GroupContextMenuGraphLayout {
+            get {
+                return ResourceManager.GetString("GroupContextMenuGraphLayout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ungroup.
         /// </summary>
         public static string GroupContextMenuUngroup {

@@ -921,44 +921,73 @@ namespace Dynamo.Models
             return null;
         }
 
+        /// <summary>
+        /// This function wraps a few methods on the workspace model layer
+        /// to set up and run the graph layout algorithm.
+        /// </summary>
         public void DoGraphAutoLayout()
         {
-            if (Nodes.Count() == 0)
-                return;
+            if (Nodes.Count() < 2) return;
 
-            GenerateCombinedGraph();
+            var selection = DynamoSelection.Instance.Selection;
+
+            // Check if all the selected models are groups
+            bool isGroupLayout = selection.Count > 0 &&
+                selection.All(x => x is AnnotationModel ||
+                    selection.Where(g => g is AnnotationModel)
+                    .Any(g => (g as AnnotationModel).SelectedModels.Contains(x)));
+
+            GenerateCombinedGraph(isGroupLayout);
+            RecordUndoGraphLayout(isGroupLayout);
             GenerateSeparateSubgraphs();
-            LayoutSubgraphs.Skip(1).ToList().ForEach(g => RunLayoutSubgraph(g));
+            LayoutSubgraphs.Skip(1).ToList().ForEach(g => RunLayoutSubgraph(g, isGroupLayout));
             AvoidSubgraphOverlap();
             SaveLayoutGraph();
+
+            // Restore the workspace model selection information
+            foreach (var model in selection)
+                model.Select();
         }
 
         /// <summary>
         /// This method extracts all models from the workspace and puts them
         /// into the combined graph object, LayoutSubgraphs.First()
+        /// <param name="isGroupLayout">True if all the selected models are groups.</param>
         /// </summary>
-        private void GenerateCombinedGraph()
+        private void GenerateCombinedGraph(bool isGroupLayout)
         {
             LayoutSubgraphs = new List<GraphLayout.Graph>();
             LayoutSubgraphs.Add(new GraphLayout.Graph());
 
             GraphLayout.Graph combinedGraph = LayoutSubgraphs.First();
 
-            foreach (AnnotationModel group in Annotations)
+            if (!isGroupLayout)
             {
-                // Treat a group as a graph layout node/vertex
-                combinedGraph.AddNode(group.GUID, group.Width, group.Height, group.X, group.Y,
-                    group.IsSelected || DynamoSelection.Instance.Selection.Count == 0);
+                foreach (AnnotationModel group in Annotations)
+                {
+                    // Treat a group as a graph layout node/vertex
+                    combinedGraph.AddNode(group.GUID, group.Width, group.Height, group.X, group.Y,
+                        group.IsSelected || DynamoSelection.Instance.Selection.Count == 0);
+                }
             }
 
             foreach (NodeModel node in Nodes)
             {
-                AnnotationModel group = Annotations.Where(
-                    g => g.SelectedModels.Contains(node)).ToList().FirstOrDefault();
-
-                // Do not process nodes within groups
-                if (group == null)
+                if (!isGroupLayout)
                 {
+                    AnnotationModel group = Annotations.Where(
+                        g => g.SelectedModels.Contains(node)).ToList().FirstOrDefault();
+
+                    // Do not process nodes within groups
+                    if (group == null)
+                    {
+                        combinedGraph.AddNode(node.GUID, node.Width, node.Height, node.X, node.Y,
+                            node.IsSelected || DynamoSelection.Instance.Selection.Count == 0);
+                    }
+                }
+                else
+                {
+                    // Process all nodes inside the selection
                     combinedGraph.AddNode(node.GUID, node.Width, node.Height, node.X, node.Y,
                         node.IsSelected || DynamoSelection.Instance.Selection.Count == 0);
                 }
@@ -966,18 +995,27 @@ namespace Dynamo.Models
 
             foreach (ConnectorModel edge in Connectors)
             {
-                AnnotationModel startGroup = null, endGroup = null;
-                startGroup = Annotations.Where(
-                    g => g.SelectedModels.Contains(edge.Start.Owner)).ToList().FirstOrDefault();
-                endGroup = Annotations.Where(
-                    g => g.SelectedModels.Contains(edge.End.Owner)).ToList().FirstOrDefault();
-
-                // Treat a group as a node, but do not process edges within a group
-                if (startGroup == null || endGroup == null || startGroup != endGroup)
+                if (!isGroupLayout)
                 {
-                    combinedGraph.AddEdge(
-                        startGroup == null ? edge.Start.Owner.GUID : startGroup.GUID,
-                        endGroup == null ? edge.End.Owner.GUID : endGroup.GUID,
+                    AnnotationModel startGroup = null, endGroup = null;
+                    startGroup = Annotations.Where(
+                        g => g.SelectedModels.Contains(edge.Start.Owner)).ToList().FirstOrDefault();
+                    endGroup = Annotations.Where(
+                        g => g.SelectedModels.Contains(edge.End.Owner)).ToList().FirstOrDefault();
+
+                    // Treat a group as a node, but do not process edges within a group
+                    if (startGroup == null || endGroup == null || startGroup != endGroup)
+                    {
+                        combinedGraph.AddEdge(
+                            startGroup == null ? edge.Start.Owner.GUID : startGroup.GUID,
+                            endGroup == null ? edge.End.Owner.GUID : endGroup.GUID,
+                            edge.Start.Center.X, edge.Start.Center.Y, edge.End.Center.X, edge.End.Center.Y);
+                    }
+                }
+                else
+                {
+                    // Edges within a group are also processed
+                    combinedGraph.AddEdge(edge.Start.Owner.GUID, edge.End.Owner.GUID,
                         edge.Start.Center.X, edge.Start.Center.Y, edge.End.Center.X, edge.End.Center.Y);
                 }
             }
@@ -997,11 +1035,45 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// This method adds relevant models to the undo recorder.
+        /// </summary>
+        /// <param name="isGroupLayout">True if all the selected models are groups.</param>
+        private void RecordUndoGraphLayout(bool isGroupLayout)
+        {
+            List<ModelBase> undoItems = new List<ModelBase>();
+
+            if (!isGroupLayout)
+            {
+                // Add all selected items to the undo recorder
+                undoItems.AddRange(Nodes);
+                undoItems.AddRange(Notes);
+                if (DynamoSelection.Instance.Selection.Count > 0)
+                {
+                    undoItems = undoItems.Where(x => x.IsSelected).ToList();
+                }
+            }
+            else
+            {
+                // Add all models inside selected groups
+                foreach (var group in Annotations)
+                {
+                    if (group.IsSelected)
+                    {
+                        group.Deselect();
+                        undoItems.AddRange(group.SelectedModels);
+                    }
+                }
+            }
+
+            WorkspaceModel.RecordModelsForModification(undoItems, UndoRecorder);
+        }
+        
+        /// <summary>
         /// This method repeatedly takes a selected node in the combined graph and
         /// uses breadth-first search to find all other nodes in the same subgraph
         /// until all selected nodes have been processed.
         /// </summary>
-        public void GenerateSeparateSubgraphs()
+        private void GenerateSeparateSubgraphs()
         {
             int processed = 0;
             var combinedGraph = LayoutSubgraphs.First();
@@ -1056,13 +1128,14 @@ namespace Dynamo.Models
             }
         }
 
-        private void RunLayoutSubgraph(GraphLayout.Graph graph)
+        /// <summary>
+        /// This function calls the graph layout algorithm methods.
+        /// </summary>
+        /// <param name="graph">The subgraph to be processed.</param>
+        /// <param name="isGroupLayout">True if all selected models are groups.</param>
+        private void RunLayoutSubgraph(GraphLayout.Graph graph, bool isGroupLayout)
         {
-            // Support undo for graph layout command
-            List<ModelBase> undoItems = new List<ModelBase>();
-            undoItems.AddRange(Nodes);
-            undoItems.AddRange(Notes);
-            WorkspaceModel.RecordModelsForModification(undoItems, UndoRecorder);
+            // Save subgraph position before running the layout
             graph.RecordInitialPosition();
 
             // Sugiyama algorithm steps
@@ -1072,7 +1145,7 @@ namespace Dynamo.Models
 
             // Node and graph positioning
             graph.DistributeNodePosition();
-            graph.SetGraphPosition();
+            graph.SetGraphPosition(isGroupLayout);
         }
 
         /// <summary>
