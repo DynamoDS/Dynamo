@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -83,6 +84,10 @@ namespace XmlDocToMarkdown
             {
                 sb.AppendLine("####No public constructors defined");
             }
+            //foreach (var check in t.GetConstructors())
+            //{
+            //    var cc = Attribute.GetCustomAttribute(check, typeof (CompilerGeneratedAttribute));
+            //}
             foreach (var method in t.GetConstructors(BindingFlags.FlattenHierarchy |
                 BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static))
             {
@@ -114,7 +119,9 @@ namespace XmlDocToMarkdown
             {
                 sb.AppendLine("####No public methods defined");
             }
-            foreach (var method in t.GetMethods().Where(m => m.IsPublic))
+            
+            foreach (var method in t.GetMethods().Where(m => m.IsPublic && !m.IsSpecialName && 
+                m.DeclaringType.Name != "Objects"))
             {
                 var methodParams = method.GetParameters();
                 var methodName = method.Name;

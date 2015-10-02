@@ -131,7 +131,7 @@ namespace XmlDocToMarkdown
                     break;
 
                 case "Italic":
-                    if (name.Length > 0)
+                    if(name!= null || name.Length > 0)
                     {
                         returnString = "*" + name.Trim() + "*";
                     }
