@@ -116,6 +116,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        protected override void OnActiveStateChanged()
+        {
+            preferences.IsBackgroundPreviewActive = active;
+
+            if (active == false && CanNavigateBackground)
+            {
+                CanNavigateBackground = false;
+            }
+        }
+
         public event Action<Model3D> RequestAttachToScene;
         protected void OnRequestAttachToScene(Model3D model3D)
         {
