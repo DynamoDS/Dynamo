@@ -376,7 +376,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             InitializeHelix();
         }
 
-        protected override void OnBeginUpdate(IEnumerable<IRenderPackage> packages)
+        public override void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages)
         {
             if (Active == false)
             {
@@ -552,7 +552,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             OnRequestViewRefresh();
         }
 
-        internal override void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
+        public override void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
         {
             lock (Model3DDictionaryMutex)
             {

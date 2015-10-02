@@ -18,7 +18,7 @@ namespace Dynamo.Controls
     /// <summary>
     /// Interaction logic for WatchControl.xaml
     /// </summary>
-    public partial class Watch3DView : IWatch3DView
+    public partial class Watch3DView
     {
         #region private members
 
@@ -114,6 +114,8 @@ namespace Dynamo.Controls
 
             var helixVM = ViewModel as HelixWatch3DViewModel;
             if (helixVM == null) return;
+
+            RegisterViewEventHandlers();
 
             helixVM.RequestAttachToScene += ViewModelRequestAttachToSceneHandler;
             helixVM.RequestCreateModels += RequestCreateModelsHandler;
@@ -214,8 +216,6 @@ namespace Dynamo.Controls
 
         #endregion
 
-        #region interface methods
-
         public Ray3D GetClickRay(MouseEventArgs mouseButtonEventArgs)
         {
             var mousePos = mouseButtonEventArgs.GetPosition(this);
@@ -223,18 +223,5 @@ namespace Dynamo.Controls
             return View.Point2DToRay3D(new Point(mousePos.X, mousePos.Y));
         }
 
-        public void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages)
-        {
-            var helixVm = ViewModel as HelixWatch3DViewModel;
-            if (helixVm == null) return;
-            helixVm.OnRequestCreateModels(packages);
-        }
-
-        public void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
-        {
-            ViewModel.DeleteGeometryForIdentifier(identifier, requestUpdate);
-        }
-
-        #endregion
     }
 }
