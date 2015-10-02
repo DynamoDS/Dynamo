@@ -80,14 +80,13 @@ namespace XmlDocToMarkdown
         /// <returns></returns>
         private static StringBuilder GenerateMarkDownForConstructors(Type t, IEnumerable<XElement> members, StringBuilder sb)
         {
+            bool foundType = false;
             if (!t.GetConstructors().Any())
             {
                 sb.AppendLine("####No public constructors defined");
+                return sb;
             }
-            //foreach (var check in t.GetConstructors())
-            //{
-            //    var cc = Attribute.GetCustomAttribute(check, typeof (CompilerGeneratedAttribute));
-            //}
+            
             foreach (var method in t.GetConstructors(BindingFlags.FlattenHierarchy |
                 BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static))
             {
@@ -99,10 +98,14 @@ namespace XmlDocToMarkdown
                methodName;
 
                 var current = GetMarkdownForMethod(members, t.FullName + fullMethodName);
+                if (current != null && !foundType) foundType = true;
                 sb.Append(current);
                 sb.AppendLine();
             }
-
+            if (!foundType)
+            {
+                sb.AppendLine("####No public constructors defined");
+            }
             return sb;
         }
 
@@ -115,13 +118,14 @@ namespace XmlDocToMarkdown
         /// <returns></returns>
         private static StringBuilder GenerateMarkDownForMethods(Type t, IEnumerable<XElement> members, StringBuilder sb)
         {
+            bool foundType = false;
             if (!t.GetMethods().Any())
             {
                 sb.AppendLine("####No public methods defined");
+                return sb;
             }
             
-            foreach (var method in t.GetMethods().Where(m => m.IsPublic && !m.IsSpecialName && 
-                m.DeclaringType.Name != "Objects"))
+            foreach (var method in t.GetMethods().Where(m => m.IsPublic))
             {
                 var methodParams = method.GetParameters();
                 var methodName = method.Name;
@@ -144,10 +148,15 @@ namespace XmlDocToMarkdown
                 Debug.WriteLine(t.FullName + "." + fullMethodName);
 
                 var current = GetMarkdownForMethod(members, t.FullName + "." + fullMethodName);
+                if (current != null && !foundType) foundType = true;
                 sb.Append(current);
                 sb.AppendLine();
             }
 
+            if (!foundType)
+            {
+                sb.AppendLine("####No public methods defined");
+            }
             return sb;
         }
 
@@ -161,9 +170,11 @@ namespace XmlDocToMarkdown
         private static StringBuilder GenerateMarkDownForProperties(Type t, IEnumerable<XElement> members,
             StringBuilder sb)
         {
+            bool foundType = false;
             if (!t.GetProperties().Any())
             {
                 sb.AppendLine("####No public properties defined");
+                return sb;
             }
 
             //If the Type is enum, then no URL is constructed
@@ -179,9 +190,15 @@ namespace XmlDocToMarkdown
                      XmlToMarkdown.PropertySetType  = "get;set;";
                  }
                 var propertyNameSpace = ConvertGenericParameterName(t.FullName);
-                var current = GetMarkdownForProperty(members, propertyNameSpace + "." + property.Name);               
+                var current = GetMarkdownForProperty(members, propertyNameSpace + "." + property.Name);
+                if (current != null && !foundType) foundType = true;
                 sb.Append(current);
                 sb.AppendLine();
+            }
+
+            if (!foundType)
+            {
+                sb.AppendLine("####No public properties defined");
             }
             return sb;
         }
@@ -196,17 +213,25 @@ namespace XmlDocToMarkdown
         private static StringBuilder GenerateMarkDownForEvents(Type t, IEnumerable<XElement> members,
            StringBuilder sb)
         {
+            bool foundType = false;
             if (!t.GetEvents().Any())
             {
                 sb.AppendLine("####No public events defined");
+                return sb;
             }
             foreach (var e in t.GetEvents())
             {
                 XmlToMarkdown.ReturnType = string.Empty;
                 var eventNameSpace = ConvertGenericParameterName(t.FullName);
                 var current = GetMarkdownForEvent(members, eventNameSpace + "." + e.Name);
+                if (current != null && !foundType) foundType = true;
                 sb.Append(current);
                 sb.AppendLine();
+            }
+
+            if (!foundType)
+            {
+                sb.AppendLine("####No public events defined");
             }
 
             return sb;
