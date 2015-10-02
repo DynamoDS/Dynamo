@@ -123,7 +123,8 @@ namespace Dynamo.Tests
                 {
                     PathResolver = pathResolver,
                     StartInTestMode = true,
-                    GeometryFactoryPath = preloader.GeometryFactoryPath
+                    GeometryFactoryPath = preloader.GeometryFactoryPath,
+                    ProcessMode = Core.Threading.TaskProcessMode.Synchronous
                 });
 
             this.ViewModel = DynamoViewModel.Start(
