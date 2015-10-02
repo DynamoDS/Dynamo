@@ -90,11 +90,6 @@ namespace Dynamo.UI.Views
             libraryToolTipPopup.SetDataContext(null, closeImmediately);
         }
 
-        private void OnRequestCloseToolTip(object sender, EventArgs e)
-        {
-            CloseToolTipInternal(true);
-        }
-
         #endregion
 
         #region Drag&Drop
