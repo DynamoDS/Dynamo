@@ -212,14 +212,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in inherited classes.
         }
 
-        private void OnActiveStateChanged()
+        protected virtual void OnActiveStateChanged()
         {
             preferences.IsBackgroundPreviewActive = active;
-
-            if (active == false && CanNavigateBackground)
-            {
-                CanNavigateBackground = false;
-            }
 
             UnregisterEventHandlers();
             OnClear();
