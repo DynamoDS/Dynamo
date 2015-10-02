@@ -1548,7 +1548,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Paste ISelectable objects from the clipboard to the workspace.
         /// </summary>
-        public void Paste()
+        public void Paste(Point2D? targetPoint = null)
         {
             //clear the selection so we can put the
             //paste contents in
@@ -1618,16 +1618,28 @@ namespace Dynamo.Models
                 minY = Math.Min(node.Y, minY);
             }
 
-            // Move all of the notes and nodes such that they are aligned with
-            // the top left of the workspace
-            var workspaceX = -CurrentWorkspace.X / CurrentWorkspace.Zoom;
-            var workspaceY = -CurrentWorkspace.Y / CurrentWorkspace.Zoom;
+            double targetX, targetY;
+            if (targetPoint == null)
+            {
+                // Move all of the notes and nodes such that they are aligned with
+                // the top left of the workspace
+                var workspaceX = -CurrentWorkspace.X/CurrentWorkspace.Zoom;
+                var workspaceY = -CurrentWorkspace.Y/CurrentWorkspace.Zoom;
 
-            // Provide a small offset when pasting so duplicate pastes aren't directly on top of each other
-            CurrentWorkspace.IncrementPasteOffset();
+                // Provide a small offset when pasting so duplicate pastes aren't directly on top of each other
+                CurrentWorkspace.IncrementPasteOffset();
 
-            var shiftX = workspaceX - minX + CurrentWorkspace.CurrentPasteOffset;
-            var shiftY = workspaceY - minY + CurrentWorkspace.CurrentPasteOffset;
+                targetX = workspaceX + CurrentWorkspace.CurrentPasteOffset;
+                targetY = workspaceY + CurrentWorkspace.CurrentPasteOffset;
+            }
+            else
+            {
+                targetX = targetPoint.Value.X;
+                targetY = targetPoint.Value.Y;
+            }
+
+            var shiftX = targetX - minX;
+            var shiftY = targetY - minY;
 
             foreach (var model in newNodeModels.Concat<ModelBase>(newNoteModels))
             {
