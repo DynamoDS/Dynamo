@@ -302,6 +302,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public void SerializeCamera(XmlElement camerasElement)
         {
+            if (camera == null) return;
+
             try
             {
                 var node = XmlHelper.AddNode(camerasElement, "Camera");
@@ -926,11 +928,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public void SetCameraData(CameraData data)
         {
-            Camera.LookDirection = data.LookDirection;
-            Camera.Position = data.EyePosition;
-            Camera.UpDirection = data.UpDirection;
-            Camera.NearPlaneDistance = data.NearPlaneDistance;
-            Camera.FarPlaneDistance = data.FarPlaneDistance;
+            if (camera == null) return;
+
+            camera.LookDirection = data.LookDirection;
+            camera.Position = data.EyePosition;
+            camera.UpDirection = data.UpDirection;
+            camera.NearPlaneDistance = data.NearPlaneDistance;
+            camera.FarPlaneDistance = data.FarPlaneDistance;
         }
 
         private double CalculateNearClipPlane(double maxDim)

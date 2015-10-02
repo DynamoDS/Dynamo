@@ -486,6 +486,7 @@ namespace Dynamo.ViewModels
                 Model.Logger.Log("Failed to create Watch3DViewModel. Creating base view model.");
 
                 watch3DViewModel = Watch3DViewModelBase.Start(backgroundPreviewParams);
+                watch3DViewModel.Active = false;
             }
 
             BackgroundPreviewViewModel = watch3DViewModel;
