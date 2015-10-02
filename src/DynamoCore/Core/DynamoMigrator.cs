@@ -166,21 +166,22 @@ namespace Dynamo.Core
         /// /// <returns>new migrator instance after migration</returns>
         protected virtual DynamoMigratorBase MigrateFrom(DynamoMigratorBase sourceMigrator)
         {
-            Copy(sourceMigrator.PackagesDirectory, this.PackagesDirectory);
-            Copy(sourceMigrator.DefinitionsDirectory, this.DefinitionsDirectory);
+            Copy(sourceMigrator.PackagesDirectory, PackagesDirectory);
+            Copy(sourceMigrator.DefinitionsDirectory, DefinitionsDirectory);
 
-            this.PreferenceSettings = sourceMigrator.PreferenceSettings;
-            if (this.PreferenceSettings == null) return this;
+            PreferenceSettings = sourceMigrator.PreferenceSettings;
+            if (PreferenceSettings == null) return this;
 
             // All preference settings are copied over including custom package folders
             // However if one of the custom folder locations points to the user data directory
             // of the previous version, it needs to be replaced with that of the current version
-            var indexToreplace = this.PreferenceSettings.CustomPackageFolders.FindIndex(f => f.Contains(sourceMigrator.UserDataDirectory));
+            var folders = PreferenceSettings.CustomPackageFolders;
+            var indexToReplace = folders.FindIndex(f => f.Contains(sourceMigrator.UserDataDirectory));
             
-            if (indexToreplace <= -1) return this;
-            
-            this.PreferenceSettings.CustomPackageFolders.RemoveAt(indexToreplace);
-            this.PreferenceSettings.CustomPackageFolders.Insert(indexToreplace, this.UserDataDirectory);
+            if (indexToReplace <= -1) return this;
+
+            folders.RemoveAt(indexToReplace);
+            folders.Insert(indexToReplace, UserDataDirectory);
             
             return this;
         }
