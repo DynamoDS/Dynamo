@@ -976,6 +976,10 @@ namespace Dynamo.PackageManager
             var files = BuildPackage();
             try
             {
+                if (files == null || files.Count() < 1)
+                {
+                    return;
+                }
                 // begin submission
                 var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
                 var handle = pmExtension.PackageManagerClient.PublishAsync(Package, files, IsNewVersion);
@@ -1003,6 +1007,10 @@ namespace Dynamo.PackageManager
 
             try
             {
+                if (files == null || files.Count() < 1)
+                {
+                    return;
+                }
                 UploadState = PackageUploadHandle.State.Copying;
                 Uploading = true;
                 // begin publishing to local directory
