@@ -925,7 +925,7 @@ namespace Dynamo.Models
         /// This function wraps a few methods on the workspace model layer
         /// to set up and run the graph layout algorithm.
         /// </summary>
-        public void DoGraphAutoLayout()
+        internal void DoGraphAutoLayout()
         {
             if (Nodes.Count() < 2) return;
 
