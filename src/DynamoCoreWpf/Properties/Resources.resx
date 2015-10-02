@@ -1607,6 +1607,9 @@ Do you want to install the latest Dynamo update?</value>
   <data name="GroupContextMenuUngroup" xml:space="preserve">
     <value>Ungroup</value>
   </data>
+  <data name="GroupContextMenuGraphLayout" xml:space="preserve">
+    <value>Cleanup Node Layout</value>
+  </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>Due to limitations in the .NET framework, it is not possible to update your package assembly while it is already loaded.  Please update the assembly while {0} is not running and try again.</value>
   </data>
