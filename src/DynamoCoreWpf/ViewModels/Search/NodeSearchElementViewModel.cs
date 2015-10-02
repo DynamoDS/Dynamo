@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Search.SearchElements;
@@ -18,12 +19,6 @@ namespace Dynamo.Wpf.ViewModels
     {
         private bool isSelected;
         private SearchViewModel searchViewModel;
-
-        public bool IsTopResult
-        {
-            get;
-            set;
-        }
 
         public event RequestBitmapSourceHandler RequestBitmapSource;
         public void OnRequestBitmapSource(IconRequestEventArgs e)
@@ -47,21 +42,7 @@ namespace Dynamo.Wpf.ViewModels
             Model.VisibilityChanged += ModelOnVisibilityChanged;
             if (searchViewModel != null)
                 Clicked += searchViewModel.OnSearchElementClicked;
-            ClickedCommand = new DelegateCommand(OnClicked);            
-        }
-
-        /// <summary>
-        /// Creates a copy of NodeSearchElementViewModel.
-        /// </summary>
-        public NodeSearchElementViewModel(NodeSearchElementViewModel copyElement)
-        {
-            if (copyElement == null)
-                throw new ArgumentNullException();
-
-            Model = copyElement.Model;
-            Clicked = copyElement.Clicked;
-            RequestBitmapSource = copyElement.RequestBitmapSource;
-            ClickedCommand = copyElement.ClickedCommand;
+            ClickedCommand = new DelegateCommand(OnClicked);
         }
 
         private void ModelOnVisibilityChanged()
@@ -123,12 +104,49 @@ namespace Dynamo.Wpf.ViewModels
             get { return Model.Description; }
         }
 
+        public string Class
+        {
+            get
+            {
+                return Model.Categories.Count > 1 ? Model.Categories.Last() : String.Empty;
+            }
+        }
+
+        public string Category
+        {
+            get
+            {
+                return Model.Categories.First();
+            }
+        }
+
+        public SearchElementGroup Group
+        {
+            get { return Model.Group; }
+        }
+
+        public string GroupIconName
+        {
+            get
+            {
+                switch (Model.Group)
+                {
+                    case SearchElementGroup.Create:
+                        return "plus";
+                    case SearchElementGroup.Action:
+                        return "LightningBolt";
+                    case SearchElementGroup.Query:
+                        return "Question";
+                    default:
+                        return null;
+                }
+            }
+        }
+
         public bool HasDescription
         {
             get { return (!Model.Description.Equals(Dynamo.UI.Configurations.NoDescriptionAvailable)); }
         }
-
-        public NodeCategoryViewModel Category { get; set; }
 
         public IEnumerable<Tuple<string, string>> InputParameters
         {
@@ -241,12 +259,6 @@ namespace Dynamo.Wpf.ViewModels
             : base(element, svm)
         {
             Path = Model.Path;
-        }
-
-        public CustomNodeSearchElementViewModel(CustomNodeSearchElementViewModel copyElement)
-            : base(copyElement)
-        {
-            Path = copyElement.Path;
         }
 
         public string Path

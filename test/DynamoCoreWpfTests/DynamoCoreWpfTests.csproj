@@ -177,7 +177,6 @@
     <Compile Include="RecentFileTests.cs" />
     <Compile Include="RecordedTests.cs" />
     <Compile Include="RunSettingsTests.cs" />
-    <Compile Include="SearchMemberGroupTests.cs" />
     <Compile Include="SearchSideEffects.cs" />
     <Compile Include="SearchViewModelTests.cs" />
     <Compile Include="SerializationTests.cs" />

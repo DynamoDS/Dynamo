@@ -105,15 +105,17 @@
             <Grid Grid.Row="1" Grid.Column="0"
                   Width="20" Margin="-35,0,0,0" ToolTip="{x:Static p:Resources.CreateMember}">
                 <Rectangle Fill="Transparent" />
-                <fa:ImageAwesome Icon="plus" Foreground="#7B9F2D"                              
-                             VerticalAlignment="Top" HorizontalAlignment="Center" />
+                <fa:ImageAwesome Icon="plus"
+                                 Foreground="{StaticResource CreateMembersColor}"
+                                 VerticalAlignment="Top"
+                                 HorizontalAlignment="Center" />
             </Grid>
             
             <ListBox x:Name="primaryMembers"
                      Grid.Row="1"
                      Grid.Column="1"
                      Background="Transparent"
-                     BorderBrush="#7B9F2D"
+                     BorderBrush="{StaticResource CreateMembersColor}"
                      ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
                      ItemTemplate="{StaticResource MemberTemplate}"
                      BorderThickness="2,0,0,0"   
@@ -136,15 +138,17 @@
 
                 <Grid  Width="12" Margin="-40,0,0,0" ToolTip="{x:Static p:Resources.ActionMember}">
                     <Rectangle Fill="Transparent" />
-                    <fa:ImageAwesome Icon="LightningBolt" Foreground="#D56867"                               
-                             VerticalAlignment="Top" HorizontalAlignment="Center" />
+                    <fa:ImageAwesome Icon="LightningBolt"
+                                     Foreground="{StaticResource ActionMembersColor}"
+                                     VerticalAlignment="Top"
+                                     HorizontalAlignment="Center" />
                 </Grid>
             </Border>           
             <ListBox x:Name="secondaryMembers"
                      Grid.Row="3"
                      Grid.Column ="1"
                      Background="Transparent"
-                     BorderBrush="#D56867"
+                     BorderBrush="{StaticResource ActionMembersColor}"
                      ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                      ItemTemplate="{StaticResource MemberTemplate}"
@@ -173,15 +177,17 @@
 
                 <Grid  Width="12" Margin="-40,0,0,0" ToolTip="{x:Static p:Resources.QueryMember}">
                     <Rectangle Fill="Transparent" />
-                    <fa:ImageAwesome Icon="Question" Foreground="#65999A"                             
-                             VerticalAlignment="Top" HorizontalAlignment="Center" />
+                    <fa:ImageAwesome Icon="Question"
+                                     Foreground="{StaticResource QueryMembersColor}"
+                                     VerticalAlignment="Top"
+                                     HorizontalAlignment="Center" />
                 </Grid>
             </Border>
                 <ListBox x:Name="queryMembers"
                      Grid.Row="5"
                      Grid.Column ="1"
                      Background="Transparent"
-                     BorderBrush="#65999A"
+                     BorderBrush="{StaticResource QueryMembersColor}"
                      ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                      ItemTemplate="{StaticResource MemberTemplate}"
