@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using System.IO;
 using Dynamo.Models;
+using Dynamo.Selection;
 
 namespace Dynamo.Tests
 {
@@ -119,6 +120,46 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void GraphLayoutTreeSelection()
+        {
+            OpenModel(GetDynPath("GraphLayoutTree.dyn"));
+            IEnumerable<NodeModel> nodes = ViewModel.CurrentSpace.Nodes;
+
+            // Select 4 nodes
+            SelectModel(ViewModel.CurrentSpace.Nodes.ElementAt(1));
+            SelectModel(ViewModel.CurrentSpace.Nodes.ElementAt(5));
+            SelectModel(ViewModel.CurrentSpace.Nodes.ElementAt(6));
+            SelectModel(ViewModel.CurrentSpace.Nodes.ElementAt(8));
+
+            ViewModel.DoGraphAutoLayout(null);
+            
+            AssertGraphLayoutLayers(new object[] {
+                new int[] { 3, 1, 1, 2 }
+            });
+
+            AssertNoOverlap();
+            AssertMaxCrossings(3);
+
+            // Deselect all
+            DynamoSelection.Instance.Selection.ToList().ForEach(n => n.Deselect());
+            DynamoSelection.Instance.Selection.Clear();
+
+            // Reselect 6 nodes
+            SelectModel(ViewModel.CurrentSpace.Nodes.ElementAt(4));
+            SelectModel(ViewModel.CurrentSpace.Nodes.ElementAt(7));
+            SelectModel(ViewModel.CurrentSpace.Nodes.ElementAt(9));
+            SelectModel(ViewModel.CurrentSpace.Nodes.ElementAt(11));
+            SelectModel(ViewModel.CurrentSpace.Nodes.ElementAt(12));
+            SelectModel(ViewModel.CurrentSpace.Nodes.ElementAt(13));
+
+            ViewModel.DoGraphAutoLayout(null);
+
+            AssertGraphLayoutLayers(new object[] {
+                new int[] { 2, 1, 2, 2, 1 }
+            });
+        }
+
+        [Test]
         public void GraphLayoutCrossings()
         {
             OpenModel(GetDynPath("GraphLayoutCrossings.dyn"));
@@ -188,6 +229,14 @@ namespace Dynamo.Tests
 
             AssertNoOverlap();
             AssertMaxCrossings(4);
+
+            // Select the group and re-run graph layout
+            SelectModel(ViewModel.CurrentSpace.Annotations.First());
+            ViewModel.DoGraphAutoLayout(null);
+            
+            AssertGraphLayoutLayers(new object[] {
+                new int[] { 0, 1, 2, 3 }
+            });
         }
 
         [Test]
@@ -206,6 +255,14 @@ namespace Dynamo.Tests
 
             AssertNoOverlap();
             AssertMaxCrossings(6);
+
+            // Select the group and re-run graph layout
+            SelectModel(ViewModel.CurrentSpace.Annotations.First());
+            ViewModel.DoGraphAutoLayout(null);
+
+            AssertGraphLayoutLayers(new object[] {
+                new int[] { 1, 1, 2, 3 }
+            });
         }
 
         [Test]
@@ -224,6 +281,14 @@ namespace Dynamo.Tests
 
             AssertNoOverlap();
             AssertMaxCrossings(5);
+
+            // Select the leftmost group and re-run graph layout
+            SelectModel(ViewModel.CurrentSpace.Annotations.First());
+            ViewModel.DoGraphAutoLayout(null);
+
+            AssertGraphLayoutLayers(new object[] {
+                new int[] { 2, 1, 2, 3 }
+            });
         }
 
         [Test]
@@ -244,6 +309,16 @@ namespace Dynamo.Tests
 
             AssertNoOverlap();
             AssertMaxCrossings(4);
+
+            // Select two groups and re-run graph layout
+            SelectModel(ViewModel.CurrentSpace.Annotations.First());
+            SelectModel(ViewModel.CurrentSpace.Annotations.Last());
+            ViewModel.DoGraphAutoLayout(null);
+
+            AssertGraphLayoutLayers(new object[] {
+                new int[] { 0, 1, 2, 3 },
+                new int[] { 0, 1, 1, 2, 3 }
+            });
         }
 
         [Test]
@@ -385,6 +460,11 @@ namespace Dynamo.Tests
             string sourceDynPath = TestDirectory;
             sourceDynPath = Path.Combine(sourceDynPath, @"core\GraphLayout\");
             return Path.Combine(sourceDynPath, sourceDynFile);
+        }
+
+        private void SelectModel(ISelectable model)
+        {
+            DynamoSelection.Instance.Selection.Add(model);
         }
 
     }
