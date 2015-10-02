@@ -1232,7 +1232,7 @@ namespace ProtoCore.Lang
 
         private static StackValue[] GenerateAlphabetRange(StackValue svStart, StackValue svEnd, StackValue svStep, RuntimeCore runtimeCore)
         {
-            if (!svStart.IsString || !svEnd.IsString || !svStep.IsInteger)
+            if (!svStart.IsString || !svEnd.IsString)
             {
                 runtimeCore.RuntimeStatus.LogWarning(
                     WarningID.kInvalidArguments,
@@ -1254,11 +1254,11 @@ namespace ProtoCore.Lang
 
             var startLetter = startValue.ToCharArray().First();
             var endLetter = endValue.ToCharArray().First();
-            int step = Convert.ToInt32(svStep.RawIntValue);
+            int step = svStep.IsNull ? 1 : Convert.ToInt32(svStep.RawIntValue);
 
             // Alphabet sequence can be made just from letters (that are not unicode).
             if (!Char.IsLetter(startLetter) || !Char.IsLetter(endLetter) || step <= 0 ||
-                startLetter > 255 || endLetter > 255)
+                startLetter > Byte.MaxValue || endLetter > Byte.MaxValue)
             {
                 runtimeCore.RuntimeStatus.LogWarning(
                     WarningID.kInvalidArguments,
