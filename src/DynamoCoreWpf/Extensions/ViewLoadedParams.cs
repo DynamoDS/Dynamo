@@ -10,7 +10,6 @@ using Dynamo.Extensions;
 using Dynamo.Interfaces;
 using Dynamo.Selection;
 using Dynamo.Wpf.ViewModels.Watch3D;
-using Dynamo.Wpf.Views.Preview;
 
 namespace Dynamo.Wpf.Extensions
 {
