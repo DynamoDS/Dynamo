@@ -3,10 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:vm="clr-namespace:Dynamo.Wpf.ViewModels"
              xmlns:views="clr-namespace:Dynamo.UI.Views"
-             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"             
              mc:Ignorable="d"
              d:DesignHeight="525"
              d:DesignWidth="350">
@@ -23,10 +24,10 @@
                 <Button Command="{Binding ClickedCommand}">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
-                            <Border BorderBrush="{StaticResource SearchDarkGreyTextColor}"
+                            <Border BorderBrush="{StaticResource SearchElementLineDeterminerColor}"
                                     BorderThickness="0,0,0,1"
-                                    Margin="15,0,15,0"
-                                    Padding="0,5,0,5"
+                                    Margin="15,3,15,3"
+                                    Padding="0,7,0,9"
                                     Background="#01000000">
 
                                 <Grid>
@@ -73,9 +74,11 @@
 
                                         <TextBlock Name="memberDescription"
                                                    FontSize="10"
+                                                   MaxHeight="50"
                                                    Text="{Binding Description}"
                                                    Foreground="{StaticResource SearchDarkGreyTextColor}"
-                                                   TextWrapping="Wrap" />
+                                                   TextWrapping="Wrap"
+                                                   TextTrimming="CharacterEllipsis" />
                                     </StackPanel>
                                 </Grid>
                             </Border>
@@ -101,6 +104,10 @@
                              Handler="OnButtonMouseLeftButtonDown" />
                 <EventSetter Event="PreviewMouseMove"
                              Handler="OnButtonPreviewMouseMove" />
+                <EventSetter Event="MouseLeave"
+                             Handler="OnPopupMouseLeave" />
+                <EventSetter Event="MouseEnter"
+                             Handler="OnMemberMouseEnter" />
             </Style>
 
             <Style BasedOn="{StaticResource LibraryScrollViewerStyle}"
@@ -120,5 +127,9 @@
                   ItemTemplate="{StaticResource SearchItemTemplate}"
                   ItemContainerStyle="{StaticResource SearchItemStyle}"
                   VirtualizingStackPanel.VirtualizationMode="Recycling" />
+        <uicontrols:LibraryToolTipPopup x:Name="libraryToolTipPopup"
+                                        StaysOpen="True"
+                                        AllowsTransparency="True"
+                                        MouseLeave="OnPopupMouseLeave" />
     </Grid>
 </UserControl>

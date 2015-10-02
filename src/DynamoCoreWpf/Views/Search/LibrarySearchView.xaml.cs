@@ -58,6 +58,45 @@ namespace Dynamo.UI.Views
             viewModel.SearchText = "";
         }
 
+        #region ToolTip methods
+
+        private void OnMemberMouseEnter(object sender, RoutedEventArgs e)
+        {
+            ShowTooltip(sender);
+        }
+
+        private void OnPopupMouseLeave(object sender, MouseEventArgs e)
+        {
+            CloseToolTipInternal();
+        }
+
+        private void ShowTooltip(object sender)
+        {
+            FrameworkElement fromSender = sender as FrameworkElement;
+            if (fromSender == null) return;
+            var nodeVM = fromSender.DataContext as NodeSearchElementViewModel;
+
+            var senderVM = fromSender.DataContext as NodeSearchElementViewModel;
+
+            if (senderVM != null && senderVM.Visibility)
+            {
+                libraryToolTipPopup.PlacementTarget = fromSender;
+                libraryToolTipPopup.SetDataContext(fromSender.DataContext);
+            }
+        }
+
+        private void CloseToolTipInternal(bool closeImmediately = false)
+        {
+            libraryToolTipPopup.SetDataContext(null, closeImmediately);
+        }
+
+        private void OnRequestCloseToolTip(object sender, EventArgs e)
+        {
+            CloseToolTipInternal(true);
+        }
+
+        #endregion
+
         #region Drag&Drop
 
         private void OnButtonMouseLeftButtonDown(object sender, MouseButtonEventArgs e)

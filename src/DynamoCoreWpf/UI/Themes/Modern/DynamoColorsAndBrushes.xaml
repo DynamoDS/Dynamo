@@ -90,5 +90,6 @@
     <SolidColorBrush x:Key="CreateMembersColor" Color="#7B9F2D" />
     <SolidColorBrush x:Key="ActionMembersColor" Color="#D56867" />
     <SolidColorBrush x:Key="QueryMembersColor" Color="#65999A" />
+    <SolidColorBrush x:Key="SearchElementLineDeterminerColor" Color="#4D4D4D" />
 
 </ResourceDictionary>
