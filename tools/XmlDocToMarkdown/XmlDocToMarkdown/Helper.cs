@@ -17,7 +17,7 @@ namespace XmlDocToMarkdown
             "repo_url: http://dynamods.github.io/DynamoAPI/",
             "site_author: Dynamo",
             "pages:",
-            "- Home: index.md",
+            "- Overview: index.md",
             "- API:"
         };
         private const string ThemeDir = "theme_dir: Theme";

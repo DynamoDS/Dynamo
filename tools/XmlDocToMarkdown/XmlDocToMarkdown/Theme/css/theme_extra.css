@@ -170,7 +170,8 @@ code.cs, code.c {
 }
 
  .wy-side-nav-search img {
-  background : none
+  background : none;
+  height:inherit
 }
 
 .wy-nav-content-wrap {

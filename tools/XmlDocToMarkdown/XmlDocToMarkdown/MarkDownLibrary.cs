@@ -148,7 +148,7 @@ namespace XmlDocToMarkdown
                 Debug.WriteLine(t.FullName + "." + fullMethodName);
 
                 var current = GetMarkdownForMethod(members, t.FullName + "." + fullMethodName);
-                if (current != null && !foundType) foundType = true;
+                if (current != "" && !foundType) foundType = true;
                 sb.Append(current);
                 sb.AppendLine();
             }
