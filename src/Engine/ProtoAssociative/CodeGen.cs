@@ -5746,10 +5746,12 @@ namespace ProtoAssociative
                 localProcedure.Name = funcDef.Name;
                 localProcedure.PC = ProtoCore.DSASM.Constants.kInvalidIndex;
                 localProcedure.LocalCount = 0;// Defer till all locals are allocated
+                ProtoCore.Type returnType = new ProtoCore.Type();
                 if (globalClassIndex != -1)
-                    localProcedure.ReturnType.Name = core.ClassTable.ClassNodes[globalClassIndex].Name;
-                localProcedure.ReturnType.UID = globalClassIndex;
-                localProcedure.ReturnType.rank = 0;
+                    returnType.Name = core.ClassTable.ClassNodes[globalClassIndex].Name;
+                returnType.UID = globalClassIndex;
+                returnType.rank = 0;
+                localProcedure.ReturnType = returnType;
                 localProcedure.IsConstructor = true;
                 localProcedure.RuntimeIndex = 0;
                 localProcedure.IsExternal = funcDef.IsExternLib;
@@ -6065,13 +6067,14 @@ namespace ProtoAssociative
                 localProcedure.LocalCount = 0; // Defer till all locals are allocated
                 var uid = core.TypeSystem.GetType(funcDef.ReturnType.Name);
                 var rank = funcDef.ReturnType.rank;
-                localProcedure.ReturnType = core.TypeSystem.BuildTypeObject(uid, rank); 
+                var returnType = core.TypeSystem.BuildTypeObject(uid, rank); 
                 if (localProcedure.ReturnType.UID == (int)PrimitiveType.kInvalidType)
                 {
                     string message = String.Format(ProtoCore.Properties.Resources.kReturnTypeUndefined, funcDef.ReturnType.Name, funcDef.Name);
                     buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, core.CurrentDSFileName, funcDef.line, funcDef.col, graphNode);
-                    localProcedure.ReturnType.UID = (int)PrimitiveType.kTypeVar;
+                    returnType.UID = (int)PrimitiveType.kTypeVar;
                 }
+                localProcedure.ReturnType = returnType;
                 localProcedure.IsConstructor = false;
                 localProcedure.IsStatic = funcDef.IsStatic;
                 localProcedure.RuntimeIndex = codeBlock.codeBlockId;

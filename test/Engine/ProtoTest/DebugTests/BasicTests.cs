@@ -15,7 +15,6 @@ namespace ProtoTest.DebugTests
     class BasicTests : ProtoTestBase
     {
         private DebugRunner fsr;
-        private ProtoScript.Config.RunConfiguration runnerConfig;
         private string testPath = @"..\..\..\test\Engine\ProtoTest\ImportFiles\";
 
         public override void Setup()
@@ -23,8 +22,6 @@ namespace ProtoTest.DebugTests
             base.Setup();
             core.Options.kDynamicCycleThreshold = 5;
 
-            runnerConfig = new ProtoScript.Config.RunConfiguration();
-            runnerConfig.IsParrallel = false;
             fsr = new DebugRunner(core);
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
@@ -49,7 +46,7 @@ namespace ProtoTest.DebugTests
 a = 1;
 b = 20;
 
-", runnerConfig);
+");
             DebugRunner.VMState vms = fsr.Step();
             vms = fsr.Step();
 
@@ -101,7 +98,7 @@ class Vector
 }
 
 p = Vector.Vector();
-            ", runnerConfig);
+            ");
 
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3990
             string defectID = "MAGN-3990 Expression interpreter returns null when evaluates expression at end of script";
@@ -172,7 +169,7 @@ class Vector
 
 p = Vector.Vector();
 
-", runnerConfig);
+");
 
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3990
             string defectiD = "MAGN-3990 Expression interpreter returns null when evaluates expression at end of script";
@@ -236,7 +233,7 @@ def f : int(i : int, j : int)
 a = f(1, 2);
 b = 2;
 c = 3;
-", runnerConfig);
+");
 
             // First step should bring the exec cursor to "a = f(1, 2)".
             DebugRunner.VMState vms = fsr.StepOver();
@@ -291,7 +288,7 @@ b = { a, 1 };       // Line 3
     m = a;          // Line 8
 }                   // Line 9
 ";
-            fsr.PreStart(sourceCode, runnerConfig);
+            fsr.PreStart(sourceCode);
             DebugRunner.VMState vms = fsr.StepOver();
             Assert.AreEqual(2, vms.ExecutionCursor.StartInclusive.LineNo);
             vms = fsr.StepOver();
@@ -346,7 +343,7 @@ def foo()
 }
 
 bbb = foo();
-", runnerConfig);
+");
 
             // First step should bring the exec cursor to "bbb = foo()".
             DebugRunner.VMState vms = fsr.StepOver();
@@ -409,7 +406,7 @@ bbb = foo();
     x = GetNumberSquare(5);
     return = x;
 }
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.StepOver();//Line 8
 
@@ -537,7 +534,7 @@ bbb = foo();
 }
 
 n = func(1);
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.StepOver();//Line 13
 
@@ -687,7 +684,7 @@ n = func(1);
     fourth = 4;
     fifth = 5;
 }
-", runnerConfig);
+");
 
             // First step should bring the exec cursor to "first = 1;".
             DebugRunner.VMState vms = fsr.StepOver();
@@ -768,7 +765,7 @@ n = func(1);
     b = 20;
 }
 
-", runnerConfig);
+");
             DebugRunner.VMState vms = fsr.Step();
             vms = fsr.Step();
 
@@ -813,7 +810,7 @@ class Vector
     t = 0;
 }
 
-", runnerConfig);
+");
 
             // Highlights "p = Vector.Vector()".
             DebugRunner.VMState vms = fsr.Step();
@@ -881,7 +878,7 @@ class Vector
 {
     eee = 43420;
 }
-", runnerConfig);
+");
 
             // First step should highlight closing bracket of "Associative" block.
             DebugRunner.VMState vms = fsr.StepOver();
@@ -963,7 +960,7 @@ a1 = A.A(0);
 a1 = A.A();
 x = a1.update(1);
 y = { a1.a1, a1.a4 };
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.StepOver();//Line 24
 
@@ -1204,7 +1201,7 @@ y = { a1.a1, a1.a4 };
     
 a = A.A();
 b = a.foo();
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.StepOver();//Line 20
 
@@ -1542,7 +1539,7 @@ a = A.A();
 x = a.x;
 a.x = a;
 b = 33;
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.StepOver();//Line 5
 
@@ -1670,7 +1667,7 @@ c2 = [Associative]
     c = a.a + b.a;
     return = c;
 }
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.StepOver();//Line 5
 
@@ -2607,7 +2604,7 @@ c2 = [Associative]
     // If this line is removed, then 'i' can be inspected.
     f = i;
 }
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.StepOver();//Line 5
 
@@ -2655,7 +2652,7 @@ c2 = [Associative]
 
 
             //ProtoScript.Runners.DebugRunner fsr = new ProtoScript.Runners.DebugRunner(null);
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
 
             DebugRunner.VMState vms = fsr.Step();
             vms = fsr.Step();
@@ -2702,7 +2699,7 @@ c = 90;
 ";
             //Assert.Fail("IDE-433Debugger does not step through few modifier block cases");
 
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
 
             DebugRunner.VMState vms = fsr.Step();
             vms = fsr.Step();
@@ -2811,7 +2808,7 @@ a =
 }
 c = 90;
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
 
             DebugRunner.VMState vms = fsr.Step();
             vms = fsr.Step();
@@ -2916,7 +2913,7 @@ a =
     B.B(a1).x => a8;    
 }
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
 
             DebugRunner.VMState vms = fsr.Step();
             vms = fsr.Step();
@@ -3068,7 +3065,7 @@ a =
     c = true;
     d = null;
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             DebugRunner.VMState vms = fsr.Step();
             vms = fsr.Step();
             Obj o = vms.mirror.GetDebugValue("a");
@@ -3152,7 +3149,7 @@ class V
 p = V.V();
 a = p.x;
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             DebugRunner.VMState vms = fsr.Step();
             vms = fsr.StepOver();
             vms = fsr.StepOver();
@@ -3187,7 +3184,7 @@ a = p.x;
     b = 2;
     c = 3;
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step(); // "f(1, 2)"
             fsr.Step(); // "a = 5;"
             DebugRunner.VMState vms = fsr.Step(); // "return = 7;"
@@ -3239,7 +3236,7 @@ val = [Imperative]
     return = sum1;
 }
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             DebugRunner.VMState vms = fsr.Step();
@@ -3275,7 +3272,7 @@ c = [Imperative]
 d = c;
 ";
 
-            fsr.PreStart(sourceCode, runnerConfig);
+            fsr.PreStart(sourceCode);
 
             DebugRunner.VMState vms = fsr.StepOver(); // "b = 5;"
             Assert.AreEqual(2, vms.ExecutionCursor.StartInclusive.LineNo);
@@ -3333,7 +3330,7 @@ d = c;
     k = 22;
 }
 ";
-            fsr.PreStart(sourceCode, runnerConfig);
+            fsr.PreStart(sourceCode);
 
             DebugRunner.VMState vms = fsr.Step(); //sum = 0;
             Assert.AreEqual(8, vms.ExecutionCursor.StartInclusive.LineNo);
@@ -3370,7 +3367,7 @@ d = c;
     k = 22;
 }
 ";
-            fsr.PreStart(sourceCode, runnerConfig);
+            fsr.PreStart(sourceCode);
 
             DebugRunner.VMState vms = fsr.Step(); //sum = 0;
             Assert.AreEqual(8, vms.ExecutionCursor.StartInclusive.LineNo);
@@ -3406,7 +3403,7 @@ def foo(y : int)
 {
     a = x < foo(22) ? 3 : 55;
 }";
-            fsr.PreStart(sourceCode, runnerConfig);
+            fsr.PreStart(sourceCode);
 
             DebugRunner.VMState vms = fsr.Step(); //x = 330;
             Assert.AreEqual(1, vms.ExecutionCursor.StartInclusive.LineNo);
@@ -3450,7 +3447,7 @@ def foo(y : int)
 	}
 }";
             //Assert.Fail("Regression with if statement");
-            fsr.PreStart(sourceCode, runnerConfig);
+            fsr.PreStart(sourceCode);
 
             DebugRunner.VMState vms = fsr.Step(); //x = 330;
             Assert.AreEqual(1, vms.ExecutionCursor.StartInclusive.LineNo);
@@ -3501,7 +3498,7 @@ def foo(y : int)
 		a = 55;
 	}
 }";
-            fsr.PreStart(sourceCode, runnerConfig);
+            fsr.PreStart(sourceCode);
 
             DebugRunner.VMState vms = fsr.Step(); //x = 330;
             Assert.AreEqual(1, vms.ExecutionCursor.StartInclusive.LineNo);
@@ -3544,7 +3541,7 @@ def foo(y : int)
 {
     a = x < foo(22) ? 3 : 55;
 }";
-            fsr.PreStart(sourceCode, runnerConfig);
+            fsr.PreStart(sourceCode);
 
             DebugRunner.VMState vms = fsr.Step(); //x = 330;
             Assert.AreEqual(1, vms.ExecutionCursor.StartInclusive.LineNo);
@@ -3605,7 +3602,7 @@ def foo(y : int)
 		a = 55;
 	}
 }";
-            fsr.PreStart(sourceCode, runnerConfig);
+            fsr.PreStart(sourceCode);
 
             DebugRunner.VMState vms = fsr.Step(); //x = 330;
             Assert.AreEqual(1, vms.ExecutionCursor.StartInclusive.LineNo);
@@ -3667,7 +3664,7 @@ def foo(y : int)
     k = 22;
 }
 ";
-            fsr.PreStart(sourceCode, runnerConfig);
+            fsr.PreStart(sourceCode);
 
             DebugRunner.VMState vms = fsr.Step(); //sum = 0;
             Assert.AreEqual(8, vms.ExecutionCursor.StartInclusive.LineNo);
@@ -3707,7 +3704,7 @@ def foo(y : int)
 }
 ";
 
-            fsr.PreStart(sourceCode, runnerConfig);
+            fsr.PreStart(sourceCode);
 
             DebugRunner.VMState vms = fsr.StepOver(); // "b = 5;"
             Assert.AreEqual(4, vms.ExecutionCursor.StartInclusive.LineNo);
@@ -3784,7 +3781,7 @@ v = 90;
 
 p = { 9, 0 };
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             DebugRunner.VMState vms = fsr.Step();
@@ -3878,7 +3875,7 @@ a = fadd(x);
 ";
             //Assert.Fail("IDE-266: Placing breakpoint and Run (Debug) twice crashes DesignScript");
 
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             //fsr.Step();
 
             fsr.Run();
@@ -3920,7 +3917,7 @@ l = Line.Create(x, y);
 ";
             //Assert.Fail("IDE-266: Placing breakpoint and Run (Debug) twice crashes DesignScript");
 
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             fsr.Run();
@@ -3967,7 +3964,7 @@ l = Line.Line(x, y);
 ";
             //Assert.Fail("IDE-266: Placing breakpoint and Run (Debug) twice crashes DesignScript");
 
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             fsr.Run();
@@ -3995,7 +3992,7 @@ l = Line.Line(x, y);
     b = 2;
     c = 3;
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step(); // "f()"
             fsr.Step(); // "a = 5;"
             DebugRunner.VMState vms = fsr.Step(); // "return = 7;"
@@ -4041,7 +4038,7 @@ l = Line.Line(x, y);
     a1 = A.A(7);
     b1 = a1.add();
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             fsr.Step();
@@ -4103,7 +4100,7 @@ l = Line.Line(x, y);
 	
 	newPoint = Point.Point(1,2,3);
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             fsr.Step();
@@ -4164,7 +4161,7 @@ class MyClass
 
 godzilla = MyClass.Create(8, 9);
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
 
             // First step over should bring exec cursor to "godzilla = MyClass.Create(8, 9)"
             DebugRunner.VMState vms = fsr.StepOver();
@@ -4236,7 +4233,7 @@ def f : int(i : int, j : int)
 a = f(1, 2);
 b = 2;
 c = 3;
-", runnerConfig);
+");
 
             // First step should bring the exec cursor to "a = f(1, 2)".
             DebugRunner.VMState vms = fsr.StepOver();
@@ -4284,7 +4281,7 @@ z = Zee.Zee();
 z.a = 10;
 z.b = 2 * 1;
 ";
-            fsr.PreStart(sourceCode, runnerConfig);
+            fsr.PreStart(sourceCode);
 
             // First step over should bring exec cursor to and highlight "z = Zee.Zee()"
             DebugRunner.VMState vms = fsr.StepOver();
@@ -4328,7 +4325,7 @@ class Zee
 z = Zee.Zee();
 z.a = foo();
 ";
-            fsr.PreStart(sourceCode, runnerConfig);
+            fsr.PreStart(sourceCode);
 
             // First step over should bring exec cursor to and highlight "z = Zee.Zee()"
             DebugRunner.VMState vms = fsr.StepOver();
@@ -4371,7 +4368,7 @@ class Point
     b = p.x;
 }
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             fsr.Step();
@@ -4434,7 +4431,7 @@ class A extends B
 }
 a1 = A.A( 98, 67 );";
 
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             // Step into base constructor
@@ -4519,7 +4516,7 @@ a1 = A.A( 1, 1.5, 2 );
 b1 = a1.foo();
 b2 = a1.foo2(1);
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             // Step into base constructor
@@ -4646,7 +4643,7 @@ class Complex
 	
 	test = Complex.Create( 17, p1_1, p1_2 );	
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             fsr.Step();
@@ -4855,7 +4852,7 @@ class Complex
 	test = Complex.Create( 17, p1_1, p1_2 );	
 }
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             fsr.Step();
@@ -5022,7 +5019,7 @@ class Complex
     d = c;        
 }
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
             DebugRunner.VMState vms = fsr.Step();
             Obj o = vms.mirror.GetDebugValue("a");
@@ -5057,7 +5054,7 @@ class Complex
 	b = a;
 	a = 3;        
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
             DebugRunner.VMState vms = fsr.Step();
             Obj o = vms.mirror.GetDebugValue("a");
@@ -5105,7 +5102,7 @@ c = a + b;
 x = 3;";
             //Assert.Fail("DNL-1467484 wrong execution sequence for update");
 
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             DebugRunner.VMState vms = fsr.Step();
@@ -5178,7 +5175,7 @@ c = a + b;
 x = 10;      
 ";
             //Assert.Fail("IDE-312: Debugger Regression: Debugger fails with update");
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             DebugRunner.VMState vms = fsr.Step();
@@ -5266,7 +5263,7 @@ t = a+c;
 ";
             //Assert.Fail("IDE-333 Debugger fails with update using Imperative Language block");
 
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             DebugRunner.VMState vms = fsr.Step();
@@ -5341,7 +5338,7 @@ t = y * 2;
 }";
             //Assert.Fail("IDE-333 Debugger fails with update using Imperative Language block");
 
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             DebugRunner.VMState vms = fsr.Step();
@@ -5418,7 +5415,7 @@ t = a+c;
 ";
             //Assert.Fail("IDE-367 Debugger might fail with update using Assoc Language block in global scope");
 
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             DebugRunner.VMState vms = fsr.Step();
@@ -5489,7 +5486,7 @@ t = y * 2;
     y = c + 2;
 }
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             DebugRunner.VMState vms = fsr.Step();
@@ -5555,7 +5552,7 @@ t = y * 2;
     negative = HalveIt(-250);
 }
 ";
-            fsr.PreStart(source, runnerConfig);
+            fsr.PreStart(source);
 
             DebugRunner.VMState vms = fsr.StepOver(); // "positive = HalveIt(250)"
             Assert.AreEqual(12, vms.ExecutionCursor.StartInclusive.LineNo);
@@ -5639,7 +5636,7 @@ def MakeItDouble : double(value : int)
 
 d = MakeItDouble(250);
 ";
-            fsr.PreStart(source, runnerConfig);
+            fsr.PreStart(source);
 
             DebugRunner.VMState vms = fsr.StepOver(); // "d = MakeItDouble(250)"
             Assert.AreEqual(7, vms.ExecutionCursor.StartInclusive.LineNo);
@@ -5683,7 +5680,7 @@ d = MakeItDouble(250);
 }
 ";
 
-            fsr.PreStart(sourceCode, runnerConfig);
+            fsr.PreStart(sourceCode);
             DebugRunner.VMState vms = fsr.StepOver(); // Highlight "x = 0;"
             Assert.AreEqual("4, 5, 4, 11", CodeRangeToString(vms.ExecutionCursor));
             vms = fsr.StepOver(); // Highlight "for"
@@ -5731,7 +5728,7 @@ def foo : int[]() {
 }
 ";
 
-            fsr.PreStart(sourceCode, runnerConfig);
+            fsr.PreStart(sourceCode);
             DebugRunner.VMState vms = fsr.StepOver(); // Highlight "x = 0;"
             Assert.AreEqual("8, 5, 8, 11", CodeRangeToString(vms.ExecutionCursor));
             vms = fsr.StepOver(); // Highlight "for"
@@ -5776,7 +5773,7 @@ def foo : int[]() {
 }
 ";
 
-            fsr.PreStart(sourceCode, runnerConfig);
+            fsr.PreStart(sourceCode);
             DebugRunner.VMState vms = fsr.StepOver(); // Highlight "x = 0;"
             Assert.AreEqual("4, 5, 4, 11", CodeRangeToString(vms.ExecutionCursor));
             vms = fsr.StepOver(); // Highlight "boo = { 1, 2 };"
@@ -5822,7 +5819,7 @@ def foo : int[]() {
 }
 ";
 
-            fsr.PreStart(sourceCode, runnerConfig);
+            fsr.PreStart(sourceCode);
             DebugRunner.VMState vms = fsr.StepOver(); // Highlight "x = 0;"
             Assert.AreEqual("4, 5, 4, 11", CodeRangeToString(vms.ExecutionCursor));
             vms = fsr.StepOver(); // Highlight "for"
@@ -5876,7 +5873,7 @@ def foo : int[]() {
 }
 
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             DebugRunner.VMState vms = fsr.Step();
@@ -5937,7 +5934,7 @@ def foo : int[]() {
 }
 
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
             DebugRunner.VMState vms = fsr.Step();
             Obj o = vms.mirror.GetDebugValue("a");
@@ -6001,7 +5998,7 @@ def foo : int[]() {
 	 test1 = add(2,1);
 }";
 
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             DebugRunner.VMState vms = fsr.Step();
@@ -6067,7 +6064,7 @@ def foo : int[]() {
     m = c;       
 }
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
             DebugRunner.VMState vms = fsr.Step();
             Obj o = vms.mirror.GetDebugValue("a");
@@ -6110,7 +6107,7 @@ a = 9;
 	}
 }
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
 
             DebugRunner.VMState vms = fsr.Step();
             fsr.Step();
@@ -6159,7 +6156,7 @@ b = a -2;
 a = a + 1;
 b = b - 1;
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             DebugRunner.VMState vms = fsr.Step();
@@ -6206,7 +6203,7 @@ class A
     a = A.A();
     b = a.foo();
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             DebugRunner.VMState vms = fsr.Step();
@@ -6306,7 +6303,7 @@ class A
 ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3963
 
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step(); // a = A.A();
 
             DebugRunner.VMState vms = fsr.Step();
@@ -6404,7 +6401,7 @@ class A
     a = A.A();
     b = a.foo();
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             DebugRunner.VMState vms = fsr.Step();
@@ -6498,7 +6495,7 @@ b = a1.a;
 
 a1.a = -1;";
 
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step(); // a1 = A.A();
 
             DebugRunner.VMState vms = fsr.Step();   // a : int[];        
@@ -6587,7 +6584,7 @@ s = Print(""a = "" + a + "" b = "" + b);
 }
 ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3985
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step(); // a = 7;
 
             DebugRunner.VMState vms = fsr.Step();   // b = 3;
@@ -6713,7 +6710,7 @@ class B
 
 a1 = A.A();
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             DebugRunner.VMState vms = fsr.Step();
@@ -6755,7 +6752,7 @@ a = [Imperative]
         return = c;
 }
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             DebugRunner.VMState vms = fsr.Step();
@@ -6823,7 +6820,7 @@ a = [Imperative]
 }
 
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             DebugRunner.VMState vms = fsr.Step();
@@ -6881,7 +6878,7 @@ i = p.mx;
 k1 = p.scale(2); 
 l1 = p.mx;";
 
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
         }
 
@@ -6915,7 +6912,7 @@ a1=a1.diff(x);
 x=3;
 x=4;
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             DebugRunner.VMState vms = fsr.Step();
@@ -6992,7 +6989,7 @@ b : int;
     b = 2 * a;
     a = a+1;
 }";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             DebugRunner.VMState vms = fsr.Step();
             Obj o = vms.mirror.GetDebugValue("a");
             Assert.AreNotEqual(null, o);
@@ -7037,7 +7034,7 @@ b : int;
 	a = a + 1;
 }";
 
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
 
             DebugRunner.VMState vms = fsr.Step();   // a = 10;
             Obj o = vms.mirror.GetDebugValue("a");
@@ -7092,7 +7089,7 @@ b : int;
 	a = a + 1;
 }";
 
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
 
             DebugRunner.VMState vms = fsr.Step();
             Obj o = vms.mirror.GetDebugValue("a");
@@ -7146,7 +7143,7 @@ b : int;
                             }
                             p = Point.Point(1, 2, 3);
                          ";
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             //fsr.Step(DebugRunner.BreakMode.ExplicitBreak);
             DebugRunner.VMState vms = fsr.Run();
             Obj o = vms.mirror.GetDebugValue("p");
@@ -7164,7 +7161,7 @@ b : int;
             string src = @"
                             a = { 1, 2, 3, { 4, 5, 6 }, 7, 8 };
                          ";
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             fsr.Step();
             DebugRunner.VMState vms = fsr.Step();
             Obj o = vms.mirror.GetDebugValue("a");
@@ -7187,7 +7184,7 @@ b : int;
                         }
                         b = foo(1, 2);";
 
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.StepOver();
             vms = fsr.StepOver();
             Obj o = vms.mirror.GetDebugValue("b");
@@ -7223,7 +7220,7 @@ b : int;
                         p = Point.Point(3, 4, 5);
                         a = foo(p);";
 
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();
             vms = fsr.StepOver();
             vms = fsr.Step();
@@ -7260,7 +7257,7 @@ class Sample
 sample = Sample.Sample();
 irrelevant = 3;
 
-", runnerConfig);
+");
 
             // First step should bring the exec cursor to "sample = Sample.Sample()".
             DebugRunner.VMState vms = fsr.StepOver();
@@ -7293,7 +7290,7 @@ irrelevant = 3;
 
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3991
             string defectID = "MAGN-3991 Defects with Toggle breakpoint";
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             ProtoCore.CodeModel.CodePoint cp = new ProtoCore.CodeModel.CodePoint
             {
                 LineNo = 7,
@@ -7330,7 +7327,7 @@ b : int = 0;
 }
 ";
 
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             ProtoCore.CodeModel.CodePoint cp = new ProtoCore.CodeModel.CodePoint
             {
                 LineNo = 8,
@@ -7361,7 +7358,7 @@ b : int = 0;
                         }
                         ";
 
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             ProtoCore.CodeModel.CodePoint cp = new ProtoCore.CodeModel.CodePoint
             {
                 LineNo = 8,
@@ -7409,7 +7406,7 @@ b : int = 0;
 
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3991
             string defectID = "MAGN-3991 Defects with Toggle breakpoint";
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             ProtoCore.CodeModel.CodePoint cp = new ProtoCore.CodeModel.CodePoint
             {
                 LineNo = 18,
@@ -7430,7 +7427,7 @@ b : int = 0;
             string src = @"
                         a=1;
                         ";
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             ProtoCore.CodeModel.CodePoint cp = new ProtoCore.CodeModel.CodePoint
             {
                 LineNo = 1,
@@ -7472,7 +7469,7 @@ zz = A.A();
 }
                                         ";
 
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             ProtoCore.CodeModel.CodePoint cp = new ProtoCore.CodeModel.CodePoint
             {
                 LineNo = 19,
@@ -7506,7 +7503,7 @@ zz = A.A();
                             a = 1 + 2 + foo(3, 4) + 5 + foo(5, 6);
                             ";
 
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             ProtoCore.CodeModel.CodePoint cp = new ProtoCore.CodeModel.CodePoint
             {
                 LineNo = 7,
@@ -7547,7 +7544,7 @@ zz = A.A();
              }
             ";
 
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             fsr.Step();
@@ -7592,7 +7589,7 @@ l1 = Line.ByStartPointEndPoint(p1, p2);
 x = 10;
 
 ";
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             DebugRunner.VMState vms = fsr.Step();
@@ -7643,7 +7640,7 @@ import(DummyBase from ""FFITarget.dll"");
     b = 9;
 }";
 
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             fsr.Step();
@@ -7670,7 +7667,7 @@ dummy = DummyBase.Create();
 dummy.Value = 868760;
 a = dummy.Value;";
 
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             fsr.Step();
 
             fsr.Step();
@@ -7696,7 +7693,7 @@ a = dummy.Value;";
             string imp2 =
                 Path.GetFullPath(string.Format("{0}{1}", testPath, "import002.ds"));
 
-            fsr.LoadAndPreStart(src, runnerConfig);
+            fsr.LoadAndPreStart(src);
 
             ProtoCore.CodeModel.CodePoint cp = new ProtoCore.CodeModel.CodePoint
             {
@@ -7758,7 +7755,7 @@ a = dummy.Value;";
                             c = foo();
                             ";
 
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             fsr.Step();
 
             DebugRunner.VMState vms = fsr.Step();
@@ -7801,7 +7798,7 @@ def foo()
 
 a = foo();
 ";
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();
 
             vms = fsr.Step();
@@ -7842,7 +7839,7 @@ a = foo();
                             a = clampRange(101, 10, 100);
                             ";
 
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
 
             fsr.Step();
             DebugRunner.VMState vms = fsr.Step();
@@ -7922,7 +7919,7 @@ def foo ()
 }
 test = foo();";
 
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             fsr.Step(); // gg = 0;
 
             DebugRunner.VMState vms = fsr.Step();   // test = foo();
@@ -8058,7 +8055,7 @@ def Compare(x, y)
 sorted = Sort(Compare, arr); //Stepping over this statement throws exception for empty stack.
 ";
             //Assert.Fail("IDE-390 Stepping into a function throws an index out of range exception (function pointer)");
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             fsr.Step();
 
             DebugRunner.VMState vms = fsr.Step();
@@ -8127,7 +8124,7 @@ a1 = B.B( 0..1);
 test = a1.t;";
 
             //Assert.Fail("IDE-442 Debugger failing to break at getting and setting class properties in inheritance hierarchy (happens only with replication)");
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             fsr.Step();
 
             DebugRunner.VMState vms = fsr.Step();
@@ -8180,7 +8177,7 @@ def makeSurf(p)
 ps = Point.ByCoordinates((-10..10..1.5), -10, 0);
 surf = makeSurf(ps);
 ";
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             fsr.Step();
         }
         [Test]
@@ -8198,7 +8195,7 @@ surf = makeSurf(ps);
                 }";
 
             //Assert.Fail("IDE-442 Debugger failing to break at getting and setting class properties in inheritance hierarchy (happens only with replication)");
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             fsr.Step(); // a = 10;
 
             DebugRunner.VMState vms = fsr.Step();   // b = 2 * a;
@@ -8244,7 +8241,7 @@ surf = makeSurf(ps);
             b = a1.a;
             a1.a = -1;";
 
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             fsr.Step(); // a1 = A.A();
 
             DebugRunner.VMState vms = fsr.Step();   // a : int[];
@@ -8295,7 +8292,7 @@ surf = makeSurf(ps);
             ";
 
             //Assert.Fail("IDE-442 Debugger failing to break at getting and setting class properties in inheritance hierarchy (happens only with replication)");
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             fsr.Step();
             fsr.Step();
             fsr.Step();
@@ -8341,7 +8338,7 @@ test = a1.x; //expected : { 1, { 2, { 0, 1 } } }
 
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1701
             //TODO: Fails in the language with the new stackframe - 24/01/13
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             fsr.Step();
             fsr.Step();
             fsr.Step();
@@ -8416,7 +8413,7 @@ test = a1.x; //expected : { 1, { 2, { 0, 1 } } }
             ";
 
             //Assert.Fail("IDE-442 Debugger failing to break at getting and setting class properties in inheritance hierarchy (happens only with replication)");
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             fsr.Step();
             DebugRunner.VMState vms = fsr.Step();
             Obj o = vms.mirror.GetDebugValue("x");
@@ -8502,7 +8499,7 @@ def f(a : int)
 
 arr = { f(99), f(87) };
 b = 2;";
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();
 
             Assert.AreEqual(7, vms.ExecutionCursor.StartInclusive.LineNo);
@@ -8551,7 +8548,7 @@ def GetValue(d : Dummy)
 arr = {Dummy.Dummy(), Dummy.Dummy(), Dummy.Dummy(), Dummy.Dummy()};
 val = GetValue(arr);";
 
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();
 
             Assert.AreEqual(15, vms.ExecutionCursor.StartInclusive.LineNo);
@@ -8599,7 +8596,7 @@ def f(a : int)
     arr = { f(99), f(87) };
     b = 2;
 }";
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();
 
             Assert.AreEqual(9, vms.ExecutionCursor.StartInclusive.LineNo);
@@ -8644,7 +8641,7 @@ class B
 
 b = B.create();
 f = 3;";
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();
 
             Assert.AreEqual(12, vms.ExecutionCursor.StartInclusive.LineNo);
@@ -8682,7 +8679,7 @@ def foo(y : int)
 a = x < foo(22) ? 3 : 55;
 ";
 
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();
 
             // highlights "x = 33;"
@@ -8751,7 +8748,7 @@ a = y.foo({ 0, 1 });
 x[y.foo({ 0, 1 })] = 3;
 z = x;
 ";
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();
 
             //"x = { };"
@@ -8871,7 +8868,7 @@ y = test.test();
 x[y.foo()] = 3;
 a = x;
 ";
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();
 
             //"x = { 1, 2 };"
@@ -8975,7 +8972,7 @@ def g()
 p = A.A(f(g()));
 a = p.f(g());
 b = 2;";
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();
 
             // highlights "p = A.A(f(g()));"
@@ -9162,7 +9159,7 @@ def g()
 p = A.A(f(g()));
 a = p.f(g());
 b = 2;";
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();
 
             // highlights "p = A.A(f(g()));"
@@ -9204,7 +9201,7 @@ b = 2;";
                 a = x > foo(20) ? 44 : foo(55); //Line 10
                 b = 2;
             }";
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();
 
             vms = fsr.StepOver();
@@ -9248,7 +9245,7 @@ b = 2;";
                 a = x > foo(20) ? 44 : foo(55); //Line 10
                 b = 2;
             }";
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();
 
             vms = fsr.StepOver();
@@ -9288,7 +9285,7 @@ b = 2;";
                     a = x > 20 ? foo(44) : foo(55); //Line 10
                     b = 2;
               }";
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();
 
             vms = fsr.StepOver();
@@ -9332,7 +9329,7 @@ b = 2;";
                     a = x > 20 ? foo(44) : foo(55); //Line 10
                     b = 2;
               }";
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();
 
             vms = fsr.StepOver();
@@ -9372,7 +9369,7 @@ b = 2;";
                     a = x > 1 ? Math.Cos(60) : Math.Cos(45);
                     b = 22;
                 }";
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();
 
             vms = fsr.StepOver();
@@ -9410,7 +9407,7 @@ b = 2;";
                     a = x > 1 ? Math.Cos(60) : Math.Cos(45);
                     b = 22;
                 }";
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();
 
             vms = fsr.StepOver();
@@ -9446,7 +9443,7 @@ b = 2;";
                 }
                 c1 = foo(10);";
 
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();   // c1 = foo(10);
 
             vms = fsr.Step();  // return = a;
@@ -9475,7 +9472,7 @@ b = 2;";
                 }
                 c1 = foo(10, 3);
                 Print(c1);";
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();   // c1 = foo(10, 3);
 
             vms = fsr.Step();  // return = x = a > b ? a : b;
@@ -9541,7 +9538,7 @@ b = 2;";
 
                 c1 = foo(10, 3);
                 Print(c1);";
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();
 
             vms = fsr.Step();
@@ -9600,7 +9597,7 @@ b = 2;";
     
                     Print(c1);
                 }";
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();
 
             vms = fsr.Step();
@@ -9689,7 +9686,7 @@ b = 2;";
                 }
 
                 e = b;";
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();
 
 
@@ -9733,7 +9730,7 @@ b = 2;";
                 e = c;
 
                 f = d;";
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();
             fsr.Run();
             ProtoCore.RuntimeCore runtimeCore = fsr.runtimeCore;
@@ -9757,7 +9754,7 @@ b = 2;";
 }
     c = f;
 } 
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();//Line 5
 
@@ -9818,7 +9815,7 @@ b = 2;";
                 a = test.test();
                 b = a.f;
 
-            ", runnerConfig);
+            ");
 
             DebugRunner.VMState vms = fsr.StepOver();//Line 5
 
@@ -9885,7 +9882,7 @@ b = 2;";
                 x = AA1.update(1);
                 y = { AA1.a, AA1.a4 };
 
-            ", runnerConfig);
+            ");
 
             DebugRunner.VMState vms = fsr.StepOver();//Line 5
 
@@ -9953,7 +9950,7 @@ b = 2;";
                 x = AA1.update(1);
                 y = { AA1.a, AA1.a4 };
 
-            ", runnerConfig);
+            ");
 
             DebugRunner.VMState vms = fsr.StepOver();//Line 5
 
@@ -10020,7 +10017,7 @@ b = 2;";
                 x = AA1.update(1);
                 y = { AA1.a, AA1.a4 };
 
-            ", runnerConfig);
+            ");
 
             DebugRunner.VMState vms = fsr.StepOver();//Line 5
 
@@ -10090,7 +10087,7 @@ b = 2;";
                     return = c;
                 }
 
-            ", runnerConfig);
+            ");
             DebugRunner.VMState vms = fsr.Step();
             vms = fsr.Step();//Line 6
             vms = fsr.Step();
@@ -10173,7 +10170,7 @@ b = 2;";
                     return = c;
                 }
 
-            ", runnerConfig);
+            ");
             DebugRunner.VMState vms = fsr.Step();
             vms = fsr.Step();//Line 6
             vms = fsr.Step();
@@ -10245,7 +10242,7 @@ b = 2;";
                 }
                 n = func(1);
 
-            ", runnerConfig);
+            ");
             DebugRunner.VMState vms = fsr.Step();
             vms = fsr.Step();//Line 6
             vms = fsr.Step();
@@ -10298,7 +10295,7 @@ b = 2;";
                 }
                 n = func(1);
 
-            ", runnerConfig);
+            ");
             DebugRunner.VMState vms = fsr.Step();
             vms = fsr.Step();//Line 6
             vms = fsr.Step();
@@ -10357,7 +10354,7 @@ b = 2;";
             }
             n = test.test();
             n1 = n.func(1);
-                    ", runnerConfig);
+                    ");
             DebugRunner.VMState vms = fsr.Step();
             vms = fsr.Step();//Line 6
             vms = fsr.Step();
@@ -10419,7 +10416,7 @@ b = 2;";
             }
         n = test.test();
         n1 = n.func(1);
-                    ", runnerConfig);
+                    ");
             DebugRunner.VMState vms = fsr.Step();
             vms = fsr.Step();//Line 6
             vms = fsr.Step();
@@ -10470,7 +10467,7 @@ b = 2;";
                     x = GetNumberSquare(5); 
                     return = x;
                     }
-                    ", runnerConfig);
+                    ");
             DebugRunner.VMState vms = fsr.Step();
             vms = fsr.Step();//Line 6
             vms = fsr.Step();
@@ -10504,7 +10501,7 @@ b = 2;";
         x = a.x;
         a.x = a;
         b = 33;
-            ", runnerConfig);
+            ");
             DebugRunner.VMState vms = fsr.Step();
             vms = fsr.Step();
             vms = fsr.Step();
@@ -10538,7 +10535,7 @@ b = 2;";
         onlyintersectCurveY = testSolid.Intersect(testPlaneY);
         testPlaneZ = Plane.ByOriginNormal(origin, Vector.ByCoordinates(0,0,1)); //Returns 1 circle 
         nowintersectCurveZ = testSolid.Intersect(testPlaneZ);
-            ", runnerConfig);
+            ");
             DebugRunner.VMState vms = fsr.StepOver();
             vms = fsr.StepOver();
             vms = fsr.StepOver();
@@ -10586,7 +10583,7 @@ return = a;
         }
 
         z = foo();
-            ", runnerConfig);
+            ");
             DebugRunner.VMState vms = fsr.StepOver();
             vms = fsr.StepOver();
             vms = fsr.StepOver();
@@ -10670,7 +10667,7 @@ return = a;
             z = foo();
 }
 
-            ", runnerConfig);
+            ");
             DebugRunner.VMState vms = fsr.StepOver();
             vms = fsr.StepOver();
             vms = fsr.StepOver();
@@ -10751,7 +10748,7 @@ return = a;
             z = foo();
 }
 
-            ", runnerConfig);
+            ");
             DebugRunner.VMState vms = fsr.StepOver();
             vms = fsr.StepOver();
             vms = fsr.StepOver();
@@ -10836,7 +10833,7 @@ class test
      z = y.foo();
 }
 
-            ", runnerConfig);
+            ");
             DebugRunner.VMState vms = fsr.StepOver();
             vms = fsr.StepOver();
             vms = fsr.Step();
@@ -10883,7 +10880,7 @@ class test
     }
 }
 
-p = Point.Point(3, 4, 5);", runnerConfig);
+p = Point.Point(3, 4, 5);");
             DebugRunner.VMState vms = fsr.Step();
             // "p = Point.Point(3, 4, 5);"
             Assert.AreEqual(15, vms.ExecutionCursor.StartInclusive.LineNo);
@@ -10949,7 +10946,7 @@ p = Point.Point(3, 4, 5);", runnerConfig);
                  @"[Imperative]
 {
     a = 1..8..1;
-}", runnerConfig);
+}");
             DebugRunner.VMState vms = fsr.Step();
             Assert.AreEqual(3, vms.ExecutionCursor.StartInclusive.LineNo);
             Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
@@ -10971,7 +10968,7 @@ p = Point.Point(3, 4, 5);", runnerConfig);
                  @"[Imperative]
 {
     a = 1..8..1;
-}", runnerConfig);
+}");
             DebugRunner.VMState vms = fsr.Step();
             Assert.AreEqual(3, vms.ExecutionCursor.StartInclusive.LineNo);
             Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
@@ -10993,7 +10990,7 @@ p = Point.Point(3, 4, 5);", runnerConfig);
                  @"[Imperative]
 {
     a = 0.5..0.25..-0.25;
-}", runnerConfig);
+}");
             DebugRunner.VMState vms = fsr.Step();
             Assert.AreEqual(3, vms.ExecutionCursor.StartInclusive.LineNo);
             Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
@@ -11015,7 +11012,7 @@ p = Point.Point(3, 4, 5);", runnerConfig);
                  @"[Imperative]
 {
     a = 0.5..0.25..-0.25;
-}", runnerConfig);
+}");
             DebugRunner.VMState vms = fsr.Step();
             Assert.AreEqual(3, vms.ExecutionCursor.StartInclusive.LineNo);
             Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
@@ -11037,7 +11034,7 @@ p = Point.Point(3, 4, 5);", runnerConfig);
                  @"[Associative]
 {
     a = 1..8..1;
-}", runnerConfig);
+}");
             DebugRunner.VMState vms = fsr.Step();
             Assert.AreEqual(3, vms.ExecutionCursor.StartInclusive.LineNo);
             Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
@@ -11059,7 +11056,7 @@ p = Point.Point(3, 4, 5);", runnerConfig);
                  @"[Associative]
 {
     a = 1..8..1;
-}", runnerConfig);
+}");
             DebugRunner.VMState vms = fsr.Step();
             Assert.AreEqual(3, vms.ExecutionCursor.StartInclusive.LineNo);
             Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
@@ -11081,7 +11078,7 @@ p = Point.Point(3, 4, 5);", runnerConfig);
                  @"[Associative]
 {
     a = 0.5..0.25..-0.25;
-}", runnerConfig);
+}");
             DebugRunner.VMState vms = fsr.Step();
             Assert.AreEqual(3, vms.ExecutionCursor.StartInclusive.LineNo);
             Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
@@ -11103,7 +11100,7 @@ p = Point.Point(3, 4, 5);", runnerConfig);
                  @"[Associative]
 {
     a = 0.5..0.25..-0.25;
-}", runnerConfig);
+}");
             DebugRunner.VMState vms = fsr.Step();
             Assert.AreEqual(3, vms.ExecutionCursor.StartInclusive.LineNo);
             Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
@@ -11128,7 +11125,7 @@ sphere = Sphere.ByCenterPointRadius(Point.ByCoordinates(0, 0, 0), 1);
 
 sface = sphere.Faces[0];
 
-surfaceGeom = sface.SurfaceGeometry.SetVisibility(true);", runnerConfig);
+surfaceGeom = sface.SurfaceGeometry.SetVisibility(true);");
 
             DebugRunner.VMState vms = fsr.Step();   // sphere = Sphere.ByCenterPointRadius(Point.ByCoordinates(0, 0, 0), 1);
             Assert.AreEqual(3, vms.ExecutionCursor.StartInclusive.LineNo);
@@ -11158,7 +11155,7 @@ surfaceGeom = sface.SurfaceGeometry.SetVisibility(true);", runnerConfig);
     
 sphere = Sphere.ByCenterPointRadius(Point.ByCoordinates(0, 0, 0), 1);
 
-surfaceGeom = sphere.Faces[0].SurfaceGeometry.SetVisibility(true);", runnerConfig);
+surfaceGeom = sphere.Faces[0].SurfaceGeometry.SetVisibility(true);");
 
             DebugRunner.VMState vms = fsr.Step();   // sphere = Sphere.ByCenterPointRadius(Point.ByCoordinates(0, 0, 0), 1);
             Assert.AreEqual(3, vms.ExecutionCursor.StartInclusive.LineNo);
@@ -11214,7 +11211,7 @@ class Sphere
 }
 
 sphere = Sphere.ByCenterPointRadius();
-surfaceGeom = sphere.Faces[0].SurfaceGeometry.SetVisibility(true);", runnerConfig);
+surfaceGeom = sphere.Faces[0].SurfaceGeometry.SetVisibility(true);");
 
             DebugRunner.VMState vms = fsr.Step();   // sphere = Sphere.ByCenterPointRadius(Point.ByCoordinates(0, 0, 0), 1);
             Assert.AreEqual(35, vms.ExecutionCursor.StartInclusive.LineNo);
@@ -11267,7 +11264,7 @@ a =
     a1 > a2.foo() ? 0 : a2.foo() => a3; //Line 28
 
 }
-c = 90;", runnerConfig);
+c = 90;");
 
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
             DebugRunner.VMState vms = fsr.Step();   // b1 = 1;
@@ -11396,7 +11393,7 @@ a =
     a1 > a2.foo() ? 0 : a2.foo() => a3; //Line 28
 
 }
-c = 90;", runnerConfig);
+c = 90;");
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
             DebugRunner.VMState vms = fsr.Step();   // b1 = 1;
 
@@ -11462,7 +11459,7 @@ def f(a)
     return = a;
 }
 x = f(c) > 5 ? 1 : 2;
-b = 2;", runnerConfig);
+b = 2;");
 
             DebugRunner.VMState vms = fsr.Step();   // c = { 1, 2, 20 };
             Assert.AreEqual(1, vms.ExecutionCursor.StartInclusive.LineNo);
@@ -11495,7 +11492,7 @@ def f(a)
     return = a;
 }
 x = f(c) > 5 ? 1 : 2;
-b = 2;", runnerConfig);
+b = 2;");
 
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3961
             Assert.Fail("Stepping In external functions and replicated functions requires two 'step in's to move to the next line");
@@ -11544,7 +11541,7 @@ CountFalse({a4}) => a5;//0
 
 }
 
-result = {a1,a2,a3,a4,a5};", runnerConfig);
+result = {a1,a2,a3,a4,a5};");
 
             //Assert.Fail("IDE-721 Only inner function call is highlighted inside the following modifier block");
 
@@ -11639,7 +11636,7 @@ CountFalse({a4}) => a5;//0
     return = x = a > b ? a : b;
 }
 c1 = foo(10, 3);
-Print(c1);", runnerConfig);
+Print(c1);");
 
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3962
             Assert.Fail("Cannot Step In to the return statement of a function if it contains a In Line Condition");
@@ -11685,7 +11682,7 @@ Print(c1);", runnerConfig);
     c1 = foo(10, 3);
     
     Print(c1);
-}", runnerConfig);
+}");
 
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3962
             Assert.Fail("IDE-722 Cannot Step In to the return statement of a function if it contains a In Line Condition");
@@ -11739,7 +11736,7 @@ test = 1;
 b = 2;
 c = 3;
            
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();
 
@@ -11797,7 +11794,7 @@ test = 1;
 b = 2;
 c = 3;
            
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();
 
@@ -11856,7 +11853,7 @@ test = 1;
 b = 2;
 c = 3;
            
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();
 
@@ -11904,7 +11901,7 @@ test = 1;
 b = 2;
 c = 3;
            
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();
 
@@ -11947,7 +11944,7 @@ a;b;
 	c = 2;
 }
            
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();
 
@@ -11989,7 +11986,7 @@ r = 0;
     }
 }
            
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();
 
@@ -12044,7 +12041,7 @@ r = 0;
 }
 r = 0;
            
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();
 
@@ -12107,7 +12104,7 @@ r = 0;
 
         a = foo();
            
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();
 
@@ -12170,7 +12167,7 @@ isPass8 = Count ( lines ) == 5 ? true : false ; // verification
 
 lines = Line.ByStartPointEndPoint( startPts<1>, endPts<2> );
            
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step(); // WCS = CoordinateSystem.Identity();
 
@@ -12227,7 +12224,7 @@ isPass8 = Count ( lines ) == 5 ? true : false ; // verification
 
 lines = Line.ByStartPointEndPoint( startPts<1>, endPts<2> );
            
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();
 
@@ -12278,7 +12275,7 @@ a;
     b = 22;
 }
            
-", runnerConfig);
+");
 
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
             Assert.Fail("IDE-656Regression: Debugging stops at inline condition");
@@ -12314,7 +12311,7 @@ a;
     b = 22;
 }
            
-", runnerConfig);
+");
 
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
             Assert.Fail("IDE-656Regression: Debugging stops at inline condition");
@@ -12360,7 +12357,7 @@ a;
     b = 2;
 }
            
-", runnerConfig);
+");
 
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
             Assert.Fail("IDE-656Regression: Debugging stops at inline condition");
@@ -12404,7 +12401,7 @@ b;
     b = 2;
 }
            
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();    // x = 330;
 
@@ -12454,7 +12451,7 @@ b;
     b = 2;
 }
            
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();    // x = 330;
 
@@ -12506,7 +12503,7 @@ a;
     b = 2;
 }
            
-", runnerConfig);
+");
 
 
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
@@ -12552,7 +12549,7 @@ def foo(y : int)
     b = 2;
 }
            
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();    // x = 330;
 
@@ -12595,7 +12592,7 @@ def foo(y : int)
     b = 2;
 }
            
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();    // x = 330;
 
@@ -12652,7 +12649,7 @@ def foo(y : int)
     b = 2;
 }
            
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();
 
@@ -12691,7 +12688,7 @@ def foo(y : int)
     b = 2;
 }
            
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();
 
@@ -12755,7 +12752,7 @@ def foo(y : int)
     b = 2;
 }
            
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();
 
@@ -12794,7 +12791,7 @@ def foo(y : int)
     b = 2;
 }
            
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();
 
@@ -12867,7 +12864,7 @@ a2 = A.A();
 a3 = a1 > a2.foo() ? 0 : a2.foo();
 c = 90;
            
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();
 
@@ -12921,7 +12918,7 @@ a2 = A.A();
 a3 = a1 > a2.foo() ? 0 : a2.foo();
 c = 90;
            
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();    // b1 = 1;
 
@@ -12994,7 +12991,7 @@ a =
     4 => a5;
 }
            
-", runnerConfig);
+");
             
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
             DebugRunner.VMState vms = fsr.Step();
@@ -13048,7 +13045,7 @@ a =
     4 => a5;
 }
            
-", runnerConfig);
+");
             DebugRunner.VMState vms = fsr.Step();    // x = 1;
 
             vms = fsr.Step();    // x > 10 ? true : false => a1;
@@ -13106,7 +13103,7 @@ def foo : int(y : int)
 
 a = x > foo(22) ? foo(1) : A.foo(4);
            
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();
 
@@ -13148,7 +13145,7 @@ def foo : int(y : int)
 
 a = x > foo(22) ? foo(1) : A.foo(4);
            
-", runnerConfig);
+");
 
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
             DebugRunner.VMState vms = fsr.Step();    // x = 33;
@@ -13206,7 +13203,7 @@ list1 = { 1, 2 };
 
 list3 = GetCoor(list1);
            
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();
 
@@ -13244,7 +13241,7 @@ list1 = { 1, 2 };
 
 list3 = GetCoor(list1);
            
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();
 
@@ -13292,7 +13289,7 @@ a =
     B.B(a1).x => a2; //Line 19
     4 => a5;
 }           
-", runnerConfig);
+");
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
             DebugRunner.VMState vms = fsr.Step();    // x = 1;
 
@@ -13354,7 +13351,7 @@ x = a1.update(1); //line 28
 
 b1 = B.B(); //line 31
 n = 22;
-", runnerConfig);
+");
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
             DebugRunner.VMState vms = fsr.Step();
 
@@ -13414,7 +13411,7 @@ def foo(y : int)
 {
     a = x > foo(22) ? foo(1) : 55; //Line 10
 }           
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();    // x = 330;
             Assert.AreEqual(2, vms.ExecutionCursor.StartInclusive.LineNo);
@@ -13489,7 +13486,7 @@ def foo(y : int)
 {
     a = x < foo(20) ? 44 : foo(55); //Line 10
 }        
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();    // x = 330;
             Assert.AreEqual(2, vms.ExecutionCursor.StartInclusive.LineNo);
@@ -13580,7 +13577,7 @@ s;
 }
 
 s = Print(results); 
-", runnerConfig);
+");
 
             Assert.Fail("TODO: Update this test case. It works fine in the debugger");
             DebugRunner.VMState vms = fsr.Step();
@@ -13647,7 +13644,7 @@ i[4] = Point.ByCoordinates(0, 5, 1);
         c = k;
     }
 }
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();    // x = 330;
 
@@ -13721,7 +13718,7 @@ s;
         k = k + 1;
     }
 }
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();    // x = 330;
 
@@ -13787,7 +13784,7 @@ b = 0;
 }
 __GC();
 c = 2;
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();   // b = 0;
 
@@ -13845,7 +13842,7 @@ b = 0;
 foo();
 __GC();
 c = 2;
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();   // b = 0;
 
@@ -13904,7 +13901,7 @@ g = { 1, 2, 3 };
 foo(g);
 __GC();
 c = 2;
-", runnerConfig);
+");
 
 
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3984
@@ -13970,7 +13967,7 @@ p.foo();
 __GC();
 
 c = 2;
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();   // b = 0;
 
@@ -14040,7 +14037,7 @@ arr = { 1,2 };
 }
 
 c = 2;
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();   // b = 0;
 
@@ -14138,7 +14135,7 @@ b = 0;
 }
 
 c = 2;
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();   // b = 0;
 
@@ -14200,7 +14197,7 @@ b = 0;
 }
 
 c = 2;
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();   // b = 0;
 
@@ -14259,7 +14256,7 @@ b = 0;
 }
 __GC();
 c = 2;
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();   // b = 0;
 
@@ -14321,7 +14318,7 @@ b = 0;
 a = A.A().foo();	
 
 c = 2;
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();   // b = 0;
 
@@ -14372,7 +14369,7 @@ b = 0;
 a = A.A().foo();	
 
 c = 2;
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();   // b = 0;
 
@@ -14431,7 +14428,7 @@ myTest = Test.FirstApproach({ 1, 2 });
 myNeTwst = myTest.Transform(1); 
 ";
 
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();   // myTest = Test.FirstApproach({ 1, 2 }); 
 
             ProtoCore.CodeModel.CodePoint cp = new ProtoCore.CodeModel.CodePoint
@@ -14471,7 +14468,7 @@ a = Dummy.Create(2);
 b = 2;
 ";
 
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();
             vms = fsr.StepOver();
 
@@ -14508,7 +14505,7 @@ a : Dummy = null;
 }
 ";
 
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();   // a : Dummy = null;
             fsr.Step();
             fsr.StepOver();                         // a = a@final;
@@ -14557,7 +14554,7 @@ a : Dummy = null;
                     }
                 ";
 
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();
             vms = fsr.StepOver();
             vms = fsr.StepOver();
@@ -14594,7 +14591,7 @@ a : Dummy = null;
                         a : int = 10;//line 9    
                         a = a + 10;//line 10
                   }
-                  ", runnerConfig);
+                  ");
 
             DebugRunner.VMState vms = fsr.Step();   // sphere = Sphere.ByCenterPointRadius(Point.ByCoordinates(0, 0, 0), 1);
             vms = fsr.StepOver();   // surfaceGeom = sphere.Faces[0].SurfaceGeometry.SetVisibility(true);
@@ -14630,7 +14627,7 @@ a : Dummy = null;
                         a : int = 10;//line 9    
                         a = a + 10;//line 10
                   }
-                  ", runnerConfig);
+                  ");
 
             DebugRunner.VMState vms = fsr.Step();   // sphere = Sphere.ByCenterPointRadius(Point.ByCoordinates(0, 0, 0), 1);
             vms = fsr.Step();   // surfaceGeom = sphere.Faces[0].SurfaceGeometry.SetVisibility(true);
@@ -14668,7 +14665,7 @@ a : Dummy = null;
                             a : int = 10;
                             a = a + 10;//Line 12
                         }
-                  ", runnerConfig);
+                  ");
 
             DebugRunner.VMState vms = fsr.Step();   // sphere = Sphere.ByCenterPointRadius(Point.ByCoordinates(0, 0, 0), 1);
             vms = fsr.Step();   // surfaceGeom = sphere.Faces[0].SurfaceGeometry.SetVisibility(true);
@@ -14706,7 +14703,7 @@ a : Dummy = null;
                             a : int = 10;
                             a = a + 10;//Line 12
                         }
-                  ", runnerConfig);
+                  ");
 
             DebugRunner.VMState vms = fsr.Step();   // sphere = Sphere.ByCenterPointRadius(Point.ByCoordinates(0, 0, 0), 1);
             vms = fsr.Step();   // surfaceGeom = sphere.Faces[0].SurfaceGeometry.SetVisibility(true);
@@ -14748,7 +14745,7 @@ z = { A.A(), A.A() };
 
 ";
 
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();   // z = { A.A(), A.A() };
             fsr.StepOver();                         // end of script
 
@@ -14771,7 +14768,7 @@ z = { A.A(), A.A() };
             fsr.PreStart(
             @"
                 
-                variableName : Line;", runnerConfig);
+                variableName : Line;");
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3982
             DebugRunner.VMState vms = fsr.Step();
 
@@ -14806,7 +14803,7 @@ z = { A.A(), A.A() };
                     b = Line.ByStartPointEndPoint(a, Point.ByCoordinates(10, 5, 0));
                     c=b.StartPoint.X;
                     a = Point.ByCoordinates(15, 0, 0);
-                }", runnerConfig);
+                }");
 
             DebugRunner.VMState vms = fsr.Step();
 
@@ -14843,7 +14840,7 @@ z = { A.A(), A.A() };
                     b = Line.ByStartPointEndPoint(Point.ByCoordinates(10, 0, 0), Point.ByCoordinates(10, 5, 0));
                     c=b.StartPoint.X;
                     a = Point.ByCoordinates(15, 0, 0);
-                }", runnerConfig);
+                }");
 
             DebugRunner.VMState vms = fsr.Step();
 
@@ -14881,7 +14878,7 @@ z = { A.A(), A.A() };
                     b = Line.ByStartPointEndPoint(a, Point.ByCoordinates(10, 5, 0));
                     c=b.StartPoint.X;
                     a = Point.ByCoordinates(15, 0, 0);
-                }", runnerConfig);
+                }");
 
             DebugRunner.VMState vms = fsr.Step();
 
@@ -14919,7 +14916,7 @@ z = { A.A(), A.A() };
                     b = Line.ByStartPointEndPoint(Point.ByCoordinates(10, 0, 0), Point.ByCoordinates(10, 5, 0));
                     c=b.StartPoint.X;
                     a = Point.ByCoordinates(15, 0, 0);
-                }", runnerConfig);
+                }");
 
             DebugRunner.VMState vms = fsr.Step();
 
@@ -14964,7 +14961,7 @@ class A
 
 y = A.A();
 x = y.add(); 
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();
 
@@ -15043,7 +15040,7 @@ class A
 
 y = A.A();
 x = y.add(); 
-", runnerConfig);
+");
 
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3963
             Assert.Fail(" Debugger skips statements on stepping over property setters followed by return statements");
@@ -15127,7 +15124,7 @@ def add(a : A)
 y = A.A();
 x = add(y); 
 
-", runnerConfig);
+");
 
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3963
             Assert.Fail(" Debugger skips statements on stepping over property setters followed by return statements");
@@ -15212,7 +15209,7 @@ y = A.A();
 x = add(y); 
 
 
-", runnerConfig);
+");
 
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3963
             Assert.Fail("Debugger skips statements on stepping over property setters followed by return statements");
@@ -15286,7 +15283,7 @@ x = add(y);
                     z = { A.A() ,A.A()};
                     y = z.a;
 
-                  ", runnerConfig);
+                  ");
 
             DebugRunner.VMState vms = fsr.StepOver();
             vms = fsr.StepOver();
@@ -15337,7 +15334,7 @@ x = add(y);
                         y = { z[0].a, z[1].a };
                     }
 
-                  ", runnerConfig);
+                  ");
 
             DebugRunner.VMState vms = fsr.StepOver();
             vms = fsr.StepOver();
@@ -15385,7 +15382,7 @@ x = add(y);
                     z = { A.A() ,A.A()};
                     y = z.a;
 
-                  ", runnerConfig);
+                  ");
 
             DebugRunner.VMState vms = fsr.Step();
             vms = fsr.Step();
@@ -15441,7 +15438,7 @@ x = add(y);
                         y = z.a;
                     }
 
-                  ", runnerConfig);
+                  ");
 
             DebugRunner.VMState vms = fsr.Step();
             vms = fsr.Step();
@@ -15480,7 +15477,6 @@ x = add(y);
     {
         public ProtoCore.Core core;
         private DebugRunner fsr;
-        private ProtoScript.Config.RunConfiguration runnerConfig;
         private string testPath = @"..\..\..\test\Engine\ProtoTest\ImportFiles\";
 
         [SetUp]
@@ -15495,8 +15491,6 @@ x = add(y);
             core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
             core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
 
-            runnerConfig = new ProtoScript.Config.RunConfiguration();
-            runnerConfig.IsParrallel = false;
             fsr = new DebugRunner(core);
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
@@ -15522,7 +15516,7 @@ a = 7;
         a = 10;    
     }    
 }
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();
             vms = fsr.Step();
@@ -15569,7 +15563,7 @@ b[2] = 100; // modifying a member of a  copy of a collections
 c = a;
 d = b[0..(Count(b) - 1)..2]; // rnage expression used for indexing into a collection
            
-", runnerConfig);
+");
 
 
             DebugRunner.VMState vms = fsr.Step();
@@ -15610,7 +15604,7 @@ d = b[0..(Count(b) - 1)..2]; // rnage expression used for indexing into a collec
 a = 0..10..2;
 a = a < 5 ? 3 : 4;
            
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();
 
@@ -15650,7 +15644,7 @@ b : int;
 	a = a + 1;
 }
            
-", runnerConfig);
+");
 
 
             DebugRunner.VMState vms = fsr.Step();
@@ -15692,7 +15686,7 @@ b : int;
     a = a + 1;
 }
            
-", runnerConfig);
+");
 
 
             DebugRunner.VMState vms = fsr.Step();
@@ -15746,7 +15740,7 @@ t1 = Tuple4.Tuple4();
 t2 = Tuple4.Tuple4();
 b = t1.Equals(t2);
            
-", runnerConfig);
+");
 
             DebugRunner.VMState vms = fsr.Step();
 
@@ -15787,7 +15781,7 @@ b = t1.Equals(t2);
             endPts = foo()  >= 1 ? Point.Point() : Point.Point();
             isPass7 = foo()  == 5 ? true : false ; // verification";
 
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             ProtoCore.CodeModel.CodePoint cp = new ProtoCore.CodeModel.CodePoint
             {
                 LineNo = 13,

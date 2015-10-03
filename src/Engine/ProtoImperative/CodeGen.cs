@@ -1286,14 +1286,16 @@ namespace ProtoImperative
                 localProcedure.Name = funcDef.Name;
                 localProcedure.PC = pc;
                 localProcedure.LocalCount = funcDef.localVars;
-                localProcedure.ReturnType.UID = core.TypeSystem.GetType(funcDef.ReturnType.Name);
+                var returnType = new ProtoCore.Type();
+                returnType.UID = core.TypeSystem.GetType(funcDef.ReturnType.Name);
                 if (localProcedure.ReturnType.UID == (int)PrimitiveType.kInvalidType)
                 {
                     string message = String.Format(ProtoCore.Properties.Resources.kReturnTypeUndefined, funcDef.ReturnType.Name, funcDef.Name);
                     buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, null, funcDef.line, funcDef.col, firstSSAGraphNode);
-                    localProcedure.ReturnType.UID = (int)PrimitiveType.kTypeVar;
+                    returnType.UID = (int)PrimitiveType.kTypeVar;
                 }
-                localProcedure.ReturnType.rank = funcDef.ReturnType.rank;
+                returnType.rank = funcDef.ReturnType.rank;
+                localProcedure.ReturnType = returnType;
                 localProcedure.RuntimeIndex = codeBlock.codeBlockId;
                 globalProcIndex = codeBlock.procedureTable.Append(localProcedure);
                 core.ProcNode = localProcedure;
