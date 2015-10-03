@@ -90,7 +90,7 @@ namespace ProtoCore.Utils
                 return ProtoCore.DSASM.Constants.kInvalidIndex;
             }
 
-            int myself = classNode.typeSystem.classTable.IndexOf(classNode.Name);
+            int myself = classNode.TypeSystem.classTable.IndexOf(classNode.Name);
             bool isInMemberFunctionContext = (classScope == myself) && (functionScope != ProtoCore.DSASM.Constants.kInvalidIndex);
             bool isInStaticFunction = isInMemberFunctionContext && 
                 classNode.ProcTable.procList.Count > functionScope &&

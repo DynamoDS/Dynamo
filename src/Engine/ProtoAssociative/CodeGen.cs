@@ -5400,7 +5400,7 @@ namespace ProtoAssociative
                 thisClass.Name = classDecl.className;
                 thisClass.Size = classDecl.varlist.Count;
                 thisClass.IsImportedClass = classDecl.IsImportedClass;
-                thisClass.typeSystem = core.TypeSystem;
+                thisClass.TypeSystem = core.TypeSystem;
                 thisClass.ClassAttributes = classDecl.ClassAttributes;
                 
                 if (classDecl.ExternLibName != null)
@@ -5419,7 +5419,7 @@ namespace ProtoAssociative
                 unPopulatedClasses.Add(globalClassIndex, classDecl);
 
                 //Always allow us to convert a class to a bool
-                thisClass.coerceTypes.Add((int)PrimitiveType.kTypeBool, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
+                thisClass.CoerceTypes.Add((int)PrimitiveType.kTypeBool, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
             }
             else if (ProtoCore.CompilerDefinitions.Associative.CompilePass.kClassBaseClass == compilePass)
             { 
@@ -5454,7 +5454,7 @@ namespace ProtoAssociative
                             }
 
                             thisClass.Bases.Add(baseClass);
-                            thisClass.coerceTypes.Add(baseClass, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceBaseClass);
+                            thisClass.CoerceTypes.Add(baseClass, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceBaseClass);
                         }
                         else
                         {
@@ -5492,7 +5492,7 @@ namespace ProtoAssociative
                             baseClass = tmpCNode.Bases[0];
                             while (ProtoCore.DSASM.Constants.kInvalidIndex != baseClass)
                             {
-                                thisClass.coerceTypes.Add(baseClass, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceBaseClass);
+                                thisClass.CoerceTypes.Add(baseClass, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceBaseClass);
                                 tmpCNode = core.ClassTable.ClassNodes[baseClass];
 
                                 baseClass = ProtoCore.DSASM.Constants.kInvalidIndex;

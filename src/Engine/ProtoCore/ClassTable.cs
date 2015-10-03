@@ -28,10 +28,10 @@ namespace ProtoCore.DSASM
         /// </summary>
         public string ExternLib { get; set; }
 
-        public TypeSystem typeSystem { get; set; }
+        public TypeSystem TypeSystem { get; set; }
         public List<AttributeEntry> Attributes { get; set; }
         // A map of allowed coercions and their respective scores
-        public Dictionary<int, int> coerceTypes { get; set; }
+        public Dictionary<int, int> CoerceTypes { get; set; }
 
         private ProcedureNode disposeMethod;
         private bool hasCachedDisposeMethod;
@@ -55,10 +55,10 @@ namespace ProtoCore.DSASM
             ExternLib = string.Empty;
 
             // Set default allowed coerce types
-            coerceTypes = new Dictionary<int, int>();
-            coerceTypes.Add((int)ProtoCore.PrimitiveType.kTypeVar, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
-            coerceTypes.Add((int)ProtoCore.PrimitiveType.kTypeArray, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
-            coerceTypes.Add((int)ProtoCore.PrimitiveType.kTypeNull, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
+            CoerceTypes = new Dictionary<int, int>();
+            CoerceTypes.Add((int)ProtoCore.PrimitiveType.kTypeVar, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
+            CoerceTypes.Add((int)ProtoCore.PrimitiveType.kTypeArray, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
+            CoerceTypes.Add((int)ProtoCore.PrimitiveType.kTypeNull, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
         }
 
         public ClassNode(ClassNode rhs)
@@ -85,16 +85,16 @@ namespace ProtoCore.DSASM
             }
             Bases = new List<int>(rhs.Bases);
             ExternLib = rhs.ExternLib;
-            typeSystem = rhs.typeSystem;
-            coerceTypes = new Dictionary<int, int>(rhs.coerceTypes);
+            TypeSystem = rhs.TypeSystem;
+            CoerceTypes = new Dictionary<int, int>(rhs.CoerceTypes);
         }
 
         public bool ConvertibleTo(int type)
         {
-            Validity.Assert(null != coerceTypes);
+            Validity.Assert(null != CoerceTypes);
             Validity.Assert((int)PrimitiveType.kInvalidType != ID);
 
-            if ((int)PrimitiveType.kTypeNull == ID || coerceTypes.ContainsKey(type))
+            if ((int)PrimitiveType.kTypeNull == ID || CoerceTypes.ContainsKey(type))
             { 
                 return true;
             }
@@ -129,7 +129,7 @@ namespace ProtoCore.DSASM
 
         public int GetCoercionScore(int type)
         {
-            Validity.Assert(null != coerceTypes);
+            Validity.Assert(null != CoerceTypes);
             int score = (int)ProtoCore.DSASM.ProcedureDistance.kNotMatchScore;
 
             if (type == ID)
@@ -141,9 +141,9 @@ namespace ProtoCore.DSASM
             }
             else
             {
-                if (coerceTypes.ContainsKey(type))
+                if (CoerceTypes.ContainsKey(type))
                 {
-                    score = coerceTypes[type];
+                    score = CoerceTypes[type];
                 }
             }
 
@@ -162,7 +162,7 @@ namespace ProtoCore.DSASM
                 if (type == baseIndex)
                     return true;
 
-                ClassNode baseClassNode = typeSystem.classTable.ClassNodes[baseIndex];
+                ClassNode baseClassNode = TypeSystem.classTable.ClassNodes[baseIndex];
                 if (baseClassNode.IsMyBase(type))
                     return true;
             }
@@ -209,7 +209,7 @@ namespace ProtoCore.DSASM
             int functionIndex = ProcTable.IndexOf(procName, argTypeList, isStaticOrConstructor);
             if (functionIndex != ProtoCore.DSASM.Constants.kInvalidIndex)
             {
-                int myClassIndex = typeSystem.classTable.IndexOf(Name);
+                int myClassIndex = TypeSystem.classTable.IndexOf(Name);
                 functionHostClassIndex = myClassIndex;
                 procNode = ProcTable.procList[functionIndex];
 
@@ -221,7 +221,7 @@ namespace ProtoCore.DSASM
                 {
                     isAccessible = true;
                 }
-                else if (typeSystem.classTable.ClassNodes[classScope].IsMyBase(myClassIndex))
+                else if (TypeSystem.classTable.ClassNodes[classScope].IsMyBase(myClassIndex))
                 {
                     isAccessible = (procNode.access != CompilerDefinitions.AccessModifier.kPrivate);
                 }
@@ -235,7 +235,7 @@ namespace ProtoCore.DSASM
 
             foreach (int baseClassIndex in Bases)
             {
-                procNode = typeSystem.classTable.ClassNodes[baseClassIndex].GetMemberFunction(procName, argTypeList, classScope, out isAccessible, out functionHostClassIndex, isStaticOrConstructor);
+                procNode = TypeSystem.classTable.ClassNodes[baseClassIndex].GetMemberFunction(procName, argTypeList, classScope, out isAccessible, out functionHostClassIndex, isStaticOrConstructor);
                 if (procNode != null && isAccessible)
                     break;
             }
@@ -258,7 +258,7 @@ namespace ProtoCore.DSASM
 
             foreach (int baseClassIndex in Bases)
             {
-                var baseClass = typeSystem.classTable.ClassNodes[baseClassIndex];
+                var baseClass = TypeSystem.classTable.ClassNodes[baseClassIndex];
                 procNode = baseClass.GetFirstMemberFunctionBy(procName);
                 if (null != procNode)
                 {
@@ -279,7 +279,7 @@ namespace ProtoCore.DSASM
 
             foreach (int baseClassIndex in Bases)
             {
-                var baseClass = typeSystem.classTable.ClassNodes[baseClassIndex];
+                var baseClass = TypeSystem.classTable.ClassNodes[baseClassIndex];
                 procNode = baseClass.GetFirstMemberFunctionBy(procName, argCount);
                 if (null != procNode)
                 {
@@ -318,7 +318,7 @@ namespace ProtoCore.DSASM
 
             foreach (int baseClassIndex in Bases)
             {
-                var baseClass = typeSystem.classTable.ClassNodes[baseClassIndex];
+                var baseClass = TypeSystem.classTable.ClassNodes[baseClassIndex];
                 procNode = baseClass.GetFirstStaticFunctionBy(procName);
                 if (null != procNode)
                 {
@@ -345,7 +345,7 @@ namespace ProtoCore.DSASM
 
             foreach (int baseClassIndex in Bases)
             {
-                var baseClass = typeSystem.classTable.ClassNodes[baseClassIndex];
+                var baseClass = TypeSystem.classTable.ClassNodes[baseClassIndex];
                 procNode = baseClass.GetFirstStaticFunctionBy(procName, argCount);
                 if (null != procNode)
                 {
