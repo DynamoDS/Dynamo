@@ -170,7 +170,7 @@ namespace ProtoTestFx
                 }
                 else
                 {
-                    symbolNode = exe.classTable.ClassNodes[ci].symbols.symbolList[(int)instruction.op1.opdata];
+                    symbolNode = exe.classTable.ClassNodes[ci].Symbols.symbolList[(int)instruction.op1.opdata];
                 }
                 string symbolName = symbolNode.name;
 

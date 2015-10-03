@@ -654,7 +654,7 @@ namespace ProtoCore.DSASM
             bool isCallingMemberFunction = Constants.kInvalidIndex != classIndex;
             if (isCallingMemberFunction)
             {
-                fNode = exe.classTable.ClassNodes[classIndex].vtable.procList[functionIndex];
+                fNode = exe.classTable.ClassNodes[classIndex].ProcTable.procList[functionIndex];
 
                 if (depth > 0 && fNode.isConstructor)
                 {
@@ -1023,7 +1023,7 @@ namespace ProtoCore.DSASM
             Validity.Assert(arrayDim.IsArrayDimension);
 
             ClassNode classNode = exe.classTable.ClassNodes[classIndex];
-            ProcedureNode procNode = classNode.vtable.procList[procIndex];
+            ProcedureNode procNode = classNode.ProcTable.procList[procIndex];
 
             // Get all arguments and replications 
             var arguments = new List<StackValue>();
@@ -1174,7 +1174,7 @@ namespace ProtoCore.DSASM
                 int ci = symbol.classScope;
                 if (ci != Constants.kInvalidIndex)
                 {
-                    symbolName = exe.classTable.ClassNodes[ci].name + "::" + symbolName;
+                    symbolName = exe.classTable.ClassNodes[ci].Name + "::" + symbolName;
                 }
                 string lhs = watchPrompt + symbolName;
 
@@ -1188,7 +1188,7 @@ namespace ProtoCore.DSASM
                 if (snode.IsPointer)
                 {
                     int type = snode.metaData.type;
-                    string cname = exe.classTable.ClassNodes[type].name;
+                    string cname = exe.classTable.ClassNodes[type].Name;
                     rhs = cname + ":ptr(" + snode.opdata + ")";
                 }
                 else if (snode.IsArray)
@@ -1274,7 +1274,7 @@ namespace ProtoCore.DSASM
             else if (snode.IsPointer)
             {
                 int type = snode.metaData.type;
-                string cname = exe.classTable.ClassNodes[type].name;
+                string cname = exe.classTable.ClassNodes[type].Name;
                 rhs = cname + ":ptr(" + snode.opdata.ToString() + ")";
             }
             return rhs;
@@ -1938,7 +1938,7 @@ namespace ProtoCore.DSASM
                                         }
                                     }
                                     else if (firstSymbolInUpdatedRef.classScope >= 0 &&
-                                        exe.classTable.ClassNodes[firstSymbolInUpdatedRef.classScope].symbols.symbolList.Count <= firstSymbolInUpdatedRef.symbolTableIndex)
+                                        exe.classTable.ClassNodes[firstSymbolInUpdatedRef.classScope].Symbols.symbolList.Count <= firstSymbolInUpdatedRef.symbolTableIndex)
                                     {
                                         continue;
                                     }
@@ -2738,7 +2738,7 @@ namespace ProtoCore.DSASM
             }
             else
             {
-                return exe.classTable.ClassNodes[classIndex].symbols.symbolList[symbolIndex];
+                return exe.classTable.ClassNodes[classIndex].Symbols.symbolList[symbolIndex];
             }
         }
 
@@ -2856,7 +2856,7 @@ namespace ProtoCore.DSASM
             }
             else
             {
-                node = exe.classTable.ClassNodes[scope].symbols.symbolList[symbol];
+                node = exe.classTable.ClassNodes[scope].Symbols.symbolList[symbol];
             }
 
             int offset = node.index;
@@ -3533,7 +3533,7 @@ namespace ProtoCore.DSASM
 
             if (!((int)PrimitiveType.kTypeVoid == classIndex
                 || Constants.kInvalidIndex == classIndex
-                || exe.classTable.ClassNodes[classIndex].symbols == null))
+                || exe.classTable.ClassNodes[classIndex].Symbols == null))
             {
                 bool hasThisSymbol;
                 AddressType addressType;
@@ -3560,7 +3560,7 @@ namespace ProtoCore.DSASM
                     }
                     else
                     {
-                        node = exe.classTable.ClassNodes[classIndex].symbols.symbolList[symbolIndex];
+                        node = exe.classTable.ClassNodes[classIndex].Symbols.symbolList[symbolIndex];
                     }
                 }
             }
@@ -3687,7 +3687,7 @@ namespace ProtoCore.DSASM
                 // when turning on converting dot operator to function call
                 if (!((int)PrimitiveType.kTypeVoid == type
                     || Constants.kInvalidIndex == type
-                    || exe.classTable.ClassNodes[type].symbols == null))
+                    || exe.classTable.ClassNodes[type].Symbols == null))
                 {
                     bool hasThisSymbol;
                     AddressType addressType;
@@ -3713,7 +3713,7 @@ namespace ProtoCore.DSASM
                         }
                         else
                         {
-                            node = exe.classTable.ClassNodes[type].symbols.symbolList[symbolIndex];
+                            node = exe.classTable.ClassNodes[type].Symbols.symbolList[symbolIndex];
                         }
                     }
                     if (node != null)
@@ -3792,7 +3792,7 @@ namespace ProtoCore.DSASM
                     }
                     else
                     {
-                        procNode = exe.classTable.ClassNodes[classId].vtable.procList[procId];
+                        procNode = exe.classTable.ClassNodes[classId].ProcTable.procList[procId];
                         isMemberFunctionPointer = !procNode.isConstructor && !procNode.isStatic;                        
                     }
                     type = classId;
@@ -3816,7 +3816,7 @@ namespace ProtoCore.DSASM
                         string property;
                         if (CoreUtils.TryGetPropertyName(procName, out property))
                         {
-                            string classname = exe.classTable.ClassNodes[type].name;
+                            string classname = exe.classTable.ClassNodes[type].Name;
                             string message = String.Format(Resources.kPropertyOfClassNotFound, property, classname);
                             runtimeCore.RuntimeStatus.LogWarning(WarningID.kMethodResolutionFailure, message);
                         }
@@ -3935,7 +3935,7 @@ namespace ProtoCore.DSASM
             }
             else
             {
-                st = exe.classTable.ClassNodes[classIndex].symbols;
+                st = exe.classTable.ClassNodes[classIndex].Symbols;
             }
 
             foreach (SymbolNode symbol in st.symbolList.Values)
@@ -4018,7 +4018,7 @@ namespace ProtoCore.DSASM
         {
             if (Constants.kGlobalScope != classIndex)
             {
-                return exe.classTable.ClassNodes[classIndex].vtable.procList[functionIndex];
+                return exe.classTable.ClassNodes[classIndex].ProcTable.procList[functionIndex];
             }
             return exe.procedureTable[blockId].procList[functionIndex];
         }
@@ -4029,8 +4029,8 @@ namespace ProtoCore.DSASM
 
             if (Constants.kGlobalScope != classIndex)
             {
-                localCount = exe.classTable.ClassNodes[classIndex].vtable.procList[functionIndex].localCount;
-                paramCount = exe.classTable.ClassNodes[classIndex].vtable.procList[functionIndex].argTypeList.Count;
+                localCount = exe.classTable.ClassNodes[classIndex].ProcTable.procList[functionIndex].localCount;
+                paramCount = exe.classTable.ClassNodes[classIndex].ProcTable.procList[functionIndex].argTypeList.Count;
             }
             else
             {
@@ -4059,7 +4059,7 @@ namespace ProtoCore.DSASM
             int type = (int)instruction.op1.opdata;
             MetaData metadata;
             metadata.type = type;
-            StackValue pointer = rmem.Heap.AllocatePointer(exe.classTable.ClassNodes[type].size, metadata);
+            StackValue pointer = rmem.Heap.AllocatePointer(exe.classTable.ClassNodes[type].Size, metadata);
             rmem.SetAtRelative(StackFrame.kFrameIndexThisPtr, pointer);
 
             ++pc;
@@ -4742,7 +4742,7 @@ namespace ProtoCore.DSASM
 
             int symbolIndex = (int)instruction.op1.opdata;
             classIndex = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
-            int stackIndex = exe.classTable.ClassNodes[classIndex].symbols.symbolList[symbolIndex].index;
+            int stackIndex = exe.classTable.ClassNodes[classIndex].Symbols.symbolList[symbolIndex].index;
 
             //==================================================
             //  1. If allocated... bypass auto allocation
@@ -4811,7 +4811,7 @@ namespace ProtoCore.DSASM
                     StackValue svNewProperty = rmem.Heap.AllocatePointer(new [] { svData });
                     thisObject.SetValueAtIndex(stackIndex, svNewProperty, runtimeCore);
 
-                    exe.classTable.ClassNodes[classIndex].symbols.symbolList[stackIndex].heapIndex = (int)svNewProperty.opdata;
+                    exe.classTable.ClassNodes[classIndex].Symbols.symbolList[stackIndex].heapIndex = (int)svNewProperty.opdata;
                 }
             }
             else if (svProperty.IsArray && (dimensions > 0))
@@ -4830,7 +4830,7 @@ namespace ProtoCore.DSASM
                     StackValue svNewProperty = rmem.Heap.AllocatePointer(new [] {svData});
                     thisObject.SetValueAtIndex(stackIndex, svNewProperty, runtimeCore);
 
-                    exe.classTable.ClassNodes[classIndex].symbols.symbolList[stackIndex].heapIndex = (int)svNewProperty.opdata;
+                    exe.classTable.ClassNodes[classIndex].Symbols.symbolList[stackIndex].heapIndex = (int)svNewProperty.opdata;
                 }
             }
 
@@ -5601,7 +5601,7 @@ namespace ProtoCore.DSASM
             ProcedureNode fNode;
             if (ci != Constants.kInvalidIndex)
             {
-                fNode = exe.classTable.ClassNodes[ci].vtable.procList[fi];
+                fNode = exe.classTable.ClassNodes[ci].ProcTable.procList[fi];
             }
             else
             {
@@ -6502,7 +6502,7 @@ namespace ProtoCore.DSASM
                 SymbolNode symnode;
                 if (Constants.kInvalidIndex != classIndex)
                 {
-                    symnode = exe.classTable.ClassNodes[classIndex].symbols.symbolList[symindex];
+                    symnode = exe.classTable.ClassNodes[classIndex].Symbols.symbolList[symindex];
                 }
                 else
                 {
@@ -6530,7 +6530,7 @@ namespace ProtoCore.DSASM
 
                     // Get the symbol and append it to the modified ref
                     updateNode = new AssociativeGraph.UpdateNode();
-                    updateNode.symbol = exe.classTable.ClassNodes[classIndex].symbols.symbolList[symindex];
+                    updateNode.symbol = exe.classTable.ClassNodes[classIndex].Symbols.symbolList[symindex];
                     updateNode.nodeType = AssociativeGraph.UpdateNodeType.kSymbol;
 
                     runtimeVerify(null != updateNode.symbol);
@@ -6950,7 +6950,7 @@ namespace ProtoCore.DSASM
                     }
                     else
                     {
-                        symbols = exe.classTable.ClassNodes[classScope].symbols.symbolList.Values;
+                        symbols = exe.classTable.ClassNodes[classScope].Symbols.symbolList.Values;
                     }
 
                     symbolsInScope = symbols.Where(s => s.functionIndex == functionScope);

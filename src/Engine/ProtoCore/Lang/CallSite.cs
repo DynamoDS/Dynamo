@@ -1096,7 +1096,7 @@ namespace ProtoCore
                 }
                 else
                 {
-                    clist.AddRange(runtimeCore.DSExecutable.classTable.ClassNodes[cidx].baseList);
+                    clist.AddRange(runtimeCore.DSExecutable.classTable.ClassNodes[cidx].Bases);
                     ++i;
                 }
             }
@@ -1127,12 +1127,12 @@ namespace ProtoCore
 
             //Walk the class tree structure to find the method
 
-            while (runtimeCore.DSExecutable.classTable.ClassNodes[typeID].baseList.Count > 0)
+            while (runtimeCore.DSExecutable.classTable.ClassNodes[typeID].Bases.Count > 0)
             {
-                Validity.Assert(runtimeCore.DSExecutable.classTable.ClassNodes[typeID].baseList.Count == 1,
+                Validity.Assert(runtimeCore.DSExecutable.classTable.ClassNodes[typeID].Bases.Count == 1,
                                 "Multiple inheritence not yet supported {B93D8D7F-AB4D-4412-8483-33DE739C0ADA}");
 
-                typeID = runtimeCore.DSExecutable.classTable.ClassNodes[typeID].baseList[0];
+                typeID = runtimeCore.DSExecutable.classTable.ClassNodes[typeID].Bases[0];
 
                 foreach (FunctionEndPoint fep in feps)
                     if (fep.ClassOwnerIndex == typeID)

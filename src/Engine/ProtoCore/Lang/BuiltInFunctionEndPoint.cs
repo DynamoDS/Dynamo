@@ -587,28 +587,28 @@ namespace ProtoCore.Lang
 
             int thisObjectType = thisObject.metaData.type;
             ClassNode classNode = runtime.exe.classTable.ClassNodes[thisObjectType];
-            int procIndex = classNode.vtable.IndexOfFirst(functionName);
+            int procIndex = classNode.ProcTable.IndexOfFirst(functionName);
             ProcedureNode procNode = null;
 
             // Trace hierarchy chain to find out the procedure node.
             if (Constants.kInvalidIndex == procIndex)
             {
                 var currentClassNode = classNode;
-                while (currentClassNode.baseList.Count > 0)
+                while (currentClassNode.Bases.Count > 0)
                 {
-                    int baseCI = currentClassNode.baseList[0];
+                    int baseCI = currentClassNode.Bases[0];
                     currentClassNode = runtime.exe.classTable.ClassNodes[baseCI];
-                    procIndex = currentClassNode.vtable.IndexOfFirst(functionName);
+                    procIndex = currentClassNode.ProcTable.IndexOfFirst(functionName);
                     if (Constants.kInvalidIndex != procIndex)
                     {
-                        procNode = currentClassNode.vtable.procList[procIndex];
+                        procNode = currentClassNode.ProcTable.procList[procIndex];
                         break;
                     }
                 }
             }
             else
             {
-                procNode = classNode.vtable.procList[procIndex];
+                procNode = classNode.ProcTable.procList[procIndex];
             }
 
             // If the function still isn't found, then it may be a function 

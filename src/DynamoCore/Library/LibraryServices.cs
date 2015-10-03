@@ -803,7 +803,7 @@ namespace Dynamo.Engine
                 var classNode = LibraryManagementCore.ClassTable.ClassNodes[classScope];
 
                 classAttribute = classNode.ClassAttributes;
-                className = classNode.name;
+                className = classNode.Name;
             }
 
             // MethodAttribute's HiddenInLibrary has higher priority than
@@ -907,7 +907,7 @@ namespace Dynamo.Engine
 
         private void ImportClass(string library, ClassNode classNode)
         {
-            foreach (ProcedureNode proc in classNode.vtable.procList)
+            foreach (ProcedureNode proc in classNode.ProcTable.procList)
                 ImportProcedure(library, proc);
         }
 

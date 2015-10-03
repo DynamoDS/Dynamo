@@ -431,7 +431,7 @@ namespace ProtoImperative
             int symbolindex = ProtoCore.DSASM.Constants.kInvalidIndex;
             if (ProtoCore.DSASM.Constants.kInvalidIndex != globalClassIndex && !IsInLanguageBlockDefinedInFunction())
             {
-                symbolindex = core.ClassTable.ClassNodes[globalClassIndex].symbols.Append(symbolnode);
+                symbolindex = core.ClassTable.ClassNodes[globalClassIndex].Symbols.Append(symbolnode);
             }
             else
             {
@@ -624,7 +624,7 @@ namespace ProtoImperative
                     // To support unamed constructor, x = A();
                     else if (refClassIndex != Constants.kInvalidIndex)
                     {
-                        string message = String.Format(ProtoCore.Properties.Resources.kCallingNonStaticMethod, core.ClassTable.ClassNodes[refClassIndex].name, procName);
+                        string message = String.Format(ProtoCore.Properties.Resources.kCallingNonStaticMethod, core.ClassTable.ClassNodes[refClassIndex].Name, procName);
                         buildStatus.LogWarning(WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
                         inferedType.UID = (int)PrimitiveType.kTypeNull;
                         EmitPushNull();
@@ -2229,7 +2229,7 @@ namespace ProtoImperative
                     {
                         int symbol = ProtoCore.DSASM.Constants.kInvalidIndex;
 
-                        for (int n = 0; n < core.ClassTable.ClassNodes[globalClassIndex].symbols.symbolList.Count; ++n)
+                        for (int n = 0; n < core.ClassTable.ClassNodes[globalClassIndex].Symbols.symbolList.Count; ++n)
                         {
                             //Fuqiang: Not a member variable if it is a local variable inside a function with the same name
                             bool localVarInMemFunc = false;
@@ -2247,15 +2247,15 @@ namespace ProtoImperative
                                     localVarInMemFunc = true;
                                 }
                             }
-                            bool isMemberVar = ProtoCore.DSASM.Constants.kGlobalScope == core.ClassTable.ClassNodes[globalClassIndex].symbols.symbolList[n].functionIndex
-                                && core.ClassTable.ClassNodes[globalClassIndex].symbols.symbolList[n].name == t.Name
+                            bool isMemberVar = ProtoCore.DSASM.Constants.kGlobalScope == core.ClassTable.ClassNodes[globalClassIndex].Symbols.symbolList[n].functionIndex
+                                && core.ClassTable.ClassNodes[globalClassIndex].Symbols.symbolList[n].name == t.Name
                                 && !localVarInMemFunc;
                             if (isMemberVar)
                             {
                                 if (t.ArrayDimensions == null)
-                                    core.ClassTable.ClassNodes[globalClassIndex].symbols.symbolList[n].datatype = inferedType;
+                                    core.ClassTable.ClassNodes[globalClassIndex].Symbols.symbolList[n].datatype = inferedType;
                                 else if (dimensions == inferedType.rank)
-                                    core.ClassTable.ClassNodes[globalClassIndex].symbols.symbolList[n].datatype.UID = inferedType.UID;
+                                    core.ClassTable.ClassNodes[globalClassIndex].Symbols.symbolList[n].datatype.UID = inferedType.UID;
                                 symbol = symbolnode.symbolTableIndex;
                                 break;
                             }
@@ -2550,10 +2550,10 @@ namespace ProtoImperative
                 SymbolNode symbol = null;
                 if (ProtoCore.DSASM.Constants.kInvalidIndex != globalClassIndex && !IsInLanguageBlockDefinedInFunction())
                 {
-                    symbolIndex = core.ClassTable.ClassNodes[globalClassIndex].symbols.IndexOf(identName);
+                    symbolIndex = core.ClassTable.ClassNodes[globalClassIndex].Symbols.IndexOf(identName);
                     if (symbolIndex != Constants.kInvalidIndex)
                     {
-                        symbol = core.ClassTable.ClassNodes[globalClassIndex].symbols.symbolList[symbolIndex];
+                        symbol = core.ClassTable.ClassNodes[globalClassIndex].Symbols.symbolList[symbolIndex];
                     }
                 }
                 else
@@ -2574,10 +2574,10 @@ namespace ProtoImperative
 
                 if (ProtoCore.DSASM.Constants.kInvalidIndex != globalClassIndex && !IsInLanguageBlockDefinedInFunction())
                 {
-                    symbolIndex = core.ClassTable.ClassNodes[globalClassIndex].symbols.IndexOf(keyIdent);
+                    symbolIndex = core.ClassTable.ClassNodes[globalClassIndex].Symbols.IndexOf(keyIdent);
                     if (symbolIndex != Constants.kInvalidIndex)
                     {
-                        symbol = core.ClassTable.ClassNodes[globalClassIndex].symbols.symbolList[symbolIndex];
+                        symbol = core.ClassTable.ClassNodes[globalClassIndex].Symbols.symbolList[symbolIndex];
                     }
                 }
                 else

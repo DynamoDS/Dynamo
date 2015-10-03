@@ -222,7 +222,7 @@ namespace ProtoCore
                 {
                     ClassNode classNode = runtimeCore.DSExecutable.classTable.ClassNodes[sv.metaData.type];
                     List<string> types = new List<string>();
-                    types.Add(classNode.name);
+                    types.Add(classNode.Name);
                     asmType.Add(classNode.ExternLib, types);
 
                     return asmType;
@@ -410,7 +410,7 @@ namespace ProtoCore
             public static IEnumerable<ClassMirror> GetClasses(Core core)
             {
                 return core.ClassTable.ClassNodes.Skip((int)PrimitiveType.kMaxPrimitives).
-                    Where(x => !CoreUtils.StartsWithSingleUnderscore(x.name)).
+                    Where(x => !CoreUtils.StartsWithSingleUnderscore(x.Name)).
                     Select(x => new ClassMirror(core, x));
             }
 
@@ -419,8 +419,8 @@ namespace ProtoCore
                 // TODO: Get rid of keyword "PointerReserved" and PrimitiveType.kTypePointer
                 // if not used in the language: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6752
                 return core.ClassTable.ClassNodes.
-                    Where(x => !CoreUtils.StartsWithSingleUnderscore(x.name)
-                    && x.name != DSDefinitions.Keyword.PointerReserved).
+                    Where(x => !CoreUtils.StartsWithSingleUnderscore(x.Name)
+                    && x.Name != DSDefinitions.Keyword.PointerReserved).
                     Select(x => new ClassMirror(core, x));
             }
 
@@ -483,7 +483,7 @@ namespace ProtoCore
                     {
                         ClassNode classNode = classTable.ClassNodes[ci];
 
-                        MethodMirror mm = FindMethod(methodName, arguments, classNode.vtable.procList);
+                        MethodMirror mm = FindMethod(methodName, arguments, classNode.ProcTable.procList);
                         if (mm != null)
                             return mm.ReturnType;
                     }
@@ -604,14 +604,14 @@ namespace ProtoCore
                 ProtoCore.DSASM.ClassTable classTable = core.ClassTable;
                 classNode = classTable.ClassNodes[classIndex];
                 libraryMirror = new LibraryMirror(classNode.ExternLib, core);
-                ClassName = classNode.name;
+                ClassName = classNode.Name;
             }
 
             internal ClassMirror(ProtoCore.Core core, ProtoCore.DSASM.ClassNode classNode,
                 LibraryMirror libraryMirror = null)
-                : base(core, classNode.name)
+                : base(core, classNode.Name)
             {
-                ClassName = classNode.name;
+                ClassName = classNode.Name;
                 if (libraryMirror == null)
                     this.libraryMirror = new LibraryMirror(classNode.ExternLib, core);
                 else
@@ -634,7 +634,7 @@ namespace ProtoCore
                 Validity.Assert(classNodes != null && classNodes.Count > 0);
 
                 this.classNode = classNodes[svData.metaData.type];
-                this.ClassName = this.classNode.name;
+                this.ClassName = this.classNode.Name;
                 this.Name = this.ClassName;
                 libraryMirror = new LibraryMirror(classNode.ExternLib, core);
 
@@ -682,7 +682,7 @@ namespace ProtoCore
                 Validity.Assert(!string.IsNullOrEmpty(ClassName));
                 Validity.Assert(staticCore != null);
 
-                int ci = ClassNode.baseList[0];
+                int ci = ClassNode.Bases[0];
                 Validity.Assert(ci != ProtoCore.DSASM.Constants.kInvalidIndex);
 
                 return new ClassMirror(staticCore, staticCore.ClassTable.ClassNodes[ci], this.libraryMirror);
@@ -701,10 +701,10 @@ namespace ProtoCore
                 Validity.Assert(staticCore != null);
 
                 ClassNode cNode = ClassNode;
-                while (cNode.baseList.Count > 0)
+                while (cNode.Bases.Count > 0)
                 {
 
-                    int ci = cNode.baseList[0];
+                    int ci = cNode.Bases[0];
                     Validity.Assert(ci != ProtoCore.DSASM.Constants.kInvalidIndex);
 
                     baseClasses.Add(new ClassMirror(staticCore, staticCore.ClassTable.ClassNodes[ci], this.libraryMirror));
@@ -724,7 +724,7 @@ namespace ProtoCore
 
                 string name = string.Empty;
 
-                ProcedureTable procedureTable = ClassNode.vtable;
+                ProcedureTable procedureTable = ClassNode.ProcTable;
                 List<ProcedureNode> procList = procedureTable.procList;
                 string getterPrefix = ProtoCore.DSASM.Constants.kGetterPrefix;
                 int prefixLength = getterPrefix.Length;
@@ -748,7 +748,7 @@ namespace ProtoCore
             /// <returns></returns>
             public IEnumerable<MethodMirror> GetConstructors()
             {
-                return ClassNode.vtable.procList.Where(
+                return ClassNode.ProcTable.procList.Where(
                     x =>
                     {
                         bool hidden = x.MethodAttribute == null ? false : x.MethodAttribute.HiddenInLibrary;
@@ -765,7 +765,7 @@ namespace ProtoCore
             {
                 List<MethodMirror> methods = new List<MethodMirror>();
 
-                ProcedureTable procedureTable = ClassNode.vtable;
+                ProcedureTable procedureTable = ClassNode.ProcTable;
                 List<ProcedureNode> procList = procedureTable.procList;
 
                 foreach (ProcedureNode pNode in procList)
@@ -795,7 +795,7 @@ namespace ProtoCore
             /// <returns></returns>
             public IEnumerable<MethodMirror> GetOverloads(string methodName)
             {
-                return ClassNode.vtable.procList.Where(x => x.name == methodName)
+                return ClassNode.ProcTable.procList.Where(x => x.name == methodName)
                     .Select(y => new MethodMirror(y));
             }
 
@@ -857,7 +857,7 @@ namespace ProtoCore
 
             public MethodMirror GetDeclaredMethod(string methodName, List<ProtoCore.Type> argumentTypes)
             {
-                ProcedureTable procedureTable = ClassNode.vtable;
+                ProcedureTable procedureTable = ClassNode.ProcTable;
                 List<ProcedureNode> procList = procedureTable.procList;
 
                 return StaticMirror.FindMethod(methodName, argumentTypes, procList);
@@ -1172,7 +1172,7 @@ namespace ProtoCore
                     }
 
 
-                    ProcedureTable procedureTable = classNode.vtable;
+                    ProcedureTable procedureTable = classNode.ProcTable;
                     List<ProcedureNode> procList = procedureTable.procList;
 
                     return StaticMirror.FindMethod(methodName, argumentTypes, procList);

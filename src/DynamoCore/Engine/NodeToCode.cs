@@ -74,7 +74,7 @@ namespace Dynamo.Engine.NodeToCode
             {
                 if (customization != null)
                 {
-                    shortName = customization.GetShortName(classNode.name);
+                    shortName = customization.GetShortName(classNode.Name);
                     if (!String.IsNullOrEmpty(shortName))
                         break;
                 }
@@ -86,9 +86,9 @@ namespace Dynamo.Engine.NodeToCode
                         break;
                 }
 
-                if (classNode.baseList.Any())
+                if (classNode.Bases.Any())
                 {
-                    var baseIndex = classNode.baseList[0];
+                    var baseIndex = classNode.Bases[0];
                     classNode = core.ClassTable.ClassNodes[baseIndex];
                 }
                 else

@@ -160,7 +160,7 @@ namespace ProtoCore
         {
             if (Constants.kGlobalScope != classIndex)
             {
-                return core.ClassTable.ClassNodes[classIndex].vtable.procList[functionIndex];
+                return core.ClassTable.ClassNodes[classIndex].ProcTable.procList[functionIndex];
             }
             return codeBlock.procedureTable.procList[functionIndex];
         }
@@ -603,7 +603,7 @@ namespace ProtoCore
                         int symindex = core.ClassTable.ClassNodes[lefttype.UID].GetFirstVisibleSymbolNoAccessCheck(identnode.Value);
                         if (ProtoCore.DSASM.Constants.kInvalidIndex != symindex)
                         {
-                            symbolnode = core.ClassTable.ClassNodes[lefttype.UID].symbols.symbolList[symindex];
+                            symbolnode = core.ClassTable.ClassNodes[lefttype.UID].Symbols.symbolList[symindex];
                         }
                     }
 
@@ -677,7 +677,7 @@ namespace ProtoCore
                             int symindex = core.ClassTable.ClassNodes[lefttype.UID].GetFirstVisibleSymbolNoAccessCheck(functionName);
                             if (ProtoCore.DSASM.Constants.kInvalidIndex != symindex)
                             {
-                                symbolnode = core.ClassTable.ClassNodes[lefttype.UID].symbols.symbolList[symindex];
+                                symbolnode = core.ClassTable.ClassNodes[lefttype.UID].Symbols.symbolList[symindex];
                             }
                         }
 
@@ -729,7 +729,7 @@ namespace ProtoCore
                         int symindex = core.ClassTable.ClassNodes[lefttype.UID].GetFirstVisibleSymbolNoAccessCheck(identnode.Value);
                         if (ProtoCore.DSASM.Constants.kInvalidIndex != symindex)
                         {
-                            symbolnode = core.ClassTable.ClassNodes[lefttype.UID].symbols.symbolList[symindex];
+                            symbolnode = core.ClassTable.ClassNodes[lefttype.UID].Symbols.symbolList[symindex];
                         }
                     }
 
@@ -807,7 +807,7 @@ namespace ProtoCore
                             int symindex = core.ClassTable.ClassNodes[lefttype.UID].GetFirstVisibleSymbolNoAccessCheck(functionName);
                             if (ProtoCore.DSASM.Constants.kInvalidIndex != symindex)
                             {
-                                symbolnode = core.ClassTable.ClassNodes[lefttype.UID].symbols.symbolList[symindex];
+                                symbolnode = core.ClassTable.ClassNodes[lefttype.UID].Symbols.symbolList[symindex];
                             }
                         }
 
@@ -1229,7 +1229,7 @@ namespace ProtoCore
             }
             else
             {
-                symbolTable = core.ClassTable.ClassNodes[classScope].symbols;
+                symbolTable = core.ClassTable.ClassNodes[classScope].Symbols;
             }
 
             symbol = null;
@@ -1318,7 +1318,7 @@ namespace ProtoCore
                     }
                     else
                     {
-                        symbol = thisClass.symbols.symbolList[symbolIndex];
+                        symbol = thisClass.Symbols.symbolList[symbolIndex];
                     }
 
                     isAccessible = true;
@@ -1398,7 +1398,7 @@ namespace ProtoCore
                     }
                     else
                     {
-                        symbol = thisClass.symbols.symbolList[symbolIndex];
+                        symbol = thisClass.Symbols.symbolList[symbolIndex];
                     }
 
                     isAccessible = true;
@@ -1512,7 +1512,7 @@ namespace ProtoCore
                 return false;
             }
 
-            return (classnode.symbols.symbolList[symbolIndex].functionIndex == ProtoCore.DSASM.Constants.kGlobalScope);
+            return (classnode.Symbols.symbolList[symbolIndex].functionIndex == ProtoCore.DSASM.Constants.kGlobalScope);
         }
 #endif
 
@@ -2855,7 +2855,7 @@ namespace ProtoCore
             if (Constants.kGlobalScope != procNode.classScope)
             {
                 int classIndex = procNode.classScope;
-                string className = core.ClassTable.ClassNodes[classIndex].name;
+                string className = core.ClassTable.ClassNodes[classIndex].Name;
                 name = String.Format(@"{0}.{1}", className, name);
             }
 
@@ -2902,7 +2902,7 @@ namespace ProtoCore
 
             // TODO(Jiong): Do a check on the number of arguments 
             bool hasMatchedConstructor = false;
-            foreach (ProtoCore.DSASM.ProcedureNode pn in core.ClassTable.ClassNodes[cix].vtable.procList)
+            foreach (ProtoCore.DSASM.ProcedureNode pn in core.ClassTable.ClassNodes[cix].ProcTable.procList)
             {
                 if (pn.isConstructor && pn.argInfoList.Count == attribute.Arguments.Count)
                 {
