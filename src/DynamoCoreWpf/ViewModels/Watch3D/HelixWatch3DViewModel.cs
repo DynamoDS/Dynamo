@@ -302,6 +302,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public void SerializeCamera(XmlElement camerasElement)
         {
+            if (camera == null) return;
+
             try
             {
                 var node = XmlHelper.AddNode(camerasElement, "Camera");
@@ -926,6 +928,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public void SetCameraData(CameraData data)
         {
+            if (Camera == null) return;
+
             Camera.LookDirection = data.LookDirection;
             Camera.Position = data.EyePosition;
             Camera.UpDirection = data.UpDirection;

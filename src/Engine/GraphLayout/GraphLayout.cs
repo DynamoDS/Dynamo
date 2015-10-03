@@ -567,13 +567,13 @@ namespace GraphLayout
         /// <summary>
         /// To shift the whole graph back to its original position.
         /// </summary>
-        public void SetGraphPosition()
+        public void SetGraphPosition(bool isGroupLayout)
         {
             double moveX = 0;
             double moveY = 0;
 
-            // If this is a separate subgraph then retain original position
-            if (AnchorLeftEdges.Count + AnchorRightEdges.Count == 0)
+            // If this is a group or a separate subgraph then retain original position
+            if (isGroupLayout || AnchorLeftEdges.Count + AnchorRightEdges.Count == 0)
             {
                 moveX = InitialGraphCenterX - GraphCenterX;
                 moveY = InitialGraphCenterY - GraphCenterY;
