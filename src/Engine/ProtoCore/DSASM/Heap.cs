@@ -577,7 +577,7 @@ namespace ProtoCore.DSASM
                 // fix for IDE-963 - pratapa
                 bool explicitCall = exe.IsExplicitCall;
                 bool tempFlag = explicitCall;
-                exe.Callr(pn.runtimeIndex, pn.procId, classIndex, ref explicitCall);
+                exe.Callr(pn.RuntimeIndex, pn.ID, classIndex, ref explicitCall);
 
                 exe.IsExplicitCall = tempFlag;
 

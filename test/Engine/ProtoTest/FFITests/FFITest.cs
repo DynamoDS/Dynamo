@@ -2579,7 +2579,7 @@ import (TestData from ""FFITarget.dll"");
             var testDataClassIndex = core.ClassTable.IndexOf("TestData");
             var testDataClass = core.ClassTable.ClassNodes[testDataClassIndex];
             var funcNode = testDataClass.ProcTable.GetFirstStatic("GetCircleArea");
-            var argument = funcNode.argInfoList.First();
+            var argument = funcNode.ArgumentInfos.First();
 
             Assert.IsNotNull(argument);
             Assert.IsNotNull(argument.Attributes);

@@ -866,7 +866,7 @@ namespace ProtoCore.AssociativeEngine
                     {
                         if (null != gnode.firstProc)
                         {
-                            if (fnode.Name == gnode.firstProc.name && fnode.Signature.Arguments.Count == gnode.firstProc.argInfoList.Count)
+                            if (fnode.Name == gnode.firstProc.Name && fnode.Signature.Arguments.Count == gnode.firstProc.ArgumentInfos.Count)
                             {
                                 if (Constants.kInvalidIndex == exprId)
                                 {
@@ -1153,7 +1153,7 @@ namespace ProtoCore.AssociativeGraph
                 {
                     foreach (var node in updateNodeRef.nodeList)
                     {
-                        if (node.procNode != null && node.procNode.name == getter)
+                        if (node.procNode != null && node.procNode.Name == getter)
                         {
                             return true;
                         }
@@ -1181,7 +1181,7 @@ namespace ProtoCore.AssociativeGraph
                 {
                     for (int i = 0; i < updateNodeRef.nodeList.Count; ++i)
                     {
-                        if (updateNodeRef.nodeList[i].procNode.name == getter && i == 1)
+                        if (updateNodeRef.nodeList[i].procNode.Name == getter && i == 1)
                         {
                             return updateNodeRef.nodeList[0];
                         }

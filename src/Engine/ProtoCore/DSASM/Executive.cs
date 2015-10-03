@@ -656,9 +656,9 @@ namespace ProtoCore.DSASM
             {
                 fNode = exe.classTable.ClassNodes[classIndex].ProcTable.procList[functionIndex];
 
-                if (depth > 0 && fNode.isConstructor)
+                if (depth > 0 && fNode.IsConstructor)
                 {
-                    string message = String.Format(Resources.KCallingConstructorOnInstance, fNode.name);
+                    string message = String.Format(Resources.KCallingConstructorOnInstance, fNode.Name);
                     runtimeCore.RuntimeStatus.LogWarning(WarningID.kCallingConstructorOnInstance, message);
                     return StackValue.Null;
                 }
@@ -677,7 +677,7 @@ namespace ProtoCore.DSASM
             int stackindex = rmem.Stack.Count - 1;
 
             List<StackValue> dotCallDimensions = new List<StackValue>();
-            if (fNode.name.Equals(Constants.kDotMethodName))
+            if (fNode.Name.Equals(Constants.kDotMethodName))
             {
                 int firstDotArgIndex = stackindex - (Constants.kDotCallArgCount - 1);
                 StackValue svLHS = rmem.Stack[firstDotArgIndex];
@@ -702,7 +702,7 @@ namespace ProtoCore.DSASM
             }
             else
             {
-                PopArgumentsFromStack(fNode.argTypeList.Count, ref arguments, ref replicationGuides);
+                PopArgumentsFromStack(fNode.ArgumentTypes.Count, ref arguments, ref replicationGuides);
             }
 
             replicationGuides.Reverse();
@@ -712,8 +712,8 @@ namespace ProtoCore.DSASM
 
             // Comment Jun: These function do not require replication guides
             // TODO Jun: Move these conditions or refactor JIL code emission so these checks dont reside here (Post R1)
-            if (Constants.kDotMethodName != fNode.name
-                && Constants.kFunctionRangeExpression != fNode.name)
+            if (Constants.kDotMethodName != fNode.Name
+                && Constants.kFunctionRangeExpression != fNode.Name)
             {
                 // Comment Jun: If this is a non-dot call, cache the guides first and retrieve them on the actual function call
                 // TODO Jun: Ideally, cache the replication guides in the dynamic function node
@@ -739,7 +739,7 @@ namespace ProtoCore.DSASM
                 // 
                 if (!svThisPtr.IsPointer)
                 {
-                    string message = String.Format(Resources.kInvokeMethodOnInvalidObject, fNode.name);
+                    string message = String.Format(Resources.kInvokeMethodOnInvalidObject, fNode.Name);
                     runtimeCore.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer, message);
                     return StackValue.Null;
                 }
@@ -748,13 +748,13 @@ namespace ProtoCore.DSASM
             {
                 // There is no depth, but check if the function is a member function
                 // If its a member function, the this pointer is required by the core to pass on to the FEP call
-                if (isCallingMemberFunction && !fNode.isConstructor && !fNode.isStatic)
+                if (isCallingMemberFunction && !fNode.IsConstructor && !fNode.IsStatic)
                 {
                     // A member function
                     // Get the this pointer as this class instance would have already been cosntructed
                     svThisPtr = rmem.CurrentStackFrame.ThisPtr;
                 }
-                else if (fNode.name.Equals(Constants.kInlineConditionalMethodName))
+                else if (fNode.Name.Equals(Constants.kInlineConditionalMethodName))
                 {
                     // The built-in inlinecondition function is global but it is treated as a conditional execution rather than a normal function call
                     // This is why the class scope  needs to be preserved such that the auto-generated language blocks in an inline conditional can still refer to member functions and properties
@@ -797,7 +797,7 @@ namespace ProtoCore.DSASM
             CallSite callsite = runtimeCore.RuntimeData.GetCallSite(
                 exe.ExecutingGraphnode, 
                 classIndex, 
-                fNode.name, 
+                fNode.Name, 
                 exe,
                 runtimeCore.RunningBlock, 
                 runtimeCore.Options, 
@@ -827,7 +827,7 @@ namespace ProtoCore.DSASM
                                             registers, 
                                             null);
 
-            FunctionCounter counter = FindCounter(functionIndex, classIndex, fNode.name);
+            FunctionCounter counter = FindCounter(functionIndex, classIndex, fNode.Name);
             StackValue sv = StackValue.Null;
 
 
@@ -846,7 +846,7 @@ namespace ProtoCore.DSASM
 
                     else if (counter.times >= 1)
                     {
-                        if (fNode.name.ToCharArray()[0] != '%' && fNode.name.ToCharArray()[0] != '_' && !fNode.name.Equals(Constants.kDotMethodName) && exe.calledInFunction)
+                        if (fNode.Name.ToCharArray()[0] != '%' && fNode.Name.ToCharArray()[0] != '_' && !fNode.Name.Equals(Constants.kDotMethodName) && exe.calledInFunction)
                         {
                             counter.times++;
                         }
@@ -1000,9 +1000,9 @@ namespace ProtoCore.DSASM
                     runtimeCore.DebugProps.RestoreCallrForNoBreak(runtimeCore, fNode);
                 }
 
-                GCDotMethods(fNode.name, ref sv, dotCallDimensions, arguments);
+                GCDotMethods(fNode.Name, ref sv, dotCallDimensions, arguments);
 
-                if (fNode.name.ToCharArray()[0] != '%' && fNode.name.ToCharArray()[0] != '_')
+                if (fNode.Name.ToCharArray()[0] != '%' && fNode.Name.ToCharArray()[0] != '_')
                 {
                     exe.calledInFunction = false;
                 }
@@ -1028,7 +1028,7 @@ namespace ProtoCore.DSASM
             // Get all arguments and replications 
             var arguments = new List<StackValue>();
             var repGuides = new List<List<ReplicationGuide>>();
-            PopArgumentsFromStack(procNode.argTypeList.Count,
+            PopArgumentsFromStack(procNode.ArgumentTypes.Count,
                                   ref arguments,
                                   ref repGuides);
             arguments.Reverse();
@@ -1068,7 +1068,7 @@ namespace ProtoCore.DSASM
 
             var callsite = runtimeCore.RuntimeData.GetCallSite(exe.ExecutingGraphnode,
                                             classIndex,
-                                            procNode.name,
+                                            procNode.Name,
                                             exe, runtimeCore.RunningBlock, runtimeCore.Options, runtimeCore.RuntimeStatus);
 
             Validity.Assert(null != callsite);
@@ -2066,7 +2066,7 @@ namespace ProtoCore.DSASM
                 if (thisPtr == null)
                 {
                     StackValue sv = RX;
-                    GCDotMethods(procNode.name, ref sv, DotCallDimensions, Arguments);
+                    GCDotMethods(procNode.Name, ref sv, DotCallDimensions, Arguments);
                     RX = sv;
                 }
             }
@@ -3786,14 +3786,14 @@ namespace ProtoCore.DSASM
 
                     if (Constants.kGlobalScope == classId)
                     {
-                        procName = exe.procedureTable[blockId].procList[procId].name;
+                        procName = exe.procedureTable[blockId].procList[procId].Name;
                         CodeBlock codeblock = ProtoCore.Utils.CoreUtils.GetCodeBlock(exe.CodeBlocks, blockId);
                         procNode = CoreUtils.GetFirstVisibleProcedure(procName, arglist, codeblock);
                     }
                     else
                     {
                         procNode = exe.classTable.ClassNodes[classId].ProcTable.procList[procId];
-                        isMemberFunctionPointer = !procNode.isConstructor && !procNode.isStatic;                        
+                        isMemberFunctionPointer = !procNode.IsConstructor && !procNode.IsStatic;                        
                     }
                     type = classId;
                 }
@@ -3837,7 +3837,7 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            if (null != procNode && Constants.kInvalidIndex != procNode.procId)
+            if (null != procNode && Constants.kInvalidIndex != procNode.ID)
             {
                 if (isLeftClass || (isFunctionPointerCall && depth > 0)) //constructor or static function or function pointer call
                 {
@@ -3851,13 +3851,13 @@ namespace ProtoCore.DSASM
                     rmem.Push(argSvList[i]);
                 }
                 //push value-not-provided default argument
-                for (int i = arglist.Count; i < procNode.argInfoList.Count; i++)
+                for (int i = arglist.Count; i < procNode.ArgumentInfos.Count; i++)
                 {
                     rmem.Push(StackValue.BuildDefaultArgument());
                 }
 
                 // Push the function declaration block  
-                StackValue opblock = StackValue.BuildBlockIndex(procNode.runtimeIndex);
+                StackValue opblock = StackValue.BuildBlockIndex(procNode.RuntimeIndex);
                 instr.op3 = opblock;
 
                 int dimensions = 0;
@@ -3867,7 +3867,7 @@ namespace ProtoCore.DSASM
                 rmem.Push(StackValue.BuildInt(depth));
 
                 //Modify the operand data
-                instr.op1.opdata = procNode.procId;
+                instr.op1.opdata = procNode.ID;
                 instr.op1.optype = AddressType.FunctionIndex;
                 instr.op2.opdata = type;
 
@@ -4029,13 +4029,13 @@ namespace ProtoCore.DSASM
 
             if (Constants.kGlobalScope != classIndex)
             {
-                localCount = exe.classTable.ClassNodes[classIndex].ProcTable.procList[functionIndex].localCount;
-                paramCount = exe.classTable.ClassNodes[classIndex].ProcTable.procList[functionIndex].argTypeList.Count;
+                localCount = exe.classTable.ClassNodes[classIndex].ProcTable.procList[functionIndex].LocalCount;
+                paramCount = exe.classTable.ClassNodes[classIndex].ProcTable.procList[functionIndex].ArgumentTypes.Count;
             }
             else
             {
-                localCount = exe.procedureTable[blockId].procList[functionIndex].localCount;
-                paramCount = exe.procedureTable[blockId].procList[functionIndex].argTypeList.Count;
+                localCount = exe.procedureTable[blockId].procList[functionIndex].LocalCount;
+                paramCount = exe.procedureTable[blockId].procList[functionIndex].ArgumentTypes.Count;
             }
         }
 
@@ -5645,7 +5645,7 @@ namespace ProtoCore.DSASM
                 // in base constructor all params will be in reverse order
                 List<StackValue> argvalues = new List<StackValue>();
                 int stackindex = rmem.Stack.Count - 1;
-                for (int idx = 0; idx < fNode.argTypeList.Count; ++idx)
+                for (int idx = 0; idx < fNode.ArgumentTypes.Count; ++idx)
                 {
                     StackValue value = rmem.Stack[stackindex--];
                     argvalues.Add(value);
@@ -5672,8 +5672,8 @@ namespace ProtoCore.DSASM
                         replicationGuideList.Reverse();
                     }
                 }
-                rmem.PopFrame(fNode.argTypeList.Count);
-                for (int idx = 0; idx < fNode.argTypeList.Count; ++idx)
+                rmem.PopFrame(fNode.ArgumentTypes.Count);
+                for (int idx = 0; idx < fNode.ArgumentTypes.Count; ++idx)
                 {
                     rmem.Push(argvalues[idx]);
                 }
@@ -5704,11 +5704,11 @@ namespace ProtoCore.DSASM
             int depth = 0;
 
             StackFrameType type = StackFrameType.kTypeFunction;
-            rmem.PushStackFrame(svThisPointer, ci, fi, pc + 1, blockDecl, blockCaller, callerType, type, depth, rmem.FramePointer, registers, fNode.localCount, 0);
+            rmem.PushStackFrame(svThisPointer, ci, fi, pc + 1, blockDecl, blockCaller, callerType, type, depth, rmem.FramePointer, registers, fNode.LocalCount, 0);
 
 
             // Now let's go to the function
-            pc = fNode.pc + pcoffset;
+            pc = fNode.PC + pcoffset;
             fepRunStack.Push(false);
 
             // A standard call instruction must reset the graphnodes for associative
@@ -6075,7 +6075,7 @@ namespace ProtoCore.DSASM
 
             // Comment Jun: Dispose calls are always implicit and need to terminate
             // TODO Jun: This instruction should not know about dispose
-            bool isDispose = CoreUtils.IsDisposeMethod(procNode.name);
+            bool isDispose = CoreUtils.IsDisposeMethod(procNode.Name);
             if (isDispose)
             {
                 terminate = true;
@@ -6105,7 +6105,7 @@ namespace ProtoCore.DSASM
                 {
                     RX = CallSite.PerformReturnTypeCoerce(procNode, runtimeCore, RX);
                     StackValue svRet = RX;
-                    GCDotMethods(procNode.name, ref svRet, Properties.functionCallDotCallDimensions, Properties.functionCallArguments);
+                    GCDotMethods(procNode.Name, ref svRet, Properties.functionCallDotCallDimensions, Properties.functionCallArguments);
                     RX = svRet;
                 }
             }
@@ -6225,7 +6225,7 @@ namespace ProtoCore.DSASM
 
             // TODO: Currently functions can be defined only in the global and level 1 blocks (BlockIndex = 0 or 1)
             // Ideally the procNode.runtimeIndex should capture this information but this needs to be tested - pratapa
-            rmem.Push(StackValue.BuildBlockIndex(procNode.runtimeIndex));
+            rmem.Push(StackValue.BuildBlockIndex(procNode.RuntimeIndex));
 
             // The function call dimension for the subsequent feps are assumed to be 0 for now
             // This is not being used currently except for stack alignment - pratapa
@@ -6238,7 +6238,7 @@ namespace ProtoCore.DSASM
             rmem.Push(StackValue.BuildInt(runtimeCore.ContinuationStruct.InitialDepth));
 
             bool explicitCall = true;
-            Callr(procNode.runtimeIndex, fi, ci, ref explicitCall);
+            Callr(procNode.RuntimeIndex, fi, ci, ref explicitCall);
         }
 
         private void JMP_Handler(Instruction instruction)

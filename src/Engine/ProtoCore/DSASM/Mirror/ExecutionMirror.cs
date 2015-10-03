@@ -166,12 +166,12 @@ namespace ProtoCore.DSASM.Mirror
                     if (runtimeCore.DSExecutable.FuncPointerTable.TryGetFunction(val, runtimeCore, out procNode))
                     {
                         string className = String.Empty;
-                        if (procNode.classScope != Constants.kGlobalScope)
+                        if (procNode.ClassID != Constants.kGlobalScope)
                         {
-                            className = runtimeCore.DSExecutable.classTable.GetTypeName(procNode.classScope).Split('.').Last() + ".";
+                            className = runtimeCore.DSExecutable.classTable.GetTypeName(procNode.ClassID).Split('.').Last() + ".";
                         }
 
-                        return "function: " + className + procNode.name; 
+                        return "function: " + className + procNode.Name; 
                     }
                     return "function: " + val.opdata.ToString();
 

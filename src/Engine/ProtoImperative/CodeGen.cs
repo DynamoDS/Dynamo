@@ -474,8 +474,8 @@ namespace ProtoImperative
             }
             else
             {
-                int locOffset = localProcedure.localCount;
-                locOffset = localProcedure.localCount;
+                int locOffset = localProcedure.LocalCount;
+                locOffset = localProcedure.LocalCount;
                 symbolnode.index = -1 - ProtoCore.DSASM.StackFrame.kStackFrameSize - (locOffset + argOffset);
                 ++argOffset;
 
@@ -609,8 +609,8 @@ namespace ProtoImperative
                     if (procNode != null)
                     {
                         Validity.Assert(realType != ProtoCore.DSASM.Constants.kInvalidIndex);
-                        isConstructor = procNode.isConstructor;
-                        isStatic = procNode.isStatic;
+                        isConstructor = procNode.IsConstructor;
+                        isStatic = procNode.IsStatic;
                         type = lefttype = realType;
 
                         if (!isAccessible)
@@ -638,7 +638,7 @@ namespace ProtoImperative
                         if (classIndex != Constants.kInvalidIndex)
                         {
                             procNode = core.ClassTable.ClassNodes[classIndex].GetMemberFunction(procName, arglist, globalClassIndex, out isAccessible, out dummy, true);
-                            if (procNode != null && procNode.isConstructor)
+                            if (procNode != null && procNode.IsConstructor)
                             {
                                 type = classIndex;
                             }
@@ -681,9 +681,9 @@ namespace ProtoImperative
                 if (null != procNode)
                 {
                     type = ProtoCore.DSASM.Constants.kGlobalScope;
-                    if (core.TypeSystem.IsHigherRank(procNode.returntype.UID, inferedType.UID))
+                    if (core.TypeSystem.IsHigherRank(procNode.ReturnType.UID, inferedType.UID))
                     {
-                        inferedType = procNode.returntype;
+                        inferedType = procNode.ReturnType;
                     }
                 }
             }
@@ -702,7 +702,7 @@ namespace ProtoImperative
                     {
                         Validity.Assert(realType != ProtoCore.DSASM.Constants.kInvalidIndex);
                         procNode = memProcNode;
-                        inferedType = procNode.returntype;
+                        inferedType = procNode.ReturnType;
                         type = realType;
 
                         if (!isAccessible)
@@ -720,17 +720,17 @@ namespace ProtoImperative
 
             if (null != procNode)
             {
-                inferedType = procNode.returntype;
+                inferedType = procNode.ReturnType;
 
-                if (ProtoCore.DSASM.Constants.kInvalidIndex != procNode.procId)
+                if (ProtoCore.DSASM.Constants.kInvalidIndex != procNode.ID)
                 {
                     // The function is at block 0 if its a constructor, member or at the globals scope.
                     // Its at block 1 if its inside a language block. 
                     // Its limited to block 1 as of R1 since we dont support nested function declarations yet
-                    int blockId = procNode.runtimeIndex;
+                    int blockId = procNode.RuntimeIndex;
 
                     //push value-not-provided default argument
-                    for (int i = arglist.Count; i < procNode.argInfoList.Count; i++)
+                    for (int i = arglist.Count; i < procNode.ArgumentInfos.Count; i++)
                     {
                         EmitDefaultArgNode();
                     }
@@ -746,25 +746,25 @@ namespace ProtoImperative
                     EmitPush(StackValue.BuildInt(depth));
 
                     // The function call
-                    EmitInstrConsole(ProtoCore.DSASM.kw.callr, procNode.name);
+                    EmitInstrConsole(ProtoCore.DSASM.kw.callr, procNode.Name);
 
                     DebugProperties.BreakpointOptions oldOptions = core.DebuggerProperties.breakOptions;
-                    if(procNode.name.StartsWith(Constants.kSetterPrefix))
+                    if(procNode.Name.StartsWith(Constants.kSetterPrefix))
                     {
-                        EmitCall(procNode.procId, blockId, type, parentNode.line, parentNode.col, parentNode.endLine, parentNode.endCol);
+                        EmitCall(procNode.ID, blockId, type, parentNode.line, parentNode.col, parentNode.endLine, parentNode.endCol);
                     }
                     else if (bnode != null)
                     {
-                        EmitCall(procNode.procId, blockId, type, bnode.line, bnode.col, bnode.endLine, bnode.endCol);
+                        EmitCall(procNode.ID, blockId, type, bnode.line, bnode.col, bnode.endLine, bnode.endCol);
                     }
-                    else if (!procNode.name.Equals(Constants.kFunctionRangeExpression) ||
+                    else if (!procNode.Name.Equals(Constants.kFunctionRangeExpression) ||
                         oldOptions.HasFlag(DebugProperties.BreakpointOptions.EmitCallrForTempBreakpoint))
                     {
-                        EmitCall(procNode.procId, blockId, type, node.line, node.col, node.endLine, node.endCol);
+                        EmitCall(procNode.ID, blockId, type, node.line, node.col, node.endLine, node.endCol);
                     }
                     else
                     {
-                        EmitCall(procNode.procId, blockId, type);
+                        EmitCall(procNode.ID, blockId, type);
                     }
                     EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regRX);
                     StackValue opReturn = StackValue.BuildRegister(Registers.RX);
@@ -998,14 +998,14 @@ namespace ProtoImperative
             {
                 if (localProcedure != null)
                 {
-                    if (localProcedure.isStatic)
+                    if (localProcedure.IsStatic)
                     {
                         string message = ProtoCore.Properties.Resources.kUsingThisInStaticFunction;
                         core.BuildStatus.LogWarning(WarningID.kInvalidThis, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                         EmitPushNull();
                         return;
                     }
-                    else if (localProcedure.classScope == Constants.kGlobalScope)
+                    else if (localProcedure.ClassID == Constants.kGlobalScope)
                     {
                         string message = ProtoCore.Properties.Resources.kInvalidThis;
                         core.BuildStatus.LogWarning(WarningID.kInvalidThis, message, core.CurrentDSFileName, t.line, t.col, graphNode);
@@ -1047,7 +1047,7 @@ namespace ProtoImperative
                 procNode = CoreUtils.GetFirstVisibleProcedure(t.Name, null, codeBlock);
                 if (null != procNode)
                 {
-                    if (ProtoCore.DSASM.Constants.kInvalidIndex != procNode.procId)
+                    if (ProtoCore.DSASM.Constants.kInvalidIndex != procNode.ID)
                     {
                         // A global function
                         inferedType.UID = (int)PrimitiveType.kTypeFunctionPointer;
@@ -1283,18 +1283,18 @@ namespace ProtoImperative
 
                 // TODO jun: Add semantics for checking overloads (different parameter types)
                 localProcedure = new ProtoCore.DSASM.ProcedureNode();
-                localProcedure.name = funcDef.Name;
-                localProcedure.pc = pc;
-                localProcedure.localCount = funcDef.localVars;
-                localProcedure.returntype.UID = core.TypeSystem.GetType(funcDef.ReturnType.Name);
-                if (localProcedure.returntype.UID == (int)PrimitiveType.kInvalidType)
+                localProcedure.Name = funcDef.Name;
+                localProcedure.PC = pc;
+                localProcedure.LocalCount = funcDef.localVars;
+                localProcedure.ReturnType.UID = core.TypeSystem.GetType(funcDef.ReturnType.Name);
+                if (localProcedure.ReturnType.UID == (int)PrimitiveType.kInvalidType)
                 {
                     string message = String.Format(ProtoCore.Properties.Resources.kReturnTypeUndefined, funcDef.ReturnType.Name, funcDef.Name);
                     buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, null, funcDef.line, funcDef.col, firstSSAGraphNode);
-                    localProcedure.returntype.UID = (int)PrimitiveType.kTypeVar;
+                    localProcedure.ReturnType.UID = (int)PrimitiveType.kTypeVar;
                 }
-                localProcedure.returntype.rank = funcDef.ReturnType.rank;
-                localProcedure.runtimeIndex = codeBlock.codeBlockId;
+                localProcedure.ReturnType.rank = funcDef.ReturnType.rank;
+                localProcedure.RuntimeIndex = codeBlock.codeBlockId;
                 globalProcIndex = codeBlock.procedureTable.Append(localProcedure);
                 core.ProcNode = localProcedure;
 
@@ -1322,15 +1322,15 @@ namespace ProtoImperative
                         }
 
                         ProtoCore.Type argType = BuildArgumentTypeFromVarDeclNode(argNode, firstSSAGraphNode);
-                        int symbolIndex = AllocateArg(paramNode.Value, localProcedure.procId, argType);
+                        int symbolIndex = AllocateArg(paramNode.Value, localProcedure.ID, argType);
                         if (ProtoCore.DSASM.Constants.kInvalidIndex == symbolIndex)
                         {
                             throw new BuildHaltException("26384684");
                         }
 
-                        localProcedure.argTypeList.Add(argType);
+                        localProcedure.ArgumentTypes.Add(argType);
                         ProtoCore.DSASM.ArgumentInfo argInfo = new ProtoCore.DSASM.ArgumentInfo { DefaultExpression = aDefaultExpression };
-                        localProcedure.argInfoList.Add(argInfo);
+                        localProcedure.ArgumentInfos.Add(argInfo);
                     }
                 }         
             }
@@ -1358,20 +1358,20 @@ namespace ProtoImperative
                 localProcedure.Attributes = PopulateAttributes(funcDef.Attributes);
                 // Its only on the parse body pass where the real pc is determined. Update this procedures' pc
                 //Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex == localProcedure.pc);
-                localProcedure.pc = pc;
+                localProcedure.PC = pc;
 
                 // Copy the active function to the core so nested language blocks can refer to it
                 core.ProcNode = localProcedure;
 
                 // Arguments have been allocated, update the baseOffset
-                localProcedure.localCount = core.BaseOffset;
+                localProcedure.LocalCount = core.BaseOffset;
 
 
                 ProtoCore.FunctionEndPoint fep = null;
                                 
                 //Traverse default argument
                 emitDebugInfo = false;
-                foreach (ProtoCore.DSASM.ArgumentInfo argNode in localProcedure.argInfoList)
+                foreach (ProtoCore.DSASM.ArgumentInfo argNode in localProcedure.ArgumentInfos)
                 {
                     if (!argNode.IsDefault)
                     {
@@ -1412,31 +1412,31 @@ namespace ProtoImperative
                 }
 
                 // All locals have been stack allocated, update the local count of this function
-                localProcedure.localCount = core.BaseOffset;
+                localProcedure.LocalCount = core.BaseOffset;
 
                 // Update the param stack indices of this function
                 foreach (ProtoCore.DSASM.SymbolNode symnode in codeBlock.symbolTable.symbolList.Values)
                 {
-                    if (symnode.functionIndex == localProcedure.procId && symnode.isArgument)
+                    if (symnode.functionIndex == localProcedure.ID && symnode.isArgument)
                     {
-                        symnode.index -= localProcedure.localCount;
+                        symnode.index -= localProcedure.LocalCount;
                     }
                 }
 
                 ProtoCore.Lang.JILActivationRecord record = new ProtoCore.Lang.JILActivationRecord();
-                record.pc = localProcedure.pc;
-                record.locals = localProcedure.localCount;
+                record.pc = localProcedure.PC;
+                record.locals = localProcedure.LocalCount;
                 record.classIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
-                record.funcIndex = localProcedure.procId;
+                record.funcIndex = localProcedure.ID;
                 fep = new ProtoCore.Lang.JILFunctionEndPoint(record);
 
 
 
                 // Construct the fep arguments
-                fep.FormalParams = new ProtoCore.Type[localProcedure.argTypeList.Count];
+                fep.FormalParams = new ProtoCore.Type[localProcedure.ArgumentTypes.Count];
                 fep.BlockScope = codeBlock.codeBlockId;
                 fep.procedureNode = localProcedure;
-                localProcedure.argTypeList.CopyTo(fep.FormalParams, 0);
+                localProcedure.ArgumentTypes.CopyTo(fep.FormalParams, 0);
 
                 // TODO Jun: 'classIndexAtCallsite' is the class index as it is stored at the callsite function tables
                 // Determine whether this still needs to be aligned to the actual 'classIndex' variable
@@ -1468,7 +1468,7 @@ namespace ProtoImperative
                 {
                     if (!core.Options.SuppressFunctionResolutionWarning)
                     {
-                        string message = String.Format(ProtoCore.Properties.Resources.kFunctionNotReturnAtAllCodePaths, localProcedure.name);
+                        string message = String.Format(ProtoCore.Properties.Resources.kFunctionNotReturnAtAllCodePaths, localProcedure.Name);
                         core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kMissingReturnStatement, message, core.CurrentDSFileName, funcDef.line, funcDef.col, firstSSAGraphNode);
                     }
 
@@ -2120,7 +2120,7 @@ namespace ProtoImperative
                         bool isAccessibleFp;
                         int realType;
                         var procNode = core.ClassTable.ClassNodes[globalClassIndex].GetMemberFunction(t.Name, null, globalClassIndex, out isAccessibleFp, out realType);
-                        if (procNode != null && procNode.procId != Constants.kInvalidIndex && emitDebugInfo)
+                        if (procNode != null && procNode.ID != Constants.kInvalidIndex && emitDebugInfo)
                         {
                             buildStatus.LogSemanticError(String.Format(Resources.FunctionAsVaribleError, t.Name), core.CurrentDSFileName, t.line, t.col);
                         }
@@ -2150,7 +2150,7 @@ namespace ProtoImperative
 
                     // Comment Jun: Add modifeid properties into the updatedProperties list of the current function
                     // This propagates upated of mproperties taht were modified in an imperative block
-                    if (null != localProcedure && ProtoCore.DSASM.Constants.kGlobalScope != localProcedure.classScope)
+                    if (null != localProcedure && ProtoCore.DSASM.Constants.kGlobalScope != localProcedure.ClassID)
                     {
                         if (isAllocated)
                         {
@@ -2162,7 +2162,7 @@ namespace ProtoImperative
                             ProtoCore.AssociativeGraph.UpdateNodeRef leftNodeRef = new ProtoCore.AssociativeGraph.UpdateNodeRef();
                             DFSGetSymbolList(b.LeftNode, ref type, leftNodeRef);
 
-                            localProcedure.updatedProperties.Push(leftNodeRef);
+                            localProcedure.UpdatedProperties.Push(leftNodeRef);
                         }
                     }
 
@@ -2242,7 +2242,7 @@ namespace ProtoImperative
                                         localVarInMemFunc = true;
                                     }
                                 }
-                                else if (symbolnode.functionIndex != ProtoCore.DSASM.Constants.kGlobalScope && !localProcedure.isConstructor)
+                                else if (symbolnode.functionIndex != ProtoCore.DSASM.Constants.kGlobalScope && !localProcedure.IsConstructor)
                                 {
                                     localVarInMemFunc = true;
                                 }

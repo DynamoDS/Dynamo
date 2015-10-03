@@ -13,7 +13,7 @@ namespace ProtoCore.DSASM
     {
         public string Name { get; set; }
         public SymbolTable Symbols { get; set; }
-        public List<AST.AssociativeAST.AssociativeNode> DefaultArgExprList { get; set; } 
+        public List<AssociativeNode> DefaultArgExprList { get; set; } 
         public ProcedureTable ProcTable { get; set; }
         public int Size { get; set; }
         public int Rank { get; set; }
@@ -215,7 +215,7 @@ namespace ProtoCore.DSASM
 
                 if (classScope == ProtoCore.DSASM.Constants.kInvalidIndex)
                 {
-                    isAccessible = (procNode.access == CompilerDefinitions.AccessModifier.kPublic);
+                    isAccessible = (procNode.AccessModifier == CompilerDefinitions.AccessModifier.kPublic);
                 }
                 else if (classScope == myClassIndex) 
                 {
@@ -223,11 +223,11 @@ namespace ProtoCore.DSASM
                 }
                 else if (TypeSystem.classTable.ClassNodes[classScope].IsMyBase(myClassIndex))
                 {
-                    isAccessible = (procNode.access != CompilerDefinitions.AccessModifier.kPrivate);
+                    isAccessible = (procNode.AccessModifier != CompilerDefinitions.AccessModifier.kPrivate);
                 }
                 else
                 {
-                    isAccessible = (procNode.access == CompilerDefinitions.AccessModifier.kPublic);
+                    isAccessible = (procNode.AccessModifier == CompilerDefinitions.AccessModifier.kPublic);
                 }
 
                 return procNode;
@@ -297,7 +297,7 @@ namespace ProtoCore.DSASM
             }
 
             return  ProcTable.GetFunctionsBy(procName, argCount)
-                          .Where(p => p.isConstructor)
+                          .Where(p => p.IsConstructor)
                           .FirstOrDefault();
         }
 
@@ -309,7 +309,7 @@ namespace ProtoCore.DSASM
             }
 
             ProcedureNode procNode = ProcTable.GetFunctionsBy(procName)
-                                           .Where(p => p.isStatic)
+                                           .Where(p => p.IsStatic)
                                            .FirstOrDefault();
             if (procNode != null)
             {
@@ -336,7 +336,7 @@ namespace ProtoCore.DSASM
             }
 
             ProcedureNode procNode = ProcTable.GetFunctionsBy(procName, argCount)
-                                           .Where(p => p.isStatic)
+                                           .Where(p => p.IsStatic)
                                            .FirstOrDefault();
             if (procNode != null)
             {
@@ -377,7 +377,7 @@ namespace ProtoCore.DSASM
             Validity.Assert(null != variableName && variableName.Length > 0);
             ProcedureNode proc = GetProcNode(variableName);
             Validity.Assert(null != proc);
-            return proc.isStatic;
+            return proc.IsStatic;
         }
 
         public bool IsMemberVariable(string variableName)
@@ -418,7 +418,7 @@ namespace ProtoCore.DSASM
                 {
                     foreach (ProcedureNode procNode in ProcTable.procList)
                     {
-                        if (CoreUtils.IsDisposeMethod(procNode.name) && procNode.argInfoList.Count == 0)
+                        if (CoreUtils.IsDisposeMethod(procNode.Name) && procNode.ArgumentInfos.Count == 0)
                         {
                             disposeMethod = procNode;
                             break;

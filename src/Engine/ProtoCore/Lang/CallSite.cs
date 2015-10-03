@@ -1177,7 +1177,7 @@ namespace ProtoCore
                 return feps[indeciesOfSmallest[0]];
 
 
-            if (!CoreUtils.IsInternalMethod(feps[0].procedureNode.name) || CoreUtils.IsGetterSetter(feps[0].procedureNode.name))
+            if (!CoreUtils.IsInternalMethod(feps[0].procedureNode.Name) || CoreUtils.IsGetterSetter(feps[0].procedureNode.Name))
             {
                 //If this has failed, we have multiple feps, which can't be distiquished by class hiearchy. Emit a warning and select one
                 StringBuilder possibleFuncs = new StringBuilder();
@@ -1285,8 +1285,8 @@ namespace ProtoCore
 
                 if ((stackFrame.ThisPtr.IsPointer &&
                      stackFrame.ThisPtr.opdata == -1 && fep.procedureNode != null
-                     && !fep.procedureNode.isConstructor) && !fep.procedureNode.isStatic
-                    && (fep.procedureNode.classScope != -1))
+                     && !fep.procedureNode.IsConstructor) && !fep.procedureNode.IsStatic
+                    && (fep.procedureNode.ClassID != -1))
                 {
                     continue;
                 }
@@ -2068,7 +2068,7 @@ namespace ProtoCore
                             "Proc Node was null.... {976C039E-6FE4-4482-80BA-31850E708E79}");
 
             //Now cast ret into the return type
-            Type retType = procNode.returntype;
+            Type retType = procNode.ReturnType;
 
             if (retType.UID == (int) PrimitiveType.kTypeVar)
             {
@@ -2078,7 +2078,7 @@ namespace ProtoCore
                 }
                 else
                 {
-                    StackValue coercedRet = TypeSystem.Coerce(ret, procNode.returntype, runtimeCore);
+                    StackValue coercedRet = TypeSystem.Coerce(ret, procNode.ReturnType, runtimeCore);
                     return coercedRet;
                 }
             }
@@ -2099,7 +2099,7 @@ namespace ProtoCore
                 return ret;
             }
 
-            if (ret.IsArray && procNode.returntype.IsIndexable)
+            if (ret.IsArray && procNode.ReturnType.IsIndexable)
             {
                 StackValue coercedRet = TypeSystem.Coerce(ret, retType, runtimeCore);
                 return coercedRet;

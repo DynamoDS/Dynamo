@@ -56,9 +56,9 @@ namespace ProtoCore.DSASM
 
         public FunctionPointerNode(ProcedureNode procNode)
         {
-            this.procId = procNode.procId;
-            this.classScope = procNode.classScope;
-            this.blockId = procNode.runtimeIndex;
+            this.procId = procNode.ID;
+            this.classScope = procNode.ClassID;
+            this.blockId = procNode.RuntimeIndex;
         }
     }
 

@@ -631,7 +631,7 @@ namespace ProtoCore.Lang
                             thisObjectType = ProtoCore.DSASM.Constants.kGlobalScope;
                             procIndex = (int)svFunctionPtr.opdata;
                             procNode = runtime.exe.procedureTable[0].procList[procIndex];
-                            functionName = procNode.name;
+                            functionName = procNode.Name;
                         }
                     }
                 }
