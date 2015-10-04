@@ -479,7 +479,6 @@ namespace Dynamo.ViewModels
             RenderPackageFactoryViewModel = new RenderPackageFactoryViewModel(Model.PreferenceSettings);
             RenderPackageFactoryViewModel.PropertyChanged += RenderPackageFactoryViewModel_PropertyChanged;
 
-            // TODO: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-8736
             BackgroundPreviewViewModel = startConfiguration.Watch3DViewModel;
             BackgroundPreviewViewModel.Setup(this, RenderPackageFactoryViewModel.Factory, RenderPackageFactoryViewModel);
             Watch3DViewModels.Add(BackgroundPreviewViewModel);
