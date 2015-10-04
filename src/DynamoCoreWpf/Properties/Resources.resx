@@ -1938,4 +1938,7 @@ Do you want to install the latest Dynamo update?</value>
   <data name="AddToLibraryButton" xml:space="preserve">
     <value>Add</value>
   </data>
+  <data name="BackgroundPreviewDefaultName" xml:space="preserve">
+    <value>Default Background Preview</value>
+  </data>
 </root>

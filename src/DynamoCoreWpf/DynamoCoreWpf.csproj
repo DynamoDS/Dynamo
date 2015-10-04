@@ -291,7 +291,7 @@
     <Compile Include="ViewModels\Watch3D\DynamoLineGeometryModel3D.cs" />
     <Compile Include="ViewModels\Watch3D\DynamoPointGeometryModel3D.cs" />
     <Compile Include="ViewModels\Watch3D\HelixWatch3DViewModel.cs" />
-    <Compile Include="ViewModels\Watch3D\Watch3DViewModelBase.cs" />
+    <Compile Include="ViewModels\Watch3D\DefaultWatch3DViewModel.cs" />
     <Compile Include="Views\About\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>

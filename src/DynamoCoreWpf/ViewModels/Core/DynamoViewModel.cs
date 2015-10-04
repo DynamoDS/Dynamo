@@ -44,7 +44,7 @@ namespace Dynamo.ViewModels
         private Point transformOrigin;
         private bool showStartPage = false;
         
-        private List<Watch3DViewModelBase> watch3DViewModels = new List<Watch3DViewModelBase>();
+        private List<DefaultWatch3DViewModel> watch3DViewModels = new List<DefaultWatch3DViewModel>();
 
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
@@ -375,7 +375,7 @@ namespace Dynamo.ViewModels
             get { return this.Model.CurrentWorkspace.Presets.Any(); }            
         }
 
-        public List<Watch3DViewModelBase> Watch3DViewModels
+        public List<DefaultWatch3DViewModel> Watch3DViewModels
         {
             get { return watch3DViewModels; }
             protected set
@@ -385,7 +385,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public Watch3DViewModelBase BackgroundPreviewViewModel { get; private set; }
+        public DefaultWatch3DViewModel BackgroundPreviewViewModel { get; private set; }
 
         public bool BackgroundPreviewActive
         {
@@ -400,7 +400,7 @@ namespace Dynamo.ViewModels
             public IWatchHandler WatchHandler { get; set; }
             public DynamoModel DynamoModel { get; set; }
             public bool ShowLogin { get; set; }
-            public Watch3DViewModelBase Watch3DViewModel { get; set; }
+            public DefaultWatch3DViewModel Watch3DViewModel { get; set; }
 
             /// <summary>
             /// This property is initialized if there is an external host application
@@ -420,7 +420,7 @@ namespace Dynamo.ViewModels
             if (startConfiguration.Watch3DViewModel == null)
             {
                 startConfiguration.Watch3DViewModel = new HelixWatch3DViewModel(
-                    new Watch3DViewModelStartupParams(startConfiguration.DynamoModel, Resources.BackgroundPreviewName));
+                    new Watch3DViewModelStartupParams(startConfiguration.DynamoModel));
             }
 
             return new DynamoViewModel(startConfiguration);

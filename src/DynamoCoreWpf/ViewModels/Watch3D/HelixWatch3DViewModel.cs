@@ -14,7 +14,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
+using Dynamo.Controls;
 using Dynamo.Models;
+using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Rendering;
 using DynamoUtilities;
 using HelixToolkit.Wpf.SharpDX;
@@ -63,7 +65,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
     }
 
-    public class HelixWatch3DViewModel : Watch3DViewModelBase
+    /// <summary>
+    /// The HelixWatch3DViewModel establishes a full rendering 
+    /// context using the HelixToolkit. An instance of this class
+    /// can act as the data source for a <see cref="Watch3DView"/>
+    /// </summary>
+    public class HelixWatch3DViewModel : DefaultWatch3DViewModel
     {
         #region private members
 
@@ -287,7 +294,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         #endregion
 
         public HelixWatch3DViewModel(Watch3DViewModelStartupParams parameters) : base(parameters)
-        { 
+        {
+            Name = Resources.BackgroundPreviewName;
             IsResizable = false;
             RenderTechniquesManager = new DynamoRenderTechniquesManager();
             EffectsManager = new DynamoEffectsManager(RenderTechniquesManager);

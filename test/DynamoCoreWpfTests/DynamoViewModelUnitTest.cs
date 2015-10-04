@@ -128,12 +128,12 @@ namespace Dynamo.Tests
                     ProcessMode = Core.Threading.TaskProcessMode.Synchronous
                 });
 
-            var watch3DViewParams = new Watch3DViewModelStartupParams(model, "Test");
+            var watch3DViewParams = new Watch3DViewModelStartupParams(model);
             this.ViewModel = DynamoViewModel.Start(
                 new DynamoViewModel.StartConfiguration()
                 {
                     DynamoModel = model,
-                    Watch3DViewModel = new Watch3DViewModelBase(watch3DViewParams)
+                    Watch3DViewModel = new DefaultWatch3DViewModel(watch3DViewParams)
                 });
 
             this.ViewModel.RequestUserSaveWorkflow += RequestUserSaveWorkflow;
