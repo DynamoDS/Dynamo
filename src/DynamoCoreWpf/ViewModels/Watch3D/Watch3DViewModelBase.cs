@@ -26,9 +26,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public ILogger Logger { get; set; }
         public IPreferences Preferences { get; set; }
         public IEngineControllerManager EngineControllerManager { get; set; }
-        public IRenderPackageFactory RenderPackageFactory { get; set; }
-        public IDynamoViewModel ViewModel { get; set; }
-        public INotifyPropertyChanged RenderPackageFactoryViewModel { get;set; }
         public string Name { get; set; }
 
         public Watch3DViewModelStartupParams()
@@ -36,16 +33,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             
         }
 
-        public Watch3DViewModelStartupParams(DynamoModel model, DynamoViewModel viewModel, string name)
+        public Watch3DViewModelStartupParams(DynamoModel model, string name)
         {
             Model = model;
             Scheduler = model.Scheduler;
             Logger = model.Logger;
             Preferences = model.PreferenceSettings;
             EngineControllerManager = model;
-            RenderPackageFactory = viewModel.RenderPackageFactoryViewModel.Factory;
-            ViewModel = viewModel;
-            RenderPackageFactoryViewModel = viewModel.RenderPackageFactoryViewModel;
             Name = name;
         }
     }
@@ -63,9 +57,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         protected readonly IPreferences preferences;
         protected readonly ILogger logger;
         protected readonly IEngineControllerManager engineManager;
-        protected readonly IRenderPackageFactory renderPackageFactory;
-        protected readonly IDynamoViewModel viewModel;
-        protected readonly INotifyPropertyChanged renderPackageFactoryViewModel;
+        protected IRenderPackageFactory renderPackageFactory;
+        protected IDynamoViewModel viewModel;
+        protected INotifyPropertyChanged renderPackageFactoryViewModel;
 
         protected List<NodeModel> recentlyAddedNodes = new List<NodeModel>();
         protected bool active;
@@ -165,16 +159,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        protected Watch3DViewModelBase(Watch3DViewModelStartupParams parameters)
+        public Watch3DViewModelBase(Watch3DViewModelStartupParams parameters)
         {
             model = parameters.Model;
             scheduler = parameters.Scheduler;
             preferences = parameters.Preferences;
             logger = parameters.Logger;
             engineManager = parameters.EngineControllerManager;
-            renderPackageFactory = parameters.RenderPackageFactory;
-            viewModel = parameters.ViewModel;
-            renderPackageFactoryViewModel = parameters.RenderPackageFactoryViewModel;
 
             Active = parameters.Preferences.IsBackgroundPreviewActive;
             Name = parameters.Name;
@@ -187,16 +178,22 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
         }
 
-        public static Watch3DViewModelBase Start(Watch3DViewModelStartupParams parameters)
+        /// <summary>
+        /// Call setup to establish the visualization context for the
+        /// Watch3DViewModel.
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <param name="renderPackageFactory"></param>
+        /// <param name="renderPackageFactoryViewModel"></param>
+        public void Setup(IDynamoViewModel viewModel, 
+            IRenderPackageFactory renderPackageFactory, 
+            INotifyPropertyChanged renderPackageFactoryViewModel)
         {
-            var vm = new Watch3DViewModelBase(parameters);
-            vm.OnStartup();
-            return vm;
-        }
+            this.viewModel = viewModel;
+            this.renderPackageFactory = renderPackageFactory;
+            this.renderPackageFactoryViewModel = renderPackageFactoryViewModel;
 
-        protected virtual void OnStartup()
-        {
-            // Override in inherited classes.
+            renderPackageFactoryViewModel.PropertyChanged += OnRenderPackageFactoryViewModelPropertyChanged;
         }
 
         protected virtual void OnShutdown()
@@ -224,19 +221,19 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             LogVisualizationCapabilities();
 
-            renderPackageFactoryViewModel.PropertyChanged += OnRenderPackageFactoryViewModelPropertyChanged;
-
             RegisterModelEventhandlers(model);
 
             RegisterWorkspaceEventHandlers(model);
-
         }
 
         private void UnregisterEventHandlers()
         {
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChangedHandler;
 
-            renderPackageFactoryViewModel.PropertyChanged -= OnRenderPackageFactoryViewModelPropertyChanged;
+            if (renderPackageFactoryViewModel != null)
+            {
+                renderPackageFactoryViewModel.PropertyChanged -= OnRenderPackageFactoryViewModelPropertyChanged;
+            }
 
             UnregisterModelEventHandlers(model);
 

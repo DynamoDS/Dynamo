@@ -14,6 +14,7 @@ using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.ViewModels.Watch3D;
 using NUnit.Framework;
 using DynamoCoreWpfTests.Utility;
 

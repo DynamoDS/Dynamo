@@ -23,6 +23,8 @@ using DynamoShapeManager;
 using Microsoft.Win32;
 
 using Dynamo.Applications;
+using Dynamo.DynamoSandbox.Properties;
+using Dynamo.Wpf.ViewModels.Watch3D;
 
 namespace DynamoSandbox
 {
@@ -40,7 +42,8 @@ namespace DynamoSandbox
                 new DynamoViewModel.StartConfiguration()
                 {
                     CommandFilePath = commandFilePath,
-                    DynamoModel = model
+                    DynamoModel = model,
+                    Watch3DViewModel = new HelixWatch3DViewModel(new Watch3DViewModelStartupParams(model, "Background Preview"))
                 });
 
             var view = new DynamoView(viewModel);

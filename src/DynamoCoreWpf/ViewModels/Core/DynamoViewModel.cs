@@ -400,6 +400,7 @@ namespace Dynamo.ViewModels
             public IWatchHandler WatchHandler { get; set; }
             public DynamoModel DynamoModel { get; set; }
             public bool ShowLogin { get; set; }
+            public Watch3DViewModelBase Watch3DViewModel { get; set; }
 
             /// <summary>
             /// This property is initialized if there is an external host application
@@ -415,6 +416,12 @@ namespace Dynamo.ViewModels
 
             if(startConfiguration.WatchHandler == null)
                 startConfiguration.WatchHandler = new DefaultWatchHandler(startConfiguration.DynamoModel.PreferenceSettings);
+
+            if (startConfiguration.Watch3DViewModel == null)
+            {
+                startConfiguration.Watch3DViewModel = new HelixWatch3DViewModel(
+                    new Watch3DViewModelStartupParams(startConfiguration.DynamoModel, Resources.BackgroundPreviewName));
+            }
 
             return new DynamoViewModel(startConfiguration);
         }
@@ -472,26 +479,12 @@ namespace Dynamo.ViewModels
 
             RenderPackageFactoryViewModel = new RenderPackageFactoryViewModel(Model.PreferenceSettings);
             RenderPackageFactoryViewModel.PropertyChanged += RenderPackageFactoryViewModel_PropertyChanged;
-            
-            var backgroundPreviewParams = new Watch3DViewModelStartupParams(Model, this, Resources.BackgroundPreviewName);
 
             // TODO: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-8736
-            Watch3DViewModelBase watch3DViewModel;
-            try
-            {
-                watch3DViewModel = HelixWatch3DViewModel.Start(backgroundPreviewParams);
-            }
-            catch (Exception ex)
-            {
-                Model.Logger.Log(ex.Message);
-                Model.Logger.Log("Failed to create Watch3DViewModel. Creating base view model.");
-
-                watch3DViewModel = Watch3DViewModelBase.Start(backgroundPreviewParams);
-            }
-
-            BackgroundPreviewViewModel = watch3DViewModel;
-            Watch3DViewModels.Add(watch3DViewModel);
-            watch3DViewModel.PropertyChanged += Watch3DViewModelPropertyChanged;
+            BackgroundPreviewViewModel = startConfiguration.Watch3DViewModel;
+            BackgroundPreviewViewModel.Setup(this, RenderPackageFactoryViewModel.Factory, RenderPackageFactoryViewModel);
+            Watch3DViewModels.Add(BackgroundPreviewViewModel);
+            BackgroundPreviewViewModel.PropertyChanged += Watch3DViewModelPropertyChanged;
         }
 
         private void RenderPackageFactoryViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)

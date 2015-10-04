@@ -33,7 +33,7 @@ namespace Dynamo.Controls
             get { return watch_view; }
         }
 
-        internal Watch3DViewModelBase ViewModel { get; private set; }
+        internal HelixWatch3DViewModel ViewModel { get; private set; }
 
         #endregion
 
@@ -56,9 +56,7 @@ namespace Dynamo.Controls
 
             CompositionTarget.Rendering -= CompositionTargetRenderingHandler;
 
-            var helixVm = ViewModel as HelixWatch3DViewModel;
-            if (helixVm == null) return;
-            helixVm.RequestAttachToScene -= ViewModelRequestAttachToSceneHandler;
+            ViewModel.RequestAttachToScene -= ViewModelRequestAttachToSceneHandler;
         }
 
         private void RegisterButtonHandlers()
@@ -106,21 +104,18 @@ namespace Dynamo.Controls
 
         private void ViewLoadedHandler(object sender, RoutedEventArgs e)
         {
-            ViewModel = DataContext as Watch3DViewModelBase;
+            ViewModel = DataContext as HelixWatch3DViewModel;
 
             CompositionTarget.Rendering += CompositionTargetRenderingHandler;
 
             RegisterButtonHandlers();
 
-            var helixVM = ViewModel as HelixWatch3DViewModel;
-            if (helixVM == null) return;
-
             RegisterViewEventHandlers();
 
-            helixVM.RequestAttachToScene += ViewModelRequestAttachToSceneHandler;
-            helixVM.RequestCreateModels += RequestCreateModelsHandler;
-            helixVM.RequestViewRefresh += RequestViewRefreshHandler;
-            helixVM.RequestClickRay += GetClickRay;
+            ViewModel.RequestAttachToScene += ViewModelRequestAttachToSceneHandler;
+            ViewModel.RequestCreateModels += RequestCreateModelsHandler;
+            ViewModel.RequestViewRefresh += RequestViewRefreshHandler;
+            ViewModel.RequestClickRay += GetClickRay;
         }
 
         void RequestViewRefreshHandler()
@@ -222,6 +217,5 @@ namespace Dynamo.Controls
 
             return View.Point2DToRay3D(new Point(mousePos.X, mousePos.Y));
         }
-
     }
 }
