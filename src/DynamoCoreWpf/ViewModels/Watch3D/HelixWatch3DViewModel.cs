@@ -286,18 +286,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         #endregion
 
-        protected HelixWatch3DViewModel(Watch3DViewModelStartupParams parameters) : base(parameters)
+        public HelixWatch3DViewModel(Watch3DViewModelStartupParams parameters) : base(parameters)
         { 
             IsResizable = false;
             RenderTechniquesManager = new DynamoRenderTechniquesManager();
             EffectsManager = new DynamoEffectsManager(RenderTechniquesManager);
-        }
 
-        public static HelixWatch3DViewModel Start(Watch3DViewModelStartupParams parameters)
-        {
-            var vm = new HelixWatch3DViewModel(parameters);
-            vm.OnStartup();
-            return vm;
+            SetupScene();
+            InitializeHelix();
         }
 
         public void SerializeCamera(XmlElement camerasElement)
@@ -370,12 +366,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
 
             return new CameraData();
-        }
-
-        protected override void OnStartup()
-        {
-            SetupScene();
-            InitializeHelix();
         }
 
         protected override void OnBeginUpdate(IEnumerable<IRenderPackage> packages)

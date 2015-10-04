@@ -5,8 +5,6 @@ using System.Linq;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Models;
-using Dynamo.Utilities;
-using Dynamo.Nodes;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -19,14 +17,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             get { return false; }
         }
 
-        public static HelixWatch3DNodeViewModel Start(Dynamo.Nodes.Watch3D node, Watch3DViewModelStartupParams parameters)
-        {
-            var vm = new HelixWatch3DNodeViewModel(node, parameters);
-            vm.OnStartup();
-            return vm;
-        }
-
-        private HelixWatch3DNodeViewModel(Dynamo.Nodes.Watch3D node, Watch3DViewModelStartupParams parameters):
+        public HelixWatch3DNodeViewModel(Nodes.Watch3D node, Watch3DViewModelStartupParams parameters):
             base(parameters)
         {
             watchNode = node;
