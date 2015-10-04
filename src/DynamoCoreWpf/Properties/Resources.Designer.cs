@@ -188,6 +188,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Default Background Preview.
+        /// </summary>
+        public static string BackgroundPreviewDefaultName {
+            get {
+                return ResourceManager.GetString("BackgroundPreviewDefaultName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Background Preview.
         /// </summary>
         public static string BackgroundPreviewName {
