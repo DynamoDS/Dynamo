@@ -197,11 +197,6 @@ namespace Dynamo.Core
         /// <returns>new migrator instance after migration</returns>
         public static DynamoMigratorBase MigrateBetweenDynamoVersions(IPathManager pathManager, IPathResolver pathResolver)
         {
-            // No migration required if the current version is <= version 0.7
-            if (pathManager.MajorFileVersion == 0 &&
-                pathManager.MinorFileVersion <= 7)
-                return null;
-
             var userDataDir = Path.GetDirectoryName(pathManager.UserDataDirectory);
             var versions = GetInstalledVersions(userDataDir).ToList();
             if (versions.Count() < 2)
@@ -209,8 +204,6 @@ namespace Dynamo.Core
 
             var previousVersion = versions[1];
             var currentVersion = versions[0];
-            Debug.Assert(currentVersion.MajorPart == pathManager.MajorFileVersion
-                && currentVersion.MinorPart == pathManager.MinorFileVersion);
 
             return Migrate(pathResolver, previousVersion, currentVersion);
         }
