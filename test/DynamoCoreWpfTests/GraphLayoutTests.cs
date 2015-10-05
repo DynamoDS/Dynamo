@@ -37,6 +37,25 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void GraphLayoutMarkFileAsDirty()
+        {
+            // A graph with one node
+            OpenModel(GetDynPath("GraphLayoutOneNode.dyn"));
+            IEnumerable<NodeModel> nodes = ViewModel.CurrentSpace.Nodes;
+
+            Assert.IsFalse(ViewModel.CurrentSpace.HasUnsavedChanges);
+            ViewModel.DoGraphAutoLayout(null);
+            Assert.IsFalse(ViewModel.CurrentSpace.HasUnsavedChanges);
+
+            // A graph with two nodes
+            OpenModel(GetDynPath("GraphLayoutTwoConnectedNodes.dyn"));
+            
+            Assert.IsFalse(ViewModel.CurrentSpace.HasUnsavedChanges);
+            ViewModel.DoGraphAutoLayout(null);
+            Assert.IsTrue(ViewModel.CurrentSpace.HasUnsavedChanges);
+        }
+
+        [Test]
         public void GraphLayoutOneNode()
         {
             OpenModel(GetDynPath("GraphLayoutOneNode.dyn"));
