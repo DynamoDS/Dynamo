@@ -1023,7 +1023,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         }
                         else
                         {
-                            lineGeometry3D = CreateLineGeometryModel3D(rp);
+                            // If the package contains mesh vertices, then the lines represent the 
+                            // edges of meshes. Draw them with a different thickness.
+                            lineGeometry3D = CreateLineGeometryModel3D(rp, rp.MeshVertices.Any()?0.5:1.0);
                             Model3DDictionary.Add(id, lineGeometry3D);
                         }
 
@@ -1153,19 +1155,18 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     Console.WriteLine(ex.StackTrace);
                 }
             }
-            //((MaterialGeometryModel3D)meshGeometry3D).SelectionColor = defaultSelectionColor;
 
             return meshGeometry3D;
         }
 
-        private DynamoLineGeometryModel3D CreateLineGeometryModel3D(HelixRenderPackage rp)
+        private DynamoLineGeometryModel3D CreateLineGeometryModel3D(HelixRenderPackage rp, double thickness = 1.0)
         {
             var lineGeometry3D = new DynamoLineGeometryModel3D()
             {
                 Geometry = HelixRenderPackage.InitLineGeometry(),
                 Transform = Model1Transform,
                 Color = Color.White,
-                Thickness = 0.5,
+                Thickness = thickness,
                 IsHitTestVisible = false,
                 IsSelected = rp.IsSelected
             };
