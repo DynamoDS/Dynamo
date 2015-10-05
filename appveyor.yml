@@ -7,11 +7,12 @@ configuration: Release
 environment:
   dynamo_solution: src/Dynamo.All.2013.sln
   xmlDocs_solution: tools/XmlDocToMarkdown/XmlDocToMarkdown.sln
-  access_token:
-    secure: 14B2LfzdzmTNRCadtOW73/mofQniTe49NA71lH65TSq8uLPeTKlIu/o2FVUOisAc
+  oauth_access_token:
+    secure: 9V2HPr20tWakE4vLSsHHzE0UyGuU4UCKEbUwK4UJIlseBRuw+j5WBaEWQYXl+M8W
 build_script:
   - msbuild %dynamo_solution%
   - msbuild %xmlDocs_solution%
+
 
 after_build:
   - ps: tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/BuildScript.ps1
@@ -25,5 +26,6 @@ on_success:
       git clone -q https://$($env:oauth_access_token):x-oauth-basic@github.com/DynamoDS/DynamoAPI.git  c:\projects\dynamo\DynamoAPI 2>&1 | % { $_.ToString() }      
       tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/PublishDocs.ps1	
     }  
+
   
 test: off

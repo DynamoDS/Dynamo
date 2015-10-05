@@ -385,15 +385,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public HelixWatch3DViewModel BackgroundPreviewViewModel
-        {
-            get
-            {
-                var result = Watch3DViewModels.FirstOrDefault(vm => vm is HelixWatch3DViewModel);
-
-                return (HelixWatch3DViewModel) result;
-            }
-        }
+        public Watch3DViewModelBase BackgroundPreviewViewModel { get; private set; }
 
         public bool BackgroundPreviewActive
         {
@@ -478,24 +470,51 @@ namespace Dynamo.ViewModels
             SubscribeDispatcherHandlers();
 
             RenderPackageFactoryViewModel = new RenderPackageFactoryViewModel(Model.PreferenceSettings);
-
+            RenderPackageFactoryViewModel.PropertyChanged += RenderPackageFactoryViewModel_PropertyChanged;
+            
             var backgroundPreviewParams = new Watch3DViewModelStartupParams(Model, this, Resources.BackgroundPreviewName);
 
-            var watch3DViewModel = HelixWatch3DViewModel.Start(backgroundPreviewParams);
+            // TODO: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-8736
+            Watch3DViewModelBase watch3DViewModel;
+            try
+            {
+                watch3DViewModel = HelixWatch3DViewModel.Start(backgroundPreviewParams);
+            }
+            catch (Exception ex)
+            {
+                Model.Logger.Log(ex.Message);
+                Model.Logger.Log("Failed to create Watch3DViewModel. Creating base view model.");
+
+                watch3DViewModel = Watch3DViewModelBase.Start(backgroundPreviewParams);
+            }
+
+            BackgroundPreviewViewModel = watch3DViewModel;
             Watch3DViewModels.Add(watch3DViewModel);
-            watch3DViewModel.PropertyChanged += HelixWatch3DViewModelPropertyChanged;
+            watch3DViewModel.PropertyChanged += Watch3DViewModelPropertyChanged;
         }
 
-        void HelixWatch3DViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void RenderPackageFactoryViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "ShowEdges":
+                    var factoryVm = (RenderPackageFactoryViewModel)sender;
+                    model.PreferenceSettings.ShowEdges = factoryVm.Factory.TessellationParameters.ShowEdges;
+                    break;
+                default:
+                    return;
+            }
+        }
+
+        void Watch3DViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
                 case "Active":
-                    RaisePropertyChanged("BackgroundPreviewActive");
-                    
+                    RaisePropertyChanged("BackgroundPreviewActive");                 
                     break;
                 case "CanNavigateBackground":
-                    if (!((HelixWatch3DViewModel)BackgroundPreviewViewModel).CanNavigateBackground)
+                    if (!BackgroundPreviewViewModel.CanNavigateBackground)
                     {
                         // Return focus back to Search View (Search Field)
                         SearchViewModel.OnRequestReturnFocusToSearch(this, new EventArgs());
@@ -1453,6 +1472,7 @@ namespace Dynamo.ViewModels
 
         public void ToggleFullscreenWatchShowing(object parameter)
         {
+            if (BackgroundPreviewViewModel == null) return;
             BackgroundPreviewViewModel.Active = !BackgroundPreviewViewModel.Active;
         }
 
@@ -1849,7 +1869,8 @@ namespace Dynamo.ViewModels
 
         internal void ZoomIn(object parameter)
         {
-            if (BackgroundPreviewViewModel.CanNavigateBackground)
+            if (BackgroundPreviewViewModel != null && 
+                BackgroundPreviewViewModel.CanNavigateBackground)
             {
                 var op = ViewOperationEventArgs.Operation.ZoomIn;
                 OnRequestViewOperation(new ViewOperationEventArgs(op));
@@ -1867,7 +1888,8 @@ namespace Dynamo.ViewModels
 
         private void ZoomOut(object parameter)
         {
-            if (BackgroundPreviewViewModel.CanNavigateBackground)
+            if (BackgroundPreviewViewModel != null && 
+                BackgroundPreviewViewModel.CanNavigateBackground)
             {
                 var op = ViewOperationEventArgs.Operation.ZoomOut;
                 OnRequestViewOperation(new ViewOperationEventArgs(op));

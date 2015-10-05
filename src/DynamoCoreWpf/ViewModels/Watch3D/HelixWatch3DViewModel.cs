@@ -13,28 +13,19 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Xml;
-using System.Xml.Serialization;
 using Autodesk.DesignScript.Interfaces;
-using Dynamo.Controls;
-using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.Selection;
-using Dynamo.Services;
-using Dynamo.UI.Commands;
 using Dynamo.Wpf.Rendering;
 using DynamoUtilities;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
 using SharpDX;
-using SharpDX.Direct3D11;
-using SharpDX.DXGI;
 using Color = SharpDX.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
 using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
 using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
-using Quaternion = SharpDX.Quaternion;
 using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
@@ -122,6 +113,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             if (RequestViewRefresh != null)
             {
                 RequestViewRefresh();
+            }
+        }
+
+        protected override void OnActiveStateChanged()
+        {
+            preferences.IsBackgroundPreviewActive = active;
+
+            if (active == false && CanNavigateBackground)
+            {
+                CanNavigateBackground = false;
             }
         }
 
@@ -241,28 +242,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        public bool IsPanning
-        {
-            get
-            {
-                return CurrentSpaceViewModel != null && CurrentSpaceViewModel.IsPanning;
-            }
-        }
-
-        public bool IsOrbiting
-        {
-            get
-            {
-                return CurrentSpaceViewModel != null && CurrentSpaceViewModel.IsOrbiting;
-            }
-        }
-
-        public DelegateCommand TogglePanCommand { get; set; }
-
-        public DelegateCommand ToggleOrbitCommand { get; set; }
-
-        public DelegateCommand ToggleCanNavigateBackgroundCommand { get; set; }
-
         /// <summary>
         /// The LeftClickCommand is set according to the
         /// ViewModel's IsPanning or IsOrbiting properties.
@@ -299,34 +278,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        private bool canNavigateBackground = false;
-        public bool CanNavigateBackground
-        {
-            get
-            {
-                return canNavigateBackground || navigationKeyIsDown;
-            }
-            set
-            {
-                canNavigateBackground = value;
-                RaisePropertyChanged("CanNavigateBackground");
-            }
-        }
-
-        private bool navigationKeyIsDown = false;
-        public bool NavigationKeyIsDown
-        {
-            get { return navigationKeyIsDown; }
-            set 
-            {
-                if (navigationKeyIsDown == value) return;
-
-                navigationKeyIsDown = value;
-                RaisePropertyChanged("NavigationKeyIsDown");
-                RaisePropertyChanged("CanNavigateBackground");
-            }
-        }
-
         public IEffectsManager EffectsManager { get; private set; }
 
         public IRenderTechniquesManager RenderTechniquesManager { get; private set; }
@@ -336,13 +287,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         #endregion
 
         protected HelixWatch3DViewModel(Watch3DViewModelStartupParams parameters) : base(parameters)
-        {
+        { 
             IsResizable = false;
-
-            TogglePanCommand = new DelegateCommand(TogglePan, CanTogglePan);
-            ToggleOrbitCommand = new DelegateCommand(ToggleOrbit, CanToggleOrbit);
-            ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
-
             RenderTechniquesManager = new DynamoRenderTechniquesManager();
             EffectsManager = new DynamoEffectsManager(RenderTechniquesManager);
         }
@@ -356,6 +302,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public void SerializeCamera(XmlElement camerasElement)
         {
+            if (camera == null) return;
+
             try
             {
                 var node = XmlHelper.AddNode(camerasElement, "Camera");
@@ -464,16 +412,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             RaisePropertyChanged("SceneItems");
             OnRequestViewRefresh();
-        }
-
-        protected override void OnActiveStateChanged()
-        {
-            preferences.IsBackgroundPreviewActive = active;
-
-            if (active == false && CanNavigateBackground)
-            {
-                CanNavigateBackground = false;
-            }
         }
 
         protected override void OnWorkspaceCleared(WorkspaceModel workspace)
@@ -990,6 +928,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public void SetCameraData(CameraData data)
         {
+            if (Camera == null) return;
+
             Camera.LookDirection = data.LookDirection;
             Camera.Position = data.EyePosition;
             Camera.UpDirection = data.UpDirection;
@@ -1317,59 +1257,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
                 tw.WriteLine("endsolid {0}", model.CurrentWorkspace.Name);
             }
-        }
-
-        #endregion
-
-        #region command methods
-
-        internal override void TogglePan(object parameter)
-        {
-            CurrentSpaceViewModel.RequestTogglePanMode();
-
-            // Since panning and orbiting modes are exclusive from one another,
-            // turning one on may turn the other off. This is the reason we must
-            // raise property change for both at the same time to update visual.
-            RaisePropertyChanged("IsPanning");
-            RaisePropertyChanged("IsOrbiting");
-            RaisePropertyChanged("LeftClickCommand");
-        }
-
-        private static bool CanTogglePan(object parameter)
-        {
-            return true;
-        }
-
-        private void ToggleOrbit(object parameter)
-        {
-            CurrentSpaceViewModel.RequestToggleOrbitMode();
-
-            // Since panning and orbiting modes are exclusive from one another,
-            // turning one on may turn the other off. This is the reason we must
-            // raise property change for both at the same time to update visual.
-            RaisePropertyChanged("IsPanning");
-            RaisePropertyChanged("IsOrbiting");
-            RaisePropertyChanged("LeftClickCommand");
-        }
-
-        private static bool CanToggleOrbit(object parameter)
-        {
-            return true;
-        }
-
-        public void ToggleCanNavigateBackground(object parameter)
-        {
-            if (!Active)
-                return;
-
-            CanNavigateBackground = !CanNavigateBackground;
-
-            InstrumentationLogger.LogAnonymousScreen(CanNavigateBackground ? "Geometry" : "Nodes");
-        }
-
-        internal bool CanToggleCanNavigateBackground(object parameter)
-        {
-            return true;
         }
 
         #endregion

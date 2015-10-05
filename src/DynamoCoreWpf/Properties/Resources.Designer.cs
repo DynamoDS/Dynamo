@@ -2183,6 +2183,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cleanup Node Layout.
+        /// </summary>
+        public static string GroupContextMenuGraphLayout {
+            get {
+                return ResourceManager.GetString("GroupContextMenuGraphLayout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ungroup.
         /// </summary>
         public static string GroupContextMenuUngroup {
@@ -4206,6 +4215,15 @@ namespace Dynamo.Wpf.Properties {
         public static string StartPageDiscussionForum {
             get {
                 return ResourceManager.GetString("StartPageDiscussionForum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo Primer.
+        /// </summary>
+        public static string StartPageDynamoPrimer {
+            get {
+                return ResourceManager.GetString("StartPageDynamoPrimer", resourceCulture);
             }
         }
         

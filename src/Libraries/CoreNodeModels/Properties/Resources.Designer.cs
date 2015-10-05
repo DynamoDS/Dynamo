@@ -835,6 +835,60 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sort list based on its keys.
+        /// </summary>
+        internal static string ListSortByKeyDescription {
+            get {
+                return ResourceManager.GetString("ListSortByKeyDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to list of keys.
+        /// </summary>
+        internal static string ListSortByKeyIncomingKeys {
+            get {
+                return ResourceManager.GetString("ListSortByKeyIncomingKeys", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to list to be sorted.
+        /// </summary>
+        internal static string ListSortByKeyIncomingList {
+            get {
+                return ResourceManager.GetString("ListSortByKeyIncomingList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to sorted keys.
+        /// </summary>
+        internal static string ListSortByKeyOutKeys {
+            get {
+                return ResourceManager.GetString("ListSortByKeyOutKeys", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to sorted list.
+        /// </summary>
+        internal static string ListSortByKeyOutList {
+            get {
+                return ResourceManager.GetString("ListSortByKeyOutList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to sort;key.
+        /// </summary>
+        internal static string ListSortByKeySearchTags {
+            get {
+                return ResourceManager.GetString("ListSortByKeySearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The procedure used to map element.
         /// </summary>
         internal static string MapPortDataFxToolTip {
@@ -858,24 +912,6 @@ namespace DSCoreNodesUI.Properties {
         internal static string MapPortDataResultToolTip {
             get {
                 return ResourceManager.GetString("MapPortDataResultToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Creates a sequence of numbers..
-        /// </summary>
-        internal static string NumberSequenceDescription {
-            get {
-                return ResourceManager.GetString("NumberSequenceDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to numbersequence;.
-        /// </summary>
-        internal static string NumberSequenceSearchTags {
-            get {
-                return ResourceManager.GetString("NumberSequenceSearchTags", resourceCulture);
             }
         }
         
@@ -1209,6 +1245,24 @@ namespace DSCoreNodesUI.Properties {
         internal static string SelectionPortDataResultToolTip {
             get {
                 return ResourceManager.GetString("SelectionPortDataResultToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creates a sequence of numbers..
+        /// </summary>
+        internal static string SequenceDescription {
+            get {
+                return ResourceManager.GetString("SequenceDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to numbersequence;.
+        /// </summary>
+        internal static string SequenceSearchTags {
+            get {
+                return ResourceManager.GetString("SequenceSearchTags", resourceCulture);
             }
         }
         
