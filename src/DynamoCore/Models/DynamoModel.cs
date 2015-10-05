@@ -1546,9 +1546,29 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     Paste ISelectable objects from the clipboard to the workspace.
+        ///     Paste ISelectable objects from the clipboard to the workspace in top left corner
         /// </summary>
-        public void Paste(Point2D? targetPoint = null)
+        public void Paste()
+        {
+            // Move all of the notes and nodes such that they are aligned with
+            // the top left of the workspace
+            var workspaceX = -CurrentWorkspace.X / CurrentWorkspace.Zoom;
+            var workspaceY = -CurrentWorkspace.Y / CurrentWorkspace.Zoom;
+
+            // Provide a small offset when pasting so duplicate pastes aren't directly on top of each other
+            CurrentWorkspace.IncrementPasteOffset();
+            
+            var x = workspaceX + CurrentWorkspace.CurrentPasteOffset;
+            var y = workspaceY + CurrentWorkspace.CurrentPasteOffset;
+            var targetPoint = new Point2D(x, y);
+            
+            Paste(targetPoint);
+        }
+
+        /// <summary>
+        ///     Paste ISelectable objects from the clipboard to the workspace at specified point.
+        /// </summary>
+        public void Paste(Point2D targetPoint)
         {
             //clear the selection so we can put the
             //paste contents in
@@ -1618,28 +1638,8 @@ namespace Dynamo.Models
                 minY = Math.Min(node.Y, minY);
             }
 
-            double targetX, targetY;
-            if (targetPoint == null)
-            {
-                // Move all of the notes and nodes such that they are aligned with
-                // the top left of the workspace
-                var workspaceX = -CurrentWorkspace.X/CurrentWorkspace.Zoom;
-                var workspaceY = -CurrentWorkspace.Y/CurrentWorkspace.Zoom;
-
-                // Provide a small offset when pasting so duplicate pastes aren't directly on top of each other
-                CurrentWorkspace.IncrementPasteOffset();
-
-                targetX = workspaceX + CurrentWorkspace.CurrentPasteOffset;
-                targetY = workspaceY + CurrentWorkspace.CurrentPasteOffset;
-            }
-            else
-            {
-                targetX = targetPoint.Value.X;
-                targetY = targetPoint.Value.Y;
-            }
-
-            var shiftX = targetX - minX;
-            var shiftY = targetY - minY;
+            var shiftX = targetPoint.X - minX;
+            var shiftY = targetPoint.Y - minY;
 
             foreach (var model in newNodeModels.Concat<ModelBase>(newNoteModels))
             {
