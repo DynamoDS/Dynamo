@@ -285,7 +285,7 @@ namespace ProtoTest.ProtoAST
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void TestRoundTrip_ClassDecl_PropertyAccess_01()
         {
             int result1 = 10;
@@ -389,7 +389,7 @@ namespace ProtoTest.ProtoAST
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void TestRoundTrip_ClassDecl_MemFunctionCall_01()
         {
             int result1 = 20;

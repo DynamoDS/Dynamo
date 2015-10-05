@@ -268,7 +268,7 @@ a@first;
             Assert.IsTrue((Int64)os[2].Payload == 5);
         }
         [Test]
-        [Category("DSDefinedClass_Ignored_EmptyTest")]
+        [Ignore][Category("DSDefinedClass_Ignored_EmptyTest")]
         [Category("ModifierBlock")] 
         public void ClassTest()
         {

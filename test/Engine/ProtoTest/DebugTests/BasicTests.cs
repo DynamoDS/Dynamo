@@ -82,7 +82,7 @@ b = 20;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("ExpressionInterpreterRunner")]
         public void TestWatchExpression2()
         {
@@ -151,7 +151,7 @@ p = Vector.Vector();
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("ExpressionInterpreterRunner")]
         [Category("Failure")]
         public void TestWatchExpression3()
@@ -789,7 +789,7 @@ n = func(1);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("ExpressionInterpreterRunner")]
         public void TestWatchExpressionImperative3()
         {
@@ -929,7 +929,7 @@ class Vector
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("ModifierBlock")] 
         [Category("ExpressionInterpreterRunner")]
         public void TestWatchExpressionInClassMember1()
@@ -1177,7 +1177,7 @@ y = { a1.a1, a1.a4 };
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("ExpressionInterpreterRunner")]
         public void TestWatchExpressionInClassMember2()
         {
@@ -1528,7 +1528,7 @@ b = a.foo();
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("ExpressionInterpreterRunner")]
         public void TestWatchExpressionForDotProperty()
         {
@@ -2664,7 +2664,7 @@ c2 = [Associative]
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("Debugger")]
         [Category("ModifierBlock")] 
         public void TestModifierBlockDebugging1()
@@ -2774,7 +2774,7 @@ c = 90;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("Debugger")]
         [Category("ModifierBlock")] 
         public void TestModifierBlockDebugging2()
@@ -2880,7 +2880,7 @@ c = 90;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("Debugger")]
         [Category("ModifierBlock")]
         public void TestModifierBlockDebugging3()
@@ -3132,7 +3132,7 @@ a =
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("Debugger")]
         public void TestStepNextClass()
         {
@@ -3886,7 +3886,7 @@ a = fadd(x);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("Debugger")]
         public void TestRunDebugManyFunctions2()
         {
@@ -3927,7 +3927,7 @@ l = Line.Create(x, y);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("Debugger")]
         public void TestRunDebugManyCtors()
         {
@@ -4016,7 +4016,7 @@ l = Line.Line(x, y);
 
         [Test]
         [Category("Debugger")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void TestStepIntoClassConstructor1()
         {
             String code =
@@ -4082,7 +4082,7 @@ l = Line.Line(x, y);
 
         [Test]
         [Category("Debugger")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void TestStepIntoClassConstructor2()
         {
             String code =
@@ -4145,7 +4145,7 @@ l = Line.Line(x, y);
         [Test]
         [Category("Debugger")]
         [Category("Failure")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void TestStepIntoClassConstructor3()
         {
             String code =
@@ -4268,7 +4268,7 @@ c = 3;
         [Test]
         [Category("Debugger")]
         [Category("Failure")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void PropertyAssignFromBuiltInFunction()
         {
             string sourceCode = @"
@@ -4311,7 +4311,7 @@ z.b = 2 * 1;
 
         [Test]
         [Category("Debugger")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void PropertyAssignFromUserFunction()
         {
             string sourceCode = @"
@@ -4349,7 +4349,7 @@ z.a = foo();
 
         [Test]
         [Category("Debugger")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void TestStepAtPropertyInImperativeBlock()
         {
             String code =
@@ -4409,7 +4409,7 @@ class Point
 
         [Test]
         [Category("Debugger")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void TestStepInClassInheritance0()
         {
             String code =
@@ -4471,7 +4471,7 @@ a1 = A.A( 98, 67 );";
 
         [Test]
         [Category("Debugger")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void TestStepInClassInheritance()
         {
             String code =
@@ -4595,7 +4595,7 @@ b2 = a1.foo2(1);
 
         [Test]
         [Category("Debugger")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void TestStepInOutConstructors()
         {
             String code =
@@ -4801,7 +4801,7 @@ class Complex
 
         [Test]
         [Category("Debugger")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void TestStepInOutConstructorsFromLangBlock()
         {
             String code =
@@ -6185,7 +6185,7 @@ b = b - 1;
 
         [Test]
         [Category("Debugger")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void TestUpdateLoopInsideFunction1()
         {
             String code =
@@ -6280,7 +6280,7 @@ class A
         [Test]
         [Category("Debugger")]
         [Category("Failure")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void TestUpdateLoopInsideFunction2()
         {
             String code =
@@ -6380,7 +6380,7 @@ class A
 
         [Test]
         [Category("Debugger")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void TestUpdateLoopInsideFunction3()
         {
             String code =
@@ -6468,7 +6468,7 @@ class A
 
         [Test]
         [Category("Debugger")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void TestUpdateLoopWithProperties()
         {
             String code = @"
@@ -6684,7 +6684,7 @@ s = Print(""a = "" + a + "" b = "" + b);
 
         [Test]
         [Category("Debugger")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void TestUpdateStaticMemberInClass()
         {
             String code =
@@ -6853,7 +6853,7 @@ a = [Imperative]
 
         [Test]
         [Category("Debugger")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void TestUpdateWithMutatingProperties()
         {
             String code = @"
@@ -6886,7 +6886,7 @@ l1 = p.mx;";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("Debugger")]
         [Category("Failure")]
         public void TestSSAassignments1()
@@ -7127,7 +7127,7 @@ b : int;
      
         [Test]
         [Category("Debugger")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void MirrorApiTest001()
         {
             string src = @"
@@ -7196,7 +7196,7 @@ b : int;
 
         [Test]
         [Category("Debugger")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void StepOver002()
         {
             string src = @"
@@ -7245,7 +7245,7 @@ b : int;
 
         [Test]
         [Category("Debugger")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void StepOver003()
         {
             // Execute and verify the main script in a debug session
@@ -7445,7 +7445,7 @@ b : int = 0;
 
         [Test]
         [Category("Debugger")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void ToggleBreakPointApiTest()
         {
             string src = @"class A
@@ -8101,7 +8101,7 @@ sorted = Sort(Compare, arr); //Stepping over this statement throws exception for
 
         [Test]
         [Category("Debugger")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void Defect_IDE442()
         {
             string src =
@@ -8226,7 +8226,7 @@ surf = makeSurf(ps);
 
         [Test]
         [Category("Debugger")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void Defect_IDE_464()
         {
             string src =
@@ -8274,7 +8274,7 @@ surf = makeSurf(ps);
 
         [Test]
         [Category("Debugger")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void Defect_IDE_368()
         {
             string src =
@@ -8309,7 +8309,7 @@ surf = makeSurf(ps);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("Debugger")]
         [Category("Failure")]
         public void Defect_IDE_442()
@@ -8378,7 +8378,7 @@ test = a1.x; //expected : { 1, { 2, { 0, 1 } } }
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("ModifierBlock")] 
         [Category("Debugger")]
         public void Defect_IDE_434()
@@ -8529,7 +8529,7 @@ b = 2;";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("Debugger")]
         public void HighlightingFunctionsInArrayAssociative2_Defect_IDE_578()
         {
@@ -8583,7 +8583,7 @@ val = GetValue(arr);";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("Debugger")]
         public void HighlightingFunctionsInArrayImperative_Defect_IDE_578()
         {
@@ -8627,7 +8627,7 @@ def f(a : int)
 
         [Test]
         [Category("Debugger")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void Defect_IDE_602()
         {
             string src =
@@ -8734,7 +8734,7 @@ a = x < foo(22) ? 3 : 55;
 
         [Test]
         [Category("Debugger")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void Defect_IDE_619_2()
         {
             string src =
@@ -8855,7 +8855,7 @@ z = x;
 
         [Test]
         [Category("Debugger")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void Defect_IDE_619_3()
         {
             string src =
@@ -8944,7 +8944,7 @@ a = x;
 
         [Test]
         [Category("Debugger")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void SteppingInFunctionCalls()
         {
             string src =
@@ -9131,7 +9131,7 @@ b = 2;";
 
         [Test]
         [Category("Debugger")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void SteppingOverFunctionCalls()
         {
             string src =
@@ -9792,7 +9792,7 @@ b = 2;";
         }
         [Test]
         [Category("ExpressionInterpreterRunner")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void TestWatchExpressionInNestedBlock2_519_2()
         {
             // Execute and verify the defect IDE-519
@@ -9856,7 +9856,7 @@ b = 2;";
             }
         }
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("ModifierBlock")] 
         [Category("ExpressionInterpreterRunner")]
         public void Testmemberpropertyinwatch_476()
@@ -9926,7 +9926,7 @@ b = 2;";
         [Test]
         [Category("ModifierBlock")] 
         [Category("ExpressionInterpreterRunner")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void Testprivatememberpropertyinwatch_476_2()
         {
             // Execute and verify the defect IDE-519
@@ -9993,7 +9993,7 @@ b = 2;";
         [Test]
         [Category("ModifierBlock")] 
         [Category("ExpressionInterpreterRunner")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void Testprivatememberpropertyinwatch_476_3()
         {
             // Execute and verify the defect IDE-519
@@ -10059,7 +10059,7 @@ b = 2;";
         }
         [Test]
         [Category("ExpressionInterpreterRunner")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void Testprivatememberpropertyinwatch_487_1()
         {
             // Execute and verify the defect IDE-519
@@ -10142,7 +10142,7 @@ b = 2;";
         }
         [Test]
         [Category("ExpressionInterpreterRunner")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void Testprivatememberpropertyinwatch_487_2()
         {
             // Execute and verify the defect IDE-519
@@ -10330,7 +10330,7 @@ b = 2;";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("ExpressionInterpreterRunner")]
         public void Testprivatememberpropertyinwatch_544_3()
         {
@@ -10392,7 +10392,7 @@ b = 2;";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("ExpressionInterpreterRunner")]
         public void Testprivatememberpropertyinwatch_544_4()
         {
@@ -10489,7 +10489,7 @@ b = 2;";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("ExpressionInterpreterRunner")]
         public void Testdotproperty_523()
         {
@@ -10864,7 +10864,7 @@ class test
         [Test]
         [Category("Debugger")]
         [Category("Failure")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void Defect_IDE_607()
         {
             // Execute and verify the defect IDE-519
@@ -11175,7 +11175,7 @@ surfaceGeom = sphere.Faces[0].SurfaceGeometry.SetVisibility(true);", runnerConfi
 
         [Test]
         [Category("Debugger")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void Defect_IDE_653_3()
         {
             fsr.PreStart(
@@ -11230,7 +11230,7 @@ surfaceGeom = sphere.Faces[0].SurfaceGeometry.SetVisibility(true);", runnerConfi
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("Debugger")]
         [Category("Failure")]
         [Category("ModifierBlock")] 
@@ -11361,7 +11361,7 @@ c = 90;", runnerConfig);
         [Test]
         [Category("Debugger")]
         [Category("Failure")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("ModifierBlock")] 
         public void Defect_IDE_656_2()
         {
@@ -11713,7 +11713,7 @@ Print(c1);", runnerConfig);
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void watchinImperative_542()
         {
             // Execute and verify the main script in a debug session
@@ -11770,7 +11770,7 @@ c = 3;
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void watchinImperative_542_2()
         {
             // Execute and verify the main script in a debug session
@@ -11831,7 +11831,7 @@ c = 3;
         }
         [Test]
         [Category("ExpressionInterpreterRunner")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void watchinImperative_542_3()
         {
             // Execute and verify the main script in a debug session
@@ -11879,7 +11879,7 @@ c = 3;
         }
         [Test]
         [Category("ExpressionInterpreterRunner")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void watchinImperative_542_4()
         {
             // Execute and verify the main script in a debug session
@@ -12837,7 +12837,7 @@ def foo(y : int)
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("ExpressionInterpreterRunner")]
         public void inlineconditional_stepnext_656_9()
         {
@@ -12891,7 +12891,7 @@ c = 90;
         }
         [Test]
         [Category("ExpressionInterpreterRunner")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void inlineconditional_stepin_656_9()
         {
             // Execute and verify the main script in a debug session
@@ -12965,7 +12965,7 @@ c = 90;
 
         [Test]
         [Category("ModifierBlock")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("ExpressionInterpreterRunner")]
         public void inlineconditional_stepnext_656_13()
         {
@@ -13017,7 +13017,7 @@ a =
             TestFrameWork.Verify(mirror, "a", 4, 0);
         }
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("ExpressionInterpreterRunner")]
         [Category("ModifierBlock")] 
         public void inlineconditional_stepin_656_13()
@@ -13082,7 +13082,7 @@ a =
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void inlineconditional_stepnext_656_10()
         {
             // Execute and verify the main script in a debug session
@@ -13123,7 +13123,7 @@ a = x > foo(22) ? foo(1) : A.foo(4);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("ExpressionInterpreterRunner")]
         public void inlineconditional_stepin_656_10()
         {
@@ -13265,7 +13265,7 @@ list3 = GetCoor(list1);
         [Test]
         [Category("ModifierBlock")] 
         [Category("ExpressionInterpreterRunner")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void inlineconditional_stepnext_656_14()
         {
             // Execute and verify the main script in a debug session
@@ -13316,7 +13316,7 @@ a =
         [Category("ExpressionInterpreterRunner")]
         [Category("Failure")]
         [Category("ModifierBlock")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void inlineconditional_stepin_656_14()
         {
             // Execute and verify the main script in a debug session
@@ -13766,7 +13766,7 @@ s;
 
         [Test]
         [Category("DebuggerReferenceCount")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void IDE_DebuggerRefCount_LangBlock()
         {
             fsr.PreStart( // Execute and verify the main script in a debug session
@@ -13821,7 +13821,7 @@ c = 2;
 
         [Test]
         [Category("DebuggerReferenceCount")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void IDE_DebuggerRefCount_FunctionCall()
         {
             fsr.PreStart( // Execute and verify the main script in a debug session
@@ -13880,7 +13880,7 @@ c = 2;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("DebuggerReferenceCount")]
         public void IDE_DebuggerRefCount_ReplicatedFunctionCall()
         {
@@ -13944,7 +13944,7 @@ c = 2;
 
         [Test]
         [Category("DebuggerReferenceCount")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void IDE_DebuggerRefCount_DotCall()
         {
             fsr.PreStart( // Execute and verify the main script in a debug session
@@ -14015,7 +14015,7 @@ c = 2;
 
         [Test]
         [Category("DebuggerReferenceCount")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void IDE_DebuggerRefCount_ForLoop()
         {
             fsr.PreStart( // Execute and verify the main script in a debug session
@@ -14114,7 +14114,7 @@ c = 2;
 
         [Test]
         [Category("DebuggerReferenceCount")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void IDE_DebuggerRefCount_IfStatement()
         {
             fsr.PreStart( // Execute and verify the main script in a debug session
@@ -14172,7 +14172,7 @@ c = 2;
 
         [Test]
         [Category("DebuggerReferenceCount")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void IDE_DebuggerRefCount_ElseStatement()
         {
             fsr.PreStart( // Execute and verify the main script in a debug session
@@ -14234,7 +14234,7 @@ c = 2;
 
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("DebuggerReferenceCount")]
         public void IDE_DebuggerRefCount_LangBlock_StepIn()
         {
@@ -14295,7 +14295,7 @@ c = 2;
 
         [Test]
         [Category("DebuggerReferenceCount")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void IDE_DebuggerRefCount_AnonymousVariable()
         {
             fsr.PreStart( // Execute and verify the main script in a debug session
@@ -14350,7 +14350,7 @@ c = 2;
 
         [Test]
         [Category("DebuggerReferenceCount")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void IDE_DebuggerRefCount_AnonymousVariable_StepIn()
         {
             fsr.PreStart( // Execute and verify the main script in a debug session
@@ -14405,7 +14405,7 @@ c = 2;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void Defect_1467570_Crash_In_Debug_Mode()
         {
             string src = @" 
@@ -14729,7 +14729,7 @@ a : Dummy = null;
 
         }
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("ExpressionInterpreterRunner")]
         public void TestWatchExpressionForFFIProperty_2()
         {
@@ -14762,7 +14762,7 @@ z = { A.A(), A.A() };
             Assert.AreEqual(mirror.GetType(lo[1]), "A");*/
         }
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("ExpressionInterpreterRunner")]
         [Category("Failure")]
         public void undefinedclass()
@@ -14939,7 +14939,7 @@ z = { A.A(), A.A() };
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("ExpressionInterpreterRunner")]
         public void ModifyAndReturnClassPropertyInsideFunction()
         {
@@ -15019,7 +15019,7 @@ x = y.add();
         [Test]
         [Category("ExpressionInterpreterRunner")]
         [Category("Failure")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void ModifyAndReturnClassPropertyInsideFunction_1()
         {
             // Execute and verify the main script in a debug session
@@ -15101,7 +15101,7 @@ x = y.add();
         [Test]
         [Category("ExpressionInterpreterRunner")]
         [Category("Failure")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void ModifyAndReturnClassPropertyInsideFunction_2()
         {
             // Execute and verify the main script in a debug session
@@ -15183,7 +15183,7 @@ x = add(y);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("ExpressionInterpreterRunner")]
         [Category("Failure")]
         public void ModifyAndReturnClassPropertyInsideFunction_3()
@@ -15269,7 +15269,7 @@ x = add(y);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("ExpressionInterpreterRunner")]
         public void watchExpandClassinstance_758()
         {
@@ -15317,7 +15317,7 @@ x = add(y);
 
         }
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("ExpressionInterpreterRunner")]
         public void watchExpandClassinstanceImperative_758()
         {
@@ -15368,7 +15368,7 @@ x = add(y);
 
         }
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("ExpressionInterpreterRunner")]
         public void watchExpandClassinstance_StepIn_758()
         {
@@ -15421,7 +15421,7 @@ x = add(y);
 
         }
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("ExpressionInterpreterRunner")]
         public void watchExpandClassinstance_Imperative_StepIn_758()
         {
@@ -15716,7 +15716,7 @@ b : int;
 
         }
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("ExpressionInterpreterRunner")]
         [Category("ReleaseCriteria")]
         public void Simple_debug()
@@ -15763,7 +15763,7 @@ b = t1.Equals(t2);
         }
         [Test]
         [Category("Debugger")]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void breakPoint_Cursor_1471()
         {
             string src = @"

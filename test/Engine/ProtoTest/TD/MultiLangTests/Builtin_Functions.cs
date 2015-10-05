@@ -1177,7 +1177,7 @@ result = {foo(AllFalse(a1)),foo(AllFalse(a2)),foo(AllFalse(a3))};//true,true,fal
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void T038_AllFalse_Class()
         {
@@ -1513,7 +1513,7 @@ result = foo(c);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Failing")]
+        [Ignore][Category("DSDefinedClass_Ignored_Failing")]
         [Category("SmokeTest"), Category("Failure")]
         public void T050_Sum_Class()
         {
@@ -1910,7 +1910,7 @@ r2 = Print(arr2);";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_InvalidTest_NoVerification")]
+        [Ignore][Category("DSDefinedClass_Ignored_InvalidTest_NoVerification")]
         [Category("Built in Functions")]
         public void TV1467193_print()
         {
@@ -2559,7 +2559,7 @@ sort = Sort(sorterFunction, a);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Failing")]
+        [Ignore][Category("DSDefinedClass_Ignored_Failing")]
         [Category("Failure")]
         public void BIM32_Sort_class()
         {
@@ -2589,7 +2589,7 @@ y=z.create();
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Failing")]
+        [Ignore][Category("DSDefinedClass_Ignored_Failing")]
         [Category("Failure")]
         public void BIM33_Sort_class_2()
         {
@@ -4037,7 +4037,7 @@ t8 = Math.Factorial(arr);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void T069_Defect_1467556_Sort_Over_Derived_Classes()
         {
             String code =
@@ -4073,7 +4073,7 @@ b = Sort(sorter,a).X;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void T069_Defect_1467556_Sort_Over_Derived_Classes_2()
         {
             String code =
@@ -4112,7 +4112,7 @@ b = Sort(sorter,a).X;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void T069_Defect_1467556_Sort_Over_Derived_Classes_3()
         {
             String code =
@@ -4378,7 +4378,7 @@ def foo ()
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         public void T074_Defect_1467750_4()
         {
             String code =
@@ -4412,7 +4412,7 @@ class B
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         public void T074_Defect_1467750_5()
         {
             String code =
@@ -4450,7 +4450,7 @@ class B
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_ModifierBlock")]
+        [Ignore][Category("DSDefinedClass_Ignored_ModifierBlock")]
         [Category("ModifierBlock")]
         public void T074_Defect_1467750_6()
         {
@@ -4625,7 +4625,7 @@ def foo ()
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_ModifierBlock")]
+        [Ignore][Category("DSDefinedClass_Ignored_ModifierBlock")]
         public void T075_Defect_1467323_6()
         {
             String code =
