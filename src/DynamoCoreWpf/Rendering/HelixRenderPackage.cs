@@ -485,6 +485,10 @@ namespace Dynamo.Wpf.Rendering
                 Colors = new Color4Collection()
             };
 
+            points.Positions.Add(new Vector3());
+            points.Indices.Add(0);
+            points.Colors.Add(new Color4());
+
             return points;
         }
 
