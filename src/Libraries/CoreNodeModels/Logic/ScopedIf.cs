@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using Dynamo.Engine;
+using Dynamo.Engine.CodeGeneration;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using DSCoreNodesUI.Properties;
@@ -37,7 +37,7 @@ namespace DSCoreNodesUI.Logic
             // The second parameter, isDeltaExecution, is set to false so that
             // all AST nodes will be added to this IF graph node instead of 
             // adding to the corresponding graph node. 
-            var allAstNodes = builder.CompileToAstNodes(nodes, Dynamo.Engine.AstBuilder.CompilationContext.None, verboseLogging);
+            var allAstNodes = builder.CompileToAstNodes(nodes, CompilationContext.None, verboseLogging);
             var astNodes = allAstNodes.SelectMany(t => t.Item2).ToList();
             astNodes.Add(AstFactory.BuildReturnStatement(inputAstNodes[branch]));
             return astNodes;

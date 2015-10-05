@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
-using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
@@ -10,9 +9,9 @@ using ProtoCore.Namespace;
 using ProtoCore.Utils;
 using ProtoCore;
 using ProtoCore.DSASM;
-using DynamoUtilities;
 using Dynamo.Library;
 using Dynamo.Engine;
+using Dynamo.Engine.CodeGeneration;
 
 namespace Dynamo.Nodes
 {
@@ -40,7 +39,7 @@ namespace Dynamo.Nodes
 
         public CustomNodeDefinition Definition { get { return Controller.Definition; } }
         
-        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, AstBuilder.CompilationContext context)
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, CompilationContext context)
         {
             return Controller.BuildAst(this, inputAstNodes);
         }
@@ -447,7 +446,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, AstBuilder.CompilationContext context)
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, CompilationContext context)
         {
             AssociativeNode assignment;
             if (null == inputAstNodes || inputAstNodes.Count == 0)

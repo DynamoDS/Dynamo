@@ -20,10 +20,11 @@ using Constants = ProtoCore.DSASM.Constants;
 using RuntimeWarning = ProtoCore.Runtime.WarningEntry;
 using ProtoCore.Utils;
 using Dynamo.Engine.NodeToCode;
+using Dynamo.Engine.CodeGeneration;
 
 namespace Dynamo.Engine
 {
-    public delegate void AstBuiltEventHandler(object sender, AstBuilder.ASTBuiltEventArgs e);
+    public delegate void AstBuiltEventHandler(object sender, CompiledEventArgs e);
 
     /// <summary>
     /// A controller to coordinate the interactions between some DesignScript
@@ -210,7 +211,7 @@ namespace Dynamo.Engine
                 var activeNodes = nodes.Where(n => !n.IsInErrorState);
 
                 if (activeNodes.Any())
-                    astBuilder.CompileToAstNodes(activeNodes, AstBuilder.CompilationContext.DeltaExecution, verboseLogging);
+                    astBuilder.CompileToAstNodes(activeNodes, CompilationContext.DeltaExecution, verboseLogging);
 
                 return VerifyGraphSyncData(nodes);
             }
@@ -234,7 +235,7 @@ namespace Dynamo.Engine
             var activeNodes = updatedNodes.Where(n => !n.IsInErrorState);
             if (activeNodes.Any())
             {
-                astBuilder.CompileToAstNodes(activeNodes, AstBuilder.CompilationContext.DeltaExecution, verboseLogging);
+                astBuilder.CompileToAstNodes(activeNodes, CompilationContext.DeltaExecution, verboseLogging);
             }
 
             if (!VerifyGraphSyncData(nodes) || ((graphSyncDataQueue.Count <= 0)))
@@ -262,7 +263,7 @@ namespace Dynamo.Engine
             var activeNodes = updatedNodes.Where(n => n.State != ElementState.Error);
             if (activeNodes.Any())
             {
-                astBuilder.CompileToAstNodes(activeNodes, AstBuilder.CompilationContext.PreviewGraph, verboseLogging);
+                astBuilder.CompileToAstNodes(activeNodes, CompilationContext.PreviewGraph, verboseLogging);
             }
 
             GraphSyncData graphSyncdata = syncDataManager.GetSyncData();
@@ -575,12 +576,12 @@ namespace Dynamo.Engine
 
         #region Implement IAstNodeContainer interface
 
-        public void OnAstNodeBuilding(Guid nodeGuid)
+        public void OnCompiling(Guid nodeGuid)
         {
             syncDataManager.MarkForAdding(nodeGuid);
         }
 
-        public void OnAstNodeBuilt(Guid nodeGuid, IEnumerable<AssociativeNode> astNodes)
+        public void OnCompiled(Guid nodeGuid, IEnumerable<AssociativeNode> astNodes)
         {
             var associativeNodes = astNodes as IList<AssociativeNode> ?? astNodes.ToList();
 
@@ -588,7 +589,7 @@ namespace Dynamo.Engine
                 syncDataManager.AddNode(nodeGuid, astNode);
 
             if (AstBuilt != null)
-                AstBuilt(this, new AstBuilder.ASTBuiltEventArgs(nodeGuid, associativeNodes));
+                AstBuilt(this, new CompiledEventArgs(nodeGuid, associativeNodes));
         }
 
         #endregion

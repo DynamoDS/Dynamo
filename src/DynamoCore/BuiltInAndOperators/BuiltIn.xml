@@ -127,6 +127,12 @@
             <param name="list">list of values</param>
             <search>sort,order</search>
         </member>
+    <member name="SortByFunction">
+            <summary>Use a function to determine how list items should be sorted</summary>
+            <param name="list">list of values</param>
+            <param name="function"></param>
+            <search>sort,order</search>
+    </member>
 		<member name="SortIndexByValue">
             <param name="list">list of values</param>
             <search>sort,index,value</search>
@@ -312,17 +318,12 @@
 			<param name="lists"></param>
             <search>reduce</search>
         </member>
-		<member name="SortByKey">
-			<param name="list">list of values</param>
-			<param name="keyProjector"></param>
-            <search>sort,key</search>
-        </member>
 		<member name="GroupByFunction">
       <summary>Use a function to determine how list items should be grouped</summary>
-			<param name="list">list of values</param>
-			<param name="function"></param>
-            <search>group,function</search>
-        </member>
+      <param name="list">list of values</param>
+      <param name="function"></param>
+      <search>group,function</search>
+    </member>
 		<member name="TrueForAll">
 			<param name="list">list of values</param>
 			<param name="predicate"></param>

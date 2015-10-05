@@ -38,15 +38,15 @@ namespace ProtoTest.TD.MultiLangTests
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS002_IntToUserDefinedTypeConversion()
         {
             string code =
                 @"
-                class A {}
+                import(""FFITarget.dll"");
                 a = 1;
-                b : A = a;";
+                b : ClassFunctionality = a;";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", 1);
             thisTest.Verify("b", null);
@@ -84,26 +84,22 @@ namespace ProtoTest.TD.MultiLangTests
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS005_RetTypeArray_return_Singleton_1467196()
         {
             string code =
                 @"
-                   //return type class and return an array of class-
-                   class A
-                        {
-                            X : int;
-                        }
-                        def length : A[] (pts : A[])
+import(""FFITarget.dll"");
+                        def length : ClassFunctionality[] (pts : ClassFunctionality[])
                         {
                             return = pts[0];
                         }
-                        pt1 = A.A( );
-                        pt2 = A.A(  );
+                        pt1 = ClassFunctionality.ClassFunctionality( );
+                        pt2 = ClassFunctionality.ClassFunctionality(  );
                         pts = {pt1, pt2};
                         numpts = length(pts); 
-                        a=numpts.X;
+                        a=numpts.IntVal;
                        
                 ";
             //Assert.Fail("1467196 - Sprint 25 - Rev 3216 - [Design Issue] when rank of return type does not match the value returned what is the expected result ");
@@ -132,24 +128,20 @@ namespace ProtoTest.TD.MultiLangTests
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS005_RetTypeArray_return_Singleton_1467196_b()
         {
             string code =
                 @"
-                   //return type class and return an array of class-
-                   class A
-                        {
-                            X : int;
-                        }
-                        def length : A[] (a : A)
+import(""FFITarget.dll"");
+                        def length : ClassFunctionality[] (a : ClassFunctionality)
                         {
                             return = a;
                         }
-                        pt = A.A();
+                        pt = ClassFunctionality.ClassFunctionality();
                         numpts = length(pt); 
-                        a=numpts.X;
+                        a=numpts.IntVal;
                        
                 ";
             //Assert.Fail("1467196 - Sprint 25 - Rev 3216 - [Design Issue] when rank of return type does not match the value returned what is the expected result ");
@@ -159,26 +151,22 @@ namespace ProtoTest.TD.MultiLangTests
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS006_RetTypeuserdefinedArray_return_double_1467196()
         {
             string code =
                 @"
-                   //return type class and return a double
-                   class A
-                    {
-                        X : int;
-                    }
-                    def length : A (pts : A[])
+import(""FFITarget.dll"");
+                    def length : ClassFunctionality (pts : ClassFunctionality[])
                     {
                         return = 1.0;
                     }
-                    pt1 = A.A();
-                    pt2 = A.A();
+                    pt1 = ClassFunctionality.ClassFunctionality();
+                    pt2 = ClassFunctionality.ClassFunctionality();
                     pts = {pt1, pt2};
                     numpts = length(pts); 
-                    a=numpts.X;
+                    a=numpts.IntVal;
                 ";
             //Assert.Fail("1467196 - Sprint 25 - Rev 3216 - [Design Issue] when rank of return type does not match the value returned what is the expected result ");
             thisTest.RunScriptSource(code);
@@ -187,26 +175,22 @@ namespace ProtoTest.TD.MultiLangTests
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS007_Return_double_To_int_1467196()
         {
             string code =
                 @"
-                        //return type int and return a double
-                        class A
-                        {
-                            X : int;
-                        }
-                        def length : double (pts : A[])
-                        {
-                              return = 1;
-                        }
-                        pt1 = A.A( );
-                        pt2 = A.A( );
-                        pts = {pt1, pt2};
-                        numpts = length(pts); 
-                         a=numpts.X;
+import(""FFITarget.dll"");
+def length : double (pts : ClassFunctionality[])
+{
+    return = 1;
+}
+pt1 = ClassFunctionality.ClassFunctionality( );
+pt2 = ClassFunctionality.ClassFunctionality( );
+pts = {pt1, pt2};
+numpts = length(pts); 
+a=numpts.IntVal;
                  
                 ";
             //Assert.Fail("1467196 - Sprint 25 - Rev 3216 - [Design Issue] when rank of return type does not match the value returned what is the expected result ");
@@ -372,29 +356,22 @@ namespace ProtoTest.TD.MultiLangTests
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS017_Return_BoolArray_ToInt_1467182()
         {
             string code =
                 @"
-                       class A
-                            {
-                            id:int;
-                            }
-                            class B
-                            {
-                                id:int;
-                            }
-                            a = {A.A(),B.B()};
+                            a = {1,2};
                             b=a;
-                            a[0].id = 100;
-                            b[0].id = ""false"";
-                            c=a[0].id;
-                            d=b[0].id;";
+                            a[0] = 100;
+                            b[0] = ""false"";
+                            c=a[0];
+                            d=b[0];
+";
             string error = "1467182 - Sprint 25 - [Design Decision] Rev 3163 - method resolution or type conversion is expected in following cases ";
             thisTest.RunScriptSource(code, error);
-            thisTest.Verify("c", null);// null 
+            thisTest.Verify("c", 100);
         }
 
         [Test]
@@ -573,34 +550,32 @@ b;c;d;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS020_conditional_cantevaluate_1465293_2()
         {
             string code =
                 @"
-                    a = { 1, 2 };
+a = { 1, 2 };
 b = 0;
-class test
+
+def foo(a)
 {
-    def foo(a)
+    d = [Imperative]
     {
-        d = [Imperative]
+        if (a!= null)
         {
-            if (a!= null)
-            {
-                b = 1;
-            }
-            return = b;
+            b = 1;
         }
-        return = d;
+        return = b;
     }
+    return = d;
 }
+
 z;
 [Imperative]
 {
-    y = test.test();
-    z = y.foo(a);
+    z = foo(a);
 }
                         
                         ";
@@ -609,32 +584,29 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS020_conditional_cantevaluate_1465293_3()
         {
             string code =
                 @"
-                    a = { 1, 2 };
+a = { 1, 2 };
 b = 0;
-class test
+
+def foo(a)
 {
-    def foo(a)
+    d = [Imperative]
     {
-        d = [Imperative]
+        if (a!= null)
         {
-            if (a!= null)
-            {
-                b = 1;
-            }
-            return = b;
+            b = 1;
         }
-        return = d;
+        return = b;
     }
+    return = d;
 }
-z;
-    y = test.test();
-    z = y.foo(a);
+
+z = foo(a);
                         
                         ";
             thisTest.RunScriptSource(code);
@@ -672,27 +644,27 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS021_OverallPrimitiveConversionTestInt()
         {
             string code =
                 @"
-                class A {}
+import(""FFITarget.dll"");
                 zero_var:var = 0;
                 zero_int:int = 0;
                 zero_double:double = 0;
                 zero_bool:bool = 0;
                 zero_String:string = 0;
                 zero_char:char = 0;
-                zero_a:A = 0;
+                zero_a:ClassFunctionality = 0;
                  one_var:var = 1;
                  one_int:int = 1;
                  one_double:double = 1;
                  one_bool:bool = 1;
                  one_String:string = 1;
                  one_char:char = 1;
-                 one_a:A = 1;
+                 one_a:ClassFunctionality = 1;
                 foo:int = 32.342;
                 foo2:int = 32.542;
                 foo3:int = 32.5;
@@ -817,24 +789,18 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS023_Double_To_Int_1467084_3()
         {
             string code =
                 @"
-                     class twice
+                        def twice : int []( a : double )
                         {
-                                def twice : int []( a : double )
-                                {
-                         //      c=(1..a)..5..1;
-                                        //return = c;
-                        return = {{1,1},{1,1}};
-                                }
+                            return = {{1,1},{1,1}};
                         }
                         d=1..4;
-                        a=twice.twice();
-                        d=a.twice(4);
+                        d=twice(4);
                         ";
             //Assert.Fail("1463268 - Sprint 20 : [Design Issue] Rev 1822 : Method resolution fails when implicit type conversion of double to int is expected ");
             thisTest.RunScriptSource(code);
@@ -936,23 +902,18 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS029_Double_ToVar_1467222()
         {
             string code =
                 @"
-                  class A
+                    def foo()
                     {
-                        x:int;
-                        def foo()
-                        {
-                            x : double = 3.5; // x still is int, and 3.5 converted to 4
-                            return = x;
-                        }
+                        x : int = 3.5; // x still is int, and 3.5 converted to 4
+                        return = x;
                     }
-                    a = A.A();
-                    b = a.foo();
+                    b = foo();
  
                         ";
             //Assert.Fail("1467222 - Sprint 26 - rev 3345 - if return type is var it still does type conversion ");
@@ -978,13 +939,13 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS030_eachtype_To_var()
         {
             string code =
-                @"class A{ a=1; }
-                  
+                @"
+import(""FFITarget.dll"");
                         def foo ( x )
                         {
 	                        b1= x ;
@@ -994,8 +955,8 @@ z;
                         b = foo( 1); 
                         c = foo( ""1.5""); //char to var 
                         //a = foo( '1.5');// char to var 
-                         d = foo( A.A()); // user define to var 
-                        d1=d.a;
+                         d = foo( ClassFunctionality.ClassFunctionality(1)); // user define to var 
+                        d1=d.IntVal;
                         e = foo( false);//bool to var 
                         f = foo( null);//null to var 
                         ";
@@ -1009,13 +970,13 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS030_eachtype_To_var_2()
         {
             string code =
-                @"class A{ a=1; }
-                  
+                @"
+import(""FFITarget.dll"");
                         def foo ( x:var )
                         {
 	                        b1= x ;
@@ -1025,8 +986,8 @@ z;
                         b = foo( 1); 
                         c = foo( ""1.5""); //char to var 
                         //a = foo( '1.5');// char to var 
-                         d = foo( A.A()); // user define to var 
-                        d1=d.a;
+                         d = foo( ClassFunctionality.ClassFunctionality(1)); // user define to var 
+                        d1=d.IntVal;
                         e = foo( false);//bool to var 
                         f = foo( null);//null to var 
                         ";
@@ -1041,13 +1002,13 @@ z;
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS031_eachType_To_int()
         {
             string code =
                 @"
-                  class A{ a=1; }
+import(""FFITarget.dll"");
                         def foo ( x:int )
                         {
 	                        b1= x ;
@@ -1057,8 +1018,8 @@ z;
                         b = foo( 1); 
                         c = foo( ""1.5""); // var to int 
                         //a = foo( '1.5');// var to int
-                         d = foo( A.A()); // user define to var 
-                        d1=d.a;
+                         d = foo( ClassFunctionality.ClassFunctionality(1)); // user define to var 
+                        d1=d.IntVal;
                         e = foo( false);// var to int 
                         f = foo( null);//null to int
                         ";
@@ -1092,13 +1053,13 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS031_eachtype_To_double()
         {
             string code =
                 @"
-                   class A{ a=1; }
+import(""FFITarget.dll"");
                         def foo ( x:double )
                         {
 	                        b1= x ;
@@ -1108,8 +1069,8 @@ z;
                         b = foo( 1); 
                         c = foo( ""1.5""); // var to int 
                         //a = foo( '1.5');// var to int
-                         d = foo( A.A()); // user define to var 
-                        d1=d.a;
+                         d = foo( ClassFunctionality.ClassFunctionality(1)); // user define to var 
+                        d1=d.IntVal;
                         e = foo( false);// var to int 
                         f = foo( null);//null to int
                         ";
@@ -1161,19 +1122,18 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS032_eachType_To_bool()
         {
             string code =
-                @"
-                    class A{ a=1; }
+                @"import(""FFITarget.dll"");
                         a:bool= 1;//true
                         b:bool= -0.1; //true
                         c:bool=""1.5""; //true
                         c1:bool= """"; //false
                         //d:bool='1.5';
-                        d:bool= A.A(); // user def to bool - > if not null true
+                        d:bool= ClassFunctionality.ClassFunctionality(1); // user def to bool - > if not null true
                        
                         e:bool= true;
                         e1:bool=null;
@@ -1189,13 +1149,13 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS033_eachType_To_string()
         {
             string code =
                 @"
-                    class A{ a=1; }
+import(""FFITarget.dll"");
                        def foo ( x:string)
                           {
                               b1= x ;
@@ -1205,8 +1165,8 @@ z;
                           b = foo( 1); // int to  string
                           c = foo( ""1.5"");//char to string  
                           c1 = foo( '1');// char to string 
-                          d = foo( A.A()); // user define to string
-                          d1=d.a;
+                          d = foo( ClassFunctionality.ClassFunctionality(1)); // user define to string
+                          d1=d.IntVal;
                           e = foo( false);//bool to string
                           f = foo( null);//null to string";
             string error = "1467311 - Sprint 26 - Rev 3788 - Char to String conversion not happening ";
@@ -1260,13 +1220,13 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS034_eachType_To_char()
         {
             string code =
                 @"
-                     class A{ a=1; }
+import(""FFITarget.dll"");
                        def foo ( x:char)
                           {
                               b1= x ;
@@ -1276,8 +1236,8 @@ z;
                           b = foo( 1); // int to  char
                           c = foo( ""1.5"");//char to char
                           c1 = foo( '1');// char to char  
-                          d = foo( A.A()); // user define to char
-                          d1=d.a;
+                          d = foo( ClassFunctionality.ClassFunctionality(1)); // user define to char
+                          d1=d.IntVal;
                           e = foo( false);//bool to char
                           f = foo( null);//null to char";
             thisTest.RunScriptSource(code);
@@ -1329,28 +1289,21 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS37_userdefinedTobool_1467240()
         {
             string code =
                 @"
-                class A
-                    {
-	                    a:int;
-	                    constructor A (b:int)
-	                    {
-		                    a=b;
-                        }
-                    }
-                    d:bool=A.A(5); // user def to bool - > if not null true ";
+import(""FFITarget.dll"");
+                    d:bool=ClassFunctionality.ClassFunctionality(5); // user def to bool - > if not null true ";
             string error = "1467240 - Sprint 26 - Rev 3426 user defined type not convertible to bool";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("d", true);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("Type System")]
         public void TS37_userdefinedTo_null()
         {
@@ -1375,29 +1328,20 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS038_eachType_To_Userdefined()
         {
             string code =
-                @"
-                    class B{ b=1; }
-                            class A
-                            {
-	                            a:int;
-	                            constructor A (b:int)
-	                            {
-		                            a=b;
-                                }
-                            }
+                @"import(""FFITarget.dll"");    
                             a:A= 1;//
                             b:A= -0.1; //
                             c:A= ""1.5""; //false
                             d:A=true;
                             //d:bool='1.5';
-                            d:A= B.B(); // user def to bool - > if not null true
-                            e:A=A.A(1);
-                            e1=e.a;
+                            d:ClassFunctionality= ClassFunctionalityMirror.ClassFunctionalityMirror();
+                            e:ClassFunctionality=ClassFunctionality.ClassFunctionality(1);
+                            e1=e.IntVal;
                             f:A= true;
                             g:A=null;
                           ";
@@ -1412,15 +1356,14 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS038_Param_single_AlltypeTo_UserDefined()
         {
             string code =
                 @"
-                    class A{ a=1; }
-                    class B extends A{ b=2; }
-                        def foo ( x:A)
+import(""FFITarget.dll"");
+                        def foo ( x:ClassFunctionality)
                         {
 	                        b1= x ;
 	                        return =b1;
@@ -1431,8 +1374,8 @@ z;
                         b = foo(1);
                         c = foo( ""1.5"" );
                         c1 = foo( '1');
-                        d = foo( B.B() );
-                        d1 = d.b;
+                        d = foo( ClassFunctionality.ClassFunctionality(2) );
+                        d1 = d.IntVal;
                         e = foo(false);
                         f = foo( null );";
             string error = "1467314 - Sprint 26 - Rev 3805 user defined type to array of user defined type does not upgrade to array ";
@@ -1449,7 +1392,7 @@ z;
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         public void TS038_return_single_AlltypeTo_UserDefined()
         {
@@ -1485,7 +1428,7 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         public void TS039_userdefined_covariance()
         {
@@ -1508,14 +1451,15 @@ z;
 		                    b=c;
                         }
                     }
-                    a:A=A.A(1);
+                   a:A=A.A(1);
                     a1=a.a;
                     b:A=B.B(2);
                     b1=b.b;
                     b2=b.a;
                     c:B=A.A(3);
                     c1=c.b;
-                    c2=c.a;";
+                    c2=c.a;
+";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a1", 1);
             thisTest.Verify("b1", 2);
@@ -1526,7 +1470,7 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         public void TS039_userdefined_covariance_2()
         {
@@ -1536,7 +1480,7 @@ z;
                     class B extends A{ b=2; }
                     class A{
                         a : B;
-                        c : A;
+                        c : ClassFunctionality;
                     }
                     def foo( x)
                     {
@@ -1624,21 +1568,18 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS44_any_toNull()
         {
             string code =
                 @"
-                class test
-                    {
-                    
-                    }
+import(""FFITarget.dll"");
                     a:double= null; 
                     b:int =  null; 
                     c:string=null; 
                     d:char = null;
-                    e:test = null;
+                    e:ClassFunctionality = null;
                     f:bool = null;
                     g = null;"; //expected :true, received : null
             thisTest.RunScriptSource(code);
@@ -1670,28 +1611,26 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS46_typedassignment_To_array_1467206()
         {
             string code =
                 @"
-               class test
-                    {
-                        x=1;
-                    }
+import(""FFITarget.dll"");
                     a:double[]= {1,2,3}; 
                     
                     b:int[] =  {1,2,3}; 
                     c:string[]={""a"",""b"",""c""}; 
                     d:char []= {'c','d','e'};
-                    x1= test.test();
-                    y1= test.test();
-                    z1= test.test();
-                    e:test []= {x1,y1,z1};
-                    e1=e.x;
+                    x1= ClassFunctionality.ClassFunctionality(1);
+                    y1= ClassFunctionality.ClassFunctionality(1);
+                    z1= ClassFunctionality.ClassFunctionality(1);
+                    e:ClassFunctionality []= {x1,y1,z1};
+                    e1=e.IntVal;
                     f:bool []= {true,false,null};
-                    g []={ null,null,null};";
+                    g []={ null,null,null};
+";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", new object[] { 1.0, 2.0, 3.0 });
             thisTest.Verify("b", new object[] { 1, 2, 3 });
@@ -1703,26 +1642,24 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS46_typedassignment_To_array_1467294_2()
         {
             string code =
                 @"
-               class test
-                    {
-                        x=1;
-                    }
+import(""FFITarget.dll"");
                     a:double[]= 1; 
                     
                     b:int[] =  1.1; 
                     c:string[]=""a""; 
                     d:char []= 'c';
-                    x1= test.test();
-                    e:test []= x1;
-                    e1=e.x;
+                    x1=ClassFunctionality.ClassFunctionality(1);
+                    e:ClassFunctionality []= x1;
+                    e1=e.IntVal;
                     f:bool []= true;
-                    g []=null;";
+                    g []=null;
+";
             
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", new object[] { 1.0 });
@@ -1735,25 +1672,22 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS46_typedassignment_To_array_1467294_3()
         {
             string code =
                 @"
-               class test
-                    {
-                        x=1;
-                    }
+import(""FFITarget.dll"");
                     a:double[][]= {1}; 
                     
                     b:int[][] =  {1.1}; 
                     c:string[][]={""a""}; 
                     d:char [][]= {'c'};
-                    x1= test.test();
-                    e:test [][]= {x1};
-                    e1=e.x;
+                    x1= ClassFunctionality.ClassFunctionality(1);
+                    e:ClassFunctionality [][]= {x1};
+                    e1=e.IntVal;
                     f:bool [][]= {true};
                     g [][]={null};";
 
@@ -1771,25 +1705,22 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS46_typedassignment_To_Vararray_1467294_4()
         {
             string code =
                 @"
-               class test
-                    {
-                        x=1;
-                    }
+import(""FFITarget.dll"");
                     a:var[][]= 1; 
                     
                     b:var[][] =  1.1; 
                     c:var[][]=""a""; 
                     d:var[][]= 'c';
-                    x1= test.test();
+                    x1= ClassFunctionality.ClassFunctionality(1);
                     e:var[][]= x1;
-                    e1=e.x;
+                    e1=e.IntVal;
                     f:var[][]= true;
                     g :var[][]=null;";
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3974
@@ -1805,24 +1736,21 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS46_typedassignment_To_Intarray()
         {
             string code =
                 @"
-               class test
-                    {
-                        x=1;
-                    }
+import(""FFITarget.dll"");
                     a:int[]= 1; 
                     
                     b:int[] =  1.1; 
                     c:int[]=""a""; 
                     d:int[]= 'c';
-                    x1= test.test();
+                    x1= ClassFunctionality.ClassFunctionality(1);
                     e:int[]= x1;
-                    e1=e.x;
+                    e1=e.IntVal;
                     f:int[]= true;
                     g :int[]=null;";
             string error = "1467294 - Sprint 26 - Rev 3763 - in typed assignment, array promotion does not occur in some cases";
@@ -1837,25 +1765,22 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS46_typedassignment_singleton_To_Intarray()
         {
             string code =
                 @"
-               class test
-                    {
-                        x=1;
-                    }
+import(""FFITarget.dll"");
                     a:int[][]= {1}; 
                     
                     b:int[][] =  {1.1}; 
                     c:int[][]={""a""}; 
                     d:int[][]= {'c'};
-                    x1= test.test();
+                    x1= ClassFunctionality.ClassFunctionality(1);
                     e:int[][]= {x1};
-                    e1=e.x;
+                    e1=e.IntVal;
                     f:int[][]= {true};
                     g :int[][]={null;}";
             string error = "MAGN-1670 Sprint 27 - Rev 3956 {null} to array upgrdation must null out";
@@ -1870,24 +1795,21 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS46_typedassignment_To_doublearray()
         {
             string code =
                 @"
-               class test
-                    {
-                        x=1;
-                    }
+import(""FFITarget.dll"");
                     a:double[]= 1; 
                     
                     b:double[] =  1.1; 
                     c:double[]=""a""; 
                     d:double[]= 'c';
-                    x1= test.test();
+                    x1= ClassFunctionality.ClassFunctionality(1);
                     e:double[]= x1;
-                    e1=e.x;
+                    e1=e.IntVal;
                     f:double[]= true;
                     g :double[]=null;";
             //string error = "1467294 - Sprint 26 - Rev 3763 - in typed assignment, array promotion does not occur in some cases";
@@ -1903,25 +1825,22 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS46_typedassignment_Singleton_To_doublearray()
         {
             string code =
                 @"
-               class test
-                    {
-                        x=1;
-                    }
+import(""FFITarget.dll"");
                     a:double[][]= {1}; 
                     
                     b:double[][] =  {1.1}; 
                     c:double[][]={""a""}; 
                     d:double[][]= {'c'};
-                    x1= test.test();
+                    x1= ClassFunctionality.ClassFunctionality(1);
                     e:double[][]= {x1};
-                    e1=e.x;
+                    e1=e.IntVal;
                     f:double[][]= {true};
                     g :double[][]={null};";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1670
@@ -1937,24 +1856,21 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS46_typedassignment_To_boolarray()
         {
             string code =
                 @"
-               class test
-                    {
-                        x=1;
-                    }
+import(""FFITarget.dll"");
                     a:bool[]= 1; 
                     
                     b:bool[] =  1.1; 
                     c:bool[]=""a""; 
                     d:bool[]= 'c';
-                    x1= test.test();
+                    x1= ClassFunctionality.ClassFunctionality(1);
                     e:bool[]= x1;
-                    e1=e.x;
+                    e1=e.IntVal;
                     f:bool[]= true;
                     g :bool[]=null;";
             string error = "1467295- Sprint 26 : rev 3766 null gets converted into an array of nulls (while converting into array of any type) when the conversion is not allowed ";
@@ -1970,24 +1886,21 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS46_typedassignment_singleton_To_boolarray()
         {
             string code =
                 @"
-               class test
-                    {
-                        x=1;
-                    }
+import(""FFITarget.dll"");
                     a:bool[][]= {1}; 
                     
                     b:bool[][] =  {1.1}; 
                     c:bool[][]={""a""}; 
                     d:bool[][]= {'c'};
-                    x1= test.test();
+                    x1= ClassFunctionality.ClassFunctionality(1);
                     e:bool[][]= {x1};
-                    e1=e.x;
+                    e1=e.IntVal;
                     f:bool[][]= {true};
                     g :bool[][]={null;}";
             //string error = "1467295- Sprint 26 : rev 3766 null gets converted into an array of nulls (while converting into array of any type) when the conversion is not allowed ";
@@ -2003,24 +1916,21 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS46_typedassignment_To_stringarray()
         {
             string code =
                 @"
-               class test
-                    {
-                        x=1;
-                    }
+import(""FFITarget.dll"");
                     a:string[]= 1; 
                     
                     b:string[] =  1.0; 
                     c:string[]=""test""; 
                     d:string[]= '1';
-                    x1= test.test();
+                    x1= ClassFunctionality.ClassFunctionality(1);
                     e:string[]= x1;
-                    e1=e.x;
+                    e1=e.IntVal;
                     f:string[]= false;
                     g :string[]=null;";
             //string error = "1467295 - Sprint 26 : rev 3766 null gets converted into an array of nulls (while converting into array of any type) when the conversion is not allowed ";
@@ -2036,25 +1946,22 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS46_typedassignment_singleton_To_stringarray()
         {
             string code =
                 @"
-               class test
-                    {
-                        x=1;
-                    }
+import(""FFITarget.dll"");
                     a:string[][]= {1}; 
                     
                     b:string[][] =  {1.0}; 
                     c:string[][]={""test""}; 
                     d:string[][]= {'1'};
-                    x1= test.test();
+                    x1= ClassFunctionality.ClassFunctionality(1);
                     e:string[][]= {x1};
-                    e1=e.x;
+                    e1=e.IntVal;
                     f:string[][]= {false};
                     g :string[][]={null};";
 
@@ -2070,24 +1977,21 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS46_typedassignment_To_chararray()
         {
             string code =
                 @"
-               class test
-                    {
-                        x=1;
-                    }
+import(""FFITarget.dll"");
                     a:char[]= 1; 
                     
                     b:char[] =  1.0; 
                     c:char[]=""test""; 
                     d:char[]= '1';
-                    x1= test.test();
+                    x1= ClassFunctionality.ClassFunctionality(1);
                     e:char[]= x1;
-                    e1=e.x;
+                    e1=e.IntVal;
                     f:char[]= false;
                     g :char[]=null;";
             string error = "1467295 - Sprint 26 : rev 3766 null gets converted into an array of nulls (while converting into array of any type) when the conversion is not allowed ";
@@ -2102,24 +2006,21 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS46_typedassignment_singleton_To_chararray()
         {
             string code =
                 @"
-               class test
-                    {
-                        x=1;
-                    }
+import(""FFITarget.dll"");
                     a:char[][]= 1; 
                     
                     b:char[][] =  1.0; 
                     c:char[][]=""test""; 
                     d:char[][]= '1';
-                    x1= test.test();
+                    x1= ClassFunctionality.ClassFunctionality(1);
                     e:char[][]= x1;
-                    e1=e.x;
+                    e1=e.IntVal;
                     f:char[][]= false;
                     g :char[][]=null;";
             string error = "1467295 - Sprint 26 : rev 3766 null gets converted into an array of nulls (while converting into array of any type) when the conversion is not allowed ";
@@ -2174,13 +2075,13 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS048_Param_eachType_To_varArray()
         {
             string code =
                 @"
-                  class A{ a=1; }
+import(""FFITarget.dll"");
                         def foo ( x:var[] )
                         {
 	                        b1= x ;
@@ -2189,8 +2090,8 @@ z;
                         a  = foo( 1.5); 
                         b  = foo( 1); 
                         c  = foo( ""1.5""); // char to var 
-                        d  = foo( A.A());   // user define to var
-                        d1 = d.a;
+                        d  = foo( ClassFunctionality.ClassFunctionality(1));   // user define to var
+                        d1 = d.IntVal;
                         e  = foo( false);   //bool to var 
                         f  = foo( null);    //null to var 
                         ";
@@ -2223,14 +2124,14 @@ z;
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS049_Return_eachType_To_varArray()
         {
             string code =
                 @"
-                   class A{ a=1; }
+import(""FFITarget.dll"");
                         def foo :var[]( x)
                         {
 	                        b1= x ;
@@ -2240,8 +2141,8 @@ z;
                         b = foo( 1); 
                         c = foo( ""1.5""); 
                         //a = foo( '1.5'); 
-                        d = foo( A.A()); // user define to var
-                        d1=d.a;
+                        d = foo( ClassFunctionality.ClassFunctionality(1)); // user define to var
+                        d1=d.IntVal;
                         e = foo( false); 
                         f = foo( null); 
                         ";
@@ -2259,14 +2160,14 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS050_Return_eachType_To_intArray()
         {
             //  
             string code =
                 @"
-                  class A{ a=1; }
+import(""FFITarget.dll"");
                         def foo :int[]( x)
                         {
 	                        b1= x ;
@@ -2278,8 +2179,8 @@ z;
                         b = foo( 1); 
                         c = foo( ""1.5""); 
                         //a = foo( '1.5');
-                        d = foo( A.A()); // user define to var
-                        d1=d.a;
+                        d = foo( ClassFunctionality.ClassFunctionality(1)); // user define to var
+                        d1=d.IntVal;
                         e = foo( false); 
                         f = foo( null); 
                         ";
@@ -2295,13 +2196,13 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS051_Param_eachType_To_intArray()
         {
             string code =
                 @"
-                 class A{ a=1; }
+import(""FFITarget.dll"");
                         def foo ( x:int[])
                         {
 	                        b1= x ;
@@ -2313,8 +2214,8 @@ z;
                         b = foo( 1); 
                         c = foo( ""1.5""); 
                         c1  = foo( '1');
-                       d = foo( A.A()); // user define to var
-                        d1=d.a;
+                       d = foo( ClassFunctionality.ClassFunctionality(1)); // user define to var
+                        d1=d.IntVal;
                         e = foo( false); 
                         f = foo( null);
                         ";
@@ -2331,14 +2232,14 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS052_Return_AllTypeTo_doubleArray()
         {
             //  
             string code =
                 @"
-                  class A{ a=1; }
+import(""FFITarget.dll"");
                         def foo :double[]( x)
                         {
 	                        b1= x ;
@@ -2350,8 +2251,8 @@ z;
                         b = foo( 1); 
                         c = foo( ""1.5""); 
                         c1 = foo( '1');
-                        d = foo( A.A()); // user define to var
-                        d1=d.a;
+                        d = foo( ClassFunctionality.ClassFunctionality(1)); // user define to var
+                        d1=d.IntVal;
                         e = foo( false); 
                         f = foo( null); 
                         ";
@@ -2368,14 +2269,14 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS053_Param_AlltypeTo_doubleArray()
         {
             //  
             string code =
                 @"
-                  class A{ a=1; }
+import(""FFITarget.dll"");
                         def foo ( x:double[])
                         {
 	                        b1= x ;
@@ -2387,8 +2288,8 @@ z;
                         b = foo( 1); 
                         c = foo( ""1.5"");  
                         c1 = foo( '1');
-                        d = foo( A.A()); // user define to var
-                        d1=d.a;
+                        d = foo( ClassFunctionality.ClassFunctionality(1)); // user define to var
+                        d1=d.IntVal;
                         e = foo( false);
                         f = foo( null);
                         ";
@@ -2405,14 +2306,14 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS055_Param_AlltypeTo_BoolArray()
         {
             string code =
                 @"
-                    class A{ a=1; }
+import(""FFITarget.dll"");
                         def foo ( x:bool[])
                         {
 	                        b1= x ;
@@ -2424,7 +2325,7 @@ z;
                         b = foo({ 1, 0 });
                         c = foo({ ""1.5"" ,""""});
                         c1 = foo( {'1','0'});
-                        d = foo({ A.A(),A.A() });
+                        d = foo({ ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1) });
                         e = foo({ false,true });
                         f = foo({ null, null });";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1664
@@ -2475,14 +2376,14 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS056_Return_AlltypeTo_BoolArray()
         {
             string code =
                 @"
-                   class A{ a=1; }
+import(""FFITarget.dll"");
                         def foo :bool[]( x)
                         {
 	                        b1= x ;
@@ -2494,7 +2395,7 @@ z;
                         b = foo({ 1, 0 });
                         c = foo({ ""1.5"" ,""""});
                         d = foo( {'1','0'});
-                        e = d = foo({ A.A(),A.A() });
+                        e = d = foo({ ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1) });
                         f = foo({ false,true });
                         g = foo({ null, null });
                                                   ";
@@ -2512,14 +2413,14 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS056_Return_BoolArray_1467258()
         {
             string code =
                 @"
-                   class A{ a=1; }
+import(""FFITarget.dll"");
                     def foo:bool[](x)
                             {
 		 	                    b1= x ;
@@ -2532,7 +2433,7 @@ z;
                     b = foo({ 1, 0 });
                     c = foo({ ""1.5"" ,""""});
                     d = foo({ '1', '0' });
-                     e = d = foo({ A.A(),A.A() });
+                     e = d = foo({ ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1) });
                                                   ";
             string error = "1467258 - sprint 26 - Rev 3541 if the return type is bool array , type conversion does not happen for some cases  ";
             thisTest.RunScriptSource(code, error);
@@ -2545,14 +2446,13 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS057_Return_Array_1467305()
         {
             string code =
                 @"
-                   class A{ a=1; }
                     def foo:bool[](x)
                             {
 		 	                    b1= x ;
@@ -2576,23 +2476,19 @@ z;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
-        public void TS058_setter_Typeconversion_1467262()
+        public void SetWrongTypeInFFIClass()
         {
             string code =
                 @"
-                   class A
-                    {
-                        id : int;
-                    }
-                    a = A.A();
-                    a.id = false;
-                    c = a.id;
+import(""FFITarget.dll"");
+                    a = DummyVector.ByCoordinates(1,2,3);
+                    a.X = false;
+                    c = a.X;
                 ";
-            string error = "1467262 - Sprint 26 - Rev 3543 , setter method does not do type conversion correctly";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code, error);
-            thisTest.VerifyProperty(mirror, "a", "id", null, 0);
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("c", 1);
         }
 
         [Test]
@@ -2770,13 +2666,13 @@ a;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS068_Param_singleton_AlltypeTo_BoolArray()
         {
             string code =
                 @"
-                    class A{ a=1; }
+import(""FFITarget.dll"");
                         def foo ( x:bool[])
                         {
 	                        b1= x ;
@@ -2788,7 +2684,7 @@ a;
                         b = foo( 1);
                         c = foo( ""1.5"" );
                         c1 = foo( '1');
-                        d = foo(A.A() );
+                        d = foo(ClassFunctionality.ClassFunctionality(1) );
                         e = foo( false );
                         f = foo( null );";
             // string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
@@ -2805,13 +2701,13 @@ a;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS069_Return_singleton_AlltypeTo_BoolArray()
         {
             string code =
                 @"
-                    class A{ a=1; }
+import(""FFITarget.dll"");
                         def foo:bool[]( x)
                         {
 	                        b1= x ;
@@ -2823,7 +2719,7 @@ a;
                         b = foo( 1);
                         c = foo( ""1.5"" );
                         c1 = foo( '1');
-                        d = foo(A.A() );
+                        d = foo(ClassFunctionality.ClassFunctionality(1) );
                         e = foo( false );
                         f = foo( null );";
             string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
@@ -2839,13 +2735,13 @@ a;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS070_Param_singleton_AlltypeTo_StringArray()
         {
             string code =
                 @"
-                    class A{ a=1; }
+import(""FFITarget.dll"");
                         def foo ( x:string[])
                         {
 	                        b1= x ;
@@ -2857,7 +2753,7 @@ a;
                         b = foo(1);
                         c = foo( ""1.5"" );
                         c1 = foo( '1');
-                        d = foo( A.A() );
+                        d = foo( ClassFunctionality.ClassFunctionality(1) );
                         e = foo(false);
                         f = foo( null );";
             thisTest.RunScriptSource(code);
@@ -2872,13 +2768,13 @@ a;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS071_return_singleton_AlltypeTo_StringArray()
         {
             string code =
                 @"
-                    class A{ a=1; }
+import(""FFITarget.dll"");
                         def foo :string[]( x)
                         {
 	                        b1= x ;
@@ -2890,7 +2786,7 @@ a;
                         b = foo(1);
                         c = foo( ""1.5"" );
                         c1 = foo( '1');
-                        d = foo( A.A() );
+                        d = foo( ClassFunctionality.ClassFunctionality(1) );
                         e = foo(false);
                         f = foo( null );";
             string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
@@ -2906,13 +2802,13 @@ a;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS072_Param_singleton_AlltypeTo_CharArray()
         {
             string code =
                 @"
-                    class A{ a=1; }
+import(""FFITarget.dll"");
                         def foo ( x:char[])
                         {
 	                        b1= x ;
@@ -2924,7 +2820,7 @@ a;
                         b = foo(1);
                         c = foo( ""1.5"" );
                         c1 = foo( '1');
-                        d = foo( A.A() );
+                        d = foo( ClassFunctionality.ClassFunctionality(1) );
                         e = foo(false);
                         f = foo( null );";
             string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
@@ -2940,13 +2836,13 @@ a;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS073_return_singleton_AlltypeTo_CharArray()
         {
             string code =
                 @"
-                    class A{ a=1; }
+import(""FFITarget.dll"");
                         def foo :char[]( x)
                         {
 	                        b1= x ;
@@ -2958,7 +2854,7 @@ a;
                         b = foo(1);
                         c = foo( ""1.5"" );
                         c1 = foo( '1');
-                        d = foo( A.A() );
+                        d = foo( ClassFunctionality.ClassFunctionality(1) );
                         e = foo(false);
                         f = foo( null );";
             thisTest.RunScriptSource(code);
@@ -2973,7 +2869,7 @@ a;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         public void TS074_Param_singleton_AlltypeTo_UserDefinedArray()
         {
@@ -3010,7 +2906,7 @@ a;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         public void TS075_return_singleton_AlltypeTo_UserDefinedArray()
         {
@@ -3045,7 +2941,7 @@ a;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         public void TS076_UserDefinedCovariance_ArrayPromotion()
         {
@@ -3067,15 +2963,15 @@ a;
                             }
                     }
                    
-                   
-                    a:A[]=A.A(1);
-                    a1=a.a;
-                    b:A[]=B.B(2);
-                    b1=b.b;
-                    b2=b.a;
-                    c:B[]=A.A(3);
-                    c1=c.b;
+                    a:A[]=A.A(1); 
+                    a1=a.a; 
+                    b:A[]=B.B(2); 
+                    b1=b.b; 
+                    b2=b.a; 
+                    c:B[]=A.A(3); 
+                    c1=c.b; 
                     c2=c.a;
+
                     ";
             string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
             thisTest.RunScriptSource(code, error);
@@ -3088,22 +2984,16 @@ a;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS077_userdefinedTobool_1467240_Imperative()
         {
             string code =
-                @"class A
-                    {
-	                    a:int;
-	                    constructor A (b:int)
-	                    {
-		                    a=b;
-                        }
-                    }
+                @"
+import(""FFITarget.dll"");
 d;
                     [Imperative]{
-                         d:bool=A.A(5); // user def to bool - > if not null true
+                         d:bool=ClassFunctionality.ClassFunctionality(5); // user def to bool - > if not null true
                     }";
             string error = "1467287 Sprint 26 - 3721 user defined to bool conversion does not happen in imperative ";
             thisTest.RunScriptSource(code, error);
@@ -3112,21 +3002,15 @@ d;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS078_userdefinedToUserdefinedArray()
         {
             string code =
-                @"class A
-                    {
-                                a:int;
-                                constructor A (b:int)
-                                {
-                                        a=b;
-                            }
-                    }
-                        a : A[] =  A.A(1) ;
-                        a1 = a.a;";
+                @"
+import(""FFITarget.dll"");
+                        a : ClassFunctionality[] =  ClassFunctionality.ClassFunctionality(1) ;
+                        a1 = a.IntVal;";
             string error = "";
             thisTest.RunScriptSource(code, error);
             //Assert.Fail("1467240 - Sprint 26 - Rev 3426 user defined type not convertible to bool");
@@ -3134,17 +3018,17 @@ d;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS079_typedassignment_nullTo_Anyarray_1467295()
         {
             string code =
                 @"
-               class A{};
+import(""FFITarget.dll"");
                     a :double[]=null;
                     b :string[]=null;
                     c :char[]=null;
-                    d :A[]=null;
+                    d :ClassFunctionality[]=null;
                     e :bool[]=null;
                     g :int[]=null;";
             string error = "1467295 - Sprint 26 : rev 3766 null gets converted into an array of nulls (while converting into array of any type) when the conversion is not allowed ";
@@ -3158,101 +3042,86 @@ d;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TZ01_Defect_1467235_coercion_from_singleton_array()
         {
             string code =
                     @"
-                    class A{
                        def foo(x:int[])
                        {
                              return = x;
                        }
-                       }
-                    s = A.A();
-                    r = s.foo(1);";
+                    r = foo(1);";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r", new object[] { 1 });
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TZ01_Defect_1467235_coercion_from_singleton_array_2()
         {
             string code =
                     @"
-                    class A{
                     def foo(x:int[][])
                     {
                         return = x;
                     }
-                    }
-                    s = A.A();
-                    r = s.foo(1);";
+                    r = foo(1);";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r", new object[] { new object[] { 1 } });
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TZ01_Defect_1467235_coercion_from_singleton_array_5()
         {
             string code =
                     @"
-                    class A{
                     def foo:int[][](x)
                     {
                         return = x;
                     }
-                    }
-                    s = A.A();
-                    r = s.foo(1);";
+                    r = foo(1);";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r", new object[] { new object[] { 1 } });
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TZ01_Defect_1467235_coercion_from_singleton_array_3()
         {
             string code =
                     @"
-                    class A{
                     def foo (x:var[][])
                     {
                         return = x;
                     }
-                    }
-                    s = A.A();
-                    r = s.foo(1);";
+                    r = foo(1);";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r", new object[] { new object[] { 1 } });
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TZ01_Defect_1467235_coercion_from_singleton_array_4()
         {
             string code =
                     @"
-                    class A {
                     def foo : var[](x:var[][])
                     {
                         return = x;
                     }
-                    }
-                    s = A.A();
-                    r = s.foo(1);";
+                    r = foo(1);";
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4172
             string error = "MAGN-4172: What is the proper coercion strategy for this?";
             thisTest.VerifyRunScriptSource(code, error);
@@ -3260,32 +3129,26 @@ d;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TZ01_Defect_1467235_coercion_from_singleton_array_6()
         {
             string code =
                     @"
-                        class B{b1=0;}
-                        class A
+                        def foo (y)
                         {
-                            x : int[];
-                            def foo (y)
-                            {
-    	                        x = y;
-                                return = x;
-                            }
+    	                    x : int[] = y;
+                            return = x;
                         }
-                        s = A.A();
-                        r = s.foo(1);
-                        t = s.foo(1.0);
+                        
+                        r = foo(1);
+                        t = foo(1.0);
                         u1:var= 1;
-                        u = s.foo(u1);
-                        v = s.foo(true);
-                        w = s.foo(""1"");
-                        x = s.foo('1');
-                        y = s.foo(B.B());
-                        z = s.foo(null);"
+                        u = foo(u1);
+                        v = foo(true);
+                        w = foo(""1"");
+                        x = foo('1');
+                        z = foo(null);"
                     ;
             string error = "1467235 - Sprint25: rev 3411 : When class property is a collection and a single value is passed to it, it should be coerced to a collection";
             thisTest.VerifyRunScriptSource(code, error);
@@ -3295,37 +3158,29 @@ d;
             thisTest.Verify("v", null);
             thisTest.Verify("w", null);
             thisTest.Verify("x", null);
-            thisTest.Verify("y", null);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TZ01_Defect_1467235_coercion_from_singleton_array_7()
         {
             string code =
                     @"
-                        class B{b1=0;}
-                        class A
+                        def foo (y)
                         {
-                            x : var[];
-                            def foo (y)
-                            {
-    	                        x = y;
-                                return = x;
-                            }
+    	                    loc : var[] = y;
+                            return = loc;
                         }
-                        s = A.A();
-                        r = s.foo(1);
-                        t = s.foo(1.0);
+                        r = foo(1);
+                        t = foo(1.0);
                         u1:var= 1;
-                        u = s.foo(u1);
-                        v = s.foo(true);
-                        w = s.foo(""1"");
-                        x = s.foo('1');
-                        y = s.foo(B.B()).b1;
-                        z = s.foo(null);"
-                    ;
+                        u = foo(u1);
+                        v = foo(true);
+                        w = foo(""1"");
+                        x = foo('1');
+                        z = foo(null);
+";
             string error = "1467235 - Sprint25: rev 3411 : When class property is a collection and a single value is passed to it, it should be coerced to a collection";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r", new object[] { 1 });
@@ -3334,37 +3189,30 @@ d;
             thisTest.Verify("v", new object[] { true });
             thisTest.Verify("w", new object[] { "1" });
             thisTest.Verify("x", new object[] { '1' });
-            thisTest.Verify("y", new object[] { 0 });
             thisTest.Verify("z", null);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TZ01_Defect_1467235_coercion_from_singleton_array_8()
         {
             string code =
                     @"
-                        class B{b1=0;}
-                        class A
+                        def foo (y)
                         {
-                            x : double[];
-                            def foo (y)
-                            {
-    	                        x = y;
-                                return = x;
-                            }
+    	                    loc : double[] = y;
+                            return = loc;
                         }
-                        s = A.A();
-                        r = s.foo(1);
-                        t = s.foo(1.0);
+                        
+                        r = foo(1);
+                        t = foo(1.0);
                         u1:var= 1;
-                        u = s.foo(u1);
-                        v = s.foo(true);
-                        w = s.foo(""1"");
-                        x = s.foo('1');
-                        y = s.foo(B.B());
-                        z = s.foo(null);"
+                        u = foo(u1);
+                        v = foo(true);
+                        w = foo(""1"");
+                        x = foo('1');
+                        z = foo(null);"
                     ;
             string error = "1467235 - Sprint25: rev 3411 : When class property is a collection and a single value is passed to it, it should be coerced to a collection";
             thisTest.VerifyRunScriptSource(code, error);
@@ -3374,37 +3222,31 @@ d;
             thisTest.Verify("v", null);
             thisTest.Verify("w", null);
             thisTest.Verify("x", null);
-            thisTest.Verify("y", null);
             thisTest.Verify("z", null);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TZ01_Defect_1467235_coercion_from_singleton_array_9()
         {
             string code =
                     @"
-                        class B{b1=0;}
-                        class A
-                        {
-                            x : bool[];
                             def foo (y)
                             {
-    	                        x = y;
-                                return = x;
+    	                        loc:bool[] = y;
+                                return = loc;
                             }
-                        }
-                        s = A.A();
-                        r = s.foo(1);
-                        t = s.foo(1.0);
+                        
+                        r = foo(1);
+                        t = foo(1.0);
                         u1:var= 1;
-                        u = s.foo(u1);
-                        v = s.foo(true);
-                        w = s.foo(""1"");
-                        x = s.foo('1');
-                        y = s.foo(B.B());
-                        z = s.foo(null);"
+                        u = foo(u1);
+                        v = foo(true);
+                        w = foo(""1"");
+                        x = foo('1');
+                        z = foo(null);
+"
                     ;
             string error = "1467235 - Sprint25: rev 3411 : When class property is a collection and a single value is passed to it, it should be coerced to a collection";
             thisTest.VerifyRunScriptSource(code, error);
@@ -3414,61 +3256,51 @@ d;
             thisTest.Verify("v", new object[] { true });
             thisTest.Verify("w", new object[] { true });
             thisTest.Verify("x", new object[] { true });
-            thisTest.Verify("y", new object[] { true });
             thisTest.Verify("z", null);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TZ01_Defect_1467235_coercion_from_singleton_array_10()
         {
             string code =
                     @"
-                        class A
-                        {
-                            x : var[];
                             def foo (y)
                             {
-    	                        x = y;
+    	                        x : var[] = y;
                                 return = x;
                             }
-                        }
-                        s = A.A();
-                        r = s.foo(1);";
+                        r = foo(1);";
             string error = "1467235 - Sprint25: rev 3411 : When class property is a collection and a single value is passed to it, it should be coerced to a collection";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r", new object[] { 1 });
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TZ01_Defect_1467235_coercion_from_singleton_array_11()
         {
             string code =
                     @"
-                        class B{b1=0;}
-                        class A
-                        {
-                            x : string[];
+import(""FFITarget.dll"");
                             def foo (y)
                             {
-    	                        x = y;
-                                return = x;
+    	                        loc : string[]= y;
+                                return = loc;
                             }
-                        }
-                        s = A.A();
-                        r = s.foo(1);
-                        t = s.foo(1.0);
+                        
+                        r = foo(1);
+                        t = foo(1.0);
                         u1:var= 1;
-                        u = s.foo(u1);
-                        v = s.foo(true);
-                        w = s.foo(""1"");
-                        x = s.foo('1');
-                        y = s.foo(B.B());
-                        z = s.foo(null);"
-                    ;
+                        u = foo(u1);
+                        v = foo(true);
+                        w = foo(""1"");
+                        x = foo('1');
+                        y = foo(ClassFunctionality.ClassFunctionality());
+                        z = foo(null);
+";
             string error = "1467235 - Sprint25: rev 3411 : When class property is a collection and a single value is passed to it, it should be coerced to a collection";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r", null);
@@ -3482,32 +3314,27 @@ d;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TZ01_Defect_1467235_coercion_from_singleton_array_12()
         {
             string code =
                     @"
-                        class B{b1=0;}
-                        class A
-                        {
-                            x : char[];
+import(""FFITarget.dll"");
                             def foo (y)
                             {
-    	                        x = y;
-                                return = x;
+    	                        loc : char[] = y;
+                                return = loc;
                             }
-                        }
-                        s = A.A();
-                        r = s.foo(1);
-                        t = s.foo(1.0);
+                        r = foo(1);
+                        t = foo(1.0);
                         u1:var= 1;
-                        u = s.foo(u1);
-                        v = s.foo(true);
-                        w = s.foo(""1"");
-                        x = s.foo('1');
-                        y = s.foo(B.B());
-                        z = s.foo(null);"
+                        u = foo(u1);
+                        v = foo(true);
+                        w = foo(""1"");
+                        x = foo('1');
+                        y = foo(ClassFunctionality.ClassFunctionality());
+                        z = foo(null);"
                     ;
             string error = "1467235 - Sprint25: rev 3411 : When class property is a collection and a single value is passed to it, it should be coerced to a collection";
             thisTest.VerifyRunScriptSource(code, error);
@@ -3522,44 +3349,36 @@ d;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TZ01_1467320_single_To_Dynamicarray()
         {
             string code =
                     @"
-              class A
-                    {
-                        x:int[] = { };
-	                    constructor A ( y : int )
-	                    {
-                        x =  y ;
-	                    }
-                    }
-                    c = A.A(0);
-                    d = c.x;";
+                    x:int[] = { };
+                    x = 0;
+";
             thisTest.VerifyRunScriptSource(code);
-            thisTest.Verify("d", new object[] { 0 });
+            thisTest.Verify("x", new object[] { 0 });
         }
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TZ01_1467320_single_To_Dynamicarray_2()
         {
             string code =
                     @"
-              class A
-                    {
-                        x = { };
-	                    constructor A ( y : int )
+	                    def foo ( y : int )
 	                    {
-                        x =  {y,y+1} ;
+                            x = { };
+                            x =  {y,y+1} ;
+                            return = x;
 	                    }
-                    }
-                    c = A.A(0);
-                    d = c.x;";
+                    
+                    d = foo(0);
+";
             string error = "1467320 Sprint 27 - Rev 3873 ,Upgrade to array does not happen if the member property define as dynamic array and single value is assigned ";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("d", new object[] { 0, 1 });
@@ -3567,22 +3386,20 @@ d;
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TZ01_1467320_single_To_Dynamicarray_3()
         {
             string code =
                     @"
-              class A
-                    {
-                        x = { };
-	                    constructor A ( y : int )
+	                    def foo ( y : int )
 	                    {
-                        x =  {y,{y+1}} ;
+                            x = { };
+                            x =  {y,{y+1}} ;
+                            return = x;
 	                    }
-                    }
-                    c = A.A(0);
-                    d = c.x;";
+                    d = foo(0);
+";
             string error = "1467320 Sprint 27 - Rev 3873 ,Upgrade to array does not happen if the member property define as dynamic array and single value is assigned ";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("d", new object[] { 0, new object[] { 1 } });
@@ -3609,25 +3426,20 @@ d;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS081_Userdefined_To_single_1467308()
         {
             string code =
                     @"
-                    class A
-                    {
-                        a : int;
-                        constructor A(b : int[])
+                        def foo (b : int[])
                         {
-                            a = b;
+                            a : int = b;
+                            return = a;
                         }
-                    }
-e;
-                    [Imperative]
+                    e = [Imperative]
                     {
-                        d = A.A(5);
-                        e = d.a;
+                        return = foo(5);
                     }
                     ";
             string error = "1467308 - Sprint 26 - Rev 3786 - userdefined type array to singleton conversion must return null since conversion not possible ";
@@ -3636,25 +3448,20 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS081_Userdefined_To_single_1467308_2()
         {
             string code =
                     @"
-                    class A
+                    def foo (b : int)
                     {
-                        a : int[];
-                        constructor A(b : int)
-                        {
-                            a = b;
-                        }
+                        a : int[] = b;
+                        return = a;
                     }
-e;
-                    [Imperative]
+                    e = [Imperative]
                     {
-                        d = A.A(5);
-                        e = d.a;
+                        return = foo(5);
                     }
                     ";
             string error = "1467308 - Sprint 26 - Rev 3786 - userdefined type array to singleton conversion must return null since conversion not possible ";
@@ -3663,25 +3470,20 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS081_Userdefined_To_single_1467308_3()
         {
             string code =
                     @"
-                    class A
-                    {
-                        a : int;
-                        constructor A(b : int[]..[])
+                        def foo(b : int[]..[])
                         {
-                            a = b;
+                            a :int= b;
+                            return = a;
                         }
-                    }
-e;
-                    [Imperative]
+                    e = [Imperative]
                     {
-                        d = A.A(5);
-                        e = d.a;
+                        return = foo(5);
                     }
                     ";
             string error = "1467308 - Sprint 26 - Rev 3786 - userdefined type array to singleton conversion must return null since conversion not possible ";
@@ -3690,25 +3492,20 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS081_Userdefined_To_single_1467308_4()
         {
             string code =
                     @"
-                    class A
-                    {
-                        a : int;
-                        constructor A(b : int[]..[])
+                        def foo(b : int[]..[])
                         {
-                            a = b;
+                            a : int= b;
+                            return = a;
                         }
-                    }
-e;
-                    [Imperative]
+                    e = [Imperative]
                     {
-                        d = A.A(5);
-                        e = d.a;
+                        return = foo(5);
                     }
                     ";
             thisTest.VerifyRunScriptSource(code);
@@ -3717,20 +3514,20 @@ e;
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS082_return_userdefined_To_BoolArray_1467310()
         {
             string code =
                     @"
-                    class A{ a=1; }
+import(""FFITarget.dll"");
                         def foo:bool[]( x)
                         {
 	                        b1= x ;
 	                        return =b1;
                         }
                        
-                        d = foo(A.A() );
+                        d = foo(ClassFunctionality.ClassFunctionality(1) );
                     ";
             string error = "147310 - Sprint 26 - Rev 3786 user defined to bool array - array conversion does not happen ";
             thisTest.VerifyRunScriptSource(code, error);
@@ -3738,20 +3535,20 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS082_Param_userdefined_To_BoolArray_1467310()
         {
             string code =
                     @"
-                    class A{ a=1; }
+import(""FFITarget.dll"");
                         def foo( x:bool[])
                         {
 	                        b1= x ;
 	                        return =b1;
                         }
                        
-                        d = foo(A.A() );
+                        d = foo(ClassFunctionality.ClassFunctionality(1) );
                     ";
             string error = "1467310 -Sprint 26 - Rev 3786 user defined to bool array - array conversion does not happen ";
             thisTest.VerifyRunScriptSource(code, error);
@@ -3759,14 +3556,14 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS082_assign_userdefined_To_BoolArray_1467310()
         {
             string code =
                     @"
-                    class A{  }
-                    v = {A.A(), A.A()};
+import(""FFITarget.dll"");
+                    v = {ClassFunctionality.ClassFunctionality(), ClassFunctionality.ClassFunctionality()};
                     b:bool[] = v;
                     ";
             string error = "147310 - Sprint 26 - Rev 3786 user defined to bool array - array conversion does not happen ";
@@ -3775,14 +3572,14 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS082_assign2_userdefined_To_BoolArray_1467310()
         {
             string code =
                     @"
-                    class A{  }
-                    v = A.A();
+import(""FFITarget.dll"");
+                    v = ClassFunctionality.ClassFunctionality();
                     b:bool[] = v;
                     ";
             string error = "147310 - Sprint 26 - Rev 3786 user defined to bool array - array conversion does not happen ";
@@ -3791,15 +3588,15 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS082_dispatch2_userdefined_To_BoolArray_1467310()
         {
             string code =
                     @"
-                    class A{  }
+import(""FFITarget.dll"");
                     def foo(b : bool[]) { return = 1; }
-                    v = {A.A(), A.A()};
+                    v = {ClassFunctionality.ClassFunctionality(), ClassFunctionality.ClassFunctionality()};
                     o = foo(v);
                     ";
             string error = "147310 - Sprint 26 - Rev 3786 user defined to bool array - array conversion does not happen ";
@@ -3808,15 +3605,15 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS082_dispatch3_userdefined_To_BoolArray_1467310()
         {
             string code =
                     @"
-                    class A{  }
+import(""FFITarget.dll"");
                     def foo(b : bool[]) { return = 1; }
-                    v = A.A();
+                    v = ClassFunctionality.ClassFunctionality();
                     o = foo(v);
                     ";
             string error = "147310 - Sprint 26 - Rev 3786 user defined to bool array - array conversion does not happen ";
@@ -3861,21 +3658,21 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS084_Param_UserDefine_To_UserDefinedArray_1467314()
         {
             string code =
                     @"
-                    class A{ a = 1; }
-                        def foo : A[](x )
+import(""FFITarget.dll"");
+                        def foo : ClassFunctionality[](x )
                         {
                             b1 = x;
                             return = b1;
     
                         }
-                        d = foo(A.A());
-                        d1 = d.a;
+                        d = foo(ClassFunctionality.ClassFunctionality(1));
+                        d1 = d.IntVal;
                     ";
             string error = "1467314 Sprint 26 - Rev 3805 user defined type to array of user defined type does not upgrade to array ";
             thisTest.VerifyRunScriptSource(code, error);
@@ -3883,21 +3680,21 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS085_return_UserDefine_To_UserDefinedArray_1467314()
         {
             string code =
                     @"
-                    class A{ a = 1; }
-                        def foo(x:A[] )
+import(""FFITarget.dll"");
+                        def foo(x:ClassFunctionality[] )
                         {
                             b1 = x;
                             return = b1;
     
                         }
-                        d = foo(A.A());
-                        d1 = d.a;
+                        d = foo(ClassFunctionality.ClassFunctionality(1));
+                        d1 = d.IntVal;
                     ";
             string error = "1467314 Sprint 26 - Rev 3805 user defined type to array of user defined type does not upgrade to array ";
             thisTest.VerifyRunScriptSource(code, error);
@@ -3924,21 +3721,18 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS087_arrayUpgrade_function_arguments_1457470()
         {
             string code =
                     @"
-                    class A{
-                        x : int[];
-                        constructor A(i : int[])
+                        def foo(i : int[])
                         {
-                            x = i;
+                            x : int[] = i;
+                               return = x;
                         }
-                    }
-                    a1 = A.A(1);
-                    b1 = a1.x;
+                    b1 = foo(1);
                     ";
             string error = "1467316 - Sprint 26 - Rev 3831 function arguments - if the first argument in an array is null it replicates, when not expected";
             thisTest.VerifyRunScriptSource(code, error);
@@ -4031,76 +3825,70 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS093_Param_notypedefined_indexing_Userdefined()
         {
             string code =
                     @"
-                    class A{ a = 1234;}
-                    class B{
-                        b : A;
-                        constructor B(x : A, y : A)
-                        {
-                            b = x;
-                        }
+import(""FFITarget.dll"");
+                    def foo(x : ClassFunctionality, y : ClassFunctionality)
+                    {
+
+                        b : ClassFunctionality = x;
+                        return = b;
                     }
-                    points = { A.A(), A.A() };
+                    points = { ClassFunctionality.ClassFunctionality(1234), ClassFunctionality.ClassFunctionality(1234) };
                     def CreateLine(points: var[] )
                     {
-                        return = B.B(points[0], points[1]);
+                        return = foo(points[0], points[1]);
                     }
                     test = CreateLine(points);
-                    z=test.b.a;
+                    z=test.IntVal;
                     ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("z", 1234);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS094_Param_notypedefined_single_Userdefined()
         {
             string code =
-                    @"
-                    class A{ a=0; }
-                        class B{
-                            b : A;
-                            constructor B(x : A)
-                            {
-                                b = x;
-                            }
+                    @"import(""FFITarget.dll"");
+                        def foo (x : ClassFunctionality)
+                        {
+                            b  : ClassFunctionality = x;
+                            return = b;
                         }
-                        points = A.A();
+                        points = ClassFunctionality.ClassFunctionality(0);
                         def CreateLine(points )
                         {
-                            return = B.B(points);
+                            return = foo(points);
                         }
                         test = CreateLine(points);
-                        z = test.b.a;
+                        z = test.IntVal;
                     ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("z", 0);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS094_Class_member_single_ToDynamicArray_Userdefined_1467320()
         {
             string code =
                     @"
-                    class A
+                        def foo ( y : int )
                         {
                             x = { };
-                                constructor A ( y : int )
-                                {
                             x =  y ;
-                                }
+                            return = x;
                         }
-                        c = A.A(0);
-                        d = c.x;
+                        
+                        d = foo(0);
                     ";
             //string error = "1467320 - Sprint 27 - Rev 3873 ,Upgrade to array does not happen if the member property define as dynamic array and single value is assigned ";
             string error = "";
@@ -4109,27 +3897,25 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS0120_typedassignment_To_Jagged_Vararray()
         {
             string code =
                 @"
-               class test
-                    {
-                        x=1;
-                    }
+import(""FFITarget.dll"");
                     a:var[]..[]= {1,{2,3},{{4},3}}; 
                     
                     b:var[]..[] =  {1.1,{2.2,3.3}}; 
                     c:var[]..[]={""a"",{""a""}}; 
                     d:var[]..[]= {'c',{'c'}};
-                    x1= test.test();
+                    x1= ClassFunctionality.ClassFunctionality(1);
                     e:var[]..[]= {x1,{x1}};
-                    e1=e.x;
+                    e1=e.IntVal;
                     f:var[]..[]= {true,{true}};
-                    g :var[]..[]={null,{null}};";
+                    g :var[]..[]={null,{null}};
+";
 
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1701
             string error = "MAGN-1701 Regression : Dot operation on jagged arrays is giving unexpected null";
@@ -4145,25 +3931,22 @@ e;
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS0121_typedassignment_To_Jagged_Intarray()
         {
             string code =
                 @"
-                class test
-                    {
-                        x=1;
-                    }
+import(""FFITarget.dll"");
                     a:int[]..[]= {1,{2,{3}}}; 
                     
                     b:int[]..[] =  {1.1,{1.1}}; 
                     c:int[]..[]={""a"",{""a""}}; 
                     d:int[]..[]= {'c',{'c'}};
-                    x1= test.test();
+                    x1= ClassFunctionality.ClassFunctionality(1);
                     e:int[]..[]= {x1,{x1}};
-                    e1=e.x;
+                    e1=e.IntVal;
                     f:int[]..[]= {true,{true}};
                     g :int[]..[]={null,{null}};";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1701
@@ -4179,25 +3962,22 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS0122_typedassignment_To_Jagged_doublearray()
         {
             string code =
                 @"
-               class test
-                    {
-                        x=1;
-                    }
+import(""FFITarget.dll"");
                     a:double[]= {1,{1}}; 
                     
                     b:double[] =  {1.1,{-3}}; 
                     c:double[]={""a"",{""ds""}}; 
                     d:double[]= {'c',{'1'}};
-                    x1= test.test();
+                    x1= ClassFunctionality.ClassFunctionality(1);
                     e:double[]= {x1,{x1}};
-                    e1=e.x;
+                    e1=e.IntVal;
                     f:double[]= {true,{true}};
                     g :double[]={null,{null}};";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1670
@@ -4215,25 +3995,22 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS0123_typedassignment_To_Jagged_boolarray()
         {
             string code =
                 @"
-               class test
-                    {
-                        x=1;
-                    }
+import(""FFITarget.dll"");
                     a:bool[]..[]= {1,{1}}; 
                     
                     b:bool[] ..[]=  {1.1,{1.1}}; 
                     c:bool[]..[]={""a"",{""a""}}; 
                     d:bool[]..[]= {'c',{'c'}};
-                    x1= test.test();
+                    x1= ClassFunctionality.ClassFunctionality(1);
                     e:bool[]..[]= {x1,{x1}};
-                    e1=e.x;
+                    e1=e.IntVal;
                     f:bool[]..[]= {true,{true}};
                     g :bool[]..[]={null,{null}};";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1670
@@ -4250,25 +4027,22 @@ e;
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS0124_typedassignment_To_Jagged_stringarray()
         {
             string code =
                 @"
-               class test
-                    {
-                        x=1;
-                    }
+import(""FFITarget.dll"");
                     a:string[]..[]= {1,{1}}; 
                     
                     b:string[] ..[]=  {1.0,{1.0}}; 
                     c:string[]..[]={""test"",{""test""}}; 
                     d:string[]..[]= {'1',{'1'}};
-                    x1= test.test();
+                    x1= ClassFunctionality.ClassFunctionality(1);
                     e:string[]..[]= {x1,{x1}};
-                    e1=e.x;
+                    e1=e.IntVal;
                     f:string[]..[]= {false,{true}};
                     g :string[]..[]={null,{null}};";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1670
@@ -4284,25 +4058,22 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS0125_typedassignment_To_Jagged_chararray()
         {
             string code =
                 @"
-               class test
-                    {
-                        x=1;
-                    }
+import(""FFITarget.dll"");
                     a:char[]..[]= {1,{1}}; 
                     
                     b:char[]..[] =  {1.0,{1.0}}; 
                     c:char[]..[]={""test"",{""test""}}; 
                     d:char[]..[]= {'1',{'1'}};
-                    x1= test.test();
+                    x1= ClassFunctionality.ClassFunctionality(1);
                     e:char[]..[]= {x1,{x1}};
-                    e1=e.x;
+                    e1=e.IntVal;
                     f:char[]..[]= {false,{false}};
                     g :char[]..[]={null,{null}};";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1670
@@ -4355,13 +4126,13 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS126_Param_eachType_Array_To_VarArray()
         {
             string code =
                 @"
-                    class A{a=0; }
+import(""FFITarget.dll"");
                         def foo (x: var[][])
                         {
                             return = x;
@@ -4374,8 +4145,8 @@ e;
                         e = foo({ '1' });
                         f : var = 3;
                         f1 = foo({ f });
-                        h = foo({A.A()});
-                        h1=h.a;
+                        h = foo({ClassFunctionality.ClassFunctionality()});
+                        h1=h.IntVal;
                         i = foo({ null });
                     ";
             string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
@@ -4391,13 +4162,13 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS126_Return_eachType_Array_To_VarArray()
         {
             string code =
                 @"
-                    class A{a=0; }
+                    import(""FFITarget.dll"");
                         def foo : var[][](x)
                         {
                             return = x;
@@ -4410,8 +4181,8 @@ e;
                         e = foo({ '1' });
                         f : var = 3;
                         f1 = foo({ f });
-                         h = foo({A.A()});
-                        h1=h.a;
+                         h = foo({ClassFunctionality.ClassFunctionality()});
+                        h1=h.IntVal;
                         i = foo({ null });
                     ";
             string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
@@ -4427,13 +4198,13 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS127_Param_eachType_Array_To_IntArray()
         {
             string code =
                 @"
-                    class A{a=0; }
+                    import(""FFITarget.dll"");
                         def foo (x: int[][])
                         {
                             return = x;
@@ -4446,8 +4217,8 @@ e;
                         e = foo({ '1' });
                         f : var = 3;
                         f1 = foo({ f });
-                        h = foo({A.A()});
-                        h1=h.a;
+                        h = foo({ClassFunctionality.ClassFunctionality()});
+                        h1=h.IntVal;
                         i = foo({ null });
                     ";
             string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
@@ -4463,14 +4234,14 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS128_Return_eachType_Array_To_IntArray()
         {
             string code =
                 @"
-                    class A{a=0; }
+                    import(""FFITarget.dll"");
                         def foo : int[][](x)
                         {
                             return = x;
@@ -4483,8 +4254,8 @@ e;
                         e = foo({ '1' });
                         f : var = 3.0;
                         f1 = foo({ f });
-                        h = foo({A.A()});
-                        h1=h.a;
+                        h = foo({ClassFunctionality.ClassFunctionality()});
+                        h1=h.IntVal;
                         i = foo({ null });
                     ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
@@ -4501,13 +4272,13 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS129_Param_eachType_Array_To_DoubleArray()
         {
             string code =
                 @"
-                    class A{a=0; }
+                    import(""FFITarget.dll"");
                         def foo (x: double[][])
                         {
                             return = x;
@@ -4520,8 +4291,8 @@ e;
                         e = foo({ '1' });
                         f : var = 3.0;
                         f1 = foo({ f });
-                        h = foo({A.A()});
-                        h1=h.a;
+                        h = foo({ClassFunctionality.ClassFunctionality()});
+                        h1=h.IntVal;
                         i = foo({ null });
                     ";
             string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
@@ -4537,14 +4308,14 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS130_Return_eachType_Array_To_DoubleArray()
         {
             string code =
                 @"
-                    class A{a=0; }
+                    import(""FFITarget.dll"");
                         def foo : double[][](x)
                         {
                             return = x;
@@ -4557,8 +4328,8 @@ e;
                         e = foo({ '1' });
                         f : var = 3;
                         f1 = foo({ f });
-                        h = foo({A.A()});
-                        h1=h.a;
+                        h = foo({ClassFunctionality.ClassFunctionality()});
+                        h1=h.IntVal;
                         i = foo({ null });
                     ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
@@ -4575,13 +4346,13 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS131_Param_eachType_Array_To_BoolArray()
         {
             string code =
                 @"
-                    class A{a=0; }
+                    import(""FFITarget.dll"");
                         def foo (x: bool[][])
                         {
                             return = x;
@@ -4594,8 +4365,8 @@ e;
                         e = foo({ '1' });
                         f : var = 3.0;
                         f1 = foo({ f });
-                        h = foo({A.A()});
-                        h1=h.a;
+                        h = foo({ClassFunctionality.ClassFunctionality()});
+                        h1=h.IntVal;
                         i = foo({ null });
                     ";
             string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
@@ -4611,13 +4382,13 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS132_Return_eachType_Array_To_BoolArray()
         {
             string code =
                 @"
-                    class A{a=0; }
+                    import(""FFITarget.dll"");
                         def foo : bool[][](x)
                         {
                             return = x;
@@ -4630,8 +4401,8 @@ e;
                         e = foo({ '1' });
                         f : var = 3;
                         f1 = foo({ f });
-                        h = foo({A.A()});
-                        h1=h.a;
+                        h = foo({ClassFunctionality.ClassFunctionality()});
+                        h1=h.IntVal;
                         i = foo({ null });
                     ";
             string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
@@ -4647,13 +4418,13 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS133_Param_eachType_Array_To_StringArray()
         {
             string code =
                 @"
-                    class A{a=0; }
+                    import(""FFITarget.dll"");
                         def foo (x: string[][])
                         {
                             return = x;
@@ -4666,8 +4437,8 @@ e;
                         e = foo({ '1' });
                         f : var = 3.0;
                         f1 = foo({ f });
-                        h = foo({A.A()});
-                        h1=h.a;
+                        h = foo({ClassFunctionality.ClassFunctionality()});
+                        h1=h.IntVal;
                         i = foo({ null });
                     ";
             string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
@@ -4683,14 +4454,14 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS134_Return_eachType_Array_To_StringArray()
         {
             string code =
                 @"
-                    class A{a=0; }
+                    import(""FFITarget.dll"");
                         def foo : string[][](x)
                         {
                             return = x;
@@ -4703,8 +4474,8 @@ e;
                         e = foo({ '1' });
                         f : var = 3;
                         f1 = foo({ f });
-                        h = foo({A.A()});
-                        h1=h.a;
+                        h = foo({ClassFunctionality.ClassFunctionality()});
+                        h1=h.IntVal;
                         i = foo({ null });
                     ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
@@ -4721,13 +4492,13 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS135_Param_eachType_Array_To_charArray()
         {
             string code =
                 @"
-                    class A{a=0; }
+                    import(""FFITarget.dll"");
                         def foo (x: char[][])
                         {
                             return = x;
@@ -4740,8 +4511,8 @@ e;
                         e = foo({ '1' });
                         f : var = 3.0;
                         f1 = foo({ f });
-                        h = foo({A.A()});
-                        h1=h.a;
+                        h = foo({ClassFunctionality.ClassFunctionality()});
+                        h1=h.IntVal;
                         i = foo({ null });
                     ";
             string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
@@ -4757,14 +4528,14 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS136_Return_eachType_Array_To_CharArray()
         {
             string code =
                 @"
-                    class A{a=0; }
+                    import(""FFITarget.dll"");
                         def foo : char[][](x)
                         {
                             return = x;
@@ -4777,8 +4548,8 @@ e;
                         e = foo({ '1' });
                         f : var = 3;
                         f1 = foo({ f });
-                        h = foo({A.A()});
-                        h1=h.a;
+                        h = foo({ClassFunctionality.ClassFunctionality()});
+                        h1=h.IntVal;
                         i = foo({ null });
                     ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
@@ -4795,14 +4566,14 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS0137_Param_eachType_Array_To_Jagged_VarArray()
         {
             string code =
                 @"
-                    class A{a=0; }
+                    import(""FFITarget.dll"");
                         def foo (x: var[]..[])
                         {
                             return = x;
@@ -4815,8 +4586,8 @@ e;
                         e = foo({ '1',{'1'} });
                         f : var = 3;
                         f1 = foo({ f,{f} });
-                        h = foo({A.A(),{A.A()}});
-                        h1=h.a;
+                        h = foo({ClassFunctionality.ClassFunctionality(),{ClassFunctionality.ClassFunctionality()}});
+                        h1=h.IntVal;
                         i = foo({ null ,{null}});
                     ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
@@ -4833,14 +4604,14 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS0138_Return_eachType_Array_To_Jagged_VarArray()
         {
             string code =
                  @"
-                  class A{a=0; }
+                  import(""FFITarget.dll"");
                       def foo : var[]..[](x)
                       {
                           return = x;
@@ -4853,8 +4624,8 @@ e;
                       e = foo({ '1',{'1'} });
                       f : var = 3;
                       f1 = foo({ f,{f} });
-                      h = foo({A.A(),{A.A()}});
-                      h1=h.a;
+                      h = foo({ClassFunctionality.ClassFunctionality(),{ClassFunctionality.ClassFunctionality()}});
+                      h1=h.IntVal;
                       i = foo({ null ,{null}});
                   ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1671
@@ -4871,14 +4642,14 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS139_Param_eachType_Array_To_jagged_IntArray()
         {
             string code =
                   @"
-          class A{a=0; }
+          import(""FFITarget.dll"");
                      def foo (x: int[]..[])
                      {
                          return = x;
@@ -4891,8 +4662,8 @@ e;
                      e = foo({ '1' ,{'1'}});
                      f : var = 3.0;
                      f1 = foo({ f ,{f}});
-                     h = foo({A.A(),{A.A()}});
-                     h1=h.a;
+                     h = foo({ClassFunctionality.ClassFunctionality(),{ClassFunctionality.ClassFunctionality()}});
+                     h1=h.IntVal;
                      i = foo({ null ,{null}});
                  ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1671
@@ -4909,14 +4680,14 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS140_Return_eachType_Array_To_Jagged_IntArray()
         {
             string code =
                 @"
-                 class A{a=0; }
+                 import(""FFITarget.dll"");
                      def foo : int[]..[](x)
                      {
                          return = x;
@@ -4929,8 +4700,8 @@ e;
                      e = foo({ '1' ,{'1'}});
                      f : var = 3.0;
                      f1 = foo({ f ,{f}});
-                     h = foo({A.A(),{A.A()}});
-                     h1=h.a;
+                     h = foo({ClassFunctionality.ClassFunctionality(),{ClassFunctionality.ClassFunctionality()}});
+                     h1=h.IntVal;
                      i = foo({ null ,{null}});
                  ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1671
@@ -4947,13 +4718,13 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS141_Param_eachType_Array_To_jagged_DoubleArray()
         {
             string code =
                 @"
-                 class A{a=0; }
+                 import(""FFITarget.dll"");
                      def foo (x: double[]..[])
                      {
                          return = x;
@@ -4966,8 +4737,8 @@ e;
                      e = foo({ '1' ,{'1'}});
                      f : var = 3.0;
                      f1 = foo({ f ,{f}});
-                     h = foo({A.A(),{A.A()}});
-                     h1=h.a;
+                     h = foo({ClassFunctionality.ClassFunctionality(),{ClassFunctionality.ClassFunctionality()}});
+                     h1=h.IntVal;
                      i = foo({ null ,{null}});
                  ";
             // string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
@@ -4984,13 +4755,13 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS142_Return_eachType_Array_To_Jagged_DoubleArray()
         {
             string code =
                               @"
-                 class A{a=0; }
+                 import(""FFITarget.dll"");
                      def foo (x: double[]..[])
                      {
                          return = x;
@@ -5003,8 +4774,8 @@ e;
                      e = foo({ '1' ,{'1'}});
                      f : var = 3.0;
                      f1 = foo({ f ,{f}});
-                     h = foo({A.A(),{A.A()}});
-                     h1=h.a;
+                     h = foo({ClassFunctionality.ClassFunctionality(),{ClassFunctionality.ClassFunctionality()}});
+                     h1=h.IntVal;
                      i = foo({ null ,{null}});
                  ";
             string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
@@ -5020,14 +4791,14 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS143_Param_eachType_Array_To_Jagged_BoolArray()
         {
             string code =
                 @"
-                 class A{a=0; }
+                 import(""FFITarget.dll"");
                      def foo (x: bool[]..[])
                      {
                          return = x;
@@ -5040,8 +4811,8 @@ e;
                      e = foo({ '1',{'0'} });
                      f : var = 3.0;
                      f1 = foo({ f ,{f}});
-                     h = foo({A.A(),{A.A()}});
-                     h1=h.a;
+                     h = foo({ClassFunctionality.ClassFunctionality(),{ClassFunctionality.ClassFunctionality()}});
+                     h1=h.IntVal;
                      i = foo({ null ,{null}});
                  ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
@@ -5058,14 +4829,14 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS144_Return_eachType_Array_To_Jagged_BoolArray()
         {
             string code =
                  @"
-                 class A{a=0; }
+                 import(""FFITarget.dll"");
                      def foo : bool[]..[](x)
                      {
                          return = x;
@@ -5078,8 +4849,8 @@ e;
                      e = foo({ '1',{'0'} });
                      f : var = 3.0;
                      f1 = foo({ f ,{f}});
-                     h = foo({A.A(),{A.A()}});
-                     h1=h.a;
+                     h = foo({ClassFunctionality.ClassFunctionality(),{ClassFunctionality.ClassFunctionality()}});
+                     h1=h.IntVal;
                      i = foo({ null ,{null}});
                  ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1671
@@ -5096,14 +4867,14 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS147_Param_eachType_Array_To_jagged_StringArray()
         {
             string code =
                  @"
-                   class A{a=0; }
+                   import(""FFITarget.dll"");
                        def foo (x: string[]..[])
                        {
                            return = x;
@@ -5116,8 +4887,8 @@ e;
                        e = foo({ '1',{'1'} });
                        f : var = 3;
                        f1 = foo({ f,{f} });
-                       h = foo({A.A(),{A.A()}});
-                       h1=h.a;
+                       h = foo({ClassFunctionality.ClassFunctionality(),{ClassFunctionality.ClassFunctionality()}});
+                       h1=h.IntVal;
                        i = foo({ null ,{null}});
                    ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
@@ -5134,14 +4905,14 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS148_Return_eachType_Array_To_jagged_StringArray()
         {
             string code =
                 @"
-                   class A{a=0; }
+                   import(""FFITarget.dll"");
                        def foo : string[]..[](x)
                        {
                            return = x;
@@ -5154,8 +4925,8 @@ e;
                        e = foo({ '1',{'1'} });
                        f : var = 3;
                        f1 = foo({ f,{f} });
-                       h = foo({A.A(),{A.A()}});
-                       h1=h.a;
+                       h = foo({ClassFunctionality.ClassFunctionality(),{ClassFunctionality.ClassFunctionality()}});
+                       h1=h.IntVal;
                        i = foo({ null ,{null}});
                    ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1670
@@ -5172,13 +4943,13 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS149_Param_eachType_Array_To_Jagged_charArray()
         {
             string code =
                 @"
-                  class A{a=0; }
+                  import(""FFITarget.dll"");
                       def foo (x: char[]..[])
                       {
                           return = x;
@@ -5191,8 +4962,8 @@ e;
                       e = foo({ '1',{'1'} });
                       f : var = 3;
                       f1 = foo({ f ,{f}});
-                      h = foo({A.A(),{A.A()}});
-                      h1=h.a;
+                      h = foo({ClassFunctionality.ClassFunctionality(),{ClassFunctionality.ClassFunctionality()}});
+                      h1=h.IntVal;
                       i = foo({ null ,{null}});
                   ";
             string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
@@ -5208,14 +4979,14 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS150_Return_eachType_Array_To_jagged_CharArray()
         {
             string code =
                 @"
-                  class A{a=0; }
+                  import(""FFITarget.dll"");
                       def foo : char[]..[](x)
                       {
                           return = x;
@@ -5228,8 +4999,8 @@ e;
                       e = foo({ '1',{'1'} });
                       f : var = 3;
                       f1 = foo({ f,{f}});
-                      h = foo({A.A(),{A.A()}});
-                      h1=h.a;
+                      h = foo({ClassFunctionality.ClassFunctionality(),{ClassFunctionality.ClassFunctionality()}});
+                      h1=h.IntVal;
                       i = foo({ null,{null}});
                   ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
@@ -5246,13 +5017,13 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS0151_Param_eachType_Heterogenous_Array_To_VarArray()
         {
             string code =
                 @"
-                    class A{a=0; }
+                    import(""FFITarget.dll"");
                         def foo (x: var[]..[])
                         {
                             return = x;
@@ -5260,8 +5031,8 @@ e;
                         }
                         f : var = 3;
                         a = foo({ 3,3.0,true ,""1"",'1',f});
-                        b = foo({ 3,3.0,true ,""1"",'1',f,A.A().a});
-                        c = foo({ 3,3.0,true ,""1"",'1',f,A.A().a,null});
+                        b = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal});
+                        c = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal,null});
                         d = foo({ 3,3.0,true ,""1"",'1',f,null});
                         e = foo({ null ,3,3.0,true ,""1"",'1',f});
                     ";
@@ -5275,21 +5046,20 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS0152_NullingOutTest()
         {
             string code =
                 @"
-class A{
-    a : int;
-    constructor A(b : int[])
+
+    def foo(b : int[])
     {
-        a = b;
+        a : int = b;
+        return = a;
     }
-}
-    d = A.A(5);
-e = d.a;
+
+e = foo(5);
                     ";
             string error = "DNL-1467307 Sprint 25 - Rev 3784 : Method resolution failure on member function when actual parameter is the subtype of the formal parameter type";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -5297,24 +5067,21 @@ e = d.a;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS0152_NullingOutTest_a()
         {
             string code =
                 @"
-class A{
-    a : int;
-    constructor A(b : int[])
+    def foo(b : int[])
     {
-        a = b;
+        a : int = b;
+        return = a;
     }
-}
-e;
-[Imperative]
+
+e = [Imperative]
 {
-    d = A.A(5);
-    e = d.a;
+    return = foo(5);
 }
                     ";
             string error = "DNL-1467307 Sprint 25 - Rev 3784 : Method resolution failure on member function when actual parameter is the subtype of the formal parameter type";
@@ -5323,24 +5090,21 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS0152_NullingOutTest_b()
         {
             string code =
                 @"
-class A{
-    a : int[];
-    constructor A(b : int[])
+    def foo(b : int[])
     {
-        a = b;
+        a : int[] = b;
+        return = a;
     }
-}
-e;
-[Imperative]
+
+e = [Imperative]
 {
-    d = A.A(5);
-    e = d.a;
+    return = foo(5);
 }
                     ";
             string error = "DNL-1467307 Sprint 25 - Rev 3784 : Method resolution failure on member function when actual parameter is the subtype of the formal parameter type";
@@ -5349,25 +5113,18 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS0152_NullingOutTest_c()
         {
             string code =
                 @"
-class A{
-    a : int;
-    constructor A(b : int[])
-    {
-        a = b;
-    }
-    def foo()
-    {
-        return=a;
-    }
+def foo(b : int[])
+{
+    a : int = b;
+    return=a;
 }
-    d = A.A(5);
-e = d.foo();
+e = foo(5);
                     ";
             string error = "DNL-1467307 Sprint 25 - Rev 3784 : Method resolution failure on member function when actual parameter is the subtype of the formal parameter type";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -5405,13 +5162,13 @@ e = foo({5});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS0160_Param_eachType_Heterogenous_Array_To_VarArray()
         {
             string code =
                 @"
-                    class A{a=0; }
+                    import(""FFITarget.dll"");
                         def foo (x: var[])
                         {
                             return = x;
@@ -5419,8 +5176,8 @@ e = foo({5});
                         }
                         f : var = 3;
                         a = foo({ 3,3.0,true ,""1"",'1',f});
-                        b = foo({ 3,3.0,true ,""1"",'1',f,A.A().a});
-                        c = foo({ 3,3.0,true ,""1"",'1',f,A.A().a,null});
+                        b = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal});
+                        c = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal,null});
                         d = foo({ 3,3.0,true ,""1"",'1',f,null});
                         e = foo({ null ,3,3.0,true ,""1"",'1',f});
                     ";
@@ -5434,13 +5191,13 @@ e = foo({5});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS161_Param_eachType_Heterogenous_Array_To_VarArray()
         {
             string code =
                 @"
-                    class A{a=0; }
+                    import(""FFITarget.dll"");
                         def foo (x: var)
                         {
                             return = x;
@@ -5448,8 +5205,8 @@ e = foo({5});
                         }
                         f : var = 3;
                         a = foo({ 3,3.0,true ,""1"",'1',f});
-                        b = foo({ 3,3.0,true ,""1"",'1',f,A.A().a});
-                        c = foo({ 3,3.0,true ,""1"",'1',f,A.A().a,null});
+                        b = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal});
+                        c = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal,null});
                         d = foo({ 3,3.0,true ,""1"",'1',f,null});
                         e = foo({ null ,3,3.0,true ,""1"",'1',f});
                     ";
@@ -5463,13 +5220,13 @@ e = foo({5});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS0162_Param_ArrayReduction_varArray_Var()
         {
             string code =
                 @"
-                    class A{a=0; }
+                    import(""FFITarget.dll"");
                         def foo (x: var)
                         {
                             return = x;
@@ -5477,8 +5234,8 @@ e = foo({5});
                         }
                         f : var = 3;
                         a = foo({ 3,3.0,true ,""1"",'1',f});
-                        b = foo({ 3,3.0,true ,""1"",'1',f,A.A().a});
-                        c = foo({ 3,3.0,true ,""1"",'1',f,A.A().a,null});
+                        b = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal});
+                        c = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal,null});
                         d = foo({ 3,3.0,true ,""1"",'1',f,null});
                         e = foo({ null ,3,3.0,true ,""1"",'1',f});
                     ";
@@ -5492,13 +5249,13 @@ e = foo({5});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS0163_Param_ArrayReduction_heterogenous_To_Int()
         {
             string code =
                 @"
-                    class A{a=0; }
+                    import(""FFITarget.dll"");
                         def foo (x: int)
                         {
                             return = x;
@@ -5506,8 +5263,8 @@ e = foo({5});
                         }
                         f : var = 3;
                         a = foo({ 3,3.0,true ,""1"",'1',f});
-                        b = foo({ 3,3.0,true ,""1"",'1',f,A.A()});
-                        c = foo({ 3,3.0,true ,""1"",'1',f,A.A(),null});
+                        b = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality()});
+                        c = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality(),null});
                         d = foo({ 3,3.0,true ,""1"",'1',f,null});
                         e = foo({ null ,3,3.0,true ,""1"",'1',f});
                     ";
@@ -5521,14 +5278,14 @@ e = foo({5});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS0164_Param_ArrayReduction_heterogenous_To_double()
         {
             string code =
                 @"
-                    class A{a=0; }
+                    import(""FFITarget.dll"");
                         def foo (x: double)
                         {
                             return = x;
@@ -5536,8 +5293,8 @@ e = foo({5});
                         }
                         f : var = 3;
                         a = foo({ 3,3.0,true ,""1"",'1',f});
-                        b = foo({ 3,3.0,true ,""1"",'1',f,A.A()});
-                        c = foo({ 3,3.0,true ,""1"",'1',f,A.A(),null});
+                        b = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality()});
+                        c = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality(),null});
                         d = foo({ 3,3.0,true ,""1"",'1',f,null});
                         e = foo({ null ,3,3.0,true ,""1"",'1',f});
                         f =foo({ true,""1"",3,3.0,'1',f,null});
@@ -5554,13 +5311,13 @@ e = foo({5});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS0165_Param_ArrayReduction_heterogenous_To_bool()
         {
             string code =
                 @"
-                    class A{a=0; }
+                    import(""FFITarget.dll"");
                         def foo (x: bool)
                         {
                             return = x;
@@ -5568,8 +5325,8 @@ e = foo({5});
                         }
                         f : var = 3;
                         a = foo({ 3,3.0,true ,""1"",'1',f});
-                        b = foo({ 3,3.0,true ,""1"",'1',f,A.A()});
-                        c = foo({ 3,3.0,true ,""1"",'1',f,A.A(),null});
+                        b = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality()});
+                        c = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality(),null});
                         d = foo({ 3,3.0,true ,""1"",'1',f,null});
                         e = foo({ null ,3,3.0,true ,""1"",'1',f});
                     ";
@@ -5583,14 +5340,14 @@ e = foo({5});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS0166_Param_ArrayReduction_heterogenous_To_UserDefined()
         {
             string code =
                 @"
-                    class A{a=0; }
+                    import(""FFITarget.dll"");
                         def foo (x: A)
                         {
                             return = x;
@@ -5598,10 +5355,10 @@ e = foo({5});
                         }
                         f : var = 3;
                         a = foo({ 3,3.0,true ,""1"",'1',f});
-                        b = foo({ 3,3.0,true ,""1"",'1',f,A.A()});
-                        b1 = {b[0] ,b[1],b[2] ,b[3],b[4],b[5],A.A().a};
-                        c = foo({ 3,3.0,true ,""1"",'1',f,A.A(),null});
-                        c1 = {c[0] ,c[1],c[2] ,c[3],c[4],c[5],A.A().a,c[7]};
+                        b = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality()});
+                        b1 = {b[0] ,b[1],b[2] ,b[3],b[4],b[5],ClassFunctionality.ClassFunctionality().IntVal};
+                        c = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality(),null});
+                        c1 = {c[0] ,c[1],c[2] ,c[3],c[4],c[5],ClassFunctionality.ClassFunctionality().IntVal,c[7]};
                         d = foo({ 3,3.0,true ,""1"",'1',f,null});
                         e = foo({ null ,3,3.0,true ,""1"",'1',f});
                     ";
@@ -5673,24 +5430,21 @@ e = foo({5});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS0171_typeconversion_replication_botharguments_3()
         {
             string code =
                 @"
-                   class test
-                    {
                         def foo:int[](x : int, y : double[])
                         {
                             return = x + y;
                         }
-                    }
-                        z= test.test();
-                        a = z.foo(1, { 1, 2 } );
-                        b = z.foo({ 1, 2 }, { { 1, 2 }, { 2, 4 } });
-                        c = z.foo({ 1, 2 }, { 1, 2 });
-                        d = z.foo(1, { { 1, 2 }, { 2, 4 } });
+                    
+                        a = foo(1, { 1, 2 } );
+                        b = foo({ 1, 2 }, { { 1, 2 }, { 2, 4 } });
+                        c = foo({ 1, 2 }, { 1, 2 });
+                        d = foo(1, { { 1, 2 }, { 2, 4 } });
                     ";
             string error = "";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -5701,24 +5455,21 @@ e = foo({5});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS0171_typeconversion_replication_botharguments_4()
         {
             string code =
                 @"
-                   class test
-                    {
                         def foo(x, y:var[] )
                         {
                             return = x + y;
                         }
-                    }
-                        z= test.test();
-                        a = z.foo(1, { 1, 2 } );
-                        b = z.foo({ 1, 2 }, { { 1, 2 }, { 2, 4 } });
-                        c = z.foo({ 1, 2 }, { 1, 2 });
-                        d = z.foo(1, { { 1, 2 }, { 2, 4 } });
+                    
+                        a = foo(1, { 1, 2 } );
+                        b = foo({ 1, 2 }, { { 1, 2 }, { 2, 4 } });
+                        c = foo({ 1, 2 }, { 1, 2 });
+                        d = foo(1, { { 1, 2 }, { 2, 4 } });
                     ";
             string error = "";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -5797,18 +5548,18 @@ e = foo({5});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS0176_typeconversion_replication_userdefined()
         {
             string code =
                 @"
-                    class A{ a = 1; };
-                    def foo(x : bool, y : A[])
+import(""FFITarget.dll"");
+                    def foo(x : bool, y : ClassFunctionality[])
                     {
-                        return = { x, y.a };
+                        return = { x, y.IntVal };
                     }
-                    b1 = foo({ true, false }, { { A.A(), A.A() }, { A.A(), A.A() } });
+                    b1 = foo({ true, false }, { { ClassFunctionality.ClassFunctionality(1), ClassFunctionality.ClassFunctionality(1) }, { ClassFunctionality.ClassFunctionality(1), ClassFunctionality.ClassFunctionality(1) } });
                     ";
             string error = "1467355 - Sprint 27 Rev 4014 , it replicates with maximum combination where as its expected to zipped ";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -5897,15 +5648,12 @@ e = foo({5});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS0181_typeconversion_replication_class()
         {
             string code =
                 @"
-              class test
-                    {
-    
                     def foo(x : int[], y : int[])
                     {
                         return =  x + y ;
@@ -5914,11 +5662,10 @@ e = foo({5});
                     {
                         return = x - y;
                     }
-                    }
-                    z = test.test();
-                    a = z.foo({ 1, 2 }, 1);
-                    b = z.foo(1, { 1, 2 });
-                    c = z.foo( { 1, 2 }, { 1, 2 } );
+                    
+                    a = foo({ 1, 2 }, 1);
+                    b = foo(1, { 1, 2 });
+                    c = foo( { 1, 2 }, { 1, 2 } );
                     ";
             var mirror = thisTest.RunScriptSource(code);
             TestFrameWork.Verify(mirror, "a", new object[] { 0, 1 });
@@ -5957,25 +5704,16 @@ e = foo({5});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS0184_TypeConversion()
         {
             string code =
                 @"
-                class B
-                    {
-                    constructor B()
-                    {
-                    }
-                    def foo()
-                    {
-                    return = 1;
-                    }
-                    }
-                    arr = { 0, B.B() };
+import(""FFITarget.dll"");
+                    arr = { 0, ClassFunctionality.ClassFunctionality() };
                     x = arr[1];
-                    test = x.foo();
+                    test = x.SetAndReturn(1);
                                             ";
             string error = "1467359 - Sprint 27 - rev 4017 arithematic operations , the type must be converted higer up in the chain , currently does based on the first item in the array";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -5983,7 +5721,7 @@ e = foo({5});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_Redundant")]
         [Category("Type System")]
         public void TS0184_TypeConversion_1467352()
         {
@@ -6009,43 +5747,16 @@ e = foo({5});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS0184_TypeConversion_1467352_2()
         {
             string code =
                 @"
-               class A
-                    {
-                        constructor A(i)
-                        {        
-                        }
-                        def bing()
-                        {
-                            return = 10;
-                        }
-                    }
-                    class B
-                    {
-                        constructor B()
-                        {
-                        }
-                        def faa()
-                        {
-                            return = 1;
-                        }
-                        def foo()
-                        {
-                            return  = 2;
-                        }
-                        static def bar()
-                        {
-                            return = 3;
-                        }
-                    }
-                    arr = { A.A(), 1, { 2, B.B() }, 5 };
+import(""FFITarget.dll"");
+                    arr = { ClassFunctionality.ClassFunctionality(), 1, { 2, ClassFunctionality.ClassFunctionality() }, 5 };
                     x = arr[2][1];
-                    test = x.faa();
+                    test = x.SetAndReturn(1);
                                             ";
             string error = "1467352 - [Language] Mixed array return type is incorrect";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -6166,13 +5877,13 @@ e = foo({5});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS190_Param_eachType_Heterogenous_Array_To_VarArray()
         {
             string code =
                 @"
-                    class A{a=0; }
+                    import(""FFITarget.dll"");
                         def foo (x: var[])
                         {
                             return = x;
@@ -6180,8 +5891,8 @@ e = foo({5});
                         }
                         f : var = 3;
                         a = foo({ 3,3.0,true ,""1"",'1',f});
-                        b = foo({ 3,3.0,true ,""1"",'1',f,A.A().a});
-                        c = foo({ 3,3.0,true ,""1"",'1',f,A.A().a,null});
+                        b = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal});
+                        c = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal,null});
                         d = foo({ 3,3.0,true ,""1"",'1',f,null});
                         e = foo({ null ,3,3.0,true ,""1"",'1',f});
                     ";
@@ -6195,14 +5906,14 @@ e = foo({5});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS0191_Param_ArrayReduction_heterogenous_To_IntArray()
         {
             string code =
                 @"
-                    class A{a=0; }
+                    import(""FFITarget.dll"");
                         def foo (x: int[])
                         {
                             return = x;
@@ -6210,8 +5921,8 @@ e = foo({5});
                         }
                         f : var = 3;
                         a = foo({ 3,3.0,true ,""1"",'1',f});
-                        b = foo({ 3,3.0,true ,""1"",'1',f,A.A()});
-                        c = foo({ 3,3.0,true ,""1"",'1',f,A.A(),null});
+                        b = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality()});
+                        c = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality(),null});
                         d = foo({ 3,3.0,true ,""1"",'1',f,null});
                         e = foo({ null ,3,3.0,true ,""1"",'1',f});
                     ";
@@ -6226,14 +5937,14 @@ e = foo({5});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS0192_Param_ArrayReduction_heterogenous_To_doubleArray()
         {
             string code =
                 @"
-                    class A{a=0; }
+                    import(""FFITarget.dll"");
                         def foo (x: double[])
                         {
                             return = x;
@@ -6241,8 +5952,8 @@ e = foo({5});
                         }
                         f : var = 3;
                         a = foo({ 3,3.0,true ,""1"",'1',f});
-                        b = foo({ 3,3.0,true ,""1"",'1',f,A.A()});
-                        c = foo({ 3,3.0,true ,""1"",'1',f,A.A(),null});
+                        b = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality()});
+                        c = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality(),null});
                         d = foo({ 3,3.0,true ,""1"",'1',f,null});
                         e = foo({ null ,3,3.0,true ,""1"",'1',f});
                         f =foo({ true,""1"",3,3.0,'1',f,null});
@@ -6259,14 +5970,14 @@ e = foo({5});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS0193_Param_ArrayReduction_heterogenous_To_boolArray()
         {
             string code =
                 @"
-                    class A{a=0; }
+                    import(""FFITarget.dll"");
                         def foo (x: bool[])
                         {
                             return = x;
@@ -6274,8 +5985,8 @@ e = foo({5});
                         }
                         f : var = 3;
                         a = foo({ 3,3.0,true ,""1"",'1',f});
-                        b = foo({ 3,3.0,true ,""1"",'1',f,A.A()});
-                        c = foo({ 3,3.0,true ,""1"",'1',f,A.A(),null});
+                        b = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality()});
+                        c = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality(),null});
                         d = foo({ 3,3.0,true ,""1"",'1',f,null});
                         e = foo({ null ,3,3.0,true ,""1"",'1',f});
                     ";
@@ -6290,25 +6001,25 @@ e = foo({5});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS0194_Param_ArrayReduction_heterogenous_To_UserDefinedArray()
         {
             string code =
                 @"
-                   class A{a=0; }
-                        def foo (x: A[])
+                   import(""FFITarget.dll"");
+                        def foo (x: ClassFunctionality[])
                         {
                             return = x;
     
                         }
                         f : var = 3;
                         a = foo({ 3,3.0,true ,""1"",'1',f});
-                        b = foo({ 3,3.0,true ,""1"",'1',f,A.A()});
-                        b1 = {b[0] ,b[1],b[2] ,b[3],b[4],b[5],A.A().a};
-                        c = foo({ 3,3.0,true ,""1"",'1',f,A.A(),null});
-                        c1 = {c[0] ,c[1],c[2] ,c[3],c[4],c[5],A.A().a,c[7]};
+                        b = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality()});
+                        b1 = {b[0] ,b[1],b[2] ,b[3],b[4],b[5],ClassFunctionality.ClassFunctionality().IntVal};
+                        c = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality(),null});
+                        c1 = {c[0] ,c[1],c[2] ,c[3],c[4],c[5],ClassFunctionality.ClassFunctionality().IntVal,c[7]};
                         d = foo({ 3,3.0,true ,""1"",'1',f,null});
                         e = foo({ null ,3,3.0,true ,""1"",'1',f});
                     ";
@@ -6323,19 +6034,19 @@ e = foo({5});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS0195_heterogenousarray_To_UserDefinedArray()
         {
             string code =
                 @"
-                   class A{a=0; }
-                   def foo(x : A)
+                   import(""FFITarget.dll"");
+                   def foo(x : ClassFunctionality)
                         {
                             return = x;
     
                         }
-                   a = foo({ 1,A.A(), A.A() });
+                   a = foo({ 1,ClassFunctionality.ClassFunctionality(), ClassFunctionality.ClassFunctionality() });
                    b = {null,0,0};
                     ";
             string error = "1467376 - Sprint 27 - rev 4184 - when heterogenous array is passed and the type is user defined , it does not replicate unless the first item is user defined ";
@@ -6345,21 +6056,21 @@ e = foo({5});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS0196_heterogenousarray_To_UserDefinedArray()
         {
             string code =
                 @"
-                   class A{a=0; }
-                   def foo(x : A[])
+                   import(""FFITarget.dll"");
+                   def foo(x : ClassFunctionality[])
                         {
                             return = x;
     
                         }
-                   a = foo({ 1,A.A(), A.A() });
-                   b = {null,a[1].a,a[2].a};
+                   a = foo({ 1,ClassFunctionality.ClassFunctionality(), ClassFunctionality.ClassFunctionality() });
+                   b = {null,a[1].IntVal,a[2].IntVal};
                     ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1679
             string error = "MAGN-1679 Sprint 27 - rev 4184 - when heterogenous array is passed and the type is user defined , it does not replicate unless the first item is user defined";
@@ -6368,7 +6079,7 @@ e = foo({5});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS0197_getter_dotoperator_1467419()
@@ -6392,7 +6103,7 @@ e = foo({5});
                     t = x + 1;
                     }
                     }
-                    a1 = { B.B(1), { A.A(2), { B.B(0), B.B(1) } } };
+                    a1 = { B.B(1), { ClassFunctionality.ClassFunctionality(2), { B.B(0), B.B(1) } } };
                     // received :{{1},null}
                     //expected:{{1},{{0},{1}}}
                     z = a1.x;
@@ -6404,13 +6115,12 @@ e = foo({5});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS0198_method_resolution_1467273()
         {
             string code =
                 @"
-                   class test{
                         def foo(x : var[]..[])
                         {
                         return = 3;
@@ -6427,13 +6137,11 @@ e = foo({5});
                         {
                         return = 0;
                         }
-                        }
-                        a = test.test();
-                        u = a.foo({ 1, 2 });
-                        v = a.foo({ { 1 }, 2 });
-                        w = a.foo({ 1, { 2 } });
-                        x = a.foo({ { 1 }, { 2 } });
-                        y = a.foo({ { { 1 }, { 2 } } });
+                        u = foo({ 1, 2 });
+                        v = foo({ { 1 }, 2 });
+                        w = foo({ 1, { 2 } });
+                        x = foo({ { 1 }, { 2 } });
+                        y = foo({ { { 1 }, { 2 } } });
                     ";
             string error = "1467419 - Sprint 29 - Rev 4502 - the .operator is doing rank reduction where it is expected to replicate ";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -6445,13 +6153,12 @@ e = foo({5});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS0198_method_resolution_1467273_2()
         {
             string code =
                 @"
-                   class test{
                         def foo(x : int[]..[])
                         {
                         return = 3;
@@ -6468,13 +6175,11 @@ e = foo({5});
                         {
                         return = 0;
                         }
-                        }
-                        a = test.test();
-                        u = a.foo({ 1, 2 });
-                        v = a.foo({ { 1 }, 2 });
-                        w = a.foo({ 1, { 2 } });
-                        x = a.foo({ { 1 }, { 2 } });
-                        y = a.foo({ { { 1 }, { 2 } } });
+                        u = foo({ 1, 2 });
+                        v = foo({ { 1 }, 2 });
+                        w = foo({ 1, { 2 } });
+                        x = foo({ { 1 }, { 2 } });
+                        y = foo({ { { 1 }, { 2 } } });
                     ";
             string error = "1467419 - Sprint 29 - Rev 4502 - the .operator is doing rank reduction where it is expected to replicate ";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -6486,13 +6191,12 @@ e = foo({5});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS0198_method_resolution_1467273_3()
         {
             string code =
                 @"
-                   class test{
                         def foo(x : bool[]..[])
                         {
                         return = 3;
@@ -6509,13 +6213,11 @@ e = foo({5});
                         {
                         return = 0;
                         }
-                        }
-                        a = test.test();
-                        u = a.foo({ 1, 2 });
-                        v = a.foo({ { 1 }, 2 });
-                        w = a.foo({ 1, { 2 } });
-                        x = a.foo({ { 1 }, { 2 } });
-                        y = a.foo({ { { 1 }, { 2 } } });
+                        u = foo({ 1, 2 });
+                        v = foo({ { 1 }, 2 });
+                        w = foo({ 1, { 2 } });
+                        x = foo({ { 1 }, { 2 } });
+                        y = foo({ { { 1 }, { 2 } } });
                     ";
             string error = "1467419 - Sprint 29 - Rev 4502 - the .operator is doing rank reduction where it is expected to replicate ";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -6603,17 +6305,16 @@ d = { 1.0+ { { c + 5 }, { c + 5.5 }, { c + 6 } } };// received {46.0,47.00,47.00
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Failure")]
         public void indexintoarray_left_1467462_6()
         {
             string code =
                 @"
-                class A{a=1;}
-                class B{a=2;}
-                x : var[] = { A.A(),A.A(),A.A(),A.A()};//var 
-                x[2..3] = { B.B(),B.B()};
-                 y = x.a;
+import(""FFITarget.dll"");
+                x : var[] = { ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1)};//var 
+                x[2..3] = { ClassFunctionalityMirror.ClassFunctionalityMirror(2),ClassFunctionalityMirror.ClassFunctionalityMirror(2)};
+                 y = x.IntVal;
                 ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1693
             string str = "MAGN-1693 Regression : Dot Operation using Replication on heterogenous array of instances is yielding wrong output";
@@ -6622,38 +6323,32 @@ d = { 1.0+ { { c + 5 }, { c + 5.5 }, { c + 6 } } };// received {46.0,47.00,47.00
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void indexintoarray_left_1467462_7()
         {
             string code =
                 @"
-               class A{ a = 1; }
-                class B{ b = 2; }
-                x : A[] = { A.A(),A.A(),A.A(),A.A()};//class
-                x[2..3] = { B.B(), B.B() };
-                y = x.a;
+import(""FFITarget.dll"");
+                x : ClassFunctionality[] = { ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1)};//class
+                x[2..3] = {ClassFunctionalityMirror.ClassFunctionalityMirror(2),ClassFunctionalityMirror.ClassFunctionalityMirror(2)};
+                y = x.IntVal;
                 ";
             var mirror = thisTest.RunScriptSource(code);
             TestFrameWork.Verify(mirror, "y", new object[] { 1, 1, null, null });
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void TS200_memberproperty_1467486_1()
         {
             string code =
                 @"
-              class test
+                def foo()
                 {
-                    x3 : double[]..[];
-                    def foo()
-                    {
-                        x3 = {  1.5 , 2.5 };
-                        return = x3;
-                    }
+                    x3 : double[]..[] = {  1.5 , 2.5 };
+                    return = x3;
                 }
-                z = test.test();
-                y=z.foo();
+                y=foo();
                 ";
             string error = "1467486 if a member property is defined as variable array then while assigning value itthrows error could not decide which function to execute";
             var mirror = thisTest.VerifyRunScriptSource(code, error);
@@ -6662,22 +6357,18 @@ d = { 1.0+ { { c + 5 }, { c + 5.5 }, { c + 6 } } };// received {46.0,47.00,47.00
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void TS201_memberproperty_1467486_2()
         {
             string code =
                 @"
-              class test
-                {
-                    x3 : int[]..[];
                     def foo()
                     {
-                        x3 = {  1 , 2};
+                        x3 : int[]..[]= {  1 , 2};
                         return = x3;
                     }
-                }
-                z = test.test();
-                y=z.foo();
+                
+                y=foo();
                 ";
 
             string error = "1467486 if a member property is defined as variable array then while assigning value itthrows error could not decide which function to execute";
@@ -6688,30 +6379,23 @@ d = { 1.0+ { { c + 5 }, { c + 5.5 }, { c + 6 } } };// received {46.0,47.00,47.00
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void TS202_memberproperty_1467486_3()
         {
             string code =
                 @"
-             
-              class A{ a = 1; }
-                class test
-                {
-                    x3 : A[]..[];
+import(""FFITarget.dll"");
                     def foo()
                     {
-                        x3 = {  A.A() , A.A() };
+                        x3 : ClassFunctionality[]..[] = {  ClassFunctionality.ClassFunctionality(1) , ClassFunctionality.ClassFunctionality(1) };
                         return = x3;
                     }
-                }
-                z = test.test();
-                y = z.foo();
-                b = y.a;
+                
+                b = foo().IntVal;
                 ";
             string error = "1467486 if a member property is defined as variable array then while assigning value itthrows error could not decide which function to execute";
             var mirror = thisTest.VerifyRunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "b", new object[] { 1, 1 });
-            thisTest.VerifyRuntimeWarningCount(0);
         }
     }
 }
