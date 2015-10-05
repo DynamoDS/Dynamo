@@ -11,7 +11,7 @@ environment:
   dynamo_solution: src/Dynamo.All.2013.sln
   xmlDocs_solution: tools/XmlDocToMarkdown/XmlDocToMarkdown.sln
   oauth_access_token:
-    secure: 9V2HPr20tWakE4vLSsHHzE0UyGuU4UCKEbUwK4UJIlseBRuw+j5WBaEWQYXl+M8W
+    secure: WlBH06AD2+KPP2EmpDsoMLW5b4HL1D34AnfNjFz6lDtPXaTYSaPgfnOVMV1ULbNy
 build_script:
   - msbuild %dynamo_solution%
   - msbuild %xmlDocs_solution%
