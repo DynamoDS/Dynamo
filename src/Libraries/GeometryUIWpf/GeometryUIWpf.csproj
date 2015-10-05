@@ -97,21 +97,10 @@
     <ProjectReference Include="..\..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
       <Name>DynamoUtilities</Name>
-      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\CoreNodeModelsWpf\CoreNodeModelsWpf.csproj">
       <Project>{f5932f7d-8e34-4787-80b8-e7f9d996edff}</Project>
       <Name>CoreNodeModelsWpf</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\CoreNodeModels\CoreNodeModels.csproj">
-      <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
-      <Name>CoreNodeModels</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\CoreNodes\CoreNodes.csproj">
-      <Project>{87550b2b-6cb8-461e-8965-dfafe3aafb5c}</Project>
-      <Name>CoreNodes</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\DynamoConversions\DynamoConversions.csproj">
