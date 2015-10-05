@@ -110,6 +110,8 @@ namespace WpfVisualizationTests
             }
         }
 
+
+
         #region node tests
 
         [Test]

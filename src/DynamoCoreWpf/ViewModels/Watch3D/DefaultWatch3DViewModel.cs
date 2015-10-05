@@ -168,6 +168,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        public bool CanBeActivated { get; internal set; }
+
         /// <summary>
         /// The DefaultWatch3DViewModel is used in contexts where a complete rendering environment
         /// cannot be established. Typically, this is machines that do not have GPUs, or do not
@@ -191,6 +193,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             TogglePanCommand = new DelegateCommand(TogglePan, CanTogglePan);
             ToggleOrbitCommand = new DelegateCommand(ToggleOrbit, CanToggleOrbit);
             ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
+
+            CanBeActivated = true;
         }
 
         /// <summary>

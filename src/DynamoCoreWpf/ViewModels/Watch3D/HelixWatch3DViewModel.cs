@@ -312,8 +312,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 logger.Log(Resources.BackgroundPreviewCreationFailureMessage);
                 logger.Log(ex.Message);
-                
-                var vm = new DefaultWatch3DViewModel(parameters) {Active = false};
+
+                var vm = new DefaultWatch3DViewModel(parameters)
+                {
+                    Active = false,
+                    CanBeActivated = false
+                };
                 return vm;
             }
         }
