@@ -24,6 +24,9 @@ namespace XmlDocToMarkdown
         internal static string ApiStabilityTemplate = "| stability index:" + "{0}";
         internal static string returnType;
 
+        /// <summary>
+        /// Gets or sets the method return type
+        /// </summary>        
         internal static string ReturnType
         {
             get { return returnType.MarkDownFormat("Italic"); }
@@ -38,6 +41,10 @@ namespace XmlDocToMarkdown
 
         private static string propertySetType;
 
+        /// <summary>
+        /// Gets or sets the type of the property set.
+        /// value : {get; set;}
+        /// </summary>        
         internal static string PropertySetType
         {
             get
@@ -80,11 +87,17 @@ namespace XmlDocToMarkdown
                     node.Nodes().NodeMarkDown()
                 });
 
+        /// <summary>
+        /// Template for constructors
+        /// </summary>
         private static Func<string, XElement, string[]> tType =
             new Func<string, XElement, string[]>((att, node) => new[]
                 {
                     node.Nodes().NodeMarkDown()                  
                 });
+        /// <summary>
+        /// Template for properties
+        /// </summary>
         private static Func<string, string, XElement, string[]> pType =
             new Func<string, string, XElement, string[]>((att1, att2, node) =>
             {
@@ -99,6 +112,9 @@ namespace XmlDocToMarkdown
                 };
             });
 
+        /// <summary>
+        /// Template for events
+        /// </summary>
         private static Func<string, string, XElement, string[]> eType =
            new Func<string, string, XElement, string[]>((att1, att2, node) =>
            {
@@ -112,6 +128,9 @@ namespace XmlDocToMarkdown
                 };
            });
 
+        /// <summary>
+        /// Template for methods
+        /// </summary>
         private static Func<string, string, XElement, object[]> mType =
             (att1, att2, node) =>
             {
@@ -127,6 +146,12 @@ namespace XmlDocToMarkdown
             };
 
 
+        /// <summary>
+        /// Add stability index
+        /// </summary>
+        /// <param name="node">The node.</param>
+        /// <param name="methodName">Name of the method.</param>
+        /// <returns>Returns the name and its stability index</returns>
         private static string CheckAndAppendStability(XElement node, string methodName)
         {
             if (node.Elements("api_stability").Any())
@@ -143,6 +168,13 @@ namespace XmlDocToMarkdown
             return methodName;
         }
 
+        /// <summary>
+        /// Converts the generic parameters.
+        /// </summary>
+        /// <param name="node">The node.</param>
+        /// <param name="methodName">Name of the method.</param>
+        /// <param name="attribute">The attribute.</param>
+        /// <returns>converted name</returns>
         public static string ConvertGenericParameters(XElement node, string methodName, string attribute)
         {
             //Seperate the method name and paramaeters (ex: Func(a,b) = [Func] + [a,b])
