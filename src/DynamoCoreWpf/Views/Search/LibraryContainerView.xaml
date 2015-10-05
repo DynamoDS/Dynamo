@@ -1,16 +1,12 @@
 ﻿<UserControl x:Class="Dynamo.Search.SearchView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
-             xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ViewModels="clr-namespace:Dynamo.ViewModels"
              xmlns:views="clr-namespace:Dynamo.UI.Views"
              xmlns:ui="clr-namespace:Dynamo.UI"
-             xmlns:search="clr-namespace:Dynamo.Search;assembly=DynamoCore"
-             xmlns:searchElements="clr-namespace:Dynamo.Search.SearchElements;assembly=DynamoCore"
-             xmlns:viewModels="clr-namespace:Dynamo.Wpf.ViewModels"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              d:DataContext="{d:DesignInstance ViewModels:SearchViewModel, IsDesignTimeCreatable=False}"
              mc:Ignorable="d"
@@ -43,6 +39,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <Label Grid.Column="0"
@@ -52,11 +49,21 @@
                    VerticalAlignment="Center"
                    HorizontalAlignment="Stretch"
                    Content="{x:Static p:Resources.LibraryViewTitle}" />
+            <Border Grid.Column="1"
+                    BorderBrush="{StaticResource FilterIconColor}"
+                    BorderThickness="1,0,1,0"
+                    Margin="0,5,0,5">
+                <fa:ImageAwesome Icon="filter"
+                                 Foreground="{StaticResource FilterIconColor}"
+                                 Margin="5,0,5,0"
+                                 Height="10"
+                                 Width="10" />
+            </Border>
             <Button Mouse.MouseEnter="OnLibraryExpanderMouseEnter"
                     Mouse.MouseLeave="OnLibraryExpanderMouseLeave"
                     Click="OnLibraryExpanderClick"
                     Template="{DynamicResource BackgroundButton}"
-                    Grid.Column="1"
+                    Grid.Column="2"
                     VerticalAlignment="Center">
                 <Button.Resources>
                     <ControlTemplate x:Key="BackgroundButton"
