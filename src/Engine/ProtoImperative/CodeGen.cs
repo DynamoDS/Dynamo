@@ -1288,7 +1288,7 @@ namespace ProtoImperative
                 localProcedure.LocalCount = funcDef.localVars;
                 var returnType = new ProtoCore.Type();
                 returnType.UID = core.TypeSystem.GetType(funcDef.ReturnType.Name);
-                if (localProcedure.ReturnType.UID == (int)PrimitiveType.kInvalidType)
+                if (returnType.UID == (int)PrimitiveType.kInvalidType)
                 {
                     string message = String.Format(ProtoCore.Properties.Resources.kReturnTypeUndefined, funcDef.ReturnType.Name, funcDef.Name);
                     buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, null, funcDef.line, funcDef.col, firstSSAGraphNode);

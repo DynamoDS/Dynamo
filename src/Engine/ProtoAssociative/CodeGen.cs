@@ -5746,7 +5746,7 @@ namespace ProtoAssociative
                 localProcedure.Name = funcDef.Name;
                 localProcedure.PC = ProtoCore.DSASM.Constants.kInvalidIndex;
                 localProcedure.LocalCount = 0;// Defer till all locals are allocated
-                ProtoCore.Type returnType = new ProtoCore.Type();
+                ProtoCore.Type returnType = localProcedure.ReturnType; 
                 if (globalClassIndex != -1)
                     returnType.Name = core.ClassTable.ClassNodes[globalClassIndex].Name;
                 returnType.UID = globalClassIndex;
@@ -6068,7 +6068,7 @@ namespace ProtoAssociative
                 var uid = core.TypeSystem.GetType(funcDef.ReturnType.Name);
                 var rank = funcDef.ReturnType.rank;
                 var returnType = core.TypeSystem.BuildTypeObject(uid, rank); 
-                if (localProcedure.ReturnType.UID == (int)PrimitiveType.kInvalidType)
+                if (returnType.UID == (int)PrimitiveType.kInvalidType)
                 {
                     string message = String.Format(ProtoCore.Properties.Resources.kReturnTypeUndefined, funcDef.ReturnType.Name, funcDef.Name);
                     buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, core.CurrentDSFileName, funcDef.line, funcDef.col, graphNode);
