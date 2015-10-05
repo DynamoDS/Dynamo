@@ -301,7 +301,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <param name="parameters">A Watch3DViewModelStartupParams object.</param>
         /// <param name="logger">A logger to be used to log the exception.</param>
         /// <returns></returns>
-        public static DefaultWatch3DViewModel TryCreateHelixWatch3DViewModel(Watch3DViewModelStartupParams parameters, ILogger logger)
+        public static DefaultWatch3DViewModel TryCreateHelixWatch3DViewModel(Watch3DViewModelStartupParams parameters, DynamoLogger logger)
         {
             try
             {
@@ -310,8 +310,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
             catch (Exception ex)
             {
-                logger.Log(Resources.BackgroundPreviewCreationFailureMessage);
-                logger.Log(ex.Message);
+                logger.Log(Resources.BackgroundPreviewCreationFailureMessage, LogLevel.Console);
+                logger.Log(ex.Message, LogLevel.File);
 
                 var vm = new DefaultWatch3DViewModel(parameters)
                 {

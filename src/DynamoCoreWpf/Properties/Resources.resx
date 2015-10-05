@@ -1945,6 +1945,6 @@ Do you want to install the latest Dynamo update?</value>
     <value>Default Background Preview</value>
   </data>
   <data name="BackgroundPreviewCreationFailureMessage" xml:space="preserve">
-    <value>There was an error creating a background preview in Dynamo. This could be due to a lack of graphics resources on your machine.</value>
+    <value>There was an error creating a background preview in Dynamo. This could be due to a lack of graphics resources on your machine. See the log for more information.</value>
   </data>
 </root>
