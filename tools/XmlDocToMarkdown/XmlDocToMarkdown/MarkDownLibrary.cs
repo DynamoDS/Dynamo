@@ -98,7 +98,7 @@ namespace XmlDocToMarkdown
                methodName;
 
                 var current = GetMarkdownForMethod(members, t.FullName + fullMethodName);
-                if (current != null && !foundType) foundType = true;
+                if (current != "" && !foundType) foundType = true;
                 sb.Append(current);
                 sb.AppendLine();
             }
@@ -191,7 +191,7 @@ namespace XmlDocToMarkdown
                  }
                 var propertyNameSpace = ConvertGenericParameterName(t.FullName);
                 var current = GetMarkdownForProperty(members, propertyNameSpace + "." + property.Name);
-                if (current != null && !foundType) foundType = true;
+                if (current != "" && !foundType) foundType = true;
                 sb.Append(current);
                 sb.AppendLine();
             }
@@ -224,7 +224,7 @@ namespace XmlDocToMarkdown
                 XmlToMarkdown.ReturnType = string.Empty;
                 var eventNameSpace = ConvertGenericParameterName(t.FullName);
                 var current = GetMarkdownForEvent(members, eventNameSpace + "." + e.Name);
-                if (current != null && !foundType) foundType = true;
+                if (current != "" && !foundType) foundType = true;
                 sb.Append(current);
                 sb.AppendLine();
             }

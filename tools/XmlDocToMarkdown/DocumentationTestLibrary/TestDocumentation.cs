@@ -223,15 +223,7 @@ namespace Dynamo.DocumentationTestLibrary
         /// </value>
         public virtual int VirtualProperty { get; set; }
 
-        
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Person"/> class.
-        /// </summary>
-        public Person()
-        {
-
-        }
-
+    
         /// <summary>
         /// Initializes a new instance of the <see cref="Person"/> class.
         /// </summary>
