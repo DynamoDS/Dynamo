@@ -71,8 +71,6 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(nodes.ElementAt(0).X, prevX);
             Assert.AreEqual(nodes.ElementAt(0).Y, prevY);
-
-            AssertNoOverlap();
         }
 
         [Test]
