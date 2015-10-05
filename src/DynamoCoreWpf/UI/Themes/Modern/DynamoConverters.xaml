@@ -159,5 +159,9 @@
     <controls:TreeViewMarginCheck x:Key="TreeViewMarginCheck"/>   
     <controls:NestedContentMarginConverter x:Key="NestedContentMarginConverter"/>
     <controls:ClassViewMarginConverter x:Key ="ClassViewMarginConverter"/>
-    <controls:ElementGroupToColorConverter x:Key="ElementGroupToColorConverter" />    
+    <controls:ElementGroupToColorConverter x:Key="ElementGroupToColorConverter" />
+    <controls:BooleanToBrushConverter x:Key="FilterIsSelertedItemToBrushConverter"
+                                      TrueBrush="#CCCCCC"
+                                      FalseBrush="#737373">
+    </controls:BooleanToBrushConverter>
 </ResourceDictionary>

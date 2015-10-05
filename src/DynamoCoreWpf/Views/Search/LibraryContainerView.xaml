@@ -55,6 +55,7 @@
                     Margin="0,5,0,5">
                 <fa:ImageAwesome Icon="filter"
                                  Foreground="{StaticResource FilterIconColor}"
+                                 MouseLeftButtonUp="OnFilterMouseLeftButtonUp"
                                  Margin="5,0,5,0"
                                  Height="10"
                                  Width="10" />
@@ -222,6 +223,73 @@
             </views:LibrarySearchView.Visibility>
         </views:LibrarySearchView>
 
+        <!--Filter popup-->
+        <Popup Name="FilterPopup"
+               StaysOpen="True"
+               AllowsTransparency="True"
+               Placement="Bottom"
+               HorizontalOffset="-160"
+               VerticalOffset="3"
+               Width="180">
+            <Grid>
+                <Border Background="{StaticResource FilterPopupBackgroundColor}"
+                        BorderBrush="{StaticResource FilterPopupBorderColor}"
+                        BorderThickness="1"
+                        CornerRadius="5"
+                        Margin="0,11,0,0">
+                    <ItemsControl ItemsSource="{Binding SearchCategories}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Command="{Binding ClickCommand}">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <ContentPresenter />
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                    <Border Background="{Binding IsSelected, 
+                                    Converter={StaticResource FilterIsSelertedItemToBrushConverter}}"
+                                            CornerRadius="3"
+                                            Padding="3"
+                                            Margin="3">
+
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Name}"
+                                                       Foreground="{StaticResource SelectedFilterButtonTextColor}"
+                                                       FontStyle="Italic" />
+                                            <Border Height="10"
+                                                    Width="10"
+                                                    Margin="3,0,0,0"
+                                                    Background="White"
+                                                    CornerRadius="2">
+                                                <Path Width="7"
+                                                      Height="7"
+                                                      x:Name="CheckMark"
+                                                      SnapsToDevicePixels="False"
+                                                      Stroke="{StaticResource SelectedFilterButtonTextColor}"
+                                                      StrokeThickness="2"
+                                                      Data="M 0 0 L 7 7 M 0 7 L 7 0"
+                                                      Visibility="{Binding IsSelected, 
+                                                                       Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                            </Border>
+
+                                        </StackPanel>
+                                    </Border>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
+                <Path x:Name="arrow"
+                      Fill="{StaticResource FilterPopupBackgroundColor}"
+                      Stroke="{StaticResource FilterPopupBorderColor}"
+                      Data="M 155 12 L 165 0 L 175 12" />
+            </Grid>
+        </Popup>
     </Grid>
 
 </UserControl>

@@ -92,5 +92,7 @@
     <SolidColorBrush x:Key="QueryMembersColor" Color="#65999A" />
     <SolidColorBrush x:Key="SearchElementLineDeterminerColor" Color="#4D4D4D" />
     <SolidColorBrush x:Key="FilterIconColor" Color="#787878" />
-
+    <SolidColorBrush x:Key="FilterPopupBorderColor" Color="#808080" />
+    <SolidColorBrush x:Key="FilterPopupBackgroundColor" Color="#666666" />
+    <SolidColorBrush x:Key="SelectedFilterButtonTextColor" Color="#4D4D4D" />
 </ResourceDictionary>

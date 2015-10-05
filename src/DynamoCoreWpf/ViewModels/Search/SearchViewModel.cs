@@ -15,6 +15,7 @@ using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Services;
 using Dynamo.Wpf.ViewModels;
+
 using Microsoft.Practices.Prism.ViewModel;
 using Dynamo.Models;
 
@@ -142,6 +143,23 @@ namespace Dynamo.ViewModels
         ///     This property is observed by SearchView to see the search results
         /// </value>
         public ObservableCollection<NodeSearchElementViewModel> SearchResults { get; private set; }
+
+        private IEnumerable<SearchCategory> searchCategories;
+        /// <summary>
+        /// Categories that were found after search. Used to filter search results.
+        /// </summary>
+        public IEnumerable<SearchCategory> SearchCategories
+        {
+            get
+            {
+                return searchCategories;
+            }
+            set
+            {
+                searchCategories = value;
+                RaisePropertyChanged("SearchCategories");
+            }
+        }
 
         private bool searchScrollBarVisibility = true;
         public bool SearchScrollBarVisibility
@@ -647,6 +665,10 @@ namespace Dynamo.ViewModels
 
             var foundNodes = Search(query);
             SearchResults = new ObservableCollection<NodeSearchElementViewModel>(foundNodes);
+            SearchCategories = SearchResults.Select(x => x.Category)
+                               .Distinct()
+                               .Select(x => new SearchCategory(x));
+
             RaisePropertyChanged("SearchResults");
         }
 
