@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-using Dynamo.Engine;
+using Dynamo.Engine.CodeGeneration;
 using Dynamo.Models;
 using NUnit.Framework;
 
@@ -42,7 +42,7 @@ namespace Dynamo.Tests
             OpenModel(openPath);
 
             var builder = new AstBuilder(null);
-            var astNodes = builder.CompileToAstNodes(CurrentDynamoModel.CurrentWorkspace.Nodes, AstBuilder.CompilationContext.None, false);
+            var astNodes = builder.CompileToAstNodes(CurrentDynamoModel.CurrentWorkspace.Nodes, CompilationContext.None, false);
             var codeGen = new ProtoCore.CodeGenDS(astNodes.SelectMany(t => t.Item2));
             string code = codeGen.GenerateCode();
             Console.WriteLine(code);

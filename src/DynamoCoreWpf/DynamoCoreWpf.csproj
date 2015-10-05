@@ -907,9 +907,6 @@
     <Resource Include="UI\Images\StartPage\icon-video.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Images\StartPage\icons-more-samples.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="UI\Images\tabs_button_hover.png" />
   </ItemGroup>
   <ItemGroup>
