@@ -188,6 +188,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There was an error creating a background preview in Dynamo. This could be due to a lack of graphics resources on your machine..
+        /// </summary>
+        public static string BackgroundPreviewCreationFailureMessage {
+            get {
+                return ResourceManager.GetString("BackgroundPreviewCreationFailureMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default Background Preview.
         /// </summary>
         public static string BackgroundPreviewDefaultName {

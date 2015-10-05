@@ -419,8 +419,8 @@ namespace Dynamo.ViewModels
 
             if (startConfiguration.Watch3DViewModel == null)
             {
-                startConfiguration.Watch3DViewModel = new HelixWatch3DViewModel(
-                    new Watch3DViewModelStartupParams(startConfiguration.DynamoModel));
+                startConfiguration.Watch3DViewModel = HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(
+                    new Watch3DViewModelStartupParams(startConfiguration.DynamoModel), startConfiguration.DynamoModel.Logger);
             }
 
             return new DynamoViewModel(startConfiguration);
