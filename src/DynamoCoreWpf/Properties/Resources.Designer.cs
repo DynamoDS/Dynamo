@@ -4219,6 +4219,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dynamo Primer.
+        /// </summary>
+        public static string StartPageDynamoPrimer {
+            get {
+                return ResourceManager.GetString("StartPageDynamoPrimer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to FILES.
         /// </summary>
         public static string StartPageFiles {
