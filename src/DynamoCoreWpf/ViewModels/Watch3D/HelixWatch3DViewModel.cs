@@ -15,6 +15,7 @@ using System.Windows.Media.Media3D;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Controls;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Rendering;
@@ -293,7 +294,31 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         #endregion
 
-        public HelixWatch3DViewModel(Watch3DViewModelStartupParams parameters) : base(parameters)
+        /// <summary>
+        /// Attempt to create a HelixWatch3DViewModel. If one cannot be created,
+        /// fall back to creating a DefaultWatch3DViewModel and log the exception.
+        /// </summary>
+        /// <param name="parameters">A Watch3DViewModelStartupParams object.</param>
+        /// <param name="logger">A logger to be used to log the exception.</param>
+        /// <returns></returns>
+        public static DefaultWatch3DViewModel TryCreateHelixWatch3DViewModel(Watch3DViewModelStartupParams parameters, ILogger logger)
+        {
+            try
+            {
+                var vm = new HelixWatch3DViewModel(parameters);
+                return vm;
+            }
+            catch (Exception ex)
+            {
+                logger.Log(Resources.BackgroundPreviewCreationFailureMessage);
+                logger.Log(ex.Message);
+                
+                var vm = new DefaultWatch3DViewModel(parameters) {Active = false};
+                return vm;
+            }
+        }
+
+        protected HelixWatch3DViewModel(Watch3DViewModelStartupParams parameters) : base(parameters)
         {
             Name = Resources.BackgroundPreviewName;
             IsResizable = false;

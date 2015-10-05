@@ -1,29 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading;
 using System.Windows;
 
 using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.DynamoSandbox;
-using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Services;
-using Dynamo.UpdateManager;
 using Dynamo.ViewModels;
-using DynamoShapeManager;
-
-using Microsoft.Win32;
-
 using Dynamo.Applications;
-using Dynamo.DynamoSandbox.Properties;
 using Dynamo.Wpf.ViewModels.Watch3D;
 
 namespace DynamoSandbox
@@ -43,7 +29,7 @@ namespace DynamoSandbox
                 {
                     CommandFilePath = commandFilePath,
                     DynamoModel = model,
-                    Watch3DViewModel = new HelixWatch3DViewModel(new Watch3DViewModelStartupParams(model))
+                    Watch3DViewModel = HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(new Watch3DViewModelStartupParams(model), model.Logger)
                 });
 
             var view = new DynamoView(viewModel);
