@@ -106,6 +106,8 @@ namespace Dynamo.Controls
         {
             ViewModel = DataContext as HelixWatch3DViewModel;
 
+            if (ViewModel == null) return;
+
             CompositionTarget.Rendering += CompositionTargetRenderingHandler;
 
             RegisterButtonHandlers();
