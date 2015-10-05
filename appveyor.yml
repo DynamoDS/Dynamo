@@ -25,7 +25,7 @@ on_success:
     if(-not $env:APPVEYOR_PULL_REQUEST_NUMBER) {	
       git config --global user.name $env:APPVEYOR_REPO_COMMIT_AUTHOR
       git config --global credential.helper store
-      Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n" 
+      Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:oauth_access_token):x-oauth-basic@github.com`n" 
       git clone -q https://$($env:oauth_access_token):x-oauth-basic@github.com/DynamoDS/DynamoAPI.git  c:\projects\dynamo\DynamoAPI 2>&1 | % { $_.ToString() }      
       tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/PublishDocs.ps1	
     }  
