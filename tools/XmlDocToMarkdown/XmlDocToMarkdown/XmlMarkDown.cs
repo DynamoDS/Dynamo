@@ -173,7 +173,7 @@ namespace XmlDocToMarkdown
         /// </summary>
         /// <param name="node">The node.</param>
         /// <param name="methodName">Name of the method.</param>
-        /// <param name="attribute">The attribute.</param>
+        /// <param name="attribute">attribute = name / param / typeparam.</param>
         /// <returns>converted name</returns>
         public static string ConvertGenericParameters(XElement node, string methodName, string attribute)
         {
@@ -241,6 +241,9 @@ namespace XmlDocToMarkdown
             return methodName;
         }
 
+        /// <summary>
+        /// Template methods
+        /// </summary>
         private static Dictionary<string, Func<XElement, IEnumerable<object>>> methods =
             new Dictionary<string, Func<XElement, IEnumerable<object>>>
                 {
@@ -273,6 +276,11 @@ namespace XmlDocToMarkdown
                     {"filterpriority", x => new string[0]},                  
                 };
 
+        /// <summary>
+        /// Converts the node value to markdown format.
+        /// </summary>
+        /// <param name="e">The node.</param>
+        /// <returns>Markdown string</returns>
         internal static string ToMarkDown(this XNode e)
         {
             string name;
@@ -331,6 +339,11 @@ namespace XmlDocToMarkdown
             return es.Aggregate("", (current, x) => current + x.ToMarkDown());
         }
 
+        /// <summary>
+        /// This is for methods.
+        /// </summary>
+        /// <param name="es">The es.</param>
+        /// <returns></returns>
         internal static string ToTableMarkDown(this IEnumerable<XNode> es)
         {
             return es.Aggregate("", (current, x) => current + x.ToMarkDown());

@@ -29,11 +29,11 @@ namespace XmlDocToMarkdown
         };
 
         /// <summary>
-        /// Reorder the xml nodes as per the design.
+        /// Reorder the xml nodes. this is only for methods
         /// see nodeDictionary for the order.
         /// </summary>
         /// <param name="listOfNodes">The list of nodes.</param>
-        /// <returns></returns>
+        /// <returns>re-ordered nodes</returns>
         public static IEnumerable<XNode> ReOrderXMLElements(this IEnumerable<XNode> listOfNodes)
         {
             var newListOfNodes = new List<XNode>();
@@ -76,6 +76,13 @@ namespace XmlDocToMarkdown
         }
 
 
+        /// <summary>
+        /// Constructs the type of the return.
+        /// Generics are updated. ex: IList''object to "IList<object>"
+        /// If the return type is from Dynamo, then URL will be constructed
+        /// </summary>
+        /// <param name="T">The t.</param>
+        /// <returns>return type</returns>
         public static string ConstructReturnType(this Type T)
         {
             string[] separators = new string[] { "``", "`", "(", ")" }; 
@@ -111,6 +118,12 @@ namespace XmlDocToMarkdown
             return string.Empty;
         }
 
+        /// <summary>
+        /// Formar the markdown
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="format">The format.</param>
+        /// <returns>Formatted Mark down string</returns>
         public static string MarkDownFormat(this string name, string format)
         {
             var returnString = String.Empty;
@@ -142,6 +155,12 @@ namespace XmlDocToMarkdown
             return returnString;
         }
 
+        /// <summary>
+        /// Constructs the URL.
+        /// </summary>
+        /// <param name="className">Name of the class.</param>
+        /// <param name="methodName">Name of the method.</param>
+        /// <returns>URL string</returns>
         public static string ConstructUrl(this String className,String methodName)
         {
             var appSettings = ConfigurationManager.AppSettings["ServerUrl"];
@@ -154,6 +173,13 @@ namespace XmlDocToMarkdown
             return "[" + className + "]" + "(" + url + "/" + className + ")";
         }
 
+        /// <summary>
+        /// Replaces the special characters.
+        /// </summary>
+        /// <param name="className">Name of the class.</param>
+        /// <param name="toReplace">To replace.</param>
+        /// <param name="delimiter">The delimiter.</param>
+        /// <returns>string value</returns>
         public static string ReplaceSpecialCharacters(this string className, string toReplace, string delimiter)
         {
             if (string.IsNullOrEmpty(className))

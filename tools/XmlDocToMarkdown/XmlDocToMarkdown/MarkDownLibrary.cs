@@ -21,6 +21,12 @@ namespace XmlDocToMarkdown
         private const string lt = "<*";
         private const string gt = "*>";
 
+        /// <summary>
+        /// Generates the type of the markdown document for.
+        /// </summary>
+        /// <param name="t">The t.</param>
+        /// <param name="folder">The folder.</param>
+        /// <param name="xml">The XML.</param>
         public static void GenerateMarkdownDocumentForType(Type t, string folder, XDocument xml)
         {
             string[] temp = t.Name.Split(separators, StringSplitOptions.RemoveEmptyEntries);
@@ -281,27 +287,57 @@ namespace XmlDocToMarkdown
 
             return returnText;
         }
+        /// <summary>
+        /// Gets the markdown for method.
+        /// </summary>
+        /// <param name="members">The members.</param>
+        /// <param name="methodName">Name of the method.</param>
+        /// <returns></returns>
         private static string GetMarkdownForMethod(IEnumerable<XElement> members, string methodName)
         {
             return GetMarkdownForMember(members, string.Format("M:{0}", methodName));
         }
 
+        /// <summary>
+        /// Gets the markdown for type.
+        /// </summary>
+        /// <param name="members">The members.</param>
+        /// <param name="typeName">Name of the type.</param>
+        /// <returns></returns>
         private static string GetMarkdownForType(IEnumerable<XElement> members, string typeName)
         {
             var str = GetMarkdownForMember(members, string.Format("T:{0}", typeName));
             return str.Replace("|", "");
         }
 
+        /// <summary>
+        /// Gets the markdown for property.
+        /// </summary>
+        /// <param name="members">The members.</param>
+        /// <param name="propertyName">Name of the property.</param>
+        /// <returns></returns>
         private static string GetMarkdownForProperty(IEnumerable<XElement> members, string propertyName)
         {
             return GetMarkdownForMember(members, string.Format("P:{0}", propertyName));
         }
 
+        /// <summary>
+        /// Gets the markdown for event.
+        /// </summary>
+        /// <param name="members">The members.</param>
+        /// <param name="eventName">Name of the event.</param>
+        /// <returns></returns>
         private static string GetMarkdownForEvent(IEnumerable<XElement> members, string eventName)
         {
             return GetMarkdownForMember(members, string.Format("E:{0}", eventName));
         }
 
+        /// <summary>
+        /// Gets the markdown for member.
+        /// </summary>
+        /// <param name="members">The members.</param>
+        /// <param name="memberName">Name of the member.</param>
+        /// <returns></returns>
         private static string GetMarkdownForMember(IEnumerable<XElement> members, string memberName)
         {
             var foundType = members.FirstOrDefault(e => e.Attribute("name").Value == memberName);
@@ -313,6 +349,11 @@ namespace XmlDocToMarkdown
             return foundType.ToMarkDown();
         }
 
+        /// <summary>
+        /// Gets all namespaces in assembly with public members.
+        /// </summary>
+        /// <param name="assembly">The assembly.</param>
+        /// <returns></returns>
         public static IEnumerable<string> GetAllNamespacesInAssemblyWithPublicMembers(Assembly assembly)
         {
             return assembly.GetTypes().Where(t => t.IsPublic).Select(t => t.Namespace).Distinct();
