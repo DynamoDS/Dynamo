@@ -140,7 +140,7 @@ namespace Dynamo.Tests
         public void GraphLayoutTreeSelection()
         {
             OpenModel(GetDynPath("GraphLayoutTree.dyn"));
-            IEnumerable<NodeModel> nodes = ViewModel.CurrentSpace.Nodes;
+            List<NodeModel> nodes = ViewModel.CurrentSpace.Nodes.ToList();
 
             // Select 4 nodes
             SelectModel(ViewModel.CurrentSpace.Nodes.ElementAt(1));
