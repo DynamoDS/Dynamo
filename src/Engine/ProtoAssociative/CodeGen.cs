@@ -441,39 +441,6 @@ namespace ProtoAssociative
             }
         }
 
-        private void UpdateType (string ident, int funcIndex, ProtoCore.Type dataType)
-        {
-            int symbolindex = ProtoCore.DSASM.Constants.kInvalidIndex;
-            ProtoCore.DSASM.SymbolNode node = null;
-
-            if (ProtoCore.DSASM.Constants.kInvalidIndex != globalClassIndex)
-            {
-                symbolindex = core.ClassTable.ClassNodes[globalClassIndex].Symbols.IndexOf(ident, globalClassIndex, funcIndex);
-                if (ProtoCore.DSASM.Constants.kInvalidIndex != symbolindex)
-                {
-                    node = core.ClassTable.ClassNodes[globalClassIndex].Symbols.symbolList[symbolindex];
-                }
-            }
-            else
-            {
-                ProtoCore.DSASM.CodeBlock searchBlock = codeBlock;
-
-                symbolindex = searchBlock.symbolTable.IndexOf(ident, globalClassIndex, funcIndex);
-                while (ProtoCore.DSASM.Constants.kInvalidIndex == symbolindex)
-                {
-                    ProtoCore.DSASM.CodeBlock parentBlock = searchBlock.parent;
-                    if (null == parentBlock)
-                        return;
-
-                    searchBlock = parentBlock;
-                    symbolindex = searchBlock.symbolTable.IndexOf(ident, globalClassIndex, funcIndex);
-                }
-                node = searchBlock.symbolTable.symbolList[symbolindex];
-            }
-            if (node != null)
-                node.datatype = dataType;
-        }
-
         private ProtoCore.DSASM.SymbolNode Allocate(
             int classIndex,  // In which class table this variable will be allocated to ?
             int classScope,  // Variable's class scope. For example, it is a variable in base class
@@ -680,13 +647,6 @@ namespace ProtoAssociative
             return symbolindex;
         }
         
-        private bool IsCompilingCodeBody()
-        {
-            return compilePass == ProtoCore.CompilerDefinitions.Associative.CompilePass.kClassMemFuncBody
-                || compilePass == ProtoCore.CompilerDefinitions.Associative.CompilePass.kGlobalFuncBody;
-        }
-
-
         /// <summary>
         /// Emits a block of code for the following cases:
         ///     Language block body
@@ -4125,40 +4085,6 @@ namespace ProtoAssociative
             }
         }
 
-        /// <summary>
-        /// This function sets the current pc after codegening the a node thats either an external function or external class
-        /// We want the pc at this point as it will be used to determine which instructions are to be removed from the instruction list
-        /// on delta execution. We remove all instructions starting from this pc and regenerate them
-        /// </summary>
-        /// <param name="node"></param>
-        private void SetDeltaCompilePC(ProtoCore.AST.Node node)
-        {
-            // Perform analysis only on global function body compile pass
-            // This means that all import statments and its classes and functions have already been codegen'd
-            if (compilePass == ProtoCore.CompilerDefinitions.Associative.CompilePass.kGlobalFuncBody)
-            {
-                if (core.Options.IsDeltaExecution && !core.Options.IsDeltaCompile)
-                {
-                    if (node is ProtoCore.AST.AssociativeAST.FunctionDefinitionNode)
-                    {
-                        ProtoCore.AST.AssociativeAST.FunctionDefinitionNode fNode = node as ProtoCore.AST.AssociativeAST.FunctionDefinitionNode;
-                        Validity.Assert(null != fNode);
-                        if (fNode.IsExternLib || fNode.IsBuiltIn)
-                        {
-                            core.deltaCompileStartPC = pc;
-                        }
-                    }
-                    else if (node is ProtoCore.AST.AssociativeAST.ClassDeclNode)
-                    {
-                        if ((node as ProtoCore.AST.AssociativeAST.ClassDeclNode).IsImportedClass)
-                        {
-                            core.deltaCompileStartPC = pc;
-                        }
-                    }
-                }
-            }
-        }
-
         public override int Emit(ProtoCore.AST.Node codeBlockNode, ProtoCore.AssociativeGraph.GraphNode graphNode = null)
         {
             if (core.Options.IsDeltaExecution)
@@ -4304,98 +4230,6 @@ namespace ProtoAssociative
 
             return symnode.symbolTableIndex;
         }
-
-
-        private bool VerifyAllocationIncludingChildBlock(string name, int classScope, int functionScope, out ProtoCore.DSASM.SymbolNode symbol, out bool isAccessible)
-        {
-            bool isAllocated = VerifyAllocation(name, classScope, functionScope, out symbol, out isAccessible);
-            if (!isAllocated)
-            {
-                int symbolIndex = Constants.kInvalidIndex;
-
-                if (codeBlock.children.Count > 0)
-                {
-                    CodeBlock searchBlock = codeBlock.children[0];
-                    while (symbolIndex == Constants.kInvalidIndex && searchBlock != null)
-                    {
-                        symbolIndex = searchBlock.symbolTable.IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
-                        if (symbolIndex != Constants.kInvalidIndex)
-                        {
-                            symbol = searchBlock.symbolTable.symbolList[symbolIndex];
-                            isAccessible = true;
-                            return true;
-                        }
-
-                        //
-                        // TODO Jun: Parallel construct blocks?
-                        //
-                        //      if (0)
-                        //      {
-                        //          x = 10;
-                        //      }
-                        //
-                        //      if (1)
-                        //      {
-                        //          x = 20;
-                        //      }
-                        //
-
-                        if (searchBlock.children.Count > 0)
-                        {
-                            searchBlock = searchBlock.children[0];
-                        }
-                        else
-                        {
-                            searchBlock = null;
-                        }
-                    }
-                }
-            }
-            return isAllocated;
-        }
-
-        private bool EmitReplicationGuideForIdentifier(IdentifierNode t)
-        {
-            bool isReplicationGuideEmitted = false;
-            if (emitReplicationGuide)
-            {
-                int replicationGuides = 0;
-                if (null != t.ReplicationGuides)
-                {
-                    isReplicationGuideEmitted = true;
-
-                    replicationGuides = t.ReplicationGuides.Count;
-                    for (int n = 0; n < replicationGuides; ++n)
-                    {
-                        Validity.Assert(t.ReplicationGuides[n] is IdentifierNode);
-                        IdentifierNode nodeGuide = t.ReplicationGuides[n] as IdentifierNode;
-
-                        EmitInstrConsole(ProtoCore.DSASM.kw.push, nodeGuide.Value);
-                        StackValue opguide = StackValue.BuildInt(System.Convert.ToInt64(nodeGuide.Value));
-                        EmitPush(opguide);
-                    }
-                }
-            }
-
-            return isReplicationGuideEmitted;
-        }
-
-        /*
-         proc EmitIdentNode(identnode, graphnode)
-            if ssa
-                // Check an if this identifier is array indexed
-                // The array index is a secondary property and is not the original array property of the AST. this is required because this array index is meant only to resolve graphnode dependency with arrays
-                if node.arrayindex.secondary is valid
-                    dimension = traverse(node.arrayindex.secondary)
-
-                    // Create a new dependent with the array indexing
-                    dependent = new GraphNode(identnode.name, dimension)
-                    graphnode.pushdependent(dependent)
-                end
-            end
-        end
-
-         */
 
         private void EmitIdentifierNode(AssociativeNode node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone, BinaryExpressionNode parentNode = null)
         {
@@ -5157,17 +4991,7 @@ namespace ProtoAssociative
 
         private void EmitSetterForProperty(ProtoCore.AST.AssociativeAST.ClassDeclNode cnode, ProtoCore.DSASM.SymbolNode prop)
         {
-            /*
-            ProtoCore.Type varType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
-            if (!prop.datatype.Equals(varType))
-            {
-                var setterForVar = EmitSetterFunction(prop, varType);
-                cnode.funclist.Add(setterForVar);
-            }
-            */
-
             ProtoCore.Type varArrayType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
-            // if (!prop.datatype.Equals(varArrayType))
             {
                 var setterForVarArray = EmitSetterFunction(prop, varArrayType);
                 cnode.funclist.Add(setterForVarArray);
@@ -7317,39 +7141,6 @@ namespace ProtoAssociative
                 }
                 newIdentList = fCall;
             }
-                /*
-            else if (node is ProtoCore.AST.ImperativeAST.FunctionDotCallNode)
-            {
-                ProtoCore.AST.ImperativeAST.FunctionDotCallNode dotCall = node as ProtoCore.AST.ImperativeAST.FunctionDotCallNode;
-                string name = dotCall.DotCall.FormalArguments[0].Name;
-
-                // TODO Jun: If its a constructor, leave it as it is. 
-                // After the first version of global instance functioni s implemented, 2nd phase would be to remove dotarg methods completely
-                bool isConstructorCall = false;
-                if (null != name)
-                {
-                    isConstructorCall = ProtoCore.DSASM.Constants.kInvalidIndex != core.ClassTable.IndexOf(name);
-                }
-
-                ProtoCore.AST.ImperativeAST.FunctionCallNode fCall = (node as ProtoCore.AST.ImperativeAST.FunctionDotCallNode).FunctionCall;
-
-
-                if (isConstructorCall)
-                {
-                    newIdentList = node;
-                }
-                else
-                {
-                    for (int n = 0; n < fCall.FormalArguments.Count; ++n)
-                    {
-                        ProtoCore.AST.ImperativeAST.ImperativeNode argNode = fCall.FormalArguments[n];
-                        TraverseAndAppendThisPtrArg(argNode, ref argNode);
-                        fCall.FormalArguments[n] = argNode;
-                    }
-                    newIdentList = fCall;
-                }
-            }
-            */
             else if (node is ProtoCore.AST.ImperativeAST.IdentifierNode)
             {
                 string identName = (node as ProtoCore.AST.ImperativeAST.IdentifierNode).Name;
@@ -7801,54 +7592,6 @@ namespace ProtoAssociative
             return leftNodeRef;
         }
 
-        private ProtoCore.AssociativeGraph.UpdateNodeRef AutoGenerateUpdateArgumentArrayReference(AssociativeNode node, ProtoCore.AssociativeGraph.GraphNode graphNode)
-        {
-            // Get the lhs symbol list
-            ProtoCore.Type type = new ProtoCore.Type();
-            type.UID = globalClassIndex;
-            ProtoCore.AssociativeGraph.UpdateNodeRef leftNodeRef = new ProtoCore.AssociativeGraph.UpdateNodeRef();
-            DFSGetSymbolList(node, ref type, leftNodeRef);
-
-            ProtoCore.DSASM.SymbolNode firstSymbol = null;
-
-
-            // Check if we are inside a procedure
-            if (null != localProcedure)
-            {
-                if (1 == leftNodeRef.nodeList.Count)
-                {
-                    firstSymbol = leftNodeRef.nodeList[0].symbol;
-
-                    // Check if it is an array modification
-                    if (graphNode.dimensionNodeList.Count > 0)
-                    {
-                        // There is only one, see if its an array modification
-                        // Now check if the first element of the identifier list is an argument
-                        foreach (ProtoCore.DSASM.ArgumentInfo argInfo in localProcedure.ArgumentInfos)
-                        {
-                            // See if this modified variable is an argument
-                            if (argInfo.Name == firstSymbol.name)
-                            {
-                                List<ProtoCore.AssociativeGraph.UpdateNode> dimensionList = null;
-                                bool found = localProcedure.UpdatedArgumentArrays.TryGetValue(argInfo.Name, out dimensionList);
-                                if (found)
-                                {
-                                    // Overwrite it
-                                    dimensionList = graphNode.dimensionNodeList;
-                                }
-                                else
-                                {
-                                    // Create a new modified array entry
-                                    localProcedure.UpdatedArgumentArrays.Add(argInfo.Name, graphNode.dimensionNodeList);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return leftNodeRef;
-        }
-
         private ProtoCore.AssociativeGraph.UpdateNodeRef GetUpdatedNodeRef(AssociativeNode node)
         {
             if (null == localProcedure)
@@ -8176,79 +7919,6 @@ namespace ProtoAssociative
 
             DebugProperties.BreakpointOptions oldOptions = core.DebuggerProperties.breakOptions;
             
-            /*
-            proc emitbinaryexpression(node)
-                if node is assignment
-                    if graphnode is not valid
-                        graphnode = BuildNewGraphNode()
-                    end
-                    dfstraverse(node.right, graphnode)
- 
-                    def lefttype = invalid
-                    def updateNodeRef = null 
-                    dfsgetsymbollist(node.left, lefttype, updateNodeRef)
-    
-                    // Get the first procedure call in the rhs
-                    // This stack is populated on traversing the entire RHS
-                    def firstProc = functionCallStack.first()
- 
-                    graphnode.pushUpdateRef(updateNodeRef)
-
-                    // Auto-generate the updateNodeRefs for this graphnode given 
-                    the list stored in the first procedure found in the assignment expression
-                    foreach noderef in firstProc.updatedProperties
-                        def autogenRef = updateNodeRef
-                        autogenRef.append(noderef)
-                        graphnode.pushUpdateRef(autogenRef)
-                    end
-
-
-                    // See if the leftmost symbol(updateNodeRef) of the lhs expression is a property of the current class. 
-                    // If it is, then push the lhs updateNodeRef to the list of modified properties in the procedure node
-                    def symbol = classtable[ci].verifyalloc(updateNodeRef[0])
-                    if symbol is valid
-                        def localproc = getlocalproc(ci,fi)
-                        localproc.push(updateNodeRef)
-                    end		
-                    functionCallStack.Clear();
-                end
-            end
-            */
-
-            /*
-                Building the graphnode dependencies from the SSA transformed identifier list is illustrated in the following functions:
-
-                ssaPtrList = new List
-
-                proc EmitBinaryExpression(bnode, graphnode)
-                    if bnode is assignment
-                        graphnode = new graphnode
-
-                        if bnode is an SSA pointer expression
-                            if bnode.rhs is an identifier
-                                // Push the start pointer
-                                ssaPtrList.push(node.rhs)
-                            else if bnode.rhs is an identifierlist
-                                // Push the rhs of the dot operator
-                                ssaPtrList.push(node.rhs.rhs)
-                            else
-                                Assert unhandled
-                            end
-                        end
-
-                        emit(bnode.rhs)
-                        emit(bnode.lhs)
-
-                        if (bnode is an SSA pointer expression 
-                            and bnode is the last expression in the SSA factor/term
-                            ssaPtrList.Clear()
-                        end
-                    end
-                end
-
-            */
-
-
             // If this is an assignment statement, setup the top level graph node
             bool isGraphInScope = false;
             if (ProtoCore.DSASM.Operator.assign == bnode.Optr)
