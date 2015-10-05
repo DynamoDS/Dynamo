@@ -43,7 +43,7 @@ namespace DynamoSandbox
                 {
                     CommandFilePath = commandFilePath,
                     DynamoModel = model,
-                    Watch3DViewModel = new HelixWatch3DViewModel(new Watch3DViewModelStartupParams(model, "Background Preview"))
+                    Watch3DViewModel = new HelixWatch3DViewModel(new Watch3DViewModelStartupParams(model))
                 });
 
             var view = new DynamoView(viewModel);

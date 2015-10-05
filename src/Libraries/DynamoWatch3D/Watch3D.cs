@@ -42,11 +42,10 @@ namespace Dynamo.Nodes
 
             var dynamoModel = dynamoViewModel.Model;
 
-            var vmParams = new Watch3DViewModelStartupParams(dynamoModel, string.Format("{0} Preview", watch3dModel.GUID));
-            watch3DViewModel = new HelixWatch3DNodeViewModel(watch3dModel, vmParams);
+            var vmParams = new Watch3DViewModelStartupParams(dynamoModel);
+             watch3DViewModel = new HelixWatch3DNodeViewModel(watch3dModel, vmParams);
             watch3DViewModel.Setup(dynamoViewModel, 
-                dynamoViewModel.RenderPackageFactoryViewModel.Factory, 
-                dynamoViewModel.RenderPackageFactoryViewModel);
+                dynamoViewModel.RenderPackageFactoryViewModel.Factory);
 
             if (model.initialCameraData != null)
             {

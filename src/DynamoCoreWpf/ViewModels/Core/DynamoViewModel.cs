@@ -480,7 +480,7 @@ namespace Dynamo.ViewModels
             RenderPackageFactoryViewModel.PropertyChanged += RenderPackageFactoryViewModel_PropertyChanged;
 
             BackgroundPreviewViewModel = startConfiguration.Watch3DViewModel;
-            BackgroundPreviewViewModel.Setup(this, RenderPackageFactoryViewModel.Factory, RenderPackageFactoryViewModel);
+            BackgroundPreviewViewModel.Setup(this, RenderPackageFactoryViewModel.Factory);
             Watch3DViewModels.Add(BackgroundPreviewViewModel);
             BackgroundPreviewViewModel.PropertyChanged += Watch3DViewModelPropertyChanged;
         }
@@ -492,6 +492,7 @@ namespace Dynamo.ViewModels
                 case "ShowEdges":
                     var factoryVm = (RenderPackageFactoryViewModel)sender;
                     model.PreferenceSettings.ShowEdges = factoryVm.Factory.TessellationParameters.ShowEdges;
+                    Watch3DViewModels.ForEach(vm=>vm.RegenerateAllPackages());
                     break;
                 default:
                     return;

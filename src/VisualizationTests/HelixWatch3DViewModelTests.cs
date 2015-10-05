@@ -81,7 +81,7 @@ namespace WpfVisualizationTests
                 new DynamoViewModel.StartConfiguration()
                 {
                     DynamoModel = Model,
-                    Watch3DViewModel = new HelixWatch3DViewModel(new Watch3DViewModelStartupParams(Model, "Test"))
+                    Watch3DViewModel = new HelixWatch3DViewModel(new Watch3DViewModelStartupParams(Model))
                 });
 
             //create the view
@@ -518,7 +518,7 @@ namespace WpfVisualizationTests
             var height = original.Height * (1.0 + random.NextDouble());
             original.SetSize(Math.Floor(width), Math.Floor(height));
 
-            var vmParams = new Watch3DViewModelStartupParams(ViewModel.Model, "Test");
+            var vmParams = new Watch3DViewModelStartupParams(ViewModel.Model);
             var vm1 = new HelixWatch3DNodeViewModel(original, vmParams);
             var cam = vm1.Camera;
 

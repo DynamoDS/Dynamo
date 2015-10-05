@@ -55,7 +55,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         protected readonly IEngineControllerManager engineManager;
         protected IRenderPackageFactory renderPackageFactory;
         protected IDynamoViewModel viewModel;
-        protected INotifyPropertyChanged renderPackageFactoryViewModel;
 
         protected List<NodeModel> recentlyAddedNodes = new List<NodeModel>();
         protected bool active;
@@ -197,21 +196,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <summary>
         /// Call setup to establish the visualization context for the
         /// Watch3DViewModel. Because the Watch3DViewModel is passed into the DynamoViewModel,
-        /// Setup is required to full attach the 
+        /// Setup is required to fully establish the rendering context. 
         /// </summary>
         /// <param name="viewModel">An IDynamoViewModel object.</param>
         /// <param name="renderPackageFactory">An IRenderPackageFactory object.</param>
-        /// <param name="renderPackageFactoryViewModel">An INotifyPropertyChanged object corresponding to 
-        /// the RenderPackageFactoryViewModel</param>
         public void Setup(IDynamoViewModel viewModel, 
-            IRenderPackageFactory renderPackageFactory, 
-            INotifyPropertyChanged renderPackageFactoryViewModel)
+            IRenderPackageFactory renderPackageFactory)
         {
             this.viewModel = viewModel;
             this.renderPackageFactory = renderPackageFactory;
-            this.renderPackageFactoryViewModel = renderPackageFactoryViewModel;
-
-            renderPackageFactoryViewModel.PropertyChanged += OnRenderPackageFactoryViewModelPropertyChanged;
         }
 
         protected virtual void OnShutdown()
@@ -251,11 +244,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private void UnregisterEventHandlers()
         {
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChangedHandler;
-
-            if (renderPackageFactoryViewModel != null)
-            {
-                renderPackageFactoryViewModel.PropertyChanged -= OnRenderPackageFactoryViewModelPropertyChanged;
-            }
 
             UnregisterModelEventHandlers(model);
 
@@ -339,7 +327,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        private void OnRenderPackageFactoryViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        /// <summary>
+        /// Forces a regeneration of the render packages for all nodes.
+        /// </summary>
+        public void RegenerateAllPackages()
         {
             foreach (var node in
                 model.CurrentWorkspace.Nodes)
