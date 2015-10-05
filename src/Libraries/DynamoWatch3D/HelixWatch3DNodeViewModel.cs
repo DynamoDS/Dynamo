@@ -28,7 +28,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             watchNode.Serialized += SerializeCamera;
             watchNode.Deserialized += watchNode_Deserialized;
 
-            Name = $"{node.GUID} Preview";
+            Name = string.Format("{0} Preview", node.GUID);
         }
 
         void watchNode_Deserialized(XmlNode obj)
