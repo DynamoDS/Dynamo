@@ -225,7 +225,7 @@
 
         <!--Filter popup-->
         <Popup Name="FilterPopup"
-               StaysOpen="True"
+               StaysOpen="False"
                AllowsTransparency="True"
                Placement="Bottom"
                HorizontalOffset="-160"

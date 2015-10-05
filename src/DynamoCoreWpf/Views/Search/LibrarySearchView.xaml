@@ -123,7 +123,7 @@
         <ListBox  Name="SearchResults"
                   Background="{StaticResource LibraryItemHostBackground}"
                   BorderThickness="0"
-                  ItemsSource="{Binding SearchResults}"
+                  ItemsSource="{Binding FilteredResults}"
                   ItemTemplate="{StaticResource SearchItemTemplate}"
                   ItemContainerStyle="{StaticResource SearchItemStyle}"
                   VirtualizingStackPanel.VirtualizationMode="Recycling" />

@@ -137,12 +137,37 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        ///     SearchResults property
+        ///     Items that were found during search.
         /// </summary>
-        /// <value>
-        ///     This property is observed by SearchView to see the search results
-        /// </value>
-        public ObservableCollection<NodeSearchElementViewModel> SearchResults { get; private set; }
+        private IEnumerable<NodeSearchElementViewModel> searchResults;
+
+        private IEnumerable<NodeSearchElementViewModel> filteredResults;
+        /// <summary>
+        /// Filtered search results.
+        /// </summary>
+        public IEnumerable<NodeSearchElementViewModel> FilteredResults
+        {
+            set
+            {
+                filteredResults = value;
+                RaisePropertyChanged("FilteredResults");
+            }
+            get
+            {
+                return filteredResults;
+            }
+        }
+
+        /// <summary>
+        /// Filters search items, if category was selected.
+        /// </summary>
+        internal void Filter()
+        {
+            var allowedCategories = SearchCategories.Where(cat => cat.IsSelected);
+            FilteredResults = searchResults.Where(x => allowedCategories
+                                                                       .Select(cat => cat.Name)
+                                                                       .Contains(x.Category));
+        }
 
         private IEnumerable<SearchCategory> searchCategories;
         /// <summary>
@@ -154,7 +179,7 @@ namespace Dynamo.ViewModels
             {
                 return searchCategories;
             }
-            set
+            private set
             {
                 searchCategories = value;
                 RaisePropertyChanged("SearchCategories");
@@ -211,7 +236,7 @@ namespace Dynamo.ViewModels
 
         private void InitializeCore()
         {
-            SearchResults = new ObservableCollection<NodeSearchElementViewModel>();
+            searchResults = new List<NodeSearchElementViewModel>();
 
             Visible = false;
             searchText = "";
@@ -664,14 +689,37 @@ namespace Dynamo.ViewModels
                 return;
 
             var foundNodes = Search(query);
-            SearchResults = new ObservableCollection<NodeSearchElementViewModel>(foundNodes);
-            SearchCategories = SearchResults.Select(x => x.Category)
-                               .Distinct()
-                               .Select(x => new SearchCategory(x));
+            searchResults = new List<NodeSearchElementViewModel>(foundNodes);
 
-            RaisePropertyChanged("SearchResults");
+            filteredResults = searchResults;
+            UpdateSearchCategories();
+
+            RaisePropertyChanged("FilteredResults");
         }
 
+        private void UpdateSearchCategories()
+        {
+            var uniqueCategoryNames = searchResults.Select(x => x.Category).Distinct();
+
+            var categories = new List<SearchCategory>();
+            foreach (var name in uniqueCategoryNames)
+            {
+                var searchCategory = new SearchCategory(name);
+                searchCategory.PropertyChanged += IsSelectedChanged;
+                categories.Add(searchCategory);
+            }
+            SearchCategories = categories;
+        }
+
+        private void IsSelectedChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != "IsSelected")
+            {
+                return;
+            }
+
+            Filter();
+        }
 
         /// <summary>
         ///     Performs a search using the given string as query.
