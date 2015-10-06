@@ -249,37 +249,29 @@ namespace Dynamo
             mockPathResolver.Setup(x => x.UserDataRootFolder).Returns(() => userDataDir);
             mockPathManager.Setup(x => x.UserDataDirectory).Returns(() => currentVersionDir);
 
-            //try
-            {
-                // Test MigrateBetweenDynamoVersions
-                var targetMigrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(
-                    mockPathManager.Object, mockPathResolver.Object);
+            // Test MigrateBetweenDynamoVersions
+            var targetMigrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(
+                mockPathManager.Object, mockPathResolver.Object);
 
-                // Assert that both 0.8 and 0.9 dirs are the same after migration
-                var sourcePackageDir = Path.Combine(sourceVersionDir, "packages");
-                var currentPackageDir = Path.Combine(currentVersionDir, "packages");
+            // Assert that both 0.8 and 0.9 dirs are the same after migration
+            var sourcePackageDir = Path.Combine(sourceVersionDir, "packages");
+            var currentPackageDir = Path.Combine(currentVersionDir, "packages");
 
-                bool areDirectoriesEqual = Directory.EnumerateFiles(sourcePackageDir).Select(Path.GetFileName).
-                    SequenceEqual(Directory.EnumerateFiles(currentPackageDir).Select(Path.GetFileName));
-                Assert.IsTrue(areDirectoriesEqual);
+            bool areDirectoriesEqual = Directory.EnumerateFiles(sourcePackageDir).Select(Path.GetFileName).
+                SequenceEqual(Directory.EnumerateFiles(currentPackageDir).Select(Path.GetFileName));
+            Assert.IsTrue(areDirectoriesEqual);
 
-                var sourceDefinitionDir = Path.Combine(sourceVersionDir, "definitions");
-                var currentDefinitionDir = Path.Combine(currentVersionDir, "definitions");
+            var sourceDefinitionDir = Path.Combine(sourceVersionDir, "definitions");
+            var currentDefinitionDir = Path.Combine(currentVersionDir, "definitions");
 
-                areDirectoriesEqual = Directory.EnumerateFiles(sourceDefinitionDir).Select(Path.GetFileName).
-                    SequenceEqual(Directory.EnumerateFiles(currentDefinitionDir).Select(Path.GetFileName));
-                Assert.IsTrue(areDirectoriesEqual);
+            areDirectoriesEqual = Directory.EnumerateFiles(sourceDefinitionDir).Select(Path.GetFileName).
+                SequenceEqual(Directory.EnumerateFiles(currentDefinitionDir).Select(Path.GetFileName));
+            Assert.IsTrue(areDirectoriesEqual);
 
-                // Assert that new CustomePackageFolders in preference settings
-                // for 0.9 version points to user data dir for 0.9
-                Assert.AreEqual(currentVersionDir,
-                    targetMigrator.PreferenceSettings.CustomPackageFolders[0]);
-            }
-            //finally
-            //{
-            //    // Delete folders from Temp dir
-            //    Directory.Delete(userDataDir, recursive: true);
-            //}
+            // Assert that new CustomePackageFolders in preference settings
+            // for 0.9 version points to user data dir for 0.9
+            Assert.AreEqual(currentVersionDir,
+                targetMigrator.PreferenceSettings.CustomPackageFolders[0]);
         }
     }
 }
