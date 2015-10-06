@@ -237,6 +237,10 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// Called when a Node is modified in the workspace
+        /// </summary>
+        /// <param name="node">The node itself</param>
         protected override void NodeModified(NodeModel node)
         {
             base.NodeModified(node);
@@ -247,6 +251,10 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// Called when a node is added to the workspace and event handlers are to be added
+        /// </summary>
+        /// <param name="node">The node itself</param>
         protected virtual void RegisterNode(NodeModel node)
         {
             base.RegisterNode(node);
@@ -254,13 +262,22 @@ namespace Dynamo.Models
             node.RequestSilenceNodeModifiedEvents += NodeOnRequestSilenceNodeModifiedEvents;
         }
 
+        /// <summary>
+        /// Called when a node is disposed and removed from the workspace
+        /// </summary>
+        /// <param name="node">The node itself</param>
         protected virtual void DisposeNode(NodeModel node)
         {
-            base.RegisterNode(node);
+            base.DisposeNode(node);
 
             node.RequestSilenceNodeModifiedEvents -= NodeOnRequestSilenceNodeModifiedEvents;
         }
 
+        /// <summary>
+        /// Called when the RequestSilenceNodeModifiedEvents event is emitted from a Node
+        /// </summary>
+        /// <param name="node">The node itself</param>
+        /// <param name="value">A boolean value indicating whether to silence or not</param>
         private void NodeOnRequestSilenceNodeModifiedEvents(NodeModel _, bool value)
         {
             this.silenceNodeModifications = value;

@@ -701,6 +701,13 @@ namespace Dynamo.Models
             if (handler != null) handler(this);
         }
 
+        /// <summary>
+        /// Called when a node is requesting that the workspace's node modified events be
+        /// silenced. This is particularly critical for code block nodes, whose modification can 
+        /// mutate the workspace.
+        /// 
+        /// As opposed to RaisesModificationEvents, this modifies the entire parent workspace
+        /// </summary>
         internal event Action<NodeModel, bool> RequestSilenceNodeModifiedEvents;
 
         internal void OnRequestSilenceModifiedEvents(bool silence)
