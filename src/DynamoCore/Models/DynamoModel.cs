@@ -1568,6 +1568,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Paste ISelectable objects from the clipboard to the workspace at specified point.
         /// </summary>
+        /// <param name="targetPoint">Location where data will be pasted</param>
         public void Paste(Point2D targetPoint)
         {
             //clear the selection so we can put the
