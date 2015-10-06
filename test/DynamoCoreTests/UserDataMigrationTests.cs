@@ -186,11 +186,9 @@ namespace Dynamo
         /// Create empty packages and definitions dir in 0.9 folder
         /// </summary>
         /// <param name="userDataDir">return root folder</param>
-        private static void CreateMockDirectoriesAndFiles(out string userDataDir)
+        private void CreateMockDirectoriesAndFiles(out string userDataDir)
         {
-            
-            string tempPath = Path.GetTempPath();
-            userDataDir = Path.Combine(tempPath, "DynamoMigration");
+            userDataDir = Path.Combine(TempFolder, "DynamoMigration");
 
             var tempFolder = Path.Combine(userDataDir, "0.8");
 
