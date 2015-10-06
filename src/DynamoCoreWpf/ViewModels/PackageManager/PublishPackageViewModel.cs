@@ -976,6 +976,8 @@ namespace Dynamo.PackageManager
             var files = BuildPackage();
             try
             {
+                //if buildPackage() returns no files then the package
+                //is empty so we should return
                 if (files == null || files.Count() < 1)
                 {
                     return;
@@ -990,6 +992,7 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
+                UploadState = PackageUploadHandle.State.Error;
                 ErrorString = e.Message;
                 dynamoViewModel.Model.Logger.Log(e);
             }
@@ -1007,6 +1010,8 @@ namespace Dynamo.PackageManager
 
             try
             {
+                //if buildPackage() returns no files then the package
+                //is empty so we should return
                 if (files == null || files.Count() < 1)
                 {
                     return;
@@ -1068,6 +1073,7 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
+                UploadState = PackageUploadHandle.State.Error;
                 ErrorString = e.Message;
                 dynamoViewModel.Model.Logger.Log(e);
             }
