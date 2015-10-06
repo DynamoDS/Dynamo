@@ -12,18 +12,17 @@ using Dynamo.Core.Threading;
 using Dynamo.Migration;
 using Dynamo.Nodes;
 using Dynamo.Engine;
+using Dynamo.Engine.CodeGeneration;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Interfaces;
 
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
-using ProtoCore.Namespace;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 using ProtoCore.DSASM;
 using System.Reflection;
-using Autodesk.DesignScript.Runtime;
 
 namespace Dynamo.Models
 {
@@ -720,7 +719,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="inputAstNodes"></param>
         /// <param name="context">Compilation context</param>
-        internal virtual IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, AstBuilder.CompilationContext context)
+        internal virtual IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, CompilationContext context)
         {
             OnBuilt();
 

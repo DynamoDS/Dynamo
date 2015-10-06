@@ -13,13 +13,10 @@ namespace ProtoTest.Associative
     class ReplicatorTest : ProtoTestBase
     {
         DebugRunner fsr;
-        ProtoScript.Config.RunConfiguration runnerConfig;
 
         public override void Setup()
         {
             // Specify some of the requirements of IDE.
-            runnerConfig = new ProtoScript.Config.RunConfiguration();
-            runnerConfig.IsParrallel = false;
             fsr = new DebugRunner(core);
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();
@@ -38,7 +35,7 @@ namespace ProtoTest.Associative
                   ";
 
             //Run
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             DebugRunner.VMState vms = null;
             vms = fsr.Run();
             var mirror = vms.mirror;

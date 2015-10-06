@@ -487,6 +487,49 @@ namespace DSCore
         }
     }
 
+    [NodeName("SortByKey")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
+    [NodeDescription("ListSortByKeyDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("ListSortByKeySearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [IsDesignScriptCompatible]
+    public class SortByKey : NodeModel
+    {
+        public SortByKey()
+        {
+            InPortData.Add(new PortData("list", Resources.ListSortByKeyIncomingList));
+            InPortData.Add(new PortData("keys", Resources.ListSortByKeyIncomingKeys));
+
+            OutPortData.Add(new PortData("sorted list", Resources.ListSortByKeyOutList));
+            OutPortData.Add(new PortData("sorted keys", Resources.ListSortByKeyOutKeys));
+
+            RegisterAllPorts();
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(
+            List<AssociativeNode> inputAstNodes)
+        {
+            var packedId = "__temp" + GUID.ToString().Replace("-", "");
+            return new[]
+            {
+                AstFactory.BuildAssignment(
+                    AstFactory.BuildIdentifier(packedId),
+                    AstFactory.BuildFunctionCall("__SortByKey", inputAstNodes)),
+                AstFactory.BuildAssignment(
+                    GetAstIdentifierForOutputIndex(0),
+                    new IdentifierNode(packedId)
+                    {
+                        ArrayDimensions = new ArrayNode { Expr = AstFactory.BuildIntNode(0) }
+                    }),
+                AstFactory.BuildAssignment(
+                    GetAstIdentifierForOutputIndex(1),
+                    new IdentifierNode(packedId)
+                    {
+                        ArrayDimensions = new ArrayNode { Expr = AstFactory.BuildIntNode(1) }
+                    })
+            };
+        }
+    }
+
     [NodeName("ReplaceByCondition")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
     [NodeDescription("ReplaceByConditionDescription", typeof(DSCoreNodesUI.Properties.Resources))]

@@ -37,7 +37,7 @@ namespace ProtoCore.Utils
 
                 //Now add in the other conversions - as we don't have a common superclass yet
                 //@TODO(Jun): Remove this hack when we have a proper casting structure
-                foreach (int id in cn.coerceTypes.Keys)
+                foreach (int id in cn.CoerceTypes.Keys)
                     if (!chain.Contains(id))
                         chain.Add((id));
 
@@ -146,13 +146,13 @@ namespace ProtoCore.Utils
 
             List<int> coercableTypes = new List<int>();
 
-            foreach (int typeID in cn.coerceTypes.Keys)
+            foreach (int typeID in cn.CoerceTypes.Keys)
             {
                 bool inserted = false;
 
                 for (int i = 0; i < coercableTypes.Count; i++)
                 {
-                    if (cn.coerceTypes[typeID] < cn.coerceTypes[coercableTypes[i]])
+                    if (cn.CoerceTypes[typeID] < cn.CoerceTypes[coercableTypes[i]])
                     {
                         inserted = true;
                         coercableTypes.Insert(typeID, i);

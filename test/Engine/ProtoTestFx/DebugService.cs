@@ -151,10 +151,8 @@ namespace ProtoTestFx
                 core.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.PersistentManager, PersistenceManagerName);
 
                 ProtoScript.Runners.DebugRunner debugRunner = new ProtoScript.Runners.DebugRunner(core);
-                ProtoScript.Config.RunConfiguration runnerConfig = new ProtoScript.Config.RunConfiguration();
-                runnerConfig.IsParrallel = false; 
                 ExecutionMirror mirror; 
-                debugRunner.LoadAndPreStart(dsPath, runnerConfig);
+                debugRunner.LoadAndPreStart(dsPath);
                 ProtoScript.Runners.DebugRunner.VMState currentVmState ;
 
                

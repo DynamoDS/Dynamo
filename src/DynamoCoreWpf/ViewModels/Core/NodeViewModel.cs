@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 using System.Text;
 using System.Text.RegularExpressions;
 
-using Dynamo.Engine;
+using Dynamo.Engine.CodeGeneration;
 using Dynamo.Models;
 using Dynamo.Nodes;
 
@@ -416,7 +416,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void EngineController_AstBuilt(object sender, AstBuilder.ASTBuiltEventArgs e)
+        void EngineController_AstBuilt(object sender, CompiledEventArgs e)
         {
             if (e.Node == nodeLogic.GUID)
             {

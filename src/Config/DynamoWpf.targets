@@ -5,12 +5,9 @@
   <Target Name="SharpDXCleanup" AfterTargets="AfterBuild">
     <Message Text="Removing SharpDX assemblies from nodes folder..." Importance="high"/>
     <ItemGroup>
-      <FilesToDelete Include="$(OutputPath)\nodes\AssimpNet.dll"/>
-      <FilesToDelete Include="$(OutputPath)\nodes\AssimpNet.xml"/>
-      <FilesToDelete Include="$(OutputPath)\nodes\Assimp32.dll"/>
-      <FilesToDelete Include="$(OutputPath)\nodes\Assimp64.dll"/>
-      <FilesToDelete Include="$(OutputPath)\nodes\SharpDX.Toolkit.Compiler.dll"/>
-      <FilesToDelete Include="$(OutputPath)\nodes\SharpDX.Toolkit.Compiler.xml"/>
+      <FilesToDelete Include="$(OutputPath)\nodes\Assimp*"/>
+      <FilesToDelete Include="$(OutputPath)\nodes\SharpDX*"/>
+      <FilesToDelete Include="$(OutputPath)\nodes\HelixToolkit*"/>
     </ItemGroup> 
     <Delete Files="@(FilesToDelete)"/>
   </Target>

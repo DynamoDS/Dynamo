@@ -343,8 +343,8 @@ namespace ProtoCore
 
         public override string ToString()
         {
-            string name = procedureNode.name;
-            string returnType = procedureNode.returntype.ToString();
+            string name = procedureNode.Name;
+            string returnType = procedureNode.ReturnType.ToString();
 
             System.Text.StringBuilder sb = new StringBuilder();
 
