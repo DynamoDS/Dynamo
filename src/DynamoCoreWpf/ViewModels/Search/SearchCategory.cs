@@ -44,10 +44,10 @@ namespace Dynamo.Wpf.ViewModels
             name = title;
             isSelected = true;
 
-            ClickCommand = new DelegateCommand(Select);
+            ClickCommand = new DelegateCommand(ToggleSelect);
         }
 
-        private void Select(object obj)
+        private void ToggleSelect(object obj)
         {
             IsSelected = !IsSelected;
         }

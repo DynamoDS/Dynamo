@@ -95,4 +95,5 @@
     <SolidColorBrush x:Key="FilterPopupBorderColor" Color="#808080" />
     <SolidColorBrush x:Key="FilterPopupBackgroundColor" Color="#666666" />
     <SolidColorBrush x:Key="SelectedFilterButtonTextColor" Color="#4D4D4D" />
+    <SolidColorBrush x:Key="FilterCategoryIsNotSelectedColor" Color="#737373" />
 </ResourceDictionary>

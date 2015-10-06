@@ -54,7 +54,9 @@
                     BorderThickness="1,0,1,0"
                     Margin="0,5,0,5">
                 <fa:ImageAwesome Icon="filter"
-                                 Foreground="{StaticResource FilterIconColor}"
+                                 Foreground="{Binding IsAnySearchResult, 
+                                                      Converter={StaticResource FilterIconForegroundConverter}}"
+                                 IsHitTestVisible="{Binding IsAnySearchResult}"
                                  MouseLeftButtonUp="OnFilterMouseLeftButtonUp"
                                  Margin="5,0,5,0"
                                  Height="10"
@@ -252,7 +254,7 @@
                                         </ControlTemplate>
                                     </Button.Template>
                                     <Border Background="{Binding IsSelected, 
-                                    Converter={StaticResource FilterIsSelertedItemToBrushConverter}}"
+                                                                 Converter={StaticResource FilterIsSelertedCategoryToBrushConverter}}"
                                             CornerRadius="3"
                                             Padding="3"
                                             Margin="3">
@@ -264,7 +266,8 @@
                                             <Border Height="10"
                                                     Width="10"
                                                     Margin="3,0,0,0"
-                                                    Background="White"
+                                                    Background="{Binding IsSelected, 
+                                                                 Converter={StaticResource FilterIsSelertedCheckBoxForegroundConverter}}"
                                                     CornerRadius="2">
                                                 <Path Width="7"
                                                       Height="7"

@@ -139,7 +139,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         ///     Items that were found during search.
         /// </summary>
-        private IEnumerable<NodeSearchElementViewModel> searchResults;
+        private List<NodeSearchElementViewModel> searchResults;
 
         private IEnumerable<NodeSearchElementViewModel> filteredResults;
         /// <summary>
@@ -167,6 +167,14 @@ namespace Dynamo.ViewModels
             FilteredResults = searchResults.Where(x => allowedCategories
                                                                        .Select(cat => cat.Name)
                                                                        .Contains(x.Category));
+        }
+
+        public bool IsAnySearchResult
+        {
+            get
+            {
+                return searchResults.Any();
+            }
         }
 
         private IEnumerable<SearchCategory> searchCategories;
@@ -670,11 +678,19 @@ namespace Dynamo.ViewModels
         internal void SearchAndUpdateResults()
         {
             if (!String.IsNullOrEmpty(SearchText.Trim()))
+            {
                 SearchAndUpdateResults(SearchText);
+            }
+            else // Search text is empty, clear search results.
+            {
+                searchResults.Clear();
+            }
+
+            RaisePropertyChanged("IsAnySearchResult");
         }
 
         /// <summary>
-        ///     Performs a search and updates the observable SearchResults property.
+        ///     Performs a search and updates searchResults.
         /// </summary>
         /// <param name="query"> The search query </param>
         public void SearchAndUpdateResults(string query)
