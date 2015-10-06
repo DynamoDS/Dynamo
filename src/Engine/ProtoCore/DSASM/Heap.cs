@@ -550,9 +550,9 @@ namespace ProtoCore.DSASM
             ProcedureNode pn = cn.GetDisposeMethod();
             while (pn == null)
             {
-                if (cn.baseList != null && cn.baseList.Count != 0) 
+                if (cn.Bases != null && cn.Bases.Count != 0) 
                 {
-                    classIndex = cn.baseList[0];
+                    classIndex = cn.Bases[0];
                     cn = exe.exe.classTable.ClassNodes[classIndex];
                     pn = cn.GetDisposeMethod();
                 }
@@ -577,7 +577,7 @@ namespace ProtoCore.DSASM
                 // fix for IDE-963 - pratapa
                 bool explicitCall = exe.IsExplicitCall;
                 bool tempFlag = explicitCall;
-                exe.Callr(pn.runtimeIndex, pn.procId, classIndex, ref explicitCall);
+                exe.Callr(pn.RuntimeIndex, pn.ID, classIndex, ref explicitCall);
 
                 exe.IsExplicitCall = tempFlag;
 

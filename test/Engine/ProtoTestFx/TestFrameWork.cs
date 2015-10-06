@@ -709,7 +709,7 @@ namespace ProtoTestFx.TD
             }
 
             ProtoCore.DSASM.ClassNode thisClass = testCore.ClassTable.ClassNodes[classIndex];
-            if (!thisClass.vtable.procList.Exists(memberFunc => String.Compare(memberFunc.name, methodName) == 0))
+            if (!thisClass.ProcTable.procList.Exists(memberFunc => String.Compare(memberFunc.Name, methodName) == 0))
             {
                 if(doAssert)
                     Assert.Fail(string.Format("\tMethod \"{0}.{1}\" doesn't exist \n{2}", className, methodName, mErrorMessage)); 

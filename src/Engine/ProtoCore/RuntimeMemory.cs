@@ -262,7 +262,7 @@ namespace ProtoCore
                 StackValue thisptr = CurrentStackFrame.ThisPtr;
 
                 // Get the heapstck offset
-                int offset = exe.classTable.ClassNodes[scope].symbols.symbolList[symbolindex].index;
+                int offset = exe.classTable.ClassNodes[scope].Symbols.symbolList[symbolindex].index;
 
                 var obj = Heap.ToHeapObject<DSObject>(thisptr);
                 if (!obj.Values.Any())

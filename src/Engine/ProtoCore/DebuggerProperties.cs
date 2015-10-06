@@ -330,7 +330,7 @@ namespace ProtoCore
             // it is the very first or only function call statement ("return = f();") inside the calling function
             // Here there's most likely a DEP or RETURN respectively after the function call
             // in which case, search for the instruction and set that as the new pc limit
-            else if (!fNode.name.Contains(Constants.kSetterPrefix))
+            else if (!fNode.Name.Contains(Constants.kSetterPrefix))
             {
                 while (++tempPC < istream.instrList.Count)
                 {
@@ -393,7 +393,7 @@ namespace ProtoCore
             debugFrame.ThisPtr = thisPtr;
             debugFrame.HasDebugInfo = hasDebugInfo;
 
-            if (CoreUtils.IsDisposeMethod(fNode.name))
+            if (CoreUtils.IsDisposeMethod(fNode.Name))
             {
                 debugFrame.IsDisposeCall = true;
                 ReturnPCFromDispose = DebugEntryPC;
@@ -420,7 +420,7 @@ namespace ProtoCore
             }
 
             // Comment Jun: A dot call does not replicate and  must be handled immediately
-            if (fNode.name == Constants.kDotMethodName)
+            if (fNode.Name == Constants.kDotMethodName)
             {
                 isReplicating = false;
                 isExternalFunction = false;
@@ -437,7 +437,7 @@ namespace ProtoCore
             bool willReplicate = callsite.WillCallReplicate(new Context(), arguments, replicationGuides, stackFrame, runtimeCore, out replicationTrials);
             
             // the inline conditional built-in is handled separately as 'WillCallReplicate' is always true in this case
-            if(fNode.name.Equals(Constants.kInlineConditionalMethodName))
+            if(fNode.Name.Equals(Constants.kInlineConditionalMethodName))
             {
                 // The inline conditional built-in is created only for associative blocks and needs to be handled separately as below
                 InstructionStream istream = runtimeCore.DSExecutable.instrStreamList[CurrentBlockId];
@@ -488,10 +488,10 @@ namespace ProtoCore
             // Prevent breaking inside a function that is external except for dot calls
             // by clearing all breakpoints from outermost external function call
             // This check takes precedence over the replication check
-            else if (fNode.isExternal && fNode.name != Constants.kDotMethodName)
+            else if (fNode.IsExternal && fNode.Name != Constants.kDotMethodName)
             {
                 // Clear all breakpoints 
-                if (!DebugStackFrameContains(StackFrameFlagOptions.IsExternalFunction) && fNode.name != Constants.kFunctionRangeExpression)
+                if (!DebugStackFrameContains(StackFrameFlagOptions.IsExternalFunction) && fNode.Name != Constants.kFunctionRangeExpression)
                 {
                     ActiveBreakPoints.AddRange(runtimeCore.Breakpoints);
                     runtimeCore.Breakpoints.Clear();
@@ -548,7 +548,7 @@ namespace ProtoCore
             if (!DebugStackFrameContains(StackFrameFlagOptions.IsReplicating) &&
                 !DebugStackFrameContains(StackFrameFlagOptions.IsExternalFunction))
             {
-                if (ActiveBreakPoints.Count > 0 && fNode.name != Constants.kFunctionRangeExpression)
+                if (ActiveBreakPoints.Count > 0 && fNode.Name != Constants.kFunctionRangeExpression)
                 {
                     runtimeCore.Breakpoints.AddRange(ActiveBreakPoints);
                     //if (SetUpStepOverFunctionCalls(core, fNode, ActiveBreakPoints))
