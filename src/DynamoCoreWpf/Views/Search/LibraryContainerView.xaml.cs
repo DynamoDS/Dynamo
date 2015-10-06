@@ -344,7 +344,6 @@ namespace Dynamo.Search
 
         private void OnFilterMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            FilterPopup.PlacementTarget = sender as UIElement;
             FilterPopup.IsOpen = true;
         }
     }

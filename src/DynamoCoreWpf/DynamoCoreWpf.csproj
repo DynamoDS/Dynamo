@@ -125,6 +125,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\FilterWrapPanel.cs" />
     <Compile Include="Controls\InCanvasSearchControl.xaml.cs">
       <DependentUpon>InCanvasSearchControl.xaml</DependentUpon>
     </Compile>
