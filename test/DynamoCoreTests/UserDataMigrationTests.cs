@@ -200,14 +200,14 @@ namespace Dynamo
             if (!Directory.Exists(tempFolder))
                 Directory.CreateDirectory(tempFolder);
 
-            File.Create(Path.Combine(tempFolder, "package1.dll"));
+            using(File.Create(Path.Combine(tempFolder, "package1.dll"))) { }
 
             tempFolder = Path.Combine(userDataDir, "0.8", "definitions");
 
             if (!Directory.Exists(tempFolder))
                 Directory.CreateDirectory(tempFolder);
 
-            File.Create(Path.Combine(tempFolder, "definition1.dyn"));
+            using(File.Create(Path.Combine(tempFolder, "definition1.dyn"))) { }
 
             tempFolder = Path.Combine(userDataDir, "0.9");
 
@@ -249,7 +249,7 @@ namespace Dynamo
             mockPathResolver.Setup(x => x.UserDataRootFolder).Returns(() => userDataDir);
             mockPathManager.Setup(x => x.UserDataDirectory).Returns(() => currentVersionDir);
 
-            try
+            //try
             {
                 // Test MigrateBetweenDynamoVersions
                 var targetMigrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(
@@ -275,11 +275,11 @@ namespace Dynamo
                 Assert.AreEqual(currentVersionDir,
                     targetMigrator.PreferenceSettings.CustomPackageFolders[0]);
             }
-            finally
-            {
-                // Delete folders from Temp dir
-                Directory.Delete(userDataDir, recursive: true);
-            }
+            //finally
+            //{
+            //    // Delete folders from Temp dir
+            //    Directory.Delete(userDataDir, recursive: true);
+            //}
         }
     }
 }
