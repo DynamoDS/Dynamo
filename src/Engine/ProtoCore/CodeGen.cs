@@ -2168,8 +2168,7 @@ namespace ProtoCore
             }
             inferedType.UID = isBooleanOp ? (int)PrimitiveType.kTypeBool : inferedType.UID;
 
-            Byte[] utf8bytes = ProtoCore.Utils.EncodingUtils.UTF8StringToUTF8Bytes((String)cNode.value);
-            String value = Encoding.UTF8.GetString(utf8bytes);
+            String value = (String)cNode.value;
             if (value.Length > 1)
             {
                 buildStatus.LogSyntaxError(Resources.TooManyCharacters, null, node.line, node.col);
