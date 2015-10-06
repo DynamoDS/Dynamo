@@ -34,8 +34,10 @@ namespace Dynamo.Engine
         private readonly Dictionary<string, Dictionary<string, FunctionGroup>> importedFunctionGroups =
             new Dictionary<string, Dictionary<string, FunctionGroup>>(new LibraryPathComparer());
 
+        // This list includes all preloaded libraries, packaged libraries, and zero-touch imported libraries
         private readonly List<string> importedLibraries = new List<string>();
 
+        // This list includes all libraries loaded from package folders
         private readonly List<string> packagedLibraries = new List<string>();
 
         private readonly IPathManager pathManager;
