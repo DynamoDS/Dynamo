@@ -185,7 +185,8 @@ namespace SystemTestServices
                     StartInTestMode = true,
                     PathResolver = pathResolver,
                     GeometryFactoryPath = preloader.GeometryFactoryPath,
-                    UpdateManager = this.UpdateManager
+                    UpdateManager = this.UpdateManager,
+                    ProcessMode = Dynamo.Core.Threading.TaskProcessMode.Synchronous
                 });
 
             ViewModel = DynamoViewModel.Start(
@@ -240,7 +241,7 @@ namespace SystemTestServices
         {
             var nodes = ViewModel.Model.CurrentWorkspace.Nodes;
 
-            double dummyNodesCount = nodes.OfType<DSCoreNodesUI.DummyNode>().Count();
+            double dummyNodesCount = nodes.OfType<Dynamo.Nodes.DummyNode>().Count();
             if (dummyNodesCount >= 1)
             {
                 Assert.Fail("Number of dummy nodes found in Sample: " + dummyNodesCount);

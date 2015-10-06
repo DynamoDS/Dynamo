@@ -839,7 +839,7 @@ namespace Dynamo.Tests
             //create the group around selected nodes
             Guid groupid = Guid.NewGuid();
             var annotation = CurrentDynamoModel.CurrentWorkspace.AddAnnotation("This is a test group", groupid);
-            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Annotations.Count, 1);
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Annotations.Count(), 1);
             Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Annotations.First().SelectedModels.Count(), 3);
 
             CurrentDynamoModel.AddToSelection(annotation);
@@ -863,7 +863,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //Check whether the group is copied to custom workspace
-            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Annotations.Count); 
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Annotations.Count()); 
         }
 
         [Test]
@@ -905,6 +905,19 @@ namespace Dynamo.Tests
             Assert.IsNotNull(curveParam);
 
             Assert.AreEqual("Curve", curveParam.Parameter.DisplayTypeName);
+        }
+
+        [Test]
+        public void CanAddNodesWithTheSameNameAndEmptyPath2Times()
+        {
+            const string nodeName = "NodeName";
+            const string catName1 = "CatName1";
+            const string catName2 = "CatName2";
+
+            CurrentDynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName1, "");
+            CurrentDynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName2, "");
+
+            Assert.AreEqual(2, CurrentDynamoModel.SearchModel.SearchEntries.Where(entry => entry.Name == nodeName).Count());
         }
     }
 }

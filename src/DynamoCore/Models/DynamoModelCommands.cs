@@ -5,6 +5,8 @@ using Dynamo.Core;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.Engine;
+using Dynamo.Engine.NodeToCode;
 
 namespace Dynamo.Models
 {
@@ -73,7 +75,7 @@ namespace Dynamo.Models
             if (command.NodeXml != null)
             {
                 // command was deserialized, we must create the node directly
-                return NodeFactory.CreateNodeFromXml(command.NodeXml, SaveContext.File);
+                return NodeFactory.CreateNodeFromXml(command.NodeXml, SaveContext.File, currentWorkspace.ElementResolver);
             }
 
             // legacy command, hold on to your butts
@@ -352,7 +354,9 @@ namespace Dynamo.Models
 
         private void ConvertNodesToCodeImpl(ConvertNodesToCodeCommand command)
         {
-            CurrentWorkspace.ConvertNodesToCodeInternal(EngineController);
+            var libServices = new LibraryCustomizationServices(pathManager);
+            var namingProvider = new NamingProvider(EngineController.LibraryServices.LibraryManagementCore, libServices);
+            CurrentWorkspace.ConvertNodesToCodeInternal(EngineController, namingProvider);
 
             CurrentWorkspace.HasUnsavedChanges = true;
         }
@@ -377,7 +381,9 @@ namespace Dynamo.Models
 
         void CreatePresetStateImpl(AddPresetCommand command)
         {
-            this.CurrentWorkspace.AddPreset(command.PresetStateName,command.PresetStateDescription,command.ModelGuids);
+            var preset = this.CurrentWorkspace.AddPreset(command.PresetStateName,command.PresetStateDescription,command.ModelGuids);
+
+            CurrentWorkspace.RecordCreatedModel(preset);
         }
         void SetWorkSpaceToStateImpl(ApplyPresetCommand command)
         {
@@ -386,7 +392,7 @@ namespace Dynamo.Models
             {
                 return;
             }
-            var state = workspaceToSet.Presets.Where(x => x.Guid == command.StateID).FirstOrDefault();
+            var state = workspaceToSet.Presets.Where(x => x.GUID == command.StateID).FirstOrDefault();
 
             workspaceToSet.ApplyPreset (state);
         }

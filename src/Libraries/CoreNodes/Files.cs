@@ -1,5 +1,6 @@
 ﻿using Autodesk.DesignScript.Runtime;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -438,7 +439,7 @@ namespace DSCore.IO
                     {
                         writer.Write(entry);
                         if (++count < line.Length)
-                            writer.Write(", ");
+                            writer.Write(",");
                     }
                     writer.WriteLine();
                 }

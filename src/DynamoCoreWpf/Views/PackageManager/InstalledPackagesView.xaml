@@ -39,7 +39,8 @@
                  Background="Black"
                  HorizontalContentAlignment="Stretch"
                  ScrollViewer.VerticalScrollBarVisibility="Auto"
-                 ScrollViewer.HorizontalScrollBarVisibility="Hidden">
+                 ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                 VirtualizingPanel.ScrollUnit="Pixel">
 
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
@@ -165,32 +166,21 @@
                                             <Label Content="{x:Static p:Resources.InstalledPackageViewCustomNodesLabel}"
                                                    FontWeight="Bold"
                                                    Foreground="Gray"></Label>
-                                            <ListBox Name="LoadedCustomNodes"
+                                            <ItemsControl Name="LoadedCustomNodes"
                                                      ItemsSource="{Binding Path=Model.LoadedCustomNodes}"
                                                      BorderThickness="0"
                                                      Padding="0"
                                                      Margin="10,0,0,0"
                                                      Background="Transparent">
 
-                                                <ListBox.ItemContainerStyle>
-                                                    <Style TargetType="ListBoxItem">
-                                                        <Style.Resources>
-                                                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
-                                                                             Color="#000" />
-                                                            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
-                                                                             Color="#000" />
-                                                        </Style.Resources>
-                                                    </Style>
-                                                </ListBox.ItemContainerStyle>
-
-                                                <ListBox.ItemTemplate>
+                                                <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <TextBlock Text="{Binding Path=Name}"
                                                                    Foreground="White" />
                                                     </DataTemplate>
-                                                </ListBox.ItemTemplate>
+                                                </ItemsControl.ItemTemplate>
 
-                                            </ListBox>
+                                            </ItemsControl>
 
                                         </StackPanel>
 
@@ -199,25 +189,14 @@
                                             <Label Content="{x:Static p:Resources.InstalledPackageViewNodeLibrariesLabel}"
                                                    FontWeight="Bold"
                                                    Foreground="Gray"></Label>
-                                            <ListBox Name="NodeLibraries"
+                                            <ItemsControl Name="NodeLibraries"
                                                      ItemsSource="{Binding Path=Model.LoadedAssemblies}"
                                                      BorderThickness="0"
                                                      Padding="0"
                                                      Margin="10,0,0,0"
                                                      Background="Transparent">
 
-                                                <ListBox.ItemContainerStyle>
-                                                    <Style TargetType="ListBoxItem">
-                                                        <Style.Resources>
-                                                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
-                                                                             Color="#000" />
-                                                            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
-                                                                             Color="#000" />
-                                                        </Style.Resources>
-                                                    </Style>
-                                                </ListBox.ItemContainerStyle>
-
-                                                <ListBox.ItemTemplate>
+                                                <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <TextBlock Name="Label"
                                                                    Text="{Binding Path=Name}"
@@ -232,9 +211,9 @@
                                                             </DataTrigger>
                                                         </DataTemplate.Triggers>
                                                     </DataTemplate>
-                                                </ListBox.ItemTemplate>
+                                                </ItemsControl.ItemTemplate>
 
-                                            </ListBox>
+                                            </ItemsControl>
                                         </StackPanel>
 
                                         <StackPanel Visibility="{Binding Path=HasAdditionalAssemblies, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
@@ -242,25 +221,14 @@
                                             <Label Content="{x:Static p:Resources.InstalledPackageViewAdditionalLabel}"
                                                    FontWeight="Bold"
                                                    Foreground="Gray"></Label>
-                                            <ListBox Name="AddAssemblies"
+                                            <ItemsControl Name="AddAssemblies"
                                                      ItemsSource="{Binding Path=Model.LoadedAssemblies}"
                                                      BorderThickness="0"
                                                      Padding="0"
                                                      Margin="10,0,0,0"
                                                      Background="Transparent">
 
-                                                <ListBox.ItemContainerStyle>
-                                                    <Style TargetType="ListBoxItem">
-                                                        <Style.Resources>
-                                                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
-                                                                             Color="#000" />
-                                                            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
-                                                                             Color="#000" />
-                                                        </Style.Resources>
-                                                    </Style>
-                                                </ListBox.ItemContainerStyle>
-
-                                                <ListBox.ItemTemplate>
+                                                <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <TextBlock Name="Label"
                                                                    Text="{Binding Path=Name}"
@@ -275,9 +243,9 @@
                                                             </DataTrigger>
                                                         </DataTemplate.Triggers>
                                                     </DataTemplate>
-                                                </ListBox.ItemTemplate>
+                                                </ItemsControl.ItemTemplate>
 
-                                            </ListBox>
+                                            </ItemsControl>
 
                                         </StackPanel>
 
@@ -286,32 +254,21 @@
                                             <Label Content="{x:Static p:Resources.InstalledPackageViewAdditionalFileLabel}"
                                                    FontWeight="Bold"
                                                    Foreground="Gray"></Label>
-                                            <ListBox Name="AdditionalFiles"
+                                            <ItemsControl Name="AdditionalFiles"
                                                      ItemsSource="{Binding Path=Model.AdditionalFiles}"
                                                      BorderThickness="0"
                                                      Padding="0"
                                                      Margin="10,0,0,0"
                                                      Background="Transparent">
 
-                                                <ListBox.ItemContainerStyle>
-                                                    <Style TargetType="ListBoxItem">
-                                                        <Style.Resources>
-                                                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
-                                                                             Color="#000" />
-                                                            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
-                                                                             Color="#000" />
-                                                        </Style.Resources>
-                                                    </Style>
-                                                </ListBox.ItemContainerStyle>
-
-                                                <ListBox.ItemTemplate>
+                                                <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <TextBlock Text="{Binding Path=RelativePath}"
                                                                    Foreground="White" />
                                                     </DataTemplate>
-                                                </ListBox.ItemTemplate>
+                                                </ItemsControl.ItemTemplate>
 
-                                            </ListBox>
+                                            </ItemsControl>
                                         </StackPanel>
                                     </StackPanel>
                                 </Border>

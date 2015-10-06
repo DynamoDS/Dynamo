@@ -1,4 +1,4 @@
-﻿using Migrations;
+﻿using Dynamo.Migration;
 using Dynamo.Models;
 using System.Linq;
 using System.Xml;

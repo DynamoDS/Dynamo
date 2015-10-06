@@ -757,6 +757,9 @@ It does not contain your graph or any personal data</value>
   <data name="StartPageMoreSamples" xml:space="preserve">
     <value>More Samples</value>
   </data>
+  <data name="StartPageDynamoPrimer" xml:space="preserve">
+    <value>Dynamo Primer</value>
+  </data>
   <data name="StartPageNewCustomNode" xml:space="preserve">
     <value>Custom Node</value>
     <comment>Start page | New custom node</comment>
@@ -852,6 +855,10 @@ It does not contain your graph or any personal data</value>
   </data>
   <data name="MessageConfirmToInstallPackage" xml:space="preserve">
     <value>Are you sure you want to install {0} {1} ?</value>
+    <comment>Message box content</comment>
+  </data>
+  <data name="MessageConfirmToInstallPackageToFolder" xml:space="preserve">
+    <value>Are you sure you want to install {0} {1} to {2} ?</value>
     <comment>Message box content</comment>
   </data>
   <data name="MessageConfirmToSaveCustomNode" xml:space="preserve">
@@ -1257,8 +1264,17 @@ You will get a chance to save your work.</value>
     <value>⇓ Install</value>
     <comment>To install package</comment>
   </data>
-  <data name="PackageSearchViewInstallButtonTooltip" xml:space="preserve">
-    <value>Install This Version</value>
+  <data name="PackageSearchViewInstallLatestVersion" xml:space="preserve">
+    <value>Install latest version</value>
+  </data>
+  <data name="PackageSearchViewInstallLatestVersionTo" xml:space="preserve">
+    <value>Install latest version to folder...</value>
+  </data>
+  <data name="PackageSearchViewInstallThisVersion" xml:space="preserve">
+    <value>Install this version</value>
+  </data>
+  <data name="PackageSearchViewInstallThisVersionTo" xml:space="preserve">
+    <value>Install this version to folder...</value>
   </data>
   <data name="PackageSearchViewKeywords" xml:space="preserve">
     <value>Keywords</value>
@@ -1594,6 +1610,9 @@ Do you want to install the latest Dynamo update?</value>
   <data name="GroupContextMenuUngroup" xml:space="preserve">
     <value>Ungroup</value>
   </data>
+  <data name="GroupContextMenuGraphLayout" xml:space="preserve">
+    <value>Cleanup Node Layout</value>
+  </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>Due to limitations in the .NET framework, it is not possible to update your package assembly while it is already loaded.  Please update the assembly while {0} is not running and try again.</value>
   </data>
@@ -1665,7 +1684,7 @@ Do you want to install the latest Dynamo update?</value>
     <value>Package Manager Terms of Use</value>
   </data>
   <data name="GalleryDynamoVersion" xml:space="preserve">
-    <value>Version {0}.{1}</value>
+    <value>Version {0}.{1}.{2}</value>
   </data>
   <data name="LearnMore" xml:space="preserve">
     <value>Learn more</value>
@@ -1872,7 +1891,12 @@ Do you want to install the latest Dynamo update?</value>
   <data name="NodeContextMenuIsInput" xml:space="preserve">
     <value>Is Input</value>
   </data>
-
+  <data name="DynamoViewViewMenuAvailablePreviews" xml:space="preserve">
+    <value>Available Previews</value>
+  </data>
+  <data name="PresetWarningMessage" xml:space="preserve">
+    <value>No input nodes selected. Select at least one input node to create a preset.</value>
+  </data>
   <data name="UnitArea" xml:space="preserve">
     <value>Area</value>
   </data>
@@ -1887,5 +1911,34 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="PublishPackageLocally" xml:space="preserve">
     <value>Publish Locally</value>
+  </data>
+  <data name="BackgroundPreviewName" xml:space="preserve">
+    <value>Background Preview</value>
+    <comment>The name of the 3D background preview.</comment>
+  </data>
+  <data name="CameraDataLoadError" xml:space="preserve">
+    <value>Camera position information could not be loaded from the file.</value>
+  </data>
+  <data name="CameraDataSaveError" xml:space="preserve">
+    <value>Camera position information could not be saved.</value>
+  </data>
+  <data name="FolderNotWritableError" xml:space="preserve">
+    <value>You do not have write permission to {0}.</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="_dynamo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\viewmodels\watch3d\resources\_dynamo.bfx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ActionMember" xml:space="preserve">
+    <value>Action</value>
+  </data>
+  <data name="CreateMember" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="QueryMember" xml:space="preserve">
+    <value>Query</value>
+  </data>
+  <data name="AddToLibraryButton" xml:space="preserve">
+    <value>Add</value>
   </data>
 </root>

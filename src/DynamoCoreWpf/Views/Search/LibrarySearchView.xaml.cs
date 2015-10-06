@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Dynamo.Search;
@@ -38,12 +39,22 @@ namespace Dynamo.UI.Views
         private void OnLibrarySearchViewLoaded(object sender, RoutedEventArgs e)
         {
             viewModel = DataContext as SearchViewModel;
-
+            viewModel.SearchTextChanged +=viewModel_SearchTextChanged;
             // RequestReturnFocusToSearch calls, when workspace was clicked.
             // We should hide tooltip.
             viewModel.RequestReturnFocusToSearch += OnRequestCloseToolTip;
             // When workspace was changed, we should hide tooltip. 
             viewModel.RequestCloseSearchToolTip += OnRequestCloseToolTip;
+        }
+
+        private void viewModel_SearchTextChanged(object sender, EventArgs e)
+        {
+            //Get the scrollview and scroll to top on every text entered
+            var scroll = CategoryTreeView.ChildOfType<ScrollViewer>();
+            if (scroll != null)
+            {               
+                scroll.ScrollToTop();
+            }
         }
 
         private void OnNoMatchFoundButtonClick(object sender, RoutedEventArgs e)
@@ -116,10 +127,28 @@ namespace Dynamo.UI.Views
         private void OnButtonMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var senderButton = e.OriginalSource as FrameworkElement;
-            var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
+            if (senderButton != null)
+            {
+                HelperHandleMouseDown(e.GetPosition(null), senderButton.DataContext);
+            }
+            else
+            {
+                var senderRunButton = e.OriginalSource as Run;
+                if (senderRunButton != null)
+                {
+                    HelperHandleMouseDown(e.GetPosition(null), senderRunButton.DataContext);
+                }
+            }
+        }
+
+        private void HelperHandleMouseDown(Point position, object dataContext)
+        {
+            var searchElementVM = dataContext as NodeSearchElementViewModel;
 
             if (searchElementVM != null)
-                dragDropHelper.HandleMouseDown(e.GetPosition(null), searchElementVM);
+            {
+                dragDropHelper.HandleMouseDown(position, searchElementVM);
+            }
         }
 
         private void OnButtonPreviewMouseMove(object sender, MouseEventArgs e)
@@ -128,7 +157,16 @@ namespace Dynamo.UI.Views
                 return;
 
             var senderButton = e.OriginalSource as FrameworkElement;
-            dragDropHelper.HandleMouseMove(senderButton, e.GetPosition(null));
+
+            if (senderButton == null)
+                return;
+
+            var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
+            if (searchElementVM != null)
+                dragDropHelper.HandleMouseMove(senderButton, e.GetPosition(null));
+            else
+                dragDropHelper.Clear();
+
         }
 
         #endregion

@@ -7,7 +7,7 @@ using Dynamo.Models;
 using Dynamo.ViewModels;
 using System.IO;
 using System.Threading;
-using Dynamo.DSEngine;
+using Dynamo.Engine;
 
 namespace Dynamo.TestInfrastructure
 {

@@ -104,8 +104,8 @@ namespace DynamoShapeManager
 
             var preloaderPath = Path.Combine(preloaderLocation, PreloaderAssembly);
 
-            Debug.WriteLine("ASM Preloader: {0}", preloaderPath);
-            Debug.WriteLine("ASM Location: {0}", asmLocation);
+            Debug.WriteLine(string.Format("ASM Preloader: {0}", preloaderPath));
+            Debug.WriteLine(string.Format("ASM Location: {0}", asmLocation));
 
             var libG = Assembly.LoadFrom(preloaderPath);
             var preloadType = libG.GetType(PreloaderClassName);

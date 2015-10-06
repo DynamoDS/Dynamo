@@ -124,43 +124,41 @@ namespace Dynamo.PackageManager
         }
 
 
-        public void CopyFilesIntoPackageDirectory(IEnumerable<string> files, IDirectoryInfo dyfDir,
+        internal void CopyFilesIntoPackageDirectory(IEnumerable<string> files, IDirectoryInfo dyfDir,
                                                           IDirectoryInfo binDir, IDirectoryInfo extraDir)
         {
-            foreach (var file in files)
-            {
-                // If this file is null, then just continue
-                if (file == null)
-                {
-                    continue;
-                }
+            // normalize the paths to ensure correct comparison
+            var dyfDirPath = NormalizePath(dyfDir.FullName);
+            var binDirPath = NormalizePath(binDir.FullName);
+            var extraDirPath = NormalizePath(extraDir.FullName);
 
+            foreach (var file in files.Where(x => x != null))
+            {
                 // If the file doesn't actually exist, don't copy it
                 if (!fileSystem.FileExists(file))
                 {
                     continue;
                 }
 
-                string destPath;
+                // determine which folder to put the file in
+                string targetFolder = extraDirPath; 
 
-                if (file.ToLower().EndsWith(".dyf"))
+                if (file.EndsWith(".dyf"))
                 {
-                    destPath = Path.Combine(dyfDir.FullName, Path.GetFileName(file));
+                    targetFolder = dyfDirPath;
                 }
-                else if (file.ToLower().EndsWith(".dll") || IsXmlDocFile(file, files) 
-                    || IsDynamoCustomizationFile(file, files))
+                else if (file.EndsWith(".dll") || IsXmlDocFile(file, files) || IsDynamoCustomizationFile(file, files))
                 {
-                    destPath = Path.Combine(binDir.FullName, Path.GetFileName(file));
-                }
-                else
-                {
-                    destPath = Path.Combine(extraDir.FullName, Path.GetFileName(file));
+                    targetFolder = binDirPath;
                 }
 
-                if (NormalizePath(destPath) == NormalizePath(file))
+                // this also accounts for if the file is in a subdirectory of the target folder
+                if (NormalizePath(file).StartsWith(targetFolder))
                 {
                     continue;
                 }
+
+                var destPath = Path.Combine(targetFolder, Path.GetFileName(file));
 
                 if (fileSystem.FileExists(destPath))
                 {

@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
-using Dynamo.DSEngine;
+using Dynamo.Engine;
+using Dynamo.Engine.CodeGeneration;
 using Dynamo.Library;
 using Dynamo.Models;
 using ProtoCore.AST.AssociativeAST;
@@ -63,10 +64,15 @@ namespace Dynamo.Nodes
             Controller.SyncNodeWithDefinition(this);
         }
 
-        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, AstBuilder.CompilationContext context)
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, CompilationContext context)
         {
             return Controller.BuildAst(this, inputAstNodes);
         }
+
+        public override ProtoCore.Type GetTypeHintForOutput(int index)
+        {
+            return Controller.Definition.ReturnType;
+        } 
     }
     
 
@@ -170,9 +176,7 @@ namespace Dynamo.Nodes
             }
             else
             {
-                string displayReturnType = IsConstructor()
-                    ? Definition.UnqualifedClassName
-                    : Definition.ReturnType;
+                string displayReturnType = Definition.ReturnType.ToShortString();
 
                 var returns = Definition.Returns;
 

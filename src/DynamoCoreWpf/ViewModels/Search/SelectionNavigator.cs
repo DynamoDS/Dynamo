@@ -32,14 +32,15 @@ namespace Dynamo.ViewModels
 
         private IEnumerable<SearchCategory> root = null;
 
-        private NodeSearchElementViewModel selection = null;
-
         /// <summary>
         /// Currently selected member.
         /// </summary>
-        public NodeSearchElementViewModel CurrentlySelection
+        public NodeSearchElementViewModel CurrentSelection
         {
-            get { return selection; }
+            get
+            {
+                return GetSelectionFromIndices();
+            }
         }
 
         internal SelectionNavigator(IEnumerable<SearchCategory> rootTree)
@@ -53,16 +54,13 @@ namespace Dynamo.ViewModels
 
             if (root == null || !root.Any())
             {
-                selection = null;
+                selectedCategoryIndex = -1;
+                selectedMemberGroupIndex = -1;
+                selectedMemberIndex = -1;
                 return;
             }
 
-            selectedCategoryIndex = 0;
-            selectedMemberGroupIndex = 0;
-            selectedMemberIndex = 0;
-
-            selection = GetSelectionFromIndices();
-            selection.IsSelected = true;
+            SelectItem(0, 0, 0);
         }
 
         internal void MoveSelection(NavigationDirection direction)
@@ -74,8 +72,7 @@ namespace Dynamo.ViewModels
             var selectedMemberGroup = selectedCategory.MemberGroups.ElementAt(selectedMemberGroupIndex);
 
             // Clear the current selection, no matter what.
-            selection.IsSelected = false;
-            selection = null;
+            CurrentSelection.IsSelected = false;
 
             if (direction == NavigationDirection.Backward)
             {
@@ -137,12 +134,19 @@ namespace Dynamo.ViewModels
             }
 
             // Get the new selection and mark it as selected.
-            selection = GetSelectionFromIndices();
-            selection.IsSelected = true;
+            CurrentSelection.IsSelected = true;
         }
 
         private NodeSearchElementViewModel GetSelectionFromIndices()
         {
+            if ((selectedCategoryIndex == -1) &&
+                (selectedMemberGroupIndex == -1) &&
+                (selectedMemberIndex == -1))
+            {
+                // No selection.
+                return null;
+            }
+
             var selectedCategory = root.ElementAt(selectedCategoryIndex);
             if (selectedCategory == null)
                 return null;
@@ -153,6 +157,25 @@ namespace Dynamo.ViewModels
 
             var selectedMember = selectedMemberGroup.Members.ElementAt(selectedMemberIndex);
             return selectedMember;
+        }
+
+        private void SelectItem(int categoryIndex, int memberGroupIndex, int memberIndex)
+        {
+            var selection = GetSelectionFromIndices();
+            if (selection != null)
+            {
+                selection.IsSelected = false;
+            }
+
+            selectedCategoryIndex = categoryIndex;
+            selectedMemberGroupIndex = memberGroupIndex;
+            selectedMemberIndex = memberIndex;
+
+            selection = GetSelectionFromIndices();
+            if (selection != null)
+            {
+                selection.IsSelected = true;
+            }
         }
     }
 }

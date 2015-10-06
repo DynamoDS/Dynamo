@@ -117,9 +117,9 @@ namespace Dynamo.ViewModels
             get { return VisualConfigurations.GridLineColor; }
         }
 
-        public bool FullscreenWatchShowing
+        public bool BackgroundPreviewActive
         {
-            get { return workspaceVM.DynamoViewModel.FullscreenWatchShowing; }
+            get { return workspaceVM.DynamoViewModel.BackgroundPreviewActive; }
         }
 
         #region Private
@@ -164,8 +164,8 @@ namespace Dynamo.ViewModels
                 case "WorkspaceActualSize":
                     RecalculateSize();
                     break;
-                case "FullscreenWatchShowing":
-                    RaisePropertyChanged("FullscreenWatchShowing");
+                case "BackgroundPreviewActive":
+                    RaisePropertyChanged("BackgroundPreviewActive");
                     break;
             }
         }

@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -8,6 +11,7 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
+using Dynamo.UI.Controls;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;
 using NUnit.Framework;
@@ -16,6 +20,12 @@ namespace Dynamo.Tests
 {
     class ConverterTests
     {
+        [SetUp]
+        public void Setup()
+        {
+            DynamoModel.IsTestMode = true;
+        }
+
         [Test]
         public void SearchResultsToVisibilityConverterTest()
         {
@@ -351,32 +361,24 @@ namespace Dynamo.Tests
             string name = "";
             var thickness = new Thickness(5, 0, 0, 0);
             object result;
-
-            //1. Name is null.
-            //2. Name is empty.
-            //3. Name is "Category".
-            //4. Name is "Category.NestedClass1".
-            //5. Name is "Category.NestedClass1.NestedClass2".
-
-            // 1 case            
-            Assert.Throws<ArgumentException>(() => converter.Convert(null, null, null, null));
-
-            // 2 case            
-            Assert.Throws<ArgumentException>(() => converter.Convert(name, null, null, null));
-
-            // 3 case
+            
+            //1. Name is "Category".
+            //2. Name is "Category.NestedClass1".
+            //3. Name is "Category.NestedClass1.NestedClass2".
+           
+            // 1 case
             name = "Category";
             thickness = new Thickness(5, 0, 0, 0);
             result = converter.Convert(name, null, null, null);
             Assert.AreEqual(thickness, result);
 
-            // 4 case
+            // 2 case
             name = "Category.NestedClass1";
             thickness = new Thickness(25, 0, 20, 0);
             result = converter.Convert(name, null, null, null);
             Assert.AreEqual(thickness, result);
 
-            // 5 case
+            // 3 case
             name = "Category.NestedClass1.NestedClass2";
             thickness = new Thickness(45, 0, 20, 0);
             result = converter.Convert(name, null, null, null);
@@ -593,5 +595,30 @@ namespace Dynamo.Tests
             result = converter.Convert(SearchViewModel.ViewMode.LibrarySearchView, null, null, null);
             Assert.IsFalse((bool)result);
         }
+
+        [Test]
+        public void FilePathDisplayConverterTest()
+        {
+            var converter = new FilePathDisplayConverter();
+
+            Assert.DoesNotThrow(() => converter.Convert(@"\\psf\Home\Desktop\somedyn.dyn",null,null,null));
+            Assert.DoesNotThrow(() => converter.Convert(@"\\\\\\\\psf\Home\Desktop\somedyn.dyn", null, null, null));
+            Assert.DoesNotThrow(() => converter.Convert(@"\\psf\Home\somedyn.dyn", null, null, null));
+            Assert.DoesNotThrow(() => converter.Convert(@"\\\\psf\Home\somedyn.dyn", null, null, null));
+            Assert.DoesNotThrow(() => converter.Convert(@"\\\\psf\\Home\\somedyn.dyn", null, null, null));
+            Assert.DoesNotThrow(() => converter.Convert(@"\\psf\somedyn.dyn", null, null, null));
+            Assert.AreEqual(@"\\psf\Home\Desktop\somedyn.dyn",converter.Convert(@"\\psf\Home\Desktop\somedyn.dyn", null, null, null));
+            Assert.AreEqual(@"\\psf\Home...\anotherlevel\andanother\somedyn.dyn", converter.Convert(@"\\psf\Home\Desktop\anotherlevel\andanother\somedyn.dyn", null, null, null));
+        }
+
+        [Test]
+        public void FilePathDisplayConverterInternalDoesNotThrow()
+        {
+            Assert.DoesNotThrow(() => FilePathDisplayConverter.ShortenNestedFilePath(@"\\psf\Home\Desktop\somedyn.dyn")); 
+            Assert.DoesNotThrow(() => FilePathDisplayConverter.ShortenNestedFilePath(@"\\\\\\\\psf\Home\Desktop\somedyn.dyn"));
+            Assert.DoesNotThrow(() => FilePathDisplayConverter.ShortenNestedFilePath(@"\\psf\\Home\somedyn.dyn"));
+            Assert.DoesNotThrow(() => FilePathDisplayConverter.ShortenNestedFilePath(@"\\psf\somedyn.dyn"));
+            Assert.AreEqual(@"\\psf\Home\Desktop\somedyn.dyn", FilePathDisplayConverter.ShortenNestedFilePath(@"\\psf\Home\Desktop\somedyn.dyn"));
+        }       
     }
 }

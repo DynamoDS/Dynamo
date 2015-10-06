@@ -35,6 +35,16 @@ namespace FFITarget
             IntVal = i1 + i2 + i3;
         }
 
+        public void Set(int intVal)
+        {
+            this.IntVal = intVal;
+        }
+
+        public int SetAndReturn(int intVal)
+        {
+            return this.IntVal = intVal;
+        }
+
         public bool IsEqualTo(ClassFunctionality cf)
         {
             return this.IntVal == cf.IntVal;
@@ -89,5 +99,36 @@ namespace FFITarget
         }
 
         public int SomeValue { get; set; }
+    }
+
+
+    /// <summary>
+    /// A class that contains the same IntVal member as ClassFunctionality
+    /// </summary>
+    public class ClassFunctionalityMirror : IDisposable
+    {
+        private int intVal;
+        public int IntVal
+        {
+            get { return intVal; }
+            set
+            {
+                this.intVal = value;
+            }
+        }
+
+        public ClassFunctionalityMirror()
+        {
+
+        }
+
+        public ClassFunctionalityMirror(int intVal)
+        {
+            this.IntVal = intVal;
+        }
+
+        public void Dispose()
+        {
+        }
     }
 }

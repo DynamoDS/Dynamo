@@ -5,6 +5,7 @@ using System.Xml;
 
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Logging;
 using DSCoreNodesUI.Properties;
 
 namespace Dynamo.Nodes
@@ -103,7 +104,7 @@ namespace Dynamo.Nodes
             this.selectionType = selectionType;
             this.selectionObjectType = selectionObjectType;
 
-            string portName = (selectionType == SelectionType.One )? "Element" : "Elements";
+            string portName = GetOutputPortName();
             OutPortData.Add(new PortData(portName, Resources.SelectionPortDataResultToolTip));
 
             RegisterAllPorts();
@@ -253,6 +254,49 @@ namespace Dynamo.Nodes
         {
             selection = newSelection.ToList();
             SelectionResults = selection.SelectMany(ExtractSelectionResults);
+        }
+
+        protected virtual string GetOutputPortName()
+        {
+            switch (selectionObjectType)
+            {
+                case SelectionObjectType.Edge:
+                    if (selectionType == SelectionType.One)
+                    {
+                        return Resources.SelectionEdgeOutputPortName;
+                    }
+                    else
+                    {
+                        return Resources.SelectionEdgesOutputPortName;
+                    }
+                case SelectionObjectType.Face:
+                    if (selectionType == SelectionType.One)
+                    {
+                        return Resources.SelectionFaceOutputPortName;
+                    }
+                    else
+                    {
+                        return Resources.SelectionFacesOutputPortName;
+                    }
+                case SelectionObjectType.PointOnFace:
+                    if (selectionType == SelectionType.One)
+                    {
+                        return Resources.SelectionPointOutputPortName;
+                    }
+                    else
+                    {
+                        return Resources.SelectionPointsOutputPortName;
+                    }
+                default:
+                    if (selectionType == SelectionType.One)
+                    {
+                        return Resources.SelectionElementOutputPortName;
+                    }
+                    else
+                    {
+                        return Resources.SelectionElementsOutputPortName;
+                    }
+            }
         }
 
         #endregion

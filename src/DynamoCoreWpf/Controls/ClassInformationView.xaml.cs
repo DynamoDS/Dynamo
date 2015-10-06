@@ -21,29 +21,9 @@ namespace Dynamo.UI.Controls
 
         public ClassInformationView()
         {
-            InitializeComponent();
-
-            secondaryHeaderStrip.HeaderActivated += OnHeaderButtonClick;
+            InitializeComponent();           
         }
-
-        private void OnHeaderButtonClick(object sender, RoutedEventArgs e)
-        {
-            var selectedItem = (sender as FrameworkElement).DataContext as HeaderStripItem;
-            if (selectedItem.Text == Configurations.HeaderAction)
-            {
-                castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.Action;
-                secondaryMembers.ItemsSource = castedDataContext.ActionMembers;
-            }
-
-            if (selectedItem.Text == Configurations.HeaderQuery)
-            {
-                castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.Query;
-                secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
-            }
-
-            e.Handled = true;
-        }
-
+       
         private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             var listBoxItem = sender as ListBoxItem;
@@ -98,10 +78,7 @@ namespace Dynamo.UI.Controls
             bool hasCreateMembers = castedDataContext.CreateMembers.Any();
             bool hasActionMembers = castedDataContext.ActionMembers.Any();
             bool hasQueryMembers = castedDataContext.QueryMembers.Any();
-
-            primaryHeaderStrip.HeaderStripItems = castedDataContext.PrimaryHeaderItems;
-            secondaryHeaderStrip.HeaderStripItems = castedDataContext.SecondaryHeaderItems;
-
+             
             castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.None;
 
             castedDataContext.HiddenSecondaryMembersCount = 0;
@@ -119,12 +96,12 @@ namespace Dynamo.UI.Controls
 
                     secondaryMembers.ItemsSource = castedDataContext.ActionMembers;
                 }
-                else if (hasQueryMembers)
+                if (hasQueryMembers)
                 {
                     // No "Action" members but "Query" members are available.
                     castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.Query;
 
-                    secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
+                    queryMembers.ItemsSource = castedDataContext.QueryMembers;
                 }
 
                 return;
@@ -141,7 +118,7 @@ namespace Dynamo.UI.Controls
                 {
                     castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.Query;
 
-                    secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
+                    queryMembers.ItemsSource = castedDataContext.QueryMembers;
                 }
 
                 return;

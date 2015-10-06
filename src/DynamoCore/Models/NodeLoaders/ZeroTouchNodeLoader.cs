@@ -3,17 +3,17 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using DSCoreNodesUI;
-using Dynamo.DSEngine;
+using Dynamo.Engine;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using ProtoCore.Namespace;
 
 namespace Dynamo.Models.NodeLoaders
 {
     /// <summary>
     ///     Xml Loader for ZeroTouch nodes.
     /// </summary>
-    public class ZeroTouchNodeLoader : INodeLoader<NodeModel>
+    internal class ZeroTouchNodeLoader : INodeLoader<NodeModel>
     {
         private readonly LibraryServices libraryServices;
 
@@ -22,7 +22,7 @@ namespace Dynamo.Models.NodeLoaders
             this.libraryServices = libraryServices;
         }
 
-        public NodeModel CreateNodeFromXml(XmlElement nodeElement, SaveContext context)
+        public NodeModel CreateNodeFromXml(XmlElement nodeElement, SaveContext context, ElementResolver resolver)
         {
             string assembly = "";
             string function;
@@ -51,11 +51,8 @@ namespace Dynamo.Models.NodeLoaders
                     function = hintedSigniture;
 
                     // if the node needs additional parameters, add them here
-                    if (libraryServices.FunctionSignatureNeedsAdditionalAttributes(xmlSignature))
-                        libraryServices.AddAdditionalAttributesToNode(xmlSignature, nodeElement);
-
-                    if (libraryServices.FunctionSignatureNeedsAdditionalElements(xmlSignature))
-                        libraryServices.AddAdditionalElementsToNode(xmlSignature, nodeElement);
+                    libraryServices.AddAdditionalAttributesToNode(xmlSignature, nodeElement);
+                    libraryServices.AddAdditionalElementsToNode(xmlSignature, nodeElement);
                 }
                 else
                 {

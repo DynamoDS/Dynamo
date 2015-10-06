@@ -6,8 +6,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml;
 using Dynamo.Models;
-using Dynamo.Utilities;
-using Migrations;
+using Dynamo.Migration;
 
 namespace Dynamo.Nodes
 {
@@ -365,33 +364,34 @@ namespace Dynamo.Nodes
         }
     }
 
-    [AlsoKnownAs("Dynamo.Nodes.dynBuildSeq", "Dynamo.Nodes.BuildSeq")]
+    [AlsoKnownAs("Dynamo.Nodes.dynBuildSeq", "Dynamo.Nodes.BuildSeq", "DSCoreNodesUI.NumberRange")]
     public class NumberRange : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
-        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        [NodeMigration(from: "0.8.2.0", to: "0.8.3.0")]
+        public static NodeMigrationData Migrate_0820_to_0830(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             XmlElement newNode = MigrationManager.CloneAndChangeName(
-                oldNode, "DSCoreNodesUI.NumberRange", "Number Range");
+                oldNode, "DSCoreNodesUI.Range", "Range");
 
             migrationData.AppendNode(newNode);
             return migrationData;
         }
     }
 
+    [AlsoKnownAs("DSCoreNodesUI.NumberSeq")]
     public class NumberSeq : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
-        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        [NodeMigration(from: "0.8.2.0", to: "0.8.3.0")]
+        public static NodeMigrationData Migrate_0820_to_0830(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             XmlElement newNode = MigrationManager.CloneAndChangeName(
-                oldNode, "DSCoreNodesUI.NumberSeq", "Number Sequence");
+                oldNode, "DSCoreNodesUI.Sequence", "Sequence");
 
             migrationData.AppendNode(newNode);
             return migrationData;
@@ -2084,6 +2084,23 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "String.Substring", "String.Substring@string,int,int");
+        }
+    }
+}
+
+namespace DSCoreNodesUI
+{
+    public class DummyNode : MigrationNode
+    {
+        [NodeMigration(@from: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0820_to_0830(NodeMigrationData data)
+        {
+            var migrationData = new NodeMigrationData(data.Document);
+            var oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CloneAndChangeName(oldNode, "Dynamo.Nodes.DummyNode", oldNode.Attributes["nickname"].Value, true);
+            migrationData.AppendNode(newNode);
+
+            return migrationData;
         }
     }
 }

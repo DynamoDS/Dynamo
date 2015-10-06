@@ -80,7 +80,6 @@ namespace Dynamo.Views
 
             InitializeComponent();
 
-            selectionCanvas.Loaded += OnSelectionCanvasLoaded;
             DataContextChanged += OnWorkspaceViewDataContextChanged;
 
             Loaded += OnWorkspaceViewLoaded;
@@ -98,6 +97,8 @@ namespace Dynamo.Views
             {
                 ctrl.RequestShowInCanvasSearch += ShowHideInCanvasControl;
             }
+
+            infiniteGridView.AttachToZoomBorder(zoomBorder);
         }
 
         void OnWorkspaceViewUnloaded(object sender, RoutedEventArgs e)
@@ -112,6 +113,8 @@ namespace Dynamo.Views
             {
                 ctrl.RequestShowInCanvasSearch -= ShowHideInCanvasControl;
             }
+
+            infiniteGridView.DetachFromZoomBorder(zoomBorder);
         }
 
         private void LoadCursorState()
@@ -138,6 +141,7 @@ namespace Dynamo.Views
         {
             if (ViewModel == null) return;
             ViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
+            ViewModel.NodeToCodeCommand.RaiseCanExecuteChanged();
             ViewModel.DynamoViewModel.AddAnnotationCommand.RaiseCanExecuteChanged();
             ViewModel.DynamoViewModel.UngroupAnnotationCommand.RaiseCanExecuteChanged();
             ViewModel.DynamoViewModel.UngroupModelCommand.RaiseCanExecuteChanged();
@@ -225,16 +229,22 @@ namespace Dynamo.Views
 
         private void VmOnRequestSelectionBoxUpdate(object sender, SelectionBoxUpdateArgs e)
         {
+            var originalLt = new Point(e.X, e.Y);
+            var translatedLt = WorkBench.TranslatePoint(originalLt, outerCanvas);
+
             if (e.UpdatedProps.HasFlag(SelectionBoxUpdateArgs.UpdateFlags.Position))
             {
-                Canvas.SetLeft(this.selectionBox, e.X);
-                Canvas.SetTop(this.selectionBox, e.Y);
+                Canvas.SetLeft(this.selectionBox, translatedLt.X);
+                Canvas.SetTop(this.selectionBox, translatedLt.Y);
             }
 
             if (e.UpdatedProps.HasFlag(SelectionBoxUpdateArgs.UpdateFlags.Dimension))
             {
-                selectionBox.Width = e.Width;
-                selectionBox.Height = e.Height;
+                var originalRb = new Point(e.X + e.Width, e.Y + e.Height);
+                var translatedRb = WorkBench.TranslatePoint(originalRb, outerCanvas);
+
+                selectionBox.Width = translatedRb.X - translatedLt.X;
+                selectionBox.Height = translatedRb.Y - translatedLt.Y;
             }
 
             if (e.UpdatedProps.HasFlag(SelectionBoxUpdateArgs.UpdateFlags.Visibility))
@@ -256,15 +266,6 @@ namespace Dynamo.Views
             {
                 vm.OnWorkspacePropertyEditRequested();
             }
-        }
-
-        void OnSelectionCanvasLoaded(object sender, RoutedEventArgs e)
-        {
-            //Stopwatch sw = new Stopwatch();
-            //sw.Start();
-            //DrawGrid();
-            //sw.Stop();
-            //dynamoModel.Logger.Log(string.Format("{0} elapsed for drawing grid.", sw.Elapsed));
         }
 
         void vm_RequestAddViewToOuterCanvas(object sender, EventArgs e)
@@ -486,8 +487,12 @@ namespace Dynamo.Views
 
         private void OnMouseRelease(object sender, MouseButtonEventArgs e)
         {
+            if (e == null) return; // in certain bizarre cases, e can be null
+
             this.snappedPort = null;
-            WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
+
+            var wvm = (DataContext as WorkspaceViewModel);
+            if (wvm == null) return;
             wvm.HandleMouseRelease(this.WorkBench, e);
         }
 

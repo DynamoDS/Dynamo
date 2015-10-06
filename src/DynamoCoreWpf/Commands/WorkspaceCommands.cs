@@ -229,6 +229,21 @@ namespace Dynamo.ViewModels
             get { return DynamoSelection.Instance.Selection.Count > 0; }
         }
 
+        public bool IsGeometryOperationEnabled
+        {
+            get
+            {
+                if (DynamoSelection.Instance.Selection.Count <= 0)
+                    return false; // No selection.
+
+                // Menu options that are specific to geometry (show/hide all 
+                // geometry previews, upstream previews, etc.) are only enabled
+                // in the home workspace.
+                // 
+                return (this.Model is HomeWorkspaceModel);
+            }
+        }
+
         public LacingStrategy SelectionArgumentLacing
         {
             // TODO We may need a better way to do this

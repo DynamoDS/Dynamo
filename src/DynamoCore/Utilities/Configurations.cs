@@ -24,9 +24,8 @@ namespace Dynamo.UI
         public static string DynamoWikiLink = "https://github.com/DynamoDS/Dynamo/wiki";
         public static string DynamoBimForum = "http://dynamobim.org/forums/forum/dyn/";
         public static string DynamoTeamEmail = "mailto:team@dynamobim.org";
-        public static string DynamoAdvancedTutorials = "http://dynamobim.org/learn/#7570";
         public static string DynamoVideoTutorials = "http://dynamobim.org/learn/#161";
-        public static string DynamoMoreSamples = "http://dynamobim.org/learn/#159";
+        public static string DynamoPrimer = "http://dynamoprimer.com/";
         public static string DynamoDownloadLink = "http://dynamobim.org/download/";
         public static string GitHubDynamoLink = "https://github.com/DynamoDS/Dynamo";
         public static string GitHubBugReportingLink = "https://github.com/DynamoDS/Dynamo/issues";
@@ -38,19 +37,9 @@ namespace Dynamo.UI
         // Generic Constants
         public static readonly double PortHeightInPixels = 26;
 
-        // Grid Settings
-        public static readonly int GridSpacing = 100;
-        public static readonly int GridThickness = 2;
-
         // Canvas Control
         public static readonly double ZoomIncrement = 0.05;
 
-        // Node/geometry view buttons in the canvas
-        public static readonly double ButtonHeight = 30.0;
-
-        // Double Clicking
-        // Maximum distance allowed between first and second click to be accepted as a double click
-        public static readonly int DoubleClickAcceptableDistance = 10; // in pixel
         #endregion
 
         #region Tab Bar Configurations
@@ -155,7 +144,7 @@ namespace Dynamo.UI
 
         #region CodeBlockNode
 
-        public static readonly double CodeBlockPortHeightInPixels = 17.563333333333336;
+        public static readonly double CodeBlockPortHeightInPixels = 17.573333333333336;
         public static readonly int CBNMaxPortNameLength = 24;
         public static readonly string HighlightingFile =
             "DesignScript.Resources.SyntaxHighlighting.xshd";

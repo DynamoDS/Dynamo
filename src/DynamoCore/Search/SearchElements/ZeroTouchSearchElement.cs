@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dynamo.DSEngine;
+using Dynamo.Engine;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using System.Text;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -23,12 +24,18 @@ namespace Dynamo.Search.SearchElements
         {
             this.functionDescriptor = functionDescriptor;
 
-            var displayName = functionDescriptor.UserFriendlyName;
+            Name = functionDescriptor.UserFriendlyName;
+            
             if (functionDescriptor.IsOverloaded)
-                displayName += "(" + string.Join(", ", functionDescriptor.Parameters) + ")";
+            {
+                var parameters = new StringBuilder();
+                parameters.Append("(");
+                parameters.Append(String.Join(", ", functionDescriptor.Parameters.Select(x => x.Name)));
+                parameters.Append(")");
 
-            Name = displayName;
-            UserFriendlyName = functionDescriptor.UserFriendlyName;
+                Parameters = parameters.ToString();
+            }
+            
             FullCategoryName = functionDescriptor.Category;
             Description = functionDescriptor.Description;
             Assembly = functionDescriptor.Assembly;
@@ -44,10 +51,36 @@ namespace Dynamo.Search.SearchElements
                 ElementType |= ElementTypes.Packaged;
 
             inputParameters = new List<Tuple<string, string>>(functionDescriptor.InputParameters);
-            outputParameters = new List<string>() { functionDescriptor.ReturnType };
+            outputParameters = new List<string>() { functionDescriptor.ReturnType.ToShortString() };
 
             foreach (var tag in functionDescriptor.GetSearchTags())
                 SearchKeywords.Add(tag);
+
+            var weights = functionDescriptor.GetSearchTagWeights();
+            foreach (var weight in weights)
+            {
+                // Search tag weight can't be more then 1.
+                if (weight <= 1)
+                    keywordWeights.Add(weight);
+            }
+
+            int weightsCount = weights.Count();
+            // If there weren't added weights for search tags, then add default value - 0.5
+            if (weightsCount != SearchKeywords.Count)
+            {
+                int numberOfLackingWeights = SearchKeywords.Count - weightsCount;
+
+                // Number of lacking weights should be more than 0.
+                // It can be less then 0 only if there was some mistake in xml file.
+                if (numberOfLackingWeights > 0)
+                {
+                    for (int i = 0; i < numberOfLackingWeights; i++)
+                    {
+                        keywordWeights.Add(0.5);
+                    }
+                }
+
+            }
 
             iconName = GetIconName();
         }

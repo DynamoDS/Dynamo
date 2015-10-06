@@ -350,6 +350,15 @@ namespace Dynamo.PackageManager
             return true;
         }
 
+        public event EventHandler<PackagePathEventArgs> RequestShowFileDialog;
+        public virtual void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)
+        {
+            if (RequestShowFileDialog != null)
+            {
+                RequestShowFileDialog(sender, e);
+            }
+        }
+
         /// <summary>
         /// Attempts to obtain the list of search results.  If it fails, it does nothing
         /// </summary>
@@ -423,9 +432,13 @@ namespace Dynamo.PackageManager
             return String.Join(", ", pkgs.Select(x => x.Name));
         } 
 
-        private void PackageOnExecuted(PackageManagerSearchElement element, PackageVersion version)
+        private void PackageOnExecuted(PackageManagerSearchElement element, PackageVersion version, string downloadPath)
         {
-            var result = MessageBox.Show(String.Format(Resources.MessageConfirmToInstallPackage, element.Name, version.version), 
+            string msg = String.IsNullOrEmpty(downloadPath) ?
+                String.Format(Resources.MessageConfirmToInstallPackage, element.Name, version.version) :
+                String.Format(Resources.MessageConfirmToInstallPackageToFolder, element.Name, version.version, downloadPath);
+
+            var result = MessageBox.Show(msg, 
                 Resources.PackageDownloadConfirmMessageBoxTitle,
                 MessageBoxButton.OKCancel, MessageBoxImage.Question);
 
@@ -534,13 +547,13 @@ namespace Dynamo.PackageManager
                     return;
                 }
 
+                var settings = PackageManagerClientViewModel.DynamoViewModel.Model.PreferenceSettings;
+
                 if (uninstallsRequiringRestart.Any())
                 {
                     // mark for uninstallation
                     uninstallsRequiringRestart.ForEach(
-                        x =>
-                            x.MarkForUninstall(
-                                this.PackageManagerClientViewModel.DynamoViewModel.Model.PreferenceSettings));
+                        x => x.MarkForUninstall(settings));
 
                     MessageBox.Show(String.Format(Resources.MessageUninstallToContinue2,
                         PackageManagerClientViewModel.DynamoViewModel.BrandingResourceProvider.ProductName, 
@@ -561,11 +574,18 @@ namespace Dynamo.PackageManager
                         return;
                 }
 
+                // add custom path to custom package folder list
+                if (!String.IsNullOrEmpty(downloadPath))
+                {
+                    if (!settings.CustomPackageFolders.Contains(downloadPath))
+                        settings.CustomPackageFolders.Add(downloadPath);
+                }
+
                 // form header version pairs and download and install all packages
                 allPackageVersions
                         .Select(x => new PackageDownloadHandle(x.Item1, x.Item2))
                         .ToList()
-                        .ForEach(x => this.PackageManagerClientViewModel.DownloadAndInstall(x));
+                        .ForEach(x => this.PackageManagerClientViewModel.DownloadAndInstall(x, downloadPath));
 
             }
         }
@@ -683,22 +703,26 @@ namespace Dynamo.PackageManager
             if (LastSync == null) return new List<PackageManagerSearchElementViewModel>();
 
             var canLogin = PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider;
+            List<PackageManagerSearchElementViewModel> list = null;
 
             if (!String.IsNullOrEmpty(query))
             {
-                return
-                    SearchDictionary.Search(query)
-                        .Select(x => new PackageManagerSearchElementViewModel(x, canLogin))
-                        .Take(MaxNumSearchResults);
+                list = SearchDictionary.Search(query)
+                    .Select(x => new PackageManagerSearchElementViewModel(x, canLogin))
+                    .Take(MaxNumSearchResults).ToList();
+            }
+            else
+            {
+                // with null query, don't show deprecated packages
+                list = LastSync.Where(x => !x.IsDeprecated)
+                    .Select(x => new PackageManagerSearchElementViewModel(x, canLogin)).ToList();
+                Sort(list, this.SortingKey);
             }
 
-            // with null query, don't show deprecated packages
-            var list =
-                LastSync.Where(x => !x.IsDeprecated)
-                    .Select(x => new PackageManagerSearchElementViewModel(x, canLogin)).ToList();
-            Sort(list, this.SortingKey);
-            return list;
+            foreach (var x in list)
+                x.RequestShowFileDialog += OnRequestShowFileDialog;
 
+            return list;
         }
 
 

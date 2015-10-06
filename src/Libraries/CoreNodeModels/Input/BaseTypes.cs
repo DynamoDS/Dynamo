@@ -8,13 +8,14 @@ using System.Web;
 using System.Xml;
 using Dynamo.Properties;
 using Dynamo.Core;
+using Dynamo.Migration;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using ProtoCore.Namespace;
 using String = DSCoreNodesUI.String;
-using Dynamo.DSEngine;
+using Dynamo.Engine.CodeGeneration;
 
 namespace Dynamo.Nodes
 {
@@ -77,7 +78,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, AstBuilder.CompilationContext context)
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, CompilationContext context)
         {
             var rhs = AstFactory.BuildStringNode(Value);
             var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
@@ -344,7 +345,7 @@ namespace Dynamo.Nodes
             throw new Exception("Bad identifier syntax: \"" + id + "\"");
         }
 
-        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, AstBuilder.CompilationContext context)
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, CompilationContext context)
         {
             var paramDict = InPortData.Select(x => x.NickName)
                    .Zip<string, AssociativeNode, Tuple<string, AssociativeNode>>(inputAstNodes, Tuple.Create)

@@ -109,7 +109,7 @@ namespace Dynamo.Nodes
                 //Set the panning mode to false if a group is in editing mode.
                 if (ViewModel.WorkspaceViewModel.IsPanning)
                 {
-                    ViewModel.WorkspaceViewModel.DynamoViewModel.TogglePan(null);
+                    ViewModel.WorkspaceViewModel.DynamoViewModel.BackgroundPreviewViewModel.TogglePan(null);
                 }
                 e.Handled = true;
             }
@@ -227,5 +227,20 @@ namespace Dynamo.Nodes
                 ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
             }
         }
+
+        /// <summary>
+        /// This function will run graph layout algorithm to the nodes inside the selected group.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void OnGraphLayoutAnnotation(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel != null)
+            {
+                ViewModel.Select();
+                ViewModel.WorkspaceViewModel.DynamoViewModel.GraphAutoLayoutCommand.Execute(null);
+            }
+        }
+
     }
 }

@@ -1027,28 +1027,15 @@ x;
             thisTest.Verify("x", expectedResult);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
+  [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T39_Defect_1452951_2()
         {
             string code = @"
-class A
-{
-    a1 : var[];
-	constructor A( x : int[])
-	{
-	    a1 = x;
-		[Imperative]
-		{
-		    if(a1[0] < 10 ) 
-			{
-			    a1[0] = 10;
-			}
-		}
-	}
+
 	
-	def foo :int[] ( )
+	def foo :int[] (a1:int[])
 	{
 	    count = 0;
 		[Imperative]
@@ -1062,22 +1049,20 @@ class A
 		return = a1;
 	}
 	
-}
-a = { 4, 4 };
-a4;
+
+a = { 10, 4 };
+a3;
 [Imperative]
 {
-	a2 = A.A(a);
-	a3 = a2.foo();
-	a4 = a2.a1;
+	a3 = foo(a);
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             object[] expectedResult = { 11, 5 };
-            thisTest.Verify("a4", expectedResult);
+            thisTest.Verify("a3", expectedResult);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored")]
         [Category("SmokeTest")]
         public void T39_Defect_1452951_3()
         {
@@ -1236,7 +1221,7 @@ p8 = y[1][1][1];
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored")]
         [Category("SmokeTest")]
         [Category("Failure")]
         public void T42_Create_3_Dim_Collection_Using_For_Loop_In_Class_Constructor()
@@ -1304,25 +1289,13 @@ p8 = y[1][1][1];
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
-        public void T43_Create_3_Dim_Collection_Using_For_Loop_In_Class_Method()
+        public void T43_Create_3_Dim_Collection_Using_For_Loop_In_Function()
         {
             string code = @"
-class A
-{
-    a : var[];
-	b : var[];
-	c : var[];
-	
-	constructor A( a1:int[], a2:int[], a3:int[])
-	{
-	    a = a1;
-		b = a2;
-		c = a3;
-	}
-	
-	def foo :int[]..[]( )
+
+	def foo :int[]..[](a:int[],b:int[],c:int[] )
 	{
 		y = [Imperative]
 		{
@@ -1342,17 +1315,16 @@ class A
 					c2 = c2+ 1;
 				}
 				c1 = c1 + 1;
-			}		
-			return = x;				
+			}
+			return = x;
 		}
 		return = y;
-	}
-}
+	};
 a = { 0, 1 };
 b = { 2, 3};
 c = { 4, 5 };
-x = A.A( a, b , c);
-y = x.foo ();
+y = foo(a,b,c);
+
 p1 = y[0][0][0];
 p2 = y[0][0][1];
 p3 = y[0][1][0];
@@ -1374,22 +1346,14 @@ p8 = y[1][1][1];
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Array")]
-        [Category("Failure")]
+    
         public void T43_Create_CollectioninForLoop_1457172()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4081
             string errmsg = "MAGN-4081: Nested forloop fails in a constructor";
-            string src = @"class A
-{
-a : var;
-b : var;
-constructor A( a1:int[], a2:int[])
-{
-a = a1;
-b = a2;
-}
+            string src = @"
 def foo :int[]..[]( a : int[], b:int[])
 {
 y = [Imperative]
@@ -1410,20 +1374,19 @@ return = x;
 }
 return = y;
 }
-}
+
 a = { 0, 1, 2 };
 b = { 3, 4, 5 };
-x = A.A( a, b);
-y = x.foo ();
+y = foo( a, b);
 p1 = y[0][0];
-p2 = y[0][0];
+p2 = y[0][1];
 p3 = y[0][2];
 p4 = y[1][0];
 p5 = y[1][1];
 p6 = y[1][2];
 p7 = y[2][0];
 p8 = y[2][1];
-p8 = y[2][2];
+p9 = y[2][2];
 ";
             thisTest.VerifyRunScriptSource(src, errmsg);
             thisTest.Verify("p1", 3, 0);
@@ -1438,24 +1401,14 @@ p8 = y[2][2];
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Array")]
         [Category("Failure")]
         public void T43_Create_CollectioninForLoop_1457172_2()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4081
             string errmsg = "MAGN-4081: Nested forloop fails in a constructor";
-            string src = @"class A
-{
-a : var;
-b : var;
-c : var;
-constructor A( a1:int[], a2:int[], a3:int[])
-{
-a = a1;
-b = a2;
-c = a3;
-}
+            string src = @"
 def foo :int[]..[]( a : int[], b:int[], c :int[])
 {
 y = [Imperative]
@@ -1481,20 +1434,20 @@ return = x;
 }
 return = y;
 }
-}
+
 a = { 0, 1 };
 b = { 2, 3};
 c = { 4, 5 };
-x = A.A( a, b , c);
-y = x.foo (); // y expected : y={{{6,7},{7,8}},{{7,8},{8,9}}}
+y = foo( a, b , c);
+
 p1 = y[0][0][0]; //6
 p2 = y[0][0][1];//7
 p3 = y[0][1][0];//7
 p4 = y[0][1][1];//8
 p5 = y[1][0][0];//7
 p6 = y[1][0][1];//8
-p5 = y[1][1][0];//8
-p6 = y[1][1][1];//9
+p7 = y[1][1][0];//8
+p8 = y[1][1][1];//9
 ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(src, errmsg);
             thisTest.Verify("p1", 6, 0);
@@ -1524,27 +1477,14 @@ for (i in (0..10)) {
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T45_Defect_1458284()
         {
             string code = @"
-class Point
-{
-    X : var;
-    Y : var;
-    Z : var;
-    id : var;
-    
-    constructor ByCoordinates(x : double, y : double, z : double)
-    {
-        X = x;
-        Y = y;
-        Z = z;
-        id = x;
-    }
-}
-    def length (pts : Point[])
+			import(""FFITarget.dll"");
+
+    def length (pts : DummyPoint[])
     {
         numberOfPoints = [Imperative]
         {
@@ -1558,51 +1498,19 @@ class Point
         }
         return = numberOfPoints;
     }
-    
-    def getIds (pts : Point[])
-    {
-        numPoints = length(pts);
-        
-        pt_ids = [Imperative]
-        {
-            tempArr = -1..-1..#numPoints; // = { -1, -1, -1, -1, -1 }           
-            counter = 0;
-            for(pt in pts)
-            {
-                tempArr[counter] = pt.id;
-		counter = counter + 1;
-            }
-            
-            return = tempArr;
-        }
-        
-        return = pt_ids;
-    }
-class BSplineCurve
-{
-    id : var;
-    numPts : var;
-    ids : var[]..[];
-    
-    constructor ByPoints(ptsOnCurve : Point[])
-    {
-        id = null;
-        numPts = length(ptsOnCurve);
-        ids = getIds(ptsOnCurve);
-    }
-}
+
 pt1 = Point.ByCoordinates(0,0,0);
 pt2 = Point.ByCoordinates(5,0,0);
 pt3 = Point.ByCoordinates(10,0,0);
 pt4 = Point.ByCoordinates(15,0,0);
 pt5 = Point.ByCoordinates(20,0,0);
 pts = {pt1, pt2, pt3, pt4, pt5};
-bcurve = BSplineCurve.ByPoints(pts);
-numpts = bcurve.numPts;
-ids = bcurve.ids;
+
+numpts = length(pts);
+
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("ids", new Object[] { 0.0, 5.0, 10.0, 15.0, 20.0 });
+            thisTest.Verify("numpts", 5);
         }
 
 

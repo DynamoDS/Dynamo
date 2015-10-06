@@ -18,10 +18,8 @@ using NDesk.Options;
 
 namespace Dynamo.Applications
 {
-
     public class StartupUtils
     {
-
         internal class SandboxLookUp : DynamoLookUp
         {
             public override IEnumerable<string> GetDynamoInstallLocations()
@@ -151,7 +149,6 @@ namespace Dynamo.Applications
 
             var versions = new[]
             {
-                LibraryVersion.Version219,
                 LibraryVersion.Version220,
                 LibraryVersion.Version221
             };
@@ -185,6 +182,7 @@ namespace Dynamo.Applications
             var config = new DynamoModel.DefaultStartConfiguration()
                   {
                       GeometryFactoryPath = geometryFactoryPath,
+                      ProcessMode = Core.Threading.TaskProcessMode.Asynchronous
                   };
 
             config.UpdateManager = CLImode ? null : InitializeUpdateManager();

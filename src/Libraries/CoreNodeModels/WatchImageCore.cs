@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 using Dynamo.Core.Threading;
-using Dynamo.DSEngine;
+using Dynamo.Engine;
 using Dynamo.Models;
 using Dynamo.Interfaces;
 
@@ -32,8 +32,8 @@ namespace Dynamo.Nodes
             yield return AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputAstNodes[0]);
         }
 
-        protected override void RequestVisualUpdateAsyncCore(
-            IScheduler scheduler, EngineController engine, IRenderPackageFactory factory)
+        public override void RequestVisualUpdateAsync(
+            IScheduler scheduler, EngineController engine, IRenderPackageFactory factory, bool forceUpdate = false)
         {
             //Do nothing
         }

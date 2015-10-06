@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-using Dynamo.DSEngine.CodeCompletion;
+using Dynamo.Engine.CodeCompletion;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.UI;
@@ -289,6 +289,22 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        public void TestInOutPorts_ForChainedExpression()
+        {
+            // Create the initial code block node.
+            var codeBlockNode = CreateCodeBlockNode();
+
+            // Before code changes, there should be no in/out ports.
+            Assert.AreEqual(0, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(0, codeBlockNode.OutPortData.Count);
+
+            // After code changes, there should be input & output ports.
+            UpdateCodeBlockNodeContent(codeBlockNode, "Flatten(l.Explode()).Area;");
+            Assert.AreEqual(1, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(1, codeBlockNode.OutPortData.Count);
+        }
+
+        [Test]
         public void TestOutportConnectors_OnAssigningVariables_ToRetainConnections()
         {
             string openPath = Path.Combine(TestDirectory,
@@ -514,8 +530,8 @@ b = c[w][x][y][z];";
             Assert.AreEqual(2, codeBlockNode.InPortData.Count);
             Assert.AreEqual(1, codeBlockNode.OutPortData.Count);
 
-            Assert.AreEqual(2 * Configurations.CodeBlockPortHeightInPixels, codeBlockNode.OutPortData[0].VerticalMargin, tolerance);
-            
+            Assert.AreEqual(2, codeBlockNode.OutPortData[0].LineIndex);
+
             code = "c+ \n d; \n /* comment \n */ \n a+b;";
             UpdateCodeBlockNodeContent(codeBlockNode, code);
 
@@ -523,19 +539,78 @@ b = c[w][x][y][z];";
             Assert.AreEqual(2, codeBlockNode.OutPortData.Count);
 
             // The first output port should be at the first line
-            Assert.AreEqual(0 * Configurations.CodeBlockPortHeightInPixels, codeBlockNode.OutPortData[0].VerticalMargin, tolerance);
+            Assert.AreEqual(0, codeBlockNode.OutPortData[0].LineIndex);
 
             // The second output port should be at the 4th line, which is also 3 lines below the first
-            Assert.AreEqual(3 * Configurations.CodeBlockPortHeightInPixels, codeBlockNode.OutPortData[1].VerticalMargin, tolerance);
-            
+            Assert.AreEqual(4, codeBlockNode.OutPortData[1].LineIndex);
+
             code = "/*comment \n */ \n a[0]+b;";
             UpdateCodeBlockNodeContent(codeBlockNode, code);
 
             Assert.AreEqual(2, codeBlockNode.InPortData.Count);
             Assert.AreEqual(1, codeBlockNode.OutPortData.Count);
 
-            Assert.AreEqual(2 * Configurations.CodeBlockPortHeightInPixels, codeBlockNode.OutPortData[0].VerticalMargin, tolerance);
+            Assert.AreEqual(2, codeBlockNode.OutPortData[0].LineIndex);
+        }
 
+        [Test]
+        [Category("RegressionTests")]
+        public void PortIndicesShouldProduceCorrectConnectorOffsets()
+        {
+            var code =
+@"var00 = a;
+
+var01 = b;
+var02 = c;
+
+
+var03 = d;
+var04 = e;
+var05 = f;
+
+
+
+var06 = g;
+";
+
+            var codeBlockNode = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode, code);
+
+            Assert.AreEqual(7, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(7, codeBlockNode.OutPortData.Count);
+
+            // Input ports are regular ports that do not depend on LineIndex.
+            Assert.AreEqual(-1, codeBlockNode.InPortData[0].LineIndex);
+            Assert.AreEqual(-1, codeBlockNode.InPortData[1].LineIndex);
+            Assert.AreEqual(-1, codeBlockNode.InPortData[2].LineIndex);
+            Assert.AreEqual(-1, codeBlockNode.InPortData[3].LineIndex);
+            Assert.AreEqual(-1, codeBlockNode.InPortData[4].LineIndex);
+            Assert.AreEqual(-1, codeBlockNode.InPortData[5].LineIndex);
+            Assert.AreEqual(-1, codeBlockNode.InPortData[6].LineIndex);
+
+            // Output ports are smaller ports that depend on LineIndex.
+            Assert.AreEqual(0, codeBlockNode.OutPortData[0].LineIndex);
+            Assert.AreEqual(2, codeBlockNode.OutPortData[1].LineIndex);
+            Assert.AreEqual(3, codeBlockNode.OutPortData[2].LineIndex);
+            Assert.AreEqual(6, codeBlockNode.OutPortData[3].LineIndex);
+            Assert.AreEqual(7, codeBlockNode.OutPortData[4].LineIndex);
+            Assert.AreEqual(8, codeBlockNode.OutPortData[5].LineIndex);
+            Assert.AreEqual(12, codeBlockNode.OutPortData[6].LineIndex);
+
+            // Ensure that "NodeModel.GetPortVerticalOffset" does not regress.
+            // This is the way connector position is calculated.
+            var verticalOffset = 2.9;
+            var lastOutPort = codeBlockNode.OutPorts[6];
+            var expectedOffset = verticalOffset + lastOutPort.LineIndex * lastOutPort.Height;
+            var actualOffset = codeBlockNode.GetPortVerticalOffset(lastOutPort);
+            Assert.AreEqual(expectedOffset, actualOffset);
+
+            // Input ports are regular portst that should depend on "Index" instead.
+            var lastInPort = codeBlockNode.InPorts[6];
+            expectedOffset = verticalOffset + lastInPort.Index * lastInPort.Height;
+            actualOffset = codeBlockNode.GetPortVerticalOffset(lastInPort);
+            Assert.AreEqual(6, lastInPort.Index);
+            Assert.AreEqual(expectedOffset, actualOffset);
         }
 
         [Test]
@@ -1222,10 +1297,10 @@ b = c[w][x][y][z];";
             var completions = codeCompletionServices.SearchCompletions(code, Guid.Empty);
 
             // Expected 4 completion items
-            Assert.AreEqual(4, completions.Count());
+            Assert.AreEqual(8, completions.Count());
 
             string[] expectedValues = {"DummyPoint", "DesignScript.Point",
-                                    "Dynamo.Point", "UnknownPoint"};
+                                    "Dynamo.Point", "UnknownPoint", "DummyPoint2D", "Point_1D", "Point_2D", "Point_3D"};
             var expected = expectedValues.OrderBy(x => x);
             var actual = completions.Select(x => x.Text).OrderBy(x => x);
 
@@ -1261,9 +1336,9 @@ b = c[w][x][y][z];";
             var completions = codeCompletionServices.SearchCompletions(code, Guid.Empty);
 
             // Expected 2 completion items
-            Assert.AreEqual(2, completions.Count());
+            Assert.AreEqual(3, completions.Count());
 
-            string[] expected = { "SampleClassA", "SampleClassC" };
+            string[] expected = { "SampleClassA", "SampleClassC", "TestSamePropertyName" };
             var actual = completions.Select(x => x.Text).OrderBy(x => x);
 
             Assert.AreEqual(expected, actual);
@@ -1501,9 +1576,9 @@ a;b;c;d;e1;f;g;
 
             string code = "boo";
             var completions = codeCompletionServices.SearchTypes(code);
-            Assert.AreEqual(1, completions.Count());
+            Assert.AreEqual(2, completions.Count());
 
-            string[] expected = { "bool" };
+            string[] expected = { "bool", "BooleanMember" };
             var actual = completions.Select(x => x.Text).OrderBy(x => x);
             Assert.AreEqual(expected, actual);
         }

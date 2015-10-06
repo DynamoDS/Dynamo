@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+using Dynamo.Engine.CodeGeneration;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using DSCoreNodesUI.Properties;
@@ -11,7 +12,7 @@ using DSCoreNodesUI.Properties;
 using Autodesk.DesignScript.Runtime;
 using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
-using Dynamo.DSEngine;
+
 
 namespace DSCore.File
 {
@@ -27,9 +28,9 @@ namespace DSCore.File
             Value = "";
         }
 
-        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, AstBuilder.CompilationContext context)
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, CompilationContext context)
         {
-            if (context == AstBuilder.CompilationContext.NodeToCode)
+            if (context == CompilationContext.NodeToCode)
             {
                 var rhs = AstFactory.BuildStringNode(Value.Replace(@"\", @"\\"));
                 var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);

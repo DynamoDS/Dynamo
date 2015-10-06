@@ -651,7 +651,7 @@ namespace Dynamo.Models
             
             [DataMember]
             //Legacy properties
-            internal string Name { get; private set; }
+            public string Name { get; private set; }
 
             #endregion
 

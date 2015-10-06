@@ -5,7 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300"
@@ -13,7 +15,6 @@
              MinWidth="100">
     <UserControl.Resources>
         <ResourceDictionary>
-
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.SidebarGridDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
@@ -21,8 +22,8 @@
             </ResourceDictionary.MergedDictionaries>
 
             <controls:BooleanToBrushConverter x:Key="BooleanToBrushConverter"
-                                              TrueBrush="{StaticResource LibraryCommonBackground}"
-                                              FalseBrush="{StaticResource ClassButtonClickedBackground}" />
+                                              TrueBrush="{StaticResource LibraryItemHostBackground}"
+                                              FalseBrush="{StaticResource LibraryItemHostBackground}" />
 
             <Style TargetType="{x:Type ScrollViewer}">
                 <Setter Property="HorizontalScrollBarVisibility"
@@ -34,7 +35,7 @@
                    BasedOn="{StaticResource MemberGroupMemberStyle}"
                    TargetType="{x:Type ListBoxItem}">
                 <Setter Property="Background"
-                        Value="{StaticResource ClassButtonClickedBackground}" />
+                        Value="{StaticResource LibraryItemHostBackground}" />
 
                 <EventSetter Event="PreviewMouseLeftButtonUp"
                              Handler="OnMouseLeftButtonUp" />
@@ -83,14 +84,14 @@
         <Binding Path="ClassDetailsVisibility"
                  Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
     </UserControl.Visibility>
-    <Border Padding="0,10,0,3">
-        <Border.Background>
-            <Binding Path="IsRootCategoryDetails"
-                     Converter="{StaticResource BooleanToBrushConverter}" />
-        </Border.Background>
-        <Grid DataContextChanged="GridDataContextChanged"
-              KeyDown="OnMainGridKeyDown">
+    <Border Margin="25,-10,10,0"
+        Padding="0,10,0,3">
+        
+        <Grid Name="GridData"  DataContextChanged="GridDataContextChanged"
+              KeyDown="OnMainGridKeyDown" Margin="-10,10,0,0">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
@@ -100,40 +101,99 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-
-            <uicontrols:HeaderStrip x:Name="primaryHeaderStrip"
-                                    Margin="16,0,0,10"
-                                    HorizontalAlignment="Left" />
+            
+            <Grid Grid.Row="1" Grid.Column="0"
+                  Width="20" Margin="-35,0,0,0" ToolTip="{x:Static p:Resources.CreateMember}">
+                <Rectangle Fill="Transparent" />
+                <fa:ImageAwesome Icon="plus" Foreground="#7B9F2D"                              
+                             VerticalAlignment="Top" HorizontalAlignment="Center" />
+            </Grid>
+            
             <ListBox x:Name="primaryMembers"
                      Grid.Row="1"
-                     Grid.ColumnSpan="2"
+                     Grid.Column="1"
                      Background="Transparent"
-                     BorderBrush="Transparent"
+                     BorderBrush="#7B9F2D"
                      ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
-                     ItemTemplate="{StaticResource MemberTemplate}" />
-
-            <Border Padding="16,10,0,10"
-                    Grid.Row="2"
-                    HorizontalAlignment="Left">
+                     ItemTemplate="{StaticResource MemberTemplate}"
+                     BorderThickness="2,0,0,0"   
+                     Padding ="0,-10,0,0"
+                     />
+            <Border x:Name="secondaryBorder" Grid.Row="2" 
+                    Padding="0,5,0,5" HorizontalAlignment="Left" Background="Transparent">
                 <Border.Visibility>
                     <Binding Path="AreSecondaryHeadersVisible"
                              Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
                 </Border.Visibility>
-                <uicontrols:HeaderStrip x:Name="secondaryHeaderStrip" />
             </Border>
+            <Border Padding="0,5,0,5"
+                    Grid.Row="3" Grid.Column="0"
+                    HorizontalAlignment="Left" Background="Transparent">
+                <Border.Visibility>
+                    <Binding Path="AreSecondaryHeadersVisible"
+                             Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
+                </Border.Visibility>
+
+                <Grid  Width="12" Margin="-40,0,0,0" ToolTip="{x:Static p:Resources.ActionMember}">
+                    <Rectangle Fill="Transparent" />
+                    <fa:ImageAwesome Icon="LightningBolt" Foreground="#D56867"                               
+                             VerticalAlignment="Top" HorizontalAlignment="Center" />
+                </Grid>
+            </Border>           
             <ListBox x:Name="secondaryMembers"
                      Grid.Row="3"
-                     Grid.ColumnSpan="2"
+                     Grid.Column ="1"
                      Background="Transparent"
-                     BorderBrush="Transparent"
+                     BorderBrush="#D56867"
                      ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                     ItemTemplate="{StaticResource MemberTemplate}">
+                     ItemTemplate="{StaticResource MemberTemplate}"
+                     BorderThickness="2,0,0,0"
+                     Padding ="0,-10,0,0"
+                     >
                 <ListBox.Visibility>
                     <Binding Path="AreSecondaryHeadersVisible"
                              Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
                 </ListBox.Visibility>
             </ListBox>
+            <Border x:Name="queryBorder" Grid.Row="4" Padding="0,5,0,5" 
+                    HorizontalAlignment="Left" Background="Transparent">
+                <Border.Visibility>
+                    <Binding Path="AreQueryHeadersVisible"
+                             Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
+                </Border.Visibility>
+            </Border>
+            <Border Padding="0,5,0,5"
+                    Grid.Row="5" Grid.Column="0"
+                    HorizontalAlignment="Left" Background="Transparent">
+                <Border.Visibility>
+                    <Binding Path="AreQueryHeadersVisible"
+                             Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
+                </Border.Visibility>
+
+                <Grid  Width="12" Margin="-40,0,0,0" ToolTip="{x:Static p:Resources.QueryMember}">
+                    <Rectangle Fill="Transparent" />
+                    <fa:ImageAwesome Icon="Question" Foreground="#65999A"                             
+                             VerticalAlignment="Top" HorizontalAlignment="Center" />
+                </Grid>
+            </Border>
+                <ListBox x:Name="queryMembers"
+                     Grid.Row="5"
+                     Grid.Column ="1"
+                     Background="Transparent"
+                     BorderBrush="#65999A"
+                     ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
+                     ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                     ItemTemplate="{StaticResource MemberTemplate}"
+                     BorderThickness="2,0,0,0"
+                     Padding ="0,-10,0,0"
+                     >
+                <ListBox.Visibility>
+                    <Binding Path="AreQueryHeadersVisible"
+                             Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
+                </ListBox.Visibility>
+            </ListBox>
+
 
             <uicontrols:LibraryToolTipPopup x:Name="libraryToolTipPopup"
                                             StaysOpen="True"

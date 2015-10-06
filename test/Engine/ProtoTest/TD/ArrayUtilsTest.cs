@@ -29,22 +29,15 @@ namespace ProtoTest.UtilsTests
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void StackValueDiffTestUserDefined()
         {
             String code =
 @"
-class A
-{
-    x : var;
-    constructor A()
-    {
-        x = 20;
-    }
-}
+import(""FFITarget.dll"");
 [Imperative]
 {
-	a = A.A();
+	a = ClassFunctionality.ClassFunctionality(20);
     b = 1.0;
 }
 ";
@@ -57,22 +50,15 @@ class A
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void StackValueDiffTestProperty01()
         {
             String code =
 @"
-class A
-{
-    x : var;
-    constructor A()
-    {
-        x = 20;
-    }
-}
+import(""FFITarget.dll"");
 [Imperative]
 {
-	a = A.A();
+	a = ClassFunctionality.ClassFunctionality(20);
     b = 1.0;
 }
 ";
@@ -85,23 +71,16 @@ class A
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void StackValueDiffTestProperty02()
         {
             String code =
 @"
-class A
-{
-    x : var;
-    constructor A()
-    {
-        x = 20;
-    }
-}
+import(""FFITarget.dll"");
 [Imperative]
 {
-	a = A.A();
-    b = a.x;
+	a = ClassFunctionality.ClassFunctionality(20);
+    b = a.IntVal;
     c = 1.0;
 }
 ";
@@ -215,7 +194,7 @@ a;b;c;d;e;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void TestArrayGetCommonSuperType()
         {
             String code =
@@ -258,91 +237,91 @@ tCCC = {C.C(), C.C(), C.C()};
             ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
             StackValue svAAA = mirror.GetRawFirstValue("tAAA");
             ClassNode superAAA = ArrayUtils.GetGreatestCommonSubclassForArray(svAAA, runtimeCore);
-            Assert.IsTrue(superAAA.name == "A");
+            Assert.IsTrue(superAAA.Name == "A");
             StackValue svAAB = mirror.GetRawFirstValue("tAAB");
             ClassNode superAAB = ArrayUtils.GetGreatestCommonSubclassForArray(svAAB, runtimeCore);
-            Assert.IsTrue(superAAB.name == "A");
+            Assert.IsTrue(superAAB.Name == "A");
             StackValue svAAC = mirror.GetRawFirstValue("tAAC");
             ClassNode superAAC = ArrayUtils.GetGreatestCommonSubclassForArray(svAAC, runtimeCore);
-            Assert.IsTrue(superAAC.name == "A");
+            Assert.IsTrue(superAAC.Name == "A");
             StackValue svABA = mirror.GetRawFirstValue("tABA");
             ClassNode superABA = ArrayUtils.GetGreatestCommonSubclassForArray(svABA, runtimeCore);
-            Assert.IsTrue(superABA.name == "A");
+            Assert.IsTrue(superABA.Name == "A");
             StackValue svABB = mirror.GetRawFirstValue("tABB");
             ClassNode superABB = ArrayUtils.GetGreatestCommonSubclassForArray(svABB, runtimeCore);
-            Assert.IsTrue(superABB.name == "A");
+            Assert.IsTrue(superABB.Name == "A");
             StackValue svABC = mirror.GetRawFirstValue("tABC");
             ClassNode superABC = ArrayUtils.GetGreatestCommonSubclassForArray(svABC, runtimeCore);
-            Assert.IsTrue(superABC.name == "A");
+            Assert.IsTrue(superABC.Name == "A");
             StackValue svACA = mirror.GetRawFirstValue("tACA");
             ClassNode superACA = ArrayUtils.GetGreatestCommonSubclassForArray(svACA, runtimeCore);
-            Assert.IsTrue(superACA.name == "A");
+            Assert.IsTrue(superACA.Name == "A");
             StackValue svACB = mirror.GetRawFirstValue("tACB");
             ClassNode superACB = ArrayUtils.GetGreatestCommonSubclassForArray(svACB, runtimeCore);
-            Assert.IsTrue(superACB.name == "A");
+            Assert.IsTrue(superACB.Name == "A");
             StackValue svACC = mirror.GetRawFirstValue("tACC");
             ClassNode superACC = ArrayUtils.GetGreatestCommonSubclassForArray(svACC, runtimeCore);
-            Assert.IsTrue(superACC.name == "A");
+            Assert.IsTrue(superACC.Name == "A");
             //----
             StackValue svBAA = mirror.GetRawFirstValue("tBAA");
             ClassNode superBAA = ArrayUtils.GetGreatestCommonSubclassForArray(svBAA, runtimeCore);
-            Assert.IsTrue(superBAA.name == "A");
+            Assert.IsTrue(superBAA.Name == "A");
             StackValue svBAB = mirror.GetRawFirstValue("tBAB");
             ClassNode superBAB = ArrayUtils.GetGreatestCommonSubclassForArray(svBAB, runtimeCore);
-            Assert.IsTrue(superBAB.name == "A");
+            Assert.IsTrue(superBAB.Name == "A");
             StackValue svBAC = mirror.GetRawFirstValue("tBAC");
             ClassNode superBAC = ArrayUtils.GetGreatestCommonSubclassForArray(svBAC, runtimeCore);
-            Assert.IsTrue(superBAC.name == "A");
+            Assert.IsTrue(superBAC.Name == "A");
             StackValue svBBA = mirror.GetRawFirstValue("tBBA");
             ClassNode superBBA = ArrayUtils.GetGreatestCommonSubclassForArray(svBBA, runtimeCore);
-            Assert.IsTrue(superBBA.name == "A");
+            Assert.IsTrue(superBBA.Name == "A");
             StackValue svBBB = mirror.GetRawFirstValue("tBBB");
             ClassNode superBBB = ArrayUtils.GetGreatestCommonSubclassForArray(svBBB, runtimeCore);
-            Assert.IsTrue(superBBB.name == "B");
+            Assert.IsTrue(superBBB.Name == "B");
             StackValue svBBC = mirror.GetRawFirstValue("tBBC");
             ClassNode superBBC = ArrayUtils.GetGreatestCommonSubclassForArray(svBBC, runtimeCore);
-            Assert.IsTrue(superBBC.name == "B");
+            Assert.IsTrue(superBBC.Name == "B");
             StackValue svBCA = mirror.GetRawFirstValue("tBCA");
             ClassNode superBCA = ArrayUtils.GetGreatestCommonSubclassForArray(svBCA, runtimeCore);
-            Assert.IsTrue(superBCA.name == "A");
+            Assert.IsTrue(superBCA.Name == "A");
             StackValue svBCB = mirror.GetRawFirstValue("tBCB");
             ClassNode superBCB = ArrayUtils.GetGreatestCommonSubclassForArray(svBCB, runtimeCore);
-            Assert.IsTrue(superBCB.name == "B");
+            Assert.IsTrue(superBCB.Name == "B");
             StackValue svBCC = mirror.GetRawFirstValue("tBCC");
             ClassNode superBCC = ArrayUtils.GetGreatestCommonSubclassForArray(svBCC, runtimeCore);
-            Assert.IsTrue(superBCC.name == "B");
+            Assert.IsTrue(superBCC.Name == "B");
             //----
             StackValue svCAA = mirror.GetRawFirstValue("tCAA");
             ClassNode superCAA = ArrayUtils.GetGreatestCommonSubclassForArray(svCAA, runtimeCore);
-            Assert.IsTrue(superCAA.name == "A");
+            Assert.IsTrue(superCAA.Name == "A");
             StackValue svCAB = mirror.GetRawFirstValue("tCAB");
             ClassNode superCAB = ArrayUtils.GetGreatestCommonSubclassForArray(svCAB, runtimeCore);
-            Assert.IsTrue(superCAB.name == "A");
+            Assert.IsTrue(superCAB.Name == "A");
             StackValue svCAC = mirror.GetRawFirstValue("tCAC");
             ClassNode superCAC = ArrayUtils.GetGreatestCommonSubclassForArray(svCAC, runtimeCore);
-            Assert.IsTrue(superCAC.name == "A");
+            Assert.IsTrue(superCAC.Name == "A");
             StackValue svCBA = mirror.GetRawFirstValue("tCBA");
             ClassNode superCBA = ArrayUtils.GetGreatestCommonSubclassForArray(svCBA, runtimeCore);
-            Assert.IsTrue(superCBA.name == "A");
+            Assert.IsTrue(superCBA.Name == "A");
             StackValue svCBB = mirror.GetRawFirstValue("tCBB");
             ClassNode superCBB = ArrayUtils.GetGreatestCommonSubclassForArray(svCBB, runtimeCore);
-            Assert.IsTrue(superCBB.name == "B");
+            Assert.IsTrue(superCBB.Name == "B");
             StackValue svCBC = mirror.GetRawFirstValue("tCBC");
             ClassNode superCBC = ArrayUtils.GetGreatestCommonSubclassForArray(svCBC, runtimeCore);
-            Assert.IsTrue(superCBC.name == "B");
+            Assert.IsTrue(superCBC.Name == "B");
             StackValue svCCA = mirror.GetRawFirstValue("tCCA");
             ClassNode superCCA = ArrayUtils.GetGreatestCommonSubclassForArray(svCCA, runtimeCore);
-            Assert.IsTrue(superCCA.name == "A");
+            Assert.IsTrue(superCCA.Name == "A");
             StackValue svCCB = mirror.GetRawFirstValue("tCCB");
             ClassNode superCCB = ArrayUtils.GetGreatestCommonSubclassForArray(svCCB, runtimeCore);
-            Assert.IsTrue(superCCB.name == "B");
+            Assert.IsTrue(superCCB.Name == "B");
             StackValue svCCC = mirror.GetRawFirstValue("tCCC");
             ClassNode superCCC = ArrayUtils.GetGreatestCommonSubclassForArray(svCCC, runtimeCore);
-            Assert.IsTrue(superCCC.name == "C");
+            Assert.IsTrue(superCCC.Name == "C");
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void Defect_TestArrayGetCommonSuperType()
         {
             String code =
@@ -351,7 +330,7 @@ class A{};
 class B extends A{};
 class C extends A{};
 class D extends C{};
-a = A.A();
+a =A.A();
 b = B.B();
 c = C.C();
 d = D.D();
@@ -374,35 +353,35 @@ tCD = { c, d };
             StackValue svABC = mirror.GetRawFirstValue("tABC");
 
             ClassNode superABC = ArrayUtils.GetGreatestCommonSubclassForArray(svABC, runtimeCore);
-            Assert.IsTrue(superABC.name == "A");
+            Assert.IsTrue(superABC.Name == "A");
             StackValue svABD = mirror.GetRawFirstValue("tABD");
             ClassNode superABD = ArrayUtils.GetGreatestCommonSubclassForArray(svABD, runtimeCore);
-            Assert.IsTrue(superABD.name == "A");
+            Assert.IsTrue(superABD.Name == "A");
             StackValue svACD = mirror.GetRawFirstValue("tACD");
             ClassNode superACD = ArrayUtils.GetGreatestCommonSubclassForArray(svACD, runtimeCore);
-            Assert.IsTrue(superABD.name == "A");
+            Assert.IsTrue(superABD.Name == "A");
             StackValue svBCD = mirror.GetRawFirstValue("tBCD");
             ClassNode superBCD = ArrayUtils.GetGreatestCommonSubclassForArray(svBCD, runtimeCore);
-            Assert.IsTrue(superBCD.name == "A");
+            Assert.IsTrue(superBCD.Name == "A");
             StackValue svAB = mirror.GetRawFirstValue("tAB");
             ClassNode superAB = ArrayUtils.GetGreatestCommonSubclassForArray(svAB, runtimeCore);
-            Assert.IsTrue(superAB.name == "A");
+            Assert.IsTrue(superAB.Name == "A");
             StackValue svAD = mirror.GetRawFirstValue("tAD");
             ClassNode superAD = ArrayUtils.GetGreatestCommonSubclassForArray(svAD, runtimeCore);
-            Assert.IsTrue(superAD.name == "A");
+            Assert.IsTrue(superAD.Name == "A");
             StackValue svBC = mirror.GetRawFirstValue("tBC");
             ClassNode superBC = ArrayUtils.GetGreatestCommonSubclassForArray(svBC, runtimeCore);
-            Assert.IsTrue(superBC.name == "A");
+            Assert.IsTrue(superBC.Name == "A");
             StackValue svBD = mirror.GetRawFirstValue("tBD");
             ClassNode superBD = ArrayUtils.GetGreatestCommonSubclassForArray(svBD, runtimeCore);
-            Assert.IsTrue(superBD.name == "A");
+            Assert.IsTrue(superBD.Name == "A");
             StackValue svCD = mirror.GetRawFirstValue("tCD");
             ClassNode superCD = ArrayUtils.GetGreatestCommonSubclassForArray(svCD, runtimeCore);
-            Assert.IsTrue(superCD.name == "C");
+            Assert.IsTrue(superCD.Name == "C");
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Method Resolution")]
         public void Defect_TestArrayGetCommonSuperType_2_EmptyArray()
         {
@@ -428,19 +407,19 @@ tE = {};//empty array
             ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
             StackValue svABC = mirror.GetRawFirstValue("tABC");
             ClassNode superABC = ArrayUtils.GetGreatestCommonSubclassForArray(svABC, runtimeCore);
-            Assert.IsTrue(superABC.name == "A");
+            Assert.IsTrue(superABC.Name == "A");
             StackValue svABD = mirror.GetRawFirstValue("tABD");
             ClassNode superABD = ArrayUtils.GetGreatestCommonSubclassForArray(svABD, runtimeCore);
-            Assert.IsTrue(superABD.name == "A");
+            Assert.IsTrue(superABD.Name == "A");
             StackValue svACD = mirror.GetRawFirstValue("tACD");
             ClassNode superACD = ArrayUtils.GetGreatestCommonSubclassForArray(svACD, runtimeCore);
-            Assert.IsTrue(superABD.name == "A");
+            Assert.IsTrue(superABD.Name == "A");
             StackValue svBCD = mirror.GetRawFirstValue("tBCD");
             ClassNode superBCD = ArrayUtils.GetGreatestCommonSubclassForArray(svBCD, runtimeCore);
-            Assert.IsTrue(superBCD.name == "A");
+            Assert.IsTrue(superBCD.Name == "A");
             StackValue svDD = mirror.GetRawFirstValue("tDD");
             ClassNode superDD = ArrayUtils.GetGreatestCommonSubclassForArray(svDD, runtimeCore);
-            Assert.IsTrue(superDD.name == "D");
+            Assert.IsTrue(superDD.Name == "D");
             StackValue svE = mirror.GetRawFirstValue("tE");
             ClassNode superE = ArrayUtils.GetGreatestCommonSubclassForArray(svE, runtimeCore);
             Assert.IsTrue(superE == null);
@@ -448,7 +427,7 @@ tE = {};//empty array
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Method Resolution")]
         public void Defect_TestArrayGetCommonSuperType_3()
         {
@@ -479,13 +458,13 @@ rBH = {b,h};
             ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
             StackValue svABCDEF = mirror.GetRawFirstValue("rABCDEF");
             ClassNode superABCDEF = ArrayUtils.GetGreatestCommonSubclassForArray(svABCDEF, runtimeCore);
-            Assert.IsTrue(superABCDEF.name == "A");
+            Assert.IsTrue(superABCDEF.Name == "A");
             StackValue svBCDEF = mirror.GetRawFirstValue("rBCDEF");
             ClassNode superBCDEF = ArrayUtils.GetGreatestCommonSubclassForArray(svBCDEF, runtimeCore);
-            Assert.IsTrue(superBCDEF.name == "A");
+            Assert.IsTrue(superBCDEF.Name == "A");
             StackValue svBH = mirror.GetRawFirstValue("rBH");
             ClassNode superBH = ArrayUtils.GetGreatestCommonSubclassForArray(svBH, runtimeCore);
-            Assert.IsTrue(superBH.name == "var");
+            Assert.IsTrue(superBH.Name == "var");
         }
 
         [Test]

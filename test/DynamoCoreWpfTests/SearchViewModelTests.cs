@@ -650,12 +650,20 @@ namespace Dynamo.Tests
             viewModel.SearchAndUpdateResults("a");
 
             Assert.Greater(viewModel.SearchResults.Count, 0);
-            Assert.AreEqual(2, viewModel.SearchRootCategories.Count);
+            Assert.AreEqual(3, viewModel.SearchRootCategories.Count);
+
+            // Top result is selected.
             Assert.AreEqual("A", viewModel.CurrentlySelectedMember.Name);
 
+            // First node is selected.
+            viewModel.MoveSelection(NavigationDirection.Forward);
+            Assert.AreEqual("A", viewModel.CurrentlySelectedMember.Name);
+
+            // Second node is selected.
             viewModel.MoveSelection(NavigationDirection.Forward);
             Assert.AreEqual("AA", viewModel.CurrentlySelectedMember.Name);
 
+            // Third node is selected.
             viewModel.MoveSelection(NavigationDirection.Forward);
             Assert.AreEqual("AAA", viewModel.CurrentlySelectedMember.Name);
         }
@@ -677,7 +685,9 @@ namespace Dynamo.Tests
             viewModel.SearchAndUpdateResults("a");
 
             Assert.Greater(viewModel.SearchResults.Count, 0);
-            Assert.AreEqual(2, viewModel.SearchRootCategories.Count);
+            Assert.AreEqual(3, viewModel.SearchRootCategories.Count);
+
+            // Top result is selected.
             Assert.AreEqual("A", viewModel.CurrentlySelectedMember.Name);
 
             viewModel.MoveSelection(NavigationDirection.Forward);
@@ -685,11 +695,38 @@ namespace Dynamo.Tests
             viewModel.MoveSelection(NavigationDirection.Backward);
             Assert.AreEqual("A", viewModel.CurrentlySelectedMember.Name);
 
+            // Jump to third node.
+            viewModel.MoveSelection(NavigationDirection.Forward);
             viewModel.MoveSelection(NavigationDirection.Forward);
             viewModel.MoveSelection(NavigationDirection.Forward);
 
+            // Back to second node.
             viewModel.MoveSelection(NavigationDirection.Backward);
             Assert.AreEqual("AA", viewModel.CurrentlySelectedMember.Name);
+        }
+
+
+        [Test]
+        [Category("UnitTests")]
+        public void TopResultIsFirstCategory()
+        {
+            var element = CreateCustomNode("Node1", "Category1");
+            model.Add(element);
+
+            element = CreateCustomNode("Node2", "Category2");
+            model.Add(element);
+
+            viewModel.Visible = true;
+            viewModel.SearchAndUpdateResults("node");
+
+            Assert.Greater(viewModel.SearchResults.Count, 0);
+            Assert.AreEqual(3, viewModel.SearchRootCategories.Count);
+
+            // Top result is first categor.
+            Assert.AreEqual("Top Result", viewModel.SearchRootCategories.First().Name);
+            // Top node is custom node.
+            Assert.IsTrue(viewModel.SearchRootCategories.First().MemberGroups.First().Members.First()
+                is CustomNodeSearchElementViewModel);
         }
 
         #endregion

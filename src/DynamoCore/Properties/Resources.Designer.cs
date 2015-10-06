@@ -295,6 +295,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to load custom node directory. Do you have permission to access {0}?.
+        /// </summary>
+        public static string CustomNodeFolderLoadFailure {
+            get {
+                return ResourceManager.GetString("CustomNodeFolderLoadFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Custom node definition is not loaded!.
         /// </summary>
         public static string CustomNodeNotLoaded {
@@ -792,6 +801,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} contains a package without a bin folder.  Ignoring it..
+        /// </summary>
+        public static string NoBinFolder {
+            get {
+                return ResourceManager.GetString("NoBinFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Whilst preparing to run, this node encountered a problem. Please talk to the creators of the node, and give them this message:.
         /// </summary>
         public static string NodeProblemEncountered {
@@ -842,51 +860,6 @@ namespace Dynamo.Properties {
         public static string NumberNodeDescription {
             get {
                 return ResourceManager.GetString("NumberNodeDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Amount of numbers in the sequence.
-        /// </summary>
-        public static string NumberRangePortDataAmountToolTip {
-            get {
-                return ResourceManager.GetString("NumberRangePortDataAmountToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Number to end the sequence at.
-        /// </summary>
-        public static string NumberRangePortDataEndToolTip {
-            get {
-                return ResourceManager.GetString("NumberRangePortDataEndToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to New sequence.
-        /// </summary>
-        public static string NumberRangePortDataSeqToolTip {
-            get {
-                return ResourceManager.GetString("NumberRangePortDataSeqToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Number to start the sequence at.
-        /// </summary>
-        public static string NumberRangePortDataStartToolTip {
-            get {
-                return ResourceManager.GetString("NumberRangePortDataStartToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Space between numbers.
-        /// </summary>
-        public static string NumberRangePortDataStepToolTip {
-            get {
-                return ResourceManager.GetString("NumberRangePortDataStepToolTip", resourceCulture);
             }
         }
         
@@ -1089,6 +1062,51 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Amount of numbers in the sequence.
+        /// </summary>
+        public static string RangePortDataAmountToolTip {
+            get {
+                return ResourceManager.GetString("RangePortDataAmountToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number or letter to end the sequence at.
+        /// </summary>
+        public static string RangePortDataEndToolTip {
+            get {
+                return ResourceManager.GetString("RangePortDataEndToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New sequence.
+        /// </summary>
+        public static string RangePortDataSeqToolTip {
+            get {
+                return ResourceManager.GetString("RangePortDataSeqToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number or letter to start the sequence at.
+        /// </summary>
+        public static string RangePortDataStartToolTip {
+            get {
+                return ResourceManager.GetString("RangePortDataStartToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Space between numbers or letters.
+        /// </summary>
+        public static string RangePortDataStepToolTip {
+            get {
+                return ResourceManager.GetString("RangePortDataStepToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Range step could not be parsed..
         /// </summary>
         public static string RangeStepCouldNotBeParsed {
@@ -1170,7 +1188,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SEARCH LIBRARY.
+        ///   Looks up a localized string similar to Search.
         /// </summary>
         public static string SearchTextBlockText {
             get {

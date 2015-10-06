@@ -88,7 +88,7 @@ c;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T05_ClassMemerVarAsFunctionPointer()
         {
             string code = @"
@@ -115,7 +115,7 @@ c = a.x(2, 4.0);	//c = 6.0";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T05_ClassMemerVarAsFunctionPointerDefaultArg()
         {
             string code = @"
@@ -140,7 +140,7 @@ c = a.x(2, 4.0);	//c = 6.0";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T06_ClassMemerVarAsFunctionPointerAssocBlk()
         {
             string code = @"
@@ -173,7 +173,7 @@ c;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T07_ClassMemerVarAsFunctionPointerImperBlk()
         {
             string code = @"
@@ -243,24 +243,19 @@ b = a();";
         [Test]
         public void T10_NegativeTest_UsingFunctionNameAsVarName_Global()
         {
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                string code = @"
+            string code = @"
 def foo:int(x:int)
 {
 	return = x;
 }
 foo = 3;";
-                ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            });
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
         }
 
         [Test]
         public void T11_NegativeTest_UsingFunctionNameAsVarName_Global_ImperBlk()
         {
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                string code = @"
+            string code = @"
 [Imperative]
 {
 	def foo:int(x:int)
@@ -269,17 +264,14 @@ foo = 3;";
 	}
 	foo = 3;
 }";
-                ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            });
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T12_NegativeTest_UsingGlobalFunctionNameAsMemVarName_Class()
         {
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                string code = @"
+            string code = @"
 def foo:int(x:int)
 {
 	return = x;
@@ -288,12 +280,11 @@ class A
 {
 	foo : var;
 }";
-                ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            });
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T13_NegativeTest_UsingMemFunctionNameAsMemVarName_Class()
         {
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
@@ -353,7 +344,7 @@ a = foo + 2;";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T16_NegativeTest_UsingMemFunctionAsFunctionPtr()
         {
             string code = @"
@@ -450,7 +441,7 @@ a = Point.ByCartesianCoordinates(foo, 1.0, 2.0, 3.0);";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T20_FunctionPtrUpdateOnMemVar_1()
         {
             string code = @"
@@ -474,7 +465,7 @@ b = a.x(3);    //b = 3";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("Method Resolution")]
         [Category("Failure")]
         public void T21_FunctionPtrUpdateOnMemVar_2()
@@ -503,14 +494,11 @@ a.x = foo2; //b = 4.0";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T22_FunctionPointer_Update()
         {
             string code = @"
-class A
-{
-x;
-}
+glob = null;
 def foo(x)
 {
     return = 2 * x;
@@ -520,10 +508,9 @@ def bar(x, f)
     return = f(x);
 }
 x = 100;
-a = A.A();
-a.x = x;
+glob = x;
 x = bar(x, foo);
-t = a.x;
+t = glob;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("t", 200);
@@ -716,7 +703,7 @@ t6:function = foo;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("Failure")]
         public void T31_UsedAsMemberVariable()
         {
@@ -755,7 +742,7 @@ r = a.x;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T32_UseStaticMemberFunction()
         {
             string code = @"
@@ -775,7 +762,7 @@ r = f(3, 4);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T33_UseStaticMemberFunction()
         {
             string code = @"
@@ -795,18 +782,17 @@ r = f({3, 5}, {7, 9});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
-        public void T34_UseStaticMemberFunction()
+        [Category("DSDefinedClass_Ported")]
+        public void T34_UseFunction()
         {
             string code = @"
-class Foo 
-{ 
-    static def foo(x : int, y : int) 
+
+    def foo(x : int, y : int) 
     {
         return = x + y; 
     } 
-} 
-f = Foo.foo;
+
+f = foo;
 a = { 3, 5 };
 b = { 7, 9 };
 r = f(a<1>, b<2>);
@@ -816,7 +802,7 @@ r = f(a<1>, b<2>);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T35_UseConstructor()
         {
             string code = @"
@@ -838,7 +824,7 @@ r = f.i;
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T36_UseConstructor()
         {
             string code = @"
@@ -859,7 +845,7 @@ r = f.i;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T37_FunctionPointerToProperty()
         {
             string code = @"
@@ -880,7 +866,7 @@ r = fx(c);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T38_FunctionPointerToProperty()
         {
             string code = @"
@@ -901,7 +887,7 @@ r = fx(cs);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T39_FunctionPointerToMemberFunction()
         {
             string code = @"
@@ -927,7 +913,7 @@ r = fx(c, 2);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T40_FunctionPointerToMemberFunction()
         {
             string code = @"
@@ -954,7 +940,7 @@ r = fx(cs, vs);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T41_FunctionPointerToMemberFunction()
         {
             string code = @"
@@ -982,7 +968,7 @@ r = fx(cs<1>, vs<2>);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T42_FunctionPointerToProperty()
         {
             string code = @"
@@ -1003,7 +989,7 @@ r = Evaluate(fx, {c}, true);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T43_FunctionPointerToProperty()
         {
             string code = @"
@@ -1024,7 +1010,7 @@ r = Evaluate(fx, {cs}, true);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T44_FunctionPointerToMemberFunction()
         {
             string code = @"
@@ -1050,7 +1036,7 @@ r = Evaluate(fx, {c, 100}, true);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T45_FunctionPointerToMemberFunction()
         {
             string code = @"

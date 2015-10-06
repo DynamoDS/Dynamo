@@ -2,23 +2,94 @@
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Publish.Properties;
 using Dynamo.Wpf.Authentication;
 using Greg;
 using Greg.AuthProviders;
 using Reach;
-using Reach.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Dynamo.Logging;
+using Reach.Data;
+using Reach.Exceptions;
+using Reach.Upload;
 
 namespace Dynamo.Publish.Models
 {
-    public class PublishModel
+    /// <summary>
+    /// Core data model for publishing a customizer
+    /// </summary>
+    public class PublishModel : LogSourceBase
     {
+        /// <summary>
+        /// A Workspace and its dependencies
+        /// </summary>
+        internal sealed class WorkspaceDependencies
+        {
+            /// <summary>
+            /// The Workspace for which the dependencies are to be collected.
+            /// </summary>
+            public readonly HomeWorkspaceModel HomeWorkspace;
+
+            /// <summary>
+            /// The full collection of workspaces representing the dependencies
+            /// </summary>
+            public readonly IEnumerable<CustomNodeWorkspaceModel> CustomNodeWorkspaces;
+
+            private WorkspaceDependencies(HomeWorkspaceModel homeWorkspace, IEnumerable<ICustomNodeWorkspaceModel> customNodeWorkspaces)
+            {
+                this.HomeWorkspace = homeWorkspace;
+                this.CustomNodeWorkspaces = customNodeWorkspaces.OfType<CustomNodeWorkspaceModel>();
+            }
+
+            /// <summary>
+            /// Get all of the dependencies from a workspace
+            /// </summary>
+            /// <param name="workspace">The workspace to read the dependencies from</param>
+            /// <param name="customNodeManager">A custom node manager to look up dependencies</param>
+            /// <returns>A WorkspaceDependencies object containing the workspace and its CustomNodeWorkspaceModel dependencies</returns>
+            public static WorkspaceDependencies Collect(HomeWorkspaceModel workspace, ICustomNodeManager customNodeManager)
+            {
+                if (workspace == null) throw new ArgumentNullException("workspace");
+                if (customNodeManager == null) throw new ArgumentNullException("customNodeManager");
+
+                // collect all dependencies
+                var dependencies = new HashSet<CustomNodeDefinition>();
+                foreach (var node in workspace.Nodes.OfType<Function>())
+                {
+                    dependencies.Add(node.Definition);
+                    foreach (var dep in node.Definition.Dependencies)
+                    {
+                        dependencies.Add(dep);
+                    }
+                }
+
+                var customNodeWorkspaces = new List<ICustomNodeWorkspaceModel>();
+                foreach (var dependency in dependencies)
+                {
+                    ICustomNodeWorkspaceModel customNodeWs;
+                    var workspaceExists = customNodeManager.TryGetFunctionWorkspace(dependency.FunctionId, false, out customNodeWs);
+
+                    if (!workspaceExists)
+                    {
+                        throw new InvalidOperationException(String.Format(Resources.CustomNodeDefinitionNotFoundErrorMessage, dependency.FunctionName));
+                    }
+
+                    if (!customNodeWorkspaces.Contains(customNodeWs))
+                    {
+                        customNodeWorkspaces.Add(customNodeWs);
+                    }
+                }
+
+                return new WorkspaceDependencies(workspace, customNodeWorkspaces);
+            }
+        }
 
         public enum UploadState
         {
@@ -34,17 +105,26 @@ namespace Dynamo.Publish.Models
             AuthenticationFailed,
             ServerNotFound,
             AuthProviderNotFound,
+            InvalidNodes,
             UnknownServerError
         }
 
         private readonly IAuthProvider authenticationProvider;
         private readonly ICustomNodeManager customNodeManager;
-
-        private readonly string serverUrl;
-        private readonly string port;
-        private readonly string page;
-
         private IWorkspaceStorageClient reachClient;
+
+        private static string serverUrl;
+        private static string page;
+        private readonly Regex serverResponceRegex;
+
+        private static string managerURL;
+        public static string ManagerURL
+        {
+            get
+            {
+                return managerURL;
+            }
+        }
 
         public bool IsLoggedIn
         {
@@ -52,18 +132,6 @@ namespace Dynamo.Publish.Models
             {
                 return authenticationProvider.LoginState == LoginState.LoggedIn;
             }
-        }
-
-        public HomeWorkspaceModel HomeWorkspace
-        {
-            get;
-            private set;
-        }
-
-        public List<ICustomNodeWorkspaceModel> CustomNodeWorkspaces
-        {
-            get;
-            private set;
         }
 
         public bool HasAuthProvider
@@ -114,6 +182,25 @@ namespace Dynamo.Publish.Models
             }
         }
 
+        public IEnumerable<string> InvalidNodeNames { get; private set; }
+
+        private string customizerURL;
+        /// <summary>
+        /// URL sent by server.
+        /// </summary>
+        public string CustomizerURL
+        {
+            get
+            {
+                return customizerURL;
+            }
+            private set
+            {
+                customizerURL = value;
+                OnCustomizerURLChanged(customizerURL);
+            }
+        }
+
         internal event Action<UploadState> UploadStateChanged;
         private void OnUploadStateChanged(UploadState state)
         {
@@ -121,30 +208,45 @@ namespace Dynamo.Publish.Models
                 UploadStateChanged(state);
         }
 
+        internal event Action<string> CustomizerURLChanged;
+        private void OnCustomizerURLChanged(string url)
+        {
+            if (CustomizerURLChanged != null)
+                CustomizerURLChanged(url);
+        }
 
         #region Initialization
 
-        internal PublishModel(IAuthProvider dynamoAuthenticationProvider, ICustomNodeManager dynamoCustomNodeManager)
+        static PublishModel()
         {
             // Open the configuration file using the dll location.
-            var config = ConfigurationManager.OpenExeConfiguration(this.GetType().Assembly.Location);
+            var config = ConfigurationManager.OpenExeConfiguration(typeof(PublishModel).Assembly.Location);
             // Get the appSettings section.
             var appSettings = (AppSettingsSection)config.GetSection("appSettings");
 
+            // set the static fields
             serverUrl = appSettings.Settings["ServerUrl"].Value;
-            if (String.IsNullOrWhiteSpace(serverUrl))
-                throw new Exception(Resource.ServerNotFoundMessage);
-
-            port = appSettings.Settings["Port"].Value;
-            if (String.IsNullOrWhiteSpace(port))
-                throw new Exception(Resource.PortErrorMessage);
-
             page = appSettings.Settings["Page"].Value;
+            managerURL = appSettings.Settings["ManagerPage"].Value;
+        }
+
+        internal PublishModel(IAuthProvider dynamoAuthenticationProvider, ICustomNodeManager dynamoCustomNodeManager)
+        {
+            // Here we throw exceptions if any of the required static fields are not set
+            // This prevents these exceptions from being thrown in the static constructor.
+            if (String.IsNullOrWhiteSpace(serverUrl))
+                throw new Exception(Resources.ServerNotFoundMessage);
+
             if (String.IsNullOrWhiteSpace(page))
-                throw new Exception(Resource.PageErrorMessage);
+                throw new Exception(Resources.PageErrorMessage);
+
+            if (String.IsNullOrWhiteSpace(managerURL))
+                throw new Exception(Resources.ManagerErrorMessage);
 
             authenticationProvider = dynamoAuthenticationProvider;
             customNodeManager = dynamoCustomNodeManager;
+
+            serverResponceRegex = new Regex(Resources.WorkspacesSendSucceededServerResponse, RegexOptions.IgnoreCase);
 
             State = UploadState.Uninitialized;
         }
@@ -174,18 +276,24 @@ namespace Dynamo.Publish.Models
             }
         }
 
-        internal void SendAsynchronously(IEnumerable<IWorkspaceModel> workspaces)
+        internal void SendAsynchronously(HomeWorkspaceModel workspace, WorkspaceProperties workspaceProperties = null)
         {
             State = UploadState.Uploading;
 
             Task.Factory.StartNew(() =>
                 {
-                    var result = this.Send(workspaces);
+                    var result = this.Send(workspace, workspaceProperties);
+                    var serverResponce = serverResponceRegex.Match(result);
 
-                    if (result == Resource.WorkspacesSendSucceededServerResponse)
+                    if (serverResponce.Success)
                     {
                         State = UploadState.Succeeded;
                         Error = UploadErrorType.None;
+                        CustomizerURL = String.Concat(serverUrl, serverResponce.Value);
+                    }
+                    else if (InvalidNodeNames != null)
+                    {
+                        Error = UploadErrorType.InvalidNodes;
                     }
                     else
                     {
@@ -201,60 +309,61 @@ namespace Dynamo.Publish.Models
         /// Sends workspace and its' dependencies to Flood.
         /// </summary>
         /// <returns>String which is response from server.</returns>
-        internal string Send(IEnumerable<IWorkspaceModel> workspaces)
+        internal string Send(HomeWorkspaceModel workspace, WorkspaceProperties workspaceProperties = null)
         {
             if (String.IsNullOrWhiteSpace(serverUrl))
             {
                 Error = UploadErrorType.ServerNotFound;
-                return Resource.FailedMessage;
+                return Resources.FailedMessage;
             }
 
             if (String.IsNullOrWhiteSpace(authenticationProvider.Username))
             {
                 Error = UploadErrorType.AuthenticationFailed;
-                return Resource.FailedMessage;
+                return Resources.FailedMessage;
             }
 
             if (authenticationProvider == null)
             {
                 Error = UploadErrorType.AuthProviderNotFound;
-                return Resource.FailedMessage;
+                return Resources.FailedMessage;
             }
-
-            string fullServerAdress = serverUrl + ":" + port;
 
             if (reachClient == null)
-                reachClient = new WorkspaceStorageClient(authenticationProvider, fullServerAdress);
-
-            HomeWorkspace = workspaces.OfType<HomeWorkspaceModel>().First();
-            var functionNodes = HomeWorkspace.Nodes.OfType<Function>();
-
-            List<CustomNodeDefinition> dependencies = new List<CustomNodeDefinition>();
-            foreach (var node in functionNodes)
             {
-                dependencies.AddRange(node.Definition.Dependencies);
+                reachClient = new WorkspaceStorageClient(authenticationProvider, serverUrl);
             }
 
-            CustomNodeWorkspaces = new List<ICustomNodeWorkspaceModel>();
-            foreach (var dependency in dependencies)
-            {
-                ICustomNodeWorkspaceModel customNodeWs;
-                var isWorkspaceCreated = customNodeManager.TryGetFunctionWorkspace(dependency.FunctionId, false, out customNodeWs);
-                if (isWorkspaceCreated && !CustomNodeWorkspaces.Contains(customNodeWs))
-                    CustomNodeWorkspaces.Add(customNodeWs);
-            }
+            var dependencies = WorkspaceDependencies.Collect(workspace, customNodeManager);
 
             string result;
             try
             {
-                result = reachClient.Send(HomeWorkspace, CustomNodeWorkspaces.OfType<CustomNodeWorkspaceModel>());
+                result = reachClient.Send(
+                    workspace,
+                    dependencies.CustomNodeWorkspaces,
+                    workspaceProperties);
+                InvalidNodeNames = null;
+            }
+            catch (InvalidNodesException ex)
+            {
+                InvalidNodeNames = ex.InvalidNodeNames;
+                result = Resources.FailedMessage;
             }
             catch
             {
-                result = Resource.FailedMessage;
+                result = Resources.FailedMessage;
             }
+
             return result;
         }
+
+        internal void ClearState()
+        {
+            State = UploadState.Uninitialized;
+            Error = UploadErrorType.None;
+        }
+
     }
 
 }

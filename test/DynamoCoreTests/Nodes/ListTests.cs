@@ -284,17 +284,17 @@ namespace Dynamo.Tests
 
 		}
 
-		[Test]
-		public void TestPartitionStringSingleInput()
-		{
-			string testFilePath = Path.Combine(listTestFolder, "testPartitionList_singleInput.dyn");
-			RunModel(testFilePath);
+        [Test]
+        public void TestPartitionStringSingleInput()
+        {
+            string testFilePath = Path.Combine(listTestFolder, "testPartitionList_singleInput.dyn");
+            RunModel(testFilePath);
 
-			AssertPreviewValue("4070b941-f4ef-4fc0-bced-2eb469fcd5f8", new object[] { 20 });
-		}
+            AssertPreviewValue("4070b941-f4ef-4fc0-bced-2eb469fcd5f8", new object[] { new object[] { 20 } });
+        }
 
-		[Test]
-		public void TestPartitionStringNumberInput()
+        [Test]
+        public void TestPartitionStringNumberInput()
 		{
 			string testFilePath = Path.Combine(listTestFolder, "testPartitionList_numberInput.dyn");
 			RunModel(testFilePath);
@@ -1202,7 +1202,7 @@ namespace Dynamo.Tests
 			Assert.AreEqual(6, workspace.Nodes.Count());
 			Assert.AreEqual(5, workspace.Connectors.Count());
 
-			var numberRange = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSCoreNodesUI.NumberRange>("4e781f03-5b48-4d58-a511-8c732665e961");
+			var numberRange = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSCoreNodesUI.Range>("4e781f03-5b48-4d58-a511-8c732665e961");
 
 			var actual = numberRange.GetValue(0, CurrentDynamoModel.EngineController).GetElements();
 			var innerList1 = actual[0].GetElements();

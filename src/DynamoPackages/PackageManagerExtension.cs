@@ -6,6 +6,7 @@ using System.Linq;
 using Dynamo.Extensions;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Logging;
 
 using Greg;
 using System.Reflection;
@@ -41,17 +42,6 @@ namespace Dynamo.PackageManager
         #endregion
 
         #region IExtension members
-
-        public void Load(IPreferences preferences, IPathManager pathManager)
-        {
-            // Load Packages
-            PackageLoader.DoCachedPackageUninstalls(preferences);
-            PackageLoader.LoadAll(new LoadPackageParams
-            {
-                Preferences = preferences,
-                PathManager = pathManager
-            });
-        }
 
         public void Dispose()
         {
@@ -109,6 +99,8 @@ namespace Dynamo.PackageManager
             PackageManagerClient = new PackageManagerClient(
                 new GregClient(startupParams.AuthProvider, url),
                 uploadBuilder, PackageLoader.DefaultPackagesDirectory);
+
+            LoadPackages(startupParams.Preferences, startupParams.PathManager);
         }
 
         public void Ready(ReadyParams sp) { }
@@ -121,6 +113,17 @@ namespace Dynamo.PackageManager
         #endregion
 
         #region Private helper methods
+
+        private void LoadPackages(IPreferences preferences, IPathManager pathManager)
+        {
+            // Load Packages
+            PackageLoader.DoCachedPackageUninstalls(preferences);
+            PackageLoader.LoadAll(new LoadPackageParams
+            {
+                Preferences = preferences,
+                PathManager = pathManager
+            });
+        }
 
         private void OnMessageLogged(ILogMessage msg)
         {

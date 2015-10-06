@@ -9,7 +9,7 @@ namespace ProtoCore.DSASM
 
         public bool IsInternalClassAttribute()
         {
-            return ClassNode.name.StartsWith(InternalAttributes.kInternalClassName);
+            return ClassNode.Name.StartsWith(InternalAttributes.kInternalClassName);
         }
     }
 }

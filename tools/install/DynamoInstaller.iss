@@ -12,7 +12,7 @@
 [Setup]
 AppName={#ProductName}
 AppPublisher={#ProductName}
-AppID={{24113174-8C13-4FA5-8010-772C9144AC41}
+AppID={{86B8C99A-85CE-45e1-8149-0A22AAAB3792}
 AppCopyright=
 AppPublisherURL=http://www.dynamobim.org
 AppSupportURL=http://www.dynamobim.org
@@ -40,7 +40,6 @@ UninstallDisplayName={#ProductName} {#ProductVersion}
 UsePreviousAppDir=no
 
 [Dirs]
-Name: "{app}\libg_219"
 Name: "{app}\libg_220"
 Name: "{app}\libg_221"
 Name: "{app}\libg_locale"
@@ -54,9 +53,9 @@ Name: "{userappdata}\Dynamo\{#Major}.{#Minor}\packages"
 
 [Components]
 Name: "DynamoCore"; Description: "Dynamo Core Functionality"; Types: full compact custom; Flags: fixed
-Name: "DynamoForRevit2014"; Description: "Dynamo For Revit 2014"; Types: full compact custom;
 Name: "DynamoForRevit2015"; Description: "Dynamo For Revit 2015"; Types: full compact custom;
 Name: "DynamoForRevit2016"; Description: "Dynamo For Revit 2016"; Types: full compact custom;
+Name: "DynamoForRevit2017"; Description: "Dynamo For Revit 2017"; Types: full compact custom;
 Name: "DynamoTrainingFiles"; Description: "Dynamo Training Files"; Types: full
 
 [Files]
@@ -69,14 +68,10 @@ Source: "Extra\DynamoAddinGenerator.exe"; Flags: dontcopy
 Source: temp\bin\*; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: temp\bin\nodes\*; DestDir: {app}\nodes; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 Source: temp\bin\extensions\*; DestDir: {app}\extensions; Flags: ignoreversion overwritereadonly; Components: DynamoCore
-Source: temp\bin\viewExtensions\*; DestDir: {app}\viewExtensions; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
+Source: temp\bin\viewExtensions\*; DestDir: {app}\viewExtensions; Flags: ignoreversion overwritereadonly recursesubdirs skipifsourcedoesntexist; Components: DynamoCore
 Source: temp\bin\lang\*; DestDir: {app}\; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 Source: Extra\IronPython-2.7.3.msi; DestDir: {tmp}; Flags: deleteafterinstall;
 Source: temp\bin\README.txt; DestDir: {app}\; Flags: onlyifdoesntexist isreadme ignoreversion; Components: DynamoCore
-
-;Revit 2014
-Source: temp\bin\Revit_2014\*; DestDir: {app}\Revit_2014; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly recursesubdirs; Components: DynamoForRevit2014
-Source: temp\bin\Revit_2014\nodes\*; DestDir: {app}\Revit_2014\nodes; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly recursesubdirs; Components: DynamoForRevit2014
 
 ;Revit 2015
 Source: temp\bin\Revit_2015\*; DestDir: {app}\Revit_2015; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly recursesubdirs; Components: DynamoForRevit2015 
@@ -86,12 +81,15 @@ Source: temp\bin\Revit_2015\nodes\*; DestDir: {app}\Revit_2015\nodes; Flags:skip
 Source: temp\bin\Revit_2016\*; DestDir: {app}\Revit_2016; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly recursesubdirs; Components:  DynamoForRevit2016
 Source: temp\bin\Revit_2016\nodes\*; DestDir: {app}\Revit_2016\nodes; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly recursesubdirs; Components: DynamoForRevit2016
 
+;Revit 2017
+Source: temp\bin\Revit_2017\*; DestDir: {app}\Revit_2017; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly recursesubdirs; Components:  DynamoForRevit2017
+Source: temp\bin\Revit_2017\nodes\*; DestDir: {app}\Revit_2017\nodes; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly recursesubdirs; Components: DynamoForRevit2017
+
 ;AddinGenerator
 Source: Extra\DynamoAddinGenerator.exe; DestDir: {app}; Flags: ignoreversion overwritereadonly uninsneveruninstall; Components: DynamoCore
-Source: Extra\RevitAddinUtility.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly uninsneveruninstall; Components: DynamoForRevit2015 DynamoForRevit2014 DynamoForRevit2016
+Source: Extra\RevitAddinUtility.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly uninsneveruninstall; Components: DynamoForRevit2015 DynamoForRevit2016 DynamoForRevit2017
 
 ;LibG
-Source: temp\bin\LibG_219\*; DestDir: {app}\libg_219; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: temp\bin\LibG_220\*; DestDir: {app}\libg_220; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: temp\bin\LibG_221\*; DestDir: {app}\libg_221; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: temp\bin\LibG_locale\*; DestDir: {app}\libg_locale; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
@@ -132,7 +130,6 @@ Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2015\Dynamo071.addin"
 Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2014\DynamoVersionSelector.addin"
 Type: files; Name: "{app}\DynamoAddinGenerator.exe"
 Type: files; Name: "{app}\RevitAddinUtility.dll"
-Type: filesandordirs; Name: {app}\libg_219
 Type: filesandordirs; Name: {app}\libg_220
 Type: filesandordirs; Name: {app}\libg_221
 Type: filesandordirs; Name: {app}\libg_locale
@@ -198,9 +195,9 @@ begin
 
   result := true
   // check if there is a valid revit installation on this machine, if not - fail
-  if not (RevitInstallationExists('Revit2016') or RevitInstallationExists('Revit2015') or RevitInstallationExists('Revit2014')) then
+  if not (RevitInstallationExists('Revit2017') or RevitInstallationExists('Revit2016') or RevitInstallationExists('Revit2015')) then
     begin
-	  MsgBox('Dynamo requires an installation of Revit 2014, Revit 2015 or Revit 2016 in order to proceed!', mbCriticalError, MB_OK);
+	  MsgBox('Dynamo requires an installation of Revit 2015 or Revit 2016 or Revit 2017 in order to proceed!', mbCriticalError, MB_OK);
       result := false;
     end;
 
@@ -256,17 +253,17 @@ end;
 procedure CurPageChanged(CurPageID: Integer);
 begin
   if CurPageID = wpSelectComponents then
-	if not RevitInstallationExists('Revit2014') then
+  if not RevitInstallationExists('Revit2015') then
     begin
       WizardForm.ComponentsList.Checked[1] := False;
       WizardForm.ComponentsList.ItemEnabled[1] := False;
     end;
-  if not RevitInstallationExists('Revit2015') then
+  if not RevitInstallationExists('Revit2016') then
     begin
       WizardForm.ComponentsList.Checked[2] := False;
       WizardForm.ComponentsList.ItemEnabled[2] := False;
     end;
-  if not RevitInstallationExists('Revit2016') then
+  if not RevitInstallationExists('Revit2017') then
     begin
       WizardForm.ComponentsList.Checked[3] := False;
       WizardForm.ComponentsList.ItemEnabled[3] := False;

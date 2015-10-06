@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Dynamo.PackageManager.Interfaces;
 using Dynamo.Tests;
 using Moq;
 using NUnit.Framework;
@@ -10,6 +11,11 @@ namespace Dynamo.PackageManager.Tests
 {
     class PackageDirectoryBuilderTests
     {
+        public static bool ComparePaths(string path1, string path2)
+        {
+            return PackageDirectoryBuilder.NormalizePath(path1) == PackageDirectoryBuilder.NormalizePath(path2);
+        }
+
         #region BuildPackageDirectory
 
         [Test]
@@ -18,7 +24,7 @@ namespace Dynamo.PackageManager.Tests
             var files = new[] { @"C:\file1.dyf", @"C:\file2.dyf" };
             var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
 
-            var fs = new RecordedFileSystem((fn) => files.Contains(fn));
+            var fs = new RecordedFileSystem((fn) => files.Any((x) => ComparePaths(x,fn)));
 
             var db = new PackageDirectoryBuilder(fs, MockMaker.Empty<IPathRemapper>());
 
@@ -153,8 +159,8 @@ namespace Dynamo.PackageManager.Tests
 
             var dyfDir = Path.Combine(pkgsDir, pkg.Name, PackageDirectoryBuilder.CustomNodeDirectoryName);
 
-            Assert.IsTrue(fs.CopiedFiles.Any(x => x.Item2 == Path.Combine(dyfDir, "file1.dyf")));
-            Assert.IsTrue(fs.CopiedFiles.Any(x => x.Item2 == Path.Combine(dyfDir, "file2.dyf")));
+            Assert.IsTrue(fs.CopiedFiles.Any(x => ComparePaths(x.Item2, Path.Combine(dyfDir, "file1.dyf"))));
+            Assert.IsTrue(fs.CopiedFiles.Any(x => ComparePaths(x.Item2, Path.Combine(dyfDir, "file2.dyf"))));
         }
 
         [Test]
@@ -180,5 +186,35 @@ namespace Dynamo.PackageManager.Tests
         }
 
         #endregion
+
+        #region CopyFilesIntoPackageDirectory
+
+        [Test]
+        public void CopyFilesIntoPackageDirectory_DoesNotMoveFilesAlreadyWithinDirectory()
+        {
+            var files = new[] { @"C:\foo/dyf\file1.dyf", @"C:\\foo\dyf\file2.dyf", @"C:\\foo\dyf\file3.dyf", 
+                @"C:\foo/bin\file1.dll", @"C:\\foo\bin\file2.dll", @"C:\\foo\bin\file3.dll", 
+                @"C:\foo/extra\file1.pdf", @"C:\\foo\extra\file2.rvt", @"C:\\foo\extra\file3.poo" };
+
+            var fs = new RecordedFileSystem((fn) => files.Contains(fn), (dn) => true);
+            var f = new PackageDirectoryBuilder(fs, new Mock<IPathRemapper>().Object);
+
+            var dyf = new Mock<IDirectoryInfo>();
+            dyf.SetupGet((i) => i.FullName).Returns(() => "C:/foo/dyf");
+
+            var bin = new Mock<IDirectoryInfo>();
+            bin.SetupGet((i) => i.FullName).Returns(() => "C:/foo/bin");
+
+            var extra = new Mock<IDirectoryInfo>();
+            extra.SetupGet((i) => i.FullName).Returns(() => "C:/foo/extra");
+
+            f.CopyFilesIntoPackageDirectory(files, dyf.Object, bin.Object, extra.Object);
+
+            // no files should be copied, they are all already within their intended directory
+            Assert.IsEmpty(fs.CopiedFiles);
+        }
+
+        #endregion
+
     }
 }

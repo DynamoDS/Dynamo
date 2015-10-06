@@ -1,13 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using DSIronPythonNode;
+
 using Dynamo.Models;
 using NUnit.Framework;
 using DynCmd = Dynamo.Models.DynamoModel;
 
+using PythonNodeModels;
+
 namespace Dynamo.Tests
 {
+    [RequiresSTA]
     public class PythonEditTests : DynamoViewModelUnitTest
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
@@ -27,7 +30,7 @@ namespace Dynamo.Tests
             // get the python node
             var workspace = model.CurrentWorkspace;
             var nodeModel = workspace.NodeFromWorkspace("3bcad14e-d086-4278-9e08-ed2759ef92f3");
-            DSIronPythonNode.PythonNode pynode = nodeModel as DSIronPythonNode.PythonNode;
+            var pynode = nodeModel as PythonNode;
             Assert.NotNull(pynode);
 
             // make changes to python script

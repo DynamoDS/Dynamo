@@ -18,8 +18,8 @@ namespace Dynamo.Search.SearchElements
         protected string iconName;
 
         private readonly HashSet<string> keywords = new HashSet<string>();
-        private string description;
-        private string userFriendlyName;
+        protected readonly List<double> keywordWeights = new List<double>();
+        private string description;        
         private SearchElementGroup group;
         private string assembly;
         private bool isVisibleInSearch = true;
@@ -112,21 +112,12 @@ namespace Dynamo.Search.SearchElements
         }
 
         /// <summary>
-        /// User friendly name, that is used in InCanvasSearch.
+        ///     The parameters of this entry, used for overloaded nodes.
         /// </summary>
-        public string UserFriendlyName
+        public string Parameters
         {
-            get
-            {
-                if (!String.IsNullOrWhiteSpace(userFriendlyName))
-                    return userFriendlyName;
-                else
-                    return Name;
-            }
-            protected set
-            {                
-                userFriendlyName = value;                
-            }
+            get;
+            protected set;
         }
 
         /// <summary>
@@ -267,6 +258,14 @@ namespace Dynamo.Search.SearchElements
             get
             {
                 return SearchKeywords.ToList();
+            }
+        }
+
+        IEnumerable<double> ISearchEntry.SearchTagWeights
+        {
+            get
+            {
+                return keywordWeights;
             }
         }
 

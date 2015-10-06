@@ -33,7 +33,7 @@ namespace ProtoCore
 
             ClassNode cnode = null;
 
-            cnode = new ClassNode { name = kInternalClassName + kAttributeSuffix };
+            cnode = new ClassNode { Name = kInternalClassName + kAttributeSuffix };
             ClassTable.Append(cnode);
         }
     }

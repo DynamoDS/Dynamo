@@ -19,6 +19,12 @@ namespace Dynamo.Wpf.ViewModels
         private bool isSelected;
         private SearchViewModel searchViewModel;
 
+        public bool IsTopResult
+        {
+            get;
+            set;
+        }
+
         public event RequestBitmapSourceHandler RequestBitmapSource;
         public void OnRequestBitmapSource(IconRequestEventArgs e)
         {
@@ -44,6 +50,20 @@ namespace Dynamo.Wpf.ViewModels
             ClickedCommand = new DelegateCommand(OnClicked);            
         }
 
+        /// <summary>
+        /// Creates a copy of NodeSearchElementViewModel.
+        /// </summary>
+        public NodeSearchElementViewModel(NodeSearchElementViewModel copyElement)
+        {
+            if (copyElement == null)
+                throw new ArgumentNullException();
+
+            Model = copyElement.Model;
+            Clicked = copyElement.Clicked;
+            RequestBitmapSource = copyElement.RequestBitmapSource;
+            ClickedCommand = copyElement.ClickedCommand;
+        }
+
         private void ModelOnVisibilityChanged()
         {           
             RaisePropertyChanged("Visibility");
@@ -62,11 +82,6 @@ namespace Dynamo.Wpf.ViewModels
             get { return Model.Name; }
         }
 
-        public string UserFriendlyName
-        {
-            get { return Model.UserFriendlyName; }
-        }
-
         public string FullName
         {
             get { return Model.FullName; }
@@ -75,6 +90,11 @@ namespace Dynamo.Wpf.ViewModels
         public string Assembly
         {
             get { return Model.Assembly; }
+        }
+
+        public string Parameters
+        {
+            get { return Model.Parameters; }
         }
 
         public bool Visibility
@@ -172,6 +192,8 @@ namespace Dynamo.Wpf.ViewModels
             {
                 var nodeModel = Model.CreateNode();
                 Clicked(nodeModel, Position);
+
+                Dynamo.Services.InstrumentationLogger.LogPiiInfo("Search-NodeAdded", FullName);
             }
         }
 
@@ -219,6 +241,12 @@ namespace Dynamo.Wpf.ViewModels
             : base(element, svm)
         {
             Path = Model.Path;
+        }
+
+        public CustomNodeSearchElementViewModel(CustomNodeSearchElementViewModel copyElement)
+            : base(copyElement)
+        {
+            Path = copyElement.Path;
         }
 
         public string Path

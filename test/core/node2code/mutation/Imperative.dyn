@@ -1,0 +1,17 @@
+<Workspace Version="0.8.2.1915" X="-1471.92716595441" Y="1028.33076452215" zoom="1.21038043229257" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="7d857310-8737-413e-b79a-13363e54b2c7" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="1547" y="-739" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="b;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="323c8b5e-3b25-4018-99d9-8690e38e66b2" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="1378" y="-735.2" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="//a&#xA;a=1;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="9cc5ad25-0077-495f-9781-117595d8953e" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="1380" y="-631.4" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="z1 = [Imperative]&#xA;{&#xA;x={1,2,3,4};&#xA;for(i in x)&#xA;{&#xA;}&#xA;return = 1;&#xA;};" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="323c8b5e-3b25-4018-99d9-8690e38e66b2" start_index="0" end="7d857310-8737-413e-b79a-13363e54b2c7" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+</Workspace>

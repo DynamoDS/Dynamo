@@ -8,8 +8,6 @@ using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 
-using DynamoUtilities;
-
 namespace Dynamo
 {
     /// <summary>
@@ -59,7 +57,7 @@ namespace Dynamo
         /// <summary>
         /// Should the background 3D preview be shown?
         /// </summary>
-        public bool FullscreenWatchShowing { get; set; }
+        public bool IsBackgroundPreviewActive { get; set; }
 
         /// <summary>
         /// The decimal precision used to display numbers.
@@ -182,7 +180,7 @@ namespace Dynamo
             ConsoleHeight = 0;
             ShowConnector = true;
             ConnectorType = ConnectorType.BEZIER;
-            FullscreenWatchShowing = true;
+            IsBackgroundPreviewActive = true;
             PackageDirectoriesToUninstall = new List<string>();
             NumberFormat = "f3";
             UseHardwareAcceleration = true;

@@ -99,6 +99,9 @@
                 </Border>
             </HierarchicalDataTemplate>
 
+            <HierarchicalDataTemplate x:Key="TopCategoryDataTemplate"
+                                      ItemsSource="{Binding Path=MemberGroups}" />
+
             <Style BasedOn="{StaticResource LibraryScrollViewerStyle}"
                    TargetType="{x:Type ScrollViewer}">
                 <Setter Property="Template"
@@ -108,7 +111,8 @@
             <controls:LibrarySearchTreeTemplateSelector x:Key="LibrarySearchTreeTemplateSelector"
                                                         MemberTemplate="{StaticResource MemberTemplate}"
                                                         MemberGroupsTemplate="{StaticResource MemberGroupsDataTemplate}"
-                                                        CategoryTemplate="{StaticResource NestedCategoryDataTemplate}" />
+                                                        CategoryTemplate="{StaticResource NestedCategoryDataTemplate}"
+                                                        TopCategoryTemplate="{StaticResource TopCategoryDataTemplate}" />
 
             <Style x:Key="LibraryTreeViewItem"
                    TargetType="{x:Type TreeViewItem}">
@@ -122,7 +126,6 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type TreeViewItem}">
                             <Button Command="{Binding ClickedCommand}"
-                                    Focusable="False"
                                     MouseEnter="OnMemberMouseEnter"
                                     MouseLeave="OnPopupMouseLeave"
                                     PreviewMouseLeftButtonDown="OnButtonMouseLeftButtonDown"
@@ -171,7 +174,7 @@
                                                 Value="{StaticResource LibraryMemberOnHover}" />
                                     </MultiTrigger.Setters>
                                 </MultiTrigger>
-                                
+
                                 <MultiTrigger>
                                     <MultiTrigger.Conditions>
                                         <Condition Property="IsSelected"
@@ -202,39 +205,8 @@
     </UserControl.Resources>
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-
-        <StackPanel x:Name="topResultPanel"
-                    DataContext="{Binding TopResult}">
-            <StackPanel.Visibility>
-                <Binding Converter="{StaticResource NullValueToCollapsedConverter}" />
-            </StackPanel.Visibility>
-            <TextBlock Text="{Binding FullyQualifiedName}"
-                       Margin="16,8,0,8"
-                       Foreground="{StaticResource NestedMemberTextColor}"
-                       FontSize="12" />
-            <TreeView x:Name="topResultTreeView"
-                      Background="Transparent"
-                      BorderBrush="Transparent"
-                      ItemContainerStyle="{StaticResource LibraryTreeViewItem}"
-                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                      ItemsSource="{Binding Members,NotifyOnTargetUpdated=True}">
-                <TreeView.ItemTemplate>
-                    <DataTemplate>
-                        <Border BorderThickness="2,0,0,0"
-                                BorderBrush="Yellow">
-                            <ContentPresenter ContentTemplate="{StaticResource MemberTemplate}" />
-                        </Border>
-                    </DataTemplate>
-                </TreeView.ItemTemplate>
-            </TreeView>
-        </StackPanel>
 
         <TreeView  Name="CategoryTreeView"
-                   Grid.Row="1"
                    Background="{StaticResource LibraryItemHostBackground}"
                    BorderThickness="0"
                    ItemsSource="{Binding SearchRootCategories}"

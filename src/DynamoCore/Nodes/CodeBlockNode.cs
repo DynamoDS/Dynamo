@@ -6,7 +6,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Xml;
-using Dynamo.DSEngine;
+using Dynamo.Engine;
+using Dynamo.Engine.CodeGeneration;
 using ProtoCore.AST.AssociativeAST;
 using Dynamo.Models;
 using Dynamo.Utilities;
@@ -17,6 +18,7 @@ using Node = ProtoCore.AST.Node;
 using Operator = ProtoCore.DSASM.Operator;
 using ProtoCore.Utils;
 using Dynamo.UI;
+using ProtoCore;
 
 namespace Dynamo.Nodes
 {
@@ -42,7 +44,7 @@ namespace Dynamo.Nodes
             internal set { shouldFocus = value; }
         }
 
-        public ElementResolver ElementResolver { get; private set; }
+        public ElementResolver ElementResolver { get; set; }
 
         private struct Formatting
         {
@@ -60,17 +62,17 @@ namespace Dynamo.Nodes
             this.ElementResolver = new ElementResolver();
         }
 
-        public CodeBlockNodeModel(string userCode, double xPos, double yPos, LibraryServices libraryServices)
-            : this(userCode, Guid.NewGuid(), xPos, yPos, libraryServices) { }
+        public CodeBlockNodeModel(string userCode, double xPos, double yPos, LibraryServices libraryServices, ElementResolver resolver)
+            : this(userCode, Guid.NewGuid(), xPos, yPos, libraryServices, resolver) { }
 
-        public CodeBlockNodeModel(string userCode, Guid guid, double xPos, double yPos, LibraryServices libraryServices)
+        public CodeBlockNodeModel(string userCode, Guid guid, double xPos, double yPos, LibraryServices libraryServices, ElementResolver resolver)
         {
             ArgumentLacing = LacingStrategy.Disabled;
             X = xPos;
             Y = yPos;
             this.libraryServices = libraryServices;
             this.libraryServices.LibraryLoaded += LibraryServicesOnLibraryLoaded;
-            this.ElementResolver = new ElementResolver();
+            this.ElementResolver = resolver;
             code = userCode;
             GUID = guid;
             ShouldFocus = false;
@@ -277,14 +279,10 @@ namespace Dynamo.Nodes
             shouldFocus = helper.ReadBoolean("ShouldFocus");
             code = helper.ReadString("CodeText");
 
-            // Lookup namespace resolution map if available and initialize new instance of ElementResolver
-            var resolutionMap = CodeBlockUtils.DeserializeElementResolver(nodeElement);
-            ElementResolver = new ElementResolver(resolutionMap);
-
             ProcessCodeDirect();
         }
 
-        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, AstBuilder.CompilationContext context)
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, CompilationContext context)
         {
             //Do not build if the node is in error.
             if (State == ElementState.Error)
@@ -303,7 +301,7 @@ namespace Dynamo.Nodes
                     (ident, rhs) =>
                     {
                         var identNode = AstFactory.BuildIdentifier(ident);
-                        if (context != AstBuilder.CompilationContext.NodeToCode)
+                        if (context != CompilationContext.NodeToCode)
                             MapIdentifiers(identNode);
                         return AstFactory.BuildAssignment(identNode, rhs);
                     });
@@ -312,7 +310,7 @@ namespace Dynamo.Nodes
 
             foreach (var astNode in codeStatements.Select(stmnt => NodeUtils.Clone(stmnt.AstNode)))
             {
-                if (context != AstBuilder.CompilationContext.NodeToCode)
+                if (context != CompilationContext.NodeToCode)
                     MapIdentifiers(astNode);
                 resultNodes.Add(astNode as AssociativeNode);
             }
@@ -320,18 +318,7 @@ namespace Dynamo.Nodes
             return resultNodes;
         }
 
-        /// <summary>
-        /// For code block nodes, each output identifier of an output port is mapped.
-        /// For an example, "p = 1" would have its internal identifier renamed to 
-        /// "pXXXX", where "XXXX" is the GUID of the code block node. This mapping is 
-        /// done to ensure the uniqueness of the output variable name.
-        /// </summary>
-        /// <param name="portIndex">Output port index</param>
-        /// <param name="forRawName">Set this parameter to true to retrieve the 
-        /// original identifier name "p". If this parameter is false, the mapped 
-        /// identifer name "pXXXX" is returned instead.</param>
-        /// <returns></returns>
-        private IdentifierNode GetAstIdentifierForOutputIndexInternal(int portIndex, bool forRawName)
+        private Statement GetStatementForOutput(int portIndex)
         {
             if (State == ElementState.Error)
                 return null;
@@ -359,6 +346,23 @@ namespace Dynamo.Nodes
                 }
             }
 
+            return statement;
+        }
+
+        /// <summary>
+        /// For code block nodes, each output identifier of an output port is mapped.
+        /// For an example, "p = 1" would have its internal identifier renamed to 
+        /// "pXXXX", where "XXXX" is the GUID of the code block node. This mapping is 
+        /// done to ensure the uniqueness of the output variable name.
+        /// </summary>
+        /// <param name="portIndex">Output port index</param>
+        /// <param name="forRawName">Set this parameter to true to retrieve the 
+        /// original identifier name "p". If this parameter is false, the mapped 
+        /// identifer name "pXXXX" is returned instead.</param>
+        /// <returns></returns>
+        private IdentifierNode GetAstIdentifierForOutputIndexInternal(int portIndex, bool forRawName)
+        {
+            var statement = GetStatementForOutput(portIndex);
             if (statement == null)
                 return null;
 
@@ -385,6 +389,67 @@ namespace Dynamo.Nodes
             return GetAstIdentifierForOutputIndexInternal(portIndex, true);
         }
 
+        /// <summary>
+        /// Return possible type of the output at specified output port.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public override ProtoCore.Type GetTypeHintForOutput(int index)
+        {
+            ProtoCore.Type type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
+            var statement = GetStatementForOutput(index);
+            if (statement == null)
+                return type;
+
+            BinaryExpressionNode expr = statement.AstNode as BinaryExpressionNode;
+            if (expr == null || expr.Optr != Operator.assign)
+                return type;
+            
+            var core = libraryServices.LibraryManagementCore;
+
+            if (expr.RightNode is IdentifierListNode) 
+            {
+                var identListNode = expr.RightNode as IdentifierListNode;
+                var funcNode = identListNode.RightNode as FunctionCallNode;
+                if (funcNode == null)
+                    return type;
+
+                string fullyQualitifiedName = CoreUtils.GetIdentifierExceptMethodName(identListNode);
+                if (string.IsNullOrEmpty(fullyQualitifiedName))
+                    return type;
+
+                var classIndex = core.ClassTable.IndexOf(fullyQualitifiedName);
+                if (classIndex == ProtoCore.DSASM.Constants.kInvalidIndex)
+                    return type;
+
+                var targetClass = core.ClassTable.ClassNodes[classIndex];
+                var func = targetClass.GetFirstMemberFunctionBy(funcNode.Function.Name);
+                type = func.ReturnType;
+                return type;
+            }
+            else if (expr.RightNode is FunctionCallNode)
+            {
+                var functionCallNode = expr.RightNode as FunctionCallNode;
+                ProtoCore.FunctionGroup funcGroup;
+                var funcTable = core.FunctionTable.GlobalFuncTable[0];
+                if (funcTable.TryGetValue(functionCallNode.Function.Name, out funcGroup))
+                {
+                    var func = funcGroup.FunctionEndPoints.FirstOrDefault();
+                    if (func != null)
+                        return func.procedureNode.ReturnType;
+                }
+            }
+            else if (expr.RightNode is IntNode)
+                return TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt);
+            else if (expr.RightNode is StringNode)
+                return TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString);
+            else if (expr.RightNode is DoubleNode)
+                return TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble);
+            else if (expr.RightNode is StringNode)
+                return TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString);
+
+            return type;
+        }
         #endregion
 
         #region Private Methods
@@ -577,30 +642,17 @@ namespace Dynamo.Nodes
             if (allDefs.Any() == false)
                 return;
 
-            double prevPortBottom = 0.0;
             foreach (var def in allDefs)
             {
-                var logicalIndex = def.Value - 1;
-
                 string tooltip = def.Key;
                 if (tempVariables.Contains(def.Key))
                     tooltip = Formatting.TOOL_TIP_FOR_TEMP_VARIABLE;
 
-                double portCoordsY = Formatting.INITIAL_MARGIN;
-                portCoordsY += logicalIndex * Configurations.CodeBlockPortHeightInPixels;
-
                 OutPortData.Add(new PortData(string.Empty, tooltip)
                 {
-                    VerticalMargin = portCoordsY - prevPortBottom,
+                    LineIndex = def.Value - 1, // Logical line index.
                     Height = Configurations.CodeBlockPortHeightInPixels
                 });
-
-                // Since we compute the "delta" between the top of the current 
-                // port to the bottom of the previous port, we need to record 
-                // down the bottom coordinate value before proceeding to the next 
-                // port.
-                // 
-                prevPortBottom = portCoordsY + Configurations.CodeBlockPortHeightInPixels;
             }
         }
 

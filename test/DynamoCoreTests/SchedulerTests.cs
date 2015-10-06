@@ -288,24 +288,6 @@ namespace Dynamo.Tests
         }
     }
 
-    internal class FakeAggregateRenderPackageAsyncTask : AggregateRenderPackageAsyncTask
-    {
-        private readonly FakeAsyncTaskData data;
-
-        internal Guid TargetedNodeId { set { targetedNodeId = value; } }
-
-        internal FakeAggregateRenderPackageAsyncTask(FakeAsyncTaskData data)
-            : base(data.Scheduler)
-        {
-            this.data = data;
-        }
-
-        protected override void HandleTaskExecutionCore()
-        {
-            data.WriteExecutionLog(this);
-        }
-    }
-
     internal class FakeCompileCustomNodeAsyncTask : CompileCustomNodeAsyncTask
     {
         private readonly FakeAsyncTaskData data;
@@ -327,22 +309,6 @@ namespace Dynamo.Tests
         private readonly FakeAsyncTaskData data;
 
         internal FakeDelegateBasedAsyncTask(FakeAsyncTaskData data)
-            : base(data.Scheduler)
-        {
-            this.data = data;
-        }
-
-        protected override void HandleTaskExecutionCore()
-        {
-            data.WriteExecutionLog(this);
-        }
-    }
-
-    internal class FakeNotifyRenderPackagesReadyAsyncTask : NotifyRenderPackagesReadyAsyncTask
-    {
-        private readonly FakeAsyncTaskData data;
-
-        internal FakeNotifyRenderPackagesReadyAsyncTask(FakeAsyncTaskData data)
             : base(data.Scheduler)
         {
             this.data = data;
@@ -415,6 +381,15 @@ namespace Dynamo.Tests
         {
             // Avoid base method which access EngineController.
         }
+
+        protected override AsyncTask.TaskMergeInstruction CanMergeWithCore(AsyncTask otherTask)
+        {
+            var theOtherTask = otherTask as UpdateGraphAsyncTask;
+            if (theOtherTask == null)
+                return TaskMergeInstruction.KeepBoth;
+
+            return TaskMergeInstruction.KeepOther;
+        }
     }
 
     internal class FakeUpdateRenderPackageAsyncTask : UpdateRenderPackageAsyncTask
@@ -453,7 +428,7 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void TimeStampGenerator00()
         {
-            var scheduler = new DynamoScheduler(new SampleSchedulerThread(), true);
+            var scheduler = new DynamoScheduler(new SampleSchedulerThread(), TaskProcessMode.Synchronous);
             Assert.AreEqual(1024, scheduler.NextTimeStamp.Identifier);
             Assert.AreEqual(1025, scheduler.NextTimeStamp.Identifier);
             Assert.AreEqual(1026, scheduler.NextTimeStamp.Identifier);
@@ -483,7 +458,7 @@ namespace Dynamo.Tests
             }
 
             // Start all time-stamp grabbers "at one go".
-            var scheduler = new DynamoScheduler(new SampleSchedulerThread(), true);
+            var scheduler = new DynamoScheduler(new SampleSchedulerThread(), TaskProcessMode.Synchronous);
             Parallel.For(0, EventCount, ((index) =>
             {
                 grabbers[index].GrabTimeStamp(scheduler);
@@ -567,7 +542,7 @@ namespace Dynamo.Tests
             Assert.IsFalse(schedulerThread.Initialized);
             Assert.IsFalse(schedulerThread.Destroyed);
 
-            var scheduler = new DynamoScheduler(schedulerThread, false);
+            var scheduler = new DynamoScheduler(schedulerThread, TaskProcessMode.Asynchronous);
             Assert.IsTrue(schedulerThread.Initialized);
             Assert.IsFalse(schedulerThread.Destroyed);
 
@@ -584,7 +559,7 @@ namespace Dynamo.Tests
         public void TestTaskQueuePreProcessing00()
         {
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread, false);
+            var scheduler = new DynamoScheduler(schedulerThread, TaskProcessMode.Asynchronous);
 
             // Start scheduling a bunch of tasks.
             var asyncTasks = new AsyncTask[]
@@ -630,7 +605,7 @@ namespace Dynamo.Tests
         public void TestTaskQueuePreProcessing01()
         {
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread, false);
+            var scheduler = new DynamoScheduler(schedulerThread, TaskProcessMode.Asynchronous);
 
             // Start scheduling a bunch of tasks.
             var asyncTasks = new AsyncTask[]
@@ -676,7 +651,7 @@ namespace Dynamo.Tests
         public void TestTaskQueuePreProcessing02()
         {
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread, false);
+            var scheduler = new DynamoScheduler(schedulerThread, TaskProcessMode.Asynchronous);
 
             // Start scheduling a bunch of tasks.
             var asyncTasks = new AsyncTask[]
@@ -722,7 +697,7 @@ namespace Dynamo.Tests
         public void TestTaskQueuePreProcessing03()
         {
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread, false);
+            var scheduler = new DynamoScheduler(schedulerThread, TaskProcessMode.Asynchronous);
 
             // Start scheduling a bunch of tasks.
             var asyncTasks = new AsyncTask[]
@@ -754,7 +729,7 @@ namespace Dynamo.Tests
         public void TestTaskQueuePreProcessing04()
         {
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread, false);
+            var scheduler = new DynamoScheduler(schedulerThread, TaskProcessMode.Asynchronous);
 
             // Start scheduling a bunch of tasks.
             var asyncTasks = new AsyncTask[]
@@ -788,7 +763,7 @@ namespace Dynamo.Tests
         public void TestTaskQueuePreProcessing05()
         {
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread, false);
+            var scheduler = new DynamoScheduler(schedulerThread, TaskProcessMode.Asynchronous);
 
             // Start scheduling a bunch of tasks.
             var asyncTasks = new AsyncTask[]
@@ -822,7 +797,7 @@ namespace Dynamo.Tests
         public void TestTaskQueuePreProcessing06()
         {
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread, false);
+            var scheduler = new DynamoScheduler(schedulerThread, TaskProcessMode.Asynchronous);
 
             schedulerThread.GetSchedulerToProcessTasks();
             Assert.Pass("Scheduler thread successfully exits");
@@ -837,7 +812,7 @@ namespace Dynamo.Tests
         {
             var observer = new TaskEventObserver();
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread, false);
+            var scheduler = new DynamoScheduler(schedulerThread, TaskProcessMode.Asynchronous);
             scheduler.TaskStateChanged += observer.OnTaskStateChanged;
 
             // Start scheduling a bunch of tasks.
@@ -985,35 +960,27 @@ namespace Dynamo.Tests
             var tasksToSchedule = new List<AsyncTask>()
             {
                 // Query value for a given named variable.
-                MakeQueryMirrorDataAsyncTask("variableOne"),
+                MakeQueryMirrorDataAsyncTask("variableOne"), //0
 
                 // This older task is kept because it wasn't re-scheduled.
-                MakeUpdateRenderPackageAsyncTask(nodes[0].GUID),
+                MakeUpdateRenderPackageAsyncTask(nodes[0].GUID), // 1
 
                 // These older tasks are to be dropped.
-                MakeUpdateRenderPackageAsyncTask(nodes[1].GUID),
-                MakeUpdateRenderPackageAsyncTask(nodes[2].GUID),
-
-                // These older tasks are to be dropped.
-                MakeNotifyRenderPackagesReadyAsyncTask(),
-                MakeAggregateRenderPackageAsyncTask(Guid.Empty),
+                MakeUpdateRenderPackageAsyncTask(nodes[1].GUID), //2
+                MakeUpdateRenderPackageAsyncTask(nodes[2].GUID), //3
 
                 // This higher priority task moves to the front.
-                MakeUpdateGraphAsyncTask(),
+                MakeUpdateGraphAsyncTask(), //4
 
                 // Query value for a given named variable.
-                MakeQueryMirrorDataAsyncTask("variableOne"),
+                MakeQueryMirrorDataAsyncTask("variableOne"), //5
 
                 // These newer tasks will be kept.
-                MakeUpdateRenderPackageAsyncTask(nodes[1].GUID),
-                MakeUpdateRenderPackageAsyncTask(nodes[2].GUID),
+                MakeUpdateRenderPackageAsyncTask(nodes[1].GUID), //6
+                MakeUpdateRenderPackageAsyncTask(nodes[2].GUID), //7
 
                 // This higher priority task moves to the front.
-                MakeUpdateGraphAsyncTask(),
-
-                // These newer tasks will be kept.
-                MakeNotifyRenderPackagesReadyAsyncTask(),
-                MakeAggregateRenderPackageAsyncTask(Guid.Empty),
+                MakeUpdateGraphAsyncTask(), //8 
             };
 
             // Due to defaulting to auto-run mode, multiple UpdateGraphAsyncTask
@@ -1032,14 +999,12 @@ namespace Dynamo.Tests
 
             var expected = new List<string>
             {
-                "FakeUpdateGraphAsyncTask: 10",
+                "FakeUpdateGraphAsyncTask: 8",
                 "FakeQueryMirrorDataAsyncTask: 0",
                 "FakeUpdateRenderPackageAsyncTask: 1",
-                "FakeQueryMirrorDataAsyncTask: 7",
-                "FakeUpdateRenderPackageAsyncTask: 8",
-                "FakeUpdateRenderPackageAsyncTask: 9",
-                "FakeNotifyRenderPackagesReadyAsyncTask: 11",
-                "FakeAggregateRenderPackageAsyncTask: 12",
+                "FakeQueryMirrorDataAsyncTask: 5",
+                "FakeUpdateRenderPackageAsyncTask: 6",
+                "FakeUpdateRenderPackageAsyncTask: 7",
             };
 
             Assert.AreEqual(expected.Count, results.Count);
@@ -1060,10 +1025,8 @@ namespace Dynamo.Tests
                 MakeSetTraceDataAsyncTask(),                        // Highest
                 MakeCompileCustomNodeAsyncTask(),                   // Above normal
                 MakeUpdateGraphAsyncTask(),                         // Above normal
-                MakeAggregateRenderPackageAsyncTask(Guid.Empty),    // Normal
                 MakeDelegateBasedAsyncTask(),                       // Normal
                 MakeQueryMirrorDataAsyncTask("variableName"),       // Normal
-                MakeNotifyRenderPackagesReadyAsyncTask(),           // Normal
                 MakeUpdateRenderPackageAsyncTask(Guid.NewGuid()),   // Normal
             };
 
@@ -1080,11 +1043,9 @@ namespace Dynamo.Tests
                 "FakeSetTraceDataAsyncTask: 0",
                 "FakeCompileCustomNodeAsyncTask: 1",
                 "FakeUpdateGraphAsyncTask: 2",
-                "FakeAggregateRenderPackageAsyncTask: 3",
-                "FakeDelegateBasedAsyncTask: 4",
-                "FakeQueryMirrorDataAsyncTask: 5",
-                "FakeNotifyRenderPackagesReadyAsyncTask: 6",
-                "FakeUpdateRenderPackageAsyncTask: 7"
+                "FakeDelegateBasedAsyncTask: 3",
+                "FakeQueryMirrorDataAsyncTask: 4",
+                "FakeUpdateRenderPackageAsyncTask: 5"
             };
 
             Assert.AreEqual(expected.Count, results.Count);
@@ -1103,10 +1064,8 @@ namespace Dynamo.Tests
             var tasksToSchedule = new List<AsyncTask>()
             {
                 MakeUpdateRenderPackageAsyncTask(Guid.NewGuid()),   // Normal
-                MakeNotifyRenderPackagesReadyAsyncTask(),           // Normal
                 MakeQueryMirrorDataAsyncTask("variableName"),       // Normal
                 MakeDelegateBasedAsyncTask(),                       // Normal
-                MakeAggregateRenderPackageAsyncTask(Guid.Empty),    // Normal
                 MakeUpdateGraphAsyncTask(),                         // Above normal
                 MakeCompileCustomNodeAsyncTask(),                   // Above normal
                 MakeSetTraceDataAsyncTask(),                        // Highest
@@ -1122,14 +1081,12 @@ namespace Dynamo.Tests
 
             var expected = new List<string>
             {
-                "FakeSetTraceDataAsyncTask: 7",
-                "FakeUpdateGraphAsyncTask: 5",
-                "FakeCompileCustomNodeAsyncTask: 6",
+                "FakeSetTraceDataAsyncTask: 5",
+                "FakeUpdateGraphAsyncTask: 3",
+                "FakeCompileCustomNodeAsyncTask: 4",
                 "FakeUpdateRenderPackageAsyncTask: 0",
-                "FakeNotifyRenderPackagesReadyAsyncTask: 1",
-                "FakeQueryMirrorDataAsyncTask: 2",
-                "FakeDelegateBasedAsyncTask: 3",
-                "FakeAggregateRenderPackageAsyncTask: 4",
+                "FakeQueryMirrorDataAsyncTask: 1",
+                "FakeDelegateBasedAsyncTask: 2"
             };
 
             Assert.AreEqual(expected.Count, results.Count);
@@ -1149,18 +1106,13 @@ namespace Dynamo.Tests
             // Everything is scheduled in reversed order of priority.
             var tasksToSchedule = new List<AsyncTask>()
             {
-                MakeUpdateRenderPackageAsyncTask(Guid.NewGuid()),   // Normal
-                MakeNotifyRenderPackagesReadyAsyncTask(),           // Normal
-                MakeDelegateBasedAsyncTask(),                       // Normal
-                MakeAggregateRenderPackageAsyncTask(Guid.Empty),    // Normal
-                MakeAggregateRenderPackageAsyncTask(specificGuid),  // Normal
-                MakeQueryMirrorDataAsyncTask("variableName"),       // Normal
-                MakeAggregateRenderPackageAsyncTask(Guid.Empty),    // Normal
-                MakeAggregateRenderPackageAsyncTask(specificGuid),  // Normal
-                MakeQueryMirrorDataAsyncTask("variableName"),       // Normal
-                MakeUpdateGraphAsyncTask(),                         // Above normal
-                MakeCompileCustomNodeAsyncTask(),                   // Above normal
-                MakeSetTraceDataAsyncTask(),                        // Highest
+                MakeUpdateRenderPackageAsyncTask(Guid.NewGuid()),   // Normal 0
+                MakeDelegateBasedAsyncTask(),                       // Normal 1
+                MakeQueryMirrorDataAsyncTask("variableName"),       // Normal 2
+                MakeQueryMirrorDataAsyncTask("variableName"),       // Normal 3
+                MakeUpdateGraphAsyncTask(),                         // Above normal 4
+                MakeCompileCustomNodeAsyncTask(),                   // Above normal 5
+                MakeSetTraceDataAsyncTask(),                        // Highest 6
             };
 
             var scheduler = dynamoModel.Scheduler;
@@ -1173,16 +1125,13 @@ namespace Dynamo.Tests
 
             var expected = new List<string>
             {
-                "FakeSetTraceDataAsyncTask: 11",
-                "FakeUpdateGraphAsyncTask: 9",
-                "FakeCompileCustomNodeAsyncTask: 10",
+                "FakeSetTraceDataAsyncTask: 6",
+                "FakeUpdateGraphAsyncTask: 4",
+                "FakeCompileCustomNodeAsyncTask: 5",
                 "FakeUpdateRenderPackageAsyncTask: 0",
-                "FakeNotifyRenderPackagesReadyAsyncTask: 1",
-                "FakeDelegateBasedAsyncTask: 2",
-                "FakeQueryMirrorDataAsyncTask: 5",
-                "FakeAggregateRenderPackageAsyncTask: 6",
-                "FakeAggregateRenderPackageAsyncTask: 7",
-                "FakeQueryMirrorDataAsyncTask: 8",
+                "FakeDelegateBasedAsyncTask: 1",
+                "FakeQueryMirrorDataAsyncTask: 2",
+                "FakeQueryMirrorDataAsyncTask: 3",
             };
 
             Assert.AreEqual(expected.Count, results.Count);
@@ -1237,7 +1186,8 @@ namespace Dynamo.Tests
                     StartInTestMode = false,
                     SchedulerThread = schedulerThread,
                     PathResolver = pathResolver,
-                    GeometryFactoryPath = preloader.GeometryFactoryPath
+                    GeometryFactoryPath = preloader.GeometryFactoryPath,
+                    ProcessMode = TaskProcessMode.Asynchronous
                 });
         }
 
@@ -1264,14 +1214,6 @@ namespace Dynamo.Tests
 
         #region AsyncTask Class Creation Methods
 
-        private AsyncTask MakeAggregateRenderPackageAsyncTask(Guid nodeGuid)
-        {
-            return new FakeAggregateRenderPackageAsyncTask(MakeAsyncTaskData())
-            {
-                TargetedNodeId = nodeGuid
-            };
-        }
-
         private AsyncTask MakeCompileCustomNodeAsyncTask()
         {
             return new FakeCompileCustomNodeAsyncTask(MakeAsyncTaskData());
@@ -1280,11 +1222,6 @@ namespace Dynamo.Tests
         private AsyncTask MakeDelegateBasedAsyncTask()
         {
             return new FakeDelegateBasedAsyncTask(MakeAsyncTaskData());
-        }
-
-        private AsyncTask MakeNotifyRenderPackagesReadyAsyncTask()
-        {
-            return new FakeNotifyRenderPackagesReadyAsyncTask(MakeAsyncTaskData());
         }
 
         private AsyncTask MakeQueryMirrorDataAsyncTask(string variableName)
@@ -1331,5 +1268,47 @@ namespace Dynamo.Tests
         }
 
         #endregion
+    }
+
+    [TestFixture]
+    public class UpdateGraphAsyncTaskTest: DynamoModelTestBase
+    {
+        [Test]
+        public void TestUpdateGraphyAsyncTaskMerge()
+        {
+            // Verify a UpdateGraphAysncTask can't be merged with the other one
+            // if they modifiy different nodes.
+            OpenModel(TestDirectory + @"\core\scheduler\simple.dyn");
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
+            var funcNode = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DSFunction>().FirstOrDefault();
+
+            // Keep code block node be silent so that the graph won't be
+            // executed automatically
+            cbn.RaisesModificationEvents = false;
+
+            var elementResolver = CurrentDynamoModel.CurrentWorkspace.ElementResolver;
+            cbn.SetCodeContent("-22", elementResolver); // Invalid numeric value.
+            cbn.MarkNodeAsModified();
+
+            // Get a UpdateGrapyAsyncTask for the modification of cbn
+            var scheduler = new DynamoScheduler(new SampleSchedulerThread(), TaskProcessMode.Synchronous);
+            UpdateGraphAsyncTask task1 = new UpdateGraphAsyncTask(scheduler, false);
+            task1.Initialize(CurrentDynamoModel.EngineController, CurrentDynamoModel.CurrentWorkspace);
+
+            // Get a UpdateGraphAsyncTask for the modification of Math.Sin()
+            funcNode.MarkNodeAsModified();
+            UpdateGraphAsyncTask task2 = new UpdateGraphAsyncTask(scheduler, false);
+            task2.Initialize(CurrentDynamoModel.EngineController, CurrentDynamoModel.CurrentWorkspace);
+
+            // And both async tasks should be kept.
+            var mergeResult = task1.CanMergeWith(task2);
+            Assert.AreEqual(AsyncTask.TaskMergeInstruction.KeepBoth, mergeResult);
+
+            mergeResult = task2.CanMergeWith(task1);
+            Assert.AreEqual(AsyncTask.TaskMergeInstruction.KeepBoth, mergeResult);
+
+            scheduler.Shutdown();
+        }
     }
 }

@@ -6,48 +6,152 @@ using System.Threading.Tasks;
 
 namespace GraphLayout
 {
+    /// <summary>
+    /// Represents the graph object (a set of nodes and edges) in the GraphLayout algorithm.
+    /// </summary>
     public class Graph
     {
-        public const int MAX_LAYER_HEIGHT = 20;
-        public const double HORIZONTAL_NODE_DISTANCE = 100;
-        public const double VERTICAL_NODE_DISTANCE = 30;
-        public const double INFINITE = 1000000;
 
+        #region Graph properties
+
+        private const int MaxLayerHeight = 20;
+        private const double HorizontalNodeDistance = 100;
+        private const double VerticalNodeDistance = 30;
+        private const double Infinite = 1000000;
+
+        /// <summary>
+        /// Set of nodes in this graph.
+        /// </summary>
         public HashSet<Node> Nodes = new HashSet<Node>();
+
+        /// <summary>
+        /// Set of edges relevant to this graph.
+        /// </summary>
         public HashSet<Edge> Edges = new HashSet<Edge>();
 
+        /// <summary>
+        /// Layers 1 and onwards list the nodes in this graph ordered by layer,
+        /// with smaller numbers to the right part of the graph.
+        /// Layer 0 refers to outside nodes connected to the right of the first layer.
+        /// </summary>
         public List<List<Node>> Layers = new List<List<Node>>();
+
+        /// <summary>
+        /// Edges connected to outside nodes to the left of this graph.
+        /// </summary>
+        public HashSet<Edge> AnchorLeftEdges = new HashSet<Edge>();
+
+        /// <summary>
+        /// Edges connected to outside nodes to the right of this graph.
+        /// </summary>
+        public HashSet<Edge> AnchorRightEdges = new HashSet<Edge>();
+
+        /// <summary>
+        /// Stores the GraphCenterX value before layout algorithm.
+        /// </summary>
+        private double InitialGraphCenterX;
+
+        /// <summary>
+        /// Stores the GraphCenterY value before layout algorithm.
+        /// </summary>
+        private double InitialGraphCenterY;
+
+        /// <summary>
+        /// Stores the vertical offset value to avoid subgraph overlap
+        /// after running the layout algorithm.
+        /// </summary>
+        public double OffsetY = 0;
+
+        /// <summary>
+        /// Returns the x coordinate of the graph's center point.
+        /// </summary>
+        public double GraphCenterX
+        {
+            get { return (Nodes.Min(n => n.X) + Nodes.Max(n => n.X + n.Width)) / 2; }
+        }
+
+        /// <summary>
+        /// Returns the y coordinate of the graph's center point.
+        /// </summary>
+        public double GraphCenterY
+        {
+            get { return (Nodes.Min(n => n.Y) + Nodes.Max(n => n.Y + n.Height)) / 2; }
+        }
+
+        #endregion
 
         #region Helper methods
 
-        public void AddNode(Guid guid, double width, double height, double y)
+        /// <summary>
+        /// Adds a new node to the graph object.
+        /// </summary>
+        /// <param name="guid">The guid as a unique identifier of the node.</param>
+        /// <param name="width">The width of the node view.</param>
+        /// <param name="height">The height of the node view.</param>
+        /// <param name="x">The x coordinate of the node view.</param>
+        /// <param name="y">The y coordinate of the node view.</param>
+        /// <param name="isSelected">True if the node is selected in the workspace.</param>
+        public void AddNode(Guid guid, double width, double height, double x, double y, bool isSelected)
         {
-            var node = new Node(guid, width, height, y, this);
+            var node = new Node(guid, width, height, x, y, isSelected, this);
             Nodes.Add(node);
         }
 
-        public void AddEdge(Guid startId, Guid endId, double startY, double endY)
+        /// <summary>
+        /// Adds a new edge to the graph object.
+        /// </summary>
+        /// <param name="startId">The guid of the starting node.</param>
+        /// <param name="endId">The guid of the ending node.</param>
+        /// <param name="startX">The x coordinate of the connector's left end point.</param>
+        /// <param name="startY">The y coordinate of the connector's left end point.</param>
+        /// <param name="endX">The x coordinate of the connector's right end point.</param>
+        /// <param name="endY">The y coordinate of the connector's right end point.</param>
+        public void AddEdge(Guid startId, Guid endId, double startX, double startY, double endX, double endY)
         {
-            var edge = new Edge(startId, endId, startY, endY, this);
+            var edge = new Edge(startId, endId, startX, startY, endX, endY, this);
             Edges.Add(edge);
         }
 
+        /// <summary>
+        /// Finds a node from its unique guid.
+        /// </summary>
+        /// <param name="guid">The node's guid.</param>
+        /// <returns>The node object.</returns>
         public Node FindNode(Guid guid)
         {
             foreach (Node node in Nodes)
+            {
                 if (guid.Equals(node.Id))
+                {
                     return node;
+                }
+            }
             return null;
         }
 
+        /// <summary>
+        /// Finds an active edge between two nodes.
+        /// </summary>
+        /// <param name="start">Start node.</param>
+        /// <param name="end">End node.</param>
+        /// <returns>The edge object.</returns>
         public Edge FindEdge(Node start, Node end)
         {
-            foreach (Edge edge in Edges.Where(x => x.Active))
-                if (start.Equals(edge.StartNode) && end.Equals(edge.EndNode))
+            foreach (Edge edge in Edges)
+            {
+                if (edge.Active && start.Equals(edge.StartNode) && end.Equals(edge.EndNode))
+                {
                     return edge;
+                }
+            }
             return null;
         }
 
+        /// <summary>
+        /// Assigns a node into a vertical layer in the graph.
+        /// </summary>
+        /// <param name="n">The node.</param>
+        /// <param name="currentLayer">The number of the layer, starting from 0 for the rightmost layer.</param>
         public void AddToLayer(Node n, int currentLayer)
         {
             while (Layers.Count <= currentLayer)
@@ -57,12 +161,20 @@ namespace GraphLayout
             n.Layer = currentLayer;
         }
 
+        /// <summary>
+        /// Assigns a list of nodes into a vertical layer in the graph.
+        /// </summary>
+        /// <param name="list">The list of nodes.</param>
+        /// <param name="currentLayer">The number of the layer, starting from 0 for the rightmost layer.</param>
         public void AddToLayer(List<Node> list, int currentLayer)
         {
             foreach (Node n in list)
                 AddToLayer(n, currentLayer);
         }
 
+        /// <summary>
+        /// Removes any transitive edges in the graph.
+        /// </summary>
         public void RemoveTransitiveEdges()
         {
             // Check for transitive edges using an adjacency matrix.
@@ -91,17 +203,25 @@ namespace GraphLayout
                         if (y == z) continue;
 
                         if (conn[xi, yi] == 0)
+                        {
                             conn[xi, yi] = FindEdge(x, y) != null ? 1 : -1;
+                        }
 
                         if (conn[yi, zi] == 0)
+                        {
                             conn[yi, zi] = FindEdge(y, z) != null ? 1 : -1;
+                        }
 
                         Edge e = FindEdge(x, z);
                         if (conn[xi, zi] == 0)
+                        {
                             conn[xi, zi] = e != null ? 1 : -1;
+                        }
 
                         if (e != null && conn[xi, yi] + conn[yi, zi] + conn[xi, zi] == 3)
+                        {
                             e.Active = false;
+                        }
 
                     }
                 }
@@ -183,171 +303,172 @@ namespace GraphLayout
         
         /// <summary>
         /// Sugiyama step 2: Layering
-        /// This method implements Coffman-Graham layering algorithm.  All
-        /// output nodes will be put on the rightmost layer and they will be
-        /// ordered based on their original vertical positions.  All input
-        /// nodes will be put on the leftmost layer, and all isolated nodes
-        /// will be put below the input nodes.  This includes an implementation
-        /// to avoid horizontal node overlapping.
+        /// This method implements Coffman-Graham layering algorithm.
+        /// Unconnected output nodes will be put on the rightmost layer and
+        /// they will be ordered based on their original vertical positions.
         /// </summary>
         public void AssignLayers()
         {
             RemoveTransitiveEdges();
 
-            // The rightmost layer is ordered based on the original vertical
-            // position of the nodes.
-            if (Edges.Count > 0)
-                AddToLayer(Nodes.Where(x => x.RightEdges.Count == 0
-                    && x.LeftEdges.Count > 0).OrderBy(x => x.Y).ToList(), 0);
-            else
-                AddToLayer(Nodes.OrderBy(x => x.Y).ToList(), 0);
+            foreach (var n in Nodes)
+                AddToLayer(n.RightEdges.Where(e => !e.EndNode.IsSelected).Select(e => e.EndNode).ToList(), 0);
 
-            // Label the rest of the nodes based on the number of incoming edges.
-            List<Node> OrderedNodes = Nodes.Where(x => x.LeftEdges.Count > 0)
-                .OrderByDescending(x => x.LeftEdges.Count).ToList();
+            int currentLayer = 1;
+            int processed = 0;
 
-            bool isFinalLayer = false;
-            int currentLayer = 0;
-            int processed = Layers.Count > 0 ? Layers.First().Count : 0;
-
-            double layerWidth = 0;
-
-            while (processed < OrderedNodes.Count)
+            while (processed < Nodes.Count)
             {
                 // Choose a node with the highest priority (leftmost in the list)
                 // such that all the right edges of the is node connected to U.
-                
-                List<Node> selected = OrderedNodes.Where(x => x.Layer < 0 &&
-                    x.RightEdges.All(e => e.EndNode.Layer >= 0)).ToList();
+
+                List<Node> selected = Nodes.Where(x => x.Layer < 0 &&
+                    x.RightEdges.All(e => e.EndNode.Layer >= 0)).OrderBy(x => x.Y).ToList();
 
                 Node n = null;
 
                 if (selected.Count > 0)
                 {
-                    n = selected.FirstOrDefault(x =>
-                        x.RightEdges.All(e => e.EndNode.Layer < currentLayer) &&
-                        x.LeftEdges.Count(e => e.Active) > 0);
-
-                    if (n == null)
-                        n = selected.OrderByDescending(x => x.LeftEdges.Count).First();
-
-                    if (n.LeftEdges.Count == 0)
-                    {
-                        Node temp = OrderedNodes.FirstOrDefault(x => x.Layer < 0 && x.LeftEdges.Count > 0);
-                        if (temp != null)
-                            n = temp;
-                    }
+                    n = selected.FirstOrDefault(
+                        x => x.RightEdges.All(e => e.EndNode.Layer < currentLayer))
+                        ?? selected.OrderByDescending(x => x.LeftEdges.Count).First();
                 }
                 else
                 {
                     // For cyclic subgraphs
-                    n = OrderedNodes.Where(x => x.Layer < 0).OrderByDescending(
+                    n = Nodes.Where(x => x.Layer < 0).OrderByDescending(
                         x => x.RightEdges.Count(e => e.EndNode.Layer >= 0)).First();
-                    currentLayer = 0;
+                    currentLayer = 1;
                 }
 
                 // Add a new layer when needed
-                if ((Layers.Count > 0 && Layers[currentLayer].Count >= MAX_LAYER_HEIGHT) ||
-                    !n.RightEdges.All(e => e.EndNode.Layer < currentLayer) ||
-                    (currentLayer > 0 && n.LeftEdges.Count == 0 && !isFinalLayer))
+                if ((Layers.Count > 1 && Layers[currentLayer].Count >= MaxLayerHeight) ||
+                    !n.RightEdges.All(e => e.EndNode.Layer < currentLayer))
                 {
                     currentLayer++;
-
-                    layerWidth = 0;
-
-                    if (n.LeftEdges.Count == 0)
-                        isFinalLayer = true;
                 }
 
                 AddToLayer(n, currentLayer);
                 processed++;
-
-                if (n.Width > layerWidth)
-                    layerWidth = n.Width;
             }
-
-            // Put the input nodes on the leftmost layer
-            AddToLayer(Nodes.Where(x => x.LeftEdges.Count == 0).ToList(), Layers.Count);
         }
 
         /// <summary>
         /// Sugiyama step 3: Node Ordering
         /// This method uses Median heuristic to determine the vertical node
-        /// order for each layer.  This includes an implementation to avoid
-        /// vertical node overlapping.
+        /// order for each layer.
         /// </summary>
         public void OrderNodes()
         {
             // Assign temporary vertical indices for further processing
-            foreach (List<Node> layer in Layers)
+            foreach (List<Node> layer in Layers.Skip(1))
             {
                 foreach (Node node in layer)
-                    node.Y = INFINITE;
-            }
-            double y = 0;
-            foreach (Node node in Layers.First())
-            {
-                node.Y = y;
-                y += 80;
+                    node.Y = Infinite;
             }
             
-            foreach (List<Node> layer in Layers)
+            foreach (List<Node> layer in Layers.Skip(1))
             {
                 double prevY = -10;
+                bool layerUpdated = false;
 
                 foreach (Node n in layer)
                 {
-                    // Get the vertical coordinates from each node's median
-                    // outgoing edge
+                    // Get the vertical coordinates of each node's right edge
+                    // and get the median from these values
 
-                    if (layer.First().Layer > 0)
+                    List<Edge> neighborEdges = n.RightEdges
+                        .Where(x => x.EndNode.Y < Infinite).OrderBy(x => x.EndY).ToList();
+
+                    if (neighborEdges.Count > 1 && neighborEdges.Count % 2 == 0)
                     {
-                        List<Edge> neighborEdges = n.RightEdges
-                            .Where(x => x.EndNode.Y < INFINITE).OrderBy(x => x.EndY).ToList();
+                        Edge median1 = neighborEdges[(neighborEdges.Count - 1) / 2];
+                        Edge median2 = neighborEdges[(neighborEdges.Count) / 2];
+
+                        n.Y = (median1.EndY + median2.EndY -
+                            median1.StartOffsetY - median2.StartOffsetY) / 2;
+                        prevY = n.Y;
+                        layerUpdated = true;
+                    }
+                    else if (neighborEdges.Count > 0)
+                    {
+                        Edge median = neighborEdges[(neighborEdges.Count - 1) / 2];
+
+                        n.Y = median.EndY - median.StartOffsetY;
+                        prevY = n.Y;
+                        layerUpdated = true;
+                    }
+                    else if (n.LeftEdges.Count > 0 && AnchorRightEdges.Count == 0)
+                    {
+                        n.Y = prevY + 10;
+                        prevY = n.Y;
+                        layerUpdated = true;
+                    }
+                }
+
+                if (layerUpdated)
+                {
+                    AssignCoordinates(layer);
+                }
+            }
+
+            // Assign left-anchored nodes
+            foreach (List<Node> layer in Layers.Skip(1).Reverse())
+            {
+                bool layerUpdated = false;
+                foreach (Node n in layer)
+                {
+                    if (n.Y >= Infinite)
+                    {
+                        List<Edge> neighborEdges = n.LeftEdges
+                            .Where(x => x.StartNode.Y < Infinite).OrderBy(x => x.EndY).ToList();
 
                         if (neighborEdges.Count > 1 && neighborEdges.Count % 2 == 0)
                         {
                             Edge median1 = neighborEdges[(neighborEdges.Count - 1) / 2];
                             Edge median2 = neighborEdges[(neighborEdges.Count) / 2];
 
-                            n.Y = (median1.EndNode.Y + median1.EndOffsetY +
-                                median2.EndNode.Y + median2.EndOffsetY -
-                                median1.StartOffsetY - median2.StartOffsetY) / 2;
+                            n.Y = (median1.StartNode.Y + median1.StartOffsetY +
+                                median2.StartNode.Y + median2.StartOffsetY -
+                                median1.EndOffsetY - median2.EndOffsetY) / 2;
+                            layerUpdated = true;
                         }
                         else if (neighborEdges.Count > 0)
                         {
                             Edge median = neighborEdges[(neighborEdges.Count - 1) / 2];
 
-                            n.Y = median.EndNode.Y + median.EndOffsetY - median.StartOffsetY;
-                        }
-                        else if (n.LeftEdges.Count > 0)
-                        {
-                            n.Y = prevY + 10;
-                            prevY = n.Y;
+                            n.Y = median.StartNode.Y + median.StartOffsetY - median.EndOffsetY;
+                            layerUpdated = true;
                         }
                     }
                 }
-
-                AssignCoordinates(layer);
+                if (layerUpdated)
+                {
+                    AssignCoordinates(layer);
+                }
             }
         }
 
         /// <summary>
         /// Sugiyama step 4: Assign Coordinates
         /// Vertical coordinates for the nodes in a layer is assigned right after the
-        /// order of nodes in that particular layer is determined.
+        /// ordering of nodes in that particular layer is determined.
         /// </summary>
+        /// <param name="layer">The nodes in a layer to be assigned their coordinates.</param>
         public void AssignCoordinates(List<Node> layer)
         {
             // Assign vertical coordinates to the main nodes
-            List<Node> nodes = layer.Where(x => x.Y < INFINITE).OrderBy(x => x.Y).ToList();
+            // If two nodes have the same Y coordinate,
+            // follow the original ordering before graph layout.
+            List<Node> nodes = layer.Where(x => x.Y < Infinite)
+                .OrderBy(x => x.Y).ThenBy(x => x.InitialY).ToList();
 
-            double minDistance = INFINITE;
+            double minDistance = Infinite;
             int minNodeIndex = -1;
             for (int i = 1; i < nodes.Count; i++)
             {
                 double distance = nodes[i].Y - nodes[i - 1].Y - nodes[i - 1].Height;
-                if (distance < VERTICAL_NODE_DISTANCE)
+                if (distance < VerticalNodeDistance)
                 {
                     if (distance < minDistance)
                     {
@@ -362,12 +483,12 @@ namespace GraphLayout
                 nodes[minNodeIndex].Y += 1;
                 nodes[minNodeIndex - 1].Y -= 1;
 
-                minDistance = INFINITE;
+                minDistance = Infinite;
                 minNodeIndex = -1;
                 for (int i = 1; i < nodes.Count; i++)
                 {
                     double distance = nodes[i].Y - nodes[i - 1].Y - nodes[i - 1].Height;
-                    if (distance < VERTICAL_NODE_DISTANCE)
+                    if (distance < VerticalNodeDistance)
                     {
                         if (distance < minDistance)
                         {
@@ -380,122 +501,283 @@ namespace GraphLayout
 
             // Assign vertical coordinates to the rest of the nodes
             double lastY = (nodes.Count == 0) ? 0 :
-                nodes.Last().Y + nodes.Last().Height + VERTICAL_NODE_DISTANCE;
+                nodes.Last().Y + nodes.Last().Height + VerticalNodeDistance;
 
-            nodes = layer.Where(x => x.Y >= INFINITE).ToList();
+            nodes = layer.Where(x => x.Y >= Infinite).ToList();
 
             foreach (Node n in nodes)
             {
                 n.Y = lastY;
-                lastY += n.Height + VERTICAL_NODE_DISTANCE;
-            }
-
-            foreach (Node n in layer)
-            {
-                // Assign dummy coordinates to node incoming edges
-                int b = 1;
-                foreach (Edge e in n.LeftEdges.OrderBy(x => x.EndY))
-                {
-                    e.EndY = n.Y + b;
-                    b++;
-                }
+                lastY += n.Height + VerticalNodeDistance;
             }
         }
 
         #endregion
 
-        /// <summary>
-        /// To align the top and left bound of the graph at x = 0 and y = 0.
-        /// </summary>
-        public void NormalizeGraphPosition()
-        {
-            List<List<Node>> ReversedLayers = Layers;
-            ReversedLayers.Reverse();
+        #region Graph positioning methods
 
+        /// <summary>
+        /// To save the initial center position of the graph.
+        /// </summary>
+        public void RecordInitialPosition()
+        {
+            InitialGraphCenterX = GraphCenterX;
+            InitialGraphCenterY = GraphCenterY;
+        }
+
+        /// <summary>
+        /// To set spaces between the nodes based on the default node distance.
+        /// </summary>
+        public void DistributeNodePosition()
+        {
             double previousLayerX = 0;
             double offsetY = -Nodes.OrderBy(x => x.Y).First().Y;
 
-            foreach (List<Node> layer in Layers)
+            foreach (List<Node> layer in Layers.Skip(1).AsEnumerable().Reverse())
             {
+                if (layer.Count == 0) continue;
+
                 double layerWidth = layer.Max(x => x.Width);
 
                 foreach (Node x in layer)
                     x.X = previousLayerX;
 
-                previousLayerX = layer.First().X + layerWidth + HORIZONTAL_NODE_DISTANCE;
+                previousLayerX = layer.First().X + layerWidth + HorizontalNodeDistance;
 
-                double maxY = (layer.Min(x => x.Y) >= INFINITE) ?
+                double maxY = (layer.Min(x => x.Y) >= Infinite) ?
                     0 : layer.Min(x => x.Y);
 
                 foreach (Node n in layer.OrderBy(x => x.Y))
                 {
                     n.Y += offsetY;
 
-                    if (n.Y >= INFINITE + offsetY)
+                    if (n.Y >= Infinite + offsetY)
+                    {
                         n.Y = maxY;
-                    
+                    }
+
                     if (n.Y + n.Height > maxY)
-                        maxY = n.Y + n.Height + VERTICAL_NODE_DISTANCE;
+                    {
+                        maxY = n.Y + n.Height + VerticalNodeDistance;
+                    }
                 }
             }
         }
 
+        /// <summary>
+        /// To shift the whole graph back to its original position.
+        /// </summary>
+        public void SetGraphPosition(bool isGroupLayout)
+        {
+            double moveX = 0;
+            double moveY = 0;
+
+            // If this is a group or a separate subgraph then retain original position
+            if (isGroupLayout || AnchorLeftEdges.Count + AnchorRightEdges.Count == 0)
+            {
+                moveX = InitialGraphCenterX - GraphCenterX;
+                moveY = InitialGraphCenterY - GraphCenterY;
+            }
+            else
+            {
+                // If the subgraph is anchored to any side then adjust the Y position
+                double outsideY = AnchorLeftEdges.Select(e => e.StartY)
+                    .Union(AnchorRightEdges.Select(e => e.EndY)).Average();
+                double insideY = AnchorLeftEdges.Select(e => e.EndNode.Y + e.EndOffsetY)
+                    .Union(AnchorRightEdges.Select(e => e.StartNode.Y + e.StartOffsetY)).Average();
+                moveY = outsideY - insideY;
+
+                if (AnchorRightEdges.Count == 0)
+                {
+                    // Anchored to the left
+                    moveX = Math.Max(HorizontalNodeDistance - AnchorLeftEdges.Min(e => e.EndX - e.StartX),
+                        InitialGraphCenterX - GraphCenterX);
+                }
+                else if (AnchorLeftEdges.Count == 0)
+                {
+                    // Anchored to the right
+                    moveX = Math.Min(AnchorRightEdges.Min(e => e.EndX - e.StartX) - HorizontalNodeDistance,
+                        InitialGraphCenterX - GraphCenterX);
+                }
+                else
+                {
+                    // Anchored to both sides
+                    moveX = (AnchorLeftEdges.Max(e => e.StartX) +
+                        AnchorRightEdges.Min(e => e.EndNode.X)) / 2 - GraphCenterX;
+                }
+            }
+
+            foreach (Node n in Nodes)
+            {
+                n.X += moveX;
+                n.Y += moveY;
+            }
+        }
+
+        #endregion
+
     }
 
+    /// <summary>
+    /// Represents a node/vertex object in the GraphLayout algorithm.
+    /// </summary>
     public class Node
     {
+        /// <summary>
+        /// The graph object which owns the node.
+        /// </summary>
         private Graph OwnerGraph;
 
-        public Guid Id;
+        /// <summary>
+        /// The unique identifier of the node.
+        /// </summary>
+        public Guid Id { get; private set; }
 
-        public double Width;
-        public double Height;
+        /// <summary>
+        /// The width of the node view.
+        /// </summary>
+        public double Width { get; private set; }
 
+        /// <summary>
+        /// The height of the node view.
+        /// </summary>
+        public double Height { get; private set; }
+
+        /// <summary>
+        /// The x coordinate of the node view.
+        /// </summary>
         public double X;
+
+        /// <summary>
+        /// The y coordinate of the node view.
+        /// </summary>
         public double Y;
 
+        /// <summary>
+        /// The initial Y coordinate of the node view.
+        /// </summary>
+        public double InitialY { get; private set; }
+
+        /// <summary>
+        /// The layer of the node within the graph, starting from layer 0 for the rightmost layer.
+        /// </summary>
         public int Layer = -1;
 
+        /// <summary>
+        /// The set of edges connected to the input ports the node.
+        /// </summary>
         public HashSet<Edge> LeftEdges = new HashSet<Edge>();
+
+        /// <summary>
+        /// The set of edges connected to the output ports of the node.
+        /// </summary>
         public HashSet<Edge> RightEdges = new HashSet<Edge>();
 
-        public Node(Guid guid, double width, double height, double y, Graph ownerGraph)
+        /// <summary>
+        /// A list of note models which has this node as the closest node.
+        /// </summary>
+        public List<Object> LinkedNotes = new List<Object>();
+
+        /// <summary>
+        /// True if the node is selected in the workspace.
+        /// </summary>
+        public bool IsSelected;
+
+        public Node(Guid guid, double width, double height, double x, double y, bool isSelected, Graph ownerGraph)
         {
             Id = guid;
             Width = width;
             Height = height;
+            X = x;
             Y = y;
+            InitialY = y;
+            IsSelected = isSelected;
             OwnerGraph = ownerGraph;
         }
     }
 
+    /// <summary>
+    /// Represents an edge/link object in the GraphLayout algorithm.
+    /// </summary>
     public class Edge
     {
+        /// <summary>
+        /// The graph object which owns the edge.
+        /// </summary>
         private Graph OwnerGraph;
 
-        public Guid Id;
+        /// <summary>
+        /// The node connected to the edge's left end.
+        /// </summary>
+        public Node StartNode { get; private set; }
 
-        public Node StartNode;
-        public Node EndNode;
+        /// <summary>
+        /// The node connected to the edge's right end.
+        /// </summary>
+        public Node EndNode { get; private set; }
 
-        public double EndY;
-        public double StartOffsetY;
-        public double EndOffsetY;
+        /// <summary>
+        /// Returns the x coordinate of the connector's start point.
+        /// </summary>
+        public double StartX
+        {
+            get { return StartNode.X + StartNode.Width; }
+        }
 
+        /// <summary>
+        /// Returns the y coordinate of the connector's start point.
+        /// </summary>
+        public double StartY
+        {
+            get { return StartNode.Y + StartOffsetY; }
+        }
+
+        /// <summary>
+        /// Returns the x coordinate of the connector's end point.
+        /// </summary>
+        public double EndX
+        {
+            get { return EndNode.X; }
+        }
+
+        /// <summary>
+        /// Returns the y coordinate of the connector's end point.
+        /// </summary>
+        public double EndY
+        {
+            get { return EndNode.Y + EndOffsetY; }
+        }
+
+        /// <summary>
+        /// The y distance between the edge's left end and the start node's top-right corner.
+        /// </summary>
+        public double StartOffsetY { get; private set; }
+
+        /// <summary>
+        /// The y distance between the edge's right end and the end node's top-left corner.
+        /// </summary>
+        public double EndOffsetY { get; private set; }
+
+        /// <summary>
+        /// A flag for the GraphLayout algorithm.
+        /// </summary>
         public bool Active = true;
 
-        public Edge(Guid startId, Guid endId, double startY, double endY, Graph ownerGraph)
+        public Edge(Guid startId, Guid endId, double startX, double startY, double endX, double endY, Graph ownerGraph)
         {
-            EndY = endY;
             OwnerGraph = ownerGraph;
 
             StartNode = OwnerGraph.FindNode(startId);
             if (StartNode != null)
+            {
                 StartNode.RightEdges.Add(this);
+            }
 
             EndNode = OwnerGraph.FindNode(endId);
             if (EndNode != null)
+            {
                 EndNode.LeftEdges.Add(this);
+            }
 
             StartOffsetY = startY - StartNode.Y;
             EndOffsetY = endY - EndNode.Y;

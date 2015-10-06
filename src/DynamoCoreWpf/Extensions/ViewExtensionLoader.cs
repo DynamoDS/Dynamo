@@ -1,4 +1,5 @@
 ﻿using Dynamo.Interfaces;
+using Dynamo.Logging;
 
 using System;
 using System.Collections.Generic;
@@ -45,7 +46,7 @@ namespace Dynamo.Wpf.Extensions
             {
                 if (item.Name == "AssemblyPath")
                 {
-                    path = path + item.InnerText;
+                    path = Path.Combine(path, item.InnerText);
                     definition.AssemblyPath = path;
                 }
                 else if (item.Name == "TypeName")

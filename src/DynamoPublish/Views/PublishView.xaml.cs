@@ -3,8 +3,10 @@ using Dynamo.Wpf.Authentication;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -22,11 +24,29 @@ namespace Dynamo.Publish.Views
     /// </summary>
     public partial class PublishView : Window
     {
+        private PublishViewModel viewModel;
+
         public PublishView(PublishViewModel viewModel)
         {
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
             InitializeComponent();
             DataContext = viewModel;
+            this.viewModel = viewModel;
             viewModel.UIDispatcher = Dispatcher;
+
+            Closed += OnPublishViewClosed;
+        }
+
+        private void OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            System.Diagnostics.Process.Start(viewModel.ManagerURL);
+        }
+
+        private void OnPublishViewClosed(object sender, EventArgs e)
+        {
+            textBoxName.Clear();
+            textBoxDescription.Clear();
+            viewModel.ClearShareLink();
         }
     }
 }
