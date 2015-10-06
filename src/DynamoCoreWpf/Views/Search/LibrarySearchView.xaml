@@ -7,7 +7,7 @@
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:vm="clr-namespace:Dynamo.Wpf.ViewModels"
              xmlns:views="clr-namespace:Dynamo.UI.Views"
-             xmlns:fa="http://schemas.fontawesome.io/icons/"             
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
              mc:Ignorable="d"
              d:DesignHeight="525"
              d:DesignWidth="350">
@@ -24,44 +24,50 @@
                 <Button Command="{Binding ClickedCommand}">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
-                            <Border BorderBrush="{StaticResource SearchElementLineDeterminerColor}"
-                                    BorderThickness="0,0,0,1"
-                                    Margin="15,3,15,3"
-                                    Padding="0,7,0,9"
-                                    Background="#01000000">
 
-                                <Grid>
+                            <!-- Grey line between nodes -->
+                            <Border BorderThickness="0,0,0,1"
+                                    SnapsToDevicePixels="true"
+                                    BorderBrush="{StaticResource SearchElementLineDeterminerColor}"
+                                    Margin="15,0,15,0">
+
+                                <!-- Transparent, yet clickable background -->
+                                <Grid Background="#01000000">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
 
-                                    <Image Source="{Binding SmallIcon}"
+                                    <!-- Node icon -->
+                                    <Image Grid.Column="0"
+                                           Source="{Binding SmallIcon}"
                                            Height="32"
                                            Width="32"
                                            VerticalAlignment="Top"
                                            HorizontalAlignment="Left"
-                                           Margin="0,0,10,0"
-                                           Grid.Column="0" />
+                                           Margin="0,0,10,0" />
 
-                                    <StackPanel Orientation="Vertical"
-                                                Grid.Column="1">
+                                    <!-- Node class, group icon, node category -->
+                                    <StackPanel Grid.Column="1"
+                                                Orientation="Vertical">
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="{Binding Class}"
                                                        TextDecorations="Underline"
                                                        Foreground="{StaticResource CommonSidebarTextColor}" />
                                             <fa:ImageAwesome Icon="{Binding GroupIconName}"
-                                                             Foreground="{Binding Group, Converter={StaticResource ElementGroupToColorConverter}}"
+                                                             Foreground="{Binding Group, 
+                                                                                  Converter={StaticResource ElementGroupToColorConverter}}"
                                                              VerticalAlignment="Center"
                                                              HorizontalAlignment="Center"
                                                              Height="10"
                                                              Width="10"
-                                                             Margin="4" />
+                                                             Margin="4,4,4,4" />
                                             <TextBlock Text="{Binding Category}"
                                                        Foreground="{StaticResource SearchDarkGreyTextColor}"
                                                        FontStyle="Italic" />
                                         </StackPanel>
 
+                                        <!-- Node name -->
                                         <TextBlock Name="memberName"
                                                    HorizontalAlignment="Left"
                                                    VerticalAlignment="Top"
@@ -72,6 +78,7 @@
                                                      Foreground="{StaticResource SearchDarkGreyTextColor}" />
                                         </TextBlock>
 
+                                        <!-- Node description -->
                                         <TextBlock Name="memberDescription"
                                                    FontSize="10"
                                                    MaxHeight="50"
@@ -81,6 +88,7 @@
                                                    TextTrimming="CharacterEllipsis" />
                                     </StackPanel>
                                 </Grid>
+
                             </Border>
                         </ControlTemplate>
                     </Button.Template>
@@ -90,12 +98,17 @@
             <!-- Remove default listbox blue highlight. Disable item selection -->
             <Style x:Key="SearchItemStyle"
                    TargetType="ListBoxItem">
+
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ListBoxItem">
-                            <ContentPresenter Width="{Binding ActualWidth, 
+                            <Border Background="{TemplateBinding Background}"
+                                    Margin="0,2,0,0"
+                                    Width="{Binding ActualWidth, 
                                         RelativeSource={RelativeSource Mode=FindAncestor, 
-                                        AncestorType={x:Type views:LibrarySearchView }}}" />
+                                        AncestorType={x:Type views:LibrarySearchView }}}">
+                                <ContentPresenter />
+                            </Border>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
@@ -108,6 +121,17 @@
                              Handler="OnPopupMouseLeave" />
                 <EventSetter Event="MouseEnter"
                              Handler="OnMemberMouseEnter" />
+
+                <Setter Property="Background"
+                        Value="Transparent" />
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver"
+                             Value="True">
+                        <Setter Property="Background"
+                                Value="{StaticResource LibraryMemberOnHover}" />
+                    </Trigger>
+
+                </Style.Triggers>
             </Style>
 
             <Style BasedOn="{StaticResource LibraryScrollViewerStyle}"
