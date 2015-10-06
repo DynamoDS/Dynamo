@@ -631,7 +631,7 @@ namespace ProtoTestFx.TD
                     try
                     {
                         Int64 utf8Encoding = Convert.ToInt64(dsObject.Payload);
-                        Char dsValue = EncodingUtils.ConvertInt64ToCharacter(utf8Encoding);
+                        Char dsValue = Convert.ToChar(utf8Encoding); 
 
                         if (!expectedObject.Equals(dsValue))
                         {
