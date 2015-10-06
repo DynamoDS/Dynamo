@@ -61,6 +61,8 @@ namespace Dynamo.Models
             Description = info.Description;
             IsVisibleInDynamoLibrary = info.IsVisibleInDynamoLibrary;
             PropertyChanged += OnPropertyChanged;
+
+            
         }
 
         #endregion

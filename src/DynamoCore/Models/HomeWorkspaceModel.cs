@@ -189,22 +189,14 @@ namespace Dynamo.Models
                 copiedData.Add(new KeyValuePair<Guid, List<string>>(kvp.Key, strings));
             }
             historicalTraceData = copiedData;
-
-            this.NodeAdded += (x) => x.RequestSilenceNodeModifiedEvents += (_, v) => this.silenceNodeModifications = v;
-
-            foreach (var node in nodes)
-            {
-                node.RequestSilenceNodeModifiedEvents += (_, v) => this.silenceNodeModifications = v;
-            }
-
         }
 
         #endregion
 
-
         public override void Dispose()
         {
             base.Dispose();
+
             if (EngineController != null)
             {
                 EngineController.MessageLogged -= Log;
@@ -253,6 +245,25 @@ namespace Dynamo.Models
             {
                 RequestRun();
             }
+        }
+
+        protected virtual void RegisterNode(NodeModel node)
+        {
+            base.RegisterNode(node);
+
+            node.RequestSilenceNodeModifiedEvents += NodeOnRequestSilenceNodeModifiedEvents;
+        }
+
+        protected virtual void DisposeNode(NodeModel node)
+        {
+            base.RegisterNode(node);
+
+            node.RequestSilenceNodeModifiedEvents -= NodeOnRequestSilenceNodeModifiedEvents;
+        }
+
+        private void NodeOnRequestSilenceNodeModifiedEvents(NodeModel _, bool value)
+        {
+            this.silenceNodeModifications = value;
         }
 
         #region Public Operational Methods

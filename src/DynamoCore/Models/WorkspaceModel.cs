@@ -772,7 +772,7 @@ namespace Dynamo.Models
             RequestRun();
         }
 
-        private void RegisterNode(NodeModel node)
+        protected virtual void RegisterNode(NodeModel node)
         {
             node.Modified += NodeModified;
             node.ConnectorAdded += OnConnectorAdded;
