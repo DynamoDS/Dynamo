@@ -205,7 +205,6 @@
     <Compile Include="Utils\CoreUtils.cs" />
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Utils\MathUtils.cs" />
-    <Compile Include="Utils\LegacyUtils.cs" />
     <Compile Include="Utils\LexUtils.cs" />
     <Compile Include="SymbolTable.cs" />
     <Compile Include="Utils\NodeUtils.cs" />
