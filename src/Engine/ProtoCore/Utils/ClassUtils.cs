@@ -23,12 +23,12 @@ namespace ProtoCore.Utils
             ret.Add(runtimeCore.DSExecutable.classTable.ClassNodes.IndexOf(cn));
 
             ClassNode target = cn;
-            while (target.baseList.Count > 0)
+            while (target.Bases.Count > 0)
             {
-                Validity.Assert(target.baseList.Count == 1, "Multiple Inheritence not yet supported, {F5DDC58D-F721-4319-854A-622175AC43F8}");
-                ret.Add(target.baseList[0]);
+                Validity.Assert(target.Bases.Count == 1, "Multiple Inheritence not yet supported, {F5DDC58D-F721-4319-854A-622175AC43F8}");
+                ret.Add(target.Bases[0]);
 
-                target = runtimeCore.DSExecutable.classTable.ClassNodes[target.baseList[0]];
+                target = runtimeCore.DSExecutable.classTable.ClassNodes[target.Bases[0]];
             }
 
             if (!ret.Contains((int)(PrimitiveType.kTypeVar)))
@@ -79,22 +79,22 @@ namespace ProtoCore.Utils
             hasThisSymbol = false;
             addressType = ProtoCore.DSASM.AddressType.Invalid;
 
-            if (classNode.symbols == null)
+            if (classNode.Symbols == null)
             {
                 return ProtoCore.DSASM.Constants.kInvalidIndex;
             }
 
-            IEnumerable<SymbolNode> allSymbols = classNode.symbols.GetNodeForName(name);
+            IEnumerable<SymbolNode> allSymbols = classNode.Symbols.GetNodeForName(name);
             if (allSymbols == null)
             {
                 return ProtoCore.DSASM.Constants.kInvalidIndex;
             }
 
-            int myself = classNode.typeSystem.classTable.IndexOf(classNode.name);
+            int myself = classNode.TypeSystem.classTable.IndexOf(classNode.Name);
             bool isInMemberFunctionContext = (classScope == myself) && (functionScope != ProtoCore.DSASM.Constants.kInvalidIndex);
             bool isInStaticFunction = isInMemberFunctionContext && 
-                classNode.vtable.procList.Count > functionScope &&
-                classNode.vtable.procList[functionScope].isStatic;
+                classNode.ProcTable.procList.Count > functionScope &&
+                classNode.ProcTable.procList[functionScope].IsStatic;
 
             // Try for member function variables
             var blocks = GetAncestorBlockIdsOfBlock(blockId, codeblockList);

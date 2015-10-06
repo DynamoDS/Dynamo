@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>DynamoVisualProgramming.Core</id>
+    <version>0.9.0.0</version>
+    <authors>Autodesk</authors>
+    <owners>Autodesk</owners>
+    <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>https://github.com/DynamoDS/Dynamo</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Unit and system test infrastructure for Dynamo.</description>
+    <summary>This package contains the core assemblies for Dynamo.</summary>
+    <copyright>Copyright Autodesk 2015</copyright>
+    <iconUrl>https://raw.githubusercontent.com/DynamoDS/Dynamo/master/doc/distrib/Images/logo_square_32x32.png</iconUrl>
+    <dependencies>
+        <dependency id="Prism" version="4.1"/>
+        <dependency id="NUnit" version="2.6.3"/>
+    </dependencies>
+  </metadata>
+</package>

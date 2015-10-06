@@ -619,6 +619,29 @@ namespace Dynamo.Tests
             Assert.DoesNotThrow(() => FilePathDisplayConverter.ShortenNestedFilePath(@"\\psf\\Home\somedyn.dyn"));
             Assert.DoesNotThrow(() => FilePathDisplayConverter.ShortenNestedFilePath(@"\\psf\somedyn.dyn"));
             Assert.AreEqual(@"\\psf\Home\Desktop\somedyn.dyn", FilePathDisplayConverter.ShortenNestedFilePath(@"\\psf\Home\Desktop\somedyn.dyn"));
-        }       
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ElementGroupToColorConverterTest()
+        {
+            var converter = new ElementGroupToColorConverter();
+
+            object result = converter.Convert("DummyValue", null, null, null);
+            SolidColorBrush expected = null;
+            Assert.AreEqual(expected, result);            
+
+            result = converter.Convert(SearchElementGroup.Create, null, null, null);
+            expected = (SolidColorBrush)new BrushConverter().ConvertFromString("#7B9F2D");
+            Assert.AreEqual(expected.ToString(), result.ToString());
+
+            result = converter.Convert(SearchElementGroup.Action, null, null, null);
+            expected = (SolidColorBrush)new BrushConverter().ConvertFromString("#D56867");
+            Assert.AreEqual(expected.ToString(), result.ToString());
+
+            result = converter.Convert(SearchElementGroup.Query, null, null, null);
+            expected = (SolidColorBrush)new BrushConverter().ConvertFromString("#65999A");
+            Assert.AreEqual(expected.ToString(), result.ToString());
+        }
     }
 }

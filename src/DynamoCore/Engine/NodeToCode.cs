@@ -12,6 +12,7 @@ using ProtoCore.Mirror;
 using ProtoCore.Utils;
 using Dynamo.Core;
 using ProtoCore.Namespace;
+using Dynamo.Engine.CodeGeneration;
 using Dynamo.Interfaces;
 
 namespace Dynamo.Engine.NodeToCode
@@ -46,10 +47,11 @@ namespace Dynamo.Engine.NodeToCode
         public string GetTypeDependentName(ProtoCore.Type type)
         {
             string prefix = String.Empty;
-            if (type.UID >= 0 && type.UID < core.ClassTable.ClassNodes.Count())
+
+            int classIndex = core.ClassTable.IndexOf(type.Name);
+            if (classIndex != Constants.kInvalidIndex)
             {
-                // If class provides short name, then use it.
-                var classNode = core.ClassTable.ClassNodes[type.UID];
+                var classNode = core.ClassTable.ClassNodes[classIndex];
                 prefix = GetShortName(classNode);
 
                 // Otherwise change class name to its lower case
@@ -74,7 +76,7 @@ namespace Dynamo.Engine.NodeToCode
             {
                 if (customization != null)
                 {
-                    shortName = customization.GetShortName(classNode.name);
+                    shortName = customization.GetShortName(classNode.Name);
                     if (!String.IsNullOrEmpty(shortName))
                         break;
                 }
@@ -86,9 +88,9 @@ namespace Dynamo.Engine.NodeToCode
                         break;
                 }
 
-                if (classNode.baseList.Any())
+                if (classNode.Bases.Any())
                 {
-                    var baseIndex = classNode.baseList[0];
+                    var baseIndex = classNode.Bases[0];
                     classNode = core.ClassTable.ClassNodes[baseIndex];
                 }
                 else
@@ -1224,7 +1226,7 @@ namespace Dynamo.Engine.NodeToCode
             AstBuilder builder = new AstBuilder(null);
             var sortedGraph = AstBuilder.TopologicalSortForGraph(workspaceNodes);
             var sortedNodes = sortedGraph.Where(nodes.Contains);
-            var allAstNodes = builder.CompileToAstNodes(sortedNodes, AstBuilder.CompilationContext.NodeToCode, false);
+            var allAstNodes = builder.CompileToAstNodes(sortedNodes, CompilationContext.NodeToCode, false);
 
             #endregion
 

@@ -2702,4 +2702,45 @@ namespace Dynamo.Controls
                 throw new Exception("The method or operation is not implemented.");
             }
         }
-}
+
+        /// <summary>
+        /// Converter is used in Library Views.
+        /// Create - green.
+        /// Action - pink.
+        /// Query - blue.
+        /// </summary>
+        public class ElementGroupToColorConverter : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+            {
+                if (!(value is SearchElementGroup))
+                {
+                    return null;
+                }
+
+                var type = (SearchElementGroup)value;
+
+                // It's just for tests.
+                if (!UriParser.IsKnownScheme("pack")) new Application();
+
+                var resourceDictionary = SharedDictionaryManager.DynamoColorsAndBrushesDictionary;
+
+                switch (type)
+                {
+                    case SearchElementGroup.Create:
+                        return resourceDictionary["CreateMembersColor"] as SolidColorBrush;
+                    case SearchElementGroup.Action:
+                        return resourceDictionary["ActionMembersColor"] as SolidColorBrush;
+                    case SearchElementGroup.Query:
+                        return resourceDictionary["QueryMembersColor"] as SolidColorBrush;
+                    default:
+                        return null;
+                }
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+        }
+    }
