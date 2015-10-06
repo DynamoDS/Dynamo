@@ -36,6 +36,8 @@ namespace Dynamo.Engine
 
         private readonly List<string> importedLibraries = new List<string>();
 
+        private readonly List<string> packagedLibraries = new List<string>();
+
         private readonly IPathManager pathManager;
         public ProtoCore.Core LibraryManagementCore{get; private set;}
         private ProtoCore.Core liveRunnerCore = null;
@@ -673,6 +675,7 @@ namespace Dynamo.Engine
                                                                 FunctionType = FunctionType.GenericFunction,
                                                                 IsVisibleInLibrary = visibleInLibrary,
                                                                 IsBuiltIn = true,
+                                                                IsPackageMember = false,
                                                                 Assembly = "BuiltIn"
                                                             });
 
@@ -715,6 +718,7 @@ namespace Dynamo.Engine
                     PathManager = pathManager,
                     FunctionType = FunctionType.GenericFunction,
                     IsBuiltIn = true,
+                    IsPackageMember = false,
                     Assembly = "Operators"
                 }))
                 .Concat(new FunctionDescriptor(new FunctionDescriptorParams
@@ -724,6 +728,7 @@ namespace Dynamo.Engine
                     PathManager = pathManager,
                     FunctionType = FunctionType.GenericFunction,
                     IsBuiltIn = true,
+                    IsPackageMember = false,
                     Assembly = "Operators"
                 }).AsSingleton());
 
@@ -899,7 +904,8 @@ namespace Dynamo.Engine
                 IsVarArg = proc.isVarArg,
                 ObsoleteMsg = obsoleteMessage,
                 CanUpdatePeriodically = canUpdatePeriodically,
-                IsBuiltIn = pathManager.PreloadedLibraries.Contains(library)
+                IsBuiltIn = pathManager.PreloadedLibraries.Contains(library),
+                IsPackageMember = packagedLibraries.Contains(library)
             });
 
             AddImportedFunctions(library, new[] { function });
@@ -913,6 +919,15 @@ namespace Dynamo.Engine
 
         private void OnLibraryLoading(LibraryLoadingEventArgs e)
         {
+            string library = e.LibraryPath;
+
+            // Assembly, that is located in package directory, considered as part of package.
+            if (pathManager.PackagesDirectories.Any(
+                directory => library.StartsWith(directory)))
+            {
+                packagedLibraries.Add(library);
+            }
+
             EventHandler<LibraryLoadingEventArgs> handler = LibraryLoading;
             if (handler != null)
                 handler(this, e);
