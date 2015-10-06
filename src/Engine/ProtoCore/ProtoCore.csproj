@@ -126,7 +126,6 @@
     <Compile Include="DSASM\Heap.cs" />
     <Compile Include="DSASM\IExecutive.cs" />
     <Compile Include="DSASM\InstructionSet.cs" />
-    <Compile Include="DSASM\Mirror\DSASMMirror.cs" />
     <Compile Include="DSASM\Mirror\ExecutionMirror.cs" />
     <Compile Include="Exceptions\CompilerInternalException.cs" />
     <Compile Include="Exceptions\ExceptionHandling.cs" />
