@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Dynamo.Models;
 using Dynamo.Prompts;
 using Dynamo.Selection;
@@ -166,8 +167,6 @@ namespace Dynamo.Controls
         /// </summary>
         private void HandleCachedValueUpdated()
         {
-            Debug.WriteLine("HandleCacheValueUpdated" + this.ViewModel.NodeModel.GUID);
-
             Dispatcher.BeginInvoke(new Action(delegate
             {
                 // There is no preview control or the preview control is 
@@ -195,7 +194,7 @@ namespace Dynamo.Controls
                 }
 
                 previewControl.BindToDataSource(ViewModel.NodeModel.CachedValue);
-            }));
+            }), DispatcherPriority.Background);
         }
 
         void ViewModel_RequestsSelection(object sender, EventArgs e)
