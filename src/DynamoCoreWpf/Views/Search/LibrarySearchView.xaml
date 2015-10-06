@@ -29,7 +29,8 @@
                             <Border BorderThickness="0,0,0,1"
                                     SnapsToDevicePixels="true"
                                     BorderBrush="{StaticResource SearchElementLineDeterminerColor}"
-                                    Margin="15,0,15,0">
+                                    Margin="15,0,15,0"
+                                    Padding="0,7,0,9">
 
                                 <!-- Transparent, yet clickable background -->
                                 <Grid Background="#01000000">
