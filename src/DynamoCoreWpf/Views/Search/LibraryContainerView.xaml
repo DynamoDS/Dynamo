@@ -245,14 +245,19 @@
                                 <WrapPanel />
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
+
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
+
+                                <!-- Search category button -->
                                 <Button Command="{Binding ClickCommand}">
+
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
                                             <ContentPresenter />
                                         </ControlTemplate>
                                     </Button.Template>
+
                                     <Border Background="{Binding IsSelected, 
                                                                  Converter={StaticResource FilterIsSelertedCategoryToBrushConverter}}"
                                             CornerRadius="3"
@@ -260,15 +265,24 @@
                                             Margin="3">
 
                                         <StackPanel Orientation="Horizontal">
+
+                                            <!-- Search category name -->
                                             <TextBlock Text="{Binding Name}"
                                                        Foreground="{StaticResource SelectedFilterButtonTextColor}"
                                                        FontStyle="Italic" />
+
+                                            <!-- We didn't use checkbox, because the whole button should be clickable.
+                                                 And it's easier just add color converters than create new template for check box. -->
+
+                                            <!-- "CheckBox" background-->
                                             <Border Height="10"
                                                     Width="10"
                                                     Margin="3,0,0,0"
                                                     Background="{Binding IsSelected, 
                                                                  Converter={StaticResource FilterIsSelertedCheckBoxForegroundConverter}}"
                                                     CornerRadius="2">
+
+                                                <!-- "CheckBox" cross -->
                                                 <Path Width="7"
                                                       Height="7"
                                                       x:Name="CheckMark"
@@ -283,10 +297,13 @@
                                         </StackPanel>
                                     </Border>
                                 </Button>
+
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
+
                     </ItemsControl>
                 </Border>
+
                 <Path x:Name="arrow"
                       Fill="{StaticResource FilterPopupBackgroundColor}"
                       Stroke="{StaticResource FilterPopupBorderColor}"
