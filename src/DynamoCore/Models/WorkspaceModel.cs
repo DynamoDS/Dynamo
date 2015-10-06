@@ -43,19 +43,19 @@ namespace Dynamo.Models
         {
             get
             {
-                return currentPasteOffset == 0 ? PASTE_OFFSET_STEP : currentPasteOffset;
+                return currentPasteOffset == 0 ? PasteOffsetStep : currentPasteOffset;
             }
         }
 
         /// <summary>
         ///     The step to offset elements between subsequent paste operations
         /// </summary>
-        internal static readonly int PASTE_OFFSET_STEP = 10;
+        internal static readonly int PasteOffsetStep = 10;
 
         /// <summary>
         ///     The maximum paste offset before reset
         /// </summary>
-        internal static readonly int PASTE_OFFSET_MAX = 60;
+        internal static readonly int PasteOffsetMax = 60;
 
         private string fileName;
         private string name;
@@ -1017,7 +1017,7 @@ namespace Dynamo.Models
         /// </summary>
         internal void IncrementPasteOffset()
         {
-            this.currentPasteOffset = (this.currentPasteOffset + PASTE_OFFSET_STEP) % PASTE_OFFSET_MAX;
+            this.currentPasteOffset = (this.currentPasteOffset + PasteOffsetStep) % PasteOffsetMax;
         }
         
         #endregion
