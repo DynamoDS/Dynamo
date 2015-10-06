@@ -424,7 +424,7 @@ namespace Dynamo.Nodes
 
                 var targetClass = core.ClassTable.ClassNodes[classIndex];
                 var func = targetClass.GetFirstMemberFunctionBy(funcNode.Function.Name);
-                type = func.returntype;
+                type = func.ReturnType;
                 return type;
             }
             else if (expr.RightNode is FunctionCallNode)
@@ -436,7 +436,7 @@ namespace Dynamo.Nodes
                 {
                     var func = funcGroup.FunctionEndPoints.FirstOrDefault();
                     if (func != null)
-                        return func.procedureNode.returntype;
+                        return func.procedureNode.ReturnType;
                 }
             }
             else if (expr.RightNode is IntNode)
