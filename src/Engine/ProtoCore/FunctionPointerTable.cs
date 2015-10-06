@@ -73,16 +73,6 @@ namespace ProtoCore.DSASM
         readonly IDictionary<TFirst, TSecond> firstToSecond = new Dictionary<TFirst, TSecond>();
         readonly IDictionary<TSecond, TFirst> secondToFirst = new Dictionary<TSecond, TFirst>();
 
-        public bool ContainsSecond(TSecond second)
-        {
-            return secondToFirst.ContainsKey(second);
-        }
-
-        public bool ContainsFirst(TFirst first)
-        {
-            return firstToSecond.ContainsKey(first);
-        }
-
         /// <summary>
         /// Tries to add the pair to the dictionary.
         /// Returns false if either element is already in the dictionary        
@@ -126,53 +116,11 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Remove the record containing first, if there is one.
-        /// </summary>
-        /// <param name="first"></param>
-        /// <returns> If first is not in the dictionary, returns false, otherwise true</returns>
-        public Boolean TryRemoveByFirst(TFirst first)
-        {
-            TSecond second;
-            if (!firstToSecond.TryGetValue(first, out second))
-                return false;
-
-            firstToSecond.Remove(first);
-            secondToFirst.Remove(second);
-            return true;
-        }
-
-        /// <summary>
-        /// Remove the record containing second, if there is one.
-        /// </summary>
-        /// <param name="second"></param>
-        /// <returns> If second is not in the dictionary, returns false, otherwise true</returns>
-        public Boolean TryRemoveBySecond(TSecond second)
-        {
-            TFirst first;
-            if (!secondToFirst.TryGetValue(second, out first))
-                return false;
-
-            secondToFirst.Remove(second);
-            firstToSecond.Remove(first);
-            return true;
-        }
-
-        /// <summary>
         /// The number of pairs stored in the dictionary
         /// </summary>
         public Int32 Count
         {
             get { return firstToSecond.Count; }
         }
-
-        /// <summary>
-        /// Removes all items from the dictionary.
-        /// </summary>
-        public void Clear()
-        {
-            firstToSecond.Clear();
-            secondToFirst.Clear();
-        }
-
     }
 }

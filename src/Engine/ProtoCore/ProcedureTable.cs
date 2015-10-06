@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using ProtoCore.AssociativeGraph;
 using ProtoCore.AST.AssociativeAST;
-using ProtoCore.Utils;
 
 namespace ProtoCore.DSASM
 {

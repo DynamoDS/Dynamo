@@ -226,18 +226,6 @@ namespace ProtoCore
                 Stack[index] = data;
             }
 
-            /// <summary>
-            /// Set the value for symbol on specified frame. 
-            /// </summary>
-            /// <param name="symbol"></param>
-            /// <param name="data"></param>
-            /// <param name="framePointer"></param>
-            public void SetSymbolValueOnFrame(SymbolNode symbol, StackValue data, int framePointer)
-            {
-                int index = GetStackIndex(symbol, framePointer);
-                Stack[index] = data;
-            }
-
             // TO BE DELETED
             public int GetStackIndex(int offset)
             {
@@ -267,13 +255,6 @@ namespace ProtoCore
                 }
 
                 return offset >= 0 ? offset : framePointer + offset;
-            }
-
-            public void SetGlobalStackData(int globalOffset, StackValue svData)
-            {
-                Validity.Assert(globalOffset >= 0);
-                Validity.Assert(Stack.Count > 0);
-                Stack[globalOffset] = svData;
             }
             
             public StackValue GetMemberData(int symbolindex, int scope, Executable exe)

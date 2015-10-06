@@ -372,28 +372,6 @@ namespace ProtoCore.DSASM
             return vtable.procList[index];
         }
 
-        public bool IsStaticMemberVariable(string variableName)
-        {
-            Validity.Assert(null != variableName && variableName.Length > 0);
-            ProcedureNode proc = GetProcNode(variableName);
-            Validity.Assert(null != proc);
-            return proc.isStatic;
-        }
-
-        public bool IsMemberVariable(string variableName)
-        {
-            // Jun:
-            // To find a member variable, get its getter name and check the vtable
-            if (vtable == null)
-            {
-                return false;
-            }
-
-            Validity.Assert(null != variableName && variableName.Length > 0);
-            string getterName = ProtoCore.DSASM.Constants.kGetterPrefix + variableName;
-            return ProtoCore.DSASM.Constants.kInvalidIndex != vtable.IndexOfFirst(getterName) ? true : false;
-        }
-
         public bool IsMemberVariable(SymbolNode symbol)
         {
             // Jun:
