@@ -40,11 +40,11 @@ namespace DynamoCoreWpfTests
 
         }
 
-        [Test, ]
+        [Test]
         public void SetsErrorState()
         {
            
-            //open a dyf file and modify if
+            //open a dyf file and modify it
             string packagedirectory = Path.Combine(TestDirectory, "pkgs");
             var packages = Directory.EnumerateDirectories(packagedirectory);
             var first = Path.GetFullPath(packages.First());
