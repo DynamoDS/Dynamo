@@ -73,7 +73,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private LineGeometry3D worldAxes;
         private RenderTechnique renderTechnique;
         private PerspectiveCamera camera;
-        private double nearPlaneDistanceFactor = 0.01;
+        private double nearPlaneDistanceFactor = 0.001;
         private Vector3 directionalLightDirection = new Vector3(-0.5f, -1.0f, 0.0f);
         private DirectionalLight3D directionalLight;
 
@@ -1227,7 +1227,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             // http: //www.sjbaker.org/steve/omniv/love_your_z_buffer.html
             var maxDim = Math.Max(Math.Max(sceneBounds.SizeX, sceneBounds.Y), sceneBounds.SizeZ);
-            Camera.NearPlaneDistance = Math.Max(CalculateNearClipPlane(maxDim), 0.1);
+            var bounds = new BoundingBox(new Vector3(-50,-50,-50),new Vector3(50,50,50));
+            Camera.NearPlaneDistance = 
+                bounds.Contains(Camera.Position.ToVector3()) == ContainmentType.Contains ? 
+                0.1 : Math.Max(CalculateNearClipPlane(maxDim), 0.1);
         }
 
         internal override void ExportToSTL(string path, string modelName)
