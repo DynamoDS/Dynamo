@@ -456,31 +456,28 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         internal event Func<MouseEventArgs, Ray3D> RequestClickRay;
         public Ray3D GetClickRay(MouseEventArgs args)
         {
-            if (RequestClickRay != null)
-                return RequestClickRay(args);
-
-            return null;
+            return RequestClickRay != null ? RequestClickRay(args) : null;
         }
 
         public event Action<object, MouseButtonEventArgs> ViewMouseDown;
         internal void OnViewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (ViewMouseDown != null)
-                ViewMouseDown(sender, e);
+            var handler = ViewMouseDown;
+            if (handler != null) handler(sender, e);
         }
 
         public event Action<object, MouseButtonEventArgs> ViewMouseUp;
         internal void OnViewMouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (ViewMouseUp != null)
-                ViewMouseUp(sender, e);
+            var handler = ViewMouseUp;
+            if (handler != null) handler(sender, e);
         }
 
         public event Action<object, MouseEventArgs> ViewMouseMove;
         internal void OnViewMouseMove(object sender, MouseEventArgs e)
         {
-            if (ViewMouseMove != null)
-                ViewMouseMove(sender, e);
+            var handler = ViewMouseMove;
+            if (handler != null) handler(sender, e);
         }
 
         protected virtual void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
