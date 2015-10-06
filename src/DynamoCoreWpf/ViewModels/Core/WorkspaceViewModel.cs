@@ -816,6 +816,12 @@ namespace Dynamo.ViewModels
             return DynamoSelection.Instance.Selection.Count > 1;
         }
 
+        private void Paste(object param)
+        {
+            var point = InCanvasSearchViewModel.InCanvasSearchPosition;
+            DynamoViewModel.Model.Paste(new Point2D(point.X, point.Y));
+        }
+
         private void ShowHideAllGeometryPreview(object parameter)
         {
             var modelGuids = DynamoSelection.Instance.Selection.

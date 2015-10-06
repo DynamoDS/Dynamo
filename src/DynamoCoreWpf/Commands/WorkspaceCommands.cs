@@ -233,12 +233,6 @@ namespace Dynamo.ViewModels
             get { return CanCopy || CanPaste; }
         }
 
-        private void Paste(object param)
-        {
-            var point = InCanvasSearchViewModel.InCanvasSearchPosition;
-            DynamoViewModel.Model.Paste(new Point2D(point.X, point.Y));
-        }
-
         public bool AnyNodeVisible
         {
             get

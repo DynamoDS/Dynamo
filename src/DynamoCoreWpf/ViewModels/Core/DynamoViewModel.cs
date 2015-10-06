@@ -447,6 +447,7 @@ namespace Dynamo.ViewModels
 
             this.BrandingResourceProvider = startConfiguration.BrandingResourceProvider ?? new DefaultBrandingResourceProvider();
 
+            // commands should be initialized before adding any WorkspaceViewModel
             InitializeDelegateCommands();
 
             //add the initial workspace and register for future 
