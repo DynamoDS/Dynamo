@@ -405,8 +405,7 @@ namespace Dynamo.UI.Controls
 
         private Size ComputeSmallContentSize()
         {
-            Size maxSize = new Size()
-            {
+            Size maxSize = new Size(){
                 Width = Configurations.MaxCondensedPreviewWidth,
                 Height = Configurations.MaxCondensedPreviewHeight
             };
@@ -501,19 +500,19 @@ namespace Dynamo.UI.Controls
             SetCurrentStateAndNotify(State.PreTransition);
 
             RefreshCondensedDisplay(() =>
-            {
-                // Update size before fading in to view.
-                var smallContentSize = ComputeSmallContentSize();
-                UpdateAnimatorTargetSize(SizeAnimator.PhaseIn, smallContentSize);
+                {
+                    // Update size before fading in to view.
+                    var smallContentSize = ComputeSmallContentSize();
+                    UpdateAnimatorTargetSize(SizeAnimator.PhaseIn, smallContentSize);
 
-                this.centralizedGrid.Opacity = 0.0;
-                this.centralizedGrid.Visibility = System.Windows.Visibility.Visible;
-                this.smallContentGrid.Visibility = System.Windows.Visibility.Visible;
+                    this.centralizedGrid.Opacity = 0.0;
+                    this.centralizedGrid.Visibility = System.Windows.Visibility.Visible;
+                    this.smallContentGrid.Visibility = System.Windows.Visibility.Visible;
 
-                // The real transition starts
-                SetCurrentStateAndNotify(State.InTransition);
-                phaseInStoryboard.Begin(this, true);
-            }
+                    // The real transition starts
+                    SetCurrentStateAndNotify(State.InTransition);
+                    phaseInStoryboard.Begin(this, true);
+                }
             );
         }
 
@@ -536,15 +535,15 @@ namespace Dynamo.UI.Controls
             SetCurrentStateAndNotify(State.PreTransition);
 
             RefreshCondensedDisplay(() =>
-            {
-                this.smallContentGrid.Visibility = System.Windows.Visibility.Visible;
+                {
+                    this.smallContentGrid.Visibility = System.Windows.Visibility.Visible;
 
-                // The real transition starts
-                SetCurrentStateAndNotify(State.InTransition);
-                var smallContentSize = ComputeSmallContentSize();
-                UpdateAnimatorTargetSize(SizeAnimator.Condensation, smallContentSize);
-                this.condenseStoryboard.Begin(this, true);
-            }
+                    // The real transition starts
+                    SetCurrentStateAndNotify(State.InTransition);
+                    var smallContentSize = ComputeSmallContentSize();
+                    UpdateAnimatorTargetSize(SizeAnimator.Condensation, smallContentSize);
+                    this.condenseStoryboard.Begin(this, true);
+                }
             );
         }
 
@@ -558,15 +557,15 @@ namespace Dynamo.UI.Controls
             SetCurrentStateAndNotify(State.PreTransition);
 
             RefreshExpandedDisplay(() =>
-            {
-                this.largeContentGrid.Visibility = System.Windows.Visibility.Visible;
-                // The real transition starts
-                SetCurrentStateAndNotify(State.InTransition);
+                {
+                    this.largeContentGrid.Visibility = System.Windows.Visibility.Visible;
+                    // The real transition starts
+                    SetCurrentStateAndNotify(State.InTransition);
 
-                var largeContentSize = ComputeLargeContentSize();
-                UpdateAnimatorTargetSize(SizeAnimator.Expansion, largeContentSize);
-                this.expandStoryboard.Begin(this, true);
-            }
+                    var largeContentSize = ComputeLargeContentSize();
+                    UpdateAnimatorTargetSize(SizeAnimator.Expansion, largeContentSize);
+                    this.expandStoryboard.Begin(this, true);
+                }
             );
         }
 
@@ -645,7 +644,7 @@ namespace Dynamo.UI.Controls
             smallContentGrid.Visibility = System.Windows.Visibility.Hidden;
             BeginNextTransition(); // See if there's any more requests.
         }
-
+        
         private void OnPreviewControlCondensed(object sender, EventArgs e)
         {
             SetCurrentStateAndNotify(State.Condensed);
