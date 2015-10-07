@@ -624,4 +624,7 @@ value : bool = false</value>
   <data name="CustomNodeFolderLoadFailure" xml:space="preserve">
     <value>Failed to load custom node directory. Do you have permission to access {0}?</value>
   </data>
+  <data name="SequenceOutputPortTooltip" xml:space="preserve">
+    <value>var[]..[]</value>
+  </data>
 </root>

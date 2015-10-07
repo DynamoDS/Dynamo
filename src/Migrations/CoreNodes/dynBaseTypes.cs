@@ -374,7 +374,7 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             XmlElement newNode = MigrationManager.CloneAndChangeName(
-                oldNode, "DSCoreNodesUI.Range", "Range");
+                oldNode, "DSCoreNodesUI.Range", "ByRange");
 
             migrationData.AppendNode(newNode);
             return migrationData;
@@ -391,7 +391,7 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             XmlElement newNode = MigrationManager.CloneAndChangeName(
-                oldNode, "DSCoreNodesUI.Sequence", "Sequence");
+                oldNode, "DSCoreNodesUI.Sequence", "BySequence");
 
             migrationData.AppendNode(newNode);
             return migrationData;
