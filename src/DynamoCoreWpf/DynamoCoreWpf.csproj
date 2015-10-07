@@ -282,9 +282,6 @@
     <Compile Include="ViewModels\Search\ClassInformationViewModel.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\SymbolViewCustomization.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\VariableInputNodeViewCustomization.cs" />
-    <Compile Include="ViewModels\Search\SearchCategory.cs" />
-    <Compile Include="ViewModels\Search\SearchMemberGroup.cs" />
-    <Compile Include="ViewModels\Search\SelectionNavigator.cs" />
     <Compile Include="ViewModels\RenderPackageFactoryViewModel.cs" />
     <Compile Include="ViewModels\Watch3D\DynamoGeometryModel3D.cs" />
     <Compile Include="ViewModels\Watch3D\DynamoLineGeometryModel3D.cs" />

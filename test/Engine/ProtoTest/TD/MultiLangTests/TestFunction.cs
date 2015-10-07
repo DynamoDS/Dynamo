@@ -8,14 +8,11 @@ namespace ProtoTest.TD.MultiLangTests
     class TestFunction : ProtoTestBase
     {
         string testPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
-        ProtoScript.Config.RunConfiguration runnerConfig;
         ProtoScript.Runners.DebugRunner fsr;
 
         public override void Setup()
         {
             base.Setup();
-            runnerConfig = new ProtoScript.Config.RunConfiguration();
-            runnerConfig.IsParrallel = false;
             fsr = new ProtoScript.Runners.DebugRunner(core);
         }
 
@@ -6361,7 +6358,7 @@ d1 = [Imperative]
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1510
             string src = string.Format("{0}{1}", testPath, "TV88_Defect_1463489_3.ds");
-            fsr.LoadAndPreStart(src, runnerConfig);
+            fsr.LoadAndPreStart(src);
             ProtoCore.CodeModel.CodePoint cp = new ProtoCore.CodeModel.CodePoint
             {
                 CharNo = 8,

@@ -740,17 +740,17 @@ namespace ProtoCore
             if (classScope != Constants.kGlobalScope)
             {
                 //Search local variable for the class member function
-                symbolIndex = ClassTable.ClassNodes[classScope].symbols.IndexOf(name, classScope, functionScope);
+                symbolIndex = ClassTable.ClassNodes[classScope].Symbols.IndexOf(name, classScope, functionScope);
                 if (symbolIndex != Constants.kInvalidIndex)
                 {
-                    return ClassTable.ClassNodes[classScope].symbols.symbolList[symbolIndex];
+                    return ClassTable.ClassNodes[classScope].Symbols.symbolList[symbolIndex];
                 }
 
                 //Search class members
-                symbolIndex = ClassTable.ClassNodes[classScope].symbols.IndexOf(name, classScope, Constants.kGlobalScope);
+                symbolIndex = ClassTable.ClassNodes[classScope].Symbols.IndexOf(name, classScope, Constants.kGlobalScope);
                 if (symbolIndex != Constants.kInvalidIndex)
                 {
-                    return ClassTable.ClassNodes[classScope].symbols.symbolList[symbolIndex];
+                    return ClassTable.ClassNodes[classScope].Symbols.symbolList[symbolIndex];
                 }
             }
 

@@ -40,17 +40,12 @@ namespace Dynamo.UI.Views
         {
             viewModel = DataContext as SearchViewModel;
             viewModel.SearchTextChanged +=viewModel_SearchTextChanged;
-            // RequestReturnFocusToSearch calls, when workspace was clicked.
-            // We should hide tooltip.
-            viewModel.RequestReturnFocusToSearch += OnRequestCloseToolTip;
-            // When workspace was changed, we should hide tooltip. 
-            viewModel.RequestCloseSearchToolTip += OnRequestCloseToolTip;
         }
 
         private void viewModel_SearchTextChanged(object sender, EventArgs e)
         {
             //Get the scrollview and scroll to top on every text entered
-            var scroll = CategoryTreeView.ChildOfType<ScrollViewer>();
+            var scroll = SearchResults.ChildOfType<ScrollViewer>();
             if (scroll != null)
             {               
                 scroll.ScrollToTop();
@@ -61,26 +56,6 @@ namespace Dynamo.UI.Views
         {
             // Clear SearchText in ViewModel, as result search textbox clears as well.
             viewModel.SearchText = "";
-        }
-
-        private void OnMemberGroupNameMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (!(e.OriginalSource is System.Windows.Documents.Run)) return;
-
-            var memberGroup = sender as FrameworkElement;
-            var memberGroupContext = memberGroup.DataContext as SearchMemberGroup;
-
-            // Show all members of this group.
-            memberGroupContext.ExpandAllMembers();
-
-            // Make textblock underlined.
-            var textBlock = e.OriginalSource as System.Windows.Documents.Run;
-            textBlock.TextDecorations = TextDecorations.Underline;
-        }
-
-        private void OnPrefixTextBlockMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            e.Handled = true;
         }
 
         #region ToolTip methods
@@ -113,11 +88,6 @@ namespace Dynamo.UI.Views
         private void CloseToolTipInternal(bool closeImmediately = false)
         {
             libraryToolTipPopup.SetDataContext(null, closeImmediately);
-        }
-
-        private void OnRequestCloseToolTip(object sender, EventArgs e)
-        {
-            CloseToolTipInternal(true);
         }
 
         #endregion

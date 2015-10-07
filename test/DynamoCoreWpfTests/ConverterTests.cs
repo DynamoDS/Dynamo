@@ -613,6 +613,6 @@ namespace Dynamo.Tests
             Assert.DoesNotThrow(() => FilePathDisplayConverter.ShortenNestedFilePath(@"\\psf\\Home\somedyn.dyn"));
             Assert.DoesNotThrow(() => FilePathDisplayConverter.ShortenNestedFilePath(@"\\psf\somedyn.dyn"));
             Assert.AreEqual(@"\\psf\Home\Desktop\somedyn.dyn", FilePathDisplayConverter.ShortenNestedFilePath(@"\\psf\Home\Desktop\somedyn.dyn"));
-        }       
+        }        
     }
 }

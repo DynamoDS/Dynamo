@@ -798,8 +798,8 @@ namespace ProtoScript.Runners
                                     // Check if the procedure associatied with this graphnode matches thename and arg count of the modified proc
                                     if (null != gnode.firstProc)
                                     {
-                                        if (gnode.firstProc.name == functionNode.Name
-                                            && gnode.firstProc.argInfoList.Count == functionNode.Signature.Arguments.Count)
+                                        if (gnode.firstProc.Name == functionNode.Name
+                                            && gnode.firstProc.ArgumentInfos.Count == functionNode.Signature.Arguments.Count)
                                         {
                                             // If it does, create a new ast tree for this graphnode and append it to deltaAstList
                                             modifiedNodes.Add(assocNode);
