@@ -1565,6 +1565,7 @@ namespace Dynamo.Models
             // Search for the leftmost item. It's item with the smallest X, Y coordinates of center.
             var leftMostItem = orderedItems.First();
 
+            // Compute shift so that left most item will appear at right most item place with offset.
             var shiftX = rightMostItem.X + rightMostItem.Width + CurrentWorkspace.CurrentPasteOffset - leftMostItem.X;
             var shiftY = rightMostItem.Y + CurrentWorkspace.CurrentPasteOffset - leftMostItem.Y;
 
