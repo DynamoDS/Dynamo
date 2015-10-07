@@ -5895,8 +5895,8 @@ namespace ProtoAssociative
                 if (returnType.UID == (int)PrimitiveType.kInvalidType)
                 {
                     string message = String.Format(ProtoCore.Properties.Resources.kReturnTypeUndefined, funcDef.ReturnType.Name, funcDef.Name);
-                    buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, core.CurrentDSFileName, funcDef.line, funcDef.col, graphNode);
-                    returnType.UID = (int)PrimitiveType.kTypeVar;
+                    buildStatus.LogWarning(WarningID.kTypeUndefined, message, core.CurrentDSFileName, funcDef.line, funcDef.col, graphNode);
+                    returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, rank);
                 }
                 localProcedure.ReturnType = returnType;
                 localProcedure.IsConstructor = false;

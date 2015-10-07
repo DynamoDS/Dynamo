@@ -2719,10 +2719,7 @@ namespace Dynamo.Controls
                 }
 
                 var type = (SearchElementGroup)value;
-
-                // It's just for tests.
-                if (!UriParser.IsKnownScheme("pack")) new Application();
-
+               
                 var resourceDictionary = SharedDictionaryManager.DynamoColorsAndBrushesDictionary;
 
                 switch (type)
