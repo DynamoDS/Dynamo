@@ -181,8 +181,6 @@ namespace Dynamo.Nodes
             private set { code = value; }
         }
 
-
-
         public void SetCodeContent(string newCode, ElementResolver workspaceElementResolver)
         {
             if (code != null && code.Equals(newCode))
