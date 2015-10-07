@@ -81,7 +81,7 @@
 
                                         <!-- Node description -->
                                         <TextBlock Name="memberDescription"
-                                                   FontSize="10"
+                                                   FontSize="11"
                                                    MaxHeight="50"
                                                    Text="{Binding Description}"
                                                    Foreground="{StaticResource SearchDarkGreyTextColor}"
