@@ -22,7 +22,7 @@ namespace Dynamo.Controls
     public partial class NodeView : IViewModelView<NodeViewModel>
     {
         public delegate void SetToolTipDelegate(string message);
-        public delegate void UpdateLayoutDelegate(FrameworkElement el);
+        public delegate void UpdateLayoutDelegate(FrameworkElement el);       
         private NodeViewModel viewModel = null;
         private PreviewControl previewControl = null;
 
@@ -144,9 +144,9 @@ namespace Dynamo.Controls
             ViewModel.RequestShowNodeRename += ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection += ViewModel_RequestsSelection;
             ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
-
+           
         }
-
+      
         void NodeLogic_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
@@ -229,7 +229,7 @@ namespace Dynamo.Controls
             var editWindow = new EditWindow(viewModel.DynamoViewModel)
             {
                 DataContext = ViewModel,
-                Title = Dynamo.Wpf.Properties.Resources.EditNodeWindowTitle
+                Title = Dynamo.Wpf.Properties.Resources.EditNodeWindowTitle 
             };
 
             editWindow.Owner = Window.GetWindow(this);
@@ -452,6 +452,6 @@ namespace Dynamo.Controls
         }
 
         #endregion
-
+      
     }
 }
