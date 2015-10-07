@@ -147,14 +147,14 @@ namespace Dynamo.ViewModels
         /// </summary>
         public IEnumerable<NodeSearchElementViewModel> FilteredResults
         {
+            get
+            {
+                return filteredResults;
+            }
             set
             {
                 filteredResults = value;
                 RaisePropertyChanged("FilteredResults");
-            }
-            get
-            {
-                return filteredResults;
             }
         }
 
@@ -192,12 +192,6 @@ namespace Dynamo.ViewModels
             }
             private set
             {
-                // Unsubscribe old categories.
-                for (int i = 0; i < searchCategories.Count(); i++)
-                {
-                    searchCategories.ElementAt(i).PropertyChanged -= IsSelectedChanged;
-                }
-
                 searchCategories = value;
                 RaisePropertyChanged("SearchCategories");
             }
@@ -687,13 +681,11 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void SearchAndUpdateResults()
         {
+            searchResults.Clear();
+
             if (!String.IsNullOrEmpty(SearchText.Trim()))
             {
                 SearchAndUpdateResults(SearchText);
-            }
-            else // Search text is empty, clear search results.
-            {
-                searchResults.Clear();
             }
 
             RaisePropertyChanged("IsAnySearchResult");
@@ -723,6 +715,9 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("FilteredResults");
         }
 
+        /// <summary>
+        /// Select unique search categories, which are used in search UI.
+        /// </summary>
         private void UpdateSearchCategories()
         {
             var uniqueCategoryNames = searchResults.Select(x => x.Category).Distinct();

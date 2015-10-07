@@ -7,6 +7,10 @@ using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Wpf.ViewModels
 {
+    /// <summary>
+    /// Class that is used to filter nodes in search ui.
+    /// If search category is selected, then nodes of this category are shown in search.
+    /// </summary>
     public class SearchCategory : NotificationObject
     {
         private readonly string name;
@@ -37,6 +41,9 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
+        /// <summary>
+        /// Fires, when category button is clicked.
+        /// </summary>
         public ICommand ClickCommand { get; private set; }
 
         public SearchCategory(string title)
