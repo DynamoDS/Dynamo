@@ -491,6 +491,20 @@ namespace Dynamo.ViewModels
             BackgroundPreviewViewModel = watch3DViewModel;
             Watch3DViewModels.Add(watch3DViewModel);
             watch3DViewModel.PropertyChanged += Watch3DViewModelPropertyChanged;
+            CurrentSpace.CreateInputNode += CurrentSpace_CreateInputNode;
+        }
+
+        void CurrentSpace_CreateInputNode(NodeModel node1, NodeModel node2, int portIndex1, int portIndex2)
+        {
+            ExecuteCommand(new DynamoModel.CreateNodeCommand(node1, 0, 0, true, true));
+            
+            var mode = DynamoModel.MakeConnectionCommand.Mode.Begin;
+            var command = new DynamoModel.MakeConnectionCommand(node1.GUID, portIndex1, PortType.Output, mode);
+            ExecuteCommand(command);
+
+            mode = DynamoModel.MakeConnectionCommand.Mode.End;
+            command = new DynamoModel.MakeConnectionCommand(node2.GUID, portIndex2, PortType.Input, mode);
+            ExecuteCommand(command);
         }
 
         private void RenderPackageFactoryViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
