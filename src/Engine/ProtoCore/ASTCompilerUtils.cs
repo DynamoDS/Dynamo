@@ -150,30 +150,6 @@ namespace ProtoCore
             return codeBlockNode;
         }
 
-        /// <summary>
-        /// API for external hosts to build an identifier array assignment node, e.g.: var = {var1, var2, ...}
-        /// </summary>
-        /// <param name="arrayInputs"></param>
-        /// <param name="symbolName"></param>
-        /// <param name="code"></param>
-        /// <returns></returns>
-        public static AssociativeNode BuildArrayNode(List<string> arrayInputs, ref string symbolName, ref string code)
-        {
-            ExprListNode arrayNode = AstFactory.BuildExprList(arrayInputs);
-            BinaryExpressionNode bNode = CreateAssignmentNode(arrayNode);
-
-            if (bNode.LeftNode is IdentifierNode)
-            {
-                symbolName = (bNode.LeftNode as IdentifierNode).Value;
-            }
-
-            List<AssociativeNode> astNodes = new List<AssociativeNode>();
-            astNodes.Add(bNode);
-            ProtoCore.CodeGenDS codeGen = new ProtoCore.CodeGenDS(astNodes);
-            code = codeGen.GenerateCode();
-
-            return bNode;
-        }
 
         /// <summary>
         /// A node is a single identifier if its type is Identifer and is not array indexed
