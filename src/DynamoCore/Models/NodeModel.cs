@@ -410,6 +410,15 @@ namespace Dynamo.Models
                     return cachedMirrorData;
                 }
             }
+            private set
+            {
+                lock (cachedMirrorDataMutex)
+                {
+                    cachedMirrorData = value;
+                }
+
+                RaisePropertyChanged("CachedValue");
+            }
         }
 
         /// <summary>
@@ -1612,19 +1621,17 @@ namespace Dynamo.Models
                 VariableName = variableName
             });
 
-            task.Completed += OnNodeValueQueried;
+            task.Completed += QueryMirrorDataAsyncTaskCompleted;
             scheduler.ScheduleForExecution(task);
         }
 
-        private void OnNodeValueQueried(AsyncTask asyncTask)
+        private void QueryMirrorDataAsyncTaskCompleted(AsyncTask asyncTask)
         {
-            lock (cachedMirrorDataMutex)
+            var task = asyncTask as QueryMirrorDataAsyncTask;
+            if (asyncTask != null)
             {
-                var task = asyncTask as QueryMirrorDataAsyncTask;
-                cachedMirrorData = task.MirrorData;
+                this.CachedValue = task.MirrorData;
             }
-
-            RaisePropertyChanged("IsUpdated");
         }
 
         /// <summary>
