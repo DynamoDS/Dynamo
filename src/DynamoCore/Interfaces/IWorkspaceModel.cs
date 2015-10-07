@@ -21,5 +21,7 @@ namespace Dynamo.Interfaces
         event Action NodesCleared;
         event Action<ConnectorModel> ConnectorAdded;
         event Action<ConnectorModel> ConnectorDeleted;
+
+        void OnCreateInputNode(NodeModel node1, NodeModel node2, int portIndex1, int portIndex2);
     }
 }

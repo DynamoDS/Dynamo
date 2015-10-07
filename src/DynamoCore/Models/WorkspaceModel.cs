@@ -2278,6 +2278,14 @@ namespace Dynamo.Models
             }
         }
 
-        #endregion       
+        #endregion
+
+        internal event Action<NodeModel, NodeModel, int, int> CreateInputNode;
+
+        public void OnCreateInputNode(NodeModel node1, NodeModel node2, int portIndex1, int portIndex2)
+        {
+            var handler = CreateInputNode;
+            if (handler != null) handler(node1, node2, portIndex1, portIndex2);
+        }
     }
 }
