@@ -576,5 +576,27 @@ r2 = result[1];
             thisTest.Verify("r1", new object[] { "Neal", "Matt", "Ian", "Zack", "Colin" });
             thisTest.Verify("r2", new object[] { "Burnham", "Jezyk", "Keough", "Kron", "McCrone" });
         }
-    }  
+
+        [Test]
+        public void Test__SortByKey5()
+        {
+            string code =
+    @"
+import (""DSCoreNodes.dll"");
+import (""FunctionObject.ds"");
+list = {""Zack"",
+        ""Ian"",
+        ""Neal""};
+keys = {-3,
+        1.6,
+        ""abc""};
+result = __SortByKey(list, keys);
+r1 = result[0];
+r2 = result[1];
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { "Zack", "Ian", "Neal" });
+            thisTest.Verify("r2", new object[] { -3, 1.6, "abc" });
+        }
+    }
 }
