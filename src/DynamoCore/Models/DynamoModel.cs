@@ -401,6 +401,7 @@ namespace Dynamo.Models
             string GeometryFactoryPath { get; set; }
             IAuthProvider AuthProvider { get; set; }
             IEnumerable<IExtension> Extensions { get; set; }
+            TaskProcessMode ProcessMode { get; set; }
         }
 
         /// <summary>
@@ -418,6 +419,7 @@ namespace Dynamo.Models
             public string GeometryFactoryPath { get; set; }
             public IAuthProvider AuthProvider { get; set; }
             public IEnumerable<IExtension> Extensions { get; set; }
+            public TaskProcessMode ProcessMode { get; set; }
         }
 
         /// <summary>
@@ -426,7 +428,7 @@ namespace Dynamo.Models
         /// <returns></returns>
         public static DynamoModel Start()
         {
-            return Start(new DefaultStartConfiguration());
+            return Start(new DefaultStartConfiguration() { ProcessMode = TaskProcessMode.Asynchronous });
         }
 
         /// <summary>
@@ -472,7 +474,7 @@ namespace Dynamo.Models
             MigrationManager.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
             var thread = config.SchedulerThread ?? new DynamoSchedulerThread();
-            Scheduler = new DynamoScheduler(thread, IsTestMode);
+            Scheduler = new DynamoScheduler(thread, IsTestMode ? TaskProcessMode.Synchronous : TaskProcessMode.Asynchronous);
             Scheduler.TaskStateChanged += OnAsyncTaskStateChanged;
 
             geometryFactoryPath = config.GeometryFactoryPath;
@@ -1546,20 +1548,29 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     Paste ISelectable objects from the clipboard to the workspace in top left corner
+        ///     Paste ISelectable objects from the clipboard to the workspace 
+        /// so that the nodes appear in their original location with a slight offset
         /// </summary>
         public void Paste()
         {
-            // Move all of the notes and nodes such that they are aligned with
-            // the top left of the workspace
-            var workspaceX = -CurrentWorkspace.X / CurrentWorkspace.Zoom;
-            var workspaceY = -CurrentWorkspace.Y / CurrentWorkspace.Zoom;
-
             // Provide a small offset when pasting so duplicate pastes aren't directly on top of each other
             CurrentWorkspace.IncrementPasteOffset();
-            
-            var x = workspaceX + CurrentWorkspace.CurrentPasteOffset;
-            var y = workspaceY + CurrentWorkspace.CurrentPasteOffset;
+
+            var locatebleModels = ClipBoard.Where(model => model is NoteModel || model is NodeModel);
+            var orderedItems = locatebleModels.OrderBy(item => item.CenterX + item.CenterY);
+
+            // Search for the rightmost item. It's item with the biggest X, Y coordinates of center.
+            var rightMostItem = orderedItems.Last();
+
+            // Search for the leftmost item. It's item with the smallest X, Y coordinates of center.
+            var leftMostItem = orderedItems.First();
+
+            var shiftX = rightMostItem.X + rightMostItem.Width + CurrentWorkspace.CurrentPasteOffset - leftMostItem.X;
+            var shiftY = rightMostItem.Y + CurrentWorkspace.CurrentPasteOffset - leftMostItem.Y;
+
+
+            var x = shiftX + locatebleModels.Min(m => m.X);
+            var y = shiftY + locatebleModels.Min(m => m.Y);
             var targetPoint = new Point2D(x, y);
             
             Paste(targetPoint);
@@ -1588,9 +1599,6 @@ namespace Dynamo.Models
             var notes = ClipBoard.OfType<NoteModel>();
             var annotations = ClipBoard.OfType<AnnotationModel>();
 
-            var minX = Double.MaxValue;
-            var minY = Double.MaxValue;
-
             // Create the new NoteModel's
             var newNoteModels = new List<NoteModel>();
             foreach (var note in notes)
@@ -1599,9 +1607,6 @@ namespace Dynamo.Models
                 //Store the old note as Key and newnote as value.
                 modelLookup.Add(note.GUID,noteModel);
                 newNoteModels.Add(noteModel);
-
-                minX = Math.Min(note.X, minX);
-                minY = Math.Min(note.Y, minY);
             }
 
             var xmlDoc = new XmlDocument();
@@ -1631,18 +1636,20 @@ namespace Dynamo.Models
                 if (!string.IsNullOrEmpty(node.NickName))
                     newNode.NickName = node.NickName;
 
+                newNode.Width = node.Width;
+                newNode.Height = node.Height;
+
                 modelLookup.Add(node.GUID, newNode);
 
-                newNodeModels.Add( newNode );
-
-                minX = Math.Min(node.X, minX);
-                minY = Math.Min(node.Y, minY);
+                newNodeModels.Add(newNode);
             }
 
-            var shiftX = targetPoint.X - minX;
-            var shiftY = targetPoint.Y - minY;
+            var newItems = newNodeModels.Concat<ModelBase>(newNoteModels);
+            
+            var shiftX = targetPoint.X - newItems.Min(item => item.X);
+            var shiftY = targetPoint.Y - newItems.Min(item => item.Y);
 
-            foreach (var model in newNodeModels.Concat<ModelBase>(newNoteModels))
+            foreach (var model in newItems)
             {
                 model.X = model.X + shiftX;
                 model.Y = model.Y + shiftY;

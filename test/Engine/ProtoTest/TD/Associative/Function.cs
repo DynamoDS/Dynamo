@@ -420,30 +420,21 @@ result;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void Z002_Defect_1461399()
         {
-            string src = @"class Arc
-{
-	constructor Arc()
-	{
-		
-	}
-	def get_StartPoint()
-	{
-         return = 1;
-	}
-}
-def CurveProperties(curve : Arc)
+            string src = @"
+import(""FFITarget.dll"");
+def VectorProperties(v : DummyVector)
 {
  return = {
-	curve.get_StartPoint(),
-	curve.get_StartPoint(),
-	curve.get_StartPoint()	
+	v.X(),
+	v.X(),
+	v.X()	
  };
 }
-test=CurveProperties(null);
+test=VectorProperties(null);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             Object[] v1 = new Object[] { null, null, null };
@@ -451,7 +442,7 @@ test=CurveProperties(null);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void Z002_Defect_1461399_2()
         {
@@ -497,24 +488,15 @@ a = function1({null,null});
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void TestCallFunctionReturningObjectMultipleTimes()
         {
             string code = @"
-
-class Obj
-{
-    constructor Obj(){}
-    def func()
-    {
-        return = 1;
-    }
-}
-
+import(""FFITarget.dll"");
 def f()
 {
-    p = Obj.Obj();
-    p = p.func();
+    p = ClassFunctionality.ClassFunctionality(1);
+    p = p.IntVal;
     return = p;
 }
 
@@ -570,11 +552,11 @@ x = f();
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void TestDefaultArgumentPointer01()
         {
             string code = @"    
-class Point{    x : int = 1;}def f(p : Point = Point.Point()){    return = p.x;}x = f();
+import(""FFITarget.dll"");def f(p : ClassFunctionality = ClassFunctionality.ClassFunctionality(1)){    return = p.IntVal;}x = f();
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 1);
@@ -629,11 +611,11 @@ x = f();
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void TestDefaultArgumentUntyped03()
         {
             string code = @"    
-class Point{    x : int = 1;}def f(p = Point.Point()){    return = p.x;}x = f();
+import(""FFITarget.dll"");def f(p = ClassFunctionality.ClassFunctionality(1)){    return = p.IntVal;}x = f();
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 1);

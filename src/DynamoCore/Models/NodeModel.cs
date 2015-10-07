@@ -12,18 +12,17 @@ using Dynamo.Core.Threading;
 using Dynamo.Migration;
 using Dynamo.Nodes;
 using Dynamo.Engine;
+using Dynamo.Engine.CodeGeneration;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Interfaces;
 
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
-using ProtoCore.Namespace;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 using ProtoCore.DSASM;
 using System.Reflection;
-using Autodesk.DesignScript.Runtime;
 
 namespace Dynamo.Models
 {
@@ -716,7 +715,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="inputAstNodes"></param>
         /// <param name="context">Compilation context</param>
-        internal virtual IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, AstBuilder.CompilationContext context)
+        internal virtual IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, CompilationContext context)
         {
             OnBuilt();
 
@@ -1636,8 +1635,10 @@ namespace Dynamo.Models
         /// <param name="scheduler">An IScheduler on which the task will be scheduled.</param>
         /// <param name="engine">The EngineController which will be used to get MirrorData for the node.</param>
         /// <param name="factory">An IRenderPackageFactory which will be used to generate IRenderPackage objects.</param>
+        /// <param name="forceUpdate">Normally, render packages are only generated when the node's IsUpdated parameter is true.
+        /// By setting forceUpdate to true, the render packages will be updated.</param>
         public virtual void
-            RequestVisualUpdateAsync(IScheduler scheduler, EngineController engine, IRenderPackageFactory factory)
+            RequestVisualUpdateAsync(IScheduler scheduler, EngineController engine, IRenderPackageFactory factory, bool forceUpdate = false)
         {
             var initParams = new UpdateRenderPackageParams()
             {
@@ -1645,7 +1646,8 @@ namespace Dynamo.Models
                 RenderPackageFactory = factory,
                 EngineController = engine,
                 DrawableIds = GetDrawableIds(),
-                PreviewIdentifierName = AstIdentifierForPreview.Name
+                PreviewIdentifierName = AstIdentifierForPreview.Name,
+                ForceUpdate = forceUpdate
             };
 
             var task = new UpdateRenderPackageAsyncTask(scheduler);
@@ -1658,8 +1660,7 @@ namespace Dynamo.Models
         /// <summary>
         /// This event handler is invoked when UpdateRenderPackageAsyncTask is 
         /// completed, at which point the render packages (specific to this node) 
-        /// become available. Since this handler is called off the UI thread, the 
-        /// '_renderPackages' must be guarded against concurrent access.
+        /// become available. 
         /// </summary>
         /// <param name="asyncTask">The instance of UpdateRenderPackageAsyncTask
         /// that was responsible of generating the render packages.</param>
@@ -1669,8 +1670,32 @@ namespace Dynamo.Models
             var task = asyncTask as UpdateRenderPackageAsyncTask;
             if (task.RenderPackages.Any())
             {
-                OnRenderPackagesUpdated(task.RenderPackages);
+                var packages = new List<IRenderPackage>();
+                
+                packages.AddRange(task.RenderPackages);
+                packages.AddRange(OnRequestRenderPackages());
+
+                OnRenderPackagesUpdated(packages);
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public event Func<IEnumerable<IRenderPackage>> RequestRenderPackages;
+
+        /// <summary>
+        /// This event handler is invoked when the render packages (specific to this node)  
+        /// become available and in addition the node requests for associated render packages 
+        /// if any for example, packages used for associated node manipulators
+        /// </summary>
+        private IEnumerable<IRenderPackage> OnRequestRenderPackages()
+        {
+            if (RequestRenderPackages != null)
+            {
+                return RequestRenderPackages();
+            }
+            return new List<IRenderPackage>();
         }
 
         /// <summary>

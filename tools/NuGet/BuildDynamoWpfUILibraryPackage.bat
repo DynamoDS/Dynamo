@@ -1,5 +1,5 @@
 SET base=..\..\bin\AnyCPU\Debug
-SET framework=net40
+SET framework=net45
 
 SET ui=DynamoVisualProgramming.WpfUILibrary
 
@@ -8,15 +8,18 @@ rmdir /s /q .\%ui%\content
 rmdir /s /q .\%ui%\lib
 rmdir /s /q .\%ui%\tools
 
-mkdir .\%ui%\build
+mkdir .\%ui%\build\net45
 mkdir .\%ui%\content
-mkdir .\%ui%\lib\net40
+mkdir .\%ui%\lib\net45
 mkdir .\%ui%\tools
 
-copy %base%\DynamoCore.dll .\%ui%\lib\%framework%\DynamoCore.dll
 copy %base%\DynamoCoreWpf.dll .\%ui%\lib\%framework%\DynamoCoreWpf.dll
-copy %base%\ProtoCore.dll .\%ui%\lib\%framework%\ProtoCore.dll
+copy %base%\DynamoCoreWpf.xml .\%ui%\build\%framework%\DynamoCoreWpf.xml
+
 copy %base%\nodes\DSCoreNodesUI.dll .\%ui%\lib\%framework%\DSCoreNodesUI.dll
+copy %base%\nodes\DSCoreNodesUI.xml .\%ui%\build\%framework%\DSCoreNodesUI.xml
+
 copy %base%\nodes\CoreNodeModelsWpf.dll .\%ui%\lib\%framework%\CoreNodeModelsWpf.dll
+copy %base%\nodes\CoreNodeModelsWpf.xml .\%ui%\build\%framework%\CoreNodeModelsWpf.xml
 
 nuget pack .\%ui%\WpfUILibrary.nuspec

@@ -149,31 +149,19 @@ result = foo(b);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
-        public void T005_SomeNulls_Class()
+        public void T005_SomeNulls_Function()
         {
             string code = @"
-class C
+def foo(y:var[]..[])
 {
-	a : var;
-	constructor C(x:var[]..[])
-	{
-		a = SomeNulls(x);
-	}
-	
-	def foo(y:var[]..[])
-	{
-		return = SomeNulls(y);
-	}
+	return = SomeNulls(y);
 }
 l = {1, null, true,{}};
-c = C.C(l);
-m = c.a;
-n = c.foo(l);
+n = foo(l);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("m", true, 0);
             thisTest.Verify("n", true, 0);
         }
 
@@ -555,28 +543,23 @@ result = foo(b);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T016_CountTrue_Class()
         {
             string code = @"
-class C
+def create (x:var[]..[])
 {
-	a : int;
-	constructor C(x:var[]..[])
-	{
-		a = CountTrue(x);
-	}
-	
-	def foo(y:var[]..[])
-	{
-		return = CountTrue(y)+ a;
-	}
+	return = CountTrue(x);
 }
-b = {1, null, true,{{true},false}};//2
-c = C.C(b);
-m = c.a;//2
-n = c.foo(b);//4
+	
+def foo(y:var[]..[], a : int)
+{
+	return = CountTrue(y)+ a;
+}
+b = {1, null, true,{{true},false}};
+m = create(b);
+n = foo(b, m);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("m", 2, 0);
@@ -882,35 +865,6 @@ result = foo(b);
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 0, 1, 0, 3, 0 };
             thisTest.Verify("result", v1, 0);
-        }
-
-        [Test]
-        [Category("DSDefinedClass")]
-        [Category("SmokeTest")]
-        public void T027_CountFalse_Class()
-        {
-            string code = @"
-class C
-{
-	a : int;
-	constructor C(x:var[]..[])
-	{
-		a = CountFalse(x);
-	}
-	
-	def foo(y:var[]..[])
-	{
-		return = CountFalse(y)+ a;
-	}
-}
-b = {0.000, null, false,{{false},v}};//2
-c = C.C(b);
-m = c.a;//2
-n = c.foo(b);//4
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("m", 2, 0);
-            thisTest.Verify("n", 4, 0);
         }
 
         [Test]
@@ -1223,7 +1177,7 @@ result = {foo(AllFalse(a1)),foo(AllFalse(a2)),foo(AllFalse(a3))};//true,true,fal
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void T038_AllFalse_Class()
         {
@@ -1559,7 +1513,7 @@ result = foo(c);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_Failing")]
         [Category("SmokeTest"), Category("Failure")]
         public void T050_Sum_Class()
         {
@@ -1858,35 +1812,24 @@ result = {foo(a),foo(b)};";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
-        public void T062_Average_Class()
+        public void T062_Average_Function()
         {
             string code = @"
-class C 
+def foo(m:var[]..[], n:var[]..[])
 {
-	x : var;
-	y : var;
-	
-	constructor C1(m:var[]..[], n:var[]..[])
-	{
-		x = Average(m);
-		y = Average(n);
-	}
-	def foo()
-	{
-		return = Average({x,y});
-	}
+	return = Average({m,n});
 }
 a = {1,{2},{{{3}}}};
 b = {0.1,2,0};
-m = C.C1(a,b);
-m1 = m.x;
-m2 = m.y;
-n = m.foo();";
+x = Average(a);
+y = Average(b);
+n = foo(x,y);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("m1", 2.0, 0);
-            thisTest.Verify("m2", 0.7, 0);
+            thisTest.Verify("x", 2.0, 0);
+            thisTest.Verify("y", 0.7, 0);
             thisTest.Verify("n", 1.35, 0);
         }
 
@@ -1967,7 +1910,7 @@ r2 = Print(arr2);";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_InvalidTest_NoVerification")]
         [Category("Built in Functions")]
         public void TV1467193_print()
         {
@@ -2037,24 +1980,20 @@ x6 = Average({null}) ;// returns 0.0
        }*/
 
         [Test]
-        [Category("DSDefinedClass")]
-        //Test "IsRectangular"
+        [Category("DSDefinedClass_Ported")]
         public void CountInClass_1467364()
         {
             String code =
-                @"class td
+                @"
+                def foo()
                 {
                     y : int[];
                     z;
-                    constructor td()
-                    {
-                        y = { 1, 2, 3, 4, 5 };
-                        rows = { 1, 2, 3 };
-                        z = y[Count(rows)];
-                    }
+                    y = { 1, 2, 3, 4, 5 };
+                    rows = { 1, 2, 3 };
+                    return = y[Count(rows)];
                 }
-                a = td.td();
-                c=a.z; // 4 
+                c = foo();
                 ";
             string error = "1467364 Sprint 27 - Rev 4053 if built-in function is used to index into an array inside class , compile error is thrown ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, error);
@@ -2514,23 +2453,21 @@ z = foo();
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Built in Functions")]
         public void T077_Defect_1467425_negative_index_6()
         {
             string code =
 @"
-class A
+def foo ()
 {
-    static def foo ()
-    {
-        x = { 1, 2 };
-        y = {3,3};
-        z = Insert({1,2}, 1..2, -1);  
-        return = z;
-    }
+    x = { 1, 2 };
+    y = {3,3};
+    z = Insert({1,2}, 1..2, -1);  
+    return = z;
 }
-z = A.foo();
+
+z = foo();
 ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
@@ -2622,7 +2559,7 @@ sort = Sort(sorterFunction, a);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_Failing")]
         [Category("Failure")]
         public void BIM32_Sort_class()
         {
@@ -2652,7 +2589,7 @@ y=z.create();
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_Failing")]
         [Category("Failure")]
         public void BIM33_Sort_class_2()
         {
@@ -3407,37 +3344,19 @@ import (""DSCoreNodes.dll"");
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T068_Abs_2()
         {
             string code = @"
 import (""DSCoreNodes.dll"");
-class A
-{
-    x;
-	constructor A ( y )
-	{
-	    x = Math.Abs(y);
-	}
-	def foo ( z )
-	{
-	    return = Math.Abs (z + x);
-	}
-}
 def foo ( x )
 {
     return = Math.Abs(x);
 }
-t1 = {   1 => a1;
-        + Math.Abs(2) => a2;
-	}
 t2 = 0;
 arr = 1..2;
 t3 = 0;
 t4;
-tt = A.A(2.5);
-t5 = tt.x;
-t6 = tt.foo(3);
 t7 = foo(2);
 [Imperative]
 {
@@ -3457,12 +3376,9 @@ t7 = foo(2);
  
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("t1", 3);
             thisTest.Verify("t2", 3);
             thisTest.Verify("t3", 3);
             thisTest.Verify("t4", 3);
-            thisTest.Verify("t5", 2.5);
-            thisTest.Verify("t6", 5.5);
             thisTest.Verify("t7", 2);
         }
 
@@ -3486,38 +3402,20 @@ import (""DSCoreNodes.dll"");
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T068_Cosh_2()
         {
             string code = @"
 import (""DSCoreNodes.dll"");
 
-class A
-{
-    x;
-	constructor A ( y )
-	{
-	    x = Math.Cosh(y);
-	}
-	def foo ( z )
-	{
-	    return = Math.Cosh (z + x);
-	}
-}
 def foo ( x )
 {
     return = Math.Cosh(x);
 }
-t1 = {   1 => a1;
-        + Math.Cosh(2) => a2;
-	}
 t2 = 0;
 arr = 1..2;
 t3 = 0;
 t4;
-tt = A.A(2.5);
-t5 = tt.x;
-t6 = tt.foo(3);
 t7 = foo(2);
 [Imperative]
 {
@@ -3537,12 +3435,9 @@ t7 = foo(2);
  
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("t1", 4.7621956910836314);
             thisTest.Verify("t2", 5.3052763258988751);
             thisTest.Verify("t3", 10.067661995777765);
             thisTest.Verify("t4", 10.067661995777765);
-            thisTest.Verify("t5", 6.1322894796636866);
-            thisTest.Verify("t6", 4624.58682487247);
             thisTest.Verify("t7", 3.7621956910836314);
         }
 
@@ -3561,39 +3456,20 @@ import (""DSCoreNodes.dll"");
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T068_DivRem_2()
         {
             string code = @"
 import (""DSCoreNodes.dll"");
-
-class A
-{
-    x;
-	constructor A (  )
-	{
-	    x = Math.DivRem(1000, 300);
-	}
-	def foo (  )
-	{
-	    return = Math.DivRem(1000, 300);
-	}
-}
 def foo (  )
 {
     x = 0;
 	return = Math.DivRem(1000, 300);
 }
-t1 = {   1 => a1;
-        + Math.DivRem(1000, 300) => a2;
-	}
 t2 = 0;
 arr = 1..2;
 t3 = 0;
 t4;
-tt = A.A();
-t5 = tt.x;
-t6 = tt.foo();
 t7 = foo();
 [Imperative]
 {
@@ -3615,12 +3491,9 @@ t7 = foo();
  
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("t1", 101);
             thisTest.Verify("t2", 200);
             thisTest.Verify("t3", 100);
             thisTest.Verify("t4", 100);
-            thisTest.Verify("t5", 100);
-            thisTest.Verify("t6", 100);
             thisTest.Verify("t7", 100);
         }
 
@@ -3640,38 +3513,19 @@ a2 = Math.IEEERemainder( 3..4, 2..3 ) ;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T068_IEEERemainder_2()
         {
             string code = @"
 import (""DSCoreNodes.dll"");
-
-class A
-{
-    x;
-	constructor A (  )
-	{
-	    x = Math.IEEERemainder(1000, 300);
-	}
-	def foo (  )
-	{
-	    return = Math.IEEERemainder(1000, 300);
-	}
-}
 def foo (  )
 {
     return = Math.IEEERemainder(1000, 300);
 }
-t1 = {   1 => a1;
-        + Math.IEEERemainder(1000, 300) => a2;
-	}
 t2 = 0;
 arr = 1..2;
 t3 = 0;
-tt = A.A();
 t4;
-t5 = tt.x;
-t6 = tt.foo();
 t7 = foo();
 [Imperative]
 {
@@ -3691,12 +3545,9 @@ t7 = foo();
  
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("t1", 101.0);
             thisTest.Verify("t2", 200.0);
             thisTest.Verify("t3", 100.0);
             thisTest.Verify("t4", 100.0);
-            thisTest.Verify("t5", 100.0);
-            thisTest.Verify("t6", 100.0);
             thisTest.Verify("t7", 100.0);
         }
 
@@ -3728,38 +3579,20 @@ t4 = Math.Max( -2..2, -2.1..2.1 ) ;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T068_Max_2()
         {
             string code = @"
 import (""DSCoreNodes.dll"");
 
-class A
-{
-    x;
-	constructor A (  )
-	{
-	    x = Math.Max(-1..1, -1.5..1.5);
-	}
-	def foo (  )
-	{
-	    return = Math.Max(-1..1, -1.5..1.5);
-	}
-}
 def foo (  )
 {
     return = Math.Max(-1..1, -1.5..1.5);
 }
-t1 = {   1 => a1;
-        + Math.Max(-1..1, -1.5..1.5) => a2;
-	}
 t2 = 0;
 arr = 1..2;
 t3 = 0;
-tt = A.A();
 t4;
-t5 = tt.x;
-t6 = tt.foo();
 t7 = foo();
 t8 = 0;
 [Imperative]
@@ -3780,12 +3613,9 @@ t8 = 0;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("t1", new Object[] { 0.0, 1.0, 2.0 });
             thisTest.Verify("t2", -2.0);
             thisTest.Verify("t3", -1.0);
             thisTest.Verify("t4", -1.0);
-            thisTest.Verify("t5", new Object[] { -1.0, 0.0, 1.0 });
-            thisTest.Verify("t6", new Object[] { -1.0, 0.0, 1.0 });
             thisTest.Verify("t7", new Object[] { -1.0, 0.0, 1.0 });
             thisTest.Verify("t8", new Object[] { -1.0, 0.0, 1.0 });
         }
@@ -3816,38 +3646,19 @@ t4 = Math.Min( -2..2, -2.1..2.1 ) ;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T068_Min_2()
         {
             string code = @"
 import (""DSCoreNodes.dll"");
-
-class A
-{
-    x;
-	constructor A (  )
-	{
-	    x = Math.Min(-1..1, -1.5..1.5);
-	}
-	def foo (  )
-	{
-	    return = Math.Min(-1..1, -1.5..1.5);
-	}
-}
 def foo (  )
 {
     return = Math.Min(-1..1, -1.5..1.5);
 }
-t1 = {   1 => a1;
-        + Math.Min(-1..1, -1.5..1.5) => a2;
-	}
 t2 = 0;
 arr = 1..2;
 t3 = 0;
 t4;
-tt = A.A();
-t5 = tt.x;
-t6 = tt.foo();
 t7 = foo();
 t8 = 0;
 [Imperative]
@@ -3868,12 +3679,9 @@ t8 = 0;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("t1", new Object[] { -0.5, 0.5, 1.5 });
             thisTest.Verify("t2", -3.0);
             thisTest.Verify("t3", -1.5);
             thisTest.Verify("t4", -1.5);
-            thisTest.Verify("t5", new Object[] { -1.5, -0.5, 0.5 });
-            thisTest.Verify("t6", new Object[] { -1.5, -0.5, 0.5 });
             thisTest.Verify("t7", new Object[] { -1.5, -0.5, 0.5 });
             thisTest.Verify("t8", new Object[] { -1.5, -0.5, 0.5 });
         }
@@ -3904,38 +3712,22 @@ t4 = Math.Pow( -2..2, -2..2 ) ;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T068_Pow_2()
         {
             string code = @"
 import (""DSCoreNodes.dll"");
-
-class A
-{
-    x;
-	constructor A (  )
-	{
-	    x = Math.Pow(-1..1, {-2, 0, 2});
-	}
-	def foo (  )
-	{
-	    return = Math.Pow(-1..1, {-2, 0, 2});
-	}
-}
 def foo (  )
 {
     return = Math.Pow(-1..1, {-2, 0, 2});
 }
-t1 = {   1 => a1;
-        + Math.Pow(-1..1, {-2, 0, 2}) => a2;
-	}
 t2 = 0;
 arr = 1..2;
 t3 = 0;
 t4;
-tt = A.A();
-t5 = tt.x;
-t6 = tt.foo();
+
+
+
 t7 = foo();
 t8 = 0;
 [Imperative]
@@ -3956,12 +3748,9 @@ t8 = 0;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("t1", new Object[] { 2.0, 2.0, 2.0 });
             thisTest.Verify("t2", 8.0);
             thisTest.Verify("t3", 4.0);
             thisTest.Verify("t4", 4.0);
-            thisTest.Verify("t5", new Object[] { 1.0, 1.0, 1.0 });
-            thisTest.Verify("t6", new Object[] { 1.0, 1.0, 1.0 });
             thisTest.Verify("t7", new Object[] { 1.0, 1.0, 1.0 });
             thisTest.Verify("t8", new Object[] { 1.0, 1.0, 1.0 });
         }
@@ -3994,38 +3783,22 @@ t5 = Math.Round( 2.456, -2 ) ;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T068_Round_2()
         {
             string code = @"
 import (""DSCoreNodes.dll"");
-
-class A
-{
-    x;
-	constructor A (  )
-	{
-	    x = Math.Round({-1.005, -2.45, 1.0}, {2, 0, 2});
-	}
-	def foo (  )
-	{
-	    return = Math.Round({-1.005, -2.45, 1.0}, {2, 0, 2});
-	}
-}
 def foo (  )
 {
     return = Math.Round({-1.005, -2.45, 1.0}, {2, 0, 2});
 }
-t1 = {   1 => a1;
-        + Math.Round({-1.005, -2.45, 1.0}, {2, 0, 2}) => a2;
-	}
 t2 = 0;
 arr = 1..2;
 t3 = 0;
 t4;
-tt = A.A();
-t5 = tt.x;
-t6 = tt.foo();
+
+
+
 t7 = foo();
 t8 = 0;
 [Imperative]
@@ -4046,12 +3819,9 @@ t8 = 0;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("t1", new Object[] { 0.0, -1.0, 2.0 });
             thisTest.Verify("t2", 4.0);
             thisTest.Verify("t3", -2.0);
             thisTest.Verify("t4", -2.0);
-            thisTest.Verify("t5", new Object[] { -1.0, -2.0, 1.0 });
-            thisTest.Verify("t6", new Object[] { -1.0, -2.0, 1.0 });
             thisTest.Verify("t7", new Object[] { -1.0, -2.0, 1.0 });
             thisTest.Verify("t8", new Object[] { -1.0, -2.0, 1.0 });
         }
@@ -4095,38 +3865,20 @@ import (""DSCoreNodes.dll"");
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T068_Sign_2()
         {
             string code = @"
 import (""DSCoreNodes.dll"");
-
-class A
-{
-    x;
-	constructor A ( y )
-	{
-	    x = Math.Sign(y);
-	}
-	def foo ( z )
-	{
-	    return = Math.Sign (z + x);
-	}
-}
 def foo ( x )
 {
     return = Math.Sign(x);
 }
-t1 = {   1 => a1;
-        + Math.Sign(-2) => a2;
-	}
 t2 = 0;
 arr = { -4,-5,1.5};
 t3 = 0;
 t4;
-tt = A.A(-2.5);
-t5 = tt.x;
-t6 = tt.foo(3.0);
+
 t7 = foo(-2);
 [Imperative]
 {
@@ -4146,12 +3898,9 @@ t7 = foo(-2);
  
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("t1", 0);
             thisTest.Verify("t2", -1);
             thisTest.Verify("t3", -1);
             thisTest.Verify("t4", -1);
-            thisTest.Verify("t5", -1);
-            thisTest.Verify("t6", 1);
             thisTest.Verify("t7", -1);
         }
 
@@ -4244,38 +3993,22 @@ t4 = Math.Factorial(-1.5);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T068_Factorial_2()
         {
             string code = @"
 import (""DSCoreNodes.dll"");
-
-class A
-{
-    x;
-	constructor A (  )
-	{
-	    x = Math.Factorial(-3);
-	}
-	def foo (  )
-	{
-	    return = Math.Factorial (4);
-	}
-}
 def foo ( x )
 {
     return = Math.Factorial(x);
 }
-t1 = {   1 => a1;
-        + Math.Factorial(-4) => a2;
-	}
 t2 = 0;
 arr = { -1, 0, 5};
 t3 = 0;
-tt = A.A();
+
 t4;
-t5 = tt.x;
-t6 = tt.foo();
+
+
 t7 = foo(5);
 t8 = Math.Factorial(arr);
 [Imperative]
@@ -4296,18 +4029,15 @@ t8 = Math.Factorial(arr);
  
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("t1", 0);
             thisTest.Verify("t2", 120);
             thisTest.Verify("t3", -1);
             thisTest.Verify("t4", -1);
-            thisTest.Verify("t5", -1);
-            thisTest.Verify("t6", 24);
             thisTest.Verify("t7", 120);
             thisTest.Verify("t8", new Object[] { -1, 1, 120 });
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void T069_Defect_1467556_Sort_Over_Derived_Classes()
         {
             String code =
@@ -4343,7 +4073,7 @@ b = Sort(sorter,a).X;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void T069_Defect_1467556_Sort_Over_Derived_Classes_2()
         {
             String code =
@@ -4382,7 +4112,7 @@ b = Sort(sorter,a).X;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void T069_Defect_1467556_Sort_Over_Derived_Classes_3()
         {
             String code =
@@ -4574,20 +4304,16 @@ b = ImportFromCSV(a);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T074_Defect_1467750()
         {
             String code =
 @"
-class A
-{
-}
 x = A.A();
 x1 = Flatten(a) ; 
 x2 = Flatten(3) ;
 x3 = Flatten(3.5) ;
 x4 = Flatten(true) ;
-x5 = Flatten(x) ;
 x6 = Flatten(null) ;
 x7 = Flatten({}) ;
 x8 = Flatten({null}) ;
@@ -4597,20 +4323,16 @@ x8 = Flatten({null}) ;
             thisTest.Verify("x2", null);
             thisTest.Verify("x3", null);
             thisTest.Verify("x4", null);
-            thisTest.Verify("x5", null);
             thisTest.Verify("x6", null);
             thisTest.Verify("x8", new Object[] { null });
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T074_Defect_1467750_2()
         {
             String code =
 @"
-class A
-{
-}
 test = 
 [Imperative]
 {
@@ -4619,50 +4341,44 @@ test =
     x2 = Flatten(3) ;
     x3 = Flatten(3.5) ;
     x4 = Flatten(true) ;
-    x5 = Flatten(x) ;
     x6 = Flatten(null) ;
     x7 = Flatten({}) ;
     x8 = Flatten({null}) ;
-    return = { x1, x2, x3, x4, x5, x6, x8 };
+    return = { x1, x2, x3, x4, x6, x8 };
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("test", new Object[] { null, null, null, null, null, null, new Object[] { null } });
+            thisTest.Verify("test", new Object[] { null, null, null, null, null, new Object[] { null } });
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T074_Defect_1467750_3()
         {
             String code =
 @"
-class A
-{
-}
 test = foo();
 def foo ()
 {
     return = [Imperative]
     {
-        x = A.A();
         x1 = Flatten(a) ; 
         x2 = Flatten(3) ;
         x3 = Flatten(3.5) ;
         x4 = Flatten(true) ;
-        x5 = Flatten(x) ;
         x6 = Flatten(null) ;
         x7 = Flatten({}) ;
         x8 = Flatten({null}) ;
-        return = { x1, x2, x3, x4, x5, x6, x8 };
+        return = { x1, x2, x3, x4, x6, x8 };
     }
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("test", new Object[] { null, null, null, null, null, null, new Object[] { null } });
+            thisTest.Verify("test", new Object[] { null, null, null, null, null, new Object[] { null } });
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_Redundant")]
         public void T074_Defect_1467750_4()
         {
             String code =
@@ -4696,7 +4412,7 @@ class B
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_Redundant")]
         public void T074_Defect_1467750_5()
         {
             String code =
@@ -4734,7 +4450,7 @@ class B
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_ModifierBlock")]
         [Category("ModifierBlock")]
         public void T074_Defect_1467750_6()
         {
@@ -4780,20 +4496,15 @@ x6 = Average({null}) ;
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T075_Defect_1467323()
         {
             String code =
 @"
-class A
-{
-}
-x = A.A();
 x1 = Count(a) ; 
 x2 = Count(3) ;
 x3 = Count(3.5) ;
 x4 = Count(true) ;
-x5 = Count(x) ;
 x6 = Count(null) ;
 x7 = Count({}) ;
 x8 = Count({null}) ;
@@ -4803,145 +4514,118 @@ x8 = Count({null}) ;
             thisTest.Verify("x2", 1);
             thisTest.Verify("x3", 1);
             thisTest.Verify("x4", 1);
-            thisTest.Verify("x5", 1);
             thisTest.Verify("x6", 1);
             thisTest.Verify("x7", 0);
             thisTest.Verify("x8", 1);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T075_Defect_1467323_2()
         {
             String code =
 @"
-class A
-{
-}
 test = 
 [Imperative]
 {
-    x = A.A();
     x1 = Count(a) ; 
     x2 = Count(3) ;
     x3 = Count(3.5) ;
     x4 = Count(true) ;
-    x5 = Count(x) ;
     x6 = Count(null) ;
     x7 = Count({}) ;
     x8 = Count({null}) ;
-    return = { x1, x2, x3, x4, x5, x6, x7, x8 };
+    return = { x1, x2, x3, x4, x6, x7, x8 };
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("test", new Object[] { 1, 1, 1, 1, 1, 1, 0, 1 });
+            thisTest.Verify("test", new Object[] { 1, 1, 1, 1, 1, 0, 1 });
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T075_Defect_1467323_3()
         {
             String code =
 @"
-class A
-{
-}
 test = foo();
 def foo ()
 {
     return = [Imperative]
     {
-        x = A.A();
         x1 = Count(a) ; 
         x2 = Count(3) ;
         x3 = Count(3.5) ;
         x4 = Count(true) ;
-        x5 = Count(x) ;
         x6 = Count(null) ;
         x7 = Count({}) ;
         x8 = Count({null}) ;  
-        return = { x1, x2, x3, x4, x5, x6, x7, x8 }; 
+        return = { x1, x2, x3, x4, x6, x7, x8 }; 
     }
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("test", new Object[] { 1, 1, 1, 1, 1, 1, 0, 1 });
+            thisTest.Verify("test", new Object[] { 1, 1, 1, 1, 1, 0, 1 });
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T075_Defect_1467323_4()
         {
             String code =
 @"
-class A
+test = foo();
+def foo ()
 {
-}
-test = B.foo();
-class B
-{
-    static def foo ()
+    return = [Imperative]
     {
-        return = [Imperative]
-        {
-            x = A.A();
-            x1 = Count(a) ; 
-            x2 = Count(3) ;
-            x3 = Count(3.5) ;
-            x4 = Count(true) ;
-            x5 = Count(x) ;
-            x6 = Count(null) ;
-            x7 = Count({}) ;
-            x8 = Count({null}) ;
-            return = { x1, x2, x3, x4, x5, x6, x7, x8 };
-        }
+        x1 = Count(a) ; 
+        x2 = Count(3) ;
+        x3 = Count(3.5) ;
+        x4 = Count(true) ;
+        x6 = Count(null) ;
+        x7 = Count({}) ;
+        x8 = Count({null}) ;
+        return = { x1, x2, x3, x4, x6, x7, x8 };
     }
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("test", new Object[] { 1, 1, 1, 1, 1, 1, 0, 1 });
+            thisTest.Verify("test", new Object[] { 1, 1, 1, 1, 1, 0, 1 });
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T075_Defect_1467323_5()
         {
             String code =
 @"
-class A
+test = foo();
+def foo ()
 {
-}
-test = B.foo();
-class B
-{
-    static def foo ()
+    return = [Imperative]
     {
-        return = [Imperative]
+        if ( 1 )
         {
-            if ( 1 )
-            {
-                x = A.A();
-                x1 = Count(a) ; 
-                x2 = Count(3) ;
-                x3 = Count(3.5) ;
-                x4 = Count(true) ;
-                x5 = Count(x) ;
-                x6 = Count(null) ;
-                x7 = Count({}) ;
-                x8 = Count({null}) ;
-                return = { x1, x2, x3, x4, x5, x6, x7, x8 };                
-           }
-           else return = 1;
+            x1 = Count(a) ; 
+            x2 = Count(3) ;
+            x3 = Count(3.5) ;
+            x4 = Count(true) ;
+            x6 = Count(null) ;
+            x7 = Count({}) ;
+            x8 = Count({null}) ;
+            return = { x1, x2, x3, x4, x6, x7, x8 };                
         }
+        else return = 1;
     }
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("test", new Object[] { 1, 1, 1, 1, 1, 1, 0, 1 });
+            thisTest.Verify("test", new Object[] { 1, 1, 1, 1, 1, 0, 1 });
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_ModifierBlock")]
         public void T075_Defect_1467323_6()
         {
             String code =

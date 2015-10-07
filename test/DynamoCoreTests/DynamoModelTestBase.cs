@@ -41,10 +41,10 @@ namespace Dynamo
                 preloader = null;
                 DynamoSelection.Instance.ClearSelection();
 
-                if (this.CurrentDynamoModel != null)
+                if (CurrentDynamoModel != null)
                 {
-                    this.CurrentDynamoModel.ShutDown(false);
-                    this.CurrentDynamoModel = null;
+                    CurrentDynamoModel.ShutDown(false);
+                    CurrentDynamoModel = null;
                 }
             }
             catch (Exception ex)
@@ -84,15 +84,25 @@ namespace Dynamo
                 }
             }
 
-            this.CurrentDynamoModel = DynamoModel.Start(
-                new DynamoModel.DefaultStartConfiguration()
-                {
-                    PathResolver = pathResolver,
-                    StartInTestMode = true,
-                    GeometryFactoryPath = preloader.GeometryFactoryPath,
-                    Preferences = settings
-                });
+            this.CurrentDynamoModel = DynamoModel.Start(CreateStartConfiguration(settings));
+        }
 
+        /// <summary>
+        /// Derived test classes could override it to provide different 
+        /// configuration.
+        /// </summary>
+        /// <param name="settings"></param>
+        /// <returns></returns>
+        protected virtual DynamoModel.IStartConfiguration CreateStartConfiguration(IPreferences settings)
+        {
+            return new DynamoModel.DefaultStartConfiguration()
+            {
+                PathResolver = pathResolver,
+                StartInTestMode = true,
+                GeometryFactoryPath = preloader.GeometryFactoryPath,
+                Preferences = settings,
+                ProcessMode = Core.Threading.TaskProcessMode.Synchronous
+            };
         }
 
         protected T Open<T>(params string[] relativePathParts) where T : WorkspaceModel

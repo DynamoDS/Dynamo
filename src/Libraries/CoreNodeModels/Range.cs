@@ -49,14 +49,14 @@ namespace DSCoreNodesUI
         }
     }
 
-    [NodeName("Number Sequence")]
+    [NodeName("Sequence")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
-    [NodeDescription("NumberSequenceDescription", typeof(DSCoreNodesUI.Properties.Resources))]
-    [NodeSearchTags("NumberSequenceSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("SequenceDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("SequenceSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
-    public class NumberSeq : NodeModel
+    public class Sequence : NodeModel
     {
-        public NumberSeq()
+        public Sequence()
         {
             InPortData.Add(new PortData("start", Resources.RangePortDataStartToolTip));
             InPortData.Add(new PortData("amount", Resources.RangePortDataAmountToolTip));

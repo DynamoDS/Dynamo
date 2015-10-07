@@ -248,19 +248,12 @@ h;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T011_Inline_Using_Variables()
         {
             string code = @"
-class A
-{
-    a : var;
-	constructor A ( i : int)
-	{
-	    a = i;
-	}
-}
+import(""FFITarget.dll"");
 x1;
 x2;
 x3;
@@ -275,17 +268,17 @@ temp;
 	d = true;
 	f = null;
 	g = false;
-	h = A.A(1);
-	i = h.a;
+	h = ClassFunctionality.ClassFunctionality(1);
+	i = h.IntVal;
 	
 	x1 = a > b ? c : d;
 	x2 = a <= b ? c : d;
 	
 	x3 = f == g ? h : i;
 	x4 = f != g ? h : i;
-    x5 = f != g ? h : h.a;	
+    x5 = f != g ? h : h.IntVal;	
 	
-	temp = x3.a;
+	temp = x3.IntVal;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -299,19 +292,12 @@ temp;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T012_Inline_Using_Fun_Calls()
         {
             string code = @"
-class A
-{
-    a : var;
-	constructor A ( i : int)
-	{
-	    a = i;
-	}
-}
+import(""FFITarget.dll"");
 def power ( a )
 {
     return = a * a ;
@@ -322,14 +308,14 @@ c = -1;
 d = true;
 f = null;
 g = false;
-h = A.A(1);
-i = h.a;
+h = ClassFunctionality.ClassFunctionality(1);
+i = h.IntVal;
 x1 = power(power(2)) > power(2) ? power(1) : power(0);
 x2 = power(power(2)) < power(2) ? power(1) : power(0);
 x3 = power(c) < b ? power(1) : power(0);
 x4 = power(f) >= power(1) ? power(1) : power(0);
 x5 = power(f) < power(1) ? power(1) : power(0);
-x6 = power(i) >= power(h.a) ? power(1) : power(0);
+x6 = power(i) >= power(h.IntVal) ? power(1) : power(0);
 x7 = power(f) >= power(i) ? power(1) : power(0);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -345,36 +331,27 @@ x7 = power(f) >= power(i) ? power(1) : power(0);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T013_Inline_Using_Class()
         {
             string code = @"
-class A
+
+def foo ( a, b )
 {
-    a : var;
-	constructor A ( i : int)
-	{
-	    a = i;
-	}
-	
-	def foo ( b )
-	{
-		return = a * b ;
-	}
-	
+	return = a * b ;
 }
+	
+
 def power ( a )
 {
     return = a * a ;
 }
-a = A.A(-1);
-b = A.A(0);
-c = A.A(2);
-x1 = a.a < a.foo(2) ? a.a : a.foo(2);
-x2 = a.a >= a.foo(2) ? a.a : a.foo(2);
-x3 = a.foo(power(3)) < power(b.foo(3)) ? a.foo(power(3)) : power(b.foo(3));
-x4 = a.foo(power(3)) >= power(b.foo(3)) ? a.foo(power(3)) : power(b.foo(3));
+a = -1;
+x1 = a <  foo(a, 2) ? a : foo(a, 2);
+x2 = a >= foo(a, 2) ? a : foo(a, 2);
+x3 = foo(a, power(3)) <  power(foo(0, 3)) ? foo(a, power(3)) : power(foo(0, 3));
+x4 = foo(a, power(3)) >= power(foo(0, 3)) ? foo(a, power(3)) : power(foo(0, 3));
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x1", -2, 0);
@@ -450,7 +427,7 @@ c1;c2;c3;c4;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T015_Inline_In_Class_Scope()
         {
             // Assert.Fail("1467168 - Sprint24 : rev 3137 : Compiler error from  Inline Condition and class inheritance issue");

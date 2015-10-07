@@ -106,6 +106,15 @@ namespace Dynamo.Publish.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Custom node workspace {0} is not available to be published..
+        /// </summary>
+        public static string CustomNodeDefinitionNotFoundErrorMessage {
+            get {
+                return ResourceManager.GetString("CustomNodeDefinitionNotFoundErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish Customizer....
         /// </summary>
         public static string DynamoViewMenuItemPublishTitle {

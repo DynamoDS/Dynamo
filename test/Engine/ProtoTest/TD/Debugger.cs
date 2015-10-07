@@ -11,15 +11,12 @@ namespace ProtoTest.TD
 {
     class Debugger : ProtoTestBase
     {
-        ProtoScript.Config.RunConfiguration runnerConfig;
         string testCasePath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
         ProtoScript.Runners.DebugRunner fsr;
 
         public override void Setup()
         {
             base.Setup();
-            runnerConfig = new ProtoScript.Config.RunConfiguration();
-            runnerConfig.IsParrallel = false;
             fsr = new ProtoScript.Runners.DebugRunner(core);
         }
 
@@ -30,13 +27,13 @@ namespace ProtoTest.TD
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("Debugger")]
         public void T001_SampleTest()
         {
             //string errorString = "1463735 - Sprint 20 : rev 2147 : breakpoint cannot be set on property ' setter' and 'getter' methods ";
             string src = string.Format("{0}{1}", testCasePath, "T001_SampleTest.ds");
-            fsr.LoadAndPreStart(src, runnerConfig);
+            fsr.LoadAndPreStart(src);
             ProtoCore.CodeModel.CodePoint cp = new ProtoCore.CodeModel.CodePoint
             {
                 CharNo = 8,
@@ -73,7 +70,7 @@ namespace ProtoTest.TD
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("Failure")]
         public void Defect_1467570_Crash_In_Debug_Mode()
         {
@@ -99,7 +96,7 @@ myNeTwst = myTest.Transform(1);
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3989
             string defectID = "MAGN-3989 Inspection of 'this' pointer has issues in expression interpreter";
 
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();   // myTest = Test.FirstApproach({ 1, 2 }); 
             ProtoCore.CodeModel.CodePoint cp = new ProtoCore.CodeModel.CodePoint
             {
@@ -127,7 +124,7 @@ myNeTwst = myTest.Transform(1);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void Defect_1467584_Crash_In_Debug_Mode()
         {
             string src = @" 
@@ -155,7 +152,7 @@ x = edges.AddVertices();
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void Defect_1467584_Crash_In_Debug_Mode_2()
         {
             string src = @" 
@@ -182,7 +179,7 @@ x = edges.AddVertices();
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void Defect_1467584_Crash_In_Debug_Mode_3()
         {
@@ -354,7 +351,7 @@ check;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void Defect_1467584_Crash_In_Debug_Mode_4()
         {
@@ -527,7 +524,7 @@ check;
 
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void Defect_1467584_Crash_In_Debug_Mode_5()
         {
             string src = @" 
@@ -554,7 +551,7 @@ x = edges.AddVertices(0..1);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void Defect_1467584_Crash_In_Debug_Mode_6()
         {
             string src = @" 
@@ -581,7 +578,7 @@ x = edges.AddVertices(0..1);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void Defect_1467584_Crash_In_Debug_Mode_7()
         {
             string src = @" 
@@ -614,7 +611,7 @@ x = edges.AddVertices(0..2);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void Defect_IDE_884_UsingBangInsideImperative_1()
         {
             string src = @" 
@@ -638,7 +635,7 @@ test1 = test.foo();
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void Defect_IDE_884_UsingBangInsideImperative_2()
         {
             string src = @" 
@@ -662,7 +659,7 @@ b = p.foo();
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void Defect_IDE_884_UsingBangInsideImperative_3()
         {
             string src = @" 
@@ -686,7 +683,7 @@ b = p.foo();
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("WatchFx Tests")]
         public void T002_Defect_1467629_Debugging_InlineCondition_With_Multiple_Return_Types()
         {
@@ -715,7 +712,7 @@ c = 1;";
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("WatchFx Tests")]
         [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void T003_Defect_1467629_Debugging_InlineCondition_With_Multiple_Return_Types()

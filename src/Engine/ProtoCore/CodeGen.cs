@@ -33,14 +33,6 @@ namespace ProtoCore
             node.pc = pc;
             backpatchList.Add(node);
         }
-
-        public void Append(int bp)
-        {
-            BackpatchNode node = new BackpatchNode();
-            node.bp = bp;
-            node.pc = ProtoCore.DSASM.Constants.kInvalidIndex;
-            backpatchList.Add(node);
-        }
     }
 
     public abstract class CodeGen
@@ -122,7 +114,7 @@ namespace ProtoCore
             enforceTypeCheck = true;
 
             localProcedure = core.ProcNode;
-            globalProcIndex = null != localProcedure ? localProcedure.procId : ProtoCore.DSASM.Constants.kGlobalScope;
+            globalProcIndex = null != localProcedure ? localProcedure.ID : ProtoCore.DSASM.Constants.kGlobalScope;
 
             tryLevel = 0;
 
@@ -153,16 +145,6 @@ namespace ProtoCore
             }
 
             ssaPointerStack = new Stack<List<AST.AssociativeAST.AssociativeNode>>();
-        }
-
-
-        private ProcedureNode GetProcedureNode(int classIndex, int functionIndex)
-        {
-            if (Constants.kGlobalScope != classIndex)
-            {
-                return core.ClassTable.ClassNodes[classIndex].vtable.procList[functionIndex];
-            }
-            return codeBlock.procedureTable.procList[functionIndex];
         }
 
         /// <summary>
@@ -217,37 +199,6 @@ namespace ProtoCore
             // The current limitation is retrieving the cached trace data for multiple callsites in a single CBN
             // after modifying the lines of code.
             graphNode.CallsiteIdentifier = callsiteIdentifier;
-        }
-
-        protected ProtoCore.DSASM.AddressType GetOpType(ProtoCore.PrimitiveType type)
-        {
-            ProtoCore.DSASM.AddressType optype = ProtoCore.DSASM.AddressType.Int;
-            // Data coercion for the prototype
-            // The JIL executive handles int primitives
-            if (ProtoCore.PrimitiveType.kTypeInt == type
-                || ProtoCore.PrimitiveType.kTypeBool == type
-                || ProtoCore.PrimitiveType.kTypeChar == type
-                || ProtoCore.PrimitiveType.kTypeString == type)
-            {
-                optype = ProtoCore.DSASM.AddressType.Int;
-            }
-            else if (ProtoCore.PrimitiveType.kTypeDouble == type)
-            {
-                optype = ProtoCore.DSASM.AddressType.Double;
-            }
-            else if (ProtoCore.PrimitiveType.kTypeVar == type)
-            {
-                optype = ProtoCore.DSASM.AddressType.VarIndex;
-            }
-            else if (ProtoCore.PrimitiveType.kTypeReturn == type)
-            {
-                optype = ProtoCore.DSASM.AddressType.Register;
-            }
-            else
-            {
-                Validity.Assert(false);
-            }
-            return optype;
         }
 
         protected StackValue BuildOperand(ProtoCore.DSASM.SymbolNode symbol)
@@ -529,14 +480,14 @@ namespace ProtoCore
             }
             
             // Now check if the first element of the identifier list is an argument
-            foreach (ProtoCore.DSASM.ArgumentInfo argInfo in localProcedure.argInfoList)
+            foreach (ProtoCore.DSASM.ArgumentInfo argInfo in localProcedure.ArgumentInfos)
             {
                 if (argInfo.Name == firstSymbol.name)
                 {
                     nodeRef.nodeList.RemoveAt(0);
 
                     List<ProtoCore.AssociativeGraph.UpdateNodeRef> refList = null;
-                    bool found = localProcedure.updatedArgumentProperties.TryGetValue(argInfo.Name, out refList);
+                    bool found = localProcedure.UpdatedArgumentProperties.TryGetValue(argInfo.Name, out refList);
                     if (found)
                     {
                         refList.Add(nodeRef);
@@ -545,37 +496,11 @@ namespace ProtoCore
                     {
                         refList = new List<ProtoCore.AssociativeGraph.UpdateNodeRef>();
                         refList.Add(nodeRef);
-                        localProcedure.updatedArgumentProperties.Add(argInfo.Name, refList);
+                        localProcedure.UpdatedArgumentProperties.Add(argInfo.Name, refList);
                     }
                 }
             }
         }
-
-        //  
-        //  proc dfsgetsymbollist(node, lefttype, nodeRef)
-        //      if node is identlist
-        //          dfsemitpushlist(node.left, lefttype, nodeRef)
-        //      else if node is identifier
-        //          def symbol = veryifyallocation(node.left, lefttype)
-        //          if symbol is allocated
-        //              lefttype = symbol.type
-        //              def updateNode
-        //              updateNode.symbol = symbol 
-        //              updateNode.isMethod = false
-        //              nodeRef.push(updateNode)
-        //          end
-        //      else if node is function call
-        //          def procNode = procTable.GetProc(node)
-        //          if procNode is allocated
-        //              lefttype = procNode.returntype
-        //              def updateNode
-        //              updateNode.procNode = procNode
-        //              updateNode.isMethod = true
-        //              updateNodeRef.push(updateNode)
-        //          end
-        //      end
-        //  end
-        //
 
         public void DFSGetSymbolList(Node pNode, ref ProtoCore.Type lefttype, ProtoCore.AssociativeGraph.UpdateNodeRef nodeRef)
         {
@@ -603,7 +528,7 @@ namespace ProtoCore
                         int symindex = core.ClassTable.ClassNodes[lefttype.UID].GetFirstVisibleSymbolNoAccessCheck(identnode.Value);
                         if (ProtoCore.DSASM.Constants.kInvalidIndex != symindex)
                         {
-                            symbolnode = core.ClassTable.ClassNodes[lefttype.UID].symbols.symbolList[symindex];
+                            symbolnode = core.ClassTable.ClassNodes[lefttype.UID].Symbols.symbolList[symindex];
                         }
                     }
 
@@ -677,7 +602,7 @@ namespace ProtoCore
                             int symindex = core.ClassTable.ClassNodes[lefttype.UID].GetFirstVisibleSymbolNoAccessCheck(functionName);
                             if (ProtoCore.DSASM.Constants.kInvalidIndex != symindex)
                             {
-                                symbolnode = core.ClassTable.ClassNodes[lefttype.UID].symbols.symbolList[symindex];
+                                symbolnode = core.ClassTable.ClassNodes[lefttype.UID].Symbols.symbolList[symindex];
                             }
                         }
 
@@ -693,7 +618,7 @@ namespace ProtoCore
                 {
                     AssociativeGraph.UpdateNode updateNode = new AssociativeGraph.UpdateNode();
                     ProcedureNode procNodeDummy = new ProcedureNode();
-                    procNodeDummy.name = functionName;
+                    procNodeDummy.Name = functionName;
                     updateNode.procNode = procNodeDummy;
                     updateNode.nodeType = AssociativeGraph.UpdateNodeType.kMethod;
                     nodeRef.PushUpdateNode(updateNode);
@@ -729,7 +654,7 @@ namespace ProtoCore
                         int symindex = core.ClassTable.ClassNodes[lefttype.UID].GetFirstVisibleSymbolNoAccessCheck(identnode.Value);
                         if (ProtoCore.DSASM.Constants.kInvalidIndex != symindex)
                         {
-                            symbolnode = core.ClassTable.ClassNodes[lefttype.UID].symbols.symbolList[symindex];
+                            symbolnode = core.ClassTable.ClassNodes[lefttype.UID].Symbols.symbolList[symindex];
                         }
                     }
 
@@ -807,7 +732,7 @@ namespace ProtoCore
                             int symindex = core.ClassTable.ClassNodes[lefttype.UID].GetFirstVisibleSymbolNoAccessCheck(functionName);
                             if (ProtoCore.DSASM.Constants.kInvalidIndex != symindex)
                             {
-                                symbolnode = core.ClassTable.ClassNodes[lefttype.UID].symbols.symbolList[symindex];
+                                symbolnode = core.ClassTable.ClassNodes[lefttype.UID].Symbols.symbolList[symindex];
                             }
                         }
 
@@ -823,7 +748,7 @@ namespace ProtoCore
                 {
                     ProtoCore.AssociativeGraph.UpdateNode updateNode = new AssociativeGraph.UpdateNode();
                     ProtoCore.DSASM.ProcedureNode procNodeDummy = new DSASM.ProcedureNode();
-                    procNodeDummy.name = functionName;
+                    procNodeDummy.Name = functionName;
                     updateNode.procNode = procNodeDummy;
                     updateNode.nodeType = AssociativeGraph.UpdateNodeType.kMethod;
                     nodeRef.PushUpdateNode(updateNode);
@@ -1145,7 +1070,7 @@ namespace ProtoCore
                 // This is the first non-auto generated procedure found in the identifier list
                 if (null != procnode)
                 {
-                    if (!procnode.isConstructor && !procnode.name.Equals(ProtoCore.DSASM.Constants.kStaticPropertiesInitializer))
+                    if (!procnode.IsConstructor && !procnode.Name.Equals(ProtoCore.DSASM.Constants.kStaticPropertiesInitializer))
                     {
                         functionCallStack.Add(procnode);
                         if (null != graphNode)
@@ -1153,7 +1078,7 @@ namespace ProtoCore
                             graphNode.firstProcRefIndex = graphNode.dependentList.Count - 1;
                         }
                     }
-                    isMethodCallPresent = !isMethodCallPresent && !procnode.isAutoGenerated && !procnode.isConstructor;
+                    isMethodCallPresent = !isMethodCallPresent && !procnode.IsAutoGenerated && !procnode.IsConstructor;
                 }
 
                 //finalType.UID = isBooleanOp ? (int)PrimitiveType.kTypeBool : finalType.UID;
@@ -1192,24 +1117,6 @@ namespace ProtoCore
             return indexCnt;
         }
 
-#if USE_PREVIOUS_FUNCCALL_TRAVERSAL 
-        protected bool VerifyAllocation(string name, int classScope, out ProtoCore.DSASM.SymbolNode node)
-        {
-            // Identifier scope resolution
-            //  1. Current block
-            //  2. Outer language blocks
-            //  3. Class scope (TODO Jun: Implement checking the class scope)
-            //  4. Global scope (Comment Jun: Is there really a global scope? Conceptually, the outer most block is considered global)
-            //node = core.GetFirstVisibleSymbol(name, classScope, functionindex, codeBlock);
-            node = core.GetFirstVisibleSymbol(name, classScope, procIndex, codeBlock);
-            if (null != node)
-            {
-                return true;
-            }
-            return false;
-        }
-#else
-
         /// <summary>
         /// Verifies the allocation of a variable in the given symbol table
         /// </summary>
@@ -1229,7 +1136,7 @@ namespace ProtoCore
             }
             else
             {
-                symbolTable = core.ClassTable.ClassNodes[classScope].symbols;
+                symbolTable = core.ClassTable.ClassNodes[classScope].Symbols;
             }
 
             symbol = null;
@@ -1318,7 +1225,7 @@ namespace ProtoCore
                     }
                     else
                     {
-                        symbol = thisClass.symbols.symbolList[symbolIndex];
+                        symbol = thisClass.Symbols.symbolList[symbolIndex];
                     }
 
                     isAccessible = true;
@@ -1398,7 +1305,7 @@ namespace ProtoCore
                     }
                     else
                     {
-                        symbol = thisClass.symbols.symbolList[symbolIndex];
+                        symbol = thisClass.Symbols.symbolList[symbolIndex];
                     }
 
                     isAccessible = true;
@@ -1512,9 +1419,8 @@ namespace ProtoCore
                 return false;
             }
 
-            return (classnode.symbols.symbolList[symbolIndex].functionIndex == ProtoCore.DSASM.Constants.kGlobalScope);
+            return (classnode.Symbols.symbolList[symbolIndex].functionIndex == ProtoCore.DSASM.Constants.kGlobalScope);
         }
-#endif
 
         protected void Backpatch(int bp, int pc)
         {
@@ -1587,25 +1493,6 @@ namespace ProtoCore
 
             ++pc;
             AppendInstruction(instr);
-        }
-
-        protected void EmitCallSetter(int fi, int ci, 
-            int line = ProtoCore.DSASM.Constants.kInvalidIndex, 
-            int col = ProtoCore.DSASM.Constants.kInvalidIndex,
-            int endLine = ProtoCore.DSASM.Constants.kInvalidIndex, 
-            int endCol = ProtoCore.DSASM.Constants.kInvalidIndex,
-            int entrypoint = ProtoCore.DSASM.Constants.kInvalidIndex)
-        {
-            SetEntry();
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.CALL;
-            instr.op1 = StackValue.BuildFunctionIndex(fi);
-            instr.op2 = StackValue.BuildClassIndex(ci);
-            instr.op3 = StackValue.BuildInt(0); 
-
-            ++pc;
-            instr.debug = GetDebugObject(line, col, endLine, endCol, entrypoint);
-            AppendInstruction(instr, line, col);
         }
 
         protected void EmitDynamicCall(int functionIndex, int type, 
@@ -1705,24 +1592,6 @@ namespace ProtoCore
             AppendInstruction(instr);
         }
 
-        protected void EmitPopString(int size)
-        {
-            SetEntry();
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.ALLOCA;
-
-            instr.op1 = StackValue.BuildInt(size);
-            instr.op2 = StackValue.BuildString(0);
-            // Push default replication guide.  
-            if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
-            {
-                instr.op3 = StackValue.BuildReplicationGuide(0);
-            }
-
-            ++pc;
-            AppendInstruction(instr);
-        }
-
         protected void EmitPop(StackValue op, 
             int classIndex, 
             int blockId = Constants.kInvalidIndex, 
@@ -1801,22 +1670,6 @@ namespace ProtoCore
             ++pc;
 
             AppendInstruction(instr);
-        }
-
-        // TODO Jun: Merge EmitPopList with the associative version and implement in a codegen utils file
-        protected void EmitPopList(int depth, int startscope, int block, 
-            int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
-            int endline = ProtoCore.DSASM.Constants.kInvalidIndex, int endcol = ProtoCore.DSASM.Constants.kInvalidIndex)
-        {
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.POPLIST;
-            instr.op1 = StackValue.BuildInt(depth);
-            instr.op2 = StackValue.BuildInt(startscope);
-            instr.op3 = StackValue.BuildBlockIndex(block);
-
-            ++pc;
-            instr.debug = GetDebugObject(line, col, endline, endcol, pc);
-            AppendInstruction(instr, line, col);
         }
 
         protected void EmitPushBlockID(int blockID)
@@ -1934,19 +1787,6 @@ namespace ProtoCore
             AppendInstruction(instr);
         }
 
-
-        protected void EmitPushForSymbolGuide(SymbolNode symbol, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex)
-        {
-            SetEntry();
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.PUSHG;
-            instr.op1 = BuildOperand(symbol);
-            instr.op2 = StackValue.BuildClassIndex(symbol.classScope);
-
-            ++pc;
-            //instr.debug = GetDebugObject(line, col, pc);
-            AppendInstruction(instr);
-        }
         
         protected void EmitPushm(StackValue op, int classIndex, int blockId, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
             int eline = ProtoCore.DSASM.Constants.kInvalidIndex, int ecol = ProtoCore.DSASM.Constants.kInvalidIndex)
@@ -1984,18 +1824,6 @@ namespace ProtoCore
         {
             EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.Literal.Null);
             EmitPush(StackValue.Null);
-        }
-
-        protected void EmitMov(StackValue opDest, StackValue opSrc)
-        {
-            SetEntry();
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.MOV;
-            instr.op1 = opDest;
-            instr.op2 = StackValue.BuildClassIndex(globalClassIndex);
-
-            ++pc;
-            AppendInstruction(instr);
         }
 
         protected abstract void EmitRetb(int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
@@ -2168,8 +1996,7 @@ namespace ProtoCore
             }
             inferedType.UID = isBooleanOp ? (int)PrimitiveType.kTypeBool : inferedType.UID;
 
-            Byte[] utf8bytes = ProtoCore.Utils.EncodingUtils.UTF8StringToUTF8Bytes((String)cNode.value);
-            String value = Encoding.UTF8.GetString(utf8bytes);
+            String value = (String)cNode.value;
             if (value.Length > 1)
             {
                 buildStatus.LogSyntaxError(Resources.TooManyCharacters, null, node.line, node.col);
@@ -2544,7 +2371,7 @@ namespace ProtoCore
         {
             // Check the returned type against the declared return type
             if (null != localProcedure && 
-                localProcedure.isConstructor &&
+                localProcedure.IsConstructor &&
                 core.IsFunctionCodeBlock(codeBlock))
             {
                 buildStatus.LogSemanticError(Resources.ReturnStatementIsNotAllowedInConstructor, 
@@ -2562,30 +2389,6 @@ namespace ProtoCore
             EmitInstrConsole(op);
             EmitBinary(Op.GetOpCode(optr));
         }
-
-
-        /*
-            proc EmitIdentifierListNode(identListNode, graphnode)
-	            // Build the dependency given the SSA form
-	            BuildSSADependency(identListNode, graphnode) 
-
-                // Build the dependency based on the non-SSA code
-	            BuildRealDependencyForIdentList(identListNode, graphnode)
-            end
-
-            proc BuildSSADependency(identListNode, graphnode)
-	            // This is the current implementation
-            end
-
-
-            proc BuildRealDependencyForIdentList(identListNode, graphnode)
-	            dependent = new graphnode
-	            dependent.Push(ssaPtrList.GetAll())
-                dependent.Push(identListNode.rhs)
-                graphnode.PushDependent(dependent)
-            end
-        */
-
 
         private void BuildSSADependency(Node node, AssociativeGraph.GraphNode graphNode)
         {
@@ -2851,11 +2654,11 @@ namespace ProtoCore
             fptrDict.TryGetBySecond(fptrNode, out fptr);
             EmitPushVarData(0);
 
-            string name = procNode.name;
-            if (Constants.kGlobalScope != procNode.classScope)
+            string name = procNode.Name;
+            if (Constants.kGlobalScope != procNode.ClassID)
             {
-                int classIndex = procNode.classScope;
-                string className = core.ClassTable.ClassNodes[classIndex].name;
+                int classIndex = procNode.ClassID;
+                string className = core.ClassTable.ClassNodes[classIndex].Name;
                 name = String.Format(@"{0}.{1}", className, name);
             }
 
@@ -2902,9 +2705,9 @@ namespace ProtoCore
 
             // TODO(Jiong): Do a check on the number of arguments 
             bool hasMatchedConstructor = false;
-            foreach (ProtoCore.DSASM.ProcedureNode pn in core.ClassTable.ClassNodes[cix].vtable.procList)
+            foreach (ProtoCore.DSASM.ProcedureNode pn in core.ClassTable.ClassNodes[cix].ProcTable.procList)
             {
-                if (pn.isConstructor && pn.argInfoList.Count == attribute.Arguments.Count)
+                if (pn.IsConstructor && pn.ArgumentInfos.Count == attribute.Arguments.Count)
                 {
                     hasMatchedConstructor = true;
                     break;
@@ -3017,19 +2820,12 @@ namespace ProtoCore
         //public void updatePcDictionary(ProtoCore.AST.Node node, int blk)
         public void updatePcDictionary(int line, int col)
         {
-            //If the node is null, skip this update
-            //if (node == null) 
-              //  return;
-
             blk = codeBlock.codeBlockId;
-            //if ((node.line > 0) && (node.col > 0))
             if ((line > 0) && (col > 0))
             {
                 ulong mergedKey = (((ulong)blk) << 32 | ((uint)pc));
-                //ulong location = (((ulong)node.line) << 32 | ((uint)node.col));
                 ulong location = (((ulong)line) << 32 | ((uint)col));
 
-                //ProtoCore.Utils.Validity.Assert(!codeToLocation.ContainsKey(mergedKey));
                 if (core.codeToLocation.ContainsKey(mergedKey))
                 {
                     core.codeToLocation.Remove(mergedKey);
@@ -3041,7 +2837,7 @@ namespace ProtoCore
 
         protected bool IsInLanguageBlockDefinedInFunction()
         {
-            return (localProcedure != null && localProcedure.runtimeIndex != codeBlock.codeBlockId);
+            return (localProcedure != null && localProcedure.RuntimeIndex != codeBlock.codeBlockId);
         }
     }
 }

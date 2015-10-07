@@ -14,7 +14,7 @@ using System.Reflection;
 using System.Threading;
 using System.Globalization;
 using Dynamo.Engine.NodeToCode;
-
+using Dynamo.Interfaces;
 
 namespace Dynamo.Tests
 {
@@ -1157,12 +1157,6 @@ namespace Dynamo.Tests
             t.UID = -1;
             name = nameProvider.GetTypeDependentName(t);
             Assert.IsTrue(string.IsNullOrEmpty(name));
-
-            t = new ProtoCore.Type();
-            t.Name = null;
-            t.UID = -1;
-            name = nameProvider.GetTypeDependentName(t);
-            Assert.IsTrue(string.IsNullOrEmpty(name));
         } 
 
         private void SelectAll(IEnumerable<NodeModel> nodes)
@@ -1241,12 +1235,15 @@ namespace Dynamo.Tests
             base.GetLibrariesToPreload(libraries);
         }
 
-        private void SelectAll()
+        private void SelectAll(IEnumerable<Guid> nodes)
         {
             DynamoSelection.Instance.ClearSelection();
             foreach (var node in CurrentDynamoModel.CurrentWorkspace.Nodes)
             {
-                DynamoSelection.Instance.Selection.Add(node); 
+                if (nodes.Contains(node.GUID))
+                {
+                    DynamoSelection.Instance.Selection.Add(node);
+                }
             }
         }
 
@@ -1256,7 +1253,9 @@ namespace Dynamo.Tests
             foreach (var node in CurrentDynamoModel.CurrentWorkspace.Nodes)
             {
                 if (node.GUID != excludedNode)
+                {
                     DynamoSelection.Instance.Selection.Add(node);
+                }
             }
         }
 
@@ -1275,95 +1274,74 @@ namespace Dynamo.Tests
             return files;
         }
 
-        private static string[] GetFilesForUndo()
-        {
-            return GetDynFiles("undo");
-        }
-
         private static string[] GetFilesForMutation()
         {
             return GetDynFiles("mutation");
         }
 
         /// <summary>
-        /// Run the dyn file and get all preview values in string representation.
-        /// Undo, force run and get all preview values in string representation.
-        /// These two sets of preview value should be the same.
-        /// </summary>
-        /// <param name="dynFilePath"></param>
-        protected void UndoTest(string dynFilePath)
-        {
-            Dictionary<Guid, string> previewMap = new Dictionary<Guid, string>();
-            RunModel(dynFilePath);
-
-            foreach (var node in CurrentDynamoModel.CurrentWorkspace.Nodes)
-            {
-                previewMap[node.GUID] = GetStringData(node.GUID); 
-            }
-
-            int nodeCount = CurrentDynamoModel.CurrentWorkspace.Nodes.Count();
-            int connectorCount = CurrentDynamoModel.CurrentWorkspace.Connectors.Count();
-
-            SelectAll();
-            var command = new DynamoModel.ConvertNodesToCodeCommand();
-            CurrentDynamoModel.ExecuteCommand(command);
-            CurrentDynamoModel.ForceRun();
-
-            var undo = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo);
-            CurrentDynamoModel.ExecuteCommand(undo);
-            CurrentDynamoModel.ForceRun();
-
-            // Verify after undo everything is OK
-            Assert.AreEqual(nodeCount, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
-            Assert.AreEqual(connectorCount, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-
-            foreach (var node in CurrentDynamoModel.CurrentWorkspace.Nodes)
-            {
-                Assert.IsTrue(previewMap.ContainsKey(node.GUID));
-                var preValue = previewMap[node.GUID];
-                var currentValue = GetStringData(node.GUID);
-                Assert.AreEqual(preValue, currentValue);
-            }
-        }
-
-        /// <summary>
         /// Run the dyn file and get all preview values in string representation. 
         /// Then, iterate all nodes, for each iteration, choose a node and convert 
         /// the remaining nodes to code, and compare the preview value of this 
-        /// node against with its original value.
+        /// node against with its original value; then undo, run and compare the
+        /// preview values of all nodes with original values.
         /// </summary>
         /// <param name="dynFilePath"></param>
         protected void MutationTest(string dynFilePath)
         {
-            Dictionary<Guid, string> previewMap = new Dictionary<Guid, string>();
+            CurrentDynamoModel.Scheduler.ProcessMode = Core.Threading.TaskProcessMode.Asynchronous;
+
             RunModel(dynFilePath);
+            // Block until all tasks are executed
+            while (CurrentDynamoModel.Scheduler.HasPendingTasks);
 
-            foreach (var node in CurrentDynamoModel.CurrentWorkspace.Nodes)
-            {
-                previewMap[node.GUID] = GetStringData(node.GUID);
-            }
+            var allNodes = CurrentDynamoModel.CurrentWorkspace.Nodes.Select(n => n.GUID).ToList();
+            int nodeCount = allNodes.Count();
+            var previewMap = allNodes.ToDictionary(n => n, n => GetStringData(n));
 
-            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes.Select(n => n.GUID).ToList();
-            foreach (var node in nodes)
+            var convertibleNodes = CurrentDynamoModel.CurrentWorkspace.Nodes
+                                                                      .Where(node => node.IsConvertible)
+                                                                      .Select(n => n.GUID).ToList();
+            int connectorCount = CurrentDynamoModel.CurrentWorkspace.Connectors.Count();
+
+            for (int i = 1; i <= Math.Min(convertibleNodes.Count(), 10); ++i)
             {
-                SelectAllExcept(node);
+                var toBeConvertedNodes = convertibleNodes.Take(i);
+                var otherNodes = allNodes.Except(toBeConvertedNodes);
+
+                SelectAll(toBeConvertedNodes);
+
                 var command = new DynamoModel.ConvertNodesToCodeCommand();
                 CurrentDynamoModel.ExecuteCommand(command);
-                CurrentDynamoModel.ForceRun();
+                // Block until all tasks are executed
+                while (CurrentDynamoModel.Scheduler.HasPendingTasks);
 
-                var preValue = previewMap[node];
-                var currentValue = GetStringData(node);
-                Assert.AreEqual(preValue, currentValue);
- 
+                foreach (var node in otherNodes)
+                {
+                    // Verify after converting remaining nodes to code, the value
+                    // of node that is not converted should remain same.
+                    var preValue = previewMap[node];
+                    var currentValue = GetStringData(node);
+                    Assert.AreEqual(preValue, currentValue);
+                }
+
                 var undo = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo);
                 CurrentDynamoModel.ExecuteCommand(undo);
-            }
-        }
+                // Block until all tasks are executed
+                while (CurrentDynamoModel.Scheduler.HasPendingTasks) ;
 
-        [Test, TestCaseSource("GetFilesForUndo")]
-        public void TestUndo(string fileName)
-        {
-            UndoTest(fileName);
+                // Verify after undo everything is OK
+                Assert.AreEqual(nodeCount, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+                Assert.AreEqual(connectorCount, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+
+                foreach (var node in CurrentDynamoModel.CurrentWorkspace.Nodes)
+                {
+                    Assert.IsTrue(previewMap.ContainsKey(node.GUID));
+                    var preValue = previewMap[node.GUID];
+                    var currentValue = GetStringData(node.GUID);
+                    Assert.AreEqual(preValue, currentValue);
+                }
+            }
         }
 
         [Test, TestCaseSource("GetFilesForMutation")]

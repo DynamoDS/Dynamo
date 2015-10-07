@@ -681,30 +681,28 @@ namespace ProtoScript.Runners
                         // Get the cached AST and append it to the changeSet
                         csData.ForceExecuteASTList.AddRange(GetUnmodifiedASTList(oldSubTree.AstNodes, st.AstNodes));
                     }
-                    else
-                    {
-                        // Only update the cached ASTs if it is not ForceExecution
 
-                        List<AssociativeNode> newCachedASTList = new List<AssociativeNode>();
+                    // Update the cached AST to reflect the change
 
-                        // Get all the unomodified ASTs and append them to the cached ast list 
-                        newCachedASTList.AddRange(GetUnmodifiedASTList(oldSubTree.AstNodes, st.AstNodes));
+                    List<AssociativeNode> newCachedASTList = new List<AssociativeNode>();
 
-                        // Append all the modified ASTs to the cached ast list 
-                        newCachedASTList.AddRange(modifiedASTList);
+                    // Get all the unomodified ASTs and append them to the cached ast list 
+                    newCachedASTList.AddRange(GetUnmodifiedASTList(oldSubTree.AstNodes, st.AstNodes));
 
-                        // ================================================================================
-                        // Get a list of functions that were removed
-                        // This is the list of functions that exist in oldSubTree.AstNodes and no longer exist in st.AstNodes
-                        // This will passed to the changeset applier to handle removed functions in the VM
-                        // ================================================================================
-                        IEnumerable<AssociativeNode> removedFunctions = oldSubTree.AstNodes.Where(f => f is FunctionDefinitionNode && !st.AstNodes.Contains(f));
-                        csData.RemovedFunctionDefNodesFromModification.AddRange(removedFunctions);
+                    // Append all the modified ASTs to the cached ast list 
+                    newCachedASTList.AddRange(modifiedASTList);
 
-                        st.AstNodes.Clear();
-                        st.AstNodes.AddRange(newCachedASTList);
-                        currentSubTreeList[st.GUID] = st;
-                    }
+                    // ================================================================================
+                    // Get a list of functions that were removed
+                    // This is the list of functions that exist in oldSubTree.AstNodes and no longer exist in st.AstNodes
+                    // This will passed to the changeset applier to handle removed functions in the VM
+                    // ================================================================================
+                    IEnumerable<AssociativeNode> removedFunctions = oldSubTree.AstNodes.Where(f => f is FunctionDefinitionNode && !st.AstNodes.Contains(f));
+                    csData.RemovedFunctionDefNodesFromModification.AddRange(removedFunctions);
+
+                    st.AstNodes.Clear();
+                    st.AstNodes.AddRange(newCachedASTList);
+                    currentSubTreeList[st.GUID] = st;
                 }
             }
         }
@@ -800,8 +798,8 @@ namespace ProtoScript.Runners
                                     // Check if the procedure associatied with this graphnode matches thename and arg count of the modified proc
                                     if (null != gnode.firstProc)
                                     {
-                                        if (gnode.firstProc.name == functionNode.Name
-                                            && gnode.firstProc.argInfoList.Count == functionNode.Signature.Arguments.Count)
+                                        if (gnode.firstProc.Name == functionNode.Name
+                                            && gnode.firstProc.ArgumentInfos.Count == functionNode.Signature.Arguments.Count)
                                         {
                                             // If it does, create a new ast tree for this graphnode and append it to deltaAstList
                                             modifiedNodes.Add(assocNode);

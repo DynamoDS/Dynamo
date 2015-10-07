@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
@@ -11,7 +12,10 @@ using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
+using Dynamo.Services;
+using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
+using HelixToolkit.Wpf.SharpDX;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -25,7 +29,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public IRenderPackageFactory RenderPackageFactory { get; set; }
         public IDynamoViewModel ViewModel { get; set; }
         public INotifyPropertyChanged RenderPackageFactoryViewModel { get;set; }
-        public bool IsActiveAtStart { get; set; }
         public string Name { get; set; }
 
         public Watch3DViewModelStartupParams()
@@ -43,7 +46,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             RenderPackageFactory = viewModel.RenderPackageFactoryViewModel.Factory;
             ViewModel = viewModel;
             RenderPackageFactoryViewModel = viewModel.RenderPackageFactoryViewModel;
-            IsActiveAtStart = true;
             Name = name;
         }
     }
@@ -54,7 +56,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// rendering by various render targets. The base class handles the registration
     /// of all necessary event handlers on models, workspaces, and nodes.
     /// </summary>
-    public class Watch3DViewModelBase : NotificationObject
+    public class Watch3DViewModelBase : NotificationObject, IWatch3DViewModel
     {
         protected readonly IDynamoModel model;
         protected readonly IScheduler scheduler;
@@ -65,7 +67,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         protected readonly IDynamoViewModel viewModel;
         protected readonly INotifyPropertyChanged renderPackageFactoryViewModel;
 
-        protected int renderingTier;
         protected List<NodeModel> recentlyAddedNodes = new List<NodeModel>();
         protected bool active;
         private readonly List<IRenderPackage> currentTaggedPackages = new List<IRenderPackage>();
@@ -84,6 +85,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
 
                 active = value;
+                preferences.IsBackgroundPreviewActive = active;
 
                 RaisePropertyChanged("Active");
 
@@ -105,11 +107,61 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             get { return true; }
         }
 
+        private bool canNavigateBackground = false;
+        public bool CanNavigateBackground
+        {
+            get
+            {
+                return canNavigateBackground || navigationKeyIsDown;
+            }
+            set
+            {
+                canNavigateBackground = value;
+                RaisePropertyChanged("CanNavigateBackground");
+            }
+        }
+
+        private bool navigationKeyIsDown = false;
+        public bool NavigationKeyIsDown
+        {
+            get { return navigationKeyIsDown; }
+            set
+            {
+                if (navigationKeyIsDown == value) return;
+
+                navigationKeyIsDown = value;
+                RaisePropertyChanged("NavigationKeyIsDown");
+                RaisePropertyChanged("CanNavigateBackground");
+            }
+        }
+
+        public DelegateCommand TogglePanCommand { get; set; }
+
+        public DelegateCommand ToggleOrbitCommand { get; set; }
+
+        public DelegateCommand ToggleCanNavigateBackgroundCommand { get; set; }
+
         internal WorkspaceViewModel CurrentSpaceViewModel
         {
             get
             {
                 return viewModel.Workspaces.FirstOrDefault(vm => vm.Model == model.CurrentWorkspace);
+            }
+        }
+
+        public bool IsPanning
+        {
+            get
+            {
+                return CurrentSpaceViewModel != null && CurrentSpaceViewModel.IsPanning;
+            }
+        }
+
+        public bool IsOrbiting
+        {
+            get
+            {
+                return CurrentSpaceViewModel != null && CurrentSpaceViewModel.IsOrbiting;
             }
         }
 
@@ -124,11 +176,22 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             viewModel = parameters.ViewModel;
             renderPackageFactoryViewModel = parameters.RenderPackageFactoryViewModel;
 
-            Active = parameters.IsActiveAtStart;
+            Active = parameters.Preferences.IsBackgroundPreviewActive;
             Name = parameters.Name;
             logger = parameters.Logger;
 
             RegisterEventHandlers();
+
+            TogglePanCommand = new DelegateCommand(TogglePan, CanTogglePan);
+            ToggleOrbitCommand = new DelegateCommand(ToggleOrbit, CanToggleOrbit);
+            ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
+        }
+
+        public static Watch3DViewModelBase Start(Watch3DViewModelStartupParams parameters)
+        {
+            var vm = new Watch3DViewModelBase(parameters);
+            vm.OnStartup();
+            return vm;
         }
 
         protected virtual void OnStartup()
@@ -141,11 +204,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in inherited classes.
         }
 
-        protected virtual void OnBeginUpdate(IEnumerable<IRenderPackage> packages)
-        {
-            // Override in inherited classes.
-        }
-
+        
         protected virtual void OnClear()
         {
             // Override in inherited classes.
@@ -153,6 +212,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected virtual void OnActiveStateChanged()
         {
+            preferences.IsBackgroundPreviewActive = active;
+
             UnregisterEventHandlers();
             OnClear();
         }
@@ -190,7 +251,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private void LogVisualizationCapabilities()
         {
-            renderingTier = (RenderCapability.Tier >> 16);
+            var renderingTier = (RenderCapability.Tier >> 16);
             var pixelShader3Supported = RenderCapability.IsPixelShaderVersionSupported(3, 0);
             var pixelShader4Supported = RenderCapability.IsPixelShaderVersionSupported(4, 0);
             var softwareEffectSupported = RenderCapability.IsShaderEffectSoftwareRenderingSupported;
@@ -261,20 +322,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private void OnRenderPackageFactoryViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            switch (e.PropertyName)
-            {
-                case "ShowEdges":
-                    preferences.ShowEdges = renderPackageFactory.TessellationParameters.ShowEdges;
-                    break;
-            }
-
-            model.CurrentWorkspace.Nodes.Select(n => n.IsUpdated = true);
-
             foreach (var node in
                 model.CurrentWorkspace.Nodes)
             {
                 node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController,
-                        renderPackageFactory);
+                        renderPackageFactory, true);
             }
         }
 
@@ -330,7 +382,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             DeleteGeometryForIdentifier(node.AstIdentifierBase);
         }
 
-        protected virtual void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
+        public virtual void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages)
+        {
+            // Override in inherited classes.
+        }
+
+        public virtual void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
         {
             // Override in derived classes.
         }
@@ -386,13 +443,40 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected virtual void OnRenderPackagesUpdated(NodeModel node, IEnumerable<IRenderPackage> packages)
         {
-            OnBeginUpdate(packages);
+            AddGeometryForRenderPackages(packages);
         }
 
         public virtual void GenerateViewGeometryFromRenderPackagesAndRequestUpdate(
             IEnumerable<IRenderPackage> taskPackages)
         {
             // Override in derived classes
+        }
+
+        internal event Func<MouseEventArgs, Ray3D> RequestClickRay;
+        public Ray3D GetClickRay(MouseEventArgs args)
+        {
+            return RequestClickRay != null ? RequestClickRay(args) : null;
+        }
+
+        public event Action<object, MouseButtonEventArgs> ViewMouseDown;
+        internal void OnViewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            var handler = ViewMouseDown;
+            if (handler != null) handler(sender, e);
+        }
+
+        public event Action<object, MouseButtonEventArgs> ViewMouseUp;
+        internal void OnViewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            var handler = ViewMouseUp;
+            if (handler != null) handler(sender, e);
+        }
+
+        public event Action<object, MouseEventArgs> ViewMouseMove;
+        internal void OnViewMouseMove(object sender, MouseEventArgs e)
+        {
+            var handler = ViewMouseMove;
+            if (handler != null) handler(sender, e);
         }
 
         protected virtual void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -405,9 +489,57 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in derived classes
         }
 
-        internal virtual void TogglePan(object parameter)
+        #region command methods
+
+        internal void TogglePan(object parameter)
         {
-            // Override in derived classes.
+            CurrentSpaceViewModel.RequestTogglePanMode();
+
+            // Since panning and orbiting modes are exclusive from one another,
+            // turning one on may turn the other off. This is the reason we must
+            // raise property change for both at the same time to update visual.
+            RaisePropertyChanged("IsPanning");
+            RaisePropertyChanged("IsOrbiting");
+            RaisePropertyChanged("LeftClickCommand");
         }
+
+        private static bool CanTogglePan(object parameter)
+        {
+            return true;
+        }
+
+        private void ToggleOrbit(object parameter)
+        {
+            CurrentSpaceViewModel.RequestToggleOrbitMode();
+
+            // Since panning and orbiting modes are exclusive from one another,
+            // turning one on may turn the other off. This is the reason we must
+            // raise property change for both at the same time to update visual.
+            RaisePropertyChanged("IsPanning");
+            RaisePropertyChanged("IsOrbiting");
+            RaisePropertyChanged("LeftClickCommand");
+        }
+
+        private static bool CanToggleOrbit(object parameter)
+        {
+            return true;
+        }
+
+        private void ToggleCanNavigateBackground(object parameter)
+        {
+            if (!Active)
+                return;
+
+            CanNavigateBackground = !CanNavigateBackground;
+
+            InstrumentationLogger.LogAnonymousScreen(CanNavigateBackground ? "Geometry" : "Nodes");
+        }
+
+        private bool CanToggleCanNavigateBackground(object parameter)
+        {
+            return true;
+        }
+
+        #endregion
     }
 }
