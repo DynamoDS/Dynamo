@@ -169,6 +169,9 @@ namespace Dynamo.ViewModels
                                                                        .Contains(x.Category));
         }
 
+        /// <summary>
+        /// Returns true, if it was found at least one item. Otherwise it returns false.
+        /// </summary>
         public bool IsAnySearchResult
         {
             get
@@ -189,6 +192,12 @@ namespace Dynamo.ViewModels
             }
             private set
             {
+                // Unsubscribe old categories.
+                for (int i = 0; i < searchCategories.Count(); i++)
+                {
+                    searchCategories.ElementAt(i).PropertyChanged -= IsSelectedChanged;
+                }
+
                 searchCategories = value;
                 RaisePropertyChanged("SearchCategories");
             }
@@ -245,6 +254,7 @@ namespace Dynamo.ViewModels
         private void InitializeCore()
         {
             searchResults = new List<NodeSearchElementViewModel>();
+            searchCategories = new List<SearchCategory>();
 
             Visible = false;
             searchText = "";
@@ -727,6 +737,11 @@ namespace Dynamo.ViewModels
             SearchCategories = categories;
         }
 
+        /// <summary>
+        /// When category is selected, search results should be updated and contain nodes from this category.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void IsSelectedChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName != "IsSelected")

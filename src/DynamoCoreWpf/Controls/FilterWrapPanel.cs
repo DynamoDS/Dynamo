@@ -4,6 +4,10 @@ using System.Windows.Controls;
 
 namespace Dynamo.Wpf.Controls
 {
+    /// <summary>
+    /// Inherited from WrapPanel. It can align items. It has MaxItemPerRow property. 
+    /// You can specify maximal number of item per row.
+    /// </summary>
     public class FilterPanel : WrapPanel
     {
 
@@ -25,7 +29,7 @@ namespace Dynamo.Wpf.Controls
             double x = 0, y = 0, currentRowHeight = 0;
             int itemPerRow = 0;
 
-            foreach (UIElement child in this.Children)
+            foreach (UIElement child in Children)
             {
                 child.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
                 var desiredSize = child.DesiredSize;
@@ -76,6 +80,8 @@ namespace Dynamo.Wpf.Controls
                 }
             }
 
+            totalWidth = totalWidth < rowWidth ? rowWidth : totalWidth;
+            totalHeight += rowHeight;
             return new Size(totalWidth, totalHeight);
         }
     }
