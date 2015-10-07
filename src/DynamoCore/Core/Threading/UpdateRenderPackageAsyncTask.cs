@@ -38,9 +38,9 @@ namespace Dynamo.Core.Threading
     /// 
     class UpdateRenderPackageAsyncTask : AsyncTask
     {
-        private const byte DefR = 101;
-        private const byte DefG = 86;
-        private const byte DefB = 130;
+        private const byte DefR = 0;
+        private const byte DefG = 0;
+        private const byte DefB = 0;
         private const byte DefA = 255;
         private const byte MidTone = 180;
 

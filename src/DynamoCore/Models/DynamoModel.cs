@@ -1569,8 +1569,8 @@ namespace Dynamo.Models
             var notes = ClipBoard.OfType<NoteModel>();
             var annotations = ClipBoard.OfType<AnnotationModel>();
 
-            var minX = Double.MaxValue;
-            var minY = Double.MaxValue;
+            var minXY = Double.MaxValue;
+            var maxXY = Double.MinValue;
 
             // Create the new NoteModel's
             var newNoteModels = new List<NoteModel>();
@@ -1581,8 +1581,8 @@ namespace Dynamo.Models
                 modelLookup.Add(note.GUID,noteModel);
                 newNoteModels.Add(noteModel);
 
-                minX = Math.Min(note.X, minX);
-                minY = Math.Min(note.Y, minY);
+                minXY = Math.Round(Math.Min(note.CenterX + note.CenterY, minXY), 3);
+                maxXY = Math.Round(Math.Max(note.CenterX + note.CenterY, maxXY), 3);
             }
 
             var xmlDoc = new XmlDocument();
@@ -1612,29 +1612,39 @@ namespace Dynamo.Models
                 if (!string.IsNullOrEmpty(node.NickName))
                     newNode.NickName = node.NickName;
 
+                newNode.Width = node.Width;
+                newNode.Height = node.Height;
+
                 modelLookup.Add(node.GUID, newNode);
 
-                newNodeModels.Add( newNode );
+                newNodeModels.Add(newNode);
 
-                minX = Math.Min(node.X, minX);
-                minY = Math.Min(node.Y, minY);
+                minXY = Math.Round(Math.Min(node.CenterX + node.CenterY, minXY), 3);
+                maxXY = Math.Round(Math.Max(node.CenterX + node.CenterY, maxXY), 3);
             }
-
-            // Move all of the notes and nodes such that they are aligned with
-            // the top left of the workspace
-            var workspaceX = -CurrentWorkspace.X / CurrentWorkspace.Zoom;
-            var workspaceY = -CurrentWorkspace.Y / CurrentWorkspace.Zoom;
 
             // Provide a small offset when pasting so duplicate pastes aren't directly on top of each other
             CurrentWorkspace.IncrementPasteOffset();
 
-            var shiftX = workspaceX - minX + CurrentWorkspace.CurrentPasteOffset;
-            var shiftY = workspaceY - minY + CurrentWorkspace.CurrentPasteOffset;
+            var newItems = newNodeModels.Concat<ModelBase>(newNoteModels);
 
-            foreach (var model in newNodeModels.Concat<ModelBase>(newNoteModels))
+            // Search for the rightmost item. It's item with the biggest X, Y coordinates of center.
+            var rightMostItem = newItems.FirstOrDefault(item => Math.Round((item.CenterX + item.CenterY), 3) == maxXY);
+
+            // Search for the leftmost item. It's item with the smallest X, Y coordinates of center.
+            var leftMostItem = newItems.FirstOrDefault(item => Math.Round((item.CenterX + item.CenterY), 3) == minXY);
+
+            var oldCoordinateX = leftMostItem.X;
+            var oldCoordinateY = leftMostItem.Y;
+
+            // Put left most in right most item place and add offset.
+            leftMostItem.X = rightMostItem.X + rightMostItem.Width + CurrentWorkspace.CurrentPasteOffset;
+            leftMostItem.Y = rightMostItem.Y + CurrentWorkspace.CurrentPasteOffset;
+
+            foreach (var model in newItems.Except(new[] { leftMostItem }))
             {
-                model.X = model.X + shiftX;
-                model.Y = model.Y + shiftY;
+                model.X = leftMostItem.X + (model.X - oldCoordinateX);
+                model.Y = leftMostItem.Y + (model.Y - oldCoordinateY);
             }
 
             // Add the new NodeModel's to the Workspace

@@ -98,7 +98,7 @@ namespace ProtoCore.Lang
             List<StackValue> registers = new List<DSASM.StackValue>();
 
             StackValue svCallConvention;
-            bool isDispose = CoreUtils.IsDisposeMethod(procedureNode.name);
+            bool isDispose = CoreUtils.IsDisposeMethod(procedureNode.Name);
 
             bool explicitCall = !c.IsReplicating && !c.IsImplicitCall && !isDispose;
             if (explicitCall)

@@ -11,6 +11,7 @@ namespace Dynamo.Interfaces
     public interface IDynamoModel : INotifyPropertyChanged
     {
         IEnumerable<WorkspaceModel> Workspaces { get; }
+
         WorkspaceModel CurrentWorkspace { get; }
 
         event Action<WorkspaceModel> WorkspaceCleared;

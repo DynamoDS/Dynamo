@@ -146,13 +146,15 @@ namespace Dynamo.PackageManager
                 if (ret == null)
                 {
                     packageUploadHandle.Error("Failed to submit.  Try again later.");
+                    return;
                 }
 
                 if (ret != null && !ret.success)
                 {
                     packageUploadHandle.Error(ret.message);
+                    return;
                 }
-
+               
                 packageUploadHandle.Done(null);
             }
             catch (Exception e)

@@ -48,9 +48,6 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(ViewModel.CurrentSpace.Nodes.Count(), 1);
             Assert.AreEqual(ViewModel.CurrentSpace.Connectors.Count(), 0);
-            AssertGraphLayoutLayers(new object[] {
-                new int[] { 0, 1 }
-            });
 
             Assert.AreEqual(nodes.ElementAt(0).X, prevX);
             Assert.AreEqual(nodes.ElementAt(0).Y, prevY);

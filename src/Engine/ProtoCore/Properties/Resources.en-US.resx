@@ -899,4 +899,10 @@ Parameter name: {0}</value>
   <data name="FunctionGroupWithParameterNotFound" xml:space="preserve">
     <value>No function called {0} on a {1} that takes {2} could be found</value>
   </data>
+  <data name="kInvalidStringArgumentInRangeExpression" xml:space="preserve">
+    <value>Start value can be just number or single letter</value>
+  </data>
+  <data name="kInvalidUnicodeArgumentInRangeExpression" xml:space="preserve">
+    <value>Sequence node supports only ASCII characters </value>
+  </data>
 </root>

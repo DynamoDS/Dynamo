@@ -7,15 +7,12 @@ namespace ProtoTest.TD.MultiLangTests
 {
     class TestUpdate : ProtoTestBase
     {
-        ProtoScript.Config.RunConfiguration runnerConfig;
         string testPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
         ProtoScript.Runners.DebugRunner fsr;
 
         public override void Setup()
         {
             base.Setup();
-            runnerConfig = new ProtoScript.Config.RunConfiguration();
-            runnerConfig.IsParrallel = false;
             fsr = new ProtoScript.Runners.DebugRunner(core);
         }
 
@@ -725,7 +722,7 @@ a1 = 5;
  public void T18_Update_Variables_In_Inner_Assoc()
         {
             string src = string.Format("{0}{1}", testPath, "T18_Update_Variables_In_Inner_Assoc.ds");
-            fsr.LoadAndPreStart(src, runnerConfig);
+            fsr.LoadAndPreStart(src);
             ProtoCore.CodeModel.CodePoint cp = new ProtoCore.CodeModel.CodePoint
             {
                 CharNo = 8,
@@ -945,7 +942,8 @@ t2 = y2[1];
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4086
             string errmsg = "MAGN-4086: Update of class instance by updating its property is not propagating the proper update";
             string code = @"
-import(""FFITarget.dll"");
+import(""FFITarget.dll"");
+
 def foo ( a : ClassFunctionality) 
 {
     return = a.IntVal;
@@ -1879,7 +1877,7 @@ b = {
         public void T27_Modifier_Stack_Update()
         {
             string src = string.Format("{0}{1}", testPath, "T27_Modifier_Stack_Update.ds");
-            fsr.LoadAndPreStart(src, runnerConfig);
+            fsr.LoadAndPreStart(src);
             ProtoCore.CodeModel.CodePoint cp1 = new ProtoCore.CodeModel.CodePoint
             {
                 CharNo = 8,
