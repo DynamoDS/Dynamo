@@ -1617,8 +1617,10 @@ namespace Dynamo.Models
 
         private void QueryMirrorDataAsyncTaskCompleted(AsyncTask asyncTask)
         {
+            asyncTask.Completed -= QueryMirrorDataAsyncTaskCompleted;
+
             var task = asyncTask as QueryMirrorDataAsyncTask;
-            if (asyncTask != null)
+            if (task != null)
             {
                 this.CachedValue = task.MirrorData;
             }
