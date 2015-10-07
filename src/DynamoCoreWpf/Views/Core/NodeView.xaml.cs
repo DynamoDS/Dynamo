@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Threading;
 using Dynamo.Models;
 using Dynamo.Prompts;
 using Dynamo.Selection;
@@ -23,7 +22,7 @@ namespace Dynamo.Controls
     public partial class NodeView : IViewModelView<NodeViewModel>
     {
         public delegate void SetToolTipDelegate(string message);
-        public delegate void UpdateLayoutDelegate(FrameworkElement el);       
+        public delegate void UpdateLayoutDelegate(FrameworkElement el);
         private NodeViewModel viewModel = null;
         private PreviewControl previewControl = null;
 
@@ -145,9 +144,9 @@ namespace Dynamo.Controls
             ViewModel.RequestShowNodeRename += ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection += ViewModel_RequestsSelection;
             ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
-           
+
         }
-      
+
         void NodeLogic_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
@@ -156,16 +155,19 @@ namespace Dynamo.Controls
                     ViewModel.SetLacingTypeCommand.RaiseCanExecuteChanged();
                     break;
 
-                case "CachedValue":
-                    HandleCachedValueUpdated();
+                case "IsUpdated":
+                    HandleCacheValueUpdated();
                     break;
             }
         }
 
         /// <summary>
-        /// Called when NodeModel's CachedValue property is updated
+        /// Whenever property "NodeModel.IsUpdated" is set to true, this method 
+        /// is invoked. It will result in preview control updated, if the control 
+        /// is currently visible. Otherwise this call will be ignored.
         /// </summary>
-        private void HandleCachedValueUpdated()
+        /// 
+        private void HandleCacheValueUpdated()
         {
             Dispatcher.BeginInvoke(new Action(delegate
             {
@@ -194,7 +196,7 @@ namespace Dynamo.Controls
                 }
 
                 previewControl.BindToDataSource(ViewModel.NodeModel.CachedValue);
-            }), DispatcherPriority.Background);
+            }));
         }
 
         void ViewModel_RequestsSelection(object sender, EventArgs e)
@@ -227,7 +229,7 @@ namespace Dynamo.Controls
             var editWindow = new EditWindow(viewModel.DynamoViewModel)
             {
                 DataContext = ViewModel,
-                Title = Dynamo.Wpf.Properties.Resources.EditNodeWindowTitle 
+                Title = Dynamo.Wpf.Properties.Resources.EditNodeWindowTitle
             };
 
             editWindow.Owner = Window.GetWindow(this);
@@ -450,6 +452,6 @@ namespace Dynamo.Controls
         }
 
         #endregion
-      
+
     }
 }
