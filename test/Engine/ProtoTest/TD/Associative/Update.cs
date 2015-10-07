@@ -15,7 +15,6 @@ namespace ProtoTest.TD.Associative
         public override void Setup()
         {
             base.Setup();
-           
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;
             fsr = new DebugRunner(core);
@@ -548,7 +547,11 @@ a 	 = MyPoint.ByAngleRadius(5.0);
             string src =
                 Path.GetFullPath(string.Format("{0}{1}", testCasePath, "T017_Update_Of_Class_Instances.ds")); 
             
+<<<<<<< HEAD
             fsr.LoadAndPreStart(src, runnerConfig);
+=======
+            fsr.LoadAndPreStart(src);
+>>>>>>> 3a01d2d0d98af116efdc619bd9734fe8b8d3c179
             ProtoCore.CodeModel.CodePoint cp1 = new ProtoCore.CodeModel.CodePoint
             {
                 CharNo = 25,

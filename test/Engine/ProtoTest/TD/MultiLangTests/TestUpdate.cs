@@ -725,7 +725,11 @@ a1 = 5;
  public void T18_Update_Variables_In_Inner_Assoc()
         {
             string src = string.Format("{0}{1}", testPath, "T18_Update_Variables_In_Inner_Assoc.ds");
+<<<<<<< HEAD
             fsr.LoadAndPreStart(src, runnerConfig);
+=======
+            fsr.LoadAndPreStart(src);
+>>>>>>> 3a01d2d0d98af116efdc619bd9734fe8b8d3c179
             ProtoCore.CodeModel.CodePoint cp = new ProtoCore.CodeModel.CodePoint
             {
                 CharNo = 8,
@@ -3353,6 +3357,7 @@ t[1] = a[1];
 
         [Test]
         [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
+>>>>>>> 3a01d2d0d98af116efdc619bd9734fe8b8d3c179
         [Category("Update")]
         public void T46_Defect_1467275_3()
         {

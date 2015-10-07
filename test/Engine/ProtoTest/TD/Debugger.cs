@@ -11,15 +11,12 @@ namespace ProtoTest.TD
 {
     class Debugger : ProtoTestBase
     {
-        ProtoScript.Config.RunConfiguration runnerConfig;
         string testCasePath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
         ProtoScript.Runners.DebugRunner fsr;
 
         public override void Setup()
         {
             base.Setup();
-            runnerConfig = new ProtoScript.Config.RunConfiguration();
-            runnerConfig.IsParrallel = false;
             fsr = new ProtoScript.Runners.DebugRunner(core);
         }
 
@@ -36,7 +33,7 @@ namespace ProtoTest.TD
         {
             //string errorString = "1463735 - Sprint 20 : rev 2147 : breakpoint cannot be set on property ' setter' and 'getter' methods ";
             string src = string.Format("{0}{1}", testCasePath, "T001_SampleTest.ds");
-            fsr.LoadAndPreStart(src, runnerConfig);
+            fsr.LoadAndPreStart(src);
             ProtoCore.CodeModel.CodePoint cp = new ProtoCore.CodeModel.CodePoint
             {
                 CharNo = 8,
@@ -99,7 +96,7 @@ myNeTwst = myTest.Transform(1);
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3989
             string defectID = "MAGN-3989 Inspection of 'this' pointer has issues in expression interpreter";
 
-            fsr.PreStart(src, runnerConfig);
+            fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();   // myTest = Test.FirstApproach({ 1, 2 }); 
             ProtoCore.CodeModel.CodePoint cp = new ProtoCore.CodeModel.CodePoint
             {

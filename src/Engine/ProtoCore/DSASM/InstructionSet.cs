@@ -402,7 +402,7 @@ namespace ProtoCore.DSASM
         {
             StackValue value = new StackValue();
             value.optype = AddressType.Char;
-            value.opdata = ProtoCore.Utils.EncodingUtils.ConvertCharacterToInt64(ch);
+            value.opdata = Convert.ToInt64(ch);
 
             MetaData mdata = new MetaData();
             mdata.type = (int)PrimitiveType.kTypeChar;
@@ -786,7 +786,7 @@ namespace ProtoCore.DSASM
                     return string.IsNullOrEmpty(str) ? StackValue.False : StackValue.True;
 
                 case AddressType.Char:
-                    char c = EncodingUtils.ConvertInt64ToCharacter(opdata);
+                    char c = Convert.ToChar(opdata);
                     return (c == 0) ? StackValue.False : StackValue.True;
 
                 default:

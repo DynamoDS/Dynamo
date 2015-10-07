@@ -189,7 +189,7 @@ namespace ProtoCore
                     case AddressType.Boolean:
                         return sv.opdata != 0;
                     case AddressType.Char:
-                        return ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(sv.opdata);
+                        return Convert.ToChar(sv.opdata); 
                     case AddressType.String:
                         return StringUtils.GetStringValue(sv, runtimeCore);
                     case AddressType.Pointer:

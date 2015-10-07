@@ -64,6 +64,7 @@ limitations under the License.
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
     <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>..\..\bin\AnyCPU\Release\DynamoCore.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(ExecutionEngine)' != 'FScheme' ">
     <DefineConstants>$(DefineConstants);USE_DSENGINE</DefineConstants>
