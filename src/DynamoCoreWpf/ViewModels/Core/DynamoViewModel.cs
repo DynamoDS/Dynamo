@@ -494,7 +494,7 @@ namespace Dynamo.ViewModels
             CurrentSpace.CreateInputNode += CurrentSpace_CreateInputNode;
         }
 
-        void CurrentSpace_CreateInputNode(NodeModel node1, NodeModel node2, int portIndex1, int portIndex2)
+        private void CurrentSpace_CreateInputNode(NodeModel node1, NodeModel node2, int portIndex1, int portIndex2)
         {
             ExecuteCommand(new DynamoModel.CreateNodeCommand(node1, 0, 0, true, true));
             
@@ -505,6 +505,9 @@ namespace Dynamo.ViewModels
             mode = DynamoModel.MakeConnectionCommand.Mode.End;
             command = new DynamoModel.MakeConnectionCommand(node2.GUID, portIndex2, PortType.Input, mode);
             ExecuteCommand(command);
+
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.Add(node2);
         }
 
         private void RenderPackageFactoryViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
