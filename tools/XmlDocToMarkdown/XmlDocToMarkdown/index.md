@@ -1,17 +1,19 @@
-# Welcome to MkDocs
+**Dynamo API Documentation**
 
-For full documentation visit [mkdocs.org](http://mkdocs.org).
+Dynamo is a visual programming tool that aims to be accessible to non-programmers and programmers aike. It gives users the ability to visually script behavior,
+define cutom pieces of logic, and script using various textual programming languages.
 
-## Commands
+Dynamo is an open source tool, which means we need you to help us make it better. The Dynamo API Documentation will help you get familiar with the Dynamo API so that
+you can create custom nodes and libraries.
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs help` - Print this help message.
+---
 
-## Project layout
+**Resources**
 
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+Below are some links to other resources that could be helpful.
+
+- [Dynamo Website](http://dynamobim.org/)
+- [Dynamo on Github](https://github.com/DynamoDS/Dynamo)
+
+
+ 

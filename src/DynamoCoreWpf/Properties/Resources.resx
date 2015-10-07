@@ -757,6 +757,9 @@ It does not contain your graph or any personal data</value>
   <data name="StartPageMoreSamples" xml:space="preserve">
     <value>More Samples</value>
   </data>
+  <data name="StartPageDynamoPrimer" xml:space="preserve">
+    <value>Dynamo Primer</value>
+  </data>
   <data name="StartPageNewCustomNode" xml:space="preserve">
     <value>Custom Node</value>
     <comment>Start page | New custom node</comment>
@@ -1606,6 +1609,9 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="GroupContextMenuUngroup" xml:space="preserve">
     <value>Ungroup</value>
+  </data>
+  <data name="GroupContextMenuGraphLayout" xml:space="preserve">
+    <value>Cleanup Node Layout</value>
   </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>Due to limitations in the .NET framework, it is not possible to update your package assembly while it is already loaded.  Please update the assembly while {0} is not running and try again.</value>

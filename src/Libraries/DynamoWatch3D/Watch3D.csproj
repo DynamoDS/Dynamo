@@ -2,9 +2,9 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS.props" />
-    <Import Project="$(SolutionDir)Config/Dynamo.targets" />
     <Import Project="..\..\packages\SharpDX.2.6.3\build\SharpDX.targets" Condition="Exists('..\..\packages\SharpDX.2.6.3\build\SharpDX.targets')" />
     <Import Project="..\..\packages\SharpDX.Toolkit.2.6.3\build\SharpDX.Toolkit.targets" Condition="Exists('..\..\packages\SharpDX.Toolkit.2.6.3\build\SharpDX.Toolkit.targets')" />
+    <Import Project="$(SolutionDir)Config/DynamoWpf.targets" />
   </ImportGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -44,19 +44,19 @@
   <ItemGroup>
     <Reference Include="Cyotek.Drawing.BitmapFont, Version=1.0.2.0, Culture=neutral, PublicKeyToken=58daa28b0b2de221, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Cyotek.Drawing.BitmapFont.1.0.2.0\lib\net20\Cyotek.Drawing.BitmapFont.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="HelixToolkit, Version=2015.1.629.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <HintPath>..\..\packages\HelixToolkit.2015.1.629\lib\portable-net4+sl4+wp71+win8\HelixToolkit.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="HelixToolkit.Wpf, Version=2015.1.629.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <HintPath>..\..\packages\HelixToolkit.Wpf.2015.1.629\lib\net45\HelixToolkit.Wpf.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="HelixToolkit.Wpf.SharpDX, Version=2015.1.629.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <HintPath>..\..\packages\HelixToolkit.Wpf.SharpDX.2015.1.629\lib\net45\HelixToolkit.Wpf.SharpDX.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
@@ -70,39 +70,40 @@
     </Reference>
     <Reference Include="SharpDX">
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="SharpDX.D3DCompiler">
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.D3DCompiler.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="SharpDX.D3DCompiler, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\SharpDX.2.6.3\build\..\Bin\DirectX11-Signed-net40\SharpDX.D3DCompiler.dll</HintPath>
+    </Reference>
     <Reference Include="SharpDX.Direct2D1">
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.Direct2D1.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="SharpDX.Direct2D1, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\SharpDX.2.6.3\build\..\Bin\DirectX11-Signed-net40\SharpDX.Direct2D1.dll</HintPath>
+    </Reference>
     <Reference Include="SharpDX.Direct3D11">
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.Direct3D11.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="SharpDX.Direct3D11.Effects">
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.Direct3D11.Effects.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="SharpDX.Direct3D9">
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.Direct3D9.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="SharpDX.DXGI">
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.DXGI.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="SharpDX.Toolkit">
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.Toolkit.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="SharpDX.Toolkit.Graphics">
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.Toolkit.Graphics.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

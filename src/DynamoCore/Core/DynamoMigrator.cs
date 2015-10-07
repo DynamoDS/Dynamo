@@ -75,6 +75,14 @@ namespace Dynamo.Core
 
         #region virtual properties
 
+        protected virtual string UserDataDirectory
+        {
+            get
+            {
+                return pathManager.UserDataDirectory;
+            }
+        }
+
         protected virtual string PackagesDirectory
         {
             get
@@ -142,8 +150,10 @@ namespace Dynamo.Core
             using (var fs = new FileStream(this.PreferenceSettingsFilePath, FileMode.Open, FileAccess.Read))
             {
                 settings = serializer.Deserialize(fs) as PreferenceSettings;
+
                 fs.Close(); // Release file lock
             }
+            
             return settings;
         }
 
@@ -156,10 +166,23 @@ namespace Dynamo.Core
         /// /// <returns>new migrator instance after migration</returns>
         protected virtual DynamoMigratorBase MigrateFrom(DynamoMigratorBase sourceMigrator)
         {
-            Copy(sourceMigrator.PackagesDirectory, this.PackagesDirectory);
-            Copy(sourceMigrator.DefinitionsDirectory, this.DefinitionsDirectory);
+            Copy(sourceMigrator.PackagesDirectory, PackagesDirectory);
+            Copy(sourceMigrator.DefinitionsDirectory, DefinitionsDirectory);
 
-            this.PreferenceSettings = sourceMigrator.PreferenceSettings;
+            PreferenceSettings = sourceMigrator.PreferenceSettings;
+            if (PreferenceSettings == null) return this;
+
+            // All preference settings are copied over including custom package folders
+            // However if one of the custom folder locations points to the user data directory
+            // of the previous version, it needs to be replaced with that of the current version
+            var folders = PreferenceSettings.CustomPackageFolders;
+            var indexToReplace = folders.FindIndex(f => f.Contains(sourceMigrator.UserDataDirectory));
+            
+            if (indexToReplace <= -1) return this;
+
+            folders.RemoveAt(indexToReplace);
+            folders.Insert(indexToReplace, UserDataDirectory);
+            
             return this;
         }
 
@@ -174,11 +197,6 @@ namespace Dynamo.Core
         /// <returns>new migrator instance after migration</returns>
         public static DynamoMigratorBase MigrateBetweenDynamoVersions(IPathManager pathManager, IPathResolver pathResolver)
         {
-            // No migration required if the current version is <= version 0.7
-            if (pathManager.MajorFileVersion == 0 &&
-                pathManager.MinorFileVersion <= 7)
-                return null;
-
             var userDataDir = Path.GetDirectoryName(pathManager.UserDataDirectory);
             var versions = GetInstalledVersions(userDataDir).ToList();
             if (versions.Count() < 2)
@@ -186,8 +204,6 @@ namespace Dynamo.Core
 
             var previousVersion = versions[1];
             var currentVersion = versions[0];
-            Debug.Assert(currentVersion.MajorPart == pathManager.MajorFileVersion
-                && currentVersion.MinorPart == pathManager.MinorFileVersion);
 
             return Migrate(pathResolver, previousVersion, currentVersion);
         }
