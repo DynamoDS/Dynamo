@@ -101,7 +101,7 @@ namespace Dynamo.Models
         ///     Definitions for the Input Ports of this NodeModel.
         /// </summary>
         public ObservableCollection<PortData> InPortData { get; private set; }
-
+        
         /// <summary>
         ///     Definitions for the Output Ports of this NodeModel.
         /// </summary>
@@ -392,9 +392,9 @@ namespace Dynamo.Models
         {
             Type type = GetType();
             object[] attribs = type.GetCustomAttributes(typeof(NodeCategoryAttribute), false);
-
+            
             if (type.Namespace != "Dynamo.Nodes" || type.IsAbstract || attribs.Length <= 0
-                || !type.IsSubclassOf(typeof(NodeModel)))
+                || !type.IsSubclassOf(typeof(NodeModel))) 
                 return "";
 
             var elCatAttrib = attribs[0] as NodeCategoryAttribute;
@@ -554,7 +554,7 @@ namespace Dynamo.Models
             get { return displayLabels; }
             set
             {
-                if (displayLabels == value)
+                if (displayLabels == value) 
                     return;
 
                 displayLabels = value;
@@ -609,7 +609,7 @@ namespace Dynamo.Models
         /// <returns></returns>
         public virtual ProtoCore.Type GetTypeHintForOutput(int index)
         {
-            return ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeVar);
+             return ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeVar);
         }
         #endregion
 
@@ -626,7 +626,7 @@ namespace Dynamo.Models
             ShouldDisplayPreviewCore = true;
             executionHint = ExecutionHints.Modified;
 
-            PropertyChanged += delegate (object sender, PropertyChangedEventArgs args)
+            PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
             {
                 switch (args.PropertyName)
                 {
@@ -645,7 +645,7 @@ namespace Dynamo.Models
 
             RaisesModificationEvents = true;
         }
-
+     
         /// <summary>
         ///     Gets the most recent value of this node stored in an EngineController that has evaluated it.
         /// </summary>
@@ -686,7 +686,7 @@ namespace Dynamo.Models
             if (!RaisesModificationEvents)
                 return;
 
-            MarkNodeAsModified(forceExecute);
+            MarkNodeAsModified(forceExecute);           
             var handler = Modified;
             if (handler != null) handler(this);
         }
@@ -758,9 +758,9 @@ namespace Dynamo.Models
                 var fullName = this.GetType().ToString();
                 var astNodeFullName = AstFactory.BuildStringNode(fullName);
                 var arguments = new List<AssociativeNode> { astNodeFullName };
-                var func = AstFactory.BuildFunctionCall(Constants.kNodeAstFailed, arguments);
+                var func = AstFactory.BuildFunctionCall(Constants.kNodeAstFailed, arguments); 
 
-                return new[]
+                return new []
                 {
                     AstFactory.BuildAssignment(AstIdentifierForPreview, func)
                 };
@@ -877,7 +877,7 @@ namespace Dynamo.Models
                 return true;
             }
         }
-
+        
         internal void ConnectInput(int inputData, int outputData, NodeModel node)
         {
             inputNodes[inputData] = Tuple.Create(outputData, node);
@@ -1031,7 +1031,7 @@ namespace Dynamo.Models
             State = ElementState.Error;
             ToolTipText = p;
         }
-
+        
         /// <summary>
         /// Set a warning on a node. 
         /// </summary>
@@ -1121,7 +1121,7 @@ namespace Dynamo.Models
                 //port.DataContext = this;
 
                 portDataDict[port] = pd;
-                count++;
+                count++;            
             }
 
             if (inPorts.Count > count)
@@ -1159,7 +1159,7 @@ namespace Dynamo.Models
                 //port.DataContext = this;
 
                 portDataDict[port] = pd;
-                count++;
+                count++;              
             }
 
             if (outPorts.Count > count)
@@ -1240,7 +1240,7 @@ namespace Dynamo.Models
                     {
                         p = new PortModel(portType, this, data);
 
-                        p.PropertyChanged += delegate (object sender, PropertyChangedEventArgs args)
+                        p.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
                         {
                             if (args.PropertyName == "UsingDefaultValue")
                             {
@@ -1254,7 +1254,7 @@ namespace Dynamo.Models
 
                         InPorts.Add(p);
                     }
-
+                    
                     return p;
 
                 case PortType.Output:
@@ -1379,7 +1379,7 @@ namespace Dynamo.Models
             string name = updateValueParams.PropertyName;
             string value = updateValueParams.PropertyValue;
 
-            switch (name)
+            switch(name)
             {
                 case "NickName":
                     NickName = value;
@@ -1393,7 +1393,7 @@ namespace Dynamo.Models
                     var arr = value.Split(';');
                     for (int i = 0; i < arr.Length; i++)
                     {
-                        var useDef = !bool.Parse(arr[i]);
+                        var useDef = !bool.Parse(arr[i]); 
                         // do not set true, if default value is disabled
                         if (!useDef || InPorts[i].DefaultValueEnabled)
                         {
@@ -1477,8 +1477,8 @@ namespace Dynamo.Models
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            var helper = new XmlElementHelper(nodeElement);
-
+            var helper = new XmlElementHelper(nodeElement); 
+            
             if (context != SaveContext.Copy)
                 GUID = helper.ReadGuid("guid", GUID);
 
@@ -1553,7 +1553,7 @@ namespace Dynamo.Models
         #region Dirty Management
         //TODO: Refactor Property into Automatic with private(?) setter
         //TODO: Add RequestRecalc() method to replace setter --steve
-
+       
         /// <summary>
         /// Execution scenarios for a Node to be re-executed
         /// </summary>
@@ -1581,7 +1581,7 @@ namespace Dynamo.Models
         {
             executionHint = ExecutionHints.Modified;
 
-            if (forceExecute)
+            if(forceExecute)
                 executionHint |= ExecutionHints.ForceExecute;
         }
 
@@ -1597,7 +1597,7 @@ namespace Dynamo.Models
         #endregion
 
         #region Visualization Related Methods
-
+        
         /// <summary>
         /// Call this method to asynchronously update the cached MirrorData for 
         /// this NodeModel through DynamoScheduler. AstIdentifierForPreview is 
@@ -1688,7 +1688,7 @@ namespace Dynamo.Models
             if (task.RenderPackages.Any())
             {
                 var packages = new List<IRenderPackage>();
-
+                
                 packages.AddRange(task.RenderPackages);
                 packages.AddRange(OnRequestRenderPackages());
 
@@ -1794,12 +1794,12 @@ namespace Dynamo.Models
         }
 
         protected bool ShouldDisplayPreviewCore { get; set; }
-
+        
         public event Action<NodeModel, IEnumerable<IRenderPackage>> RenderPackagesUpdated;
 
         private void OnRenderPackagesUpdated(IEnumerable<IRenderPackage> packages)
         {
-            if (RenderPackagesUpdated != null)
+            if(RenderPackagesUpdated != null)
             {
                 RenderPackagesUpdated(this, packages);
             }
@@ -1839,7 +1839,7 @@ namespace Dynamo.Models
         Middle,
         Last
     }
-
+    
     [Flags]
     public enum SnapExtensionEdges
     {
@@ -1851,7 +1851,7 @@ namespace Dynamo.Models
     public delegate void PortsChangedHandler(object sender, EventArgs e);
 
     internal delegate void DispatchedToUIThreadHandler(object sender, UIDispatcherEventArgs e);
-
+    
     public class UIDispatcherEventArgs : EventArgs
     {
         public UIDispatcherEventArgs(Action a)
