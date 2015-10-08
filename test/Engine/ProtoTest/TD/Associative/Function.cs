@@ -442,7 +442,7 @@ test=VectorProperties(null);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void Z002_Defect_1461399_2()
         {
@@ -556,7 +556,13 @@ x = f();
         public void TestDefaultArgumentPointer01()
         {
             string code = @"    
-import(""FFITarget.dll"");def f(p : ClassFunctionality = ClassFunctionality.ClassFunctionality(1)){    return = p.IntVal;}x = f();
+import(""FFITarget.dll"");
+def f(p : ClassFunctionality = ClassFunctionality.ClassFunctionality(1))
+{
+    return = p.IntVal;
+}
+
+x = f();
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 1);
@@ -566,7 +572,15 @@ import(""FFITarget.dll"");def f(p : ClassFunctionality = ClassFunctionality.Cla
         [Test]
         public void TestDefaultArgumentPointer02()
         {
-            string code = @"    import(""FFITarget.dll"");def f (a : DummyPoint = DummyPoint.ByCoordinates(1,2,3)){    return = a.X;}x = f();
+            string code = @"    
+import(""FFITarget.dll"");
+
+def f (a : DummyPoint = DummyPoint.ByCoordinates(1,2,3))
+{
+    return = a.X;
+}
+
+x = f();
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 1);
@@ -575,7 +589,9 @@ import(""FFITarget.dll"");def f(p : ClassFunctionality = ClassFunctionality.Cla
         [Test]
         public void TestDefaultArgumenFFI01()
         {
-            string code = @"    import(""DSCoreNodes.dll"");a = Math.Random();
+            string code = @"    
+import(""DSCoreNodes.dll"");
+a = Math.Random();
 x = (a != null) ? 1 : 0;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -615,7 +631,13 @@ x = f();
         public void TestDefaultArgumentUntyped03()
         {
             string code = @"    
-import(""FFITarget.dll"");def f(p = ClassFunctionality.ClassFunctionality(1)){    return = p.IntVal;}x = f();
+import(""FFITarget.dll"");
+def f(p = ClassFunctionality.ClassFunctionality(1))
+{
+    return = p.IntVal;
+}
+
+x = f();
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 1);
@@ -624,7 +646,15 @@ import(""FFITarget.dll"");def f(p = ClassFunctionality.ClassFunctionality(1)){
         [Test]
         public void TestDefaultArgumentUntyped04()
         {
-            string code = @"    import(""FFITarget.dll"");def f (a = DummyPoint.ByCoordinates(1,2,3)){    return = a.X;}x = f();
+            string code = @"    
+import(""FFITarget.dll"");
+
+def f (a = DummyPoint.ByCoordinates(1,2,3))
+{
+    return = a.X;
+}
+
+x = f();
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 1);

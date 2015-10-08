@@ -216,5 +216,46 @@ Foo.SetID(foo, 41);
             testRunner.RunScriptSource(code);
             testRunner.Verify("id", null);
         }
+        class PropertyChangedVerifier
+        {
+            public PropertyChangedVerifier()
+            {
+                IsNotified = false;
+            }
+            public bool IsNotified
+            {
+                get;
+                set;
+            }
+            public void DSPropertyChanged()
+            {
+                IsNotified = true;
+            }
+        }
+
+        [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassPropertySemantics")]
+        [Category("Failure")]
+        public void RunDSPropertyChangedTest()
+        {
+            string code =
+@"class Foo
+{
+    x;
+}
+f = Foo();
+f.x = 41;
+";
+            runner.PreStart(code);
+            PropertyChangedVerifier v = new PropertyChangedVerifier();
+            // ProtoFFI.FFIPropertyChangedMonitor.GetInstance().RegisterDSPropertyChangedHandler("f", "x", v.DSPropertyChanged);
+
+            DebugRunner.VMState vms;
+            vms = runner.StepOver();
+            vms = runner.StepOver();
+            vms = runner.StepOver();
+            string err = "MAGN-4391: Failed to track property change";
+            Assert.True(v.IsNotified, err);
+        }
     }
 }

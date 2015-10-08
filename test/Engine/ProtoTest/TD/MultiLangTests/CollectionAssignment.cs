@@ -152,7 +152,7 @@ d = [Imperative]
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void T06_Collection_Assignment_Using_Class_2()
         {
@@ -232,7 +232,7 @@ def foo ( a )
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void T09_2D_Collection_Assignment_In_Class_Scope()
         {
@@ -712,7 +712,7 @@ x = createArray ( { 1, 2, 3, 4 } );
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_InvalidTest_NoVerification")]
+        [Ignore][Category("DSDefinedClass_Ignored_InvalidTest_NoVerification")]
         [Category("SmokeTest")]
         public void T24_Dynamic_Array_Accessing_Out_Of_Bound_Index()
         {
@@ -812,7 +812,7 @@ p = 4;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void T24_Dynamic_Array_Class_Scope_2()
         {
@@ -857,7 +857,7 @@ b3 = a.Count1;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T24_Dynamic_Array_Class_Scope_3()
         {
@@ -1198,7 +1198,7 @@ x = add(); //x = {{0,0},{1,1,1},{2,2,2,2}}
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T25_Adding_elements_tomemberofclass_1465704_2()
         {
@@ -1315,7 +1315,7 @@ z = add(x);
 
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("SmokeTest")]
         public void T25_Adding_elements_tomemberofclass_1465704_6()
         {
@@ -1574,7 +1574,7 @@ c = [Imperative]
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("Variable resolution")]
         [Category("Failure")]
         public void T26_Defct_DNL_1459616_5()
@@ -1736,7 +1736,7 @@ t2 = CreateArray(  count );
 
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("SmokeTest")]
         public void T27_defect_1464429_DynamicArray_class_inherit()
         {
@@ -1914,7 +1914,7 @@ aa = pts[null].IntVal;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T27_DynamicArray_Invalid_Index_1467104_2()
         {
             string code = @"
@@ -1940,7 +1940,7 @@ aa = pts[null].x[null];
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T27_DynamicArray_Invalid_Index_1467104_3()
         {
             string code = @"
@@ -2241,7 +2241,7 @@ e1 = c[2].IntVal;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void T41_Accessing_Non_Existent_Property_FromArray_1467083_3()
         {
@@ -2359,7 +2359,7 @@ s=c[0].IntVal[0];// access non array variable as if its array ";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T61_Assign_Non_Existent_Array_Properties_1467082_4()
         {
@@ -2591,7 +2591,7 @@ c=test(d);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T62_Create_Dynamic_Array_OnTheFly_inaClass_methodoverload()
         {
@@ -2643,7 +2643,7 @@ a=test(d);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void T63_Dynamic_array_onthefly_argument_class__1467139()
         {
@@ -3665,7 +3665,7 @@ test = foo().IntVal;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T55_DictionaryKeyinClass()
         {
 
@@ -3693,7 +3693,7 @@ test = foo().IntVal;
 
         }
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T56_DictionaryKeyinClass_2()
         {
 
@@ -3722,7 +3722,7 @@ test = foo().IntVal;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void T57_DictionaryKeyinClass_inheritance()
         {
 
@@ -3760,7 +3760,7 @@ test = foo().IntVal;
 
         }
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void T58_DictionaryKeyinClass_inheritance2()
         {
 
