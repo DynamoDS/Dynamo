@@ -491,23 +491,30 @@ namespace Dynamo.ViewModels
             BackgroundPreviewViewModel = watch3DViewModel;
             Watch3DViewModels.Add(watch3DViewModel);
             watch3DViewModel.PropertyChanged += Watch3DViewModelPropertyChanged;
-            CurrentSpace.CreateInputNode += CurrentSpace_CreateInputNode;
+            //CurrentSpace.CreateInputNode += CurrentSpace_CreateInputNode;
         }
 
         private void CurrentSpace_CreateInputNode(NodeModel node1, NodeModel node2, int portIndex1, int portIndex2)
         {
-            ExecuteCommand(new DynamoModel.CreateNodeCommand(node1, 0, 0, true, true));
+            var command = new DynamoModel.CreateNodeCommand(node1, 0, 0, true, true);
+            //ExecuteCommand(command);
+            //if (null != this.automationSettings)
+            //    this.automationSettings.RecordCommand(command);
+
+            //if (Model.DebugSettings.VerboseLogging)
+            //    model.Logger.Log("Command: " + command);
+
+            model.AddNodeToCurrentWorkspace(node1, centered: command.DefaultPosition, addToSelection:false);
+            CurrentSpace.RecordCreatedModel(node1);
+            //////////////////////////////////////////////////
             
             var mode = DynamoModel.MakeConnectionCommand.Mode.Begin;
-            var command = new DynamoModel.MakeConnectionCommand(node1.GUID, portIndex1, PortType.Output, mode);
-            ExecuteCommand(command);
+            var cmd = new DynamoModel.MakeConnectionCommand(node1.GUID, portIndex1, PortType.Output, mode);
+            ExecuteCommand(cmd);
 
             mode = DynamoModel.MakeConnectionCommand.Mode.End;
-            command = new DynamoModel.MakeConnectionCommand(node2.GUID, portIndex2, PortType.Input, mode);
-            ExecuteCommand(command);
-
-            DynamoSelection.Instance.ClearSelection();
-            DynamoSelection.Instance.Selection.Add(node2);
+            cmd = new DynamoModel.MakeConnectionCommand(node2.GUID, portIndex2, PortType.Input, mode);
+            ExecuteCommand(cmd);
         }
 
         private void RenderPackageFactoryViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -808,6 +815,7 @@ namespace Dynamo.ViewModels
                 case "CurrentWorkspace":
                     RaisePropertyChanged("IsAbleToGoHome");
                     RaisePropertyChanged("CurrentSpace");
+                    CurrentSpace.CreateInputNode += CurrentSpace_CreateInputNode;
                     RaisePropertyChanged("BackgroundColor");
                     RaisePropertyChanged("CurrentWorkspaceIndex");
                     RaisePropertyChanged("ViewingHomespace");

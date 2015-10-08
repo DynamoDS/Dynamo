@@ -2360,8 +2360,20 @@ namespace Dynamo.Models
 
         public void OnCreateInputNode(NodeModel node1, NodeModel node2, int portIndex1, int portIndex2)
         {
+            //var command = new DynamoModel.CreateNodeCommand(node1, 0, 0, true, true);
+            //AddAndRegisterNode(node1, command.DefaultPosition);
+            //RecordCreatedModel(node1);
+
+            //DynamoSelection.Instance.ClearSelection();
+            //DynamoSelection.Instance.Selection.Add(node2);
+
             var handler = CreateInputNode;
             if (handler != null) handler(node1, node2, portIndex1, portIndex2);
+        }
+
+        public void RecordModelForModification(ModelBase nodeModel)
+        {
+            RecordModelForModification(nodeModel, undoRecorder);
         }
     }
 }
