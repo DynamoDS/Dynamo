@@ -58,15 +58,15 @@ namespace DSCore
             var pairs = list.Cast<object>()
                     .Zip(keys.Cast<object>(), (item, key) => new { item, key });
 
-            var numberKeyPairs = pairs.Where(pair => pair.key is double || pair.key is int);
-            var stringKeyPairs = pairs.Except(numberKeyPairs);
+            var numberKeyPairs = pairs.Where(pair => pair.key is double || pair.key is int || pair.key is double);
+            var keyPairs = pairs.Except(numberKeyPairs);
 
             // Sort.
-            numberKeyPairs = numberKeyPairs.OrderBy(pair => Convert.ToInt64(pair.key));
-            stringKeyPairs = stringKeyPairs.OrderBy(pair => pair.key);
+            numberKeyPairs = numberKeyPairs.OrderBy(pair => Convert.ToDouble(pair.key));
+            keyPairs = keyPairs.OrderBy(pair => pair.key);
 
             // First items with number keys, then items with letter keys.
-            var sortedPairs = numberKeyPairs.Concat(stringKeyPairs);
+            var sortedPairs = numberKeyPairs.Concat(keyPairs);
 
             var sortedList = sortedPairs.Select(x => x.item);
             var sortedKeys = sortedPairs.Select(x => x.key);
