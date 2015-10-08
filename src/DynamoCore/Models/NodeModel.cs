@@ -1620,10 +1620,13 @@ namespace Dynamo.Models
             asyncTask.Completed -= QueryMirrorDataAsyncTaskCompleted;
 
             var task = asyncTask as QueryMirrorDataAsyncTask;
-            if (task != null)
+            if (task == null)
             {
-                this.CachedValue = task.MirrorData;
+                throw new InvalidOperationException("Expected a " + typeof(QueryMirrorDataAsyncTask).Name 
+                    + ", but got a " + asyncTask.GetType().Name );
             }
+
+            this.CachedValue = task.MirrorData;
         }
 
         /// <summary>
