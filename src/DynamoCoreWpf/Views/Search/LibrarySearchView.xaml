@@ -81,7 +81,7 @@
 
                                         <!-- Node description -->
                                         <TextBlock Name="memberDescription"
-                                                   FontSize="10"
+                                                   FontSize="11"
                                                    MaxHeight="50"
                                                    Text="{Binding Description}"
                                                    Foreground="{StaticResource SearchDarkGreyTextColor}"
@@ -148,7 +148,7 @@
         <ListBox  Name="SearchResults"
                   Background="{StaticResource LibraryItemHostBackground}"
                   BorderThickness="0"
-                  ItemsSource="{Binding SearchResults}"
+                  ItemsSource="{Binding FilteredResults}"
                   ItemTemplate="{StaticResource SearchItemTemplate}"
                   ItemContainerStyle="{StaticResource SearchItemStyle}"
                   VirtualizingStackPanel.VirtualizationMode="Recycling" />
