@@ -255,7 +255,7 @@ namespace Dynamo.Models
         /// Called when a node is added to the workspace and event handlers are to be added
         /// </summary>
         /// <param name="node">The node itself</param>
-        protected virtual void RegisterNode(NodeModel node)
+        protected override void RegisterNode(NodeModel node)
         {
             base.RegisterNode(node);
 
@@ -266,11 +266,11 @@ namespace Dynamo.Models
         /// Called when a node is disposed and removed from the workspace
         /// </summary>
         /// <param name="node">The node itself</param>
-        protected virtual void DisposeNode(NodeModel node)
+        protected override void DisposeNode(NodeModel node)
         {
-            base.DisposeNode(node);
-
             node.RequestSilenceNodeModifiedEvents -= NodeOnRequestSilenceNodeModifiedEvents;
+
+            base.DisposeNode(node);
         }
 
         /// <summary>

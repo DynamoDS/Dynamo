@@ -810,7 +810,7 @@ namespace Dynamo.Models
             DisposeNode(model);
         }
 
-        protected void DisposeNode(NodeModel model)
+        protected virtual void DisposeNode(NodeModel model)
         {
             model.ConnectorAdded -= OnConnectorAdded;
             model.Modified -= NodeModified;
