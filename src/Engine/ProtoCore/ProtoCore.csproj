@@ -183,7 +183,6 @@
     <Compile Include="FFI\FFICppFunction.cs" />
     <Compile Include="FFI\FFIHandler.cs" />
     <Compile Include="FFI\PInvokeFFI.cs" />
-    <Compile Include="LangVerify.cs" />
     <Compile Include="Lang\FFIFunctionEndPoint.cs" />
     <Compile Include="Lang\FunctionTable.cs" />
     <Compile Include="Lang\JILFunctionEndPoint.cs" />
