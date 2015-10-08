@@ -491,7 +491,7 @@ namespace Dynamo.ViewModels
             BackgroundPreviewViewModel = watch3DViewModel;
             Watch3DViewModels.Add(watch3DViewModel);
             watch3DViewModel.PropertyChanged += Watch3DViewModelPropertyChanged;
-            //CurrentSpace.CreateInputNode += CurrentSpace_CreateInputNode;
+            CurrentSpace.CreateInputNode += CurrentSpace_CreateInputNode;
         }
 
         private void CurrentSpace_CreateInputNode(NodeModel node1, NodeModel node2, int portIndex1, int portIndex2)
