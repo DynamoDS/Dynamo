@@ -46,6 +46,10 @@ namespace Dynamo.Wpf.ViewModels
         /// </summary>
         public ICommand ClickCommand { get; private set; }
 
+        /// <summary>
+        /// Creates search category, it's used in Search UI to filter nodes.
+        /// </summary>
+        /// <param name="title">name of category, e.g. Core, BuiltIn etc.</param>
         public SearchCategory(string title)
         {
             name = title;
