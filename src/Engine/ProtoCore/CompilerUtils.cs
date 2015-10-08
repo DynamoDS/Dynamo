@@ -106,14 +106,6 @@ namespace ProtoCore.Utils
             this.ElementResolver = elementResolver;
         }
 
-        public void AppendTemporaryVariable(string variable)
-        {
-            if (this.temporaries == null)
-                this.temporaries = new List<string>();
-
-            this.temporaries.Add(variable);
-        }
-
         public void AppendUnboundIdentifier(string displayName, string identifier)
         {
             if (this.unboundIdentifiers == null)
@@ -450,15 +442,6 @@ namespace ProtoCore.Utils
                 }
             }
             return astNodes;
-        }
-
-        private static bool IsNotAssigned(string code)
-        {
-            code = code.Trim(';', ' ');
-            if (string.IsNullOrEmpty(code))
-                return true;
-            bool hasLHS = code.Contains("=");
-            return hasLHS;
         }
 
         private static void GetInputLines(IEnumerable<Node> astNodes,
