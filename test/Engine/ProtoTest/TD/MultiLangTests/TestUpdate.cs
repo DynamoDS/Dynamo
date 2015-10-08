@@ -7,15 +7,12 @@ namespace ProtoTest.TD.MultiLangTests
 {
     class TestUpdate : ProtoTestBase
     {
-        ProtoScript.Config.RunConfiguration runnerConfig;
         string testPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
         ProtoScript.Runners.DebugRunner fsr;
 
         public override void Setup()
         {
             base.Setup();
-            runnerConfig = new ProtoScript.Config.RunConfiguration();
-            runnerConfig.IsParrallel = false;
             fsr = new ProtoScript.Runners.DebugRunner(core);
         }
 
@@ -1884,7 +1881,7 @@ b = {
         public void T27_Modifier_Stack_Update()
         {
             string src = string.Format("{0}{1}", testPath, "T27_Modifier_Stack_Update.ds");
-            fsr.LoadAndPreStart(src, runnerConfig);
+            fsr.LoadAndPreStart(src);
             ProtoCore.CodeModel.CodePoint cp1 = new ProtoCore.CodeModel.CodePoint
             {
                 CharNo = 8,
@@ -3357,7 +3354,6 @@ t[1] = a[1];
 
         [Test]
         [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
->>>>>>> 3a01d2d0d98af116efdc619bd9734fe8b8d3c179
         [Category("Update")]
         public void T46_Defect_1467275_3()
         {

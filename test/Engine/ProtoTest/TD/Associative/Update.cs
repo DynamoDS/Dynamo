@@ -8,15 +8,12 @@ namespace ProtoTest.TD.Associative
 {
     class Update : ProtoTestBase
     {
-        ProtoScript.Config.RunConfiguration runnerConfig;
         ProtoScript.Runners.DebugRunner fsr;
         string importPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
 
         public override void Setup()
         {
             base.Setup();
-            runnerConfig = new ProtoScript.Config.RunConfiguration();
-            runnerConfig.IsParrallel = false;
             fsr = new DebugRunner(core);
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             DLLFFIHandler.Register(FFILanguage.CPlusPlus, new ProtoFFI.PInvokeModuleHelper());

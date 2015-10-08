@@ -13,14 +13,11 @@ namespace ProtoTest.TD.MultiLangTests
 {
     class StringTest : ProtoTestBase
     {
-        ProtoScript.Config.RunConfiguration runnerConfig;
         ProtoScript.Runners.DebugRunner fsr;
 
         public override void Setup()
         {
             base.Setup();
-            runnerConfig = new ProtoScript.Config.RunConfiguration();
-            runnerConfig.IsParrallel = false;
             fsr = new ProtoScript.Runners.DebugRunner(core);
         }
 

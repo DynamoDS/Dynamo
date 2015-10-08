@@ -55,13 +55,10 @@ namespace ProtoTest.EventTests
     class PropertyChangedNotifyTest : ProtoTestBase
     {
         private DebugRunner runner;
-        private ProtoScript.Config.RunConfiguration runconfig;
 
         public override void Setup()
         {
             base.Setup();
-            runconfig = new ProtoScript.Config.RunConfiguration();
-            runconfig.IsParrallel = false;
             runner = new DebugRunner(core);
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();
@@ -89,7 +86,7 @@ foo = Foo.GetInstance();
 id = foo.ID;                           
 t = 1;                                
 ";
-            runner.PreStart(code, runconfig);
+            runner.PreStart(code);
             Foo fooSingleton = Foo.GetInstance();
             fooSingleton.ID = 101;
             DebugRunner.VMState vms = runner.StepOver();
@@ -125,7 +122,7 @@ id = foo.ID;
 r = ding();
 t = 1;                                
 ";
-            runner.PreStart(code, runconfig);
+            runner.PreStart(code);
             Foo fooSingleton = Foo.GetInstance();
             fooSingleton.ID = 101;
             DebugRunner.VMState vms;
@@ -158,7 +155,7 @@ id1 = foo.ID;
 id2 = bar.ID;
 t = 1;                         
 ";
-            runner.PreStart(code, runconfig);
+            runner.PreStart(code);
             Foo fooSingleton = Foo.GetInstance();
             fooSingleton.ID = 101;
             DebugRunner.VMState vms;
@@ -230,7 +227,7 @@ Foo.SetID(foo, 41);
                 get;
                 set;
             }
-            public void DSPropertyChanged(ProtoFFI.DSPropertyChangedEventArgs args)
+            public void DSPropertyChanged()
             {
                 IsNotified = true;
             }
@@ -249,7 +246,7 @@ Foo.SetID(foo, 41);
 f = Foo();
 f.x = 41;
 ";
-            runner.PreStart(code, runconfig);
+            runner.PreStart(code);
             PropertyChangedVerifier v = new PropertyChangedVerifier();
             // ProtoFFI.FFIPropertyChangedMonitor.GetInstance().RegisterDSPropertyChangedHandler("f", "x", v.DSPropertyChanged);
 
