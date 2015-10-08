@@ -248,6 +248,7 @@ namespace Dynamo.ViewModels
         private void InitializeCore()
         {
             searchResults = new List<NodeSearchElementViewModel>();
+            filteredResults = new List<NodeSearchElementViewModel>();
             searchCategories = new List<SearchCategory>();
 
             Visible = false;
