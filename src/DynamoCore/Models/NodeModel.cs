@@ -42,15 +42,15 @@ namespace Dynamo.Models
         private string description;
         private string persistentWarning = "";
 
-        // Data caching related class members. There are multiple parties at
-        // play when it comes to caching MirrorData for a NodeModel, this value
-        // is accessed from UI thread for display (e.g. preview bubble) and it's
-        // updated by QueryMirrorDataAsyncTask on ISchedulerThread's context. 
-        // Access to the cached data is guarded by cachedMirrorDataMutex object.
-        // 
-        private bool isUpdated;
-        private MirrorData cachedMirrorData;
-        private readonly object cachedMirrorDataMutex = new object();
+        /// <summary>
+        /// The cached value of this node. The cachedValue object is protected by the cachedValueMutex
+        /// as it may be accessed from multiple threads concurrently. 
+        /// 
+        /// However, generally access to the cachedValue property should be protected by usage
+        /// of the Scheduler. 
+        /// </summary>
+        private MirrorData cachedValue;
+        private readonly object cachedValueMutex = new object();
 
         // Input and output port related data members.
         private ObservableCollection<PortModel> inPorts = new ObservableCollection<PortModel>();
@@ -401,14 +401,30 @@ namespace Dynamo.Models
             return elCatAttrib.ElementCategory;
         }
 
+        /// <summary>
+        /// The value of this node after the most recent computation
+        /// 
+        /// As this property could be modified by the virtual machine, it's dangerous 
+        /// to access this value without using the active Scheduler. Use the Scheduler to 
+        /// remove the possibility of race conditions.
+        /// </summary>
         public MirrorData CachedValue
         {
             get
             {
-                lock (cachedMirrorDataMutex)
+                lock (cachedValueMutex)
                 {
-                    return cachedMirrorData;
+                    return cachedValue;
                 }
+            }
+            private set
+            {
+                lock (cachedValueMutex)
+                {
+                    cachedValue = value;
+                }
+
+                RaisePropertyChanged("CachedValue");
             }
         }
 
@@ -427,46 +443,28 @@ namespace Dynamo.Models
         /// 
         internal MirrorData GetCachedValueFromEngine(EngineController engine)
         {
-            if (cachedMirrorData != null)
-                return cachedMirrorData;
+            if (cachedValue != null)
+                return cachedValue;
 
             // Do not have an identifier for preview right now. For an example,
             // this can be happening at the beginning of a code block node creation.
             if (AstIdentifierForPreview.Value == null)
                 return null;
 
-            cachedMirrorData = null;
+            cachedValue = null;
 
             var runtimeMirror = engine.GetMirror(AstIdentifierForPreview.Value);
 
             if (runtimeMirror != null)
-                cachedMirrorData = runtimeMirror.GetData();
+                cachedValue = runtimeMirror.GetData();
 
-            return cachedMirrorData;
+            return cachedValue;
         }
 
         /// <summary>
-        ///     If the node is updated in LiveRunner's execution
+        /// Use to indicated if a node was involved in the most recent graph evaluation.
         /// </summary>
-        public bool IsUpdated
-        {
-            get { return isUpdated; }
-            set
-            {
-                isUpdated = value;
-                if (isUpdated)
-                {
-                    // When a NodeModel is updated, its
-                    // cached data should be invalidated.
-                    lock (cachedMirrorDataMutex)
-                    {
-                        cachedMirrorData = null;
-                    }
-                }
-
-                RaisePropertyChanged("IsUpdated");
-            }
-        }
+        internal bool WasInvolvedInExecution { get; set; }
 
         /// <summary>
         ///     Search tags for this Node.
@@ -1611,9 +1609,9 @@ namespace Dynamo.Models
             // requested to update its value. When the QueryMirrorDataAsyncTask 
             // returns, it will update cachedMirrorData with the latest value.
             // 
-            lock (cachedMirrorDataMutex)
+            lock (cachedValueMutex)
             {
-                cachedMirrorData = null;
+                cachedValue = null;
             }
 
             // Do not have an identifier for preview right now. For an example,
@@ -1629,19 +1627,22 @@ namespace Dynamo.Models
                 VariableName = variableName
             });
 
-            task.Completed += OnNodeValueQueried;
+            task.Completed += QueryMirrorDataAsyncTaskCompleted;
             scheduler.ScheduleForExecution(task);
         }
 
-        private void OnNodeValueQueried(AsyncTask asyncTask)
+        private void QueryMirrorDataAsyncTaskCompleted(AsyncTask asyncTask)
         {
-            lock (cachedMirrorDataMutex)
+            asyncTask.Completed -= QueryMirrorDataAsyncTaskCompleted;
+
+            var task = asyncTask as QueryMirrorDataAsyncTask;
+            if (task == null)
             {
-                var task = asyncTask as QueryMirrorDataAsyncTask;
-                cachedMirrorData = task.MirrorData;
+                throw new InvalidOperationException("Expected a " + typeof(QueryMirrorDataAsyncTask).Name 
+                    + ", but got a " + asyncTask.GetType().Name );
             }
 
-            RaisePropertyChanged("IsUpdated");
+            this.CachedValue = task.MirrorData;
         }
 
         /// <summary>
