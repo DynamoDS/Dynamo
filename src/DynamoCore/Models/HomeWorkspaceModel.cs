@@ -527,7 +527,7 @@ namespace Dynamo.Models
                 // Reset node states
                 foreach (var node in Nodes)
                 {
-                    node.IsUpdated = false;
+                    node.WasInvolvedInExecution = false;
                 }
 
                 // The workspace has been built for the first time

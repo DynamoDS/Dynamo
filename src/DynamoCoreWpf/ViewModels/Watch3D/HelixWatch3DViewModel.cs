@@ -502,13 +502,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             switch (e.PropertyName)
             {
                 case "CachedValue":
-                    // Only request updates when this is true. All nodes are marked IsUpdated=false
-                    // before an evaluation occurs.
-
-                    if (node.IsUpdated)
-                    {
-                        node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
-                    }
+                    node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
                     break;
 
                 case "DisplayLabels":
