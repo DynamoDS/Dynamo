@@ -1303,7 +1303,7 @@ import(""FFITarget.dll"");
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("Type System")]
         public void TS37_userdefinedTo_null()
         {
@@ -1333,7 +1333,8 @@ import(""FFITarget.dll"");
         public void TS038_eachType_To_Userdefined()
         {
             string code =
-                @"import(""FFITarget.dll"");    
+                @"
+import(""FFITarget.dll"");    
                             a:A= 1;//
                             b:A= -0.1; //
                             c:A= ""1.5""; //false
@@ -1392,7 +1393,7 @@ import(""FFITarget.dll"");
 
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         public void TS038_return_single_AlltypeTo_UserDefined()
         {
@@ -1428,7 +1429,7 @@ import(""FFITarget.dll"");
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         public void TS039_userdefined_covariance()
         {
@@ -1470,7 +1471,7 @@ import(""FFITarget.dll"");
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         public void TS039_userdefined_covariance_2()
         {
@@ -1574,7 +1575,8 @@ import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""FFITarget.dll"");
+import(""FFITarget.dll"");
+
                     a:double= null; 
                     b:int =  null; 
                     c:string=null; 
@@ -1617,7 +1619,8 @@ import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""FFITarget.dll"");
+import(""FFITarget.dll"");
+
                     a:double[]= {1,2,3}; 
                     
                     b:int[] =  {1,2,3}; 
@@ -2869,7 +2872,7 @@ import(""FFITarget.dll"");
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         public void TS074_Param_singleton_AlltypeTo_UserDefinedArray()
         {
@@ -2906,7 +2909,7 @@ import(""FFITarget.dll"");
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         public void TS075_return_singleton_AlltypeTo_UserDefinedArray()
         {
@@ -2941,7 +2944,7 @@ import(""FFITarget.dll"");
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         public void TS076_UserDefinedCovariance_ArrayPromotion()
         {
@@ -3856,7 +3859,8 @@ import(""FFITarget.dll"");
         public void TS094_Param_notypedefined_single_Userdefined()
         {
             string code =
-                    @"import(""FFITarget.dll"");
+                    @"
+import(""FFITarget.dll"");
                         def foo (x : ClassFunctionality)
                         {
                             b  : ClassFunctionality = x;
@@ -5721,7 +5725,7 @@ import(""FFITarget.dll"");
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("Type System")]
         public void TS0184_TypeConversion_1467352()
         {
@@ -6079,7 +6083,7 @@ import(""FFITarget.dll"");
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS0197_getter_dotoperator_1467419()

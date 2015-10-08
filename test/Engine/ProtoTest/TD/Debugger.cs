@@ -27,7 +27,7 @@ namespace ProtoTest.TD
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("Debugger")]
         public void T001_SampleTest()
         {
@@ -70,7 +70,7 @@ namespace ProtoTest.TD
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("Failure")]
         public void Defect_1467570_Crash_In_Debug_Mode()
         {
@@ -124,7 +124,7 @@ myNeTwst = myTest.Transform(1);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void Defect_1467584_Crash_In_Debug_Mode()
         {
             string src = @" 
@@ -152,7 +152,7 @@ x = edges.AddVertices();
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void Defect_1467584_Crash_In_Debug_Mode_2()
         {
             string src = @" 
@@ -179,8 +179,8 @@ x = edges.AddVertices();
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Category("ProtoGeometry")][Category("PortToCodeBlocks")]
         public void Defect_1467584_Crash_In_Debug_Mode_3()
         {
             string src = @"
@@ -351,8 +351,8 @@ check;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Category("ProtoGeometry")][Category("PortToCodeBlocks")]
         public void Defect_1467584_Crash_In_Debug_Mode_4()
         {
             string src = @" 
@@ -524,7 +524,7 @@ check;
 
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void Defect_1467584_Crash_In_Debug_Mode_5()
         {
             string src = @" 
@@ -551,7 +551,7 @@ x = edges.AddVertices(0..1);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void Defect_1467584_Crash_In_Debug_Mode_6()
         {
             string src = @" 
@@ -578,7 +578,7 @@ x = edges.AddVertices(0..1);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void Defect_1467584_Crash_In_Debug_Mode_7()
         {
             string src = @" 
@@ -611,7 +611,7 @@ x = edges.AddVertices(0..2);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void Defect_IDE_884_UsingBangInsideImperative_1()
         {
             string src = @" 
@@ -635,7 +635,7 @@ test1 = test.foo();
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void Defect_IDE_884_UsingBangInsideImperative_2()
         {
             string src = @" 
@@ -659,7 +659,7 @@ b = p.foo();
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void Defect_IDE_884_UsingBangInsideImperative_3()
         {
             string src = @" 
@@ -683,7 +683,7 @@ b = p.foo();
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("WatchFx Tests")]
         public void T002_Defect_1467629_Debugging_InlineCondition_With_Multiple_Return_Types()
         {
@@ -712,9 +712,9 @@ c = 1;";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         [Category("WatchFx Tests")]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("ProtoGeometry")][Category("PortToCodeBlocks")]
         public void T003_Defect_1467629_Debugging_InlineCondition_With_Multiple_Return_Types()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
