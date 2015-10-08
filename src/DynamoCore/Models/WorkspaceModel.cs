@@ -57,9 +57,6 @@ namespace Dynamo.Models
         /// </summary>
         internal static readonly int PasteOffsetMax = 60;
 
-        private const double VerticalGraphDistance = 30;
-        private const double HorizontalGraphDistance = 70;
-
         private string fileName;
         private string name;
         private double height = 100;
@@ -1032,7 +1029,7 @@ namespace Dynamo.Models
 
                 if (nd != null)
                 {
-                    nd.LinkedNotes.Add(note);
+                    nd.LinkNote(note, note.Width, note.Height);
                 }
             }
         }
@@ -1170,7 +1167,7 @@ namespace Dynamo.Models
                         // The first subgraph's center point must be higher than the second subgraph
                         if (!g1.Equals(g2) && (g1.GraphCenterY + g1.OffsetY <= g2.GraphCenterY + g2.OffsetY))
                         {
-                            var g1nodes = g1.Nodes.OrderBy(n => n.Y + n.Height);
+                            var g1nodes = g1.Nodes.OrderBy(n => n.Y + n.TotalHeight);
                             var g2nodes = g2.Nodes.OrderBy(n => n.Y);
 
                             foreach (var node1 in g1nodes)
@@ -1178,9 +1175,9 @@ namespace Dynamo.Models
                                 foreach (var node2 in g2nodes)
                                 {
                                     // If any two nodes from these two different subgraphs overlap
-                                    if ((node1.Y + node1.Height + VerticalGraphDistance + g1.OffsetY > node2.Y + g2.OffsetY) &&
-                                        (((node1.X <= node2.X) && (node1.X + node1.Width + HorizontalGraphDistance > node2.X)) ||
-                                        ((node2.X <= node1.X) && (node2.X + node2.Width + HorizontalGraphDistance > node1.X))))
+                                    if ((node1.Y + node1.TotalHeight + GraphLayout.Graph.VerticalNodeDistance + g1.OffsetY > node2.Y + g2.OffsetY) &&
+                                        (((node1.X <= node2.X) && (node1.X + node1.Width + GraphLayout.Graph.HorizontalNodeDistance > node2.X)) ||
+                                        ((node2.X <= node1.X) && (node2.X + node2.Width + GraphLayout.Graph.HorizontalNodeDistance > node1.X))))
                                     {
                                         // Shift the first subgraph to the top and the second subgraph to the bottom
                                         g1.OffsetY -= 5;
@@ -1212,14 +1209,13 @@ namespace Dynamo.Models
                 if (graph != null)
                 {
                     GraphLayout.Node n = graph.FindNode(group.GUID);
-                    double offsetY = graph.OffsetY;
 
                     double deltaX = n.X - group.X;
-                    double deltaY = n.Y - group.Y;
+                    double deltaY = n.Y - group.Y + graph.OffsetY;
                     foreach (var node in group.SelectedModels.OfType<NodeModel>())
                     {
                         node.X += deltaX;
-                        node.Y += deltaY + offsetY;
+                        node.Y += deltaY;
                         node.ReportPosition();
                     }
 
@@ -1228,7 +1224,7 @@ namespace Dynamo.Models
                         if (note.IsSelected || DynamoSelection.Instance.Selection.Count == 0)
                         {
                             note.X += deltaX;
-                            note.Y += deltaY + offsetY;
+                            note.Y += deltaY;
                             note.ReportPosition();
                         }
                     }
@@ -1246,20 +1242,19 @@ namespace Dynamo.Models
                     GraphLayout.Node n = graph.FindNode(node.GUID);
                     double offsetY = graph.OffsetY;
 
-                    double deltaX = n.X - node.X;
-                    double deltaY = n.Y - node.Y;
-
                     node.X = n.X;
-                    node.Y = n.Y + offsetY;
+                    node.Y = n.Y + n.NotesHeight + offsetY;
                     node.ReportPosition();
                     HasUnsavedChanges = true;
 
+                    double noteOffset = -n.NotesHeight;
                     foreach (NoteModel note in n.LinkedNotes)
                     {
                         if (note.IsSelected || DynamoSelection.Instance.Selection.Count == 0)
                         {
-                            note.X += deltaX;
-                            note.Y += deltaY + offsetY;
+                            note.X = node.X;
+                            note.Y = node.Y + noteOffset;
+                            noteOffset += note.Height + GraphLayout.Graph.VerticalNoteDistance;
                             note.ReportPosition();
                         }
                     }
