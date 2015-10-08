@@ -147,15 +147,15 @@ namespace Dynamo.Models
             DynamoScheduler scheduler, 
             NodeFactory factory,
             IEnumerable<KeyValuePair<Guid, List<string>>> traceData, 
-            IEnumerable<NodeModel> e, 
-            IEnumerable<NoteModel> n, 
-            IEnumerable<AnnotationModel> a,
+            IEnumerable<NodeModel> nodes, 
+            IEnumerable<NoteModel> notes, 
+            IEnumerable<AnnotationModel> annotations,
             IEnumerable<PresetModel> presets,
             ElementResolver resolver,
             WorkspaceInfo info, 
             bool verboseLogging,
             bool isTestMode)
-            : base(e, n,a, info, factory,presets, resolver)
+            : base(nodes, notes,annotations, info, factory,presets, resolver)
         {
             EvaluationCount = 0;
 
@@ -189,7 +189,6 @@ namespace Dynamo.Models
                 copiedData.Add(new KeyValuePair<Guid, List<string>>(kvp.Key, strings));
             }
             historicalTraceData = copiedData;
-
         }
 
         #endregion
@@ -197,6 +196,7 @@ namespace Dynamo.Models
         public override void Dispose()
         {
             base.Dispose();
+
             if (EngineController != null)
             {
                 EngineController.MessageLogged -= Log;
@@ -237,6 +237,10 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// Called when a Node is modified in the workspace
+        /// </summary>
+        /// <param name="node">The node itself</param>
         protected override void NodeModified(NodeModel node)
         {
             base.NodeModified(node);
@@ -245,6 +249,38 @@ namespace Dynamo.Models
             {
                 RequestRun();
             }
+        }
+
+        /// <summary>
+        /// Called when a node is added to the workspace and event handlers are to be added
+        /// </summary>
+        /// <param name="node">The node itself</param>
+        protected override void RegisterNode(NodeModel node)
+        {
+            base.RegisterNode(node);
+
+            node.RequestSilenceNodeModifiedEvents += NodeOnRequestSilenceNodeModifiedEvents;
+        }
+
+        /// <summary>
+        /// Called when a node is disposed and removed from the workspace
+        /// </summary>
+        /// <param name="node">The node itself</param>
+        protected override void DisposeNode(NodeModel node)
+        {
+            node.RequestSilenceNodeModifiedEvents -= NodeOnRequestSilenceNodeModifiedEvents;
+
+            base.DisposeNode(node);
+        }
+
+        /// <summary>
+        /// Called when the RequestSilenceNodeModifiedEvents event is emitted from a Node
+        /// </summary>
+        /// <param name="node">The node itself</param>
+        /// <param name="value">A boolean value indicating whether to silence or not</param>
+        private void NodeOnRequestSilenceNodeModifiedEvents(NodeModel _, bool value)
+        {
+            this.silenceNodeModifications = value;
         }
 
         #region Public Operational Methods
