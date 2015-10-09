@@ -128,9 +128,6 @@ namespace ProtoAssociative
             }
             catch (ProtoCore.BuildHaltException)
             {
-#if DEBUG
-                //core.BuildStatus.LogSemanticError(e.errorMsg);
-#endif
             }
 
             buildSucceeded = core.BuildStatus.BuildSucceeded;

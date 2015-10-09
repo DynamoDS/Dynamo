@@ -127,8 +127,6 @@
     <Compile Include="DSASM\InstructionSet.cs" />
     <Compile Include="DSASM\Mirror\ExecutionMirror.cs" />
     <Compile Include="Exceptions\CompilerInternalException.cs" />
-    <Compile Include="Exceptions\ExceptionHandling.cs" />
-    <Compile Include="Exceptions\MethodResolution.cs" />
     <Compile Include="Exceptions\ReplicationException.cs" />
     <Compile Include="FFI\ContextData.cs" />
     <Compile Include="FFI\ContextDataManager.cs" />
