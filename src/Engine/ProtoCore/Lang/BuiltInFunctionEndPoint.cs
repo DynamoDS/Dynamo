@@ -1415,7 +1415,7 @@ namespace ProtoCore.Lang
             int sum = 0;
             foreach (char c in characters)
             {
-                sum *= 26;
+                sum *= alphabetLength;
                 sum += (c - offset + 1);
             }
 
