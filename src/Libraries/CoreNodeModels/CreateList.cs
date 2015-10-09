@@ -7,17 +7,17 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI
 {
-    [NodeName("List.Create")]
-    [NodeDescription("ListCreateDescription", typeof(DSCoreNodesUI.Properties.Resources))]
-    [NodeSearchTags("ListCreateSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeName("List.ByItems")]
+    [NodeDescription("ListByItemsDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("ListByItemsSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
     [IsDesignScriptCompatible]
     public class CreateList : VariableInputNode
     {
         public CreateList()
         {
-            InPortData.Add(new PortData("index0", Resources.CreateListPortDataIndex0ToolTip));
-            OutPortData.Add(new PortData("list", Resources.CreateListPortDataResultToolTip));
+            InPortData.Add(new PortData("index0", Resources.ByItemsListPortDataIndex0ToolTip));
+            OutPortData.Add(new PortData("list", Resources.ByItemsListPortDataResultToolTip));
 
             RegisterAllPorts();
 
@@ -31,7 +31,7 @@ namespace DSCoreNodesUI
 
         protected override string GetInputTooltip(int index)
         {
-            return string.Format(Resources.ListCreateInPortToolTip, index);
+            return string.Format(Resources.ListByItemsInPortToolTip, index);
         }
 
         protected override void RemoveInput()

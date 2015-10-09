@@ -106,6 +106,24 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Item Index #0.
+        /// </summary>
+        internal static string ByItemsListPortDataIndex0ToolTip {
+            get {
+                return ResourceManager.GetString("ByItemsListPortDataIndex0ToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A list.
+        /// </summary>
+        internal static string ByItemsListPortDataResultToolTip {
+            get {
+                return ResourceManager.GetString("ByItemsListPortDataResultToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Get a color given a color range..
         /// </summary>
         internal static string ColorRangeDescription {
@@ -210,24 +228,6 @@ namespace DSCoreNodesUI.Properties {
         internal static string ConversionNodeDescription {
             get {
                 return ResourceManager.GetString("ConversionNodeDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Item Index #0.
-        /// </summary>
-        internal static string CreateListPortDataIndex0ToolTip {
-            get {
-                return ResourceManager.GetString("CreateListPortDataIndex0ToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A list.
-        /// </summary>
-        internal static string CreateListPortDataResultToolTip {
-            get {
-                return ResourceManager.GetString("CreateListPortDataResultToolTip", resourceCulture);
             }
         }
         
@@ -592,6 +592,33 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Makes a new list out of the given inputs.
+        /// </summary>
+        internal static string ListByItemsDescription {
+            get {
+                return ResourceManager.GetString("ListByItemsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Item Index #{0}.
+        /// </summary>
+        internal static string ListByItemsInPortToolTip {
+            get {
+                return ResourceManager.GetString("ListByItemsInPortToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to entwine;listcreate,newlist;makelist;list;.
+        /// </summary>
+        internal static string ListByItemsSearchTags {
+            get {
+                return ResourceManager.GetString("ListByItemsSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Applies a combinator to each pair in the cartesian product of two sequences.
         /// </summary>
         internal static string ListCartesianProductDescription {
@@ -624,33 +651,6 @@ namespace DSCoreNodesUI.Properties {
         internal static string ListCombineSearchTags {
             get {
                 return ResourceManager.GetString("ListCombineSearchTags", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Makes a new list out of the given inputs.
-        /// </summary>
-        internal static string ListCreateDescription {
-            get {
-                return ResourceManager.GetString("ListCreateDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Item Index #{0}.
-        /// </summary>
-        internal static string ListCreateInPortToolTip {
-            get {
-                return ResourceManager.GetString("ListCreateInPortToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to entwine;listcreate,newlist;makelist;list;.
-        /// </summary>
-        internal static string ListCreateSearchTags {
-            get {
-                return ResourceManager.GetString("ListCreateSearchTags", resourceCulture);
             }
         }
         

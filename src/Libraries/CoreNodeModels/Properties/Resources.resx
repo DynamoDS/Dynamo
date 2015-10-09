@@ -166,10 +166,10 @@
   <data name="ComposePortDataResultToolTip" xml:space="preserve">
     <value>Composed function.</value>
   </data>
-  <data name="CreateListPortDataIndex0ToolTip" xml:space="preserve">
+  <data name="ByItemsListPortDataIndex0ToolTip" xml:space="preserve">
     <value>Item Index #0</value>
   </data>
-  <data name="CreateListPortDataResultToolTip" xml:space="preserve">
+  <data name="ByItemsListPortDataResultToolTip" xml:space="preserve">
     <value>A list</value>
   </data>
   <data name="DirectoryFromPathDescription" xml:space="preserve">
@@ -303,7 +303,7 @@
     <value>map multiple;apply over lists;multiple inputs</value>
     <comment>List.Combine search tags</comment>
   </data>
-  <data name="ListCreateDescription" xml:space="preserve">
+  <data name="ListByItemsDescription" xml:space="preserve">
     <value>Makes a new list out of the given inputs</value>
     <comment>Description for List.Create</comment>
   </data>
@@ -512,7 +512,7 @@
   <data name="SelectFromComboBoxToolTip" xml:space="preserve">
     <value>This is your Revit display unit settings</value>
   </data>
-  <data name="ListCreateSearchTags" xml:space="preserve">
+  <data name="ListByItemsSearchTags" xml:space="preserve">
     <value>entwine;listcreate,newlist;makelist;list;</value>
     <comment>search tags for list.create</comment>
   </data>
@@ -524,7 +524,7 @@
     <value>Convert;Units;Length;Area;Volume;convertbetweenunits;</value>
     <comment>Search tags for DynamoConvert node. During translation, localized keywords can be appended to the end of these tags to provide localized search terms in addition to the existing ones.</comment>
   </data>
-  <data name="ListCreateInPortToolTip" xml:space="preserve">
+  <data name="ListByItemsInPortToolTip" xml:space="preserve">
     <value>Item Index #{0}</value>
   </data>
   <data name="SelectionNodeNothingSelected" xml:space="preserve">
