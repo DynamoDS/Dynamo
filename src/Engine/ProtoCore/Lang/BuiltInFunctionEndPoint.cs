@@ -1260,18 +1260,41 @@ namespace ProtoCore.Lang
                 return null;
             }
 
+            //  Alphabet sequence supports letters of the same case.
+            // It's restricted incoming letters like "Aa", "CcC"
+            if ((!startLetters.All(Char.IsUpper) && !startLetters.All(Char.IsLower))
+                || (!endLetters.All(Char.IsUpper) && !endLetters.All(Char.IsLower)))
+            {
+                runtimeCore.RuntimeStatus.LogWarning(
+                    WarningID.kInvalidArguments,
+                    Resources.kInvalidCasesInRangeExpression);
+                return null;
+            }
+
             bool isUpperCase = Char.IsUpper(startLetters.First());
 
             int startNumber = GetNumberFromLetter(startLetters, isUpperCase);
             int endNumber = GetNumberFromLetter(endLetters, isUpperCase);
-            int stepOffset = (startNumber < endNumber) ? 1 : -1;
+            bool swap = startNumber > endNumber;
+
+            // If startNumber is bigger, then swap start and end.
+            if (swap)
+            {
+                int temp = startNumber;
+                startNumber = endNumber;
+                endNumber = temp;
+            }
 
             var letters = new List<StackValue>();
-            for (int i = startNumber; i <= endNumber; i += stepOffset * step)
+            for (int i = startNumber; i <= endNumber; i += step)
             {
                 var letter = GetLetterFromNumber(i, isUpperCase);
-                letters.Add(StackValue.BuildString(letter, runtimeCore.Heap));
+                if (!String.IsNullOrEmpty(letter))
+                {
+                    letters.Add(StackValue.BuildString(letter, runtimeCore.Heap));
+                }
             }
+            if (swap) letters.Reverse();
 
             return letters.ToArray();
         }
@@ -1322,6 +1345,16 @@ namespace ProtoCore.Lang
                 return null;
             }
 
+            //  Alphabet sequence supports letters of the same case.
+            // It's restricted incoming letters like "Aa", "CcC"
+            if ((!startLetters.All(Char.IsUpper) && !startLetters.All(Char.IsLower)))
+            {
+                runtimeCore.RuntimeStatus.LogWarning(
+                    WarningID.kInvalidArguments,
+                    Resources.kInvalidCasesInRangeExpression);
+                return null;
+            }
+
             bool isUpperCase = Char.IsUpper(startLetters.First());
             var number = GetNumberFromLetter(startLetters, isUpperCase);
 
@@ -1329,7 +1362,10 @@ namespace ProtoCore.Lang
             for (int i = 0; i < amount; i++)
             {
                 var letter = GetLetterFromNumber(number, isUpperCase);
-                letters.Add(StackValue.BuildString(letter, runtimeCore.Heap));
+                if (!String.IsNullOrEmpty(letter))
+                {
+                    letters.Add(StackValue.BuildString(letter, runtimeCore.Heap));
+                }
 
                 number += step;
             }
@@ -1341,7 +1377,7 @@ namespace ProtoCore.Lang
         /// Translates number into letter.
         /// (1 = A, 2 = B...27 = AA...703 = AAA...)
         /// </summary>
-        internal static string GetLetterFromNumber(int number, bool isUpperCase = true)
+        private static string GetLetterFromNumber(int number, bool isUpperCase = true)
         {
             var letters = new StringBuilder();
             byte offset = isUpperCase ? bigLetterOffset : smallLetterOffset;
@@ -1360,7 +1396,7 @@ namespace ProtoCore.Lang
         /// Translates letter into number.
         /// (A = 1, B = 2...AA = 27...AAA = 703...)
         /// </summary>
-        internal static int GetNumberFromLetter(string letter, bool isUpperCase = true)
+        private static int GetNumberFromLetter(string letter, bool isUpperCase = true)
         {
             char[] characters = letter.ToCharArray();
             byte offset = isUpperCase ? bigLetterOffset : smallLetterOffset;

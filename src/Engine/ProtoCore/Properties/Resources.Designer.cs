@@ -1268,6 +1268,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Range node supports alphabet sequence made of letters of the same case..
+        /// </summary>
+        public static string kInvalidCasesInRangeExpression {
+            get {
+                return ResourceManager.GetString("kInvalidCasesInRangeExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Internal error, please report: Statement continue cause function to abnormally return null. (fd67aaee).
         /// </summary>
         public static string kInvalidContinueForFunction {
