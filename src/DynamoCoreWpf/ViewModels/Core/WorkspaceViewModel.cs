@@ -315,8 +315,10 @@ namespace Dynamo.ViewModels
             DynamoSelection.Instance.Selection.CollectionChanged +=
                 (sender, e) => RefreshViewOnSelectionChange();
 
-            // sync collections
+            DynamoViewModel.CopyCommand.CanExecuteChanged += CopyPasteChanged;
+            DynamoViewModel.PasteCommand.CanExecuteChanged += CopyPasteChanged;
 
+            // sync collections
 
             foreach (NodeModel node in Model.Nodes) Model_NodeAdded(node);
             foreach (NoteModel note in Model.Notes) Model_NoteAdded(note);
@@ -325,6 +327,12 @@ namespace Dynamo.ViewModels
 
             InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel);
             InCanvasSearchViewModel.Visible = true;
+        }
+
+        void CopyPasteChanged(object sender, EventArgs e)
+        {
+            RaisePropertyChanged("CanPaste", "CanCopy", "CanCopyOrPaste");
+            PasteCommand.RaiseCanExecuteChanged();
         }
 
         void RunSettingsViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -806,6 +814,12 @@ namespace Dynamo.ViewModels
         private static bool CanAlignSelected(object parameter)
         {
             return DynamoSelection.Instance.Selection.Count > 1;
+        }
+
+        private void Paste(object param)
+        {
+            var point = InCanvasSearchViewModel.InCanvasSearchPosition;
+            DynamoViewModel.Model.Paste(new Point2D(point.X, point.Y));
         }
 
         private void ShowHideAllGeometryPreview(object parameter)

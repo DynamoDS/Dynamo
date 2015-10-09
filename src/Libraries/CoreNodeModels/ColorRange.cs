@@ -59,7 +59,7 @@ namespace DSCoreNodesUI
 
         void ColorRange_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName != "IsUpdated")
+            if (e.PropertyName != "CachedValue")
                 return;
 
             if (InPorts.Any(x => x.Connectors.Count == 0))

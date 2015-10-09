@@ -166,12 +166,12 @@ namespace ProtoCore.DSASM.Mirror
                     if (runtimeCore.DSExecutable.FuncPointerTable.TryGetFunction(val, runtimeCore, out procNode))
                     {
                         string className = String.Empty;
-                        if (procNode.classScope != Constants.kGlobalScope)
+                        if (procNode.ClassID != Constants.kGlobalScope)
                         {
-                            className = runtimeCore.DSExecutable.classTable.GetTypeName(procNode.classScope).Split('.').Last() + ".";
+                            className = runtimeCore.DSExecutable.classTable.GetTypeName(procNode.ClassID).Split('.').Last() + ".";
                         }
 
-                        return "function: " + className + procNode.name; 
+                        return "function: " + className + procNode.Name; 
                     }
                     return "function: " + val.opdata.ToString();
 
@@ -183,7 +183,7 @@ namespace ProtoCore.DSASM.Mirror
                     else
                         return "\"" + heap.ToHeapObject<DSString>(val).Value + "\"";                    
                 case AddressType.Char:
-                    Char character = ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(val.opdata);
+                    Char character = Convert.ToChar(val.opdata); 
                     if (forPrint)
                         return character.ToString();
                     else
@@ -225,17 +225,17 @@ namespace ProtoCore.DSASM.Mirror
                 List<string> visibleProperties = null;
                 if (null != propertyFilter)
                 {
-                    if (!propertyFilter.TryGetValue(classnode.name, out visibleProperties))
+                    if (!propertyFilter.TryGetValue(classnode.Name, out visibleProperties))
                         visibleProperties = null;
                 }
 
                 StringBuilder classtrace = new StringBuilder();
-                if (classnode.symbols != null && classnode.symbols.symbolList.Count > 0)
+                if (classnode.Symbols != null && classnode.Symbols.symbolList.Count > 0)
                 {
                     bool firstPropertyDisplayed = false;
                     for (int n = 0; n < obj.Count; ++n)
                     {
-                        SymbolNode symbol = classnode.symbols.symbolList[n];
+                        SymbolNode symbol = classnode.Symbols.symbolList[n];
                         string propName = symbol.name;
 
                         if ((null != visibleProperties) && visibleProperties.Contains(propName) == false)
@@ -276,10 +276,10 @@ namespace ProtoCore.DSASM.Mirror
                 formatParams.RestoreOutputTraceDepth();
                 if (classtype >= (int)ProtoCore.PrimitiveType.kMaxPrimitives)
                     if (forPrint)
-                        return (string.Format("{0}{{{1}}}", classnode.name, classtrace.ToString()));
+                        return (string.Format("{0}{{{1}}}", classnode.Name, classtrace.ToString()));
                     else
                     {
-                        string tempstr =  (string.Format("{0}({1})", classnode.name, classtrace.ToString()));
+                        string tempstr =  (string.Format("{0}({1})", classnode.Name, classtrace.ToString()));
                         return tempstr;
                     }
 
@@ -527,16 +527,16 @@ namespace ProtoCore.DSASM.Mirror
 
                 if (index == Constants.kInvalidIndex)
                 {
-                    index = classnode.symbols.IndexOfClass(name, ci, functionIndex);
+                    index = classnode.Symbols.IndexOfClass(name, ci, functionIndex);
                 }
 
                 if (index != Constants.kInvalidIndex)
                 {
-                    if (classnode.symbols.symbolList[index].arraySizeList != null)
+                    if (classnode.Symbols.symbolList[index].arraySizeList != null)
                     {
                         throw new NotImplementedException("{C5877FF2-968D-444C-897F-FE83650D5201}");
                     }
-                    symbol = classnode.symbols.symbolList[index];
+                    symbol = classnode.Symbols.symbolList[index];
                     return index;
                 }
             }
@@ -671,7 +671,7 @@ namespace ProtoCore.DSASM.Mirror
                     {
                         int classtype = val.metaData.type;
                         ClassNode classnode = runtimeCore.DSExecutable.classTable.ClassNodes[classtype];
-                        return classnode.name;
+                        return classnode.Name;
                     }
                 case AddressType.ArrayPointer:
                     return "array";
@@ -691,7 +691,7 @@ namespace ProtoCore.DSASM.Mirror
         {
             if (obj.DsasmValue.IsPointer)
             {
-                return runtimeCore.DSExecutable.classTable.ClassNodes[obj.DsasmValue.metaData.type].name;
+                return runtimeCore.DSExecutable.classTable.ClassNodes[obj.DsasmValue.metaData.type].Name;
             }
             else
             {
@@ -976,7 +976,7 @@ namespace ProtoCore.DSASM.Mirror
 
             Dictionary<string, Obj> ret = new Dictionary<string, Obj>();
             int classIndex = obj.DsasmValue.metaData.type;
-            IDictionary<int,SymbolNode> symbolList = runtimeCore.DSExecutable.classTable.ClassNodes[classIndex].symbols.symbolList;
+            IDictionary<int,SymbolNode> symbolList = runtimeCore.DSExecutable.classTable.ClassNodes[classIndex].Symbols.symbolList;
             StackValue[] svs = rmem.Heap.ToHeapObject<DSObject>(obj.DsasmValue).Values.ToArray();
             int index = 0;
             for (int ix = 0; ix < svs.Length; ++ix)
@@ -1017,7 +1017,7 @@ namespace ProtoCore.DSASM.Mirror
             StackValue[] svs = MirrorTarget.rmem.Heap.ToHeapObject<DSObject>(obj.DsasmValue).Values.ToArray();
             for (int ix = 0; ix < svs.Length; ++ix)
             {
-                string propertyName = runtimeCore.DSExecutable.classTable.ClassNodes[classIndex].symbols.symbolList[ix].name;
+                string propertyName = runtimeCore.DSExecutable.classTable.ClassNodes[classIndex].Symbols.symbolList[ix].name;
                 ret.Add(propertyName);
             }
 
@@ -1507,7 +1507,7 @@ namespace ProtoCore.DSASM.Mirror
                     else if (type == typeof(Char))
                     {
                         object payload = dsArray.members[i].Payload;
-                        return ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(Convert.ToInt64(payload)) == Convert.ToChar(expected[i]);
+                        return Convert.ToChar(Convert.ToInt64(payload)) == Convert.ToChar(expected[i]);
                     }
                     else if (type == typeof(String))
                     {

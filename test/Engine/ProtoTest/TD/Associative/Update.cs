@@ -8,7 +8,6 @@ namespace ProtoTest.TD.Associative
 {
     class Update : ProtoTestBase
     {
-        ProtoScript.Config.RunConfiguration runnerConfig;
         ProtoScript.Runners.DebugRunner fsr;
         string importPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
 
@@ -16,8 +15,6 @@ namespace ProtoTest.TD.Associative
         {
             base.Setup();
            
-            runnerConfig = new ProtoScript.Config.RunConfiguration();
-            runnerConfig.IsParrallel = false;
             fsr = new DebugRunner(core);
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             DLLFFIHandler.Register(FFILanguage.CPlusPlus, new ProtoFFI.PInvokeModuleHelper());
@@ -409,7 +406,8 @@ r1 = true;
         [Category("SmokeTest")]
         public void T013_Update_Of_Variables_To_User_Defined_Class()
         {
-            string code = @"import(""FFITarget.dll"");
+            string code = @"
+import(""FFITarget.dll"");
 r1 = 2.0;
 r2 = r1+1;
 r1 = TestObjectA.TestObjectA(5);
@@ -429,7 +427,8 @@ t1 = TestObjectA.TestObjectA(5);
         [Category("SmokeTest")]
         public void T014_Update_Of_Class_Properties()
         {
-            string code = @"import(""FFITarget.dll"");
+            string code = @"
+import(""FFITarget.dll"");
 x = 3;
 a1 = TestObjectA.TestObjectA(x);
 b1 = a1.a;
@@ -446,7 +445,8 @@ c1 = b1;
         [Category("SmokeTest")]
         public void T015_Update_Of_Class_Properties()
         {
-            string code = @"import(""FFITarget.dll"");
+            string code = @"
+import(""FFITarget.dll"");
 x = { 3, 4 } ;
 a1 = TestObjectA.TestObjectA(x);
 b1 = a1.a;
@@ -465,7 +465,8 @@ c1 = b1;
         [Category("SmokeTest")]
         public void T016_Update_Of_Variable_Types()
         {
-            string code = @"import(""FFITarget.dll"");
+            string code = @"
+import(""FFITarget.dll"");
 x = { 3, 4 } ;
 y = x[0] + 1;
 x =  { 3.5, 4.5 } ;
@@ -544,7 +545,7 @@ a 	 = MyPoint.ByAngleRadius(5.0);
             string src =
                 Path.GetFullPath(string.Format("{0}{1}", testCasePath, "T017_Update_Of_Class_Instances.ds")); 
             
-            fsr.LoadAndPreStart(src, runnerConfig);
+            fsr.LoadAndPreStart(src);
             ProtoCore.CodeModel.CodePoint cp1 = new ProtoCore.CodeModel.CodePoint
             {
                 CharNo = 25,
@@ -1771,7 +1772,7 @@ a = { 0, 1, 2};
 e1 = foo(a);
 a = { 1, 2};
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("e1", new Object[] { 3, 2 });
@@ -1794,7 +1795,7 @@ a = { 0, 1, 2, 3};
 e1 = foo(a[i]);
 i = 0..2;
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("e1", new Object[] { 2, 1, 2 });
@@ -1821,7 +1822,7 @@ i = 1..2;
 e1 = A.A().foo(i);
 i = 0..2;
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg); 
             
@@ -1861,7 +1862,7 @@ i = 1..2;
 e1 = A.A().foo(i);
 i = 0..2;
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
 
@@ -1911,7 +1912,7 @@ test = p1.X;
 dummy = p1.foo(2);
 //expected test to update to '3'
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", 3.0);
@@ -1938,7 +1939,7 @@ b1 = B.B ( 1, {1.0, 2.0} );
 test1 = b1.a2[0];
 b1.a2[0] = b1.a2[1];
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test1", 2.0);
@@ -1983,7 +1984,7 @@ test = p1.X;
 dummy = p1.foo({1,1,1,1});
 p1.X[0..1] = -1;
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "MAGN-4021 Update issue with collection property in nested imperative scope";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { -1, -1, 2, 2 });

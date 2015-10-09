@@ -80,7 +80,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private readonly Color4 directionalLightColor = new Color4(0.9f, 0.9f, 0.9f, 1.0f);
         private readonly Color4 defaultSelectionColor = new Color4(new Color3(0, 158.0f / 255.0f, 1.0f));
         private readonly Color4 defaultMaterialColor = new Color4(new Color3(1.0f, 1.0f, 1.0f));
-        private readonly Size defaultPointSize = new Size(8, 8);
+        private readonly Size defaultPointSize = new Size(4, 4);
         private readonly Color4 defaultLineColor = new Color4(new Color3(0, 0, 0));
         private readonly Color4 defaultPointColor = new Color4(new Color3(0, 0, 0));
 
@@ -378,7 +378,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             InitializeHelix();
         }
 
-        protected override void OnBeginUpdate(IEnumerable<IRenderPackage> packages)
+        public override void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages)
         {
             if (Active == false)
             {
@@ -501,14 +501,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             switch (e.PropertyName)
             {
-                case "IsUpdated":
-                    // Only request updates when this is true. All nodes are marked IsUpdated=false
-                    // before an evaluation occurs.
-
-                    if (node.IsUpdated)
-                    {
-                        node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
-                    }
+                case "CachedValue":
+                    node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
                     break;
 
                 case "DisplayLabels":
@@ -554,7 +548,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             OnRequestViewRefresh();
         }
 
-        internal override void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
+        public override void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
         {
             lock (Model3DDictionaryMutex)
             {
@@ -1023,7 +1017,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         }
                         else
                         {
-                            lineGeometry3D = CreateLineGeometryModel3D(rp);
+                            // If the package contains mesh vertices, then the lines represent the 
+                            // edges of meshes. Draw them with a different thickness.
+                            lineGeometry3D = CreateLineGeometryModel3D(rp, rp.MeshVertices.Any()?0.5:1.0);
                             Model3DDictionary.Add(id, lineGeometry3D);
                         }
 
@@ -1153,19 +1149,18 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     Console.WriteLine(ex.StackTrace);
                 }
             }
-            //((MaterialGeometryModel3D)meshGeometry3D).SelectionColor = defaultSelectionColor;
 
             return meshGeometry3D;
         }
 
-        private DynamoLineGeometryModel3D CreateLineGeometryModel3D(HelixRenderPackage rp)
+        private DynamoLineGeometryModel3D CreateLineGeometryModel3D(HelixRenderPackage rp, double thickness = 1.0)
         {
             var lineGeometry3D = new DynamoLineGeometryModel3D()
             {
                 Geometry = HelixRenderPackage.InitLineGeometry(),
                 Transform = Model1Transform,
                 Color = Color.White,
-                Thickness = 0.5,
+                Thickness = thickness,
                 IsHitTestVisible = false,
                 IsSelected = rp.IsSelected
             };

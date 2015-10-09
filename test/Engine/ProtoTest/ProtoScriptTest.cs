@@ -7,7 +7,7 @@ namespace ProtoTest
         [Test]
         public void BasicInfrastructureTest()
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             fsr.Execute(
 @"[Imperative]{	x = 987654321;	[Associative]	{		 px = 1234321;	}}", core, out runtimeCore);
         }
@@ -20,7 +20,7 @@ namespace ProtoTest
         [Test]
         public void ParserFailTest1()
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             //@TODO: What exception should this throw
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
@@ -31,7 +31,7 @@ namespace ProtoTest
         [Test]
         public void ParserFailTest2()
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             //@TODO: What exception should this throw
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
@@ -42,7 +42,7 @@ namespace ProtoTest
         [Test]
         public void ParserFailTest3()
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             //@TODO: What exception should this throw
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {

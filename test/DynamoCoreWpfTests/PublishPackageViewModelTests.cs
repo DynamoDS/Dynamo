@@ -4,6 +4,8 @@ using Dynamo.PackageManager;
 using System.IO;
 using Dynamo.Tests;
 using System;
+using Moq;
+using System.Collections.Generic;
 
 namespace DynamoCoreWpfTests
 {
@@ -35,6 +37,40 @@ namespace DynamoCoreWpfTests
 
             //assert that canExecute changed was fired one time 
             Assert.AreEqual(canExecuteChangedFired, 1);
+
+        }
+
+        [Test]
+        public void SetsErrorState()
+        {
+           
+            //open a dyf file and modify it
+            string packagedirectory = Path.Combine(TestDirectory, "pkgs");
+            var packages = Directory.EnumerateDirectories(packagedirectory);
+            var first = Path.GetFullPath(packages.First());
+            string dyfpath = Path.Combine(first, "dyf");
+            var customnodes = Directory.GetFiles(dyfpath);
+            var firstnode = customnodes.First();
+            
+            OpenModel(firstnode);
+
+            //add a preset so that customnode has changes that are unsaved
+            GetModel().CurrentWorkspace.AddPreset("a useless preset", "some thing that will modify the definition",
+                new List<Guid>(){GetModel().CurrentWorkspace.Nodes.First().GUID});
+
+            Assert.IsTrue(GetModel().CurrentWorkspace.HasUnsavedChanges);
+
+            //now try to upload this file
+            var vm = new PublishPackageViewModel(this.ViewModel);
+            ViewModel.OnRequestPackagePublishDialog(vm);
+            //now add a customnode to the package
+            vm.AddFile(firstnode);
+            Console.WriteLine("add node at" + firstnode + "to package");
+
+            vm.PublishLocallyCommand.Execute();
+            //assert that we have not uploaded the file or indicated that we have
+            Assert.AreNotEqual(vm.UploadState,PackageUploadHandle.State.Uploaded);
+            Console.WriteLine(vm.ErrorString);
 
         }
 

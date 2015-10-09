@@ -7,13 +7,6 @@ namespace ProtoCore.DSASM
     public class DynamicFunctionTable
     {
         private List<DynamicFunction> functions;
-        public IEnumerable<DynamicFunction> Functions 
-        { 
-            get
-            {
-                return functions;
-            }
-        }
 
         public DynamicFunctionTable()
         {

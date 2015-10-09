@@ -362,6 +362,25 @@ namespace Dynamo.PackageManager.Tests
             Assert.AreEqual(PackageUploadHandle.State.Error, handle.UploadState);
         }
 
+        [Test]
+        public void Publish_SetsErrorStatusWhenResponseIsNull()
+        {
+            var gc = new Mock<IGregClient>();
+            var rb = new ResponseBody();
+            rb.success = false;
+           
+            gc.Setup(x => x.ExecuteAndDeserialize(It.IsAny<PackageUpload>())).Returns(rb);
+
+            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>(), "");
+
+            var pkg = new Package("", "Package", "0.1.0", "MIT");
+
+            var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
+            pc.Publish(pkg, Enumerable.Empty<string>(), true, handle);
+
+            Assert.AreEqual(PackageUploadHandle.State.Error, handle.UploadState);
+        }
+
         #endregion
 
         #region Deprecate

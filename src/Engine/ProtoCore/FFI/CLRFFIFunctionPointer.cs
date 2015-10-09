@@ -525,7 +525,7 @@ namespace ProtoFFI
                 if (classIndex != ProtoCore.DSASM.Constants.kInvalidIndex)
                 {
                     var runtimeCore = dsi.runtime.RuntimeCore;
-                    int idx = runtimeCore.DSExecutable.classTable.ClassNodes[classIndex].symbols.IndexOf(PropertyName);
+                    int idx = runtimeCore.DSExecutable.classTable.ClassNodes[classIndex].Symbols.IndexOf(PropertyName);
 
                     var obj = runtimeCore.Heap.ToHeapObject<DSObject>(thisObject);
                     StackValue oldValue = obj.GetValueFromIndex(idx, runtimeCore);

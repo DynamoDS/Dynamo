@@ -32,7 +32,7 @@ namespace ProtoTestFx.TD
         private static ProtoCore.RuntimeCore testRuntimeCore;
 
         private ExecutionMirror testMirror;
-        private readonly ProtoScriptTestRunner runner;
+        private readonly ProtoScriptRunner runner;
         private static string mErrorMessage = "";
         bool testImport;
         bool testDebug;
@@ -43,7 +43,7 @@ namespace ProtoTestFx.TD
  
         public TestFrameWork()
         {
-            runner = new ProtoScriptTestRunner();
+            runner = new ProtoScriptRunner();
         }
 
         /// <summary>
@@ -631,7 +631,7 @@ namespace ProtoTestFx.TD
                     try
                     {
                         Int64 utf8Encoding = Convert.ToInt64(dsObject.Payload);
-                        Char dsValue = EncodingUtils.ConvertInt64ToCharacter(utf8Encoding);
+                        Char dsValue = Convert.ToChar(utf8Encoding); 
 
                         if (!expectedObject.Equals(dsValue))
                         {
@@ -709,7 +709,7 @@ namespace ProtoTestFx.TD
             }
 
             ProtoCore.DSASM.ClassNode thisClass = testCore.ClassTable.ClassNodes[classIndex];
-            if (!thisClass.vtable.procList.Exists(memberFunc => String.Compare(memberFunc.name, methodName) == 0))
+            if (!thisClass.ProcTable.procList.Exists(memberFunc => String.Compare(memberFunc.Name, methodName) == 0))
             {
                 if(doAssert)
                     Assert.Fail(string.Format("\tMethod \"{0}.{1}\" doesn't exist \n{2}", className, methodName, mErrorMessage)); 

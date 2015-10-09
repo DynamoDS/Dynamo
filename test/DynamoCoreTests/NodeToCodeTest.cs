@@ -1157,12 +1157,6 @@ namespace Dynamo.Tests
             t.UID = -1;
             name = nameProvider.GetTypeDependentName(t);
             Assert.IsTrue(string.IsNullOrEmpty(name));
-
-            t = new ProtoCore.Type();
-            t.Name = null;
-            t.UID = -1;
-            name = nameProvider.GetTypeDependentName(t);
-            Assert.IsTrue(string.IsNullOrEmpty(name));
         } 
 
         private void SelectAll(IEnumerable<NodeModel> nodes)

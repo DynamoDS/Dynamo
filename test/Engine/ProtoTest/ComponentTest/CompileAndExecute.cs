@@ -28,7 +28,7 @@ namespace ProtoTest.ComponentTest
             ProtoCore.Core core = new Core(opts);
             core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
             core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
-            ProtoScriptTestRunner runner = new ProtoScriptTestRunner();
+            ProtoScriptRunner runner = new ProtoScriptRunner();
 
             // Compiler instance
             ProtoCore.DSASM.Executable dsExecutable;

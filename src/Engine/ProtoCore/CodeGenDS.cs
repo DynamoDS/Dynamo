@@ -16,8 +16,6 @@ namespace ProtoCore
         public IEnumerable<AssociativeNode> astNodeList { get; private set; }
         string code = string.Empty;
 
-        public string Code { get { return code; } }
-
         /// <summary>
         /// This is used during ProtoAST generation to connect BinaryExpressionNode's 
         /// generated from Block nodes to its child AST tree - pratapa
@@ -28,14 +26,6 @@ namespace ProtoCore
         {
             this.astNodeList = astList;
         }
-
-        //public CodeGenDS(ProtoCore.AST.AssociativeAST.BinaryExpressionNode bNode) 
-        //{
-        //    ChildTree = bNode;
-        //}
-
-        public CodeGenDS() 
-        {}
         
         /// <summary>
         /// This function prints the DS code into the destination stream

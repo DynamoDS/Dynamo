@@ -1548,9 +1548,40 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     Paste ISelectable objects from the clipboard to the workspace.
+        ///     Paste ISelectable objects from the clipboard to the workspace 
+        /// so that the nodes appear in their original location with a slight offset
         /// </summary>
         public void Paste()
+        {
+            // Provide a small offset when pasting so duplicate pastes aren't directly on top of each other
+            CurrentWorkspace.IncrementPasteOffset();
+
+            var locatebleModels = ClipBoard.Where(model => model is NoteModel || model is NodeModel);
+            var orderedItems = locatebleModels.OrderBy(item => item.CenterX + item.CenterY);
+
+            // Search for the rightmost item. It's item with the biggest X, Y coordinates of center.
+            var rightMostItem = orderedItems.Last();
+
+            // Search for the leftmost item. It's item with the smallest X, Y coordinates of center.
+            var leftMostItem = orderedItems.First();
+
+            // Compute shift so that left most item will appear at right most item place with offset.
+            var shiftX = rightMostItem.X + rightMostItem.Width + CurrentWorkspace.CurrentPasteOffset - leftMostItem.X;
+            var shiftY = rightMostItem.Y + CurrentWorkspace.CurrentPasteOffset - leftMostItem.Y;
+
+
+            var x = shiftX + locatebleModels.Min(m => m.X);
+            var y = shiftY + locatebleModels.Min(m => m.Y);
+            var targetPoint = new Point2D(x, y);
+            
+            Paste(targetPoint);
+        }
+
+        /// <summary>
+        ///     Paste ISelectable objects from the clipboard to the workspace at specified point.
+        /// </summary>
+        /// <param name="targetPoint">Location where data will be pasted</param>
+        public void Paste(Point2D targetPoint)
         {
             //clear the selection so we can put the
             //paste contents in
@@ -1569,9 +1600,6 @@ namespace Dynamo.Models
             var notes = ClipBoard.OfType<NoteModel>();
             var annotations = ClipBoard.OfType<AnnotationModel>();
 
-            var minX = Double.MaxValue;
-            var minY = Double.MaxValue;
-
             // Create the new NoteModel's
             var newNoteModels = new List<NoteModel>();
             foreach (var note in notes)
@@ -1580,9 +1608,6 @@ namespace Dynamo.Models
                 //Store the old note as Key and newnote as value.
                 modelLookup.Add(note.GUID,noteModel);
                 newNoteModels.Add(noteModel);
-
-                minX = Math.Min(note.X, minX);
-                minY = Math.Min(note.Y, minY);
             }
 
             var xmlDoc = new XmlDocument();
@@ -1612,26 +1637,20 @@ namespace Dynamo.Models
                 if (!string.IsNullOrEmpty(node.NickName))
                     newNode.NickName = node.NickName;
 
+                newNode.Width = node.Width;
+                newNode.Height = node.Height;
+
                 modelLookup.Add(node.GUID, newNode);
 
-                newNodeModels.Add( newNode );
-
-                minX = Math.Min(node.X, minX);
-                minY = Math.Min(node.Y, minY);
+                newNodeModels.Add(newNode);
             }
 
-            // Move all of the notes and nodes such that they are aligned with
-            // the top left of the workspace
-            var workspaceX = -CurrentWorkspace.X / CurrentWorkspace.Zoom;
-            var workspaceY = -CurrentWorkspace.Y / CurrentWorkspace.Zoom;
+            var newItems = newNodeModels.Concat<ModelBase>(newNoteModels);
+            
+            var shiftX = targetPoint.X - newItems.Min(item => item.X);
+            var shiftY = targetPoint.Y - newItems.Min(item => item.Y);
 
-            // Provide a small offset when pasting so duplicate pastes aren't directly on top of each other
-            CurrentWorkspace.IncrementPasteOffset();
-
-            var shiftX = workspaceX - minX + CurrentWorkspace.CurrentPasteOffset;
-            var shiftY = workspaceY - minY + CurrentWorkspace.CurrentPasteOffset;
-
-            foreach (var model in newNodeModels.Concat<ModelBase>(newNoteModels))
+            foreach (var model in newItems)
             {
                 model.X = model.X + shiftX;
                 model.Y = model.Y + shiftY;

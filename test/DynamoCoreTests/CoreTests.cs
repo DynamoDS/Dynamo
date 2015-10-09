@@ -240,6 +240,67 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void CanCopydAndPasteNodeWithRightOffset()
+        {
+            var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
+            addNode.Height = 2;
+            addNode.Width = 2;
+            addNode.CenterX = 3;
+            addNode.CenterY = 2;
+
+            CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            CurrentDynamoModel.AddToSelection(addNode);
+            Assert.AreEqual(1, DynamoSelection.Instance.Selection.Count);
+
+            CurrentDynamoModel.Copy();
+            Assert.AreEqual(1, CurrentDynamoModel.ClipBoard.Count);
+
+            CurrentDynamoModel.Paste();
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            Assert.AreEqual(14, CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(1).X);
+            Assert.AreEqual(11, CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(1).Y);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CanCopydAndPaste2NodesWithRightOffset()
+        {
+            var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
+            addNode.Height = 2;
+            addNode.Width = 2;
+            addNode.CenterX = 3;
+            addNode.CenterY = 2;
+
+            CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+            CurrentDynamoModel.AddToSelection(addNode);
+
+            addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
+            addNode.Height = 2;
+            addNode.Width = 2;
+            addNode.CenterX = 6;
+            addNode.CenterY = 8;
+
+            CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+            CurrentDynamoModel.AddToSelection(addNode);
+
+            CurrentDynamoModel.Copy();
+            Assert.AreEqual(2, CurrentDynamoModel.ClipBoard.Count);
+
+            CurrentDynamoModel.Paste();
+            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            Assert.AreEqual(17, CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(2).X);
+            Assert.AreEqual(17, CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(2).Y);
+
+            Assert.AreEqual(20, CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(3).X);
+            Assert.AreEqual(23, CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(3).Y);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void CanAdd100NodesToClipboardAndPaste3Times()
         {
             int numNodes = 100;

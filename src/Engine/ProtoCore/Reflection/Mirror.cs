@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using ProtoCore.Utils;
@@ -23,11 +22,6 @@ namespace ProtoCore
 
             protected MirrorObject() { }
 
-            //protected MirrorObject(ProtoCore.Core core)
-            //{
-            //    this.core = core;
-            //}
-
             protected MirrorObject(ProtoCore.RuntimeCore runtimeCore, ProtoCore.Core staticCore = null)
             {
                 this.runtimeCore = runtimeCore;
@@ -45,9 +39,6 @@ namespace ProtoCore
             /// This is the generic data associated with this mirror
             /// </summary>
             private MirrorData mirrorData;
-
-            //private string assemblyName = "";
-            //private string type = "";
 
             Dictionary<string, List<string>> AssemblyType = new Dictionary<string, List<string>>();
 
@@ -129,35 +120,6 @@ namespace ProtoCore
                 return deprecateThisMirror.GetStringValue(mirrorData.GetStackValue(), TargetExecutive.rmem.Heap, blockDeclaration);
             }
 
-            // Concatenates the list of strings into a single string of comma separated types
-            /*private string GetTypesHelper(List<string> types)
-            {
-                string type = "";
-                foreach(string s in types)
-                {
-                    if(string.IsNullOrEmpty(type))
-                        type = s;
-                    else
-                        type += "," + s;
-                }
-                return type;
-            }*/
-
-            /*private string GetAssembly(StackValue sv)
-            {
-                if (sv.IsObject())
-                {
-                    ClassNode classNode = core.ClassTable.ClassNodes[(int)sv.metaData.type];
-                    assemblyName = classNode.ExternLib;
-                    
-                }
-                else if (sv.IsArray)
-                {
-                    assemblyName = GetTypesHelper();                    
-                }
-                return assemblyName;
-            }*/
-
             // Returns a list of unique types in the input array
             //private List<string> GetArrayTypes(StackValue svData)
             private Dictionary<string, List<string>> GetArrayTypes(StackValue svData)
@@ -222,7 +184,7 @@ namespace ProtoCore
                 {
                     ClassNode classNode = runtimeCore.DSExecutable.classTable.ClassNodes[sv.metaData.type];
                     List<string> types = new List<string>();
-                    types.Add(classNode.name);
+                    types.Add(classNode.Name);
                     asmType.Add(classNode.ExternLib, types);
 
                     return asmType;
@@ -241,37 +203,30 @@ namespace ProtoCore
                                 break;
                             }
                         case AddressType.Int:
-                            //return "int";                            
                             type.Add("int");
                             asmType.Add("", type);
                             break;
                         case AddressType.Double:
-                            //return "double";
                             type.Add("double");
                             asmType.Add("", type);
                             break;
                         case AddressType.Null:
-                            //return "null";
                             type.Add("null");
                             asmType.Add("", type);
                             break;
                         case AddressType.Boolean:
-                            //return "bool";
                             type.Add("bool");
                             asmType.Add("", type);
                             break;
                         case AddressType.String:
-                            //return "string";
                             type.Add("string");
                             asmType.Add("", type);
                             break;
                         case AddressType.Char:
-                            //return "char";
                             type.Add("char");
                             asmType.Add("", type);
                             break;
                         case AddressType.FunctionPointer:
-                            //return "function pointer";
                             type.Add("function pointer");
                             asmType.Add("", type);
                             break;
@@ -282,62 +237,6 @@ namespace ProtoCore
                     return asmType;
                 }
             }
-
-            public Dictionary<string, List<string>> GetDynamicAssemblyType()
-            {
-                Validity.Assert(mirrorData != null);
-
-                return GetType(mirrorData.GetStackValue());
-            }
-
-            public string GetDynamicType()
-            {
-                Validity.Assert(mirrorData != null);
-                ProtoCore.DSASM.Mirror.ExecutionMirror mirror = GetUtils();
-
-                Obj obj = new Obj(mirrorData.GetStackValue());
-                return mirror.GetType(obj);
-            }
-
-            public IEnumerable<String> GetMembers()
-            {
-                List<string> members = new List<string>();
-                Validity.Assert(mirrorData != null);
-
-                ClassMirror type = mirrorData.Class;
-                if (type == null)
-                    return members;
-
-                IEnumerable<ClassMirror> baseClasses = type.GetClassHierarchy();
-                foreach (var baseClass in baseClasses)
-                {
-                    foreach (var method in baseClass.GetFunctions())
-                    {
-                        if (!members.Contains(method.MethodName))
-                            members.Add(method.MethodName);
-                    }
-
-                    foreach (var property in baseClass.GetProperties())
-                    {
-                        if (!members.Contains(property.PropertyName))
-                            members.Add(property.PropertyName);
-                    }
-                }
-
-                foreach (var method in type.GetFunctions())
-                {
-                    if (!members.Contains(method.MethodName))
-                        members.Add(method.MethodName);
-                }
-                foreach (var property in type.GetProperties())
-                {
-                    if (!members.Contains(property.PropertyName))
-                        members.Add(property.PropertyName);
-                }
-                return members;
-            }
-
-
         }
 
         /// <summary>
@@ -372,14 +271,14 @@ namespace ProtoCore
             {
                 foreach (var procNode in procNodes)
                 {
-                    if (procNode.name == methodName)
+                    if (procNode.Name == methodName)
                     {
-                        if (procNode.argInfoList.Count == arguments.Count)
+                        if (procNode.ArgumentInfos.Count == arguments.Count)
                         {
                             bool isEqual = true;
                             for (int i = 0; i < arguments.Count; ++i)
                             {
-                                if (!arguments[i].Equals(procNode.argTypeList[i]))
+                                if (!arguments[i].Equals(procNode.ArgumentTypes[i]))
                                 {
                                     isEqual = false;
                                     break;
@@ -410,7 +309,7 @@ namespace ProtoCore
             public static IEnumerable<ClassMirror> GetClasses(Core core)
             {
                 return core.ClassTable.ClassNodes.Skip((int)PrimitiveType.kMaxPrimitives).
-                    Where(x => !CoreUtils.StartsWithSingleUnderscore(x.name)).
+                    Where(x => !CoreUtils.StartsWithSingleUnderscore(x.Name)).
                     Select(x => new ClassMirror(core, x));
             }
 
@@ -419,8 +318,8 @@ namespace ProtoCore
                 // TODO: Get rid of keyword "PointerReserved" and PrimitiveType.kTypePointer
                 // if not used in the language: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6752
                 return core.ClassTable.ClassNodes.
-                    Where(x => !CoreUtils.StartsWithSingleUnderscore(x.name)
-                    && x.name != DSDefinitions.Keyword.PointerReserved).
+                    Where(x => !CoreUtils.StartsWithSingleUnderscore(x.Name)
+                    && x.Name != DSDefinitions.Keyword.PointerReserved).
                     Select(x => new ClassMirror(core, x));
             }
 
@@ -454,52 +353,15 @@ namespace ProtoCore
                     x =>
                     {
                         bool hidden = x.MethodAttribute == null ? false : x.MethodAttribute.HiddenInLibrary;
-                        return !x.isAssocOperator
-                            && !x.isAutoGenerated
+                        return !x.IsAssocOperator
+                            && !x.IsAutoGenerated
                             && !hidden
-                            && !x.name.StartsWith(ProtoCore.DSASM.Constants.kInternalNamePrefix)
-                            && !x.name.Equals("Break")
-                            && !CoreUtils.StartsWithDoubleUnderscores(x.name);
+                            && !x.Name.StartsWith(ProtoCore.DSASM.Constants.kInternalNamePrefix)
+                            && !x.Name.Equals("Break")
+                            && !CoreUtils.StartsWithDoubleUnderscores(x.Name);
 
                     }
                     ).Select(y => new MethodMirror(y));
-            }
-
-            /// <summary>
-            /// Returns the static return type of a function given its class, name and arguments
-            /// </summary>
-            /// <param name="className"></param>
-            /// <param name="methodName"></param>
-            /// <param name="arguments"></param>
-            /// <returns></returns>
-            public static ProtoCore.Type? GetType(string className, string methodName, List<ProtoCore.Type> arguments)
-            {
-                if (!string.IsNullOrEmpty(className))
-                {
-                    ClassTable classTable = staticCore.ClassTable;
-                    int ci = classTable.IndexOf(className);
-
-                    if (ci != ProtoCore.DSASM.Constants.kInvalidIndex)
-                    {
-                        ClassNode classNode = classTable.ClassNodes[ci];
-
-                        MethodMirror mm = FindMethod(methodName, arguments, classNode.vtable.procList);
-                        if (mm != null)
-                            return mm.ReturnType;
-                    }
-                }
-                else // Check for global functions
-                {
-                    Validity.Assert(staticCore.CodeBlockList.Count > 0);
-
-                    List<ProcedureNode> procNodes = staticCore.CodeBlockList[0].procedureTable.procList;
-
-                    MethodMirror mm = FindMethod(methodName, arguments, procNodes);
-                    if (mm != null)
-                        return mm.ReturnType;
-                }
-
-                return null;
             }
 
             public override string ToString()
@@ -561,18 +423,6 @@ namespace ProtoCore
                 }
             }
 
-            public ClassMirror(ProtoCore.Type type, ProtoCore.Core core)
-                : base(core, type.Name)
-            {
-                ClassName = type.Name;
-                if (classNode == null)
-                {
-                    ProtoCore.DSASM.ClassTable classTable = core.ClassTable;
-                    classNode = classTable.ClassNodes[type.UID];
-                }
-                libraryMirror = new LibraryMirror(classNode.ExternLib, core);
-            }
-
             public ClassMirror(string className, ProtoCore.Core core)
                 : base(core, className)
             {
@@ -604,14 +454,14 @@ namespace ProtoCore
                 ProtoCore.DSASM.ClassTable classTable = core.ClassTable;
                 classNode = classTable.ClassNodes[classIndex];
                 libraryMirror = new LibraryMirror(classNode.ExternLib, core);
-                ClassName = classNode.name;
+                ClassName = classNode.Name;
             }
 
             internal ClassMirror(ProtoCore.Core core, ProtoCore.DSASM.ClassNode classNode,
                 LibraryMirror libraryMirror = null)
-                : base(core, classNode.name)
+                : base(core, classNode.Name)
             {
-                ClassName = classNode.name;
+                ClassName = classNode.Name;
                 if (libraryMirror == null)
                     this.libraryMirror = new LibraryMirror(classNode.ExternLib, core);
                 else
@@ -634,7 +484,7 @@ namespace ProtoCore
                 Validity.Assert(classNodes != null && classNodes.Count > 0);
 
                 this.classNode = classNodes[svData.metaData.type];
-                this.ClassName = this.classNode.name;
+                this.ClassName = this.classNode.Name;
                 this.Name = this.ClassName;
                 libraryMirror = new LibraryMirror(classNode.ExternLib, core);
 
@@ -682,7 +532,7 @@ namespace ProtoCore
                 Validity.Assert(!string.IsNullOrEmpty(ClassName));
                 Validity.Assert(staticCore != null);
 
-                int ci = ClassNode.baseList[0];
+                int ci = ClassNode.Bases[0];
                 Validity.Assert(ci != ProtoCore.DSASM.Constants.kInvalidIndex);
 
                 return new ClassMirror(staticCore, staticCore.ClassTable.ClassNodes[ci], this.libraryMirror);
@@ -701,10 +551,10 @@ namespace ProtoCore
                 Validity.Assert(staticCore != null);
 
                 ClassNode cNode = ClassNode;
-                while (cNode.baseList.Count > 0)
+                while (cNode.Bases.Count > 0)
                 {
 
-                    int ci = cNode.baseList[0];
+                    int ci = cNode.Bases[0];
                     Validity.Assert(ci != ProtoCore.DSASM.Constants.kInvalidIndex);
 
                     baseClasses.Add(new ClassMirror(staticCore, staticCore.ClassTable.ClassNodes[ci], this.libraryMirror));
@@ -724,16 +574,16 @@ namespace ProtoCore
 
                 string name = string.Empty;
 
-                ProcedureTable procedureTable = ClassNode.vtable;
+                ProcedureTable procedureTable = ClassNode.ProcTable;
                 List<ProcedureNode> procList = procedureTable.procList;
                 string getterPrefix = ProtoCore.DSASM.Constants.kGetterPrefix;
                 int prefixLength = getterPrefix.Length;
 
                 foreach (ProcedureNode pNode in procList)
                 {
-                    name = pNode.name;
+                    name = pNode.Name;
                     bool hidden = pNode.MethodAttribute == null ? false : pNode.MethodAttribute.HiddenInLibrary;
-                    if (!hidden && name.Contains(getterPrefix) && pNode.argInfoList.Count == 0)
+                    if (!hidden && name.Contains(getterPrefix) && pNode.ArgumentInfos.Count == 0)
                     {
                         properties.Add(new PropertyMirror(pNode));
                     }
@@ -748,11 +598,11 @@ namespace ProtoCore
             /// <returns></returns>
             public IEnumerable<MethodMirror> GetConstructors()
             {
-                return ClassNode.vtable.procList.Where(
+                return ClassNode.ProcTable.procList.Where(
                     x =>
                     {
                         bool hidden = x.MethodAttribute == null ? false : x.MethodAttribute.HiddenInLibrary;
-                        return x.isConstructor && !hidden;
+                        return x.IsConstructor && !hidden;
                     }
                     ).Select(y => new MethodMirror(y));
             }
@@ -765,20 +615,20 @@ namespace ProtoCore
             {
                 List<MethodMirror> methods = new List<MethodMirror>();
 
-                ProcedureTable procedureTable = ClassNode.vtable;
+                ProcedureTable procedureTable = ClassNode.ProcTable;
                 List<ProcedureNode> procList = procedureTable.procList;
 
                 foreach (ProcedureNode pNode in procList)
                 {
                     bool hidden = pNode.MethodAttribute == null ? false : pNode.MethodAttribute.HiddenInLibrary;
-                    if (!pNode.isAssocOperator
-                        && !pNode.isAutoGenerated
-                        && !pNode.isAutoGeneratedThisProc
-                        && !pNode.isConstructor
+                    if (!pNode.IsAssocOperator
+                        && !pNode.IsAutoGenerated
+                        && !pNode.IsAutoGeneratedThisProc
+                        && !pNode.IsConstructor
                         && !hidden
-                        && !CoreUtils.IsGetter(pNode.name) && !CoreUtils.IsSetter(pNode.name)
-                        && !CoreUtils.StartsWithDoubleUnderscores(pNode.name)
-                        && !CoreUtils.IsGetTypeMethod(pNode.name))
+                        && !CoreUtils.IsGetter(pNode.Name) && !CoreUtils.IsSetter(pNode.Name)
+                        && !CoreUtils.StartsWithDoubleUnderscores(pNode.Name)
+                        && !CoreUtils.IsGetTypeMethod(pNode.Name))
                     {
                         methods.Add(new MethodMirror(pNode));
                     }
@@ -795,7 +645,7 @@ namespace ProtoCore
             /// <returns></returns>
             public IEnumerable<MethodMirror> GetOverloads(string methodName)
             {
-                return ClassNode.vtable.procList.Where(x => x.name == methodName)
+                return ClassNode.ProcTable.procList.Where(x => x.Name == methodName)
                     .Select(y => new MethodMirror(y));
             }
 
@@ -857,7 +707,7 @@ namespace ProtoCore
 
             public MethodMirror GetDeclaredMethod(string methodName, List<ProtoCore.Type> argumentTypes)
             {
-                ProcedureTable procedureTable = ClassNode.vtable;
+                ProcedureTable procedureTable = ClassNode.ProcTable;
                 List<ProcedureNode> procList = procedureTable.procList;
 
                 return StaticMirror.FindMethod(methodName, argumentTypes, procList);
@@ -885,7 +735,7 @@ namespace ProtoCore
                 get
                 {
                     if (procNode != null)
-                        return procNode.returntype;
+                        return procNode.ReturnType;
                     else
                         return null;
                 }
@@ -899,11 +749,11 @@ namespace ProtoCore
                     if (argumentList == null)
                     {
                         argumentList = new Dictionary<string, string>();
-                        for (int i = 0; i < procNode.argInfoList.Count; ++i)
+                        for (int i = 0; i < procNode.ArgumentInfos.Count; ++i)
                         {
 
-                            argumentList.Add(procNode.argInfoList[i].Name,
-                                procNode.argTypeList[i].ToString().Split('.').Last());
+                            argumentList.Add(procNode.ArgumentInfos[i].Name,
+                                procNode.ArgumentTypes[i].ToString().Split('.').Last());
                         }
                     }
                     return argumentList;
@@ -912,25 +762,11 @@ namespace ProtoCore
 
             internal MethodMirror(ProcedureNode procNode)
             {
-                MethodName = procNode.name;
+                MethodName = procNode.Name;
                 this.Name = MethodName;
-                IsConstructor = procNode.isConstructor;
-                IsStatic = procNode.isStatic;
+                IsConstructor = procNode.IsConstructor;
+                IsStatic = procNode.IsStatic;
                 this.procNode = procNode;
-            }
-
-            public List<string> GetArgumentNames()
-            {
-                List<string> argNames = new List<string>();
-                if (procNode != null)
-                {
-                    List<ArgumentInfo> argList = procNode.argInfoList;
-                    foreach (var arg in argList)
-                    {
-                        argNames.Add(arg.Name);
-                    }
-                }
-                return argNames;
             }
 
             public List<ProtoCore.Type> GetArgumentTypes()
@@ -938,7 +774,7 @@ namespace ProtoCore
                 List<ProtoCore.Type> argTypes = new List<ProtoCore.Type>();
                 if (procNode != null)
                 {
-                    foreach (var arg in procNode.argTypeList)
+                    foreach (var arg in procNode.ArgumentTypes)
                     {
                         argTypes.Add(arg);
                     }
@@ -954,25 +790,6 @@ namespace ProtoCore
             public override string ToString()
             {
                 StringBuilder sb = new StringBuilder();
-                // TODO: Dropping access specifier and static from function signature
-                // until it is required to be displayed to users later
-                //Func<Compiler.AccessModifier, string> func =
-                //    (x) =>
-                //    {
-                //        switch (x)
-                //        {
-                //            case Compiler.AccessModifier.kPrivate:
-                //                return "private ";
-                //            case Compiler.AccessModifier.kProtected:
-                //                return "protected ";
-                //            case Compiler.AccessModifier.kPublic:
-                //                return "public ";
-                //            default:
-                //                return string.Empty;
-                //        }
-                //    };
-                //var access = func(procNode.access);
-                //var isStatic = this.IsStatic == true ? "static " : "";
 
                 var returnType = string.Empty;
                 if (!this.IsConstructor)
@@ -996,9 +813,9 @@ namespace ProtoCore
                     if (procNode != null)
                     {
                         if (isSetter)
-                            return procNode.argTypeList[0];
+                            return procNode.ArgumentTypes[0];
                         else
-                            return procNode.returntype;
+                            return procNode.ReturnType;
                     }
                     return null;
                 }
@@ -1021,7 +838,7 @@ namespace ProtoCore
             {
                 get
                 {
-                    return procNode.isStatic;
+                    return procNode.IsStatic;
                 }
             }
 
@@ -1031,7 +848,7 @@ namespace ProtoCore
 
                 string getterPrefix = ProtoCore.DSASM.Constants.kGetterPrefix;
                 int prefixLength = getterPrefix.Length;
-                PropertyName = procNode.name.Substring(prefixLength);
+                PropertyName = procNode.Name.Substring(prefixLength);
                 this.Name = PropertyName;
                 this.isSetter = isSetter;
             }
@@ -1109,88 +926,11 @@ namespace ProtoCore
                 return globalMethods;
             }
 
-            public List<MethodMirror> GetOverloads(string methodName)
-            {
-                List<MethodMirror> globalMethods = GetGlobalMethods();
-                List<MethodMirror> overloads = new List<MethodMirror>();
-
-                if (globalMethods == null)
-                    return null;
-
-                foreach (var method in globalMethods)
-                {
-                    if (method.MethodName == methodName)
-                    {
-                        overloads.Add(method);
-                    }
-                }
-
-                return overloads;
-            }
-
-            public MethodMirror GetDeclaredMethod(string className, string methodName, List<ProtoCore.Type> argumentTypes)
-            {
-                // Check global methods if classname is empty or null
-                if (string.IsNullOrEmpty(className))
-                {
-                    List<MethodMirror> methods = null;
-                    methods = GetGlobalMethods();
-                    foreach (var method in methods)
-                    {
-                        if (method.MethodName == methodName)
-                        {
-                            List<ProtoCore.Type> argTypes = method.GetArgumentTypes();
-                            if (argTypes.Count == argumentTypes.Count)
-                            {
-                                bool isEqual = true;
-                                for (int i = 0; i < argumentTypes.Count; ++i)
-                                {
-                                    if (!argumentTypes[i].Equals(argTypes[i]))
-                                    {
-                                        isEqual = false;
-                                        break;
-                                    }
-                                }
-                                if (isEqual)
-                                    return method;
-                            }
-                        }
-                    }
-                }
-                else // find method in Class
-                {
-
-                    Validity.Assert(staticCore != null);
-
-                    ClassNode classNode = null;
-                    ProtoCore.DSASM.ClassTable classTable = staticCore.ClassTable;
-                    int ci = classTable.IndexOf(className);
-
-                    if (ci != ProtoCore.DSASM.Constants.kInvalidIndex)
-                    {
-                        classNode = classTable.ClassNodes[ci];
-                    }
-
-
-                    ProcedureTable procedureTable = classNode.vtable;
-                    List<ProcedureNode> procList = procedureTable.procList;
-
-                    return StaticMirror.FindMethod(methodName, argumentTypes, procList);
-                }
-
-                return null;
-            }
-
             public enum LibraryType
             {
                 kDSfile = 0,
                 kDLL,
                 kEXE
-            }
-
-            public LibraryType GetLibraryType()
-            {
-                return LibraryType.kDLL;
             }
         }
     }
