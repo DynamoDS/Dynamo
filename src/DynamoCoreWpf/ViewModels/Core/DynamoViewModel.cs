@@ -493,6 +493,7 @@ namespace Dynamo.ViewModels
                 case "ShowEdges":
                     var factoryVm = (RenderPackageFactoryViewModel)sender;
                     model.PreferenceSettings.ShowEdges = factoryVm.Factory.TessellationParameters.ShowEdges;
+                    // A full regeneration is required to get the edge geometry.
                     Watch3DViewModels.ForEach(vm=>vm.RegenerateAllPackages());
                     break;
                 default:
