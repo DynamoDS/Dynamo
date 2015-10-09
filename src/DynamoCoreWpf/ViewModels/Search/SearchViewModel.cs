@@ -279,11 +279,8 @@ namespace Dynamo.ViewModels
             searchIconAlignment = System.Windows.HorizontalAlignment.Left;
 
             // When Library changes, sync up
-            Model.EntryAdded += entry =>
-            {
-                InsertEntry(MakeNodeSearchElementVM(entry), entry.Categories);
-                RaisePropertyChanged("BrowserRootCategories");
-            };
+            Model.EntryAdded +=AddEntry;
+             
             Model.EntryUpdated += UpdateEntry;
             Model.EntryRemoved += RemoveEntry;
 
@@ -294,6 +291,16 @@ namespace Dynamo.ViewModels
 
             //TASK : MAGN 8159 - Do not Expand Geometry by Default.
             //ChangeRootCategoryExpandState(BuiltinNodeCategories.GEOMETRY_CATEGORY, true);
+        }
+
+        private void AddEntry(NodeSearchElement entry)
+        {
+            if (entry.FullCategoryName.Contains("Clockwork.Analyze.DataTypes"))
+            {
+                var cc = entry;
+            }
+            InsertEntry(MakeNodeSearchElementVM(entry), entry.Categories);
+            RaisePropertyChanged("BrowserRootCategories");
         }
 
         private IEnumerable<RootNodeCategoryViewModel> CategorizeEntries(IEnumerable<NodeSearchElement> entries, bool expanded)
@@ -374,19 +381,32 @@ namespace Dynamo.ViewModels
         }
 
         internal void RemoveEntry(NodeSearchElement entry)
-        {
+        {            
             var branch = GetTreeBranchToNode(libraryRoot, entry);
             if (!branch.Any())
                 return;
             var treeStack = new Stack<NodeCategoryViewModel>(branch.Reverse());
 
             var target = treeStack.Pop();
+            if (target.FullCategoryName.Contains("Clockwork.Analyze"))
+            {
+                var test = "found";
+            }
+
             var location = target.Entries.Select((e, i) => new { e.Model, i })
                 .FirstOrDefault(x => entry == x.Model);
             if (location == null)
                 return;
             target.Entries.RemoveAt(location.i);
 
+            //if (target.Entries.Count == 1)
+            //{
+            //    if (target.Entries[0] is CustomNodeSearchElementViewModel)
+            //    {
+            //        target.Entries.RemoveAt(0);
+            //    }
+            //}
+           
             while (!target.Items.Any() && treeStack.Any())
             {
                 var parent = treeStack.Pop();
@@ -662,8 +682,11 @@ namespace Dynamo.ViewModels
         private void AddEntryToExistingCategory(NodeCategoryViewModel category,
             NodeSearchElementViewModel entry)
         {
-            category.RequestBitmapSource += SearchViewModelRequestBitmapSource;
-            category.Entries.Add(entry);
+            category.RequestBitmapSource += SearchViewModelRequestBitmapSource; 
+            //Check if the category exists already. This check is vital if 
+            // the category name is updated. ex : clockwork package
+            if(category.Entries.All(x => x.FullName != entry.FullName))
+                 category.Entries.Add(entry);
         }
 
         private void SearchViewModelRequestBitmapSource(IconRequestEventArgs e)
