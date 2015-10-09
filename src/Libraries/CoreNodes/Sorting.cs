@@ -58,7 +58,7 @@ namespace DSCore
             var pairs = list.Cast<object>()
                     .Zip(keys.Cast<object>(), (item, key) => new { item, key });
 
-            var numberKeyPairs = pairs.Where(pair => pair.key is double || pair.key is int || pair.key is double);
+            var numberKeyPairs = pairs.Where(pair => pair.key is double || pair.key is int || pair.key is float);
             var keyPairs = pairs.Except(numberKeyPairs);
 
             // Sort.
