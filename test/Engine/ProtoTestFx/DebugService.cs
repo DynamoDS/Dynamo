@@ -74,7 +74,7 @@ namespace ProtoTestFx
 
                 core.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.GeometryFactory, GeometryFactoryName);
                 core.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.PersistentManager, PersistenceManagerName);
-                ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+                ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
 
                 ExecutionMirror mirror = fsr.LoadAndExecute(dsPath, core, out runtimeCore);
                 executionLog.AppendLine("Script executed successfully.");

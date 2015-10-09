@@ -45,7 +45,7 @@ namespace Dynamo.PackageManager
 
         public PackageLoader(IEnumerable<string> packagesDirectories)
         {
-            if (packagesDirectories == null || (!packagesDirectories.Any()))
+            if (packagesDirectories == null)
                 throw new ArgumentNullException("packagesDirectories");
 
             this.packagesDirectories.AddRange(packagesDirectories);

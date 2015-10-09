@@ -27,7 +27,7 @@ namespace ProtoTestConsoleRunner
             core.Options.Verbose = verbose;
             ProtoFFI.DLLFFIHandler.Register(ProtoFFI.FFILanguage.CSharp, new ProtoFFI.CSModuleHelper());
 
-            ProtoScriptTestRunner runner = new ProtoScriptTestRunner();
+            ProtoScriptRunner runner = new ProtoScriptRunner();
 
             RuntimeCore runtimeCore = null;
             ExecutionMirror mirror = runner.LoadAndExecute(filename, core, out runtimeCore);
@@ -52,7 +52,7 @@ namespace ProtoTestConsoleRunner
             core.Options.Verbose = false;
 #endif
             ProtoFFI.DLLFFIHandler.Register(ProtoFFI.FFILanguage.CSharp, new ProtoFFI.CSModuleHelper());
-            ProtoScriptTestRunner runner = new ProtoScriptTestRunner();
+            ProtoScriptRunner runner = new ProtoScriptRunner();
 
             // Assuming current directory in test/debug mode is "...\Dynamo\bin\AnyCPU\Debug"
             RuntimeCore runtimeCore = null;

@@ -50,7 +50,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var gathered = new List<NodeModel>();
             watchNode.VisibleUpstreamNodes(gathered);
 
-            gathered.ForEach(n => n.IsUpdated = true);
+            gathered.ForEach(n => n.WasInvolvedInExecution = true);
             gathered.ForEach(n => n.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory));
         }
 

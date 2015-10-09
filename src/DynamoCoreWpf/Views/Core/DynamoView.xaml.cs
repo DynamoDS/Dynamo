@@ -1027,9 +1027,19 @@ namespace Dynamo.Controls
         // passes it to thecurrent workspace
         void DynamoView_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key != Key.Escape || !IsMouseOver || !e.IsRepeat) return;
+            if (e.Key != Key.Escape || !IsMouseOver) return;
 
-            dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown = true;
+            var vm = dynamoViewModel.BackgroundPreviewViewModel;
+
+            if (e.IsRepeat)
+            {
+                vm.NavigationKeyIsDown = true;
+            }
+            else
+            {
+                vm.CancelNavigationState();
+            }
+            
             e.Handled = true;
         }
 
