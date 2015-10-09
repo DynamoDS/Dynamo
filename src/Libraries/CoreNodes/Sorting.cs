@@ -59,7 +59,11 @@ namespace DSCore
                     .Zip(keys.Cast<object>(), (item, key) => new { item, key });
 
             var numberKeyPairs = pairs.Where(pair => pair.key is double || pair.key is int || pair.key is float);
-            var keyPairs = pairs.Except(numberKeyPairs);
+            // We don't use Except, because Except doesn't return duplicates.
+            var keyPairs = pairs.Where(
+                pair =>
+                    !numberKeyPairs.Any(
+                        numberPair => numberPair.item == pair.item && numberPair.key == pair.key));
 
             // Sort.
             numberKeyPairs = numberKeyPairs.OrderBy(pair => Convert.ToDouble(pair.key));
