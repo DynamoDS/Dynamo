@@ -12,6 +12,7 @@ namespace DSCoreNodesUI
     [NodeSearchTags("ListByItemsSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("List.Create")]
     public class CreateList : VariableInputNode
     {
         public CreateList()

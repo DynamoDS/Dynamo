@@ -1482,11 +1482,26 @@ namespace Dynamo.Models
 
             // Resolve node nick name.
             string name = helper.ReadString("nickname", string.Empty);
-            if (!string.IsNullOrEmpty(name))
-                nickName = name;
+
+            Type type = GetType();
+            var alsoKnownAsAttribute = type.GetCustomAttributes(typeof(AlsoKnownAsAttribute), true).FirstOrDefault();
+
+            IEnumerable<string> oldNames;
+            if (alsoKnownAsAttribute != null)
+            {
+                oldNames = (alsoKnownAsAttribute as AlsoKnownAsAttribute).Values;
+            }
             else
             {
-                Type type = GetType();
+                oldNames = new List<string>();
+            }
+
+            if (!string.IsNullOrEmpty(name) && !oldNames.Contains(name))
+            {
+                nickName = name;
+            }
+            else
+            {
                 object[] attribs = type.GetCustomAttributes(typeof(NodeNameAttribute), true);
                 var attrib = attribs[0] as NodeNameAttribute;
                 if (null != attrib)
