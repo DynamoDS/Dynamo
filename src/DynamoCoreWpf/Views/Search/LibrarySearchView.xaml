@@ -99,7 +99,10 @@
             <!-- Remove default listbox blue highlight. Disable item selection -->
             <Style x:Key="SearchItemStyle"
                    TargetType="ListBoxItem">
-
+                <Setter Property="IsSelected"
+                        Value="{Binding IsSelected, Mode=OneWay}" />
+                <Setter Property="Visibility"
+                        Value="{Binding Visibility, Mode=OneWay, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ListBoxItem">
