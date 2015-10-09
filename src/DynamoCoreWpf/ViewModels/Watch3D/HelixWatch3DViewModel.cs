@@ -17,12 +17,15 @@ using Autodesk.DesignScript.Interfaces;
 using Dynamo.Models;
 using Dynamo.Wpf.Rendering;
 using DynamoUtilities;
+using HelixToolkit.Wpf;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
 using SharpDX;
+using BoundingSphere = SharpDX.BoundingSphere;
 using Color = SharpDX.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
 using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
+using MeshBuilder = HelixToolkit.Wpf.SharpDX.MeshBuilder;
 using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
@@ -931,11 +934,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             Camera.FarPlaneDistance = data.FarPlaneDistance;
         }
 
-        private double CalculateNearClipPlane(double maxDim)
-        {
-            return maxDim * NearPlaneDistanceFactor;
-        }
-
         private void RemoveGeometryForUpdatedPackages(IEnumerable<IRenderPackage> packages)
         {
             lock (Model3DDictionaryMutex)
@@ -1217,15 +1215,32 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <summary>
         /// This method attempts to maximize the near clip plane in order to 
         /// achiever higher z-buffer precision.
+        /// 
+        /// It does this by finding the nearest and closest geometry vertices in the scene
+        /// and discarding all those behind the camera. Then it calculates the nearest 
+        /// and farthest points in the scene from the camera position. It sets the camera's
+        /// near clip plane to `near/2` and the far clip plane to `far`.
         /// </summary>
-        internal void UpdateNearClipPlaneForSceneBounds(Rect3D sceneBounds)
+        internal void UpdateNearClipPlane()
         {
-            // http: //www.sjbaker.org/steve/omniv/love_your_z_buffer.html
-            var maxDim = Math.Max(Math.Max(sceneBounds.SizeX, sceneBounds.Y), sceneBounds.SizeZ);
-            var bounds = new BoundingBox(new Vector3(-50,-50,-50),new Vector3(50,50,50));
-            Camera.NearPlaneDistance = 
-                bounds.Contains(Camera.Position.ToVector3()) == ContainmentType.Contains ? 
-                0.1 : Math.Max(CalculateNearClipPlane(maxDim), 0.1);
+            var closest = double.MaxValue;
+            var farthest = double.MinValue;
+
+            var look = Camera.LookDirection.ToVector3();
+            var pos = Camera.Position.ToVector3();
+
+            foreach (var v in SceneItems.Where(i=>i is GeometryModel3D).Cast<GeometryModel3D>().SelectMany(g=>g.Geometry.Positions))
+            {
+                var vToPoint = (v - Camera.Position.ToVector3()).Normalized();
+                if (Vector3.Dot(look, vToPoint) < 0) continue;
+
+                var d = Vector3.DistanceSquared(pos, v);
+                closest = Math.Min(closest, d);
+                farthest = Math.Max(farthest, d);
+            }
+            
+            Camera.NearPlaneDistance = Math.Min(Math.Sqrt(farthest) * NearPlaneDistanceFactor, Math.Sqrt(closest)/2);
+            Debug.WriteLine(string.Format("Close={0}, Far={1}, Near clip={2}", Math.Sqrt(closest), Math.Sqrt(farthest), Camera.NearPlaneDistance));
         }
 
         internal override void ExportToSTL(string path, string modelName)

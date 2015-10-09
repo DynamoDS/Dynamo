@@ -178,12 +178,10 @@ namespace Dynamo.Controls
 
         private void CompositionTargetRenderingHandler(object sender, EventArgs e)
         {
-            var sceneBounds = watch_view.FindBounds();
-
             var helixVm = ViewModel as HelixWatch3DViewModel;
             if (helixVm == null) return;
 
-            helixVm.UpdateNearClipPlaneForSceneBounds(sceneBounds);
+            helixVm.UpdateNearClipPlane();
             helixVm.ComputeFrameUpdate();
         }
 
