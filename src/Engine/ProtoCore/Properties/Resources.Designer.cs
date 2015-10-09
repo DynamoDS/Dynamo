@@ -1268,7 +1268,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Range node supports alphabet sequence made of letters of the same case..
+        ///   Looks up a localized string similar to Letters of the same case are required..
         /// </summary>
         public static string kInvalidCasesInRangeExpression {
             get {

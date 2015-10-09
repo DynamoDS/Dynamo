@@ -906,6 +906,6 @@ Parameter name: {0}</value>
     <value>Sequence node supports only ASCII characters</value>
   </data>
   <data name="kInvalidCasesInRangeExpression" xml:space="preserve">
-    <value>Range node supports alphabet sequence made of letters of the same case.</value>
+    <value>Letters of the same case are required.</value>
   </data>
 </root>

@@ -7,7 +7,7 @@
     <Dynamo.Nodes.DoubleInput guid="52048c47-73fb-4d5f-9221-e4c6b2b41126" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="2916.23619251927" y="911.143520697347" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="9" />
     </Dynamo.Nodes.DoubleInput>
-    <DSCoreNodesUI.NumberRange guid="0068dbbe-9753-4e2a-8015-614694ee907c" type="DSCoreNodesUI.NumberRange" nickname="Number Range" x="3141.25683710489" y="845.563826571455" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <DSCoreNodesUI.ByRange guid="0068dbbe-9753-4e2a-8015-614694ee907c" type="DSCoreNodesUI.ByRange" nickname="ByRange" x="3141.25683710489" y="845.563826571455" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
     <Dynamo.Nodes.DoubleInput guid="e6d6a43f-59af-48b3-a87f-b578db52c908" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="2914.64389577814" y="976.492386142689" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="1" />
     </Dynamo.Nodes.DoubleInput>
