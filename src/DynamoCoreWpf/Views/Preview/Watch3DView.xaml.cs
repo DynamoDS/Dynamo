@@ -56,6 +56,8 @@ namespace Dynamo.Controls
 
             CompositionTarget.Rendering -= CompositionTargetRenderingHandler;
 
+            if (ViewModel == null) return;
+
             ViewModel.RequestAttachToScene -= ViewModelRequestAttachToSceneHandler;
         }
 
