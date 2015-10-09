@@ -1271,6 +1271,17 @@ namespace ProtoCore.Lang
                 return null;
             }
 
+            // Start case should be the same as end case. 
+            // It's restricted start as "AA" and end as "zz".
+            if (!((Char.IsLower(startLetters.First()) && Char.IsLower(endLetters.First()))
+                || (Char.IsUpper(startLetters.First()) && Char.IsUpper(endLetters.First()))))
+            {
+                runtimeCore.RuntimeStatus.LogWarning(
+                    WarningID.kInvalidArguments,
+                    Resources.kInvalidCasesInRangeExpression);
+                return null;
+            }
+
             bool isUpperCase = Char.IsUpper(startLetters.First());
 
             int startNumber = GetNumberFromLetter(startLetters, isUpperCase);
