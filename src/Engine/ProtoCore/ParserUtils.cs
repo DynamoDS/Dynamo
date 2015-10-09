@@ -69,53 +69,6 @@ namespace ProtoCore.Utils
             return identifiers;
         }
 
-        private static string ExtractStatementHelper(string code, int line, int col, int endLine, int endCol)
-        {
-            int linePos = 1;
-            int charPos = 1;
-            int startIndex = 0;
-            int endIndex = 0;
-            int prevLineLen = 0;
-
-            while (charPos <= code.Length + 1)
-            {
-                if (linePos == line)
-                {
-                    if (charPos == prevLineLen + col)
-                    {
-                        startIndex = charPos;
-                    }
-                }
-                if (linePos == endLine)
-                {
-                    if (charPos == prevLineLen + endCol)
-                    {
-                        if (charPos != code.Length + 1)
-                            endIndex = charPos + 1;
-                        else
-                            endIndex = charPos;
-                        while (charPos < code.Length && code[charPos] == '\n')
-                        {
-                            charPos++;
-                            endIndex++;
-                        }
-                        break;
-                    }
-
-                }
-                if (code[charPos - 1] == '\n')
-                {
-                    prevLineLen = charPos;
-                    ++linePos;
-                }
-
-                ++charPos;
-
-            }
-
-            return code.Substring(startIndex - 1, (endIndex - startIndex));
-        }
-
         public static List<ProtoCore.AST.Node> GetAstNodes(ProtoCore.AST.Node codeBlockNode)
         {
             List<ProtoCore.AST.Node> nodes = new List<ProtoCore.AST.Node>();

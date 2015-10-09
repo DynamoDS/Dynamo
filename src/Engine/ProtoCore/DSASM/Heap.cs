@@ -926,9 +926,7 @@ namespace ProtoCore.DSASM
                     }
 
                     heapElements[i] = null;
-#if !HEAP_VERIFICATION
                     freeList.Add(i);
-#endif
                 }
             }
             finally
