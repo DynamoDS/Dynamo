@@ -934,58 +934,5 @@ namespace ProtoCore.DSASM
                 IsGCRunning = false;
             }
         }
-
-
-        #region Reference counting APIs
-        /// <summary>
-        /// Checks if the heap contains at least 1 pointer element that points to itself
-        /// This function is used as a diagnostic tool for detecting heap cycles and should never return true
-        /// </summary>
-        /// <returns> Returns true if the heap contains at least one cycle</returns>
-        public bool IsHeapCyclic()
-        {
-            for (int n = 0; n < heapElements.Count; ++n)
-            {
-                HeapElement heapElem = heapElements[n];
-                if (IsHeapCyclic(heapElem, n))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Checks if the heap element is cyclic. 
-        /// Traverses the pointer element and determines it points to itself
-        /// </summary>
-        /// <param name="heapElement"></param>
-        /// <param name="core"></param>
-        /// <returns> Returns true if the array contains a cycle </returns>
-        private bool IsHeapCyclic(HeapElement heapElement, int HeapID)
-        {
-            if (heapElement.Count > 0)
-            {
-                // Traverse each element in the heap
-                foreach (StackValue sv in heapElement.Values)
-                {
-                    // Is it a pointer
-                    if (sv.IsReferenceType)
-                    {
-                        // Check if the current element in the heap points to the original pointer
-                        if (sv.opdata == HeapID)
-                        {
-                            return true;
-                        }
-
-                        HeapElement hpe;
-                        TryGetHeapElement(sv, out hpe);
-                        return IsHeapCyclic(hpe, HeapID);
-                    }
-                }
-            }
-            return false;
-        }
-        #endregion
     }
 }
