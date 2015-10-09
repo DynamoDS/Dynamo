@@ -11,7 +11,7 @@ namespace ProtoTest
         {
             String code =
 @"size;[Imperative]{	size = 5;}";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
             Obj o = mirror.GetValue("size");
             Assert.IsTrue((Int64)o.Payload == 5);

@@ -66,7 +66,7 @@ namespace ProtoTestFx
             string persistentManager, out ExecutionMirror mirror, out RuntimeCore runtimeCoreOut)
         {
             ProtoCore.Core core;
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScriptRunner();
 
             var options = new ProtoCore.Options();
             options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
