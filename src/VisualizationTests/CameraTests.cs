@@ -6,8 +6,7 @@ using NUnit.Framework;
 
 namespace WpfVisualizationTests
 {
-    //TODO: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-8735
-    [TestFixture, Category("Failure")]
+    [TestFixture]
     public class CameraTests : VisualizationTest
     {
         private Watch3DView BackgroundPreview
