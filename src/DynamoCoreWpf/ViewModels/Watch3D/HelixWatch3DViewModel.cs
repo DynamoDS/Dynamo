@@ -34,8 +34,7 @@ using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
     public class CameraData
-    {
-        
+    { 
         // Default camera position data. These values have been rounded
         // to the nearest whole value.
         // eyeX="-16.9655136013663" eyeY="24.341577725171" eyeZ="50.6494323150915" 
@@ -405,7 +404,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             return new CameraData();
         }
 
-        protected override void OnBeginUpdate(IEnumerable<IRenderPackage> packages)
+        public override void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages)
         {
             if (Active == false)
             {
@@ -581,7 +580,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             OnRequestViewRefresh();
         }
 
-        internal override void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
+        public override void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
         {
             lock (Model3DDictionaryMutex)
             {

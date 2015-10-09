@@ -207,6 +207,16 @@
                            Visibility="{Binding Path=CanFindNodesFromElements, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                            Command="{Binding FindNodesFromSelectionCommand}" />
 
+                <Separator Visibility="{Binding Path=CanCopyOrPaste, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+
+                <MenuItem  Header="{x:Static p:Resources.ContextMenuCopy}"
+                           Visibility="{Binding Path=CanCopy, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                           Command="{Binding CopyCommand}" />
+
+                <MenuItem  Header="{x:Static p:Resources.ContextMenuPaste}"
+                           Visibility="{Binding Path=CanPaste, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                           Command="{Binding PasteCommand}" /> 
+
                 <Separator Visibility="{Binding Path=IsHomeSpace, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}" />
 
                 <MenuItem  Header="{x:Static p:Resources.ContextMenuEditCustomNodeProperty}"

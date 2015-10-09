@@ -18,7 +18,7 @@ namespace Dynamo.Controls
     /// <summary>
     /// Interaction logic for WatchControl.xaml
     /// </summary>
-    public partial class Watch3DView : IWatch3DView
+    public partial class Watch3DView
     {
         #region private members
 
@@ -67,6 +67,24 @@ namespace Dynamo.Controls
             PreviewMouseRightButtonDown += view_PreviewMouseRightButtonDown;
         }
 
+        private void RegisterViewEventHandlers()
+        {
+            watch_view.MouseDown += (sender, args) =>
+            {
+                ViewModel.OnViewMouseDown(sender, args);
+            };
+
+            watch_view.MouseUp += (sender, args) =>
+            {
+                ViewModel.OnViewMouseUp(sender, args);
+            };
+
+            watch_view.MouseMove += (sender, args) =>
+            {
+                ViewModel.OnViewMouseMove(sender, args);
+            };
+        }
+
         private void UnregisterButtonHandlers()
         {
             MouseLeftButtonDown -= MouseButtonIgnoreHandler;
@@ -97,9 +115,10 @@ namespace Dynamo.Controls
             ViewModel.RequestAttachToScene += ViewModelRequestAttachToSceneHandler;
             ViewModel.RequestCreateModels += RequestCreateModelsHandler;
             ViewModel.RequestViewRefresh += RequestViewRefreshHandler;
+            ViewModel.RequestClickRay += GetClickRay;
         }
 
-        void RequestViewRefreshHandler()
+        private void RequestViewRefreshHandler()
         {
             View.InvalidateRender();
         }
@@ -192,25 +211,11 @@ namespace Dynamo.Controls
 
         #endregion
 
-        #region interface methods
-
         public Ray3D GetClickRay(MouseEventArgs mouseButtonEventArgs)
         {
             var mousePos = mouseButtonEventArgs.GetPosition(this);
 
             return View.Point2DToRay3D(new Point(mousePos.X, mousePos.Y));
         }
-
-        public void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages)
-        {
-            ViewModel.OnRequestCreateModels(packages);
-        }
-
-        public void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
-        {
-            ViewModel.DeleteGeometryForIdentifier(identifier, requestUpdate);
-        }
-
-        #endregion
     }
 }

@@ -446,6 +446,9 @@ namespace Dynamo.ViewModels
 
             this.BrandingResourceProvider = startConfiguration.BrandingResourceProvider ?? new DefaultBrandingResourceProvider();
 
+            // commands should be initialized before adding any WorkspaceViewModel
+            InitializeDelegateCommands();
+
             //add the initial workspace and register for future 
             //updates to the workspaces collection
             var homespaceViewModel = new HomeWorkspaceViewModel(model.CurrentWorkspace as HomeWorkspaceModel, this);
@@ -461,8 +464,6 @@ namespace Dynamo.ViewModels
             SubscribeUpdateManagerHandlers();
 
             InitializeAutomationSettings(startConfiguration.CommandFilePath);
-
-            InitializeDelegateCommands();
 
             SubscribeLoggerHandlers();
 

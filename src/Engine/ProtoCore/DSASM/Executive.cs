@@ -1215,7 +1215,7 @@ namespace ProtoCore.DSASM
                 }
                 else if (snode.IsChar)
                 {
-                    Char character = EncodingUtils.ConvertInt64ToCharacter(snode.RawIntValue);
+                    Char character = Convert.ToChar(snode.RawIntValue);
                     rhs = "'" + character + "'";
                 }
                 else if (snode.IsString)
@@ -1264,7 +1264,7 @@ namespace ProtoCore.DSASM
             else if (snode.IsChar)
             {
                 Int64 data = snode.opdata;
-                Char character = EncodingUtils.ConvertInt64ToCharacter(data);
+                Char character = Convert.ToChar(snode.RawIntValue);
                 rhs = "'" + character + "'";
             }
             else if (snode.IsString)
