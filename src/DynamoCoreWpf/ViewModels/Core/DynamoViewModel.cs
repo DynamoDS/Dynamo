@@ -375,16 +375,23 @@ namespace Dynamo.ViewModels
             get { return this.Model.CurrentWorkspace.Presets.Any(); }            
         }
 
-        public List<DefaultWatch3DViewModel> Watch3DViewModels
+        /// <summary>
+        /// A collection of <see cref="DefaultWatch3DViewModel"/> objects. 
+        /// 
+        /// Each DefaultWatch3DViewModel object is responsible for converting
+        /// data for visualization in a different context. For example, the 
+        /// <see cref="HelixWatch3DViewModel"/> provides the geometry for the
+        /// background preview.
+        /// </summary>
+        public IEnumerable<DefaultWatch3DViewModel> Watch3DViewModels
         {
             get { return watch3DViewModels; }
-            protected set
-            {
-                watch3DViewModels = value;
-                RaisePropertyChanged("Watch3DViewModels");
-            }
         }
 
+        /// <summary>
+        /// A <see cref="DefaultWatch3DViewModel"/> which provides the
+        /// geometry for the primary background 3d preview.
+        /// </summary>
         public DefaultWatch3DViewModel BackgroundPreviewViewModel { get; private set; }
 
         public bool BackgroundPreviewActive
@@ -481,9 +488,21 @@ namespace Dynamo.ViewModels
             RenderPackageFactoryViewModel.PropertyChanged += RenderPackageFactoryViewModel_PropertyChanged;
 
             BackgroundPreviewViewModel = startConfiguration.Watch3DViewModel;
-            BackgroundPreviewViewModel.Setup(this, RenderPackageFactoryViewModel.Factory);
-            Watch3DViewModels.Add(BackgroundPreviewViewModel);
             BackgroundPreviewViewModel.PropertyChanged += Watch3DViewModelPropertyChanged;
+            RegisterWatch3DViewModel(BackgroundPreviewViewModel, RenderPackageFactoryViewModel.Factory);
+        }
+
+        /// <summary>
+        /// Sets up the provided <see cref="DefaultWatch3DViewModel"/> object and 
+        /// adds it to the Watch3DViewModels collection.
+        /// </summary>
+        /// <param name="watch3DViewModel"></param>
+        /// <param name="factory"></param>
+        protected void RegisterWatch3DViewModel(DefaultWatch3DViewModel watch3DViewModel, IRenderPackageFactory factory)
+        {
+            watch3DViewModel.Setup(this, factory);
+            watch3DViewModels.Add(watch3DViewModel);
+            RaisePropertyChanged("Watch3DViewModels");
         }
 
         private void RenderPackageFactoryViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -494,7 +513,10 @@ namespace Dynamo.ViewModels
                     var factoryVm = (RenderPackageFactoryViewModel)sender;
                     model.PreferenceSettings.ShowEdges = factoryVm.Factory.TessellationParameters.ShowEdges;
                     // A full regeneration is required to get the edge geometry.
-                    Watch3DViewModels.ForEach(vm=>vm.RegenerateAllPackages());
+                    foreach (var vm in Watch3DViewModels)
+                    {
+                        vm.RegenerateAllPackages();
+                    }
                     break;
                 default:
                     return;
