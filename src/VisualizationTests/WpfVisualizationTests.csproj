@@ -109,6 +109,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="CameraTests.cs" />
     <Compile Include="HelixRenderPackageTests.cs" />
     <Compile Include="HelixWatch3DViewModelTests.cs" />
