@@ -1240,7 +1240,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
             
             Camera.NearPlaneDistance = Math.Min(Math.Sqrt(farthest) * NearPlaneDistanceFactor, Math.Sqrt(closest)/2);
-            Debug.WriteLine(string.Format("Close={0}, Far={1}, Near clip={2}", Math.Sqrt(closest), Math.Sqrt(farthest), Camera.NearPlaneDistance));
+            //Debug.WriteLine(string.Format("Close={0}, Far={1}, Near clip={2}", Math.Sqrt(closest), Math.Sqrt(farthest), Camera.NearPlaneDistance));
         }
 
         internal override void ExportToSTL(string path, string modelName)
