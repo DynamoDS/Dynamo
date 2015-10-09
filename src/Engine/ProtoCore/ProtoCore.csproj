@@ -101,7 +101,6 @@
       <Link>AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="AssociativeGraph.cs" />
-    <Compile Include="ASTCompilerUtils.cs" />
     <Compile Include="DSASM\HeapObjects.cs" />
     <Compile Include="SyntaxAnalysis\AstVisitor.cs" />
     <Compile Include="AttributeEntry.cs" />
@@ -113,7 +112,7 @@
     <Compile Include="CodePoint.cs" />
     <Compile Include="Compiler.cs" />
     <Compile Include="CompilerOptions.cs" />
-    <Compile Include="CompilerUtils.cs" />
+    <Compile Include="Utils\CompilerUtils.cs" />
     <Compile Include="Core.cs" />
     <Compile Include="ClassTable.cs" />
     <Compile Include="DebuggerProperties.cs" />
@@ -147,7 +146,7 @@
     <Compile Include="Namespace\ElementRewriter.cs" />
     <Compile Include="Namespace\ElementResolver.cs" />
     <Compile Include="Namespace\SymbolTable.cs" />
-    <Compile Include="ParserUtils.cs" />
+    <Compile Include="Utils\ParserUtils.cs" />
     <Compile Include="Properties\Resources.en-US.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
