@@ -92,8 +92,7 @@ namespace WpfVisualizationTests
         }
     }
 
-    // TODO: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-8735
-    [TestFixture, Category("Failure")]
+    [TestFixture]
     public class HelixWatch3DViewModelTests : VisualizationTest
     {
         private IEnumerable<Model3D> BackgroundPreviewGeometry
@@ -109,8 +108,6 @@ namespace WpfVisualizationTests
                     FirstOrDefault(c => c is Watch3DView);
             }
         }
-
-
 
         #region node tests
 
