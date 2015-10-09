@@ -498,13 +498,13 @@ namespace Dynamo.ViewModels
         {
             var command = new DynamoModel.CreateNodeCommand(node1, 0, 0, true, true);
             //ExecuteCommand(command);
-            //if (null != this.automationSettings)
-            //    this.automationSettings.RecordCommand(command);
+            if (null != this.automationSettings)
+                this.automationSettings.RecordCommand(command);
 
             //if (Model.DebugSettings.VerboseLogging)
             //    model.Logger.Log("Command: " + command);
 
-            model.AddNodeToCurrentWorkspace(node1, centered: command.DefaultPosition, addToSelection:false);
+            model.AddNodeToCurrentWorkspace(node1, centered: false, addToSelection:false);
             CurrentSpace.RecordCreatedModel(node1);
             //////////////////////////////////////////////////
             
