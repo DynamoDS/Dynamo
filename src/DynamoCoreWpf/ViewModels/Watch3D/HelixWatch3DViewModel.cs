@@ -1216,25 +1216,25 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// This method attempts to maximize the near clip plane in order to 
         /// achiever higher z-buffer precision.
         /// 
-        /// It does this by finding the nearest and closest geometry vertices in the scene
-        /// and discarding all those behind the camera. Then it calculates the nearest 
-        /// and farthest points in the scene from the camera position. It sets the camera's
-        /// near clip plane to `near/2` and the far clip plane to `far`.
+        /// It does this by finding the nearest and closest center points to the camera location 
+        /// of geometry bounding boxes in the scene . It sets the camera's near clip plane to 
+        /// `near/2` and the far clip plane to `far`.
         /// </summary>
         internal void UpdateNearClipPlane()
         {
             var closest = double.MaxValue;
             var farthest = double.MinValue;
 
-            var look = Camera.LookDirection.ToVector3();
             var pos = Camera.Position.ToVector3();
 
-            foreach (var v in SceneItems.Where(i=>i is GeometryModel3D).Cast<GeometryModel3D>().SelectMany(g=>g.Geometry.Positions))
-            {
-                var vToPoint = (v - Camera.Position.ToVector3()).Normalized();
-                if (Vector3.Dot(look, vToPoint) < 0) continue;
+            var centers =
+                SceneItems.Where(i => i is GeometryModel3D)
+                    .Cast<GeometryModel3D>()
+                    .Select(g => (g.Bounds.Maximum + g.Bounds.Minimum)/2)
+                    .ToList();
 
-                var d = Vector3.DistanceSquared(pos, v);
+            foreach (var d in centers.Select(c => Vector3.DistanceSquared(pos, c)))
+            {
                 closest = Math.Min(closest, d);
                 farthest = Math.Max(farthest, d);
             }
