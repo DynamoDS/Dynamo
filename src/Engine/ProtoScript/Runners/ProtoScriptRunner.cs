@@ -8,7 +8,7 @@ using ProtoCore.DSASM;
 namespace ProtoScript.Runners
 {
 
-    public class ProtoScriptTestRunner
+    public class ProtoScriptRunner
     {
         public ProtoCore.DebugServices.EventSink EventSink = new ProtoCore.DebugServices.ConsoleEventSink();
 

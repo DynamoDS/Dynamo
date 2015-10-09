@@ -12,7 +12,7 @@ namespace ProtoTest
         [Category("ModifierBlock")] 
         public void SimpleExpr()
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             fsr.Execute(
                         @"
                         [Associative]
@@ -25,7 +25,7 @@ namespace ProtoTest
         [Category("ModifierBlock")] 
         public void SimpleFuncDef()
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             fsr.Execute(
                         @"
                         [Associative]
@@ -42,7 +42,7 @@ namespace ProtoTest
         [Category("ModifierBlock")] 
         public void SimpleExprInModifierStack()
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = fsr.Execute(
                         @"
 a;
@@ -61,7 +61,7 @@ a;
         [Category("ModifierBlock")] 
         public void TwoSimpleExprInModifierStack()
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = fsr.Execute(
                         @"
 a;
@@ -80,7 +80,7 @@ a;
         [Category("ModifierBlock")]
         public void TwoExprInModifierStackWithOp()
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = fsr.Execute(
                         @"
 a;
@@ -102,7 +102,7 @@ a;
         [Category("ModifierBlock")] 
         public void ModifierStackWithName()
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = fsr.Execute(
                         @"
 a;a@init;
@@ -124,7 +124,7 @@ a;a@init;
         [Category("ModifierBlock")] 
         public void ModifierStackWithTwoNames()
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = fsr.Execute(
                         @"
 a;a@init;a@first;
@@ -147,7 +147,7 @@ a;a@init;a@first;
         [Category("ModifierBlock")]
         public void ModifierStackWithArray()
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = fsr.Execute(
                         @"
 a;
@@ -175,7 +175,7 @@ a@first;
         [Category("ModifierBlock")] 
         public void ModifierStackWithArrayAndFunction()
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = fsr.Execute(
                         @"a@init;a@first;b;
                         [Associative]
@@ -206,7 +206,7 @@ a@first;
         [Category("ModifierBlock")] 
         public void ModifierStackWithArrayAndFunction2()
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = fsr.Execute(
                         @"b;a@init;a@first;
                          [Associative]
@@ -231,7 +231,7 @@ a@first;
         [Category("ModifierBlock")] 
         public void ModifierStackWithArrayAndFunctionReplication()
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = fsr.Execute(
                         @"a@init;a@first;b;
                          [Associative]
@@ -272,7 +272,7 @@ a@first;
         [Category("ModifierBlock")] 
         public void ClassTest()
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             fsr.Execute(
                        @"
                             [Associative]
