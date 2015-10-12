@@ -205,8 +205,7 @@ namespace Dynamo.Controls
                     DynamoSelection.Instance.ClearSelection();
                 }
 
-                if (!DynamoSelection.Instance.Selection.Contains(ViewModel.NodeLogic))
-                    DynamoSelection.Instance.Selection.Add(ViewModel.NodeLogic);
+                DynamoSelection.Instance.Selection.AddUnique(ViewModel.NodeLogic);
             }
             else
             {
