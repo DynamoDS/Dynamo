@@ -87,7 +87,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private readonly Color4 directionalLightColor = new Color4(0.9f, 0.9f, 0.9f, 1.0f);
         private readonly Color4 defaultSelectionColor = new Color4(new Color3(0, 158.0f / 255.0f, 1.0f));
         private readonly Color4 defaultMaterialColor = new Color4(new Color3(1.0f, 1.0f, 1.0f));
-        private readonly Size defaultPointSize = new Size(4, 4);
+        private readonly Size defaultPointSize = new Size(6, 6);
         private readonly Color4 defaultLineColor = new Color4(new Color3(0, 0, 0));
         private readonly Color4 defaultPointColor = new Color4(new Color3(0, 0, 0));
 

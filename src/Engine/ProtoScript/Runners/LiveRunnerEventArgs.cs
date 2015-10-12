@@ -67,23 +67,6 @@ namespace ProtoScript.Runners
         }
     }
 
-    public class NodesToCodeCompletedEventArgs : EventArgs
-    {
-        public String output { get; private set; }
-        public EventStatus ResultStatus { get; private set; }
-        public String ErrorString { get; private set; }
-
-        public NodesToCodeCompletedEventArgs(
-            string outputData, EventStatus resultStatus, String errorString)
-        {
-            this.output = outputData;
-            this.ResultStatus = resultStatus;
-            this.ErrorString = errorString;
-        }
-    }
-
-
     public delegate void NodeValueReadyEventHandler(object sender, NodeValueReadyEventArgs e);
     public delegate void GraphUpdateReadyEventHandler(object sender, GraphUpdateReadyEventArgs e);
-    public delegate void NodesToCodeCompletedEventHandler(object sender, NodesToCodeCompletedEventArgs e);
 }
