@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Models;
 
@@ -21,8 +22,8 @@ namespace Dynamo.Search.SearchElements
             FullCategoryName = typeLoadData.Category;
             Description = typeLoadData.Description;
             Assembly = typeLoadData.Assembly.Location;
-            inputParameters = new List<System.Tuple<string, string>>();
-            outputParameters = new List<string>();
+            inputParameters = typeLoadData.InputParameters.ToList();
+            outputParameters = typeLoadData.OutputParameters.ToList();
             iconName = typeLoadData.Type.FullName;
             ElementType = ElementTypes.ZeroTouch;
             if(typeLoadData.IsPackageMember)
