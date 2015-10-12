@@ -22,3 +22,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")] // Dynamic assembly created by Moq
 [assembly: InternalsVisibleTo("DynamoStudio")]
 [assembly: InternalsVisibleTo("Reach")]
+[assembly: InternalsVisibleTo("WpfVisualizationTests")]
