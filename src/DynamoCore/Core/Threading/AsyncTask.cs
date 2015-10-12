@@ -71,6 +71,16 @@ namespace Dynamo.Core.Threading
         internal Exception Exception { get; private set; }
 
         /// <summary>
+        /// This property indicates if the AsyncTask can be executed in parallel
+        /// alongside other AsyncTask objects. Two or more AsyncTask objects with
+        /// this property set to true will be executed on separate threads that 
+        /// are launched by ISchedulerThread. Note that ISchedulerThread will not
+        /// proceed until all these threads finish their executions.
+        /// </summary>
+        /// 
+        internal bool Parallelizable { get; private set; }
+
+        /// <summary>
         /// DynamoScheduler sorts tasks base on two key factors: the priority of
         /// a task, and the relative importance between two tasks that has the 
         /// same priority. During task reprioritization process, DynamoScheduler 
@@ -112,6 +122,21 @@ namespace Dynamo.Core.Threading
 
             this.scheduler = scheduler;
             CreationTime = scheduler.NextTimeStamp;
+        }
+
+        /// <summary>
+        /// Constructs an instance of AsyncTask object.
+        /// </summary>
+        /// <param name="scheduler">A reference to the DynamoScheduler, this 
+        /// parameter cannot be null.</param>
+        /// <param name="parallelizable">A flag that indicates if this AsyncTask
+        /// can be executed in parallel with other tasks in scheduler task queue.
+        /// </param>
+        /// 
+        protected AsyncTask(DynamoScheduler scheduler, bool parallelizable)
+            : this(scheduler)
+        {
+            Parallelizable = parallelizable;
         }
 
         /// <summary>

@@ -1189,6 +1189,9 @@ namespace Dynamo.Tests
                     GeometryFactoryPath = preloader.GeometryFactoryPath,
                     ProcessMode = TaskProcessMode.Asynchronous
                 });
+
+            // Disable task parallelism for this set of test cases.
+            dynamoModel.Scheduler.EnableTaskParallelization = false;
         }
 
         private IEnumerable<NodeModel> CreateBaseNodes()

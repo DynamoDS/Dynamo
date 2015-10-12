@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Dynamo.Annotations;
 using Dynamo.Interfaces;
@@ -105,12 +106,21 @@ namespace Dynamo.Core.Threading
         /// </summary>
         public TimeStamp NextTimeStamp { get { return generator.Next; } }
 
+        /// <summary>
+        /// When this property is set to true, AsyncTask types that support 
+        /// parallel execution (i.e. AsyncTask.Parallelizable = true) will be 
+        /// executed in parallel. Set this property to false to disable task 
+        /// parallelism. This property is set to true by default.
+        /// </summary>
+        internal bool EnableTaskParallelization { get; set; }
+
         #endregion
 
         #region Public Class Operational Methods
 
         internal DynamoScheduler(ISchedulerThread schedulerThread, TaskProcessMode processMode)
         {
+            EnableTaskParallelization = true;
             this.schedulerThread = schedulerThread;
             this.ProcessMode = processMode;
 
@@ -205,7 +215,7 @@ namespace Dynamo.Core.Threading
         /// 
         public bool ProcessNextTask(bool waitIfTaskQueueIsEmpty)
         {
-            AsyncTask nextTask = null;
+            IEnumerable<AsyncTask> availableTasks = null;
             IEnumerable<AsyncTask> droppedTasks = null;
 
             lock (taskQueue)
@@ -222,8 +232,7 @@ namespace Dynamo.Core.Threading
 
                 if (taskQueue.Count > 0)
                 {
-                    nextTask = taskQueue[0];
-                    taskQueue.RemoveAt(0);
+                    availableTasks = DequeueTasks();
                 }
                 else
                 {
@@ -244,9 +253,9 @@ namespace Dynamo.Core.Threading
                 } 
             }
 
-            if (nextTask != null)
+            if ((availableTasks != null) && availableTasks.Any())
             {
-                ProcessTaskInternal(nextTask);
+                ProcessTasksInternal(availableTasks);
                 return true; // This method should be called again.
             }
 
