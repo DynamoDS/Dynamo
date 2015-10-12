@@ -297,18 +297,6 @@ namespace ProtoCore.Utils
             return false;
         }
 
-        public static bool IsGlobalInstanceSetter(string propertyName)
-        {
-            Validity.Assert(null != propertyName);
-            return propertyName.StartsWith(ProtoCore.DSASM.Constants.kGlobalInstanceNamePrefix) && propertyName.Contains(ProtoCore.DSASM.Constants.kSetterPrefix);
-        }
-
-        public static bool GetGlobalInstanceSetterName(string propertyName)
-        {
-            Validity.Assert(null != propertyName);
-            return propertyName.StartsWith(ProtoCore.DSASM.Constants.kGlobalInstanceNamePrefix) && propertyName.Contains(ProtoCore.DSASM.Constants.kSetterPrefix);
-        }
-
         public static bool IsInternalMethod(string methodName)
         {
             Validity.Assert(null != methodName);
@@ -319,27 +307,6 @@ namespace ProtoCore.Utils
         {
             Validity.Assert(null != propertyName);
             return IsGetter(propertyName) || IsSetter(propertyName);
-        }
-
-
-        public static bool IsGlobalInstanceGetterSetter(string propertyName)
-        {
-            Validity.Assert(null != propertyName);
-            return propertyName.StartsWith(ProtoCore.DSASM.Constants.kGlobalInstanceNamePrefix) && IsGetterSetter(propertyName);
-        }
-
-        public static string GetMangledFunctionName(string className, string functionName)
-        {
-            string name = ProtoCore.DSASM.Constants.kGlobalInstanceNamePrefix + className + ProtoCore.DSASM.Constants.kGlobalInstanceFunctionPrefix + functionName;
-            return name;
-        }
-
-        public static string GetMangledFunctionName(int classIndex, string functionName, Core core)
-        {
-            Validity.Assert(classIndex < core.ClassTable.ClassNodes.Count);
-            ClassNode cnode = core.ClassTable.ClassNodes[classIndex];
-            string name = ProtoCore.DSASM.Constants.kGlobalInstanceNamePrefix + cnode.Name + ProtoCore.DSASM.Constants.kGlobalInstanceFunctionPrefix + functionName;
-            return name;
         }
 
         public static string BuildSSATemp(Core core)
@@ -518,27 +485,6 @@ namespace ProtoCore.Utils
                 arrayNode = array.Type;
             }
             return exprlist;
-        }
-
-
-        // Comment Jun: 
-        // Instead of this method, consider storing the name mangled methods original class name and varname
-        public static string GetClassDeclarationName(ProcedureNode procNode, Core core)
-        {
-            string mangledName = procNode.Name;
-            mangledName = mangledName.Remove(0, ProtoCore.DSASM.Constants.kGlobalInstanceNamePrefix.Length);
-
-            int start = mangledName.IndexOf(ProtoCore.DSASM.Constants.kGlobalInstanceFunctionPrefix);
-            mangledName = mangledName.Remove(start);
-            return mangledName;
-
-            if (ProtoCore.DSASM.Constants.kInvalidIndex == procNode.ClassID)
-            {
-                return string.Empty;
-            }
-
-            Validity.Assert(core.ClassTable.ClassNodes.Count > procNode.ClassID);
-            return core.ClassTable.ClassNodes[procNode.ClassID].Name;
         }
 
         public static void CopyDebugData(ProtoCore.AST.Node nodeTo, ProtoCore.AST.Node nodeFrom)
