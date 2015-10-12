@@ -981,7 +981,7 @@ namespace ProtoTest.ProtoAST
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void TestProtoASTExecute_ClassDecl_PropertyAccess_01()
         {
 
@@ -1063,7 +1063,7 @@ namespace ProtoTest.ProtoAST
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void TestProtoASTExecute_ClassDecl_MemFunctionCall_01()
         {
 
@@ -1400,7 +1400,11 @@ namespace ProtoTest.ProtoAST
             ProtoCore.AST.AssociativeAST.FunctionDefinitionNode funcDefNode = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode();
             funcDefNode.Name = "foo";
             funcDefNode.FunctionBody = cbn;
-            /* def foo()             * {             *   b = 10;             *   return = b + 10;             * }*/
+            /* def foo()
+             * {
+             *   b = 10;
+             *   return = b + 10;
+             * }*/
             List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
             astList.Add(funcDefNode);
             ProtoCore.CodeGenDS codegen = new ProtoCore.CodeGenDS(astList);
@@ -1409,13 +1413,19 @@ namespace ProtoTest.ProtoAST
 
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void TestCodeGenDS_ClassDecl_PropertyAccess_01()
         {
 
-            //  class bar            //  {            //       f : var;            //  }            //
+            //  class bar
+            //  {
+            //       f : var;
+            //  }
+            //
             //  p = bar.bar();
-            //  p.f = 10;            //  a = p.f;            
+            //  p.f = 10;
+            //  a = p.f;
+            
 
             // Create the class node AST
             ProtoCore.AST.AssociativeAST.ClassDeclNode classDefNode = new ProtoCore.AST.AssociativeAST.ClassDeclNode();
@@ -1489,7 +1499,7 @@ namespace ProtoTest.ProtoAST
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void TestCodeGenDS_ClassDecl_MemFunctionCall_01()
         {
 

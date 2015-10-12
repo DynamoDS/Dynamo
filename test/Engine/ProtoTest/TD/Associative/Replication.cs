@@ -1833,7 +1833,7 @@ xdata = { 1.5, 2 };
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignore_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignore_DSClassInheritance")]
         [Category("SmokeTest")]
         public void T57_Defect_1467004_Replication_With_Method_Overload_5()
         {
@@ -1874,7 +1874,7 @@ xdata = { 1.5, 2 };
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         [Category("SmokeTest")]
         public void T57_Defect_1467004_Replication_With_Method_Overload_6()
         {
@@ -2602,7 +2602,7 @@ rad = foo(a, d);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_ReplicationWithinDSClass")]
+        [Ignore][Category("DSDefinedClass_Ignored_ReplicationWithinDSClass")]
         public void Array_Ranks_Match_argumentdefinition_1467190()
         {
             String code =
@@ -2921,7 +2921,7 @@ test = a1.X;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         [Category("Replication")]
         [Category("Failure")]
         public void T68_Defect_1460965_Replication_On_Dot_Operator_8()
@@ -2956,7 +2956,7 @@ test = a1.x; //expected :  { 1, { 2, { 0, 1 } } }
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         [Category("Replication")]
         [Category("Failure")]
         public void T68_Defect_1460965_Replication_On_Dot_Operator_9()
@@ -3019,7 +3019,7 @@ x = { };
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassTypeSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassTypeSemantics")]
         [Category("Replication")]
         public void T70_Defect_1467266()
         {
@@ -3092,7 +3092,7 @@ test3 = (a.X)[0];
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassTypeSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassTypeSemantics")]
         [Category("Replication")]
         public void T71_Defect_1467209_3()
         {
@@ -3124,7 +3124,7 @@ a1 = t1[0];
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassTypeSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassTypeSemantics")]
         [Category("Replication")]
         public void T71_Defect_1467209_4()
         {
@@ -3577,7 +3577,7 @@ test2 = sum ( (0..1)<1>, (2..3)<2>);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_NoReplication")]
+        [Ignore][Category("DSDefinedClass_Ignored_NoReplication")]
         [Category("Replication")]
         public void T76_Defect_1467254()
         {
@@ -3606,7 +3606,7 @@ a.x = 4;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_NoReplication")]
+        [Ignore][Category("DSDefinedClass_Ignored_NoReplication")]
         [Category("Replication")]
         public void T76_Defect_1467254_2()
         {
@@ -3674,7 +3674,7 @@ y = x [ {0,1} ][{0,1}];
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassTypeSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassTypeSemantics")]
         [Category("Replication")]
         public void T77_Defect_1467081_3()
         {
@@ -3980,7 +3980,7 @@ b = -DummyVector.ByCoordinates(1,2,3).X;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         [Category("Replication")]
         public void T80_Defect_1467297_6()
         {
@@ -4012,7 +4012,7 @@ b = -A.A().a;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         [Category("Replication")]
         public void T80_Defect_1467297_7()
         {
@@ -4044,7 +4044,7 @@ b = {A.A(), A.A()}.a;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         [Category("Replication")]
         public void T80_Defect_1467297_8()
         {
@@ -4512,7 +4512,7 @@ test = foo ( arr,  { arr, arr} );
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         [Category("Replication")]
         public void T85_Defect_1467076()
         {
@@ -4540,7 +4540,7 @@ test = foo ( arr,  { arr, arr} );
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         [Category("Replication")]
         public void T85_Defect_1467076_a()
         {
@@ -4568,7 +4568,7 @@ test = foo ( arr,  { arr, arr} );
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         [Category("Replication")]
         public void T85_Defect_1467076_2()
         {
@@ -4598,7 +4598,7 @@ test = foo ( arr,  { arr, arr} );
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         [Category("Replication")]
         public void T85_Defect_1467076_2b()
         {
@@ -4696,7 +4696,7 @@ y = x;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignore_Failing")]
+        [Ignore][Category("DSDefinedClass_Ignore_Failing")]
         [Category("Replication")]
         [Category("Failure")]
         public void T87_Defect_1467284()
@@ -4745,7 +4745,7 @@ b = ArrayMember.Ctor({ 1, 2, 3}).X[i];
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         [Category("Replication")]
         public void T88_Defect_1467296_2()
         {
@@ -4778,7 +4778,7 @@ b = A.A(i).a[i];
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         [Category("Replication")]
         public void T88_Defect_1467296_3()
         {
@@ -4811,7 +4811,7 @@ b = { A.A(i).a[i], -A.A(i).a[i] };
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         [Category("Replication")]
         public void T88_Defect_1467296_4()
         {
@@ -5009,7 +5009,7 @@ y = foo(a<1><2>,b<3><4>);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         [Category("Replication")]
         public void T93_Defect_1467315_2()
         {
@@ -5042,7 +5042,7 @@ y = A.A().foo(a<1><2>,b<3><4>);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         [Category("Replication")]
         public void T93_Defect_1467315_3()
         {
@@ -5191,7 +5191,7 @@ test = [Imperative]
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T94_Defect_1467265_4()
         {
             String code =
@@ -5286,7 +5286,7 @@ test2 = DummyPoint2D.ByCoordinates( (0..1)<1>, (2..3)<2>).X;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T95_Defect_1467398_Replication_Guides_On_Collection_2()
         {
             String code =
@@ -5448,7 +5448,7 @@ d2 = [Imperative]
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T96_Defect_1467192_Replication_Inline_Condition_3()
         {
             String code =
@@ -5516,7 +5516,7 @@ c = { { 3 } } + d;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_01()
         {
             String code =
@@ -5539,7 +5539,7 @@ a = p.f({1,2});
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_02()
         {
             String code =
@@ -5567,7 +5567,7 @@ a = p.f({1,2.1});
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_03()
         {
             String code =
@@ -5595,7 +5595,7 @@ a = p.f({1,2.1,2});
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_04()
         {
             String code =
@@ -5624,7 +5624,7 @@ a = p.f({1});
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_05()
         {
             String code =
@@ -5653,7 +5653,7 @@ a = p.f({1, 1.5});
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         [Category("Failure")]
         public void T100_Replication_On_Class_Instance_06()
         {
@@ -5688,7 +5688,7 @@ a = p.f({1, 1.5});
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_07()
         {
             String code =
@@ -5713,7 +5713,7 @@ a = p.f({1, 2});
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_08()
         {
             String code =
@@ -5741,7 +5741,7 @@ a = foo(p);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_09()
         {
             String code =
@@ -5769,7 +5769,7 @@ a = foo(p);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_10()
         {
             String code =
@@ -5797,7 +5797,7 @@ a = foo(p, 1, 2);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_11()
         {
             String code =
@@ -5828,7 +5828,7 @@ y = 1;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_12()
         {
             String code =
@@ -5862,7 +5862,7 @@ y = 3;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_13()
         {
             String code =
@@ -5889,7 +5889,7 @@ y = 3;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_14()
         {
             String code =
@@ -5923,7 +5923,7 @@ y = 3;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_15()
         {
             String code =
@@ -5946,7 +5946,7 @@ a = p.f({0,1,2,3}[1..2]);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_16()
         {
             String code =
@@ -5979,7 +5979,7 @@ y = 4;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_17()
         {
             String code =
@@ -6004,7 +6004,7 @@ d1 = d.a;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_18()
         {
             String code =
@@ -6030,7 +6030,7 @@ y = s.foo(B.B()).b1;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_19()
         {
             String code =
@@ -6057,7 +6057,7 @@ a1.a = 2;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_20()
         {
             String code =
@@ -6086,7 +6086,7 @@ res = ax.foo(1);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_21()
         {
             String code =
@@ -6124,7 +6124,7 @@ res;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_22()
         {
             String code =
@@ -6168,7 +6168,7 @@ def foo ( xx : A[] )
 
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_23()
         {
             String code =
@@ -6213,7 +6213,7 @@ ax = { A.A(), A.A(), A.A() };
 
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_24()
         {
             String code =
@@ -6241,7 +6241,7 @@ ax = { A.A(), A.A() , A.A()};
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_25()
         {
             String code =
@@ -6278,7 +6278,7 @@ bx = 2;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_26()
         {
             String code =

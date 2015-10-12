@@ -12,11 +12,14 @@ namespace ProtoTest.UtilsTests
     class ClassUtilsTest : ProtoTestBase
     {
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void GetUpcastChainTest()
         {
             String code =
-@"class A {}class B extends A {}class C extends B {}";
+@"class A {}
+class B extends A {}
+class C extends B {}
+";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ProtoCore.RuntimeCore runtimeCore = null;
             ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
