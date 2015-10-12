@@ -219,7 +219,6 @@ namespace ProtoScript.Runners
             bool succeeded = CompileAndGenerateExe(code, core, staticContext);
             if (succeeded)
             {
-                core.GenerateExecutable();
                 runtimeCore = ExecuteVM(core);
                 if (!isTest)
                 {
