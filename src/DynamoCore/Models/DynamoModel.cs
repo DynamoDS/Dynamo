@@ -474,7 +474,7 @@ namespace Dynamo.Models
             MigrationManager.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
             var thread = config.SchedulerThread ?? new DynamoSchedulerThread();
-            Scheduler = new DynamoScheduler(thread, IsTestMode ? TaskProcessMode.Synchronous : TaskProcessMode.Asynchronous);
+            Scheduler = new DynamoScheduler(thread, config.ProcessMode);
             Scheduler.TaskStateChanged += OnAsyncTaskStateChanged;
 
             geometryFactoryPath = config.GeometryFactoryPath;
@@ -1927,9 +1927,7 @@ namespace Dynamo.Models
 
             string summary = Resources.UnhandledExceptionSummary;
 
-            string description = (exception is HeapCorruptionException)
-                ? exception.Message
-                : Resources.DisplayEngineFailureMessageDescription;
+            string description = Resources.DisplayEngineFailureMessageDescription;
 
             const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_crash.png";
             var args = new TaskDialogEventArgs(

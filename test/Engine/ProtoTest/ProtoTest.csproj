@@ -124,7 +124,7 @@
     <Compile Include="Associative\TypeSystemTests.cs" />
     <Compile Include="Associative\VerificationErrorFormat.cs" />
     <Compile Include="Associative\VerificationFormatJSON.cs" />
-    <Compile Include="ComponentTest\CompileAndExecute.cs" />
+    <Compile Include="CompileAndExecute.cs" />
     <Compile Include="CoreUnitTests\StaticMirrorTest.cs" />
     <Compile Include="DebugTests\BasicTests.cs" />
     <Compile Include="DebugTests\NamespaceConflictTest.cs" />
@@ -160,7 +160,6 @@
     </Compile>
     <Compile Include="MultiLangTests\UnicodeTest.cs" />
     <Compile Include="NameSpaceTests.cs" />
-    <Compile Include="ProtoAST\ASTCompilerUtilsTests.cs" />
     <Compile Include="ProtoAST\AstFactoryTest.cs" />
     <Compile Include="ProtoAST\ProtoASTExecutionTests.cs" />
     <Compile Include="ProtoAST\RoundTripTests.cs" />
