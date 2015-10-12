@@ -341,5 +341,10 @@ namespace Dynamo.Search
 
             e.Handled = true;
         }
+
+        private void OnFilterMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            FilterPopup.IsOpen = true;
+        }
     }
 }

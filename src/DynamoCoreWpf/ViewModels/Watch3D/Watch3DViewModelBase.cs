@@ -489,6 +489,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in derived classes
         }
 
+        internal void CancelNavigationState()
+        {
+            if(IsPanning) TogglePan(null);
+            if(IsOrbiting) ToggleOrbit(null);
+        }
+
         #region command methods
 
         internal void TogglePan(object parameter)

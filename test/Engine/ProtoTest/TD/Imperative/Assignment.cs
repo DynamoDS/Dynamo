@@ -1531,7 +1531,7 @@ a;
 @"
 a = null + 1; 
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             string err = "";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
 
@@ -1553,7 +1553,7 @@ a = null + 1;
                 }
             }
             ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             string err = "1467368 - Imperative inside Imperative goes into loop ";
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
@@ -1574,7 +1574,7 @@ a = null + 1;
                 }
             }
             ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             string err = "1467368 - Imperative inside Imperative goes into loop ";
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {

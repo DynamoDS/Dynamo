@@ -1952,7 +1952,7 @@ x5 = Average({}) ;// returns 0.0
 x6 = Average({null}) ;// returns 0.0
 ";
             Object n1 = null;
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "DNL-1467301 rev 3778 : Builtin method 'Average' should return null for all negative cases";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("x2", n1);
@@ -1960,24 +1960,6 @@ x6 = Average({null}) ;// returns 0.0
             thisTest.Verify("x5", n1);
             thisTest.Verify("x6", n1);
         }
-        /*
-       
-[Test]
-       [Category("Built in Functions")]
-       public void TV1467301_Average()
-       {
-           String code =
-@"
-";
-           Object n1 = null;
-           ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-           String errmsg = "DNL-1467301 rev 3778 : Builtin method 'Average' should return null for all negative cases";
-           ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-           thisTest.Verify("x2", n1);
-           thisTest.Verify("x4", n1);
-           thisTest.Verify("x5", n1);
-           thisTest.Verify("x6", n1);
-       }*/
 
         [Test]
         [Category("DSDefinedClass_Ported")]
