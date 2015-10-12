@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
@@ -15,19 +16,27 @@ using Dynamo.Selection;
 using Dynamo.Tests;
 using Dynamo.UI;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoCoreWpfTests.Utility;
+using DynamoShapeManager;
+using HelixToolkit.Wpf;
 using HelixToolkit.Wpf.SharpDX;
 using NUnit.Framework;
 using SharpDX;
+using TestServices;
 using Color = System.Windows.Media.Color;
 using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 
-namespace DynamoCoreWpfTests
+namespace WpfVisualizationTests
 {
-    // TODO: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-8735
-    [TestFixture, Category("Failure")]
-    public class HelixWatch3DViewModelTests : SystemTestBase
+    /// <summary>
+    /// The standard SystemTestBase uses a DefaultWatch3DViewModel.
+    /// In order to test visualizations, the VisualizationTest class,
+    /// uses a HelixWatch3DViewModel supplied as part of the 
+    /// DynamoViewModel's start configuration.
+    /// </summary>
+    public class VisualizationTest : SystemTestBase
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -38,6 +47,54 @@ namespace DynamoCoreWpfTests
             base.GetLibrariesToPreload(libraries);
         }
 
+        protected override void StartDynamo(TestSessionConfiguration testConfig)
+        {
+            var preloader = new Preloader(testConfig.DynamoCorePath, testConfig.RequestedLibraryVersion);
+            preloader.Preload();
+
+            var preloadedLibraries = new List<string>();
+            GetLibrariesToPreload(preloadedLibraries);
+
+            if (preloadedLibraries.Any())
+            {
+                if (pathResolver == null)
+                    pathResolver = new TestPathResolver();
+
+                var pr = pathResolver as TestPathResolver;
+                foreach (var preloadedLibrary in preloadedLibraries.Distinct())
+                {
+                    pr.AddPreloadLibraryPath(preloadedLibrary);
+                }
+            }
+
+            Model = DynamoModel.Start(
+                new DynamoModel.DefaultStartConfiguration()
+                {
+                    StartInTestMode = true,
+                    PathResolver = pathResolver,
+                    GeometryFactoryPath = preloader.GeometryFactoryPath,
+                    UpdateManager = this.UpdateManager,
+                    ProcessMode = Dynamo.Core.Threading.TaskProcessMode.Synchronous
+                });
+
+            ViewModel = DynamoViewModel.Start(
+                new DynamoViewModel.StartConfiguration()
+                {
+                    DynamoModel = Model,
+                    Watch3DViewModel = HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(new Watch3DViewModelStartupParams(Model), Model.Logger)
+                });
+
+            //create the view
+            View = new DynamoView(ViewModel);
+            View.Show();
+
+            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+        }
+    }
+
+    [TestFixture]
+    public class HelixWatch3DViewModelTests : VisualizationTest
+    {
         private IEnumerable<Model3D> BackgroundPreviewGeometry
         {
             get { return ((HelixWatch3DViewModel)ViewModel.BackgroundPreviewViewModel).SceneItems; }
@@ -45,16 +102,10 @@ namespace DynamoCoreWpfTests
 
         private Watch3DView BackgroundPreview
         {
-            get { return (Watch3DView)View.background_grid.FindName("BackgroundPreview"); }
-        }
-
-        [SetUp]
-        public void Setup()
-        {
-            var renderingTier = (RenderCapability.Tier >> 16);
-            if (renderingTier < 2)
+            get
             {
-                Assert.Inconclusive("A watch 3d view cannot be created for this test. Ensure that the testing system is DirectX 11 capable.");
+                return (Watch3DView) View.background_grid.Children().
+                    FirstOrDefault(c => c is Watch3DView);
             }
         }
 
@@ -466,9 +517,8 @@ namespace DynamoCoreWpfTests
             var height = original.Height * (1.0 + random.NextDouble());
             original.SetSize(Math.Floor(width), Math.Floor(height));
 
-            var vmParams = new Watch3DViewModelStartupParams(ViewModel.Model, ViewModel, "Test");
-
-            var vm1 = HelixWatch3DNodeViewModel.Start(original, vmParams);
+            var vmParams = new Watch3DViewModelStartupParams(ViewModel.Model);
+            var vm1 = new HelixWatch3DNodeViewModel(original, vmParams);
             var cam = vm1.Camera;
 
             cam.Position = new Point3D(10, 20, 30);
@@ -482,13 +532,13 @@ namespace DynamoCoreWpfTests
 
             // Duplicate the node in various save context.
             var nodeFromFile = new Watch3D();
-            var vmFile = HelixWatch3DNodeViewModel.Start(nodeFromFile, vmParams);
+            var vmFile = new HelixWatch3DNodeViewModel(nodeFromFile, vmParams);
 
             var nodeFromUndo = new Watch3D();
-            var vmUndo = HelixWatch3DNodeViewModel.Start(nodeFromUndo, vmParams);
+            var vmUndo = new HelixWatch3DNodeViewModel(nodeFromUndo, vmParams);
 
             var nodeFromCopy = new Watch3D();
-            var vmCopy = HelixWatch3DNodeViewModel.Start(nodeFromCopy, vmParams);
+            var vmCopy = new HelixWatch3DNodeViewModel(nodeFromCopy, vmParams);
 
             nodeFromFile.Deserialize(fileElement, SaveContext.File);
             nodeFromUndo.Deserialize(undoElement, SaveContext.Undo);
