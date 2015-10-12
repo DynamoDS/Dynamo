@@ -1136,7 +1136,6 @@ namespace ProtoScript.Runners
 
         #region Asynchronous call
         void BeginUpdateGraph(GraphSyncData syncData);
-        void BeginConvertNodesToCode(List<Subtree> subtrees);
         void BeginQueryNodeValue(Guid nodeGuid);
         void BeginQueryNodeValues(List<Guid> nodeGuid);
         #endregion
@@ -1151,8 +1150,6 @@ namespace ProtoScript.Runners
         // Event handlers for the notification from asynchronous call
         event NodeValueReadyEventHandler NodeValueReady;
         event GraphUpdateReadyEventHandler GraphUpdateReady;
-        event NodesToCodeCompletedEventHandler NodesToCodeCompleted;
-
     }
 
     public partial class LiveRunner : ILiveRunner, IDisposable
@@ -1215,7 +1212,7 @@ namespace ProtoScript.Runners
             }
         }
 
-        private ProtoScriptTestRunner runner;
+        private ProtoScriptRunner runner;
         private ProtoRunner.ProtoVMState vmState;
         private ProtoCore.Core runnerCore = null;
         public ProtoCore.Core Core
@@ -1268,7 +1265,7 @@ namespace ProtoScript.Runners
         {
             this.configuration = configuration;
 
-            runner = new ProtoScriptTestRunner();
+            runner = new ProtoScriptRunner();
 
             InitCore();
 
@@ -1396,7 +1393,6 @@ namespace ProtoScript.Runners
 
         public event NodeValueReadyEventHandler NodeValueReady = null;
         public event GraphUpdateReadyEventHandler GraphUpdateReady = null;
-        public event NodesToCodeCompletedEventHandler NodesToCodeCompleted = null;
 
         #endregion
 
@@ -1405,30 +1401,6 @@ namespace ProtoScript.Runners
             lock (taskQueue)
             {
                 taskQueue.Enqueue(new UpdateGraphTask(syncData, this));
-            }
-        }
-
-        /// <summary>
-        /// Async call from command-line interpreter to LiveRunner
-        /// </summary>
-        /// <param name="cmdLineString"></param>
-        public void BeginUpdateCmdLineInterpreter(string cmdLineString)
-        {
-            lock (taskQueue)
-            {
-                taskQueue.Enqueue(
-                    new UpdateCmdLineInterpreterTask(cmdLineString, this));
-            }
-        }
-
-        public void BeginConvertNodesToCode(List<Subtree> subtrees)
-        {
-            if (null == subtrees || (subtrees.Count <= 0))
-                return; // Do nothing, there's no nodes to be converted.
-
-            lock (taskQueue)
-            {
-                taskQueue.Enqueue(new ConvertNodesToCodeTask(subtrees, this));
             }
         }
 
@@ -1934,7 +1906,7 @@ namespace ProtoScript.Runners
         /// </summary>
         public void ReInitializeLiveRunner()
         {
-            runner = new ProtoScriptTestRunner();
+            runner = new ProtoScriptRunner();
             deltaSymbols = 0;
             InitCore();
             staticContext = new ProtoCore.CompileTime.Context();

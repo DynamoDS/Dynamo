@@ -12,7 +12,7 @@ namespace ProtoTest.RegressionTests
         {
             String code =
 @"x;[Associative]{ a = {1001,1002};     // This is failing the pre-parse.  // Probably has somthing to do with convertingthe language blocks into binary exprs     x = a[0];  }";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
             Obj o = mirror.GetValue("x");
             Assert.IsTrue((Int64)o.Payload == 1001);

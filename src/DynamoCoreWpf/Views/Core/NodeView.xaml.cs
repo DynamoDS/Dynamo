@@ -155,19 +155,16 @@ namespace Dynamo.Controls
                     ViewModel.SetLacingTypeCommand.RaiseCanExecuteChanged();
                     break;
 
-                case "IsUpdated":
-                    HandleCacheValueUpdated();
+                case "CachedValue":
+                    CachedValueChanged();
                     break;
             }
         }
 
         /// <summary>
-        /// Whenever property "NodeModel.IsUpdated" is set to true, this method 
-        /// is invoked. It will result in preview control updated, if the control 
-        /// is currently visible. Otherwise this call will be ignored.
+        /// Called when the NodeModel's CachedValue property is updated
         /// </summary>
-        /// 
-        private void HandleCacheValueUpdated()
+        private void CachedValueChanged()
         {
             Dispatcher.BeginInvoke(new Action(delegate
             {

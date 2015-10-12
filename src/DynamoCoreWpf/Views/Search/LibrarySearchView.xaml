@@ -81,7 +81,7 @@
 
                                         <!-- Node description -->
                                         <TextBlock Name="memberDescription"
-                                                   FontSize="10"
+                                                   FontSize="11"
                                                    MaxHeight="50"
                                                    Text="{Binding Description}"
                                                    Foreground="{StaticResource SearchDarkGreyTextColor}"
@@ -99,7 +99,10 @@
             <!-- Remove default listbox blue highlight. Disable item selection -->
             <Style x:Key="SearchItemStyle"
                    TargetType="ListBoxItem">
-
+                <Setter Property="IsSelected"
+                        Value="{Binding IsSelected, Mode=OneWay}" />
+                <Setter Property="Visibility"
+                        Value="{Binding Visibility, Mode=OneWay, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ListBoxItem">
@@ -148,7 +151,7 @@
         <ListBox  Name="SearchResults"
                   Background="{StaticResource LibraryItemHostBackground}"
                   BorderThickness="0"
-                  ItemsSource="{Binding SearchResults}"
+                  ItemsSource="{Binding FilteredResults}"
                   ItemTemplate="{StaticResource SearchItemTemplate}"
                   ItemContainerStyle="{StaticResource SearchItemStyle}"
                   VirtualizingStackPanel.VirtualizationMode="Recycling" />

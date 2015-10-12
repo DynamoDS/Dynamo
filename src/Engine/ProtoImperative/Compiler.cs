@@ -19,26 +19,21 @@ namespace ProtoImperative
             blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
 
             bool buildSucceeded = false;
-            bool isLanguageSignValid = isLanguageSignValid = core.Langverify.Verify(langBlock);
-
-            if (isLanguageSignValid)
+            try
             {
-                try
-                {
-                    ProtoImperative.CodeGen codegen = new ProtoImperative.CodeGen(core, callContext, parentBlock);
+                ProtoImperative.CodeGen codegen = new ProtoImperative.CodeGen(core, callContext, parentBlock);
 
-                    codegen.context = callContext;
-                    codegen.codeBlock.EventSink = sink;
-                    blockId = codegen.Emit(codeBlockNode as ProtoCore.AST.ImperativeAST.CodeBlockNode, graphNode);
-                }
-                catch (ProtoCore.BuildHaltException)
-                {
-                }
-
-                buildSucceeded = core.BuildStatus.BuildSucceeded;
+                codegen.context = callContext;
+                codegen.codeBlock.EventSink = sink;
+                blockId = codegen.Emit(codeBlockNode as ProtoCore.AST.ImperativeAST.CodeBlockNode, graphNode);
             }
+            catch (ProtoCore.BuildHaltException)
+            {
+            }
+
+            buildSucceeded = core.BuildStatus.BuildSucceeded;
             return buildSucceeded;
         }
-	}
+    }
 }
 

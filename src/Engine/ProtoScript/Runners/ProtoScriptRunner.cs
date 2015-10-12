@@ -8,7 +8,7 @@ using ProtoCore.DSASM;
 namespace ProtoScript.Runners
 {
 
-    public class ProtoScriptTestRunner
+    public class ProtoScriptRunner
     {
         public ProtoCore.DebugServices.EventSink EventSink = new ProtoCore.DebugServices.ConsoleEventSink();
 
@@ -158,7 +158,7 @@ namespace ProtoScript.Runners
                     // Passing it to bounce() increments it so the first depth is always 0
                     ProtoCore.DSASM.StackFrame stackFrame = new ProtoCore.DSASM.StackFrame(core.GlobOffset);
                     stackFrame.FramePointer = runtimeCore.RuntimeMemory.FramePointer;
-                    
+
                     // Comment Jun: Tell the new bounce stackframe that this is an implicit bounce
                     // Register TX is used for this.
                     StackValue svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
@@ -172,7 +172,7 @@ namespace ProtoScript.Runners
                 }
                 runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
             }
-            catch 
+            catch
             {
                 runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
                 throw;
@@ -219,9 +219,9 @@ namespace ProtoScript.Runners
                 }
 
                 runtimeCore.CurrentExecutive.CurrentDSASMExec.BounceUsingExecutive(
-                    runtimeCore.CurrentExecutive.CurrentDSASMExec, 
+                    runtimeCore.CurrentExecutive.CurrentDSASMExec,
                     codeBlock.codeBlockId,
-                    runtimeCore.StartPC, 
+                    runtimeCore.StartPC,
                     stackFrame,
                     locals);
 
@@ -234,7 +234,7 @@ namespace ProtoScript.Runners
             }
             return runtimeCore;
         }
-        
+
 
         /// <summary>
         /// Compile and execute the source that is stored in the static context
@@ -245,16 +245,16 @@ namespace ProtoScript.Runners
         /// <param name="isTest"></param>
         /// <returns></returns>
         public ExecutionMirror Execute(
-            ProtoCore.CompileTime.Context staticContext, 
-            ProtoCore.Core core, 
-            out ProtoCore.RuntimeCore runtimeCoreOut, 
+            ProtoCore.CompileTime.Context staticContext,
+            ProtoCore.Core core,
+            out ProtoCore.RuntimeCore runtimeCoreOut,
             bool isTest = true)
         {
             Validity.Assert(null != staticContext.SourceCode && String.Empty != staticContext.SourceCode);
             ProtoCore.RuntimeCore runtimeCore = null;
 
             core.AddContextData(staticContext.GlobalVarList);
-   
+
             int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
             bool succeeded = Compile(staticContext, core, out blockId);
             if (succeeded)
@@ -296,9 +296,9 @@ namespace ProtoScript.Runners
             {
                 core.GenerateExecutable();
                 runtimeCore = Execute(core, blockId, new ProtoCore.CompileTime.Context());
-                if (!isTest) 
+                if (!isTest)
                 {
-                    runtimeCore.RuntimeMemory.Heap.Free(); 
+                    runtimeCore.RuntimeMemory.Heap.Free();
                 }
             }
             else
@@ -313,7 +313,7 @@ namespace ProtoScript.Runners
 
             return null;
         }
-      
+
 
         /// <summary>
         /// Compile and execute the given sourcecode
@@ -336,9 +336,9 @@ namespace ProtoScript.Runners
                 }
                 catch (ProtoCore.Exceptions.ExecutionCancelledException e)
                 {
-                    Console.WriteLine("The execution has been cancelled!");             
+                    Console.WriteLine("The execution has been cancelled!");
                 }
-                
+
                 if (!isTest)
                 {
                     runtimeCore.RuntimeMemory.Heap.Free();
@@ -366,7 +366,7 @@ namespace ProtoScript.Runners
         /// <param name="core"></param>
         /// <param name="isTest"></param>
         /// <returns></returns>
-        public ExecutionMirror LoadAndExecute(string filename, ProtoCore.Core core, out ProtoCore.RuntimeCore runtimeCoreOut,  bool isTest = true)
+        public ExecutionMirror LoadAndExecute(string filename, ProtoCore.Core core, out ProtoCore.RuntimeCore runtimeCoreOut, bool isTest = true)
         {
             System.IO.StreamReader reader = null;
             try
@@ -425,9 +425,7 @@ namespace ProtoScript.Runners
             {
                 Console.WriteLine("The execution has been cancelled!");
             }
-             
-            //return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
         }
-
     }
 }
+
