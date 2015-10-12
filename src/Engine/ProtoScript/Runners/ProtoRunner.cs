@@ -14,8 +14,8 @@ namespace ProtoScript.Runners
         private ProtoCore.RuntimeCore runtimeCore = null;
         private ProtoCore.CompileTime.Context ExecutionContext = null;
 
-        // TODO Jun: The implementation of ProtoScriptTestRunner needs to go in here
-        private ProtoScriptTestRunner Runner = null;
+        // TODO Jun: The implementation of ProtoScriptRunner needs to go in here
+        private ProtoScriptRunner Runner = null;
 
         public ProtoVMState PreStart(String source)
         {
@@ -38,7 +38,7 @@ namespace ProtoScript.Runners
             ExecutionContext = new ProtoCore.CompileTime.Context(source, context);
 
             //Validity.Assert(null == Runner);
-            Runner = new ProtoScriptTestRunner();
+            Runner = new ProtoScriptRunner();
 
             // TODO Jun: Implement run and halt at the first instruction
             //ProtoCore.DSASM.Mirror.ExecutionMirror mirror = null; // runner.Execute(executionContext, RunnerCore);

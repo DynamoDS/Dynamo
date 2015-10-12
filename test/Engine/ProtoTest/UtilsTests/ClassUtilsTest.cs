@@ -17,7 +17,7 @@ namespace ProtoTest.UtilsTests
         {
             String code =
 @"class A {}class B extends A {}class C extends B {}";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ProtoCore.RuntimeCore runtimeCore = null;
             ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
             int idA = core.ClassTable.IndexOf("A");

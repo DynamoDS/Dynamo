@@ -1212,7 +1212,7 @@ namespace ProtoScript.Runners
             }
         }
 
-        private ProtoScriptTestRunner runner;
+        private ProtoScriptRunner runner;
         private ProtoRunner.ProtoVMState vmState;
         private ProtoCore.Core runnerCore = null;
         public ProtoCore.Core Core
@@ -1265,7 +1265,7 @@ namespace ProtoScript.Runners
         {
             this.configuration = configuration;
 
-            runner = new ProtoScriptTestRunner();
+            runner = new ProtoScriptRunner();
 
             InitCore();
 
@@ -1906,7 +1906,7 @@ namespace ProtoScript.Runners
         /// </summary>
         public void ReInitializeLiveRunner()
         {
-            runner = new ProtoScriptTestRunner();
+            runner = new ProtoScriptRunner();
             deltaSymbols = 0;
             InitCore();
             staticContext = new ProtoCore.CompileTime.Context();
