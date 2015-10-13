@@ -10,11 +10,11 @@ namespace ProtoTest.UtilsTests
     [TestFixture]
     class CoreDumpTest : ProtoTestBase
     {
-        private ProtoScriptTestRunner coreRunner = null;
+        private ProtoScriptRunner coreRunner = null;
         public override void Setup()
         {
             base.Setup();
-            coreRunner = new ProtoScript.Runners.ProtoScriptTestRunner();
+            coreRunner = new ProtoScript.Runners.ProtoScriptRunner();
         }
         [Test]
         [Category("DSDefinedClass_Ignored_CoreDumpNeedsToSupportFFIClass")]

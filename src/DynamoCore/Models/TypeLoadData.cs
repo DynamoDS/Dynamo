@@ -72,6 +72,24 @@ namespace Dynamo.Models
                 Type.GetCustomAttributes<NodeDescriptionAttribute>(false)
                     .Select(x => x.ElementDescription)
                     .FirstOrDefault() ?? "";
+
+            var inputNames = Type.GetCustomAttributes<InPortNamesAttribute>(false)
+                .SelectMany(x => x.PortNames).ToList();
+            var inputTypes = Type.GetCustomAttributes<InPortTypesAttribute>(false)
+                .SelectMany(x => x.PortTypes).ToList();
+
+            if (inputNames.Any() && (inputNames.Count == inputTypes.Count))
+            {
+                InputParameters = inputNames.Zip(inputTypes, (name, type) => new Tuple<string, string>(name, type));
+            }
+            else
+            {
+                InputParameters = new List<Tuple<string, string>>();
+            }
+
+
+            OutputParameters = Type.GetCustomAttributes<OutPortTypesAttribute>(false)
+                .SelectMany(x => x.PortTypes);
         }
 
         /// <summary>
@@ -133,5 +151,15 @@ namespace Dynamo.Models
         ///     Indicates if the type is loaded from a package.
         /// </summary>
         public bool IsPackageMember;
+
+        /// <summary>
+        /// Indicates input parameters.
+        /// </summary>
+        public readonly IEnumerable<Tuple<string, string>> InputParameters;
+
+        /// <summary>
+        /// Indicates output parameters.
+        /// </summary>
+        public readonly IEnumerable<string> OutputParameters;
     }
 }

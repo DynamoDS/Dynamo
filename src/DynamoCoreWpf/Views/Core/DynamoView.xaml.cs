@@ -49,6 +49,8 @@ namespace Dynamo.Controls
     /// </summary>
     public partial class DynamoView : Window, IDisposable
     {
+        public const string BackgroundPreviewName = "BackgroundPreview";
+
         private readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
         private DynamoViewModel dynamoViewModel;
         private readonly Stopwatch _timer;
@@ -468,12 +470,7 @@ namespace Dynamo.Controls
                 }
             }
 
-            // For everything but a small number of tests,
-            // we do not want to create the 3D view when we
-            // are in test mode.
-            if (DynamoModel.IsTestMode) return;
-
-            BackgroundPreview = new Watch3DView();
+            BackgroundPreview = new Watch3DView {Name = BackgroundPreviewName};
             background_grid.Children.Add(BackgroundPreview);
             BackgroundPreview.DataContext = dynamoViewModel.BackgroundPreviewViewModel;
             BackgroundPreview.Margin = new System.Windows.Thickness(0,20,0,0);
@@ -1030,9 +1027,19 @@ namespace Dynamo.Controls
         // passes it to thecurrent workspace
         void DynamoView_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key != Key.Escape || !IsMouseOver || !e.IsRepeat) return;
+            if (e.Key != Key.Escape || !IsMouseOver) return;
 
-            dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown = true;
+            var vm = dynamoViewModel.BackgroundPreviewViewModel;
+
+            if (e.IsRepeat)
+            {
+                vm.NavigationKeyIsDown = true;
+            }
+            else
+            {
+                vm.CancelNavigationState();
+            }
+            
             e.Handled = true;
         }
 

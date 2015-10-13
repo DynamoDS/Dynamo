@@ -45,9 +45,7 @@ namespace Dynamo.Search.SearchElements
             if (functionDescriptor.IsBuiltIn)
                 ElementType |= ElementTypes.BuiltIn;
 
-            // Assembly, that is located in package directory, considered as part of package.
-            var packageDirectories = functionDescriptor.PathManager.PackagesDirectories;
-            if (packageDirectories.Any(directory => Assembly.StartsWith(directory)))
+            if (functionDescriptor.IsPackageMember)
                 ElementType |= ElementTypes.Packaged;
 
             inputParameters = new List<Tuple<string, string>>(functionDescriptor.InputParameters);

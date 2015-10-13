@@ -85,11 +85,6 @@ namespace ProtoCore
             }
         }
 
-        public void ClearWarnings()
-        {
-            warnings.Clear();
-        }
-
         public void ClearWarningForExpression(int expressionID)
         {
             warnings.RemoveAll(w => w.ExpressionID == expressionID);

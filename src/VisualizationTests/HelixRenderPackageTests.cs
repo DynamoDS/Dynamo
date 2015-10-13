@@ -1,12 +1,10 @@
 ﻿using System.Linq;
 using System.Windows.Media;
 using Autodesk.DesignScript.Interfaces;
-
-using Dynamo.Wpf;
 using Dynamo.Wpf.Rendering;
 using NUnit.Framework;
 
-namespace DynamoCoreUITests
+namespace WpfVisualizationTests
 {
     [TestFixture]
     public class HelixRenderPackageTests

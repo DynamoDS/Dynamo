@@ -474,7 +474,7 @@ namespace Dynamo.Models
             MigrationManager.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
             var thread = config.SchedulerThread ?? new DynamoSchedulerThread();
-            Scheduler = new DynamoScheduler(thread, IsTestMode ? TaskProcessMode.Synchronous : TaskProcessMode.Asynchronous);
+            Scheduler = new DynamoScheduler(thread, config.ProcessMode);
             Scheduler.TaskStateChanged += OnAsyncTaskStateChanged;
 
             geometryFactoryPath = config.GeometryFactoryPath;
@@ -1548,9 +1548,40 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     Paste ISelectable objects from the clipboard to the workspace.
+        ///     Paste ISelectable objects from the clipboard to the workspace 
+        /// so that the nodes appear in their original location with a slight offset
         /// </summary>
         public void Paste()
+        {
+            // Provide a small offset when pasting so duplicate pastes aren't directly on top of each other
+            CurrentWorkspace.IncrementPasteOffset();
+
+            var locatebleModels = ClipBoard.Where(model => model is NoteModel || model is NodeModel);
+            var orderedItems = locatebleModels.OrderBy(item => item.CenterX + item.CenterY);
+
+            // Search for the rightmost item. It's item with the biggest X, Y coordinates of center.
+            var rightMostItem = orderedItems.Last();
+
+            // Search for the leftmost item. It's item with the smallest X, Y coordinates of center.
+            var leftMostItem = orderedItems.First();
+
+            // Compute shift so that left most item will appear at right most item place with offset.
+            var shiftX = rightMostItem.X + rightMostItem.Width + CurrentWorkspace.CurrentPasteOffset - leftMostItem.X;
+            var shiftY = rightMostItem.Y + CurrentWorkspace.CurrentPasteOffset - leftMostItem.Y;
+
+
+            var x = shiftX + locatebleModels.Min(m => m.X);
+            var y = shiftY + locatebleModels.Min(m => m.Y);
+            var targetPoint = new Point2D(x, y);
+            
+            Paste(targetPoint);
+        }
+
+        /// <summary>
+        ///     Paste ISelectable objects from the clipboard to the workspace at specified point.
+        /// </summary>
+        /// <param name="targetPoint">Location where data will be pasted</param>
+        public void Paste(Point2D targetPoint)
         {
             //clear the selection so we can put the
             //paste contents in
@@ -1569,9 +1600,6 @@ namespace Dynamo.Models
             var notes = ClipBoard.OfType<NoteModel>();
             var annotations = ClipBoard.OfType<AnnotationModel>();
 
-            var minXY = Double.MaxValue;
-            var maxXY = Double.MinValue;
-
             // Create the new NoteModel's
             var newNoteModels = new List<NoteModel>();
             foreach (var note in notes)
@@ -1580,9 +1608,6 @@ namespace Dynamo.Models
                 //Store the old note as Key and newnote as value.
                 modelLookup.Add(note.GUID,noteModel);
                 newNoteModels.Add(noteModel);
-
-                minXY = Math.Round(Math.Min(note.CenterX + note.CenterY, minXY), 3);
-                maxXY = Math.Round(Math.Max(note.CenterX + note.CenterY, maxXY), 3);
             }
 
             var xmlDoc = new XmlDocument();
@@ -1618,33 +1643,17 @@ namespace Dynamo.Models
                 modelLookup.Add(node.GUID, newNode);
 
                 newNodeModels.Add(newNode);
-
-                minXY = Math.Round(Math.Min(node.CenterX + node.CenterY, minXY), 3);
-                maxXY = Math.Round(Math.Max(node.CenterX + node.CenterY, maxXY), 3);
             }
 
-            // Provide a small offset when pasting so duplicate pastes aren't directly on top of each other
-            CurrentWorkspace.IncrementPasteOffset();
-
             var newItems = newNodeModels.Concat<ModelBase>(newNoteModels);
+            
+            var shiftX = targetPoint.X - newItems.Min(item => item.X);
+            var shiftY = targetPoint.Y - newItems.Min(item => item.Y);
 
-            // Search for the rightmost item. It's item with the biggest X, Y coordinates of center.
-            var rightMostItem = newItems.FirstOrDefault(item => Math.Round((item.CenterX + item.CenterY), 3) == maxXY);
-
-            // Search for the leftmost item. It's item with the smallest X, Y coordinates of center.
-            var leftMostItem = newItems.FirstOrDefault(item => Math.Round((item.CenterX + item.CenterY), 3) == minXY);
-
-            var oldCoordinateX = leftMostItem.X;
-            var oldCoordinateY = leftMostItem.Y;
-
-            // Put left most in right most item place and add offset.
-            leftMostItem.X = rightMostItem.X + rightMostItem.Width + CurrentWorkspace.CurrentPasteOffset;
-            leftMostItem.Y = rightMostItem.Y + CurrentWorkspace.CurrentPasteOffset;
-
-            foreach (var model in newItems.Except(new[] { leftMostItem }))
+            foreach (var model in newItems)
             {
-                model.X = leftMostItem.X + (model.X - oldCoordinateX);
-                model.Y = leftMostItem.Y + (model.Y - oldCoordinateY);
+                model.X = model.X + shiftX;
+                model.Y = model.Y + shiftY;
             }
 
             // Add the new NodeModel's to the Workspace
@@ -1918,9 +1927,7 @@ namespace Dynamo.Models
 
             string summary = Resources.UnhandledExceptionSummary;
 
-            string description = (exception is HeapCorruptionException)
-                ? exception.Message
-                : Resources.DisplayEngineFailureMessageDescription;
+            string description = Resources.DisplayEngineFailureMessageDescription;
 
             const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_crash.png";
             var args = new TaskDialogEventArgs(

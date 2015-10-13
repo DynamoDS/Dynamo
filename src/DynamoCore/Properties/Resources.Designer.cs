@@ -340,6 +340,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to some description.
+        /// </summary>
+        public static string DescriptionResource1 {
+            get {
+                return ResourceManager.GetString("DescriptionResource1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The virtual machine that powers Dynamo is experiencing some unexpected errors internally and is likely &quot;having great difficulties pulling itself together. It is &quot;recommended that you save your work now and reload the file. Giving the Dynamo VM a new lease of life can potentially make it feel happier and behave better. 
         ///
         ///If you don&apos;t mind, it would be helpful for you to send us your file. That will make it quicker for us to get these issues fixed..
@@ -1035,6 +1044,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Number of port names does not equal number of port descriptions..
+        /// </summary>
+        public static string PortsNameDescriptionDoNotEqualWarningMessage {
+            get {
+                return ResourceManager.GetString("PortsNameDescriptionDoNotEqualWarningMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Proceed anyway.
         /// </summary>
         public static string ProceedButton {
@@ -1139,6 +1157,24 @@ namespace Dynamo.Properties {
         public static string RequestingVersionUpdate {
             get {
                 return ResourceManager.GetString("RequestingVersionUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resource Property is not String Type.
+        /// </summary>
+        public static string ResourcePropertyIsNotStringTypeMessage {
+            get {
+                return ResourceManager.GetString("ResourcePropertyIsNotStringTypeMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resource Type does not have Property.
+        /// </summary>
+        public static string ResourceTypeDoesNotHavePropertyMessage {
+            get {
+                return ResourceManager.GetString("ResourceTypeDoesNotHavePropertyMessage", resourceCulture);
             }
         }
         
