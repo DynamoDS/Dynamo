@@ -576,6 +576,7 @@
                                         <Setter Property="IsCheckable" Value="True"/>
                                         <Setter Property="IsChecked" Value="{Binding Active}"/>
                                         <Setter Property="Focusable" Value="False"/>
+                                        <Setter Property="IsEnabled" Value="{Binding CanBeActivated}"/>
                                     </Style>
                                 </MenuItem.ItemContainerStyle>
                             </MenuItem>

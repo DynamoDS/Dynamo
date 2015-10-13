@@ -8,18 +8,5 @@ namespace ProtoCore.Exceptions
         {
 
         }
-
-
-    }
-
-    /// <summary>
-    /// Exception handler for all error cases in the DS heap
-    /// </summary>
-    public class HeapCorruptionException : Exception
-    {
-        public HeapCorruptionException(String message)
-            : base("Heap Corruption Exception: " + message)
-        {
-        }
     }
 }
