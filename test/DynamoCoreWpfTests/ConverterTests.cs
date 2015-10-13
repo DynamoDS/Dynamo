@@ -20,12 +20,6 @@ namespace Dynamo.Tests
 {
     class ConverterTests
     {
-        [SetUp]
-        public void Setup()
-        {
-            DynamoModel.IsTestMode = true;
-        }
-
         [Test]
         public void SearchResultsToVisibilityConverterTest()
         {

@@ -25,62 +25,12 @@ namespace ProtoCore.CodeModel
         {
             return !(lhs == rhs);
         }
-
-        public bool Before(CodePoint cp)
-        {
-            if (cp.SourceLocation != SourceLocation)
-                return false;
-
-            return (cp.LineNo < LineNo || (cp.LineNo == LineNo && (cp.CharNo < CharNo)));
-        }
     }
 
     public struct CodeRange
     {
         public CodePoint StartInclusive { get; set; }
         public CodePoint EndExclusive { get; set; }
-
-        public bool InsideRange(CodePoint cp)
-        {
-            // Reject the obvious cases first (codes in different files)...
-            if (cp.SourceLocation != StartInclusive.SourceLocation)
-                return false;
-            if (cp.SourceLocation != EndExclusive.SourceLocation)
-                return false;
-
-            if (StartInclusive.LineNo <= cp.LineNo && EndExclusive.LineNo >= cp.LineNo)
-            {
-                if (StartInclusive.LineNo == cp.LineNo && StartInclusive.CharNo > cp.CharNo)
-                    return false;
-                else if (EndExclusive.LineNo == cp.LineNo && EndExclusive.CharNo < cp.CharNo)
-                    return false;
-
-                return true;
-            }
-
-            return false;
-        }
-
-        public bool InsideRange(CodeRange cr)
-        {
-            // Reject the obvious cases first (codes in different files)...
-            if (cr.StartInclusive.SourceLocation != StartInclusive.SourceLocation)
-                return false;
-            if (cr.EndExclusive.SourceLocation != EndExclusive.SourceLocation)
-                return false;
-
-            if (StartInclusive.LineNo <= cr.StartInclusive.LineNo && EndExclusive.LineNo >= cr.EndExclusive.LineNo)
-            {
-                if (StartInclusive.LineNo == cr.StartInclusive.LineNo && StartInclusive.CharNo > cr.StartInclusive.CharNo)
-                    return false;
-                else if (EndExclusive.LineNo == cr.EndExclusive.LineNo && EndExclusive.CharNo < cr.EndExclusive.CharNo)
-                    return false;
-
-                return true;
-            }
-
-            return false;
-        }
 
         public override int GetHashCode()
         {

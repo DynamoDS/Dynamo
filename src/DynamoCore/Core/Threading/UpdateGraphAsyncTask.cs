@@ -1,5 +1,5 @@
-using System.Linq;
-﻿using System;
+﻿using System.Linq;
+ using System;
 using System.Collections.Generic;
 
 using Dynamo.Engine;
@@ -116,7 +116,7 @@ namespace Dynamo.Core.Threading
             // 
             foreach (var modifiedNode in ModifiedNodes)
             {
-                modifiedNode.IsUpdated = true;
+                modifiedNode.WasInvolvedInExecution = true;
                 if (modifiedNode.State == ElementState.Warning)
                     modifiedNode.ClearRuntimeError();
             }

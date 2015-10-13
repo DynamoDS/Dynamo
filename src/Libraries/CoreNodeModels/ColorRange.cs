@@ -20,6 +20,18 @@ namespace DSCoreNodesUI
     [NodeCategory("Core.Color.Create")]
     [NodeDescription("ColorRangeDescription",typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeSearchTags("ColorRangeSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+
+    [InPortNames("colors", "indices", "value")]
+    [InPortTypes("Color[]", "double[]", "double")]
+    [InPortDescriptionsAttribute(typeof(Resources),
+        "ColorRangePortDataColorsToolTip",
+        "ColorRangePortDataIndicesToolTip",
+        "ColorRangePortDataValueToolTip")]
+    [OutPortNames("color")]
+    [OutPortTypes("Color")]
+    [OutPortDescriptions(typeof(Resources),
+        "ColorRangePortDataResultToolTip")]
+
     public class ColorRange : NodeModel
     {
         public event Action RequestChangeColorRange;
@@ -31,7 +43,7 @@ namespace DSCoreNodesUI
 
         public ColorRange()
         {
-            InitializePorts();
+            RegisterAllPorts();
 
             this.PropertyChanged += ColorRange_PropertyChanged;
             foreach (var port in InPorts)
@@ -47,19 +59,9 @@ namespace DSCoreNodesUI
             OnRequestChangeColorRange();
         }
 
-        protected virtual void InitializePorts()
-        {
-            InPortData.Add(new PortData("colors", Resources.ColorRangePortDataColorsToolTip));
-            InPortData.Add(new PortData("indices", Resources.ColorRangePortDataIndicesToolTip));
-            InPortData.Add(new PortData("value", Resources.ColorRangePortDataValueToolTip));
-            OutPortData.Add(new PortData("color", Resources.ColorRangePortDataResultToolTip));
-
-            RegisterAllPorts();
-        }
-
         void ColorRange_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName != "IsUpdated")
+            if (e.PropertyName != "CachedValue")
                 return;
 
             if (InPorts.Any(x => x.Connectors.Count == 0))

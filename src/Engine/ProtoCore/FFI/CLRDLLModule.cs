@@ -983,16 +983,7 @@ namespace ProtoFFI
         {
             Type[] types = GetTypes(typeName);
             Type exttype = typeof(IExtensionApplication);
-#if PARALLEL
-            System.Threading.Tasks.Parallel.ForEach(types, type =>
-            {
-                //For now there is no support for generic type.
-                if (!type.IsGenericType && type.IsPublic && !exttype.IsAssignableFrom(type) && !CLRModuleType.SupressesImport(type))
-                {
-                    CLRModuleType importedType = CLRModuleType.GetInstance(type, this, alias);
-                }
-            });
-#else
+
             foreach (var type in types)
             {
                 //For now there is no support for generic type.
@@ -1010,7 +1001,6 @@ namespace ProtoFFI
                     }
                 }
             }
-#endif
 
             CodeBlockNode node = new CodeBlockNode();
             //Get all the types available on this module.

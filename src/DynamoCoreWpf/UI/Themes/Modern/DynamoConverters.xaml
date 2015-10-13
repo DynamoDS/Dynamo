@@ -158,6 +158,18 @@
     <controls:TreeViewVLineMarginConverter x:Key="TreeViewVLineMarginConverter" />
     <controls:TreeViewMarginCheck x:Key="TreeViewMarginCheck"/>   
     <controls:NestedContentMarginConverter x:Key="NestedContentMarginConverter"/>
-    <controls:ClassViewMarginConverter x:Key ="ClassViewMarginConverter"/>
-    <controls:ElementGroupToColorConverter x:Key="ElementGroupToColorConverter" />    
+    <controls:ClassViewMarginConverter x:Key="ClassViewMarginConverter" />
+    <controls:ElementGroupToColorConverter x:Key="ElementGroupToColorConverter" />
+    <controls:BooleanToBrushConverter x:Key="FilterIsSelertedCategoryToBrushConverter"
+                                      TrueBrush="{StaticResource CommonSidebarTextColor}"
+                                      FalseBrush="{StaticResource FilterCategoryIsNotSelectedColor}">
+    </controls:BooleanToBrushConverter>
+    <controls:BooleanToBrushConverter x:Key="FilterIconForegroundConverter"
+                                      TrueBrush="{StaticResource FilterIconColor}"
+                                      FalseBrush="{StaticResource LibraryItemHostBackground}">
+    </controls:BooleanToBrushConverter>
+    <controls:BooleanToBrushConverter x:Key="FilterIsSelertedCheckBoxForegroundConverter"
+                                      TrueBrush="White"
+                                      FalseBrush="{StaticResource SearchDarkGreyTextColor}">
+    </controls:BooleanToBrushConverter>
 </ResourceDictionary>

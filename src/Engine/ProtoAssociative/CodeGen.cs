@@ -2910,7 +2910,8 @@ namespace ProtoAssociative
                     // Handle SSA if the lhs is not an identifier
                     // A non-identifier LHS is any LHS that is not just an identifier name.
                     //  i.e. a[0], a.b, f(), f(x)
-                    if (!ProtoCore.ASTCompilerUtils.IsSingleIdentifier(leftNode))
+                    var isSingleIdentifier = (leftNode is IdentifierNode) && (leftNode as IdentifierNode).ArrayDimensions == null;
+                    if (!isSingleIdentifier)
                     {
                         EmitSSALHS(ref leftNode, ssaStack, ref astlist);
                     }
@@ -5895,8 +5896,8 @@ namespace ProtoAssociative
                 if (returnType.UID == (int)PrimitiveType.kInvalidType)
                 {
                     string message = String.Format(ProtoCore.Properties.Resources.kReturnTypeUndefined, funcDef.ReturnType.Name, funcDef.Name);
-                    buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, core.CurrentDSFileName, funcDef.line, funcDef.col, graphNode);
-                    returnType.UID = (int)PrimitiveType.kTypeVar;
+                    buildStatus.LogWarning(WarningID.kTypeUndefined, message, core.CurrentDSFileName, funcDef.line, funcDef.col, graphNode);
+                    returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, rank);
                 }
                 localProcedure.ReturnType = returnType;
                 localProcedure.IsConstructor = false;

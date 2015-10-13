@@ -44,7 +44,7 @@ namespace Dynamo.ViewModels
         private Point transformOrigin;
         private bool showStartPage = false;
         
-        private List<Watch3DViewModelBase> watch3DViewModels = new List<Watch3DViewModelBase>();
+        private List<DefaultWatch3DViewModel> watch3DViewModels = new List<DefaultWatch3DViewModel>();
 
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
@@ -375,17 +375,24 @@ namespace Dynamo.ViewModels
             get { return this.Model.CurrentWorkspace.Presets.Any(); }            
         }
 
-        public List<Watch3DViewModelBase> Watch3DViewModels
+        /// <summary>
+        /// A collection of <see cref="DefaultWatch3DViewModel"/> objects. 
+        /// 
+        /// Each DefaultWatch3DViewModel object is responsible for converting
+        /// data for visualization in a different context. For example, the 
+        /// <see cref="HelixWatch3DViewModel"/> provides the geometry for the
+        /// background preview.
+        /// </summary>
+        public IEnumerable<DefaultWatch3DViewModel> Watch3DViewModels
         {
             get { return watch3DViewModels; }
-            protected set
-            {
-                watch3DViewModels = value;
-                RaisePropertyChanged("Watch3DViewModels");
-            }
         }
 
-        public Watch3DViewModelBase BackgroundPreviewViewModel { get; private set; }
+        /// <summary>
+        /// A <see cref="DefaultWatch3DViewModel"/> which provides the
+        /// geometry for the primary background 3d preview.
+        /// </summary>
+        public DefaultWatch3DViewModel BackgroundPreviewViewModel { get; private set; }
 
         public bool BackgroundPreviewActive
         {
@@ -400,6 +407,7 @@ namespace Dynamo.ViewModels
             public IWatchHandler WatchHandler { get; set; }
             public DynamoModel DynamoModel { get; set; }
             public bool ShowLogin { get; set; }
+            public DefaultWatch3DViewModel Watch3DViewModel { get; set; }
 
             /// <summary>
             /// This property is initialized if there is an external host application
@@ -415,6 +423,12 @@ namespace Dynamo.ViewModels
 
             if(startConfiguration.WatchHandler == null)
                 startConfiguration.WatchHandler = new DefaultWatchHandler(startConfiguration.DynamoModel.PreferenceSettings);
+
+            if (startConfiguration.Watch3DViewModel == null)
+            {
+                startConfiguration.Watch3DViewModel = HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(
+                    new Watch3DViewModelStartupParams(startConfiguration.DynamoModel), startConfiguration.DynamoModel.Logger);
+            }
 
             return new DynamoViewModel(startConfiguration);
         }
@@ -439,6 +453,9 @@ namespace Dynamo.ViewModels
 
             this.BrandingResourceProvider = startConfiguration.BrandingResourceProvider ?? new DefaultBrandingResourceProvider();
 
+            // commands should be initialized before adding any WorkspaceViewModel
+            InitializeDelegateCommands();
+
             //add the initial workspace and register for future 
             //updates to the workspaces collection
             var homespaceViewModel = new HomeWorkspaceViewModel(model.CurrentWorkspace as HomeWorkspaceModel, this);
@@ -455,8 +472,6 @@ namespace Dynamo.ViewModels
 
             InitializeAutomationSettings(startConfiguration.CommandFilePath);
 
-            InitializeDelegateCommands();
-
             SubscribeLoggerHandlers();
 
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
@@ -471,28 +486,13 @@ namespace Dynamo.ViewModels
 
             RenderPackageFactoryViewModel = new RenderPackageFactoryViewModel(Model.PreferenceSettings);
             RenderPackageFactoryViewModel.PropertyChanged += RenderPackageFactoryViewModel_PropertyChanged;
-            
-            var backgroundPreviewParams = new Watch3DViewModelStartupParams(Model, this, Resources.BackgroundPreviewName);
 
-            // TODO: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-8736
-            Watch3DViewModelBase watch3DViewModel;
-            try
-            {
-                watch3DViewModel = HelixWatch3DViewModel.Start(backgroundPreviewParams);
-            }
-            catch (Exception ex)
-            {
-                Model.Logger.Log(ex.Message);
-                Model.Logger.Log("Failed to create Watch3DViewModel. Creating base view model.");
-
-                watch3DViewModel = Watch3DViewModelBase.Start(backgroundPreviewParams);
-            }
-
-            BackgroundPreviewViewModel = watch3DViewModel;
-            Watch3DViewModels.Add(watch3DViewModel);
-            watch3DViewModel.PropertyChanged += Watch3DViewModelPropertyChanged;
+            BackgroundPreviewViewModel = startConfiguration.Watch3DViewModel;
+            BackgroundPreviewViewModel.PropertyChanged += Watch3DViewModelPropertyChanged;
+            RegisterWatch3DViewModel(BackgroundPreviewViewModel, RenderPackageFactoryViewModel.Factory);
             CurrentSpace.CreateInputNode += CurrentSpace_CreateInputNode;
         }
+
 
         private void CurrentSpace_CreateInputNode(NodeModel node1, NodeModel node2, int portIndex1, int portIndex2)
         {
@@ -504,10 +504,10 @@ namespace Dynamo.ViewModels
             //if (Model.DebugSettings.VerboseLogging)
             //    model.Logger.Log("Command: " + command);
 
-            model.AddNodeToCurrentWorkspace(node1, centered: false, addToSelection:false);
+            model.AddNodeToCurrentWorkspace(node1, centered: false, addToSelection: false);
             CurrentSpace.RecordCreatedModel(node1);
             //////////////////////////////////////////////////
-            
+
             var mode = DynamoModel.MakeConnectionCommand.Mode.Begin;
             var cmd = new DynamoModel.MakeConnectionCommand(node1.GUID, portIndex1, PortType.Output, mode);
             ExecuteCommand(cmd);
@@ -517,6 +517,19 @@ namespace Dynamo.ViewModels
             ExecuteCommand(cmd);
         }
 
+        /// <summary>
+        /// Sets up the provided <see cref="DefaultWatch3DViewModel"/> object and 
+        /// adds it to the Watch3DViewModels collection.
+        /// </summary>
+        /// <param name="watch3DViewModel"></param>
+        /// <param name="factory"></param>
+        protected void RegisterWatch3DViewModel(DefaultWatch3DViewModel watch3DViewModel, IRenderPackageFactory factory)
+        {
+            watch3DViewModel.Setup(this, factory);
+            watch3DViewModels.Add(watch3DViewModel);
+            RaisePropertyChanged("Watch3DViewModels");
+        }
+
         private void RenderPackageFactoryViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
@@ -524,6 +537,11 @@ namespace Dynamo.ViewModels
                 case "ShowEdges":
                     var factoryVm = (RenderPackageFactoryViewModel)sender;
                     model.PreferenceSettings.ShowEdges = factoryVm.Factory.TessellationParameters.ShowEdges;
+                    // A full regeneration is required to get the edge geometry.
+                    foreach (var vm in Watch3DViewModels)
+                    {
+                        vm.RegenerateAllPackages();
+                    }
                     break;
                 default:
                     return;

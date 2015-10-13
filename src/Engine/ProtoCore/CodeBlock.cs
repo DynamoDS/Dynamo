@@ -65,14 +65,5 @@ namespace ProtoCore
                 && eqBody;
         }
     }
-
-    public class Script
-    {
-        public List<LanguageCodeBlock> codeblockList { get; set; }
-        public Script()
-        {
-            codeblockList = new List<LanguageCodeBlock>();
-        }
-    }
 }
 

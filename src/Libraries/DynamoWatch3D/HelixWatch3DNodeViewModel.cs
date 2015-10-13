@@ -5,8 +5,6 @@ using System.Linq;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Models;
-using Dynamo.Utilities;
-using Dynamo.Nodes;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -19,14 +17,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             get { return false; }
         }
 
-        public static HelixWatch3DNodeViewModel Start(Dynamo.Nodes.Watch3D node, Watch3DViewModelStartupParams parameters)
-        {
-            var vm = new HelixWatch3DNodeViewModel(node, parameters);
-            vm.OnStartup();
-            return vm;
-        }
-
-        private HelixWatch3DNodeViewModel(Dynamo.Nodes.Watch3D node, Watch3DViewModelStartupParams parameters):
+        public HelixWatch3DNodeViewModel(Nodes.Watch3D node, Watch3DViewModelStartupParams parameters):
             base(parameters)
         {
             watchNode = node;
@@ -36,6 +27,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             watchNode.Serialized += SerializeCamera;
             watchNode.Deserialized += watchNode_Deserialized;
+
+            Name = string.Format("{0} Preview", node.GUID);
         }
 
         void watchNode_Deserialized(XmlNode obj)
@@ -57,7 +50,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var gathered = new List<NodeModel>();
             watchNode.VisibleUpstreamNodes(gathered);
 
-            gathered.ForEach(n => n.IsUpdated = true);
+            gathered.ForEach(n => n.WasInvolvedInExecution = true);
             gathered.ForEach(n => n.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory));
         }
 
