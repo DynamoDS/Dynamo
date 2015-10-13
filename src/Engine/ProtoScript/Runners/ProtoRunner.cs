@@ -59,21 +59,6 @@ namespace ProtoScript.Runners
 
         #region Synchronous API
 
-        public ProtoVMState StepIn(ProtoVMState state)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ProtoVMState StepOver(ProtoVMState state)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ProtoVMState StepOut(ProtoVMState state)
-        {
-            throw new NotImplementedException();
-        }
-
         public ProtoVMState RunToNextBreakpoint(ProtoVMState state)
         {
             Validity.Assert(null != RunnerCore);
@@ -88,36 +73,6 @@ namespace ProtoScript.Runners
         }
 
         #endregion
-
-        #region Sync Notifications API
-
-        /// <summary>
-        /// Inform the virtual machine that the value of an external variable mau have changed and any
-        /// necessary variables may be updated
-        /// </summary>
-        /// <param name="variableName"></param>
-        /// <returns></returns>
-        public ProtoVMState NotifyChange(string variableName)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Assign the new value to the variable whose name has been specified and compute
-        /// any necessary updates
-        /// </summary>
-        /// <param name="variableName"></param>
-        /// <param name="newValue"></param>
-        /// <returns></returns>
-        public ProtoVMState NotifyChange(string variableName, Object newValue)
-        {
-            throw new NotImplementedException();
-        }
-
-
-        #endregion
-
-
 
         public class ProtoVMState
         {
@@ -153,16 +108,6 @@ namespace ProtoScript.Runners
                 Validity.Assert(runtimeMirror != null);
 
                 return runtimeMirror;
-            }
-
-            public StackValue LookupNameToSV(string name)
-            {
-                throw new NotImplementedException();
-            }
-
-            public List<string> GetAllNamesInscope()
-            {
-                throw new IdentityNotMappedException();
             }
         }
     }
