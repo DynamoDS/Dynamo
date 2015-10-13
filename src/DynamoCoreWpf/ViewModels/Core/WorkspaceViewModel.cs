@@ -569,10 +569,9 @@ namespace Dynamo.ViewModels
                 {
                     selection.AddUnique(n);
                 }
-                else
+                else if (n.IsSelected)
                 {
-                    if (n.IsSelected)
-                        selection.Remove(n);
+                    selection.Remove(n);
                 }
             }
 
@@ -587,10 +586,9 @@ namespace Dynamo.ViewModels
                         selection.AddUnique(m);
                     }
                 }
-                else
+                else if (n.IsSelected)
                 {
-                    if (n.IsSelected)
-                        selection.Remove(n);
+                    selection.Remove(n);
                 }
             }
         }
