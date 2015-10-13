@@ -16,36 +16,24 @@ namespace ProtoTest.ComponentTest
     {
         readonly string testCasePath = Path.GetFullPath(@"..\..\..\Scripts\Associative\MicroFeatureTests\");
 
-        [Test, Category("Failure")]
+        [Test]
         public void TestCompilerAndRuntimeComponent01()
         {
 
             String code =
-@"a = 10;";
-            // Compile core
-            var opts = new Options();
-            opts.ExecutionMode = ExecutionMode.Serial;
-            ProtoCore.Core core = new Core(opts);
-            core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
-            core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
+@"// DesignScript code herea = 10;";
+            // Compile
             ProtoScriptRunner runner = new ProtoScriptRunner();
-
-            // Compiler instance
-            ProtoCore.DSASM.Executable dsExecutable;
-            bool compileSucceeded = runner.CompileMe(code, core, out dsExecutable);
+            bool compileSucceeded = runner.CompileAndGenerateExe(code, core, new ProtoCore.CompileTime.Context());
             Assert.IsTrue(compileSucceeded == true);
             
-            // Pass compile data to the runtime 
-            RuntimeCore runtimeCore = new RuntimeCore(core.Heap);
-            runtimeCore.SetProperties(core.Options, dsExecutable);
+            // Execute
+            runtimeCore = runner.ExecuteVM(core);
 
-            // Runtime
-            ExecutionMirror mirror = runner.ExecuteMe(runtimeCore);
+            // Verify
+            ExecutionMirror mirror = new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
             Obj o = mirror.GetValue("a");
             Assert.IsTrue((Int64)o.Payload == 10);
         }
-
-       
-
     }
 }

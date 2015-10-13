@@ -12,45 +12,9 @@ namespace ProtoScript.Runners
     {
         public ProtoCore.DebugServices.EventSink EventSink = new ProtoCore.DebugServices.ConsoleEventSink();
 
-
-        public bool Compile(ProtoCore.CompileTime.Context context, ProtoCore.Core core, out int blockId)
+        private bool Compile(string code, ProtoCore.Core core, ProtoCore.CompileTime.Context context)
         {
             bool buildSucceeded = false;
-            blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-            try
-            {
-                // No More HashAngleReplace for unified parser (Fuqiang)
-                //String strSource = ProtoCore.Utils.LexerUtils.HashAngleReplace(code);    
-
-                //defining the global Assoc block that wraps the entire .ds source file
-                ProtoCore.LanguageCodeBlock globalBlock = new ProtoCore.LanguageCodeBlock();
-                globalBlock.language = ProtoCore.Language.kAssociative;
-
-                Validity.Assert(null != context.SourceCode && String.Empty != context.SourceCode);
-                globalBlock.body = context.SourceCode;
-                //the wrapper block can be given a unique id to identify it as the global scope
-                globalBlock.id = ProtoCore.LanguageCodeBlock.OUTERMOST_BLOCK_ID;
-
-
-                //passing the global Assoc wrapper block to the compiler
-                ProtoCore.Language id = globalBlock.language;
-                core.Compilers[id].Compile(out blockId, null, globalBlock, context, EventSink);
-
-                core.BuildStatus.ReportBuildResult();
-                buildSucceeded = core.BuildStatus.BuildSucceeded;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
-
-            return buildSucceeded;
-        }
-
-        public bool Compile(string code, ProtoCore.Core core, out int blockId)
-        {
-            bool buildSucceeded = false;
-            blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
             try
             {
                 // No More HashAngleReplace for unified parser (Fuqiang)
@@ -65,8 +29,8 @@ namespace ProtoScript.Runners
 
 
                 //passing the global Assoc wrapper block to the compiler
-                ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
                 ProtoCore.Language id = globalBlock.language;
+                int blockId = Constants.kInvalidIndex;
                 core.Compilers[id].Compile(out blockId, null, globalBlock, context, EventSink);
 
                 core.BuildStatus.ReportBuildResult();
@@ -81,10 +45,9 @@ namespace ProtoScript.Runners
         }
 
 
-        public bool Compile(List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList, ProtoCore.Core core, out int blockId)
+        private bool Compile(List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList, ProtoCore.Core core, ProtoCore.CompileTime.Context context)
         {
             bool buildSucceeded = false;
-            blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
             if (astList.Count <= 0)
             {
                 // Nothing to compile
@@ -103,7 +66,6 @@ namespace ProtoScript.Runners
 
 
                     //passing the global Assoc wrapper block to the compiler
-                    ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
                     context.SetData(string.Empty, new Dictionary<string, object>(), null);
                     ProtoCore.Language id = globalBlock.language;
 
@@ -111,6 +73,7 @@ namespace ProtoScript.Runners
                     ProtoCore.AST.AssociativeAST.CodeBlockNode codeblock = new ProtoCore.AST.AssociativeAST.CodeBlockNode();
                     codeblock.Body.AddRange(astList);
 
+                    int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
                     core.Compilers[id].Compile(out blockId, null, globalBlock, context, EventSink, codeblock);
 
                     core.BuildStatus.ReportBuildResult();
@@ -126,7 +89,7 @@ namespace ProtoScript.Runners
             return buildSucceeded;
         }
 
-        private ProtoCore.RuntimeCore CreateRuntimeCore(ProtoCore.Core core, int runningBlock)
+        private ProtoCore.RuntimeCore CreateRuntimeCore(ProtoCore.Core core)
         {
             ProtoCore.RuntimeCore runtimeCore = new ProtoCore.RuntimeCore(core.Heap);
             runtimeCore.SetupForExecution(core, core.GlobOffset);
@@ -138,13 +101,10 @@ namespace ProtoScript.Runners
         /// This is the entry point of all DS code to be executed
         /// </summary>
         /// <param name="core"></param>
-        /// <param name="runningBlock"></param>
-        /// <param name="staticContext"></param>
-        /// <param name="runtimeContext"></param>
-        public ProtoCore.RuntimeCore Execute(
-            ProtoCore.Core core, int runningBlock, ProtoCore.CompileTime.Context staticContex)
+        /// <returns></returns>
+        public ProtoCore.RuntimeCore ExecuteVM(ProtoCore.Core core)
         {
-            ProtoCore.RuntimeCore runtimeCore = CreateRuntimeCore(core, runningBlock);
+            ProtoCore.RuntimeCore runtimeCore = CreateRuntimeCore(core);
 
             //Start the timer       
             runtimeCore.StartTimer();
@@ -255,12 +215,11 @@ namespace ProtoScript.Runners
 
             core.AddContextData(staticContext.GlobalVarList);
 
-            int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-            bool succeeded = Compile(staticContext, core, out blockId);
+            string code = staticContext.SourceCode;
+            bool succeeded = CompileAndGenerateExe(code, core, staticContext);
             if (succeeded)
             {
-                core.GenerateExecutable();
-                runtimeCore = Execute(core, blockId, staticContext);
+                runtimeCore = ExecuteVM(core);
                 if (!isTest)
                 {
                     runtimeCore.RuntimeMemory.Heap.Free();
@@ -290,13 +249,11 @@ namespace ProtoScript.Runners
         public ExecutionMirror Execute(List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList, ProtoCore.Core core, bool isTest = true)
         {
             ProtoCore.RuntimeCore runtimeCore = null;
-            int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-            bool succeeded = Compile(astList, core, out blockId);
+            bool succeeded = CompileAndGenerateExe(astList, core, new ProtoCore.CompileTime.Context());
             if (succeeded)
             {
-                core.GenerateExecutable();
-                runtimeCore = Execute(core, blockId, new ProtoCore.CompileTime.Context());
-                if (!isTest)
+                runtimeCore = ExecuteVM(core);
+                if (!isTest) 
                 {
                     runtimeCore.RuntimeMemory.Heap.Free();
                 }
@@ -325,14 +282,12 @@ namespace ProtoScript.Runners
         public ExecutionMirror Execute(string sourcecode, ProtoCore.Core core, out ProtoCore.RuntimeCore runtimeCoreOut, bool isTest = true)
         {
             ProtoCore.RuntimeCore runtimeCore = null;
-            int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-            bool succeeded = Compile(sourcecode, core, out blockId);
+            bool succeeded = CompileAndGenerateExe(sourcecode, core, new ProtoCore.CompileTime.Context());
             if (succeeded)
             {
-                core.GenerateExecutable();
                 try
                 {
-                    runtimeCore = Execute(core, blockId, new ProtoCore.CompileTime.Context());
+                    runtimeCore = ExecuteVM(core);
                 }
                 catch (ProtoCore.Exceptions.ExecutionCancelledException e)
                 {
@@ -360,7 +315,7 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
-        /// Load and execute the DS code in the specified file
+        /// Load and executes the DS code in the specified file
         /// </summary>
         /// <param name="filename"></param>
         /// <param name="core"></param>
@@ -385,46 +340,46 @@ namespace ProtoScript.Runners
 
             core.Options.RootModulePathName = ProtoCore.Utils.FileUtils.GetFullPathName(filename);
             core.CurrentDSFileName = core.Options.RootModulePathName;
-            Execute(strSource, core, out runtimeCore);
+            ExecutionMirror mirror = Execute(strSource, core, out runtimeCore);
 
             runtimeCoreOut = runtimeCore;
-
-            if (isTest && !core.Options.CompileToLib)
-                return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
-            else
-                return null;
+            return mirror;
         }
 
+        
         /// <summary>
-        /// The public method to compile DS code
+        /// The public method to compile DS code and stores the executable in core
         /// </summary>
         /// <param name="sourcecode"></param>
         /// <param name="compileCore"></param>
-        /// <param name="dsExecutable"></param>
         /// <returns></returns>
-        public bool CompileMe(string sourcecode, ProtoCore.Core compileCore, out Executable dsExecutable)
+        public bool CompileAndGenerateExe(string sourcecode, ProtoCore.Core compileCore, ProtoCore.CompileTime.Context context)
         {
-            int blockID = 0;
-            bool succeeded = Compile(sourcecode, compileCore, out blockID);
-
-            compileCore.GenerateExecutable();
-            dsExecutable = compileCore.DSExecutable;
-
+            bool succeeded = Compile(sourcecode, compileCore, context);
+            if (succeeded)
+            {
+                compileCore.GenerateExecutable();
+            }
             return succeeded;
         }
 
-        public ExecutionMirror ExecuteMe(ProtoCore.RuntimeCore runtimeCore)
+        /// <summary>
+        /// The public method to compile DS AST and stores the executable in core
+        /// </summary>
+        /// <param name="astList"></param>
+        /// <param name="compileCore"></param>
+        /// <returns></returns>
+        public bool CompileAndGenerateExe(
+            List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList, 
+            ProtoCore.Core compileCore,
+            ProtoCore.CompileTime.Context context)
         {
-            throw new NotImplementedException();
-
-            try
+            bool succeeded = Compile(astList, compileCore, context);
+            if (succeeded)
             {
-                //Execute(runtimeCore, 0, new ProtoCore.CompileTime.Context(), new ProtoCore.Runtime.Context());
+                compileCore.GenerateExecutable();
             }
-            catch (ProtoCore.Exceptions.ExecutionCancelledException e)
-            {
-                Console.WriteLine("The execution has been cancelled!");
-            }
+            return succeeded;
         }
     }
 }

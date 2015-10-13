@@ -64,7 +64,7 @@ namespace ProtoCore
     /// </summary>
     public class RuntimeCore
     {
-        public RuntimeCore(Heap heap, Options options = null)
+        public RuntimeCore(Heap heap, Options options = null, Executable executable = null)
         {
             // The heap is initialized by the core and is used to allocate strings
             // Use the that heap for runtime
@@ -99,6 +99,7 @@ namespace ProtoCore
             RuntimeStatus = new ProtoCore.RuntimeStatus(this);
             StartPC = Constants.kInvalidPC;
             RuntimeData = new ProtoCore.RuntimeData();
+            DSExecutable = executable;
         }
 
         /// <summary>
