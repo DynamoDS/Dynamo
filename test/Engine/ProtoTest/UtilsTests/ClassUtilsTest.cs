@@ -16,10 +16,13 @@ namespace ProtoTest.UtilsTests
         public void GetUpcastChainTest()
         {
             String code =
-@"class A {}class B extends A {}class C extends B {}";
+@"class A {}
+class B extends A {}
+class C extends B {}
+";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ProtoCore.RuntimeCore runtimeCore = null;
-            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             int idA = core.ClassTable.IndexOf("A");
             int idB = core.ClassTable.IndexOf("B");
             int idC = core.ClassTable.IndexOf("C");
