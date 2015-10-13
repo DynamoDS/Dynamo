@@ -672,11 +672,10 @@ namespace Dynamo.ViewModels
 
         private void ModelWorkspaceCleared(WorkspaceModel workspace)
         {
-            this.UndoCommand.RaiseCanExecuteChanged();
-            this.RedoCommand.RaiseCanExecuteChanged();
+            RaiseCanExecuteUndoRedo();
 
             // Reset workspace state
-            this.CurrentSpaceViewModel.CancelActiveState();
+            CurrentSpaceViewModel.CancelActiveState();
         }
 
         public void ReturnFocusToSearch()
@@ -854,6 +853,12 @@ namespace Dynamo.ViewModels
             }
 
             return true;
+        }
+
+        private void Paste(object parameter)
+        {
+            model.Paste();
+            RaiseCanExecuteUndoRedo();
         }
 
         /// <summary>
@@ -1738,6 +1743,12 @@ namespace Dynamo.ViewModels
         {
             var workspace = model.CurrentWorkspace;
             return ((null == workspace) ? false : workspace.CanRedo);
+        }
+
+        internal void RaiseCanExecuteUndoRedo()
+        {
+            UndoCommand.RaiseCanExecuteChanged();
+            RedoCommand.RaiseCanExecuteChanged();
         }
 
         public void ToggleConsoleShowing(object parameter)

@@ -183,23 +183,20 @@ namespace Dynamo.Nodes
         private void GroupTextBox_OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             var textbox = sender as TextBox;
-            if (textbox != null && textbox.Visibility == Visibility.Visible)
+            if (textbox == null || textbox.Visibility != Visibility.Visible) return;
+
+            //Record the value here, this is useful when title is poped from stack during undo
+            ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                new DynCmd.UpdateModelValueCommand(
+                    Guid.Empty, ViewModel.AnnotationModel.GUID, "TextBlockText",
+                    GroupTextBox.Text));
+
+            ViewModel.WorkspaceViewModel.DynamoViewModel.RaiseCanExecuteUndoRedo();
+
+            textbox.Focus();
+            if (textbox.Text.Equals(Properties.Resources.GroupDefaultText))
             {
-                //Record the value here, this is useful when title is poped from stack during undo
-                ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-                   new DynCmd.UpdateModelValueCommand(
-                       System.Guid.Empty, this.ViewModel.AnnotationModel.GUID, "TextBlockText",
-                       GroupTextBox.Text));
-
-                ViewModel.WorkspaceViewModel.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
-                ViewModel.WorkspaceViewModel.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
-
-                textbox.Focus();
-                if (textbox.Text.Equals(Dynamo.Properties.Resources.GroupDefaultText))
-                {
-                    textbox.SelectAll();  
-                }
-                             
+                textbox.SelectAll();  
             }
         }
 
