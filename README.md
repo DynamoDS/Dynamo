@@ -46,6 +46,9 @@ Create DirectShape Elements in Dynamo
 Library Enhancements
 - The library is now organized in a tree view to make it easier to find the nodes you want. Node types have also been color-coded to make it easier for you to locate create, action, and query nodes in the library
 
+Manage Custom Node and Package Paths  
+- Add paths to makes nodes and packages show up in the library
+
 Node Layout Cleanup Improvements
 - We have recently updated the Node Layout Cleanup feature so that you can 'cleanup' nodes within a group with just one click
 
@@ -53,6 +56,7 @@ Background Preview working on Remote Desktop and Parallels
 - For remote systems with GPUs and virtual machines with hardware-acceleration, background preview is now visible.
 
 Additional Updates and Improvements
+- New Chapters and expansion of the [Dynamo Primer](http://dynamobim.com/learn/)
 - Easier to parse node overloads in Search 
 - Node to Code Stabilization
 - Improved Export Image of Canvas functionality
