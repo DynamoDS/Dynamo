@@ -3,12 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:controls="clr-namespace:Dynamo.Controls"
-             xmlns:views="clr-namespace:Dynamo.UI.Views"
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              xmlns:resx="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
-             xmlns:viewmodels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
              mc:Ignorable="d"
              MinWidth="250"
              IsVisibleChanged="OnInCanvasSearchControlVisibilityChanged">
@@ -61,8 +58,8 @@
                                 Width="Auto"
                                 Orientation="Horizontal">
                         <Image x:Name="SearchIcon"
-                               Width="25"
-                               Height="26"
+                               Width="18"
+                               Height="18"
                                VerticalAlignment="Center"
                                HorizontalAlignment="Left">
                             <Image.Style>
@@ -90,7 +87,7 @@
                                                     Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
                                    HorizontalAlignment="Center"
                                    Height="18"
-                                   Margin="3,0,0,0"
+                                   Margin="9,0,0,0"
                                    Text="{x:Static resx:Resources.SearchTextBlockText}" />
 
                     </StackPanel>
@@ -121,7 +118,7 @@
                      Background="Transparent"
                      BorderBrush="Transparent"
                      ItemContainerStyle="{StaticResource SearchMemberStyle}"
-                     ItemsSource="{Binding SearchResults, NotifyOnTargetUpdated=True}"
+                     ItemsSource="{Binding FilteredResults, NotifyOnTargetUpdated=True}"
                      TargetUpdated="OnMembersListBoxUpdated"
                      PreviewMouseWheel="OnMembersListBoxMouseWheel">
                 <ListBox.ItemTemplate>
