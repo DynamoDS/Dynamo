@@ -60,10 +60,7 @@ namespace Dynamo.Nodes
                     DynamoSelection.Instance.ClearSelection();
                 }
 
-                if (!DynamoSelection.Instance.Selection.Contains(ViewModel.Model))
-                {
-                    DynamoSelection.Instance.Selection.Add(ViewModel.Model);
-                }
+                DynamoSelection.Instance.Selection.AddUnique(ViewModel.Model);
 
             }
             else
