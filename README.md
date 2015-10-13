@@ -44,7 +44,7 @@ Create DirectShape Elements in Dynamo
 - You can now wrap meshes, solids, and surfaces in a DirectShape and place it into your Revit Model
 
 Library Enhancements
--The library is now organized in a tree view to make it easier to find the nodes you want. Node types have also been color-coded to make it easier for you to locate create, action, and query nodes in the library
+- The library is now organized in a tree view to make it easier to find the nodes you want. Node types have also been color-coded to make it easier for you to locate create, action, and query nodes in the library
 
 Node Layout Cleanup Improvements
 - We have recently updated the Node Layout Cleanup feature so that you can 'cleanup' nodes within a group with just one click
