@@ -738,6 +738,8 @@ namespace Dynamo.ViewModels
                 if (model.ClipBoard.Any())
                 {
                     model.Paste(targetPoint);
+                    owningWorkspace.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+                    owningWorkspace.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
                 }
 
                 model.ClipBoard.Clear();
