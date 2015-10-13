@@ -114,6 +114,8 @@ namespace Dynamo.Controls
 
             RegisterButtonHandlers();
 
+            RegisterViewEventHandlers();
+
             ViewModel.RequestAttachToScene += ViewModelRequestAttachToSceneHandler;
             ViewModel.RequestCreateModels += RequestCreateModelsHandler;
             ViewModel.RequestViewRefresh += RequestViewRefreshHandler;
