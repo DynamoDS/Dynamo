@@ -108,7 +108,7 @@ namespace DSCoreNodesUI.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Item Index #0.
         /// </summary>
-        internal static string ByItemsListPortDataIndex0ToolTip {
+        public static string ByItemsListPortDataIndex0ToolTip {
             get {
                 return ResourceManager.GetString("ByItemsListPortDataIndex0ToolTip", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace DSCoreNodesUI.Properties {
         /// <summary>
         ///   Looks up a localized string similar to A list.
         /// </summary>
-        internal static string ByItemsListPortDataResultToolTip {
+        public static string ByItemsListPortDataResultToolTip {
             get {
                 return ResourceManager.GetString("ByItemsListPortDataResultToolTip", resourceCulture);
             }
@@ -232,27 +232,6 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
-<<<<<<< HEAD
-=======
-        ///   Looks up a localized string similar to Item Index #0.
-        /// </summary>
-        public static string CreateListPortDataIndex0ToolTip {
-            get {
-                return ResourceManager.GetString("CreateListPortDataIndex0ToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A list.
-        /// </summary>
-        public static string CreateListPortDataResultToolTip {
-            get {
-                return ResourceManager.GetString("CreateListPortDataResultToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
->>>>>>> remotes/upstream/master
         ///   Looks up a localized string similar to Create a DateTime object from a formatted date and time string. Date and time must be of the format &quot;April 12, 1977 12:00 PM&quot;.
         /// </summary>
         public static string DateTimeDescription {
@@ -615,11 +594,7 @@ namespace DSCoreNodesUI.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Makes a new list out of the given inputs.
         /// </summary>
-<<<<<<< HEAD
-        internal static string ListByItemsDescription {
-=======
-        public static string ListCartesianProductDescription {
->>>>>>> remotes/upstream/master
+        public static string ListByItemsDescription {
             get {
                 return ResourceManager.GetString("ListByItemsDescription", resourceCulture);
             }
@@ -628,11 +603,7 @@ namespace DSCoreNodesUI.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Item Index #{0}.
         /// </summary>
-<<<<<<< HEAD
-        internal static string ListByItemsInPortToolTip {
-=======
-        public static string ListCartesianProductSearchTags {
->>>>>>> remotes/upstream/master
+        public static string ListByItemsInPortToolTip {
             get {
                 return ResourceManager.GetString("ListByItemsInPortToolTip", resourceCulture);
             }
@@ -641,11 +612,7 @@ namespace DSCoreNodesUI.Properties {
         /// <summary>
         ///   Looks up a localized string similar to entwine;listcreate,newlist;makelist;list;.
         /// </summary>
-<<<<<<< HEAD
-        internal static string ListByItemsSearchTags {
-=======
-        public static string ListCombineDescription {
->>>>>>> remotes/upstream/master
+        public static string ListByItemsSearchTags {
             get {
                 return ResourceManager.GetString("ListByItemsSearchTags", resourceCulture);
             }
@@ -654,11 +621,7 @@ namespace DSCoreNodesUI.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Applies a combinator to each pair in the cartesian product of two sequences.
         /// </summary>
-<<<<<<< HEAD
-        internal static string ListCartesianProductDescription {
-=======
-        public static string ListCombineSearchTags {
->>>>>>> remotes/upstream/master
+        public static string ListCartesianProductDescription {
             get {
                 return ResourceManager.GetString("ListCartesianProductDescription", resourceCulture);
             }
@@ -667,11 +630,7 @@ namespace DSCoreNodesUI.Properties {
         /// <summary>
         ///   Looks up a localized string similar to cross product;crossreference;cross ref;.
         /// </summary>
-<<<<<<< HEAD
-        internal static string ListCartesianProductSearchTags {
-=======
-        public static string ListCreateDescription {
->>>>>>> remotes/upstream/master
+        public static string ListCartesianProductSearchTags {
             get {
                 return ResourceManager.GetString("ListCartesianProductSearchTags", resourceCulture);
             }
@@ -680,11 +639,7 @@ namespace DSCoreNodesUI.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Applies a combinator to each element in two sequences.
         /// </summary>
-<<<<<<< HEAD
-        internal static string ListCombineDescription {
-=======
-        public static string ListCreateInPortToolTip {
->>>>>>> remotes/upstream/master
+        public static string ListCombineDescription {
             get {
                 return ResourceManager.GetString("ListCombineDescription", resourceCulture);
             }
@@ -693,11 +648,7 @@ namespace DSCoreNodesUI.Properties {
         /// <summary>
         ///   Looks up a localized string similar to map multiple;apply over lists;multiple inputs.
         /// </summary>
-<<<<<<< HEAD
-        internal static string ListCombineSearchTags {
-=======
-        public static string ListCreateSearchTags {
->>>>>>> remotes/upstream/master
+        public static string ListCombineSearchTags {
             get {
                 return ResourceManager.GetString("ListCombineSearchTags", resourceCulture);
             }
