@@ -17,7 +17,7 @@ namespace ProtoTest.UtilsTests
             coreRunner = new ProtoScript.Runners.ProtoScriptRunner();
         }
         [Test]
-        [Category("DSDefinedClass_Ignored_CoreDumpNeedsToSupportFFIClass")]
+        [Ignore][Category("DSDefinedClass_Ignored_CoreDumpNeedsToSupportFFIClass")]
         public void TestArrayCoreDump01()
         {
             string sourceCode = @"                class A                {                    c : int = 0;                        constructor B(v : int)                    {                        c = v;                    }                }                values = A.B(1..20..1);";
@@ -28,7 +28,7 @@ namespace ProtoTest.UtilsTests
             Assert.AreEqual("values = { A(c = 1), A(c = 2), A(c = 3), ..., A(c = 18), A(c = 19), A(c = 20) }", globalVariables[0]);
         }
         [Test]
-        [Category("DSDefinedClass_Ignored_CoreDumpNeedsToSupportFFIClass")]
+        [Ignore][Category("DSDefinedClass_Ignored_CoreDumpNeedsToSupportFFIClass")]
         public void TestArrayCoreDump02() // Test array truncation size being an even number.
         {
             string sourceCode = @"                class A                {                    c : int = 0;                        constructor B(v : int)                    {                        c = v;                    }                }                under = A.B(1..7..1);                match = A.B(1..8..1);                over = A.B(1..9..1);";
@@ -41,7 +41,7 @@ namespace ProtoTest.UtilsTests
             Assert.AreEqual("over = { A(c = 1), A(c = 2), A(c = 3), A(c = 4), ..., A(c = 6), A(c = 7), A(c = 8), A(c = 9) }", globalVariables[2]);
         }
         [Test]
-        [Category("DSDefinedClass_Ignored_CoreDumpNeedsToSupportFFIClass")]
+        [Ignore][Category("DSDefinedClass_Ignored_CoreDumpNeedsToSupportFFIClass")]
         public void TestArrayCoreDump03() // Test array truncation size being an odd number.
         {
             string sourceCode = @"                class A                {                    c : int = 0;                        constructor B(v : int)                    {                        c = v;                    }                }                under = A.B(1..6..1);                match = A.B(1..7..1);                over = A.B(1..8..1);";
@@ -54,7 +54,7 @@ namespace ProtoTest.UtilsTests
             Assert.AreEqual("over = { A(c = 1), A(c = 2), A(c = 3), ..., A(c = 6), A(c = 7), A(c = 8) }", globalVariables[2]);
         }
         [Test]
-        [Category("DSDefinedClass_Ignored_CoreDumpNeedsToSupportFFIClass")]
+        [Ignore][Category("DSDefinedClass_Ignored_CoreDumpNeedsToSupportFFIClass")]
         public void TestRecursiveCoreDump()
         {
             string sourceCode = @"                class A                {                    x;                }                a = A.A();                x = a.x;                a.x = a;";
