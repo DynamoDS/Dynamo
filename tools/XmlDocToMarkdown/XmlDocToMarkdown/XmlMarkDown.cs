@@ -68,7 +68,7 @@ namespace XmlDocToMarkdown
                     {"event", "|{0}  \n| ------------- | :--------------- \n{1}\n"},
                     {"summary", "| {0}\n"},
                     {"remarks", "| {0}\n"},
-                    {"example", "| **Example:** | _C# code_\n\n```c#\n{0}\n```\n"},
+                    {"example", "| \n**Example:** | _C# code_\n\n```\nc#\n{0}\n```\n"},
                     {"seePage", "[[{1}|{0}]]"},
                     {"seeAnchor", "[{1}]({0})"},
                     {"param", "| **{0}**\n|{1}\n" },
