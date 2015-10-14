@@ -628,6 +628,59 @@ namespace Dynamo.Tests
 
         #endregion
 
+        #region Key navigation
+
+        [Test]
+        [Category("UnitTests")]
+        public void MoveForward()
+        {
+            var element = CreateCustomNode("AMember", "Category");
+            model.Add(element);
+
+            element = CreateCustomNode("BMember", "Category");
+            model.Add(element);
+
+            viewModel.Visible = true;
+            viewModel.SearchAndUpdateResults("member");
+
+            Assert.AreEqual(2, viewModel.FilteredResults.Count());
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(0).IsSelected);
+
+            viewModel.MoveSelection(SearchViewModel.MovementDirection.Forward);
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(1).IsSelected);
+
+            viewModel.MoveSelection(SearchViewModel.MovementDirection.Forward);
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(1).IsSelected);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void MoveBack()
+        {
+            var element = CreateCustomNode("AMember", "Category");
+            model.Add(element);
+
+            element = CreateCustomNode("BMember", "Category");
+            model.Add(element);
+
+            viewModel.Visible = true;
+            viewModel.SearchAndUpdateResults("member");
+
+            Assert.AreEqual(2, viewModel.FilteredResults.Count());
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(0).IsSelected);
+
+            viewModel.MoveSelection(SearchViewModel.MovementDirection.Back);
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(0).IsSelected);
+
+            viewModel.MoveSelection(SearchViewModel.MovementDirection.Forward);
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(1).IsSelected);
+
+            viewModel.MoveSelection(SearchViewModel.MovementDirection.Back);
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(0).IsSelected);
+        }
+
+        #endregion
+
         #region Helpers
 
         private static NodeSearchElement CreateCustomNode(string name, string category,
