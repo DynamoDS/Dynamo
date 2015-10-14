@@ -387,7 +387,15 @@ namespace Dynamo.Models
             } 
         }
 
+        /// <summary>
+        /// List of subgraphs for graph layout algorithm.
+        /// </summary>
         internal List<GraphLayout.Graph> LayoutSubgraphs;
+
+        /// <summary>
+        /// List of clusters (groups of nodes) which will be processed separately
+        /// in the subgraph creation of graph layout algorithm.
+        /// </summary>
         private List<List<GraphLayout.Node>> SubgraphClusters;
 
         private void AddNode(NodeModel node)
@@ -1043,12 +1051,14 @@ namespace Dynamo.Models
 
             if (!isGroupLayout)
             {
+                // Add all nodes to one big cluster
                 List<GraphLayout.Node> bigcluster = new List<GraphLayout.Node>();
                 bigcluster.AddRange(combinedGraph.Nodes);
                 SubgraphClusters.Add(bigcluster);
             }
             else
             {
+                // Each group becomes one cluster
                 foreach (AnnotationModel group in DynamoSelection.Instance.Selection.OfType<AnnotationModel>())
                 {
                     List<GraphLayout.Node> cluster = new List<GraphLayout.Node>();
@@ -1098,6 +1108,7 @@ namespace Dynamo.Models
         /// uses breadth-first search to find all other nodes in the same subgraph
         /// until all selected nodes have been processed.
         /// </summary>
+        /// <param name="nodes">A cluster of nodes to be separated into subgraphs.</param>
         private void GenerateSeparateSubgraphs(HashSet<GraphLayout.Node> nodes)
         {
             int processed = 0;
