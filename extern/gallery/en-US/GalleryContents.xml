@@ -13,17 +13,17 @@
 	</GalleryContent>
 	<GalleryContent>
 		<Header>Node Layout Cleanup Improvements</Header>
-		<Body>We have recently updated the Node Layout Cleanup feature so that you can 'cleanup' nodes within a group with just one click.</Body>
+		<Body>Consider groups as a whole or cleanup node layouts within a group with just one click.</Body>
 		<ImagePath>NodeLayoutCleanup.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
-		<Header>Background Preview working on Remote Desktop and Parallels</Header>
+		<Header>Background Preview works on Remote Desktop and Parallels</Header>
 		<Body>For remote systems with GPUs and virtual machines with hardware-acceleration, background preview is now visible.</Body>
 		<ImagePath>Rendering.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
 		<Header>Additional Updates and Improvements</Header>
-		<Body>- Easier to parse node overloads in Search&#10;- Node to Code Stabilization&#10;- Improved Export Image of Canvas functionality&#10;- Move to .NET 4.5&#10;- Lots of bug fixes</Body>
+		<Body>- Easier to read Search Results&#10;- Node to Code Stabilization&#10;- Improved Export Image of Canvas functionality&#10;- New Chapters and expansion of the Dynamo Primer&#10;- Move to .NET 4.5</Body>
 		<ImagePath>Misc.png</ImagePath>
 	</GalleryContent>
 	</GalleryUiContents>
