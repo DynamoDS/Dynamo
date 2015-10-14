@@ -306,6 +306,16 @@ namespace Dynamo.Tests
             AssertGraphLayoutLayers(new object[] {
                 new int[] { 2, 1, 2, 3 }
             });
+
+            // Now select two groups and re-run graph layout
+            // The two groups should be two different subgraphs
+            SelectModel(ViewModel.CurrentSpace.Annotations.ElementAt(1));
+            ViewModel.DoGraphAutoLayout(null);
+
+            AssertGraphLayoutLayers(new object[] {
+                new int[] { 2, 1, 2, 3 },
+                new int[] { 1, 1, 2, 3 }
+            });
         }
 
         [Test]
@@ -393,6 +403,16 @@ namespace Dynamo.Tests
             AssertMaxCrossings(1);
         }
 
+        [Test]
+        public void GraphLayoutNoteModels()
+        {
+            OpenModel(GetDynPath("GraphLayoutNotes.dyn"));
+            IEnumerable<NodeModel> nodes = ViewModel.CurrentSpace.Nodes;
+            ViewModel.DoGraphAutoLayout(null);
+
+            AssertNoOverlap();
+        }
+
         #endregion
 
         private void AssertMaxCrossings(int maxCrossings)
@@ -442,9 +462,11 @@ namespace Dynamo.Tests
 
         private void AssertNoOverlap()
         {
-            foreach (var a in ViewModel.CurrentSpace.Nodes)
+            var models = ViewModel.CurrentSpace.Nodes.Concat<ModelBase>(ViewModel.CurrentSpace.Notes);
+
+            foreach (var a in models)
             {
-                foreach (var b in ViewModel.CurrentSpace.Nodes)
+                foreach (var b in models)
                 {
                     if (!a.Equals(b) && 
                         (((a.X <= b.X) && (a.Y <= b.Y) && (b.X - a.X <= a.Width) && (b.Y - a.Y <= a.Height)) ||
