@@ -479,7 +479,7 @@ def SortByFunction(list : var[]..[], func:_FunctionObject)
         {
             _keys[_index] = __Apply(func, list[_index]);
         }
-        return = Sorting.sortByKey(list, _keys)[0];
+        return = Sorting.sortByKey(list, _keys);
     };
 }
 
