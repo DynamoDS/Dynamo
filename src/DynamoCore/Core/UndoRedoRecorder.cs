@@ -73,6 +73,7 @@ namespace Dynamo.Core
         private XmlElement currentActionGroup;
         private readonly Stack<XmlElement> undoStack;
         private readonly Stack<XmlElement> redoStack;
+        private HashSet<Guid> offTrackModels;
 
         #endregion
 
@@ -91,6 +92,7 @@ namespace Dynamo.Core
 
             undoStack = new Stack<XmlElement>();
             redoStack = new Stack<XmlElement>();
+            offTrackModels = new HashSet<Guid>();
         }
 
         /// <summary>
@@ -241,6 +243,18 @@ namespace Dynamo.Core
             return PopActionGroupFromUndoStack();
         }
 
+        /// <summary>
+        /// A model is marked as off-track means it is modified or deleted in
+        /// somewhere else, but that deletation/modification is not recorded
+        /// in undo/redo stack, although its other modifications are properly
+        /// recorded. So during undo/redo, UndoRedoRecorder will ignore all
+        /// exceptions related to off-track objects.
+        /// </summary>
+        /// <param name="model"></param>
+        public void MarkAsOffTrack(ModelBase model)
+        {
+            offTrackModels.Add(model.GUID);
+        }
         #endregion
 
         #region Public Class Properties
@@ -363,17 +377,37 @@ namespace Dynamo.Core
             for (int index = actions.Count - 1; index >= 0; index--)
             {
                 var element = actions[index] as XmlElement;
+
                 XmlAttribute actionAttribute = element.Attributes[UserActionAttrib];
                 var modelActionType = (UserAction)Enum.Parse(typeof(UserAction), actionAttribute.Value);
+
                 switch (modelActionType)
                 {
                     // Before undo takes place (to delete the model), the most 
                     // up-to-date model is retrieved and serialized into the 
                     // redo action group so that it can properly be redone later.
                     case UserAction.Creation:
-                        ModelBase toBeDeleted = undoClient.GetModelForElement(element);
-                        RecordActionInternal(newGroup, toBeDeleted, modelActionType);
-                        undoClient.DeleteModel(element);
+                        try
+                        {
+                            ModelBase toBeDeleted = undoClient.GetModelForElement(element);
+                            RecordActionInternal(newGroup, toBeDeleted, modelActionType);
+                            undoClient.DeleteModel(element);
+                        }
+                        catch (ArgumentException e)
+                        {
+                            bool isOffTrackObject = false;
+                            XmlAttribute guidAttribute = element.Attributes["guid"];
+                            if (null != guidAttribute)
+                            {
+                                var guid = Guid.Parse(guidAttribute.Value);
+                                isOffTrackObject = offTrackModels.Contains(guid);
+                            }
+
+                            if (!isOffTrackObject)
+                            {
+                                throw e;
+                            }
+                        }
                         break;
 
                     case UserAction.Modification:

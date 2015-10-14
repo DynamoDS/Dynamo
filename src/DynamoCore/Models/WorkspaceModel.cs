@@ -285,9 +285,9 @@ namespace Dynamo.Models
         public event Action<ConnectorModel> ConnectorDeleted;
         protected virtual void OnConnectorDeleted(ConnectorModel obj)
         {
-            if (nodeInSync != null &&
-                (obj.Start.Owner is Function || obj.End.Owner is Function))
+            if (nodeInSync != null)
             {
+                undoRecorder.MarkAsOffTrack(obj);
             }
 
             var handler = ConnectorDeleted;
