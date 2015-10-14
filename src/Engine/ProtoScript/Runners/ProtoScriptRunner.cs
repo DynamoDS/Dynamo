@@ -104,11 +104,8 @@ namespace ProtoScript.Runners
         /// <returns></returns>
         public ProtoCore.RuntimeCore ExecuteVM(ProtoCore.Core core)
         {
-            ProtoCore.RuntimeCore runtimeCore = CreateRuntimeCore(core);
-
-            //Start the timer       
+            ProtoCore.RuntimeCore runtimeCore = CreateRuntimeCore(core);  
             runtimeCore.StartTimer();
-
             try
             {
                 foreach (ProtoCore.DSASM.CodeBlock codeblock in core.CodeBlockList)
@@ -279,7 +276,7 @@ namespace ProtoScript.Runners
         /// <param name="core"></param>
         /// <param name="isTest"></param>
         /// <returns></returns>
-        public ExecutionMirror Execute(string sourcecode, ProtoCore.Core core, out ProtoCore.RuntimeCore runtimeCoreOut, bool isTest = true)
+        public ProtoCore.RuntimeCore Execute(string sourcecode, ProtoCore.Core core, bool isTest = true)
         {
             ProtoCore.RuntimeCore runtimeCore = null;
             bool succeeded = CompileAndGenerateExe(sourcecode, core, new ProtoCore.CompileTime.Context());
@@ -304,14 +301,11 @@ namespace ProtoScript.Runners
                 throw new ProtoCore.Exceptions.CompileErrorsOccured();
             }
 
-            runtimeCoreOut = runtimeCore;
-
             if (isTest && !core.Options.CompileToLib)
             {
-                return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
+                runtimeCore.Mirror = new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
             }
-
-            return null;
+            return runtimeCore;
         }
 
         /// <summary>
@@ -321,7 +315,7 @@ namespace ProtoScript.Runners
         /// <param name="core"></param>
         /// <param name="isTest"></param>
         /// <returns></returns>
-        public ExecutionMirror LoadAndExecute(string filename, ProtoCore.Core core, out ProtoCore.RuntimeCore runtimeCoreOut, bool isTest = true)
+        public ProtoCore.RuntimeCore LoadAndExecute(string filename, ProtoCore.Core core, bool isTest = true)
         {
             System.IO.StreamReader reader = null;
             try
@@ -333,17 +327,12 @@ namespace ProtoScript.Runners
                 throw new Exception("Cannot open file " + filename);
             }
 
-            ProtoCore.RuntimeCore runtimeCore = null;
-
             string strSource = reader.ReadToEnd();
             reader.Dispose();
 
             core.Options.RootModulePathName = ProtoCore.Utils.FileUtils.GetFullPathName(filename);
             core.CurrentDSFileName = core.Options.RootModulePathName;
-            ExecutionMirror mirror = Execute(strSource, core, out runtimeCore);
-
-            runtimeCoreOut = runtimeCore;
-            return mirror;
+            return Execute(strSource, core);
         }
 
         
