@@ -125,6 +125,18 @@ namespace Dynamo.Selection
         {
         }
 
+        /// <summary>
+        /// Adds an item only if the sequence does not have it yet
+        /// </summary>
+        /// <param name="item">Item to add</param>
+        public void AddUnique(T item)
+        {
+            if (!Contains(item))
+            {
+                Add(item);
+            }
+        }
+
         public void AddRange(IEnumerable<T> range)
         {
             foreach (var item in range)
