@@ -230,6 +230,20 @@ namespace GraphLayout
             }
         }
 
+        /// <summary>
+        /// To assign all nodes back to layer -1.
+        /// </summary>
+        public void ResetLayers()
+        {
+            foreach (var layer in Layers)
+            {
+                foreach (var node in layer)
+                {
+                    node.Layer = -1;
+                }
+            }
+        }
+
         #endregion
 
         #region Sugiyama algorithm methods

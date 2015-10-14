@@ -944,6 +944,9 @@ namespace Dynamo.Models
             SubgraphClusters.ForEach(
                 x => GenerateSeparateSubgraphs(new HashSet<GraphLayout.Node>(x)));
 
+            // Deselect all nodes
+            SubgraphClusters.ForEach(c => c.ForEach(x => x.IsSelected = false));
+
             // Run layout algorithm for each subgraph
             LayoutSubgraphs.Skip(1).ToList().ForEach(g => RunLayoutSubgraph(g, isGroupLayout));
             AvoidSubgraphOverlap();
@@ -1150,9 +1153,6 @@ namespace Dynamo.Models
                     processed++;
                 }
             }
-
-            // Deselect all nodes
-            nodes.ToList().ForEach(x => x.IsSelected = false);
         }
 
         /// <summary>
@@ -1177,8 +1177,9 @@ namespace Dynamo.Models
             graph.DistributeNodePosition();
             graph.SetGraphPosition(isGroupLayout);
 
-            // Deselect nodes
-            graph.Nodes.ToList().ForEach(x => { x.IsSelected = false; });
+            // Reset layer information and deselect nodes
+            graph.ResetLayers();
+            graph.Nodes.ToList().ForEach(x => x.IsSelected = false);
         }
 
         /// <summary>
