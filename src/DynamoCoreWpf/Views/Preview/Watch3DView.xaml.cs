@@ -224,46 +224,4 @@ namespace Dynamo.Controls
             return View.Point2DToRay3D(new Point(mousePos.X, mousePos.Y));
         }
     }
-
-    internal static class BoundingBoxExtensions
-    {
-        /// <summary>
-        /// Convert a <see cref="BoundingBox"/> to a <see cref="Rect3D"/>
-        /// </summary>
-        /// <param name="bounds">The <see cref="BoundingBox"/> to be converted.</param>
-        /// <returns>A <see cref="Rect3D"/> object.</returns>
-        public static Rect3D ToRect3D(this BoundingBox bounds)
-        {
-            var min = bounds.Minimum;
-            var max = bounds.Maximum;
-            var size = new Size3D((max.X - min.X), (max.Y - min.Y), (max.Z - min.Z));
-            return new Rect3D(min.ToPoint3D(), size);
-        }
-
-        /// <summary>
-        /// If a <see cref="GeometryModel3D"/> has more than one point, then
-        /// return its bounds, otherwise, return a unit-sized bounding
-        /// box surrounding the point.
-        /// </summary>
-        /// <param name="pointGeom">A <see cref="GeometryModel3D"/> object.</param>
-        /// <returns>A <see cref="BoundingBox"/> object encapsulating the geometry.</returns>
-        public static BoundingBox Bounds(this GeometryModel3D geom)
-        {
-            if (geom.Geometry.Positions.Count == 0)
-            {
-                return new BoundingBox();
-            }
-
-            if (geom.Geometry.Positions.Count > 1)
-            {
-                return BoundingBox.FromPoints(geom.Geometry.Positions.ToArray());
-            }
-
-            const float boundsSize = 5.0f;
-            var pos = geom.Geometry.Positions.First();
-            var min = pos + new Vector3(-boundsSize, -boundsSize, -boundsSize);
-            var max = pos + new Vector3(boundsSize, boundsSize, boundsSize);
-            return new BoundingBox(min, max);
-        }
-    }
 }
