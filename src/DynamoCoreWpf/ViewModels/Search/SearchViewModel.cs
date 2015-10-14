@@ -665,10 +665,18 @@ namespace Dynamo.ViewModels
             NodeSearchElementViewModel entry)
         {
             category.RequestBitmapSource += SearchViewModelRequestBitmapSource; 
-            //Check if the category exists already. This check is vital if 
-            // the category name is updated. ex : clockwork package
-            if(category.Entries.All(x => x.FullName != entry.FullName))
-                 category.Entries.Add(entry);
+            // Check if the category exists already. 
+            // ex : clockwork package. For clockwork 
+            // package the category names in dyf is different from what we show it 
+            // on the tree view. so when you click on the category to populate it 
+            // triggers an update to category name. on the same instance when you uninstall
+            // and insall the clockwork package, the categories are named correctly but 
+            // every install triggers an update that gives a duplicate entry. so check if the
+            // entry is already added (specific to browse).
+            if (category.Entries.All(x => x.FullName != entry.FullName))
+            {
+                category.Entries.Add(entry);
+            }
         }
 
         private void SearchViewModelRequestBitmapSource(IconRequestEventArgs e)
