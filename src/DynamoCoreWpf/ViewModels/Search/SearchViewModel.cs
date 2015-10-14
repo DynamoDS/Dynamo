@@ -153,6 +153,18 @@ namespace Dynamo.ViewModels
             }
             set
             {
+                // Unselect all.
+                foreach (NodeSearchElementViewModel res in value)
+                {
+                    res.IsSelected = false;
+                }
+
+                // Select first.
+                if (value.Any())
+                {
+                    value.First().IsSelected = true;
+                }
+
                 filteredResults = value;
                 RaisePropertyChanged("FilteredResults");
             }
@@ -710,7 +722,7 @@ namespace Dynamo.ViewModels
             var foundNodes = Search(query);
             searchResults = new List<NodeSearchElementViewModel>(foundNodes);
 
-            filteredResults = searchResults;
+            FilteredResults = searchResults;
             UpdateSearchCategories();
 
             RaisePropertyChanged("FilteredResults");
@@ -842,6 +854,56 @@ namespace Dynamo.ViewModels
         }
 
         #endregion
+
+        #region Key navigation
+
+        public enum MovementDirection
+        {
+            Forward, Back
+        }
+
+        /// <summary>
+        /// Executes selected item in search UI.
+        /// </summary>
+        public void ExecuteSelectedItem()
+        {
+            var selected = FilteredResults.FirstOrDefault(item => item.IsSelected);
+
+            if (selected != null)
+            {
+                selected.ClickedCommand.Execute(null);
+            }
+        }
+
+        /// <summary>
+        /// When down key is pressed, selected element should move forward.
+        /// When up key is pressed, selected element should move back.
+        /// </summary>
+        public void MoveSelection(MovementDirection direction)
+        {
+            var oldItem = FilteredResults.FirstOrDefault(item => item.IsSelected);
+            if (oldItem == null) return;
+
+            int newItemIndex = FilteredResults.IndexOf(oldItem);
+
+            if (direction == MovementDirection.Forward)
+            {
+                newItemIndex++;
+            }
+            else
+            {
+                newItemIndex--;
+            }
+
+            if (newItemIndex < 0 || newItemIndex >= FilteredResults.Count()) return;
+
+            oldItem.IsSelected = false;
+            var newItem = FilteredResults.ElementAt(newItemIndex);
+            newItem.IsSelected = true;
+        }
+
+        #endregion
+
 
         #region Search field manipulation
 

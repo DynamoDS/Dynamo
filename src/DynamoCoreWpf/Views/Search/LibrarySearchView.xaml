@@ -134,7 +134,11 @@
                         <Setter Property="Background"
                                 Value="{StaticResource LibraryMemberOnHover}" />
                     </Trigger>
-
+                    <Trigger Property="IsSelected"
+                             Value="True">
+                        <Setter Property="Background"
+                                Value="{StaticResource LibraryMemberOnHover}" />
+                    </Trigger>
                 </Style.Triggers>
             </Style>
 
