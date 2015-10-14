@@ -12,7 +12,7 @@ using ProtoScript.Runners;
 
 namespace ProtoTest.ComponentTest
 {
-    class CompileAndExecute : ProtoTestBase
+    public class CompileAndExecute : ProtoTestBase
     {
         readonly string testCasePath = Path.GetFullPath(@"..\..\..\Scripts\Associative\MicroFeatureTests\");
 
@@ -21,7 +21,7 @@ namespace ProtoTest.ComponentTest
         {
 
             String code =
-@"a = 10;";
+@"// Any DS code goes herea = 10;";
             // Compile core
             var opts = new Options();
             opts.ExecutionMode = ExecutionMode.Serial;
@@ -30,22 +30,17 @@ namespace ProtoTest.ComponentTest
             core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
             ProtoScriptRunner runner = new ProtoScriptRunner();
 
-            // Compiler instance
-            ProtoCore.DSASM.Executable dsExecutable;
-            bool compileSucceeded = runner.CompileMe(code, core, out dsExecutable);
+            // Compile
+            bool compileSucceeded = runner.CompileAndGenerateExe(code, core);
             Assert.IsTrue(compileSucceeded == true);
-            
-            // Pass compile data to the runtime 
-            RuntimeCore runtimeCore = new RuntimeCore(core.Heap);
-            runtimeCore.SetProperties(core.Options, dsExecutable);
 
-            // Runtime
-            ExecutionMirror mirror = runner.ExecuteMe(runtimeCore);
+            // Execute
+            RuntimeCore runtimeCore = runner.ExecuteVM(core);
+
+            // Verify
+            ExecutionMirror mirror = new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
             Obj o = mirror.GetValue("a");
             Assert.IsTrue((Int64)o.Payload == 10);
         }
-
-       
-
     }
 }

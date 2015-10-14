@@ -35,6 +35,104 @@ namespace ProtoTest.LiveRunner
         }
 
         [Test]
+        public void SimulateCBNExecution()
+        {
+            // DS code in a CBN node
+            string code = @"a = 10;";
+            
+            // Generate a GUID for the CBN
+            Guid guid = System.Guid.NewGuid();
+
+            // Build data structure that contains the DS code in the CBN
+            // This simulates Dynamo generating the CBN node data
+            List<Subtree> added = new List<Subtree>();
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, code));
+            var syncData = new GraphSyncData(null, added, null);
+
+            // Sending the CBN node data to the VM
+            // Execute the DS code
+            liveRunner.UpdateGraph(syncData);
+
+            // Verify the CBN result
+            AssertValue("a", 10);
+        }
+
+
+        [Test]
+        public void SimulateConnectedCBNExecution()
+        {
+            // Simulate 2 CBNs where one is connected to the other
+            // [a = 1]----->[x = a]
+            List<string> codes = new List<string>() 
+            {
+                @"a = 10;", // CBN 1 contents
+                @"x = a;"   // CBN 2 contents
+            };
+
+            // Simulate 2 CBNs
+            Guid cbnGuid1 = System.Guid.NewGuid(); 
+            Guid cbnGuid2 = System.Guid.NewGuid(); 
+            List<Subtree> added = new List<Subtree>();
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(cbnGuid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(cbnGuid2, codes[1]));
+            var syncData = new GraphSyncData(null, added, null);
+
+            // Sending the CBN node data to the VM
+            // Execute the DS code
+            liveRunner.UpdateGraph(syncData);
+
+            // Verify the values of the variables in the CBNs
+            AssertValue("a", 10);
+            AssertValue("x", 10);
+        }
+
+
+        [Test]
+        public void SimulateConnectedCBNReExecution()
+        {
+            // Simulate 2 CBNs where one is connected to the other
+            // [a = 1]----->[x = a]
+            //
+            // Modify CBN 1
+            // [a = 10]----->[x = a]
+            List<string> codes = new List<string>() 
+            {
+                @"a = 10;", // CBN 1 contents
+                @"x = a;",  // CBN 2 contents
+                @"a = 20;"  // CBN 1 modified contents
+            };
+
+            // Simulate 2 CBNs
+            Guid cbnGuid1 = System.Guid.NewGuid();
+            Guid cbnGuid2 = System.Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(cbnGuid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(cbnGuid2, codes[1]));
+            var syncData = new GraphSyncData(null, added, null);
+
+            // Sending the CBN node data to the VM
+            liveRunner.UpdateGraph(syncData);
+
+            // Verify the values of the variables in the CBNs
+            AssertValue("a", 10);
+            AssertValue("x", 10);
+
+
+            // Modify the CBN 1 only
+            List<Subtree> modified = new List<Subtree>();
+            Subtree subtree = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(cbnGuid1, codes[2]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+
+            // Sending the CBN node data to the VM
+            liveRunner.UpdateGraph(syncData);
+
+            // Verify that both variables have been modified
+            AssertValue("a", 20);
+            AssertValue("x", 20);
+        }
+
+        [Test]
         public void GraphILTest_Assign01()
         {
             // Build the AST trees

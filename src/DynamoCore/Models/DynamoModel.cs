@@ -1559,8 +1559,8 @@ namespace Dynamo.Models
             // Provide a small offset when pasting so duplicate pastes aren't directly on top of each other
             CurrentWorkspace.IncrementPasteOffset();
 
-            var locatebleModels = ClipBoard.Where(model => model is NoteModel || model is NodeModel);
-            var orderedItems = locatebleModels.OrderBy(item => item.CenterX + item.CenterY);
+            var locatableModels = ClipBoard.Where(model => model is NoteModel || model is NodeModel);
+            var orderedItems = locatableModels.OrderBy(item => item.CenterX + item.CenterY);
 
             // Search for the rightmost item. It's item with the biggest X, Y coordinates of center.
             var rightMostItem = orderedItems.Last();
@@ -1573,8 +1573,8 @@ namespace Dynamo.Models
             var shiftY = rightMostItem.Y + CurrentWorkspace.CurrentPasteOffset - leftMostItem.Y;
 
 
-            var x = shiftX + locatebleModels.Min(m => m.X);
-            var y = shiftY + locatebleModels.Min(m => m.Y);
+            var x = shiftX + locatableModels.Min(m => m.X);
+            var y = shiftY + locatableModels.Min(m => m.Y);
             var targetPoint = new Point2D(x, y);
             
             Paste(targetPoint);
@@ -1664,7 +1664,6 @@ namespace Dynamo.Models
             {
                 CurrentWorkspace.AddAndRegisterNode(newNode, false);
                 createdModels.Add(newNode);
-                AddToSelection(newNode);
             }
 
             // TODO: is this required?
@@ -1675,7 +1674,6 @@ namespace Dynamo.Models
             {
                 CurrentWorkspace.AddNote(newNote, false);
                 createdModels.Add(newNote);
-                AddToSelection(newNote);
             }
 
             ModelBase start;
@@ -1743,6 +1741,12 @@ namespace Dynamo.Models
                 AddToSelection(newAnnotation);
             }
 
+            // adding an annotation overrides selection, so add nodes and notes after
+            foreach (var item in newItems)
+            {
+                AddToSelection(item);
+            }
+
             // Record models that are created as part of the command.
             CurrentWorkspace.RecordCreatedModels(createdModels);
         }
@@ -1754,10 +1758,9 @@ namespace Dynamo.Models
         public void AddToSelection(object parameters)
         {
             var selectable = parameters as ISelectable;
-            if ((selectable != null) && !selectable.IsSelected)
+            if (selectable != null)
             {
-                if (!DynamoSelection.Instance.Selection.Contains(selectable))
-                    DynamoSelection.Instance.Selection.Add(selectable);
+                DynamoSelection.Instance.Selection.AddUnique(selectable);
             }
         }
 
