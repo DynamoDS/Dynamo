@@ -50,6 +50,8 @@ b, strong {
 }
 
 .wy-side-nav-search {
+    color: #BBB;
+    margin-bottom:0px;
     background: #000000;
     text-align: left;
     display: block;
@@ -179,6 +181,8 @@ code.cs, code.c {
 }
 
 .wy-page-title { 
+ font-size:30px;
+ position:absolute;
  left:45%; 
 }
 
@@ -294,10 +298,7 @@ code.cs, code.c {
     font-size: 90%;
     color: #838383;
 }
-.wy-side-nav-search {
-    color: #BBB;
-    margin-bottom:0px;
-}
+
 .wy-side-nav-search form {
     position: relative;
     top: 30%;
@@ -320,4 +321,30 @@ nav.stickynav {
 li.home a:hover{
 	background-color: #939598;
 	color:white;
+}
+
+.wy-side-search {
+	width:300px;
+	float:left;
+}
+
+@media only screen 
+and (min-device-width : 320px) 
+and (max-device-width : 480px) {
+ .wy-page-title { 
+	 visibility : hidden
+	}
+	
+	.wy-nav-top {
+	 line-height:20px
+	}
+	 
+   .wy-nav-top i {
+     float:left;
+   }
+   
+   .wy-side-search {
+     width:auto
+   }
+   
 }
