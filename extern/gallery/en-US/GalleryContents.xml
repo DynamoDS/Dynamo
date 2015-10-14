@@ -13,7 +13,7 @@
 	</GalleryContent>
 	<GalleryContent>
 		<Header>Node Layout Cleanup Improvements</Header>
-		<Body>Consider groups as a whole or cleanup node layouts within a group with just one click.</Body>
+		<Body>Treat groups as a whole or cleanup node layouts within a group with just one click.</Body>
 		<ImagePath>NodeLayoutCleanup.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
@@ -23,7 +23,7 @@
 	</GalleryContent>
 	<GalleryContent>
 		<Header>Additional Updates and Improvements</Header>
-		<Body>- Easier to read Search Results&#10;- Node to Code Stabilization&#10;- Improved Export Image of Canvas functionality&#10;- New Chapters and expansion of the Dynamo Primer&#10;- Move to .NET 4.5</Body>
+		<Body>- Easier to read Search Results&#10;- Node to Code Stabilization&#10;- Improved 'Canvas Snapshot' functionality&#10;- New Chapters and expansion of the Dynamo Primer&#10;- Move to .NET 4.5</Body>
 		<ImagePath>Misc.png</ImagePath>
 	</GalleryContent>
 	</GalleryUiContents>
