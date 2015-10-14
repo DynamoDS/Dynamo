@@ -50,14 +50,14 @@ Manage Custom Node and Package Paths
 - Add paths to makes nodes and packages show up in the library
 
 Node Layout Cleanup Improvements
-- We have recently updated the Node Layout Cleanup feature so that you can 'cleanup' nodes within a group with just one click
+- Consider groups as a whole or cleanup node layouts within a group with just one click
 
-Background Preview working on Remote Desktop and Parallels
+Background Preview works on Remote Desktop and Parallels
 - For remote systems with GPUs and virtual machines with hardware-acceleration, background preview is now visible.
 
 Additional Updates and Improvements
 - New Chapters and expansion of the [Dynamo Primer](http://dynamobim.com/learn/)
-- Easier to parse node overloads in Search 
+- Easier to read Search Results 
 - Node to Code Stabilization
 - Improved Export Image of Canvas functionality
 - Move to .NET 4.5
