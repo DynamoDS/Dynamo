@@ -76,7 +76,7 @@
                 </MenuItem>
 
                 <MenuItem Header="{x:Static p:Resources.Watch3DViewContextMenuZoomToFit}"
-                          Click="OnZoomToFitClickedHandler" />
+                          Command="{Binding ZoomToFitCommand}"/>
                 
             </ContextMenu>
         </Grid.ContextMenu>

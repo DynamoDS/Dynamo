@@ -17,6 +17,7 @@ using Autodesk.DesignScript.Interfaces;
 using Dynamo.Controls;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Selection;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Rendering;
 using DynamoUtilities;
@@ -105,6 +106,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private const int FrameUpdateSkipCount = 200;
         private int currentFrameSkipCount;
+        private readonly Rect3D defaultBounds = new Rect3D(new Point3D(-25, -25, -25), new Size3D(50,50,50));
 
 #if DEBUG
         private readonly Stopwatch renderTimer = new Stopwatch();
@@ -151,6 +153,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             if (RequestCreateModels != null)
             {
                 RequestCreateModels(packages);
+            }
+        }
+
+        public event Action<Rect3D> RequestZoomToFit;
+        protected void OnRequestZoomToFit(Rect3D bounds)
+        {
+            if(RequestZoomToFit != null)
+            {
+                RequestZoomToFit(bounds);
             }
         }
 
@@ -619,6 +630,26 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        protected override void ZoomToFit(object parameter)
+        {
+            if (!DynamoSelection.Instance.Selection.Any())
+            {
+                OnRequestZoomToFit(defaultBounds);
+            }
+
+            var selNodes = DynamoSelection.Instance.Selection.Where(s => s is NodeModel).Cast<NodeModel>().ToArray();
+            if (!selNodes.Any()) return;
+
+            var geoms = SceneItems.Where(item => item is GeometryModel3D).Cast<GeometryModel3D>();
+
+            var selectionBounds = ComputeBoundsForSelectedNodeGeometry(geoms, selNodes);
+
+            // Don't zoom if there is no valid bounds.
+            if (selectionBounds.Equals(new BoundingBox())) return;
+
+            OnRequestZoomToFit(selectionBounds.ToRect3D());
+        }
+
         #region internal methods
 
         internal void ComputeFrameUpdate()
@@ -648,6 +679,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         #endregion
 
+        #region private methods
+   
         private KeyValuePair<string, Model3D>[] FindAllGeometryModel3DsForNode(string identifier)
         {
             KeyValuePair<string, Model3D>[] geometryModels;
@@ -664,7 +697,31 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             return geometryModels;
         }
 
-        #region private methods
+        /// <summary>
+        /// For a set of selected nodes, compute a bounding box which
+        /// encompasses all of the nodes' generated geometry.
+        /// </summary>
+        /// <param name="geometry">A collection of <see cref="GeometryModel3D"/> objects.</param>
+        /// <param name="selNodes">A collection of <see cref="NodeModel"/> objects.</param>
+        /// <returns>A <see cref="BoundingBox"/> object.</returns>
+        private static BoundingBox ComputeBoundsForSelectedNodeGeometry(IEnumerable<GeometryModel3D> geometry, IEnumerable<NodeModel> selNodes)
+        {
+            var selIdents =
+                selNodes.SelectMany(n => n.OutPorts.Select(p => n.GetAstIdentifierForOutputIndex(p.Index)));
+            var selGeoms =
+                selIdents.SelectMany(id => geometry.Where(item => item.Name.Contains(id.Value))).ToArray();
+
+            if (!selGeoms.Any()) return new BoundingBox();
+
+            var bounds = selGeoms.First().Bounds();
+            bounds = selGeoms.Aggregate(bounds, (current, geom) => BoundingBox.Merge(current, geom.Bounds()));
+
+#if DEBUG
+            Debug.WriteLine("{0} geometry items referenced by the selection.", selGeoms.Count());
+            Debug.WriteLine("Bounding box of selected geometry:{0}", bounds);
+#endif
+            return bounds;
+        }
 
         private void SetSelection(IEnumerable items, bool isSelected)
         {
@@ -1264,9 +1321,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 closest = Math.Min(closest, d);
                 farthest = Math.Max(farthest, d);
             }
-            
-            Camera.NearPlaneDistance = Math.Min(Math.Sqrt(farthest) * NearPlaneDistanceFactor, Math.Sqrt(closest)/2);
-            //Debug.WriteLine(string.Format("Close={0}, Far={1}, Near clip={2}", Math.Sqrt(closest), Math.Sqrt(farthest), Camera.NearPlaneDistance));
+
+            var nearClipDistance = Math.Min(Math.Sqrt(farthest)*NearPlaneDistanceFactor, Math.Sqrt(closest)/2);
+            if (Camera.NearPlaneDistance == nearClipDistance) return;
+
+            Camera.NearPlaneDistance = nearClipDistance;
+            //Debug.WriteLine("Close={0}, Far={1}, Near clip={2}", Math.Sqrt(closest), Math.Sqrt(farthest), Camera.NearPlaneDistance);
         }
 
         internal override void ExportToSTL(string path, string modelName)
