@@ -287,7 +287,7 @@ namespace Dynamo.Models
         {
             if (nodeInSync != null)
             {
-                undoRecorder.MarkAsOffTrack(obj);
+                undoRecorder.RecordOffTrackModel(obj);
             }
 
             var handler = ConnectorDeleted;

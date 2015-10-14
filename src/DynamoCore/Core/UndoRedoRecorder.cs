@@ -171,6 +171,7 @@ namespace Dynamo.Core
             EnsureValidRecorderStates();
             undoStack.Clear();
             redoStack.Clear();
+            offTrackModels.Clear();
         }
 
         #endregion
@@ -244,14 +245,18 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// A model is marked as off-track means it is modified or deleted in
-        /// somewhere else, but that deletation/modification is not recorded
-        /// in undo/redo stack, although its other modifications are properly
-        /// recorded. So during undo/redo, UndoRedoRecorder will ignore all
-        /// exceptions related to off-track objects.
+        /// A model is recorded as an off-track object means it is modified
+        /// somewhere else, but that modification operation is not recorded in
+        /// undo/redo stack. UndoRedoRecorder will ignore all excpetions that
+        /// related to this kind of objects during undo/redo.
+        /// 
+        /// For example, a connector that connects to an input port of a custom
+        /// node instance could be deleted because of the removal of that input
+        /// port in custom workspace. As this deletion is not recorded by
+        /// UndoRedoRecorder, the connector should be marked as off-track.
         /// </summary>
         /// <param name="model"></param>
-        public void MarkAsOffTrack(ModelBase model)
+        public void RecordOffTrackModel(ModelBase model)
         {
             offTrackModels.Add(model.GUID);
         }
