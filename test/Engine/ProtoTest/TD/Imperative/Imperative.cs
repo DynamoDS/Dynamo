@@ -11,7 +11,7 @@ namespace ProtoTest.TD.Imperative
     class Imperative : ProtoTestBase
     {
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         [Category("Imperative")]
         public void T002_ClassConstructorNestedScope_InlineCondition()
         {
@@ -41,7 +41,7 @@ t1 = A.A(2).a;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         [Category("Imperative")]
         public void T003_ClassConstructorNestedScope_RangeExpr()
         {
@@ -113,7 +113,7 @@ a = ClassFunctionality.ClassFunctionality(true);";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         [Category("Imperative")]
         public void T006_ClassConstructorNestedScope_FunctionCall()
         {
@@ -164,7 +164,7 @@ a = test.test().t;";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         [Category("Imperative")]
         public void T007_ClassConstructorNestedScope_ArrayCreation()
         {
@@ -228,7 +228,7 @@ a4 = test.test().t4;";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         [Category("Imperative")]
         public void T008_ClassConstructorNestedScope_ArrayIndexing()
         {
@@ -511,7 +511,7 @@ a2 = foo(foo2(1.0),2);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         [Category("Imperative")]
         public void T013_ClassConstructorNestedScope_UseThisKeyWord()
         {
@@ -558,7 +558,7 @@ a2 = a.c2;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         [Category("Imperative")]
         public void T014_ClassConstructorNestedScope_CompareClassesUsingThis()
         {
@@ -602,7 +602,7 @@ c = b.c1;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         [Category("Imperative")]
         public void T015_ClassConstructorNestedScope_GlobalVariableInCode()
         {
@@ -643,7 +643,7 @@ y = 2;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         [Category("Imperative")]
         public void T016_ClassConstructorNestedScope_GlobalVariableInArgument()
         {
@@ -684,7 +684,7 @@ y = 2;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         [Category("Imperative")]
         public void T017_ClassConstructorNestedScope_UpdateInSameScope()
         {
@@ -725,7 +725,7 @@ b = a.c1;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         [Category("Imperative")]
         [Category("Failure")]
         public void T018_ClassConstructorNestedScope_UpdateInInnerScope()
@@ -772,7 +772,7 @@ c = a.x2;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         [Category("Imperative")]
         public void T018_ClassConstructorNestedScope_UpdateInOuterScope()
         {
