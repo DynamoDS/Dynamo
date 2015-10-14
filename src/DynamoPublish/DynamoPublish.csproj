@@ -139,10 +139,10 @@
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="AfterBuild">
+  <!--<Target Name="AfterBuild">
     <ItemGroup>
       <ExtensionDefinition Include="DynamoPublishExtension_ViewExtensionDefinition.xml" />
     </ItemGroup>
     <Copy SourceFiles="@(ExtensionDefinition)" DestinationFolder="$(OutputPath)\viewExtensions\" />
-  </Target>
+  </Target>-->
 </Project>
