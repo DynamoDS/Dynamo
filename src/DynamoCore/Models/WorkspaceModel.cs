@@ -287,7 +287,7 @@ namespace Dynamo.Models
         {
             if (nodeInSync != null)
             {
-                undoRecorder.RecordOffTrackModel(obj);
+                undoRecorder.RecordOffTrackModel(obj.GUID);
             }
 
             var handler = ConnectorDeleted;
@@ -2136,8 +2136,16 @@ namespace Dynamo.Models
                 // for example, connector connects to a custom node instance
                 // whose input ports have been changed, so connector can't find
                 // its end port owner.
-                if (connector != null)
+                if (connector == null)
+                {
+                    XmlAttribute guidAttribute = modelData.Attributes["guid"];
+                    if (null != guidAttribute)
+                        undoRecorder.RecordOffTrackModel(Guid.Parse(guidAttribute.Value)); 
+                }
+                else 
+                {
                     OnConnectorAdded(connector); // Update view-model and view.
+                }
             }
             else if (typeName.StartsWith("Dynamo.Models.NoteModel"))
             {
