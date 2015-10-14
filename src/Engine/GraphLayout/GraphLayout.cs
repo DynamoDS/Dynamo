@@ -662,7 +662,7 @@ namespace GraphLayout
         /// <summary>
         /// The height of the node view only.
         /// </summary>
-        public double Height;
+        public double Height { get; private set; }
 
         /// <summary>
         /// The x coordinate of the node view.
