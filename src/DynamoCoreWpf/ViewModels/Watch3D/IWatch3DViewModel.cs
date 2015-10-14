@@ -7,6 +7,12 @@ using HelixToolkit.Wpf.SharpDX;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
+    public interface IRay
+    {
+        IPointEntity Origin { get; }
+        IVectorEntity Axis { get; }
+    }
+
     /// <summary>
     /// An interface to expose API's on the Watch UI Viewmodel to extensions
     /// </summary>
@@ -20,6 +26,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <param name="args">mouse click location in screen coordinates</param>
         /// <returns></returns>
         Ray3D GetClickRay(MouseEventArgs args);
+
+
+        IRay GetClickRay2(MouseEventArgs args);
 
         /// <summary>
         /// Converts render packages into drawable geometry primitives 

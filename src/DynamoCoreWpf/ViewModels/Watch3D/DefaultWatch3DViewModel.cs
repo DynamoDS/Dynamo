@@ -477,6 +477,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             return RequestClickRay != null ? RequestClickRay(args) : null;
         }
 
+        internal event Func<MouseEventArgs, IRay> RequestClickRay2;
+        public IRay GetClickRay2(MouseEventArgs args)
+        {
+            return RequestClickRay2 != null ? RequestClickRay2(args) : null;
+        }
+
         public event Action<object, MouseButtonEventArgs> ViewMouseDown;
         internal void OnViewMouseDown(object sender, MouseButtonEventArgs e)
         {
