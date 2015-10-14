@@ -1673,34 +1673,11 @@ namespace ProtoScript.Runners
             throw new NotImplementedException();
         }
 
-
-        private bool Compile(string code, out int blockId)
+        private bool Compile(List<AssociativeNode> astList, Core targetCore)
         {
-            Dictionary<string, bool> execFlagList = null;
-
-            staticContext.SetData(code, new Dictionary<string, object>(), execFlagList);
-
-            bool succeeded = runner.Compile(staticContext, runnerCore, out blockId);
+            bool succeeded = runner.CompileAndGenerateExe(astList, targetCore, new ProtoCore.CompileTime.Context());
             if (succeeded)
             {
-                // Regenerate the DS executable
-                runnerCore.GenerateExecutable();
-
-                // Update the symbol tables
-                // TODO Jun: Expand to accomoadate the list of symbols
-                //staticContext.symbolTable = runnerCore.DSExecutable.runtimeSymbols[0];
-            }
-            return succeeded;
-        }
-
-        private bool Compile(List<AssociativeNode> astList, Core targetCore, out int blockId)
-        {
-            bool succeeded = runner.Compile(astList, targetCore, out blockId);
-            if (succeeded)
-            {
-                // Regenerate the DS executable
-                targetCore.GenerateExecutable();
-
                 // Update the symbol tables
                 // TODO Jun: Expand to accomoadate the list of symbols
                 staticContext.symbolTable = targetCore.DSExecutable.runtimeSymbols[0];
@@ -1726,11 +1703,9 @@ namespace ProtoScript.Runners
         private bool CompileAndExecute(string code)
         {
             // TODO Jun: Revisit all the Compile functions and remove the blockId out argument
-            int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-            bool succeeded = Compile(code, out blockId);
+            bool succeeded = runner.CompileAndGenerateExe(code, runnerCore, new ProtoCore.CompileTime.Context());
             if (succeeded)
             {
-                runtimeCore.RunningBlock = blockId;
                 vmState = Execute(!string.IsNullOrEmpty(code));
             }
             return succeeded;
@@ -1738,12 +1713,9 @@ namespace ProtoScript.Runners
 
         private bool CompileAndExecute(List<AssociativeNode> astList)
         {
-            // TODO Jun: Revisit all the Compile functions and remove the blockId out argument
-            int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-            bool succeeded= Compile(astList, runnerCore, out blockId);
+            bool succeeded = Compile(astList, runnerCore);
             if (succeeded)
             {
-                runtimeCore.RunningBlock = blockId;
                 vmState = Execute(astList.Count > 0);
             }
             return succeeded;

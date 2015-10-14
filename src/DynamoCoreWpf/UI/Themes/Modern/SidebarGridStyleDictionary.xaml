@@ -233,16 +233,13 @@
         <StackPanel Name="ImageAndNodeName"
                     Orientation="Horizontal"
                     VerticalAlignment="Center">
-            <Border BorderBrush="Yellow"
-                    BorderThickness="2,0,0,0"
-                    Visibility="{Binding IsTopResult, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
             <Image HorizontalAlignment="Left"
                    Height="36"
                    Margin="16,0,16,0"
                    VerticalAlignment="Center"
                    Width="24"
                    Source="{Binding SmallIcon}" />
-            <Grid Margin="-10,10,0,5">
+            <Grid Margin="-10,0,0,0">
                 <Rectangle Fill="#3E464C"
                            HorizontalAlignment="Stretch"
                            VerticalAlignment="Stretch">
@@ -258,7 +255,7 @@
                 <TextBlock Grid.Column="1"
                            Name="memberName"
                            HorizontalAlignment="Left"
-                           VerticalAlignment="Top"
+                           VerticalAlignment="Center"
                            FontSize="13">
                     <Run Text="{Binding Name, Mode=OneWay}"
                          Foreground="{StaticResource CommonSidebarTextColor}" />
@@ -358,7 +355,7 @@
         <Setter Property="BorderBrush"
                 Value="Transparent" />
         <Setter Property="Height"
-                Value="40" />
+                Value="30" />
         <Setter Property="Background"
                 Value="{StaticResource LibraryCommonBackground}" />
         <Setter Property="FocusVisualStyle"
@@ -367,8 +364,7 @@
                 Value="{Binding Path=Visibility, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
         <Setter Property="Focusable"
                 Value="False" />
-        <Setter Property ="Margin" Value="-10,0,0,-10"/>
-                   
+
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ListBoxItem}">

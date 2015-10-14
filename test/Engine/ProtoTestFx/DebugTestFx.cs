@@ -77,7 +77,7 @@ namespace ProtoTestFx
 
             //Run
 
-            fsr.Execute(code, core, out runtimeCore);
+            runtimeCore = fsr.Execute(code, core);
 
             return core;
         }
