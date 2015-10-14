@@ -2132,7 +2132,12 @@ namespace Dynamo.Models
                 var connector = NodeGraph.LoadConnectorFromXml(modelData,
                     Nodes.ToDictionary(node => node.GUID));
 
-                OnConnectorAdded(connector); // Update view-model and view.
+                // It is possible that in some cases connector can't be created,
+                // for example, connector connects to a custom node instance
+                // whose input ports have been changed, so connector can't find
+                // its end port owner.
+                if (connector != null)
+                    OnConnectorAdded(connector); // Update view-model and view.
             }
             else if (typeName.StartsWith("Dynamo.Models.NoteModel"))
             {
