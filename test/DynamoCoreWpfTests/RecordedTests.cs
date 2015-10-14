@@ -6,7 +6,6 @@ using System.Xml;
 
 using SystemTestServices;
 
-using DSIronPythonNode;
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Models;
@@ -19,6 +18,8 @@ using NUnit.Framework;
 using Dynamo.UI;
 using System.Reflection;
 using TestServices;
+
+using PythonNodeModels;
 
 using IntegerSlider = DSCoreNodesUI.Input.IntegerSlider;
 
@@ -190,7 +191,8 @@ namespace DynamoCoreWpfTests
                 {
                     StartInTestMode = true,
                     PathResolver = pathResolver,
-                    GeometryFactoryPath = geometryFactoryPath
+                    GeometryFactoryPath = geometryFactoryPath,
+                    ProcessMode = Dynamo.Core.Threading.TaskProcessMode.Synchronous
                 });
 
             // Create the DynamoViewModel to control the view

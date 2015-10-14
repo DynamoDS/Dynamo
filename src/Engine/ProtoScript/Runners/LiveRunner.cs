@@ -63,42 +63,83 @@ namespace ProtoScript.Runners
     /// </summary>
     public class GraphSyncData
     {
+        /// <summary>
+        /// Deleted sub trees.
+        /// </summary>
         public List<Subtree> DeletedSubtrees
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Added sub trees.
+        /// </summary>
         public List<Subtree> AddedSubtrees
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Modified sub trees.
+        /// </summary>
         public List<Subtree> ModifiedSubtrees
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Newly added nodes' IDs.
+        /// </summary>
+        public IEnumerable<Guid> AddedNodeIDs
+        {
+            get
+            {
+                return AddedSubtrees.Select(ts => ts.GUID);
+            }
+        }
+
+        /// <summary>
+        /// Modified nodes' IDs.
+        /// </summary>
+        public IEnumerable<Guid> ModifiedNodeIDs
+        {
+            get
+            {
+                return ModifiedSubtrees.Select(ts => ts.GUID);
+            }
+        }
+
+        /// <summary>
+        /// Deleted nodes' IDs.
+        /// </summary>
+        public IEnumerable<Guid> DeletedNodeIDs 
+        {
+            get
+            {
+                return DeletedSubtrees.Select(ts => ts.GUID);
+            }
+        }
+
+        /// <summary>
+        /// All node IDs in this graph sync data.
+        /// </summary>
         public IEnumerable<Guid> NodeIDs
         {
-            get;
-            private set;
+            get
+            {
+                return AddedNodeIDs.Concat(ModifiedNodeIDs).Concat(DeletedNodeIDs);
+            }
         }
 
         public GraphSyncData(List<Subtree> deleted, List<Subtree> added, List<Subtree> modified)
         {
-            DeletedSubtrees = deleted;
-            AddedSubtrees = added;
-            ModifiedSubtrees = modified;
-
-            NodeIDs = Enumerable.Empty<Guid>()
-                                .Concat(deleted == null ? Enumerable.Empty<Guid>() : deleted.Select(t => t.GUID))
-                                .Concat(added == null ? Enumerable.Empty<Guid>() : added.Select(t => t.GUID))
-                                .Concat(modified == null ? Enumerable.Empty<Guid>() : modified.Select(t => t.GUID));
+            DeletedSubtrees = deleted ?? new List<Subtree>();
+            AddedSubtrees = added ?? new List<Subtree>();
+            ModifiedSubtrees = modified ?? new List<Subtree>();
         }
-
 
         public override string ToString()
         {
@@ -329,6 +370,34 @@ namespace ProtoScript.Runners
             this.core = core;
             this.runtimeCore = runtimeCore;
             currentSubTreeList = new Dictionary<Guid, Subtree>();
+        }
+
+        /// <summary>
+        /// Deep clone the change set computer
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public ChangeSetComputer Clone()
+        {
+            ChangeSetComputer comp = new ChangeSetComputer(this.core, this.runtimeCore);
+
+            comp.currentSubTreeList = new Dictionary<Guid, Subtree>();
+            foreach (var subTreePairs in currentSubTreeList)
+            {
+                comp.currentSubTreeList.Add(subTreePairs.Key, subTreePairs.Value); 
+            }
+
+            comp.csData = new ChangeSetData();
+            comp.csData.ContainsDeltaAST = csData.ContainsDeltaAST;
+            comp.csData.DeletedBinaryExprASTNodes = new List<AssociativeNode>(csData.DeletedBinaryExprASTNodes);
+            comp.csData.DeletedFunctionDefASTNodes = new List<AssociativeNode>(csData.DeletedFunctionDefASTNodes);
+            comp.csData.RemovedBinaryNodesFromModification = new List<AssociativeNode>(csData.RemovedBinaryNodesFromModification);
+            comp.csData.ModifiedNodesForRuntimeSetValue = new List<AssociativeNode>(csData.ModifiedNodesForRuntimeSetValue);
+            comp.csData.RemovedFunctionDefNodesFromModification = new List<AssociativeNode>(csData.RemovedFunctionDefNodesFromModification);
+            comp.csData.ForceExecuteASTList = new List<AssociativeNode>(csData.ForceExecuteASTList);
+            comp.csData.ModifiedFunctions = new List<AssociativeNode>(csData.ModifiedFunctions);
+            comp.csData.ModifiedNestedLangBlock = new List<AssociativeNode>(csData.ModifiedNestedLangBlock);
+            return comp;
         }
 
         /// <summary>
@@ -612,30 +681,28 @@ namespace ProtoScript.Runners
                         // Get the cached AST and append it to the changeSet
                         csData.ForceExecuteASTList.AddRange(GetUnmodifiedASTList(oldSubTree.AstNodes, st.AstNodes));
                     }
-                    else
-                    {
-                        // Only update the cached ASTs if it is not ForceExecution
 
-                        List<AssociativeNode> newCachedASTList = new List<AssociativeNode>();
+                    // Update the cached AST to reflect the change
 
-                        // Get all the unomodified ASTs and append them to the cached ast list 
-                        newCachedASTList.AddRange(GetUnmodifiedASTList(oldSubTree.AstNodes, st.AstNodes));
+                    List<AssociativeNode> newCachedASTList = new List<AssociativeNode>();
 
-                        // Append all the modified ASTs to the cached ast list 
-                        newCachedASTList.AddRange(modifiedASTList);
+                    // Get all the unomodified ASTs and append them to the cached ast list 
+                    newCachedASTList.AddRange(GetUnmodifiedASTList(oldSubTree.AstNodes, st.AstNodes));
 
-                        // ================================================================================
-                        // Get a list of functions that were removed
-                        // This is the list of functions that exist in oldSubTree.AstNodes and no longer exist in st.AstNodes
-                        // This will passed to the changeset applier to handle removed functions in the VM
-                        // ================================================================================
-                        IEnumerable<AssociativeNode> removedFunctions = oldSubTree.AstNodes.Where(f => f is FunctionDefinitionNode && !st.AstNodes.Contains(f));
-                        csData.RemovedFunctionDefNodesFromModification.AddRange(removedFunctions);
+                    // Append all the modified ASTs to the cached ast list 
+                    newCachedASTList.AddRange(modifiedASTList);
 
-                        st.AstNodes.Clear();
-                        st.AstNodes.AddRange(newCachedASTList);
-                        currentSubTreeList[st.GUID] = st;
-                    }
+                    // ================================================================================
+                    // Get a list of functions that were removed
+                    // This is the list of functions that exist in oldSubTree.AstNodes and no longer exist in st.AstNodes
+                    // This will passed to the changeset applier to handle removed functions in the VM
+                    // ================================================================================
+                    IEnumerable<AssociativeNode> removedFunctions = oldSubTree.AstNodes.Where(f => f is FunctionDefinitionNode && !st.AstNodes.Contains(f));
+                    csData.RemovedFunctionDefNodesFromModification.AddRange(removedFunctions);
+
+                    st.AstNodes.Clear();
+                    st.AstNodes.AddRange(newCachedASTList);
+                    currentSubTreeList[st.GUID] = st;
                 }
             }
         }
@@ -731,8 +798,8 @@ namespace ProtoScript.Runners
                                     // Check if the procedure associatied with this graphnode matches thename and arg count of the modified proc
                                     if (null != gnode.firstProc)
                                     {
-                                        if (gnode.firstProc.name == functionNode.Name
-                                            && gnode.firstProc.argInfoList.Count == functionNode.Signature.Arguments.Count)
+                                        if (gnode.firstProc.Name == functionNode.Name
+                                            && gnode.firstProc.ArgumentInfos.Count == functionNode.Signature.Arguments.Count)
                                         {
                                             // If it does, create a new ast tree for this graphnode and append it to deltaAstList
                                             modifiedNodes.Add(assocNode);
@@ -1069,7 +1136,6 @@ namespace ProtoScript.Runners
 
         #region Asynchronous call
         void BeginUpdateGraph(GraphSyncData syncData);
-        void BeginConvertNodesToCode(List<Subtree> subtrees);
         void BeginQueryNodeValue(Guid nodeGuid);
         void BeginQueryNodeValues(List<Guid> nodeGuid);
         #endregion
@@ -1084,8 +1150,6 @@ namespace ProtoScript.Runners
         // Event handlers for the notification from asynchronous call
         event NodeValueReadyEventHandler NodeValueReady;
         event GraphUpdateReadyEventHandler GraphUpdateReady;
-        event NodesToCodeCompletedEventHandler NodesToCodeCompleted;
-
     }
 
     public partial class LiveRunner : ILiveRunner, IDisposable
@@ -1148,7 +1212,7 @@ namespace ProtoScript.Runners
             }
         }
 
-        private ProtoScriptTestRunner runner;
+        private ProtoScriptRunner runner;
         private ProtoRunner.ProtoVMState vmState;
         private ProtoCore.Core runnerCore = null;
         public ProtoCore.Core Core
@@ -1201,7 +1265,7 @@ namespace ProtoScript.Runners
         {
             this.configuration = configuration;
 
-            runner = new ProtoScriptTestRunner();
+            runner = new ProtoScriptRunner();
 
             InitCore();
 
@@ -1329,7 +1393,6 @@ namespace ProtoScript.Runners
 
         public event NodeValueReadyEventHandler NodeValueReady = null;
         public event GraphUpdateReadyEventHandler GraphUpdateReady = null;
-        public event NodesToCodeCompletedEventHandler NodesToCodeCompleted = null;
 
         #endregion
 
@@ -1338,30 +1401,6 @@ namespace ProtoScript.Runners
             lock (taskQueue)
             {
                 taskQueue.Enqueue(new UpdateGraphTask(syncData, this));
-            }
-        }
-
-        /// <summary>
-        /// Async call from command-line interpreter to LiveRunner
-        /// </summary>
-        /// <param name="cmdLineString"></param>
-        public void BeginUpdateCmdLineInterpreter(string cmdLineString)
-        {
-            lock (taskQueue)
-            {
-                taskQueue.Enqueue(
-                    new UpdateCmdLineInterpreterTask(cmdLineString, this));
-            }
-        }
-
-        public void BeginConvertNodesToCode(List<Subtree> subtrees)
-        {
-            if (null == subtrees || (subtrees.Count <= 0))
-                return; // Do nothing, there's no nodes to be converted.
-
-            lock (taskQueue)
-            {
-                taskQueue.Enqueue(new ConvertNodesToCodeTask(subtrees, this));
             }
         }
 
@@ -1634,34 +1673,11 @@ namespace ProtoScript.Runners
             throw new NotImplementedException();
         }
 
-
-        private bool Compile(string code, out int blockId)
+        private bool Compile(List<AssociativeNode> astList, Core targetCore)
         {
-            Dictionary<string, bool> execFlagList = null;
-
-            staticContext.SetData(code, new Dictionary<string, object>(), execFlagList);
-
-            bool succeeded = runner.Compile(staticContext, runnerCore, out blockId);
+            bool succeeded = runner.CompileAndGenerateExe(astList, targetCore, new ProtoCore.CompileTime.Context());
             if (succeeded)
             {
-                // Regenerate the DS executable
-                runnerCore.GenerateExecutable();
-
-                // Update the symbol tables
-                // TODO Jun: Expand to accomoadate the list of symbols
-                //staticContext.symbolTable = runnerCore.DSExecutable.runtimeSymbols[0];
-            }
-            return succeeded;
-        }
-
-        private bool Compile(List<AssociativeNode> astList, Core targetCore, out int blockId)
-        {
-            bool succeeded = runner.Compile(astList, targetCore, out blockId);
-            if (succeeded)
-            {
-                // Regenerate the DS executable
-                targetCore.GenerateExecutable();
-
                 // Update the symbol tables
                 // TODO Jun: Expand to accomoadate the list of symbols
                 staticContext.symbolTable = targetCore.DSExecutable.runtimeSymbols[0];
@@ -1687,11 +1703,9 @@ namespace ProtoScript.Runners
         private bool CompileAndExecute(string code)
         {
             // TODO Jun: Revisit all the Compile functions and remove the blockId out argument
-            int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-            bool succeeded = Compile(code, out blockId);
+            bool succeeded = runner.CompileAndGenerateExe(code, runnerCore, new ProtoCore.CompileTime.Context());
             if (succeeded)
             {
-                runtimeCore.RunningBlock = blockId;
                 vmState = Execute(!string.IsNullOrEmpty(code));
             }
             return succeeded;
@@ -1699,12 +1713,9 @@ namespace ProtoScript.Runners
 
         private bool CompileAndExecute(List<AssociativeNode> astList)
         {
-            // TODO Jun: Revisit all the Compile functions and remove the blockId out argument
-            int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-            bool succeeded= Compile(astList, runnerCore, out blockId);
+            bool succeeded = Compile(astList, runnerCore);
             if (succeeded)
             {
-                runtimeCore.RunningBlock = blockId;
                 vmState = Execute(astList.Count > 0);
             }
             return succeeded;
@@ -1804,11 +1815,12 @@ namespace ProtoScript.Runners
 
         private List<Guid> PreviewInternal(GraphSyncData syncData)
         {
+            var previewChangeSetComputer = changeSetComputer.Clone();
             // Get the list of ASTs that will be affected by syncData
-            var previewAstList = changeSetComputer.GetDeltaASTList(syncData);
+            var previewAstList = previewChangeSetComputer.GetDeltaASTList(syncData);
 
             // Get the list of guid's affected by the astlist
-            List<Guid> cbnGuidList = changeSetComputer.EstimateNodesAffectedByASTList(previewAstList);
+            List<Guid> cbnGuidList = previewChangeSetComputer.EstimateNodesAffectedByASTList(previewAstList);
             return cbnGuidList;
         }
 
@@ -1866,7 +1878,7 @@ namespace ProtoScript.Runners
         /// </summary>
         public void ReInitializeLiveRunner()
         {
-            runner = new ProtoScriptTestRunner();
+            runner = new ProtoScriptRunner();
             deltaSymbols = 0;
             InitCore();
             staticContext = new ProtoCore.CompileTime.Context();

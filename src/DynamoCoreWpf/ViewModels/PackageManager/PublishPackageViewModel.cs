@@ -976,6 +976,12 @@ namespace Dynamo.PackageManager
             var files = BuildPackage();
             try
             {
+                //if buildPackage() returns no files then the package
+                //is empty so we should return
+                if (files == null || files.Count() < 1)
+                {
+                    return;
+                }
                 // begin submission
                 var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
                 var handle = pmExtension.PackageManagerClient.PublishAsync(Package, files, IsNewVersion);
@@ -986,6 +992,7 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
+                UploadState = PackageUploadHandle.State.Error;
                 ErrorString = e.Message;
                 dynamoViewModel.Model.Logger.Log(e);
             }
@@ -1003,6 +1010,12 @@ namespace Dynamo.PackageManager
 
             try
             {
+                //if buildPackage() returns no files then the package
+                //is empty so we should return
+                if (files == null || files.Count() < 1)
+                {
+                    return;
+                }
                 UploadState = PackageUploadHandle.State.Copying;
                 Uploading = true;
                 // begin publishing to local directory
@@ -1060,6 +1073,7 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
+                UploadState = PackageUploadHandle.State.Error;
                 ErrorString = e.Message;
                 dynamoViewModel.Model.Logger.Log(e);
             }

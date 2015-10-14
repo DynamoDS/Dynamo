@@ -11,11 +11,12 @@ using NUnit.Framework;
 using ProtoCore.Mirror;
 using System.Reflection;
 using System.IO;
+using Dynamo.Wpf.ViewModels.Watch3D;
 using TestServices;
 
 namespace Dynamo.Tests
 {
-    /// <summary>
+    /// <summary>ix
     /// 
     ///     The DynamoViewModelUnitTests constructs the DynamoModel
     ///     and the DynamoViewModel, but does not construct the view.
@@ -123,13 +124,16 @@ namespace Dynamo.Tests
                 {
                     PathResolver = pathResolver,
                     StartInTestMode = true,
-                    GeometryFactoryPath = preloader.GeometryFactoryPath
+                    GeometryFactoryPath = preloader.GeometryFactoryPath,
+                    ProcessMode = Core.Threading.TaskProcessMode.Synchronous
                 });
 
+            var watch3DViewParams = new Watch3DViewModelStartupParams(model);
             this.ViewModel = DynamoViewModel.Start(
                 new DynamoViewModel.StartConfiguration()
                 {
-                    DynamoModel = model
+                    DynamoModel = model,
+                    Watch3DViewModel = new DefaultWatch3DViewModel(watch3DViewParams)
                 });
 
             this.ViewModel.RequestUserSaveWorkflow += RequestUserSaveWorkflow;

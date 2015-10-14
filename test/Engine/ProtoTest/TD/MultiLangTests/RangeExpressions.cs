@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
@@ -410,7 +410,7 @@ o = {0.800000,0.810000}
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T11_RangeExpressionUsingClasses()
         {
@@ -529,7 +529,7 @@ a1;a2;a3;a4;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T14_RangeExpressionUsingClassMethods()
         {
@@ -853,7 +853,7 @@ b;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T22_RangeExpressionsUsingClassMethods_2()
         {
@@ -884,7 +884,7 @@ d;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T23_RangeExpressionsUsingClassMethods_3()
         {
             //string err = "1467069 - Sprint 23: rev 2634: 328588 An array cannot be used to index into an array, must throw warning";
@@ -1277,40 +1277,32 @@ num = length(arr);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TA21_Defect_1454692_3()
         {
             string code = @"
-class A
+
+def length (pts : double[] )
 {
-	Pts : var[];
-	constructor A ( pts : double[] )
+	numPts = [Imperative]
 	{
-	    Pts = pts;
-	}
-	def length ()
-	{
-		numPts = [Imperative]
+		counter = 0;
+		for(pt in pts)
 		{
-			counter = 0;
-			for(pt in Pts)
-			{
-				counter = counter + 1;
-			}
-			
-			return = counter;
+			counter = counter + 1;
 		}
-		return = numPts;
+			
+		return = counter;
 	}
+	return = numPts;
 }
     
-arr = 0.0..3.0;//{0.0,1.0,2.0,3.0};
-a1 = A.A(arr);
-num = a1.length();
+arr = 0.0..3.0;
+len = length(arr);
 	";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("num", 4, 0);
+            thisTest.Verify("len", 4, 0);
         }
 
 
@@ -1612,7 +1604,7 @@ c=twice(4);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T27_RangeExpression_class_return_1463472_2()
         {
             string code = @"
@@ -1773,21 +1765,14 @@ c = 5;
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void IndexingIntoClassInstanceByRangeExpr()
         {
             string code = @"
-class A
-{
-    x;
-    constructor A(i)
-    {
-        x = i;
-    }
-}
-x = (A.A(1..3))[0];
-z = x.x;
+import(""FFITarget.dll"");
+x = (ClassFunctionality.ClassFunctionality(1..3))[0];
+z = x.IntVal;
 ";
             thisTest.VerifyRunScriptSource(code, "DNL-1467618 Regression : Use of the array index after replicated constructor yields complier error now");
             thisTest.Verify("z", 1);
@@ -1894,6 +1879,260 @@ b = 0..10..a;
             TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kInvalidArguments);
             thisTest.VerifyRuntimeWarningCount(1);
             thisTest.Verify("b", null);
+        }
+
+        [Test]
+        [Category("SmokeTest")]
+        public void AlphabetRangeImperative()
+        {
+            string src = @"a1;a2;a3;a4;a5;a6;a7;a8;a9;a10;
+[Imperative]
+{
+	a1 = ""a""..""c""..1;
+    a2 = ""A""..""E""..1;
+    a3 = ""A""..""E""..2;
+    a4 = ""a""..""e""..3;
+    a5 = ""e""..""a""..1;
+    a6 = ""z""..""v""..1;
+    a7 = ""z""..""v""..4;
+    a8 = ""a""..""z""..3;
+    a9 = ""A""..""D"";
+    a10 = ""o""..""q"";
+}
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(src);
+            List<Object> result = new List<Object> { "a", "b", "c" };
+            Assert.IsTrue(mirror.CompareArrays("a1", result, typeof(String)));
+
+            result = new List<Object> { "A", "B", "C", "D", "E" };
+            Assert.IsTrue(mirror.CompareArrays("a2", result, typeof(String)));
+
+            result = new List<Object> { "A", "C", "E" };
+            Assert.IsTrue(mirror.CompareArrays("a3", result, typeof(String)));
+
+            result = new List<Object> { "a", "d" };
+            Assert.IsTrue(mirror.CompareArrays("a4", result, typeof(String)));
+
+            result = new List<Object> { "e", "d", "c", "b", "a" };
+            Assert.IsTrue(mirror.CompareArrays("a5", result, typeof(String)));
+
+            result = new List<Object> { "z", "y", "x", "w", "v" };
+            Assert.IsTrue(mirror.CompareArrays("a6", result, typeof(String)));
+
+            result = new List<Object> { "z", "v" };
+            Assert.IsTrue(mirror.CompareArrays("a7", result, typeof(String)));
+
+            result = new List<Object> { "a", "d", "g", "j", "m", "p", "s", "v", "y" };
+            Assert.IsTrue(mirror.CompareArrays("a8", result, typeof(String)));
+
+            result = new List<Object> { "A", "B", "C", "D" };
+            Assert.IsTrue(mirror.CompareArrays("a9", result, typeof(String)));
+
+            result = new List<Object> { "o", "p", "q" };
+            Assert.IsTrue(mirror.CompareArrays("a10", result, typeof(String)));
+        }
+
+        [Test, Category("SmokeTest")]
+        public void AlphabetRangeNegativeTestCasesImperative()
+        {
+            string src = @"a1;a2;a3;a4;a5;a6;a7;
+[Imperative]
+{
+	a1 = ""ab""..""cd""..1;
+    a2 = ""c""..""a""..-1;
+    a3 = ""a""..""&""..1;
+    a4 = ""abc""..""def""..1;
+    a5 = ""a""..""z""..-10;
+    a6 = ""л""..""н""..1;
+    a7 = ""л""..""н"";
+}
+";
+            thisTest.RunScriptSource(src);
+
+            thisTest.Verify("a1", null);
+            thisTest.Verify("a2", null);
+            thisTest.Verify("a3", null);
+            thisTest.Verify("a4", null);
+            thisTest.Verify("a5", null);
+            thisTest.Verify("a6", null);
+            thisTest.Verify("a7", null);
+
+            thisTest.VerifyRuntimeWarningCount(7);
+        }
+
+        [Test]
+        [Category("SmokeTest")]
+        public void AlphabetRangeAssociative()
+        {
+            string src = @"
+	a1 = ""a""..""c""..1;
+    a2 = ""A""..""E""..1;
+    a3 = ""A""..""E""..2;
+    a4 = ""a""..""e""..3;
+    a5 = ""e""..""a""..1;
+    a6 = ""z""..""v""..1;
+    a7 = ""z""..""v""..4;
+    a8 = ""a""..""z""..3;
+    a9 = ""A""..""D"";
+    a10 = ""o""..""q"";";
+
+            ExecutionMirror mirror = thisTest.RunScriptSource(src);
+            List<Object> result = new List<Object> { "a", "b", "c" };
+            Assert.IsTrue(mirror.CompareArrays("a1", result, typeof(String)));
+
+            result = new List<Object> { "A", "B", "C", "D", "E" };
+            Assert.IsTrue(mirror.CompareArrays("a2", result, typeof(String)));
+
+            result = new List<Object> { "A", "C", "E" };
+            Assert.IsTrue(mirror.CompareArrays("a3", result, typeof(String)));
+
+            result = new List<Object> { "a", "d" };
+            Assert.IsTrue(mirror.CompareArrays("a4", result, typeof(String)));
+
+            result = new List<Object> { "e", "d", "c", "b", "a" };
+            Assert.IsTrue(mirror.CompareArrays("a5", result, typeof(String)));
+
+            result = new List<Object> { "z", "y", "x", "w", "v" };
+            Assert.IsTrue(mirror.CompareArrays("a6", result, typeof(String)));
+
+            result = new List<Object> { "z", "v" };
+            Assert.IsTrue(mirror.CompareArrays("a7", result, typeof(String)));
+
+            result = new List<Object> { "a", "d", "g", "j", "m", "p", "s", "v", "y" };
+            Assert.IsTrue(mirror.CompareArrays("a8", result, typeof(String)));
+
+            result = new List<Object> { "A", "B", "C", "D" };
+            Assert.IsTrue(mirror.CompareArrays("a9", result, typeof(String)));
+
+            result = new List<Object> { "o", "p", "q" };
+            Assert.IsTrue(mirror.CompareArrays("a10", result, typeof(String)));
+        }
+
+        [Test, Category("SmokeTest")]
+        public void AlphabetRangeNegativeTestCasesAssociative()
+        {
+            string src = @"
+	a1 = ""ab""..""cd""..1;
+    a2 = ""c""..""a""..-1;
+    a3 = ""a""..""&""..1;
+    a4 = ""abc""..""def""..1;
+    a5 = ""a""..""z""..-10;
+    a6 = ""л""..""н""..1;
+    a7 = ""л""..""н"";";
+
+            thisTest.RunScriptSource(src);
+
+            thisTest.Verify("a1", null);
+            thisTest.Verify("a2", null);
+            thisTest.Verify("a3", null);
+            thisTest.Verify("a4", null);
+            thisTest.Verify("a5", null);
+            thisTest.Verify("a6", null);
+            thisTest.Verify("a7", null);
+
+            thisTest.VerifyRuntimeWarningCount(7);
+        }
+
+        [Test]
+        [Category("SmokeTest")]
+        public void AlphabetSequenceImperative()
+        {
+            string src = @"a1;a2;a3;a4;a5;a6;
+[Imperative]
+{
+	a1 = ""a""..#3..2;
+    a2 = ""A""..#3..2;
+    a3 = ""I""..#4..1;
+    a4 = ""z""..#5..1;
+    a5 = ""A""..#3..-1;
+    a6 = ""z""..#3..-1;
+}";
+            ExecutionMirror mirror = thisTest.RunScriptSource(src);
+            List<Object> result = new List<Object> { "a", "c", "e" };
+            Assert.IsTrue(mirror.CompareArrays("a1", result, typeof(String)));
+
+            result = new List<Object> { "A", "C", "E" };
+            Assert.IsTrue(mirror.CompareArrays("a2", result, typeof(String)));
+
+            result = new List<Object> { "I", "J", "K", "L" };
+            Assert.IsTrue(mirror.CompareArrays("a3", result, typeof(String)));
+
+            result = new List<Object> { "z" };
+            Assert.IsTrue(mirror.CompareArrays("a4", result, typeof(String)));
+
+            result = new List<Object> { "A" };
+            Assert.IsTrue(mirror.CompareArrays("a5", result, typeof(String)));
+
+            result = new List<Object> { "z", "y", "x" };
+            Assert.IsTrue(mirror.CompareArrays("a6", result, typeof(String)));
+        }
+
+        [Test]
+        [Category("SmokeTest")]
+        public void AlphabetSequenceNegativeTestCasesImperative()
+        {
+            string src = @"a1;a2;a3;
+[Imperative]
+{
+	a1 = ""л""..#3..2;    
+    a2 = ""I""..#-5..1;
+    a3 = ""z""..#0..1;
+}";
+            thisTest.RunScriptSource(src);
+
+            thisTest.Verify("a1", null);
+            thisTest.Verify("a2", null);
+            thisTest.Verify("a3", new List<Object>());
+
+            thisTest.VerifyRuntimeWarningCount(2);
+        }
+
+        [Test]
+        [Category("SmokeTest")]
+        public void AlphabetSequenceAssociative()
+        {
+            string src = @"
+	a1 = ""a""..#3..2;
+    a2 = ""A""..#3..2;
+    a3 = ""I""..#4..1;
+    a4 = ""z""..#5..1;
+    a5 = ""A""..#3..-1;
+    a6 = ""z""..#3..-1;";
+            ExecutionMirror mirror = thisTest.RunScriptSource(src);
+            List<Object> result = new List<Object> { "a", "c", "e" };
+            Assert.IsTrue(mirror.CompareArrays("a1", result, typeof(String)));
+
+            result = new List<Object> { "A", "C", "E" };
+            Assert.IsTrue(mirror.CompareArrays("a2", result, typeof(String)));
+
+            result = new List<Object> { "I", "J", "K", "L" };
+            Assert.IsTrue(mirror.CompareArrays("a3", result, typeof(String)));
+
+            result = new List<Object> { "z" };
+            Assert.IsTrue(mirror.CompareArrays("a4", result, typeof(String)));
+
+            result = new List<Object> { "A" };
+            Assert.IsTrue(mirror.CompareArrays("a5", result, typeof(String)));
+
+            result = new List<Object> { "z", "y", "x" };
+            Assert.IsTrue(mirror.CompareArrays("a6", result, typeof(String)));
+        }
+
+        [Test]
+        [Category("SmokeTest")]
+        public void AlphabetSequenceNegativeTestCasesAssociative()
+        {
+            string src = @"
+	a1 = ""л""..#3..2;    
+    a2 = ""I""..#-5..1;
+    a3 = ""z""..#0..1;";
+            thisTest.RunScriptSource(src);
+
+            thisTest.Verify("a1", null);
+            thisTest.Verify("a2", null);
+            thisTest.Verify("a3", new List<Object>());
+
+            thisTest.VerifyRuntimeWarningCount(2);
         }
     }
 }

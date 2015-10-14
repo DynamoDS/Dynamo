@@ -289,6 +289,22 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        public void TestInOutPorts_ForChainedExpression()
+        {
+            // Create the initial code block node.
+            var codeBlockNode = CreateCodeBlockNode();
+
+            // Before code changes, there should be no in/out ports.
+            Assert.AreEqual(0, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(0, codeBlockNode.OutPortData.Count);
+
+            // After code changes, there should be input & output ports.
+            UpdateCodeBlockNodeContent(codeBlockNode, "Flatten(l.Explode()).Area;");
+            Assert.AreEqual(1, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(1, codeBlockNode.OutPortData.Count);
+        }
+
+        [Test]
         public void TestOutportConnectors_OnAssigningVariables_ToRetainConnections()
         {
             string openPath = Path.Combine(TestDirectory,
@@ -1281,10 +1297,10 @@ var06 = g;
             var completions = codeCompletionServices.SearchCompletions(code, Guid.Empty);
 
             // Expected 4 completion items
-            Assert.AreEqual(4, completions.Count());
+            Assert.AreEqual(8, completions.Count());
 
             string[] expectedValues = {"DummyPoint", "DesignScript.Point",
-                                    "Dynamo.Point", "UnknownPoint"};
+                                    "Dynamo.Point", "UnknownPoint", "DummyPoint2D", "Point_1D", "Point_2D", "Point_3D"};
             var expected = expectedValues.OrderBy(x => x);
             var actual = completions.Select(x => x.Text).OrderBy(x => x);
 
@@ -1320,9 +1336,9 @@ var06 = g;
             var completions = codeCompletionServices.SearchCompletions(code, Guid.Empty);
 
             // Expected 2 completion items
-            Assert.AreEqual(2, completions.Count());
+            Assert.AreEqual(3, completions.Count());
 
-            string[] expected = { "SampleClassA", "SampleClassC" };
+            string[] expected = { "SampleClassA", "SampleClassC", "TestSamePropertyName" };
             var actual = completions.Select(x => x.Text).OrderBy(x => x);
 
             Assert.AreEqual(expected, actual);
@@ -1560,9 +1576,9 @@ a;b;c;d;e1;f;g;
 
             string code = "boo";
             var completions = codeCompletionServices.SearchTypes(code);
-            Assert.AreEqual(1, completions.Count());
+            Assert.AreEqual(2, completions.Count());
 
-            string[] expected = { "bool" };
+            string[] expected = { "bool", "BooleanMember" };
             var actual = completions.Select(x => x.Text).OrderBy(x => x);
             Assert.AreEqual(expected, actual);
         }

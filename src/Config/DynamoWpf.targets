@@ -1,0 +1,15 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--The SharpDX NuGet package will automatically install certain
+  dlls in the output directory. This task is used to remove those files
+  from the nodes directory, as they will be available in the main directory.-->
+  <Target Name="SharpDXCleanup" AfterTargets="AfterBuild">
+    <Message Text="Removing SharpDX assemblies from nodes folder..." Importance="high"/>
+    <ItemGroup>
+      <FilesToDelete Include="$(OutputPath)\nodes\Assimp*"/>
+      <FilesToDelete Include="$(OutputPath)\nodes\SharpDX*"/>
+      <FilesToDelete Include="$(OutputPath)\nodes\HelixToolkit*"/>
+      <FilesToDelete Include="$(OutputPath)\nodes\Cyotek*"/>
+    </ItemGroup> 
+    <Delete Files="@(FilesToDelete)"/>
+  </Target>
+</Project>

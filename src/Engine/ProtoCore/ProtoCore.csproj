@@ -101,7 +101,6 @@
       <Link>AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="AssociativeGraph.cs" />
-    <Compile Include="ASTCompilerUtils.cs" />
     <Compile Include="DSASM\HeapObjects.cs" />
     <Compile Include="SyntaxAnalysis\AstVisitor.cs" />
     <Compile Include="AttributeEntry.cs" />
@@ -113,7 +112,7 @@
     <Compile Include="CodePoint.cs" />
     <Compile Include="Compiler.cs" />
     <Compile Include="CompilerOptions.cs" />
-    <Compile Include="CompilerUtils.cs" />
+    <Compile Include="Utils\CompilerUtils.cs" />
     <Compile Include="Core.cs" />
     <Compile Include="ClassTable.cs" />
     <Compile Include="DebuggerProperties.cs" />
@@ -126,11 +125,8 @@
     <Compile Include="DSASM\Heap.cs" />
     <Compile Include="DSASM\IExecutive.cs" />
     <Compile Include="DSASM\InstructionSet.cs" />
-    <Compile Include="DSASM\Mirror\DSASMMirror.cs" />
     <Compile Include="DSASM\Mirror\ExecutionMirror.cs" />
     <Compile Include="Exceptions\CompilerInternalException.cs" />
-    <Compile Include="Exceptions\ExceptionHandling.cs" />
-    <Compile Include="Exceptions\MethodResolution.cs" />
     <Compile Include="Exceptions\ReplicationException.cs" />
     <Compile Include="FFI\ContextData.cs" />
     <Compile Include="FFI\ContextDataManager.cs" />
@@ -148,7 +144,7 @@
     <Compile Include="Namespace\ElementRewriter.cs" />
     <Compile Include="Namespace\ElementResolver.cs" />
     <Compile Include="Namespace\SymbolTable.cs" />
-    <Compile Include="ParserUtils.cs" />
+    <Compile Include="Utils\ParserUtils.cs" />
     <Compile Include="Properties\Resources.en-US.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -184,7 +180,6 @@
     <Compile Include="FFI\FFICppFunction.cs" />
     <Compile Include="FFI\FFIHandler.cs" />
     <Compile Include="FFI\PInvokeFFI.cs" />
-    <Compile Include="LangVerify.cs" />
     <Compile Include="Lang\FFIFunctionEndPoint.cs" />
     <Compile Include="Lang\FunctionTable.cs" />
     <Compile Include="Lang\JILFunctionEndPoint.cs" />
@@ -205,8 +200,6 @@
     <Compile Include="Utils\CoreUtils.cs" />
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Utils\MathUtils.cs" />
-    <Compile Include="Utils\LegacyUtils.cs" />
-    <Compile Include="Utils\LexUtils.cs" />
     <Compile Include="SymbolTable.cs" />
     <Compile Include="Utils\NodeUtils.cs" />
     <Compile Include="Utils\StringUtils.cs" />

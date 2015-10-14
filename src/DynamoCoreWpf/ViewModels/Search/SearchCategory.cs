@@ -1,151 +1,66 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using Dynamo.Search.SearchElements;
-using Dynamo.UI;
-using Dynamo.Wpf.ViewModels;
-using Dynamo.Core;
-using System.Windows.Input;
+﻿using System.Windows.Input;
+
 using Dynamo.UI.Commands;
+using Dynamo.ViewModels;
 
-namespace Dynamo.Search
+using Microsoft.Practices.Prism.ViewModel;
+
+namespace Dynamo.Wpf.ViewModels
 {
-    public class SearchCategory : NotificationObject, ISearchEntryViewModel
+    /// <summary>
+    /// Class that is used to filter nodes in search ui.
+    /// If search category is selected, then nodes of this category are shown in search.
+    /// </summary>
+    public class SearchCategory : NotificationObject
     {
-        private readonly ObservableCollection<NodeCategoryViewModel> classes;
-        private readonly List<SearchMemberGroup> memberGroups;
+        private readonly string name;
 
-        public string Name { get; private set; }
-
-        private bool isExpanded;
-        public bool IsExpanded { get { return isExpanded; } }
-
-        private bool isTopCategory;
-        public bool IsTopCategory { get { return isTopCategory; } }
-
-        // TODO: classes functionality.
-        //       All functionality marked as 'classes functionality'
-        //       Should be implemented as classes are shown in search results.
-        //       http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6198
-        public ObservableCollection<NodeCategoryViewModel> Classes
+        /// <summary>
+        /// Name of category
+        /// </summary>
+        public string Name
         {
-            get { return classes; }
-        }
-
-        public IEnumerable<SearchMemberGroup> MemberGroups
-        {
-            get { return memberGroups; }
-        }
-
-        public ICommand ClickedCommand { get; private set; }
-
-        private void OnClicked(object obj)
-        {
-            isExpanded = !isExpanded;
-            RaisePropertyChanged("IsExpanded");
-        }
-
-        internal SearchCategory(string name, bool isTopResult = false)
-        {
-            Name = name;
-            classes = new ObservableCollection<NodeCategoryViewModel>();
-            memberGroups = new List<SearchMemberGroup>();
-            isExpanded = true;
-            isTopCategory = isTopResult;
-
-            ClickedCommand = new DelegateCommand(OnClicked);
-        }
-
-        internal void AddMemberToGroup(NodeSearchElementViewModel memberNode)
-        {
-            string categoryWithGroup = AddGroupToCategory(memberNode.Model.FullCategoryName,
-                memberNode.Model.Group);
-            string shortenedCategory = Nodes.Utilities.ShortenCategoryName(categoryWithGroup);
-
-            var group = memberGroups.FirstOrDefault(mg => mg.FullyQualifiedName == shortenedCategory);
-            if (group == null)
+            get
             {
-                group = new SearchMemberGroup(shortenedCategory, memberNode.Category);
-                memberGroups.Add(group);
-            }
-
-            group.AddMember(memberNode);
-        }
-
-        // TODO: classes functionality.
-        internal void AddClassToGroup(NodeCategoryViewModel memberNode)
-        {
-            // TODO: The following limit of displaying only two classes are 
-            // temporary, it should be updated whenever the design intent has been finalized.
-            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6199
-
-            //const int maxClassesCount = 2;
-            //if (classes.Count >= maxClassesCount)
-            //    return;
-
-            // Parent should be of 'BrowserInternalElement' type or derived.
-            // Root category can't be added to classes list. 
-            // TODO(Vladimir): Implement the logic when classes are shown in search results.
-        }
-
-        public bool ContainsClassOrMember(NodeSearchElement member)
-        {
-            var memberViewModel = new NodeSearchElementViewModel(member, null);
-
-            // TODO(Vladimir): classes functionality.
-            //if (Classes.Any(cl => cl.Equals(member))) return true;
-
-            // Search among member groups.
-            return MemberGroups.Any(group => group.ContainsMember(memberViewModel));
-        }
-
-        private string AddGroupToCategory(string category, SearchElementGroup group)
-        {
-            switch (group)
-            {
-                case SearchElementGroup.Action:
-                    return category + Configurations.CategoryDelimiterString + Configurations.CategoryGroupAction;
-                case SearchElementGroup.Create:
-                    return category + Configurations.CategoryDelimiterString + Configurations.CategoryGroupCreate;
-                case SearchElementGroup.Query:
-                    return category + Configurations.CategoryDelimiterString + Configurations.CategoryGroupQuery;
-                default:
-                    return category;
+                return name;
             }
         }
 
-        public void SortChildren()
-        {
-            // TODO(Vladimir): classes functionality.
-            //Classes.ToList().ForEach(x => x.RecursivelySort());
-            MemberGroups.ToList().ForEach(x => x.Sort());
-        }
+        private bool isSelected;
 
-
-        public bool Visibility
-        {
-            get { return true; }
-        }
-
+        /// <summary>
+        /// If category is selected, nodes of this category are shown as search results.
+        /// </summary>
         public bool IsSelected
         {
-            get { return false; }
+            get { return isSelected; }
+            set
+            {
+                isSelected = value;
+                RaisePropertyChanged("IsSelected");
+            }
         }
 
-        public string Description
+        /// <summary>
+        /// Fires, when category button is clicked.
+        /// </summary>
+        public ICommand ClickCommand { get; private set; }
+
+        /// <summary>
+        /// Creates search category, it's used in Search UI to filter nodes.
+        /// </summary>
+        /// <param name="title">name of category, e.g. Core, BuiltIn etc.</param>
+        public SearchCategory(string title)
         {
-            get { return String.Empty; }
+            name = title;
+            isSelected = true;
+
+            ClickCommand = new DelegateCommand(ToggleSelect);
         }
 
-        public ElementTypes ElementType
+        private void ToggleSelect(object obj)
         {
-            get { return ElementTypes.None; }
-        }
-
-        public void Dispose()
-        {
-
+            IsSelected = !IsSelected;
         }
     }
 }

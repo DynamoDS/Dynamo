@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.ViewModels;
+
+using FontAwesome.WPF;
+
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 using Dynamo.Models;
@@ -16,14 +20,10 @@ namespace Dynamo.Wpf.ViewModels
 {
     public class NodeSearchElementViewModel : NotificationObject, ISearchEntryViewModel
     {
+        private Dictionary<SearchElementGroup, FontAwesomeIcon> FontAwesomeDict;
+
         private bool isSelected;
         private SearchViewModel searchViewModel;
-
-        public bool IsTopResult
-        {
-            get;
-            set;
-        }
 
         public event RequestBitmapSourceHandler RequestBitmapSource;
         public void OnRequestBitmapSource(IconRequestEventArgs e)
@@ -47,21 +47,9 @@ namespace Dynamo.Wpf.ViewModels
             Model.VisibilityChanged += ModelOnVisibilityChanged;
             if (searchViewModel != null)
                 Clicked += searchViewModel.OnSearchElementClicked;
-            ClickedCommand = new DelegateCommand(OnClicked);            
-        }
+            ClickedCommand = new DelegateCommand(OnClicked);
 
-        /// <summary>
-        /// Creates a copy of NodeSearchElementViewModel.
-        /// </summary>
-        public NodeSearchElementViewModel(NodeSearchElementViewModel copyElement)
-        {
-            if (copyElement == null)
-                throw new ArgumentNullException();
-
-            Model = copyElement.Model;
-            Clicked = copyElement.Clicked;
-            RequestBitmapSource = copyElement.RequestBitmapSource;
-            ClickedCommand = copyElement.ClickedCommand;
+            LoadFonts();
         }
 
         private void ModelOnVisibilityChanged()
@@ -82,11 +70,6 @@ namespace Dynamo.Wpf.ViewModels
             get { return Model.Name; }
         }
 
-        public string UserFriendlyName
-        {
-            get { return Model.UserFriendlyName; }
-        }
-
         public string FullName
         {
             get { return Model.FullName; }
@@ -95,6 +78,11 @@ namespace Dynamo.Wpf.ViewModels
         public string Assembly
         {
             get { return Model.Assembly; }
+        }
+
+        public string Parameters
+        {
+            get { return Model.Parameters; }
         }
 
         public bool Visibility
@@ -123,12 +111,66 @@ namespace Dynamo.Wpf.ViewModels
             get { return Model.Description; }
         }
 
+        /// <summary>
+        /// Indicates class from which node came, e.g. Point - class, ByCoordinates - node.
+        /// </summary>
+        public string Class
+        {
+            get
+            {
+                return Model.Categories.Count > 1 ? Model.Categories.Last() : String.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Indicates category from which node came, e.g. Geometry - category, ByCoordinates - node.
+        /// </summary>
+        public string Category
+        {
+            get
+            {
+                return Model.Categories.FirstOrDefault();
+            }
+        }
+
+        /// <summary>
+        /// Indicates node's group. It can be create, action or query. 
+        /// </summary>
+        public SearchElementGroup Group
+        {
+            get
+            {
+                return Model.Group;
+            }
+        }
+
+        /// <summary>
+        /// Loads font awesome icons for node's groups, e.g. create - plus icon.
+        /// </summary>
+        private void LoadFonts()
+        {
+            FontAwesomeDict = new Dictionary<SearchElementGroup, FontAwesomeIcon>();
+
+            FontAwesomeDict.Add(SearchElementGroup.Create, FontAwesomeIcon.Plus);
+            FontAwesomeDict.Add(SearchElementGroup.Action, FontAwesomeIcon.LightningBolt);
+            FontAwesomeDict.Add(SearchElementGroup.Query, FontAwesomeIcon.Question);
+        }
+
+        /// <summary>
+        /// Indicates group icon, e.g. create - plus icon.
+        /// </summary>
+        public FontAwesomeIcon GroupIconName
+        {
+            get
+            {
+                return FontAwesomeDict.ContainsKey(Group) ? FontAwesomeDict[Group] : FontAwesomeIcon.None;
+            }
+        }
+
         public bool HasDescription
         {
             get { return (!Model.Description.Equals(Dynamo.UI.Configurations.NoDescriptionAvailable)); }
         }
-
-        public NodeCategoryViewModel Category { get; set; }
 
         public IEnumerable<Tuple<string, string>> InputParameters
         {
@@ -241,12 +283,6 @@ namespace Dynamo.Wpf.ViewModels
             : base(element, svm)
         {
             Path = Model.Path;
-        }
-
-        public CustomNodeSearchElementViewModel(CustomNodeSearchElementViewModel copyElement)
-            : base(copyElement)
-        {
-            Path = copyElement.Path;
         }
 
         public string Path

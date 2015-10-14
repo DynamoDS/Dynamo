@@ -73,6 +73,7 @@ namespace Dynamo.Engine
         public IPathManager PathManager { get; set; }
         public bool IsVarArg { get; set; }
         public bool IsBuiltIn { get; set; }
+        public bool IsPackageMember { get; set; }
     }
 
     /// <summary>
@@ -89,7 +90,11 @@ namespace Dynamo.Engine
 
         public FunctionDescriptor(FunctionDescriptorParams funcDescParams)
         {
-            summary = funcDescParams.Summary;
+            if (!String.IsNullOrEmpty(funcDescParams.Summary))
+            {
+                summary = funcDescParams.Summary;
+            }
+
             pathManager = funcDescParams.PathManager;
             Assembly = funcDescParams.Assembly;
             ClassName = funcDescParams.ClassName;
@@ -123,6 +128,7 @@ namespace Dynamo.Engine
             ObsoleteMessage = funcDescParams.ObsoleteMsg;
             CanUpdatePeriodically = funcDescParams.CanUpdatePeriodically;
             IsBuiltIn = funcDescParams.IsBuiltIn;
+            IsPackageMember = funcDescParams.IsPackageMember;
         }
 
         public bool IsOverloaded { get; set; }
@@ -165,6 +171,7 @@ namespace Dynamo.Engine
         public bool IsVarArg { get; private set; }
 
         public bool IsBuiltIn { get; private set; }
+        public bool IsPackageMember { get; private set; }
 
         public string ObsoleteMessage { get; protected set; }
         public bool IsObsolete { get { return !string.IsNullOrEmpty(ObsoleteMessage); } }

@@ -19,10 +19,12 @@ using BuildWarning = ProtoCore.BuildData.WarningEntry;
 using Constants = ProtoCore.DSASM.Constants;
 using RuntimeWarning = ProtoCore.Runtime.WarningEntry;
 using ProtoCore.Utils;
+using Dynamo.Engine.NodeToCode;
+using Dynamo.Engine.CodeGeneration;
 
 namespace Dynamo.Engine
 {
-    public delegate void AstBuiltEventHandler(object sender, AstBuilder.ASTBuiltEventArgs e);
+    public delegate void AstBuiltEventHandler(object sender, CompiledEventArgs e);
 
     /// <summary>
     /// A controller to coordinate the interactions between some DesignScript
@@ -45,7 +47,7 @@ namespace Dynamo.Engine
         private readonly LibraryServices libraryServices;
         private CodeCompletionServices codeCompletionServices;
         private readonly AstBuilder astBuilder;
-        private readonly SyncDataManager syncDataManager;
+        private SyncDataManager syncDataManager;
         private readonly Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
         private readonly Queue<List<Guid>> previewGraphQueue = new Queue<List<Guid>>();
         public bool VerboseLogging;
@@ -209,7 +211,7 @@ namespace Dynamo.Engine
                 var activeNodes = nodes.Where(n => !n.IsInErrorState);
 
                 if (activeNodes.Any())
-                    astBuilder.CompileToAstNodes(activeNodes, AstBuilder.CompilationContext.DeltaExecution, verboseLogging);
+                    astBuilder.CompileToAstNodes(activeNodes, CompilationContext.DeltaExecution, verboseLogging);
 
                 return VerifyGraphSyncData(nodes);
             }
@@ -233,7 +235,7 @@ namespace Dynamo.Engine
             var activeNodes = updatedNodes.Where(n => !n.IsInErrorState);
             if (activeNodes.Any())
             {
-                astBuilder.CompileToAstNodes(activeNodes, AstBuilder.CompilationContext.DeltaExecution, verboseLogging);
+                astBuilder.CompileToAstNodes(activeNodes, CompilationContext.DeltaExecution, verboseLogging);
             }
 
             if (!VerifyGraphSyncData(nodes) || ((graphSyncDataQueue.Count <= 0)))
@@ -257,14 +259,16 @@ namespace Dynamo.Engine
             if (updatedNodes == null)
                 return null;
 
+            var tempSyncDataManager = syncDataManager.Clone();
             var activeNodes = updatedNodes.Where(n => n.State != ElementState.Error);
             if (activeNodes.Any())
             {
-                astBuilder.CompileToAstNodes(activeNodes, AstBuilder.CompilationContext.DeltaExecution, verboseLogging);
+                astBuilder.CompileToAstNodes(activeNodes, CompilationContext.PreviewGraph, verboseLogging);
             }
 
             GraphSyncData graphSyncdata = syncDataManager.GetSyncData();
             List<Guid> previewGraphData = this.liveRunnerServices.PreviewGraph(graphSyncdata, verboseLogging);
+            syncDataManager = tempSyncDataManager;
 
              lock (previewGraphQueue)
              {
@@ -381,7 +385,7 @@ namespace Dynamo.Engine
                 nodes.Where(n => n.NeedsForceExecution)
                      .Select(n => n.GUID));
 
-            if (reExecuteNodesIds.Any() && graphSyncdata.ModifiedSubtrees != null)
+            if (reExecuteNodesIds.Any())
             {
                 for (int i = 0; i < graphSyncdata.ModifiedSubtrees.Count; ++i)
                 {
@@ -395,9 +399,7 @@ namespace Dynamo.Engine
                 }
             }
 
-            if ((graphSyncdata.AddedSubtrees != null && graphSyncdata.AddedSubtrees.Count > 0) ||
-                (graphSyncdata.ModifiedSubtrees != null && graphSyncdata.ModifiedSubtrees.Count > 0) ||
-                (graphSyncdata.DeletedSubtrees != null && graphSyncdata.DeletedSubtrees.Count > 0))
+            if (graphSyncdata.AddedSubtrees.Any() || graphSyncdata.ModifiedSubtrees.Any() || graphSyncdata.DeletedSubtrees.Any())
             {
                 lock (graphSyncDataQueue)
                 {
@@ -574,12 +576,12 @@ namespace Dynamo.Engine
 
         #region Implement IAstNodeContainer interface
 
-        public void OnAstNodeBuilding(Guid nodeGuid)
+        public void OnCompiling(Guid nodeGuid)
         {
             syncDataManager.MarkForAdding(nodeGuid);
         }
 
-        public void OnAstNodeBuilt(Guid nodeGuid, IEnumerable<AssociativeNode> astNodes)
+        public void OnCompiled(Guid nodeGuid, IEnumerable<AssociativeNode> astNodes)
         {
             var associativeNodes = astNodes as IList<AssociativeNode> ?? astNodes.ToList();
 
@@ -587,7 +589,7 @@ namespace Dynamo.Engine
                 syncDataManager.AddNode(nodeGuid, astNode);
 
             if (AstBuilt != null)
-                AstBuilt(this, new AstBuilder.ASTBuiltEventArgs(nodeGuid, associativeNodes));
+                AstBuilt(this, new CompiledEventArgs(nodeGuid, associativeNodes));
         }
 
         #endregion
@@ -603,9 +605,9 @@ namespace Dynamo.Engine
 
         #region Node2Code
 
-        internal NodeToCodeResult ConvertNodesToCode(IEnumerable<NodeModel> graph, IEnumerable<NodeModel> nodes)
+        internal NodeToCodeResult ConvertNodesToCode(IEnumerable<NodeModel> graph, IEnumerable<NodeModel> nodes, INamingProvider namingProvider = null)
         {
-            return NodeToCodeUtils.NodeToCode(libraryServices.LibraryManagementCore, astBuilder, graph, nodes);
+            return NodeToCodeCompiler.NodeToCode(libraryServices.LibraryManagementCore, graph, nodes, namingProvider);
         }
 
         private bool HasVariableDefined(string var)

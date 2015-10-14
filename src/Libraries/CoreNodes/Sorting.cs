@@ -55,12 +55,27 @@ namespace DSCore
             [ArbitraryDimensionArrayImport] IList list,
             [ArbitraryDimensionArrayImport] IList keys)
         {
-            return
-                list.Cast<object>()
-                    .Zip(keys.Cast<IComparable>(), (item, key) => new {item, key})
-                    .OrderBy(x => x.key)
-                    .Select(x => x.item)
-                    .ToList();
+            var pairs = list.Cast<object>()
+                    .Zip(keys.Cast<object>(), (item, key) => new { item, key });
+
+            var numberKeyPairs = pairs.Where(pair => pair.key is double || pair.key is int || pair.key is float);
+            // We don't use Except, because Except doesn't return duplicates.
+            var keyPairs = pairs.Where(
+                pair =>
+                    !numberKeyPairs.Any(
+                        numberPair => numberPair.item == pair.item && numberPair.key == pair.key));
+
+            // Sort.
+            numberKeyPairs = numberKeyPairs.OrderBy(pair => Convert.ToDouble(pair.key));
+            keyPairs = keyPairs.OrderBy(pair => pair.key);
+
+            // First items with number keys, then items with letter keys.
+            var sortedPairs = numberKeyPairs.Concat(keyPairs);
+
+            var sortedList = sortedPairs.Select(x => x.item);
+            var sortedKeys = sortedPairs.Select(x => x.key);
+
+            return new ArrayList { sortedList, sortedKeys };
         }
 
         public static IList groupByKey(IList list, IList keys)
@@ -70,6 +85,11 @@ namespace DSCore
                     .GroupBy(x => x.key)
                     .Select(x => x.Select(y => y.item).ToList())
                     .ToList();
+        }
+
+        public static IList uniqueItems(IList list)
+        {
+            return list.Cast<object>().Distinct().ToList();
         }
     }
     // ReSharper restore InconsistentNaming

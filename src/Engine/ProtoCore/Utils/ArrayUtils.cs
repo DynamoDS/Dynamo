@@ -4,7 +4,6 @@ using System.Linq;
 using ProtoCore.DSASM;
 using ProtoCore.Exceptions;
 using ProtoCore.Runtime;
-using ProtoCore.Properties;
 
 namespace ProtoCore.Utils
 {
@@ -37,7 +36,7 @@ namespace ProtoCore.Utils
 
                 //Now add in the other conversions - as we don't have a common superclass yet
                 //@TODO(Jun): Remove this hack when we have a proper casting structure
-                foreach (int id in cn.coerceTypes.Keys)
+                foreach (int id in cn.CoerceTypes.Keys)
                     if (!chain.Contains(id))
                         chain.Add((id));
 
@@ -119,56 +118,6 @@ namespace ProtoCore.Utils
             }
 
             return runtimeCore.DSExecutable.classTable.ClassNodes[orderedTypes.First()];
-        }
-
-        /// <summary>
-        /// For a class node using single inheritence, get the chain of inheritences
-        /// </summary>
-        /// <param name="cn"></param>
-        /// <param name="core"></param>
-        /// <returns></returns>
-        public static List<int> GetConversionChain(ClassNode cn, RuntimeCore runtimeCore)
-        {
-            List<int> ret = new List<int>();
-            /*
-            //@TODO: Replace this with an ID
-            ret.Add(core.classTable.list.IndexOf(cn));
-
-            ClassNode target = cn;
-            while (target.baseList.Count > 0)
-            {
-                Validity.Assert(target.baseList.Count == 1, "Multiple Inheritence not yet supported, {F5DDC58D-F721-4319-854A-622175AC43F8}");
-                ret.Add(cn.baseList[0]);
-
-                target = core.classTable.list[cn.baseList[0]];
-            }
-            */
-
-            List<int> coercableTypes = new List<int>();
-
-            foreach (int typeID in cn.coerceTypes.Keys)
-            {
-                bool inserted = false;
-
-                for (int i = 0; i < coercableTypes.Count; i++)
-                {
-                    if (cn.coerceTypes[typeID] < cn.coerceTypes[coercableTypes[i]])
-                    {
-                        inserted = true;
-                        coercableTypes.Insert(typeID, i);
-                        break;
-                    }
-                }
-                if (!inserted)
-                    coercableTypes.Add(typeID);
-            }
-            coercableTypes.Add(runtimeCore.DSExecutable.classTable.ClassNodes.IndexOf(cn));
-
-
-
-            ret.AddRange(coercableTypes);
-            return ret;
-
         }
 
         public static Dictionary<int, StackValue> GetTypeExamplesForLayer(StackValue array, RuntimeCore runtimeCore)
@@ -337,17 +286,6 @@ namespace ProtoCore.Utils
 
             var array = runtimeCore.Heap.ToHeapObject<DSArray>(sv);
             return array.Values.Any(v => ContainsNonArrayElement(v, runtimeCore)); 
-        }
-
-        public static bool IsUniform(StackValue sv, RuntimeCore runtimeCore)
-        {
-            if (!sv.IsArray)
-                return false;
-
-            if (Utils.ArrayUtils.GetTypeStatisticsForArray(sv, runtimeCore).Count != 1)
-                return false;
-
-            return true;
         }
     
         /// <summary>

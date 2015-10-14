@@ -202,7 +202,7 @@ namespace ProtoFFI
 
         public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, Type type)
         {
-            return ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(dsObject.opdata);
+            return Convert.ToChar(dsObject.opdata);
         }
     }
 
@@ -1066,7 +1066,7 @@ namespace ProtoFFI
 
             MetaData metadata;
             metadata.type = type;
-            StackValue retval = runtimeCore.RuntimeMemory.Heap.AllocatePointer(classTable.ClassNodes[type].size, metadata);
+            StackValue retval = runtimeCore.RuntimeMemory.Heap.AllocatePointer(classTable.ClassNodes[type].Size, metadata);
             BindObjects(obj, retval);
             dsi.runtime.RuntimeCore.FFIPropertyChangedMonitor.AddFFIObject(obj);
             return retval;
@@ -1091,7 +1091,7 @@ namespace ProtoFFI
             StackValue[] svs = dsi.runtime.rmem.Heap.ToHeapObject<DSObject>(dsObject).Values.ToArray();
             for (int ix = 0; ix < svs.Length; ++ix)
             {
-                SymbolNode symbol = runtimeCore.DSExecutable.classTable.ClassNodes[classIndex].symbols.symbolList[ix];
+                SymbolNode symbol = runtimeCore.DSExecutable.classTable.ClassNodes[classIndex].Symbols.symbolList[ix];
                 object prop = null;
                 if (properties.TryGetValue(symbol.name, out prop) && null != prop)
                     svs[ix] = Marshal(prop, context, dsi, GetMarshaledType(prop.GetType()));

@@ -372,11 +372,11 @@
   <data name="MapPortDataResultToolTip" xml:space="preserve">
     <value>Mapped list</value>
   </data>
-  <data name="NumberRangeDescription" xml:space="preserve">
-    <value>Creates a sequence of numbers in the specified range.</value>
+  <data name="RangeDescription" xml:space="preserve">
+    <value>Creates a sequence of numbers or letters in the specified range.</value>
     <comment>Description for Number Range</comment>
   </data>
-  <data name="NumberSequenceDescription" xml:space="preserve">
+  <data name="SequenceDescription" xml:space="preserve">
     <value>Creates a sequence of numbers.</value>
     <comment>Description for Number Sequence</comment>
   </data>
@@ -554,10 +554,10 @@
   <data name="IntegerSliderSearchTags" xml:space="preserve">
     <value>integerslider;</value>
   </data>
-  <data name="NumberRangeSearchTags" xml:space="preserve">
+  <data name="RangeSearchTags" xml:space="preserve">
     <value>numberrange;numbersequence;</value>
   </data>
-  <data name="NumberSequenceSearchTags" xml:space="preserve">
+  <data name="SequenceSearchTags" xml:space="preserve">
     <value>numbersequence;</value>
   </data>
   <data name="SelectionEdgeOutputPortName" xml:space="preserve">
@@ -583,5 +583,41 @@
   </data>
   <data name="SelectionPointsOutputPortName" xml:space="preserve">
     <value>Points</value>
+  </data>
+  <data name="ListGroupByKeyDescription" xml:space="preserve">
+    <value>Group items into sub-lists based on their like key values</value>
+  </data>
+  <data name="ListGroupByKeyGroupsTooltip" xml:space="preserve">
+    <value>list of sublists, with items grouped by like key values</value>
+  </data>
+  <data name="ListGroupByKeyKeysTooltip" xml:space="preserve">
+    <value>Key values, one per item in the input list, used for grouping the items</value>
+  </data>
+  <data name="ListGroupByKeyListTooltip" xml:space="preserve">
+    <value>List of items to group as sublists</value>
+  </data>
+  <data name="ListGroupByKeySearchTags" xml:space="preserve">
+    <value>list;group;groupbykey;</value>
+  </data>
+  <data name="ListGroupByKeyUniqueKeysTooltip" xml:space="preserve">
+    <value>key value corresponding to each group</value>
+  </data>
+  <data name="ListSortByKeyDescription" xml:space="preserve">
+    <value>Sort list based on its keys</value>
+  </data>
+  <data name="ListSortByKeySearchTags" xml:space="preserve">
+    <value>sort;key</value>
+  </data>
+  <data name="ListSortByKeyIncomingKeys" xml:space="preserve">
+    <value>list of keys</value>
+  </data>
+  <data name="ListSortByKeyIncomingList" xml:space="preserve">
+    <value>list to be sorted</value>
+  </data>
+  <data name="ListSortByKeyOutKeys" xml:space="preserve">
+    <value>sorted keys</value>
+  </data>
+  <data name="ListSortByKeyOutList" xml:space="preserve">
+    <value>sorted list</value>
   </data>
 </root>

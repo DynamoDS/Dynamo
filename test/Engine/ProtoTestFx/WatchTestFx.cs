@@ -170,7 +170,7 @@ namespace ProtoTestFx
                 }
                 else
                 {
-                    symbolNode = exe.classTable.ClassNodes[ci].symbols.symbolList[(int)instruction.op1.opdata];
+                    symbolNode = exe.classTable.ClassNodes[ci].Symbols.symbolList[(int)instruction.op1.opdata];
                 }
                 string symbolName = symbolNode.name;
 
@@ -339,11 +339,8 @@ namespace ProtoTestFx
 
         internal void TestRunnerRunOnly(string includePath, string code, Dictionary<int, List<string>> map /*, string executionLogFilePath*/)
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScriptRunner();
 
-
-            ProtoScript.Config.RunConfiguration runnerConfig;
-            
             // Specify some of the requirements of IDE.
 
             core.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
@@ -376,14 +373,11 @@ namespace ProtoTestFx
             core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
             core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
 
-            runnerConfig = new ProtoScript.Config.RunConfiguration();
-            runnerConfig.IsParrallel = false;
-            
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             
             //Run
-            RuntimeCore runtimeCore = null;
-            Mirror = fsr.Execute(code, core, out runtimeCore);
+            RuntimeCore runtimeCore = fsr.Execute(code, core);
+            Mirror = runtimeCore.Mirror;
 
             //sw.Close();
             runtimeCore.Cleanup();
@@ -395,7 +389,6 @@ namespace ProtoTestFx
             //Internal setup
             ProtoCore.Core core;
             DebugRunner fsr;
-            ProtoScript.Config.RunConfiguration runnerConfig;
             
             // Specify some of the requirements of IDE.
             var options = new ProtoCore.Options();
@@ -422,14 +415,12 @@ namespace ProtoTestFx
             core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
             core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
 
-            runnerConfig = new ProtoScript.Config.RunConfiguration();
-            runnerConfig.IsParrallel = false;
             fsr = new DebugRunner(core);
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             
             //Run
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
 
 
             RuntimeCore runtimeCore = fsr.runtimeCore;

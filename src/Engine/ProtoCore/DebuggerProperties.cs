@@ -1,22 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
-using System.Linq;
 using ProtoCore.AssociativeGraph;
-using ProtoCore.AssociativeEngine;
-using ProtoCore.AST;
-using ProtoCore.AST.AssociativeAST;
-using ProtoCore.BuildData;
 using ProtoCore.CodeModel;
-using ProtoCore.DebugServices;
 using ProtoCore.DSASM;
-using ProtoCore.Lang;
 using ProtoCore.Lang.Replication;
 using ProtoCore.Runtime;
 using ProtoCore.Utils;
-using ProtoFFI;
 
 using StackFrame = ProtoCore.DSASM.StackFrame;
 
@@ -339,7 +330,7 @@ namespace ProtoCore
             // it is the very first or only function call statement ("return = f();") inside the calling function
             // Here there's most likely a DEP or RETURN respectively after the function call
             // in which case, search for the instruction and set that as the new pc limit
-            else if (!fNode.name.Contains(Constants.kSetterPrefix))
+            else if (!fNode.Name.Contains(Constants.kSetterPrefix))
             {
                 while (++tempPC < istream.instrList.Count)
                 {
@@ -402,7 +393,7 @@ namespace ProtoCore
             debugFrame.ThisPtr = thisPtr;
             debugFrame.HasDebugInfo = hasDebugInfo;
 
-            if (CoreUtils.IsDisposeMethod(fNode.name))
+            if (CoreUtils.IsDisposeMethod(fNode.Name))
             {
                 debugFrame.IsDisposeCall = true;
                 ReturnPCFromDispose = DebugEntryPC;
@@ -429,7 +420,7 @@ namespace ProtoCore
             }
 
             // Comment Jun: A dot call does not replicate and  must be handled immediately
-            if (fNode.name == Constants.kDotMethodName)
+            if (fNode.Name == Constants.kDotMethodName)
             {
                 isReplicating = false;
                 isExternalFunction = false;
@@ -446,7 +437,7 @@ namespace ProtoCore
             bool willReplicate = callsite.WillCallReplicate(new Context(), arguments, replicationGuides, stackFrame, runtimeCore, out replicationTrials);
             
             // the inline conditional built-in is handled separately as 'WillCallReplicate' is always true in this case
-            if(fNode.name.Equals(Constants.kInlineConditionalMethodName))
+            if(fNode.Name.Equals(Constants.kInlineConditionalMethodName))
             {
                 // The inline conditional built-in is created only for associative blocks and needs to be handled separately as below
                 InstructionStream istream = runtimeCore.DSExecutable.instrStreamList[CurrentBlockId];
@@ -467,24 +458,17 @@ namespace ProtoCore
                 {
                     runtimeCore.DebugProps.InlineConditionOptions.ActiveBreakPoints.AddRange(runtimeCore.Breakpoints);
 
-                    /*if (core.DebugProps.RunMode == Runmode.StepNext)
-                    {
-                        core.Breakpoints.Clear();
-                    }*/
-
                     isReplicating = false;
                     isExternalFunction = false;
                 }
                 else // an inline conditional call that replicates
                 {
-#if !__DEBUG_REPLICATE
                     // Clear all breakpoints for outermost replicated call
                     if(!DebugStackFrameContains(StackFrameFlagOptions.IsReplicating))
                     {
                         ActiveBreakPoints.AddRange(runtimeCore.Breakpoints);
                         runtimeCore.Breakpoints.Clear();
                     }
-#endif
                     isExternalFunction = false;
                     isReplicating = true;
                 }
@@ -497,10 +481,10 @@ namespace ProtoCore
             // Prevent breaking inside a function that is external except for dot calls
             // by clearing all breakpoints from outermost external function call
             // This check takes precedence over the replication check
-            else if (fNode.isExternal && fNode.name != Constants.kDotMethodName)
+            else if (fNode.IsExternal && fNode.Name != Constants.kDotMethodName)
             {
                 // Clear all breakpoints 
-                if (!DebugStackFrameContains(StackFrameFlagOptions.IsExternalFunction) && fNode.name != Constants.kFunctionRangeExpression)
+                if (!DebugStackFrameContains(StackFrameFlagOptions.IsExternalFunction) && fNode.Name != Constants.kFunctionRangeExpression)
                 {
                     ActiveBreakPoints.AddRange(runtimeCore.Breakpoints);
                     runtimeCore.Breakpoints.Clear();
@@ -513,14 +497,12 @@ namespace ProtoCore
             // prevent stepping in by removing all breakpoints from outermost replicated call
             else if (willReplicate)
             {
-#if !__DEBUG_REPLICATE
                 // Clear all breakpoints for outermost replicated call
                 if(!DebugStackFrameContains(StackFrameFlagOptions.IsReplicating))
                 {
                     ActiveBreakPoints.AddRange(runtimeCore.Breakpoints);
                     runtimeCore.Breakpoints.Clear();
                 }
-#endif
 
                 isReplicating = true;
                 isExternalFunction = false;
@@ -553,11 +535,10 @@ namespace ProtoCore
 
             // Restore breakpoints which occur after returning from outermost replicating function call 
             // as well as outermost external function call
-#if !__DEBUG_REPLICATE
             if (!DebugStackFrameContains(StackFrameFlagOptions.IsReplicating) &&
                 !DebugStackFrameContains(StackFrameFlagOptions.IsExternalFunction))
             {
-                if (ActiveBreakPoints.Count > 0 && fNode.name != Constants.kFunctionRangeExpression)
+                if (ActiveBreakPoints.Count > 0 && fNode.Name != Constants.kFunctionRangeExpression)
                 {
                     runtimeCore.Breakpoints.AddRange(ActiveBreakPoints);
                     //if (SetUpStepOverFunctionCalls(core, fNode, ActiveBreakPoints))
@@ -566,32 +547,14 @@ namespace ProtoCore
                     }
                 }
             }
-#else
-            if (!DebugStackFrameContains(StackFrameFlagOptions.IsExternalFunction))
-            {
-                if (ActiveBreakPoints.Count > 0 && fNode.name != ProtoCore.DSASM.Constants.kFunctionRangeExpression)
-                {
-                    core.Breakpoints.AddRange(ActiveBreakPoints);
-                    //if (SetUpStepOverFunctionCalls(core, fNode, ActiveBreakPoints))
-                    {
-                        ActiveBreakPoints.Clear();
-                    }
-                }
-            }
-#endif
 
-#if __DEBUG_REPLICATE
-            if(!isReplicating)
-#endif
+            // If stepping over function call in debug mode
+            if (debugFrame.HasDebugInfo && RunMode == Runmode.StepNext)
             {
-                // If stepping over function call in debug mode
-                if (debugFrame.HasDebugInfo && RunMode == Runmode.StepNext)
+                // if stepping over outermost function call
+                if (!DebugStackFrameContains(StackFrameFlagOptions.IsFunctionStepOver))
                 {
-                    // if stepping over outermost function call
-                    if (!DebugStackFrameContains(StackFrameFlagOptions.IsFunctionStepOver))
-                    {
-                        SetUpStepOverFunctionCalls(runtimeCore, fNode, debugFrame.ExecutingGraphNode, debugFrame.HasDebugInfo);
-                    }
+                    SetUpStepOverFunctionCalls(runtimeCore, fNode, debugFrame.ExecutingGraphNode, debugFrame.HasDebugInfo);
                 }
             }
         }

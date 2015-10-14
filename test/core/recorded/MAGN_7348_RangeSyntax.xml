@@ -33,7 +33,7 @@
   <DragSelectionCommand X="467" Y="266" DragOperation="0" />
   <DragSelectionCommand X="134" Y="227" DragOperation="1" />
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
-    <DSCoreNodesUI.NumberRange guid="8a7591cf-0271-4c47-989f-583ab7c028ca" type="DSCoreNodesUI.NumberRange" nickname="Number Range" x="316.5" y="69.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <DSCoreNodesUI.Range guid="8a7591cf-0271-4c47-989f-583ab7c028ca" type="DSCoreNodesUI.Range" nickname="Number Range" x="316.5" y="69.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
   </CreateNodeCommand>
   <SelectModelCommand ModelGuid="8a7591cf-0271-4c47-989f-583ab7c028ca" Modifiers="0" />
   <DragSelectionCommand X="421" Y="292" DragOperation="0" />
@@ -66,7 +66,7 @@
   <RunCancelCommand ShowErrors="false" CancelRun="false" />
   <PausePlaybackCommand Tag="FirstRun" PauseDurationInMs="20" />
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
-    <DSCoreNodesUI.NumberSeq guid="b1335d53-2746-4aa4-b4d3-6ea8af3387c7" type="DSCoreNodesUI.NumberSeq" nickname="Number Sequence" x="234.906029471613" y="290.042110315065" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <DSCoreNodesUI.Sequence guid="b1335d53-2746-4aa4-b4d3-6ea8af3387c7" type="DSCoreNodesUI.Sequence" nickname="Sequence" x="234.906029471613" y="290.042110315065" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
   </CreateNodeCommand>
   <SelectModelCommand ModelGuid="b1335d53-2746-4aa4-b4d3-6ea8af3387c7" Modifiers="0" />
   <DragSelectionCommand X="339" Y="197" DragOperation="0" />

@@ -458,7 +458,7 @@ def __Reduce(accumulator : _FunctionObject, seed: var[]..[], lists : var[]..[])
     };
 }
 
-def SortByKey(list : var[]..[], keyProjector:_FunctionObject)
+def SortByFunction(list : var[]..[], func:_FunctionObject)
 {
     return = [Imperative]
     {
@@ -477,13 +477,39 @@ def SortByKey(list : var[]..[], keyProjector:_FunctionObject)
 
         for (_index in 0..(_count - 1))
         {
-            _keys[_index] = __Apply(keyProjector, list[_index]);
+            _keys[_index] = __Apply(func, list[_index]);
         }
-        return = Sorting.sortByKey(list, _keys);
+        return = Sorting.sortByKey(list, _keys)[0];
     };
 }
 
-def GroupByKey(list : var[]..[], keyProjector: _FunctionObject)
+def __SortByKey(list : var[]..[], keys : var[]..[])
+{
+    return = [Imperative]
+    {
+        if (list == null || keys == null)
+        {
+            return = null;
+        }
+
+		_countList = Count(list);
+		_countKeys = Count(keys);
+
+		if (_countList != _countKeys)
+        {
+            return = null;
+        }
+
+		sortItems = Sorting.sortByKey(list, keys);
+
+		_sortedList = sortItems[0];
+		_sortedKeys = sortItems[1];
+
+        return = { _sortedList, _sortedKeys };
+    };
+}
+
+def GroupByFunction(list : var[]..[], func: _FunctionObject)
 {
     return = [Imperative]
     {
@@ -502,7 +528,7 @@ def GroupByKey(list : var[]..[], keyProjector: _FunctionObject)
 
         for (_index in 0..(_count - 1))
         {
-            _keys[_index] = __Apply(keyProjector, list[_index]);
+            _keys[_index] = __Apply(func, list[_index]);
         }
         return = Sorting.groupByKey(list, _keys);
     };
@@ -604,5 +630,15 @@ def LoopWhile(init: var[]..[], continueWhile: _FunctionObject, loopBody: _Functi
 			init = __Apply(loopBody, init);
 		}
 		return = init;
+	};
+}
+
+def __GroupByKey(list: var[]..[], keys: var[]..[])
+{
+	return = [Imperative]
+	{
+		_sortedList = Sorting.groupByKey(list, keys);
+		_uniqueKeys = Sorting.uniqueItems(keys);
+		return = {_sortedList, _uniqueKeys};
 	};
 }

@@ -14,7 +14,7 @@ using Dynamo.Tests;
 using Dynamo.UpdateManager;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
-
+using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoShapeManager;
 
 using NUnit.Framework;
@@ -185,7 +185,8 @@ namespace SystemTestServices
                     StartInTestMode = true,
                     PathResolver = pathResolver,
                     GeometryFactoryPath = preloader.GeometryFactoryPath,
-                    UpdateManager = this.UpdateManager
+                    UpdateManager = this.UpdateManager,
+                    ProcessMode = Dynamo.Core.Threading.TaskProcessMode.Synchronous
                 });
 
             ViewModel = DynamoViewModel.Start(

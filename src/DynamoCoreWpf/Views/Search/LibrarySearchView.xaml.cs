@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Dynamo.Search;
@@ -39,17 +40,12 @@ namespace Dynamo.UI.Views
         {
             viewModel = DataContext as SearchViewModel;
             viewModel.SearchTextChanged +=viewModel_SearchTextChanged;
-            // RequestReturnFocusToSearch calls, when workspace was clicked.
-            // We should hide tooltip.
-            viewModel.RequestReturnFocusToSearch += OnRequestCloseToolTip;
-            // When workspace was changed, we should hide tooltip. 
-            viewModel.RequestCloseSearchToolTip += OnRequestCloseToolTip;
         }
 
         private void viewModel_SearchTextChanged(object sender, EventArgs e)
         {
             //Get the scrollview and scroll to top on every text entered
-            var scroll = CategoryTreeView.ChildOfType<ScrollViewer>();
+            var scroll = SearchResults.ChildOfType<ScrollViewer>();
             if (scroll != null)
             {               
                 scroll.ScrollToTop();
@@ -60,26 +56,6 @@ namespace Dynamo.UI.Views
         {
             // Clear SearchText in ViewModel, as result search textbox clears as well.
             viewModel.SearchText = "";
-        }
-
-        private void OnMemberGroupNameMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (!(e.OriginalSource is System.Windows.Documents.Run)) return;
-
-            var memberGroup = sender as FrameworkElement;
-            var memberGroupContext = memberGroup.DataContext as SearchMemberGroup;
-
-            // Show all members of this group.
-            memberGroupContext.ExpandAllMembers();
-
-            // Make textblock underlined.
-            var textBlock = e.OriginalSource as System.Windows.Documents.Run;
-            textBlock.TextDecorations = TextDecorations.Underline;
-        }
-
-        private void OnPrefixTextBlockMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            e.Handled = true;
         }
 
         #region ToolTip methods
@@ -114,11 +90,6 @@ namespace Dynamo.UI.Views
             libraryToolTipPopup.SetDataContext(null, closeImmediately);
         }
 
-        private void OnRequestCloseToolTip(object sender, EventArgs e)
-        {
-            CloseToolTipInternal(true);
-        }
-
         #endregion
 
         #region Drag&Drop
@@ -128,11 +99,26 @@ namespace Dynamo.UI.Views
             var senderButton = e.OriginalSource as FrameworkElement;
             if (senderButton != null)
             {
-                var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
+                HelperHandleMouseDown(e.GetPosition(null), senderButton.DataContext);
+            }
+            else
+            {
+                var senderRunButton = e.OriginalSource as Run;
+                if (senderRunButton != null)
+                {
+                    HelperHandleMouseDown(e.GetPosition(null), senderRunButton.DataContext);
+                }
+            }
+        }
 
-                if (searchElementVM != null)
-                    dragDropHelper.HandleMouseDown(e.GetPosition(null), searchElementVM);
-            }          
+        private void HelperHandleMouseDown(Point position, object dataContext)
+        {
+            var searchElementVM = dataContext as NodeSearchElementViewModel;
+
+            if (searchElementVM != null)
+            {
+                dragDropHelper.HandleMouseDown(position, searchElementVM);
+            }
         }
 
         private void OnButtonPreviewMouseMove(object sender, MouseEventArgs e)

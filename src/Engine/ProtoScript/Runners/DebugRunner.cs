@@ -58,10 +58,9 @@ namespace ProtoScript.Runners
         /// <summary>
         /// Setup to run with customised launch options
         /// </summary>
-        /// <param name="configuration"></param>
         /// <returns>Ready to run?</returns>
         /// 
-        private bool _PreStart(string code, Config.RunConfiguration configuration, string fileName)
+        private bool _PreStart(string code, string fileName)
         {
             this.code = code;
             if (null == core)
@@ -96,13 +95,13 @@ namespace ProtoScript.Runners
             }
         }
         
-        public bool PreStart(string src, Config.RunConfiguration configuration = new Config.RunConfiguration())
+        public bool PreStart(string src)
         {
-            return _PreStart(src, configuration, null);
+            return _PreStart(src, null);
         }
-        public bool LoadAndPreStart(string src, Config.RunConfiguration configuration = new Config.RunConfiguration())
+        public bool LoadAndPreStart(string src)
         {
-            return _PreStart(File.ReadAllText(src), configuration, src);
+            return _PreStart(File.ReadAllText(src), src);
         }
 
         /// <summary>
@@ -450,9 +449,7 @@ namespace ProtoScript.Runners
             }
             catch (Exception ex)
             {
-                Messages.FatalCompileError fce = new Messages.FatalCompileError { Message = ex.ToString() };
-
-                Console.WriteLine(fce.Message);
+                Console.WriteLine(ex.ToString());
                 return false;
             }
 

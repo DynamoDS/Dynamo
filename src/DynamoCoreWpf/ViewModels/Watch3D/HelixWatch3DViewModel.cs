@@ -13,14 +13,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Xml;
-using System.Xml.Serialization;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Controls;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.Selection;
-using Dynamo.Services;
-using Dynamo.UI.Commands;
+using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Rendering;
 using DynamoUtilities;
 using HelixToolkit.Wpf.SharpDX;
@@ -32,14 +29,12 @@ using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
 using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
-using Quaternion = SharpDX.Quaternion;
 using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
     public class CameraData
-    {
-        
+    { 
         // Default camera position data. These values have been rounded
         // to the nearest whole value.
         // eyeX="-16.9655136013663" eyeY="24.341577725171" eyeZ="50.6494323150915" 
@@ -51,7 +46,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private readonly Vector3D defaultCameraUpDirection = new Vector3D(0, 1, 0);
         private const double defaultNearPlaneDistance = 0.1;
         private const double defaultFarPlaneDistance = 10000000;
-
+         
         public Point3D EyePosition { get; set; }
         public Vector3D UpDirection { get; set; }
         public Vector3D LookDirection { get; set; }
@@ -70,7 +65,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
     }
 
-    public class HelixWatch3DViewModel : Watch3DViewModelBase
+    /// <summary>
+    /// The HelixWatch3DViewModel establishes a full rendering 
+    /// context using the HelixToolkit. An instance of this class
+    /// can act as the data source for a <see cref="Watch3DView"/>
+    /// </summary>
+    public class HelixWatch3DViewModel : DefaultWatch3DViewModel
     {
         #region private members
 
@@ -87,7 +87,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private readonly Color4 directionalLightColor = new Color4(0.9f, 0.9f, 0.9f, 1.0f);
         private readonly Color4 defaultSelectionColor = new Color4(new Color3(0, 158.0f / 255.0f, 1.0f));
         private readonly Color4 defaultMaterialColor = new Color4(new Color3(1.0f, 1.0f, 1.0f));
-        private readonly Size defaultPointSize = new Size(8, 8);
+        private readonly Size defaultPointSize = new Size(6, 6);
         private readonly Color4 defaultLineColor = new Color4(new Color3(0, 0, 0));
         private readonly Color4 defaultPointColor = new Color4(new Color3(0, 0, 0));
 
@@ -99,6 +99,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private const string LinesKey = ":lines";
         private const string MeshKey = ":mesh";
         private const string TextKey = ":text";
+
+        private const int FrameUpdateSkipCount = 200;
+        private int currentFrameSkipCount;
 
 #if DEBUG
         private readonly Stopwatch renderTimer = new Stopwatch();
@@ -117,6 +120,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             if (RequestViewRefresh != null)
             {
                 RequestViewRefresh();
+            }
+        }
+
+        protected override void OnActiveStateChanged()
+        {
+            preferences.IsBackgroundPreviewActive = active;
+
+            if (active == false && CanNavigateBackground)
+            {
+                CanNavigateBackground = false;
             }
         }
 
@@ -236,28 +249,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        public bool IsPanning
-        {
-            get
-            {
-                return CurrentSpaceViewModel != null && CurrentSpaceViewModel.IsPanning;
-            }
-        }
-
-        public bool IsOrbiting
-        {
-            get
-            {
-                return CurrentSpaceViewModel != null && CurrentSpaceViewModel.IsOrbiting;
-            }
-        }
-
-        public DelegateCommand TogglePanCommand { get; set; }
-
-        public DelegateCommand ToggleOrbitCommand { get; set; }
-
-        public DelegateCommand ToggleCanNavigateBackgroundCommand { get; set; }
-
         /// <summary>
         /// The LeftClickCommand is set according to the
         /// ViewModel's IsPanning or IsOrbiting properties.
@@ -288,67 +279,63 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     return new List<Model3D>();
                 }
 
-                var values = Model3DDictionary.
-                    Select(x => x.Value).
-                    ToList();
-
-                values.Sort((a, b) =>
-                {
-                    var aType = a.GetType() == typeof(BillboardTextModel3D);
-                    var bType = b.GetType() == typeof(BillboardTextModel3D);
-                    return aType.CompareTo(bType);
-                });
-
+                var values = Model3DDictionary.Values.ToList();
+                //values.Sort(new Model3DComparer(Camera.Position));
                 return values;
             }
         }
 
-        private bool canNavigateBackground = false;
-        public bool CanNavigateBackground
-        {
-            get
-            {
-                return canNavigateBackground || navigationKeyIsDown; 
-            }
-            set
-            {
-                canNavigateBackground = value;
-                RaisePropertyChanged("CanNavigateBackground");
-            }
-        }
+        public IEffectsManager EffectsManager { get; private set; }
 
-        private bool navigationKeyIsDown = false;
-        public bool NavigationKeyIsDown
+        public IRenderTechniquesManager RenderTechniquesManager { get; private set; }
+
+        public bool SupportDeferredRender { get; private set; }
+
+        #endregion
+
+        /// <summary>
+        /// Attempt to create a HelixWatch3DViewModel. If one cannot be created,
+        /// fall back to creating a DefaultWatch3DViewModel and log the exception.
+        /// </summary>
+        /// <param name="parameters">A Watch3DViewModelStartupParams object.</param>
+        /// <param name="logger">A logger to be used to log the exception.</param>
+        /// <returns></returns>
+        public static DefaultWatch3DViewModel TryCreateHelixWatch3DViewModel(Watch3DViewModelStartupParams parameters, DynamoLogger logger)
         {
-            get { return navigationKeyIsDown; }
-            set 
-            { 
-                navigationKeyIsDown = value;
-                RaisePropertyChanged("NavigationKeyIsDown");
-                RaisePropertyChanged("CanNavigateBackground");
+            try
+            {
+                var vm = new HelixWatch3DViewModel(parameters);
+                return vm;
+            }
+            catch (Exception ex)
+            {
+                logger.Log(Resources.BackgroundPreviewCreationFailureMessage, LogLevel.Console);
+                logger.Log(ex.Message, LogLevel.File);
+
+                var vm = new DefaultWatch3DViewModel(parameters)
+                {
+                    Active = false,
+                    CanBeActivated = false
+                };
+                return vm;
             }
         }
-        
-        #endregion
 
         protected HelixWatch3DViewModel(Watch3DViewModelStartupParams parameters) : base(parameters)
         {
+            Name = Resources.BackgroundPreviewName;
             IsResizable = false;
+            RenderTechniquesManager = new DynamoRenderTechniquesManager();
+            EffectsManager = new DynamoEffectsManager(RenderTechniquesManager);
 
-            TogglePanCommand = new DelegateCommand(TogglePan, CanTogglePan);
-            ToggleOrbitCommand = new DelegateCommand(ToggleOrbit, CanToggleOrbit);
-            ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
-        }
-
-        public static HelixWatch3DViewModel Start(Watch3DViewModelStartupParams parameters)
-        {
-            var vm = new HelixWatch3DViewModel(parameters);
-            vm.OnStartup();
-            return vm;
+            SetupScene();
+            InitializeHelix();
         }
 
         public void SerializeCamera(XmlElement camerasElement)
         {
+            if (camera == null) return;
+
             try
             {
                 var node = XmlHelper.AddNode(camerasElement, "Camera");
@@ -417,13 +404,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             return new CameraData();
         }
 
-        protected override void OnStartup()
-        {
-            SetupScene();
-            InitializeHelix();
-        }
-
-        protected override void OnBeginUpdate(IEnumerable<IRenderPackage> packages)
+        public override void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages)
         {
             if (Active == false)
             {
@@ -433,6 +414,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Raise request for model objects to be
             // created on the UI thread.
             OnRequestCreateModels(packages);
+        }
+
+        protected override void OnShutdown()
+        {
+            EffectsManager = null;
+            RenderTechniquesManager = null;
         }
 
         protected override void OnClear()
@@ -451,16 +438,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             RaisePropertyChanged("SceneItems");
             OnRequestViewRefresh();
-        }
-
-        protected override void OnActiveStateChanged()
-        {
-            preferences.IsBackgroundPreviewActive = active;
-
-            if (active == false && CanNavigateBackground)
-            {
-                CanNavigateBackground = false;
-            }
         }
 
         protected override void OnWorkspaceCleared(WorkspaceModel workspace)
@@ -512,7 +489,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 case NotifyCollectionChangedAction.Reset:
                     Model3DDictionary.Values.
                         Where(v => v is GeometryModel3D).
-                        Cast<GeometryModel3D>().ToList().ForEach(g => g.IsSelected = false);
+                        Cast<GeometryModel3D>().ToList().ForEach(g => g.SetValue(AttachedProperties.ShowSelectedProperty, false));
                     return;
 
                 case NotifyCollectionChangedAction.Remove:
@@ -550,18 +527,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             switch (e.PropertyName)
             {
-                case "IsUpdated":
-                    // Only request updates when this is true. All nodes are marked IsUpdated=false
-                    // before an evaluation occurs.
-
-                    if (node.IsUpdated)
-                    {
-                        node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
-                    }
+                case "CachedValue":
+                    node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
                     break;
 
                 case "DisplayLabels":
-                    node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
+                    node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory, true);
                     break;
 
                 case "IsVisible":
@@ -572,8 +543,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         //RaisePropertyChanged("SceneItems");
                     }
 
-                    node.IsUpdated = true;
-                    node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
+                    node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory, true);
 
                     break;
             }
@@ -582,12 +552,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public override void GenerateViewGeometryFromRenderPackagesAndRequestUpdate(IEnumerable<IRenderPackage> taskPackages)
         {
             recentlyAddedNodes.Clear();
-
-            // Don't render if the user's system is incapable.
-            if (renderingTier == 0)
-            {
-                return;
-            }
 
 #if DEBUG
             renderTimer.Start();
@@ -610,7 +574,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             OnRequestViewRefresh();
         }
 
-        protected override void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
+        public override void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
         {
             lock (Model3DDictionaryMutex)
             {
@@ -623,10 +587,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                 foreach (var kvp in geometryModels)
                 {
-                    var model = Model3DDictionary[kvp.Key] as GeometryModel3D;
-                    if (model != null)
+                    var model3D = Model3DDictionary[kvp.Key] as GeometryModel3D;
+                    if (model3D != null)
                     {
-                        model.Detach();
+                        model3D.Detach();
                     }
                     Model3DDictionary.Remove(kvp.Key);
                 }
@@ -646,8 +610,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     OnClear();
                     foreach (var node in model.CurrentWorkspace.Nodes)
                     {
-                        node.IsUpdated = true;
-                        node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
+                        node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory, true);
                     }
                     break;
             }
@@ -665,24 +628,19 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 renderTimer.Reset();
             }
 #endif
-            if (directionalLight == null)
-            {
-                return;
-            }
 
-            var cf = new Vector3((float)camera.LookDirection.X, (float)camera.LookDirection.Y, (float)camera.LookDirection.Z).Normalized();
-            var cu = new Vector3((float)camera.UpDirection.X, (float)camera.UpDirection.Y, (float)camera.UpDirection.Z).Normalized();
-            var right = Vector3.Cross(cf, cu);
+            // Raising a property change notification for
+            // the SceneItems collections causes a full
+            // re-render including sorting for transparency.
+            // We don't want to do this every frame, so we
+            // do this update only at a fixed interval.
+            //if (currentFrameSkipCount == FrameUpdateSkipCount)
+            //{
+            //    RaisePropertyChanged("SceneItems");
+            //    currentFrameSkipCount = 0;
+            //}
 
-            var qel = Quaternion.RotationAxis(right, (float)((-LightElevationDegrees * Math.PI) / 180));
-            var qaz = Quaternion.RotationAxis(cu, (float)((LightAzimuthDegrees * Math.PI) / 180));
-            var v = Vector3.Transform(cf, qaz * qel);
-            directionalLightDirection = v;
-
-            if (!directionalLight.Direction.Equals(directionalLightDirection))
-            {
-                directionalLight.Direction = v;
-            }
+            currentFrameSkipCount++;
         }
 
         #endregion
@@ -723,7 +681,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
 
                 var modelValues = geometryModels.Select(x => x.Value);
-                modelValues.Cast<GeometryModel3D>().ToList().ForEach(g => g.IsSelected = isSelected);
+
+                foreach(GeometryModel3D g in modelValues)
+                {
+                    g.SetValue(AttachedProperties.ShowSelectedProperty, isSelected);
+                }
             }
         }
 
@@ -784,7 +746,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private void SetupScene()
         {
-            RenderTechnique = Techniques.RenderDynamo;
+            RenderTechnique = new RenderTechnique("RenderCustom");
 
             WhiteMaterial = new PhongMaterial
             {
@@ -840,7 +802,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Model3DDictionary.Add(DefaultLightName, directionalLight);
             }
 
-            var gridModel3D = new LineGeometryModel3D
+            var gridModel3D = new DynamoLineGeometryModel3D
             {
                 Geometry = Grid,
                 Transform = Model1Transform,
@@ -855,7 +817,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Model3DDictionary.Add(DefaultGridName, gridModel3D);
             }
 
-            var axesModel3D = new LineGeometryModel3D
+            var axesModel3D = new DynamoLineGeometryModel3D
             {
                 Geometry = Axes,
                 Transform = Model1Transform,
@@ -925,7 +887,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             Axes.Positions = axesPositions;
             Axes.Indices = axesIndices;
             Axes.Colors = axesColors;
-
         }
 
         private static void DrawGridPatch(
@@ -987,6 +948,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public void SetCameraData(CameraData data)
         {
+            if (Camera == null) return;
+
             Camera.LookDirection = data.LookDirection;
             Camera.Position = data.EyePosition;
             Camera.UpDirection = data.UpDirection;
@@ -1012,11 +975,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        private void AggregateRenderPackages(IEnumerable<HelixRenderPackage> pacakges)
+        private void AggregateRenderPackages(IEnumerable<HelixRenderPackage> packages)
         {
             lock (Model3DDictionaryMutex)
             {
-                foreach (var rp in pacakges)
+                foreach (var rp in packages)
                 {
                     // Each node can produce multiple render packages. We want all the geometry of the
                     // same kind stored inside a RenderPackage to be pushed into one GeometryModel3D object.
@@ -1080,7 +1043,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         }
                         else
                         {
-                            lineGeometry3D = CreateLineGeometryModel3D(rp);
+                            // If the package contains mesh vertices, then the lines represent the 
+                            // edges of meshes. Draw them with a different thickness.
+                            lineGeometry3D = CreateLineGeometryModel3D(rp, rp.MeshVertices.Any()?0.5:1.0);
                             Model3DDictionary.Add(id, lineGeometry3D);
                         }
 
@@ -1135,7 +1100,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                     if (mesh.Colors.Any(c => c.Alpha < 1.0))
                     {
-                        meshGeometry3D.HasTransparency = true;
+                        meshGeometry3D.SetValue(AttachedProperties.HasTransparencyProperty, true);
                     }
 
                     if (rp.DisplayLabels)
@@ -1175,13 +1140,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private DynamoGeometryModel3D CreateDynamoGeometryModel3D(HelixRenderPackage rp)
         {
-            var meshGeometry3D = new DynamoGeometryModel3D()
+            var meshGeometry3D = new DynamoGeometryModel3D(renderTechnique)
             {
                 Transform = Model1Transform,
                 Material = WhiteMaterial,
-                IsHitTestVisible = true,
+                IsHitTestVisible = false,
                 RequiresPerVertexColoration = rp.RequiresPerVertexColoration,
-                IsSelected = rp.IsSelected,
+                IsSelected = rp.IsSelected
             };
 
             if (rp.Colors != null)
@@ -1210,28 +1175,27 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     Console.WriteLine(ex.StackTrace);
                 }
             }
-            ((MaterialGeometryModel3D)meshGeometry3D).SelectionColor = defaultSelectionColor;
 
             return meshGeometry3D;
         }
 
-        private LineGeometryModel3D CreateLineGeometryModel3D(HelixRenderPackage rp)
+        private DynamoLineGeometryModel3D CreateLineGeometryModel3D(HelixRenderPackage rp, double thickness = 1.0)
         {
-            var lineGeometry3D = new LineGeometryModel3D()
+            var lineGeometry3D = new DynamoLineGeometryModel3D()
             {
                 Geometry = HelixRenderPackage.InitLineGeometry(),
                 Transform = Model1Transform,
                 Color = Color.White,
-                Thickness = 0.5,
-                IsHitTestVisible = true,
+                Thickness = thickness,
+                IsHitTestVisible = false,
                 IsSelected = rp.IsSelected
             };
             return lineGeometry3D;
         }
 
-        private PointGeometryModel3D CreatePointGeometryModel3D(HelixRenderPackage rp)
+        private DynamoPointGeometryModel3D CreatePointGeometryModel3D(HelixRenderPackage rp)
         {
-            var pointGeometry3D = new PointGeometryModel3D
+            var pointGeometry3D = new DynamoPointGeometryModel3D
             {
                 Geometry = HelixRenderPackage.InitPointGeometry(),
                 Transform = Model1Transform,
@@ -1317,59 +1281,70 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         #endregion
+    }
 
-        #region command methods
+    /// <summary>
+    /// The Model3DComparer is used to sort arrays of Model3D objects. 
+    /// After sorting, the target array's objects will be organized
+    /// as follows:
+    /// 1. All opaque geometry.
+    /// 2. All text.
+    /// 3. All transparent geometry, ordered by distance from
+    /// the camera.
+    /// </summary>
+    public class Model3DComparer : IComparer<Model3D>
+    {
+        private readonly Vector3 cameraPosition;
 
-        internal override void TogglePan(object parameter)
+        public Model3DComparer(Point3D cameraPosition)
         {
-            CurrentSpaceViewModel.RequestTogglePanMode();
-
-            // Since panning and orbiting modes are exclusive from one another,
-            // turning one on may turn the other off. This is the reason we must
-            // raise property change for both at the same time to update visual.
-            RaisePropertyChanged("IsPanning");
-            RaisePropertyChanged("IsOrbiting");
-            RaisePropertyChanged("LeftClickCommand");
+            this.cameraPosition = cameraPosition.ToVector3();
         }
 
-        private static bool CanTogglePan(object parameter)
+        public int Compare(Model3D x, Model3D y)
         {
-            return true;
+            var a = x as GeometryModel3D;
+            var b = y as GeometryModel3D;
+
+            if (a == null && b == null)
+            {
+                return 0;
+            }
+
+            if (a == null)
+            {
+                return -1;
+            }
+
+            if (b == null)
+            {
+                return 1;
+            }
+
+            var textA = a.GetType() == typeof(BillboardTextModel3D);
+            var textB = b.GetType() == typeof(BillboardTextModel3D);
+            var result = textA.CompareTo(textB);
+
+            if (result == 0 && textA)
+            {
+                return result;
+            }
+
+            var transA = (bool) a.GetValue(AttachedProperties.HasTransparencyProperty);
+            var transB = (bool) b.GetValue(AttachedProperties.HasTransparencyProperty);
+            result = transA.CompareTo(transB);
+
+            if (result != 0 || !transA) return result;
+
+            // compare distance
+            var boundsA = a.Bounds;
+            var boundsB = b.Bounds;
+            var cpA = (boundsA.Maximum + boundsA.Minimum)/2;
+            var cpB = (boundsB.Maximum + boundsB.Minimum)/2;
+            var dA = Vector3.DistanceSquared(cpA, cameraPosition);
+            var dB = Vector3.DistanceSquared(cpB, cameraPosition);
+            return -dA.CompareTo(dB);
         }
-
-        private void ToggleOrbit(object parameter)
-        {
-            CurrentSpaceViewModel.RequestToggleOrbitMode();
-
-            // Since panning and orbiting modes are exclusive from one another,
-            // turning one on may turn the other off. This is the reason we must
-            // raise property change for both at the same time to update visual.
-            RaisePropertyChanged("IsPanning");
-            RaisePropertyChanged("IsOrbiting");
-            RaisePropertyChanged("LeftClickCommand");
-        }
-
-        private static bool CanToggleOrbit(object parameter)
-        {
-            return true;
-        }
-
-        public void ToggleCanNavigateBackground(object parameter)
-        {
-            if (!Active)
-                return;
-
-            CanNavigateBackground = !CanNavigateBackground;
-
-            InstrumentationLogger.LogAnonymousScreen(CanNavigateBackground ? "Geometry" : "Nodes");
-        }
-
-        internal bool CanToggleCanNavigateBackground(object parameter)
-        {
-            return true;
-        }
-
-        #endregion
     }
 
     internal static class CameraExtensions

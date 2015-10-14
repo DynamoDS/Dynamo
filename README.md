@@ -13,6 +13,7 @@ Looking to learn or download Dynamo?  Check out [dynamobim.org](http://dynamobim
 ### Create a Node Library for Dynamo ###
 If you're interested in developing a Node library for Dynamo, the easiest place to start is by browsing the [DynamoSamples](https://github.com/DynamoDS/DynamoSamples).  
 These samples use the [Dynamo NuGet packages](https://www.nuget.org/packages?q=DynamoVisualProgramming) which can be installed using the NuGet package manager in Visual Studio.
+[![NuGet](https://img.shields.io/nuget/v/DynamoVisualProgramming.ZeroTouchLibrary.svg)]()
 
 You can learn more about developing libraries for Dynamo on the [Dynamo wiki](https://github.com/DynamoDS/Dynamo/wiki/Zero-Touch-Plugin-Development).
 
@@ -36,6 +37,31 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 
 
 ## Releases ##
+
+### 0.9.0 ###
+
+Create DirectShape Elements in Dynamo
+- You can now wrap meshes, solids, and surfaces in a DirectShape and place it into your Revit Model
+
+Library Enhancements
+- The library is now organized in a tree view to make it easier to find the nodes you want. Node types have also been color-coded to make it easier for you to locate create, action, and query nodes in the library
+
+Manage Custom Node and Package Paths  
+- Add paths to makes nodes and packages show up in the library
+
+Node Layout Cleanup Improvements
+- We have recently updated the Node Layout Cleanup feature so that you can 'cleanup' nodes within a group with just one click
+
+Background Preview working on Remote Desktop and Parallels
+- For remote systems with GPUs and virtual machines with hardware-acceleration, background preview is now visible.
+
+Additional Updates and Improvements
+- New Chapters and expansion of the [Dynamo Primer](http://dynamobim.com/learn/)
+- Easier to parse node overloads in Search 
+- Node to Code Stabilization
+- Improved Export Image of Canvas functionality
+- Move to .NET 4.5
+- Lots of bug fixes
 
 ### 0.8.2 ###
 

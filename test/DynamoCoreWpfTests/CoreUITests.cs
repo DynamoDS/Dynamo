@@ -14,6 +14,7 @@ using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.ViewModels.Watch3D;
 using NUnit.Framework;
 using DynamoCoreWpfTests.Utility;
 
@@ -588,7 +589,10 @@ namespace DynamoCoreWpfTests
             Model = DynamoModel.Start(
                 new DynamoModel.DefaultStartConfiguration()
                 {
-                    StartInTestMode = startInTestMode
+                    StartInTestMode = startInTestMode,
+                    ProcessMode = startInTestMode 
+                        ? Dynamo.Core.Threading.TaskProcessMode.Synchronous 
+                        : Dynamo.Core.Threading.TaskProcessMode.Asynchronous
                 });
 
             ViewModel = DynamoViewModel.Start(

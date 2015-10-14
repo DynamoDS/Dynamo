@@ -23,6 +23,8 @@ namespace Dynamo.Core.Threading
         internal NodeModel Node { get; set; }
         internal EngineController EngineController { get; set; }
         internal IEnumerable<string> DrawableIds { get; set; }
+
+        internal bool ForceUpdate { get; set; }
     }
 
     /// <summary>
@@ -36,9 +38,9 @@ namespace Dynamo.Core.Threading
     /// 
     class UpdateRenderPackageAsyncTask : AsyncTask
     {
-        private const byte DefR = 101;
-        private const byte DefG = 86;
-        private const byte DefB = 130;
+        private const byte DefR = 0;
+        private const byte DefG = 0;
+        private const byte DefB = 0;
         private const byte DefA = 255;
         private const byte MidTone = 180;
 
@@ -87,7 +89,7 @@ namespace Dynamo.Core.Threading
                 throw new ArgumentNullException("initParams.DrawableIds");
 
             var nodeModel = initParams.Node;
-            if (!nodeModel.IsUpdated)
+            if (!nodeModel.WasInvolvedInExecution && !initParams.ForceUpdate)
                 return false; // Not has not been updated at all.
 
             // If a node is in either of the following states, then it will not 

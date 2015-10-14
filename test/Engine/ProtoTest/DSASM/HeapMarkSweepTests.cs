@@ -28,9 +28,7 @@ namespace ProtoTest.DSASM
         {
             testCore = thisTest.SetupTestCore();
 
-            testRuntimeCore = new RuntimeCore(testCore.Heap);
-            testRuntimeCore.SetProperties(testCore.Options, null);
-
+            testRuntimeCore = new RuntimeCore(testCore.Heap, testCore.Options);
             testExecutive = new TestExecutive(testRuntimeCore);
         }
 

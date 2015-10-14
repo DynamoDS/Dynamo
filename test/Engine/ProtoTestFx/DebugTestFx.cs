@@ -56,10 +56,7 @@ namespace ProtoTestFx
         internal static ProtoCore.Core TestRunnerRunOnly(string code, out RuntimeCore runtimeCore)
         {
             ProtoCore.Core core;
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScriptTestRunner();
-
-
-            ProtoScript.Config.RunConfiguration runnerConfig;
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScriptRunner();
 
             // Specify some of the requirements of IDE.
             var options = new ProtoCore.Options();
@@ -73,16 +70,14 @@ namespace ProtoTestFx
             core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
             core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
 
-            runnerConfig = new ProtoScript.Config.RunConfiguration();
-            runnerConfig.IsParrallel = false;
-            fsr = new ProtoScriptTestRunner();
+            fsr = new ProtoScriptRunner();
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();
 
             //Run
 
-            fsr.Execute(code, core, out runtimeCore);
+            runtimeCore = fsr.Execute(code, core);
 
             return core;
         }
@@ -91,7 +86,6 @@ namespace ProtoTestFx
         {
             ProtoCore.Core core;
             DebugRunner fsr;
-            ProtoScript.Config.RunConfiguration runnerConfig;
 
             // Specify some of the requirements of IDE.
             var options = new ProtoCore.Options();
@@ -106,8 +100,6 @@ namespace ProtoTestFx
             core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
             core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
 
-            runnerConfig = new ProtoScript.Config.RunConfiguration();
-            runnerConfig.IsParrallel = false;
             fsr = new DebugRunner(core);
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
@@ -115,7 +107,7 @@ namespace ProtoTestFx
 
             //Run
 
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             DebugRunner.VMState vms = null;
 
             vms = fsr.Run();
@@ -129,7 +121,6 @@ namespace ProtoTestFx
 
             ProtoCore.Core core;
             DebugRunner fsr;
-            ProtoScript.Config.RunConfiguration runnerConfig;
 
              // Specify some of the requirements of IDE.
             var options = new ProtoCore.Options();
@@ -145,8 +136,6 @@ namespace ProtoTestFx
             core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
 
 
-            runnerConfig = new ProtoScript.Config.RunConfiguration();
-            runnerConfig.IsParrallel = false;
             fsr = new DebugRunner(core);
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
@@ -154,7 +143,7 @@ namespace ProtoTestFx
 
             //Run
 
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             DebugRunner.VMState vms = null;
  
             while (!fsr.isEnded)
@@ -171,7 +160,6 @@ namespace ProtoTestFx
 
             ProtoCore.Core core;
             DebugRunner fsr;
-            ProtoScript.Config.RunConfiguration runnerConfig;
 
             // Specify some of the requirements of IDE.
             var options = new ProtoCore.Options();
@@ -186,8 +174,6 @@ namespace ProtoTestFx
             core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
             core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
 
-            runnerConfig = new ProtoScript.Config.RunConfiguration();
-            runnerConfig.IsParrallel = false;
             fsr = new DebugRunner(core);
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
@@ -195,7 +181,7 @@ namespace ProtoTestFx
 
             //Run
 
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             DebugRunner.VMState vms = null;
 
             while (!fsr.isEnded)

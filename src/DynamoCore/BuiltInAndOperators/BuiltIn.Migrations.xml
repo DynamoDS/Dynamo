@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<migrations>
+  <priorNameHint>
+    <oldName>GroupByKey</oldName>
+    <newName>GroupByFunction</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>SortByKey</oldName>
+    <newName>SortByFunction</newName>
+  </priorNameHint>
+</migrations>

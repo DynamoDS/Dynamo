@@ -1,5 +1,5 @@
-using System.Linq;
-﻿using System;
+﻿using System.Linq;
+ using System;
 using System.Collections.Generic;
 
 using Dynamo.Engine;
@@ -116,7 +116,7 @@ namespace Dynamo.Core.Threading
             // 
             foreach (var modifiedNode in ModifiedNodes)
             {
-                modifiedNode.IsUpdated = true;
+                modifiedNode.WasInvolvedInExecution = true;
                 if (modifiedNode.State == ElementState.Warning)
                     modifiedNode.ClearRuntimeError();
             }
@@ -142,19 +142,28 @@ namespace Dynamo.Core.Threading
 
             if (graphSyncData == null)
                 return other.graphSyncData == null;
-            else
-                return other.graphSyncData == null ? true : other.graphSyncData.NodeIDs.All(graphSyncData.NodeIDs.Contains);
+            else if (other.graphSyncData == null)
+                return true;
+
+            return other.graphSyncData.AddedNodeIDs.All(graphSyncData.AddedNodeIDs.Contains) &&
+                   other.graphSyncData.ModifiedNodeIDs.All(graphSyncData.ModifiedNodeIDs.Contains) &&
+                   other.graphSyncData.DeletedNodeIDs.All(graphSyncData.DeletedNodeIDs.Contains);
         }
 
-        protected override AsyncTask.TaskMergeInstruction CanMergeWithCore(AsyncTask otherTask)
+        private bool IsScheduledAfter(UpdateGraphAsyncTask other)
+        {
+            return CreationTime > other.CreationTime;
+        }
+
+        protected override TaskMergeInstruction CanMergeWithCore(AsyncTask otherTask)
         {
             var theOtherTask = otherTask as UpdateGraphAsyncTask;
             if (theOtherTask == null)
                 return base.CanMergeWithCore(otherTask);
 
-            if (theOtherTask.Contains(this))
+            if (theOtherTask.IsScheduledAfter(this) && theOtherTask.Contains(this))
                 return TaskMergeInstruction.KeepOther;
-            else if (this.Contains(theOtherTask)) 
+            else if (this.IsScheduledAfter(theOtherTask) && this.Contains(theOtherTask))
                 return TaskMergeInstruction.KeepThis;
             else
                 return TaskMergeInstruction.KeepBoth;

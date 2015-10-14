@@ -315,8 +315,10 @@ namespace Dynamo.ViewModels
             DynamoSelection.Instance.Selection.CollectionChanged +=
                 (sender, e) => RefreshViewOnSelectionChange();
 
-            // sync collections
+            DynamoViewModel.CopyCommand.CanExecuteChanged += CopyPasteChanged;
+            DynamoViewModel.PasteCommand.CanExecuteChanged += CopyPasteChanged;
 
+            // sync collections
 
             foreach (NodeModel node in Model.Nodes) Model_NodeAdded(node);
             foreach (NoteModel note in Model.Notes) Model_NoteAdded(note);
@@ -325,6 +327,12 @@ namespace Dynamo.ViewModels
 
             InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel);
             InCanvasSearchViewModel.Visible = true;
+        }
+
+        void CopyPasteChanged(object sender, EventArgs e)
+        {
+            RaisePropertyChanged("CanPaste", "CanCopy", "CanCopyOrPaste");
+            PasteCommand.RaiseCanExecuteChanged();
         }
 
         void RunSettingsViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -551,56 +559,36 @@ namespace Dynamo.ViewModels
 
         internal void SelectInRegion(Rect2D region, bool isCrossSelect)
         {
-            bool fullyEnclosed = !isCrossSelect;
+            var fullyEnclosed = !isCrossSelect;
+            var selection = DynamoSelection.Instance.Selection;
+            var childlessModels = Model.Nodes.Concat<ModelBase>(Model.Notes);
 
-            foreach (NodeModel n in Model.Nodes)
+            foreach (var n in childlessModels)
             {
-                double x0 = n.X;
-                double y0 = n.Y;
-
                 if (IsInRegion(region, n, fullyEnclosed))
                 {
-                    if (!DynamoSelection.Instance.Selection.Contains(n))
-                        DynamoSelection.Instance.Selection.Add(n);
+                    selection.AddUnique(n);
                 }
-                else
+                else if (n.IsSelected)
                 {
-                    if (n.IsSelected)
-                        DynamoSelection.Instance.Selection.Remove(n);
-                }
-            }
-
-            foreach (var n in Model.Notes)
-            {
-                double x0 = n.X;
-                double y0 = n.Y;
-
-                if (IsInRegion(region, n, fullyEnclosed))
-                {
-                    if (!DynamoSelection.Instance.Selection.Contains(n))
-                        DynamoSelection.Instance.Selection.Add(n);
-                }
-                else
-                {
-                    if (n.IsSelected)
-                        DynamoSelection.Instance.Selection.Remove(n);
+                    selection.Remove(n);
                 }
             }
 
             foreach (var n in Model.Annotations)
             {
-                double x0 = n.X;
-                double y0 = n.Y;
-
                 if (IsInRegion(region, n, fullyEnclosed))
                 {
-                    if (!DynamoSelection.Instance.Selection.Contains(n))
-                        DynamoSelection.Instance.Selection.Add(n);
+                    selection.AddUnique(n);
+                    // if annotation is selected its children should be added to selection too
+                    foreach (var m in n.SelectedModels)
+                    {
+                        selection.AddUnique(m);
+                    }
                 }
-                else
+                else if (n.IsSelected)
                 {
-                    if (n.IsSelected)
-                        DynamoSelection.Instance.Selection.Remove(n);
+                    selection.Remove(n);
                 }
             }
         }
@@ -806,6 +794,12 @@ namespace Dynamo.ViewModels
         private static bool CanAlignSelected(object parameter)
         {
             return DynamoSelection.Instance.Selection.Count > 1;
+        }
+
+        private void Paste(object param)
+        {
+            var point = InCanvasSearchViewModel.InCanvasSearchPosition;
+            DynamoViewModel.Model.Paste(new Point2D(point.X, point.Y));
         }
 
         private void ShowHideAllGeometryPreview(object parameter)
@@ -1052,93 +1046,7 @@ namespace Dynamo.ViewModels
 
         private void DoGraphAutoLayout(object o)
         {
-            if (Model.Nodes.Count() == 0)
-                return;
-
-            Model.LayoutGraph = new GraphLayout.Graph();
-            var graph = Model.LayoutGraph;
-            var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
-
-            foreach (AnnotationModel group in Model.Annotations)
-            {
-                // Treat a group as a graph layout node/vertex
-                graph.AddNode(group.GUID, group.Width, group.Height, group.Y);
-                models.Add(group, UndoRedoRecorder.UserAction.Modification);
-            }
-
-            foreach (NodeModel node in Model.Nodes)
-            {
-                AnnotationModel group = Model.Annotations.Where(
-                    g => g.SelectedModels.Contains(node)).ToList().FirstOrDefault();
-
-                // Do not process nodes within groups
-                if (group == null)
-                {
-                    graph.AddNode(node.GUID, node.Width, node.Height, node.Y);
-                    models.Add(node, UndoRedoRecorder.UserAction.Modification);
-                }
-            }
-
-            foreach (ConnectorModel edge in Model.Connectors)
-            {
-                AnnotationModel startGroup = null, endGroup = null;
-                startGroup = Model.Annotations.Where(
-                    g => g.SelectedModels.Contains(edge.Start.Owner)).ToList().FirstOrDefault();
-                endGroup = Model.Annotations.Where(
-                    g => g.SelectedModels.Contains(edge.End.Owner)).ToList().FirstOrDefault();
-
-                // Treat a group as a node, but do not process edges within a group
-                if (startGroup == null || endGroup == null || startGroup != endGroup)
-                {
-                    graph.AddEdge(
-                        startGroup == null ? edge.Start.Owner.GUID : startGroup.GUID,
-                        endGroup == null ? edge.End.Owner.GUID : endGroup.GUID,
-                        edge.Start.Center.X, edge.Start.Center.Y, edge.End.Center.X, edge.End.Center.Y);
-                }
-
-                models.Add(edge, UndoRedoRecorder.UserAction.Modification);
-            }
-
-            // Support undo for graph layout command
-            WorkspaceModel.RecordModelsForModification(new List<ModelBase>(Model.Nodes), Model.UndoRecorder);
-
-            // Sugiyama algorithm steps
-            graph.RemoveCycles();
-            graph.AssignLayers();
-            graph.OrderNodes();
-
-            graph.NormalizeGraphPosition();
-
-            // Assign coordinates to nodes inside groups
-            foreach (var group in Model.Annotations)
-            {
-                var g = graph.FindNode(group.GUID);
-                double deltaX = g.X - group.X;
-                double deltaY = g.Y - group.Y;
-                foreach (var node in group.SelectedModels)
-                {
-                    node.X += deltaX;
-                    node.Y += deltaY;
-                    node.ReportPosition();
-                }
-            }
-
-            // Assign coordinates to nodes outside groups
-            foreach (var node in Model.Nodes)
-            {
-                var n = graph.FindNode(node.GUID);
-                if (n != null)
-                {
-                    node.X = n.X;
-                    node.Y = n.Y;
-                    node.ReportPosition();
-                }
-            }
-
-            // Fit view to the new graph layout
-            DynamoSelection.Instance.ClearSelection();
-            ResetFitViewToggle(null);
-            FitViewInternal();
+            Model.DoGraphAutoLayout();
         }
 
         private static bool CanDoGraphAutoLayout(object o)

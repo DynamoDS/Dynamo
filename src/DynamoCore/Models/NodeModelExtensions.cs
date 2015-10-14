@@ -47,6 +47,11 @@ namespace Dynamo.Models
 
         internal static IEnumerable<NodeModel> AllUpstreamNodes(this NodeModel node, List<NodeModel> gathered)
         {
+            if(node == null)
+            {
+                return new List<NodeModel>();
+            }
+
             var upstream = node.InPorts.SelectMany(p => p.Connectors.Select(c => c.Start.Owner));
 
             foreach (var n in upstream.Where(n => !gathered.Contains(n)))

@@ -6,6 +6,8 @@ using NUnit.Framework;
 using DSCoreNodesUI;
 using System.Xml;
 
+using PythonNodeModels;
+
 namespace Dynamo.Tests
 {
     public class NodeMigrationTests : DynamoModelTestBase
@@ -781,6 +783,22 @@ namespace Dynamo.Tests
 
             RunCurrentModel();
             AssertPreviewValue("74416af6-c22c-4822-8b65-c5deea710a38", 2.718282);
+        }
+
+        [Test]
+        public void TestNumberRange()
+        {
+            OpenModel(GetDynPath("TestNumberRange.dyn"));
+
+            AssertPreviewValue("b2b256b2-ab76-428c-93be-3ad03fd8e527", new int[] { 1, 2, 3, 4, 5 });
+        }
+
+        [Test]
+        public void TestNumberSequence()
+        {
+            OpenModel(GetDynPath("TestNumberSequence.dyn"));
+
+            AssertPreviewValue("0d42e506-7463-410e-8273-6aa1020c298d", new int[] { 2, 4, 6 });
         }
 
         [Test]
@@ -1903,6 +1921,19 @@ namespace Dynamo.Tests
             Assert.AreEqual("test", File.ReadAllText(fullPath));
         }
 
+        [Test]
+        public void TestMigration_GroupByKey()
+        {
+            TestMigration("TestMigration_GroupByKey.dyn");
+        }
+
+        [Test]
+        public void TestMigration_SortByKey()
+        {
+            TestMigration("TestMigration_SortByKey.dyn");
+        }
+
+
         #endregion
 
         #region Dynamo Libraries Node Migration Tests
@@ -1978,7 +2009,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is Dynamo.Nodes.DummyNode));
 
             // check that the node is migrated to a PythonNode which retains the old script
-            StringAssert.Contains("OUT = OUT", workspace.NodeFromWorkspace<DSIronPythonNode.PythonNode>(
+            StringAssert.Contains("OUT = OUT", workspace.NodeFromWorkspace<PythonNode>(
                 "caef9f81-c9a6-47aa-92c9-dc3b8fd6f7d7").Script);
         }
 

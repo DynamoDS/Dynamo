@@ -30,7 +30,6 @@
         AllowsTransparency="False"
         KeyDown="DynamoView_KeyDown"
         KeyUp="DynamoView_KeyUp"
-        LostFocus="DynamoView_LostFocus"
         Background="#FF353535"
         SnapsToDevicePixels="True"
         ResizeMode="CanResizeWithGrip"
@@ -577,6 +576,7 @@
                                         <Setter Property="IsCheckable" Value="True"/>
                                         <Setter Property="IsChecked" Value="{Binding Active}"/>
                                         <Setter Property="Focusable" Value="False"/>
+                                        <Setter Property="IsEnabled" Value="{Binding CanBeActivated}"/>
                                     </Style>
                                 </MenuItem.ItemContainerStyle>
                             </MenuItem>
@@ -824,11 +824,7 @@
                 </Canvas.Background>
             </Canvas>
 
-            <controls:Watch3DView x:Name="BackgroundPreview" 
-                                  DataContext="{Binding BackgroundPreviewViewModel}"
-                                  Margin="0,20,0,0"
-                                  Visibility="{Binding Active, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}">
-            </controls:Watch3DView>
+            <!-- The BackgroundPreview is now created in the DynamoView_Loaded method.-->
             
         </Grid>
 

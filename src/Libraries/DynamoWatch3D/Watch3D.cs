@@ -42,9 +42,11 @@ namespace Dynamo.Nodes
 
             var dynamoModel = dynamoViewModel.Model;
 
-            var vmParams = new Watch3DViewModelStartupParams(dynamoModel, dynamoViewModel, string.Format("{0} Preview", watch3dModel.GUID));
+            var vmParams = new Watch3DViewModelStartupParams(dynamoModel);
+             watch3DViewModel = new HelixWatch3DNodeViewModel(watch3dModel, vmParams);
+            watch3DViewModel.Setup(dynamoViewModel, 
+                dynamoViewModel.RenderPackageFactoryViewModel.Factory);
 
-            watch3DViewModel = HelixWatch3DNodeViewModel.Start(watch3dModel, vmParams);
             if (model.initialCameraData != null)
             {
                 try
@@ -309,7 +311,7 @@ namespace Dynamo.Nodes
         }
 
         public override void RequestVisualUpdateAsync(
-            IScheduler scheduler, EngineController engine, IRenderPackageFactory factory)
+            IScheduler scheduler, EngineController engine, IRenderPackageFactory factory, bool forceUpdate = false)
         {
             // No visualization update is required for this node type.
         }

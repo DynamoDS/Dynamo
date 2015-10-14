@@ -66,12 +66,8 @@ namespace ProtoTestFx
             string persistentManager, out ExecutionMirror mirror, out RuntimeCore runtimeCoreOut)
         {
             ProtoCore.Core core;
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScriptRunner();
 
-
-            ProtoScript.Config.RunConfiguration runnerConfig;
-
-            // Specify some of the requirements of IDE.
             var options = new ProtoCore.Options();
             options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
             options.SuppressBuildOutput = false;
@@ -105,14 +101,12 @@ namespace ProtoTestFx
             core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
             core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
 
-            runnerConfig = new ProtoScript.Config.RunConfiguration();
-            runnerConfig.IsParrallel = false;
-
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
 
             //Run
 
-            mirror = fsr.Execute(code, core, out runtimeCoreOut);
+            runtimeCoreOut = fsr.Execute(code, core);
+            mirror = runtimeCoreOut.Mirror;
 
             //sw.Close();
 

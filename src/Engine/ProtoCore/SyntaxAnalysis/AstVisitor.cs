@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.AST;
 
@@ -474,6 +472,19 @@ namespace ProtoCore.SyntaxAnalysis
                     node.ArrayDimensions = newArrayDimensions as ArrayNode;
             }
 
+            return node;
+        }
+
+        public override AssociativeNode VisitLanguageBlockNode(LanguageBlockNode node)
+        {
+            var cbn = node.CodeBlockNode as CodeBlockNode;
+            if (cbn == null)
+            {
+                return base.VisitLanguageBlockNode(node);
+            }
+
+            var nodeList = cbn.Body.Select(astNode => astNode.Accept(this)).ToList();
+            cbn.Body = nodeList;
             return node;
         }
 
