@@ -185,7 +185,7 @@ namespace Dynamo.Nodes
         {
             if (Definition == null) return;
 
-            OnSyncStarting(model);
+            OnSyncWithDefinitionStart(model);
             model.InPortData.Clear();
             model.OutPortData.Clear();
 
@@ -193,21 +193,21 @@ namespace Dynamo.Nodes
             InitializeOutputs(model);
             model.RegisterAllPorts();
             model.NickName = NickName;
-            OnSyncEnded(model);
+            OnSyncWithDefintionEnd(model);
         }
 
         /// <summary>
         /// Event handler for the event when node starts syncing with its 
         /// definition.
         /// </summary>
-        public event Action<NodeModel> SyncStartingEventHandler;
+        public event Action<NodeModel> SyncWithDefinitionStart;
         /// <summary>
         /// Start syncing with its definition.
         /// </summary>
         /// <param name="obj"></param>
-        protected virtual void OnSyncStarting(NodeModel obj)
+        protected virtual void OnSyncWithDefinitionStart(NodeModel obj)
         {
-            var handler = SyncStartingEventHandler;
+            var handler = SyncWithDefinitionStart;
             if (handler != null) handler(obj);
         }
 
@@ -216,14 +216,14 @@ namespace Dynamo.Nodes
         /// Event handler for the event when node finishes syncing with its
         /// definition.
         /// </summary>
-        public event Action<NodeModel> SyncEndedEventHandler;
+        public event Action<NodeModel> SyncWithDefinitionEnd;
         /// <summary>
         /// Finish syncing with its definition.
         /// </summary>
         /// <param name="obj"></param>
-        protected virtual void OnSyncEnded(NodeModel obj)
+        protected virtual void OnSyncWithDefintionEnd(NodeModel obj)
         {
-            var handler = SyncEndedEventHandler;
+            var handler = SyncWithDefinitionEnd;
             if (handler != null) handler(obj);
         }
     }
