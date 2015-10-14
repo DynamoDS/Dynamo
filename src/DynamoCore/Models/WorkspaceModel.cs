@@ -76,6 +76,7 @@ namespace Dynamo.Models
         private readonly List<AnnotationModel> annotations;
         private readonly List<PresetModel> presets;
         private readonly UndoRedoRecorder undoRecorder;
+        private NodeModel nodeInSync;
         private Guid guid;
 
         #endregion
@@ -284,6 +285,11 @@ namespace Dynamo.Models
         public event Action<ConnectorModel> ConnectorDeleted;
         protected virtual void OnConnectorDeleted(ConnectorModel obj)
         {
+            if (nodeInSync != null &&
+                (obj.Start.Owner is Function || obj.End.Owner is Function))
+            {
+            }
+
             var handler = ConnectorDeleted;
             if (handler != null) handler(obj);
         }
@@ -307,6 +313,15 @@ namespace Dynamo.Models
             if (handler != null) handler(obj);
         }
 
+        public void OnSyncStarting(NodeModel nodeModel)
+        {
+            nodeInSync = nodeModel;
+        }
+
+        public void OnSyncEnded(NodeModel nodeModel)
+        {
+            nodeInSync = null;
+        }
         #endregion
 
         #region public properties
