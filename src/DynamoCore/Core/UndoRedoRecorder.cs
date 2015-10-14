@@ -255,10 +255,10 @@ namespace Dynamo.Core
         /// port in custom workspace. As this deletion is not recorded by
         /// UndoRedoRecorder, the connector should be marked as off-track.
         /// </summary>
-        /// <param name="model"></param>
-        public void RecordOffTrackModel(ModelBase model)
+        /// <param name="modelGuid"></param>
+        public void RecordOffTrackModel(Guid modelGuid)
         {
-            offTrackModels.Add(model.GUID);
+            offTrackModels.Add(modelGuid);
         }
         #endregion
 
