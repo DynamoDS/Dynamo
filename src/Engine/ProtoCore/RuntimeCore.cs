@@ -100,6 +100,7 @@ namespace ProtoCore
             StartPC = Constants.kInvalidPC;
             RuntimeData = new ProtoCore.RuntimeData();
             DSExecutable = executable;
+            Mirror = null;
         }
 
         /// <summary>
@@ -189,6 +190,8 @@ namespace ProtoCore
         // Cached replication guides for the current call. 
         // TODO Jun: Store this in the dynamic table node
         public List<List<ReplicationGuide>> ReplicationGuides;
+        
+        public ProtoCore.DSASM.Mirror.ExecutionMirror Mirror { get; set; }
 
         private bool cancellationPending = false;
         public bool CancellationPending
