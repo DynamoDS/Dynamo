@@ -267,7 +267,12 @@ namespace Dynamo.Engine.CodeGeneration
         {
 
             var inputAstNodes = new List<AssociativeNode>();
-            foreach (int index in Enumerable.Range(0, node.InPorts.Count))
+            var inPortsCount = node.InPorts.Count;
+            var inPortDataCount = node.InPortData.Count;
+
+            int inputsCount = inPortsCount > inPortDataCount ? inPortsCount : inPortDataCount;
+
+            for (int index = 0; index < inputsCount; index++)
             {
                 Tuple<int, NodeModel> inputTuple;
 
@@ -285,7 +290,7 @@ namespace Dynamo.Engine.CodeGeneration
                 }
                 else
                 {
-                    PortModel port = node.InPorts[index];
+                    PortData port = node.InPortData[index];
                     inputAstNodes.Add(port.DefaultValue ?? new NullNode());
                 }
             }
