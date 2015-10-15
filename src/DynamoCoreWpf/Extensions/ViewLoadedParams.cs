@@ -29,6 +29,9 @@ namespace Dynamo.Wpf.Extensions
         /// </summary>
         public IWatch3DViewModel BackgroundPreviewViewModel { get { return dynamoViewModel.BackgroundPreviewViewModel; } }
 
+        /// <summary>
+        /// Reference to the Dynamo ViewModel to be able to execute node creation commands
+        /// </summary>
         public IDynamoViewModel ViewModel { get { return dynamoViewModel; } }
 
         /// <summary>

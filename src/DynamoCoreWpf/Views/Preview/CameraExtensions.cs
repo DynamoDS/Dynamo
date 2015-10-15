@@ -74,7 +74,7 @@ namespace Dynamo.Controls
         }
     }
 
-    public class Ray3 : IRay
+    internal class Ray3 : IRay
     {
         private readonly Point3D origin;
         private readonly Vector3D direction;

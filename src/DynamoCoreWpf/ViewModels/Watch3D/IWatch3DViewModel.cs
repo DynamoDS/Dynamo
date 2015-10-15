@@ -7,6 +7,9 @@ using Autodesk.DesignScript.Interfaces;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
+    /// <summary>
+    /// Interface to expose origin point and direction vector of any given Ray
+    /// </summary>
     public interface IRay
     {
         Point3D Origin { get; }

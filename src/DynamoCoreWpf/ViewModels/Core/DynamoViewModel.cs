@@ -35,6 +35,13 @@ namespace Dynamo.ViewModels
     {
         ObservableCollection<WorkspaceViewModel> Workspaces { get; set; }
 
+        /// <summary>
+        /// Executes node and connector creation commands to create node1 and connect it to node2
+        /// </summary>
+        /// <param name="node1">input node to create</param>
+        /// <param name="node2">node to connect to</param>
+        /// <param name="portIndex1">output port of input node</param>
+        /// <param name="portIndex2">input node of given node</param>
         void CreateAndConnectInputNode(NodeModel node1, NodeModel node2, int portIndex1, int portIndex2);
     }
 

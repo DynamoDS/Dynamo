@@ -286,6 +286,15 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// Implement to record node modification for undo/redo
+        /// </summary>
+        /// <param name="nodeModel"></param>
+        public void RecordModelForModification(ModelBase nodeModel)
+        {
+            RecordModelForModification(nodeModel, undoRecorder);
+        }
+
+        /// <summary>
         ///     Event that is fired when this workspace is disposed of.
         /// </summary>
         public event Action Disposed;
@@ -2396,9 +2405,5 @@ namespace Dynamo.Models
 
         #endregion
 
-        public void RecordModelForModification(ModelBase nodeModel)
-        {
-            RecordModelForModification(nodeModel, undoRecorder);
-        }
     }
 }

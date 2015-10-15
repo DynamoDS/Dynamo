@@ -22,6 +22,10 @@ namespace Dynamo.Interfaces
         event Action<ConnectorModel> ConnectorAdded;
         event Action<ConnectorModel> ConnectorDeleted;
 
+        /// <summary>
+        /// Implement to record node modification for undo/redo
+        /// </summary>
+        /// <param name="nodeModel"></param>
         void RecordModelForModification(ModelBase nodeModel);
     }
 }
