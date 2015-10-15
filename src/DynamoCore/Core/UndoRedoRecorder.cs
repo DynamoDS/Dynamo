@@ -252,11 +252,12 @@ namespace Dynamo.Core
         /// 
         /// For example, a connector that connects to an input port of a custom
         /// node instance could be deleted because of the removal of that input
-        /// port in custom workspace. As this deletion is not recorded by
-        /// UndoRedoRecorder, the connector should be marked as off-track.
+        /// port in custom workspace. As this deletion in the custom workspace 
+        /// is not recorded by UndoRedoRecorder in home workspace, the connector
+        /// should be marked as off-track.
         /// </summary>
         /// <param name="modelGuid"></param>
-        public void RecordOffTrackModel(Guid modelGuid)
+        public void RecordModelAsOffTrack(Guid modelGuid)
         {
             offTrackModels.Add(modelGuid);
         }

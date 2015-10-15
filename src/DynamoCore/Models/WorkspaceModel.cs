@@ -287,7 +287,7 @@ namespace Dynamo.Models
         {
             if (hasNodeInSyncWithDefinition)
             {
-                undoRecorder.RecordOffTrackModel(obj.GUID);
+                undoRecorder.RecordModelAsOffTrack(obj.GUID);
             }
 
             var handler = ConnectorDeleted;
@@ -2138,9 +2138,12 @@ namespace Dynamo.Models
                 // its end port owner.
                 if (connector == null)
                 {
-                    XmlAttribute guidAttribute = modelData.Attributes["guid"];
-                    if (null != guidAttribute)
-                        undoRecorder.RecordOffTrackModel(Guid.Parse(guidAttribute.Value)); 
+                    var guidAttribute = modelData.Attributes["guid"];
+                    if (guidAttribute == null)
+                    {
+                        throw new InvalidOperationException("'guid' field missing from recorded model");
+                    }
+                    undoRecorder.RecordModelAsOffTrack(Guid.Parse(guidAttribute.Value)); 
                 }
                 else 
                 {
