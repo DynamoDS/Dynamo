@@ -631,6 +631,26 @@ namespace Dynamo.Tests
         #region Key navigation
 
         [Test, Category("UnitTests")]
+        public void ToggleSelectionTest()
+        {
+            var elementVM = CreateCustomNodeViewModel(CreateCustomNode("AMember", "Category"));
+            elementVM.IsSelected = false;
+
+            var items = new List<NodeSearchElementViewModel>();
+            items.Add(elementVM);
+
+            elementVM = CreateCustomNodeViewModel(CreateCustomNode("BMember", "Category"));
+            elementVM.IsSelected = true;
+
+            items.Add(elementVM);
+
+            var result = viewModel.ToggleSelect(items);
+
+            Assert.IsTrue(result.First().IsSelected);
+            Assert.IsFalse(result.Last().IsSelected);
+        }
+
+        [Test, Category("UnitTests")]
         public void FirstItemIsSelectedAfterSearch()
         {
             var element = CreateCustomNode("AMember", "Category");
@@ -645,6 +665,15 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, viewModel.FilteredResults.Count());
             Assert.IsTrue(viewModel.FilteredResults.ElementAt(0).IsSelected);
             Assert.IsFalse(viewModel.FilteredResults.ElementAt(1).IsSelected);
+        }
+
+        [Test, Category("UnitTests")]
+        public void NoItemsAfterSearch()
+        {
+            viewModel.Visible = true;
+            viewModel.SearchAndUpdateResults("member");
+
+            Assert.DoesNotThrow(() => viewModel.MoveSelection(SearchViewModel.Direction.Down));
         }
 
         [Test]
