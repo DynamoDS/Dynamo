@@ -270,6 +270,8 @@ namespace Dynamo.Engine.CodeGeneration
             var inPortsCount = node.InPorts.Count;
             var inPortDataCount = node.InPortData.Count;
 
+            //TODO: inputsCount should be removed in future. 
+            // InPortData won't be used anymore, so we shouldn't take into account InPortData.Count.
             int inputsCount = inPortsCount > inPortDataCount ? inPortsCount : inPortDataCount;
 
             for (int index = 0; index < inputsCount; index++)
