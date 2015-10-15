@@ -402,8 +402,8 @@ namespace Dynamo.Core
                         catch (ArgumentException e)
                         {
                             bool isOffTrackObject = false;
-                            XmlAttribute guidAttribute = element.Attributes["guid"];
-                            if (null != guidAttribute)
+                            var guidAttribute = element.Attributes["guid"];
+                            if (guidAttribute != null)
                             {
                                 var guid = Guid.Parse(guidAttribute.Value);
                                 isOffTrackObject = offTrackModels.Contains(guid);
