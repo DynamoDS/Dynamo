@@ -1,0 +1,59 @@
+<Workspace Version="0.8.0.760" X="6638.13831224456" Y="5401.14882989863" zoom="0.261226649892289" Name="Home" RunType="Automatic" RunPeriod="100">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="5b9ce6ea-d88f-4d2d-9eac-159ed8f3a277" type="Dynamo.Nodes.DSFunction" nickname="Point.ByCoordinates" x="-24492.8726906649" y="-19896.652824505" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction guid="0aa5294e-af81-4a93-8b6a-14a8944d8478" type="Dynamo.Nodes.DSFunction" nickname="Point.ByCoordinates" x="-24475.5123494032" y="-19298.4741738685" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <DSCoreNodesUI.NumberRange guid="a6083d4a-6070-4906-9204-1541f146010c" type="DSCoreNodesUI.NumberRange" nickname="Number Range" x="-24769.1187272669" y="-19298.4741738685" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.DoubleInput guid="07aadec5-30d9-4538-8fa9-49115d20a81f" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="-24970.789680203" y="-19298.4741738685" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput guid="33d68931-60a6-4f90-bfed-1213d0256ac1" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="-24972.5011674131" y="-19236.9837983206" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="10" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Watch guid="aaa8dff2-a34b-4d7a-950c-3aeeb70e82c7" type="Dynamo.Nodes.Watch" nickname="Watch" x="-24160.7622888382" y="-19471.6201986717" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch3D guid="0e500d65-fbc3-406a-9aef-67574bc1f2a5" type="Dynamo.Nodes.Watch3D" nickname="Watch 3D" x="-24177.0903888257" y="-20169.9179062821" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <view width="220" height="339">
+        <camera pos_x="20.6975697527233" pos_y="20.6975697527233" pos_z="20.6965697527233" look_x="-20.6975697527233" look_y="-20.6975697527233" look_z="-20.6975697527233" />
+      </view>
+    </Dynamo.Nodes.Watch3D>
+    <Dynamo.Nodes.DSFunction guid="227c1a9c-02d1-4a9c-91aa-ea7e67d222fb" type="Dynamo.Nodes.DSFunction" nickname="Point.Add" x="-23433.1018389433" y="-19304.6919184607" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.Add@Autodesk.DesignScript.Geometry.Vector" />
+    <DSCoreNodesUI.Input.DoubleSlider guid="f6a164cc-92e0-48a0-a83b-efaa476990d0" type="DSCoreNodesUI.Input.DoubleSlider" nickname="Number Slider" x="-24873.7258592866" y="-19832.6842644348" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double>5.638</System.Double>
+      <Range min="0" max="10" step="0.1" />
+    </DSCoreNodesUI.Input.DoubleSlider>
+    <Dynamo.Nodes.DSFunction guid="3c918558-fc8a-4419-9ecb-187fc5686802" type="Dynamo.Nodes.DSFunction" nickname="Point.Z" x="-24177.0903888257" y="-19653.6670613887" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.Z" />
+    <Dynamo.Nodes.DoubleInput guid="04271250-66d9-4802-aaba-0410c552b831" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="-24974.9875469409" y="-19172.8116354338" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DSFunction guid="ae64d918-eefe-417b-9a57-e9a56509cb26" type="Dynamo.Nodes.DSFunction" nickname="Point.AsVector" x="-23766.2211671275" y="-19459.7617313085" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.AsVector" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="5b9ce6ea-d88f-4d2d-9eac-159ed8f3a277" start_index="0" end="0e500d65-fbc3-406a-9aef-67574bc1f2a5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5b9ce6ea-d88f-4d2d-9eac-159ed8f3a277" start_index="0" end="aaa8dff2-a34b-4d7a-950c-3aeeb70e82c7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5b9ce6ea-d88f-4d2d-9eac-159ed8f3a277" start_index="0" end="3c918558-fc8a-4419-9ecb-187fc5686802" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0aa5294e-af81-4a93-8b6a-14a8944d8478" start_index="0" end="227c1a9c-02d1-4a9c-91aa-ea7e67d222fb" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a6083d4a-6070-4906-9204-1541f146010c" start_index="0" end="0aa5294e-af81-4a93-8b6a-14a8944d8478" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="07aadec5-30d9-4538-8fa9-49115d20a81f" start_index="0" end="a6083d4a-6070-4906-9204-1541f146010c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="33d68931-60a6-4f90-bfed-1213d0256ac1" start_index="0" end="a6083d4a-6070-4906-9204-1541f146010c" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="aaa8dff2-a34b-4d7a-950c-3aeeb70e82c7" start_index="0" end="ae64d918-eefe-417b-9a57-e9a56509cb26" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f6a164cc-92e0-48a0-a83b-efaa476990d0" start_index="0" end="5b9ce6ea-d88f-4d2d-9eac-159ed8f3a277" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="04271250-66d9-4802-aaba-0410c552b831" start_index="0" end="a6083d4a-6070-4906-9204-1541f146010c" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ae64d918-eefe-417b-9a57-e9a56509cb26" start_index="0" end="227c1a9c-02d1-4a9c-91aa-ea7e67d222fb" end_index="1" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Basic Geometric Elements have default values for numerical inputs.  " x="-24563.5023638902" y="-19956.5969680633" />
+    <Dynamo.Models.NoteModel text="After hitting &quot;Run&quot; or with Run Automatically enabled, see the geometric entity either in the Background Peview, in Watch 3d, or as data in a Watch node.  Elements will highlight in Background when the node is selected" x="-24177.0903888257" y="-20287.4502956788" />
+    <Dynamo.Models.NoteModel text="Arrays of Geometry can be created using Sequences, Ranges, and Lists " x="-24868.7393184764" y="-19358.0035515424" />
+    <Dynamo.Models.NoteModel text="Information Can be pulled out of Geometry using tools in the Query subcategory of the entiry" x="-24177.0903888257" y="-19709.0244140629" />
+    <Dynamo.Models.NoteModel text="Derivative elements can be created by using tools in the Actions subcategory of the entity" x="-23501.9576318459" y="-19376.5158562362" />
+    <Dynamo.Models.NoteModel text="Make 1, 2, and 3 dimensional arrays by passing Ranges into the points x, y, and z ports, then changing the Lacing properties in the right click menue for the node " x="-24525.2047171741" y="-19377.8954802656" />
+  </Notes>
+</Workspace>
