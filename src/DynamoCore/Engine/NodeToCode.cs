@@ -57,9 +57,13 @@ namespace Dynamo.Engine.NodeToCode
                 // Otherwise change class name to its lower case
                 if (String.IsNullOrEmpty(prefix) && (type.UID > (int)ProtoCore.PrimitiveType.kMaxPrimitives))
                 {
-                    prefix = type.ToShortString();
-                    if (!String.IsNullOrEmpty(prefix))
+                    prefix = type.Name;
+                    if (!string.IsNullOrEmpty(prefix))
+                    {
+                        if (prefix.Contains("."))
+                            prefix = prefix.Split('.').Last();
                         prefix = prefix.ToLower();
+                    }
                 }
             }
 
