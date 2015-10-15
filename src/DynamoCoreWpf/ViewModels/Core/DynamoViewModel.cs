@@ -33,7 +33,9 @@ namespace Dynamo.ViewModels
 {
     public interface IDynamoViewModel : INotifyPropertyChanged
     {
-        ObservableCollection<WorkspaceViewModel> Workspaces { get; set; } 
+        ObservableCollection<WorkspaceViewModel> Workspaces { get; set; }
+
+        void CreateAndConnectInputNode(NodeModel node1, NodeModel node2, int portIndex1, int portIndex2);
     }
 
     public partial class DynamoViewModel : ViewModelBase, IDynamoViewModel
@@ -490,23 +492,18 @@ namespace Dynamo.ViewModels
             BackgroundPreviewViewModel = startConfiguration.Watch3DViewModel;
             BackgroundPreviewViewModel.PropertyChanged += Watch3DViewModelPropertyChanged;
             RegisterWatch3DViewModel(BackgroundPreviewViewModel, RenderPackageFactoryViewModel.Factory);
-            CurrentSpace.CreateInputNode += CurrentSpace_CreateInputNode;
         }
 
 
-        private void CurrentSpace_CreateInputNode(NodeModel node1, NodeModel node2, int portIndex1, int portIndex2)
+        public void CreateAndConnectInputNode(NodeModel node1, NodeModel node2, int portIndex1, int portIndex2)
         {
             var command = new DynamoModel.CreateNodeCommand(node1, 0, 0, true, true);
-            //ExecuteCommand(command);
+            
             if (null != this.automationSettings)
                 this.automationSettings.RecordCommand(command);
 
-            //if (Model.DebugSettings.VerboseLogging)
-            //    model.Logger.Log("Command: " + command);
-
             model.AddNodeToCurrentWorkspace(node1, centered: false, addToSelection: false);
             CurrentSpace.RecordCreatedModel(node1);
-            //////////////////////////////////////////////////
 
             var mode = DynamoModel.MakeConnectionCommand.Mode.Begin;
             var cmd = new DynamoModel.MakeConnectionCommand(node1.GUID, portIndex1, PortType.Output, mode);
@@ -833,7 +830,6 @@ namespace Dynamo.ViewModels
                 case "CurrentWorkspace":
                     RaisePropertyChanged("IsAbleToGoHome");
                     RaisePropertyChanged("CurrentSpace");
-                    CurrentSpace.CreateInputNode += CurrentSpace_CreateInputNode;
                     RaisePropertyChanged("BackgroundColor");
                     RaisePropertyChanged("CurrentWorkspaceIndex");
                     RaisePropertyChanged("ViewingHomespace");

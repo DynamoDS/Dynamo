@@ -22,11 +22,14 @@ namespace Dynamo.Wpf.Extensions
         private readonly DynamoViewModel dynamoViewModel;
         public readonly Menu dynamoMenu;
 
+
         /// <summary>
         /// A reference to the background preview viewmodel for geometry selection,
         /// hit testing, mouse and keyboard event handling for events in the background preview 
         /// </summary>
         public IWatch3DViewModel BackgroundPreviewViewModel { get { return dynamoViewModel.BackgroundPreviewViewModel; } }
+
+        public IDynamoViewModel ViewModel { get { return dynamoViewModel; } }
 
         /// <summary>
         /// A reference to the factory for creating render packages in the extension

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Input;
-using Autodesk.DesignScript.Geometry;
+using System.Windows.Media.Media3D;
 using Autodesk.DesignScript.Interfaces;
 
 
@@ -9,9 +9,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 {
     public interface IRay
     {
-        Point Origin { get; }
+        Point3D Origin { get; }
 
-        Vector Direction { get; }
+        Vector3D Direction { get; }
     }
 
     /// <summary>
