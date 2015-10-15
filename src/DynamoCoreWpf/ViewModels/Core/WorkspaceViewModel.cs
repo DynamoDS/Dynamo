@@ -559,56 +559,36 @@ namespace Dynamo.ViewModels
 
         internal void SelectInRegion(Rect2D region, bool isCrossSelect)
         {
-            bool fullyEnclosed = !isCrossSelect;
+            var fullyEnclosed = !isCrossSelect;
+            var selection = DynamoSelection.Instance.Selection;
+            var childlessModels = Model.Nodes.Concat<ModelBase>(Model.Notes);
 
-            foreach (NodeModel n in Model.Nodes)
+            foreach (var n in childlessModels)
             {
-                double x0 = n.X;
-                double y0 = n.Y;
-
                 if (IsInRegion(region, n, fullyEnclosed))
                 {
-                    if (!DynamoSelection.Instance.Selection.Contains(n))
-                        DynamoSelection.Instance.Selection.Add(n);
+                    selection.AddUnique(n);
                 }
-                else
+                else if (n.IsSelected)
                 {
-                    if (n.IsSelected)
-                        DynamoSelection.Instance.Selection.Remove(n);
-                }
-            }
-
-            foreach (var n in Model.Notes)
-            {
-                double x0 = n.X;
-                double y0 = n.Y;
-
-                if (IsInRegion(region, n, fullyEnclosed))
-                {
-                    if (!DynamoSelection.Instance.Selection.Contains(n))
-                        DynamoSelection.Instance.Selection.Add(n);
-                }
-                else
-                {
-                    if (n.IsSelected)
-                        DynamoSelection.Instance.Selection.Remove(n);
+                    selection.Remove(n);
                 }
             }
 
             foreach (var n in Model.Annotations)
             {
-                double x0 = n.X;
-                double y0 = n.Y;
-
                 if (IsInRegion(region, n, fullyEnclosed))
                 {
-                    if (!DynamoSelection.Instance.Selection.Contains(n))
-                        DynamoSelection.Instance.Selection.Add(n);
+                    selection.AddUnique(n);
+                    // if annotation is selected its children should be added to selection too
+                    foreach (var m in n.SelectedModels)
+                    {
+                        selection.AddUnique(m);
+                    }
                 }
-                else
+                else if (n.IsSelected)
                 {
-                    if (n.IsSelected)
-                        DynamoSelection.Instance.Selection.Remove(n);
+                    selection.Remove(n);
                 }
             }
         }

@@ -14,8 +14,6 @@ namespace ProtoTest.ComponentTest
 {
     class CompileAndExecute : ProtoTestBase
     {
-        readonly string testCasePath = Path.GetFullPath(@"..\..\..\Scripts\Associative\MicroFeatureTests\");
-
         [Test]
         public void TestCompilerAndRuntimeComponent01()
         {

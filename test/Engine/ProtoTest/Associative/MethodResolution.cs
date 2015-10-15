@@ -14,7 +14,7 @@ namespace ProtoTest.Associative
             String code =
 @"	fx : var;	fy : var;	fx = 123;	fy = 345;		x = fx;	y = fy;";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 123);
             Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 345);
         }
@@ -26,7 +26,7 @@ namespace ProtoTest.Associative
             String code =
 @"	def f()	{		return = 123;	}    def f(a : int)    {        return = a;	}    x = f();    y = f(345);";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 123);
             Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 345);
         }
@@ -38,7 +38,7 @@ namespace ProtoTest.Associative
             String code =
 @"	x : var;	y : var;    def scale : int()	{		x = x * 2;		y = y * 2;        return = 0;	}    def scale : int(s: int)	{		x = x * s;		y = y * s;        return = 0;	}	x = 10;    y = 40;	n = scale();	n = scale(10);";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 200);
             Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 800);
         }
@@ -50,7 +50,7 @@ namespace ProtoTest.Associative
             String code =
 @"class Sample{    mx : var;    constructor Create()    {}            constructor Create(intval : int)    {}            constructor Create(doubleval : double)    {        mx = doubleval;    }            constructor Create(intval : int, doubleval : double)    {}}    //    default ctors1 = Sample.Create();    //    ctor with ints2 = Sample.Create(1);    //    ctor with doubles3 = Sample.Create(1.0);    //    ctor with int and doubles4 = Sample.Create(1, 1.0);d = s3.mx;";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             Assert.IsTrue((double)mirror.GetValue("d").Payload == 1);
         }
 
@@ -61,7 +61,7 @@ namespace ProtoTest.Associative
             string code =
                 @"                class A                {	                def execute(a : A)	                {		                return = 1;	                }                }                class B extends A                {	                def execute(b : B)	                {		                return = 2;	                }                }                a = A.A();                b = B.B();                val = b.execute(a);                ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             Assert.IsTrue((Int64)mirror.GetValue("val").Payload == 1);
             Assert.IsTrue(core.BuildStatus.WarningCount == 0);
         }
@@ -73,7 +73,7 @@ namespace ProtoTest.Associative
             string code =
                 @"                class A                {	                def execute(a : A)	                {		                return = 1;	                }                }                class B extends A                {	                def execute(b : B)	                {		                return = 2;	                }                }                class C extends A                {                }                b = B.B();                c = C.C();                val = b.execute(c);                ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             Assert.IsTrue((Int64)mirror.GetValue("val").Payload == 1);
             Assert.IsTrue(core.BuildStatus.WarningCount == 0);
         }
@@ -85,7 +85,7 @@ namespace ProtoTest.Associative
             string code =
                 @"                class A                {	                def execute(a : A)	                {		                return = 1;	                }                }                class B extends A                {	                def execute(b : B)	                {		                return = 2;	                }                }                class C extends A                {                }                c = C.C();                val = c.execute(c);                ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             Assert.IsTrue((Int64)mirror.GetValue("val").Payload == 1);
             Assert.IsTrue(core.BuildStatus.WarningCount == 0);
         }
@@ -97,7 +97,7 @@ namespace ProtoTest.Associative
             string code =
                 @"                class A                {	                def execute(a : A)	                {		                return = 1;	                }                }                class B extends A                {	                def execute(b : B)	                {		                return = 2;	                }                }                class C extends B                {                }                c = C.C();                val = c.execute(c);                ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             Assert.IsTrue((Int64)mirror.GetValue("val").Payload == 2);
             Assert.IsTrue(core.BuildStatus.WarningCount == 0);
         }
@@ -109,7 +109,7 @@ namespace ProtoTest.Associative
             string code =
                 @"                class A                {	                def execute(a : A)	                {		                return = 1;	                }                }                class B extends A                {                }                class C extends B                {                }                c = C.C();                val = c.execute(c);                ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             Assert.IsTrue((Int64)mirror.GetValue("val").Payload == 1);
             Assert.IsTrue(core.BuildStatus.WarningCount == 0);
         }
@@ -121,7 +121,7 @@ namespace ProtoTest.Associative
             string code =
                 @"                def execute(a : var)                {                     return = -1;                 }                def execute(arr : var[])                {                    return = 2;                }                arr = {1, 2, 3};                val = execute(arr);                ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             Assert.IsTrue((Int64)mirror.GetValue("val").Payload == 2);
             Assert.IsTrue(core.BuildStatus.WarningCount == 0);
         }
@@ -156,7 +156,7 @@ namespace ProtoTest.Associative
             string code =
                 @"                class A                {                }                class B extends A                {                    static def execute(b : B)                    {                         return = -1;                     }                    def execute(arr : B[])                    {                        return = 2;                    }                }                class C extends B                {                }                arr = {C.C(), B.B(), C.C()};                val = B.execute(arr);                val1 = val[0];                val2 = val[1];                val3 = val[2];                ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             Assert.IsTrue((Int64)mirror.GetValue("val1").Payload == -1);
             Assert.IsTrue((Int64)mirror.GetValue("val2").Payload == -1);
             Assert.IsTrue((Int64)mirror.GetValue("val3").Payload == -1);
@@ -170,7 +170,7 @@ namespace ProtoTest.Associative
             string code =
                 @"                class A                {                }                class B extends A                {                    static def execute(b : B)                    {                         return = -1;                     }                    def execute(arr : B[])                    {                        return = 2;                    }                }                arr = {B.B(), B.B()};                val = B.execute(arr);                val1 = val[0];                val2 = val[1];                ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             Assert.IsTrue((Int64)mirror.GetValue("val1").Payload == -1);
             Assert.IsTrue((Int64)mirror.GetValue("val2").Payload == -1);
             Assert.IsTrue(core.BuildStatus.WarningCount == 0);
@@ -185,7 +185,7 @@ namespace ProtoTest.Associative
             string code =
                 @"def execute(b : var){	return = 100; }arr = {3};v = execute(arr);val = v[0];                ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             Assert.IsTrue((Int64)mirror.GetValue("val").Payload == 100);
             Assert.IsTrue(core.BuildStatus.WarningCount == 0);
         }
@@ -199,7 +199,7 @@ namespace ProtoTest.Associative
             string code =
                 @"def execute(b : var){    return = 100; }arr = {};v = execute(arr);val = v[0];                ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             //Assert.IsTrue((Int64)mirror.GetValue("val").Payload == 100);
             Assert.IsTrue(core.BuildStatus.WarningCount == 0);
         }
@@ -232,7 +232,7 @@ namespace ProtoTest.Associative
         {
             string code = @"                            def Test(arr : var[])                            {                                return = 123;                            }                            a = {3, 4, 5};                            val = Test(a);                            ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             Assert.IsTrue((Int64)mirror.GetValue("val").Payload == 123);
             Assert.IsTrue(core.BuildStatus.WarningCount == 0);
         }
@@ -243,7 +243,7 @@ namespace ProtoTest.Associative
         {
             string code = @"                            class A                            {                            }                            class B extends A                            {                            }                            def Test(arr : A[])                            {                                    return = 123;                            }                            a = {B.B(), A.A(), B.B()};                            val = Test(a);                            ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             Assert.IsTrue((Int64)mirror.GetValue("val").Payload == 123);
             Assert.IsTrue(core.BuildStatus.WarningCount == 0);
         }
@@ -255,7 +255,7 @@ namespace ProtoTest.Associative
         {
             string code = @"                            def foo(x : double)                            { return = 1; }                            def foo(x : double[]) 	                        { return = 2; }	                        def foo(x : double[][]) 	                        { return = 3; }                            arr = 1..20..2;                            val = foo(arr);                            ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             Assert.IsTrue((Int64)mirror.GetValue("val").Payload == 2);
             Assert.IsTrue(core.BuildStatus.WarningCount == 0);
         }
@@ -267,7 +267,7 @@ namespace ProtoTest.Associative
         {
             string code = @"                            def foo(x : int)                            { return = 1; }                            def foo(x : int[]) 	                        { return = 2; }	                        def foo(x : int[][]) 	                        { return = 3; }                            arr = 1..20..2;                            val = foo(arr);                            ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             Assert.IsTrue((Int64)mirror.GetValue("val").Payload == 2);
             Assert.IsTrue(core.BuildStatus.WarningCount == 0);
         }
@@ -278,7 +278,7 @@ namespace ProtoTest.Associative
         {
             string code = @"                            class A                            {	                            def foo(x : double)                                { return = 1; }                            }                            class B extends A                            {                                def foo(x : double)                                { return = 2; }                            }                                                        a = A.A();                            val1 = a.foo(0.0);                                                      //  b = B.B();                                                      //  val2 =b.foo(0.0);                            ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             Assert.IsTrue((Int64)mirror.GetValue("val1").Payload == 1);
             //Assert.IsTrue((Int64)mirror.GetValue("val2").Payload == 2);
         }
@@ -289,7 +289,7 @@ namespace ProtoTest.Associative
         {
             string code = @"                            class A                            {	                            def foo(x : double)                                { return = 1; }                            }                            class B extends A                            {                                def foo(x : double)                                { return = 2; }                            }                                                      //  a = A.A();                          //  val1 = a.foo(0.0);                                                      b = B.B();                                                      val2 =b.foo(0.0);                            ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             //Assert.IsTrue((Int64)mirror.GetValue("val1").Payload == 1);
             Assert.IsTrue((Int64)mirror.GetValue("val2").Payload == 2);
         }

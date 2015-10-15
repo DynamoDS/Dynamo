@@ -3,7 +3,7 @@
     ToolsVersion="4.0"
     DefaultTargets="Build">
 <PropertyGroup>
-    <Solution>Dynamo.All.2013.sln</Solution>
+    <Solution>Dynamo.All.sln</Solution>
  </PropertyGroup>
 	
 <ItemGroup>
@@ -13,7 +13,7 @@
 </ItemGroup>
 
 <Target Name="Build" DependsOnTargets="RestorePackages">
-    <MSBuild Projects="@(ProjectToBuild)"/>
+    <MSBuild Projects="@(ProjectToBuild)" Targets="Rebuild"/>
 </Target>
 
 <Target Name="RestorePackages">
