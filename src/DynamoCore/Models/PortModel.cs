@@ -136,6 +136,14 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// Returns port's default value.
+        /// </summary>
+        public AssociativeNode DefaultValue
+        {
+            get { return portData.DefaultValue; }
+        }
+
+        /// <summary>
         /// Controls the space between successive output ports
         /// </summary>
         public Thickness MarginThickness

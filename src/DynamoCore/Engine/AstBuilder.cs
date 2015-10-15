@@ -285,7 +285,7 @@ namespace Dynamo.Engine.CodeGeneration
                 }
                 else
                 {
-                    PortData port = node.InPortData[index];
+                    PortModel port = node.InPorts[index];
                     inputAstNodes.Add(port.DefaultValue ?? new NullNode());
                 }
             }
