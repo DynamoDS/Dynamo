@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Input;
+using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
-using HelixToolkit.Wpf.SharpDX;
 
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
     public interface IRay
     {
-        IPointEntity Origin { get; }
-        IVectorEntity Axis { get; }
+        Point Origin { get; }
+
+        Vector Direction { get; }
     }
 
     /// <summary>
@@ -19,16 +20,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     public interface IWatch3DViewModel
     {
         /// <summary>
-        /// Returns a 3D ray from the camera to the given a mouse location
+        /// Returns a 3D ray from the camera to the given mouse location
         /// in world coordinates that can be used to perform a hit-test 
         /// on objects in the view
         /// </summary>
         /// <param name="args">mouse click location in screen coordinates</param>
         /// <returns></returns>
-        Ray3D GetClickRay(MouseEventArgs args);
-
-
-        IRay GetClickRay2(MouseEventArgs args);
+        IRay GetClickRay(MouseEventArgs args);
 
         /// <summary>
         /// Converts render packages into drawable geometry primitives 

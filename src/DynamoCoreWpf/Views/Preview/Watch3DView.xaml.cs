@@ -8,9 +8,7 @@ using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Wpf.ViewModels.Watch3D;
-using Dynamo.Wpf.Views.Preview;
 using HelixToolkit.Wpf.SharpDX;
-using SharpDX;
 using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
 using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 using Point = System.Windows.Point;
@@ -122,10 +120,7 @@ namespace Dynamo.Controls
             ViewModel.RequestCreateModels += RequestCreateModelsHandler;
             ViewModel.RequestViewRefresh += RequestViewRefreshHandler;
             ViewModel.RequestClickRay += GetClickRay;
-            ViewModel.RequestClickRay2 += GetClickRay2;
         }
-
-        
 
         private void RequestViewRefreshHandler()
         {
@@ -220,46 +215,23 @@ namespace Dynamo.Controls
 
         #endregion
 
-        private Ray3D GetClickRay(MouseEventArgs mouseButtonEventArgs)
+        private IRay GetClickRay(MouseEventArgs args)
         {
-            var mousePos = mouseButtonEventArgs.GetPosition(this);
+            var mousePos = args.GetPosition(this);
 
-            return View.Point2DToRay3D(new Point(mousePos.X, mousePos.Y));
-        }
+            var ray = View.Point2DToRay3D(new Point(mousePos.X, mousePos.Y));
 
-        private IRay GetClickRay2(MouseEventArgs arg)
-        {
-            Point3D? pt3D = null;
-            var ray = GetClickRay(arg);
-
-            if (ray == null)
-            {
-                pt3D = null;
-                return null;
-            }
+            if (ray == null) return null;
 
             var position = new Point3D(0, 0, 0);
             var normal = new Vector3D(0, 0, 1);
-            pt3D = ray.PlaneIntersection(position, normal);
+            var pt3D = ray.PlaneIntersection(position, normal);
 
-            return new Ray
-            {
-                Direction = ray.Direction.ToVector(),
-                Origin = ray.Origin.ToPoint()
-            };
+            if (pt3D == null) return null;
+
+            return new Ray3(ray.Origin, ray.Direction);
         }
     }
 
-    internal class Ray : IRay
-    {
-        public IPointEntity Origin
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public IVectorEntity Axis
-        {
-            get { throw new NotImplementedException(); }
-        }
-    }
+    
 }

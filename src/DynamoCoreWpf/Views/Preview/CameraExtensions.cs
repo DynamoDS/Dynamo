@@ -2,8 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Media.Media3D;
+using Autodesk.DesignScript.Geometry;
+using Dynamo.Wpf.ViewModels.Watch3D;
 using HelixToolkit.Wpf.SharpDX;
 using SharpDX;
+using OrthographicCamera = HelixToolkit.Wpf.SharpDX.OrthographicCamera;
+using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
+using Point = Autodesk.DesignScript.Geometry.Point;
+using ProjectionCamera = HelixToolkit.Wpf.SharpDX.ProjectionCamera;
 
 namespace Dynamo.Controls
 {
@@ -66,6 +73,47 @@ namespace Dynamo.Controls
         {
             var r = viewport.Point2DToRay(point2d.ToVector2());
             return new Ray3D(r.Position.ToPoint3D(), r.Direction.ToVector3D());
+        }
+    }
+
+    internal static class PointExtensions
+    {
+        public static Point ToPoint(this Point3D point)
+        {
+            return Point.ByCoordinates(point.X, point.Y, point.Z);
+        }
+
+        public static Vector ToVector(this Vector3D vec)
+        {
+            return Vector.ByCoordinates(vec.X, vec.Y, vec.Z);
+        }
+    }
+
+    public class Ray3 : IRay
+    {
+        private readonly Point origin;
+        private readonly Vector direction;
+
+        public Ray3(Point origin, Vector direction)
+        {
+            this.origin = origin;
+            this.direction = direction;
+        }
+
+        internal Ray3(Point3D origin, Vector3D direction)
+        {
+            this.origin = origin.ToPoint();
+            this.direction = direction.ToVector();
+        }
+
+        public Point Origin
+        {
+            get { return origin; }
+        }
+
+        public Vector Direction
+        {
+            get { return direction; }
         }
     }
 }

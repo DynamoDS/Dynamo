@@ -471,16 +471,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in derived classes
         }
 
-        internal event Func<MouseEventArgs, Ray3D> RequestClickRay;
-        public Ray3D GetClickRay(MouseEventArgs args)
+        internal event Func<MouseEventArgs, IRay> RequestClickRay;
+        public IRay GetClickRay(MouseEventArgs args)
         {
             return RequestClickRay != null ? RequestClickRay(args) : null;
-        }
-
-        internal event Func<MouseEventArgs, IRay> RequestClickRay2;
-        public IRay GetClickRay2(MouseEventArgs args)
-        {
-            return RequestClickRay2 != null ? RequestClickRay2(args) : null;
         }
 
         public event Action<object, MouseButtonEventArgs> ViewMouseDown;
