@@ -172,7 +172,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Unselects all items and selectes the first one.
         /// </summary>
-        private IEnumerable<NodeSearchElementViewModel> ToggleSelect(IEnumerable<NodeSearchElementViewModel> items)
+        internal IEnumerable<NodeSearchElementViewModel> ToggleSelect(IEnumerable<NodeSearchElementViewModel> items)
         {
             if (!items.Any())
             {
