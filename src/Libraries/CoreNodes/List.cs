@@ -275,13 +275,13 @@ namespace DSCore
             // First items with number keys, then items with letter keys.
             var sortedPairs = numberKeyPairs.Concat(keyPairs);
 
-            var sortedList = sortedPairs.Select(x => x.item);
-            var sortedKeys = sortedPairs.Select(x => x.key);
+            var sortedList = sortedPairs.Select(x => x.item).ToList();
+            var sortedKeys = sortedPairs.Select(x => x.key).ToList();
 
             return new Dictionary<object, object>
             {
-                { "sorted list", sortedList.ToList() },
-                { "sorted keys", sortedKeys.ToList() }
+                { "sorted list", sortedList },
+                { "sorted keys", sortedKeys }
             };
         }
 
