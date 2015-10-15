@@ -975,9 +975,7 @@ namespace DSCoreNodesTests
             var list = new ArrayList { "item1", "item2" };
             var keys = new ArrayList { "key1" };
 
-            var result = List.SortByKey(list, keys);
-
-            Assert.AreEqual(null, result);
+            Assert.Throws<ArgumentException>(() => List.SortByKey(list, keys));
         }
 
         [Test]
@@ -987,9 +985,7 @@ namespace DSCoreNodesTests
             var list = new ArrayList { "item1" };
             var keys = new ArrayList { "key1", "key2" };
 
-            var result = List.SortByKey(list, keys);
-
-            Assert.AreEqual(null, result);
+            Assert.Throws<ArgumentException>(() => List.SortByKey(list, keys));
         }
 
         [Test]
@@ -1125,14 +1121,7 @@ namespace DSCoreNodesTests
             var list = new ArrayList { "item1", "item2", "item1", "item3" };
             var keys = new ArrayList { "key1", "key2", "key1" };
 
-            var result = List.GroupByKey(list, keys);
-            var expected = new Dictionary<string, object>
-            {
-                { "groups",new object[] { new object[] { "item1", "item1" }, new object[] { "item2" } }},
-                { "unique keys", new object[] { "key1", "key2" } }
-            };
-
-            Assert.AreEqual(expected, result);
+            Assert.Throws<ArgumentException>(() => List.GroupByKey(list, keys));
         }
 
         [Test]
@@ -1142,14 +1131,7 @@ namespace DSCoreNodesTests
             var list = new ArrayList { "item1" };
             var keys = new ArrayList { "key1", "key2" };
 
-            var result = List.GroupByKey(list, keys);
-            var expected = new Dictionary<string, object>
-            {
-                { "groups",new object[] { new object[] { "item1" } }},
-                { "unique keys", new object[] { "key1", "key2" } }
-            };
-
-            Assert.AreEqual(expected, result);
+            Assert.Throws<ArgumentException>(() => List.GroupByKey(list, keys));
         }
     }
 }

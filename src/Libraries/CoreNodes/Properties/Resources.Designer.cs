@@ -160,11 +160,20 @@ namespace DSCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid input data. Lists as keys are not supported..
+        ///   Looks up a localized string similar to One or more input types are not matching. Lists as keys are not supported..
         /// </summary>
         internal static string InvalidKeysErrorMessage {
             get {
                 return ResourceManager.GetString("InvalidKeysErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number of items does not match the number of keys..
+        /// </summary>
+        internal static string InvalidKeysLenghtErrorMessage {
+            get {
+                return ResourceManager.GetString("InvalidKeysLenghtErrorMessage", resourceCulture);
             }
         }
         

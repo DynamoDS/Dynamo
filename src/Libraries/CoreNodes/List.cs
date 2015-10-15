@@ -256,7 +256,9 @@ namespace DSCore
             }
 
             if (list.Count != keys.Count)
-                return null;
+            {
+                throw new ArgumentException(Resources.InvalidKeysLenghtErrorMessage);
+            }
 
             var pairs = list.Cast<object>()
                     .Zip(keys.Cast<object>(), (item, key) => new { item, key });
@@ -296,6 +298,11 @@ namespace DSCore
         [MultiReturn(new[] { "groups", "unique keys" })]
         public static IDictionary GroupByKey(IList list, IList keys)
         {
+            if (list.Count != keys.Count)
+            {
+                throw new ArgumentException(Resources.InvalidKeysLenghtErrorMessage);
+            }
+
             var containsSublists = keys.Cast<object>().Any(key => key is IList || key is ICollection);
             if (containsSublists)
             {
