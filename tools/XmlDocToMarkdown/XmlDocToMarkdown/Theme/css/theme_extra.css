@@ -318,33 +318,18 @@ code.cs, code.c {
 nav.stickynav {
     background-color:white;
 }
-li.home a:hover{
+ 
+li.home a:not(.current):hover{
 	background-color: #939598;
 	color:white;
+}
+
+li.current a.current:hover{
+background-color: #666666!important;
+color:white;
 }
 
 .wy-side-search {
 	width:300px;
 	float:left;
-}
-
-@media only screen 
-and (min-device-width : 320px) 
-and (max-device-width : 480px) {
- .wy-page-title { 
-	 visibility : hidden
-	}
-	
-	.wy-nav-top {
-	 line-height:20px
-	}
-	 
-   .wy-nav-top i {
-     float:left;
-   }
-   
-   .wy-side-search {
-     width:auto
-   }
-   
-}
+} 
