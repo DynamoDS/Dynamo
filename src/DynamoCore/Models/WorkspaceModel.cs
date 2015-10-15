@@ -73,6 +73,7 @@ namespace Dynamo.Models
         private readonly List<AnnotationModel> annotations;
         private readonly List<PresetModel> presets;
         private readonly UndoRedoRecorder undoRecorder;
+        private bool hasNodeInSyncWithDefinition;
         private Guid guid;
 
         #endregion
@@ -281,6 +282,11 @@ namespace Dynamo.Models
         public event Action<ConnectorModel> ConnectorDeleted;
         protected virtual void OnConnectorDeleted(ConnectorModel obj)
         {
+            if (hasNodeInSyncWithDefinition)
+            {
+                undoRecorder.RecordModelAsOffTrack(obj.GUID);
+            }
+
             var handler = ConnectorDeleted;
             if (handler != null) handler(obj);
         }
@@ -304,6 +310,15 @@ namespace Dynamo.Models
             if (handler != null) handler(obj);
         }
 
+        public void OnSyncWithDefintionStart(NodeModel nodeModel)
+        {
+            hasNodeInSyncWithDefinition = true;
+        }
+
+        public void OnSyncWithDefinitionEnd(NodeModel nodeModel)
+        {
+            hasNodeInSyncWithDefinition = false;
+        }
         #endregion
 
         #region public properties
@@ -2157,7 +2172,23 @@ namespace Dynamo.Models
                 var connector = NodeGraph.LoadConnectorFromXml(modelData,
                     Nodes.ToDictionary(node => node.GUID));
 
-                OnConnectorAdded(connector); // Update view-model and view.
+                // It is possible that in some cases connector can't be created,
+                // for example, connector connects to a custom node instance
+                // whose input ports have been changed, so connector can't find
+                // its end port owner.
+                if (connector == null)
+                {
+                    var guidAttribute = modelData.Attributes["guid"];
+                    if (guidAttribute == null)
+                    {
+                        throw new InvalidOperationException("'guid' field missing from recorded model");
+                    }
+                    undoRecorder.RecordModelAsOffTrack(Guid.Parse(guidAttribute.Value)); 
+                }
+                else 
+                {
+                    OnConnectorAdded(connector); // Update view-model and view.
+                }
             }
             else if (typeName.StartsWith("Dynamo.Models.NoteModel"))
             {
