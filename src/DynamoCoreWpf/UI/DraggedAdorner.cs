@@ -43,10 +43,12 @@ namespace Dynamo.Wpf.UI
         /// </summary>
         /// <param name="left">X coordinate</param>
         /// <param name="top">Y coordianate</param>
-        public void SetPosition(double left, double top)
+        /// <param name="bounds">Visible rectangle of dragged content</param>
+        public void SetPosition(double left, double top, Rect bounds)
         {
             this.left = left;
             this.top = top;
+            contentPresenter.Clip = new RectangleGeometry(bounds);
             if (adornerLayer != null)
             {
                 adornerLayer.Update(AdornedElement);

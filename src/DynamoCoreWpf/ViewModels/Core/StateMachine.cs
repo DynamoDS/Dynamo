@@ -645,7 +645,6 @@ namespace Dynamo.ViewModels
 
                     if (Keyboard.Modifiers != ModifierKeys.Control)
                     {
-
                         // Record and begin the drag operation for selected nodes.
                         var operation = DynCmd.DragSelectionCommand.Operation.BeginDrag;
                         var command = new DynCmd.DragSelectionCommand(

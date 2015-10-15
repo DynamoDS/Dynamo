@@ -512,7 +512,7 @@ namespace Dynamo.Views
                 var annotations = selection.OfType<AnnotationModel>();
                 
                 var connectors = nodes.SelectMany(n => 
-                    n.InPorts.Concat(n.OutPorts).SelectMany(port => port.Connectors)
+                    n.OutPorts.SelectMany(port => port.Connectors)
                         .Where(c => c.End != null && c.End.Owner.IsSelected)).Distinct();
 
                 // set list of selected viewmodels
@@ -611,11 +611,21 @@ namespace Dynamo.Views
                     draggedSelectionTemplate, WorkspaceElements, adornerLayer);
             }
 
+            var zoom = ViewModel.Zoom;
+            var xOffset = currentPosition.X - initialMousePosition.X;
+            var yOffset = currentPosition.Y - initialMousePosition.Y;
             // compute (x; y) so that dragged selection has mouse cursor 
             // in the same place as origin selection does
-            var x = (currentPosition.X - initialMousePosition.X) * ViewModel.Zoom;
-            var y = (currentPosition.Y - initialMousePosition.Y) * ViewModel.Zoom;
-            draggedAdorner.SetPosition(x, y);
+            var x = xOffset * zoom;
+            var y = yOffset * zoom;
+
+            // compute bounds of dragged content so that it does not go outside dragged canvas
+            var x1 = -ViewModel.Model.X/zoom - xOffset;
+            var y1 = -ViewModel.Model.Y/zoom - yOffset;
+            var x2 = WorkspaceElements.RenderSize.Width / zoom;
+            var y2 = WorkspaceElements.RenderSize.Height / zoom;
+            var bounds = new Rect(x1, y1, x2, y2);
+            draggedAdorner.SetPosition(x, y, bounds);
         }
 
         private PortViewModel GetSnappedPort(Point mouseCursor)
