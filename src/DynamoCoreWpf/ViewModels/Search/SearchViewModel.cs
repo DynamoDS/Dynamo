@@ -153,19 +153,7 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                // Unselect all.
-                foreach (NodeSearchElementViewModel res in value)
-                {
-                    res.IsSelected = false;
-                }
-
-                // Select first.
-                if (value.Any())
-                {
-                    value.First().IsSelected = true;
-                }
-
-                filteredResults = value;
+                filteredResults = ToggleSelect(value);
                 RaisePropertyChanged("FilteredResults");
             }
         }
@@ -179,6 +167,24 @@ namespace Dynamo.ViewModels
             FilteredResults = searchResults.Where(x => allowedCategories
                                                                        .Select(cat => cat.Name)
                                                                        .Contains(x.Category));
+        }
+
+        /// <summary>
+        /// Unselects all items and selectes the first one.
+        /// </summary>
+        private IEnumerable<NodeSearchElementViewModel> ToggleSelect(IEnumerable<NodeSearchElementViewModel> items)
+        {
+            if (!items.Any())
+            {
+                return items;
+            }
+
+            // Unselect all.
+            items.Skip(1).ToList().ForEach(x => x.IsSelected = false);
+            // Select first.
+            items.First().IsSelected = true;
+
+            return items;
         }
 
         /// <summary>
@@ -857,9 +863,9 @@ namespace Dynamo.ViewModels
 
         #region Key navigation
 
-        public enum MovementDirection
+        public enum Direction
         {
-            Forward, Back
+            Down, Up
         }
 
         /// <summary>
@@ -879,14 +885,15 @@ namespace Dynamo.ViewModels
         /// When down key is pressed, selected element should move forward.
         /// When up key is pressed, selected element should move back.
         /// </summary>
-        public void MoveSelection(MovementDirection direction)
+        public void MoveSelection(Direction direction)
         {
             var oldItem = FilteredResults.FirstOrDefault(item => item.IsSelected);
             if (oldItem == null) return;
 
             int newItemIndex = FilteredResults.IndexOf(oldItem);
+            if (newItemIndex < 0 || newItemIndex >= FilteredResults.Count()) return;
 
-            if (direction == MovementDirection.Forward)
+            if (direction == Direction.Down)
             {
                 newItemIndex++;
             }
@@ -903,7 +910,6 @@ namespace Dynamo.ViewModels
         }
 
         #endregion
-
 
         #region Search field manipulation
 

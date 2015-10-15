@@ -203,7 +203,7 @@ namespace Dynamo.Search
                             break;
                         }
 
-                        viewModel.MoveSelection(SearchViewModel.MovementDirection.Forward);
+                        viewModel.MoveSelection(SearchViewModel.Direction.Down);
                         break;
                     }
 
@@ -215,7 +215,7 @@ namespace Dynamo.Search
                             break;
                         }
 
-                        viewModel.MoveSelection(SearchViewModel.MovementDirection.Back);
+                        viewModel.MoveSelection(SearchViewModel.Direction.Up);
                         break;
                     }
             }
