@@ -13,7 +13,7 @@
 	</GalleryContent>
 	<GalleryContent>
 		<Header>Node Layout Cleanup Improvements</Header>
-		<Body>Treat groups as a whole or cleanup node layouts within a group with just one click.</Body>
+		<Body>Clean up layouts considering groups as a whole or clean up layouts within groups.</Body>
 		<ImagePath>NodeLayoutCleanup.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
