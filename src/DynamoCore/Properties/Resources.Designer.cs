@@ -1233,6 +1233,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to var[]..[].
+        /// </summary>
+        public static string SequenceOutputPortTooltip {
+            get {
+                return ResourceManager.GetString("SequenceOutputPortTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creates a string..
         /// </summary>
         public static string StringNodeDescription {

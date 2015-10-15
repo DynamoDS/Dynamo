@@ -1268,6 +1268,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Letters of the same case are required..
+        /// </summary>
+        public static string kInvalidCasesInRangeExpression {
+            get {
+                return ResourceManager.GetString("kInvalidCasesInRangeExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Internal error, please report: Statement continue cause function to abnormally return null. (fd67aaee).
         /// </summary>
         public static string kInvalidContinueForFunction {

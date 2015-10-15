@@ -1885,7 +1885,7 @@ b = 0..10..a;
         [Category("SmokeTest")]
         public void AlphabetRangeImperative()
         {
-            string src = @"a1;a2;a3;a4;a5;a6;a7;a8;a9;a10;
+            string src = @"a1;a2;a3;a4;a5;a6;a7;a8;a9;a10;a11;a12;
 [Imperative]
 {
 	a1 = ""a""..""c""..1;
@@ -1898,6 +1898,8 @@ b = 0..10..a;
     a8 = ""a""..""z""..3;
     a9 = ""A""..""D"";
     a10 = ""o""..""q"";
+    a11 = ""x""..""ac"";
+    a12 = ""aa""..""bb""..5;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -1930,21 +1932,26 @@ b = 0..10..a;
 
             result = new List<Object> { "o", "p", "q" };
             Assert.IsTrue(mirror.CompareArrays("a10", result, typeof(String)));
+
+            result = new List<Object> { "x", "y", "z", "aa", "ab", "ac" };
+            Assert.IsTrue(mirror.CompareArrays("a11", result, typeof(String)));
+
+            result = new List<Object> { "aa", "af", "ak", "ap", "au", "az" };
+            Assert.IsTrue(mirror.CompareArrays("a12", result, typeof(String)));
         }
 
         [Test, Category("SmokeTest")]
         public void AlphabetRangeNegativeTestCasesImperative()
         {
-            string src = @"a1;a2;a3;a4;a5;a6;a7;
+            string src = @"a1;a2;a3;a4;a5;a6;
 [Imperative]
 {
-	a1 = ""ab""..""cd""..1;
-    a2 = ""c""..""a""..-1;
-    a3 = ""a""..""&""..1;
-    a4 = ""abc""..""def""..1;
-    a5 = ""a""..""z""..-10;
-    a6 = ""л""..""н""..1;
-    a7 = ""л""..""н"";
+    a1 = ""c""..""a""..-1;
+    a2 = ""a""..""&""..1;
+    a3 = ""a""..""z""..-10;
+    a4 = ""л""..""н""..1;
+    a5 = ""л""..""н"";
+    a6 = ""Aa""..""BB"";
 }
 ";
             thisTest.RunScriptSource(src);
@@ -1955,9 +1962,8 @@ b = 0..10..a;
             thisTest.Verify("a4", null);
             thisTest.Verify("a5", null);
             thisTest.Verify("a6", null);
-            thisTest.Verify("a7", null);
 
-            thisTest.VerifyRuntimeWarningCount(7);
+            thisTest.VerifyRuntimeWarningCount(6);
         }
 
         [Test]
@@ -1974,7 +1980,9 @@ b = 0..10..a;
     a7 = ""z""..""v""..4;
     a8 = ""a""..""z""..3;
     a9 = ""A""..""D"";
-    a10 = ""o""..""q"";";
+    a10 = ""o""..""q"";
+    a11 = ""x""..""ac"";
+    a12 = ""aa""..""bb""..5;";
 
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { "a", "b", "c" };
@@ -2006,19 +2014,24 @@ b = 0..10..a;
 
             result = new List<Object> { "o", "p", "q" };
             Assert.IsTrue(mirror.CompareArrays("a10", result, typeof(String)));
+
+            result = new List<Object> { "x", "y", "z", "aa", "ab", "ac" };
+            Assert.IsTrue(mirror.CompareArrays("a11", result, typeof(String)));
+
+            result = new List<Object> { "aa", "af", "ak", "ap", "au", "az" };
+            Assert.IsTrue(mirror.CompareArrays("a12", result, typeof(String)));
         }
 
         [Test, Category("SmokeTest")]
         public void AlphabetRangeNegativeTestCasesAssociative()
         {
             string src = @"
-	a1 = ""ab""..""cd""..1;
-    a2 = ""c""..""a""..-1;
-    a3 = ""a""..""&""..1;
-    a4 = ""abc""..""def""..1;
-    a5 = ""a""..""z""..-10;
-    a6 = ""л""..""н""..1;
-    a7 = ""л""..""н"";";
+	a1 = ""c""..""a""..-1;
+    a2 = ""a""..""&""..1;
+    a3 = ""a""..""z""..-10;
+    a4 = ""л""..""н""..1;
+    a5 = ""л""..""н"";
+    a6 = ""Aa""..""BB"";";
 
             thisTest.RunScriptSource(src);
 
@@ -2028,9 +2041,8 @@ b = 0..10..a;
             thisTest.Verify("a4", null);
             thisTest.Verify("a5", null);
             thisTest.Verify("a6", null);
-            thisTest.Verify("a7", null);
 
-            thisTest.VerifyRuntimeWarningCount(7);
+            thisTest.VerifyRuntimeWarningCount(6);
         }
 
         [Test]
@@ -2057,7 +2069,7 @@ b = 0..10..a;
             result = new List<Object> { "I", "J", "K", "L" };
             Assert.IsTrue(mirror.CompareArrays("a3", result, typeof(String)));
 
-            result = new List<Object> { "z" };
+            result = new List<Object> { "z", "aa", "ab", "ac", "ad" };
             Assert.IsTrue(mirror.CompareArrays("a4", result, typeof(String)));
 
             result = new List<Object> { "A" };
@@ -2108,7 +2120,7 @@ b = 0..10..a;
             result = new List<Object> { "I", "J", "K", "L" };
             Assert.IsTrue(mirror.CompareArrays("a3", result, typeof(String)));
 
-            result = new List<Object> { "z" };
+            result = new List<Object> { "z", "aa", "ab", "ac", "ad" };
             Assert.IsTrue(mirror.CompareArrays("a4", result, typeof(String)));
 
             result = new List<Object> { "A" };

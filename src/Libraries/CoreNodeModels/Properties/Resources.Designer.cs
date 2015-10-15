@@ -1249,7 +1249,7 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creates a sequence of numbers..
+        ///   Looks up a localized string similar to Creates a list of numbers or letters in a sequence.
         /// </summary>
         public static string SequenceDescription {
             get {

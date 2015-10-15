@@ -975,6 +975,10 @@ namespace ProtoCore.Lang
     }
     internal class RangeExpressionUntils
     {
+        private const byte smallLetterOffset = 97;
+        private const byte bigLetterOffset = 65;
+        private const byte alphabetLength = 26;
+
         internal static StackValue[] GenerateRangeByStepSize(decimal start, decimal end, decimal stepsize, bool isIntRange)
         {
             if ((stepsize == 0) || (end > start && stepsize < 0) || (end < start && stepsize > 0))
@@ -1238,25 +1242,15 @@ namespace ProtoCore.Lang
                 return null;
             }
 
-            var startValue = runtimeCore.Heap.ToHeapObject<DSString>(svStart).Value;
-            var endValue = runtimeCore.Heap.ToHeapObject<DSString>(svEnd).Value;
+            var startLetters = runtimeCore.Heap.ToHeapObject<DSString>(svStart).Value;
+            var endLetters = runtimeCore.Heap.ToHeapObject<DSString>(svEnd).Value;
 
-            // Start and end values can be just alphabet letters. So their length can't be more than 1.
-            if (startValue.Length != 1 || endValue.Length != 1)
-            {
-                runtimeCore.RuntimeStatus.LogWarning(
-                    WarningID.kInvalidArguments,
-                    Resources.kInvalidArgumentsInRangeExpression);
-                return null;
-            }
-
-            var startLetter = startValue.ToCharArray().First();
-            var endLetter = endValue.ToCharArray().First();
             int step = svStep.IsNull ? 1 : Convert.ToInt32(svStep.RawIntValue);
 
             // Alphabet sequence can be made just from letters (that are not unicode).
-            if (!Char.IsLetter(startLetter) || !Char.IsLetter(endLetter) || step <= 0 ||
-                startLetter > Byte.MaxValue || endLetter > Byte.MaxValue)
+            if (!startLetters.All(Char.IsLetter) || !endLetters.All(Char.IsLetter) || step <= 0 
+                || !startLetters.Any(l => l < Byte.MaxValue)
+                || !endLetters.Any(l => l < Byte.MaxValue))
             {
                 runtimeCore.RuntimeStatus.LogWarning(
                     WarningID.kInvalidArguments,
@@ -1264,20 +1258,54 @@ namespace ProtoCore.Lang
                 return null;
             }
 
-            StackValue[] letters;
-            int stepOffset = (startLetter < endLetter) ? 1 : -1;
-            int stepnum = (int)Math.Abs(Math.Truncate((endLetter - startLetter) / (double)step)) + 1;
+            //  Alphabet sequence supports letters of the same case.
+            // It's restricted incoming letters like "Aa", "CcC"
+            if ((!startLetters.All(Char.IsUpper) && !startLetters.All(Char.IsLower))
+                || (!endLetters.All(Char.IsUpper) && !endLetters.All(Char.IsLower)))
+            {
+                runtimeCore.RuntimeStatus.LogWarning(
+                    WarningID.kInvalidArguments,
+                    Resources.kInvalidCasesInRangeExpression);
+                return null;
+            }
 
-            letters = Enumerable.Range(1, stepnum)
-                // Generate arithmetic progression.
-                 .Select(x => startLetter + (x - 1) * step * stepOffset)
-                // Take just letters.
-                 .Where(x => Char.IsLetter((char)x))
-                // Create stack values.
-                 .Select(x => StackValue.BuildString(Char.ToString((char)x), runtimeCore.Heap))
-                 .ToArray();
+            // Start case should be the same as end case. 
+            // It's restricted start as "AA" and end as "zz".
+            if (!((Char.IsLower(startLetters.First()) && Char.IsLower(endLetters.First()))
+                || (Char.IsUpper(startLetters.First()) && Char.IsUpper(endLetters.First()))))
+            {
+                runtimeCore.RuntimeStatus.LogWarning(
+                    WarningID.kInvalidArguments,
+                    Resources.kInvalidCasesInRangeExpression);
+                return null;
+            }
 
-            return letters;
+            bool isUpperCase = Char.IsUpper(startLetters.First());
+
+            int startNumber = GetNumberFromLetter(startLetters, isUpperCase);
+            int endNumber = GetNumberFromLetter(endLetters, isUpperCase);
+            bool swap = startNumber > endNumber;
+
+            // If startNumber is bigger, then swap start and end.
+            if (swap)
+            {
+                int temp = startNumber;
+                startNumber = endNumber;
+                endNumber = temp;
+            }
+
+            var letters = new List<StackValue>();
+            for (int i = startNumber; i <= endNumber; i += step)
+            {
+                var letter = GetLetterFromNumber(i, isUpperCase);
+                if (!String.IsNullOrEmpty(letter))
+                {
+                    letters.Add(StackValue.BuildString(letter, runtimeCore.Heap));
+                }
+            }
+            if (swap) letters.Reverse();
+
+            return letters.ToArray();
         }
 
         private static StackValue[] GenerateAlphabetSequence(StackValue svStart, StackValue svEnd, StackValue svStep, StackValue svOp, RuntimeCore runtimeCore)
@@ -1304,19 +1332,9 @@ namespace ProtoCore.Lang
                 return null;
             }
 
-            var startValue = runtimeCore.Heap.ToHeapObject<DSString>(svStart).Value;
+            var startLetters = runtimeCore.Heap.ToHeapObject<DSString>(svStart).Value;
             var amount = Convert.ToInt32(svEnd.RawIntValue);
             var step = Convert.ToInt32(svStep.RawIntValue);
-
-            // Start value can be just alphabet letter. So its length can't be more than 1.
-            // End value must be int. (we checked it before)
-            if (startValue.Length != 1)
-            {
-                runtimeCore.RuntimeStatus.LogWarning(
-                    WarningID.kInvalidArguments,
-                    Resources.kInvalidStringArgumentInRangeExpression);
-                return null;
-            }
 
             if (amount < 0)
             {
@@ -1324,13 +1342,11 @@ namespace ProtoCore.Lang
                    WarningID.kInvalidArguments,
                    Resources.kInvalidAmountInRangeExpression);
                 return null;
-            }
-
-            var startLetter = startValue.ToCharArray().First();
+            }         
 
             // Alphabet sequence can be made just from letters,
             // that are not unicode, i.e. their code is less than 255.
-            if (!Char.IsLetter(startLetter) || startLetter > Byte.MaxValue)
+            if (!startLetters.All(Char.IsLetter) || !startLetters.Any(l => l < Byte.MaxValue))
             {
                 runtimeCore.RuntimeStatus.LogWarning(
                     WarningID.kInvalidArguments,
@@ -1338,18 +1354,70 @@ namespace ProtoCore.Lang
                 return null;
             }
 
-            List<StackValue> letters = new List<StackValue>();
+            //  Alphabet sequence supports letters of the same case.
+            // It's restricted incoming letters like "Aa", "CcC"
+            if ((!startLetters.All(Char.IsUpper) && !startLetters.All(Char.IsLower)))
+            {
+                runtimeCore.RuntimeStatus.LogWarning(
+                    WarningID.kInvalidArguments,
+                    Resources.kInvalidCasesInRangeExpression);
+                return null;
+            }
+
+            bool isUpperCase = Char.IsUpper(startLetters.First());
+            var number = GetNumberFromLetter(startLetters, isUpperCase);
+
+            var letters = new List<StackValue>();
             for (int i = 0; i < amount; i++)
             {
-                if (Char.IsLetter(startLetter))
+                var letter = GetLetterFromNumber(number, isUpperCase);
+                if (!String.IsNullOrEmpty(letter))
                 {
-                    letters.Add(StackValue.BuildString(Char.ToString(startLetter), runtimeCore.Heap));
+                    letters.Add(StackValue.BuildString(letter, runtimeCore.Heap));
                 }
 
-                startLetter = (char)(startLetter + step);
+                number += step;
             }
 
             return letters.ToArray();
+        }
+
+        /// <summary>
+        /// Translates number into letter.
+        /// (1 = A, 2 = B...27 = AA...703 = AAA...)
+        /// </summary>
+        private static string GetLetterFromNumber(int number, bool isUpperCase = true)
+        {
+            var letters = new StringBuilder();
+            byte offset = isUpperCase ? bigLetterOffset : smallLetterOffset;
+
+            while (number > 0)
+            {
+                int modulo = (number - 1) % alphabetLength;
+                letters = letters.Insert(0, Convert.ToChar(offset + modulo));
+                number = (number - modulo) / alphabetLength;
+            }
+
+            return letters.ToString();
+        }
+
+        /// <summary>
+        /// Translates letter into number.
+        /// (A = 1, B = 2...AA = 27...AAA = 703...)
+        /// </summary>
+        private static int GetNumberFromLetter(string letter, bool isUpperCase = true)
+        {
+            char[] characters = letter.ToCharArray();
+            byte offset = isUpperCase ? bigLetterOffset : smallLetterOffset;
+
+            int sum = 0;
+            foreach (char c in characters)
+            {
+                sum *= alphabetLength;
+                sum += (c - offset + 1);
+            }
+
+            return sum;
         }
     }
     internal class ArrayUtilsForBuiltIns

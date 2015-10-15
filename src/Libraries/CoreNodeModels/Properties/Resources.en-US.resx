@@ -377,7 +377,7 @@
     <comment>Description for Number Range</comment>
   </data>
   <data name="SequenceDescription" xml:space="preserve">
-    <value>Creates a sequence of numbers.</value>
+    <value>Creates a list of numbers or letters in a sequence</value>
     <comment>Description for Number Sequence</comment>
   </data>
   <data name="OrDescription" xml:space="preserve">

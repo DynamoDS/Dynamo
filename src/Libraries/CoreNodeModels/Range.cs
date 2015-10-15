@@ -7,14 +7,14 @@ using System.Collections.Generic;
 
 namespace DSCoreNodesUI
 {
-    [NodeName("Range")]
+    [NodeName("ByRange")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
     [NodeDescription("RangeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeSearchTags("RangeSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
-    public class Range : NodeModel
+    public class ByRange : NodeModel
     {
-        public Range()
+        public ByRange()
         {
             InPortData.Add(new PortData("start", Resources.RangePortDataStartToolTip));
             InPortData.Add(new PortData("end", Resources.RangePortDataEndToolTip));
@@ -49,19 +49,19 @@ namespace DSCoreNodesUI
         }
     }
 
-    [NodeName("Sequence")]
+    [NodeName("BySequence")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
     [NodeDescription("SequenceDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeSearchTags("SequenceSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
-    public class Sequence : NodeModel
+    public class BySequence : NodeModel
     {
-        public Sequence()
+        public BySequence()
         {
             InPortData.Add(new PortData("start", Resources.RangePortDataStartToolTip));
             InPortData.Add(new PortData("amount", Resources.RangePortDataAmountToolTip));
             InPortData.Add(new PortData("step", Resources.RangePortDataStepToolTip));
-            OutPortData.Add(new PortData("seq", Resources.RangePortDataSeqToolTip));
+            OutPortData.Add(new PortData("list", Resources.SequenceOutputPortTooltip));
 
             RegisterAllPorts();
 

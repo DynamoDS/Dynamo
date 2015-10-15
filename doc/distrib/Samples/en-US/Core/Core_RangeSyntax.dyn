@@ -1,8 +1,8 @@
 <Workspace Version="0.8.0.684" X="-517.584810758433" Y="831.316312494702" zoom="0.338533966155978" Name="Home" RunType="Automatic" RunPeriod="100">
   <NamespaceResolutionMap />
   <Elements>
-    <DSCoreNodesUI.NumberSeq guid="e29704c3-dbc2-4eb8-bd2c-f671c4629051" type="DSCoreNodesUI.NumberSeq" nickname="Number Sequence" x="2230.49505500963" y="152.17945003846" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
-    <DSCoreNodesUI.NumberRange guid="5892dcad-9e46-46b5-97f2-5e18e17ca7db" type="DSCoreNodesUI.NumberRange" nickname="Number Range" x="2234.42023803884" y="-130.887249905509" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <DSCoreNodesUI.BySequence guid="e29704c3-dbc2-4eb8-bd2c-f671c4629051" type="DSCoreNodesUI.BySequence" nickname="BySequence" x="2230.49505500963" y="152.17945003846" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <DSCoreNodesUI.Range guid="5892dcad-9e46-46b5-97f2-5e18e17ca7db" type="DSCoreNodesUI.ByRange" nickname="ByRange" x="2234.42023803884" y="-130.887249905509" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
     <Dynamo.Nodes.DoubleInput guid="3ab75ca7-5aa0-45bf-a027-fa604cf40bd5" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="2127.07928186753" y="-151.616663837934" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="0" />
     </Dynamo.Nodes.DoubleInput>
@@ -42,7 +42,7 @@
       <Range min="0" max="10" step="1" />
     </DSCoreNodesUI.Input.IntegerSlider>
     <Dynamo.Nodes.Watch guid="f487811f-4d05-4c2a-8e74-f6cc429cb0e3" type="Dynamo.Nodes.Watch" nickname="Watch" x="2465.71957352301" y="-2076.25485351043" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <DSCoreNodesUI.NumberSeq guid="8b6a80c2-5218-459a-8bf7-5a0cb5b558d6" type="DSCoreNodesUI.NumberSeq" nickname="Number Sequence" x="2267.5888002793" y="-2058.35946616213" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <DSCoreNodesUI.BySequence guid="8b6a80c2-5218-459a-8bf7-5a0cb5b558d6" type="DSCoreNodesUI.BySequence" nickname="BySequence" x="2267.5888002793" y="-2058.35946616213" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
     <Dynamo.Nodes.DoubleInput guid="848b3879-4075-4b9e-8d04-e36ffa43ef74" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="2064.40900941013" y="-2077.11249838867" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="0" />
     </Dynamo.Nodes.DoubleInput>
@@ -50,7 +50,7 @@
       <System.Double value="2" />
     </Dynamo.Nodes.DoubleInput>
     <Dynamo.Nodes.Watch guid="aa85ae2a-cd2f-4ffc-a218-c5d0ceb23918" type="Dynamo.Nodes.Watch" nickname="Watch" x="2449.12311000364" y="-2360.47120328457" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <DSCoreNodesUI.NumberRange guid="2d406cdc-3bf6-4a11-bed9-dc88fb562a69" type="DSCoreNodesUI.NumberRange" nickname="Number Range" x="2271.51398330851" y="-2341.42616610609" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <DSCoreNodesUI.ByRange guid="2d406cdc-3bf6-4a11-bed9-dc88fb562a69" type="DSCoreNodesUI.ByRange" nickname="ByRange" x="2271.51398330851" y="-2341.42616610609" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
     <Dynamo.Nodes.DoubleInput guid="0ae6912a-4e63-4b59-9fa2-60d95b09b15e" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="2118.23694239017" y="-2298.18341851674" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="10" />
     </Dynamo.Nodes.DoubleInput>
