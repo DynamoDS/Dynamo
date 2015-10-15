@@ -280,8 +280,8 @@ namespace DSCore
 
             return new Dictionary<object, object>
             {
-                { "sorted list", sortedList },
-                { "sorted keys", sortedKeys }
+                { "sorted list", sortedList.ToList() },
+                { "sorted keys", sortedKeys.ToList() }
             };
         }
 

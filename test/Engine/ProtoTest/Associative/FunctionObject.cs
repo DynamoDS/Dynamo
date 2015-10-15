@@ -335,6 +335,55 @@ t4 = __Map(getPointKey, r6);
         }
 
         [Test]
+        public void TestGroupByFunction()
+        {
+            string code =
+    @"import(""FFITarget.dll"");
+import (""DSCoreNodes.dll"");
+import (""FunctionObject.ds"");
+
+p1 = DummyPoint.ByCoordinates(0, 0, 0);
+p2 = DummyPoint.ByCoordinates(1, 0, 0);
+p3 = DummyPoint.ByCoordinates(1, -1, 0);
+
+def getCoordinateValue(p : DummyPoint)
+{
+    return = p.X + p.Y + p.Z;
+}
+
+getPointKey = _SingleFunctionObject(getCoordinateValue, 1, { }, { }, true);
+r1 = GroupByFunction(null, getPointKey);
+r2 = GroupByFunction({ }, getPointKey);
+
+r3 = GroupByFunction({ p1 }, getPointKey);
+
+r4 = GroupByFunction({ p1, p2, p3 }, getPointKey);
+
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", null);
+            thisTest.Verify("r2", new object[] { });
+            thisTest.Verify("r3", new object[]
+            {
+                new object[]
+                {
+                    FFITarget.DummyPoint.ByCoordinates(0, 0, 0)
+                }
+            });
+            thisTest.Verify("r4", new object[]
+            {
+                new object[]
+                {
+                    FFITarget.DummyPoint.ByCoordinates(0, 0, 0), FFITarget.DummyPoint.ByCoordinates(1, -1, 0)
+                },
+                new object[]
+                {
+                    FFITarget.DummyPoint.ByCoordinates(1, 0, 0)
+                }
+            });
+        }
+
+        [Test]
         public void TestFilter()
         {
             string code =
