@@ -815,7 +815,8 @@ namespace Dynamo.Models
                 customNodeSearchRegistry.Add(info.FunctionId);
                 var searchElement = new CustomNodeSearchElement(CustomNodeManager, info);
                 SearchModel.Add(searchElement);
-                CustomNodeManager.InfoUpdated += newInfo =>
+                Action<CustomNodeInfo> infoUpdatedHandler = null;
+                infoUpdatedHandler = newInfo =>
                 {
                     if (info.FunctionId == newInfo.FunctionId)
                     {
@@ -824,8 +825,10 @@ namespace Dynamo.Models
                         SearchModel.Update(searchElement, isCategoryChanged);
                     }
                 };
+                CustomNodeManager.InfoUpdated += infoUpdatedHandler;
                 CustomNodeManager.CustomNodeRemoved += id =>
                 {
+                    CustomNodeManager.InfoUpdated -= infoUpdatedHandler;
                     if (info.FunctionId == id)
                     {
                         customNodeSearchRegistry.Remove(info.FunctionId);
