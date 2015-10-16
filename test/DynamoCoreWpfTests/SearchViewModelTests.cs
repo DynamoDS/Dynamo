@@ -674,6 +674,7 @@ namespace Dynamo.Tests
             viewModel.SearchAndUpdateResults("member");
 
             Assert.DoesNotThrow(() => viewModel.MoveSelection(SearchViewModel.Direction.Down));
+            Assert.IsFalse(viewModel.FilteredResults.Any());
         }
 
         [Test]
