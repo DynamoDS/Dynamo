@@ -668,7 +668,7 @@ namespace Dynamo.Tests
         }
 
         [Test, Category("UnitTests")]
-        public void NoItemsAfterSearch()
+        public void NoItemsIsSelectedAfterSearch()
         {
             viewModel.Visible = true;
             viewModel.SearchAndUpdateResults("member");
