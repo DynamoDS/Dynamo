@@ -1300,7 +1300,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             double nearPlaneDistanceFactor, out double near, out double far, double defaultNearClipDistance, double defaultFarClipDistance)
         {
             near = defaultNearClipDistance;
-            far = double.MaxValue;
+            far = DefaultFarClipDistance;
 
             var validGeometry = geometry.Where(i => i is GeometryModel3D).ToArray();
             if (!validGeometry.Any()) return;
