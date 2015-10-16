@@ -14,7 +14,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
+using Dynamo.Controls;
+using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Rendering;
 using DynamoUtilities;
 using HelixToolkit.Wpf.SharpDX;
@@ -31,8 +34,7 @@ using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
     public class CameraData
-    {
-        
+    { 
         // Default camera position data. These values have been rounded
         // to the nearest whole value.
         // eyeX="-16.9655136013663" eyeY="24.341577725171" eyeZ="50.6494323150915" 
@@ -63,7 +65,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
     }
 
-    public class HelixWatch3DViewModel : Watch3DViewModelBase
+    /// <summary>
+    /// The HelixWatch3DViewModel establishes a full rendering 
+    /// context using the HelixToolkit. An instance of this class
+    /// can act as the data source for a <see cref="Watch3DView"/>
+    /// </summary>
+    public class HelixWatch3DViewModel : DefaultWatch3DViewModel
     {
         #region private members
 
@@ -286,18 +293,43 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         #endregion
 
+        /// <summary>
+        /// Attempt to create a HelixWatch3DViewModel. If one cannot be created,
+        /// fall back to creating a DefaultWatch3DViewModel and log the exception.
+        /// </summary>
+        /// <param name="parameters">A Watch3DViewModelStartupParams object.</param>
+        /// <param name="logger">A logger to be used to log the exception.</param>
+        /// <returns></returns>
+        public static DefaultWatch3DViewModel TryCreateHelixWatch3DViewModel(Watch3DViewModelStartupParams parameters, DynamoLogger logger)
+        {
+            try
+            {
+                var vm = new HelixWatch3DViewModel(parameters);
+                return vm;
+            }
+            catch (Exception ex)
+            {
+                logger.Log(Resources.BackgroundPreviewCreationFailureMessage, LogLevel.Console);
+                logger.Log(ex.Message, LogLevel.File);
+
+                var vm = new DefaultWatch3DViewModel(parameters)
+                {
+                    Active = false,
+                    CanBeActivated = false
+                };
+                return vm;
+            }
+        }
+
         protected HelixWatch3DViewModel(Watch3DViewModelStartupParams parameters) : base(parameters)
-        { 
+        {
+            Name = Resources.BackgroundPreviewName;
             IsResizable = false;
             RenderTechniquesManager = new DynamoRenderTechniquesManager();
             EffectsManager = new DynamoEffectsManager(RenderTechniquesManager);
-        }
 
-        public static HelixWatch3DViewModel Start(Watch3DViewModelStartupParams parameters)
-        {
-            var vm = new HelixWatch3DViewModel(parameters);
-            vm.OnStartup();
-            return vm;
+            SetupScene();
+            InitializeHelix();
         }
 
         public void SerializeCamera(XmlElement camerasElement)
@@ -370,12 +402,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
 
             return new CameraData();
-        }
-
-        protected override void OnStartup()
-        {
-            SetupScene();
-            InitializeHelix();
         }
 
         public override void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages)

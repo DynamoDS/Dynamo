@@ -2549,35 +2549,6 @@ namespace ProtoCore
                     int blockId = 0;
                     EmitPushList(depth, globalClassIndex, blockId);
                 }
-
-                
-#if PROPAGATE_PROPERTY_MODIFY_VIA_METHOD_UPDATE
-                if (isMethodCallPresent)
-                {
-                    // Comment Jun: If the first symbol is null, it is a constructor. If you see it isnt, pls tell me
-                    if (null != firstSymbol)
-                    {
-                        StackValue op = StackValue.Null;
-
-                        if (firstSymbol.classScope != ProtoCore.DSASM.Constants.kInvalidIndex &&
-                            firstSymbol.functionIndex == ProtoCore.DSASM.Constants.kGlobalScope)
-                        {
-                            // Member var
-                            op = firstSymbol.isStatic 
-                                 ? StackValue.BuildStaticMemVarIndex(firstSymbol.symbolTableIndex)
-                                 : StackValue.BuildMemVarIndex(firstSymbol.symbolTableIndex);
-                        }
-                        else
-                        {
-                            op = StackValue.BuildVarIndex(firstSymbol.symbolTableIndex);
-                        }
-
-                        EmitPushDependencyData(currentBinaryExprUID, false);
-                        EmitInstrConsole(ProtoCore.DSASM.kw.dep, firstSymbol.name);
-                        EmitDependency(firstSymbol.runtimeTableIndex, op, 0);
-                    }
-                }
-#endif
             }
         }
 

@@ -449,9 +449,7 @@ namespace ProtoScript.Runners
             }
             catch (Exception ex)
             {
-                Messages.FatalCompileError fce = new Messages.FatalCompileError { Message = ex.ToString() };
-
-                Console.WriteLine(fce.Message);
+                Console.WriteLine(ex.ToString());
                 return false;
             }
 

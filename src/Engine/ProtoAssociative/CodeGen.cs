@@ -2747,7 +2747,8 @@ namespace ProtoAssociative
                     // Handle SSA if the lhs is not an identifier
                     // A non-identifier LHS is any LHS that is not just an identifier name.
                     //  i.e. a[0], a.b, f(), f(x)
-                    if (!ProtoCore.ASTCompilerUtils.IsSingleIdentifier(leftNode))
+                    var isSingleIdentifier = (leftNode is IdentifierNode) && (leftNode as IdentifierNode).ArrayDimensions == null;
+                    if (!isSingleIdentifier)
                     {
                         EmitSSALHS(ref leftNode, ssaStack, ref astlist);
                     }

@@ -169,20 +169,20 @@ temp = test(1, 2);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
-        [Category("Class")]
+        [Category("DSDefinedClass_Ported")]
         public void TestClasses01()
         {
             String code =
-@"	class f	{		fx : var;		fy : var;		constructor f()		{			fx = 123;			fy = 345;		}	}		class g	{		gx : var;		gy : var;		constructor g()		{			// Construct a class within a class			gx = f.f();			gy = 678;		}	}	p = f.f();    a = p.fx;    b = p.fy;";
+@"import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(123.0, 345.0, 567.0);a = p.X;b = p.Y;c = p.Z;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 123);
-            Assert.IsTrue((Int64)mirror.GetValue("b").Payload == 345);
+            Assert.IsTrue((double)mirror.GetValue("a").Payload == 123.0);
+            Assert.IsTrue((double)mirror.GetValue("b").Payload == 345.0);
+            Assert.IsTrue((double)mirror.GetValue("c").Payload == 567.0);
         }
 
         [Test]
         [Category("DSDefinedClass_Ported")]
-        public void TestClasses02()
+        public void TestFunction01()
         {
             String code =
 @"	mx : var;	my : var;	def vector2D(px : int, py : int)	{		mx = px; 		// Copy mx to my with px's value		my = mx; 	}	vector2D(100,20);	x = mx;	y = my;";
@@ -192,7 +192,7 @@ temp = test(1, 2);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void TestClasses03()
         {
             String code =
@@ -202,7 +202,7 @@ temp = test(1, 2);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void TestClasses04()
         {
             String code =
@@ -214,7 +214,7 @@ temp = test(1, 2);
 
         [Test]
         [Category("DSDefinedClass_Ported")]
-        public void TestClasses05()
+        public void TestFunction02()
         {
             String code =
 @"      def sum : double (p : double)    {        return = p + 10.0;    }    val : var;	mx : var;	my : var;	mz : var;    def Obj(xx : double, yy : double, zz : double)    {        mx = xx;        my = yy;        mz = zz;        val = sum(zz);    }    p = Obj(0.0, 1.0, 2.0);    x = val;";
@@ -223,17 +223,28 @@ temp = test(1, 2);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Category("DSDefinedClass_Ported")]
         public void TestClasses06()
         {
             String code =
-@"  class Point{    mx : var;    my : var;    mz : var;    constructor ByCoordinates(x : int, y : int, z : int)    {        mx = x;        my = y;        mz = z;    }}class BSplineCurve{    mpts : var[];    constructor ByPoints(ptsOnCurve : Point[])    {        mpts = ptsOnCurve;    }}pt1 = Point.ByCoordinates(1,2,3);pt2 = Point.ByCoordinates(4,5,6);pt3 = Point.ByCoordinates(7,8,9);pt4 = Point.ByCoordinates(10,11,12);pt5 = Point.ByCoordinates(15,16,17);pts = {pt1, pt2, pt3, pt4, pt5};p = BSplineCurve.ByPoints(pts);a1 = p.mpts[0].mx;a2 = p.mpts[1].my;a3 = p.mpts[2].mz;a4 = p.mpts[3].mx;a5 = p.mpts[4].my;";
+@"  import(""FFITarget.dll"");
+p1 = DummyPoint.ByCoordinates(1,1,1);
+p2 = DummyPoint.ByCoordinates(10,10,10);
+line = DummyLine.ByStartPointEndPoint(p1, p2);
+a = line.Start.X;
+b = line.Start.Y;
+c = line.Start.Z;
+x = line.End.X;
+y = line.End.Y;
+z = line.End.Z;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("a1").Payload == 1);
-            Assert.IsTrue((Int64)mirror.GetValue("a2").Payload == 5);
-            Assert.IsTrue((Int64)mirror.GetValue("a3").Payload == 9);
-            Assert.IsTrue((Int64)mirror.GetValue("a4").Payload == 10);
-            Assert.IsTrue((Int64)mirror.GetValue("a5").Payload == 16);
+            Assert.IsTrue((double)mirror.GetValue("a").Payload == 1.0);
+            Assert.IsTrue((double)mirror.GetValue("b").Payload == 1.0);
+            Assert.IsTrue((double)mirror.GetValue("c").Payload == 1.0);
+            Assert.IsTrue((double)mirror.GetValue("x").Payload == 10.0);
+            Assert.IsTrue((double)mirror.GetValue("y").Payload == 10.0);
+            Assert.IsTrue((double)mirror.GetValue("z").Payload == 10.0);
         }
 
         [Test]
@@ -399,7 +410,7 @@ x = d.foo(c);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Category("DSDefinedClass_Ignored_Redundant")]
         public void TestClassFunction05()
         {
             String code =
@@ -416,15 +427,32 @@ x = d.foo(c);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
-        public void TestClassFunction06()
+        [Category("DSDefinedClass_Ported")]
+        public void TestClassProperty()
         {
             String code =
-@"class Point {    mx : var;    my : var;    mz : var;    constructor ByCoordinates(xx : double, yy : double, zz : double)    {    mx = xx;    my = yy;    mz = zz;    }}    class Circle{    _cp : var;        constructor ByCenterPointRadius(centerPt : Point, rad : double)    {        _cp = centerPt;    }        def get_CenterPoint : Point ()    {                return = _cp;    }        }e;f;g;[Associative]{    pt = Point.ByCoordinates(10.0,20.0,30.0);    rad = 25.0;        c = Circle.ByCenterPointRadius(pt, rad);        d = c.get_CenterPoint();    e = d.mx;    f = d.my;    g = d.mz;}";
+@"  import(""FFITarget.dll"");
+p1 = DummyPoint.ByCoordinates(1.0,1.0,1.0);
+p2 = DummyPoint.ByCoordinates(10.0,10.0,10.0);
+line = DummyLine.ByStartPointEndPoint(p1, p2);
+a;b;c;x;y;z;
+[Associative]
+{
+    a = line.Start.X;
+    b = line.Start.Y;
+    c = line.Start.Z;
+    x = line.End.X;
+    y = line.End.Y;
+    z = line.End.Z;
+}
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((double)mirror.GetValue("e", 0).Payload == 10);
-            Assert.IsTrue((double)mirror.GetValue("f", 0).Payload == 20);
-            Assert.IsTrue((double)mirror.GetValue("g", 0).Payload == 30);
+            Assert.IsTrue((double)mirror.GetValue("a").Payload == 1.0);
+            Assert.IsTrue((double)mirror.GetValue("b").Payload == 1.0);
+            Assert.IsTrue((double)mirror.GetValue("c").Payload == 1.0);
+            Assert.IsTrue((double)mirror.GetValue("x").Payload == 10.0);
+            Assert.IsTrue((double)mirror.GetValue("y").Payload == 10.0);
+            Assert.IsTrue((double)mirror.GetValue("z").Payload == 10.0);
         }
 
         [Test]

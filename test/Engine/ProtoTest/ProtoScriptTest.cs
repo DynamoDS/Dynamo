@@ -8,8 +8,8 @@ namespace ProtoTest
         public void BasicInfrastructureTest()
         {
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            fsr.Execute(
-@"[Imperative]{	x = 987654321;	[Associative]	{		 px = 1234321;	}}", core, out runtimeCore);
+            runtimeCore = fsr.Execute(
+@"[Imperative]{	x = 987654321;	[Associative]	{		 px = 1234321;	}}", core);
         }
     }
 
@@ -24,8 +24,8 @@ namespace ProtoTest
             //@TODO: What exception should this throw
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
-                fsr.Execute(
-    @"[imperative{    a = 3}", core, out runtimeCore);
+                runtimeCore = fsr.Execute(
+    @"[imperative{    a = 3}", core);
             });
         }
         [Test]
@@ -35,8 +35,8 @@ namespace ProtoTest
             //@TODO: What exception should this throw
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
-                fsr.Execute(
-    @"[{    a = 3}", core, out runtimeCore);
+                runtimeCore = fsr.Execute(
+    @"[{    a = 3}", core);
             });
         }
         [Test]
@@ -46,8 +46,8 @@ namespace ProtoTest
             //@TODO: What exception should this throw
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
-                fsr.Execute(
-    @"[associative]{	a = 1;	}", core, out runtimeCore);
+                runtimeCore = fsr.Execute(
+    @"[associative]{	a = 1;	}", core);
             });
         }
     }
