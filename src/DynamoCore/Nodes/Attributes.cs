@@ -7,7 +7,7 @@ using Autodesk.DesignScript.Runtime;
 
 using Dynamo.Utilities;
 
-namespace Dynamo.Nodes
+namespace Dynamo.Models
 {
     [AttributeUsage(AttributeTargets.All)]
     public class NodeNameAttribute : Attribute
