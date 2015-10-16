@@ -4358,31 +4358,7 @@ namespace ProtoAssociative
             }
 
         }
-#if ENABLE_INC_DEC_FIX
-        private void EmitPostFixNode(AssociativeNode node, ref ProtoCore.Type inferedType)
-        {
-            bool parseGlobal = null == localProcedure && ProtoCore.CompilerDefinitions.Associative.CompilePass.kAll == compilePass;
-            bool parseGlobalFunction = null != localProcedure && ProtoCore.CompilerDefinitions.Associative.CompilePass.kGlobalFuncBody == compilePass;
-            bool parseMemberFunction = ProtoCore.DSASM.Constants.kGlobalScope != classIndex && ProtoCore.CompilerDefinitions.Associative.CompilePass.kClassMemFuncBody == compilePass;
 
-            if (parseGlobal || parseGlobalFunction || parseMemberFunction)
-            {
-                PostFixNode pfNode = node as PostFixNode;
-
-                //convert post fix operation to a binary operation
-                BinaryExpressionNode binRight = new BinaryExpressionNode();
-                BinaryExpressionNode bin = new BinaryExpressionNode();
-
-                binRight.LeftNode = pfNode.Identifier;
-                binRight.RightNode = new IntNode() { value = "1" };
-                binRight.Optr = (ProtoCore.DSASM.UnaryOperator.Increment == pfNode.Operator) ? ProtoCore.DSASM.Operator.add : ProtoCore.DSASM.Operator.sub;
-                bin.LeftNode = pfNode.Identifier;
-                bin.RightNode = binRight;
-                bin.Optr = ProtoCore.DSASM.Operator.assign;
-                EmitBinaryExpressionNode(bin, ref inferedType);
-            }
-        }
-#endif
         private void EmitRangeExprNode(AssociativeNode node, 
                                        ref ProtoCore.Type inferedType, 
                                        GraphNode graphNode = null,
@@ -7740,15 +7716,6 @@ namespace ProtoAssociative
             }
 
             int startpc = ProtoCore.DSASM.Constants.kInvalidIndex;
-            // (Ayush) in case of PostFixNode, only traverse the identifier now. Post fix operation will be applied later.
-#if ENABLE_INC_DEC_FIX
-                if (bnode.RightNode is PostFixNode)
-                {
-                    DfsTraverse((bnode.RightNode as PostFixNode).Identifier, ref inferedType, isBooleanOperation, graphNode);
-                }
-                else
-                {
-#endif
             if ((ProtoCore.DSASM.Operator.assign == bnode.Optr) && (bnode.RightNode is LanguageBlockNode))
             {
                 var inferredType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
@@ -7789,9 +7756,6 @@ namespace ProtoAssociative
             startpc = pc;
 
             DfsTraverse(bnode.RightNode, ref inferedType, isBooleanOperation, graphNode, subPass, node);
-#if ENABLE_INC_DEC_FIX
-                }
-#endif
 
             rightType.UID = inferedType.UID;
             rightType.rank = inferedType.rank;
@@ -7816,11 +7780,6 @@ namespace ProtoAssociative
                 EmitBinaryOperation(leftType, rightType, bnode.Optr);
                 isBooleanOp = false;
 
-                //if post fix, now traverse the post fix
-#if ENABLE_INC_DEC_FIX
-                if (bnode.RightNode is PostFixNode)
-                    EmitPostFixNode(bnode.RightNode, ref inferedType);
-#endif
                 return;
             }
 
@@ -8258,13 +8217,6 @@ namespace ProtoAssociative
                 throw new BuildHaltException(message);
             }
             core.DebuggerProperties.breakOptions = oldOptions;
-
-            //if post fix, now traverse the post fix
-
-#if ENABLE_INC_DEC_FIX
-                if (bnode.RightNode is PostFixNode)
-                    EmitPostFixNode(bnode.RightNode, ref inferedType);
-#endif
         }
 
         private void EmitImportNode(AssociativeNode node, ref ProtoCore.Type inferedType, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone)
