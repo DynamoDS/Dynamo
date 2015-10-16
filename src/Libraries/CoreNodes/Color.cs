@@ -470,6 +470,14 @@ namespace DSCore
             return Color.Lerp(c1.Color, c2.Color, (parameter - c1.Parameter) / (c2.Parameter - c1.Parameter));
         }
 
+        /// <summary>
+        /// Create a ColorRange1D with the default color scheme.
+        /// </summary>
+        /// <returns></returns>
+        public static ColorRange1D Default()
+        {
+            return new ColorRange1D(DefaultColorRanges.Analysis, new [] {0.0,0.5,1.0});
+        }
     }
 
     [IsVisibleInDynamoLibrary(false)]

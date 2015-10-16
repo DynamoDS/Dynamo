@@ -299,7 +299,7 @@ namespace Dynamo.Engine.CodeGeneration
                     }
                     else
                     {
-                        Log("Node does not have input port data.");
+                        Log("Node does not have InPortData at the requested index.");
                     }
                 }
             }

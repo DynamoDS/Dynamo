@@ -12,6 +12,7 @@ using ProtoCore.Mirror;
 using System.Globalization;
 
 using Dynamo.Engine;
+using Dynamo.Engine.CodeGeneration;
 
 namespace DSCoreNodesUI
 {
@@ -72,15 +73,30 @@ namespace DSCoreNodesUI
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            var buildColorRangeNode =
+            AssociativeNode buildColorRangeNode = null;
+
+            // If either of the first two inputs does not have a connector
+            // then build a default color range.
+            if (!InPorts[0].Connectors.Any() || !InPorts[1].Connectors.Any())
+            {
+                buildColorRangeNode =
+                    AstFactory.BuildFunctionCall(
+                        new Func<ColorRange1D>(ColorRange1D.Default),
+                        new List<AssociativeNode>());
+            }
+            else
+            {
+                buildColorRangeNode =
                 AstFactory.BuildFunctionCall(
                     new Func<List<Color>, List<double>, ColorRange1D>(ColorRange1D.ByColorsAndParameters),
-                    new List<AssociativeNode>(){inputAstNodes[0], inputAstNodes[1]});
+                    new List<AssociativeNode>() { inputAstNodes[0], inputAstNodes[1] });
+            }
 
+            // The last inputAstNode is assumed to be the value.
             var functionCall =
                 AstFactory.BuildFunctionCall(
                     new Func<ColorRange1D,double, Color>(ColorRange1D.GetColorAtParameter),
-                    new List<AssociativeNode>(){buildColorRangeNode, inputAstNodes[2]});
+                    new List<AssociativeNode>(){buildColorRangeNode, inputAstNodes.Last()});
 
             return new[]
             {
