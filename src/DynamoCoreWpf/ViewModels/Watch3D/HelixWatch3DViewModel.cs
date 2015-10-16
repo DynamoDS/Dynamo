@@ -1285,7 +1285,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         /// <summary>
-        /// This clamp the near and far clip planes around the scene geometry
+        /// This method clamps the near and far clip planes around the scene geometry
         /// to achiever higher z-buffer precision.
         /// 
         /// It does this by finding the distance from each GeometryModel3D object's corner points
