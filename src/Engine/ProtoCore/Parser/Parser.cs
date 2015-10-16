@@ -3301,8 +3301,8 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			NodeUtils.SetNodeEndLocation(bNode, t);
 			node = bNode; 
 			
-		} else if (!(lhsNode is ProtoCore.AST.ImperativeAST.PostFixNode)) {
-			Expect(49);
+		} else if (la.kind == 49) {
+			Get();
 			ProtoCore.AST.ImperativeAST.ImperativeNode rhsNode = null; 
 			if (HasMoreAssignmentStatements()) {
 				Imperative_assignstmt(out rhsNode);
