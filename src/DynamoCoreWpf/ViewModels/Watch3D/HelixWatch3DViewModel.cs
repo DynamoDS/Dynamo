@@ -103,6 +103,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private const int FrameUpdateSkipCount = 200;
         private int currentFrameSkipCount;
 
+        private const double EqualityTolerance = 0.000001;
         private double nearPlaneDistanceFactor = 0.001;
         internal const double DefaultNearClipDistance = 0.1f;
         internal const double DefaultFarClipDistance = 100000;
@@ -156,6 +157,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        /// <summary>
+        /// An event requesting a zoom to fit operation around the provided bounds.
+        /// </summary>
         public event Action<BoundingBox> RequestZoomToFit;
         protected void OnRequestZoomToFit(BoundingBox bounds)
         {
@@ -1295,12 +1299,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         internal static void ComputeClipPlaneDistances(Vector3 cameraPosition, Vector3 cameraLook, IEnumerable<Model3D> geometry, 
             double nearPlaneDistanceFactor, out double near, out double far, double defaultNearClipDistance, double defaultFarClipDistance)
         {
-            near = defaultNearClipDistance; 
+            near = defaultNearClipDistance;
             far = double.MaxValue;
-            
-            var bounds =
-                geometry.Where(i => i is GeometryModel3D)
-                    .Cast<GeometryModel3D>().Select(g=>g.Bounds());
+
+            var validGeometry = geometry.Where(i => i is GeometryModel3D).ToArray();
+            if (!validGeometry.Any()) return;
+
+            var bounds = validGeometry.Cast<GeometryModel3D>().Select(g=>g.Bounds());
 
             // See http://mathworld.wolfram.com/Point-PlaneDistance.html
             // The plane distance formula will return positive values for points on the same side of the plane
@@ -1310,41 +1315,27 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Select(c => c.DistanceToPlane(cameraPosition, cameraLook.Normalized())).
                 ToList();
 
+            if (!distances.Any()) return;
+
             distances.Sort();
 
-            if (distances.Any())
+            // All behind
+            // Set the near and far clip to their defaults
+            // because nothing is in front of the camera.
+            if (distances.All(d => d < 0))
             {
-                // All behind
-                // Set the near and far clip to their defaults
-                // because nothing is in front of the camera.
-                if (distances.All(d => d < 0))
-                {
-                    //Debug.WriteLine("All points behind.");
-                    near = defaultNearClipDistance;
-                    far = defaultFarClipDistance;
-                }
-                // All in front
-                // Set the near clip plane to some fraction of the 
-                // of the distance to the first point.
-                else if (distances.All(d => d > 0))
-                {
-                    //Debug.WriteLine("All points in front.");
-                    near = Math.Max(defaultNearClipDistance, distances.First(d => d > 0) * nearPlaneDistanceFactor);
-                    far = distances.Last() * 2;
-                }
-                // Some in front, some behind
-                // In this case, set the near plane distance
-                // to the default to avoid clipping near geometry. This will cause
-                // artifacts for large scene geometry.
-                else
-                {
-                    //Debug.WriteLine("Some points in front.");
-                    near = Math.Max(defaultNearClipDistance, distances.First(d => d > 0)*nearPlaneDistanceFactor);
-                    far = distances.Last() * 2;
-                }
+                near = defaultNearClipDistance;
+                far = defaultFarClipDistance;
+                return;
             }
 
-            //Debug.WriteLine("Near={0}, Far={1}", near, far);
+            // All in front or some in front and some behind
+            // Set the near clip plane to some fraction of the 
+            // of the distance to the first point.
+            var closest = distances.First(d => d >= 0);
+            near = closest.AlmostEqualTo(0, EqualityTolerance) ? DefaultNearClipDistance : closest * nearPlaneDistanceFactor;
+            far = distances.Last() * 2;
+
         }
 
         internal static IEnumerable<string> FindIdentifiersForSelectedNodes(IEnumerable<NodeModel> selectedNodes)
@@ -1546,6 +1537,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         internal static double DistanceToPlane(this Vector3 point, Vector3 planeOrigin, Vector3 planeNormal)
         {
             return Vector3.Dot(planeNormal, (point - planeOrigin));
+        }
+    }
+
+    internal static class DoubleExtensions
+    {
+        internal static bool AlmostEqualTo(this double a, double b, double tolerance)
+        {
+            return Math.Abs(a - b) < tolerance;
         }
     }
 }

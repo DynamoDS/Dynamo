@@ -22,7 +22,7 @@ namespace WpfVisualizationTests
             var builder = new MeshBuilder();
             builder.AddBox(new Vector3(-10000, -10000, -5000), 5, 5, 5, BoxFaces.All);
             var boxGeom = builder.ToMeshGeometry3D();
-            var cube = new MeshGeometryModel3D()
+            cube = new MeshGeometryModel3D()
             {
                 Geometry = boxGeom,
                 Name = "cube"
@@ -32,7 +32,7 @@ namespace WpfVisualizationTests
         #region clip plane tests
 
         [Test]
-        public void ComputeNearClipPlaneDistance_AllObjectsInFront_ClipDistance_IsCorrect()
+        public void ComputeClipPlaneDistances_AllObjectsInFront_ClipDistance_IsCorrect()
         {
             double near, far;
             var planeOrigin = new Vector3(-50000,0,0);
@@ -46,7 +46,7 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        public void ComputeNearClipPlaneDistance_AllObjectsBehind__ClipDistances_AreDefault()
+        public void ComputeClipPlaneDistances_AllObjectsBehind__ClipDistances_AreDefault()
         {
             double near, far;
             var planeOrigin = new Vector3(50000, 0, 0);
@@ -59,7 +59,7 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        public void ComputeNearClipPlaneDistance_ObjectsInFrontAndBehind_ClipDistance_IsCorrect()
+        public void ComputeClipPlaneDistances_ObjectsInFrontAndBehind_ClipDistance_IsCorrect()
         {
             double near, far;
             var planeOrigin = new Vector3(-10, 0, 0);
@@ -69,6 +69,18 @@ namespace WpfVisualizationTests
                 HelixWatch3DViewModel.DefaultNearClipDistance, HelixWatch3DViewModel.DefaultFarClipDistance);
             Assert.Less(near, closePoint.Bounds().GetCorners().Min(c => c.DistanceToPlane(planeOrigin, planeNormal)));
             Assert.Greater(far, farPoint.Bounds().GetCorners().Max(c => c.DistanceToPlane(planeOrigin, planeNormal)));
+        }
+
+        [Test]
+        public void ComputeClipPlaneDistances_ClosestObjectCoincidentWithCamera_NearClipDistance_IsDefault()
+        {
+            double near, far;
+            var planeOrigin = farPoint.Bounds().Minimum;
+            var planeNormal = new Vector3(1, 0, 0);
+            var geometry = new GeometryModel3D[] { closePoint, farPoint, cube };
+            HelixWatch3DViewModel.ComputeClipPlaneDistances(planeOrigin, planeNormal, geometry, 0.001, out near, out far,
+                HelixWatch3DViewModel.DefaultNearClipDistance, HelixWatch3DViewModel.DefaultFarClipDistance);
+            Assert.AreEqual(near, HelixWatch3DViewModel.DefaultNearClipDistance);
         }
 
         #endregion
