@@ -508,10 +508,10 @@ namespace Dynamo.Tests
             var filename = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             string resultPath = SampleDirectory + "Data\\helix.csv";
-            // Although old path is a hard coded but that is not going to change 
-            // because it is saved in DYN which we have added in Samples folder.
-            filename.Value = filename.Value.Replace
-                ("C:\\ProgramData\\Dynamo\\0.8\\samples\\Data\\helix.csv", resultPath);
+          
+            //we cannot count on this path never changing as the samples path
+            //must be updated to match dynamo version number
+            filename.Value = resultPath;
 
             RunCurrentModel();
 
@@ -534,10 +534,10 @@ namespace Dynamo.Tests
             var filename = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             string resultPath = Path.Combine(TempFolder, "icosohedron_points.csv");
-            // Although old path is a hard coded but that is not going to change 
-            // because it is saved in DYN which we have added in Samples folder.
-            filename.Value = filename.Value.Replace
-                ("C:\\ProgramData\\Dynamo\\0.8\\samples\\Data\\icosohedron_points.csv", resultPath);
+
+            //we cannot count on this path never changing as the samples path
+            //must be updated to match dynamo version number
+            filename.Value = resultPath;
 
             RunCurrentModel();
 
@@ -562,10 +562,10 @@ namespace Dynamo.Tests
             var filename = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             string resultPath = SampleDirectory + "Data\\helix.xlsx";
-            // Although old path is a hard coded but that is not going to change 
-            // because it is saved in DYN which we have added in Samples folder.
-            filename.Value = filename.Value.Replace
-                ("C:\\ProgramData\\Dynamo\\0.8\\samples\\Data\\helix.xlsx", resultPath);
+
+            //we cannot count on this path never changing as the samples path
+            //must be updated to match dynamo version number
+            filename.Value = resultPath;
 
             //RunCurrentModel();
 
