@@ -150,6 +150,44 @@ namespace Dynamo.Nodes
         }
     }
 
+    [AlsoKnownAs("DSCore.SortByKey")]
+    public class SortByKey : MigrationNode
+    {
+        [NodeMigration(from: "0.8.3.0", to: "0.9.0.0")]
+        public static NodeMigrationData Migrate_0830_to_0900(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+
+            XmlElement newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            migrationData.AppendNode(newNode);
+
+            MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
+                    "List.SortByKey", "List.SortByKey@IList,IList");
+
+            return migrationData;
+        }
+    }
+
+    [AlsoKnownAs("DSCore.GroupByKey")]
+    public class GroupByKey : MigrationNode
+    {
+        [NodeMigration(from: "0.8.3.0", to: "0.9.0.0")]
+        public static NodeMigrationData Migrate_0830_to_0900(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+
+            XmlElement newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            migrationData.AppendNode(newNode);
+
+            MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
+                    "List.GroupByKey", "List.GroupByKey@IList,IList");
+
+            return migrationData;
+        }
+    }
+
     public class Sort : MigrationNode
     {
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
