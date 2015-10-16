@@ -288,7 +288,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     List of items to group as sublists
+        ///     Group items into sub-lists based on their like key values
         /// </summary>
         /// <param name="list">List of items to group as sublists</param>
         /// <param name="keys">Key values, one per item in the input list, used for grouping the items</param>
