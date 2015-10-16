@@ -184,6 +184,7 @@ code.cs, code.c {
  font-size:30px;
  position:absolute;
  left:45%; 
+ color:#fff;
 }
 
 .rst-content table.docutils {
