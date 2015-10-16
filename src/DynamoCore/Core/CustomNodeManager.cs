@@ -1138,6 +1138,8 @@ namespace Dynamo.Core
                 var collapsedNode = CreateCustomNodeInstance(newId, isTestMode: isTestMode);
                 collapsedNode.X = avgX;
                 collapsedNode.Y = avgY;
+                collapsedNode.Controller.SyncWithDefinitionStart += currentWorkspace.OnSyncWithDefintionStart;
+                collapsedNode.Controller.SyncWithDefinitionEnd += currentWorkspace.OnSyncWithDefinitionEnd;
                 currentWorkspace.AddAndRegisterNode(collapsedNode, centered: false);
                 undoRecorder.RecordCreationForUndo(collapsedNode);
 
