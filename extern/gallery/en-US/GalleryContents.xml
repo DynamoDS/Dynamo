@@ -2,33 +2,28 @@
 <GalleryContents xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<GalleryUiContents>
 	<GalleryContent>
-		<Header>Manage Node and Package Paths</Header>
-		<Body>Under settings, paths can now be defined so that nodes and packages automatically show up in the Library. You can even set paths to map to shared network folders for easy collaboration.</Body>
-		<ImagePath>ManagePaths.png</ImagePath>
+		<Header>Create DirectShape Elements in Dynamo</Header>
+		<Body>You can now wrap meshes, solids, and surfaces in a DirectShape and place it into your Revit Model.</Body>
+		<ImagePath>DirectShape.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
-		<Header>Save Design Options with Presets</Header>
-		<Body>Presets allow you to keep track of different states of your graph by capturing the values of its input nodes.</Body>
-		<ImagePath>Presets.png</ImagePath>
+		<Header>Library Enhancements</Header>
+		<Body>The library is now organized in a tree view to make it easier to find the nodes you want. Node types have also been color-coded to make it easier for you to locate create, action, and query nodes in the library.</Body>
+		<ImagePath>Library.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
-		<Header>Convert Nodes to Code</Header>
-		<Body>Select groups of nodes and automatically generate the corresponding DesignScript code.</Body>
-		<ImagePath>Node2Code.png</ImagePath>
+		<Header>Node Layout Cleanup Improvements</Header>
+		<Body>Clean up layouts considering groups as a whole or clean up layouts within groups.</Body>
+		<ImagePath>NodeLayoutCleanup.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
-		<Header>Improved In-Canvas Search and Tooltips</Header>
-		<Body>Search algorithms and keyboard navigation have been improved so that you can quickly search for nodes without using the Library.&#10;Right-click (or Shift + Double-click) over the canvas to bring up search. Hovering over search results reveals helpful tooltips.</Body>
-		<ImagePath>In-CanvasSearch.png</ImagePath>
-	</GalleryContent>
-	<GalleryContent>
-		<Header>Color on Surfaces</Header>
-		<Body>Square arrays of color can now be applied to surfaces with the Display.BySurfaceColors node.</Body>
-		<ImagePath>ColorSurface.png</ImagePath>
+		<Header>Background Preview works on Remote Desktop and Parallels</Header>
+		<Body>For remote systems with GPUs and virtual machines with hardware-acceleration, background preview is now visible.</Body>
+		<ImagePath>Rendering.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
 		<Header>Additional Updates and Improvements</Header>
-		<Body>- Localization to twelve languages&#10;- Publish a package locally from Dynamo for Revit&#10;- Four new chapters have been added to the Dynamo Primer&#10;- New and updated Nuget packages for developers&#10;- New Command Line Interface for evaluating non-Revit Dynamo graphs.</Body>
+		<Body>- Easier to read Search Results&#10;- Node to Code Stabilization&#10;- Improved 'Canvas Snapshot' functionality&#10;- New Chapters and expansion of the Dynamo Primer&#10;- Move to .NET 4.5</Body>
 		<ImagePath>Misc.png</ImagePath>
 	</GalleryContent>
 	</GalleryUiContents>
