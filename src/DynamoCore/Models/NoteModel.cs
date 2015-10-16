@@ -61,6 +61,9 @@ namespace Dynamo.Models
             Text = helper.ReadString("text", "New Note");
             X = helper.ReadDouble("x", 0.0);
             Y = helper.ReadDouble("y", 0.0);
+
+            // Notify listeners that the position of the note has changed, 
+            // then parent group will also redraw itself.
             ReportPosition();
         }
 
