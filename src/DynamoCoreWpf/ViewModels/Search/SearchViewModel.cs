@@ -891,7 +891,8 @@ namespace Dynamo.ViewModels
             if (oldItem == null) return;
 
             int newItemIndex = FilteredResults.IndexOf(oldItem);
-            if (newItemIndex < 0 || newItemIndex >= FilteredResults.Count()) return;
+            if ((newItemIndex <= 0 && direction == Direction.Up) ||
+                (newItemIndex >= FilteredResults.Count() - 1 && direction == Direction.Down)) return;
 
             if (direction == Direction.Down)
             {
@@ -901,8 +902,6 @@ namespace Dynamo.ViewModels
             {
                 newItemIndex--;
             }
-
-            if (newItemIndex < 0 || newItemIndex >= FilteredResults.Count()) return;
 
             oldItem.IsSelected = false;
             var newItem = FilteredResults.ElementAt(newItemIndex);
