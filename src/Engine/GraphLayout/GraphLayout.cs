@@ -15,9 +15,11 @@ namespace GraphLayout
         #region Graph properties
 
         private const int MaxLayerHeight = 20;
-        private const double HorizontalNodeDistance = 100;
-        private const double VerticalNodeDistance = 30;
         private const double Infinite = 1000000;
+        
+        public readonly static double VerticalNodeDistance = 30;
+        public readonly static double HorizontalNodeDistance = 100;
+        public readonly static double VerticalNoteDistance = 5;
 
         /// <summary>
         /// Set of nodes in this graph.
@@ -75,7 +77,7 @@ namespace GraphLayout
         /// </summary>
         public double GraphCenterY
         {
-            get { return (Nodes.Min(n => n.Y) + Nodes.Max(n => n.Y + n.Height)) / 2; }
+            get { return (Nodes.Min(n => n.Y) + Nodes.Max(n => n.Y + n.TotalHeight)) / 2; }
         }
 
         #endregion
@@ -224,6 +226,20 @@ namespace GraphLayout
                         }
 
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        /// To assign all nodes back to layer -1.
+        /// </summary>
+        public void ResetLayers()
+        {
+            foreach (var layer in Layers)
+            {
+                foreach (var node in layer)
+                {
+                    node.Layer = -1;
                 }
             }
         }
@@ -467,7 +483,7 @@ namespace GraphLayout
             int minNodeIndex = -1;
             for (int i = 1; i < nodes.Count; i++)
             {
-                double distance = nodes[i].Y - nodes[i - 1].Y - nodes[i - 1].Height;
+                double distance = nodes[i].Y - nodes[i - 1].Y - nodes[i - 1].TotalHeight;
                 if (distance < VerticalNodeDistance)
                 {
                     if (distance < minDistance)
@@ -487,7 +503,7 @@ namespace GraphLayout
                 minNodeIndex = -1;
                 for (int i = 1; i < nodes.Count; i++)
                 {
-                    double distance = nodes[i].Y - nodes[i - 1].Y - nodes[i - 1].Height;
+                    double distance = nodes[i].Y - nodes[i - 1].Y - nodes[i - 1].TotalHeight;
                     if (distance < VerticalNodeDistance)
                     {
                         if (distance < minDistance)
@@ -501,14 +517,14 @@ namespace GraphLayout
 
             // Assign vertical coordinates to the rest of the nodes
             double lastY = (nodes.Count == 0) ? 0 :
-                nodes.Last().Y + nodes.Last().Height + VerticalNodeDistance;
+                nodes.Last().Y + nodes.Last().TotalHeight + VerticalNodeDistance;
 
             nodes = layer.Where(x => x.Y >= Infinite).ToList();
 
             foreach (Node n in nodes)
             {
                 n.Y = lastY;
-                lastY += n.Height + VerticalNodeDistance;
+                lastY += n.TotalHeight + VerticalNodeDistance;
             }
         }
 
@@ -537,7 +553,7 @@ namespace GraphLayout
             {
                 if (layer.Count == 0) continue;
 
-                double layerWidth = layer.Max(x => x.Width);
+                double layerWidth = layer.Max(x => Math.Max(x.Width, x.NotesWidth));
 
                 foreach (Node x in layer)
                     x.X = previousLayerX;
@@ -556,9 +572,9 @@ namespace GraphLayout
                         n.Y = maxY;
                     }
 
-                    if (n.Y + n.Height > maxY)
+                    if (n.Y + n.TotalHeight > maxY)
                     {
-                        maxY = n.Y + n.Height + VerticalNodeDistance;
+                        maxY = n.Y + n.TotalHeight + VerticalNodeDistance;
                     }
                 }
             }
@@ -639,7 +655,12 @@ namespace GraphLayout
         public double Width { get; private set; }
 
         /// <summary>
-        /// The height of the node view.
+        /// The height of the node view and its linked notes.
+        /// </summary>
+        public double TotalHeight { get { return Height + NotesHeight; } }
+
+        /// <summary>
+        /// The height of the node view only.
         /// </summary>
         public double Height { get; private set; }
 
@@ -649,7 +670,7 @@ namespace GraphLayout
         public double X;
 
         /// <summary>
-        /// The y coordinate of the node view.
+        /// The y coordinate of the node view or the topmost note view linked to this node.
         /// </summary>
         public double Y;
 
@@ -679,6 +700,33 @@ namespace GraphLayout
         public List<Object> LinkedNotes = new List<Object>();
 
         /// <summary>
+        /// The maximum width of this node's linked notes.
+        /// </summary>
+        public double NotesWidth { get; private set; }
+
+        /// <summary>
+        /// The total height of all notes linked to this node,
+        /// including the vertical spaces.
+        /// </summary>
+        public double NotesHeight { get; private set; }
+
+        /// <summary>
+        /// Marks a note as linked to this node.
+        /// </summary>
+        /// <param name="note">Note to be linked.</param>
+        /// <param name="noteWidth">The width of the note model.</param>
+        /// <param name="noteHeight">The height of the note model.</param>
+        public void LinkNote(object note, double noteWidth, double noteHeight)
+        {
+            LinkedNotes.Add(note);
+            NotesHeight += noteHeight + Graph.VerticalNoteDistance;
+            NotesWidth = Math.Max(noteWidth, NotesWidth);
+
+            // This Y refers to the topmost linked note's y coordinate if there is any
+            Y -= noteHeight + Graph.VerticalNoteDistance;
+        }
+
+        /// <summary>
         /// True if the node is selected in the workspace.
         /// </summary>
         public bool IsSelected;
@@ -693,6 +741,8 @@ namespace GraphLayout
             InitialY = y;
             IsSelected = isSelected;
             OwnerGraph = ownerGraph;
+            NotesWidth = 0;
+            NotesHeight = 0;
         }
     }
 
@@ -749,14 +799,26 @@ namespace GraphLayout
         }
 
         /// <summary>
+        /// The y distance between the edge's left end
+        /// and the start node (including its linked notes)'s top.
+        /// </summary>
+        public double StartOffsetY { get { return NodeStartOffsetY + StartNode.NotesHeight; } }
+
+        /// <summary>
         /// The y distance between the edge's left end and the start node's top-right corner.
         /// </summary>
-        public double StartOffsetY { get; private set; }
+        private double NodeStartOffsetY;
+
+        /// <summary>
+        /// The y distance between the edge's right end
+        /// and the end node (including its linked notes)'s top.
+        /// </summary>
+        public double EndOffsetY { get { return NodeEndOffsetY + EndNode.NotesHeight; } }
 
         /// <summary>
         /// The y distance between the edge's right end and the end node's top-left corner.
         /// </summary>
-        public double EndOffsetY { get; private set; }
+        private double NodeEndOffsetY;
 
         /// <summary>
         /// A flag for the GraphLayout algorithm.
@@ -779,8 +841,8 @@ namespace GraphLayout
                 EndNode.LeftEdges.Add(this);
             }
 
-            StartOffsetY = startY - StartNode.Y;
-            EndOffsetY = endY - EndNode.Y;
+            NodeStartOffsetY = startY - StartNode.Y;
+            NodeEndOffsetY = endY - EndNode.Y;
         }
     }
 }

@@ -266,6 +266,7 @@ namespace Dynamo.ViewModels
                 InsertEntry(MakeNodeSearchElementVM(entry), entry.Categories);
                 RaisePropertyChanged("BrowserRootCategories");
             };
+             
             Model.EntryUpdated += UpdateEntry;
             Model.EntryRemoved += RemoveEntry;
 
@@ -356,19 +357,20 @@ namespace Dynamo.ViewModels
         }
 
         internal void RemoveEntry(NodeSearchElement entry)
-        {
+        {            
             var branch = GetTreeBranchToNode(libraryRoot, entry);
             if (!branch.Any())
                 return;
             var treeStack = new Stack<NodeCategoryViewModel>(branch.Reverse());
 
             var target = treeStack.Pop();
+          
             var location = target.Entries.Select((e, i) => new { e.Model, i })
                 .FirstOrDefault(x => entry == x.Model);
             if (location == null)
                 return;
             target.Entries.RemoveAt(location.i);
-
+           
             while (!target.Items.Any() && treeStack.Any())
             {
                 var parent = treeStack.Pop();
@@ -644,8 +646,19 @@ namespace Dynamo.ViewModels
         private void AddEntryToExistingCategory(NodeCategoryViewModel category,
             NodeSearchElementViewModel entry)
         {
-            category.RequestBitmapSource += SearchViewModelRequestBitmapSource;
-            category.Entries.Add(entry);
+            category.RequestBitmapSource += SearchViewModelRequestBitmapSource; 
+            // Check if the category exists already. 
+            // ex : clockwork package. For clockwork 
+            // package the category names in dyf is different from what we show it 
+            // on the tree view. so when you click on the category to populate it 
+            // triggers an update to category name. on the same instance when you uninstall
+            // and insall the clockwork package, the categories are named correctly but 
+            // every install triggers an update that gives a duplicate entry. so check if the
+            // entry is already added (specific to browse).
+            if (category.Entries.All(x => x.FullName != entry.FullName))
+            {
+                category.Entries.Add(entry);
+            }
         }
 
         private void SearchViewModelRequestBitmapSource(IconRequestEventArgs e)
