@@ -292,8 +292,15 @@ namespace Dynamo.Engine.CodeGeneration
                 }
                 else
                 {
-                    PortData port = node.InPortData[index];
-                    inputAstNodes.Add(port.DefaultValue ?? new NullNode());
+                    if (node.InPortData.Count > index)
+                    {
+                        var port = node.InPortData[index];
+                        inputAstNodes.Add(port.DefaultValue ?? new NullNode());
+                    }
+                    else
+                    {
+                        Log("Node does not have input port data.");
+                    }
                 }
             }
 
