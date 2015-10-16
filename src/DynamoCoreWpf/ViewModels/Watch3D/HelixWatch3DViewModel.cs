@@ -1498,7 +1498,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// </summary>
         /// <param name="bounds">The <see cref="BoundingBox"/> to be converted.</param>
         /// <returns>A <see cref="Rect3D"/> object.</returns>
-        public static Rect3D ToRect3D(this BoundingBox bounds)
+        internal static Rect3D ToRect3D(this BoundingBox bounds)
         {
             var min = bounds.Minimum;
             var max = bounds.Maximum;
@@ -1516,7 +1516,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// </summary>
         /// <param name="pointGeom">A <see cref="GeometryModel3D"/> object.</param>
         /// <returns>A <see cref="BoundingBox"/> object encapsulating the geometry.</returns>
-        public static BoundingBox Bounds(this GeometryModel3D geom, float defaultBoundsSize = 5.0f)
+        internal static BoundingBox Bounds(this GeometryModel3D geom, float defaultBoundsSize = 5.0f)
         {
             if (geom.Geometry.Positions.Count == 0)
             {
