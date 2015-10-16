@@ -129,9 +129,9 @@ namespace Dynamo.Controls
             ViewModel.RequestZoomToFit += ViewModel_RequestZoomToFit;
         }
 
-        private void ViewModel_RequestZoomToFit(Rect3D obj)
+        private void ViewModel_RequestZoomToFit(BoundingBox bounds)
         {
-            watch_view.ZoomExtents(obj);
+            watch_view.ZoomExtents(bounds.ToRect3D());
         }
 
         private void RequestViewRefreshHandler()

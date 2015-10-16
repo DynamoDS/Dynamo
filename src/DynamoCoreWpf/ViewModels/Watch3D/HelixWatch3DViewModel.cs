@@ -15,17 +15,14 @@ using System.Windows.Media.Media3D;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Controls;
-using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Rendering;
 using DynamoUtilities;
-using HelixToolkit.Wpf;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
 using SharpDX;
-using BoundingSphere = SharpDX.BoundingSphere;
 using Color = SharpDX.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
 using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
@@ -84,7 +81,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private LineGeometry3D worldAxes;
         private RenderTechnique renderTechnique;
         private PerspectiveCamera camera;
-        private double nearPlaneDistanceFactor = 0.001;
         private Vector3 directionalLightDirection = new Vector3(-0.5f, -1.0f, 0.0f);
         private DirectionalLight3D directionalLight;
 
@@ -106,7 +102,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private const int FrameUpdateSkipCount = 200;
         private int currentFrameSkipCount;
-        private readonly Rect3D defaultBounds = new Rect3D(new Point3D(-25, -25, -25), new Size3D(50,50,50));
+
+        private double nearPlaneDistanceFactor = 0.001;
+        internal const double DefaultNearClipDistance = 0.1f;
+        internal const double DefaultFarClipDistance = 100000;
+        internal static BoundingBox DefaultBounds = new BoundingBox(new Vector3(-25f, -25f, -25f), new Vector3(25f,25f,25f));
 
 #if DEBUG
         private readonly Stopwatch renderTimer = new Stopwatch();
@@ -156,8 +156,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        public event Action<Rect3D> RequestZoomToFit;
-        protected void OnRequestZoomToFit(Rect3D bounds)
+        public event Action<BoundingBox> RequestZoomToFit;
+        protected void OnRequestZoomToFit(BoundingBox bounds)
         {
             if(RequestZoomToFit != null)
             {
@@ -634,20 +634,21 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             if (!DynamoSelection.Instance.Selection.Any())
             {
-                OnRequestZoomToFit(defaultBounds);
+                OnRequestZoomToFit(ComputeBoundsForGeometry(SceneItems.Where(item=>item is GeometryModel3D).Cast<GeometryModel3D>().ToArray()));
             }
 
             var selNodes = DynamoSelection.Instance.Selection.Where(s => s is NodeModel).Cast<NodeModel>().ToArray();
             if (!selNodes.Any()) return;
 
             var geoms = SceneItems.Where(item => item is GeometryModel3D).Cast<GeometryModel3D>();
-
-            var selectionBounds = ComputeBoundsForSelectedNodeGeometry(geoms, selNodes);
+            var idents = FindIdentifiersForSelectedNodes(selNodes);
+            var selGeoms = FindGeometryForIdentifiers(geoms, idents);
+            var selectionBounds = ComputeBoundsForGeometry(selGeoms.ToArray());
 
             // Don't zoom if there is no valid bounds.
             if (selectionBounds.Equals(new BoundingBox())) return;
 
-            OnRequestZoomToFit(selectionBounds.ToRect3D());
+            OnRequestZoomToFit(selectionBounds);
         }
 
         #region internal methods
@@ -695,32 +696,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
 
             return geometryModels;
-        }
-
-        /// <summary>
-        /// For a set of selected nodes, compute a bounding box which
-        /// encompasses all of the nodes' generated geometry.
-        /// </summary>
-        /// <param name="geometry">A collection of <see cref="GeometryModel3D"/> objects.</param>
-        /// <param name="selNodes">A collection of <see cref="NodeModel"/> objects.</param>
-        /// <returns>A <see cref="BoundingBox"/> object.</returns>
-        private static BoundingBox ComputeBoundsForSelectedNodeGeometry(IEnumerable<GeometryModel3D> geometry, IEnumerable<NodeModel> selNodes)
-        {
-            var selIdents =
-                selNodes.SelectMany(n => n.OutPorts.Select(p => n.GetAstIdentifierForOutputIndex(p.Index)));
-            var selGeoms =
-                selIdents.SelectMany(id => geometry.Where(item => item.Name.Contains(id.Value))).ToArray();
-
-            if (!selGeoms.Any()) return new BoundingBox();
-
-            var bounds = selGeoms.First().Bounds();
-            bounds = selGeoms.Aggregate(bounds, (current, geom) => BoundingBox.Merge(current, geom.Bounds()));
-
-#if DEBUG
-            Debug.WriteLine("{0} geometry items referenced by the selection.", selGeoms.Count());
-            Debug.WriteLine("Bounding box of selected geometry:{0}", bounds);
-#endif
-            return bounds;
         }
 
         private void SetSelection(IEnumerable items, bool isSelected)
@@ -1297,40 +1272,109 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         internal void UpdateNearClipPlane()
         {
-            var nearClipDistance = ComputeNearClipPlaneDistance(Camera.Position.ToVector3(), SceneItems,
-                NearPlaneDistanceFactor);
+            var near = camera.NearPlaneDistance;
+            var far = camera.FarPlaneDistance;
 
-            if (Camera.NearPlaneDistance == nearClipDistance) return;
-            Camera.NearPlaneDistance = nearClipDistance;
+            ComputeClipPlaneDistances(camera.Position.ToVector3(), camera.LookDirection.ToVector3(), SceneItems,
+                NearPlaneDistanceFactor, out near, out far, DefaultNearClipDistance, DefaultFarClipDistance);
+
+            if (Camera.NearPlaneDistance == near && Camera.FarPlaneDistance == far) return;
+
+            Camera.NearPlaneDistance = near;
+            Camera.FarPlaneDistance = far;
         }
 
         /// <summary>
-        /// This method attempts to maximize the near clip plane in order to 
-        /// achiever higher z-buffer precision.
+        /// This clamp the near and far clip planes around the scene geometry
+        /// to achiever higher z-buffer precision.
         /// 
-        /// It does this by finding the nearest and closest center points to the camera location 
-        /// of geometry bounding boxes in the scene . It sets the camera's near clip plane to 
-        /// `near/2` and the far clip plane to `far`.
+        /// It does this by finding the distance from each GeometryModel3D object's corner points
+        /// to the camera plane. The camera's far clip plane is set to 2 * dfar, and the camera's 
+        /// near clip plane is set to nearPlaneDistanceFactor * dnear
         /// </summary>
-        internal static double ComputeNearClipPlaneDistance(Vector3 cameraPosition, IEnumerable<Model3D> geometry, double nearPlaneDistanceFactor)
+        internal static void ComputeClipPlaneDistances(Vector3 cameraPosition, Vector3 cameraLook, IEnumerable<Model3D> geometry, 
+            double nearPlaneDistanceFactor, out double near, out double far, double defaultNearClipDistance, double defaultFarClipDistance)
         {
-            var closest = double.MaxValue;
-            var farthest = double.MinValue;
-
-            var centers =
+            near = defaultNearClipDistance; 
+            far = double.MaxValue;
+            
+            var bounds =
                 geometry.Where(i => i is GeometryModel3D)
-                    .Cast<GeometryModel3D>()
-                    .Select(g => (g.Bounds.Maximum + g.Bounds.Minimum)/2)
-                    .ToList();
+                    .Cast<GeometryModel3D>().Select(g=>g.Bounds());
 
-            foreach (var d in centers.Select(c => Vector3.DistanceSquared(cameraPosition, c)))
+            // See http://mathworld.wolfram.com/Point-PlaneDistance.html
+            // The plane distance formula will return positive values for points on the same side of the plane
+            // as the plane's normal, and negative values for points on the opposite side of the plane. 
+
+            var distances = bounds.SelectMany(b => b.GetCorners()).
+                Select(c => c.DistanceToPlane(cameraPosition, cameraLook.Normalized())).
+                ToList();
+
+            distances.Sort();
+
+            if (distances.Any())
             {
-                closest = Math.Min(closest, d);
-                farthest = Math.Max(farthest, d);
+                // All behind
+                // Set the near and far clip to their defaults
+                // because nothing is in front of the camera.
+                if (distances.All(d => d < 0))
+                {
+                    //Debug.WriteLine("All points behind.");
+                    near = defaultNearClipDistance;
+                    far = defaultFarClipDistance;
+                }
+                // All in front
+                // Set the near clip plane to some fraction of the 
+                // of the distance to the first point.
+                else if (distances.All(d => d > 0))
+                {
+                    //Debug.WriteLine("All points in front.");
+                    near = Math.Max(defaultNearClipDistance, distances.First(d => d > 0) * nearPlaneDistanceFactor);
+                    far = distances.Last() * 2;
+                }
+                // Some in front, some behind
+                // In this case, set the near plane distance
+                // to the default to avoid clipping near geometry. This will cause
+                // artifacts for large scene geometry.
+                else
+                {
+                    //Debug.WriteLine("Some points in front.");
+                    near = Math.Max(defaultNearClipDistance, distances.First(d => d > 0)*nearPlaneDistanceFactor);
+                    far = distances.Last() * 2;
+                }
             }
 
-            //Debug.WriteLine("Close={0}, Far={1}, Near clip={2}", Math.Sqrt(closest), Math.Sqrt(farthest), Camera.NearPlaneDistance);
-            return Math.Min(Math.Sqrt(farthest)* nearPlaneDistanceFactor, Math.Sqrt(closest)/2);
+            //Debug.WriteLine("Near={0}, Far={1}", near, far);
+        }
+
+        internal static IEnumerable<string> FindIdentifiersForSelectedNodes(IEnumerable<NodeModel> selectedNodes)
+        {
+            return selectedNodes.SelectMany(n => n.OutPorts.Select(p => n.GetAstIdentifierForOutputIndex(p.Index).Value));
+        }
+
+        internal static IEnumerable<GeometryModel3D> FindGeometryForIdentifiers(IEnumerable<GeometryModel3D> geometry, IEnumerable<string> identifiers)
+        {
+            return identifiers.SelectMany(id => geometry.Where(item => item.Name.Contains(id))).ToArray();
+        }
+
+        /// <summary>
+        /// For a set of selected nodes, compute a bounding box which
+        /// encompasses all of the nodes' generated geometry.
+        /// </summary>
+        /// <param name="geometry">A collection of <see cref="GeometryModel3D"/> objects.</param>
+        /// <returns>A <see cref="BoundingBox"/> object.</returns>
+        internal static BoundingBox ComputeBoundsForGeometry(GeometryModel3D[] geometry)
+        {
+            if (!geometry.Any()) return DefaultBounds;
+
+            var bounds = geometry.First().Bounds();
+            bounds = geometry.Aggregate(bounds, (current, geom) => BoundingBox.Merge(current, geom.Bounds()));
+
+#if DEBUG
+            Debug.WriteLine("{0} geometry items referenced by the selection.", geometry.Count());
+            Debug.WriteLine("Bounding box of selected geometry:{0}", bounds);
+#endif
+            return bounds;
         }
 
         internal override void ExportToSTL(string path, string modelName)
@@ -1464,12 +1508,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         /// <summary>
         /// If a <see cref="GeometryModel3D"/> has more than one point, then
-        /// return its bounds, otherwise, return a unit-sized bounding
-        /// box surrounding the point.
+        /// return its bounds, otherwise, return a bounding
+        /// box surrounding the point of the supplied size.
+        /// 
+        /// This extension method is to correct for the Helix toolkit's GeometryModel3D.Bounds
+        /// property which does not update correctly as new geometry is added to the GeometryModel3D.
         /// </summary>
         /// <param name="pointGeom">A <see cref="GeometryModel3D"/> object.</param>
         /// <returns>A <see cref="BoundingBox"/> object encapsulating the geometry.</returns>
-        public static BoundingBox Bounds(this GeometryModel3D geom)
+        public static BoundingBox Bounds(this GeometryModel3D geom, float defaultBoundsSize = 5.0f)
         {
             if (geom.Geometry.Positions.Count == 0)
             {
@@ -1481,11 +1528,24 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 return BoundingBox.FromPoints(geom.Geometry.Positions.ToArray());
             }
 
-            const float boundsSize = 5.0f;
             var pos = geom.Geometry.Positions.First();
-            var min = pos + new Vector3(-boundsSize, -boundsSize, -boundsSize);
-            var max = pos + new Vector3(boundsSize, boundsSize, boundsSize);
+            var min = pos + new Vector3(-defaultBoundsSize, -defaultBoundsSize, -defaultBoundsSize);
+            var max = pos + new Vector3(defaultBoundsSize, defaultBoundsSize, defaultBoundsSize);
             return new BoundingBox(min, max);
+        }
+
+        public static Vector3 Center(this BoundingBox bounds)
+        {
+            return (bounds.Maximum + bounds.Minimum)/2;
+        }
+
+    }
+
+    internal static class Vector3Extensions
+    {
+        internal static double DistanceToPlane(this Vector3 point, Vector3 planeOrigin, Vector3 planeNormal)
+        {
+            return Vector3.Dot(planeNormal, (point - planeOrigin));
         }
     }
 }
