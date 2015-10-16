@@ -185,7 +185,7 @@ namespace Dynamo.Nodes
             var textbox = sender as TextBox;
             if (textbox == null || textbox.Visibility != Visibility.Visible) return;
 
-            //Record the value here, this is useful when title is poped from stack during undo
+            //Record the value here, this is useful when title is popped from stack during undo
             ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.UpdateModelValueCommand(
                     Guid.Empty, ViewModel.AnnotationModel.GUID, "TextBlockText",
