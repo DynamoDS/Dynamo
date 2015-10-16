@@ -73,6 +73,10 @@ namespace DSCoreNodesUI
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
+            if (!InPorts.SelectMany(p => p.Connectors).Any())
+            {
+                return new[] {AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode())};
+            }
             AssociativeNode buildColorRangeNode = null;
 
             // If either of the first two inputs does not have a connector
