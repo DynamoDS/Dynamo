@@ -153,7 +153,7 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                filteredResults = value;
+                filteredResults = ToggleSelect(value);
                 RaisePropertyChanged("FilteredResults");
             }
         }
@@ -167,6 +167,24 @@ namespace Dynamo.ViewModels
             FilteredResults = searchResults.Where(x => allowedCategories
                                                                        .Select(cat => cat.Name)
                                                                        .Contains(x.Category));
+        }
+
+        /// <summary>
+        /// Unselects all items and selectes the first one.
+        /// </summary>
+        internal IEnumerable<NodeSearchElementViewModel> ToggleSelect(IEnumerable<NodeSearchElementViewModel> items)
+        {
+            if (!items.Any())
+            {
+                return items;
+            }
+
+            // Unselect all.
+            items.Skip(1).ToList().ForEach(x => x.IsSelected = false);
+            // Select first.
+            items.First().IsSelected = true;
+
+            return items;
         }
 
         /// <summary>
@@ -723,7 +741,7 @@ namespace Dynamo.ViewModels
             var foundNodes = Search(query);
             searchResults = new List<NodeSearchElementViewModel>(foundNodes);
 
-            filteredResults = searchResults;
+            FilteredResults = searchResults;
             UpdateSearchCategories();
 
             RaisePropertyChanged("FilteredResults");
@@ -852,6 +870,55 @@ namespace Dynamo.ViewModels
             catName = string.Join(" > ", s);
 
             return catName;
+        }
+
+        #endregion
+
+        #region Key navigation
+
+        public enum Direction
+        {
+            Down, Up
+        }
+
+        /// <summary>
+        /// Executes selected item in search UI.
+        /// </summary>
+        public void ExecuteSelectedItem()
+        {
+            var selected = FilteredResults.FirstOrDefault(item => item.IsSelected);
+
+            if (selected != null)
+            {
+                selected.ClickedCommand.Execute(null);
+            }
+        }
+
+        /// <summary>
+        /// When down key is pressed, selected element should move forward.
+        /// When up key is pressed, selected element should move back.
+        /// </summary>
+        public void MoveSelection(Direction direction)
+        {
+            var oldItem = FilteredResults.FirstOrDefault(item => item.IsSelected);
+            if (oldItem == null) return;
+
+            int newItemIndex = FilteredResults.IndexOf(oldItem);
+            if ((newItemIndex <= 0 && direction == Direction.Up) ||
+                (newItemIndex >= FilteredResults.Count() - 1 && direction == Direction.Down)) return;
+
+            if (direction == Direction.Down)
+            {
+                newItemIndex++;
+            }
+            else
+            {
+                newItemIndex--;
+            }
+
+            oldItem.IsSelected = false;
+            var newItem = FilteredResults.ElementAt(newItemIndex);
+            newItem.IsSelected = true;
         }
 
         #endregion

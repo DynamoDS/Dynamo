@@ -183,6 +183,41 @@ namespace Dynamo.Search
                         }
                     }
                     break;
+                case Key.Enter:
+                    {
+                        if (viewModel.CurrentMode != SearchViewModel.ViewMode.LibrarySearchView
+                            || !viewModel.IsAnySearchResult)
+                        {
+                            break;
+                        }
+
+                        viewModel.ExecuteSelectedItem();
+                        break;
+                    }
+
+                case Key.Down:
+                    {
+                        if (viewModel.CurrentMode != SearchViewModel.ViewMode.LibrarySearchView
+                            || !viewModel.IsAnySearchResult)
+                        {
+                            break;
+                        }
+
+                        viewModel.MoveSelection(SearchViewModel.Direction.Down);
+                        break;
+                    }
+
+                case Key.Up:
+                    {
+                        if (viewModel.CurrentMode != SearchViewModel.ViewMode.LibrarySearchView
+                            || !viewModel.IsAnySearchResult)
+                        {
+                            break;
+                        }
+
+                        viewModel.MoveSelection(SearchViewModel.Direction.Up);
+                        break;
+                    }
             }
         }
 
