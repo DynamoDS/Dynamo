@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Wpf.ViewModels.Watch3D;
-using Dynamo.Wpf.Views.Preview;
 using HelixToolkit.Wpf.SharpDX;
+using SharpDX;
 using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
 using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 using Point = System.Windows.Point;
@@ -33,7 +35,7 @@ namespace Dynamo.Controls
             get { return watch_view; }
         }
 
-        internal Watch3DViewModelBase ViewModel { get; private set; }
+        internal HelixWatch3DViewModel ViewModel { get; private set; }
 
         #endregion
 
@@ -56,9 +58,13 @@ namespace Dynamo.Controls
 
             CompositionTarget.Rendering -= CompositionTargetRenderingHandler;
 
-            var helixVm = ViewModel as HelixWatch3DViewModel;
-            if (helixVm == null) return;
-            helixVm.RequestAttachToScene -= ViewModelRequestAttachToSceneHandler;
+            if (ViewModel == null) return;
+
+            ViewModel.RequestAttachToScene -= ViewModelRequestAttachToSceneHandler;
+            ViewModel.RequestCreateModels -= RequestCreateModelsHandler;
+            ViewModel.RequestViewRefresh -= RequestViewRefreshHandler;
+            ViewModel.RequestClickRay -= GetClickRay;
+            ViewModel.RequestZoomToFit -= ViewModel_RequestZoomToFit;
         }
 
         private void RegisterButtonHandlers()
@@ -106,24 +112,29 @@ namespace Dynamo.Controls
 
         private void ViewLoadedHandler(object sender, RoutedEventArgs e)
         {
-            ViewModel = DataContext as Watch3DViewModelBase;
+            ViewModel = DataContext as HelixWatch3DViewModel;
+
+            if (ViewModel == null) return;
 
             CompositionTarget.Rendering += CompositionTargetRenderingHandler;
 
             RegisterButtonHandlers();
 
-            var helixVM = ViewModel as HelixWatch3DViewModel;
-            if (helixVM == null) return;
-
             RegisterViewEventHandlers();
 
-            helixVM.RequestAttachToScene += ViewModelRequestAttachToSceneHandler;
-            helixVM.RequestCreateModels += RequestCreateModelsHandler;
-            helixVM.RequestViewRefresh += RequestViewRefreshHandler;
-            helixVM.RequestClickRay += GetClickRay;
+            ViewModel.RequestAttachToScene += ViewModelRequestAttachToSceneHandler;
+            ViewModel.RequestCreateModels += RequestCreateModelsHandler;
+            ViewModel.RequestViewRefresh += RequestViewRefreshHandler;
+            ViewModel.RequestClickRay += GetClickRay;
+            ViewModel.RequestZoomToFit += ViewModel_RequestZoomToFit;
         }
 
-        void RequestViewRefreshHandler()
+        private void ViewModel_RequestZoomToFit(BoundingBox bounds)
+        {
+            watch_view.ZoomExtents(bounds.ToRect3D());
+        }
+
+        private void RequestViewRefreshHandler()
         {
             View.InvalidateRender();
         }
@@ -178,18 +189,8 @@ namespace Dynamo.Controls
 
         private void CompositionTargetRenderingHandler(object sender, EventArgs e)
         {
-            var sceneBounds = watch_view.FindBounds();
-
-            var helixVm = ViewModel as HelixWatch3DViewModel;
-            if (helixVm == null) return;
-
-            helixVm.UpdateNearClipPlaneForSceneBounds(sceneBounds);
-            helixVm.ComputeFrameUpdate();
-        }
-
-        private void OnZoomToFitClickedHandler(object sender, RoutedEventArgs e)
-        {
-            watch_view.ZoomExtents();
+            ViewModel.UpdateNearClipPlane();
+            ViewModel.ComputeFrameUpdate();
         }
 
         private void MouseButtonIgnoreHandler(object sender, MouseButtonEventArgs e)
@@ -222,6 +223,5 @@ namespace Dynamo.Controls
 
             return View.Point2DToRay3D(new Point(mousePos.X, mousePos.Y));
         }
-
     }
 }

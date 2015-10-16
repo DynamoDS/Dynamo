@@ -30,3 +30,4 @@ using System.Windows;
 [assembly: InternalsVisibleTo("DynamoMSOfficeTests")]
 [assembly: InternalsVisibleTo("CoreNodeModelsWpf")]
 [assembly: InternalsVisibleTo("DynamoSandbox")]
+[assembly: InternalsVisibleTo("WpfVisualizationTests")]

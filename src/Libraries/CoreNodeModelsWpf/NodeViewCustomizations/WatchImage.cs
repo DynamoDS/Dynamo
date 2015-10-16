@@ -41,7 +41,7 @@ namespace Dynamo.Wpf.Nodes
 
         private void NodeModelOnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
-            if (args.PropertyName != "IsUpdated") 
+            if (args.PropertyName != "CachedValue") 
                 return;
 
             var data = nodeModel.CachedValue;

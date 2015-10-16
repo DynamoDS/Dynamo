@@ -629,12 +629,11 @@ namespace Dynamo.ViewModels
 
         private void SetLacingType(object param)
         {           
-            this.DynamoViewModel.ExecuteCommand(
+            DynamoViewModel.ExecuteCommand(
               new DynamoModel.UpdateModelValueCommand(
-                    System.Guid.Empty, this.NodeModel.GUID, "ArgumentLacing", param.ToString()));
-          
-            DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
-            DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
+                    Guid.Empty, NodeModel.GUID, "ArgumentLacing", param.ToString()));
+
+            DynamoViewModel.RaiseCanExecuteUndoRedo();
         }
 
         private bool CanSetLacingType(object param)
@@ -804,8 +803,7 @@ namespace Dynamo.ViewModels
                 new[] { nodeLogic.GUID }, "IsVisible", visibility);
 
             DynamoViewModel.Model.ExecuteCommand(command);
-            DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
-            DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
+            DynamoViewModel.RaiseCanExecuteUndoRedo();
         }
 
         private void ToggleIsUpstreamVisible(object parameter)
@@ -816,8 +814,7 @@ namespace Dynamo.ViewModels
                 new[] { nodeLogic.GUID }, "IsUpstreamVisible", visibility);
 
             DynamoViewModel.Model.ExecuteCommand(command);
-            DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
-            DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
+            DynamoViewModel.RaiseCanExecuteUndoRedo();
         }
 
         private bool CanVisibilityBeToggled(object parameter)

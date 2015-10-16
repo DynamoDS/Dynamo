@@ -15,6 +15,7 @@ using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Services;
 using Dynamo.Wpf.ViewModels;
+
 using Microsoft.Practices.Prism.ViewModel;
 using Dynamo.Models;
 
@@ -136,12 +137,83 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        ///     SearchResults property
+        ///     Items that were found during search.
         /// </summary>
-        /// <value>
-        ///     This property is observed by SearchView to see the search results
-        /// </value>
-        public ObservableCollection<NodeSearchElementViewModel> SearchResults { get; private set; }
+        private List<NodeSearchElementViewModel> searchResults;
+
+        private IEnumerable<NodeSearchElementViewModel> filteredResults;
+        /// <summary>
+        /// Filtered search results.
+        /// </summary>
+        public IEnumerable<NodeSearchElementViewModel> FilteredResults
+        {
+            get
+            {
+                return filteredResults;
+            }
+            set
+            {
+                filteredResults = ToggleSelect(value);
+                RaisePropertyChanged("FilteredResults");
+            }
+        }
+
+        /// <summary>
+        /// Filters search items, if category was selected.
+        /// </summary>
+        internal void Filter()
+        {
+            var allowedCategories = SearchCategories.Where(cat => cat.IsSelected);
+            FilteredResults = searchResults.Where(x => allowedCategories
+                                                                       .Select(cat => cat.Name)
+                                                                       .Contains(x.Category));
+        }
+
+        /// <summary>
+        /// Unselects all items and selectes the first one.
+        /// </summary>
+        internal IEnumerable<NodeSearchElementViewModel> ToggleSelect(IEnumerable<NodeSearchElementViewModel> items)
+        {
+            if (!items.Any())
+            {
+                return items;
+            }
+
+            // Unselect all.
+            items.Skip(1).ToList().ForEach(x => x.IsSelected = false);
+            // Select first.
+            items.First().IsSelected = true;
+
+            return items;
+        }
+
+        /// <summary>
+        /// Returns true, if it was found at least one item. Otherwise it returns false.
+        /// </summary>
+        public bool IsAnySearchResult
+        {
+            get
+            {
+                return searchResults.Any();
+            }
+        }
+
+        private IEnumerable<SearchCategory> searchCategories;
+        /// <summary>
+        /// Categories that were found after search. Used to filter search results.
+        /// </summary>
+        public IEnumerable<SearchCategory> SearchCategories
+        {
+            get
+            {
+                return searchCategories;
+            }
+            private set
+            {
+                searchCategories = value;
+                RaisePropertyChanged("SearchCategories");
+            }
+        }
 
         private bool searchScrollBarVisibility = true;
         public bool SearchScrollBarVisibility
@@ -193,7 +265,9 @@ namespace Dynamo.ViewModels
 
         private void InitializeCore()
         {
-            SearchResults = new ObservableCollection<NodeSearchElementViewModel>();
+            searchResults = new List<NodeSearchElementViewModel>();
+            filteredResults = new List<NodeSearchElementViewModel>();
+            searchCategories = new List<SearchCategory>();
 
             Visible = false;
             searchText = "";
@@ -210,6 +284,7 @@ namespace Dynamo.ViewModels
                 InsertEntry(MakeNodeSearchElementVM(entry), entry.Categories);
                 RaisePropertyChanged("BrowserRootCategories");
             };
+             
             Model.EntryUpdated += UpdateEntry;
             Model.EntryRemoved += RemoveEntry;
 
@@ -300,19 +375,20 @@ namespace Dynamo.ViewModels
         }
 
         internal void RemoveEntry(NodeSearchElement entry)
-        {
+        {            
             var branch = GetTreeBranchToNode(libraryRoot, entry);
             if (!branch.Any())
                 return;
             var treeStack = new Stack<NodeCategoryViewModel>(branch.Reverse());
 
             var target = treeStack.Pop();
+          
             var location = target.Entries.Select((e, i) => new { e.Model, i })
                 .FirstOrDefault(x => entry == x.Model);
             if (location == null)
                 return;
             target.Entries.RemoveAt(location.i);
-
+           
             while (!target.Items.Any() && treeStack.Any())
             {
                 var parent = treeStack.Pop();
@@ -588,8 +664,19 @@ namespace Dynamo.ViewModels
         private void AddEntryToExistingCategory(NodeCategoryViewModel category,
             NodeSearchElementViewModel entry)
         {
-            category.RequestBitmapSource += SearchViewModelRequestBitmapSource;
-            category.Entries.Add(entry);
+            category.RequestBitmapSource += SearchViewModelRequestBitmapSource; 
+            // Check if the category exists already. 
+            // ex : clockwork package. For clockwork 
+            // package the category names in dyf is different from what we show it 
+            // on the tree view. so when you click on the category to populate it 
+            // triggers an update to category name. on the same instance when you uninstall
+            // and insall the clockwork package, the categories are named correctly but 
+            // every install triggers an update that gives a duplicate entry. so check if the
+            // entry is already added (specific to browse).
+            if (category.Entries.All(x => x.FullName != entry.FullName))
+            {
+                category.Entries.Add(entry);
+            }
         }
 
         private void SearchViewModelRequestBitmapSource(IconRequestEventArgs e)
@@ -626,12 +713,18 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void SearchAndUpdateResults()
         {
+            searchResults.Clear();
+
             if (!String.IsNullOrEmpty(SearchText.Trim()))
+            {
                 SearchAndUpdateResults(SearchText);
+            }
+
+            RaisePropertyChanged("IsAnySearchResult");
         }
 
         /// <summary>
-        ///     Performs a search and updates the observable SearchResults property.
+        ///     Performs a search and updates searchResults.
         /// </summary>
         /// <param name="query"> The search query </param>
         public void SearchAndUpdateResults(string query)
@@ -646,10 +739,45 @@ namespace Dynamo.ViewModels
                 return;
 
             var foundNodes = Search(query);
-            SearchResults = new ObservableCollection<NodeSearchElementViewModel>(foundNodes);
-            RaisePropertyChanged("SearchResults");
+            searchResults = new List<NodeSearchElementViewModel>(foundNodes);
+
+            FilteredResults = searchResults;
+            UpdateSearchCategories();
+
+            RaisePropertyChanged("FilteredResults");
         }
 
+        /// <summary>
+        /// Select unique search categories, which are used in search UI.
+        /// </summary>
+        private void UpdateSearchCategories()
+        {
+            var uniqueCategoryNames = searchResults.Select(x => x.Category).Distinct();
+
+            var categories = new List<SearchCategory>();
+            foreach (var name in uniqueCategoryNames)
+            {
+                var searchCategory = new SearchCategory(name);
+                searchCategory.PropertyChanged += IsSelectedChanged;
+                categories.Add(searchCategory);
+            }
+            SearchCategories = categories;
+        }
+
+        /// <summary>
+        /// When category is selected, search results should be updated and contain nodes from this category.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void IsSelectedChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != "IsSelected")
+            {
+                return;
+            }
+
+            Filter();
+        }
 
         /// <summary>
         ///     Performs a search using the given string as query.
@@ -742,6 +870,55 @@ namespace Dynamo.ViewModels
             catName = string.Join(" > ", s);
 
             return catName;
+        }
+
+        #endregion
+
+        #region Key navigation
+
+        public enum Direction
+        {
+            Down, Up
+        }
+
+        /// <summary>
+        /// Executes selected item in search UI.
+        /// </summary>
+        public void ExecuteSelectedItem()
+        {
+            var selected = FilteredResults.FirstOrDefault(item => item.IsSelected);
+
+            if (selected != null)
+            {
+                selected.ClickedCommand.Execute(null);
+            }
+        }
+
+        /// <summary>
+        /// When down key is pressed, selected element should move forward.
+        /// When up key is pressed, selected element should move back.
+        /// </summary>
+        public void MoveSelection(Direction direction)
+        {
+            var oldItem = FilteredResults.FirstOrDefault(item => item.IsSelected);
+            if (oldItem == null) return;
+
+            int newItemIndex = FilteredResults.IndexOf(oldItem);
+            if ((newItemIndex <= 0 && direction == Direction.Up) ||
+                (newItemIndex >= FilteredResults.Count() - 1 && direction == Direction.Down)) return;
+
+            if (direction == Direction.Down)
+            {
+                newItemIndex++;
+            }
+            else
+            {
+                newItemIndex--;
+            }
+
+            oldItem.IsSelected = false;
+            var newItem = FilteredResults.ElementAt(newItemIndex);
+            newItem.IsSelected = true;
         }
 
         #endregion

@@ -59,7 +59,6 @@ namespace ProtoCore.DSASM
             LX = sv;
         }
 
-        //public ProtoCore.AssociativeGraph.GraphNode executingGraphNode { get; private set; }
         public InterpreterProperties Properties { get; set; }
 
         enum DebugFlags
@@ -914,62 +913,7 @@ namespace ProtoCore.DSASM
                 explicitCall = false;
                 IsExplicitCall = explicitCall;
 
-#if __DEBUG_REPLICATE
-                // TODO: This if block is currently executed only for a replicating function call in Debug Mode (including each of its continuations) 
-                // This condition will no longer be required once the same Dispatch function can decide whether to perform a fast dispatch (parallel mode)
-                // OR a Serial/Debug mode dispatch, in which case this same block should work for Serial mode execution w/o the Debug mode check - pratapa
-                if (runtimeCore.RuntimeOptions.IDEDebugMode)
-                {
-                    DebugFrame debugFrame = runtimeCore.DebugProps.DebugStackFrame.Peek();
-
-                    //if (debugFrame.IsReplicating || runtimeCore.ContinuationStruct.IsContinuation)
-                    if (debugFrame.IsReplicating)
-                    {
-                        FunctionEndPoint fep = null;
-                        ContinuationStructure cs = runtimeCore.ContinuationStruct;
-
-                        if (runtimeCore.RuntimeOptions.ExecutionMode == ProtoCore.ExecutionMode.Serial || runtimeCore.RuntimeOptions.IDEDebugMode)
-                        {
-                            // This needs to be done only for the initial argument arrays (ie before the first replicating call) - pratapa
-                            if(runtimeCore.ContinuationStruct.IsFirstCall)
-                            {
-                                runtimeCore.ContinuationStruct.InitialDepth = depth;
-                                runtimeCore.ContinuationStruct.InitialPC = pc;
-                                runtimeCore.ContinuationStruct.InitialArguments = arguments;
-                                runtimeCore.ContinuationStruct.InitialDotCallDimensions = dotCallDimensions;
-
-                                for (int i = 0; i < arguments.Count; ++i)
-                                {
-                                    GCUtils.GCRetain(arguments[i], core);
-                                }
-
-                                // Hardcoded
-                                runtimeCore.ContinuationStruct.NextDispatchArgs.Add(StackValue.BuildInt(1));
-                            }
-
-                            // The Resolve function is currently hard-coded as a place holder to test debugging replication - pratapa
-                            fep = callsite.ResolveForReplication(new ProtoCore.Runtime.Context(), arguments, replicationGuides, stackFrame, core, cs);
-                            
-                            // TODO: Refactor following steps into new function (ExecWithZeroRI + JILFep.Execute) to be called from here - pratapa
-                            // Get final FEP by calling SelectFinalFep()
-                            // Update DebugProps with final FEP
-                            // Call finalFEP.CoerceParameters()
-                            // Setup stackframe
-                            // Push Stackframe
-                            sv = callsite.ExecuteContinuation(fep, stackFrame, core);
-
-                            runtimeCore.ContinuationStruct = cs;
-                            runtimeCore.ContinuationStruct.IsFirstCall = true;
-
-                        }
-                    }
-                    else
-                        sv = callsite.JILDispatch(arguments, replicationGuides, stackFrame, core);
-                }
-                else
-#endif
                 sv = callsite.JILDispatch(arguments, replicationGuides, stackFrame, runtimeCore, runtimeContext);
-
                 if (sv.IsExplicitCall)
                 {
                     //
@@ -1326,15 +1270,6 @@ namespace ProtoCore.DSASM
             return arrayelements.ToString();
         }
 
-        //proc SetupNextExecutableGraph
-        //    Find the first dirty node and execute it
-        //    foreach node in graphNodeList
-        //        if node.isDirty is true
-        //            node.isDirty = false
-        //            pc = node.updateBlock.startpc
-        //        end	
-        //    end
-        //end
         public void SetupNextExecutableGraph(int function, int classscope)
         {
             Validity.Assert(istream != null);
@@ -1793,47 +1728,6 @@ namespace ProtoCore.DSASM
             pc = setentry;
         }
 
-        public void XLangSetupNextExecutableGraph(int function, int classscope)
-        {
-            bool isUpdated = false;
-
-            foreach (InstructionStream instrStream in exe.instrStreamList)
-            {
-                if (Language.kAssociative == instrStream.language && instrStream.dependencyGraph.GraphList.Count > 0)
-                {
-                    foreach (AssociativeGraph.GraphNode graphNode in instrStream.dependencyGraph.GraphList)
-                    {
-                        if (graphNode.isDirty)
-                        {
-                            //if (null != graphNode.symbol && graphNode.symbol.functionIndex == function && graphNode.symbol.classScope == classscope)
-                            bool isUpdateable = graphNode.updateNodeRefList[0].nodeList.Count > 0;
-                            if (isUpdateable && graphNode.procIndex == function && graphNode.classIndex == classscope)
-                            {
-                                graphNode.isDirty = false;
-
-                                // In function calls, the first graphnode in the function is executed first and was not marked 
-                                // If this is the case, just move on to the next graphnode
-                                if (pc == graphNode.updateBlock.endpc)
-                                {
-                                    continue;
-                                }
-
-                                pc = graphNode.updateBlock.startpc;
-                                isUpdated = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (!isUpdated)
-            {
-                // There were no updates, this is the end of this associative block
-                pc = Constants.kInvalidPC;
-            }
-        }
-
         private void XLangUpdateDependencyGraph(int currentLangBlock)
         {
             int classScope = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
@@ -2087,9 +1981,7 @@ namespace ProtoCore.DSASM
             DebugFrame debugFrame = runtimeCore.DebugProps.DebugStackFrame.Peek();
             bool isReplicating = debugFrame.IsReplicating;
 
-#if !__DEBUG_REPLICATE
             if (!isReplicating)
-#endif
             {
                 bool isResume = debugFrame.IsResume;
 
@@ -2105,30 +1997,13 @@ namespace ProtoCore.DSASM
                         frame.IsResume = true;
                     }
 
-#if __DEBUG_REPLICATE
-                    // Return type coercion and function call GC for replicating case takes place separately 
-                    // in SerialReplication() when ContinuationStruct.Done == true - pratapa
-                    if(!isReplicating)
-#endif
-                    {
-                        DebugPerformCoercionAndGC(debugFrame);
-                    }
+                    DebugPerformCoercionAndGC(debugFrame);
 
                     // Restore registers except RX on popping of function stackframe
                     ResumeRegistersFromStackExceptRX();
 
                     terminate = false;
                 }
-
-                // Restore return address and lang block
-                /*pc = (int)rmem.GetAtRelative(StackFrame.kFrameIndexReturnAddress).opdata;
-                exeblock = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunctionCallerBlock).opdata;
-
-                istream = exe.instrStreamList[exeblock];
-                instructions = istream.instrList;
-                executingLanguage = istream.language;
-
-                executingGraphNode = debugFrame.ExecutingGraphNode;*/
 
                 if (runtimeCore.DebugProps.RunMode.Equals(Runmode.StepOut) && pc == runtimeCore.DebugProps.StepOutReturnPC)
                 {
@@ -2153,9 +2028,7 @@ namespace ProtoCore.DSASM
 
             isReplicating = debugFrame.IsReplicating;
 
-#if !__DEBUG_REPLICATE
             if (!isReplicating)
-#endif
             {
                 bool isResume = debugFrame.IsResume;
 
@@ -2178,14 +2051,7 @@ namespace ProtoCore.DSASM
                         }
                     }
 
-#if __DEBUG_REPLICATE
-                    // Return type coercion and function call GC for replicating case takes place separately 
-                    // in SerialReplication() when ContinuationStruct.Done == true - pratapa
-                    if (!isReplicating)
-#endif
-                    {
-                        DebugPerformCoercionAndGC(debugFrame);
-                    }
+                    DebugPerformCoercionAndGC(debugFrame);
 
                     // Restore registers except RX on popping of function stackframe
                     ResumeRegistersFromStackExceptRX();
@@ -2225,9 +2091,7 @@ namespace ProtoCore.DSASM
             // Pop function stackframe as this is not allowed in Ret/Retc in debug mode
             rmem.FramePointer = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer).opdata;
 
-            //int execstates = (int)rmem.GetAtRelative(StackFrame.kFrameIndexExecutionStates).opdata;
             rmem.PopFrame(StackFrame.kStackFrameSize + localCount + paramCount + execStateRestore.Count); 
-
 
             ResumeRegistersFromStackExceptRX();
 
@@ -2326,18 +2190,11 @@ namespace ProtoCore.DSASM
             }
             else
             {
-#if __DEBUG_REPLICATE
-                // When debugging replication, we must pop off the DebugFrame for the Dot call only after replication is complete
-                // (after ContinuationStruct.Done == true) - pratapa
-                if (!isReplicating)
-#endif
+                debugFrame = runtimeCore.DebugProps.DebugStackFrame.Peek();
+                // If call returns to Dot Call, restore debug props for Dot call
+                if (debugFrame.IsDotCall)
                 {
-                    debugFrame = runtimeCore.DebugProps.DebugStackFrame.Peek();
-                    // If call returns to Dot Call, restore debug props for Dot call
-                    if (debugFrame.IsDotCall)
-                    {
-                        waspopped = RestoreDebugPropsOnReturnFromBuiltIns();
-                    }
+                    waspopped = RestoreDebugPropsOnReturnFromBuiltIns();
                 }
                 runtimeCore.DebugProps.DebugEntryPC = currentPC;
             }
@@ -2368,15 +2225,6 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            // TODO: This call is common to both Debug as well as Serial mode of execution. Currently this will work only in Debug mode - pratapa
-#if __DEBUG_REPLICATE
-
-            if (isReplicating)
-            {
-                SerialReplication(procNode, ref exeblock, ci, fi, debugFrame);
-                waspopped = true;
-            }
-#endif
             return waspopped;
         }
 
@@ -3286,15 +3134,6 @@ namespace ProtoCore.DSASM
             StackValue opVal = rtSymbols[n - 1].Sv;
             if (opVal.IsPointer || opVal.IsInvalid)
             {
-                /*
-                  if lookahead is Not a pointer then
-                      move to that pointer and get its value at stack index 0 (or further if array)
-                      push that
-                  else 
-                      push the current ptr
-                  end
-                */
-
                 // Determine if we still need to move one more time on the heap
                 // Peek into the pointed data using nextPtr. 
                 // If nextPtr is not a pointer (a primitive) then return the data at nextPtr
@@ -3970,19 +3809,9 @@ namespace ProtoCore.DSASM
             }
         }
 
-        public void Modify_istream_instrList_FromSetValue(int pc, StackValue op)
-        {
-            istream.instrList[pc].op1 = op;
-        }
-
         public void Modify_istream_instrList_FromSetValue(int blockId, int pc, StackValue op)
         {
             exe.instrStreamList[blockId].instrList[pc].op1 = op;
-        }
-
-        public void Modify_istream_entrypoint_FromSetValue(int pc)
-        {
-            istream.entrypoint = pc;
         }
 
         public void Modify_istream_entrypoint_FromSetValue(int blockId, int pc)
@@ -4592,9 +4421,7 @@ namespace ProtoCore.DSASM
                 PopToIndexedArray(blockId, (int)instruction.op1.opdata, (int)instruction.op2.opdata, dimList, svData);
             }
 
-#if !NAIVE_MARK_AND_SWEEP
             rmem.Heap.GC();
-#endif
             ++pc;
             return tempSvData;
         }
@@ -4654,9 +4481,7 @@ namespace ProtoCore.DSASM
                 PopToIndexedArray(blockId, (int)instruction.op1.opdata, (int)instruction.op2.opdata, dimList, svData);
             }
 
-#if !NAIVE_MARK_AND_SWEEP
             rmem.Heap.GC();
-#endif
             ++pc;
         }
 
@@ -4836,10 +4661,6 @@ namespace ProtoCore.DSASM
 
             ++pc;
 
-#if SUPPORT_DS_PROPERTYCHANGED_EVENT
-            SymbolNode propertySymbol = GetSymbolNode(blockId, classIndex, symbolIndex);
-            ProtoFFI.FFIPropertyChangedMonitor.GetInstance().DSObjectPropertyChanged(this, thisptr, propertySymbol.name, null);
-#endif
             return svData;
         }
 
@@ -6398,9 +6219,6 @@ namespace ProtoCore.DSASM
                 }
             }
 
-#if NAIVE_MARK_AND_SWEEP 
-            GC();
-#endif
             return;
         }
 
@@ -6598,13 +6416,12 @@ namespace ProtoCore.DSASM
 
         private void Exec(Instruction instruction)
         {
-#if !NAIVE_MARK_AND_SWEEP
             if (rmem.Heap.IsWaitingForRoots)
             {
                 var gcroots = CollectGCRoots();
                 rmem.Heap.SetRoots(gcroots, this);
             }
-#endif
+
             switch (instruction.opCode)
             {
                 case OpCode.ALLOCC:

@@ -15,6 +15,7 @@ using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Properties;
 using HelixToolkit.Wpf.SharpDX;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
@@ -26,53 +27,46 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public ILogger Logger { get; set; }
         public IPreferences Preferences { get; set; }
         public IEngineControllerManager EngineControllerManager { get; set; }
-        public IRenderPackageFactory RenderPackageFactory { get; set; }
-        public IDynamoViewModel ViewModel { get; set; }
-        public INotifyPropertyChanged RenderPackageFactoryViewModel { get;set; }
-        public string Name { get; set; }
 
         public Watch3DViewModelStartupParams()
         {
             
         }
 
-        public Watch3DViewModelStartupParams(DynamoModel model, DynamoViewModel viewModel, string name)
+        public Watch3DViewModelStartupParams(DynamoModel model)
         {
             Model = model;
             Scheduler = model.Scheduler;
             Logger = model.Logger;
             Preferences = model.PreferenceSettings;
             EngineControllerManager = model;
-            RenderPackageFactory = viewModel.RenderPackageFactoryViewModel.Factory;
-            ViewModel = viewModel;
-            RenderPackageFactoryViewModel = viewModel.RenderPackageFactoryViewModel;
-            Name = name;
         }
     }
 
     /// <summary>
-    /// The Watch3DViewModelBase is the base class for all 3D previews in Dynamo.
+    /// The DefaultWatch3DViewModel is the base class for all 3D previews in Dynamo.
     /// Classes which derive from this base are used to prepare geometry for 
     /// rendering by various render targets. The base class handles the registration
     /// of all necessary event handlers on models, workspaces, and nodes.
     /// </summary>
-    public class Watch3DViewModelBase : NotificationObject, IWatch3DViewModel
+    public class DefaultWatch3DViewModel : NotificationObject, IWatch3DViewModel
     {
         protected readonly IDynamoModel model;
         protected readonly IScheduler scheduler;
         protected readonly IPreferences preferences;
         protected readonly ILogger logger;
         protected readonly IEngineControllerManager engineManager;
-        protected readonly IRenderPackageFactory renderPackageFactory;
-        protected readonly IDynamoViewModel viewModel;
-        protected readonly INotifyPropertyChanged renderPackageFactoryViewModel;
+        protected IRenderPackageFactory renderPackageFactory;
+        protected IDynamoViewModel viewModel;
 
         protected List<NodeModel> recentlyAddedNodes = new List<NodeModel>();
         protected bool active;
         private readonly List<IRenderPackage> currentTaggedPackages = new List<IRenderPackage>();
 
         /// <summary>
-        /// A flag which indicates whether geometry should be processed.
+        /// A flag which indicates whether this Watch3DView should process
+        /// geometry updates. When set to False, the Watch3DView corresponding
+        /// to this view model is not displayed.
         /// </summary>
         public bool Active
         {
@@ -121,6 +115,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        /// <summary>
+        /// A flag which indicates whether the user is holding the
+        /// navigation override key (ESC).
+        /// </summary>
         private bool navigationKeyIsDown = false;
         public bool NavigationKeyIsDown
         {
@@ -141,6 +139,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public DelegateCommand ToggleCanNavigateBackgroundCommand { get; set; }
 
+        public DelegateCommand ZoomToFitCommand { get; set; }
+
         internal WorkspaceViewModel CurrentSpaceViewModel
         {
             get
@@ -149,6 +149,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        /// <summary>
+        /// A flag which indicates whether the Watch3DViewModel
+        /// is currently in pan mode.
+        /// </summary>
         public bool IsPanning
         {
             get
@@ -157,6 +161,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        /// <summary>
+        /// A flag which indicates whether the Watch3DViewModel
+        /// is currently in orbit mode.
+        /// </summary>
         public bool IsOrbiting
         {
             get
@@ -165,19 +173,24 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        protected Watch3DViewModelBase(Watch3DViewModelStartupParams parameters)
+        public bool CanBeActivated { get; internal set; }
+
+        /// <summary>
+        /// The DefaultWatch3DViewModel is used in contexts where a complete rendering environment
+        /// cannot be established. Typically, this is machines that do not have GPUs, or do not
+        /// support DirectX 10 feature levels. For most purposes, you will want to use a <see cref="HelixWatch3DViewModel"/>
+        /// </summary>
+        /// <param name="parameters">A Watch3DViewModelStartupParams object.</param>
+        public DefaultWatch3DViewModel(Watch3DViewModelStartupParams parameters)
         {
             model = parameters.Model;
             scheduler = parameters.Scheduler;
             preferences = parameters.Preferences;
             logger = parameters.Logger;
             engineManager = parameters.EngineControllerManager;
-            renderPackageFactory = parameters.RenderPackageFactory;
-            viewModel = parameters.ViewModel;
-            renderPackageFactoryViewModel = parameters.RenderPackageFactoryViewModel;
 
+            Name = Resources.BackgroundPreviewDefaultName;
             Active = parameters.Preferences.IsBackgroundPreviewActive;
-            Name = parameters.Name;
             logger = parameters.Logger;
 
             RegisterEventHandlers();
@@ -185,18 +198,22 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             TogglePanCommand = new DelegateCommand(TogglePan, CanTogglePan);
             ToggleOrbitCommand = new DelegateCommand(ToggleOrbit, CanToggleOrbit);
             ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
+            ZoomToFitCommand = new DelegateCommand(ZoomToFit, CanZoomToFit);
+            CanBeActivated = true;
         }
 
-        public static Watch3DViewModelBase Start(Watch3DViewModelStartupParams parameters)
+        /// <summary>
+        /// Call setup to establish the visualization context for the
+        /// Watch3DViewModel. Because the Watch3DViewModel is passed into the DynamoViewModel,
+        /// Setup is required to fully establish the rendering context. 
+        /// </summary>
+        /// <param name="viewModel">An IDynamoViewModel object.</param>
+        /// <param name="renderPackageFactory">An IRenderPackageFactory object.</param>
+        public void Setup(IDynamoViewModel viewModel, 
+            IRenderPackageFactory renderPackageFactory)
         {
-            var vm = new Watch3DViewModelBase(parameters);
-            vm.OnStartup();
-            return vm;
-        }
-
-        protected virtual void OnStartup()
-        {
-            // Override in inherited classes.
+            this.viewModel = viewModel;
+            this.renderPackageFactory = renderPackageFactory;
         }
 
         protected virtual void OnShutdown()
@@ -224,19 +241,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             LogVisualizationCapabilities();
 
-            renderPackageFactoryViewModel.PropertyChanged += OnRenderPackageFactoryViewModelPropertyChanged;
-
             RegisterModelEventhandlers(model);
 
             RegisterWorkspaceEventHandlers(model);
-
         }
 
         private void UnregisterEventHandlers()
         {
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChangedHandler;
-
-            renderPackageFactoryViewModel.PropertyChanged -= OnRenderPackageFactoryViewModelPropertyChanged;
 
             UnregisterModelEventHandlers(model);
 
@@ -320,7 +332,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        private void OnRenderPackageFactoryViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        /// <summary>
+        /// Forces a regeneration of the render packages for all nodes.
+        /// </summary>
+        public void RegenerateAllPackages()
         {
             foreach (var node in
                 model.CurrentWorkspace.Nodes)
@@ -446,6 +461,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             AddGeometryForRenderPackages(packages);
         }
 
+        /// <summary>
+        /// Called from derived classes when a collection of render packages
+        /// are available to be processed as render geometry.
+        /// </summary>
+        /// <param name="taskPackages">A collection of packages from which to 
+        /// create render geometry.</param>
         public virtual void GenerateViewGeometryFromRenderPackagesAndRequestUpdate(
             IEnumerable<IRenderPackage> taskPackages)
         {
@@ -545,6 +566,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             return true;
         }
+
+        private static bool CanZoomToFit(object parameter)
+        {
+            return true;
+        }
+
+        protected virtual void ZoomToFit(object parameter)
+        {
+            // Override in derived classes to specify zoom to fit behavior.
+        } 
 
         #endregion
     }

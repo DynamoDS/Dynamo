@@ -32,7 +32,7 @@ namespace ProtoTestFx.TD
         private static ProtoCore.RuntimeCore testRuntimeCore;
 
         private ExecutionMirror testMirror;
-        private readonly ProtoScriptTestRunner runner;
+        private readonly ProtoScriptRunner runner;
         private static string mErrorMessage = "";
         bool testImport;
         bool testDebug;
@@ -43,7 +43,7 @@ namespace ProtoTestFx.TD
  
         public TestFrameWork()
         {
-            runner = new ProtoScriptTestRunner();
+            runner = new ProtoScriptRunner();
         }
 
         /// <summary>
@@ -355,7 +355,8 @@ namespace ProtoTestFx.TD
                     Console.WriteLine(String.Format("Path: {0} does not exist.", includePath));
                 }
             }
-            testMirror = runner.LoadAndExecute(pathname, testCore, out testRuntimeCore);
+            testRuntimeCore = runner.LoadAndExecute(pathname, testCore);
+            testMirror = testRuntimeCore.Mirror;
             SetErrorMessage(errorstring);
             return testMirror;
         }
@@ -445,7 +446,8 @@ namespace ProtoTestFx.TD
                         Console.WriteLine(String.Format("Path: {0} does not exist.", includePath));
                     }
                 }
-                testMirror = runner.Execute(sourceCode, testCore, out testRuntimeCore);
+                testRuntimeCore = runner.Execute(sourceCode, testCore);
+                testMirror = testRuntimeCore.Mirror;
                 
                 if (dumpDS )
                 {

@@ -1,15 +1,13 @@
 ﻿using System.IO;
 using System.Windows.Media.Media3D;
-using SystemTestServices;
 using Dynamo.Controls;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using NUnit.Framework;
 
-namespace DynamoCoreWpfTests
+namespace WpfVisualizationTests
 {
-    //TODO: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-8735
-    [TestFixture, Category("Failure")]
-    public class CameraTests : SystemTestBase
+    [TestFixture]
+    public class CameraTests : VisualizationTest
     {
         private Watch3DView BackgroundPreview
         {

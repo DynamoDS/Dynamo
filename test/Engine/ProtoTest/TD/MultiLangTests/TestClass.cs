@@ -3992,7 +3992,7 @@ t = Test.Test();
 a = Test.DoSomething(t); //no warning is thrown and returned value is null
 a = Test.DoSomething(); //wrong warning is thrown: 
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object n1 = null;
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kFunctionNotFound);
@@ -4528,7 +4528,7 @@ t1 = l1.StartPoint.X;
 a = A.A();
 t = a.x;
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
@@ -4550,7 +4550,7 @@ a = A.A();
 t = a.x;
 }
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
@@ -4573,7 +4573,7 @@ t = a.x;
 }
 ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1694
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             string errmsg = "MAGN-1694 Regression : Dot Operation on instances using replication returns single null where multiple nulls are expected";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;

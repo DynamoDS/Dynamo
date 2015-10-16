@@ -41,16 +41,18 @@ namespace Dynamo.Models
         private string toolTipText = "";
         private string description;
         private string persistentWarning = "";
+        private bool areInputPortsRegistered;
+        private bool areOutputPortsRegistered;
 
-        // Data caching related class members. There are multiple parties at
-        // play when it comes to caching MirrorData for a NodeModel, this value
-        // is accessed from UI thread for display (e.g. preview bubble) and it's
-        // updated by QueryMirrorDataAsyncTask on ISchedulerThread's context. 
-        // Access to the cached data is guarded by cachedMirrorDataMutex object.
-        // 
-        private bool isUpdated;
-        private MirrorData cachedMirrorData;
-        private readonly object cachedMirrorDataMutex = new object();
+        /// <summary>
+        /// The cached value of this node. The cachedValue object is protected by the cachedValueMutex
+        /// as it may be accessed from multiple threads concurrently. 
+        /// 
+        /// However, generally access to the cachedValue property should be protected by usage
+        /// of the Scheduler. 
+        /// </summary>
+        private MirrorData cachedValue;
+        private readonly object cachedValueMutex = new object();
 
         // Input and output port related data members.
         private ObservableCollection<PortModel> inPorts = new ObservableCollection<PortModel>();
@@ -100,11 +102,13 @@ namespace Dynamo.Models
         /// <summary>
         ///     Definitions for the Input Ports of this NodeModel.
         /// </summary>
+        [Obsolete("InPortData is deprecated, please use the InPortNamesAttribute, InPortDescriptionsAttribute, and InPortTypesAttribute instead.")]
         public ObservableCollection<PortData> InPortData { get; private set; }
         
         /// <summary>
         ///     Definitions for the Output Ports of this NodeModel.
         /// </summary>
+        [Obsolete("OutPortData is deprecated, please use the OutPortNamesAttribute, OutPortDescriptionsAttribute, and OutPortTypesAttribute instead.")]
         public ObservableCollection<PortData> OutPortData { get; private set; }
 
         /// <summary>
@@ -401,14 +405,30 @@ namespace Dynamo.Models
             return elCatAttrib.ElementCategory;
         }
 
+        /// <summary>
+        /// The value of this node after the most recent computation
+        /// 
+        /// As this property could be modified by the virtual machine, it's dangerous 
+        /// to access this value without using the active Scheduler. Use the Scheduler to 
+        /// remove the possibility of race conditions.
+        /// </summary>
         public MirrorData CachedValue
         {
             get
             {
-                lock (cachedMirrorDataMutex)
+                lock (cachedValueMutex)
                 {
-                    return cachedMirrorData;
+                    return cachedValue;
                 }
+            }
+            private set
+            {
+                lock (cachedValueMutex)
+                {
+                    cachedValue = value;
+                }
+
+                RaisePropertyChanged("CachedValue");
             }
         }
 
@@ -427,46 +447,28 @@ namespace Dynamo.Models
         /// 
         internal MirrorData GetCachedValueFromEngine(EngineController engine)
         {
-            if (cachedMirrorData != null)
-                return cachedMirrorData;
+            if (cachedValue != null)
+                return cachedValue;
 
             // Do not have an identifier for preview right now. For an example,
             // this can be happening at the beginning of a code block node creation.
             if (AstIdentifierForPreview.Value == null)
                 return null;
 
-            cachedMirrorData = null;
+            cachedValue = null;
 
             var runtimeMirror = engine.GetMirror(AstIdentifierForPreview.Value);
 
             if (runtimeMirror != null)
-                cachedMirrorData = runtimeMirror.GetData();
+                cachedValue = runtimeMirror.GetData();
 
-            return cachedMirrorData;
+            return cachedValue;
         }
 
         /// <summary>
-        ///     If the node is updated in LiveRunner's execution
+        /// Use to indicated if a node was involved in the most recent graph evaluation.
         /// </summary>
-        public bool IsUpdated
-        {
-            get { return isUpdated; }
-            set
-            {
-                isUpdated = value;
-                if (isUpdated)
-                {
-                    // When a NodeModel is updated, its
-                    // cached data should be invalidated.
-                    lock (cachedMirrorDataMutex)
-                    {
-                        cachedMirrorData = null;
-                    }
-                }
-
-                RaisePropertyChanged("IsUpdated");
-            }
-        }
+        internal bool WasInvolvedInExecution { get; set; }
 
         /// <summary>
         ///     Search tags for this Node.
@@ -567,7 +569,7 @@ namespace Dynamo.Models
         /// </summary>
         public bool IsPartiallyApplied //TODO(Steve): Move to Graph level -- MAGN-5710
         {
-            get { return !Enumerable.Range(0, InPortData.Count).All(HasInput); }
+            get { return !Enumerable.Range(0, InPorts.Count).All(HasInput); }
         }
 
         /// <summary>
@@ -590,10 +592,10 @@ namespace Dynamo.Models
         /// <returns>Identifier corresponding to the given output port.</returns>
         public virtual IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
         {
-            if (outputIndex < 0 || outputIndex > OutPortData.Count)
+            if (outputIndex < 0 || outputIndex > OutPorts.Count)
                 throw new ArgumentOutOfRangeException("outputIndex", @"Index must correspond to an OutPortData index.");
 
-            if (OutPortData.Count <= 1)
+            if (OutPorts.Count <= 1)
                 return AstIdentifierForPreview;
             else
             {
@@ -766,7 +768,7 @@ namespace Dynamo.Models
                 };
             }
 
-            if (OutPortData.Count == 1)
+            if (OutPorts.Count == 1)
             {
                 var firstOuputIdent = GetAstIdentifierForOutputIndex(0);
                 if (!AstIdentifierForPreview.Equals(firstOuputIdent))
@@ -1106,12 +1108,29 @@ namespace Dynamo.Models
         /// <summary>
         ///     Reads inputs list and adds ports for each input.
         /// </summary>
+        [Obsolete("RegisterInputPorts is deprecated, please use the InPortNamesAttribute, InPortDescriptionsAttribute, and InPortTypesAttribute instead.")]
         public void RegisterInputPorts()
         {
+            var inputs = new List<PortData>();
+
+            // Old version of input ports registration.
+            // Used InPortData.
+            if (InPortData.Count > 0)
+            {
+                inputs.AddRange(InPortData);
+            }
+
+            // New version of input ports registration.
+            // Used port Attributes.
+            if (!areInputPortsRegistered)
+            {
+                inputs.AddRange(GetPortDataFromAttributes(PortType.Input));
+            }
+
             //read the inputs list and create a number of
             //input ports
             int count = 0;
-            foreach (PortData pd in InPortData)
+            foreach (PortData pd in inputs)
             {
                 //add a port for each input
                 //distribute the ports along the 
@@ -1121,7 +1140,7 @@ namespace Dynamo.Models
                 //port.DataContext = this;
 
                 portDataDict[port] = pd;
-                count++;            
+                count++;
             }
 
             if (inPorts.Count > count)
@@ -1138,17 +1157,35 @@ namespace Dynamo.Models
 
             //Configure Snap Edges
             ConfigureSnapEdges(inPorts);
+            areInputPortsRegistered = true;
         }
 
         /// <summary>
         ///     Reads outputs list and adds ports for each output
         /// </summary>
+        [Obsolete("RegisterOutputPorts is deprecated, please use the OutPortNamesAttribute, OutPortDescriptionsAttribute, and OutPortTypesAttribute instead.")]
         public void RegisterOutputPorts()
         {
+            var outputs = new List<PortData>();
+
+            // Old version of output ports registration.
+            // Used OutPortData.
+            if (OutPortData.Count > 0)
+            {
+                outputs.AddRange(OutPortData);
+            }
+
+            // New version of output ports registration.
+            // Used port Attributes.
+            if (!areOutputPortsRegistered)
+            {
+                outputs.AddRange(GetPortDataFromAttributes(PortType.Output));
+            }
+
             //read the inputs list and create a number of
             //input ports
             int count = 0;
-            foreach (PortData pd in OutPortData)
+            foreach (PortData pd in outputs)
             {
                 //add a port for each input
                 //distribute the ports along the 
@@ -1159,7 +1196,7 @@ namespace Dynamo.Models
                 //port.DataContext = this;
 
                 portDataDict[port] = pd;
-                count++;              
+                count++;
             }
 
             if (outPorts.Count > count)
@@ -1175,6 +1212,68 @@ namespace Dynamo.Models
 
             //configure snap edges
             ConfigureSnapEdges(outPorts);
+            areOutputPortsRegistered = true;
+        }
+
+        /// <summary>
+        /// Tries to load ports names and descriptions from attributes.
+        /// </summary>
+        /// <param name="portType">Input or Output port type</param>
+        private IEnumerable<PortData> GetPortDataFromAttributes(PortType portType)
+        {
+            var type = GetType();
+            List<string> names = null;
+            List<string> descriptions = null;
+
+            switch (portType)
+            {
+                case PortType.Input:
+                    {
+                        names = type.GetCustomAttributes<InPortNamesAttribute>(false)
+                                .SelectMany(x => x.PortNames)
+                                .ToList();
+                        descriptions = type.GetCustomAttributes<InPortDescriptionsAttribute>(false)
+                            .SelectMany(x => x.PortDescriptions)
+                            .ToList();
+                        break;
+                    }
+                case PortType.Output:
+                    {
+                        names = type.GetCustomAttributes<OutPortNamesAttribute>(false)
+                                .SelectMany(x => x.PortNames)
+                                .ToList();
+                        descriptions = type.GetCustomAttributes<OutPortDescriptionsAttribute>(false)
+                            .SelectMany(x => x.PortDescriptions)
+                            .ToList();
+                        break;
+                    }
+            }
+
+            if (names == null)
+            {
+                return new List<PortData>();
+            }
+
+            if (names.Count != descriptions.Count)
+            {
+                Log(String.Concat(
+                        Name,
+                        ": ",
+                        Properties.Resources.PortsNameDescriptionDoNotEqualWarningMessage));
+
+                // Take the same number of descriptions as number of names.
+                descriptions = new List<string>(descriptions.Take(names.Count));
+            }
+
+            var ports = new List<PortData>();
+            for (int i = 0; i < names.Count; i++)
+            {
+                string descr = i < descriptions.Count ? descriptions[i] : String.Empty;
+                var pd = new PortData(names[i], descr);
+                ports.Add(pd);
+            }
+
+            return ports;
         }
 
         /// <summary>
@@ -1209,7 +1308,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     Updates UI so that all ports reflect current state of InPortData and OutPortData.
+        ///     Updates UI so that all ports reflect current state of node ports.
         /// </summary>
         public void RegisterAllPorts()
         {
@@ -1323,16 +1422,15 @@ namespace Dynamo.Models
         {
             string nick = NickName.Replace(' ', '_');
 
-            if (!Enumerable.Range(0, InPortData.Count).Any(HasInput))
+            if (!Enumerable.Range(0, InPorts.Count).Any(HasInput))
                 return nick;
 
             string s = "";
 
-            if (Enumerable.Range(0, InPortData.Count).All(HasInput))
+            if (Enumerable.Range(0, InPorts.Count).All(HasInput))
             {
-                s += "(" + nick;
-                //for (int i = 0; i < InPortData.Count; i++)
-                foreach (int data in Enumerable.Range(0, InPortData.Count))
+                s += "(" + nick;                
+                foreach (int data in Enumerable.Range(0, InPorts.Count))
                 {
                     Tuple<int, NodeModel> input;
                     TryGetInput(data, out input);
@@ -1342,17 +1440,16 @@ namespace Dynamo.Models
             }
             else
             {
-                s += "(lambda (" + string.Join(" ", InPortData.Where((_, i) => !HasInput(i)).Select(x => x.NickName))
-                     + ") (" + nick;
-                //for (int i = 0; i < InPortData.Count; i++)
-                foreach (int data in Enumerable.Range(0, InPortData.Count))
+                s += "(lambda (" + string.Join(" ", InPorts.Where((_, i) => !HasInput(i)).Select(x => x.PortName))
+                     + ") (" + nick;                
+                foreach (int data in Enumerable.Range(0, InPorts.Count))
                 {
                     s += " ";
                     Tuple<int, NodeModel> input;
                     if (TryGetInput(data, out input))
                         s += input.Item2.PrintExpression();
                     else
-                        s += InPortData[data].NickName;
+                        s += InPorts[data].PortName;
                 }
                 s += "))";
             }
@@ -1611,9 +1708,9 @@ namespace Dynamo.Models
             // requested to update its value. When the QueryMirrorDataAsyncTask 
             // returns, it will update cachedMirrorData with the latest value.
             // 
-            lock (cachedMirrorDataMutex)
+            lock (cachedValueMutex)
             {
-                cachedMirrorData = null;
+                cachedValue = null;
             }
 
             // Do not have an identifier for preview right now. For an example,
@@ -1629,19 +1726,22 @@ namespace Dynamo.Models
                 VariableName = variableName
             });
 
-            task.Completed += OnNodeValueQueried;
+            task.Completed += QueryMirrorDataAsyncTaskCompleted;
             scheduler.ScheduleForExecution(task);
         }
 
-        private void OnNodeValueQueried(AsyncTask asyncTask)
+        private void QueryMirrorDataAsyncTaskCompleted(AsyncTask asyncTask)
         {
-            lock (cachedMirrorDataMutex)
+            asyncTask.Completed -= QueryMirrorDataAsyncTaskCompleted;
+
+            var task = asyncTask as QueryMirrorDataAsyncTask;
+            if (task == null)
             {
-                var task = asyncTask as QueryMirrorDataAsyncTask;
-                cachedMirrorData = task.MirrorData;
+                throw new InvalidOperationException("Expected a " + typeof(QueryMirrorDataAsyncTask).Name 
+                    + ", but got a " + asyncTask.GetType().Name );
             }
 
-            RaisePropertyChanged("IsUpdated");
+            this.CachedValue = task.MirrorData;
         }
 
         /// <summary>
