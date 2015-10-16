@@ -1333,7 +1333,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Set the near clip plane to some fraction of the 
             // of the distance to the first point.
             var closest = distances.First(d => d >= 0);
-            near = closest.AlmostEqualTo(0, EqualityTolerance) ? DefaultNearClipDistance : closest * nearPlaneDistanceFactor;
+            near = closest.AlmostEqualTo(0, EqualityTolerance) ? DefaultNearClipDistance : Math.Max(DefaultNearClipDistance, closest * nearPlaneDistanceFactor);
             far = distances.Last() * 2;
 
         }
