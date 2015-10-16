@@ -180,6 +180,7 @@ namespace Dynamo.Models
 
         protected override void NodeModified(NodeModel node)
         {
+            Console.WriteLine("NodeModified");
             base.NodeModified(node);
             RequestRun();
         }
@@ -191,9 +192,14 @@ namespace Dynamo.Models
             if (handler != null) handler();
         }
 
+        public bool DisableDefinitionUpdated = false;
+
         public event Action DefinitionUpdated;
-        protected virtual void OnDefinitionUpdated()
+        internal virtual void OnDefinitionUpdated()
         {
+            if (DisableDefinitionUpdated) return;
+
+            Console.WriteLine("DefinitionUpdated");
             var handler = DefinitionUpdated;
             if (handler != null) handler();
         }

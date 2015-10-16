@@ -189,6 +189,7 @@ namespace Dynamo.Core
         {
             Action defUpdatedHandler = () =>
             {
+                Console.WriteLine("ResyncWithDefinition");
                 node.ResyncWithDefinition(workspace.CustomNodeDefinition);
             };
             workspace.DefinitionUpdated += defUpdatedHandler;
