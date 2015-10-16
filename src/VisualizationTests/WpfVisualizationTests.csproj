@@ -115,6 +115,7 @@
     <Compile Include="CameraTests.cs" />
     <Compile Include="HelixRenderPackageTests.cs" />
     <Compile Include="HelixWatch3DViewModelTests.cs" />
+    <Compile Include="HelixWatch3DViewModelUnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Watch3DViewModelTests.cs" />
   </ItemGroup>
