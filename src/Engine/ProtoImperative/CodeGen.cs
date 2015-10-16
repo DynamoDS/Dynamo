@@ -3316,11 +3316,6 @@ namespace ProtoImperative
             return BuildIdentfier(core.GenerateTempVar(), PrimitiveType.kTypeVar);
         }
 
-        public ImperativeNode BuildReturn()
-        {
-            return BuildIdentfier(ProtoCore.DSDefinitions.Keyword.Return, PrimitiveType.kTypeReturn);
-        }
-
         public ImperativeNode BuildIdentList(ImperativeNode leftNode, ImperativeNode rightNode)
         {
             var identList = new IdentifierListNode();
