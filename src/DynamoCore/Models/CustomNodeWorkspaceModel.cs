@@ -180,7 +180,6 @@ namespace Dynamo.Models
 
         protected override void NodeModified(NodeModel node)
         {
-            Console.WriteLine("NodeModified");
             base.NodeModified(node);
             RequestRun();
         }
