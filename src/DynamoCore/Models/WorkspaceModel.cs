@@ -43,7 +43,7 @@ namespace Dynamo.Models
         {
             get
             {
-                return currentPasteOffset == 0 ? PasteOffsetStep : currentPasteOffset;
+                return currentPasteOffset + PasteOffsetStep;
             }
         }
 
@@ -595,13 +595,13 @@ namespace Dynamo.Models
 
         public double CenterX
         {
-            get { return (Width - X) / (2 * Zoom); }
+            get { return (Width / 2 - X) / Zoom; }
             set { }
         }
 
         public double CenterY
         {
-            get { return (Height - Y) / (2 * Zoom); }
+            get { return (Height / 2 - Y) / Zoom; }
             set { }
         }
 

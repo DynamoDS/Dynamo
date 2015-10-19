@@ -10,7 +10,9 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Input;
 using System.Windows.Threading;
+using Dynamo.Controls;
 using Dynamo.Engine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
@@ -20,6 +22,7 @@ using Dynamo.Services;
 using Dynamo.UI;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
+using Dynamo.Views;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.UI;
@@ -873,6 +876,35 @@ namespace Dynamo.ViewModels
 
         private void Paste(object parameter)
         {
+            var locatableModels = model.ClipBoard.Where(item => item is NoteModel || item is NodeModel);
+
+            bool outOfView = locatableModels.Any(item => !model.CurrentWorkspace.Rect.Contains(item.Rect));
+
+            // If copied nodes are out of view, we paste their copies under mouse cursor or at the center of workspace.
+            if (outOfView)
+            {
+                var dynamoWindow = parameter as DynamoView;
+                if (dynamoWindow == null) return;
+                var currentWorkspace = dynamoWindow.WorkspaceTabs.ChildrenOfType<WorkspaceView>()
+                    .First(ws => ws.ViewModel.IsCurrentSpace);                
+
+                // If mouse is over workspace, paste copies under mouse cursor.
+                if (currentWorkspace.IsMouseOver)
+                {
+                    // Find mouse position relative to ws elements.
+                    Point mousePosition = Mouse.GetPosition(currentWorkspace.WorkspaceElements);
+                    Point2D mousePosition2D = new Point2D(mousePosition.X, mousePosition.Y);
+                    model.Paste(mousePosition2D, false);
+                }
+                else // If mouse is out of workspace view, then paste copies at the center.
+                {
+                    model.Paste(new Point2D(model.CurrentWorkspace.CenterX, model.CurrentWorkspace.CenterY));
+                }
+                return;
+            }
+
+            // All copied nodes are inside of workspace.
+            // Paste them with little offset.           
             model.Paste();
             RaiseCanExecuteUndoRedo();
         }

@@ -101,7 +101,8 @@
                     Command="{Binding Path=DataContext.AddNoteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="V"
                     Modifiers="Control"
-                    Command="{Binding Path=DataContext.PasteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+                    Command="{Binding Path=DataContext.PasteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="S"
                     Modifiers="Control"
                     Command="{Binding Path=DataContext.ShowSaveDialogIfNeededAndSaveResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />

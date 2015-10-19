@@ -1556,25 +1556,8 @@ namespace Dynamo.Models
         /// </summary>
         public void Paste()
         {
-            // Provide a small offset when pasting so duplicate pastes aren't directly on top of each other
-            CurrentWorkspace.IncrementPasteOffset();
-
             var locatableModels = ClipBoard.Where(model => model is NoteModel || model is NodeModel);
             var orderedItems = locatableModels.OrderBy(item => item.CenterX + item.CenterY);
-
-            // Find workspace boundaries.
-            var x1 = -CurrentWorkspace.X / CurrentWorkspace.Zoom;
-            var y1 = -CurrentWorkspace.Y / CurrentWorkspace.Zoom;
-            var x2 = CurrentWorkspace.Width / CurrentWorkspace.Zoom;
-            var y2 = CurrentWorkspace.Height / CurrentWorkspace.Zoom;
-            bool outOfView = locatableModels.Any(item => item.X < x1 || item.Y < y1 || item.X > x2 || item.Y > y2);
-
-            // If nodes are out of view, we paste their copies at the center of workspace.
-            if (outOfView)
-            {
-                Paste(new Point2D(CurrentWorkspace.CenterX, CurrentWorkspace.CenterY));
-                return;
-            }
 
             // Search for the rightmost item. It's item with the biggest X, Y coordinates of center.
             var rightMostItem = orderedItems.Last();
@@ -1583,9 +1566,8 @@ namespace Dynamo.Models
             var leftMostItem = orderedItems.First();
 
             // Compute shift so that left most item will appear at right most item place with offset.
-            var shiftX = rightMostItem.X + rightMostItem.Width + CurrentWorkspace.CurrentPasteOffset - leftMostItem.X;
-            var shiftY = rightMostItem.Y + CurrentWorkspace.CurrentPasteOffset - leftMostItem.Y;
-
+            var shiftX = rightMostItem.X + rightMostItem.Width - leftMostItem.X;
+            var shiftY = rightMostItem.Y - leftMostItem.Y;
 
             var x = shiftX + locatableModels.Min(m => m.X);
             var y = shiftY + locatableModels.Min(m => m.Y);
@@ -1598,8 +1580,13 @@ namespace Dynamo.Models
         ///     Paste ISelectable objects from the clipboard to the workspace at specified point.
         /// </summary>
         /// <param name="targetPoint">Location where data will be pasted</param>
-        public void Paste(Point2D targetPoint)
+        /// <param name="useOffset">Indicates whether we will use current workspace offset or paste nodes
+        /// directly in this point. </param>
+        public void Paste(Point2D targetPoint, bool useOffset = true)
         {
+            // Provide a small offset when pasting so duplicate pastes aren't directly on top of each other
+            CurrentWorkspace.IncrementPasteOffset();           
+
             //clear the selection so we can put the
             //paste contents in
             DynamoSelection.Instance.ClearSelection();
@@ -1666,11 +1653,12 @@ namespace Dynamo.Models
             
             var shiftX = targetPoint.X - newItems.Min(item => item.X);
             var shiftY = targetPoint.Y - newItems.Min(item => item.Y);
+            var offset = useOffset ? CurrentWorkspace.CurrentPasteOffset : 0;
 
             foreach (var model in newItems)
             {
-                model.X = model.X + shiftX;
-                model.Y = model.Y + shiftY;
+                model.X = model.X + shiftX + offset;
+                model.Y = model.Y + shiftY + offset;
             }
 
             // Add the new NodeModel's to the Workspace
