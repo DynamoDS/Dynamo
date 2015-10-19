@@ -883,13 +883,13 @@ namespace Dynamo.ViewModels
                 // If mouse is over workspace, paste copies under mouse cursor.
                 if (CurrentSpaceViewModel.IsMouseOver)
                 {
-                    // Find mouse position relative to ws elements.                               
                     model.Paste(CurrentSpaceViewModel.MousePosition, false);
                 }
                 else // If mouse is out of workspace view, then paste copies at the center.
                 {
                     model.Paste(new Point2D(model.CurrentWorkspace.CenterX, model.CurrentWorkspace.CenterY));
                 }
+                RaiseCanExecuteUndoRedo();
                 return;
             }
 
