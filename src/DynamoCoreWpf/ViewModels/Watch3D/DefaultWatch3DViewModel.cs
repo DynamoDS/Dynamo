@@ -564,7 +564,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private bool CanToggleCanNavigateBackground(object parameter)
         {
-            return true;
+            return false;
         }
 
         private static bool CanZoomToFit(object parameter)
