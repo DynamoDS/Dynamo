@@ -106,11 +106,14 @@ namespace Dynamo.Wpf.Extensions
         private MenuItem SearchForMenuItem(MenuBarType type)
         {
             var dynamoMenuItems = dynamoMenu.Items.OfType<MenuItem>();
-            return dynamoMenuItems.First(item => item.Header.ToString() == "_" + type);
+            return dynamoMenuItems.First(item => item.Header.ToString() == type.ToDisplayString());
         }
 
     }
-
+    /// <summary>
+    /// an enum that represets the different possible 
+    /// MenuBrs which view extensions may add items to.
+    /// </summary>
     public enum MenuBarType
     {
         File,
@@ -118,4 +121,31 @@ namespace Dynamo.Wpf.Extensions
         View,
         Help
     }
+
+    /// <summary>
+    /// a class of extensins to the MenuBarEnum
+    /// </summary>
+    public static class MenuBarTypeExtensions
+    {
+        /// <summary>
+        /// a method to extract the appropriate localized string 
+        /// representing the header name of this menu type
+        /// i.e. file -> _File
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns>a localized string used as the menu header</returns>
+        public static string ToDisplayString(this MenuBarType type)
+        {
+            switch (type)
+            {
+                case MenuBarType.File: return Properties.Resources.DynamoViewFileMenu;
+                case MenuBarType.Edit: return Properties.Resources.DynamoViewEditMenu;
+                case MenuBarType.View: return Properties.Resources.DynamoViewViewMenu;
+                case MenuBarType.Help: return Properties.Resources.DynamoViewHelpMenu;
+
+                default: throw new ArgumentOutOfRangeException("type");
+            }
+        }
+    }
+
 }
