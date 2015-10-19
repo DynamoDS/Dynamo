@@ -1562,6 +1562,20 @@ namespace Dynamo.Models
             var locatableModels = ClipBoard.Where(model => model is NoteModel || model is NodeModel);
             var orderedItems = locatableModels.OrderBy(item => item.CenterX + item.CenterY);
 
+            // Find workspace boundaries.
+            var x1 = -CurrentWorkspace.X / CurrentWorkspace.Zoom;
+            var y1 = -CurrentWorkspace.Y / CurrentWorkspace.Zoom;
+            var x2 = CurrentWorkspace.Width / CurrentWorkspace.Zoom;
+            var y2 = CurrentWorkspace.Height / CurrentWorkspace.Zoom;
+            bool outOfView = locatableModels.Any(item => item.X < x1 || item.Y < y1 || item.X > x2 || item.Y > y2);
+
+            // If nodes are out of view, we paste their copies at the center of workspace.
+            if (outOfView)
+            {
+                Paste(new Point2D(CurrentWorkspace.CenterX, CurrentWorkspace.CenterY));
+                return;
+            }
+
             // Search for the rightmost item. It's item with the biggest X, Y coordinates of center.
             var rightMostItem = orderedItems.Last();
 

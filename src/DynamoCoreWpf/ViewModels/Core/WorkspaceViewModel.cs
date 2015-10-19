@@ -216,6 +216,18 @@ namespace Dynamo.ViewModels
             get { return Model.Zoom; }
         }
 
+        public double Height
+        {
+            get { return Model.Height; }
+            set { Model.Height = value; }
+        }
+
+        public double Width
+        {
+            get { return Model.Width; }
+            set { Model.Width = value; }
+        }
+
         public bool CanZoomIn
         {
             get { return CanZoom(Configurations.ZoomIncrement); }

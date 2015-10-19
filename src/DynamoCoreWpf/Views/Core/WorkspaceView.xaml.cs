@@ -772,5 +772,11 @@ namespace Dynamo.Views
             ViewModel.InCanvasSearchViewModel.SearchText = String.Empty;
         }
 
+        private void OnWorkspaceSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ViewModel.Height = e.NewSize.Height;
+            ViewModel.Width = e.NewSize.Width;
+        }
+
     }
 }

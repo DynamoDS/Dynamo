@@ -595,13 +595,13 @@ namespace Dynamo.Models
 
         public double CenterX
         {
-            get { return 0; }
+            get { return (Width - X) / (2 * Zoom); }
             set { }
         }
 
         public double CenterY
         {
-            get { return 0; }
+            get { return (Height - Y) / (2 * Zoom); }
             set { }
         }
 
