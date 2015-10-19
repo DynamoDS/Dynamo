@@ -236,6 +236,28 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private Point2D mousePosition;
+        /// <summary>
+        /// Indicates mouse position on workspace view.
+        /// </summary>
+        public Point2D MousePosition
+        {
+            get { return mousePosition; }
+            set
+            {
+                mousePosition = value;
+                RaisePropertyChanged("MousePosition");
+            }
+        }
+
+        /// <summary>
+        /// Indicates if mouse is over workspace view.
+        /// </summary>
+        public bool IsMouseOver
+        {
+            get { return Model.Rect.Contains(MousePosition); }
+        }
+
         public bool CanZoomIn
         {
             get { return CanZoom(Configurations.ZoomIncrement); }

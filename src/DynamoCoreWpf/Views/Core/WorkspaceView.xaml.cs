@@ -538,6 +538,8 @@ namespace Dynamo.Views
 
             if (false == mouseMessageHandled)
                 wvm.HandleMouseMove(this.WorkBench, e);
+
+            ViewModel.MousePosition = Mouse.GetPosition(this.WorkspaceElements).AsDynamoType();
         }
 
         private PortViewModel GetSnappedPort(Point mouseCursor)

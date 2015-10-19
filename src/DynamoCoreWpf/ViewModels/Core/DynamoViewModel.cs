@@ -10,9 +10,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Input;
 using System.Windows.Threading;
-using Dynamo.Controls;
 using Dynamo.Engine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
@@ -22,7 +20,6 @@ using Dynamo.Services;
 using Dynamo.UI;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
-using Dynamo.Views;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.UI;
@@ -883,17 +880,11 @@ namespace Dynamo.ViewModels
             // If copied nodes are out of view, we paste their copies under mouse cursor or at the center of workspace.
             if (outOfView)
             {
-                var dynamoWindow = parameter as DynamoView;
-                if (dynamoWindow == null) return;
-                var currentWorkspace = dynamoWindow.WorkspaceTabs.ChildrenOfType<WorkspaceView>()
-                    .First(ws => ws.ViewModel.IsCurrentSpace);                
-
                 // If mouse is over workspace, paste copies under mouse cursor.
-                if (currentWorkspace.IsMouseOver)
+                if (CurrentSpaceViewModel.IsMouseOver)
                 {
-                    // Find mouse position relative to ws elements.
-                    var mousePosition = Mouse.GetPosition(currentWorkspace.WorkspaceElements).AsDynamoType();                    
-                    model.Paste(mousePosition, false);
+                    // Find mouse position relative to ws elements.                               
+                    model.Paste(CurrentSpaceViewModel.MousePosition, false);
                 }
                 else // If mouse is out of workspace view, then paste copies at the center.
                 {
