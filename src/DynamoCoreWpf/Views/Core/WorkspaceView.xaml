@@ -87,6 +87,21 @@
             <EventSetter Event="PreviewMouseDown"
                          Handler="OnInCanvasSearchContextMenuMouseDown" />
         </Style>
+        <DataTemplate x:Key="DraggedSelectionTemplate">
+            <ItemsControl ItemsSource="{Binding}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="ContentPresenter">
+                        <Setter Property="Canvas.Left" Value="{Binding Left}"/>
+                        <Setter Property="Canvas.Top" Value="{Binding Top}"/>
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+            </ItemsControl>
+        </DataTemplate>
     </UserControl.Resources>
 
     <Grid  Name="outerCanvas"
@@ -284,8 +299,7 @@
                                              HorizontalAlignment="Left"
                                              VerticalAlignment="Top"
                                              Visibility="Visible"
-                                             ContextMenuOpening="WorkBench_ContextMenuOpening"
-                                             Loaded="WorkBench_OnLoaded"
+                                             Loaded="workBench_OnLoaded"
                                              IsItemsHost="True">
                             <Canvas.Background>
                                 <SolidColorBrush Color="Transparent" />

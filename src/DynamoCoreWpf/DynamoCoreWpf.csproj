@@ -167,6 +167,7 @@
     <Compile Include="Rendering\RenderPackageExtensions.cs" />
     <Compile Include="Services\IconServices.cs" />
     <Compile Include="UI\ClassObjectTemplateSelector.cs" />
+    <Compile Include="UI\DraggedAdorner.cs" />
     <Compile Include="UI\HeaderTemplateSelector.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
