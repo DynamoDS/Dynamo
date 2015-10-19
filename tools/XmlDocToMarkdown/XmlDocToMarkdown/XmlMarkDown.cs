@@ -69,8 +69,8 @@ namespace XmlDocToMarkdown
                     {"summary", "| {0}\n"},
                     {"remarks", "| {0}\n"},
                     {"example", "| \n**Example:** | _C# code_\n\n```\n{0}\n```\n"},
-                    {"seePage", "[[{1}|{0}]]"},
-                    {"seeAnchor", "[{1}]({0})"},
+                    {"seePage", "*{0}*"},
+                    {"seeAnchor", "[**{1}**](**{0}**)"},
                     {"param", "| **{0}**\n|{1}\n" },
                     {"exception", "| **[[{0}|{0}]]:** | {1}\n" },
                     {"returns", "| **Return Value:** {0}\n"},
@@ -83,7 +83,7 @@ namespace XmlDocToMarkdown
         private static Func<string, XElement, string[]> d =
             new Func<string, XElement, string[]>((att, node) => new[]
                 {
-                    node.Attribute(att).Value, 
+                    node.Attribute(att).Value.ToClassString(), 
                     node.Nodes().NodeMarkDown()
                 });
 
@@ -359,6 +359,24 @@ namespace XmlDocToMarkdown
             var lines = s.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
             var blank = lines[0].TakeWhile(x => x == ' ').Count() - 4;
             return string.Join("\n", lines.Select(x => new string(x.SkipWhile((y, i) => i < blank).ToArray())));
+        }
+
+        static string ToClassString(this string s)
+        {
+            if (s.Contains("T:"))
+            {
+                var className = s.Replace("T:", "");
+                var methodName = className.Split('.').Last();
+                if (className.Contains("Dynamo"))
+                {
+                    var url = className.ConstructUrl(methodName);
+                    return url;
+                }
+
+                return methodName;
+            }
+
+            return s;
         }
     }
 }
