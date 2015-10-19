@@ -1584,8 +1584,11 @@ namespace Dynamo.Models
         /// directly in this point. </param>
         public void Paste(Point2D targetPoint, bool useOffset = true)
         {
-            // Provide a small offset when pasting so duplicate pastes aren't directly on top of each other
-            CurrentWorkspace.IncrementPasteOffset();           
+            if (useOffset)
+            {
+                // Provide a small offset when pasting so duplicate pastes aren't directly on top of each other
+                CurrentWorkspace.IncrementPasteOffset();
+            }
 
             //clear the selection so we can put the
             //paste contents in
@@ -1660,7 +1663,7 @@ namespace Dynamo.Models
                 model.X = model.X + shiftX + offset;
                 model.Y = model.Y + shiftY + offset;
 
-                // If new item appeare outside of workspace,
+                // If new item appeares outside of workspace,
                 // then paste it at the center.
                 if (!CurrentWorkspace.Rect.Contains(model.Rect))
                 {

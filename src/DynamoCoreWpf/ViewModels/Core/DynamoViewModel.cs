@@ -892,9 +892,8 @@ namespace Dynamo.ViewModels
                 if (currentWorkspace.IsMouseOver)
                 {
                     // Find mouse position relative to ws elements.
-                    Point mousePosition = Mouse.GetPosition(currentWorkspace.WorkspaceElements);
-                    Point2D mousePosition2D = new Point2D(mousePosition.X, mousePosition.Y);
-                    model.Paste(mousePosition2D, false);
+                    var mousePosition = Mouse.GetPosition(currentWorkspace.WorkspaceElements).AsDynamoType();                    
+                    model.Paste(mousePosition, false);
                 }
                 else // If mouse is out of workspace view, then paste copies at the center.
                 {
