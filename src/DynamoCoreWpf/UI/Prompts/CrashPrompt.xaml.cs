@@ -8,7 +8,7 @@ using System.Xml;
 using System.Windows.Documents;
 using System.Windows.Markup;
 using System.Diagnostics;
-
+using Dynamo.Logging;
 using Dynamo.ViewModels;
 
 namespace Dynamo.Nodes.Prompts

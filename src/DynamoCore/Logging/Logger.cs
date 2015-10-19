@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
-
 using CSharpAnalytics;
 using CSharpAnalytics.Protocols.Measurement;
-
 using Dynamo.Models;
-
+using Dynamo.Services;
 using Microsoft.Win32;
-using net.riversofdata.dhlogger;
 
-namespace Dynamo.Services
+namespace Dynamo.Logging
 {
     /// <summary>
     /// Interception class to handle whether logging is called or not

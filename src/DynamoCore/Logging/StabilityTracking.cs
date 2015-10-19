@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-
 using Microsoft.Win32;
 
-namespace Dynamo.Services
+namespace Dynamo.Logging
 {
     /// <summary>
     /// Stability state tracking utils library

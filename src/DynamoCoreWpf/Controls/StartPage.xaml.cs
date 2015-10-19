@@ -16,6 +16,7 @@ using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Views.Gallery;
 using Dynamo.Wpf.ViewModels.Core;
 using System.Linq;
+using Dynamo.Logging;
 using Dynamo.Services;
 
 namespace Dynamo.UI.Controls

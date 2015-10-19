@@ -15,6 +15,7 @@ using Microsoft.Practices.Prism.ViewModel;
 using Dynamo.Models;
 using Dynamo.Search;
 using System.Windows;
+using Dynamo.Logging;
 
 namespace Dynamo.Wpf.ViewModels
 {
@@ -235,7 +236,7 @@ namespace Dynamo.Wpf.ViewModels
                 var nodeModel = Model.CreateNode();
                 Clicked(nodeModel, Position);
 
-                Dynamo.Services.InstrumentationLogger.LogPiiInfo("Search-NodeAdded", FullName);
+                InstrumentationLogger.LogPiiInfo("Search-NodeAdded", FullName);
             }
         }
 

@@ -10,6 +10,7 @@ using Autodesk.DesignScript.Interfaces;
 using Dynamo.Core;
 using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Services;
