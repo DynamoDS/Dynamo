@@ -90,9 +90,6 @@ namespace DSOffice
                 excel = new Microsoft.Office.Interop.Excel.Application();
             }
 
-            // KILLDYNSETTINGS - is this safe
-            AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
-
             excel.Visible = ShowOnStartup;
             excel.DisplayAlerts = false;
 
