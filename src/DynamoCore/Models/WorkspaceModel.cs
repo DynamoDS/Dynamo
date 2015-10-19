@@ -800,6 +800,13 @@ namespace Dynamo.Models
         {
             node.Modified += NodeModified;
             node.ConnectorAdded += OnConnectorAdded;
+
+            var functionNode = node as Function;
+            if (functionNode != null)
+            {
+                functionNode.Controller.SyncWithDefinitionStart += OnSyncWithDefintionStart;
+                functionNode.Controller.SyncWithDefinitionEnd += OnSyncWithDefinitionEnd;
+            }
         }
 
         protected virtual void RequestRun()
@@ -833,6 +840,12 @@ namespace Dynamo.Models
 
         protected virtual void DisposeNode(NodeModel model)
         {
+            var functionNode = model as Function;
+            if (functionNode != null)
+            {
+                functionNode.Controller.SyncWithDefinitionStart -= OnSyncWithDefintionStart;
+                functionNode.Controller.SyncWithDefinitionEnd -= OnSyncWithDefinitionEnd;
+            }
             model.ConnectorAdded -= OnConnectorAdded;
             model.Modified -= NodeModified;
             model.Dispose();
