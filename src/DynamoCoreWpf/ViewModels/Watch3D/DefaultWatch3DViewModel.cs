@@ -506,6 +506,20 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             if (handler != null) handler(sender, e);
         }
 
+        public event Action<object, MouseEventArgs> ViewMouseEnter;
+        internal void OnViewMouseEnter(object sender, MouseEventArgs e)
+        {
+            var handler = ViewMouseEnter;
+            if (handler != null) handler(sender, e);
+        }
+
+        public event Action<object, MouseEventArgs> ViewMouseLeave;
+        internal void OnViewMouseLeave(object sender, MouseEventArgs e)
+        {
+            var handler = ViewMouseLeave;
+            if (handler != null) handler(sender, e);
+        }
+
         protected virtual void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             // Override in derived classes.

@@ -1,6 +1,7 @@
 ﻿using Dynamo.Models;
 using System;
 using System.Collections.Generic;
+using Dynamo.Nodes;
 
 namespace Dynamo.Interfaces
 {
@@ -27,5 +28,12 @@ namespace Dynamo.Interfaces
         /// </summary>
         /// <param name="nodeModel"></param>
         void RecordModelForModification(ModelBase nodeModel);
+
+        /// <summary>
+        /// Returns all zero touch nodes in the workspace that match the given names
+        /// </summary>
+        /// <param name="nodeNames">list of CreationName's of ZT nodes</param>
+        /// <returns></returns>
+        IEnumerable<DSFunctionBase> GetZTNodesForMatchingNames(IEnumerable<string> nodeNames);
     }
 }

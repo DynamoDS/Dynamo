@@ -1031,6 +1031,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         pointGeometry3D.Geometry = points;
                         pointGeometry3D.Name = baseId;
                         pointGeometry3D.MouseDown3D += pointGeometry3D_MouseDown3D;
+                        pointGeometry3D.PreviewMouseMove += pointGeometry3D_MouseMove;
                     }
 
                     var l = rp.Lines;
@@ -1118,6 +1119,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                 AttachAllGeometryModel3DToRenderHost();
             }
+        }
+
+        void pointGeometry3D_MouseMove(object sender, MouseEventArgs e)
+        {
+            
         }
 
         void pointGeometry3D_MouseDown3D(object sender, RoutedEventArgs e)

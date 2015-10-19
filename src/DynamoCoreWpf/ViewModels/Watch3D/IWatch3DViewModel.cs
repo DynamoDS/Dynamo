@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using Autodesk.DesignScript.Interfaces;
@@ -60,5 +61,22 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// Event to be raised for a mouse move event in the Watch view
         /// </summary>
         event Action<object, MouseEventArgs> ViewMouseMove;
+
+        /// <summary>
+        /// Event to be raised for a mouse enter event in the Watch view
+        /// </summary>
+        event Action<object, MouseEventArgs> ViewMouseEnter;
+
+        /// <summary>
+        /// Event to be raised for a mouse leave event in the Watch view
+        /// </summary>
+        event Action<object, MouseEventArgs> ViewMouseLeave;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        event PropertyChangedEventHandler PropertyChanged;
+
+        bool CanNavigateBackground { get; }
     }
 }
