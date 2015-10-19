@@ -23,6 +23,7 @@ using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 using ProtoCore.DSASM;
 using System.Reflection;
+using Dynamo.Visualization;
 
 namespace Dynamo.Models
 {

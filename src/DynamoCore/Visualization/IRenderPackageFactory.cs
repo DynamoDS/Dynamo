@@ -1,7 +1,6 @@
 ﻿using Autodesk.DesignScript.Interfaces;
-using Dynamo.Annotations;
 
-namespace Dynamo.Interfaces
+namespace Dynamo.Visualization
 {
     /// <summary>
     /// IRenderPackageFactory is used to create IRenderPackage objects suitable 

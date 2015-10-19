@@ -9,6 +9,7 @@ using Dynamo.Utilities;
 using Dynamo.Extensions;
 using Dynamo.Interfaces;
 using Dynamo.Selection;
+using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
 
 namespace Dynamo.Wpf.Extensions
