@@ -111,8 +111,8 @@ namespace Dynamo.Wpf.Extensions
 
     }
     /// <summary>
-    /// an enum that represets the different possible 
-    /// MenuBrs which view extensions may add items to.
+    /// An enum that represents the different possible 
+    /// MenuBars which ViewExtensions may add items to.
     /// </summary>
     public enum MenuBarType
     {
@@ -123,17 +123,17 @@ namespace Dynamo.Wpf.Extensions
     }
 
     /// <summary>
-    /// a class of extensins to the MenuBarEnum
+    /// A class of extensions for the MenuBarType Enum.
     /// </summary>
     public static class MenuBarTypeExtensions
     {
         /// <summary>
-        /// a method to extract the appropriate localized string 
+        /// A method to extract the appropriate localized string 
         /// representing the header name of this menu type
-        /// i.e. file -> _File
+        /// i.e. file -> "_File"
         /// </summary>
         /// <param name="type"></param>
-        /// <returns>a localized string used as the menu header</returns>
+        /// <returns>A localized string used as the menu header</returns>
         public static string ToDisplayString(this MenuBarType type)
         {
             switch (type)
