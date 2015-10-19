@@ -812,6 +812,7 @@ namespace Dynamo.ViewModels
         {
             var point = InCanvasSearchViewModel.InCanvasSearchPosition;
             DynamoViewModel.Model.Paste(new Point2D(point.X, point.Y));
+            DynamoViewModel.RaiseCanExecuteUndoRedo();
         }
 
         private void ShowHideAllGeometryPreview(object parameter)

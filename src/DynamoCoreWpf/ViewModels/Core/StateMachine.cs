@@ -245,8 +245,7 @@ namespace Dynamo.ViewModels
 
             WorkspaceModel.RecordModelsForModification(models, Model.UndoRecorder);
 
-            DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
-            DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
+            DynamoViewModel.RaiseCanExecuteUndoRedo();
         }
 
         private void OnDragSelectionStarted(object sender, EventArgs e)

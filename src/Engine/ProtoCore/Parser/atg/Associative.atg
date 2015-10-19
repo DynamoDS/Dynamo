@@ -1678,28 +1678,6 @@ Associative_unaryop<out UnaryOperator op>
     '~'       
         (. op = UnaryOperator.Negate; .)
         (. #endif                     .)
-
-        (. #if ENABLE_INC_DEC_FIX .)
-    | Associative_PostFixOp<out op> 
-        (. #endif .)
-)
-(. 
-    #if ENABLE_INC_DEC_FIX
-    #else
-    if (la.val == "++" || la.val == "--") Get(); 
-    #endif	
-.)
-.
-
-Associative_PostFixOp<out UnaryOperator op>         
-=           
-    (. op = UnaryOperator.None; .)
-(
-    "++"    
-        (. op = UnaryOperator.Increment; .)
-    |
-    "--"    
-        (. op = UnaryOperator.Decrement; .)
 )
 .
 
@@ -1962,7 +1940,7 @@ Associative_Factor<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 
 
 Associative_Ident<out ProtoCore.AST.AssociativeAST.AssociativeNode node> 
-=               (.  ProtoCore.AST.AssociativeAST.AssociativeNode var = null; .)
+=
     ident   (. 
                 if (!disableKwCheck && IsKeyWord(t.val, false, false))
                 {
@@ -1974,20 +1952,9 @@ Associative_Ident<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                      SynErr(String.Format(Resources.InvalidReturnStatement, la.val));
                 }
                 
-                var = ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, t.val, (ProtoCore.PrimitiveType)ltype);
-                NodeUtils.SetNodeLocation(var, t);
+                node = ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, t.val, (ProtoCore.PrimitiveType)ltype);
+                NodeUtils.SetNodeLocation(node, t);
             .)
-
-    (. #if ENABLE_INC_DEC_FIX .)
-    [
-        Associative_PostFixOp<out op>       (.  ProtoCore.AST.AssociativeAST.PostFixNode pfNode = new ProtoCore.AST.AssociativeAST.PostFixNode();
-                                                pfNode.Operator = op;
-                                                pfNode.Identifier = var;
-                                                var = pfNode;
-                                            .)
-    ]
-    (. #endif .)
-                                            (. node = var; .)
 .
 
 Associative_ArrayExprList<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
