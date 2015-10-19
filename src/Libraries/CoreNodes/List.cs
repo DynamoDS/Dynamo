@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using Autodesk.DesignScript.Runtime;
+using DSCore.Properties;
 
 #endregion
 
@@ -231,6 +232,94 @@ namespace DSCore
             {
                 { "first", list[0] },
                 { "rest", list.Cast<object>().Skip(1).ToList() }
+            };
+        }
+
+        /// <summary>
+        ///     Sort list based on its keys
+        /// </summary>
+        /// <param name="list">list to be sorted</param>
+        /// <param name="keys">list of keys</param>
+        /// <returns name="sorted list">sorted list</returns>
+        /// <returns name="sorted keys">sorted keys</returns>
+        /// <search>sort;key</search>
+        [MultiReturn(new[] { "sorted list", "sorted keys" })]
+        public static IDictionary SortByKey(IList list, IList keys)
+        {
+            if (list == null || keys == null)
+                return null;
+
+            var containsSublists = keys.Cast<object>().Any(key => key is IList || key is ICollection);
+            if (containsSublists)
+            {
+                throw new ArgumentException(Resources.InvalidKeysErrorMessage);
+            }
+
+            if (list.Count != keys.Count)
+            {
+                throw new ArgumentException(Resources.InvalidKeysLenghtErrorMessage);
+            }
+
+            var pairs = list.Cast<object>()
+                    .Zip(keys.Cast<object>(), (item, key) => new { item, key });
+
+            var numberKeyPairs = pairs.Where(pair => pair.key is double || pair.key is int || pair.key is float);
+            // We don't use Except, because Except doesn't return duplicates.
+            var keyPairs = pairs.Where(
+                pair =>
+                    !numberKeyPairs.Any(
+                        numberPair => numberPair.item == pair.item && numberPair.key == pair.key));
+
+            // Sort.
+            numberKeyPairs = numberKeyPairs.OrderBy(pair => Convert.ToDouble(pair.key));
+            keyPairs = keyPairs.OrderBy(pair => pair.key);
+
+            // First items with number keys, then items with letter keys.
+            var sortedPairs = numberKeyPairs.Concat(keyPairs);
+
+            var sortedList = sortedPairs.Select(x => x.item).ToList();
+            var sortedKeys = sortedPairs.Select(x => x.key).ToList();
+
+            return new Dictionary<object, object>
+            {
+                { "sorted list", sortedList },
+                { "sorted keys", sortedKeys }
+            };
+        }
+
+        /// <summary>
+        ///     Group items into sub-lists based on their like key values
+        /// </summary>
+        /// <param name="list">List of items to group as sublists</param>
+        /// <param name="keys">Key values, one per item in the input list, used for grouping the items</param>
+        /// <returns name="groups">list of sublists, with items grouped by like key values</returns>
+        /// <returns name="unique keys">key value corresponding to each group</returns>
+        /// <search>list;group;groupbykey;</search>
+        [MultiReturn(new[] { "groups", "unique keys" })]
+        public static IDictionary GroupByKey(IList list, IList keys)
+        {
+            if (list.Count != keys.Count)
+            {
+                throw new ArgumentException(Resources.InvalidKeysLenghtErrorMessage);
+            }
+
+            var containsSublists = keys.Cast<object>().Any(key => key is IList || key is ICollection);
+            if (containsSublists)
+            {
+                throw new ArgumentException(Resources.InvalidKeysErrorMessage);
+            }
+
+            var groups =
+                list.Cast<object>().Zip(keys.Cast<object>(), (item, key) => new { item, key })
+                    .GroupBy(x => x.key)
+                    .Select(x => x.Select(y => y.item).ToList());
+
+            var uniqueItems = keys.Cast<object>().Distinct().ToList();
+
+            return new Dictionary<object, object>
+            {
+                { "groups", groups },
+                { "unique keys", uniqueItems }
             };
         }
 
