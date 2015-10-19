@@ -562,7 +562,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             InstrumentationLogger.LogAnonymousScreen(CanNavigateBackground ? "Geometry" : "Nodes");
         }
 
-        private bool CanToggleCanNavigateBackground(object parameter)
+        protected virtual bool CanToggleCanNavigateBackground(object parameter)
         {
             return false;
         }
