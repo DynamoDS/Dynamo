@@ -80,6 +80,11 @@ namespace Dynamo.Models
             get { return portData.LineIndex; }
         }
 
+        /// <summary>
+        /// A flag indicating whether the port is considered connected.
+        /// 
+        /// IsConnected may be set to true while the port still has connectors.
+        /// </summary>
         public bool IsConnected
         {
             get; private set;
@@ -188,31 +193,42 @@ namespace Dynamo.Models
         {
             connectors.Add(connector);
 
+            IsConnected = true;
+
             //throw the event for a connection
             OnPortConnected(connector);
-
-            IsConnected = true;
         }
 
         public void Disconnect(ConnectorModel connector, bool silent = false)
         {
             if (!connectors.Contains(connector))
                 return;
-            
+
+            // Set IsConnected to false so Ast building
+            // methods on nodes can know that the port is
+            // disconnected pending removal of the connectors.
+            switch (PortType)
+            {
+                    case PortType.Input:
+                        IsConnected = false;
+                        break;
+                    case PortType.Output:
+                        if (connectors.Count == 0)
+                        {
+                            IsConnected = false;
+                        }
+                        break;
+                    default:
+                        break;
+            }
+
             //throw the event for a disconnection
             if (!silent)
             {
-                OnPortDisconnected();  
+                OnPortDisconnected();
             }
 
             connectors.Remove(connector);
-            
-            //don't set back to white if
-            //there are still connectors on this port
-            if (connectors.Count == 0)
-            {
-                IsConnected = false;
-            }
 
             Owner.ValidateConnections();
         }
