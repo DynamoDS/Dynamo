@@ -1659,6 +1659,14 @@ namespace Dynamo.Models
             {
                 model.X = model.X + shiftX + offset;
                 model.Y = model.Y + shiftY + offset;
+
+                // If new item appeare outside of workspace,
+                // then paste it at the center.
+                if (!CurrentWorkspace.Rect.Contains(model.Rect))
+                {
+                    model.X = CurrentWorkspace.CenterX + offset;
+                    model.Y = CurrentWorkspace.CenterY + offset;
+                }
             }
 
             // Add the new NodeModel's to the Workspace
