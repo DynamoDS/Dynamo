@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using System.Xml.Serialization;
+using Dynamo.Configuration;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using ProtoCore.AST.AssociativeAST;

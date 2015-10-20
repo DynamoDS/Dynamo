@@ -13,6 +13,7 @@ using Dynamo.Controls;
 using Dynamo.UI;
 
 using DSCoreNodesUI;
+using Dynamo.Configuration;
 using Dynamo.Core.Threading;
 using Dynamo.Models;
 using Dynamo.ViewModels;
