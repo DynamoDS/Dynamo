@@ -592,15 +592,6 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to entwine;listcreate,newlist;makelist;list;.
-        /// </summary>
-        public static string ListByCreateSearchTags {
-            get {
-                return ResourceManager.GetString("ListByCreateSearchTags", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Applies a combinator to each pair in the cartesian product of two sequences.
         /// </summary>
         public static string ListCartesianProductDescription {
@@ -651,6 +642,15 @@ namespace DSCoreNodesUI.Properties {
         public static string ListCreateInPortToolTip {
             get {
                 return ResourceManager.GetString("ListCreateInPortToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to entwine;listcreate,newlist;makelist;list;.
+        /// </summary>
+        public static string ListCreateSearchTags {
+            get {
+                return ResourceManager.GetString("ListCreateSearchTags", resourceCulture);
             }
         }
         

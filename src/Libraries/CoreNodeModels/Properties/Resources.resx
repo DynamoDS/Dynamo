@@ -512,7 +512,7 @@
   <data name="SelectFromComboBoxToolTip" xml:space="preserve">
     <value>This is your Revit display unit settings</value>
   </data>
-  <data name="ListByCreateSearchTags" xml:space="preserve">
+  <data name="ListCreateSearchTags" xml:space="preserve">
     <value>entwine;listcreate,newlist;makelist;list;</value>
     <comment>search tags for list.create</comment>
   </data>
