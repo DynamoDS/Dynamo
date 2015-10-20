@@ -1787,8 +1787,6 @@ namespace Dynamo.Models
             var task = asyncTask as UpdateRenderPackageAsyncTask;
             if (task.RenderPackages.Any())
             {
-                //cachedMirrorData = GetCachedValueFromEngine(task.EngineController);
-
                 var packages = new List<IRenderPackage>();
                 
                 packages.AddRange(task.RenderPackages);
