@@ -2902,6 +2902,15 @@ namespace ProtoCore.AST.AssociativeAST
             return BuildExprList(nodes);
         }
 
+        public static IdentifierListNode BuildIdentList(AssociativeNode leftNode, AssociativeNode rightNode)
+        {
+            var identList = new IdentifierListNode();
+            identList.LeftNode = leftNode;
+            identList.RightNode = rightNode;
+            identList.Optr = Operator.dot;
+            return identList;
+        }
+
         public static BinaryExpressionNode BuildBinaryExpression(AssociativeNode lhs,
                                                                  AssociativeNode rhs,
                                                                  Operator op)

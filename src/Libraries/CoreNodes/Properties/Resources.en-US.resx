@@ -150,6 +150,12 @@
   <data name="FromObjectObsolete" xml:space="preserve">
     <value>This node is obsolete, please use "String from Object"</value>
   </data>
+  <data name="InvalidKeysErrorMessage" xml:space="preserve">
+    <value>One or more input types are not matching. Lists as keys are not supported.</value>
+  </data>
+  <data name="InvalidKeysLenghtErrorMessage" xml:space="preserve">
+    <value>Number of items does not match the number of keys.</value>
+  </data>
   <data name="LoadImageFromPathObsolete" xml:space="preserve">
     <value>Use File.FromPath -&gt;  Image.ReadFromFile nodes instead</value>
   </data>

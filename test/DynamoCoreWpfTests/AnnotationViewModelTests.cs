@@ -1,20 +1,10 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Windows;
-
-using SystemTestServices;
-
-using Dynamo;
-using Dynamo.Controls;
+﻿using System.Linq;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
-using Dynamo.Services;
 using Dynamo.Tests;
-using Dynamo.ViewModels;
 using NUnit.Framework;
+using Dynamo.Utilities;
 
 namespace DynamoCoreWpfTests
 {
@@ -692,6 +682,59 @@ namespace DynamoCoreWpfTests
 
             //Check whether the model is selected
             Assert.AreEqual(true,addNode.IsSelected);
+        }
+
+        [Test]
+        public void UndoMovingNoteInsideGroup()
+        {
+            OpenModel(@"UI\NoteInGroupTest.dyn");
+
+            var workspaceVm = ViewModel.CurrentSpaceViewModel;
+
+            // check if note is loaded from the file
+            var noteVm = workspaceVm.Notes.First();
+            Assert.IsNotNull(noteVm);
+            var noteX = noteVm.Left;
+            var noteY = noteVm.Top;
+            var noteCenterX = noteVm.Model.CenterX;
+            var noteCenterY = noteVm.Model.CenterY;
+
+            // check if group is loaded from the file
+            var groupVm = workspaceVm.Annotations.First();
+            Assert.IsNotNull(groupVm);
+            var groupX = groupVm.Left;
+            var groupY = groupVm.Top;
+
+            // only note should be selected
+            DynamoSelection.Instance.Selection.Add(noteVm.Model);
+
+            var point = new Point2D(noteCenterX, noteCenterY);
+            var operation = DynamoModel.DragSelectionCommand.Operation.BeginDrag;
+            var command = new DynamoModel.DragSelectionCommand(point, operation);
+
+            ViewModel.ExecuteCommand(command);
+
+            operation = DynamoModel.DragSelectionCommand.Operation.EndDrag;
+            point.X += 100;
+            point.Y += 100;
+            command = new DynamoModel.DragSelectionCommand(point, operation);
+
+            ViewModel.ExecuteCommand(command);
+
+            // Check note and annotation are moved
+            Assert.AreNotEqual(groupX, groupVm.Left);
+            Assert.AreNotEqual(groupY, groupVm.Top);
+            Assert.AreNotEqual(noteX, noteVm.Left);
+            Assert.AreNotEqual(noteY, noteVm.Top);
+
+            ViewModel.UndoCommand.Execute(null);
+
+            // Check annotation and note are moved back
+            var msgPart = " was not moved back";
+            Assert.AreEqual(groupX, groupVm.Left, "Group" + msgPart);
+            Assert.AreEqual(groupY, groupVm.Top, "Group" + msgPart);
+            Assert.AreEqual(noteX, noteVm.Left, "Note" + msgPart);
+            Assert.AreEqual(noteY, noteVm.Top, "Note" + msgPart);
         }
 
         #endregion

@@ -592,10 +592,10 @@ namespace Dynamo.Models
         /// <returns>Identifier corresponding to the given output port.</returns>
         public virtual IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
         {
-            if (outputIndex < 0 || outputIndex > OutPortData.Count)
+            if (outputIndex < 0 || outputIndex > OutPorts.Count)
                 throw new ArgumentOutOfRangeException("outputIndex", @"Index must correspond to an OutPortData index.");
 
-            if (OutPortData.Count <= 1)
+            if (OutPorts.Count <= 1)
                 return AstIdentifierForPreview;
             else
             {
@@ -768,7 +768,7 @@ namespace Dynamo.Models
                 };
             }
 
-            if (OutPortData.Count == 1)
+            if (OutPorts.Count == 1)
             {
                 var firstOuputIdent = GetAstIdentifierForOutputIndex(0);
                 if (!AstIdentifierForPreview.Equals(firstOuputIdent))

@@ -1928,19 +1928,21 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestMigration_GroupByKeyUI()
+        {
+            TestMigration("TestMigration_GroupByKeyUI.dyn");
+        }
+
+        [Test]
         public void TestMigration_SortByKey()
         {
             TestMigration("TestMigration_SortByKey.dyn");
         }
 
         [Test]
-        public void TestMigration_ListCreate()
+        public void TestMigration_SortByKeyUI()
         {
-            TestMigration("TestMigration_ListCreate.dyn");
-            var workspace = CurrentDynamoModel.CurrentWorkspace;
-
-            var listNode = workspace.NodeFromWorkspace<CreateList>("0e3d28ac-1a96-4598-a575-3bc7074dfc82");
-            Assert.AreEqual("List.ByItems", listNode.NickName);
+            TestMigration("TestMigration_SortByKeyUI.dyn");
         }
 
         #endregion

@@ -121,8 +121,7 @@ namespace Dynamo.ViewModels
                 case "ConvertNodesToCodeCommand":
                 case "UngroupModelCommand":
                 case "AddModelToGroupCommand":
-                    UndoCommand.RaiseCanExecuteChanged();
-                    RedoCommand.RaiseCanExecuteChanged();
+                    RaiseCanExecuteUndoRedo();
                     break;
 
                 case "SwitchTabCommand":

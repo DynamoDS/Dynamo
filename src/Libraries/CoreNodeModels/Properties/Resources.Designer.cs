@@ -691,60 +691,6 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Group items into sub-lists based on their like key values.
-        /// </summary>
-        public static string ListGroupByKeyDescription {
-            get {
-                return ResourceManager.GetString("ListGroupByKeyDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to list of sublists, with items grouped by like key values.
-        /// </summary>
-        public static string ListGroupByKeyGroupsTooltip {
-            get {
-                return ResourceManager.GetString("ListGroupByKeyGroupsTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Key values, one per item in the input list, used for grouping the items.
-        /// </summary>
-        public static string ListGroupByKeyKeysTooltip {
-            get {
-                return ResourceManager.GetString("ListGroupByKeyKeysTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to List of items to group as sublists.
-        /// </summary>
-        public static string ListGroupByKeyListTooltip {
-            get {
-                return ResourceManager.GetString("ListGroupByKeyListTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to list;group;groupbykey;.
-        /// </summary>
-        public static string ListGroupByKeySearchTags {
-            get {
-                return ResourceManager.GetString("ListGroupByKeySearchTags", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to key value corresponding to each group.
-        /// </summary>
-        public static string ListGroupByKeyUniqueKeysTooltip {
-            get {
-                return ResourceManager.GetString("ListGroupByKeyUniqueKeysTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Applies a combinator to each pair resulting from a longest lacing of the input lists. All lists have their last element repeated to match the length of the longest input..
         /// </summary>
         public static string ListLaceLongestDescription {
@@ -831,60 +777,6 @@ namespace DSCoreNodesUI.Properties {
         public static string ListScanSearchTags {
             get {
                 return ResourceManager.GetString("ListScanSearchTags", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Sort list based on its keys.
-        /// </summary>
-        public static string ListSortByKeyDescription {
-            get {
-                return ResourceManager.GetString("ListSortByKeyDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to list of keys.
-        /// </summary>
-        public static string ListSortByKeyIncomingKeys {
-            get {
-                return ResourceManager.GetString("ListSortByKeyIncomingKeys", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to list to be sorted.
-        /// </summary>
-        public static string ListSortByKeyIncomingList {
-            get {
-                return ResourceManager.GetString("ListSortByKeyIncomingList", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to sorted keys.
-        /// </summary>
-        public static string ListSortByKeyOutKeys {
-            get {
-                return ResourceManager.GetString("ListSortByKeyOutKeys", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to sorted list.
-        /// </summary>
-        public static string ListSortByKeyOutList {
-            get {
-                return ResourceManager.GetString("ListSortByKeyOutList", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to sort;key.
-        /// </summary>
-        public static string ListSortByKeySearchTags {
-            get {
-                return ResourceManager.GetString("ListSortByKeySearchTags", resourceCulture);
             }
         }
         
