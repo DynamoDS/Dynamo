@@ -303,7 +303,7 @@
     <value>map multiple;apply over lists;multiple inputs</value>
     <comment>List.Combine search tags</comment>
   </data>
-  <data name="ListByItemsDescription" xml:space="preserve">
+  <data name="ListCreateDescription" xml:space="preserve">
     <value>Makes a new list out of the given inputs</value>
     <comment>Description for List.Create</comment>
   </data>
@@ -512,7 +512,7 @@
   <data name="SelectFromComboBoxToolTip" xml:space="preserve">
     <value>This is your Revit display unit settings</value>
   </data>
-  <data name="ListByItemsSearchTags" xml:space="preserve">
+  <data name="ListByCreateSearchTags" xml:space="preserve">
     <value>entwine;listcreate,newlist;makelist;list;</value>
     <comment>search tags for list.create</comment>
   </data>
@@ -524,7 +524,7 @@
     <value>Convert;Units;Length;Area;Volume;convertbetweenunits;</value>
     <comment>Search tags for DynamoConvert node. During translation, localized keywords can be appended to the end of these tags to provide localized search terms in addition to the existing ones.</comment>
   </data>
-  <data name="ListByItemsInPortToolTip" xml:space="preserve">
+  <data name="ListCreateInPortToolTip" xml:space="preserve">
     <value>Item Index #{0}</value>
   </data>
   <data name="SelectionNodeNothingSelected" xml:space="preserve">

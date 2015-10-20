@@ -7,9 +7,9 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI
 {
-    [NodeName("List.ByItems")]
-    [NodeDescription("ListByItemsDescription", typeof(DSCoreNodesUI.Properties.Resources))]
-    [NodeSearchTags("ListByItemsSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeName("List.Create")]
+    [NodeDescription("ListCreateDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("ListCreateSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("List.Create")]
@@ -32,7 +32,7 @@ namespace DSCoreNodesUI
 
         protected override string GetInputTooltip(int index)
         {
-            return string.Format(Resources.ListByItemsInPortToolTip, index);
+            return string.Format(Resources.ListCreateInPortToolTip, index);
         }
 
         protected override void RemoveInput()

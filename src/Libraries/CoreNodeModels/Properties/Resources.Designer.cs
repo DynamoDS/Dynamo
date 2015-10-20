@@ -592,29 +592,11 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Makes a new list out of the given inputs.
-        /// </summary>
-        public static string ListByItemsDescription {
-            get {
-                return ResourceManager.GetString("ListByItemsDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Item Index #{0}.
-        /// </summary>
-        public static string ListByItemsInPortToolTip {
-            get {
-                return ResourceManager.GetString("ListByItemsInPortToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to entwine;listcreate,newlist;makelist;list;.
         /// </summary>
-        public static string ListByItemsSearchTags {
+        public static string ListByCreateSearchTags {
             get {
-                return ResourceManager.GetString("ListByItemsSearchTags", resourceCulture);
+                return ResourceManager.GetString("ListByCreateSearchTags", resourceCulture);
             }
         }
         
@@ -651,6 +633,24 @@ namespace DSCoreNodesUI.Properties {
         public static string ListCombineSearchTags {
             get {
                 return ResourceManager.GetString("ListCombineSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Makes a new list out of the given inputs.
+        /// </summary>
+        public static string ListCreateDescription {
+            get {
+                return ResourceManager.GetString("ListCreateDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Item Index #{0}.
+        /// </summary>
+        public static string ListCreateInPortToolTip {
+            get {
+                return ResourceManager.GetString("ListCreateInPortToolTip", resourceCulture);
             }
         }
         
