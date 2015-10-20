@@ -77,7 +77,8 @@ namespace Dynamo.Core.Threading
         protected override void HandleTaskExecutionCore()
         {
             // Updating graph in the context of ISchedulerThread.
-            engineController.UpdateGraphImmediate(graphSyncData);
+            if (!engineController.IsDisposed)
+                engineController.UpdateGraphImmediate(graphSyncData);
         }
 
         protected override void HandleTaskCompletionCore()
