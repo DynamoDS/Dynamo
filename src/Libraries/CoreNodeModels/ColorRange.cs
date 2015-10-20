@@ -12,7 +12,6 @@ using ProtoCore.Mirror;
 using System.Globalization;
 
 using Dynamo.Engine;
-using Dynamo.Engine.CodeGeneration;
 
 namespace DSCoreNodesUI
 {
@@ -114,7 +113,7 @@ namespace DSCoreNodesUI
             List<double> parameters;
 
             // If there are colors supplied
-            if (InPorts[0].Connectors.Any())
+            if (InPorts[0].IsConnected)
             {
                 var colorsNode = InPorts[0].Connectors[0].Start.Owner;
                 var colorsIndex = InPorts[0].Connectors[0].Start.Index;
@@ -124,11 +123,12 @@ namespace DSCoreNodesUI
             }
             else
             {
-                colors = DefaultColorRanges.Analysis;
+                colors = new List<Color>();
+                colors.AddRange(DefaultColorRanges.Analysis);
             }
 
             // If there are indices supplied
-            if (InPorts[1].Connectors.Any())
+            if (InPorts[1].IsConnected)
             {
                 var valuesNode = InPorts[1].Connectors[0].Start.Owner;
                 var valuesIndex = InPorts[1].Connectors[0].Start.Index;
