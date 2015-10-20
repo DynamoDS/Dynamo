@@ -571,7 +571,7 @@ namespace Dynamo.Models
         /// </summary>
         public Rect2D Rect
         {
-            get { return new Rect2D(x, y, width, height); }
+            get { return new Rect2D(-x/zoom, -y/zoom, width/zoom, height/zoom); }
         }
 
         /// <summary>
