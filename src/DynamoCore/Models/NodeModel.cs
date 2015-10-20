@@ -1199,7 +1199,7 @@ namespace Dynamo.Models
                 count++;
             }
 
-            if (outPorts.Count > count)
+            if (outPorts.Count > count && !areOutputPortsRegistered)
             {
                 foreach (PortModel outport in outPorts.Skip(count))
                     outport.DestroyConnectors();

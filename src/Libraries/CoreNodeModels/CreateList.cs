@@ -12,13 +12,18 @@ namespace DSCoreNodesUI
     [NodeSearchTags("ListCreateSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
     [IsDesignScriptCompatible]
+    [InPortNames("item0")]
+    [InPortTypes("var")]
+    [InPortDescriptionsAttribute(typeof(Resources),
+        "CreateListPortDataIndex0ToolTip")]
+    [OutPortNames("list")]
+    [OutPortTypes("var[]..[]")]
+    [OutPortDescriptions(typeof(Resources),
+        "CreateListPortDataResultToolTip")]
     public class CreateList : VariableInputNode
     {
         public CreateList()
         {
-            InPortData.Add(new PortData("item0", Resources.CreateListPortDataIndex0ToolTip));
-            OutPortData.Add(new PortData("list", Resources.CreateListPortDataResultToolTip));
-
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Disabled;
