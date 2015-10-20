@@ -25,7 +25,14 @@ namespace Dynamo.Nodes
             : base(new ZeroTouchVarArgNodeController<FunctionDescriptor>(descriptor))
         {
             VarInputController = new ZeroTouchVarInputController(this);
+            defaultNumInputs = descriptor.Parameters.Count();
         }
+
+        /// <summary>
+        /// Returns the default number of inputs for the node
+        /// </summary>
+        private readonly int defaultNumInputs;
+        internal int DefaultNumInputs { get { return defaultNumInputs; } }
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {

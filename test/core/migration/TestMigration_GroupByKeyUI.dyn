@@ -1,0 +1,18 @@
+<Workspace Version="0.8.3.0" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <DSCore.GroupByKey guid="cd7c37bf-bd03-4dba-ac15-34c11e935261" type="DSCore.GroupByKey" nickname="GroupByKey" x="735.5" y="236.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="2113f888-9c36-4754-a88d-4ebf904db465" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="321" y="172" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" CodeText="{&quot;a&quot;,&quot;a&quot;,&quot;b&quot;};" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="61d03b01-aa36-4d85-9a06-e7e0514001ee" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="264" y="286" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" CodeText="{1,1,0};" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="2113f888-9c36-4754-a88d-4ebf904db465" start_index="0" end="cd7c37bf-bd03-4dba-ac15-34c11e935261" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="61d03b01-aa36-4d85-9a06-e7e0514001ee" start_index="0" end="cd7c37bf-bd03-4dba-ac15-34c11e935261" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>

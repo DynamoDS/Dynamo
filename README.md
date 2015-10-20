@@ -13,7 +13,8 @@ Looking to learn or download Dynamo?  Check out [dynamobim.org](http://dynamobim
 ### Create a Node Library for Dynamo ###
 If you're interested in developing a Node library for Dynamo, the easiest place to start is by browsing the [DynamoSamples](https://github.com/DynamoDS/DynamoSamples).  
 These samples use the [Dynamo NuGet packages](https://www.nuget.org/packages?q=DynamoVisualProgramming) which can be installed using the NuGet package manager in Visual Studio.
-[![NuGet](https://img.shields.io/nuget/v/DynamoVisualProgramming.ZeroTouchLibrary.svg)]()
+[![NuGet](https://img.shields.io/nuget/v/DynamoVisualProgramming.ZeroTouchLibrary.svg)]()  
+The [API Changes](https://github.com/DynamoDS/Dynamo/wiki/API-Changes) document explains changes made to the Dynamo API with every version.
 
 You can learn more about developing libraries for Dynamo on the [Dynamo wiki](https://github.com/DynamoDS/Dynamo/wiki/Zero-Touch-Plugin-Development).
 
@@ -50,7 +51,7 @@ Manage Custom Node and Package Paths
 - Add paths to makes nodes and packages show up in the library
 
 Node Layout Cleanup Improvements
-- Consider groups as a whole or cleanup node layouts within a group with just one click
+- Clean up layouts considering groups as a whole or clean up layouts within groups
 
 Background Preview works on Remote Desktop and Parallels
 - For remote systems with GPUs and virtual machines with hardware-acceleration, background preview is now visible.
@@ -59,7 +60,7 @@ Additional Updates and Improvements
 - New Chapters and expansion of the [Dynamo Primer](http://dynamobim.com/learn/)
 - Easier to read Search Results 
 - Node to Code Stabilization
-- Improved Export Image of Canvas functionality
+- Improved 'Canvas Snapshot' functionality
 - Move to .NET 4.5
 - Lots of bug fixes
 

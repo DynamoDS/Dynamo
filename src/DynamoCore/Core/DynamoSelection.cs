@@ -53,6 +53,8 @@ namespace Dynamo.Selection
             }
         }
 
+        public bool ClearSelectionDisabled { get; set; }
+
         private DynamoSelection()
         {
             Selection.CollectionChanged += selection_CollectionChanged;
@@ -91,6 +93,8 @@ namespace Dynamo.Selection
         /// </summary>
         public void ClearSelection()
         {
+            if (ClearSelectionDisabled) return;
+            
             Instance.Selection.ToList().ForEach(x=>x.Deselect());
             Instance.Selection.Reset(new List<ISelectable>());
         }
