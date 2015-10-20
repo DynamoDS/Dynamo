@@ -184,15 +184,13 @@ namespace Dynamo.ViewModels
 
         private void UpdateFontSize(object parameter)
         {
-            if (parameter != null)
-            {
-                this.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-                    new DynamoModel.UpdateModelValueCommand(
-                    System.Guid.Empty, this.AnnotationModel.GUID, "FontSize", parameter.ToString()));
+            if (parameter == null) return;
 
-                this.WorkspaceViewModel.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
-                this.WorkspaceViewModel.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();                              
-            }
+            WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                new DynamoModel.UpdateModelValueCommand(
+                    Guid.Empty, AnnotationModel.GUID, "FontSize", parameter.ToString()));
+
+            WorkspaceViewModel.DynamoViewModel.RaiseCanExecuteUndoRedo();
         }
 
         private void model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

@@ -628,6 +628,106 @@ namespace Dynamo.Tests
 
         #endregion
 
+        #region Key navigation
+
+        [Test, Category("UnitTests")]
+        public void ToggleSelectionTest()
+        {
+            var elementVM = CreateCustomNodeViewModel(CreateCustomNode("AMember", "Category"));
+            elementVM.IsSelected = false;
+
+            var items = new List<NodeSearchElementViewModel>();
+            items.Add(elementVM);
+
+            elementVM = CreateCustomNodeViewModel(CreateCustomNode("BMember", "Category"));
+            elementVM.IsSelected = true;
+
+            items.Add(elementVM);
+
+            var result = viewModel.ToggleSelect(items);
+
+            Assert.IsTrue(result.First().IsSelected);
+            Assert.IsFalse(result.Last().IsSelected);
+        }
+
+        [Test, Category("UnitTests")]
+        public void FirstItemIsSelectedAfterSearch()
+        {
+            var element = CreateCustomNode("AMember", "Category");
+            model.Add(element);
+
+            element = CreateCustomNode("BMember", "Category");
+            model.Add(element);
+
+            viewModel.Visible = true;
+            viewModel.SearchAndUpdateResults("member");
+
+            Assert.AreEqual(2, viewModel.FilteredResults.Count());
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(0).IsSelected);
+            Assert.IsFalse(viewModel.FilteredResults.ElementAt(1).IsSelected);
+        }
+
+        [Test, Category("UnitTests")]
+        public void NoItemsIsSelectedAfterSearch()
+        {
+            viewModel.Visible = true;
+            viewModel.SearchAndUpdateResults("member");
+
+            Assert.DoesNotThrow(() => viewModel.MoveSelection(SearchViewModel.Direction.Down));
+            Assert.IsFalse(viewModel.FilteredResults.Any());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void MoveForward()
+        {
+            var element = CreateCustomNode("AMember", "Category");
+            model.Add(element);
+
+            element = CreateCustomNode("BMember", "Category");
+            model.Add(element);
+
+            viewModel.Visible = true;
+            viewModel.SearchAndUpdateResults("member");
+
+            Assert.AreEqual(2, viewModel.FilteredResults.Count());
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(0).IsSelected);
+
+            viewModel.MoveSelection(SearchViewModel.Direction.Down);
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(1).IsSelected);
+
+            viewModel.MoveSelection(SearchViewModel.Direction.Down);
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(1).IsSelected);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void MoveBack()
+        {
+            var element = CreateCustomNode("AMember", "Category");
+            model.Add(element);
+
+            element = CreateCustomNode("BMember", "Category");
+            model.Add(element);
+
+            viewModel.Visible = true;
+            viewModel.SearchAndUpdateResults("member");
+
+            Assert.AreEqual(2, viewModel.FilteredResults.Count());
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(0).IsSelected);
+
+            viewModel.MoveSelection(SearchViewModel.Direction.Up);
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(0).IsSelected);
+
+            viewModel.MoveSelection(SearchViewModel.Direction.Down);
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(1).IsSelected);
+
+            viewModel.MoveSelection(SearchViewModel.Direction.Up);
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(0).IsSelected);
+        }
+
+        #endregion
+
         #region Helpers
 
         private static NodeSearchElement CreateCustomNode(string name, string category,

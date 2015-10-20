@@ -343,40 +343,34 @@ Imperative_assignstmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                         .)
         |
         (
-            (
-                IF (!(lhsNode is ProtoCore.AST.ImperativeAST.PostFixNode))
-                (
-    
-                    '='     
-                                    (. ProtoCore.AST.ImperativeAST.ImperativeNode rhsNode = null; .)
-                    (   
-                        ( 
-                            IF(HasMoreAssignmentStatements())
-                                Imperative_assignstmt<out rhsNode>
-                        )
-                        |        
-                        (
-                            Imperative_expr<out rhsNode>        
-                            (.
-                                if (la.kind != _endline)
-                                   SynErr(Resources.SemiColonExpected);
-                            .)
-                            endline
-                        )
-                        |
-                        (
-                            Imperative_languageblock<out rhsNode>       
-                        )
-                    )
-                    (.
-                        bNode.LeftNode = lhsNode;
-                        bNode.RightNode = rhsNode;
-                        bNode.Optr = Operator.assign;
-                        NodeUtils.SetNodeEndLocation(bNode, t);
-                        node = bNode;       
-                    .)                                      
+            '='     
+            (. ProtoCore.AST.ImperativeAST.ImperativeNode rhsNode = null; .)
+            (   
+                ( 
+                    IF(HasMoreAssignmentStatements())
+                        Imperative_assignstmt<out rhsNode>
                 )
-            )   
+                |        
+                (
+                    Imperative_expr<out rhsNode>        
+                    (.
+                        if (la.kind != _endline)
+                           SynErr(Resources.SemiColonExpected);
+                    .)
+                    endline
+                )
+                |
+                (
+                    Imperative_languageblock<out rhsNode>       
+                )
+            )
+            (.
+                bNode.LeftNode = lhsNode;
+                bNode.RightNode = rhsNode;
+                bNode.Optr = Operator.assign;
+                NodeUtils.SetNodeEndLocation(bNode, t);
+                node = bNode;       
+            .)                                      
         )
         |
         (
@@ -384,23 +378,6 @@ Imperative_assignstmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
         )
     )
 .   
-
-
-//returnstmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
-//=
-                            //(. node = null; .)
-    //kw_return 
-    //[
-        //Imperative_expr<out node>
-    //]
-                            //(. 
-                                //ProtoCore.AST.ImperativeAST.ReturnNode retNode = new ProtoCore.AST.ImperativeAST.ReturnNode(); 
-                                //retNode.ReturnExpr = node;
-                                //node = retNode; 
-                            //.)    
-    //endline
-//.
-
 
 Imperative_ifstmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>  
 = 
@@ -860,7 +837,7 @@ Imperative_functioncall<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
 .
 
 Imperative_Ident<out ProtoCore.AST.ImperativeAST.ImperativeNode node> 
-=               (.  ProtoCore.AST.ImperativeAST.ImperativeNode var = null; .) 
+=               
     ident       (. 
                     if (!disableKwCheck && IsKeyWord(t.val, false, false))
                     {
@@ -871,20 +848,9 @@ Imperative_Ident<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                     {
                         SynErr(String.Format(Resources.InvalidReturnStatement, la.val)); 
                     }        
-                    var = BuildImperativeIdentifier(t.val, (ProtoCore.PrimitiveType)ltype);
-                    NodeUtils.SetNodeLocation(var, t);
+                    node = BuildImperativeIdentifier(t.val, (ProtoCore.PrimitiveType)ltype);
+                    NodeUtils.SetNodeLocation(node, t);
                 .)
-    (. #if ENABLE_INC_DEC_FIX .)
-    [
-        Imperative_PostFixOp<out op>    (.  ProtoCore.AST.ImperativeAST.PostFixNode pfNode = new ProtoCore.AST.ImperativeAST.PostFixNode();
-                                            pfNode.Operator = op;
-                                            pfNode.Identifier = var;
-                                            var = pfNode;                           
-                                        .)
-    ]
-    (. #endif .)
-        
-                (. node = var; .)
 .
 
 Imperative_NameReference<out ProtoCore.AST.ImperativeAST.ImperativeNode node> 
@@ -1075,21 +1041,8 @@ Imperative_ArgDecl<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
             ]
         ]
     ]
-                                    (. varDeclNode.ArgumentType = argtype; .)                                    
-//    [
-//        '=' 
-//                                    (. ProtoCore.AST.ImperativeAST.ImperativeNode rhsNode; .)        
-//        Imperative_expr<out rhsNode>         
-//                                    (.
-//                                        ProtoCore.AST.ImperativeAST.BinaryExpressionNode bNode = new ProtoCore.AST.ImperativeAST.BinaryExpressionNode();
-//                                        bNode.LeftNode = tNode;
-//                                        bNode.RightNode = rhsNode;
-//                                        bNode.Optr = Operator.assign;
-//                                        bNode.line = tNode.line; bNode.col = tNode.col;
-//                                        varDeclNode.NameNode = bNode;        
-//                                    .)    
-//    ]                                        
                                     (. 
+                                        varDeclNode.ArgumentType = argtype; 
                                         node = varDeclNode; 
                                         if(!isGlobalScope) {
                                             localVarCount++;
@@ -1370,25 +1323,6 @@ Imperative_unaryop<out UnaryOperator op>
         |   
         '~'     (. op = UnaryOperator.Negate; .)
                 (. #endif                     .)
-
-                (.  #if ENABLE_INC_DEC_FIX .)
-        |
-        Imperative_PostFixOp<out op> (. #endif .)
-    )
-    (.
-        #if ENABLE_INC_DEC_FIX 
-        #else
-            if (la.val == "++" || la.val == "--") Get(); 
-        #endif
-    .)   
-.
-
-Imperative_PostFixOp<out UnaryOperator op>          
-=           (. op = UnaryOperator.None; .)
-    (
-        "++"    (. op = UnaryOperator.Increment; .)
-        |
-        "--"    (. op = UnaryOperator.Decrement; .)
     )
 .
 

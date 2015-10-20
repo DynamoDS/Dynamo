@@ -132,6 +132,11 @@ namespace Dynamo.ViewModels
             draggedNodes.Clear(); // We are no longer dragging anything.
         }
 
+        internal void PasteSelection(Point2D targetPoint)
+        {
+            stateMachine.PasteSelection(targetPoint);
+        }
+
         internal void BeginConnection(Guid nodeId, int portIndex, PortType portType)
         {
             bool isInPort = portType == PortType.Input;
@@ -245,8 +250,7 @@ namespace Dynamo.ViewModels
 
             WorkspaceModel.RecordModelsForModification(models, Model.UndoRecorder);
 
-            DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
-            DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
+            DynamoViewModel.RaiseCanExecuteUndoRedo();
         }
 
         private void OnDragSelectionStarted(object sender, EventArgs e)
@@ -638,13 +642,19 @@ namespace Dynamo.ViewModels
                         return false;
                     }
 
-                    // Record and begin the drag operation for selected nodes.
-                    var operation = DynCmd.DragSelectionCommand.Operation.BeginDrag;
-                    var command = new DynCmd.DragSelectionCommand(mouseCursor.AsDynamoType(), operation);
-                    owningWorkspace.DynamoViewModel.ExecuteCommand(command);
+                    if (Keyboard.Modifiers != ModifierKeys.Control)
+                    {
+                        // Record and begin the drag operation for selected nodes.
+                        var operation = DynCmd.DragSelectionCommand.Operation.BeginDrag;
+                        var command = new DynCmd.DragSelectionCommand(
+                            mouseCursor.AsDynamoType(),
+                            operation);
+                        owningWorkspace.DynamoViewModel.ExecuteCommand(command);
 
-                    SetCurrentState(State.NodeReposition);
-                    return true;
+                        SetCurrentState(State.NodeReposition);
+                        return true;
+                    }
+
                 }
                 else if (this.currentState == State.NodeReposition)
                 {
@@ -715,6 +725,24 @@ namespace Dynamo.ViewModels
                 }
 
                 return true;
+            }
+
+            internal void PasteSelection(Point2D targetPoint)
+            {
+                var model = owningWorkspace.DynamoViewModel.Model;
+                var oldClipboardData = model.ClipBoard.ToList();
+
+                model.Copy();
+                if (model.ClipBoard.Any())
+                {
+                    model.Paste(targetPoint);
+                    owningWorkspace.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+                    owningWorkspace.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
+                }
+
+                model.ClipBoard.Clear();
+                model.ClipBoard.AddRange(oldClipboardData);
+                SetCurrentState(State.None);
             }
 
             #endregion

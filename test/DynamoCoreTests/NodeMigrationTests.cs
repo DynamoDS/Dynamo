@@ -1928,11 +1928,22 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestMigration_GroupByKeyUI()
+        {
+            TestMigration("TestMigration_GroupByKeyUI.dyn");
+        }
+
+        [Test]
         public void TestMigration_SortByKey()
         {
             TestMigration("TestMigration_SortByKey.dyn");
         }
 
+        [Test]
+        public void TestMigration_SortByKeyUI()
+        {
+            TestMigration("TestMigration_SortByKeyUI.dyn");
+        }
 
         #endregion
 
