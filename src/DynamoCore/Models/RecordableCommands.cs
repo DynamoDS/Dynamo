@@ -689,6 +689,110 @@ namespace Dynamo.Models
             #endregion
         }
 
+        [DataContract]
+        public class AutoCreateNodeCommand : ModelBasedRecordableCommand
+        {
+            #region Public Class Methods
+
+            private void SetProperties(int outputPortIndex, int inputPortIndex, double x, double y, 
+                bool defaultPosition, bool transformCoordinates)
+            {
+                OutputPortIndex = outputPortIndex;
+                InputPortIndex = inputPortIndex;
+                X = x;
+                Y = y;
+                DefaultPosition = defaultPosition;
+                TransformCoordinates = transformCoordinates;
+            }
+
+            public AutoCreateNodeCommand(
+                NodeModel inputNode, NodeModel givenNode, int outputPortIndex, int inputPortIndex, 
+                double x, double y, bool defaultPosition, bool transformCoordinates)
+                : base(inputNode != null && givenNode != null ? new[] { inputNode.GUID, givenNode.GUID } : new[] { Guid.Empty })
+            {
+                InputNode = inputNode;
+                GivenNode = givenNode;
+                
+                SetProperties(outputPortIndex, inputPortIndex, x, y, defaultPosition, transformCoordinates);
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            // Faster, direct creation
+            internal NodeModel InputNode { get; private set; }
+
+            internal NodeModel GivenNode { get; private set; }
+
+            [DataMember]
+            internal int OutputPortIndex { get; private set; }
+            
+            [DataMember]
+            internal int InputPortIndex { get; private set; }
+
+
+
+            [DataMember]
+            internal double X { get; private set; }
+
+            [DataMember]
+            internal double Y { get; private set; }
+
+            [DataMember]
+            internal bool DefaultPosition { get; private set; }
+
+            [DataMember]
+            internal bool TransformCoordinates { get; private set; }
+
+            [DataMember]
+            //Legacy properties
+            public string Name { get; private set; }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoModel dynamoModel)
+            {
+                //dynamoModel.AddNodeToCurrentWorkspace(InputNode, centered: false, addToSelection: false);
+                dynamoModel.CurrentWorkspace.RecordCreatedModel(InputNode);
+
+                var mode = MakeConnectionCommand.Mode.Begin;
+                var cmd = new MakeConnectionCommand(InputNode.GUID, OutputPortIndex, PortType.Output, mode);
+                dynamoModel.ExecuteCommand(cmd);
+
+                mode = MakeConnectionCommand.Mode.End;
+                cmd = new MakeConnectionCommand(GivenNode.GUID, InputPortIndex, PortType.Input, mode);
+                dynamoModel.ExecuteCommand(cmd);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                base.SerializeCore(element);
+                var helper = new XmlElementHelper(element);
+                helper.SetAttribute("X", X);
+                helper.SetAttribute("Y", Y);
+                helper.SetAttribute("DefaultPosition", DefaultPosition);
+                helper.SetAttribute("TransformCoordinates", TransformCoordinates);
+
+                if (InputNode != null)
+                {
+                    var nodeElement = InputNode.Serialize(element.OwnerDocument, SaveContext.File);
+                    element.AppendChild(nodeElement);
+                }
+                helper.SetAttribute("PortIndex", OutputPortIndex);
+                helper.SetAttribute("Type", ((int)PortType.Output));
+                helper.SetAttribute("ConnectionMode", ((int)MakeConnectionCommand.Mode.Begin));
+
+                helper.SetAttribute("PortIndex", InputPortIndex);
+                helper.SetAttribute("Type", ((int)PortType.Input));
+                helper.SetAttribute("ConnectionMode", ((int)MakeConnectionCommand.Mode.End));
+            }
+
+            #endregion
+        }
+
         /// <summary>
         /// Contains additional information needed for creating proxy custom node
         /// </summary>
