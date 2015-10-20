@@ -166,10 +166,10 @@
   <data name="ComposePortDataResultToolTip" xml:space="preserve">
     <value>Composed function.</value>
   </data>
-  <data name="ByItemsListPortDataIndex0ToolTip" xml:space="preserve">
+  <data name="CreateListPortDataIndex0ToolTip" xml:space="preserve">
     <value>Item Index #0</value>
   </data>
-  <data name="ByItemsListPortDataResultToolTip" xml:space="preserve">
+  <data name="CreateListPortDataResultToolTip" xml:space="preserve">
     <value>A list</value>
   </data>
   <data name="DirectoryFromPathDescription" xml:space="preserve">

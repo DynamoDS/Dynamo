@@ -106,24 +106,6 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Item Index #0.
-        /// </summary>
-        public static string ByItemsListPortDataIndex0ToolTip {
-            get {
-                return ResourceManager.GetString("ByItemsListPortDataIndex0ToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A list.
-        /// </summary>
-        public static string ByItemsListPortDataResultToolTip {
-            get {
-                return ResourceManager.GetString("ByItemsListPortDataResultToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Get a color given a color range..
         /// </summary>
         public static string ColorRangeDescription {
@@ -228,6 +210,24 @@ namespace DSCoreNodesUI.Properties {
         public static string ConversionNodeDescription {
             get {
                 return ResourceManager.GetString("ConversionNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Item Index #0.
+        /// </summary>
+        public static string CreateListPortDataIndex0ToolTip {
+            get {
+                return ResourceManager.GetString("CreateListPortDataIndex0ToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A list.
+        /// </summary>
+        public static string CreateListPortDataResultToolTip {
+            get {
+                return ResourceManager.GetString("CreateListPortDataResultToolTip", resourceCulture);
             }
         }
         
