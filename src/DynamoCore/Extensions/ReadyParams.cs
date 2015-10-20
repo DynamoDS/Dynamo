@@ -38,6 +38,19 @@ namespace Dynamo.Extensions
             }
         }
 
+        private ICommandExecutive commandExecutive;
+        public virtual ICommandExecutive CommandExecutive 
+        {
+            get
+            {
+                if (commandExecutive != null)
+                {
+                    commandExecutive = new ExtensionCommandExecutive(dynamoModel);
+                }
+                return commandExecutive;
+            }
+        }
+
         public event Action<IWorkspaceModel> CurrentWorkspaceChanged;
         private void OnCurrentWorkspaceModelChanged(IWorkspaceModel ws)
         {

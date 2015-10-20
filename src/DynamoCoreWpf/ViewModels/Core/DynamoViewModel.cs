@@ -34,15 +34,6 @@ namespace Dynamo.ViewModels
     public interface IDynamoViewModel : INotifyPropertyChanged
     {
         ObservableCollection<WorkspaceViewModel> Workspaces { get; set; }
-
-        /// <summary>
-        /// Executes node and connector creation commands to create node1 and connect it to node2
-        /// </summary>
-        /// <param name="node1">input node to create</param>
-        /// <param name="node2">node to connect to</param>
-        /// <param name="portIndex1">output port of input node</param>
-        /// <param name="portIndex2">input node of given node</param>
-        void CreateAndConnectInputNode(NodeModel node1, NodeModel node2, int portIndex1, int portIndex2);
     }
 
     public partial class DynamoViewModel : ViewModelBase, IDynamoViewModel
@@ -499,26 +490,6 @@ namespace Dynamo.ViewModels
             BackgroundPreviewViewModel = startConfiguration.Watch3DViewModel;
             BackgroundPreviewViewModel.PropertyChanged += Watch3DViewModelPropertyChanged;
             RegisterWatch3DViewModel(BackgroundPreviewViewModel, RenderPackageFactoryViewModel.Factory);
-        }
-
-
-        public void CreateAndConnectInputNode(NodeModel node1, NodeModel node2, int portIndex1, int portIndex2)
-        {
-            var command = new DynamoModel.CreateNodeCommand(node1, 0, 0, true, true);
-            
-            if (null != this.automationSettings)
-                this.automationSettings.RecordCommand(command);
-
-            model.AddNodeToCurrentWorkspace(node1, centered: false, addToSelection: false);
-            CurrentSpace.RecordCreatedModel(node1);
-
-            var mode = DynamoModel.MakeConnectionCommand.Mode.Begin;
-            var cmd = new DynamoModel.MakeConnectionCommand(node1.GUID, portIndex1, PortType.Output, mode);
-            ExecuteCommand(cmd);
-
-            mode = DynamoModel.MakeConnectionCommand.Mode.End;
-            cmd = new DynamoModel.MakeConnectionCommand(node2.GUID, portIndex2, PortType.Input, mode);
-            ExecuteCommand(cmd);
         }
 
         /// <summary>
