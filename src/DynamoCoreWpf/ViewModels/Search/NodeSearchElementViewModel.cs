@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Search.SearchElements;
-using Dynamo.UI;
 using Dynamo.ViewModels;
 
 using FontAwesome.WPF;
@@ -15,6 +13,8 @@ using Microsoft.Practices.Prism.ViewModel;
 using Dynamo.Models;
 using Dynamo.Search;
 using System.Windows;
+
+using Dynamo.Logging;
 using Dynamo.Configuration;
 
 namespace Dynamo.Wpf.ViewModels
@@ -236,7 +236,7 @@ namespace Dynamo.Wpf.ViewModels
                 var nodeModel = Model.CreateNode();
                 Clicked(nodeModel, Position);
 
-                Dynamo.Services.InstrumentationLogger.LogPiiInfo("Search-NodeAdded", FullName);
+                InstrumentationLogger.LogPiiInfo("Search-NodeAdded", FullName);
             }
         }
 
