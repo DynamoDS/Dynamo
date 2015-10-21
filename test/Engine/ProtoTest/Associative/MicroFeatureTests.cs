@@ -192,7 +192,7 @@ temp = test(1, 2);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void TestClasses03()
         {
             String code =
@@ -202,7 +202,7 @@ temp = test(1, 2);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void TestClasses04()
         {
             String code =
@@ -258,7 +258,7 @@ z = line.End.Z;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestClasses08()
         {
             String code =
@@ -281,7 +281,7 @@ z = line.End.Z;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestClassHeirarchy01()
         {
             String code =
@@ -329,7 +329,7 @@ x = d.foo(c);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestClassHeirarchy02()
         {
             String code =
@@ -399,7 +399,7 @@ x = d.foo(c);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestClassFunction04()
         {
             String code =
@@ -410,7 +410,7 @@ x = d.foo(c);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         public void TestClassFunction05()
         {
             String code =
@@ -456,7 +456,7 @@ a;b;c;x;y;z;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestClassFunction07()
         {
             String code =
@@ -466,7 +466,7 @@ a;b;c;x;y;z;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestClassFunction08()
         {
             String code =
@@ -493,7 +493,7 @@ a;b;c;x;y;z;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestClassFunction10()
         {
             String code =
@@ -502,7 +502,7 @@ a;b;c;x;y;z;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestClassFunction11()
         {
             String code =
@@ -512,7 +512,7 @@ a;b;c;x;y;z;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestClassFunction12()
         {
             String code =
@@ -521,7 +521,7 @@ a;b;c;x;y;z;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestClassFunction13()
         {
             String code =
@@ -534,7 +534,7 @@ a;b;c;x;y;z;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         [Category("JunToFix")]
         public void TestClassFunction14()
         {
@@ -558,7 +558,7 @@ a;b;c;x;y;z;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestClassFunction16()
         {
             String code =
@@ -567,7 +567,7 @@ a;b;c;x;y;z;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestClassFunction17()
         {
             String code =
@@ -578,7 +578,7 @@ a;b;c;x;y;z;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestStaticUpdate01()
         {
             string code = @"class Base{    static x : int = 1;}t = Base.x;Base.x = 10;                 ";
@@ -587,7 +587,7 @@ a;b;c;x;y;z;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestStaticUpdate02()
         {
             string code = @"class Base{    static x : int[];}t = Base.x;Base.x = { 1, 2 };                   ";
@@ -596,7 +596,7 @@ a;b;c;x;y;z;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestStaticProperty01()
         {
             string code = @"class A{    static x:int;    static def foo(i)    {        return = 2 * i;    }}a = A.A();a.x = 3;t1 = a.x;b = A.A();t2 = b.x;                ";
@@ -606,7 +606,7 @@ a;b;c;x;y;z;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestStaticProperty02()
         {
             string code = @"class S{	public static a : int;}class C{    public x : int;    constructor C()    {        S.a = 2;    }}p = C.C();b = S.a;";
@@ -633,7 +633,7 @@ a;b;c;x;y;z;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestClassNegative01()
         {
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
@@ -737,7 +737,7 @@ a;b;c;x;y;z;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestIndexingIntoArray01()
         {
             String code =
@@ -963,7 +963,7 @@ r2 = a[""x""];
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestDictionary05()
         {
             // Using class instance as a key 
@@ -1517,7 +1517,7 @@ b = a[0];";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestReplicationGuidesOnDotOps04()
         {
             string code = @"class C{    def f(a : int)    {        return = 10;    }}p = {C.C(), C.C()};x = p<1>.f({1,2}<2>);y = x[0];z = x[1];";
@@ -1527,7 +1527,7 @@ b = a[0];";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestReplicationGuidesOnDotOps05()
         {
             string code = @"class A{        x;        constructor A ( x1 )        {            x = x1;        }        def foo ( y )        {            return = x + y;        }}a = A.A (0..1);b = 2..3;x = a<1>.foo(b<2>);y = x[0];z = x[1];";
@@ -1647,7 +1647,7 @@ b = a[0];";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestEq()
         {
             string code= @"
@@ -1741,7 +1741,7 @@ x4 = 0..#5..10;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void FunctionWithinConstr001()
         {
             String code =
@@ -1880,7 +1880,7 @@ b = 2.1 % 0;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void NegativeIndexOnCollection003()
         {
             String code =
@@ -1969,7 +1969,7 @@ z[1][0] = 10;                ";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestFunctionUpdate01()
         {
             String code =
@@ -2037,7 +2037,7 @@ length = myline;                ";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestPropertyUpdate03()
         {
             String code =
@@ -2047,7 +2047,7 @@ length = myline;                ";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestPropertyUpdate04()
         {
             String code =
@@ -2078,7 +2078,7 @@ length = myline;                ";
 
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestPropertyUpdate07()
         {
             String code =
@@ -2088,7 +2088,7 @@ length = myline;                ";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestLHSUpdate01()
         {
             String code =
@@ -2240,7 +2240,7 @@ a = 10;
 
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestGCRefCount()
         {
             String code =
@@ -2285,7 +2285,7 @@ a = 10;
 
         [Test]
         [Ignore]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         [Category("ProtoGeometry")]
         [Category("PortToCodeBlocks")]
         public void TestNullFFI()
@@ -2298,7 +2298,7 @@ a = 10;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestAttributeOnClass()
         {
             string src = @"class TestAttribute
@@ -2340,7 +2340,7 @@ class Point
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestAttributeOnGlobalFunction()
         {
             string src = @"class TestAttribute
@@ -2382,7 +2382,7 @@ class Point
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassAttribute")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassAttribute")]
         public void TestAttributeOnLanguageBlock()
         {
             string src = @"class TestAttribute
@@ -2408,7 +2408,7 @@ class VisibilityAttribute
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassAttribute")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassAttribute")]
         public void TestAttributeWithLanguageBlockAndArrayExpression()
         {
             string src = @"class TestAttribute
@@ -2557,7 +2557,7 @@ ret = t;";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestTypedAssignment01()
         {
             String code =
@@ -2591,7 +2591,7 @@ ret = t;";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestTypedAssignment04()
         {
             string code =
@@ -2628,7 +2628,7 @@ r = foo();";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         [Category("Escalate")]
         [Category("ToFixJun")]
         public void TestPropAssignWithReplication()
@@ -2642,7 +2642,7 @@ r = foo();";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestPropAssignWithReplication02()
         {
             string code =
@@ -3170,7 +3170,7 @@ p = f();
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestLocalFromMemberFunction01()
         {
             string code =
@@ -3194,7 +3194,7 @@ y = p.f();
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestLocalFromMemberFunction02()
         {
             string code =
