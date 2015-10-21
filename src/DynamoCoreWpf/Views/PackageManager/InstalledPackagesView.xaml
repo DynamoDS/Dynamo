@@ -25,8 +25,7 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <Grid Background="Black"
-          Margin="0">
+    <Grid Background="Black">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -40,7 +39,8 @@
                  HorizontalContentAlignment="Stretch"
                  ScrollViewer.VerticalScrollBarVisibility="Auto"
                  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                 VirtualizingPanel.ScrollUnit="Pixel">
+                 VirtualizingPanel.ScrollUnit="Pixel"
+                 Padding="0">
 
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
@@ -50,6 +50,8 @@
                         <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
                                          Color="#000" />
                     </Style.Resources>
+                    <Setter Property="Padding"
+                            Value="0,0,0,0" />
                 </Style>
 
             </ListBox.ItemContainerStyle>
@@ -58,9 +60,15 @@
 
                 <DataTemplate>
 
+                    <!--This border shouldn't be wider then installed packages window.
+                    That's why bind its' width to ItemsPresenter's width. 
+                    ItemsPresenter is UI container for ListBox items.
+                    ItemsPresenter can't be wider then visible part of the window.-->
                     <Border BorderBrush="#222"
                             BorderThickness="0,0,0,1"
-                            Background="#333">
+                            Background="#333"
+                            Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, 
+                                                                        AncestorType={x:Type ItemsPresenter}}}">
                         <Border BorderBrush="#444"
                                 BorderThickness="0,1,0,0">
 
@@ -167,16 +175,17 @@
                                                    FontWeight="Bold"
                                                    Foreground="Gray"></Label>
                                             <ItemsControl Name="LoadedCustomNodes"
-                                                     ItemsSource="{Binding Path=Model.LoadedCustomNodes}"
-                                                     BorderThickness="0"
-                                                     Padding="0"
-                                                     Margin="10,0,0,0"
-                                                     Background="Transparent">
+                                                          ItemsSource="{Binding Path=Model.LoadedCustomNodes}"
+                                                          BorderThickness="0"
+                                                          Padding="0"
+                                                          Margin="10,0,0,0"
+                                                          Background="Transparent">
 
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <TextBlock Text="{Binding Path=Name}"
-                                                                   Foreground="White" />
+                                                                   Foreground="White"
+                                                                   TextTrimming="CharacterEllipsis" />
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
 
@@ -190,17 +199,18 @@
                                                    FontWeight="Bold"
                                                    Foreground="Gray"></Label>
                                             <ItemsControl Name="NodeLibraries"
-                                                     ItemsSource="{Binding Path=Model.LoadedAssemblies}"
-                                                     BorderThickness="0"
-                                                     Padding="0"
-                                                     Margin="10,0,0,0"
-                                                     Background="Transparent">
+                                                          ItemsSource="{Binding Path=Model.LoadedAssemblies}"
+                                                          BorderThickness="0"
+                                                          Padding="0"
+                                                          Margin="10,0,0,0"
+                                                          Background="Transparent">
 
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <TextBlock Name="Label"
                                                                    Text="{Binding Path=Name}"
-                                                                   Foreground="White" />
+                                                                   Foreground="White"
+                                                                   TextTrimming="CharacterEllipsis" />
 
                                                         <DataTemplate.Triggers>
                                                             <DataTrigger Binding="{Binding Path=IsNodeLibrary}"
@@ -222,17 +232,18 @@
                                                    FontWeight="Bold"
                                                    Foreground="Gray"></Label>
                                             <ItemsControl Name="AddAssemblies"
-                                                     ItemsSource="{Binding Path=Model.LoadedAssemblies}"
-                                                     BorderThickness="0"
-                                                     Padding="0"
-                                                     Margin="10,0,0,0"
-                                                     Background="Transparent">
+                                                          ItemsSource="{Binding Path=Model.LoadedAssemblies}"
+                                                          BorderThickness="0"
+                                                          Padding="0"
+                                                          Margin="10,0,0,0"
+                                                          Background="Transparent">
 
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <TextBlock Name="Label"
                                                                    Text="{Binding Path=Name}"
-                                                                   Foreground="White" />
+                                                                   Foreground="White"
+                                                                   TextTrimming="CharacterEllipsis" />
 
                                                         <DataTemplate.Triggers>
                                                             <DataTrigger Binding="{Binding Path=IsNodeLibrary}"
@@ -255,16 +266,17 @@
                                                    FontWeight="Bold"
                                                    Foreground="Gray"></Label>
                                             <ItemsControl Name="AdditionalFiles"
-                                                     ItemsSource="{Binding Path=Model.AdditionalFiles}"
-                                                     BorderThickness="0"
-                                                     Padding="0"
-                                                     Margin="10,0,0,0"
-                                                     Background="Transparent">
+                                                          ItemsSource="{Binding Path=Model.AdditionalFiles}"
+                                                          BorderThickness="0"
+                                                          Padding="0"
+                                                          Margin="10,0,0,0"
+                                                          Background="Transparent">
 
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <TextBlock Text="{Binding Path=RelativePath}"
-                                                                   Foreground="White" />
+                                                                   Foreground="White"
+                                                                   TextTrimming="CharacterEllipsis" />
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
 
