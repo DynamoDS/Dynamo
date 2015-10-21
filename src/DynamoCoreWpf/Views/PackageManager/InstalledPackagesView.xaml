@@ -60,6 +60,10 @@
 
                 <DataTemplate>
 
+                    <!--This border shouldn't be wider then installed packages window.
+                    That's why bind its' width to ItemsPresenter's width. 
+                    ItemsPresenter is UI container for ListBox items.
+                    ItemsPresenter can't be wider then visible part of the window.-->
                     <Border BorderBrush="#222"
                             BorderThickness="0,0,0,1"
                             Background="#333"
