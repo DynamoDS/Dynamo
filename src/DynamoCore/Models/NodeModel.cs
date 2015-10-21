@@ -1139,23 +1139,8 @@ namespace Dynamo.Models
                 //distribute the ports along the 
                 //edges of the icon
                 PortModel port = AddPort(PortType.Input, pd, InPorts.Count + count);
-                //MVVM: AddPort now returns a port model. You can't set the data context here.
-                //port.DataContext = this;
-
                 portDataDict[port] = pd;
                 count++;
-            }
-
-            if (inPorts.Count > count && !usedAttributesLoadingStyle)
-            {
-                foreach (PortModel inport in inPorts.Skip(count))
-                {
-                    inport.DestroyConnectors();
-                    portDataDict.Remove(inport);
-                }
-
-                for (int i = inPorts.Count - 1; i >= count; i--)
-                    inPorts.RemoveAt(i);
             }
 
             //Configure Snap Edges
@@ -1195,27 +1180,19 @@ namespace Dynamo.Models
                 //edges of the icon
                 PortModel port = AddPort(PortType.Output, pd, count);
 
-                //MVVM : don't set the data context in the model
-                //port.DataContext = this;
-
                 portDataDict[port] = pd;
                 count++;
-            }
-
-            if (outPorts.Count > count && OutPortData.Count > 0)
-            {
-                foreach (PortModel outport in outPorts.Skip(count))
-                    outport.DestroyConnectors();
-
-                for (int i = outPorts.Count - 1; i >= count; i--)
-                    outPorts.RemoveAt(i);
-
-                //OutPorts.RemoveRange(count, outPorts.Count - count);
             }
 
             //configure snap edges
             ConfigureSnapEdges(outPorts);
             areOutputPortsRegistered = true;
+        }
+
+        public void AddInputPort(PortData portData)
+        {
+            PortModel port = AddPort(PortType.Input, portData, InPorts.Count);
+            portDataDict[port] = portData;
         }
 
         public void RemoveInputPort(int index)

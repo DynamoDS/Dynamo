@@ -119,7 +119,7 @@ namespace Dynamo.Models.NodeLoaders
                 foreach (var param in descriptor.Parameters)
                 {
                     if (i >= inputTypes.Length || param.Type.ToString() != inputTypes[i])
-                        result.InPorts[j].UsingDefaultValue = result.InPortData[j].DefaultValue != null;
+                        result.InPorts[j].UsingDefaultValue = result.InPorts[j].DefaultValue != null;
                     else
                         i++;
                     j++;

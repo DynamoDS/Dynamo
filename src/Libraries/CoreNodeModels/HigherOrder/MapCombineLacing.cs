@@ -74,7 +74,7 @@ namespace DSCore
 
         protected override void RemoveInput()
         {
-            if (InPortData.Count > minPorts)
+            if (InPorts.Count > minPorts)
                 base.RemoveInput();
         }
     }
@@ -290,7 +290,7 @@ namespace DSCore
 
         protected override void RemoveInput()
         {
-            if (InPortData.Count > 3)
+            if (InPorts.Count > 3)
             {
                 base.RemoveInput();
                 //UpdateReductorPort();
@@ -305,11 +305,11 @@ namespace DSCore
 
         private void UpdateReductorPort()
         {
-            if (InPortData.Count > 6) 
+            if (InPorts.Count > 6) 
                 reductorPort.NickName = "f(x1, x2, ... xN, a)";
             else
             {
-                if (InPortData.Count == 3) 
+                if (InPorts.Count == 3) 
                     reductorPort.NickName = "f(x, a)";
                 else
                 {
@@ -335,7 +335,7 @@ namespace DSCore
 
         protected override int GetInputIndex()
         {
-            return InPortData.Count - 1;
+            return InPorts.Count - 1;
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -378,7 +378,7 @@ namespace DSCore
 
         protected override void RemoveInput()
         {
-            if (InPortData.Count > 3)
+            if (InPorts.Count > 3)
             {
                 base.RemoveInput();
                 //UpdateReductorPort();
@@ -393,11 +393,11 @@ namespace DSCore
 
         private void UpdateReductorPort()
         {
-            if (InPortData.Count > 6)
+            if (InPorts.Count > 6)
                 reductorPort.NickName = "f(x1, x2, ... xN, a)";
             else
             {
-                if (InPortData.Count == 3)
+                if (InPorts.Count == 3)
                     reductorPort.NickName = "f(x, a)";
                 else
                 {
@@ -423,7 +423,7 @@ namespace DSCore
 
         protected override int GetInputIndex()
         {
-            return InPortData.Count - 1;
+            return InPorts.Count - 1;
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)

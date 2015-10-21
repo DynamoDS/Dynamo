@@ -161,7 +161,7 @@ namespace Dynamo.Nodes
         public virtual void AddInputToModel()
         {
             var idx = GetInputIndexFromModel();
-            model.InPortData.Add(new PortData(GetInputName(idx), GetInputTooltip(idx)));
+            model.AddInputPort(new PortData(GetInputName(idx), GetInputTooltip(idx)));
 
             MarkNodeDirty();
         }
@@ -172,18 +172,18 @@ namespace Dynamo.Nodes
         /// <param name="numInputs"></param>
         public void SetNumInputs(int numInputs)
         {
-            while (model.InPortData.Count < numInputs)
+            while (model.InPorts.Count < numInputs)
                 AddInputToModel();
 
-            while (model.InPortData.Count > numInputs)
+            while (model.InPorts.Count > numInputs)
                 RemoveInputFromModel();
         }
 
         public void OnBuilt()
         {
-            inputAmtLastBuild = model.InPortData.Count;
+            inputAmtLastBuild = model.InPorts.Count;
 
-            foreach (var idx in Enumerable.Range(0, model.InPortData.Count))
+            foreach (var idx in Enumerable.Range(0, model.InPorts.Count))
                 connectedLastBuild[idx] = model.HasInput(idx);
         }
 

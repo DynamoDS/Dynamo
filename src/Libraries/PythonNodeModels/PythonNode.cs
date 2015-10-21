@@ -157,18 +157,21 @@ namespace PythonNodeModels
     [NodeDescription("PythonScriptFromStringDescription", typeof(Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
+    [InPortNames("script")]
+    [InPortTypes("Script")]
+    [InPortDescriptionsAttribute(typeof(Properties.Resources),
+        "PythonStringPortDataScriptToolTip")]
     public sealed class PythonStringNode : PythonNodeBase
     {
         public PythonStringNode()
         {
-            InPortData.Add(new PortData("script", Properties.Resources.PythonStringPortDataScriptToolTip));
-            AddInput();
             RegisterAllPorts();
+            AddInput();
         }
 
         protected override void RemoveInput()
         {
-            if (InPortData.Count > 1)
+            if (InPorts.Count > 1)
                 base.RemoveInput();
         }
 

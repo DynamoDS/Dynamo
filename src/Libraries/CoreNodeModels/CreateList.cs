@@ -54,12 +54,12 @@ namespace DSCoreNodesUI
         {
             if (IsPartiallyApplied)
             {
-                var connectedInput = Enumerable.Range(0, InPortData.Count)
+                var connectedInput = Enumerable.Range(0, InPorts.Count)
                                                .Where(HasConnectedInput)
                                                .Select(x => new IntNode(x) as AssociativeNode)
                                                .ToList();
 
-                var paramNumNode = new IntNode(InPortData.Count);
+                var paramNumNode = new IntNode(InPorts.Count);
                 var positionNode = AstFactory.BuildExprList(connectedInput);
                 var arguments = AstFactory.BuildExprList(inputAstNodes);
                 var functionNode = new IdentifierListNode
