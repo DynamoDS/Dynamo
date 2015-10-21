@@ -170,11 +170,11 @@ namespace DSCoreNodesUI
             }
             catch { }
 
-            InPortData.Clear();
+            InPorts.Clear();
 
             foreach (var p in parameters)
             {
-                InPortData.Add(new PortData(p, "variable"));
+                AddInputPort((new PortData(p, "variable")));
             }
 
             RegisterInputPorts();
@@ -186,7 +186,7 @@ namespace DSCoreNodesUI
             Func<string, string[], object[], object> backingMethod = DSCore.Formula.Evaluate;
 
             // Format input names to be used as function parameters
-            var inputs = InPortData.Select(x => x.NickName.Replace(' ', '_')).ToList();
+            var inputs = InPorts.Select(x => x.PortName.Replace(' ', '_')).ToList();
 
 
             /*  def formula_partial(<params>) {
@@ -216,9 +216,9 @@ namespace DSCoreNodesUI
                                             {
                                                 AstFactory.BuildStringNode(FormulaString),
                                                 AstFactory.BuildExprList(
-                                                    InPortData.Select(
+                                                    InPorts.Select(
                                                         x =>
-                                                            AstFactory.BuildStringNode(x.NickName) as
+                                                            AstFactory.BuildStringNode(x.PortName) as
                                                             AssociativeNode).ToList()),
                                                 AstFactory.BuildExprList(
                                                     inputs.Select(AstFactory.BuildIdentifier)
