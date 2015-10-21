@@ -63,7 +63,7 @@ namespace Dynamo.Wpf.Nodes
             });
 
             // then update on the ui thread
-            t.ThenPost((_) =>
+            t.ThenSend((_) =>
             {
                 var bmp = CreateColorRangeBitmap(colorRange);
                 gradientImage.Source = bmp;

@@ -1030,7 +1030,7 @@ a;b;c;d;e1;f;g;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         public void TS039_userdefined_covariance_Imperative()
         {
@@ -2368,7 +2368,7 @@ d;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("Type System")]
         public void TS0189_TypeConversion_class_member_1467599()
         {
@@ -2544,7 +2544,7 @@ myRangeExpressionResult ;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("Type System")]
         public void TS0195_TypeConversion_nested_block_1467568()
         {
@@ -2581,7 +2581,7 @@ t2 = a.x;";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("Type System")]
         public void TS0196_TypeConversion_nested_block_1467568()
         {
