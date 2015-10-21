@@ -1030,7 +1030,7 @@ a;b;c;d;e1;f;g;
         }
 
         [Test]
-        [Ignore][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         public void TS039_userdefined_covariance_Imperative()
         {
