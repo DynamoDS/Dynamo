@@ -2284,7 +2284,6 @@ a = 10;
         }
 
         [Test]
-        [Ignore]
         [Ignore][Category("DSDefinedClass_Ignored")]
         [Category("ProtoGeometry")]
         [Category("PortToCodeBlocks")]
