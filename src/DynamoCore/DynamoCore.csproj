@@ -144,12 +144,12 @@ limitations under the License.
     <Compile Include="Extensions\StartupParams.cs" />
     <Compile Include="Interfaces\IRenderPackageFactory.cs" />
     <Compile Include="Models\AnnotationModel.cs" />
-    <Compile Include="Core\PathManager.cs" />
+    <Compile Include="Configuration\PathManager.cs" />
     <Compile Include="Models\PresetModel.cs" />
     <Compile Include="Library\MemberDocumentNode.cs" />
     <Compile Include="Models\RunSettings.cs" />
     <Compile Include="Core\Threading\AsyncTaskExtensions.cs" />
-    <Compile Include="Interfaces\IPathResolver.cs" />
+    <Compile Include="Configuration\IPathResolver.cs" />
     <Compile Include="Search\Interfaces\ISearchCategory.cs" />
     <Compile Include="Search\Interfaces\ISearchEntry.cs" />
     <Compile Include="Search\NodeSearchModel.cs" />
@@ -201,7 +201,7 @@ limitations under the License.
     <Compile Include="Library\TypedParameter.cs" />
     <Compile Include="Library\XmlDocumentationExtensions.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
-    <Compile Include="Interfaces\IPreferences.cs" />
+    <Compile Include="Configuration\IPreferences.cs" />
     <Compile Include="Models\DynamoModelEventArgs.cs" />
     <Compile Include="Models\DynamoModelDelegates.cs" />
     <Compile Include="Models\DynamoModelEvents.cs" />
@@ -230,7 +230,7 @@ limitations under the License.
     <Compile Include="Nodes\ZeroTouch\DSFunction.cs" />
     <Compile Include="Migration\Migration.cs" />
     <Compile Include="Core\CustomNodeDefinition.cs" />
-    <Compile Include="Core\PreferenceSettings.cs" />
+    <Compile Include="Configuration\PreferenceSettings.cs" />
     <Compile Include="Core\DynamoLogger.cs" />
     <Compile Include="Core\DynamoSelection.cs" />
     <Compile Include="Logging\Heartbeat.cs" />
@@ -242,7 +242,7 @@ limitations under the License.
     <Compile Include="Models\PortModel.cs" />
     <Compile Include="UpdateManager\BinaryVersion.cs" />
     <Compile Include="UpdateManager\UpdateManager.cs" />
-    <Compile Include="Utilities\Configurations.cs" />
+    <Compile Include="Configuration\Configurations.cs" />
     <Compile Include="Migration\MigrationReport.cs" />
     <Compile Include="Search\BrowserInternalElement.cs" />
     <Compile Include="Core\CustomNodeManager.cs" />

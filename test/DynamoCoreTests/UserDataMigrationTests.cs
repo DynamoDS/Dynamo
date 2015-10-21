@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Tests;

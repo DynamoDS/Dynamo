@@ -31,6 +31,7 @@ using System.Windows.Data;
 using Dynamo.UI.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using Dynamo.Configuration;
 using Dynamo.Services;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Logging;

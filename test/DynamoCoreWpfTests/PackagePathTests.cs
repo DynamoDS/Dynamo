@@ -5,6 +5,7 @@ using System.Windows;
 
 using SystemTestServices;
 using Dynamo;
+using Dynamo.Configuration;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 

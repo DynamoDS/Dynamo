@@ -13,11 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Practices.Prism.ViewModel;
 using Dynamo.Wpf.Properties;
-using Dynamo.Wpf.Views.Gallery;
-using Dynamo.Wpf.ViewModels.Core;
-using System.Linq;
 using Dynamo.Logging;
-using Dynamo.Services;
+using Dynamo.Configuration;
 
 namespace Dynamo.UI.Controls
 {

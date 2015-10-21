@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Search.SearchElements;
-using Dynamo.UI;
 using Dynamo.ViewModels;
 
 using FontAwesome.WPF;
@@ -15,7 +13,9 @@ using Microsoft.Practices.Prism.ViewModel;
 using Dynamo.Models;
 using Dynamo.Search;
 using System.Windows;
+
 using Dynamo.Logging;
+using Dynamo.Configuration;
 
 namespace Dynamo.Wpf.ViewModels
 {
@@ -170,7 +170,7 @@ namespace Dynamo.Wpf.ViewModels
 
         public bool HasDescription
         {
-            get { return (!Model.Description.Equals(Dynamo.UI.Configurations.NoDescriptionAvailable)); }
+            get { return (!Model.Description.Equals(Configurations.NoDescriptionAvailable)); }
         }
 
         public IEnumerable<Tuple<string, string>> InputParameters
