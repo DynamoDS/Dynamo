@@ -1,24 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Text;
 using System.Linq;
 using ProtoCore.AssociativeGraph;
-using ProtoCore.AssociativeEngine;
-using ProtoCore.AST;
-using ProtoCore.AST.AssociativeAST;
-using ProtoCore.BuildData;
-using ProtoCore.CodeModel;
-using ProtoCore.DebugServices;
 using ProtoCore.DSASM;
-using ProtoCore.Lang;
-using ProtoCore.Lang.Replication;
-using ProtoCore.Runtime;
 using ProtoCore.Utils;
-using ProtoFFI;
-
-using StackFrame = ProtoCore.DSASM.StackFrame;
 
 namespace ProtoCore
 {
@@ -128,6 +113,57 @@ namespace ProtoCore
             return csInstance;
         }
 
+        public Dictionary<Guid, List<CallSite>>
+        GetCallsitesForNodes(IEnumerable<Guid> nodeGuids, Executable executable)
+        {
+            if (nodeGuids == null)
+                throw new ArgumentNullException("nodeGuids");
+
+            var nodeMap = new Dictionary<Guid, List<CallSite>>();
+
+            if (!nodeGuids.Any()) // Nothing to persist now.
+                return nodeMap;
+
+            // Attempt to get the list of graph node if one exists.
+            IEnumerable<GraphNode> graphNodes = null;
+            {
+                if (executable != null)
+                {
+                    var stream = executable.instrStreamList;
+                    if (stream != null && (stream.Length > 0))
+                    {
+                        var graph = stream[0].dependencyGraph;
+                        if (graph != null)
+                            graphNodes = graph.GraphList;
+                    }
+                }
+
+
+                if (graphNodes == null) // No execution has taken place.
+                    return nodeMap;
+            }
+
+            foreach (Guid nodeGuid in nodeGuids)
+            {
+                // Get a list of GraphNode objects that correspond to this node.
+                var matchingGraphNodes = graphNodes.
+                        Where(gn => gn.guid == nodeGuid);
+
+                if (!matchingGraphNodes.Any())
+                    continue;
+
+                // Get all callsites that match the graph node ids.
+                var matchingCallSites = (from cs in CallsiteCache
+                                         from gn in matchingGraphNodes
+                                         where string.Equals(cs.Key, gn.CallsiteIdentifier)
+                                         select cs.Value);
+
+                // Append each callsite element under node element.
+                nodeMap[nodeGuid] = matchingCallSites.ToList();
+            }
+
+            return nodeMap;
+        }
 
         #region Trace Data Serialization Methods/Members
 
@@ -197,58 +233,6 @@ namespace ProtoCore
             }
 
             return nodeDataPairs;
-        }
-
-        public Dictionary<Guid, List<CallSite>>
-        GetCallsitesForNodes(IEnumerable<Guid> nodeGuids, Executable executable)
-        {
-            if (nodeGuids == null)
-                throw new ArgumentNullException("nodeGuids");
-
-            var nodeMap = new Dictionary<Guid, List<CallSite>>();
-
-            if (!nodeGuids.Any()) // Nothing to persist now.
-                return nodeMap;
-
-            // Attempt to get the list of graph node if one exists.
-            IEnumerable<GraphNode> graphNodes = null;
-            {
-                if (executable != null)
-                {
-                    var stream = executable.instrStreamList;
-                    if (stream != null && (stream.Length > 0))
-                    {
-                        var graph = stream[0].dependencyGraph;
-                        if (graph != null)
-                            graphNodes = graph.GraphList;
-                    }
-                }
-
-
-                if (graphNodes == null) // No execution has taken place.
-                    return nodeMap;
-            }
-
-            foreach (Guid nodeGuid in nodeGuids)
-            {
-                // Get a list of GraphNode objects that correspond to this node.
-                var matchingGraphNodes = graphNodes.
-                    Where(gn => gn.guid == nodeGuid);
-
-                if (!matchingGraphNodes.Any())
-                    continue;
-
-                // Get all callsites that match the graph node ids.
-                var matchingCallSites = (from cs in CallsiteCache
-                                         from gn in matchingGraphNodes
-                                         where string.Equals(cs.Key, gn.CallsiteIdentifier)
-                                         select cs.Value);
-
-                // Append each callsite element under node element.
-                nodeMap[nodeGuid] = matchingCallSites.ToList();
-            }
-
-            return nodeMap;
         }
 
         /// <summary>

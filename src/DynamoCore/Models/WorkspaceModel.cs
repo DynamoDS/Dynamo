@@ -41,21 +41,21 @@ namespace Dynamo.Models
         private int currentPasteOffset = 0;
         internal int CurrentPasteOffset
         {
-            get { return currentPasteOffset; }
+            get
+            {
+                return currentPasteOffset == 0 ? PasteOffsetStep : currentPasteOffset;
+            }
         }
 
         /// <summary>
         ///     The step to offset elements between subsequent paste operations
         /// </summary>
-        internal static readonly int PASTE_OFFSET_STEP = 10;
+        internal static readonly int PasteOffsetStep = 10;
 
         /// <summary>
         ///     The maximum paste offset before reset
         /// </summary>
-        internal static readonly int PASTE_OFFSET_MAX = 60;
-
-        private const double VerticalGraphDistance = 30;
-        private const double HorizontalGraphDistance = 70;
+        internal static readonly int PasteOffsetMax = 60;
 
         private string fileName;
         private string name;
@@ -73,6 +73,7 @@ namespace Dynamo.Models
         private readonly List<AnnotationModel> annotations;
         private readonly List<PresetModel> presets;
         private readonly UndoRedoRecorder undoRecorder;
+        private bool hasNodeInSyncWithDefinition;
         private Guid guid;
 
         #endregion
@@ -281,6 +282,11 @@ namespace Dynamo.Models
         public event Action<ConnectorModel> ConnectorDeleted;
         protected virtual void OnConnectorDeleted(ConnectorModel obj)
         {
+            if (hasNodeInSyncWithDefinition)
+            {
+                undoRecorder.RecordModelAsOffTrack(obj.GUID);
+            }
+
             var handler = ConnectorDeleted;
             if (handler != null) handler(obj);
         }
@@ -304,6 +310,15 @@ namespace Dynamo.Models
             if (handler != null) handler(obj);
         }
 
+        public void OnSyncWithDefintionStart(NodeModel nodeModel)
+        {
+            hasNodeInSyncWithDefinition = true;
+        }
+
+        public void OnSyncWithDefinitionEnd(NodeModel nodeModel)
+        {
+            hasNodeInSyncWithDefinition = false;
+        }
         #endregion
 
         #region public properties
@@ -387,7 +402,16 @@ namespace Dynamo.Models
             } 
         }
 
+        /// <summary>
+        /// List of subgraphs for graph layout algorithm.
+        /// </summary>
         internal List<GraphLayout.Graph> LayoutSubgraphs;
+
+        /// <summary>
+        /// List of clusters (groups of nodes) which will be processed separately
+        /// in the subgraph creation of graph layout algorithm.
+        /// </summary>
+        private List<List<GraphLayout.Node>> SubgraphClusters;
 
         private void AddNode(NodeModel node)
         {
@@ -608,9 +632,9 @@ namespace Dynamo.Models
         #region constructors
 
         protected WorkspaceModel(
-            IEnumerable<NodeModel> e, 
-            IEnumerable<NoteModel> n,
-            IEnumerable<AnnotationModel> a,
+            IEnumerable<NodeModel> nodes, 
+            IEnumerable<NoteModel> notes,
+            IEnumerable<AnnotationModel> annotations,
             WorkspaceInfo info, 
             NodeFactory factory,
             IEnumerable<PresetModel> presets,
@@ -618,10 +642,10 @@ namespace Dynamo.Models
         {
             guid = Guid.NewGuid();
 
-            nodes = new List<NodeModel>(e);
-            notes = new List<NoteModel>(n);
+            this.nodes = new List<NodeModel>(nodes);
+            this.notes = new List<NoteModel>(notes);
 
-            annotations = new List<AnnotationModel>(a);         
+            this.annotations = new List<AnnotationModel>(annotations);         
 
             // Set workspace info from WorkspaceInfo object
             Name = info.Name;
@@ -642,7 +666,7 @@ namespace Dynamo.Models
             this.presets = new List<PresetModel>(presets);
             ElementResolver = resolver;
 
-            foreach (var node in nodes)
+            foreach (var node in this.nodes)
                 RegisterNode(node);
 
             foreach (var connector in Connectors)
@@ -772,10 +796,17 @@ namespace Dynamo.Models
             RequestRun();
         }
 
-        private void RegisterNode(NodeModel node)
+        protected virtual void RegisterNode(NodeModel node)
         {
             node.Modified += NodeModified;
             node.ConnectorAdded += OnConnectorAdded;
+
+            var functionNode = node as Function;
+            if (functionNode != null)
+            {
+                functionNode.Controller.SyncWithDefinitionStart += OnSyncWithDefintionStart;
+                functionNode.Controller.SyncWithDefinitionEnd += OnSyncWithDefinitionEnd;
+            }
         }
 
         protected virtual void RequestRun()
@@ -807,8 +838,14 @@ namespace Dynamo.Models
             DisposeNode(model);
         }
 
-        protected void DisposeNode(NodeModel model)
+        protected virtual void DisposeNode(NodeModel model)
         {
+            var functionNode = model as Function;
+            if (functionNode != null)
+            {
+                functionNode.Controller.SyncWithDefinitionStart -= OnSyncWithDefintionStart;
+                functionNode.Controller.SyncWithDefinitionEnd -= OnSyncWithDefinitionEnd;
+            }
             model.ConnectorAdded -= OnConnectorAdded;
             model.Modified -= NodeModified;
             model.Dispose();
@@ -934,19 +971,25 @@ namespace Dynamo.Models
             // Check if all the selected models are groups
             bool isGroupLayout = selection.Count > 0 &&
                 selection.All(x => x is AnnotationModel ||
-                    selection.Where(g => g is AnnotationModel)
-                    .Any(g => (g as AnnotationModel).SelectedModels.Contains(x)));
+                    selection.OfType<AnnotationModel>().Any(g => g.SelectedModels.Contains(x)));
 
             GenerateCombinedGraph(isGroupLayout);
             RecordUndoGraphLayout(isGroupLayout);
-            GenerateSeparateSubgraphs();
+
+            // Generate subgraphs separately for each cluster
+            SubgraphClusters.ForEach(
+                x => GenerateSeparateSubgraphs(new HashSet<GraphLayout.Node>(x)));
+
+            // Deselect all nodes
+            SubgraphClusters.ForEach(c => c.ForEach(x => x.IsSelected = false));
+
+            // Run layout algorithm for each subgraph
             LayoutSubgraphs.Skip(1).ToList().ForEach(g => RunLayoutSubgraph(g, isGroupLayout));
             AvoidSubgraphOverlap();
             SaveLayoutGraph();
 
             // Restore the workspace model selection information
-            foreach (var model in selection)
-                model.Select();
+            selection.ToList().ForEach(x => x.Select());
         }
 
         /// <summary>
@@ -960,6 +1003,7 @@ namespace Dynamo.Models
             LayoutSubgraphs.Add(new GraphLayout.Graph());
 
             GraphLayout.Graph combinedGraph = LayoutSubgraphs.First();
+            SubgraphClusters = new List<List<GraphLayout.Node>>();
 
             if (!isGroupLayout)
             {
@@ -1029,9 +1073,28 @@ namespace Dynamo.Models
 
                 if (nd != null)
                 {
-                    nd.LinkedNotes.Add(note);
+                    nd.LinkNote(note, note.Width, note.Height);
                 }
             }
+
+            if (!isGroupLayout)
+            {
+                // Add all nodes to one big cluster
+                List<GraphLayout.Node> bigcluster = new List<GraphLayout.Node>();
+                bigcluster.AddRange(combinedGraph.Nodes);
+                SubgraphClusters.Add(bigcluster);
+            }
+            else
+            {
+                // Each group becomes one cluster
+                foreach (AnnotationModel group in DynamoSelection.Instance.Selection.OfType<AnnotationModel>())
+                {
+                    List<GraphLayout.Node> cluster = new List<GraphLayout.Node>();
+                    cluster.AddRange(group.SelectedModels.Select(x => combinedGraph.FindNode(x.GUID)));
+                    SubgraphClusters.Add(cluster);
+                }
+            }
+
         }
 
         /// <summary>
@@ -1073,14 +1136,15 @@ namespace Dynamo.Models
         /// uses breadth-first search to find all other nodes in the same subgraph
         /// until all selected nodes have been processed.
         /// </summary>
-        private void GenerateSeparateSubgraphs()
+        /// <param name="nodes">A cluster of nodes to be separated into subgraphs.</param>
+        private void GenerateSeparateSubgraphs(HashSet<GraphLayout.Node> nodes)
         {
             int processed = 0;
             var combinedGraph = LayoutSubgraphs.First();
             GraphLayout.Graph graph = new GraphLayout.Graph();
             Queue<GraphLayout.Node> queue = new Queue<GraphLayout.Node>();
 
-            while (combinedGraph.Nodes.Count(n => n.IsSelected) > 0)
+            while (nodes.Count(n => n.IsSelected) > 0)
             {
                 GraphLayout.Node currentNode;
 
@@ -1091,12 +1155,13 @@ namespace Dynamo.Models
                         // Save the subgraph and subtract these nodes from the combined graph
 
                         LayoutSubgraphs.Add(graph);
+                        nodes.ExceptWith(graph.Nodes);
                         combinedGraph.Nodes.ExceptWith(graph.Nodes);
                         graph = new GraphLayout.Graph();
                     }
-                    if (combinedGraph.Nodes.Count(n => n.IsSelected) == 0) break;
+                    if (nodes.Count(n => n.IsSelected) == 0) break;
 
-                    currentNode = combinedGraph.Nodes.FirstOrDefault(n => n.IsSelected);
+                    currentNode = nodes.FirstOrDefault(n => n.IsSelected);
                     graph.Nodes.Add(currentNode);
                 }
                 else
@@ -1109,8 +1174,9 @@ namespace Dynamo.Models
 
                 var selectedNodes = currentNode.RightEdges.Select(e => e.EndNode)
                     .Union(currentNode.LeftEdges.Select(e => e.StartNode))
+                    .Where(x => nodes.Contains(x) && x.IsSelected)
                     .Except(graph.Nodes).ToList();
-                graph.Nodes.UnionWith(selectedNodes.Where(n => n.IsSelected));
+                graph.Nodes.UnionWith(selectedNodes);
                 graph.Edges.UnionWith(currentNode.RightEdges);
                 graph.Edges.UnionWith(currentNode.LeftEdges);
 
@@ -1120,7 +1186,7 @@ namespace Dynamo.Models
                 graph.AnchorRightEdges.UnionWith(currentNode.RightEdges.Where(e => !e.EndNode.IsSelected));
                 graph.AnchorLeftEdges.UnionWith(currentNode.LeftEdges.Where(e => !e.StartNode.IsSelected));
 
-                foreach (var node in selectedNodes.Where(n => n.IsSelected))
+                foreach (var node in selectedNodes)
                 {
                     queue.Enqueue(node);
                     processed++;
@@ -1135,6 +1201,9 @@ namespace Dynamo.Models
         /// <param name="isGroupLayout">True if all selected models are groups.</param>
         private void RunLayoutSubgraph(GraphLayout.Graph graph, bool isGroupLayout)
         {
+            // Select relevant nodes
+            graph.Nodes.ToList().ForEach(x => x.IsSelected = true);
+
             // Save subgraph position before running the layout
             graph.RecordInitialPosition();
 
@@ -1146,6 +1215,10 @@ namespace Dynamo.Models
             // Node and graph positioning
             graph.DistributeNodePosition();
             graph.SetGraphPosition(isGroupLayout);
+
+            // Reset layer information and deselect nodes
+            graph.ResetLayers();
+            graph.Nodes.ToList().ForEach(x => x.IsSelected = false);
         }
 
         /// <summary>
@@ -1167,7 +1240,7 @@ namespace Dynamo.Models
                         // The first subgraph's center point must be higher than the second subgraph
                         if (!g1.Equals(g2) && (g1.GraphCenterY + g1.OffsetY <= g2.GraphCenterY + g2.OffsetY))
                         {
-                            var g1nodes = g1.Nodes.OrderBy(n => n.Y + n.Height);
+                            var g1nodes = g1.Nodes.OrderBy(n => n.Y + n.TotalHeight);
                             var g2nodes = g2.Nodes.OrderBy(n => n.Y);
 
                             foreach (var node1 in g1nodes)
@@ -1175,9 +1248,9 @@ namespace Dynamo.Models
                                 foreach (var node2 in g2nodes)
                                 {
                                     // If any two nodes from these two different subgraphs overlap
-                                    if ((node1.Y + node1.Height + VerticalGraphDistance + g1.OffsetY > node2.Y + g2.OffsetY) &&
-                                        (((node1.X <= node2.X) && (node1.X + node1.Width + HorizontalGraphDistance > node2.X)) ||
-                                        ((node2.X <= node1.X) && (node2.X + node2.Width + HorizontalGraphDistance > node1.X))))
+                                    if ((node1.Y + node1.TotalHeight + GraphLayout.Graph.VerticalNodeDistance + g1.OffsetY > node2.Y + g2.OffsetY) &&
+                                        (((node1.X <= node2.X) && (node1.X + node1.Width + GraphLayout.Graph.HorizontalNodeDistance > node2.X)) ||
+                                        ((node2.X <= node1.X) && (node2.X + node2.Width + GraphLayout.Graph.HorizontalNodeDistance > node1.X))))
                                     {
                                         // Shift the first subgraph to the top and the second subgraph to the bottom
                                         g1.OffsetY -= 5;
@@ -1209,14 +1282,13 @@ namespace Dynamo.Models
                 if (graph != null)
                 {
                     GraphLayout.Node n = graph.FindNode(group.GUID);
-                    double offsetY = graph.OffsetY;
 
                     double deltaX = n.X - group.X;
-                    double deltaY = n.Y - group.Y;
+                    double deltaY = n.Y - group.Y + graph.OffsetY;
                     foreach (var node in group.SelectedModels.OfType<NodeModel>())
                     {
                         node.X += deltaX;
-                        node.Y += deltaY + offsetY;
+                        node.Y += deltaY;
                         node.ReportPosition();
                     }
 
@@ -1225,7 +1297,7 @@ namespace Dynamo.Models
                         if (note.IsSelected || DynamoSelection.Instance.Selection.Count == 0)
                         {
                             note.X += deltaX;
-                            note.Y += deltaY + offsetY;
+                            note.Y += deltaY;
                             note.ReportPosition();
                         }
                     }
@@ -1243,20 +1315,19 @@ namespace Dynamo.Models
                     GraphLayout.Node n = graph.FindNode(node.GUID);
                     double offsetY = graph.OffsetY;
 
-                    double deltaX = n.X - node.X;
-                    double deltaY = n.Y - node.Y;
-
                     node.X = n.X;
-                    node.Y = n.Y + offsetY;
+                    node.Y = n.Y + n.NotesHeight + offsetY;
                     node.ReportPosition();
                     HasUnsavedChanges = true;
 
+                    double noteOffset = -n.NotesHeight;
                     foreach (NoteModel note in n.LinkedNotes)
                     {
                         if (note.IsSelected || DynamoSelection.Instance.Selection.Count == 0)
                         {
-                            note.X += deltaX;
-                            note.Y += deltaY + offsetY;
+                            note.X = node.X;
+                            note.Y = node.Y + noteOffset;
+                            noteOffset += note.Height + GraphLayout.Graph.VerticalNoteDistance;
                             note.ReportPosition();
                         }
                     }
@@ -1360,7 +1431,7 @@ namespace Dynamo.Models
         /// </summary>
         internal void IncrementPasteOffset()
         {
-            this.currentPasteOffset = (this.currentPasteOffset + PASTE_OFFSET_STEP) % PASTE_OFFSET_MAX;
+            this.currentPasteOffset = (this.currentPasteOffset + PasteOffsetStep) % PasteOffsetMax;
         }
         
         #endregion
@@ -2114,7 +2185,23 @@ namespace Dynamo.Models
                 var connector = NodeGraph.LoadConnectorFromXml(modelData,
                     Nodes.ToDictionary(node => node.GUID));
 
-                OnConnectorAdded(connector); // Update view-model and view.
+                // It is possible that in some cases connector can't be created,
+                // for example, connector connects to a custom node instance
+                // whose input ports have been changed, so connector can't find
+                // its end port owner.
+                if (connector == null)
+                {
+                    var guidAttribute = modelData.Attributes["guid"];
+                    if (guidAttribute == null)
+                    {
+                        throw new InvalidOperationException("'guid' field missing from recorded model");
+                    }
+                    undoRecorder.RecordModelAsOffTrack(Guid.Parse(guidAttribute.Value)); 
+                }
+                else 
+                {
+                    OnConnectorAdded(connector); // Update view-model and view.
+                }
             }
             else if (typeName.StartsWith("Dynamo.Models.NoteModel"))
             {

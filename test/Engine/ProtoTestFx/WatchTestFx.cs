@@ -339,7 +339,7 @@ namespace ProtoTestFx
 
         internal void TestRunnerRunOnly(string includePath, string code, Dictionary<int, List<string>> map /*, string executionLogFilePath*/)
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScriptRunner();
 
             // Specify some of the requirements of IDE.
 
@@ -376,8 +376,8 @@ namespace ProtoTestFx
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             
             //Run
-            RuntimeCore runtimeCore = null;
-            Mirror = fsr.Execute(code, core, out runtimeCore);
+            RuntimeCore runtimeCore = fsr.Execute(code, core);
+            Mirror = runtimeCore.Mirror;
 
             //sw.Close();
             runtimeCore.Cleanup();

@@ -12,21 +12,21 @@ namespace ProtoTest
         [Category("ModifierBlock")] 
         public void SimpleExpr()
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            fsr.Execute(
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            runtimeCore = fsr.Execute(
                         @"
                         [Associative]
                         {
                             a = 10;
                         }
-                        ", core, out runtimeCore);
+                        ", core);
         }
         [Test]
         [Category("ModifierBlock")] 
         public void SimpleFuncDef()
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            fsr.Execute(
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            runtimeCore = fsr.Execute(
                         @"
                         [Associative]
                         {
@@ -36,14 +36,14 @@ namespace ProtoTest
                             }
                             x = foo(2);
                         }
-                        ", core, out runtimeCore);
+                        ", core);
         }
         [Test]
         [Category("ModifierBlock")] 
         public void SimpleExprInModifierStack()
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            runtimeCore = fsr.Execute(
                         @"
 a;
                         [Associative]
@@ -53,7 +53,8 @@ a;
                                     10;
                                 }
                         }
-                        ", core, out runtimeCore);
+                        ", core);
+            ExecutionMirror mirror = runtimeCore.Mirror;
             Assert.IsTrue((Int64)mirror.GetValue("a", 0).Payload == 10);
 
         }
@@ -61,8 +62,8 @@ a;
         [Category("ModifierBlock")] 
         public void TwoSimpleExprInModifierStack()
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            runtimeCore  = fsr.Execute(
                         @"
 a;
                         [Associative]
@@ -73,15 +74,16 @@ a;
                                     20;
                                 }
                         }
-                        ", core, out runtimeCore);
+                        ", core);
+            ExecutionMirror mirror = runtimeCore.Mirror;
             Assert.IsTrue((Int64)mirror.GetValue("a", 0).Payload == 20);
         }
         [Test]
         [Category("ModifierBlock")]
         public void TwoExprInModifierStackWithOp()
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            runtimeCore  = fsr.Execute(
                         @"
 a;
                         [Associative]
@@ -93,7 +95,8 @@ a;
                                     *2;
                                 }
                         }
-                        ", core, out runtimeCore);
+                        ", core);
+            ExecutionMirror mirror = runtimeCore.Mirror;
             Assert.IsTrue((Int64)mirror.GetValue("a", 0).Payload == 60);
         }
 
@@ -102,8 +105,8 @@ a;
         [Category("ModifierBlock")] 
         public void ModifierStackWithName()
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            runtimeCore  = fsr.Execute(
                         @"
 a;a@init;
                         [Associative]
@@ -116,7 +119,8 @@ a;a@init;
                                 *2;
                                  }
                         }
-                        ", core, out runtimeCore);
+                        ", core);
+            ExecutionMirror mirror = runtimeCore.Mirror;
             Assert.IsTrue((Int64)mirror.GetValue("a@init", 0).Payload == 2);
             Assert.IsTrue((Int64)mirror.GetValue("a", 0).Payload == 6);
         }
@@ -124,8 +128,8 @@ a;a@init;
         [Category("ModifierBlock")] 
         public void ModifierStackWithTwoNames()
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            runtimeCore  = fsr.Execute(
                         @"
 a;a@init;a@first;
                         [Associative]
@@ -138,7 +142,8 @@ a;a@init;a@first;
                                     *2;
                                 }
                         }
-                        ", core, out runtimeCore);
+                        ", core);
+            ExecutionMirror mirror = runtimeCore.Mirror;
             Assert.IsTrue((Int64)mirror.GetValue("a@init", 0).Payload == 3);
             Assert.IsTrue((Int64)mirror.GetValue("a@first", 0).Payload == 4);
             Assert.IsTrue((Int64)mirror.GetValue("a", 0).Payload == 16);
@@ -147,8 +152,8 @@ a;a@init;a@first;
         [Category("ModifierBlock")]
         public void ModifierStackWithArray()
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            runtimeCore  = fsr.Execute(
                         @"
 a;
 a@init;
@@ -161,8 +166,9 @@ a@first;
                                     1 => a@first;
                                 }
                         }
-                        ", core, out runtimeCore);
+                        ", core);
 
+            ExecutionMirror mirror = runtimeCore.Mirror;
             Obj o = mirror.GetValue("a@init");
             List<Obj> os = mirror.GetArrayElements(o);
             Assert.IsTrue(os.Count == 3);
@@ -175,8 +181,8 @@ a@first;
         [Category("ModifierBlock")] 
         public void ModifierStackWithArrayAndFunction()
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            runtimeCore  = fsr.Execute(
                         @"a@init;a@first;b;
                         [Associative]
                          {
@@ -191,7 +197,8 @@ a@first;
                                      foo(7) => a@first;
                                  }
                          }
-                        ", core, out runtimeCore);
+                        ", core);
+            ExecutionMirror mirror = runtimeCore.Mirror;
             Obj o = mirror.GetValue("a@init");
             List<Obj> os = mirror.GetArrayElements(o);
             Assert.IsTrue(os.Count == 3);
@@ -206,8 +213,8 @@ a@first;
         [Category("ModifierBlock")] 
         public void ModifierStackWithArrayAndFunction2()
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            runtimeCore  = fsr.Execute(
                         @"b;a@init;a@first;
                          [Associative]
                          {
@@ -222,7 +229,8 @@ a@first;
                                      foo(a@init) => a@first;
                                  }
                          }
-                        ", core, out runtimeCore);
+                        ", core);
+            ExecutionMirror mirror = runtimeCore.Mirror;
             Assert.IsTrue((Int64)mirror.GetValue("a@init", 0).Payload == 8);
             Assert.IsTrue((Int64)mirror.GetValue("a@first", 0).Payload == 10);
             Assert.IsTrue((Int64)mirror.GetValue("b", 0).Payload == 10);
@@ -231,8 +239,8 @@ a@first;
         [Category("ModifierBlock")] 
         public void ModifierStackWithArrayAndFunctionReplication()
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            runtimeCore  = fsr.Execute(
                         @"a@init;a@first;b;
                          [Associative]
                          {
@@ -247,7 +255,8 @@ a@first;
                                      foo(a@init) => a@first;
                                  }
                          }
-                        ", core, out runtimeCore);
+                        ", core);
+            ExecutionMirror mirror = runtimeCore.Mirror;
             Obj o = mirror.GetValue("a@init");
             List<Obj> os = mirror.GetArrayElements(o);
             Assert.IsTrue(os.Count == 3);
@@ -268,11 +277,11 @@ a@first;
             Assert.IsTrue((Int64)os[2].Payload == 5);
         }
         [Test]
-        [Category("DSDefinedClass_Ignored_EmptyTest")]
+        [Ignore][Category("DSDefinedClass_Ignored_EmptyTest")]
         [Category("ModifierBlock")] 
         public void ClassTest()
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             fsr.Execute(
                        @"
                             [Associative]
@@ -291,7 +300,7 @@ a@first;
                               }
                                 point = Point.Point(10,10,10);
                             }
-                            ", core, out runtimeCore);
+                            ", core);
             //Object o = mirror.GetValue("point.mx");
             //Assert.IsTrue((long)o == 10);
         }

@@ -63,8 +63,8 @@
     <SolidColorBrush x:Key="UpdateManagerUpToDateBrush" Color="Green"/>
     
     <!--3D-->
-    <Color x:Key="EdgeColor">#655682</Color>
-    <Color x:Key="PointColor">#655682</Color>
+    <Color x:Key="EdgeColor">#000000</Color>
+    <Color x:Key="PointColor">#000000</Color>
     <Color x:Key="SelectionColor">#009EFF</Color>
     <Color x:Key="MaterialColor">#efede4</Color>
 
@@ -83,9 +83,17 @@
     <SolidColorBrush x:Key="DeafultSearchTextBlockText"
                      Color="#6D6E71" />
     <SolidColorBrush x:Key="CommonSidebarTextColor" Color="#CCCCCC" />
-    <SolidColorBrush x:Key="SearchBoxBackgroundColor"
-                     Color="#231F20" />
+    <SolidColorBrush x:Key="SearchBoxBackgroundColor" Color="#231F20" />
     <SolidColorBrush x:Key="NestedMemberTextColor" Color="#989898" />
     <SolidColorBrush x:Key="VariableTypeTextColor" Color="#777777" />
-
+    <SolidColorBrush x:Key="SearchDarkGreyTextColor" Color="#808285" />
+    <SolidColorBrush x:Key="CreateMembersColor" Color="#7B9F2D" />
+    <SolidColorBrush x:Key="ActionMembersColor" Color="#D56867" />
+    <SolidColorBrush x:Key="QueryMembersColor" Color="#65999A" />
+    <SolidColorBrush x:Key="SearchElementLineDeterminerColor" Color="#4D4D4D" />
+    <SolidColorBrush x:Key="FilterIconColor" Color="#787878" />
+    <SolidColorBrush x:Key="FilterPopupBorderColor" Color="#808080" />
+    <SolidColorBrush x:Key="FilterPopupBackgroundColor" Color="#666666" />
+    <SolidColorBrush x:Key="SelectedFilterButtonTextColor" Color="#4D4D4D" />
+    <SolidColorBrush x:Key="FilterCategoryIsNotSelectedColor" Color="#737373" />
 </ResourceDictionary>

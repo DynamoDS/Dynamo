@@ -1,7 +1,7 @@
 ﻿using Dynamo.Tests;
 using NUnit.Framework;
 
-namespace DynamoCoreWpfTests
+namespace WpfVisualizationTests
 {
     [TestFixture]
     public class Watch3DViewModelTests : DynamoViewModelUnitTest

@@ -12,14 +12,13 @@ namespace ProtoTest.Associative
     class MethodsFocusTeam : ProtoTestBase
     {
         [Test]
-        [Category("DSDefinedClass_Ignored_DSConstructor")]
+        [Category("DSDefinedClass_Ported")]
         public void SimpleCtorResolution01()
         {
             String code =
-@"	class f	{		fx : var;		fy : var;		constructor f()		{			fx = 123;			fy = 345;		}	}// Construct class 'f'	cf = f.f();	x = cf.fx;	y = cf.fy;";
+@"    import(""FFITarget.dll"");	p = TestObjectA.TestObjectA();    p.Set(2);	x = p.a;";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("x", 123);
-            thisTest.Verify("y", 345);
+            thisTest.Verify("x", 2);
         }
 
         [Test]
@@ -34,41 +33,38 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSConstructor")]
-        public void T001_DotOp_DefautConstructor_01()
+        [Category("DSDefinedClass_Ported")]
+        public void SimpleCtorResolution02()
         {
             String code =
-@"	class C	{		fx : int;		fy : int;	}	c = C.C();	x = c.fx;	y = c.fy;";
+@"    import(""FFITarget.dll"");	p = TestObjectA.TestObjectA(2);	x = p.a;";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("x", 0);
-            thisTest.Verify("y", 0);
+            thisTest.Verify("x", 2);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSConstructor")]
-        public void T002_DotOp_DefautConstructor_02()
+        [Category("DSDefinedClass_Ported")]
+        public void T002_DotOp_DefautConstructor_IntProperty()
         {
             String code =
-@"	class C	{		fx : double;		fy : var;	}	c = C.C();	x = c.fx;	y = c.fy;";
+@"    import(""FFITarget.dll"");	c = ClassFunctionality.ClassFunctionality(1);	x = c.IntVal;";
             thisTest.RunScriptSource(code);
             //Assert.Fail("0.0 should not be evaluated to be the same as 'null' in verification");
-            thisTest.Verify("x", 0.0);
-            thisTest.Verify("y", null);
+            thisTest.Verify("x", 1);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSConstructor")]
-        public void T003_DotOp_DefautConstructor_03()
+        [Category("DSDefinedClass_Ported")]
+        public void T002_DotOp_DefautConstructor_DoubleProperty()
         {
             String code =
-@"	class C	{		fx : double;		fy : double;	}	c = C.C();	x = c.fx;	y = c.fy;";
+@"    import(""FFITarget.dll"");	p = DummyPoint.ByCoordinates(1.0, 2.0, 3.0);    x = p.X;";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("x", 0.0);
-            thisTest.Verify("y", 0.0);
+            thisTest.Verify("x", 1.0);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSConstructor")]
+        [Category("DSDefinedClass_Ignored_Redunadant")]
         public void T004_DotOp_DefautConstructor_04()
         {
             String code =
@@ -81,27 +77,23 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSConstructor")]
-        public void T005_DotOp_DefautConstructor_05()
+        [Category("DSDefinedClass_Ported")]
+        public void T002_DotOp_DefautConstructor_ArrayProperty()
         {
             String code =
-@"	class C	{		fx : var[];		fy : var[];	}	c = C.C();	x = c.fx;	y = c.fy;";
+@"    import(""FFITarget.dll"");	p = ArrayMember.Ctor({1,2,3,4,5});    x = p.X;";
             thisTest.RunScriptSource(code);
-            Object v1 = new Object();
-            v1 = null;
-            thisTest.Verify("x", v1);
-            thisTest.Verify("y", v1);
+            thisTest.Verify("x", new object[] { 1, 2, 3, 4, 5 });
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSConstructor")]
+        [Category("DSDefinedClass_Ported")]
         public void T006_DotOp_SelfDefinedConstructor_01()
         {
             String code =
-@"	class C	{		fx : int;		fy : int;		constructor C()		{			fx = 10;			fy = 20;		}    	}	c = C.C();	x = c.fx;	y = c.fy;";
+@"    import(""FFITarget.dll"");	p = ClassFunctionality.ClassFunctionality(10);	x = p.IntVal;";
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", 10);
-            thisTest.Verify("y", 20);
         }
 
         [Test]
@@ -133,27 +125,16 @@ namespace ProtoTest.Associative
             thisTest.Verify("r", 4.1415926);
         }
 
-        [Test]
-        [Category("DSDefinedClass_Ignored_NotTestingAnything")]
-        public void TV1467134_intToDouble_dotOp()
-        {
-            String code =
-@"class A{    fx : double = 1;    constructor A(x : int)    {        fx = this.foo(x);    }    def foo : double(y : int)    {        fx = y+fx;        return = fx;    }}a = A.A(1.1);r1 = a.foo(2.0);r2 = a.fx;";
-            thisTest.RunScriptSource(code);
-            //thisTest.Verify("r1", );
-        }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSConstructor")]
+        [Category("DSDefinedClass_Ported")]
         public void T008_DotOp_MultiConstructor_01()
         {
             String code =
-@"	class C	{		fx : var;		fy : var;		constructor C1()		{			fx = 1;			fy = 2;		} 		constructor C2()		{			fx = 3;			fy = 4;		}   	}	c1 = C.C1();	x1 = c1.fx;	y1 = c1.fy;	c2 = C.C2();	x2 = c2.fx;	y2 = c2.fy;";
+@"	    import(""FFITarget.dll"");	p1 = TestObjectA.TestObjectA();    p1.Set(1);	x = p1.a;	p2 = TestObjectA.TestObjectA(2);	y = p2.a;";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("x1", 1);
-            thisTest.Verify("y1", 2);
-            thisTest.Verify("x2", 3);
-            thisTest.Verify("y2", 4);
+            thisTest.Verify("x", 1);
+            thisTest.Verify("y", 2);
         }
 
         [Test]
@@ -179,20 +160,18 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
-        public void T011_DotOp_Property_2()
+        [Category("DSDefinedClass_Ported")]
+        public void ArrayInFunction()
         {
             String code =
-@"class C{	fx : var[];	constructor C()	{		fx = {0,1,2};	}        def foo(fz:int)    {        return = fx + fz;    }}fc = C.C();m = fc.fx;n = fc.foo(1);	";
+@"def foo(fz:int){    return =  {0,1,2} + fz;}n = foo(1);	";
             thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 0, 1, 2 };
             Object[] v2 = new Object[] { 1, 2, 3 };
-            thisTest.Verify("m", v1);
             thisTest.Verify("n", v2);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T012_DotOp_UserDefinedClass_01()
         {
             String code =
@@ -204,7 +183,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T013_DotOp_UserDefinedClass_02()
         {
             String code =
@@ -219,7 +198,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T014_DotOp_UserDefinedClass_03()
         {
             String code =
@@ -467,29 +446,26 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T018_DotOp_Collection_04()
         {
             String code =
-                    @"                    class A                     {                                    fx: var;                                    fb: B[];                                                    constructor A(x :var)                                    {                                                    fx = x;                                                    fb = B.B({10,11});                                                  }                    }                    class B                    {                                    fy : var;                                    constructor B(y : var)                                    {                                                    fy = y;                                    }                    }                    a = {1,2};                    va = A.A(a);                    r1 = va.fb.fy;                    ";
+                    @"                     import(""FFITarget.dll"");	c = ClassFunctionality.ClassFunctionality({1,2});	x = c.IntVal;                    ";
             thisTest.RunScriptSource(code);
-            //Assert.Fail("1467136 - Sprint 24 - Rev 2941:resolution failure when using dot operation to get 2D array property ");
-            Object[] v1 = { 10, 11 };
-            Object[] v2 = { v1, v1 };
-            thisTest.Verify("r1", v2);
+            Object[] v = { 1, 2 };
+            thisTest.Verify("x", v);
 
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
+        [Category("DSDefinedClass_Ported")]
         public void TV018_DotOp_Collection_04_1()
         {
             String code =
-@"class A {                fx: var;                fb: B[];                                constructor A(x :var)                {                                fx = x;                                fb = B.B({10,11});                              }}class B{                fy : var;                constructor B(y : var)                {                                fy = y;                }}a = {1,2};va = A.A(a);r1 = va.fb.fy;";
+@"import(""FFITarget.dll"");	c = ClassFunctionality.ClassFunctionality({1,2} + 1);	x = c.IntVal;";
             thisTest.RunScriptSource(code);
-            Object v1 = new Object[] { 10, 11 };
-            Object v2 = new Object[] { v1, v1 };
-            thisTest.Verify("r1", v2);
+            Object[] v = { 2, 3 };
+            thisTest.Verify("x", v);
         }
 
         [Test]
@@ -503,27 +479,25 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
+        [Category("DSDefinedClass_Ported")]
         public void TV018_DotOp_Collection_04_3()
         {
             String code =
-                    @"                    class A                     {                                    fx: var;                        fb : B[];                                        constructor A(x : var)                                    {                                                    fx = x;                                                    fb = B.B({10,11});                                                  }                    }                    class B                    {                                    fy : var;                                    constructor B(y : var)                                    {                                                    fy = y;                                    }                    }                    a = {1,2};                    va = { A.A(a),  A.A(a + 1)  };                    r1 = va.fb.fy;                    ";
+                    @"                   import(""FFITarget.dll"");	c = {ClassFunctionality.ClassFunctionality(1), ClassFunctionality.ClassFunctionality(2)};	x = c.IntVal;                    ";
             thisTest.RunScriptSource(code);
-            Object v1 = new Object[] { 10, 11 };
-            Object v2 = new Object[] { new object[] { v1, v1 }, new object[] { v1, v1 } };
-            thisTest.Verify("r1", v2);
+            Object[] v = { 1, 2 };
+            thisTest.Verify("x", v);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
+        [Category("DSDefinedClass_Ported")]
         public void TV018_DotOp_Collection_04_4()
         {
             String code =
-                    @"                    class A                         {                                        fx: var;                            fb : B[];                            fc : var[];                                            constructor A(x : var)                                        {                                                        fx = x;                                            fb = B.B({ 10, 11 });                                            fc = fb.fy;                                        }                        }                        class B                        {                                        fy : var;                                        constructor B(y : var)                                        {                                                        fy = y;                                        }                        }                        a = {1,2};                        va = A.A(a) ;                        r1 = va.fc;                    ";
+                    @"    import(""FFITarget.dll"");	c = {ClassFunctionality.ClassFunctionality(1), ClassFunctionality.ClassFunctionality(2)};	x = c.IntVal + 1;                    ";
             thisTest.RunScriptSource(code);
-            Object v1 = new Object[] { 10, 11 };
-            Object v2 = new Object[] { v1, v1 };
-            thisTest.Verify("r1", v2);
+            Object[] v = { 2, 3 };
+            thisTest.Verify("x", v);                    
         }
 
 
@@ -538,46 +512,41 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
+        [Category("DSDefinedClass_Ported")]
         public void T019_DotOp_Collection_05()
         {
             String code =
-@"class A {	fx: int;	fb: B;		constructor A(x :int)	{		fx = x;		fb = B.B({10,11});		}}class B{	fy : int;	constructor B(y : int)	{		fy = y;	}}a = {1,2};va = A.A(a);r1 = va[0].fb.fy;r2 = va.fb[0].fy;r3 = va.fb.fy[0];";
+@" import(""FFITarget.dll"");	c = {ClassFunctionality.ClassFunctionality(1), ClassFunctionality.ClassFunctionality(2)};	x = c.IntVal[0];";
             thisTest.RunScriptSource(code);
-            thisTest.SetErrorMessage("1467333 - Sprint 27 - Rev 3959: when initializing class member, array is converted to not indexable type, which gives wrong result");
-            Object v1 = null;
-            thisTest.Verify("r1", v1);
-            thisTest.Verify("r2", v1);
-            thisTest.Verify("r3", v1);
+            thisTest.Verify("x", 1);
 
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
-        public void T021_DotOp_Nested_01()
+        [Category("DSDefinedClass_Ported")]
+        public void T019_DotOp_Collection_06()
         {
             String code =
-@"class A {	fx: var;	fb: B[];		constructor A(x :var)	{		fx = x;		fb = B.B({10,11});		}}class B{	fy : var;	fc: C[];	constructor B(y : var)	{		fy = y;		fc = C.C({100,200});	}}class C{	fz:var;	constructor C(z :var)	{		fz= z;	}}a = {1,2};va = A.A(a);r = va[0].fb[0].fc[0].fz;";
+
+@" import(""FFITarget.dll"");	c = {ClassFunctionality.ClassFunctionality({1,2}), ClassFunctionality.ClassFunctionality({3,4})};	x = c.IntVal[0][1];";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("r", 100);
+            thisTest.Verify("x", 2);
 
 
         }
 
+
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
-        public void T021_DotOp_Nested_02()
+        [Category("DSDefinedClass_Ported")]
+        public void T019_DotOp_Collection_07()
         {
             String code =
-@"class A {    fx: int;    fc: C[];        constructor A(x :int)    {        fx = x;        fc = C.C({10,11});        }}class B extends A{    constructor B(y : int): base.A(y)    {    }}class C {    fz : int;    constructor C(z : int)    {        fz = z;    }}b = {1,2};vb = B.B(b);t1 = vb.fc;r1 = vb[0].fc.fz;r2 = vb.fc[0].fz;r3 = vb.fc.fz[0];r4 = vb.fx;";
+
+@" import(""FFITarget.dll"");	c = {ClassFunctionality.ClassFunctionality({1,2}), ClassFunctionality.ClassFunctionality({3,4})};	x = c.IntVal[1][0];";
             thisTest.RunScriptSource(code);
-            thisTest.SetErrorMessage("1467137 - Sprint 24 - Rev 2941: wrong result when using dot opration to get property for more than two collections");
-            Object[] v1 = new Object[] { 10, 11 };
-            Object[] v2 = new Object[] { 1, 2 };
-            thisTest.Verify("r1", v1);
-            thisTest.Verify("r2", v1);
-            thisTest.Verify("r3", v1);
-            thisTest.Verify("r4", v2);
+            thisTest.Verify("x", 3);
+
+
         }
 
         [Test]
@@ -806,11 +775,11 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassProperty")]
+        [Category("DSDefinedClass_Ported")]
         public void T032_ReservationCheck_rangeExp()
         {
             String code =
-@"class R {    RangeExpression :int;    constructor R()    {        RangeExpression = 1;    }}r = R.R();r1 = r.RangeExpression;";
+@"def RangeExpression : int () { return = 1;}r1 = RangeExpression();";
             thisTest.RunScriptSource(code);
 
             thisTest.Verify("r1", 1);

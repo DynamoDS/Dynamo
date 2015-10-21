@@ -87,6 +87,21 @@
             <EventSetter Event="PreviewMouseDown"
                          Handler="OnInCanvasSearchContextMenuMouseDown" />
         </Style>
+        <DataTemplate x:Key="DraggedSelectionTemplate">
+            <ItemsControl ItemsSource="{Binding}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="ContentPresenter">
+                        <Setter Property="Canvas.Left" Value="{Binding Left}"/>
+                        <Setter Property="Canvas.Top" Value="{Binding Top}"/>
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+            </ItemsControl>
+        </DataTemplate>
     </UserControl.Resources>
 
     <Grid  Name="outerCanvas"
@@ -207,6 +222,16 @@
                            Visibility="{Binding Path=CanFindNodesFromElements, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                            Command="{Binding FindNodesFromSelectionCommand}" />
 
+                <Separator Visibility="{Binding Path=CanCopyOrPaste, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+
+                <MenuItem  Header="{x:Static p:Resources.ContextMenuCopy}"
+                           Visibility="{Binding Path=CanCopy, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                           Command="{Binding CopyCommand}" />
+
+                <MenuItem  Header="{x:Static p:Resources.ContextMenuPaste}"
+                           Visibility="{Binding Path=CanPaste, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                           Command="{Binding PasteCommand}" /> 
+
                 <Separator Visibility="{Binding Path=IsHomeSpace, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}" />
 
                 <MenuItem  Header="{x:Static p:Resources.ContextMenuEditCustomNodeProperty}"
@@ -274,8 +299,7 @@
                                              HorizontalAlignment="Left"
                                              VerticalAlignment="Top"
                                              Visibility="Visible"
-                                             ContextMenuOpening="WorkBench_ContextMenuOpening"
-                                             Loaded="WorkBench_OnLoaded"
+                                             Loaded="workBench_OnLoaded"
                                              IsItemsHost="True">
                             <Canvas.Background>
                                 <SolidColorBrush Color="Transparent" />
@@ -326,6 +350,10 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Top"
                     Height="Auto">
+                <StackPanel.IsEnabled>
+                    <Binding Path="DataContext.BackgroundPreviewViewModel.Active"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
+                </StackPanel.IsEnabled>
                 <ui:ImageCheckBox Width="56"
                               Height="30"
                               Margin="4,4,0,4"
@@ -419,8 +447,6 @@
             </ui:ImageCheckBox>
 
         </StackPanel>
-
-     
 
         <Popup Name="InCanvasSearchBar"
                StaysOpen="True"

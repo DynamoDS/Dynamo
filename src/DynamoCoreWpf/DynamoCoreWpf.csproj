@@ -124,6 +124,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\FilterWrapPanel.cs" />
     <Compile Include="Controls\InCanvasSearchControl.xaml.cs">
       <DependentUpon>InCanvasSearchControl.xaml</DependentUpon>
     </Compile>
@@ -151,6 +152,7 @@
     <Compile Include="Extensions\IViewExtension.cs" />
     <Compile Include="Extensions\IViewExtensionLoader.cs" />
     <Compile Include="Extensions\IViewExtensionManager.cs" />
+    <Compile Include="Extensions\MenuBarTypeExtensions.cs" />
     <Compile Include="Extensions\ViewExtensionLoader.cs" />
     <Compile Include="Extensions\ViewExtensionManager.cs" />
     <Compile Include="Extensions\ViewLoadedParams.cs" />
@@ -166,6 +168,7 @@
     <Compile Include="Rendering\RenderPackageExtensions.cs" />
     <Compile Include="Services\IconServices.cs" />
     <Compile Include="UI\ClassObjectTemplateSelector.cs" />
+    <Compile Include="UI\DraggedAdorner.cs" />
     <Compile Include="UI\HeaderTemplateSelector.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -282,15 +285,14 @@
     <Compile Include="ViewModels\Search\ClassInformationViewModel.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\SymbolViewCustomization.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\VariableInputNodeViewCustomization.cs" />
-    <Compile Include="ViewModels\Search\SearchCategory.cs" />
-    <Compile Include="ViewModels\Search\SearchMemberGroup.cs" />
-    <Compile Include="ViewModels\Search\SelectionNavigator.cs" />
     <Compile Include="ViewModels\RenderPackageFactoryViewModel.cs" />
+    <Compile Include="ViewModels\Search\SearchCategory.cs" />
     <Compile Include="ViewModels\Watch3D\DynamoGeometryModel3D.cs" />
     <Compile Include="ViewModels\Watch3D\DynamoLineGeometryModel3D.cs" />
     <Compile Include="ViewModels\Watch3D\DynamoPointGeometryModel3D.cs" />
     <Compile Include="ViewModels\Watch3D\HelixWatch3DViewModel.cs" />
-    <Compile Include="ViewModels\Watch3D\Watch3DViewModelBase.cs" />
+    <Compile Include="ViewModels\Watch3D\DefaultWatch3DViewModel.cs" />
+    <Compile Include="ViewModels\Watch3D\IWatch3DViewModel.cs" />
     <Compile Include="Views\About\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
@@ -308,7 +310,6 @@
     <Compile Include="ViewModels\Watch3D\DynamoEffectsManager.cs" />
     <Compile Include="ViewModels\Watch3D\DynamoRenderTechniquesManager.cs" />
     <Compile Include="Views\Preview\CameraExtensions.cs" />
-    <Compile Include="Views\Preview\IWatch3DView.cs" />
     <Compile Include="Views\Preview\Watch3DSettingsControl.xaml.cs">
       <DependentUpon>Watch3DSettingsControl.xaml</DependentUpon>
     </Compile>
@@ -1251,9 +1252,6 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="d3d10warp.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="sharpdx_direct3d11_effects_x64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

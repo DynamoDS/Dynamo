@@ -24,8 +24,6 @@ namespace ProtoImperative
 
     public class CodeGen : ProtoCore.CodeGen
     {
-        private List<ImperativeNode> astNodes; 
-
         private ProtoCore.CompilerDefinitions.Imperative.CompilePass compilePass;
 
         private readonly BackpatchMap backpatchMap;
@@ -35,13 +33,6 @@ namespace ProtoImperative
         public CodeGen(Core coreObj, ProtoCore.CompileTime.Context callContext, ProtoCore.DSASM.CodeBlock parentBlock = null) : base(coreObj, parentBlock)
         {
             context = callContext;
-            //  dumpbytecode is optionally enabled
-            //
-            astNodes = new List<ImperativeNode>();
-
-            // Create a new symboltable for this block
-            // Set the new symbol table's parent
-            // Set the new table as a child of the parent table
 
             // Comment Jun: Get the codeblock to use for this codegenerator
             if (core.Options.IsDeltaExecution)
@@ -1124,30 +1115,7 @@ namespace ProtoImperative
             // We need to get inferedType for boolean variable so that we can perform type check
             inferedType.UID = (isBooleanOp || (type.UID == (int)PrimitiveType.kTypeBool)) ? (int)PrimitiveType.kTypeBool : type.UID;
         }
-#if ENABLE_INC_DEC_FIX
-        private void EmitPostFixNode(ImperativeNode node, ref ProtoCore.Type inferedType)
-        {
-            bool parseGlobal = null == localProcedure && ProtoCore.CompilerDefinitions.Imperative.CompilePass.kAll == compilePass;
-            bool parseGlobalFunction = null != localProcedure && ProtoCore.CompilerDefinitions.Imperative.CompilePass.kGlobalFuncBody == compilePass;
 
-            if (parseGlobal || parseGlobalFunction)
-            {
-                PostFixNode pfNode = node as PostFixNode;
-
-                //convert post fix operation to a binary operation
-                BinaryExpressionNode binRight = new BinaryExpressionNode();
-                BinaryExpressionNode bin = new BinaryExpressionNode();
-
-                binRight.LeftNode = pfNode.Identifier;
-                binRight.RightNode = new IntNode() { value = "1" };
-                binRight.Optr = (ProtoCore.DSASM.UnaryOperator.Increment == pfNode.Operator) ? ProtoCore.DSASM.Operator.add : ProtoCore.DSASM.Operator.sub;
-                bin.LeftNode = pfNode.Identifier;
-                bin.RightNode = binRight;
-                bin.Optr = ProtoCore.DSASM.Operator.assign;
-                EmitBinaryExpressionNode(bin, ref inferedType);
-            }
-        }
-#endif
         private void EmitLanguageBlockNode(ImperativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode propogateUpdateGraphNode = null)
         {
             if (IsParsingGlobal() || IsParsingGlobalFunctionBody())
@@ -1253,13 +1221,13 @@ namespace ProtoImperative
                 localProcedure.LocalCount = funcDef.localVars;
                 var returnType = new ProtoCore.Type();
                 returnType.UID = core.TypeSystem.GetType(funcDef.ReturnType.Name);
+                returnType.rank = funcDef.ReturnType.rank;
                 if (returnType.UID == (int)PrimitiveType.kInvalidType)
                 {
                     string message = String.Format(ProtoCore.Properties.Resources.kReturnTypeUndefined, funcDef.ReturnType.Name, funcDef.Name);
                     buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, null, funcDef.line, funcDef.col, firstSSAGraphNode);
-                    returnType.UID = (int)PrimitiveType.kTypeVar;
+                    returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, funcDef.ReturnType.rank);
                 }
-                returnType.rank = funcDef.ReturnType.rank;
                 localProcedure.ReturnType = returnType;
                 localProcedure.RuntimeIndex = codeBlock.codeBlockId;
                 globalProcIndex = codeBlock.procedureTable.Append(localProcedure);
@@ -2003,13 +1971,6 @@ namespace ProtoImperative
                 }
             }
 
-            // (Ayush) in case of PostFixNode, only traverse the identifier now. Post fix operation will be applied later.
-#if ENABLE_INC_DEC_FIX
-                if (b.RightNode is PostFixNode)
-                    DfsTraverse((b.RightNode as PostFixNode).Identifier, ref inferedType, isBooleanOperation);
-                else
-                {
-#endif
             if ((ProtoCore.DSASM.Operator.assign == b.Optr) && (b.RightNode is LanguageBlockNode))
             {
                 inferedType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
@@ -2040,10 +2001,6 @@ namespace ProtoImperative
                 DfsTraverse(b.RightNode, ref inferedType, isBooleanOperation, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone, b);
             }
 
-#if ENABLE_INC_DEC_FIX
-                }
-#endif
-
             rightType.UID = inferedType.UID;
             rightType.rank = inferedType.rank;
 
@@ -2060,11 +2017,6 @@ namespace ProtoImperative
                 EmitBinaryOperation(leftType, rightType, b.Optr);
                 isBooleanOp = false;
 
-                //if post fix, now traverse the post fix
-#if ENABLE_INC_DEC_FIX
-                if (b.RightNode is PostFixNode)
-                    EmitPostFixNode(b.RightNode, ref inferedType);
-#endif
                 return;
             }
 
@@ -2335,12 +2287,6 @@ namespace ProtoImperative
 
             if ((node as BinaryExpressionNode).Optr == Operator.assign)
                 EmitSetExpressionUID(core.ExpressionUID++);
-
-            //if post fix, now traverse the post fix
-#if ENABLE_INC_DEC_FIX
-                if (b.RightNode is PostFixNode)
-                    EmitPostFixNode(b.RightNode, ref inferedType);
-#endif
         }
 
         private void EmitUnaryExpressionNode(ImperativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AST.ImperativeAST.BinaryExpressionNode parentNode)
@@ -2999,12 +2945,6 @@ namespace ProtoImperative
 
         }     
 
-        //protected override void EmitDependency(int exprUID, bool isSSAAssign)
-        protected void EmitDependency(int exprUID, bool isSSAAssign)
-        {
-            throw new NotImplementedException();
-        }
-
         private void EmitPushDepData(List<ProtoCore.DSASM.SymbolNode> symbolList)
         {
             foreach (ProtoCore.DSASM.SymbolNode symbol in symbolList)
@@ -3208,12 +3148,6 @@ namespace ProtoImperative
             {
                 EmitNullNode(node, ref inferedType, isBooleanOp);
             }
-#if ENABLE_INC_DEC_FIX
-            else if (node is PostFixNode)
-            {
-                EmitPostFixNode(node, ref inferedType);
-            }
-#endif
             else if (node is LanguageBlockNode)
             {
                 EmitLanguageBlockNode(node, ref inferedType, graphNode);
@@ -3314,11 +3248,6 @@ namespace ProtoImperative
         public ImperativeNode BuildTempVariable()
         {
             return BuildIdentfier(core.GenerateTempVar(), PrimitiveType.kTypeVar);
-        }
-
-        public ImperativeNode BuildReturn()
-        {
-            return BuildIdentfier(ProtoCore.DSDefinitions.Keyword.Return, PrimitiveType.kTypeReturn);
         }
 
         public ImperativeNode BuildIdentList(ImperativeNode leftNode, ImperativeNode rightNode)

@@ -1298,22 +1298,6 @@ namespace ProtoCore.AST.ImperativeAST
         }
     }
 
-    public class PostFixNode : ImperativeNode
-    {
-        public ImperativeNode Identifier { get; set; }
-        public ProtoCore.DSASM.UnaryOperator Operator { get; set; }
-
-        public override bool Equals(object other)
-        {
-            var otherNode = other as PostFixNode;
-            if (null == otherNode)
-                return false;
-
-            return Operator.Equals(otherNode.Operator) &&
-                   Identifier.Equals(otherNode.Identifier);
-        }
-    }
-
     public class BreakNode: ImperativeNode
     {
         public override string ToString()

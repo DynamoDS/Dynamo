@@ -3,10 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI"
-             xmlns:resx="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
+             xmlns:vm="clr-namespace:Dynamo.Wpf.ViewModels"
+             xmlns:views="clr-namespace:Dynamo.UI.Views"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
              mc:Ignorable="d"
              d:DesignHeight="525"
              d:DesignWidth="350">
@@ -18,89 +19,128 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
 
-            <HierarchicalDataTemplate x:Key="MemberGroupsDataTemplate"
-                                      ItemsSource="{Binding Path=Members}">
-                <Border Background="{StaticResource LibraryItemHostBackground}">
-                    <TextBlock Foreground="{StaticResource NestedMemberTextColor}"
-                               FontSize="12"
-                               Margin="16,8,0,8">
-                                                            <Run Text="{Binding Prefix, Mode=OneWay}"
-                                                                 MouseDown="OnPrefixTextBlockMouseDown" /><Run Text="{Binding GroupName, Mode=OneWay}">
-                                                                <Run.Style>
-                                                                   <Style TargetType="{x:Type Run}">
-                                                                    <Setter Property="Foreground"
-                                                                            Value="{StaticResource NestedMemberTextColor}" />
-                                                                    <Style.Triggers>
-                                                                        <Trigger Property="IsMouseOver"
-                                                                                 Value="true">
-                                                                            <Setter Property="Foreground"
-                                                                                    Value="{StaticResource MemberButtonText}" />
-                                                                        </Trigger>
-                                                                    </Style.Triggers>
-                                                                </Style> 
-                                                                </Run.Style>
-                                                            </Run>
-                    </TextBlock>
-                </Border>
-            </HierarchicalDataTemplate>
+            <DataTemplate x:Key="SearchItemTemplate"
+                          DataType="{x:Type vm:NodeSearchElementViewModel}">
+                <Button Command="{Binding ClickedCommand}">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
 
-            <HierarchicalDataTemplate x:Key="NestedCategoryDataTemplate"
-                                      ItemsSource="{Binding Path=MemberGroups}">
-                <Border>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <ToggleButton x:Name="Expander"
-                                      Background="Transparent"
-                                      IsHitTestVisible="False"
-                                      Style="{StaticResource LibraryExpandCollapseToggleStyle}"
-                                      ClickMode="Press"
-                                      IsChecked="{Binding IsExpanded, Mode=OneWay}"
-                                      Margin="5,0,0,0"
-                                      Grid.Column="0" />
+                            <!-- Grey line between nodes -->
+                            <Border BorderThickness="0,0,0,1"
+                                    SnapsToDevicePixels="true"
+                                    BorderBrush="{StaticResource SearchElementLineDeterminerColor}"
+                                    Margin="15,0,15,0"
+                                    Padding="0,7,0,9">
 
-                        <TextBlock Foreground="{StaticResource NestedMemberTextColor}"
-                                   FontSize="13"
-                                   Text="{Binding Path=Name}"
-                                   VerticalAlignment="Center"
-                                   Name="CategoryName"
-                                   Grid.Column="1">
-                            <TextBlock.Style>
-                                <Style>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsExpanded, 
-                                                               RelativeSource={RelativeSource FindAncestor, 
-                                                                                              AncestorType={x:Type TreeViewItem}}}"
-                                                     Value="True">
-                                            <Setter Property="TextBlock.FontWeight"
-                                                    Value="SemiBold" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                    </Grid>
-                    <Border.Style>
-                        <Style TargetType="{x:Type Border}">
-                            <Setter Property="Background"
-                                    Value="{StaticResource RootElementBackground}" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self},
-                                                                                     Path=IsMouseOver}"
-                                             Value="True">
-                                    <Setter Property="Background"
-                                            Value="{StaticResource RootElementOnHover}" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Border.Style>
-                </Border>
-            </HierarchicalDataTemplate>
+                                <!-- Transparent, yet clickable background -->
+                                <Grid Background="#01000000">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
 
-            <HierarchicalDataTemplate x:Key="TopCategoryDataTemplate"
-                                      ItemsSource="{Binding Path=MemberGroups}" />
+                                    <!-- Node icon -->
+                                    <Image Grid.Column="0"
+                                           Source="{Binding SmallIcon}"
+                                           Height="32"
+                                           Width="32"
+                                           VerticalAlignment="Top"
+                                           HorizontalAlignment="Left"
+                                           Margin="0,0,10,0" />
+
+                                    <!-- Node class, group icon, node category -->
+                                    <StackPanel Grid.Column="1"
+                                                Orientation="Vertical">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Class}"
+                                                       TextDecorations="Underline"
+                                                       Foreground="{StaticResource CommonSidebarTextColor}" />
+                                            <fa:ImageAwesome Icon="{Binding GroupIconName}"
+                                                             Foreground="{Binding Group, 
+                                                                                  Converter={StaticResource ElementGroupToColorConverter}}"
+                                                             VerticalAlignment="Center"
+                                                             HorizontalAlignment="Center"
+                                                             Height="10"
+                                                             Width="10"
+                                                             Margin="4,4,4,4" />
+                                            <TextBlock Text="{Binding Category}"
+                                                       Foreground="{StaticResource SearchDarkGreyTextColor}"
+                                                       FontStyle="Italic" />
+                                        </StackPanel>
+
+                                        <!-- Node name -->
+                                        <TextBlock Name="memberName"
+                                                   HorizontalAlignment="Left"
+                                                   VerticalAlignment="Top"
+                                                   FontSize="13">
+                                                <Run Text="{Binding Name, Mode=OneWay}"
+                                                     Foreground="{StaticResource CommonSidebarTextColor}" />
+                                                <Run Text="{Binding Parameters, Mode=OneWay}"
+                                                     Foreground="{StaticResource SearchDarkGreyTextColor}" />
+                                        </TextBlock>
+
+                                        <!-- Node description -->
+                                        <TextBlock Name="memberDescription"
+                                                   FontSize="11"
+                                                   MaxHeight="50"
+                                                   Text="{Binding Description}"
+                                                   Foreground="{StaticResource SearchDarkGreyTextColor}"
+                                                   TextWrapping="Wrap"
+                                                   TextTrimming="CharacterEllipsis" />
+                                    </StackPanel>
+                                </Grid>
+
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </DataTemplate>
+
+            <!-- Remove default listbox blue highlight. Disable item selection -->
+            <Style x:Key="SearchItemStyle"
+                   TargetType="ListBoxItem">
+                <Setter Property="IsSelected"
+                        Value="{Binding IsSelected, Mode=OneWay}" />
+                <Setter Property="Visibility"
+                        Value="{Binding Visibility, Mode=OneWay, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ListBoxItem">
+                            <Border Background="{TemplateBinding Background}"
+                                    Margin="0,2,0,0"
+                                    Width="{Binding ActualWidth, 
+                                        RelativeSource={RelativeSource Mode=FindAncestor, 
+                                        AncestorType={x:Type views:LibrarySearchView }}}">
+                                <ContentPresenter />
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+
+                <EventSetter Event="PreviewMouseLeftButtonDown"
+                             Handler="OnButtonMouseLeftButtonDown" />
+                <EventSetter Event="PreviewMouseMove"
+                             Handler="OnButtonPreviewMouseMove" />
+                <EventSetter Event="MouseLeave"
+                             Handler="OnPopupMouseLeave" />
+                <EventSetter Event="MouseEnter"
+                             Handler="OnMemberMouseEnter" />
+
+                <Setter Property="Background"
+                        Value="Transparent" />
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver"
+                             Value="True">
+                        <Setter Property="Background"
+                                Value="{StaticResource LibraryMemberOnHover}" />
+                    </Trigger>
+                    <Trigger Property="IsSelected"
+                             Value="True">
+                        <Setter Property="Background"
+                                Value="{StaticResource LibraryMemberOnHover}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
 
             <Style BasedOn="{StaticResource LibraryScrollViewerStyle}"
                    TargetType="{x:Type ScrollViewer}">
@@ -108,114 +148,17 @@
                         Value="{StaticResource LibraryScrollViewerControlTemplate}" />
             </Style>
 
-            <controls:LibrarySearchTreeTemplateSelector x:Key="LibrarySearchTreeTemplateSelector"
-                                                        MemberTemplate="{StaticResource MemberTemplate}"
-                                                        MemberGroupsTemplate="{StaticResource MemberGroupsDataTemplate}"
-                                                        CategoryTemplate="{StaticResource NestedCategoryDataTemplate}"
-                                                        TopCategoryTemplate="{StaticResource TopCategoryDataTemplate}" />
-
-            <Style x:Key="LibraryTreeViewItem"
-                   TargetType="{x:Type TreeViewItem}">
-                <Setter Property="IsExpanded"
-                        Value="{Binding IsExpanded, Mode=OneWay}" />
-                <Setter Property="IsSelected"
-                        Value="{Binding IsSelected, Mode=OneWay}" />
-                <Setter Property="Visibility"
-                        Value="{Binding Visibility, Mode=OneWay, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type TreeViewItem}">
-                            <Button Command="{Binding ClickedCommand}"
-                                    MouseEnter="OnMemberMouseEnter"
-                                    MouseLeave="OnPopupMouseLeave"
-                                    PreviewMouseLeftButtonDown="OnButtonMouseLeftButtonDown"
-                                    PreviewMouseMove="OnButtonPreviewMouseMove">
-                                <Button.Template>
-                                    <ControlTemplate TargetType="Button">
-                                        <ContentPresenter />
-                                    </ControlTemplate>
-                                </Button.Template>
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="*" />
-                                    </Grid.RowDefinitions>
-
-
-                                    <Border Name="ContentPresenterBorder"
-                                            Grid.Row="0">
-                                        <ContentPresenter VerticalAlignment="Center"
-                                                          ContentSource="Header" />
-                                    </Border>
-
-                                    <ItemsPresenter x:Name="ItemsHost"
-                                                    Grid.Row="1" />
-                                </Grid>
-                            </Button>
-
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsExpanded"
-                                         Value="false">
-                                    <Setter Property="Visibility"
-                                            TargetName="ItemsHost"
-                                            Value="Collapsed" />
-                                </Trigger>
-
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="IsSelected"
-                                                   Value="True" />
-                                        <Condition Property="IsMouseOver"
-                                                   Value="False" />
-                                    </MultiTrigger.Conditions>
-                                    <MultiTrigger.Setters>
-                                        <Setter Property="Background"
-                                                TargetName="ContentPresenterBorder"
-                                                Value="{StaticResource LibraryMemberOnHover}" />
-                                    </MultiTrigger.Setters>
-                                </MultiTrigger>
-
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="IsSelected"
-                                                   Value="False" />
-                                        <Condition Property="IsMouseOver"
-                                                   Value="False" />
-                                    </MultiTrigger.Conditions>
-                                    <MultiTrigger.Setters>
-                                        <Setter Property="Background"
-                                                TargetName="ContentPresenterBorder"
-                                                Value="{StaticResource LibraryItemHostBackground}" />
-                                    </MultiTrigger.Setters>
-                                </MultiTrigger>
-
-                                <Trigger Property="IsMouseOver"
-                                         Value="True">
-                                    <Setter Property="Background"
-                                            TargetName="ContentPresenterBorder"
-                                            Value="{StaticResource LibraryMemberOnHover}" />
-                                </Trigger>
-
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
-
-        <TreeView  Name="CategoryTreeView"
-                   Background="{StaticResource LibraryItemHostBackground}"
-                   BorderThickness="0"
-                   ItemsSource="{Binding SearchRootCategories}"
-                   ItemTemplateSelector="{StaticResource LibrarySearchTreeTemplateSelector}"
-                   ItemContainerStyle="{StaticResource LibraryTreeViewItem}"
-                   ScrollViewer.CanContentScroll="True"
-                   VirtualizingStackPanel.IsVirtualizing="True"
-                   VirtualizingStackPanel.VirtualizationMode="Recycling" />
-
+        <ListBox  Name="SearchResults"
+                  Background="{StaticResource LibraryItemHostBackground}"
+                  BorderThickness="0"
+                  ItemsSource="{Binding FilteredResults}"
+                  ItemTemplate="{StaticResource SearchItemTemplate}"
+                  ItemContainerStyle="{StaticResource SearchItemStyle}"
+                  VirtualizingStackPanel.VirtualizationMode="Recycling" />
         <uicontrols:LibraryToolTipPopup x:Name="libraryToolTipPopup"
                                         StaysOpen="True"
                                         AllowsTransparency="True"

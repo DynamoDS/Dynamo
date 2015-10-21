@@ -2,6 +2,7 @@
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
+using Dynamo.Utilities;
 using Dynamo.Wpf.Properties;
 
 namespace Dynamo.ViewModels
@@ -26,10 +27,21 @@ namespace Dynamo.ViewModels
         private DelegateCommand _showHideAllGeometryPreviewCommand;
         private DelegateCommand _showHideAllUpstreamPreviewCommand;
         private DelegateCommand _showInCanvasSearchCommand;
+        private DelegateCommand _pasteCommand;
 
         #endregion
 
         #region Public Delegate Commands
+
+        public DelegateCommand CopyCommand
+        {
+            get { return DynamoViewModel.CopyCommand; }
+        }
+
+        public DelegateCommand PasteCommand
+        {
+            get { return _pasteCommand ?? (_pasteCommand = new DelegateCommand(Paste, DynamoViewModel.CanPaste)); }
+        }
 
         public DelegateCommand SelectAllCommand
         {
@@ -205,6 +217,21 @@ namespace Dynamo.ViewModels
         #endregion
 
         #region Properties for Command Data Binding
+
+        public bool CanCopy
+        {
+            get { return DynamoViewModel.CanCopy(null); }
+        }
+
+        public bool CanPaste
+        {
+            get { return DynamoViewModel.CanPaste(null); }
+        }
+
+        public bool CanCopyOrPaste
+        {
+            get { return CanCopy || CanPaste; }
+        }
 
         public bool AnyNodeVisible
         {

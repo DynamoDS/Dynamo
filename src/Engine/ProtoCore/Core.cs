@@ -253,7 +253,6 @@ namespace ProtoCore
         /// </summary>
 #region COMPILER_GENERATED_TO_RUNTIME_DATA
 
-        public LangVerify Langverify { get; private set; }
         public FunctionTable FunctionTable { get; private set; }
 
 #endregion
@@ -595,7 +594,6 @@ namespace ProtoCore
             ClassIndex = Constants.kInvalidIndex;
 
             FunctionTable = new FunctionTable(); 
-            Langverify = new LangVerify();
 
 
             watchFunctionScope = Constants.kInvalidIndex;

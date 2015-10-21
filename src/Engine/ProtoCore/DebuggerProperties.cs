@@ -1,22 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
-using System.Linq;
 using ProtoCore.AssociativeGraph;
-using ProtoCore.AssociativeEngine;
-using ProtoCore.AST;
-using ProtoCore.AST.AssociativeAST;
-using ProtoCore.BuildData;
 using ProtoCore.CodeModel;
-using ProtoCore.DebugServices;
 using ProtoCore.DSASM;
-using ProtoCore.Lang;
 using ProtoCore.Lang.Replication;
 using ProtoCore.Runtime;
 using ProtoCore.Utils;
-using ProtoFFI;
 
 using StackFrame = ProtoCore.DSASM.StackFrame;
 
@@ -467,24 +458,17 @@ namespace ProtoCore
                 {
                     runtimeCore.DebugProps.InlineConditionOptions.ActiveBreakPoints.AddRange(runtimeCore.Breakpoints);
 
-                    /*if (core.DebugProps.RunMode == Runmode.StepNext)
-                    {
-                        core.Breakpoints.Clear();
-                    }*/
-
                     isReplicating = false;
                     isExternalFunction = false;
                 }
                 else // an inline conditional call that replicates
                 {
-#if !__DEBUG_REPLICATE
                     // Clear all breakpoints for outermost replicated call
                     if(!DebugStackFrameContains(StackFrameFlagOptions.IsReplicating))
                     {
                         ActiveBreakPoints.AddRange(runtimeCore.Breakpoints);
                         runtimeCore.Breakpoints.Clear();
                     }
-#endif
                     isExternalFunction = false;
                     isReplicating = true;
                 }
@@ -513,14 +497,12 @@ namespace ProtoCore
             // prevent stepping in by removing all breakpoints from outermost replicated call
             else if (willReplicate)
             {
-#if !__DEBUG_REPLICATE
                 // Clear all breakpoints for outermost replicated call
                 if(!DebugStackFrameContains(StackFrameFlagOptions.IsReplicating))
                 {
                     ActiveBreakPoints.AddRange(runtimeCore.Breakpoints);
                     runtimeCore.Breakpoints.Clear();
                 }
-#endif
 
                 isReplicating = true;
                 isExternalFunction = false;
@@ -553,7 +535,6 @@ namespace ProtoCore
 
             // Restore breakpoints which occur after returning from outermost replicating function call 
             // as well as outermost external function call
-#if !__DEBUG_REPLICATE
             if (!DebugStackFrameContains(StackFrameFlagOptions.IsReplicating) &&
                 !DebugStackFrameContains(StackFrameFlagOptions.IsExternalFunction))
             {
@@ -566,32 +547,14 @@ namespace ProtoCore
                     }
                 }
             }
-#else
-            if (!DebugStackFrameContains(StackFrameFlagOptions.IsExternalFunction))
-            {
-                if (ActiveBreakPoints.Count > 0 && fNode.name != ProtoCore.DSASM.Constants.kFunctionRangeExpression)
-                {
-                    core.Breakpoints.AddRange(ActiveBreakPoints);
-                    //if (SetUpStepOverFunctionCalls(core, fNode, ActiveBreakPoints))
-                    {
-                        ActiveBreakPoints.Clear();
-                    }
-                }
-            }
-#endif
 
-#if __DEBUG_REPLICATE
-            if(!isReplicating)
-#endif
+            // If stepping over function call in debug mode
+            if (debugFrame.HasDebugInfo && RunMode == Runmode.StepNext)
             {
-                // If stepping over function call in debug mode
-                if (debugFrame.HasDebugInfo && RunMode == Runmode.StepNext)
+                // if stepping over outermost function call
+                if (!DebugStackFrameContains(StackFrameFlagOptions.IsFunctionStepOver))
                 {
-                    // if stepping over outermost function call
-                    if (!DebugStackFrameContains(StackFrameFlagOptions.IsFunctionStepOver))
-                    {
-                        SetUpStepOverFunctionCalls(runtimeCore, fNode, debugFrame.ExecutingGraphNode, debugFrame.HasDebugInfo);
-                    }
+                    SetUpStepOverFunctionCalls(runtimeCore, fNode, debugFrame.ExecutingGraphNode, debugFrame.HasDebugInfo);
                 }
             }
         }

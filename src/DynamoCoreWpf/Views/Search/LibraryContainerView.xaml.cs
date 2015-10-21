@@ -183,24 +183,41 @@ namespace Dynamo.Search
                         }
                     }
                     break;
+                case Key.Enter:
+                    {
+                        if (viewModel.CurrentMode != SearchViewModel.ViewMode.LibrarySearchView
+                            || !viewModel.IsAnySearchResult)
+                        {
+                            break;
+                        }
 
-                case Key.Tab:
-                    viewModel.PopulateSearchTextWithSelectedResult();
-                    break;
+                        viewModel.ExecuteSelectedItem();
+                        break;
+                    }
 
                 case Key.Down:
-                    if (viewModel.CurrentMode == SearchViewModel.ViewMode.LibrarySearchView)
-                        viewModel.MoveSelection(NavigationDirection.Forward);
-                    break;
+                    {
+                        if (viewModel.CurrentMode != SearchViewModel.ViewMode.LibrarySearchView
+                            || !viewModel.IsAnySearchResult)
+                        {
+                            break;
+                        }
+
+                        viewModel.MoveSelection(SearchViewModel.Direction.Down);
+                        break;
+                    }
 
                 case Key.Up:
-                    if (viewModel.CurrentMode == SearchViewModel.ViewMode.LibrarySearchView)
-                        viewModel.MoveSelection(NavigationDirection.Backward);
-                    break;
-                case Key.Enter:
-                    if (viewModel.CurrentMode == SearchViewModel.ViewMode.LibrarySearchView)
-                        viewModel.ExecuteSelectedMember();
-                    break;
+                    {
+                        if (viewModel.CurrentMode != SearchViewModel.ViewMode.LibrarySearchView
+                            || !viewModel.IsAnySearchResult)
+                        {
+                            break;
+                        }
+
+                        viewModel.MoveSelection(SearchViewModel.Direction.Up);
+                        break;
+                    }
             }
         }
 
@@ -358,6 +375,11 @@ namespace Dynamo.Search
                 Mouse.SetCursor(CursorLibrary.GetCursor(CursorSet.DragMove));
 
             e.Handled = true;
+        }
+
+        private void OnFilterMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            FilterPopup.IsOpen = true;
         }
     }
 }

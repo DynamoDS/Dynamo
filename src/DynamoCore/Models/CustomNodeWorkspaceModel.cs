@@ -46,13 +46,13 @@ namespace Dynamo.Models
 
         public CustomNodeWorkspaceModel( 
             NodeFactory factory,
-            IEnumerable<NodeModel> e, 
-            IEnumerable<NoteModel> n, 
-            IEnumerable<AnnotationModel> a,
+            IEnumerable<NodeModel> nodes, 
+            IEnumerable<NoteModel> notes, 
+            IEnumerable<AnnotationModel> annotations,
             IEnumerable<PresetModel> presets,
             ElementResolver elementResolver, 
             WorkspaceInfo info)
-            : base(e, n,a, info, factory,presets, elementResolver)
+            : base(nodes, notes,annotations, info, factory,presets, elementResolver)
         {
             HasUnsavedChanges = false;
 
@@ -191,9 +191,17 @@ namespace Dynamo.Models
             if (handler != null) handler();
         }
 
+        /// <summary>
+        /// Disable the DefinitionUpdated event. This might be desirable to lump a large number of 
+        /// workspace changes into a single event.
+        /// </summary>
+        internal bool SilenceDefinitionUpdated { get; set; }
+
         public event Action DefinitionUpdated;
-        protected virtual void OnDefinitionUpdated()
+        internal virtual void OnDefinitionUpdated()
         {
+            if (SilenceDefinitionUpdated) return;
+
             var handler = DefinitionUpdated;
             if (handler != null) handler();
         }

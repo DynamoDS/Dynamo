@@ -183,7 +183,7 @@ namespace ProtoCore.DSASM.Mirror
                     else
                         return "\"" + heap.ToHeapObject<DSString>(val).Value + "\"";                    
                 case AddressType.Char:
-                    Char character = ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(val.opdata);
+                    Char character = Convert.ToChar(val.opdata); 
                     if (forPrint)
                         return character.ToString();
                     else
@@ -1507,7 +1507,7 @@ namespace ProtoCore.DSASM.Mirror
                     else if (type == typeof(Char))
                     {
                         object payload = dsArray.members[i].Payload;
-                        return ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(Convert.ToInt64(payload)) == Convert.ToChar(expected[i]);
+                        return Convert.ToChar(Convert.ToInt64(payload)) == Convert.ToChar(expected[i]);
                     }
                     else if (type == typeof(String))
                     {

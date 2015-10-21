@@ -40,15 +40,12 @@ namespace Dynamo.Tests
             model.Add(new CustomNodeSearchElement(null, new CustomNodeInfo(Guid.NewGuid(), "Noodle", catName, descr, path)));
 
             viewModel.SearchAndUpdateResults("xy");
-            viewModel.PopulateSearchTextWithSelectedResult();
             Assert.AreEqual("xyz", viewModel.SearchText);
 
             viewModel.SearchAndUpdateResults("ood");
-            viewModel.PopulateSearchTextWithSelectedResult();
             Assert.AreEqual("Noodle", viewModel.SearchText);
 
             viewModel.SearchAndUpdateResults("do");
-            viewModel.PopulateSearchTextWithSelectedResult();
             Assert.AreEqual("dog", viewModel.SearchText);
         }
 
@@ -633,100 +630,100 @@ namespace Dynamo.Tests
 
         #region Key navigation
 
-        [Test]
-        [Category("UnitTests")]
-        public void SelectNextTest()
+        [Test, Category("UnitTests")]
+        public void ToggleSelectionTest()
         {
-            var element = CreateCustomNode("A", "Category1");
+            var elementVM = CreateCustomNodeViewModel(CreateCustomNode("AMember", "Category"));
+            elementVM.IsSelected = false;
+
+            var items = new List<NodeSearchElementViewModel>();
+            items.Add(elementVM);
+
+            elementVM = CreateCustomNodeViewModel(CreateCustomNode("BMember", "Category"));
+            elementVM.IsSelected = true;
+
+            items.Add(elementVM);
+
+            var result = viewModel.ToggleSelect(items);
+
+            Assert.IsTrue(result.First().IsSelected);
+            Assert.IsFalse(result.Last().IsSelected);
+        }
+
+        [Test, Category("UnitTests")]
+        public void FirstItemIsSelectedAfterSearch()
+        {
+            var element = CreateCustomNode("AMember", "Category");
             model.Add(element);
 
-            element = CreateCustomNode("AA", "Category1");
-            model.Add(element);
-
-            element = CreateCustomNode("AAA", "Category2");
+            element = CreateCustomNode("BMember", "Category");
             model.Add(element);
 
             viewModel.Visible = true;
-            viewModel.SearchAndUpdateResults("a");
+            viewModel.SearchAndUpdateResults("member");
 
-            Assert.Greater(viewModel.SearchResults.Count, 0);
-            Assert.AreEqual(3, viewModel.SearchRootCategories.Count);
+            Assert.AreEqual(2, viewModel.FilteredResults.Count());
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(0).IsSelected);
+            Assert.IsFalse(viewModel.FilteredResults.ElementAt(1).IsSelected);
+        }
 
-            // Top result is selected.
-            Assert.AreEqual("A", viewModel.CurrentlySelectedMember.Name);
+        [Test, Category("UnitTests")]
+        public void NoItemsIsSelectedAfterSearch()
+        {
+            viewModel.Visible = true;
+            viewModel.SearchAndUpdateResults("member");
 
-            // First node is selected.
-            viewModel.MoveSelection(NavigationDirection.Forward);
-            Assert.AreEqual("A", viewModel.CurrentlySelectedMember.Name);
-
-            // Second node is selected.
-            viewModel.MoveSelection(NavigationDirection.Forward);
-            Assert.AreEqual("AA", viewModel.CurrentlySelectedMember.Name);
-
-            // Third node is selected.
-            viewModel.MoveSelection(NavigationDirection.Forward);
-            Assert.AreEqual("AAA", viewModel.CurrentlySelectedMember.Name);
+            Assert.DoesNotThrow(() => viewModel.MoveSelection(SearchViewModel.Direction.Down));
+            Assert.IsFalse(viewModel.FilteredResults.Any());
         }
 
         [Test]
         [Category("UnitTests")]
-        public void SelectPreviousTest()
+        public void MoveForward()
         {
-            var element = CreateCustomNode("A", "Category1");
+            var element = CreateCustomNode("AMember", "Category");
             model.Add(element);
 
-            element = CreateCustomNode("AA", "Category1");
-            model.Add(element);
-
-            element = CreateCustomNode("AAA", "Category2");
+            element = CreateCustomNode("BMember", "Category");
             model.Add(element);
 
             viewModel.Visible = true;
-            viewModel.SearchAndUpdateResults("a");
+            viewModel.SearchAndUpdateResults("member");
 
-            Assert.Greater(viewModel.SearchResults.Count, 0);
-            Assert.AreEqual(3, viewModel.SearchRootCategories.Count);
+            Assert.AreEqual(2, viewModel.FilteredResults.Count());
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(0).IsSelected);
 
-            // Top result is selected.
-            Assert.AreEqual("A", viewModel.CurrentlySelectedMember.Name);
+            viewModel.MoveSelection(SearchViewModel.Direction.Down);
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(1).IsSelected);
 
-            viewModel.MoveSelection(NavigationDirection.Forward);
-
-            viewModel.MoveSelection(NavigationDirection.Backward);
-            Assert.AreEqual("A", viewModel.CurrentlySelectedMember.Name);
-
-            // Jump to third node.
-            viewModel.MoveSelection(NavigationDirection.Forward);
-            viewModel.MoveSelection(NavigationDirection.Forward);
-            viewModel.MoveSelection(NavigationDirection.Forward);
-
-            // Back to second node.
-            viewModel.MoveSelection(NavigationDirection.Backward);
-            Assert.AreEqual("AA", viewModel.CurrentlySelectedMember.Name);
+            viewModel.MoveSelection(SearchViewModel.Direction.Down);
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(1).IsSelected);
         }
-
 
         [Test]
         [Category("UnitTests")]
-        public void TopResultIsFirstCategory()
+        public void MoveBack()
         {
-            var element = CreateCustomNode("Node1", "Category1");
+            var element = CreateCustomNode("AMember", "Category");
             model.Add(element);
 
-            element = CreateCustomNode("Node2", "Category2");
+            element = CreateCustomNode("BMember", "Category");
             model.Add(element);
 
             viewModel.Visible = true;
-            viewModel.SearchAndUpdateResults("node");
+            viewModel.SearchAndUpdateResults("member");
 
-            Assert.Greater(viewModel.SearchResults.Count, 0);
-            Assert.AreEqual(3, viewModel.SearchRootCategories.Count);
+            Assert.AreEqual(2, viewModel.FilteredResults.Count());
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(0).IsSelected);
 
-            // Top result is first categor.
-            Assert.AreEqual("Top Result", viewModel.SearchRootCategories.First().Name);
-            // Top node is custom node.
-            Assert.IsTrue(viewModel.SearchRootCategories.First().MemberGroups.First().Members.First()
-                is CustomNodeSearchElementViewModel);
+            viewModel.MoveSelection(SearchViewModel.Direction.Up);
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(0).IsSelected);
+
+            viewModel.MoveSelection(SearchViewModel.Direction.Down);
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(1).IsSelected);
+
+            viewModel.MoveSelection(SearchViewModel.Direction.Up);
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(0).IsSelected);
         }
 
         #endregion

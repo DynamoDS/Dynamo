@@ -53,6 +53,8 @@ namespace Dynamo.Selection
             }
         }
 
+        public bool ClearSelectionDisabled { get; set; }
+
         private DynamoSelection()
         {
             Selection.CollectionChanged += selection_CollectionChanged;
@@ -91,6 +93,8 @@ namespace Dynamo.Selection
         /// </summary>
         public void ClearSelection()
         {
+            if (ClearSelectionDisabled) return;
+            
             Instance.Selection.ToList().ForEach(x=>x.Deselect());
             Instance.Selection.Reset(new List<ISelectable>());
         }
@@ -123,6 +127,18 @@ namespace Dynamo.Selection
         public SmartCollection(List<T> list)
             : base(list)
         {
+        }
+
+        /// <summary>
+        /// Adds an item only if the sequence does not have it yet
+        /// </summary>
+        /// <param name="item">Item to add</param>
+        public void AddUnique(T item)
+        {
+            if (!Contains(item))
+            {
+                Add(item);
+            }
         }
 
         public void AddRange(IEnumerable<T> range)

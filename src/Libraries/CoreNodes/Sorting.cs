@@ -55,15 +55,12 @@ namespace DSCore
             [ArbitraryDimensionArrayImport] IList list,
             [ArbitraryDimensionArrayImport] IList keys)
         {
-            var sortedPairs = list.Cast<object>()
-                    .Zip(keys.Cast<IComparable>(), (item, key) => new { item, key })
+            return
+                list.Cast<object>()
+                    .Zip(keys.Cast<IComparable>(), (item, key) => new {item, key})
                     .OrderBy(x => x.key)
+                    .Select(x => x.item)
                     .ToList();
-
-            var sortedList = sortedPairs.Select(x => x.item);
-            var sortedKeys = sortedPairs.Select(x => x.key);
-
-            return new ArrayList { sortedList, sortedKeys };
         }
 
         public static IList groupByKey(IList list, IList keys)
@@ -73,11 +70,6 @@ namespace DSCore
                     .GroupBy(x => x.key)
                     .Select(x => x.Select(y => y.item).ToList())
                     .ToList();
-        }
-
-        public static IList uniqueItems(IList list)
-        {
-            return list.Cast<object>().Distinct().ToList();
         }
     }
     // ReSharper restore InconsistentNaming

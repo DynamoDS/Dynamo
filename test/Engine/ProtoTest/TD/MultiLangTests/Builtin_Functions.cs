@@ -1177,7 +1177,7 @@ result = {foo(AllFalse(a1)),foo(AllFalse(a2)),foo(AllFalse(a3))};//true,true,fal
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void T038_AllFalse_Class()
         {
@@ -1513,7 +1513,7 @@ result = foo(c);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Failing")]
+        [Ignore][Category("DSDefinedClass_Ignored_Failing")]
         [Category("SmokeTest"), Category("Failure")]
         public void T050_Sum_Class()
         {
@@ -1910,7 +1910,7 @@ r2 = Print(arr2);";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_InvalidTest_NoVerification")]
+        [Ignore][Category("DSDefinedClass_Ignored_InvalidTest_NoVerification")]
         [Category("Built in Functions")]
         public void TV1467193_print()
         {
@@ -1952,7 +1952,7 @@ x5 = Average({}) ;// returns 0.0
 x6 = Average({null}) ;// returns 0.0
 ";
             Object n1 = null;
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "DNL-1467301 rev 3778 : Builtin method 'Average' should return null for all negative cases";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("x2", n1);
@@ -1960,24 +1960,6 @@ x6 = Average({null}) ;// returns 0.0
             thisTest.Verify("x5", n1);
             thisTest.Verify("x6", n1);
         }
-        /*
-       
-[Test]
-       [Category("Built in Functions")]
-       public void TV1467301_Average()
-       {
-           String code =
-@"
-";
-           Object n1 = null;
-           ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-           String errmsg = "DNL-1467301 rev 3778 : Builtin method 'Average' should return null for all negative cases";
-           ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-           thisTest.Verify("x2", n1);
-           thisTest.Verify("x4", n1);
-           thisTest.Verify("x5", n1);
-           thisTest.Verify("x6", n1);
-       }*/
 
         [Test]
         [Category("DSDefinedClass_Ported")]
@@ -2559,7 +2541,7 @@ sort = Sort(sorterFunction, a);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Failing")]
+        [Ignore][Category("DSDefinedClass_Ignored_Failing")]
         [Category("Failure")]
         public void BIM32_Sort_class()
         {
@@ -2589,7 +2571,7 @@ y=z.create();
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Failing")]
+        [Ignore][Category("DSDefinedClass_Ignored_Failing")]
         [Category("Failure")]
         public void BIM33_Sort_class_2()
         {
@@ -4037,7 +4019,7 @@ t8 = Math.Factorial(arr);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void T069_Defect_1467556_Sort_Over_Derived_Classes()
         {
             String code =
@@ -4073,7 +4055,7 @@ b = Sort(sorter,a).X;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void T069_Defect_1467556_Sort_Over_Derived_Classes_2()
         {
             String code =
@@ -4112,7 +4094,7 @@ b = Sort(sorter,a).X;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void T069_Defect_1467556_Sort_Over_Derived_Classes_3()
         {
             String code =
@@ -4378,7 +4360,7 @@ def foo ()
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         public void T074_Defect_1467750_4()
         {
             String code =
@@ -4412,7 +4394,7 @@ class B
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         public void T074_Defect_1467750_5()
         {
             String code =
@@ -4450,7 +4432,7 @@ class B
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_ModifierBlock")]
+        [Ignore][Category("DSDefinedClass_Ignored_ModifierBlock")]
         [Category("ModifierBlock")]
         public void T074_Defect_1467750_6()
         {
@@ -4625,7 +4607,7 @@ def foo ()
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_ModifierBlock")]
+        [Ignore][Category("DSDefinedClass_Ignored_ModifierBlock")]
         public void T075_Defect_1467323_6()
         {
             String code =

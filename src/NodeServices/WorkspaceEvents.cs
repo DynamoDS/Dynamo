@@ -5,6 +5,8 @@ namespace DynamoServices
     public delegate void WorkspaceAddedEventHandler(WorkspacesModificationEventArgs args);
     public delegate void WorkspaceRemoveStartedEventHandler(WorkspacesModificationEventArgs args);
     public delegate void WorkspaceRemovedEventHandler(WorkspacesModificationEventArgs args);
+    public delegate void WorkspaceClearingEventHandler();
+    public delegate void WorkspaceClearedEventHandler();
 
     public static class WorkspaceEvents
     {
@@ -13,10 +15,10 @@ namespace DynamoServices
         /// to the DynamoModel's Workspaces collection.
         /// </summary>
         public static event WorkspaceAddedEventHandler WorkspaceAdded;
-        public static void OnWorkspaceAdded(Guid id, string name)
+        public static void OnWorkspaceAdded(Guid id, string name, Type type)
         {
             if (WorkspaceAdded != null)
-                WorkspaceAdded(new WorkspacesModificationEventArgs(id,name));
+                WorkspaceAdded(new WorkspacesModificationEventArgs(id, name, type));
         }
 
         /// <summary>
@@ -24,10 +26,10 @@ namespace DynamoServices
         /// from the Workspaces collection.
         /// </summary>
         public static event WorkspaceRemoveStartedEventHandler WorkspaceRemoveStarted;
-        public static void OnWorkspaceRemoveStarted(Guid id, string name)
+        public static void OnWorkspaceRemoveStarted(Guid id, string name, Type type)
         {
             if (WorkspaceRemoveStarted != null)
-                WorkspaceRemoveStarted(new WorkspacesModificationEventArgs(id, name));
+                WorkspaceRemoveStarted(new WorkspacesModificationEventArgs(id, name, type));
         }
 
         /// <summary>
@@ -35,10 +37,30 @@ namespace DynamoServices
         /// from the DynamoModel's Workspaces collection.
         /// </summary>
         public static event WorkspaceRemovedEventHandler WorkspaceRemoved;
-        public static void OnWorkspaceRemoved(Guid id, string name)
+        public static void OnWorkspaceRemoved(Guid id, string name, Type type)
         {
             if (WorkspaceRemoved != null)
-                WorkspaceRemoved(new WorkspacesModificationEventArgs(id, name));
+                WorkspaceRemoved(new WorkspacesModificationEventArgs(id, name, type));
+        }
+
+        /// <summary>
+        /// An event that is triggered before a workspace is cleared.
+        /// </summary>
+        public static event WorkspaceClearingEventHandler WorkspaceClearing;
+        public static void OnWorkspaceClearing()
+        {
+            if (WorkspaceClearing != null)
+                WorkspaceClearing();
+        }
+
+        /// <summary>
+        /// An event that is triggered after a workspace is cleared.
+        /// </summary>
+        public static event WorkspaceClearedEventHandler WorkspaceCleared;
+        public static void OnWorkspaceCleared()
+        {
+            if (WorkspaceCleared != null)
+                WorkspaceCleared();
         }
     }
 
@@ -46,11 +68,13 @@ namespace DynamoServices
     {
         public Guid Id { get; internal set; }
         public string Name { get; internal set; }
+        public Type Type { get; internal set; }
 
-        public WorkspacesModificationEventArgs(Guid id, string name)
+        public WorkspacesModificationEventArgs(Guid id, string name, Type type)
         {
             Id = id;
             Name = name;
+            Type = type;
         }
     }
 }

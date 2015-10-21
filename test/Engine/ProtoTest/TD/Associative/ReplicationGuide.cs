@@ -14,7 +14,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a,b){    return = a + b;}test = foo( {0,1}<1>,{2,3}<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
@@ -26,7 +26,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a,b){    return = a + b;}f = {0,1};g = {2,3};test = foo( f<1>, g<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
@@ -38,7 +38,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a,b){    return = a + b;}x = 0..1;y = 2..3;test = foo( x<1>,y<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
@@ -50,7 +50,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a,b){    return = a + b;}x = {0,1};y = {2,3};test = foo( x<1>,y<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
@@ -62,7 +62,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a,b){    return = a + b;}test = foo( (0..1)<1>,(2..3)<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
@@ -74,7 +74,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a,b){    return = a + b;}test = foo( {0..1}<1>,{2..3}<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { new Object[] { 2, 4 } } }); // extra bracket is known issue for now
@@ -86,7 +86,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a:var,b:var){    return = a + b;}x = {0,1};y = {2,3};test = foo( x<1>,y<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
@@ -98,7 +98,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a:var,b:var){    return = a + b;}x = {0,1};y = {2,3};test = foo( x<1>,y<1> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { 2, 4 });
@@ -110,7 +110,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a:int,b:double){    return = a + b;}x = {0,1};y = {2,3};test = foo( x<1>,y<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 2.0, 3.0 }, new Object[] { 3.0, 4.0 } });
@@ -123,7 +123,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"import(""FFITarget.dll"");def foo(a:TestObjectA, b:TestObjectA){    return = a.a + b.a;}x = TestObjectA.TestObjectA({0,1});y = TestObjectA.TestObjectA({2,3});test = foo( x<1>,y<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
@@ -135,7 +135,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a:int,b:double){    return = a + b;}x = {{0,1},{2,3}};y = {{0,1},{2,3}};test = foo( x<1>,y<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] x1 = new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } };
@@ -148,7 +148,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a:int,b:double){    return = a + b;}x = {{0,1}};y = {{2,3}};test = foo( x<1>,y<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] x1 = new Object[] { new Object[] { 2.0, 4.0 } };
@@ -161,7 +161,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a:var[],b:var[]){    return = a + b;}x = {{0,1}};y = {{2,3}};test = foo( x<1>,y<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             // verification : unknown
@@ -173,7 +173,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a,b:int){    return = a + b;}x = {0,1};y = {2,3};test = foo( x<1>,y<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
@@ -186,7 +186,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a:int,b:int){    return = a + b;}x = {0,1};y = {2,3};test = foo( x<1>,y );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "DNL-1467580 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             // verification : clarify with new spec
@@ -200,7 +200,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a:int,b:int){    return = a + b;}x = {0,1};y = {2,3};test = foo( x,y<1> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "DNL-1467580 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             // verification : clarify with new spec
@@ -213,7 +213,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a:int,b:int){    return = a + b;}x = {0,1};y = {2,3,4};test = foo( x<1>,y<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 2, 3, 4 }, new Object[] { 3, 4, 5 } });
@@ -225,7 +225,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a:int,b:int){    return = a + b;}x = {0,1,3};y = {4,5};test = foo( x<1>,y<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 4, 5 }, new Object[] { 5, 6 }, new Object[] { 7, 8 } });
@@ -237,7 +237,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a:int,b:int){    return = a + b;}x = {0,1};y = 4;test = foo( x<1>,y<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[][] { new object[]{4},new object[]{ 5} });
@@ -249,7 +249,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a:int,b:int,c){    return = a + b +c;}x = {0,1};y = {2,3};z = {4,5};test = foo( x<1>,y<2>,z<3> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] x1 = new Object[] { new Object[] { new Object[] { 6, 7 }, new Object[] { 7, 8 } }, new Object[] { new Object[] { 7, 8 }, new Object[] { 8, 9 } } };
@@ -262,7 +262,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a:int,b:int,c:int){    return = a + b +c;}x = {0,1};y = {2,3};z = {4,5};test = foo( x<1>,y<2>,z<1> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] x1 = new Object[] { new Object[] { 6, 7 }, new Object[] { 8, 9 } };
@@ -277,7 +277,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a:int,b:int,c:int){    return = a + b +c;}x = {0,1};y = {2,3};z = {4,5};test = foo( x<1>,y,z<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "DNL-1467580 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] x1 = new Object[] { new Object[] { 6, 7 }, new Object[] { 8, 9 } };
@@ -291,7 +291,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a,b,c){    return = a + b +c;}x = {0,1};y = {2,3};z = {4,5};test = foo( x<1>,y<2>,z<3> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] x1 = new Object[] { new Object[] { new Object[] { 6, 7 }, new Object[] { 7, 8 } }, new Object[] { new Object[] { 7, 8 }, new Object[] { 8, 9 } } };
@@ -305,7 +305,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a,b,c){    return = a + b +c;}x = {0,1};y = {2,3,4};z = {5,6,7,8};test = foo( x<1>,y<2>,z<3> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] x1 = new Object[] { new Object[] { new Object[] { 7, 8, 9, 10 }, new Object[] { 8, 9, 10, 11 }, new Object[] { 9, 10, 11, 12 } }, new Object[] { new Object[] { 8, 9, 10, 11 }, new Object[] { 9, 10, 11, 12 }, new Object[] { 10, 11, 12, 13 } } };
@@ -319,7 +319,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"import(""FFITarget.dll"");test = TestObjectC.TestObjectC({0,1}<1>,{2,3}<2>).z;";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
 
@@ -333,7 +333,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"import(""FFITarget.dll"");test = TestObjectC.TestObjectC((0..1)<1>,(2..3)<2>).z;";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
@@ -346,7 +346,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"import(""FFITarget.dll"");x = {0,1};y = {2,3};test = TestObjectC.TestObjectC(x<1>,y<2>).z;";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
@@ -360,7 +360,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"import(""FFITarget.dll"");x = {0,1};y = 2;test = TestObjectC.TestObjectC(x<1>,y<2>).z;";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "DNL-1467459 NotImplemented Exception occurs when replication guides are used on a combination of collection and singleton";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { 2, 3 });
@@ -373,7 +373,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"import(""FFITarget.dll"");x = {0,1};y = {2,3};z = {4,5};test = TestObjectD.TestObjectD(x<1>,y<2>,z<3>).t;";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] x1 = new Object[] { new Object[] { new Object[] { 6, 7 }, new Object[] { 7, 8 } }, new Object[] { new Object[] { 7, 8 }, new Object[] { 8, 9 } } };
@@ -387,7 +387,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"import(""FFITarget.dll"");x = {0,1};y = {2,3};z = {4,5};test = TestObjectD.TestObjectD(x<1>,y<2>,z<1>).t;";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] x1 = new Object[] { new Object[] { 6, 7 }, new Object[] { 8, 9 } };
@@ -403,7 +403,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"import(""FFITarget.dll"");x = {0,1};y = {2,3};z = {4,5};test = TestObjectD.TestObjectD(x<1>,y<2>,z).t;";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "DNL-1467580 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] x1 = new Object[] { new Object[] { 6, 7 }, new Object[] { 8, 9 } };
@@ -417,7 +417,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"a = 0..10;b = a;b[2] = 100;c = a;d = b[0..(Count(b) - 1)..2];a_singleton = 10;b_1DArray = 10..100..10;//c_2D_Array = (10..100..10) < 1 > + (10..100..10) < 2 >;";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] a = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
@@ -439,7 +439,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"import(""FFITarget.dll"");def ByPoints(pts : DummyPoint2D){    return = pts;}p = DummyPoint2D.ByCoordinates((1..2..1)<1>, (3..4..1)<2> );test = ByPoints(p).X;";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";//1467383 - Validation Required -  [USER MANUAL] Select Trim Method Failure - Requested Coercion not implemented ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 1.0, 1.0 }, new Object[] { 2.0, 2.0 } });
@@ -452,7 +452,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
                 @"import(""FFITarget.dll"");def ByStartPointEndPoint(p1:DummyPoint, p2:DummyPoint){    return = p1;}height = 5;p1 = DummyPoint.ByCoordinates((0..1)<1>, (0..1)<2>,1);p2 = DummyPoint.ByCoordinates((0..1)<1>, (0..1)<2>,height);l = ByStartPointEndPoint(p1, p2);test = l.X;                ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 0.0, 0.0 }, new Object[] { 1.0, 1.0 } });
@@ -464,7 +464,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
                 @"def sum ( a, b, c){    return = a + b + c ;}x = 1..2;y = 3..4;z = 1;test = sum ( z, x<1>, y<2> ); ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";//DNL-1467386 Rev 4247 : WARNING: Replication unbox requested on Singleton warning coming from using replication guides on only some, not all arguments of a function gives incorrect output";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyBuildWarningCount(0);
@@ -477,7 +477,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
                 @"def sum ( a, b, c){    return = a + b + c ;}x = 1..2;y = 3..4;z = {1, 1};test = sum ( z<1>, x<1>, y<2> ); ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";//DNL-1467386 Rev 4247 : WARNING: Replication unbox requested on Singleton warning coming from using replication guides on only some, not all arguments of a function gives incorrect output";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyBuildWarningCount(0);
@@ -490,7 +490,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
                 @"def sum ( a, b, c){    return = a + b + c ;}x = 1..2;y = 3..4;z = 1;test = sum ( x<1>, y<2>, z ); ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";//DNL-1467386 Rev 4247 : WARNING: Replication unbox requested on Singleton warning coming from using replication guides on only some, not all arguments of a function gives incorrect output";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyBuildWarningCount(0);
@@ -503,7 +503,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
                 @"def sum ( a, b, c){    return = a + b + c ;}x = {1,2};y = {3,4};z = 1;test = sum ( z, x<1>, y<2> ); ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";//DNL-1467386 Rev 4247 : WARNING: Replication unbox requested on Singleton warning coming from using replication guides on only some, not all arguments of a function gives incorrect output";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyBuildWarningCount(0);
@@ -516,7 +516,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def sum ( a, b, c){    return = a + b + c ;}x = 1..2;y = 3..4;z = 1;test = sum ( z, x<1>, y<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";//DNL-1467386 Rev 4247 : WARNING: Replication unbox requested on Singleton warning coming from using replication guides on only some, not all arguments of a function gives incorrect output";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyBuildWarningCount(0);
@@ -529,7 +529,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def sum ( a, b, c){    return = a + b + c ;}x = 1..2;y = 3..4;z = 1;test = sum ( x<1>, z, y<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";//DNL-1467386 Rev 4247 : WARNING: Replication unbox requested on Singleton warning coming from using replication guides on only some, not all arguments of a function gives incorrect output";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyBuildWarningCount(0);
@@ -542,7 +542,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def sum ( a, b){    return = a + b  ;}x = 1..2;z = 1;test = sum ( x<1>, z );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyBuildWarningCount(0);
@@ -555,7 +555,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def sum ( a, b){    return = a + b  ;}x = 1..2;z = 1;test = sum ( z, x<1> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyBuildWarningCount(0);
@@ -569,7 +569,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"import(""FFITarget.dll"");x1 = 1..2;y1 = 1;a = DummyPoint2D.ByCoordinates(y1, x1<1>);test = a.Y;";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";//DNL-1467386 Rev 4247 : WARNING: Replication unbox requested on Singleton warning coming from using replication guides on only some, not all arguments of a function gives incorrect output";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { 1, 2 });
@@ -582,7 +582,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo ( a, b){    x = a;    y = b;    return = x + y;}x1 = 1..2;y1 = 1;dummy = foo(y1, x1);";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";//DNL-1467386 Rev 4247 : WARNING: Replication unbox requested on Singleton warning coming from using replication guides on only some, not all arguments of a function gives incorrect output";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyBuildWarningCount(0);
@@ -597,7 +597,7 @@ namespace ProtoTest.TD.Associative
             String code =
 @"import(""FFITarget.dll"");a = (0..1..#2);cs = DummyPoint.ByCoordinates(1, a<1>, a<2>); test = cs.Y;
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, "");
             thisTest.Verify("test", new Object[] { new Object[] { 0.0, 0.0 }, new Object[] { 1.0, 1.0 } });
         }
@@ -609,7 +609,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"import(""DSCoreNodes.dll"");def sum ( a, b, c ){    return = a + b + c;}temp1 = (Math.Sin(0..180..#2) * 2);temp2 = (Math.Sin(0..180..#3) * 1);zArray = temp1<1> + temp2<2>;zArray1 = zArray + 1;ceilingPoints = sum((0..10..#2)<1>, (0..15..#3)<2>, zArray1 );// expected :  ceilingPoints = { { 1.000, 9.500, 16.000 }, { 11.000, 19.500, 26.000 } }// received :  ceilingPoints = null";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "MAGN-1707 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyBuildWarningCount(0);
@@ -626,7 +626,7 @@ namespace ProtoTest.TD.Associative
             //have the fix applied for function calls applied to ctors as well.
             String code =
 @"import(""FFITarget.dll"");a = (0..1..#2);b = { 0, 1}; // fails with this as wellcs = DummyPoint.ByCoordinates(1, a<1>, b<2>); test = cs.Y;";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code);
             thisTest.Verify("test", new Object[] { new Object[] { 0.0, 0.0 }, new Object[] { 1.0, 1.0 } });
         }
@@ -639,7 +639,7 @@ namespace ProtoTest.TD.Associative
             String code =
 @"import(""FFITarget.dll"");a = ArrayMember.Ctor({1,2});b = ArrayMember.Ctor({1,2});test = a.X<1> + b.X<2>;
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
@@ -653,7 +653,7 @@ namespace ProtoTest.TD.Associative
             String code =
 @"import(""FFITarget.dll"");def foo (){    a = ArrayMember.Ctor({1,2});    b = ArrayMember.Ctor({1,2});    test = a.X<1> + b.X<2>;    return = test;}test = foo();
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
@@ -666,7 +666,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"import(""FFITarget.dll"");test = { { } };test2 = [Associative]{    test2 = { } ;    [Imperative]    {        a = ArrayMember.Ctor({1,2});        b = ArrayMember.Ctor({1,2});        [Associative]        {            test = a.X<1> + b.X<2>;            test2 = a.X + b.X;        }    }    return = test2;}";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
@@ -680,7 +680,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"import(""FFITarget.dll"");p = DummyPoint2D.ByCoordinates((1..2..1)<1>, (3..4..1)<2> ).X;";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("p", new Object[] { new Object[] { 1.0, 1.0 }, new Object[] { 2.0, 2.0 } });
