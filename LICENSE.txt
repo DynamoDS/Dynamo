@@ -22,6 +22,14 @@ http://opensource.org/licenses/lgpl-3.0.html
 https://github.com/AttackPattern/CSharpAnalytics
 http://www.apache.org/licenses/LICENSE-2.0
 
+###Cyotek.Drawing.BitmapFont###
+https://github.com/cyotek/Cyotek.Drawing.BitmapFont
+https://github.com/cyotek/Cyotek.Drawing.BitmapFont/blob/master/LICENSE.txt
+
+###Fontawesome###
+https://www.nuget.org/packages/FontAwesome.WPF/
+https://github.com/charri/Font-Awesome-WPF/blob/master/LICENSE
+
 ###GNU gettext (libintl)###
 https://www.gnu.org/software/gettext/
 https://www.gnu.org/software/gettext/manual/html_node/GNU-LGPL.html#GNU-LGPL
@@ -93,11 +101,3 @@ http://www.apache.org/licenses/LICENSE-2.0
 ###Winpthreads###
 http://mingw-w64.sourceforge.net/
 http://www.mingw.org/license
-
-###Fontawesome###
-https://www.nuget.org/packages/FontAwesome.WPF/
-https://github.com/charri/Font-Awesome-WPF/blob/master/LICENSE
-
-###Cyotek.Drawing.BitmapFont###
-https://github.com/cyotek/Cyotek.Drawing.BitmapFont
-https://github.com/cyotek/Cyotek.Drawing.BitmapFont/blob/master/LICENSE.txt
