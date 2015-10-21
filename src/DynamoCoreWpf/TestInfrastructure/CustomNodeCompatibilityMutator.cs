@@ -8,6 +8,7 @@ using System.IO;
 using System.Threading;
 using Autodesk.DesignScript.Runtime;
 using System.Reflection;
+using Dynamo.Configuration;
 using DynamoUtilities;
 using Dynamo.Core;
 using Dynamo.Engine;

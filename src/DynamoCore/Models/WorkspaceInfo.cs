@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Xml;
 using Dynamo.Interfaces;
+using Dynamo.Logging;
 using Dynamo.Utilities;
 
 namespace Dynamo.Models

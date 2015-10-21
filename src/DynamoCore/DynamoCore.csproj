@@ -114,8 +114,8 @@ limitations under the License.
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="Core\CrashPromptArgs.cs" />
-    <Compile Include="Core\DebugSettings.cs" />
-    <Compile Include="Core\Context.cs" />
+    <Compile Include="Configuration\DebugSettings.cs" />
+    <Compile Include="Configuration\Context.cs" />
     <Compile Include="Core\DynamoMigrator.cs" />
     <Compile Include="Core\Threading\Disposable.cs" />
     <Compile Include="Engine\LinkedListOfList.cs" />
@@ -200,7 +200,7 @@ limitations under the License.
     <Compile Include="Library\LibraryServices.cs" />
     <Compile Include="Library\TypedParameter.cs" />
     <Compile Include="Library\XmlDocumentationExtensions.cs" />
-    <Compile Include="Interfaces\ILogger.cs" />
+    <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Configuration\IPreferences.cs" />
     <Compile Include="Models\DynamoModelEventArgs.cs" />
     <Compile Include="Models\DynamoModelDelegates.cs" />
@@ -231,7 +231,7 @@ limitations under the License.
     <Compile Include="Migration\Migration.cs" />
     <Compile Include="Core\CustomNodeDefinition.cs" />
     <Compile Include="Configuration\PreferenceSettings.cs" />
-    <Compile Include="Core\DynamoLogger.cs" />
+    <Compile Include="Logging\DynamoLogger.cs" />
     <Compile Include="Core\DynamoSelection.cs" />
     <Compile Include="Logging\Heartbeat.cs" />
     <Compile Include="Logging\Log.cs" />

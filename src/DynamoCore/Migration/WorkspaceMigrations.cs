@@ -1,4 +1,5 @@
 ﻿using System.Xml;
+using Dynamo.Logging;
 using Dynamo.Models;
 
 namespace Dynamo.Migration
