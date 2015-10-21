@@ -21,6 +21,7 @@ using Dynamo.Services;
 using Dynamo.UI;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
+using Dynamo.Visualization;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.UI;

@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-
 using Autodesk.DesignScript.Interfaces;
-
 using Dynamo.Interfaces;
 
-namespace Dynamo
+namespace Dynamo.Visualization
 {
     public class DefaultRenderPackageFactory : IRenderPackageFactory
     {
