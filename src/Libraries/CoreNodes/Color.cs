@@ -365,7 +365,7 @@ namespace DSCore
                 parameters = new List<double>();
 
             // If there's no colors supplied, then supply
-            // a deafult gradient
+            // a default gradient
             if (!colors.Any())
             {
                 colors = new List<Color>();
