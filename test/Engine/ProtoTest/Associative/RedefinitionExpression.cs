@@ -41,27 +41,19 @@ x = p.X;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Category("DSDefinedClass_Ported")]
         public void RedefineWithFunctions03()
         {
             String code =
 @"
-class C
+def f(a : int)
 {
-    mx : var;
-    constructor C()
-    {
-        mx = 10;
-    }
-    def f(a : int)
-    {
-        mx = a + 1;
-        return = mx;
-    }
+    a = a + 1;
+    return = a;
 }
+
 x = 10;
-p = C.C();
-x = p.f(x);
+x = f(x);
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;

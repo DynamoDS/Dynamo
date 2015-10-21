@@ -153,7 +153,7 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                filteredResults = value;
+                filteredResults = ToggleSelect(value);
                 RaisePropertyChanged("FilteredResults");
             }
         }
@@ -167,6 +167,24 @@ namespace Dynamo.ViewModels
             FilteredResults = searchResults.Where(x => allowedCategories
                                                                        .Select(cat => cat.Name)
                                                                        .Contains(x.Category));
+        }
+
+        /// <summary>
+        /// Unselects all items and selectes the first one.
+        /// </summary>
+        internal IEnumerable<NodeSearchElementViewModel> ToggleSelect(IEnumerable<NodeSearchElementViewModel> items)
+        {
+            if (!items.Any())
+            {
+                return items;
+            }
+
+            // Unselect all.
+            items.Skip(1).ToList().ForEach(x => x.IsSelected = false);
+            // Select first.
+            items.First().IsSelected = true;
+
+            return items;
         }
 
         /// <summary>
@@ -266,6 +284,7 @@ namespace Dynamo.ViewModels
                 InsertEntry(MakeNodeSearchElementVM(entry), entry.Categories);
                 RaisePropertyChanged("BrowserRootCategories");
             };
+             
             Model.EntryUpdated += UpdateEntry;
             Model.EntryRemoved += RemoveEntry;
 
@@ -356,19 +375,20 @@ namespace Dynamo.ViewModels
         }
 
         internal void RemoveEntry(NodeSearchElement entry)
-        {
+        {            
             var branch = GetTreeBranchToNode(libraryRoot, entry);
             if (!branch.Any())
                 return;
             var treeStack = new Stack<NodeCategoryViewModel>(branch.Reverse());
 
             var target = treeStack.Pop();
+          
             var location = target.Entries.Select((e, i) => new { e.Model, i })
                 .FirstOrDefault(x => entry == x.Model);
             if (location == null)
                 return;
             target.Entries.RemoveAt(location.i);
-
+           
             while (!target.Items.Any() && treeStack.Any())
             {
                 var parent = treeStack.Pop();
@@ -644,8 +664,19 @@ namespace Dynamo.ViewModels
         private void AddEntryToExistingCategory(NodeCategoryViewModel category,
             NodeSearchElementViewModel entry)
         {
-            category.RequestBitmapSource += SearchViewModelRequestBitmapSource;
-            category.Entries.Add(entry);
+            category.RequestBitmapSource += SearchViewModelRequestBitmapSource; 
+            // Check if the category exists already. 
+            // ex : clockwork package. For clockwork 
+            // package the category names in dyf is different from what we show it 
+            // on the tree view. so when you click on the category to populate it 
+            // triggers an update to category name. on the same instance when you uninstall
+            // and insall the clockwork package, the categories are named correctly but 
+            // every install triggers an update that gives a duplicate entry. so check if the
+            // entry is already added (specific to browse).
+            if (category.Entries.All(x => x.FullName != entry.FullName))
+            {
+                category.Entries.Add(entry);
+            }
         }
 
         private void SearchViewModelRequestBitmapSource(IconRequestEventArgs e)
@@ -710,7 +741,7 @@ namespace Dynamo.ViewModels
             var foundNodes = Search(query);
             searchResults = new List<NodeSearchElementViewModel>(foundNodes);
 
-            filteredResults = searchResults;
+            FilteredResults = searchResults;
             UpdateSearchCategories();
 
             RaisePropertyChanged("FilteredResults");
@@ -839,6 +870,55 @@ namespace Dynamo.ViewModels
             catName = string.Join(" > ", s);
 
             return catName;
+        }
+
+        #endregion
+
+        #region Key navigation
+
+        public enum Direction
+        {
+            Down, Up
+        }
+
+        /// <summary>
+        /// Executes selected item in search UI.
+        /// </summary>
+        public void ExecuteSelectedItem()
+        {
+            var selected = FilteredResults.FirstOrDefault(item => item.IsSelected);
+
+            if (selected != null)
+            {
+                selected.ClickedCommand.Execute(null);
+            }
+        }
+
+        /// <summary>
+        /// When down key is pressed, selected element should move forward.
+        /// When up key is pressed, selected element should move back.
+        /// </summary>
+        public void MoveSelection(Direction direction)
+        {
+            var oldItem = FilteredResults.FirstOrDefault(item => item.IsSelected);
+            if (oldItem == null) return;
+
+            int newItemIndex = FilteredResults.IndexOf(oldItem);
+            if ((newItemIndex <= 0 && direction == Direction.Up) ||
+                (newItemIndex >= FilteredResults.Count() - 1 && direction == Direction.Down)) return;
+
+            if (direction == Direction.Down)
+            {
+                newItemIndex++;
+            }
+            else
+            {
+                newItemIndex--;
+            }
+
+            oldItem.IsSelected = false;
+            var newItem = FilteredResults.ElementAt(newItemIndex);
+            newItem.IsSelected = true;
         }
 
         #endregion

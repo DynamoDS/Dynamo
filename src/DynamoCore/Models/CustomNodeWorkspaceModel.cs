@@ -191,9 +191,17 @@ namespace Dynamo.Models
             if (handler != null) handler();
         }
 
+        /// <summary>
+        /// Disable the DefinitionUpdated event. This might be desirable to lump a large number of 
+        /// workspace changes into a single event.
+        /// </summary>
+        internal bool SilenceDefinitionUpdated { get; set; }
+
         public event Action DefinitionUpdated;
-        protected virtual void OnDefinitionUpdated()
+        internal virtual void OnDefinitionUpdated()
         {
+            if (SilenceDefinitionUpdated) return;
+
             var handler = DefinitionUpdated;
             if (handler != null) handler();
         }
