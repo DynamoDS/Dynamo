@@ -6,9 +6,9 @@ using System.Linq;
 using System.Reflection;
 using Dynamo.Interfaces;
 using System.Globalization;
+using Dynamo.Configuration;
 using Dynamo.Models;
 using Dynamo.Properties;
-using Dynamo.UI;
 using DynamoUtilities;
 
 namespace Dynamo.Core

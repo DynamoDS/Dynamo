@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
+using Dynamo.Configuration;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using Dynamo.Search;

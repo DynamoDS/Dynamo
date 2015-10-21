@@ -15,6 +15,7 @@ using Microsoft.Practices.Prism.ViewModel;
 using Dynamo.Models;
 using Dynamo.Search;
 using System.Windows;
+using Dynamo.Configuration;
 
 namespace Dynamo.Wpf.ViewModels
 {
@@ -169,7 +170,7 @@ namespace Dynamo.Wpf.ViewModels
 
         public bool HasDescription
         {
-            get { return (!Model.Description.Equals(Dynamo.UI.Configurations.NoDescriptionAvailable)); }
+            get { return (!Model.Description.Equals(Configurations.NoDescriptionAvailable)); }
         }
 
         public IEnumerable<Tuple<string, string>> InputParameters

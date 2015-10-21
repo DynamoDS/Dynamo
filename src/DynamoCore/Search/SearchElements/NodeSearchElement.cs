@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Dynamo.Annotations;
+using Dynamo.Configuration;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Search.Interfaces;
-using Dynamo.UI;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -141,7 +141,7 @@ namespace Dynamo.Search.SearchElements
             get
             {
                 if (string.IsNullOrEmpty(description))
-                    return Dynamo.UI.Configurations.NoDescriptionAvailable;
+                    return Configurations.NoDescriptionAvailable;
 
                 return description;
             }

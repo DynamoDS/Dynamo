@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 
 using Dynamo;
+using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Interfaces;
 using Dynamo.Models;
