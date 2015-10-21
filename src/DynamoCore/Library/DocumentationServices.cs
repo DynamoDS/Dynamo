@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using Dynamo.Configuration;
 using Dynamo.Interfaces;
 using DynamoUtilities;
 
@@ -75,7 +76,7 @@ namespace Dynamo.Engine
             if (File.Exists(documentationPath))
                 return true;
 
-            localizedResPath = Path.Combine(baseDir, UI.Configurations.FallbackUiCulture);
+            localizedResPath = Path.Combine(baseDir, Configurations.FallbackUiCulture);
             documentationPath = Path.Combine(localizedResPath, xmlFileName);
             if (File.Exists(documentationPath))
                 return true;

@@ -10,6 +10,7 @@ using Dynamo.Models;
 using Dynamo.Services;
 using Dynamo.ViewModels;
 using Dynamo.Applications;
+using Dynamo.Logging;
 using Dynamo.Wpf.ViewModels.Watch3D;
 
 namespace DynamoSandbox

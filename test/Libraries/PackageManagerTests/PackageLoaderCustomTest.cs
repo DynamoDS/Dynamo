@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using Dynamo.Configuration;
 using Dynamo.PackageManager;
 using NUnit.Framework;
 

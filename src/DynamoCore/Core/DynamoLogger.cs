@@ -4,6 +4,7 @@ using System.Text;
 
 using Dynamo.Core;
 using Dynamo.Interfaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Services;
 

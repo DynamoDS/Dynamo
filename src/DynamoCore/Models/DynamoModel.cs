@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Threading;
 using System.Xml;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Core.Threading;
 using Dynamo.Engine;
