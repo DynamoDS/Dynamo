@@ -253,7 +253,7 @@ r =
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T06_String_Class()
         {
@@ -671,7 +671,7 @@ import(""FFITarget.dll"");
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("ConcatenationString")]
         public void TV_ADD_StringPointer_2()
         {

@@ -29,13 +29,13 @@ namespace ProtoTest.Associative
 
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Category("DSDefinedClass_Ported")]
         public void RedefConvTest()
         {
             String code =
-                @"class A{    x:int;    def foo()    {        x:double = 3.5;  // x still is int, and 3.5 converted to 4        return = x;    }}a = A.A();v=a.foo();";
+                @"    def foo()    {        x:int = 3.2;          return = x;    }v=foo();";
             var mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.Verify(mirror, "v", 4);
+            TestFrameWork.Verify(mirror, "v", 3);
         }
 
 

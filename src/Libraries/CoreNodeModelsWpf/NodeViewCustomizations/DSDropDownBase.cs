@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using DSCoreNodesUI;
+using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.UI;
 using Dynamo.Wpf;

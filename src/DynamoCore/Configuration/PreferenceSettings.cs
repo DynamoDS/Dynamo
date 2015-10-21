@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
-
 using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 
-namespace Dynamo
+namespace Dynamo.Configuration
 {
     /// <summary>
     /// PreferenceSettings is a class for GUI to persist certain settings.

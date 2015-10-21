@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 
 using DSOffice;
+using Dynamo.Configuration;
 using NUnit.Framework;
 using ProtoCore.Mirror;
 using Dynamo.Engine.CodeCompletion;

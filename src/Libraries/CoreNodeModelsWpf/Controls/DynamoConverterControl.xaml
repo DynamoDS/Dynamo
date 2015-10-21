@@ -6,6 +6,7 @@
              xmlns:conversions="clr-namespace:DynamoConversions;assembly=DynamoConversions"  
              xmlns:ui2="clr-namespace:Dynamo.UI;assembly=DynamoCore"
              xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
              mc:Ignorable="d" Width="400" Height="Auto">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -24,7 +25,7 @@
         <ComboBox Name="SelectConversionMetric"                
                 ItemsSource="{Binding Source={x:Static conversions:Conversions.ConversionMetricDictionary}, Path=Keys}"   
                 Grid.Row="0"
-                Height ="{x:Static ui2:Configurations.PortHeightInPixels}"
+                Height ="{x:Static configuration:Configurations.PortHeightInPixels}"
                 SelectedItem="{Binding SelectedMetricConversion}">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
@@ -44,7 +45,7 @@
             <ComboBox Name="SelectConversionFrom" 
                 Grid.Column="0"
                 ItemsSource="{Binding SelectedFromConversionSource}"
-                Height ="{x:Static ui2:Configurations.PortHeightInPixels}"                                        
+                Height ="{x:Static configuration:Configurations.PortHeightInPixels}"                                        
                 ToolTip="{Binding SelectionFromBoxToolTip}"
                 ToolTipService.ShowOnDisabled="True" 
                 IsEnabled="{Binding IsSelectionFromBoxEnabled}"
@@ -61,13 +62,13 @@
                 Content="⇄"  
                 FontWeight="Bold"
                 FontSize="13"
-                Height ="{x:Static ui2:Configurations.PortHeightInPixels}"
+                Height ="{x:Static configuration:Configurations.PortHeightInPixels}"
                 Width="40" Command="{Binding ToggleButtonClick}"/>
 
             <ComboBox x:Name="SelectConversionTo"   
                 Grid.Column="2"
         	    ItemsSource="{Binding SelectedToConversionSource}"
-                Height ="{x:Static ui2:Configurations.PortHeightInPixels}"                       
+                Height ="{x:Static configuration:Configurations.PortHeightInPixels}"                       
         	    SelectedItem="{Binding SelectedToConversion, Mode=TwoWay}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>

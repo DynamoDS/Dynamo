@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Threading;
 using DSCoreNodesUI.Logic;
+using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Core.Threading;
 using Dynamo.Interfaces;

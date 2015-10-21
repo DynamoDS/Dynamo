@@ -141,7 +141,6 @@ namespace Dynamo.Nodes
             {
                 model.OnNodeModified();
             }
-              
         }
 
         /// <summary>
@@ -244,18 +243,16 @@ namespace Dynamo.Nodes
 
         internal bool HandleModelEventCore(string eventName, UndoRedoRecorder recorder)
         {
-            if (eventName == "AddInPort")
+            switch (eventName)
             {
-                AddInputToModel();
-                model.RegisterAllPorts();
-                return true; // Handled here.
-            }
-
-            if (eventName == "RemoveInPort")
-            {
-                RemoveInputFromModel();
-                model.RegisterAllPorts();
-                return true; // Handled here.
+                case "AddInPort":
+                    AddInputToModel();
+                    model.RegisterAllPorts();
+                    return true; // Handled here.
+                case "RemoveInPort":
+                    RemoveInputFromModel();
+                    model.RegisterAllPorts();
+                    return true; // Handled here.
             }
 
             return false; // base.HandleModelEventCore(eventName);
