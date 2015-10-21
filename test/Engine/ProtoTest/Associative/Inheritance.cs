@@ -8,7 +8,7 @@ namespace ProtoTest.Associative
     class InheritaceTest : ProtoTestBase
     {
         [Test]
-        [Category("DSDefinedClass_Ignored_DoNotTestInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DoNotTestInheritance")]
         public void InheritanceTest01()
         {
             String code =
@@ -20,7 +20,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DoNotTestInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DoNotTestInheritance")]
         public void InheritanceTest02()
         {
             String code =
@@ -30,7 +30,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DoNotTestInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DoNotTestInheritance")]
         public void InheritanceTest03()
         {
             String code =
@@ -40,7 +40,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DoNotTestInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DoNotTestInheritance")]
         public void InheritanceTest04()
         {
             String code =
@@ -51,7 +51,7 @@ namespace ProtoTest.Associative
 
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DoNotTestInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DoNotTestInheritance")]
         public void InheritanceTest05()
         {
             String code =

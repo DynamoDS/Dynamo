@@ -1111,6 +1111,8 @@ namespace Dynamo.Models
         [Obsolete("RegisterInputPorts is deprecated, please use the InPortNamesAttribute, InPortDescriptionsAttribute, and InPortTypesAttribute instead.")]
         public void RegisterInputPorts()
         {
+            RaisesModificationEvents = false;
+
             var inputs = new List<PortData>();
 
             // Old version of input ports registration.
@@ -1158,6 +1160,9 @@ namespace Dynamo.Models
             //Configure Snap Edges
             ConfigureSnapEdges(inPorts);
             areInputPortsRegistered = true;
+
+            RaisesModificationEvents = true;
+            OnNodeModified();
         }
 
         /// <summary>
@@ -1166,6 +1171,8 @@ namespace Dynamo.Models
         [Obsolete("RegisterOutputPorts is deprecated, please use the OutPortNamesAttribute, OutPortDescriptionsAttribute, and OutPortTypesAttribute instead.")]
         public void RegisterOutputPorts()
         {
+            RaisesModificationEvents = false;
+
             var outputs = new List<PortData>();
 
             // Old version of output ports registration.
@@ -1213,6 +1220,9 @@ namespace Dynamo.Models
             //configure snap edges
             ConfigureSnapEdges(outPorts);
             areOutputPortsRegistered = true;
+
+            RaisesModificationEvents = true;
+            OnNodeModified();
         }
 
         /// <summary>

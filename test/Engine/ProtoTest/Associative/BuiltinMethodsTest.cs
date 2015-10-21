@@ -632,7 +632,7 @@ x = foo({ Evaluate, Evaluate }, { f1, f2 }, { { 41 }, { 42 } });
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void Test_EvaluateFunctionPointer09()
         {
             // Nested call

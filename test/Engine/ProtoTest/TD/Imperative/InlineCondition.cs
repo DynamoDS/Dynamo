@@ -427,7 +427,7 @@ c1;c2;c3;c4;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T015_Inline_In_Class_Scope()
         {
             // Assert.Fail("1467168 - Sprint24 : rev 3137 : Compiler error from  Inline Condition and class inheritance issue");

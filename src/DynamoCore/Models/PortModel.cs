@@ -80,6 +80,11 @@ namespace Dynamo.Models
             get { return portData.LineIndex; }
         }
 
+        /// <summary>
+        /// A flag indicating whether the port is considered connected.
+        /// </summary>
+        /// 
+        [Obsolete("Please use NodeModel.HasConnectedInput instead.")]
         public bool IsConnected
         {
             get; private set;
@@ -198,17 +203,15 @@ namespace Dynamo.Models
         {
             if (!connectors.Contains(connector))
                 return;
-            
+
             //throw the event for a disconnection
             if (!silent)
             {
-                OnPortDisconnected();  
+                OnPortDisconnected();
             }
 
             connectors.Remove(connector);
-            
-            //don't set back to white if
-            //there are still connectors on this port
+
             if (connectors.Count == 0)
             {
                 IsConnected = false;
