@@ -441,7 +441,7 @@ namespace Dynamo.Models
         {
             // where necessary, assign defaults
             if (string.IsNullOrEmpty(configuration.Context))
-                configuration.Context = Core.Context.NONE;
+                configuration.Context = Configuration.Context.NONE;
 
             return new DynamoModel(configuration);
         }

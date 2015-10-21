@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Dynamo.Interfaces
+namespace Dynamo.Logging
 {
     /// <summary>
     ///     Consumes messages to be used for logging.
