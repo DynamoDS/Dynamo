@@ -194,7 +194,7 @@ b  = b2 + 2;    // 5";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_ModifierBlock")]
+        [Ignore][Category("DSDefinedClass_Ignored_ModifierBlock")]
         [Category("ModifierBlock")] 
         public void T007_surface_trimmed_with_modifier_and_named_states_Robert()
         {
@@ -247,7 +247,7 @@ test = mySurface.x; //expected : 4
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_ComplexUseCase")]
+        [Ignore][Category("DSDefinedClass_Ignored_ComplexUseCase")]
         [Category("SmokeTest")]
         public void T008_long_hand_surface_trim_Robert()
         {
@@ -334,7 +334,7 @@ x;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_ComplexUseCase")]
+        [Ignore][Category("DSDefinedClass_Ignored_ComplexUseCase")]
         public void T011_Cyclic_Dependency_From_Geometry()
         {
             string code = @"
@@ -357,7 +357,7 @@ projectVector = Vector.ByCoordinates(5.0,0,-1);";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_ComplexUseCase")]
+        [Ignore][Category("DSDefinedClass_Ignored_ComplexUseCase")]
         public void T012_property_test_on_collections_2_Robert()
         {
             string code = @"
@@ -376,7 +376,7 @@ t2= line2.Color;";
 
 
         [Test]
-        [Category("DSDefinedClass_Ignored_ComplexUseCase")]
+        [Ignore][Category("DSDefinedClass_Ignored_ComplexUseCase")]
         public void T013_nested_programming_blocks_1_Robert()
         {
             string errmsg = "";
