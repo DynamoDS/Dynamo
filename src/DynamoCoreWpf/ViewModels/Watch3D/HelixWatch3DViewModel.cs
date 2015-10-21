@@ -655,6 +655,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             OnRequestZoomToFit(selectionBounds);
         }
 
+        protected override bool CanToggleCanNavigateBackground(object parameter)
+        {
+            return true;
+        }
+
         #region internal methods
 
         internal void ComputeFrameUpdate()
