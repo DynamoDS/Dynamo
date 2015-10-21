@@ -15,6 +15,7 @@ using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
+using Dynamo.Visualization;
 using Dynamo.Wpf.Properties;
 using HelixToolkit.Wpf.SharpDX;
 
