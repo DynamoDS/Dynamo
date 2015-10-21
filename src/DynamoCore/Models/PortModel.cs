@@ -82,9 +82,9 @@ namespace Dynamo.Models
 
         /// <summary>
         /// A flag indicating whether the port is considered connected.
-        /// 
-        /// IsConnected may be set to true while the port still has connectors.
         /// </summary>
+        /// 
+        [Obsolete("Please use NodeModel.HasConnectedInput instead.")]
         public bool IsConnected
         {
             get; private set;
@@ -193,34 +193,16 @@ namespace Dynamo.Models
         {
             connectors.Add(connector);
 
-            IsConnected = true;
-
             //throw the event for a connection
             OnPortConnected(connector);
+
+            IsConnected = true;
         }
 
         public void Disconnect(ConnectorModel connector, bool silent = false)
         {
             if (!connectors.Contains(connector))
                 return;
-
-            // Set IsConnected to false so Ast building
-            // methods on nodes can know that the port is
-            // disconnected pending removal of the connectors.
-            switch (PortType)
-            {
-                    case PortType.Input:
-                        IsConnected = false;
-                        break;
-                    case PortType.Output:
-                        if (connectors.Count == 0)
-                        {
-                            IsConnected = false;
-                        }
-                        break;
-                    default:
-                        break;
-            }
 
             //throw the event for a disconnection
             if (!silent)
@@ -229,6 +211,11 @@ namespace Dynamo.Models
             }
 
             connectors.Remove(connector);
+
+            if (connectors.Count == 0)
+            {
+                IsConnected = false;
+            }
 
             Owner.ValidateConnections();
         }
