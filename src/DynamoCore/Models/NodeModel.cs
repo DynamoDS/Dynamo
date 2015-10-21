@@ -43,6 +43,7 @@ namespace Dynamo.Models
         private string persistentWarning = "";
         private bool areInputPortsRegistered;
         private bool areOutputPortsRegistered;
+        private bool usedAttributesLoadingStyle;
 
         /// <summary>
         /// The cached value of this node. The cachedValue object is protected by the cachedValueMutex
@@ -1118,6 +1119,7 @@ namespace Dynamo.Models
             if (InPortData.Count > 0)
             {
                 inputs.AddRange(InPortData);
+                InPortData.Clear();
             }
 
             // New version of input ports registration.
@@ -1125,6 +1127,7 @@ namespace Dynamo.Models
             if (!areInputPortsRegistered)
             {
                 inputs.AddRange(GetPortDataFromAttributes(PortType.Input));
+                usedAttributesLoadingStyle = true;
             }
 
             //read the inputs list and create a number of
@@ -1135,7 +1138,7 @@ namespace Dynamo.Models
                 //add a port for each input
                 //distribute the ports along the 
                 //edges of the icon
-                PortModel port = AddPort(PortType.Input, pd, count);
+                PortModel port = AddPort(PortType.Input, pd, InPorts.Count + count);
                 //MVVM: AddPort now returns a port model. You can't set the data context here.
                 //port.DataContext = this;
 
@@ -1143,7 +1146,7 @@ namespace Dynamo.Models
                 count++;
             }
 
-            if (inPorts.Count > count)
+            if (inPorts.Count > count && !usedAttributesLoadingStyle)
             {
                 foreach (PortModel inport in inPorts.Skip(count))
                 {
@@ -1199,7 +1202,7 @@ namespace Dynamo.Models
                 count++;
             }
 
-            if (outPorts.Count > count && !areOutputPortsRegistered)
+            if (outPorts.Count > count && OutPortData.Count > 0)
             {
                 foreach (PortModel outport in outPorts.Skip(count))
                     outport.DestroyConnectors();
@@ -1213,6 +1216,17 @@ namespace Dynamo.Models
             //configure snap edges
             ConfigureSnapEdges(outPorts);
             areOutputPortsRegistered = true;
+        }
+
+        public void RemoveInputPort(int index)
+        {
+            var count = InPorts.Count;
+            if (count <= index) return;
+
+            var inport = InPorts.ElementAt(index);
+            inport.DestroyConnectors();
+            InPorts.Remove(inport);
+            portDataDict.Remove(inport);
         }
 
         /// <summary>

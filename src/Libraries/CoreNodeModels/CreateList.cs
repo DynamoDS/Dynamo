@@ -41,7 +41,7 @@ namespace DSCoreNodesUI
 
         protected override void RemoveInput()
         {
-            if (InPortData.Count > 1)
+            if (InPorts.Count > 1)
                 base.RemoveInput();
         }
 

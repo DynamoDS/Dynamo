@@ -129,13 +129,15 @@ namespace Dynamo.Nodes
         /// </summary>
         public virtual int GetInputIndexFromModel()
         {
-            return model.InPortData.Count;
+            int inportDataCount = model.InPortData.Count;
+            int inportsCount = model.InPorts.Count;
+            return inportDataCount > inportsCount ? inportDataCount : inportsCount;
         }
 
         private void MarkNodeDirty()
         {
-            var dirty = model.InPortData.Count != inputAmtLastBuild
-                || Enumerable.Range(0, model.InPortData.Count).Any(idx => connectedLastBuild[idx] == model.HasInput(idx));
+            var dirty = model.InPorts.Count != inputAmtLastBuild
+                || Enumerable.Range(0, model.InPorts.Count).Any(idx => connectedLastBuild[idx] == model.HasInput(idx));
 
             if (dirty)
             {
@@ -149,10 +151,7 @@ namespace Dynamo.Nodes
         /// </summary>
         public virtual void RemoveInputFromModel()
         {
-            var count = model.InPortData.Count;
-            if (count > 0)
-                model.InPortData.RemoveAt(count - 1);
-
+            model.RemoveInputPort(model.InPorts.Count - 1);
             MarkNodeDirty();
         }
 
