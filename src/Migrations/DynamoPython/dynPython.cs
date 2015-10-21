@@ -13,7 +13,7 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             System.Xml.XmlElement xmlNode = data.MigratedNodes.ElementAt(0);
-            var element = MigrationManager.CloneAndChangeName(xmlNode, "DSIronPythonNode.PythonNode", "Python Script");
+            var element = MigrationManager.CloneAndChangeName(xmlNode, "PythonNodeModels.PythonNode", "Python Script");
             element.SetAttribute("nickname", "Python Script");
             element.SetAttribute("inputcount", "1");
             element.RemoveAttribute("inputs");
@@ -37,7 +37,7 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             System.Xml.XmlElement xmlNode = data.MigratedNodes.ElementAt(0);
-            var element = MigrationManager.CloneAndChangeName(xmlNode, "DSIronPythonNode.PythonNode", "Python Script");
+            var element = MigrationManager.CloneAndChangeName(xmlNode, "PythonNodeModels.PythonNode", "Python Script");
             element.SetAttribute("nickname", "Python Script");
             element.SetAttribute("inputcount", xmlNode.GetAttribute("inputs"));
             element.RemoveAttribute("inputs");
@@ -64,7 +64,7 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             System.Xml.XmlElement xmlNode = data.MigratedNodes.ElementAt(0);
-            var element = MigrationManager.CloneAndChangeName(xmlNode, "DSIronPythonNode.PythonStringNode", "Python Script From String");
+            var element = MigrationManager.CloneAndChangeName(xmlNode, "PythonNodeModels.PythonStringNode", "Python Script From String");
             element.SetAttribute("inputcount", "2");
 
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -79,7 +79,7 @@ namespace DSIronPythonNode
     public class PythonNode : MigrationNode
     {
         [NodeMigration(from: "0.8.3.0", to: "0.9.0.0")]
-        public static NodeMigrationData Migrate_0820_to_0830(NodeMigrationData data)
+        public static NodeMigrationData Migrate_0830_to_0900(NodeMigrationData data)
         {
             System.Xml.XmlElement xmlNode = data.MigratedNodes.ElementAt(0);
             var element = MigrationManager.CloneAndChangeName(xmlNode, "PythonNodeModels.PythonNode", "Python Script", true);
@@ -93,7 +93,7 @@ namespace DSIronPythonNode
     public class PythonStringNode : MigrationNode
     {
         [NodeMigration(from: "0.8.3.0", to: "0.9.0.0")]
-        public static NodeMigrationData Migrate_0820_to_0830(NodeMigrationData data)
+        public static NodeMigrationData Migrate_0830_to_0900(NodeMigrationData data)
         {
             System.Xml.XmlElement xmlNode = data.MigratedNodes.ElementAt(0);
             var element = MigrationManager.CloneAndChangeName(xmlNode, "PythonNodeModels.PythonStringNode", "Python Script From String");
