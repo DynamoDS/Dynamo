@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -17,6 +18,7 @@ using Autodesk.DesignScript.Interfaces;
 using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Rendering;
@@ -627,10 +629,44 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 case "CurrentWorkspace":
                     OnClear();
-                    foreach (var node in model.CurrentWorkspace.Nodes)
+
+                    var ws = model.CurrentWorkspace;
+                    IEnumerable<NodeModel> nodesToRender = null;
+
+                    //var cs = ws as CustomNodeWorkspaceModel;
+                    //if (cs != null)
+                    //{
+                    //    var hs = model.Workspaces.FirstOrDefault(i => i is HomeWorkspaceModel);
+                    //    if (hs != null)
+                    //    {
+                    //        var functionId = cs.CustomNodeInfo.FunctionId;
+                    //        nodesToRender = hs.Nodes.Where(n => n is Function).
+                    //            Cast<Function>().
+                    //            Where(n => n.IsCustomFunction).
+                    //            Where(n => n.Definition.FunctionId == functionId);
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    nodesToRender = model.CurrentWorkspace.Nodes;
+                    //}
+
+                    var hs = model.Workspaces.FirstOrDefault(i => i is HomeWorkspaceModel);
+                    if (hs != null)
+                    {
+                        nodesToRender = hs.Nodes;
+                    }
+
+                    if (nodesToRender == null)
+                    {
+                        return;
+                    }
+
+                    foreach (var node in nodesToRender)
                     {
                         node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory, true);
                     }
+
                     break;
             }
         }
@@ -1017,6 +1053,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private void AggregateRenderPackages(IEnumerable<HelixRenderPackage> packages)
         {
+            var inCustomNode = CurrentSpaceViewModel.Model is CustomNodeWorkspaceModel;
+            IEnumerable<string> customNodeIdents = null;
+            if (inCustomNode)
+            {
+                var hs = model.Workspaces.FirstOrDefault(ws => ws is HomeWorkspaceModel);
+                if (hs != null)
+                {
+                    customNodeIdents = FindIdentifiersForCustomNodes((HomeWorkspaceModel)hs);
+                }
+            }
+
             lock (Model3DDictionaryMutex)
             {
                 foreach (var rp in packages)
@@ -1133,7 +1180,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     var idxCount = mesh.Positions.Count;
 
                     mesh.Positions.AddRange(m.Positions);
-                    mesh.Colors.AddRange(m.Colors);
+
+                    if (inCustomNode && !customNodeIdents.Contains(baseId))
+                    {
+                        meshGeometry3D.RequiresPerVertexColoration = true;
+                        mesh.Colors.AddRange(m.Colors.Select(c=>new Color4(c.Red, c.Green, c.Blue, 0.1f)));
+                    }
+                    else
+                    {
+                        mesh.Colors.AddRange(m.Colors);
+                    }
+
                     mesh.Normals.AddRange(m.Normals);
                     mesh.TextureCoordinates.AddRange(m.TextureCoordinates);
                     mesh.Indices.AddRange(m.Indices.Select(i => i + idxCount));
@@ -1347,6 +1404,26 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         internal static IEnumerable<string> FindIdentifiersForSelectedNodes(IEnumerable<NodeModel> selectedNodes)
         {
             return selectedNodes.SelectMany(n => n.OutPorts.Select(p => n.GetAstIdentifierForOutputIndex(p.Index).Value));
+        }
+
+        /// <summary>
+        /// Find all output identifiers for custom nodes in the provided workspace. 
+        /// </summary>
+        /// <param name="workspace">A workspace</param>
+        /// <returns></returns>
+        internal static IEnumerable<string> FindIdentifiersForCustomNodes(HomeWorkspaceModel workspace)
+        {
+            if (workspace == null)
+            {
+                return null;
+            }
+
+            const string pattern = "_out[0-9]";
+            var rgx = new Regex(pattern);
+
+            return
+                workspace.Nodes.Where(n => n is Function)
+                    .SelectMany(n => n.OutPorts.Select(p => rgx.Replace(n.GetAstIdentifierForOutputIndex(p.Index).Value, "")));
         }
 
         internal static IEnumerable<GeometryModel3D> FindGeometryForIdentifiers(IEnumerable<GeometryModel3D> geometry, IEnumerable<string> identifiers)
