@@ -435,9 +435,11 @@ namespace Dynamo.Models
                 // But for cyclic dependency warnings, it is
                 // easier to understand to report a build warning.
                 string message = string.Empty;
-                if (messages.ContainsKey(warning.Key) &&
-                    warning.Value.Any(w => w.ID == ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency))
+                if (messages.ContainsKey(warning.Key))
                 {
+                    if (!warning.Value.Any(w => w.ID == ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency))
+                        continue;
+
                     messages.Remove(warning.Key);
                     message = string.Join("\n", warning.Value.
                         Where(w => w.ID == ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency).
