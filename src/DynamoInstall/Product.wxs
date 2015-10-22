@@ -7,7 +7,7 @@
            Language="1033"
            Version="$(var.Major).$(var.Minor).$(var.Rev)"
            Manufacturer="Dynamo"
-           UpgradeCode="{9A9BCBCC-5B1A-4B65-AC10-D822BAB5389E}">
+           UpgradeCode="{B3EF5767-C359-41AD-8951-E77EA3A10CC5}">
 
     <Package InstallerVersion="200"
              Compressed="yes"
