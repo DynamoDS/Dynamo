@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using Dynamo.Core;
 using Dynamo.Nodes;
@@ -63,6 +64,15 @@ namespace Dynamo.Models
 
             AddNodeToCurrentWorkspace(node, centered: command.DefaultPosition);
             CurrentWorkspace.RecordCreatedModel(node);
+        }
+
+        void CreateAndConnectNodeImpl(CreateAndConnectNodeCommand command)
+        {
+            AddNodeToCurrentWorkspace(command.NewNode, false, command.AddNewNodeToSelection);
+            CurrentWorkspace.RecordCreatedModel(command.NewNode);
+
+            ExecuteCommand(command.MakeConnectionCommandBegin);
+            ExecuteCommand(command.MakeConnectionCommandEnd);
         }
 
         NodeModel GetNodeFromCommand(CreateNodeCommand command)
