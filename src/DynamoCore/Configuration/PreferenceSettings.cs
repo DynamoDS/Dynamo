@@ -59,6 +59,11 @@ namespace Dynamo.Configuration
         public bool IsBackgroundPreviewActive { get; set; }
 
         /// <summary>
+        /// Should the background grid be shown?
+        /// </summary>
+        public bool IsBackgroundGridVisible { get; set; }
+
+        /// <summary>
         /// The decimal precision used to display numbers.
         /// </summary>
         public string NumberFormat
