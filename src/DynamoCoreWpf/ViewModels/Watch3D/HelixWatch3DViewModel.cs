@@ -630,26 +630,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 case "CurrentWorkspace":
                     OnClear();
 
-                    var ws = model.CurrentWorkspace;
+
                     IEnumerable<NodeModel> nodesToRender = null;
 
-                    //var cs = ws as CustomNodeWorkspaceModel;
-                    //if (cs != null)
-                    //{
-                    //    var hs = model.Workspaces.FirstOrDefault(i => i is HomeWorkspaceModel);
-                    //    if (hs != null)
-                    //    {
-                    //        var functionId = cs.CustomNodeInfo.FunctionId;
-                    //        nodesToRender = hs.Nodes.Where(n => n is Function).
-                    //            Cast<Function>().
-                    //            Where(n => n.IsCustomFunction).
-                    //            Where(n => n.Definition.FunctionId == functionId);
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    nodesToRender = model.CurrentWorkspace.Nodes;
-                    //}
+                    // Get the nodes to render from the current home workspace. For custom
+                    // nodes, this will get the workspace in which the custom node is placed.
+                    // This will need to be adapted when multiple home workspaces are supported,
+                    // so that a specific workspace can be selected to act as the preview context.
 
                     var hs = model.Workspaces.FirstOrDefault(i => i is HomeWorkspaceModel);
                     if (hs != null)
