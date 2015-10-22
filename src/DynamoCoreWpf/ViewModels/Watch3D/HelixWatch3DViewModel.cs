@@ -1168,6 +1168,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                     mesh.Positions.AddRange(m.Positions);
 
+                    // If we are in a custom node, and the current
+                    // package's id is NOT one of the output ids of custom nodes
+                    // in the graph, then draw the geometry with transparency.
                     if (inCustomNode && !customNodeIdents.Contains(baseId))
                     {
                         meshGeometry3D.RequiresPerVertexColoration = true;
@@ -1405,6 +1408,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 return null;
             }
 
+            // Remove the output identifier appended to the custom node outputs.
             const string pattern = "_out[0-9]";
             var rgx = new Regex(pattern);
 
