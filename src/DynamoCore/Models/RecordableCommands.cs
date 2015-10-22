@@ -697,14 +697,13 @@ namespace Dynamo.Models
         public class CreateAndConnectNodeCommand : ModelBasedRecordableCommand
         {
             
-
             #region Public Class Methods
 
             /// <summary>
             /// Creates a new CreateAndConnectNodeCommand with the given inputs
             /// </summary>
-            /// <param name="newNode">new node to create in the command</param>
-            /// <param name="existingNode">Existing node to connect from/to</param>
+            /// <param name="newNodeGuid">new node to create in the command</param>
+            /// <param name="existingNodeGuid">Existing node to connect from/to</param>
             /// <param name="outputPortIndex"></param>
             /// <param name="inputPortIndex"></param>
             /// <param name="x"></param>
@@ -713,38 +712,38 @@ namespace Dynamo.Models
             /// new node to be created as downstream or upstream node wrt the existing node
             /// </param>
             /// <param name="addNewNodeToSelection">select the new node after it is created by default</param>
-            public CreateAndConnectNodeCommand(
-                NodeModel newNode, NodeModel existingNode, int outputPortIndex, int inputPortIndex, 
-                double x, double y, bool createAsDownstreamNode = true, bool addNewNodeToSelection = true)
-                : base(newNode != null ? new[] { newNode.GUID } : new[] { Guid.Empty })
-            {
-                NewNode = newNode;
-                ExistingNode = existingNode;
+            //public CreateAndConnectNodeCommand(
+            //    NodeModel newNode, NodeModel existingNode, int outputPortIndex, int inputPortIndex, 
+            //    double x, double y, bool createAsDownstreamNode = true, bool addNewNodeToSelection = true)
+            //    : base(newNode != null ? new[] { newNode.GUID } : new[] { Guid.Empty })
+            //{
+            //    NewNode = newNode;
+            //    ExistingNode = existingNode;
 
-                OutputPortIndex = outputPortIndex;
-                InputPortIndex = inputPortIndex;
+            //    OutputPortIndex = outputPortIndex;
+            //    InputPortIndex = inputPortIndex;
+            //    X = x;
+            //    Y = y;
+
+            //    CreateAsDownstreamNode = createAsDownstreamNode;
+            //    AddNewNodeToSelection = addNewNodeToSelection;
+
+            //}
+
+            public CreateAndConnectNodeCommand(Guid newNodeGuid , Guid existingNodeGuid , int outPortIndex , int inPortIndex , double x , double y,
+                bool createAsDownstreamNode, bool addNewNodeToSelection)
+                : base(new[] { newNodeGuid, existingNodeGuid })
+            {
+                NewNodeGuid = newNodeGuid;
+                ExistingNodeGuid = existingNodeGuid;
+
+                OutputPortIndex = outPortIndex;
+                InputPortIndex = inPortIndex;
                 X = x;
                 Y = y;
 
+                CreateAsDownstreamNode = createAsDownstreamNode;
                 AddNewNodeToSelection = addNewNodeToSelection;
-
-                Guid startNodeGuid, endNodeGuid;
-                if (createAsDownstreamNode)
-                {
-                    startNodeGuid = ExistingNode.GUID;
-                    endNodeGuid = NewNode.GUID;
-                }
-                else
-                {
-                    startNodeGuid = NewNode.GUID;
-                    endNodeGuid = ExistingNode.GUID;
-                }
-
-                var mode = MakeConnectionCommand.Mode.Begin;
-                MakeConnectionCommandBegin = new MakeConnectionCommand(startNodeGuid, OutputPortIndex, PortType.Output, mode);
-                
-                mode = MakeConnectionCommand.Mode.End;
-                MakeConnectionCommandEnd = new MakeConnectionCommand(endNodeGuid, InputPortIndex, PortType.Input, mode);
             }
 
             #endregion
@@ -752,9 +751,12 @@ namespace Dynamo.Models
             #region Public Command Properties
 
             // Faster, direct creation
-            internal NodeModel NewNode { get; private set; }
+            //internal NodeModel NewNode { get; private set; }
 
-            internal NodeModel ExistingNode { get; private set; }
+            //internal NodeModel ExistingNode { get; private set; }
+
+            internal Guid NewNodeGuid { get; private set; }
+            internal Guid ExistingNodeGuid { get; private set; }
 
             [DataMember]
             internal int OutputPortIndex { get; private set; }
@@ -769,11 +771,8 @@ namespace Dynamo.Models
             internal double Y { get; private set; }
 
             // These properties need not be serialized/deserialized
+            internal bool CreateAsDownstreamNode { get; private set; }
             internal bool AddNewNodeToSelection { get; private set; }
-
-            internal MakeConnectionCommand MakeConnectionCommandBegin { get; private set; }
-            internal MakeConnectionCommand MakeConnectionCommandEnd { get; private set; }
-
 
             #endregion
 
@@ -786,45 +785,51 @@ namespace Dynamo.Models
 
             protected override void SerializeCore(XmlElement element)
             {
+                base.SerializeCore(element);
+
                 SerializeCreateNodeCommand(element);
 
-                SerializeMakeConnectionCommand(element, OutputPortIndex, PortType.Output, 
-                MakeConnectionCommand.Mode.Begin);
+                var helper = new XmlElementHelper(element);
+                helper.SetAttribute("OutPortIndex", OutputPortIndex);
+                helper.SetAttribute("InPortIndex", InputPortIndex);
+            }
 
-                SerializeMakeConnectionCommand(element, InputPortIndex, PortType.Input, 
-                MakeConnectionCommand.Mode.End);
+            internal static CreateAndConnectNodeCommand DeserializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                double x = helper.ReadDouble("X");
+                double y = helper.ReadDouble("Y");
+                bool createAsDownstreamNode = helper.ReadBoolean("CreateAsDownstreamNode");
+                bool addNewNodeToSelection = helper.ReadBoolean("AddNewNodeToSelection");
+
+                //var nodeElement = element.ChildNodes.OfType<XmlElement>().FirstOrDefault(el => el.Name != "ModelGuid");
+
+                Guid newNodeGuid, existingNodeGuid;
+                //if (nodeElement == null)
+                //{
+                //    // Get the old NodeId 
+                //    var guids = DeserializeGuid(element, helper);
+                //}
+                var guids = DeserializeGuid(element, helper).ToList();
+                newNodeGuid = guids[0];
+                existingNodeGuid = guids[1];
+                helper = new XmlElementHelper(element);
+                int outPortIndex = helper.ReadInteger("PortIndex");
+
+                helper = new XmlElementHelper(element);
+                int inPortIndex = helper.ReadInteger("PortIndex");
+
+                return new CreateAndConnectNodeCommand(newNodeGuid, existingNodeGuid, outPortIndex, inPortIndex, x, y,
+                    createAsDownstreamNode, addNewNodeToSelection);
             }
 
             private void SerializeCreateNodeCommand(XmlElement element)
             {
-                base.SerializeCore(element);
                 var helper = new XmlElementHelper(element);
                 helper.SetAttribute("X", X);
                 helper.SetAttribute("Y", Y);
-
-                if (NewNode != null)
-                {
-                    var nodeElement = NewNode.Serialize(element.OwnerDocument, SaveContext.File);
-                    element.AppendChild(nodeElement);
-                }
-                //else if (NodeXml != null)
-                //{
-                //    element.AppendChild(NodeXml);
-                //}
-                //else
-                //{
-                //    helper.SetAttribute("NodeName", Name);
-                //}
-            }
-
-            private void SerializeMakeConnectionCommand(XmlElement element, int portIndex, PortType type, 
-                MakeConnectionCommand.Mode mode)
-            {
-                base.SerializeCore(element);
-                var helper = new XmlElementHelper(element);
-                helper.SetAttribute("PortIndex", portIndex);
-                helper.SetAttribute("Type", ((int)type));
-                helper.SetAttribute("ConnectionMode", ((int)mode));
+                helper.SetAttribute("CreateAsDownstreamNode", CreateAsDownstreamNode);
+                helper.SetAttribute("AddNewNodeToSelection", AddNewNodeToSelection);
             }
 
             #endregion

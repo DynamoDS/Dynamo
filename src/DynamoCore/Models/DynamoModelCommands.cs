@@ -68,11 +68,65 @@ namespace Dynamo.Models
 
         void CreateAndConnectNodeImpl(CreateAndConnectNodeCommand command)
         {
-            AddNodeToCurrentWorkspace(command.NewNode, false, command.AddNewNodeToSelection);
-            CurrentWorkspace.RecordCreatedModel(command.NewNode);
+            using (CurrentWorkspace.UndoRecorder.BeginActionGroup())
+            {
+                var NewNode = CurrentWorkspace.GetModelInternal(command.NewNodeGuid) as NodeModel;
+                var ExistingNode = CurrentWorkspace.GetModelInternal(command.ExistingNodeGuid) as NodeModel;
+                
+                if(NewNode == null || ExistingNode == null) return;
 
-            ExecuteCommand(command.MakeConnectionCommandBegin);
-            ExecuteCommand(command.MakeConnectionCommandEnd);
+                AddNodeToCurrentWorkspace(NewNode, false, command.AddNewNodeToSelection);
+                CurrentWorkspace.UndoRecorder.RecordCreationForUndo(NewNode);
+
+                PortModel inPortModel, outPortModel;
+                if (command.CreateAsDownstreamNode)
+                {
+                    // Connect output port of Existing Node to input port of New node
+                    outPortModel = ExistingNode.OutPorts[command.OutputPortIndex];
+                    inPortModel = NewNode.InPorts[command.InputPortIndex];
+                }
+                else
+                {
+                    // Connect output port of New Node to input port of existing node
+                    outPortModel = NewNode.OutPorts[command.OutputPortIndex];
+                    inPortModel = ExistingNode.InPorts[command.InputPortIndex];
+                }
+                ConnectorModel connectorToRemove = null;
+
+                // Remove connector if one already exists
+                if (inPortModel.Connectors.Count > 0 && inPortModel.PortType == PortType.Input)
+                {
+                    connectorToRemove = inPortModel.Connectors[0];
+                    connectorToRemove.Delete();
+                }
+                // Create the new connector model
+                ConnectorModel newConnectorModel = ConnectorModel.Make(
+                    outPortModel.Owner,
+                    inPortModel.Owner,
+                    outPortModel.Index,
+                    inPortModel.Index
+                    );
+
+                // Record the creation of connector in the undo recorder.
+                var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
+                if (connectorToRemove != null)
+                {
+                    models.Add(connectorToRemove, UndoRedoRecorder.UserAction.Deletion);
+                }
+                models.Add(newConnectorModel, UndoRedoRecorder.UserAction.Creation);
+                foreach (var modelPair in models)
+                {
+                    switch (modelPair.Value)
+                    {
+                        case UndoRedoRecorder.UserAction.Creation:
+                            CurrentWorkspace.UndoRecorder.RecordCreationForUndo(modelPair.Key);
+                            break;
+                        case UndoRedoRecorder.UserAction.Deletion:
+                            CurrentWorkspace.UndoRecorder.RecordDeletionForUndo(modelPair.Key);
+                            break;
+                    }
+                }
+            }
         }
 
         NodeModel GetNodeFromCommand(CreateNodeCommand command)
