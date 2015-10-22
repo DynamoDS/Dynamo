@@ -47,7 +47,6 @@ using System.Runtime.InteropServices;
 // automated build process.
 [assembly: AssemblyVersion("0.9.0.2854")]
 
-
 // By default, the "Product version" shown in the file properties window is
 // the same as the value specified for AssemblyFileVersionAttribute.
 // Set AssemblyInformationalVersionAttribute to be the same as
@@ -65,3 +64,4 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyFileVersion("0.9.0.2854")]
+
