@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Threading;
 using System.Xml;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Core.Threading;
 using Dynamo.Engine;
@@ -440,7 +441,7 @@ namespace Dynamo.Models
         {
             // where necessary, assign defaults
             if (string.IsNullOrEmpty(configuration.Context))
-                configuration.Context = Core.Context.NONE;
+                configuration.Context = Configuration.Context.NONE;
 
             return new DynamoModel(configuration);
         }
@@ -1082,12 +1083,24 @@ namespace Dynamo.Models
         /// Call this method to reset the virtual machine, avoiding a race 
         /// condition by using a thread join inside the vm executive.
         /// TODO(Luke): Push this into a resync call with the engine controller
+        ///
+        /// Tracked in MAGN-5167.
+        /// As some async tasks use engine controller, for example 
+        /// CompileCustomNodeAsyncTask and UpdateGraphAsyncTask, it is possible
+        /// that engine controller is reset *before* tasks get executed. For
+        /// example, opening custom node will schedule a CompileCustomNodeAsyncTask
+        /// firstly and then reset engine controller. 
+        /// 
+        /// We should make sure engine controller is reset after all tasks that
+        /// depend on it get executed, or those tasks are thrown away if safe to 
+        /// do that. 
         /// </summary>
         /// <param name="markNodesAsDirty">Set this parameter to true to force 
         ///     reset of the execution substrait. Note that setting this parameter 
         ///     to true will have a negative performance impact.</param>
         public virtual void ResetEngine(bool markNodesAsDirty = false)
         {
+            
             ResetEngineInternal();
             foreach (var workspaceModel in Workspaces.OfType<HomeWorkspaceModel>())
             {

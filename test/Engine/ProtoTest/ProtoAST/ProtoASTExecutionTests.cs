@@ -981,7 +981,7 @@ namespace ProtoTest.ProtoAST
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void TestProtoASTExecute_ClassDecl_PropertyAccess_01()
         {
 
@@ -1063,7 +1063,7 @@ namespace ProtoTest.ProtoAST
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void TestProtoASTExecute_ClassDecl_MemFunctionCall_01()
         {
 
@@ -1409,7 +1409,7 @@ namespace ProtoTest.ProtoAST
 
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void TestCodeGenDS_ClassDecl_PropertyAccess_01()
         {
 
@@ -1489,7 +1489,7 @@ namespace ProtoTest.ProtoAST
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void TestCodeGenDS_ClassDecl_MemFunctionCall_01()
         {
 

@@ -64,7 +64,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redunadant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redunadant")]
         public void T004_DotOp_DefautConstructor_04()
         {
             String code =
@@ -97,7 +97,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSConstructor")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSConstructor")]
         public void T007_DotOp_SelfDefinedConstructor_02()
         {
             String code =
@@ -171,7 +171,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T012_DotOp_UserDefinedClass_01()
         {
             String code =
@@ -183,7 +183,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T013_DotOp_UserDefinedClass_02()
         {
             String code =
@@ -198,7 +198,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T014_DotOp_UserDefinedClass_03()
         {
             String code =
@@ -221,7 +221,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_TestAlreadyFails")]
+        [Ignore][Category("DSDefinedClass_Ignored_TestAlreadyFails")]
         [Category("Failure")]
         public void TV1467135_DotOp_Replication_1()
         {
@@ -238,7 +238,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_ReplicationInsideClass")]
+        [Ignore][Category("DSDefinedClass_Ignored_ReplicationInsideClass")]
         public void TV1467135_DotOp_Replication_2()
         {
             String code =
@@ -253,7 +253,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_TestAlreadyFails")]
+        [Ignore][Category("DSDefinedClass_Ignored_TestAlreadyFails")]
         [Category("Failure")]
         public void TV1467135_DotOp_Replication_3()
         {
@@ -271,7 +271,7 @@ namespace ProtoTest.Associative
 
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TV1467135_CallingFuncInSameScope()
         {
             String code =
@@ -283,7 +283,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignore_UsingThisKeyword")]
+        [Ignore][Category("DSDefinedClass_Ignore_UsingThisKeyword")]
         public void TV1467135_CallingFuncInSameScope_this()
         {
             String code =
@@ -296,7 +296,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignore_UsingThisKeyword")]
+        [Ignore][Category("DSDefinedClass_Ignore_UsingThisKeyword")]
         public void TV1467372_ThisKeyword()
         {
             String code =
@@ -307,7 +307,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignore_UsingThisKeyword")]
+        [Ignore][Category("DSDefinedClass_Ignore_UsingThisKeyword")]
         public void TV1467372_ThisKeyword_InMemberFunction_Replication()
         {
             String code =
@@ -318,7 +318,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignore_UsingThisKeyword")]
+        [Ignore][Category("DSDefinedClass_Ignore_UsingThisKeyword")]
         public void TV1467372_ThisKeyword_InMemberFunction_Replication_2()
         {
             String code =
@@ -329,7 +329,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignore_UsingThisKeyword")]
+        [Ignore][Category("DSDefinedClass_Ignore_UsingThisKeyword")]
         public void TV1467372_ThisKeyword_InMemberFunction_Replication_3()
         {
             String code =
@@ -341,7 +341,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignore_UsingThisKeyword")]
+        [Ignore][Category("DSDefinedClass_Ignore_UsingThisKeyword")]
         public void TV1467372_ThisKeyword_2()
         {
             String code =
@@ -351,7 +351,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignore_UsingThisKeyword")]
+        [Ignore][Category("DSDefinedClass_Ignore_UsingThisKeyword")]
         public void TV1467372_ThisKeyword_2_Replication()
         {
             String code =
@@ -362,7 +362,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignore_UsingThisKeyword")]
+        [Ignore][Category("DSDefinedClass_Ignore_UsingThisKeyword")]
         public void TV1467372_ThisKeyword_3()
         {
             String code =
@@ -375,7 +375,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignore_UsingThisKeyword")]
+        [Ignore][Category("DSDefinedClass_Ignore_UsingThisKeyword")]
         public void TV1467372_ThisKeyword_InMemberFunction_1()
         {
             String code =
@@ -385,7 +385,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignore_ReplicationWithinDSClass")]
+        [Ignore][Category("DSDefinedClass_Ignore_ReplicationWithinDSClass")]
         public void TV1467135_DotOp_Replication_4()
         {
             String code =
@@ -550,7 +550,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
         public void TV1467137_DotOp_Indexing_1()
         {
             String code =
@@ -565,7 +565,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
         public void TV1467137_1_DotOp_Update()
         {
             String code =
@@ -582,7 +582,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
         public void T021_DotOp_Nested_03()
         {
             String code =
@@ -598,7 +598,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
         public void TV1467333()
         {
             String code =
@@ -613,7 +613,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T022_DotOp_CallFunc_01()
         {
             String code =
@@ -625,7 +625,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClasswithinDSClass_AlreadyFailing")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClasswithinDSClass_AlreadyFailing")]
         [Category("Failure")]
         public void T023_DotOp_FuncCall_02()
         {
@@ -639,7 +639,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
 
         [Test]
         [Category("Failure")]
-        [Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
         public void T024_DotOp_FuncCall_03()
         {
             String code =
@@ -663,7 +663,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
         public void TV025_1467140_1()
         {
             String code =
@@ -676,7 +676,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
         public void TV025_1467140_2()
         {
             String code =
@@ -689,7 +689,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
         public void T026_DotOp_FuncCall_05()
         {
             String code =
@@ -703,7 +703,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
         public void T027_DotOp_FuncCall_06()
         {
             String code =
@@ -718,7 +718,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         //////Inheritance
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T028_Inheritance_Property()
         {
             String code =
@@ -734,7 +734,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         [Category("Class")]
         public void T029_Inheritance_Property_1()
         {
@@ -749,7 +749,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T030_Inheritance_Property_2()
         {
             String code =
@@ -760,7 +760,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
 
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T031_Inheritance_Property_3()
         {
             String code =
@@ -786,7 +786,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassProperty")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassProperty")]
         public void T032_Defect_ReservationCheck_rangeExp()
         {
             String code =
@@ -807,7 +807,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T033_PushThroughCasting_UserDefinedType()
         {
             String code =
@@ -852,7 +852,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T034_PushThroughCastingWithReplication_UserDefinedType()
         {
             String code =
@@ -1072,7 +1072,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
 [Test]        public void T039_Inheritance_()        {            String code =@"class A extends var{    fx = 0;    constructor A() : base var();    {        fx = 1;    }}a = A.A();b = a.fx;";            thisTest.RunScriptSource(code);            thisTest.Verify("fx", 1);        }*/
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T039_Inheritance_Method_1()
         {
             String code =
@@ -1084,7 +1084,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void TV1467161_Inheritance_Update_1()
         {
             String code =
@@ -1096,7 +1096,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void TV1467161_Inheritance_Update_2()
         {
             String code =
@@ -1109,7 +1109,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T040_Inheritance_Dynamic_Typing_1()
         {
             String code =
@@ -1121,7 +1121,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T041_Inheritance_Dynamic_Typing_2()
         {
             String code =
@@ -1135,7 +1135,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T042_Inheritance_Dynamic_Typing_3()
         {
             String code =
@@ -1149,7 +1149,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T044_Function_Overriding_NoArgs()
         {
             String code =
@@ -1161,7 +1161,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T043_Function_Overriding_1()
         {
             String code =
@@ -1175,7 +1175,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T043_Function_Overriding_2()
         {
             String code =
@@ -1189,7 +1189,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         [Category("Failure")]
         public void TV1467063_Function_Overriding()
         {
@@ -1206,7 +1206,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T045_Inheritance_Method_02()
         {
             String code =
@@ -1217,7 +1217,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T046_Inheritance_Method_03()
         {
             String code =
@@ -1228,7 +1228,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T047_Inheritance_Method_04()
         {
             String code =
@@ -1259,7 +1259,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void TV1467175_3()
         {
             String code =
@@ -1270,7 +1270,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void TV1467175_4()
         {
             String code =
@@ -1281,7 +1281,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T049_Inheritance_Update_01()
         {
             String code =
@@ -1295,7 +1295,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T049_Inheritance_Update_02()
         {
             String code =
@@ -1310,7 +1310,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T049_Inheritance_Update_03()
         {
             String code =
@@ -1338,7 +1338,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
 
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T050_Transitive_Inheritance_01()
         {
             String code =
@@ -1351,7 +1351,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T050_Transitive_Inheritance_02()
         {
             String code =
@@ -1365,7 +1365,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T050_Inheritance_Multi_Constructor_01()
         {
             String code =
@@ -1382,7 +1382,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         [Category("ToFixJun")]
         [Category("Failure")]
         [Category("Class")]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T051_TransitiveInheritance_Constructor()
         {
             String code =
@@ -1396,7 +1396,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T050_Inheritance_Multi_Constructor_02()
         {
             String code =
@@ -1499,7 +1499,7 @@ import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(va
 
         [Test]
         [Category("Failure")]
-        [Category("DSDefinedClass_Ignore")]
+        [Ignore][Category("DSDefinedClass_Ignore")]
         public void T053_ReplicationWithDiffTypesInArr()
         {
             String code =
@@ -1516,7 +1516,7 @@ import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(va
 
         [Test]
         [Category("Failure")]
-        [Category("DSDefinedClass_Ignore")]
+        [Ignore][Category("DSDefinedClass_Ignore")]
         public void T054_ReplicationWithInvalidTypesInArr()
         {
             String code =
@@ -1533,7 +1533,7 @@ import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(va
         }
         
         [Test]
-        [Category("DSDefinedClass_Ignore_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignore_DSClassInheritance")]
         public void T055_ReplicationWithDiffTypesInArr_UserDefined_Simpler()
         {
             String code =
@@ -1554,7 +1554,7 @@ import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(va
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignore_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignore_DSClassInheritance")]
         public void Test()
         {
             String code =
@@ -1585,7 +1585,7 @@ import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(va
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T058_nonmatchingclass_1467162_3()
         {
             String code =
@@ -1596,7 +1596,7 @@ import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(va
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T059_Polymphism()
         {
             String code =
@@ -1606,7 +1606,7 @@ import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(va
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T059_Polymphism_2()
         {
             String code =
@@ -1617,7 +1617,7 @@ import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(va
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T059_Polymphism_3()
         {
             String code =
@@ -1627,7 +1627,7 @@ import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(va
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T059_Polymphism_4()
         {
             String code =
@@ -1637,7 +1637,7 @@ import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(va
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T059_Polymphism_5()
         {
             String code =

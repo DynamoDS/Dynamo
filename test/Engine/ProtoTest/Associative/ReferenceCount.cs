@@ -878,7 +878,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignore_DisposeWithinDSClass")]
+        [Ignore][Category("DSDefinedClass_Ignore_DisposeWithinDSClass")]
         public void TestReferenceCount66_DID1467277()
         {
             string code = @"class A{    x;    static s_dispose = 0;    constructor A(i)    {        x = i;    }    def _Dispose()    {        s_dispose = s_dispose + 1;        return = null;    }}class B{    def CreateA(i)    {        return = DisposeTestClassA.DisposeTestClassA(i);    }}b = DisposeTestClassB.DisposeTestClassB();t = A.s_dispose;";
@@ -889,7 +889,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         public void TestReferenceCount67_DID1467277_02()
         {
             string code = @"class A{    x;    static s_dispose = 0;    constructor A(i)    {        x = i;    }    def _Dispose()    {        s_dispose = s_dispose + 1;        return = null;    }}t = A.s_dispose;";
@@ -967,7 +967,7 @@ d = DisposeTestClassD.count;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         public void T074_DG1465049()
         {
             string code = @"class Obj{    static s_dispose = 0;    mi : int;    constructor Obj(i:int)    {        mi = i;    }        def _Dispose()    {        s_dispose = s_dispose + 1;    }    def Translate(i)    {        newi = mi + i;        return = Obj.Obj(newi);    }}as = {Obj.Obj(2), Obj.Obj(3), Obj.Obj(5)};as[1] = as[1].Translate(100);as = null;__GC();d = Obj.s_dispose;";
@@ -979,7 +979,7 @@ d = DisposeTestClassD.count;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         public void TestReferenceCountForMembers()
         {
             string code = @"a_dispose = 0;class AA{    def _Dispose()    {        a_dispose = a_dispose + 1;    }}class Obj{    as : AA[]..[];    constructor Obj()    {        [Imperative]        {            as = {AA.AA()};        }    }}[Associative]{    b = Obj.Obj();}__GC();";
@@ -988,7 +988,7 @@ d = DisposeTestClassD.count;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         public void TestReferenceCountForStaticMembers()
         {
             string code = @"a_dispose = 0;class AA{    def _Dispose()    {        a_dispose = a_dispose + 1;    }}class BB{    static sas : AA[]..[];    constructor BB()    {        [Imperative]        {            sas[0] = {AA.AA()};        }    }}[Associative]{    b = BB.BB();    b.sas = null;}__GC();";
@@ -997,7 +997,7 @@ d = DisposeTestClassD.count;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         public void TestReferenceCountForStaticMembers2()
         {
             string code = @"a_dispose = 0;class AA{    static x;    def _Dispose()    {        a_dispose = a_dispose + 1;    }}class BB{    sas : AA[]..[];    constructor BB()    {        [Imperative]        {            sas = {AA.AA()};            sas = {AA.AA()};        }    }}[Associative]{    b = BB.BB();    b.sas = null;}__GC();";

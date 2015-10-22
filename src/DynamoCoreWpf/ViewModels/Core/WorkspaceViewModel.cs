@@ -12,6 +12,7 @@ using Dynamo.UI;
 using Dynamo.Utilities;
 
 using System.Windows.Input;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Wpf.ViewModels;
 

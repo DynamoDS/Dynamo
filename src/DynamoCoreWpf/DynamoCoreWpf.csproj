@@ -152,6 +152,7 @@
     <Compile Include="Extensions\IViewExtension.cs" />
     <Compile Include="Extensions\IViewExtensionLoader.cs" />
     <Compile Include="Extensions\IViewExtensionManager.cs" />
+    <Compile Include="Extensions\MenuBarTypeExtensions.cs" />
     <Compile Include="Extensions\ViewExtensionLoader.cs" />
     <Compile Include="Extensions\ViewExtensionManager.cs" />
     <Compile Include="Extensions\ViewLoadedParams.cs" />

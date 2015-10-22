@@ -17,6 +17,7 @@ using DynamoShapeManager;
 using NUnit.Framework;
 using Dynamo.UI;
 using System.Reflection;
+using Dynamo.Configuration;
 using TestServices;
 
 using PythonNodeModels;

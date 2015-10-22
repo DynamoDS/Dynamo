@@ -442,7 +442,7 @@ test=VectorProperties(null);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void Z002_Defect_1461399_2()
         {
