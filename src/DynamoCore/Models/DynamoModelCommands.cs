@@ -70,50 +70,30 @@ namespace Dynamo.Models
         {
             using (CurrentWorkspace.UndoRecorder.BeginActionGroup())
             {
-                var NewNode = CurrentWorkspace.GetModelInternal(command.NewNodeGuid) as NodeModel;
-                var ExistingNode = CurrentWorkspace.GetModelInternal(command.ExistingNodeGuid) as NodeModel;
+                var newNode = CurrentWorkspace.GetModelInternal(command.ModelGuid) as NodeModel;
+                var existingNode = CurrentWorkspace.GetModelInternal(command.ModelGuids.ElementAt(1)) as NodeModel;
                 
-                if(NewNode == null || ExistingNode == null) return;
+                if(newNode == null || existingNode == null) return;
 
-                AddNodeToCurrentWorkspace(NewNode, false, command.AddNewNodeToSelection);
-                CurrentWorkspace.UndoRecorder.RecordCreationForUndo(NewNode);
+                AddNodeToCurrentWorkspace(newNode, false, command.AddNewNodeToSelection);
+                CurrentWorkspace.UndoRecorder.RecordCreationForUndo(newNode);
 
                 PortModel inPortModel, outPortModel;
                 if (command.CreateAsDownstreamNode)
                 {
                     // Connect output port of Existing Node to input port of New node
-                    outPortModel = ExistingNode.OutPorts[command.OutputPortIndex];
-                    inPortModel = NewNode.InPorts[command.InputPortIndex];
+                    outPortModel = existingNode.OutPorts[command.OutputPortIndex];
+                    inPortModel = newNode.InPorts[command.InputPortIndex];
                 }
                 else
                 {
                     // Connect output port of New Node to input port of existing node
-                    outPortModel = NewNode.OutPorts[command.OutputPortIndex];
-                    inPortModel = ExistingNode.InPorts[command.InputPortIndex];
+                    outPortModel = newNode.OutPorts[command.OutputPortIndex];
+                    inPortModel = existingNode.InPorts[command.InputPortIndex];
                 }
-                ConnectorModel connectorToRemove = null;
 
-                // Remove connector if one already exists
-                if (inPortModel.Connectors.Count > 0 && inPortModel.PortType == PortType.Input)
-                {
-                    connectorToRemove = inPortModel.Connectors[0];
-                    connectorToRemove.Delete();
-                }
-                // Create the new connector model
-                ConnectorModel newConnectorModel = ConnectorModel.Make(
-                    outPortModel.Owner,
-                    inPortModel.Owner,
-                    outPortModel.Index,
-                    inPortModel.Index
-                    );
+                var models = GetConnectorsToAddAndDelete(inPortModel, outPortModel);
 
-                // Record the creation of connector in the undo recorder.
-                var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
-                if (connectorToRemove != null)
-                {
-                    models.Add(connectorToRemove, UndoRedoRecorder.UserAction.Deletion);
-                }
-                models.Add(newConnectorModel, UndoRedoRecorder.UserAction.Creation);
                 foreach (var modelPair in models)
                 {
                     switch (modelPair.Value)
@@ -310,43 +290,54 @@ namespace Dynamo.Models
                 return;
             
             PortModel portModel = isInPort ? node.InPorts[portIndex] : node.OutPorts[portIndex];
+
+            var models = GetConnectorsToAddAndDelete(portModel, activeStartPort);
+
+            WorkspaceModel.RecordModelsForUndo(models, CurrentWorkspace.UndoRecorder);
+            activeStartPort = null;
+        }
+
+        static Dictionary<ModelBase, UndoRedoRecorder.UserAction> GetConnectorsToAddAndDelete(
+            PortModel endPort, PortModel startPort)
+        {
             ConnectorModel connectorToRemove = null;
 
             // Remove connector if one already exists
-            if (portModel.Connectors.Count > 0 && portModel.PortType == PortType.Input)
+            if (endPort.Connectors.Count > 0 && endPort.PortType == PortType.Input)
             {
-                connectorToRemove = portModel.Connectors[0];
+                connectorToRemove = endPort.Connectors[0];
                 connectorToRemove.Delete();
             }
 
             // We could either connect from an input port to an output port, or 
             // another way around (in which case we swap first and second ports).
-            PortModel firstPort, second;
-            if (portModel.PortType != PortType.Input)
+            PortModel firstPort, secondPort;
+            if (endPort.PortType != PortType.Input)
             {
-                firstPort = portModel;
-                second = activeStartPort;
+                firstPort = endPort;
+                secondPort = startPort;
             }
             else
             {
                 // Create the new connector model
-                firstPort = activeStartPort;
-                second = portModel;
+                firstPort = startPort;
+                secondPort = endPort;
             }
 
             ConnectorModel newConnectorModel = ConnectorModel.Make(
                 firstPort.Owner,
-                second.Owner,
+                secondPort.Owner,
                 firstPort.Index,
-                second.Index);
+                secondPort.Index);
 
             // Record the creation of connector in the undo recorder.
             var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
             if (connectorToRemove != null)
+            {
                 models.Add(connectorToRemove, UndoRedoRecorder.UserAction.Deletion);
+            }
             models.Add(newConnectorModel, UndoRedoRecorder.UserAction.Creation);
-            WorkspaceModel.RecordModelsForUndo(models, CurrentWorkspace.UndoRecorder);
-            activeStartPort = null;
+            return models;
         }
 
         void DeleteModelImpl(DeleteModelCommand command)

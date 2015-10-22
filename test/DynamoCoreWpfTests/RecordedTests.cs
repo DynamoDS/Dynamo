@@ -365,7 +365,7 @@ namespace DynamoCoreWpfTests
             double x = randomizer.NextDouble() * 1000;
             double y = randomizer.NextDouble() * 1000;
 
-            var cmdOne = new DynamoModel.CreateAndConnectNodeCommand(newNodeGuid, existingNodeGuid, 
+            var cmdOne = new DynamoModel.CreateAndConnectNodeCommand(new [] {newNodeGuid, existingNodeGuid},
                 0, 0, x, y, false, false);
 
             var cmdTwo = DuplicateAndCompare(cmdOne);
@@ -375,8 +375,8 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(cmdOne.OutputPortIndex, cmdTwo.OutputPortIndex);
             Assert.AreEqual(cmdOne.CreateAsDownstreamNode, cmdTwo.CreateAsDownstreamNode);
             Assert.AreEqual(cmdOne.AddNewNodeToSelection, cmdTwo.AddNewNodeToSelection);
-            Assert.AreEqual(cmdOne.NewNodeGuid, cmdTwo.NewNodeGuid);
-            Assert.AreEqual(cmdOne.ExistingNodeGuid, cmdTwo.ExistingNodeGuid);
+            Assert.AreEqual(cmdOne.ModelGuid, cmdTwo.ModelGuid);
+            Assert.AreEqual(cmdOne.ModelGuids.ElementAt(1), cmdTwo.ModelGuids.ElementAt(1));
 
             // A RecordableCommand should be created in "recording mode" by default, 
             // and only deserialized commands should be marked as "in playback mode".
