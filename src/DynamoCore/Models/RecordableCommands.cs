@@ -701,7 +701,7 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             /// <summary>
-            /// 
+            /// Creates a new CreateAndConnectNodeCommand with the given inputs
             /// </summary>
             /// <param name="newNode">new node to create in the command</param>
             /// <param name="existingNode">Existing node to connect from/to</param>
@@ -786,10 +786,45 @@ namespace Dynamo.Models
 
             protected override void SerializeCore(XmlElement element)
             {
-                var command = new CreateNodeCommand(NewNode, X, Y, true, true);
-                command.Serialize();
-                MakeConnectionCommandBegin.Serialize();
-                MakeConnectionCommandEnd.Serialize();
+                SerializeCreateNodeCommand(element);
+
+                SerializeMakeConnectionCommand(element, OutputPortIndex, PortType.Output, 
+                MakeConnectionCommand.Mode.Begin);
+
+                SerializeMakeConnectionCommand(element, InputPortIndex, PortType.Input, 
+                MakeConnectionCommand.Mode.End);
+            }
+
+            private void SerializeCreateNodeCommand(XmlElement element)
+            {
+                base.SerializeCore(element);
+                var helper = new XmlElementHelper(element);
+                helper.SetAttribute("X", X);
+                helper.SetAttribute("Y", Y);
+
+                if (NewNode != null)
+                {
+                    var nodeElement = NewNode.Serialize(element.OwnerDocument, SaveContext.File);
+                    element.AppendChild(nodeElement);
+                }
+                //else if (NodeXml != null)
+                //{
+                //    element.AppendChild(NodeXml);
+                //}
+                //else
+                //{
+                //    helper.SetAttribute("NodeName", Name);
+                //}
+            }
+
+            private void SerializeMakeConnectionCommand(XmlElement element, int portIndex, PortType type, 
+                MakeConnectionCommand.Mode mode)
+            {
+                base.SerializeCore(element);
+                var helper = new XmlElementHelper(element);
+                helper.SetAttribute("PortIndex", portIndex);
+                helper.SetAttribute("Type", ((int)type));
+                helper.SetAttribute("ConnectionMode", ((int)mode));
             }
 
             #endregion
