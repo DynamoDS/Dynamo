@@ -61,6 +61,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected List<NodeModel> recentlyAddedNodes = new List<NodeModel>();
         protected bool active;
+        protected bool isGridVisible;
         private readonly List<IRenderPackage> currentTaggedPackages = new List<IRenderPackage>();
 
         /// <summary>
@@ -84,6 +85,19 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 RaisePropertyChanged("Active");
 
                 OnActiveStateChanged();
+            }
+        }
+
+        public virtual bool IsGridVisible
+        {
+            get { return isGridVisible; }
+            set
+            {
+                if (isGridVisible == value) return;
+
+                isGridVisible = value;
+                preferences.IsBackgroundGridVisible = value;
+                RaisePropertyChanged("IsGridVisible");
             }
         }
 
@@ -191,6 +205,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             Name = Resources.BackgroundPreviewDefaultName;
             Active = parameters.Preferences.IsBackgroundPreviewActive;
+            isGridVisible = parameters.Preferences.IsBackgroundGridVisible;
             logger = parameters.Logger;
 
             RegisterEventHandlers();

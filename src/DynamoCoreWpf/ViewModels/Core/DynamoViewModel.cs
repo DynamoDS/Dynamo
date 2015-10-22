@@ -1503,6 +1503,18 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        public void ToggleBackgroundGridVisibility(object parameter)
+        {
+            if (!CanToggleBackgroundGridVisibility(parameter)) return;
+
+            BackgroundPreviewViewModel.IsGridVisible = !BackgroundPreviewViewModel.IsGridVisible;
+        }
+
+        internal bool CanToggleBackgroundGridVisibility(object parameter)
+        {
+            return BackgroundPreviewViewModel != null && BackgroundPreviewViewModel.Active;
+        }
+
         public void GoToWorkspace(object parameter)
         {
             if (parameter is Guid && model.CustomNodeManager.Contains((Guid)parameter))

@@ -581,8 +581,14 @@
                                 </MenuItem.ItemContainerStyle>
                             </MenuItem>
 
+                            <MenuItem Header="{x:Static p:Resources.DynamoViewViewMenuShowGrid}"
+                                      IsEnabled="{Binding BackgroundPreviewActive}"
+                                      IsChecked="{Binding BackgroundPreviewViewModel.IsGridVisible}"
+                                      Focusable="False"
+                                      Command="{Binding ToggleBackgroundGridVisibilityCommand}" />
+
                             <MenuItem Header="{x:Static p:Resources.DynamoViewViewMenuPreviewNavigate}"
-                                      IsEnabled="{Binding Path=BackgroundPreviewActive}"
+                                      IsEnabled="{Binding BackgroundPreviewActive}"
                                       IsChecked="{Binding Path=BackgroundPreviewViewModel.CanNavigateBackground}"
                                       InputGestureText="Ctrl + B"
                                       Focusable="False"
