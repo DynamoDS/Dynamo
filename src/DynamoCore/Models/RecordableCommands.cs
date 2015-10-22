@@ -689,31 +689,62 @@ namespace Dynamo.Models
             #endregion
         }
 
+        /// <summary>
+        /// Command used to create a new upstream/downstream node and connect
+        /// it to an existing node in a single step
+        /// </summary>
         [DataContract]
-        public class AutoCreateNodeCommand : ModelBasedRecordableCommand
+        public class CreateAndConnectNodeCommand : ModelBasedRecordableCommand
         {
+            
+
             #region Public Class Methods
 
-            private void SetProperties(int outputPortIndex, int inputPortIndex, double x, double y, 
-                bool defaultPosition, bool transformCoordinates)
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="newNode">new node to create in the command</param>
+            /// <param name="existingNode">Existing node to connect from/to</param>
+            /// <param name="outputPortIndex"></param>
+            /// <param name="inputPortIndex"></param>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <param name="createAsDownstreamNode">
+            /// new node to be created as downstream or upstream node wrt the existing node
+            /// </param>
+            /// <param name="addNewNodeToSelection">select the new node after it is created by default</param>
+            public CreateAndConnectNodeCommand(
+                NodeModel newNode, NodeModel existingNode, int outputPortIndex, int inputPortIndex, 
+                double x, double y, bool createAsDownstreamNode = true, bool addNewNodeToSelection = true)
+                : base(newNode != null ? new[] { newNode.GUID } : new[] { Guid.Empty })
             {
+                NewNode = newNode;
+                ExistingNode = existingNode;
+
                 OutputPortIndex = outputPortIndex;
                 InputPortIndex = inputPortIndex;
                 X = x;
                 Y = y;
-                DefaultPosition = defaultPosition;
-                TransformCoordinates = transformCoordinates;
-            }
 
-            public AutoCreateNodeCommand(
-                NodeModel inputNode, NodeModel givenNode, int outputPortIndex, int inputPortIndex, 
-                double x, double y, bool defaultPosition, bool transformCoordinates)
-                : base(inputNode != null && givenNode != null ? new[] { inputNode.GUID, givenNode.GUID } : new[] { Guid.Empty })
-            {
-                InputNode = inputNode;
-                GivenNode = givenNode;
+                AddNewNodeToSelection = addNewNodeToSelection;
+
+                Guid startNodeGuid, endNodeGuid;
+                if (createAsDownstreamNode)
+                {
+                    startNodeGuid = ExistingNode.GUID;
+                    endNodeGuid = NewNode.GUID;
+                }
+                else
+                {
+                    startNodeGuid = NewNode.GUID;
+                    endNodeGuid = ExistingNode.GUID;
+                }
+
+                var mode = MakeConnectionCommand.Mode.Begin;
+                MakeConnectionCommandBegin = new MakeConnectionCommand(startNodeGuid, OutputPortIndex, PortType.Output, mode);
                 
-                SetProperties(outputPortIndex, inputPortIndex, x, y, defaultPosition, transformCoordinates);
+                mode = MakeConnectionCommand.Mode.End;
+                MakeConnectionCommandEnd = new MakeConnectionCommand(endNodeGuid, InputPortIndex, PortType.Input, mode);
             }
 
             #endregion
@@ -721,9 +752,9 @@ namespace Dynamo.Models
             #region Public Command Properties
 
             // Faster, direct creation
-            internal NodeModel InputNode { get; private set; }
+            internal NodeModel NewNode { get; private set; }
 
-            internal NodeModel GivenNode { get; private set; }
+            internal NodeModel ExistingNode { get; private set; }
 
             [DataMember]
             internal int OutputPortIndex { get; private set; }
@@ -731,23 +762,18 @@ namespace Dynamo.Models
             [DataMember]
             internal int InputPortIndex { get; private set; }
 
-
-
             [DataMember]
             internal double X { get; private set; }
 
             [DataMember]
             internal double Y { get; private set; }
 
-            [DataMember]
-            internal bool DefaultPosition { get; private set; }
+            // These properties need not be serialized/deserialized
+            internal bool AddNewNodeToSelection { get; private set; }
 
-            [DataMember]
-            internal bool TransformCoordinates { get; private set; }
+            internal MakeConnectionCommand MakeConnectionCommandBegin { get; private set; }
+            internal MakeConnectionCommand MakeConnectionCommandEnd { get; private set; }
 
-            [DataMember]
-            //Legacy properties
-            public string Name { get; private set; }
 
             #endregion
 
@@ -755,39 +781,15 @@ namespace Dynamo.Models
 
             protected override void ExecuteCore(DynamoModel dynamoModel)
             {
-                //dynamoModel.AddNodeToCurrentWorkspace(InputNode, centered: false, addToSelection: false);
-                dynamoModel.CurrentWorkspace.RecordCreatedModel(InputNode);
-
-                var mode = MakeConnectionCommand.Mode.Begin;
-                var cmd = new MakeConnectionCommand(InputNode.GUID, OutputPortIndex, PortType.Output, mode);
-                dynamoModel.ExecuteCommand(cmd);
-
-                mode = MakeConnectionCommand.Mode.End;
-                cmd = new MakeConnectionCommand(GivenNode.GUID, InputPortIndex, PortType.Input, mode);
-                dynamoModel.ExecuteCommand(cmd);
+                dynamoModel.CreateAndConnectNodeImpl(this);
             }
 
             protected override void SerializeCore(XmlElement element)
             {
-                base.SerializeCore(element);
-                var helper = new XmlElementHelper(element);
-                helper.SetAttribute("X", X);
-                helper.SetAttribute("Y", Y);
-                helper.SetAttribute("DefaultPosition", DefaultPosition);
-                helper.SetAttribute("TransformCoordinates", TransformCoordinates);
-
-                if (InputNode != null)
-                {
-                    var nodeElement = InputNode.Serialize(element.OwnerDocument, SaveContext.File);
-                    element.AppendChild(nodeElement);
-                }
-                helper.SetAttribute("PortIndex", OutputPortIndex);
-                helper.SetAttribute("Type", ((int)PortType.Output));
-                helper.SetAttribute("ConnectionMode", ((int)MakeConnectionCommand.Mode.Begin));
-
-                helper.SetAttribute("PortIndex", InputPortIndex);
-                helper.SetAttribute("Type", ((int)PortType.Input));
-                helper.SetAttribute("ConnectionMode", ((int)MakeConnectionCommand.Mode.End));
+                var command = new CreateNodeCommand(NewNode, X, Y, true, true);
+                command.Serialize();
+                MakeConnectionCommandBegin.Serialize();
+                MakeConnectionCommandEnd.Serialize();
             }
 
             #endregion

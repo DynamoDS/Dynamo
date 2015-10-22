@@ -121,7 +121,7 @@ namespace Dynamo.ViewModels
                 case "ConvertNodesToCodeCommand":
                 case "UngroupModelCommand":
                 case "AddModelToGroupCommand":
-                case "AutoCreateNodeCommand":
+                case "CreateAndConnectNodeCommand":
                     RaiseCanExecuteUndoRedo();
                     break;
 
@@ -177,7 +177,7 @@ namespace Dynamo.ViewModels
                 case "AddModelToGroupCommand":
                 case "AddPresetCommand":
                 case "ApplyPresetCommand":
-                case "AutoCreateNodeCommand":
+                case "CreateAndConnectNodeCommand":
                     // for this commands there is no need
                     // to do anything before execution
                     break;
