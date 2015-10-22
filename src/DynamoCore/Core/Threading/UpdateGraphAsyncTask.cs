@@ -95,18 +95,11 @@ namespace Dynamo.Core.Threading
         protected override void HandleTaskExecutionCore()
         {
             // Updating graph in the context of ISchedulerThread.
-
-            // EngineController might be disposed and become invalid.
-            // After MAGN-5167 is done, we could remove this checking.
-            if (!engineController.IsDisposed)
-                engineController.UpdateGraphImmediate(graphSyncData);
+            engineController.UpdateGraphImmediate(graphSyncData);
         }
 
         protected override void HandleTaskCompletionCore()
         {
-            if (engineController.IsDisposed)
-                return;
-
             // Retrieve warnings in the context of ISchedulerThread.
             BuildWarnings = engineController.GetBuildWarnings();
             RuntimeWarnings = engineController.GetRuntimeWarnings();
