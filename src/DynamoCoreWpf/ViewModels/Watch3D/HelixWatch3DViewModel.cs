@@ -660,24 +660,54 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected override void ZoomToFit(object parameter)
         {
-            if (!DynamoSelection.Instance.Selection.Any())
-            {
-                OnRequestZoomToFit(ComputeBoundsForGeometry(SceneItems.Where(item=>item is GeometryModel3D).Cast<GeometryModel3D>().ToArray()));
-            }
-
-            var selNodes = DynamoSelection.Instance.Selection.Where(s => s is NodeModel).Cast<NodeModel>().ToArray();
-            if (!selNodes.Any()) return;
-
+            var idents = FindIdentifiersForContext();
             var geoms = SceneItems.Where(item => item is GeometryModel3D).Cast<GeometryModel3D>();
-            var idents = FindIdentifiersForSelectedNodes(selNodes);
-            var selGeoms = FindGeometryForIdentifiers(geoms, idents);
-            var selectionBounds = ComputeBoundsForGeometry(selGeoms.ToArray());
+            var targetGeoms = FindGeometryForIdentifiers(geoms, idents);
+            var selectionBounds = ComputeBoundsForGeometry(targetGeoms.ToArray());
 
             // Don't zoom if there is no valid bounds.
             if (selectionBounds.Equals(new BoundingBox())) return;
 
             OnRequestZoomToFit(selectionBounds);
         }
+
+        /// <summary>
+        /// Finds all output identifiers based on the context.
+        /// 
+        /// Ex. If there are nodes selected, returns all identifiers for outputs
+        /// on the selected nodes. If you're in a custom node, returns all identifiers
+        /// for the outputs from instances of those custom nodes in the graph. etc.
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerable<string> FindIdentifiersForContext()
+        {
+            IEnumerable<string> idents = null;
+
+            var hs = (HomeWorkspaceModel)model.Workspaces.FirstOrDefault(ws => ws is HomeWorkspaceModel);
+            if (hs == null)
+            {
+                return idents;
+            }
+
+            if (InCustomNode())
+            {
+                idents = FindIdentifiersForCustomNodes(hs);
+            }
+            else
+            {
+                if (DynamoSelection.Instance.Selection.Any())
+                {
+                    var selNodes = DynamoSelection.Instance.Selection.Where(s => s is NodeModel).Cast<NodeModel>().ToArray();
+                    idents = FindIdentifiersForSelectedNodes(selNodes);
+                }
+                else
+                {
+                    idents = AllOutputIdentifiersInWorkspace(hs);
+                }
+            }
+
+            return idents;
+        } 
 
         protected override bool CanToggleCanNavigateBackground(object parameter)
         {
@@ -1038,11 +1068,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        private bool InCustomNode()
+        {
+             return CurrentSpaceViewModel.Model is CustomNodeWorkspaceModel;
+        }
+
         private void AggregateRenderPackages(IEnumerable<HelixRenderPackage> packages)
         {
-            var inCustomNode = CurrentSpaceViewModel.Model is CustomNodeWorkspaceModel;
+            
             IEnumerable<string> customNodeIdents = null;
-            if (inCustomNode)
+            if (InCustomNode())
             {
                 var hs = model.Workspaces.FirstOrDefault(ws => ws is HomeWorkspaceModel);
                 if (hs != null)
@@ -1171,7 +1206,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     // If we are in a custom node, and the current
                     // package's id is NOT one of the output ids of custom nodes
                     // in the graph, then draw the geometry with transparency.
-                    if (inCustomNode && !customNodeIdents.Contains(baseId))
+                    if (InCustomNode() && !customNodeIdents.Contains(baseId))
                     {
                         meshGeometry3D.RequiresPerVertexColoration = true;
                         mesh.Colors.AddRange(m.Colors.Select(c=>new Color4(c.Red, c.Green, c.Blue, 0.1f)));
@@ -1416,6 +1451,18 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 workspace.Nodes.Where(n => n is Function)
                     .SelectMany(n => n.OutPorts.Select(p => rgx.Replace(n.GetAstIdentifierForOutputIndex(p.Index).Value, "")));
         }
+
+        internal static IEnumerable<string> AllOutputIdentifiersInWorkspace(HomeWorkspaceModel workspace)
+        {
+            if (workspace == null)
+            {
+                return null;
+            }
+
+            return
+                workspace.Nodes
+                    .SelectMany(n => n.OutPorts.Select(p => n.GetAstIdentifierForOutputIndex(p.Index).Value));
+        } 
 
         internal static IEnumerable<GeometryModel3D> FindGeometryForIdentifiers(IEnumerable<GeometryModel3D> geometry, IEnumerable<string> identifiers)
         {
