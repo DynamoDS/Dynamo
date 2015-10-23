@@ -1251,11 +1251,11 @@ namespace Dynamo.Tests
 			var maxWithKey = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>("a8ad0bfb-25f2-4ddc-aea6-927bdc739753");
 			var minWithKey = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>("2b2b1e9c-2ae1-4ba2-8b82-e01311df5429");
 
-			// check that the nodes are migrated based on whether the key is connected or not
-			Assert.AreEqual(1, maxNoKey.InPortData.Count);
-			Assert.AreEqual(1, minNoKey.InPortData.Count);
-			Assert.AreEqual(2, maxWithKey.InPortData.Count);
-			Assert.AreEqual(2, minWithKey.InPortData.Count);
+            // check that the nodes are migrated based on whether the key is connected or not
+            Assert.AreEqual(1, maxNoKey.InPorts.Count);
+            Assert.AreEqual(1, minNoKey.InPorts.Count);
+            Assert.AreEqual(2, maxWithKey.InPorts.Count);
+            Assert.AreEqual(2, minWithKey.InPorts.Count);
 			
 			// check output values
             Assert.AreEqual("eeee", maxNoKey.GetValue(0, CurrentDynamoModel.EngineController).Data);

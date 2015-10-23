@@ -12,14 +12,21 @@ namespace DSCoreNodesUI.HigherOrder
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
     [NodeDescription("FunctionApplyDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
+    [InPortNames("func")]
+    [InPortTypes("_FunctionObject")]
+    [InPortDescriptionsAttribute(typeof(Resources),
+        "ApplyPortDataFuncToolTip")]
+    [OutPortNames("func(args)")]
+    [OutPortTypes("var[]..[]")]
+    [OutPortDescriptions(typeof(Resources),
+        "ApplyPortDataFuncArgToolTip")]
     public class ApplyFunction : VariableInputNode
     {
-        public ApplyFunction() : base()
+        public ApplyFunction()
+            : base()
         {
-            InPortData.Add(new PortData("func", Resources.ApplyPortDataFuncToolTip));
-            OutPortData.Add(new PortData("func(args)", Resources.ApplyPortDataFuncArgToolTip));
-            AddInput();
             RegisterAllPorts();
+            AddInput();
         }
 
         protected override string GetInputName(int index)
@@ -40,7 +47,7 @@ namespace DSCoreNodesUI.HigherOrder
 
         protected override void RemoveInput()
         {
-            if (InPortData.Count > 1)
+            if (InPorts.Count > 1)
                 base.RemoveInput();
         }
 
@@ -91,7 +98,7 @@ namespace DSCoreNodesUI.HigherOrder
 
         protected override void RemoveInput()
         {
-            if (InPortData.Count > 2)
+            if (InPorts.Count > 2)
                 base.RemoveInput();
         }
 

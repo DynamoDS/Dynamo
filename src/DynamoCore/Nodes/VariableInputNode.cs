@@ -129,13 +129,15 @@ namespace Dynamo.Nodes
         /// </summary>
         public virtual int GetInputIndexFromModel()
         {
-            return model.InPortData.Count;
+            int inportDataCount = model.InPortData.Count;
+            int inportsCount = model.InPorts.Count;
+            return inportDataCount > inportsCount ? inportDataCount : inportsCount;
         }
 
         private void MarkNodeDirty()
         {
-            var dirty = model.InPortData.Count != inputAmtLastBuild
-                || Enumerable.Range(0, model.InPortData.Count).Any(idx => connectedLastBuild[idx] == model.HasInput(idx));
+            var dirty = model.InPorts.Count != inputAmtLastBuild
+                || Enumerable.Range(0, model.InPorts.Count).Any(idx => connectedLastBuild[idx] == model.HasInput(idx));
 
             if (dirty)
             {
@@ -148,10 +150,7 @@ namespace Dynamo.Nodes
         /// </summary>
         public virtual void RemoveInputFromModel()
         {
-            var count = model.InPortData.Count;
-            if (count > 0)
-                model.InPortData.RemoveAt(count - 1);
-
+            model.RemoveInputPort(model.InPorts.Count - 1);
             MarkNodeDirty();
         }
 
@@ -161,7 +160,7 @@ namespace Dynamo.Nodes
         public virtual void AddInputToModel()
         {
             var idx = GetInputIndexFromModel();
-            model.InPortData.Add(new PortData(GetInputName(idx), GetInputTooltip(idx)));
+            model.AddInputPort(new PortData(GetInputName(idx), GetInputTooltip(idx)));
 
             MarkNodeDirty();
         }
@@ -172,18 +171,18 @@ namespace Dynamo.Nodes
         /// <param name="numInputs"></param>
         public void SetNumInputs(int numInputs)
         {
-            while (model.InPortData.Count < numInputs)
+            while (model.InPorts.Count < numInputs)
                 AddInputToModel();
 
-            while (model.InPortData.Count > numInputs)
+            while (model.InPorts.Count > numInputs)
                 RemoveInputFromModel();
         }
 
         public void OnBuilt()
         {
-            inputAmtLastBuild = model.InPortData.Count;
+            inputAmtLastBuild = model.InPorts.Count;
 
-            foreach (var idx in Enumerable.Range(0, model.InPortData.Count))
+            foreach (var idx in Enumerable.Range(0, model.InPorts.Count))
                 connectedLastBuild[idx] = model.HasInput(idx);
         }
 

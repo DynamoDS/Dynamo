@@ -12,13 +12,18 @@ namespace DSCoreNodesUI
     [NodeSearchTags("ListCreateSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
     [IsDesignScriptCompatible]
+    [InPortNames("item0")]
+    [InPortTypes("var")]
+    [InPortDescriptionsAttribute(typeof(Resources),
+        "CreateListPortDataIndex0ToolTip")]
+    [OutPortNames("list")]
+    [OutPortTypes("var[]..[]")]
+    [OutPortDescriptions(typeof(Resources),
+        "CreateListPortDataResultToolTip")]
     public class CreateList : VariableInputNode
     {
         public CreateList()
         {
-            InPortData.Add(new PortData("index0", Resources.CreateListPortDataIndex0ToolTip));
-            OutPortData.Add(new PortData("list", Resources.CreateListPortDataResultToolTip));
-
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Disabled;
@@ -26,7 +31,7 @@ namespace DSCoreNodesUI
 
         protected override string GetInputName(int index)
         {
-            return "index" + index;
+            return "item" + index;
         }
 
         protected override string GetInputTooltip(int index)
@@ -36,7 +41,7 @@ namespace DSCoreNodesUI
 
         protected override void RemoveInput()
         {
-            if (InPortData.Count > 1)
+            if (InPorts.Count > 1)
                 base.RemoveInput();
         }
 
@@ -49,12 +54,12 @@ namespace DSCoreNodesUI
         {
             if (IsPartiallyApplied)
             {
-                var connectedInput = Enumerable.Range(0, InPortData.Count)
+                var connectedInput = Enumerable.Range(0, InPorts.Count)
                                                .Where(HasConnectedInput)
                                                .Select(x => new IntNode(x) as AssociativeNode)
                                                .ToList();
 
-                var paramNumNode = new IntNode(InPortData.Count);
+                var paramNumNode = new IntNode(InPorts.Count);
                 var positionNode = AstFactory.BuildExprList(connectedInput);
                 var arguments = AstFactory.BuildExprList(inputAstNodes);
                 var functionNode = new IdentifierListNode

@@ -186,6 +186,7 @@ namespace Dynamo.Nodes
             if (Definition == null) return;
 
             OnSyncWithDefinitionStart(model);
+            
             model.InPortData.Clear();
             model.OutPortData.Clear();
 

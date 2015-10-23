@@ -44,6 +44,7 @@ namespace Dynamo.Models
         private string persistentWarning = "";
         private bool areInputPortsRegistered;
         private bool areOutputPortsRegistered;
+        private int numberAttributePorts;
 
         /// <summary>
         /// The cached value of this node. The cachedValue object is protected by the cachedValueMutex
@@ -1106,6 +1107,7 @@ namespace Dynamo.Models
             return verticalOffset + index * portModel.Height;
         }
 
+
         /// <summary>
         ///     Reads inputs list and adds ports for each input.
         /// </summary>
@@ -1121,13 +1123,16 @@ namespace Dynamo.Models
             if (InPortData.Count > 0)
             {
                 inputs.AddRange(InPortData);
+                InPortData.Clear();
             }
 
             // New version of input ports registration.
             // Used port Attributes.
             if (!areInputPortsRegistered)
             {
-                inputs.AddRange(GetPortDataFromAttributes(PortType.Input));
+                var portData = GetPortDataFromAttributes(PortType.Input);
+                inputs.AddRange(portData);
+                numberAttributePorts = portData.Count();
             }
 
             //read the inputs list and create a number of
@@ -1138,24 +1143,9 @@ namespace Dynamo.Models
                 //add a port for each input
                 //distribute the ports along the 
                 //edges of the icon
-                PortModel port = AddPort(PortType.Input, pd, count);
-                //MVVM: AddPort now returns a port model. You can't set the data context here.
-                //port.DataContext = this;
-
+                PortModel port = AddPort(PortType.Input, pd, numberAttributePorts + count);
                 portDataDict[port] = pd;
                 count++;
-            }
-
-            if (inPorts.Count > count)
-            {
-                foreach (PortModel inport in inPorts.Skip(count))
-                {
-                    inport.DestroyConnectors();
-                    portDataDict.Remove(inport);
-                }
-
-                for (int i = inPorts.Count - 1; i >= count; i--)
-                    inPorts.RemoveAt(i);
             }
 
             //Configure Snap Edges
@@ -1200,22 +1190,8 @@ namespace Dynamo.Models
                 //edges of the icon
                 PortModel port = AddPort(PortType.Output, pd, count);
 
-                //MVVM : don't set the data context in the model
-                //port.DataContext = this;
-
                 portDataDict[port] = pd;
                 count++;
-            }
-
-            if (outPorts.Count > count)
-            {
-                foreach (PortModel outport in outPorts.Skip(count))
-                    outport.DestroyConnectors();
-
-                for (int i = outPorts.Count - 1; i >= count; i--)
-                    outPorts.RemoveAt(i);
-
-                //OutPorts.RemoveRange(count, outPorts.Count - count);
             }
 
             //configure snap edges
@@ -1224,6 +1200,23 @@ namespace Dynamo.Models
 
             RaisesModificationEvents = true;
             OnNodeModified();
+        }
+
+        public void AddInputPort(PortData portData)
+        {
+            PortModel port = AddPort(PortType.Input, portData, InPorts.Count);
+            portDataDict[port] = portData;
+        }
+
+        public void RemoveInputPort(int index)
+        {
+            var count = InPorts.Count;
+            if (count <= index) return;
+
+            var inport = InPorts.ElementAt(index);
+            inport.DestroyConnectors();
+            InPorts.Remove(inport);
+            portDataDict.Remove(inport);
         }
 
         /// <summary>
@@ -1593,7 +1586,9 @@ namespace Dynamo.Models
             // Resolve node nick name.
             string name = helper.ReadString("nickname", string.Empty);
             if (!string.IsNullOrEmpty(name))
+            {
                 nickName = name;
+            }
             else
             {
                 Type type = GetType();
