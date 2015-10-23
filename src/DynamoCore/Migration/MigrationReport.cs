@@ -5,7 +5,6 @@ using System.Xml;
 
 namespace Dynamo.Migration
 {
-
     /// <summary>
     /// Class responsible for creation of an XML in following format that records 
     /// node mapping information - which old node has been converted to which to new node(s) 

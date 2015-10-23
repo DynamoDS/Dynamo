@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Dynamo.Core
+namespace Dynamo.Configuration
 {
     public static class Context
     {

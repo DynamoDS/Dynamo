@@ -1062,7 +1062,7 @@ a3;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         [Category("SmokeTest")]
         public void T39_Defect_1452951_3()
         {
@@ -1221,7 +1221,7 @@ p8 = y[1][1][1];
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         [Category("SmokeTest")]
         [Category("Failure")]
         public void T42_Create_3_Dim_Collection_Using_For_Loop_In_Class_Constructor()

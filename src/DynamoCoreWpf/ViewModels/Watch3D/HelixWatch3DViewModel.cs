@@ -15,6 +15,7 @@ using System.Windows.Media.Media3D;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Controls;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Wpf.Properties;
@@ -666,6 +667,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             if (selectionBounds.Equals(new BoundingBox())) return;
 
             OnRequestZoomToFit(selectionBounds);
+        }
+
+        protected override bool CanToggleCanNavigateBackground(object parameter)
+        {
+            return true;
         }
 
         #region internal methods
@@ -1363,7 +1369,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Set the near clip plane to some fraction of the 
             // of the distance to the first point.
             var closest = distances.First(d => d >= 0);
-            near = closest.AlmostEqualTo(0, EqualityTolerance) ? DefaultNearClipDistance : closest * nearPlaneDistanceFactor;
+            near = closest.AlmostEqualTo(0, EqualityTolerance) ? DefaultNearClipDistance : Math.Max(DefaultNearClipDistance, closest * nearPlaneDistanceFactor);
             far = distances.Last() * 2;
 
         }

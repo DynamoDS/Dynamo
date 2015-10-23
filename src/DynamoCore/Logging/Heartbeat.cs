@@ -5,8 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Dynamo.Models;
+using Dynamo.Services;
 
-namespace Dynamo.Services
+namespace Dynamo.Logging
 {
     /// <summary>
     /// Class to automatically report various metrics of the application usage

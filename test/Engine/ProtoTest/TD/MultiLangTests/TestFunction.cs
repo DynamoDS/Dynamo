@@ -215,7 +215,7 @@ a;b;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T08_Function_From_Inside_Class_Constructor()
         {
@@ -260,7 +260,7 @@ a;b;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T09_Function_From_Inside_Class_Constructor()
         {
@@ -304,7 +304,7 @@ a;b;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T10_Function_From_Inside_Class_Method()
         {
@@ -352,7 +352,7 @@ a;b;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T11_Function_From_Inside_Class_Method()
         {
@@ -1443,7 +1443,7 @@ c;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T48_Function_With_Mismatching_Argument_Type()
         {
@@ -2080,7 +2080,7 @@ a;b;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T72_Function_Name_Checking()
         {
@@ -2723,7 +2723,7 @@ e = foo(1, 2.0, 3); // not found, null
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T93_Function_With_Default_Arg_In_Class()
         {
             string str = "";
@@ -3390,7 +3390,7 @@ b;c;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_InvalidTest_NoVerification")]
+        [Ignore][Category("DSDefinedClass_Ignored_InvalidTest_NoVerification")]
         [Category("SmokeTest")]
         public void TV25_Defect_1454923()
         {
@@ -4508,7 +4508,7 @@ x;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void TV56_Defect_1456571_3()
         {
@@ -4912,7 +4912,7 @@ a2 = compare( b1, a, 1, 1 );
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void TV69_Defect_1456799()
         {
@@ -4948,7 +4948,7 @@ bcurvePtX = bcurvePt.X;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void TV69_Defect_1456799_2()
         {
@@ -4983,7 +4983,7 @@ bcurvePtX = bcurve.P[1].X;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void TV69_Defect_1456799_3()
         {
@@ -5415,7 +5415,7 @@ x2;y12;y22;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void TV77_Defect_1455259_2()
         {
@@ -5506,7 +5506,7 @@ z2 = [Imperative]
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void TV78_Defect_1460866_2()
         {
@@ -6017,7 +6017,7 @@ b = f2( { null, null } );
 
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void TV87_Defect_1464027()
         {
@@ -6075,7 +6075,7 @@ t11;t12;t13;t14;t15;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void TV87_Defect_1464027_2()
         {
@@ -6132,7 +6132,7 @@ t11;t12;t13;t14;t15;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void TV87_Defect_1464027_3()
         {
@@ -6190,7 +6190,7 @@ t11;t12;t13;t14;t15;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void TV87_Defect_1464027_4()
         {
@@ -6248,7 +6248,7 @@ t11;t12;t13;t14;t15;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void TV87_Defect_1464027_5()
         {
@@ -6542,7 +6542,7 @@ b;c;d;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         public void TV91_Defect_1463703_2()
         {
             //This failure is no longer related to this defect. Back to TD.
@@ -6612,7 +6612,7 @@ y1;y2;y3;y4;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Failing")]
+        [Ignore][Category("DSDefinedClass_Ignored_Failing")]
         [Category("Method Resolution")]
         [Category("Failure")]
         public void TV91_Defect_1463703_3()
@@ -6847,7 +6847,7 @@ s1 = UnionBox(s, points, top_index);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("SmokeTest")]
         public void TV95_Method_Resolution_Derived_Class_Arguments()
         {
@@ -7280,7 +7280,7 @@ t = val[0]; //expected 100, received 1";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void T100_Class_inheritance_replication()
         {
             string code = @"
@@ -7306,7 +7306,7 @@ b = c.Test(c);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void T100_Class_inheritance_replication_2()
         {
             // Assert.Fail("1467131- Sprint 24 - Rev 2910 method overload with replication , throws error WARNING: Multiple type+pattern match parameters found, non-deterministic dispatch" );
@@ -7333,7 +7333,7 @@ result = c.Test(c);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Method Resolution")]
         public void T100_Defect_Class_inheritance_dispatch()
         {
@@ -7364,7 +7364,7 @@ r2 = b.Test(b);//1
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Method Resolution")]
         public void T100_Defect_Class_inheritance_dispatch_a()
         {
@@ -7391,7 +7391,7 @@ r2 = b.Test(b);//1
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void T100_Defect_Class_inheritance_replication_1()
         {
             String code =
@@ -7726,7 +7726,7 @@ c = foo(a);";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void TV103_Defect_1455090_Rank_Of_Arg_3()
         {
@@ -7861,7 +7861,7 @@ b = foo ( a );";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("SmokeTest")]
         public void TV104_Defect_1467112()
         {

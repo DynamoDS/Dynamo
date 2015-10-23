@@ -1,7 +1,7 @@
 ﻿using Dynamo.Properties;
 using Dynamo.Utilities;
 
-namespace Dynamo.UI
+namespace Dynamo.Configuration
 {
     public class Configurations
     {

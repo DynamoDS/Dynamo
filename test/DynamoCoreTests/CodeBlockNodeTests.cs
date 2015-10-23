@@ -6,7 +6,6 @@ using System.Linq;
 using Dynamo.Engine.CodeCompletion;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.UI;
 using Dynamo.Utilities;
 using NUnit.Framework;
 

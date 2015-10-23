@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media.Animation;
+using Dynamo.Configuration;
 using Dynamo.Extensions;
 
 namespace Dynamo.UI.Controls

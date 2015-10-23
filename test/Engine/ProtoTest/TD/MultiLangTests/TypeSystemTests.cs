@@ -1303,7 +1303,7 @@ import(""FFITarget.dll"");
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("Type System")]
         public void TS37_userdefinedTo_null()
         {
@@ -1392,7 +1392,7 @@ import(""FFITarget.dll"");
 
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         public void TS038_return_single_AlltypeTo_UserDefined()
         {
@@ -1428,7 +1428,7 @@ import(""FFITarget.dll"");
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         public void TS039_userdefined_covariance()
         {
@@ -1470,7 +1470,7 @@ import(""FFITarget.dll"");
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         public void TS039_userdefined_covariance_2()
         {
@@ -2869,7 +2869,7 @@ import(""FFITarget.dll"");
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         public void TS074_Param_singleton_AlltypeTo_UserDefinedArray()
         {
@@ -2906,7 +2906,7 @@ import(""FFITarget.dll"");
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         public void TS075_return_singleton_AlltypeTo_UserDefinedArray()
         {
@@ -2941,7 +2941,7 @@ import(""FFITarget.dll"");
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         public void TS076_UserDefinedCovariance_ArrayPromotion()
         {
@@ -5721,7 +5721,7 @@ import(""FFITarget.dll"");
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("Type System")]
         public void TS0184_TypeConversion_1467352()
         {
@@ -6079,7 +6079,7 @@ import(""FFITarget.dll"");
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         [Category("Failure")]
         public void TS0197_getter_dotoperator_1467419()
