@@ -52,8 +52,9 @@
     <Color x:Key="HeaderTopColor">#FFC5CBF9</Color>
     <Color x:Key="DatagridCurrentCellBorderColor">Black</Color>
     <Color x:Key="SliderTrackDarkColor">#FFC5CBF9</Color>
-
     <Color x:Key="NavButtonFrameColor">#FF3843C4</Color>
+
+    <clr:Double x:Key="NodeNickNameHeight">27</clr:Double>
 
     <!--InfoBubble colors-->
     <SolidColorBrush x:Key="InfoBubbleBackNormalBrush"
