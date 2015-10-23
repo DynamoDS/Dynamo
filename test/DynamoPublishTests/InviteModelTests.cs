@@ -38,7 +38,8 @@ namespace DynamoPublishTests
             restClient.Setup(x => x.Execute(It.IsAny<IRestRequest>()))
                 .Returns(new RestResponse()
                 {
-                    StatusCode = HttpStatusCode.OK
+                    StatusCode = HttpStatusCode.OK,
+                    Content = "{ target : \"foo@foo.com\"}"
                 });
 
             // Create Invite model.

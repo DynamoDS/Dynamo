@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Reach.Upload;
+using System.Net;
 
 namespace DynamoPublishTests
 {
@@ -31,10 +32,16 @@ namespace DynamoPublishTests
 
             // Create mock of reach client.
             var client = new Mock<IWorkspaceStorageClient>();
+            var success = new Mock<IReachHttpResponse>();
+
+            success.Setup(resp => resp.Content).Returns(Resources.WorkspacesSendSucceededServerResponse);
+            success.Setup(resp => resp.StatusCode).Returns(HttpStatusCode.OK);
+
+            var successMock = success.Object;
+
             client.Setup(c =>
                 // If it's sent any workspace or any custom nodes, result always will be successful.
-                c.Send(It.IsAny<HomeWorkspaceModel>(), It.IsAny<IEnumerable<CustomNodeWorkspaceModel>>(), null)).
-                Returns(Resources.WorkspacesSendSucceededServerResponse);
+                c.Send(It.IsAny<HomeWorkspaceModel>(), It.IsAny<IEnumerable<CustomNodeWorkspaceModel>>(), null)).Returns(successMock);
 
             // Create publish model.
             publishModel = new PublishModel(authenticationProvider.Object, 
@@ -89,7 +96,7 @@ namespace DynamoPublishTests
             var hws = CurrentDynamoModel.CurrentWorkspace as HomeWorkspaceModel;
             Assert.NotNull(hws, "The current workspace is not a " + typeof(HomeWorkspaceModel).FullName);
 
-            publishModel.SendAsynchronously(hws);
+            publishModel.SendAsync(hws);
             Assert.AreEqual(PublishModel.UploadState.Uploading, publishModel.State);
 
             var startTime = DateTime.Now;
