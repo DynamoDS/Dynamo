@@ -873,29 +873,7 @@ namespace Dynamo.ViewModels
 
         private void Paste(object parameter)
         {
-            var locatableModels = model.ClipBoard.Where(item => item is NoteModel || item is NodeModel);
-
-            bool outOfView = locatableModels.Any(item => !model.CurrentWorkspace.Rect.Contains(item.Rect));
-
-            // If copied nodes are out of view, we paste their copies under mouse cursor or at the center of workspace.
-            if (outOfView)
-            {
-                // If mouse is over workspace, paste copies under mouse cursor.
-                if (CurrentSpaceViewModel.IsMouseOver)
-                {
-                    model.Paste(CurrentSpaceViewModel.MousePosition, false);
-                }
-                else // If mouse is out of workspace view, then paste copies at the center.
-                {
-                    model.Paste(new Point2D(model.CurrentWorkspace.CenterX, model.CurrentWorkspace.CenterY));
-                }
-                RaiseCanExecuteUndoRedo();
-                return;
-            }
-
-            // All copied nodes are inside of workspace.
-            // Paste them with little offset.           
-            model.Paste();
+            OnRequestPaste();
             RaiseCanExecuteUndoRedo();
         }
 

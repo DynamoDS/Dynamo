@@ -41,6 +41,7 @@ using Dynamo.Wpf.Views.Gallery;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Interfaces;
 using Dynamo.Wpf.Views.PackageManager;
+using Dynamo.Views;
 
 namespace Dynamo.Controls
 {
@@ -148,6 +149,47 @@ namespace Dynamo.Controls
                     Log(ext.Name + ": " + exc.Message);
                 }
             }
+
+            this.dynamoViewModel.RequestPaste += OnRequestPaste;
+        }
+
+        private void OnRequestPaste()
+        {
+            var clopBoard = dynamoViewModel.Model.ClipBoard;
+            var locatableModels = clopBoard.Where(item => item is NoteModel || item is NodeModel);
+
+            // Find node views, that were copied. Translate them into rect.
+            var nodeBounds = this.ChildrenOfType<NodeView>()
+                            .Where(nodeView => locatableModels
+                                .Any(locatable => locatable.GUID == nodeView.ViewModel.NodeModel.GUID))
+                                .Select(view => view.BoundsRelativeTo(this));
+
+            // Find workspace view.
+            var workspace = this.ChildOfType<WorkspaceView>();
+            var workspaceBounds = workspace.BoundsRelativeTo(this);
+
+            bool outOfView = nodeBounds.Any(node => !workspaceBounds.Contains(node));
+
+            // If copied nodes are out of view, we paste their copies under mouse cursor or at the center of workspace.
+            if (outOfView)
+            {
+                // If mouse is over workspace, paste copies under mouse cursor.
+                if (workspace.IsMouseOver)
+                {
+                    dynamoViewModel.Model.Paste(Mouse.GetPosition(workspace.WorkspaceElements).AsDynamoType(), false);
+                }
+                else // If mouse is out of workspace view, then paste copies at the center.
+                {
+                    var centerX = (workspace.ViewModel.Width - workspaceBounds.X) / workspace.ViewModel.Zoom;
+                    var centerY = (workspaceBounds.Height - workspaceBounds.Y) / workspace.ViewModel.Zoom;
+                    dynamoViewModel.Model.Paste(new Point2D(centerX, centerY));
+                }
+                return;
+            }
+
+            // All copied nodes are inside of workspace.
+            // Paste them with little offset.           
+            dynamoViewModel.Model.Paste();
         }
 
         #region NodeViewCustomization
