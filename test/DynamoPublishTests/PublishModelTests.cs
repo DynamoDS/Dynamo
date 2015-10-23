@@ -89,7 +89,7 @@ namespace DynamoPublishTests
             var hws = CurrentDynamoModel.CurrentWorkspace as HomeWorkspaceModel;
             Assert.NotNull(hws, "The current workspace is not a " + typeof(HomeWorkspaceModel).FullName);
 
-            publishModel.SendAsynchronously(hws);
+            publishModel.SendAsync(hws);
             Assert.AreEqual(PublishModel.UploadState.Uploading, publishModel.State);
 
             var startTime = DateTime.Now;

@@ -273,4 +273,10 @@
   <data name="LinkCopied" xml:space="preserve">
     <value>Link copied to clipboard.</value>
   </data>
+  <data name="PublishUnauthorizedMessage" xml:space="preserve">
+    <value>Sorry, it doesn't look like you're authorized to publish a customizer.</value>
+  </data>
+  <data name="EmptyWorkspaceMessage" xml:space="preserve">
+    <value>You cannot publish an empty workspace.</value>
+  </data>
 </root>
