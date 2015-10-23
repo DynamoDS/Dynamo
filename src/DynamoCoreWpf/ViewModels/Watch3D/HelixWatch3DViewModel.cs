@@ -630,7 +630,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 case "CurrentWorkspace":
                     OnClear();
 
-
                     IEnumerable<NodeModel> nodesToRender = null;
 
                     // Get the nodes to render from the current home workspace. For custom
@@ -1070,7 +1069,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private bool InCustomNode()
         {
-             return CurrentSpaceViewModel.Model is CustomNodeWorkspaceModel;
+            return model.CurrentWorkspace is CustomNodeWorkspaceModel;
         }
 
         private void AggregateRenderPackages(IEnumerable<HelixRenderPackage> packages)
