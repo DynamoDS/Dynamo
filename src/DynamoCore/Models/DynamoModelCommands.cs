@@ -174,8 +174,7 @@ namespace Dynamo.Models
                     if (!command.Modifiers.HasFlag(ModifierKeys.Shift) && command.ModelGuids.Count() == 1)
                         DynamoSelection.Instance.ClearSelection();
 
-                    if (!DynamoSelection.Instance.Selection.Contains(model))
-                        DynamoSelection.Instance.Selection.Add(model);
+                    DynamoSelection.Instance.Selection.AddUnique(model);
                 }
                 else
                 {
