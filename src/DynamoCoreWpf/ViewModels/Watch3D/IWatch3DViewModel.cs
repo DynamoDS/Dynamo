@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using Autodesk.DesignScript.Interfaces;
+using Dynamo.Models;
 
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
@@ -46,6 +47,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <param name="identifier"></param>
         /// <param name="requestUpdate"></param>
         void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true);
+
+        void HighlightGeometry(IEnumerable<NodeModel> nodes);
+
+        void UnHighlightGeometry(IEnumerable<NodeModel> nodes);
 
         /// <summary>
         /// Event to be raised for a mouse down event in the Watch view

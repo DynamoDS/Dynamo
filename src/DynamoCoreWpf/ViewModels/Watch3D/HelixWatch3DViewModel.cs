@@ -22,12 +22,14 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Rendering;
 using DynamoUtilities;
+using HelixToolkit.Wpf;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
 using SharpDX;
 using Color = SharpDX.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
 using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
+using MeshBuilder = HelixToolkit.Wpf.SharpDX.MeshBuilder;
 using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
@@ -1031,7 +1033,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         pointGeometry3D.Geometry = points;
                         pointGeometry3D.Name = baseId;
                         pointGeometry3D.MouseDown3D += pointGeometry3D_MouseDown3D;
-                        pointGeometry3D.PreviewMouseMove += pointGeometry3D_MouseMove;
                     }
 
                     var l = rp.Lines;
@@ -1121,10 +1122,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        void pointGeometry3D_MouseMove(object sender, MouseEventArgs e)
-        {
-            
-        }
 
         void pointGeometry3D_MouseDown3D(object sender, RoutedEventArgs e)
         {
@@ -1140,6 +1137,44 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 if (!foundNode) continue;
                 DynamoSelection.Instance.ClearSelection();
                 vm.Model.AddToSelection(node);
+            }
+        }
+
+        public override void HighlightGeometry(IEnumerable<NodeModel> nodes)
+        {
+            HighlightGeometryOnOff(nodes, true);
+        }
+
+        public override void UnHighlightGeometry(IEnumerable<NodeModel> nodes)
+        {
+            HighlightGeometryOnOff(nodes, false);
+        }
+
+        private void HighlightGeometryOnOff(IEnumerable<NodeModel> nodes, bool highlightOn)
+        {
+            foreach (var node in nodes)
+            {
+                var geometries = FindAllGeometryModel3DsForNode(node.AstIdentifierBase);
+                foreach (var geometry in geometries)
+                {
+                    //AnimationExtensions.AnimateOpacity(geometry.Value, 0.5, 200);
+                    var pointGeom = geometry.Value as PointGeometryModel3D;
+                    if (pointGeom != null)
+                    {
+                        if (highlightOn)
+                        {
+                            //pointGeom.Color = Color.Green;
+                            //pointGeom.Opacity = 0.5;
+                            pointGeom.Size = new Size(10, 10);
+                            //OnRequestAttachToScene(pointGeom);
+                        }
+                        else
+                        {
+                            pointGeom.Size = new Size(6, 6);
+                        }
+                    }
+
+                }
             }
         }
 

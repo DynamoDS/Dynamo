@@ -405,6 +405,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in derived classes.
         }
 
+        public virtual void HighlightGeometry(IEnumerable<NodeModel> nodes)
+        {
+            // Override in derived classes.
+        }
+
+        public virtual void UnHighlightGeometry(IEnumerable<NodeModel> nodes)
+        {
+            // Override in derived classes.
+        }
+
         private void RegisterNodeEventHandlers(NodeModel node)
         {
             node.PropertyChanged += OnNodePropertyChanged;
