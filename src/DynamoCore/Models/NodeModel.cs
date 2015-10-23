@@ -44,7 +44,7 @@ namespace Dynamo.Models
         private string persistentWarning = "";
         private bool areInputPortsRegistered;
         private bool areOutputPortsRegistered;
-        private bool usedAttributesLoadingStyle;
+        private int numberAttributePorts;
 
         /// <summary>
         /// The cached value of this node. The cachedValue object is protected by the cachedValueMutex
@@ -1107,6 +1107,7 @@ namespace Dynamo.Models
             return verticalOffset + index * portModel.Height;
         }
 
+
         /// <summary>
         ///     Reads inputs list and adds ports for each input.
         /// </summary>
@@ -1129,8 +1130,9 @@ namespace Dynamo.Models
             // Used port Attributes.
             if (!areInputPortsRegistered)
             {
-                inputs.AddRange(GetPortDataFromAttributes(PortType.Input));
-                usedAttributesLoadingStyle = true;
+                var portData = GetPortDataFromAttributes(PortType.Input);
+                inputs.AddRange(portData);
+                numberAttributePorts = portData.Count();
             }
 
             //read the inputs list and create a number of
@@ -1141,7 +1143,7 @@ namespace Dynamo.Models
                 //add a port for each input
                 //distribute the ports along the 
                 //edges of the icon
-                PortModel port = AddPort(PortType.Input, pd, InPorts.Count + count);
+                PortModel port = AddPort(PortType.Input, pd, numberAttributePorts + count);
                 portDataDict[port] = pd;
                 count++;
             }

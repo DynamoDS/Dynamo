@@ -186,12 +186,9 @@ namespace Dynamo.Nodes
             if (Definition == null) return;
 
             OnSyncWithDefinitionStart(model);
-            //TODO: InPortData and OutPortData won't be used. This should be removed soon.
+            
             model.InPortData.Clear();
             model.OutPortData.Clear();
-
-            model.InPorts.Clear();
-            model.OutPorts.Clear();
 
             InitializeInputs(model);
             InitializeOutputs(model);
