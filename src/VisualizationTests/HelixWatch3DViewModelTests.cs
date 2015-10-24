@@ -24,6 +24,7 @@ using SharpDX;
 using TestServices;
 using Color = System.Windows.Media.Color;
 using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
+using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
 
 namespace WpfVisualizationTests
 {
@@ -35,6 +36,11 @@ namespace WpfVisualizationTests
     /// </summary>
     public class VisualizationTest : SystemTestBase
     {
+        protected IEnumerable<Model3D> BackgroundPreviewGeometry
+        {
+            get { return ((HelixWatch3DViewModel)ViewModel.BackgroundPreviewViewModel).SceneItems; }
+        }
+
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
@@ -87,16 +93,25 @@ namespace WpfVisualizationTests
 
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
         }
+
+        protected void OpenVisualizationTest(string fileName)
+        {
+            string relativePath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                string.Format(@"core\visualization\{0}", fileName));
+
+            if (!File.Exists(relativePath))
+            {
+                throw new FileNotFoundException("The specified .dyn file could not be found.");
+            }
+
+            ViewModel.OpenCommand.Execute(relativePath);
+        }
     }
 
     [TestFixture]
     public class HelixWatch3DViewModelTests : VisualizationTest
     {
-        protected IEnumerable<Model3D> BackgroundPreviewGeometry
-        {
-            get { return ((HelixWatch3DViewModel)ViewModel.BackgroundPreviewViewModel).SceneItems; }
-        }
-
         protected Watch3DView BackgroundPreview
         {
             get
@@ -632,20 +647,6 @@ namespace WpfVisualizationTests
             Assert.True(BackgroundPreviewGeometry.HasAnyColorMappedMeshes());
         }
 
-        protected void OpenVisualizationTest(string fileName)
-        {
-            string relativePath = Path.Combine(
-                GetTestDirectory(ExecutingDirectory),
-                string.Format(@"core\visualization\{0}",fileName));
-
-            if (!File.Exists(relativePath))
-            {
-                throw new FileNotFoundException("The specified .dyn file could not be found.");
-            }
-
-            ViewModel.OpenCommand.Execute(relativePath);
-        }
-
         [Test]
         public void TurnGlobalPreviewOnAndOff()
         {
@@ -780,9 +781,69 @@ namespace WpfVisualizationTests
                 : 0;
         }
 
+        /// <summary>
+        /// Returns the total number of DynamoGeometryModel3D objects.
+        /// 
+        /// Each DynamoGeometryModel3D object may contain more than one mesh.
+        /// </summary>
+        /// <param name="dictionary"></param>
+        /// <returns></returns>
         public static int TotalMeshes(this IEnumerable<Model3D> dictionary)
         {
             return dictionary.Count(g => g is DynamoGeometryModel3D && !keyList.Contains(g.Name));
+        }
+
+        public static IEnumerable<DynamoGeometryModel3D> Meshes(this IEnumerable<Model3D> geometry)
+        {
+            var candidates = geometry.Where(g => g is DynamoGeometryModel3D && !keyList.Contains(g.Name));
+            return candidates.Cast<DynamoGeometryModel3D>();
+        }
+
+        public static IEnumerable<LineGeometryModel3D> Curves(this IEnumerable<Model3D> geometry)
+        {
+            var candidates = geometry.Where(g => g is LineGeometryModel3D && !keyList.Contains(g.Name));
+            return candidates.Cast<LineGeometryModel3D>();
+        }
+
+        public static IEnumerable<PointGeometryModel3D> Points(this IEnumerable<Model3D> geometry)
+        {
+            var candidates = geometry.Where(g => g is PointGeometryModel3D && !keyList.Contains(g.Name));
+            return candidates.Cast<PointGeometryModel3D>();
+        }
+
+        public static bool IsDead(this GeometryModel3D geometry)
+        {
+            if (geometry is PointGeometryModel3D || geometry is LineGeometryModel3D)
+            {
+                return geometry.Geometry.Colors.All(c => c == HelixWatch3DViewModel.defaultDeadColor);
+            }
+
+            if (geometry is DynamoGeometryModel3D)
+            {
+                return geometry.Geometry.Colors.All(c => c.Alpha < 1.0f);
+            }
+
+            return false;
+        }
+
+        public static bool IsAlive(this GeometryModel3D geometry)
+        {
+            if (geometry is PointGeometryModel3D)
+            {
+                return geometry.Geometry.Colors.All(c => c == HelixWatch3DViewModel.defaultPointColor);
+            }
+
+            if (geometry is LineGeometryModel3D)
+            {
+                return geometry.Geometry.Colors.All(c => c == HelixWatch3DViewModel.defaultLineColor);
+            }
+
+            if (geometry is DynamoGeometryModel3D)
+            {
+                return geometry.Geometry.Colors.All(c => c.Alpha == 1.0f);
+            }
+
+            return false;
         }
 
         public static int TotalCurves(this IEnumerable<Model3D> dictionary)

@@ -91,8 +91,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private readonly Color4 defaultSelectionColor = new Color4(new Color3(0, 158.0f / 255.0f, 1.0f));
         private readonly Color4 defaultMaterialColor = new Color4(new Color3(1.0f, 1.0f, 1.0f));
         private readonly Size defaultPointSize = new Size(6, 6);
-        private readonly Color4 defaultLineColor = new Color4(new Color3(0, 0, 0));
-        private readonly Color4 defaultPointColor = new Color4(new Color3(0, 0, 0));
+        internal static readonly Color4 defaultLineColor = new Color4(new Color3(0, 0, 0));
+        internal static readonly Color4 defaultPointColor = new Color4(new Color3(0, 0, 0));
+        internal static readonly Color4 defaultDeadColor = new Color4(new Color3(0.7f,0.7f,0.7f));
+        internal static readonly float defaultDeadAlpha = 0.1f;
 
         internal const string DefaultGridName = "Grid";
         internal const string DefaultAxesName = "Axes";
@@ -1103,6 +1105,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     }
                     var id = baseId;
 
+                    var drawDead = InCustomNode() && !customNodeIdents.Contains(baseId);
+
                     var p = rp.Points;
                     if (p.Positions.Any())
                     {
@@ -1124,10 +1128,19 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         var startIdx = points.Positions.Count;
 
                         points.Positions.AddRange(p.Positions);
-                        points.Colors.AddRange(p.Colors.Any()
-                            ? p.Colors
-                            : Enumerable.Repeat(defaultPointColor, points.Positions.Count));
-                        points.Indices.AddRange(p.Indices.Select(i => i + startIdx));
+
+                        if (drawDead)
+                        {
+                            points.Colors.AddRange(Enumerable.Repeat(defaultDeadColor, points.Positions.Count));
+                        }
+                        else
+                        {
+                            points.Colors.AddRange(p.Colors.Any()
+                              ? p.Colors
+                              : Enumerable.Repeat(defaultPointColor, points.Positions.Count));
+                            points.Indices.AddRange(p.Indices.Select(i => i + startIdx));
+                        }
+                        
 
                         if (rp.DisplayLabels)
                         {
@@ -1161,9 +1174,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         var startIdx = lineSet.Positions.Count;
 
                         lineSet.Positions.AddRange(l.Positions);
-                        lineSet.Colors.AddRange(l.Colors.Any()
-                            ? l.Colors
-                            : Enumerable.Repeat(defaultLineColor, l.Positions.Count));
+                        if (drawDead)
+                        {
+                            lineSet.Colors.AddRange(Enumerable.Repeat(defaultDeadColor, l.Positions.Count));
+                        }
+                        else
+                        {
+                            lineSet.Colors.AddRange(l.Colors.Any()
+                             ? l.Colors
+                             : Enumerable.Repeat(defaultLineColor, l.Positions.Count));
+                        }
+                        
                         lineSet.Indices.AddRange(l.Indices.Any()
                             ? l.Indices.Select(i => i + startIdx)
                             : Enumerable.Range(startIdx, startIdx + l.Positions.Count));
@@ -1205,7 +1226,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     // If we are in a custom node, and the current
                     // package's id is NOT one of the output ids of custom nodes
                     // in the graph, then draw the geometry with transparency.
-                    if (InCustomNode() && !customNodeIdents.Contains(baseId))
+                    if (drawDead)
                     {
                         meshGeometry3D.RequiresPerVertexColoration = true;
                         mesh.Colors.AddRange(m.Colors.Select(c=>new Color4(c.Red, c.Green, c.Blue, 0.1f)));
