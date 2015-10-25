@@ -6,6 +6,7 @@ using Dynamo;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
+using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 
 namespace WpfVisualizationTests
@@ -182,6 +183,8 @@ namespace WpfVisualizationTests
         [Test, Category("Failure")]
         public void InsideInstance_PartiallyApplied_AllGeometrySolid()
         {
+            // The mirror data for the output port of List.Map is null during testing.
+
             Assert.AreEqual(1, BackgroundPreviewGeometry.Points().Count(p => p.IsDead()));
             Assert.AreEqual(1, BackgroundPreviewGeometry.Curves().Count(p => p.IsDead()));
             Assert.AreEqual(1, BackgroundPreviewGeometry.Meshes().Count(p => p.IsDead()));
