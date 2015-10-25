@@ -762,9 +762,12 @@ namespace Dynamo.Models
             {
                 base.SerializeCore(element);
 
-                SerializeCreateNodeCommand(element);
-
                 var helper = new XmlElementHelper(element);
+                helper.SetAttribute("X", X);
+                helper.SetAttribute("Y", Y);
+                helper.SetAttribute("CreateAsDownstreamNode", CreateAsDownstreamNode);
+                helper.SetAttribute("AddNewNodeToSelection", AddNewNodeToSelection);
+
                 helper.SetAttribute("OutPortIndex", OutputPortIndex);
                 helper.SetAttribute("InPortIndex", InputPortIndex);
             }
@@ -788,14 +791,6 @@ namespace Dynamo.Models
                     createAsDownstreamNode, addNewNodeToSelection);
             }
 
-            private void SerializeCreateNodeCommand(XmlElement element)
-            {
-                var helper = new XmlElementHelper(element);
-                helper.SetAttribute("X", X);
-                helper.SetAttribute("Y", Y);
-                helper.SetAttribute("CreateAsDownstreamNode", CreateAsDownstreamNode);
-                helper.SetAttribute("AddNewNodeToSelection", AddNewNodeToSelection);
-            }
         }
 
         /// <summary>

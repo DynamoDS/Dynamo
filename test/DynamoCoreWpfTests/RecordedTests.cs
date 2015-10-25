@@ -362,13 +362,15 @@ namespace DynamoCoreWpfTests
             // 
             Guid newNodeGuid = Guid.NewGuid();
             Guid existingNodeGuid = Guid.NewGuid();
+
             double x = randomizer.NextDouble() * 1000;
             double y = randomizer.NextDouble() * 1000;
 
             var cmdOne = new DynamoModel.CreateAndConnectNodeCommand(new [] {newNodeGuid, existingNodeGuid},
-                0, 0, x, y, false, false);
+                0, 1, x, y, false, false);
 
             var cmdTwo = DuplicateAndCompare(cmdOne);
+
             Assert.AreEqual(cmdOne.X, cmdTwo.X, 0.000001);
             Assert.AreEqual(cmdOne.Y, cmdTwo.Y, 0.000001);
             Assert.AreEqual(cmdOne.InputPortIndex, cmdTwo.InputPortIndex);
