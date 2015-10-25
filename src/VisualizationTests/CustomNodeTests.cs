@@ -11,7 +11,7 @@ using NUnit.Framework;
 namespace WpfVisualizationTests
 {
     [TestFixture]
-    public class CustomNodeHomeWorkspaceTests : VisualizationTest
+    public class CustomNodeInsideHomeWorkspaceTests : VisualizationTest
     {
         [SetUp]
         public void Setup()
@@ -84,19 +84,18 @@ namespace WpfVisualizationTests
         }
     }
 
-    [TestFixture]
-    public class CustomNodeCustomWorkspaceTests : VisualizationTest
+    public class CustomNodeInsideCustomWorkspaceTestBase : VisualizationTest
     {
-        private CustomNodeWorkspaceModel customNodeWorkspace;
+        protected CustomNodeInfo info;
+        protected CustomNodeWorkspaceModel customNodeWorkspace;
 
         [SetUp]
-        public void Setup()
+        public virtual void Setup()
         {
             var customNodePath = Path.Combine(
                 GetTestDirectory(ExecutingDirectory),
                 @"core\visualization\custom-nodes\FiveCubes.dyf");
 
-            CustomNodeInfo info;
             Assert.IsTrue(
                 ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(
                     customNodePath,
@@ -105,6 +104,15 @@ namespace WpfVisualizationTests
 
             // Disable edge rendering to ensure that curve counts are correct.
             ViewModel.RenderPackageFactoryViewModel.ShowEdges = false;
+        }    
+    }
+
+    [TestFixture]
+    public class CustomNodeInsideCustomWorkspaceTests : CustomNodeInsideCustomWorkspaceTestBase
+    {
+        public override void Setup()
+        {
+            base.Setup();
 
             OpenVisualizationTest(@"custom-nodes\custom-node-test.dyn");
 
@@ -117,8 +125,6 @@ namespace WpfVisualizationTests
         [Test]
         public void InsideInstance_AllGeometrySolid()
         {
-            Model.OpenCustomNodeWorkspace(customNodeWorkspace.CustomNodeId);
-
             Assert.AreEqual(2, BackgroundPreviewGeometry.Points().Count(p => p.IsAlive()));
             Assert.AreEqual(2, BackgroundPreviewGeometry.Curves().Count(p => p.IsAlive()));
             Assert.AreEqual(2, BackgroundPreviewGeometry.Meshes().Count(p => p.IsAlive()));
@@ -127,8 +133,6 @@ namespace WpfVisualizationTests
         [Test]
         public void InsideInstance_OtherGeometryTransparent()
         {
-            Model.OpenCustomNodeWorkspace(customNodeWorkspace.CustomNodeId);
-
             Assert.AreEqual(1, BackgroundPreviewGeometry.Points().Count(p => p.IsDead()));
             Assert.AreEqual(1, BackgroundPreviewGeometry.Curves().Count(p => p.IsDead()));
             Assert.AreEqual(1, BackgroundPreviewGeometry.Meshes().Count(p => p.IsDead()));
@@ -143,22 +147,48 @@ namespace WpfVisualizationTests
             Assert.NotNull(customNode);
             customNode.UpdateValue(new UpdateValueParams("IsVisible", "false"));
 
-            Model.OpenCustomNodeWorkspace(customNodeWorkspace.CustomNodeId);
-
             Assert.AreEqual(2, BackgroundPreviewGeometry.Meshes().Count(m=> m.Visibility == Visibility.Visible));
             Assert.AreEqual(1, BackgroundPreviewGeometry.Meshes().Count(m => m.Visibility == Visibility.Hidden));
-        }
-
-        [Test]
-        public void InsideInstance_PartiallyApplied_AllGeometrySolid()
-        {
-            Assert.Inconclusive("Finish me.");
         }
 
         [Test]
         public void InsideNestedInstance_HasOuterGeometryAndOuterInstanceGeometry()
         {
             Assert.Inconclusive("Finish me.");
+        }
+
+        [Test]
+        public void InsideCustomNode_NotPlacedInHomeWorkspace_NoGeometry()
+        {
+            Assert.Inconclusive("Finish me.");
+        }
+    }
+
+    [TestFixture]
+    public class CustomNodePartialApplicationTests : CustomNodeInsideCustomWorkspaceTestBase
+    {
+        public override void Setup()
+        {
+            base.Setup();
+
+            OpenVisualizationTest(@"custom-nodes\custom-node-partial-application-test.dyn");
+
+            Model.OpenCustomNodeWorkspace(info.FunctionId);
+            var cws = Model.Workspaces.FirstOrDefault(ws => ws is CustomNodeWorkspaceModel);
+            Assert.NotNull(cws);
+            customNodeWorkspace = (CustomNodeWorkspaceModel)cws;
+        }
+
+        [Test, Category("Failure")]
+        public void InsideInstance_PartiallyApplied_AllGeometrySolid()
+        {
+            Assert.AreEqual(1, BackgroundPreviewGeometry.Points().Count(p => p.IsDead()));
+            Assert.AreEqual(1, BackgroundPreviewGeometry.Curves().Count(p => p.IsDead()));
+            Assert.AreEqual(1, BackgroundPreviewGeometry.Meshes().Count(p => p.IsDead()));
+
+            Assert.AreEqual(0, BackgroundPreviewGeometry.Points().Count(p => p.IsAlive()));
+            Assert.AreEqual(0, BackgroundPreviewGeometry.Curves().Count(p => p.IsAlive()));
+            Assert.AreEqual(1, BackgroundPreviewGeometry.Meshes().Count(p => p.IsAlive()));
         }
     }
 }

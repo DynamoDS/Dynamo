@@ -551,6 +551,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             switch (e.PropertyName)
             {
                 case "CachedValue":
+                    Debug.WriteLine(string.Format("Requesting render packages for {0}", node.GUID));
                     node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
                     break;
 
@@ -574,6 +575,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public override void GenerateViewGeometryFromRenderPackagesAndRequestUpdate(IEnumerable<IRenderPackage> taskPackages)
         {
+            foreach (var p in taskPackages)
+            {
+                Debug.WriteLine(string.Format("Processing render packages for {0}", p.Description));
+            }
+
             recentlyAddedNodes.Clear();
 
 #if DEBUG
@@ -1467,9 +1473,27 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             const string pattern = "_out[0-9]";
             var rgx = new Regex(pattern);
 
-            return
-                workspace.Nodes.Where(n => n is Function)
-                    .SelectMany(n => n.OutPorts.Select(p => rgx.Replace(n.GetAstIdentifierForOutputIndex(p.Index).Value, "")));
+            var customNodes = workspace.Nodes.Where(n => n is Function);
+            var idents = new List<string>();
+            foreach (var n in customNodes)
+            {
+                if (n.IsPartiallyApplied)
+                {
+                    // Find output identifiers for the connected map node
+                    var mapOutportsIdents =
+                        n.OutPorts.SelectMany(
+                            np => np.Connectors.SelectMany(
+                                    c => c.End.Owner.OutPorts.Select(
+                                            mp => rgx.Replace(mp.Owner.GetAstIdentifierForOutputIndex(mp.Index).Value, ""))));
+                    
+                    idents.AddRange(mapOutportsIdents);
+                }
+                else
+                {
+                    idents.AddRange(n.OutPorts.Select(p => rgx.Replace(n.GetAstIdentifierForOutputIndex(p.Index).Value, "")));
+                }
+            }
+            return idents;
         }
 
         internal static IEnumerable<string> AllOutputIdentifiersInWorkspace(HomeWorkspaceModel workspace)
