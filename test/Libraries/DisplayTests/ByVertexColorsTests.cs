@@ -7,7 +7,7 @@ using TestServices;
 namespace DisplayTests
 {
     [TestFixture]
-    public class ByMeshVertexColorsTests : GeometricTestBase
+    public class ByVertexColorsTests : GeometricTestBase
     {
         [Test]
         public void ByMeshVertexColors_Construction_AllGood()

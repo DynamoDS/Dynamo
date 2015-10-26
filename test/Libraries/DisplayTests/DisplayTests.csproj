@@ -61,7 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ByGeometryColorTests.cs" />
-    <Compile Include="ByMeshVertexColorsTests.cs" />
+    <Compile Include="ByVertexColorsTests.cs" />
     <Compile Include="BySurfaceUvsColorsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
