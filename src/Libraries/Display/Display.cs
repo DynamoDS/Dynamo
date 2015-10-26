@@ -14,9 +14,11 @@ namespace Display
     {
         #region private members
 
+        private readonly Mesh mesh;
         private readonly Geometry geometry;
         private readonly Color singleColor;
         private readonly Color[][] colorMap;
+        private readonly Color[] meshVertexColors;
 
         #endregion
 
@@ -52,6 +54,12 @@ namespace Display
                     colorMap[j][i] = colors[i][j];
                 }
             } 
+        }
+
+        private Display(Mesh mesh, Color[] colors)
+        {
+            this.mesh = mesh;
+            meshVertexColors = colors;
         }
 
         #endregion
@@ -119,6 +127,38 @@ namespace Display
             return new Display(surface, colors);
         }
 
+        /// <summary>
+        /// Display vertex colors on a mesh.
+        /// </summary>
+        /// <param name="mesh">The mesh whose vertices will be colored.</param>
+        /// <param name="colors">An array of colors. The number of colors should match the number of vertices on the mesh.</param>
+        /// <returns></returns>
+        public static Display ByMeshVertexColors(Mesh mesh, Color[] colors)
+        {
+            if(mesh == null)
+            {
+                throw new ArgumentNullException("mesh");
+            }
+
+            if(colors == null)
+            {
+                throw new ArgumentNullException("colors");
+            }
+
+            if (!colors.Any())
+            {
+                throw new ArgumentException("You must provide some colors.", "colors");
+            }
+
+            var flatIndices = mesh.FaceIndices.SelectMany(ig => new[] { ig.A, ig.B, ig.C }).Distinct();
+            if (colors.Count() != flatIndices.Count())
+            {
+                throw new ArgumentException("The number of colors supplied must match the number of vertices in the mesh.", "colors");
+            }
+
+            return new Display(mesh, colors);
+        }
+
         #endregion
 
         #region public methods
@@ -126,11 +166,19 @@ namespace Display
         [IsVisibleInDynamoLibrary(false)]
         public void Tessellate(IRenderPackage package, TessellationParameters parameters)
         {
+            if(mesh != null)
+            {
+                CreateVertexColoredMesh(mesh, meshVertexColors, package, parameters);
+                return;
+            }
+
             if (singleColor != null)
             {
                 CreateGeometryRenderData(singleColor, package, parameters);
+                return;
             }
-            else if (colorMap != null)
+
+            if (colorMap != null)
             {
                 if (!colorMap.Any())
                 {
@@ -138,6 +186,7 @@ namespace Display
                 }
 
                 CreateColorMapOnSurface(colorMap, package, parameters);
+                return;
             }
         }
 
@@ -270,6 +319,29 @@ namespace Display
             var t = expRange*value;
             var finalExp = (int)Math.Pow(2, (int)(lowestPower + t));
             return finalExp;
+        }
+
+        private static void CreateVertexColoredMesh(Mesh mesh, Color[] colors, IRenderPackage package, TessellationParameters parameters)
+        {
+            package.RequiresPerVertexColoration = true;
+
+            var pts = mesh.VertexPositions;
+            var normals = mesh.VertexNormals;
+            var indexGroups = mesh.FaceIndices;
+            var flatIndices = mesh.FaceIndices.SelectMany(ig => new[] { ig.A, ig.B, ig.C }).ToArray();
+
+            for (int i = 0; i < flatIndices.Count(); i++)
+            {
+                var idx = flatIndices[i];
+                var pt = pts[idx];
+                var c = colors[idx];
+                var n = normals[idx];
+
+                package.AddTriangleVertex(pt.X, pt.Y, pt.Z);
+                package.AddTriangleVertexNormal(n.X, n.Y, n.Z);
+                package.AddTriangleVertexColor(c.Red, c.Green, c.Blue, c.Alpha);
+                package.AddTriangleVertexUV(0, 0);
+            }
         }
 
         #endregion
