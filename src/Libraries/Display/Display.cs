@@ -5,6 +5,7 @@ using Analysis;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
+using Display.Properties;
 using DSCore;
 using Math = DSCore.Math;
 
@@ -150,12 +151,12 @@ namespace Display
 
             if (!vertices.Any())
             {
-                throw new ArgumentException("You must provide some vertices.", "vertices");
+                throw new ArgumentException(Resources.NoVertexExceptionMessage, "vertices");
             }
 
             if (vertices.Count() %3 != 0)
             {
-                throw new ArgumentException("The number of vertices supplied must be divisible by three.");
+                throw new ArgumentException(Resources.VerticesDivisibleByThreeExceptionMessage);
             }
 
             if(colors == null)
@@ -165,12 +166,12 @@ namespace Display
 
             if (!colors.Any())
             {
-                throw new ArgumentException("You must provide some colors.", "colors");
+                throw new ArgumentException(Resources.NoColorsExceptionMessage, "colors");
             }
 
             if (colors.Count() != vertices.Count())
             {
-                throw new ArgumentException("The number of colors supplied must match the number of vertices.", "colors");
+                throw new ArgumentException(Resources.VertexColorCountMismatchExceptionMessage, "colors");
             }
 
             return new Display(vertices, colors);
