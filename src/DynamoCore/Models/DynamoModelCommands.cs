@@ -70,7 +70,7 @@ namespace Dynamo.Models
         {
             using (CurrentWorkspace.UndoRecorder.BeginActionGroup())
             {
-                var newNode = CurrentWorkspace.GetModelInternal(command.ModelGuid) as NodeModel;
+                var newNode = command.NewNode;
                 var existingNode = CurrentWorkspace.GetModelInternal(command.ModelGuids.ElementAt(1)) as NodeModel;
                 
                 if(newNode == null || existingNode == null) return;

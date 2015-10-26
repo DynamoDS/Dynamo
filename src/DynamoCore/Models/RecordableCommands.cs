@@ -699,8 +699,41 @@ namespace Dynamo.Models
         [DataContract]
         public class CreateAndConnectNodeCommand : ModelBasedRecordableCommand
         {
-            
+            private void SetProperties(double x, double y, int outPortIndex, int inPortIndex,
+                bool createAsDownstreamNode, bool addNewNodeToSelection)
+            {
+                OutputPortIndex = outPortIndex;
+                InputPortIndex = inPortIndex;
+                X = x;
+                Y = y;
+
+                CreateAsDownstreamNode = createAsDownstreamNode;
+                AddNewNodeToSelection = addNewNodeToSelection;
+            }
+
             #region Public Class Methods
+
+            /// <summary>
+            /// Creates a new CreateAndConnectNodeCommand given a new node and an existing node to connect to
+            /// </summary>
+            /// <param name="newNode"></param>
+            /// <param name="existingNode"></param>
+            /// <param name="outPortIndex"></param>
+            /// <param name="inPortIndex"></param>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <param name="createAsDownstreamNode">
+            /// new node to be created as downstream or upstream node wrt the existing node
+            /// </param>
+            /// <param name="addNewNodeToSelection">select the new node after it is created by default</param>
+            public CreateAndConnectNodeCommand(NodeModel newNode, NodeModel existingNode, int outPortIndex, int inPortIndex,
+                double x, double y, bool createAsDownstreamNode, bool addNewNodeToSelection)
+                : base(newNode != null && existingNode != null ? new[] { newNode.GUID, existingNode.GUID } : new[] { Guid.Empty })
+            {
+                NewNode = newNode;
+
+                SetProperties(x, y, outPortIndex, inPortIndex, createAsDownstreamNode, addNewNodeToSelection);
+            }
 
             /// <summary>
             /// Creates a new CreateAndConnectNodeCommand with the given inputs
@@ -714,22 +747,18 @@ namespace Dynamo.Models
             /// new node to be created as downstream or upstream node wrt the existing node
             /// </param>
             /// <param name="addNewNodeToSelection">select the new node after it is created by default</param>
-            public CreateAndConnectNodeCommand(IEnumerable<Guid> nodeGuids, int outPortIndex, int inPortIndex, 
+            internal CreateAndConnectNodeCommand(IEnumerable<Guid> nodeGuids, int outPortIndex, int inPortIndex, 
                 double x, double y, bool createAsDownstreamNode, bool addNewNodeToSelection)
                 : base(nodeGuids)
             {
-                OutputPortIndex = outPortIndex;
-                InputPortIndex = inPortIndex;
-                X = x;
-                Y = y;
-
-                CreateAsDownstreamNode = createAsDownstreamNode;
-                AddNewNodeToSelection = addNewNodeToSelection;
+                SetProperties(x, y, outPortIndex, inPortIndex, createAsDownstreamNode, addNewNodeToSelection);
             }
 
             #endregion
 
             #region Public Command Properties
+
+            internal NodeModel NewNode { get; private set; }
 
             [DataMember]
             internal int OutputPortIndex { get; private set; }
