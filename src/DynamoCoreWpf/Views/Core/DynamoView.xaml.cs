@@ -357,6 +357,11 @@ namespace Dynamo.Controls
             switch (e.ViewOperation)
             {
                 case ViewOperationEventArgs.Operation.FitView:
+                    if (dynamoViewModel.BackgroundPreviewViewModel != null)
+                    {
+                        dynamoViewModel.BackgroundPreviewViewModel.ZoomToFitCommand.Execute(null);
+                        return;
+                    }
                     BackgroundPreview.View.ZoomExtents();
                     break;
 
