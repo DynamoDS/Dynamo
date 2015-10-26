@@ -185,6 +185,7 @@ namespace Dynamo.Configuration
             ShowConnector = true;
             ConnectorType = ConnectorType.BEZIER;
             IsBackgroundPreviewActive = true;
+            IsBackgroundGridVisible = true;
             PackageDirectoriesToUninstall = new List<string>();
             NumberFormat = "f3";
             UseHardwareAcceleration = true;
