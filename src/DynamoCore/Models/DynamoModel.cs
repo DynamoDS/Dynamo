@@ -1557,22 +1557,10 @@ namespace Dynamo.Models
         public void Paste()
         {
             var locatableModels = ClipBoard.Where(model => model is NoteModel || model is NodeModel);
-            var orderedItems = locatableModels.OrderBy(item => item.CenterX + item.CenterY);
-
-            // Search for the rightmost item. It's item with the biggest X, Y coordinates of center.
-            var rightMostItem = orderedItems.Last();
-
-            // Search for the leftmost item. It's item with the smallest X, Y coordinates of center.
-            var leftMostItem = orderedItems.First();
-
-            // Compute shift so that left most item will appear at right most item place with offset.
-            var shiftX = rightMostItem.X + rightMostItem.Width - leftMostItem.X;
-            var shiftY = rightMostItem.Y - leftMostItem.Y;
-
-            var x = shiftX + locatableModels.Min(m => m.X);
-            var y = shiftY + locatableModels.Min(m => m.Y);
+            var x = locatableModels.Min(m => m.X);
+            var y = locatableModels.Min(m => m.Y);
             var targetPoint = new Point2D(x, y);
-            
+
             Paste(targetPoint);
         }
 
@@ -1662,14 +1650,6 @@ namespace Dynamo.Models
             {
                 model.X = model.X + shiftX + offset;
                 model.Y = model.Y + shiftY + offset;
-
-                // If new item appeares outside of workspace,
-                // then paste it at the center.
-                if (!CurrentWorkspace.Rect.Contains(model.Rect))
-                {
-                    model.X = CurrentWorkspace.CenterX + offset;
-                    model.Y = CurrentWorkspace.CenterY + offset;
-                }
             }
 
             // Add the new NodeModel's to the Workspace

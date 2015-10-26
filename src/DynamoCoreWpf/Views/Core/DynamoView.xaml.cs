@@ -180,20 +180,56 @@ namespace Dynamo.Controls
                 }
                 else // If mouse is out of workspace view, then paste copies at the center.
                 {
-                    var nodeBoundsWidth = nodeBounds.Sum(node => node.Width);
-                    var nodeBoundsHeight = nodeBounds.Sum(node => node.Height);
-                    var centerX = ((workspace.ViewModel.Width - workspaceBounds.X) / workspace.ViewModel.Zoom)
-                        - nodeBoundsWidth * 2;
-                    var centerY = ((workspaceBounds.Height - workspaceBounds.Y) / workspace.ViewModel.Zoom)
-                        - nodeBoundsHeight * 2;
-                    dynamoViewModel.Model.Paste(new Point2D(centerX, centerY));
+                    PasteNodeAtTheCenter(workspace);
                 }
                 return;
             }
 
+            // All nodes are inside of workspace and visible for user.
+            // Order them by CenterX and CenterY.
+            var orderedItems = locatableModels.OrderBy(item => item.CenterX + item.CenterY);
+
+            // Search for the rightmost item. It's item with the biggest X, Y coordinates of center.
+            var rightMostItem = orderedItems.Last();
+            // Search for the leftmost item. It's item with the smallest X, Y coordinates of center.
+            var leftMostItem = orderedItems.First();
+
+            // Compute shift so that left most item will appear at right most item place with offset.
+            var shiftX = rightMostItem.X + rightMostItem.Width - leftMostItem.X;
+            var shiftY = rightMostItem.Y - leftMostItem.Y;
+
+            // Find new node bounds.
+            var newNodeBounds = nodeBounds
+                .Select(node => new Rect(node.X + shiftX + workspace.ViewModel.Model.CurrentPasteOffset,
+                                         node.Y + shiftY + workspace.ViewModel.Model.CurrentPasteOffset,
+                                         node.Width, node.Height));
+
+            outOfView = newNodeBounds.Any(node => !workspaceBounds.Contains(node));
+
+            // If new node bounds appeare out of workspace view, we should paste them at the center.
+            if (outOfView)
+            {
+                PasteNodeAtTheCenter(workspace);
+                return;
+            }
+
+            var x = shiftX + locatableModels.Min(m => m.X);
+            var y = shiftY + locatableModels.Min(m => m.Y);
+
             // All copied nodes are inside of workspace.
             // Paste them with little offset.           
-            dynamoViewModel.Model.Paste();
+            dynamoViewModel.Model.Paste(new Point2D(x, y));
+        }
+
+        /// <summary>
+        /// Paste nodes at the center of workspace view.
+        /// </summary>
+        /// <param name="workspace">workspace view</param>
+        private void PasteNodeAtTheCenter(WorkspaceView workspace)
+        {
+            var centerX = (workspace.ActualWidth / 2 - workspace.ViewModel.Model.X) / workspace.ViewModel.Zoom;
+            var centerY = (workspace.ActualHeight / 2 - workspace.ViewModel.Model.Y) / workspace.ViewModel.Zoom;
+            dynamoViewModel.Model.Paste(new Point2D(centerX, centerY));
         }
 
         #region NodeViewCustomization
