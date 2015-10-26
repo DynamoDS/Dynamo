@@ -44,8 +44,7 @@ namespace Dynamo.Controls
             minorGridPen = new Pen(minorBrush, 1.0);
 
             AddVisualChild(drawingVisual);
-            this.SizeChanged += (s, e) => UpdateDrawingVisual();
-            this.Loaded += (s, e) => InitializeOnce();
+            SizeChanged += (s, e) => UpdateDrawingVisual();
         }
 
         internal void HandleViewSettingsChange(double x, double y, double zoom)
@@ -67,7 +66,7 @@ namespace Dynamo.Controls
 
         #region Private Class Helper and Event Handlers
 
-        private void InitializeOnce()
+        private void InitializeWorkspaceModel()
         {
             var workspaceView = WpfUtilities.FindUpVisualTree<WorkspaceView>(this);
 
@@ -83,7 +82,10 @@ namespace Dynamo.Controls
         private void UpdateDrawingVisual()
         {
             if (workspaceModel == null)
-                return;
+            {
+                // Indicates that this is a first load, so ws should be initialized first
+                InitializeWorkspaceModel();
+            }
 
             UpdateDrawingVisual(workspaceModel.X, workspaceModel.Y, workspaceModel.Zoom);
         }

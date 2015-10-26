@@ -153,21 +153,9 @@ namespace Dynamo.Controls
 
         private void ViewModelRequestAttachToSceneHandler(Model3D model3D)
         {
-            if (model3D is GeometryModel3D)
+            if (!model3D.IsAttached && View != null && View.RenderHost != null)
             {
-                if (View != null && View.RenderHost != null && !model3D.IsAttached)
-                {
-                    model3D.Attach(View.RenderHost);
-                }
-            }
-            else
-            {
-                //This is for Directional Light. When a watch is attached,
-                //Directional light has to be attached one more time.
-                if (!model3D.IsAttached && View != null && View.RenderHost != null)
-                {
-                    model3D.Attach(View.RenderHost);
-                }
+                model3D.Attach(View.RenderHost);
             }
         }
 
