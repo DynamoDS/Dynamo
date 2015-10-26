@@ -68,7 +68,7 @@ namespace DisplayTests
             var c = Color.ByARGB(255, 255, 255, 255);
             var d = Color.ByARGB(255, 255, 0, 0);
 
-            return new[] { a, b, c, d };
+            return new[] { a, b, c, a,c, d };
         }
 
     }
