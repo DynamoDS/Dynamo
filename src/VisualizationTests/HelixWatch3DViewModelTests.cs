@@ -589,6 +589,52 @@ namespace WpfVisualizationTests
             Assert.AreEqual(6, view.View.Items.Count);
         }
 
+        [Test]
+        public void HelixWatch3DViewModel_DisableGrid_GridDoesNotDraw()
+        {
+            var bPreviewVm = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
+            Assert.IsNotNull(bPreviewVm, "HelixWatch3D has not been loaded");
+            bPreviewVm.Active = true;
+            bPreviewVm.IsGridVisible = false;
+
+            // check if grid has not redraw
+            Assert.IsTrue(bPreviewVm.Active, "Background has become inactive");
+            Assert.IsFalse(bPreviewVm.IsGridVisible, "Background grid has not been hidden");
+            Assert.IsFalse(bPreviewVm.Model3DDictionary
+                .ContainsKey(HelixWatch3DViewModel.DefaultGridName), "Background grid has not been hidden");
+        }
+
+        [Test]
+        public void HelixWatch3DViewModel_OpenFileWithGridDisabled_GridDoesNotDraw()
+        {
+            HelixWatch3DViewModel_DisableGrid_GridDoesNotDraw();
+
+            OpenVisualizationTest("CBN.dyn");
+
+            // check if grid has not redraw after opening a file
+            var bPreviewVm = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
+            Assert.IsTrue(bPreviewVm.Active, "Background has become inactive");
+            Assert.IsFalse(bPreviewVm.IsGridVisible, "Background grid has become visible");
+            Assert.IsFalse(bPreviewVm.Model3DDictionary
+                .ContainsKey(HelixWatch3DViewModel.DefaultGridName), "Background grid has become visible");
+        }
+
+        [Test]
+        public void HelixWatch3DViewModel_OpenFileWithGridDisabled_EnableGrid_GridDraws()
+        {
+            HelixWatch3DViewModel_OpenFileWithGridDisabled_GridDoesNotDraw();
+
+            // turn on grid
+            ViewModel.ToggleBackgroundGridVisibilityCommand.Execute(null);
+
+            // check if grid has appeared
+            var bPreviewVm = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
+            Assert.IsTrue(bPreviewVm.Active, "Background has become inactive");
+            Assert.IsTrue(bPreviewVm.IsGridVisible, "Background grid has not appeared");
+            Assert.IsTrue(bPreviewVm.Model3DDictionary
+                .ContainsKey(HelixWatch3DViewModel.DefaultGridName), "Background grid has not appeared");
+        }
+
         #endregion
 
         #region dynamo view tests

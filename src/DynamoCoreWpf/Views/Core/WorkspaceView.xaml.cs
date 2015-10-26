@@ -879,6 +879,5 @@ namespace Dynamo.Views
         {
             ViewModel.InCanvasSearchViewModel.SearchText = String.Empty;
         }
-
     }
 }

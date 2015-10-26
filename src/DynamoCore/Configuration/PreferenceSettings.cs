@@ -59,6 +59,11 @@ namespace Dynamo.Configuration
         public bool IsBackgroundPreviewActive { get; set; }
 
         /// <summary>
+        /// Should the background grid be shown?
+        /// </summary>
+        public bool IsBackgroundGridVisible { get; set; }
+
+        /// <summary>
         /// The decimal precision used to display numbers.
         /// </summary>
         public string NumberFormat
@@ -180,6 +185,7 @@ namespace Dynamo.Configuration
             ShowConnector = true;
             ConnectorType = ConnectorType.BEZIER;
             IsBackgroundPreviewActive = true;
+            IsBackgroundGridVisible = true;
             PackageDirectoriesToUninstall = new List<string>();
             NumberFormat = "f3";
             UseHardwareAcceleration = true;

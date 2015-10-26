@@ -43,7 +43,7 @@ namespace Dynamo.Models
         {
             get
             {
-                return currentPasteOffset == 0 ? PasteOffsetStep : currentPasteOffset;
+                return currentPasteOffset + PasteOffsetStep;
             }
         }
 

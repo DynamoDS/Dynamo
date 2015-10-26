@@ -10,6 +10,7 @@ namespace Dynamo.Interfaces
         bool ShowConnector { get; set; }
         ConnectorType ConnectorType { get; set; }
         bool IsBackgroundPreviewActive { get; set; }
+        bool IsBackgroundGridVisible { get; set; }
         string NumberFormat { get; set; }
         bool IsUsageReportingApproved { get; set; }
         bool IsAnalyticsReportingApproved { get; set; }
