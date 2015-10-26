@@ -598,8 +598,6 @@ namespace Dynamo.Views
 
             if (false == mouseMessageHandled)
                 wvm.HandleMouseMove(workBench, e);
-
-            ViewModel.MousePosition = Mouse.GetPosition(this.WorkspaceElements).AsDynamoType();
         }
 
         protected override void OnDragOver(DragEventArgs e)
@@ -872,12 +870,5 @@ namespace Dynamo.Views
         {
             ViewModel.InCanvasSearchViewModel.SearchText = String.Empty;
         }
-
-        private void OnWorkspaceSizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            ViewModel.Height = e.NewSize.Height;
-            ViewModel.Width = e.NewSize.Width;
-        }
-
     }
 }

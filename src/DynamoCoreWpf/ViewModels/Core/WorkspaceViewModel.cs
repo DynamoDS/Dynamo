@@ -216,48 +216,6 @@ namespace Dynamo.ViewModels
             get { return Model.Zoom; }
         }
 
-        public double Height
-        {
-            get { return Model.Height; }
-            set
-            {
-                Model.Height = value;
-                RaisePropertyChanged("Height");
-            }
-        }
-
-        public double Width
-        {
-            get { return Model.Width; }
-            set
-            {
-                Model.Width = value;
-                RaisePropertyChanged("Width");
-            }
-        }
-
-        private Point2D mousePosition;
-        /// <summary>
-        /// Indicates mouse position on workspace view.
-        /// </summary>
-        public Point2D MousePosition
-        {
-            get { return mousePosition; }
-            set
-            {
-                mousePosition = value;
-                RaisePropertyChanged("MousePosition");
-            }
-        }
-
-        /// <summary>
-        /// Indicates if mouse is over workspace view.
-        /// </summary>
-        public bool IsMouseOver
-        {
-            get { return Model.Rect.Contains(MousePosition); }
-        }
-
         public bool CanZoomIn
         {
             get { return CanZoom(Configurations.ZoomIncrement); }

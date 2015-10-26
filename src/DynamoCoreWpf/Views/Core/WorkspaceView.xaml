@@ -18,8 +18,7 @@
              KeyUp="WorkspaceView_KeyUp"
              IsHitTestVisible="{Binding IsCurrentSpace}"
              AllowDrop="True"
-             Drop="OnWorkspaceDrop"
-             SizeChanged="OnWorkspaceSizeChanged">
+             Drop="OnWorkspaceDrop">
 
     <UserControl.Resources>
         <Style TargetType="{x:Type ContextMenu}"

@@ -571,7 +571,7 @@ namespace Dynamo.Models
         /// </summary>
         public Rect2D Rect
         {
-            get { return new Rect2D(-x/zoom, -y/zoom, width/zoom, height/zoom); }
+            get { return new Rect2D(x, y, width, height); }
         }
 
         /// <summary>
@@ -595,13 +595,13 @@ namespace Dynamo.Models
 
         public double CenterX
         {
-            get { return (Width / 2 - X) / Zoom; }
+            get { return 0; }
             set { }
         }
 
         public double CenterY
         {
-            get { return (Height / 2 - Y) / Zoom; }
+            get { return 0; }
             set { }
         }
 
