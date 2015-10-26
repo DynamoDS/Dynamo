@@ -90,6 +90,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        /// <summary>
+        /// A flag indicating whether the grid is visible in 3D.
+        /// </summary>
         public virtual bool IsGridVisible
         {
             get { return isGridVisible; }
