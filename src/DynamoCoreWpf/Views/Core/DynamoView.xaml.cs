@@ -180,8 +180,12 @@ namespace Dynamo.Controls
                 }
                 else // If mouse is out of workspace view, then paste copies at the center.
                 {
-                    var centerX = (workspace.ViewModel.Width - workspaceBounds.X) / workspace.ViewModel.Zoom;
-                    var centerY = (workspaceBounds.Height - workspaceBounds.Y) / workspace.ViewModel.Zoom;
+                    var nodeBoundsWidth = nodeBounds.Sum(node => node.Width);
+                    var nodeBoundsHeight = nodeBounds.Sum(node => node.Height);
+                    var centerX = ((workspace.ViewModel.Width - workspaceBounds.X) / workspace.ViewModel.Zoom)
+                        - nodeBoundsWidth * 2;
+                    var centerY = ((workspaceBounds.Height - workspaceBounds.Y) / workspace.ViewModel.Zoom)
+                        - nodeBoundsHeight * 2;
                     dynamoViewModel.Model.Paste(new Point2D(centerX, centerY));
                 }
                 return;
