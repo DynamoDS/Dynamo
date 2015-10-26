@@ -155,8 +155,8 @@ namespace Dynamo.Controls
 
         private void OnRequestPaste()
         {
-            var clopBoard = dynamoViewModel.Model.ClipBoard;
-            var locatableModels = clopBoard.Where(item => item is NoteModel || item is NodeModel);
+            var clipBoard = dynamoViewModel.Model.ClipBoard;
+            var locatableModels = clipBoard.Where(item => item is NoteModel || item is NodeModel);
 
             // Find node views, that were copied. Translate them into rect.
             var nodeBounds = this.ChildrenOfType<NodeView>()

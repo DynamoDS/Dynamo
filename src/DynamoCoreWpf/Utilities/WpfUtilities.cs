@@ -73,6 +73,10 @@ namespace Dynamo.Utilities
             }
         }
 
+        /// <summary>
+        /// Computes rectangle taking into account relative element.
+        /// </summary>
+        /// <returns>Rectangle</returns>
         public static Rect BoundsRelativeTo(this FrameworkElement element,
                                          Visual relativeTo)
         {
