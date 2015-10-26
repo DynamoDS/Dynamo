@@ -488,8 +488,8 @@ namespace Dynamo.Tests
             var node2 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace
                 ("1ad8632e-7ddc-4cc7-bfa5-58cb899a5ddf");
 
-            Assert.IsTrue(node1.ToolTipText.Contains("cyclic"));
-            Assert.IsTrue(node2.ToolTipText.Contains("cyclic"));
+            Assert.IsTrue(node1.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+            Assert.IsTrue(node2.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
         }
     }
 }
