@@ -33,7 +33,7 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        public void InHomeWorkspace_HasGeometry()
+        public void InHomeWorkspace_CustomNodeInstance_HasGeometry()
         {
             Assert.AreEqual(3, BackgroundPreviewGeometry.Meshes().Count());
             Assert.AreEqual(3, BackgroundPreviewGeometry.Curves().Count());
@@ -109,6 +109,19 @@ namespace WpfVisualizationTests
     }
 
     [TestFixture]
+    public class CustomNodeNotInWorkspaceTests : VisualizationTest
+    {
+        [Test]
+        public void InsideCustomNode_NotPlacedInHomeWorkspace_NoGeometry()
+        {
+            OpenVisualizationTest(@"custom-nodes\FiveCubes.dyf");
+            Assert.AreEqual(0, BackgroundPreviewGeometry.Points().Count());
+            Assert.AreEqual(0, BackgroundPreviewGeometry.Curves().Count());
+            Assert.AreEqual(0, BackgroundPreviewGeometry.Meshes().Count());
+        }
+    }
+
+    [TestFixture]
     public class CustomNodeInsideCustomWorkspaceTests : CustomNodeInsideCustomWorkspaceTestBase
     {
         public override void Setup()
@@ -124,7 +137,7 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        public void InsideInstance_AllGeometrySolid()
+        public void InsideInstance_AllGeometryFromInstancesOfThisCustomNode_Alive()
         {
             Assert.AreEqual(2, BackgroundPreviewGeometry.Points().Count(p => p.IsAlive()));
             Assert.AreEqual(2, BackgroundPreviewGeometry.Curves().Count(p => p.IsAlive()));
@@ -132,7 +145,7 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        public void InsideInstance_OtherGeometryTransparent()
+        public void InsideInstance_OtherGeometryFromOtherNodes_Dead()
         {
             Assert.AreEqual(1, BackgroundPreviewGeometry.Points().Count(p => p.IsDead()));
             Assert.AreEqual(1, BackgroundPreviewGeometry.Curves().Count(p => p.IsDead()));
@@ -157,12 +170,6 @@ namespace WpfVisualizationTests
         {
             Assert.Inconclusive("Finish me.");
         }
-
-        [Test]
-        public void InsideCustomNode_NotPlacedInHomeWorkspace_NoGeometry()
-        {
-            Assert.Inconclusive("Finish me.");
-        }
     }
 
     [TestFixture]
@@ -181,7 +188,7 @@ namespace WpfVisualizationTests
         }
 
         [Test, Category("Failure")]
-        public void InsideInstance_PartiallyApplied_AllGeometrySolid()
+        public void InsideInstance_PartiallyApplied_AllGeometryFromInstancesOfThisCustomNode_Alive()
         {
             // The mirror data for the output port of List.Map is null during testing.
 
