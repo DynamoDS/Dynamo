@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Dynamo.Interfaces;
+using Dynamo.Logging;
 using NUnit.Framework;
 
 namespace Dynamo.PackageManager.Tests

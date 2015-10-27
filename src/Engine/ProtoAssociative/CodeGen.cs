@@ -385,9 +385,12 @@ namespace ProtoAssociative
 
                 string symbol1 = firstNode.updateNodeRefList[0].nodeList[0].symbol.name;
                 string symbol2 = lastNode.updateNodeRefList[0].nodeList[0].symbol.name;
-                string message = String.Format(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency, symbol1, symbol2);
 
-                core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency, message, core.CurrentDSFileName);
+                foreach (var n in dependencyList.GroupBy(x => x.guid).Select(y => y.First()))
+                {
+                    core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency,
+                        ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency, core.CurrentDSFileName, graphNode: n);
+                }
                 firstNode.isCyclic = true;
 
                 cyclicSymbol1 = firstNode.updateNodeRefList[0].nodeList[0].symbol;

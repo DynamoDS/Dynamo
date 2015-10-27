@@ -15,6 +15,7 @@ using System.Windows.Media.Media3D;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Controls;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.ViewModels;
@@ -78,6 +79,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private double lightAzimuthDegrees = 45.0;
         private double lightElevationDegrees = 35.0;
+        private DynamoLineGeometryModel3D gridModel3D;
         private LineGeometry3D worldGrid;
         private LineGeometry3D worldAxes;
         private RenderTechnique renderTechnique;
@@ -265,6 +267,18 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 nearPlaneDistanceFactor = value;
                 RaisePropertyChanged("NearPlaneDistanceFactor");
+            }
+        }
+
+        public override bool IsGridVisible
+        {
+            get { return isGridVisible; }
+            set
+            {
+                if (isGridVisible == value) return;
+
+                base.IsGridVisible = value;
+                SetGridVisibility();
             }
         }
 
@@ -656,6 +670,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             OnRequestZoomToFit(selectionBounds);
         }
 
+        protected override bool CanToggleCanNavigateBackground(object parameter)
+        {
+            return true;
+        }
+
         #region internal methods
 
         internal void ComputeFrameUpdate()
@@ -842,7 +861,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Model3DDictionary.Add(DefaultLightName, directionalLight);
             }
 
-            var gridModel3D = new DynamoLineGeometryModel3D
+            gridModel3D = new DynamoLineGeometryModel3D
             {
                 Geometry = Grid,
                 Transform = Model1Transform,
@@ -852,10 +871,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Name = DefaultGridName
             };
 
-            if (!Model3DDictionary.ContainsKey(DefaultGridName))
-            {
-                Model3DDictionary.Add(DefaultGridName, gridModel3D);
-            }
+            SetGridVisibility();
 
             var axesModel3D = new DynamoLineGeometryModel3D
             {
@@ -871,8 +887,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 Model3DDictionary.Add(DefaultAxesName, axesModel3D);
             }
-
-            AttachAllGeometryModel3DToRenderHost();
         }
 
         /// <summary>
@@ -927,6 +941,28 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             Axes.Positions = axesPositions;
             Axes.Indices = axesIndices;
             Axes.Colors = axesColors;
+        }
+
+        private void SetGridVisibility()
+        {
+            //return if there is nothing to change
+            if (Model3DDictionary.ContainsKey(DefaultGridName) == isGridVisible) return;
+
+            if (isGridVisible)
+            {
+                if (!gridModel3D.IsAttached)
+                {
+                    OnRequestAttachToScene(gridModel3D);
+                }
+
+                Model3DDictionary[DefaultGridName] = gridModel3D;
+            }
+            else
+            {
+                Model3DDictionary.Remove(DefaultGridName);
+            }
+
+            RaisePropertyChanged("SceneItems");
         }
 
         private static void DrawGridPatch(
@@ -1352,7 +1388,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Set the near clip plane to some fraction of the 
             // of the distance to the first point.
             var closest = distances.First(d => d >= 0);
-            near = closest.AlmostEqualTo(0, EqualityTolerance) ? DefaultNearClipDistance : closest * nearPlaneDistanceFactor;
+            near = closest.AlmostEqualTo(0, EqualityTolerance) ? DefaultNearClipDistance : Math.Max(DefaultNearClipDistance, closest * nearPlaneDistanceFactor);
             far = distances.Last() * 2;
 
         }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Autodesk.DesignScript.Interfaces;
 
-namespace Dynamo.Interfaces
+namespace Dynamo.Visualization
 {
     public interface IRenderPackageSource<T>
     {

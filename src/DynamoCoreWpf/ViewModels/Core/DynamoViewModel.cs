@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Threading;
+using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
@@ -20,6 +21,7 @@ using Dynamo.Services;
 using Dynamo.UI;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
+using Dynamo.Visualization;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.UI;
@@ -873,7 +875,7 @@ namespace Dynamo.ViewModels
 
         private void Paste(object parameter)
         {
-            model.Paste();
+            OnRequestPaste();
             RaiseCanExecuteUndoRedo();
         }
 
@@ -1501,6 +1503,18 @@ namespace Dynamo.ViewModels
         internal bool CanToggleFullscreenWatchShowing(object parameter)
         {
             return true;
+        }
+
+        public void ToggleBackgroundGridVisibility(object parameter)
+        {
+            if (!CanToggleBackgroundGridVisibility(parameter)) return;
+
+            BackgroundPreviewViewModel.IsGridVisible = !BackgroundPreviewViewModel.IsGridVisible;
+        }
+
+        internal bool CanToggleBackgroundGridVisibility(object parameter)
+        {
+            return BackgroundPreviewViewModel != null && BackgroundPreviewViewModel.Active;
         }
 
         public void GoToWorkspace(object parameter)

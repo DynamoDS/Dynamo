@@ -14,11 +14,12 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Threading;
 using System.Windows.Documents;
-
+using Dynamo.Controls;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI.Controls;
 using Dynamo.Wpf.UI;
+using Dynamo.Utilities;
 
 using ModifierKeys = System.Windows.Input.ModifierKeys;
 
@@ -516,16 +517,24 @@ namespace Dynamo.Views
                         .Where(c => c.End != null && c.End.Owner.IsSelected)).Distinct();
 
                 // set list of selected viewmodels
-                draggedData = nodes.Select(n => (ViewModelBase)new NodeViewModel(ViewModel, n))
+                draggedData = connectors.Select(c => (ViewModelBase)new ConnectorViewModel(ViewModel, c))
                     .Concat(notes.Select(n => new NoteViewModel(ViewModel, n)))
                     .Concat(annotations.Select(a => new AnnotationViewModel(ViewModel, a)))
-                    .Concat(connectors.Select(c => new ConnectorViewModel(ViewModel, c))).ToList();
+                    .Concat(nodes.Select(n =>
+                    {
+                        var nodeRect = this.ChildrenOfType<NodeView>()
+                            .First(view => view.ViewModel.NodeModel == n).nodeBorder;
+                        var size = new Size(nodeRect.ActualWidth, nodeRect.ActualHeight);
+                        // set fixed size for dragged nodes, 
+                        // so that they will correspond to origin nodes
+                        return new NodeViewModel(ViewModel, n, size);
+                    })).ToList();
                 
                 var mouse = e.GetPosition(WorkspaceElements);
                 var locatableModels = nodes.Concat<ModelBase>(notes);
                 var minX = locatableModels.Any() ? locatableModels.Min(mb => mb.X) : 0;
                 var minY = locatableModels.Any() ? locatableModels.Min(mb => mb.Y) : 0;
-                // comput offset to correctly place selected items rigth under mouse cursor 
+                // compute offset to correctly place selected items right under mouse cursor 
                 var mouseOffset = new Point2D(mouse.X - minX, mouse.Y - minY);
 
                 DynamoSelection.Instance.ClearSelectionDisabled = false;
@@ -870,6 +879,5 @@ namespace Dynamo.Views
         {
             ViewModel.InCanvasSearchViewModel.SearchText = String.Empty;
         }
-
     }
 }

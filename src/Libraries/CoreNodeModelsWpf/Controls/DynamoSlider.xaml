@@ -6,6 +6,7 @@
              xmlns:ui1="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              xmlns:ui2="clr-namespace:Dynamo.UI;assembly=DynamoCore"
              xmlns:nodes1="clr-namespace:Dynamo.Nodes;assembly=DynamoCoreWpf"
+             xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
              mc:Ignorable="d" 
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch">
@@ -52,7 +53,7 @@
 
         </Expander>
 
-        <Grid Height="{x:Static ui2:Configurations.PortHeightInPixels}" 
+        <Grid Height="{x:Static configuration:Configurations.PortHeightInPixels}" 
               VerticalAlignment="Top">
 
             <Grid.ColumnDefinitions>

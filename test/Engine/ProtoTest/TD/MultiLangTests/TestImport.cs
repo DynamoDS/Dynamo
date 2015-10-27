@@ -140,7 +140,7 @@ endPtZ = endPt.Z;";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void T009_BasicImport_TestClassInstanceMethod()
         {
@@ -157,7 +157,7 @@ midValue = myPoint.MidValue();";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void T010_BaseImportWithVariableClassInstance_top()
         {
@@ -284,7 +284,7 @@ a = 10;";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void T018_MultipleImport()
         {
@@ -304,7 +304,7 @@ arr = Scale(midValue, 4.0);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void T019_MultipleImport_ClashFunctionClassRedifinition()
         {

@@ -1,13 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Interfaces;
-using Dynamo.Models;
-using Dynamo.Services;
 
-namespace Dynamo
+namespace Dynamo.Logging
 {
     public enum LogLevel{Console, File, Warning}
     public enum WarningLevel{Mild, Moderate, Error}

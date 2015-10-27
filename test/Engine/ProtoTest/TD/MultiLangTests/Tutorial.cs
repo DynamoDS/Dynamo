@@ -225,7 +225,7 @@ t4 = lines[3][0].Start.X;
 
 
         [Test]
-        [Category("DSDefinedClass_Ignored_WorkflowTest")]
+        [Ignore][Category("DSDefinedClass_Ignored_WorkflowTest")]
         public void T00008_Geometry_005_circle_adjacent_pairs_externalised()
         {
             //Assert.Fail("1456568 - Sprint 16 : Rev 982 : Replication does not work on operators "); 
@@ -279,7 +279,7 @@ t2 = lines[1][2].Start.X;";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_TestAsWorkflow")]
+        [Ignore][Category("DSDefinedClass_Ignored_TestAsWorkflow")]
         [Category("Failure")]
         public void T00010_Geometry_007_specialPoint_2()
         {
@@ -356,7 +356,7 @@ a 		= a.incrementRadius(0.2); 				// [POINT does not updates]
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_TestAsWorkflow")]
+        [Ignore][Category("DSDefinedClass_Ignored_TestAsWorkflow")]
         [Category("Replication")]
         [Category("Failure")]
         public void T00011_Geometry_008_trim_then_tube_4()
@@ -395,7 +395,7 @@ t5 = tubes[4].EndPoint.X;";
 
 
         [Test]
-        [Category("DSDefinedClass_Ignored_TestAsWorkflow")]
+        [Ignore][Category("DSDefinedClass_Ignored_TestAsWorkflow")]
         [Category("Failure")]
         public void T00012_Geometry_008a_alternative_method_invocations_1()
         {
@@ -463,7 +463,7 @@ x8 = tube_3.StartPoint.X;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_TestAsWorkflow")]
+        [Ignore][Category("DSDefinedClass_Ignored_TestAsWorkflow")]
         [Category("SmokeTest")]
         public void T00013_Geometry_009_nested_user_defined_feature_2b()
         {
@@ -545,7 +545,7 @@ x3 = triangle0002.Side_b_c.MidPoint.X;
 
 
         [Test]
-        [Category("DSDefinedClass_Ignored_TestAsWorkflow")]
+        [Ignore][Category("DSDefinedClass_Ignored_TestAsWorkflow")]
         [Category("Replication")]
         public void T00014_Geometry_010_nested_user_defined_feature_rand_2()
         {
@@ -626,7 +626,7 @@ x3 = MyTriangle0001[2].side_c_a.midPoint.X;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_TestAsWorkflow")]
+        [Ignore][Category("DSDefinedClass_Ignored_TestAsWorkflow")]
         [Category("Feature")]
         public void T00015_Geometry_011_nested_user_defined_feature_with_partial_class_1()
         {

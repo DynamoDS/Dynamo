@@ -8,6 +8,7 @@ using System.Diagnostics;
 using Dynamo.Models;
 using Dynamo.Services;
 using System.Text.RegularExpressions;
+using Dynamo.Logging;
 
 namespace DynamoCLI
 {

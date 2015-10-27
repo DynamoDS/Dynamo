@@ -20,6 +20,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:preview="clr-namespace:Dynamo.Wpf.Views.Preview"
         xmlns:watch3D="clr-namespace:Dynamo.Wpf.ViewModels.Watch3D"
+        xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
         x:Name="_this"
         Height="768"
         Width="1024"
@@ -581,8 +582,14 @@
                                 </MenuItem.ItemContainerStyle>
                             </MenuItem>
 
+                            <MenuItem Header="{x:Static p:Resources.DynamoViewViewMenuShowGrid}"
+                                      IsEnabled="{Binding BackgroundPreviewActive}"
+                                      IsChecked="{Binding BackgroundPreviewViewModel.IsGridVisible}"
+                                      Focusable="False"
+                                      Command="{Binding ToggleBackgroundGridVisibilityCommand}" />
+
                             <MenuItem Header="{x:Static p:Resources.DynamoViewViewMenuPreviewNavigate}"
-                                      IsEnabled="{Binding Path=BackgroundPreviewActive}"
+                                      IsEnabled="{Binding BackgroundPreviewActive}"
                                       IsChecked="{Binding Path=BackgroundPreviewViewModel.CanNavigateBackground}"
                                       InputGestureText="Ctrl + B"
                                       Focusable="False"
@@ -1190,7 +1197,7 @@
 
                         <Style TargetType="{x:Type TabItem}">
                             <Setter Property="MaxWidth"
-                                    Value="{Binding Source={x:Static ui1:Configurations.TabDefaultWidth}}" />
+                                    Value="{Binding Source={x:Static configuration:Configurations.TabDefaultWidth}}" />
                             <Setter Property="Width">
                                 <Setter.Value>
                                     <MultiBinding Converter="{StaticResource TabSizeConverter}">

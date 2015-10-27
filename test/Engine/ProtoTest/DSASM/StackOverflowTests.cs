@@ -11,7 +11,7 @@ namespace ProtoTest.DSASM
     class StackOverflowTests : ProtoTestBase
     {
         [Test]
-        [Category("DSDefinedClass_Ignored_CoveredInRecusionTests")]
+        [Ignore][Category("DSDefinedClass_Ignored_CoveredInRecusionTests")]
         [Category("StackOverflow")]
         public void StackOverflow_DNL_1467365()
         {
@@ -37,8 +37,7 @@ Rows = Row.ByPoints(a, b);";
         }
 
         [Test]
-        [Ignore]
-        [Category("DSDefinedClass_Ignored_CoveredInRecusionTests")]
+        [Ignore][Category("DSDefinedClass_Ignored_CoveredInRecusionTests")]
         [Category("StackOverflow")]
         [Category("Failure")]
         public void StackOverflow_DNL_1467354()

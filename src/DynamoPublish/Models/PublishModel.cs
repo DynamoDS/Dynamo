@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -103,8 +104,10 @@ namespace Dynamo.Publish.Models
         {
             None,
             AuthenticationFailed,
+            Unauthorized,
             ServerNotFound,
             AuthProviderNotFound,
+            EmptyWorkspace,
             InvalidNodes,
             UnknownServerError
         }
@@ -276,59 +279,74 @@ namespace Dynamo.Publish.Models
             }
         }
 
-        internal void SendAsynchronously(HomeWorkspaceModel workspace, WorkspaceProperties workspaceProperties = null)
+        internal async void SendAsync(HomeWorkspaceModel workspace, WorkspaceProperties workspaceProperties = null)
         {
+            if (String.IsNullOrWhiteSpace(serverUrl))
+            {
+                Error = UploadErrorType.ServerNotFound;
+                return;
+            }
+
+            if (String.IsNullOrWhiteSpace(authenticationProvider.Username))
+            {
+                Error = UploadErrorType.AuthenticationFailed;
+                return;
+            }
+
+            if (workspace.Nodes.Count() == 0)
+            {
+                Error = UploadErrorType.EmptyWorkspace;
+                return;
+            }
+
+            if (authenticationProvider == null)
+            {
+                Error = UploadErrorType.AuthProviderNotFound;
+                return;
+            }
+
             State = UploadState.Uploading;
 
-            Task.Factory.StartNew(() =>
-                {
-                    var result = this.Send(workspace, workspaceProperties);
-                    var serverResponce = serverResponceRegex.Match(result);
+            IReachHttpResponse result;
 
-                    if (serverResponce.Success)
-                    {
-                        State = UploadState.Succeeded;
-                        Error = UploadErrorType.None;
-                        CustomizerURL = String.Concat(serverUrl, serverResponce.Value);
-                    }
-                    else if (InvalidNodeNames != null)
-                    {
-                        Error = UploadErrorType.InvalidNodes;
-                    }
-                    else
-                    {
-                        // If there wasn't any error during uploading, 
-                        // that means it's some error on the server side.
-                        Error = UploadErrorType.UnknownServerError;
-                    }
-                });
+            try
+            {
+                result = await Task.Run(() => this.Send(workspace, workspaceProperties));
+            }
+            catch (InvalidNodesException ex)
+            {
+                InvalidNodeNames = ex.InvalidNodeNames;
+                Error = UploadErrorType.InvalidNodes;
+                return;
+            }
 
+            if (result.StatusCode == HttpStatusCode.Unauthorized) {
+                Error = UploadErrorType.Unauthorized;
+                return;
+            }
+
+            var serverResponce = serverResponceRegex.Match(result.Content);
+
+            if (serverResponce.Success)
+            {
+                State = UploadState.Succeeded;
+                Error = UploadErrorType.None;
+                CustomizerURL = String.Concat(serverUrl, serverResponce.Value);
+            }
+            else
+            {
+                // If there wasn't any error during uploading, 
+                // that means it's some error on the server side.
+                Error = UploadErrorType.UnknownServerError;
+            }
         }
 
         /// <summary>
         /// Sends workspace and its' dependencies to Flood.
         /// </summary>
         /// <returns>String which is response from server.</returns>
-        internal string Send(HomeWorkspaceModel workspace, WorkspaceProperties workspaceProperties = null)
+        private IReachHttpResponse Send(HomeWorkspaceModel workspace, WorkspaceProperties workspaceProperties = null)
         {
-            if (String.IsNullOrWhiteSpace(serverUrl))
-            {
-                Error = UploadErrorType.ServerNotFound;
-                return Resources.FailedMessage;
-            }
-
-            if (String.IsNullOrWhiteSpace(authenticationProvider.Username))
-            {
-                Error = UploadErrorType.AuthenticationFailed;
-                return Resources.FailedMessage;
-            }
-
-            if (authenticationProvider == null)
-            {
-                Error = UploadErrorType.AuthProviderNotFound;
-                return Resources.FailedMessage;
-            }
-
             if (reachClient == null)
             {
                 reachClient = new WorkspaceStorageClient(authenticationProvider, serverUrl);
@@ -336,26 +354,12 @@ namespace Dynamo.Publish.Models
 
             var dependencies = WorkspaceDependencies.Collect(workspace, customNodeManager);
 
-            string result;
-            try
-            {
-                result = reachClient.Send(
+            InvalidNodeNames = null;
+
+            return reachClient.Send(
                     workspace,
                     dependencies.CustomNodeWorkspaces,
                     workspaceProperties);
-                InvalidNodeNames = null;
-            }
-            catch (InvalidNodesException ex)
-            {
-                InvalidNodeNames = ex.InvalidNodeNames;
-                result = Resources.FailedMessage;
-            }
-            catch
-            {
-                result = Resources.FailedMessage;
-            }
-
-            return result;
         }
 
         internal void ClearState()
@@ -363,7 +367,5 @@ namespace Dynamo.Publish.Models
             State = UploadState.Uninitialized;
             Error = UploadErrorType.None;
         }
-
     }
-
 }

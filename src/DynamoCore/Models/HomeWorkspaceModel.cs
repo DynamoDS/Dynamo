@@ -432,11 +432,28 @@ namespace Dynamo.Models
             {
                 // If there is already runtime warnings for 
                 // this node, then ignore the build warnings.
+                // But for cyclic dependency warnings, it is
+                // easier to understand to report a build warning.
+                string message = string.Empty;
                 if (messages.ContainsKey(warning.Key))
-                    continue;
+                {
+                    if (!warning.Value.Any(w => w.ID == ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency))
+                        continue;
 
-                var message = string.Join("\n", warning.Value.Select(w => w.Message));
-                messages.Add(warning.Key, message);
+                    messages.Remove(warning.Key);
+                    message = string.Join("\n", warning.Value.
+                        Where(w => w.ID == ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency).
+                        Select(w => w.Message));
+                }
+                else
+                {
+                    message = string.Join("\n", warning.Value.Select(w => w.Message));
+                }
+
+                if (!string.IsNullOrEmpty(message))
+                {
+                    messages.Add(warning.Key, message);
+                }
             }
 
             var workspace = updateTask.TargetedWorkspace;

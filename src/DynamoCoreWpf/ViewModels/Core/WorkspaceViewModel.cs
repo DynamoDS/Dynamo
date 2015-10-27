@@ -12,6 +12,7 @@ using Dynamo.UI;
 using Dynamo.Utilities;
 
 using System.Windows.Input;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Wpf.ViewModels;
 
@@ -799,7 +800,7 @@ namespace Dynamo.ViewModels
         private void Paste(object param)
         {
             var point = InCanvasSearchViewModel.InCanvasSearchPosition;
-            DynamoViewModel.Model.Paste(new Point2D(point.X, point.Y));
+            DynamoViewModel.Model.Paste(new Point2D(point.X, point.Y), false);
             DynamoViewModel.RaiseCanExecuteUndoRedo();
         }
 

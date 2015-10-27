@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
-
 using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 
-namespace Dynamo
+namespace Dynamo.Configuration
 {
     /// <summary>
     /// PreferenceSettings is a class for GUI to persist certain settings.
@@ -58,6 +57,11 @@ namespace Dynamo
         /// Should the background 3D preview be shown?
         /// </summary>
         public bool IsBackgroundPreviewActive { get; set; }
+
+        /// <summary>
+        /// Should the background grid be shown?
+        /// </summary>
+        public bool IsBackgroundGridVisible { get; set; }
 
         /// <summary>
         /// The decimal precision used to display numbers.
@@ -181,6 +185,7 @@ namespace Dynamo
             ShowConnector = true;
             ConnectorType = ConnectorType.BEZIER;
             IsBackgroundPreviewActive = true;
+            IsBackgroundGridVisible = true;
             PackageDirectoriesToUninstall = new List<string>();
             NumberFormat = "f3";
             UseHardwareAcceleration = true;

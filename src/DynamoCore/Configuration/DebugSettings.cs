@@ -1,4 +1,6 @@
-﻿namespace Dynamo.Core
+﻿using Dynamo.Core;
+
+namespace Dynamo.Configuration
 {
     public class DebugSettings : NotificationObject
     {

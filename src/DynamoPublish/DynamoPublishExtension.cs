@@ -7,6 +7,7 @@ using System;
 using System.Windows.Controls;
 using System.Linq;
 using System.Windows;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Publish.Properties;
 using Greg;

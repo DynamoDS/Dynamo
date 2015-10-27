@@ -350,6 +350,10 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Top"
                     Height="Auto">
+                <StackPanel.IsEnabled>
+                    <Binding Path="DataContext.BackgroundPreviewViewModel.Active"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
+                </StackPanel.IsEnabled>
                 <ui:ImageCheckBox Width="56"
                               Height="30"
                               Margin="4,4,0,4"
@@ -443,8 +447,6 @@
             </ui:ImageCheckBox>
 
         </StackPanel>
-
-     
 
         <Popup Name="InCanvasSearchBar"
                StaysOpen="True"
