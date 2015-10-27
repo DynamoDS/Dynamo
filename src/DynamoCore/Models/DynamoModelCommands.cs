@@ -70,7 +70,7 @@ namespace Dynamo.Models
         {
             using (CurrentWorkspace.UndoRecorder.BeginActionGroup())
             {
-                var newNode = CreateNodeFromNameorType(command.ModelGuid, command.NewNodeName);
+                var newNode = CreateNodeFromNameOrType(command.ModelGuid, command.NewNodeName);
                 var existingNode = CurrentWorkspace.GetModelInternal(command.ModelGuids.ElementAt(1)) as NodeModel;
                 
                 if(newNode == null || existingNode == null) return;
@@ -148,7 +148,7 @@ namespace Dynamo.Models
 
             // Then, we have to figure out what kind of node to make, based on the name.
 
-            NodeModel node = CreateNodeFromNameorType(nodeId, name);
+            NodeModel node = CreateNodeFromNameOrType(nodeId, name);
             if (node != null) return node;
 
             // And if that didn't work, then it must be a custom node.
@@ -164,7 +164,7 @@ namespace Dynamo.Models
             return null;
         }
 
-        private NodeModel CreateNodeFromNameorType(Guid nodeId, string name)
+        private NodeModel CreateNodeFromNameOrType(Guid nodeId, string name)
         {
             NodeModel node;
 
