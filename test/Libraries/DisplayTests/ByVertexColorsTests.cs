@@ -12,42 +12,42 @@ namespace DisplayTests
         [Test]
         public void ByMeshVertexColors_Construction_AllGood()
         {
-            Assert.DoesNotThrow(() => Display.Display.ByVertexColors(
+            Assert.DoesNotThrow(() => Display.Display.ByPointsColors(
             TestVertices(), TestColors()));
         }
 
         [Test]
         public void ByMeshVertexColors_Construction_NullVertices_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => Display.Display.ByVertexColors(
+            Assert.Throws<ArgumentNullException>(() => Display.Display.ByPointsColors(
             null, TestColors()));
         }
 
         [Test]
         public void ByMeshVertexColors_Construction_NullColors_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => Display.Display.ByVertexColors(
+            Assert.Throws<ArgumentNullException>(() => Display.Display.ByPointsColors(
             TestVertices(), null));
         }
 
         [Test]
         public void ByMeshVertexColors_Construction_EmptyVertices_ThrowsException()
         {
-            Assert.Throws<ArgumentException>(() => Display.Display.ByVertexColors(
+            Assert.Throws<ArgumentException>(() => Display.Display.ByPointsColors(
             new Point[] {}, TestColors()));
         }
 
         [Test]
         public void ByMeshVertexColors_Construction_EmptyColors_ThrowsException()
         {
-            Assert.Throws<ArgumentException>(() => Display.Display.ByVertexColors(
+            Assert.Throws<ArgumentException>(() => Display.Display.ByPointsColors(
             TestVertices(), new Color[] { }));
         }
 
         [Test]
         public void ByMeshVertexColors_Construction_UnequalPointsAndColors_ThrowsException()
         {
-            Assert.Throws<ArgumentException>(() => Display.Display.ByVertexColors(
+            Assert.Throws<ArgumentException>(() => Display.Display.ByPointsColors(
             TestVertices(), new Color[] { Color.ByARGB(), Color.ByARGB(255, 0, 0, 255) }));
         }
 

@@ -90,11 +90,19 @@ namespace Display
 
         /// <summary>
         /// Display color values on a surface.
+        /// 
+        /// The colors provided are converted internally to an image texture which is
+        /// mapped to the surface. 
         /// </summary>
-        /// <param name="surface">The surface on which to apply the colors.</param>
-        /// <param name="colors">A two dimensional list of Colors.</param>
+        /// <param name="surface">The surface on which to apply the colors.
+        /// </param>
+        /// <param name="colors">A two dimensional list of Colors.
+        /// 
+        /// The list of colors must be square. Attempting to pass a jagged array
+        /// will result in an exception. </param>
         /// <returns>A Display object.</returns>
-        public static Display BySurfaceColors(Surface surface, Color[][] colors)
+        public static Display BySurfaceColors(Surface surface, 
+            [DefaultArgument("{{Color.ByARGB(255,255,0,0),Color.ByARGB(255,255,255,0)},{Color.ByARGB(255,0,255,255),Color.ByARGB(255,0,0,255)}};")] Color[][] colors)
         {
             if (surface == null)
             {
@@ -129,32 +137,33 @@ namespace Display
         }
 
         /// <summary>
-        /// Display vertex colors on a mesh.
+        /// Create a colored mesh using points and colors.
         /// 
-        /// The list of points supplied is used to create a triangular mesh, with
+        /// The list of points supplied is used to construct a triangulated mesh, with
         /// non-joined vertices.
         /// </summary>
-        /// <param name="vertices">A list of Points. 
+        /// <param name="points">A list of Points. 
         /// 
-        /// Only triangular meshes are currently supported.
-        /// Attempting to pass a list of vertices whose count is not divisble by 3 will throw an exception.</param>
+        /// Only triangular meshes are currently supported. Each triplet of points in the list will form one 
+        /// triangle in the mesh. Attempting to pass a list of vertices whose count is not divisble by 3 will throw an exception.</param>
         /// <param name="colors">A list of colors. 
         /// 
-        /// The number of colors should match the number of vertices.</param>
-        /// <returns></returns>
-        public static Display ByVertexColors(Point[] vertices, Color[] colors)
+        /// The number of colors must match the number of vertices. Attempting pass a list of colors which does not
+        /// have the same number of Colors as the list of points will throw an exception.</param>
+        /// <returns>A Display object.</returns>
+        public static Display ByPointsColors(Point[] points, Color[] colors)
         {
-            if(vertices == null)
+            if(points == null)
             {
-                throw new ArgumentNullException("vertices");
+                throw new ArgumentNullException("points");
             }
 
-            if (!vertices.Any())
+            if (!points.Any())
             {
-                throw new ArgumentException(Resources.NoVertexExceptionMessage, "vertices");
+                throw new ArgumentException(Resources.NoVertexExceptionMessage, "points");
             }
 
-            if (vertices.Count() %3 != 0)
+            if (points.Count() %3 != 0)
             {
                 throw new ArgumentException(Resources.VerticesDivisibleByThreeExceptionMessage);
             }
@@ -169,12 +178,12 @@ namespace Display
                 throw new ArgumentException(Resources.NoColorsExceptionMessage, "colors");
             }
 
-            if (colors.Count() != vertices.Count())
+            if (colors.Count() != points.Count())
             {
                 throw new ArgumentException(Resources.VertexColorCountMismatchExceptionMessage, "colors");
             }
 
-            return new Display(vertices, colors);
+            return new Display(points, colors);
         }
 
         #endregion
