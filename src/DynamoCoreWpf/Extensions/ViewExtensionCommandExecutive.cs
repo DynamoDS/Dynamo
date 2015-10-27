@@ -23,15 +23,21 @@ namespace Dynamo.Wpf.Extensions
 
         public void ExecuteCommand(DynamoModel.RecordableCommand command, string uniqueId, string extensionName)
         {
-            Log(LogMessage.Info(string.Format(
+            var extnDetails = string.Format(
                 "ViewExtensionCommandExecutive ( UniqueId: {0}, Name: {1}, commandTypeName: {2} )",
-                uniqueId, extensionName, command.GetType().Name)));
+                uniqueId, extensionName, command.GetType().Name);
 
-            // run the command
-            dynamoViewModel.ExecuteCommand(command);
-
-            // clean up or show failure messages
-
+            Log(LogMessage.Info(extnDetails));
+            try
+            {
+                // run the command
+                dynamoViewModel.ExecuteCommand(command);
+            }
+            catch (Exception e)
+            {
+                // clean up or show failure messages
+                Log(LogMessage.Error(string.Format("{0}, from {1}", e.Message, extnDetails)));
+            }
         }
 
         public event Action<ILogMessage> MessageLogged;

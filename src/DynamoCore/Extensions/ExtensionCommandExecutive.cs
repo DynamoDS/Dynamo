@@ -26,15 +26,23 @@ namespace Dynamo.Extensions
             {
                 dynamoModel.Logger.Log("Command: " + command);
             }
+            
+            var extnDetails = string.Format(
+                "ExtensionCommandExecutive ( UniqueId: {0}, Name: {1}, commandTypeName: {2} )",
+                uniqueId, extensionName, command.GetType().Name);
+            
+            Log(LogMessage.Info(extnDetails));
 
-            Log(LogMessage.Info(string.Format(
-                "ExtensionCommandExecutive ( UniqueId: {0}, Name: {1}, commandTypeName: {2} )", 
-                uniqueId, extensionName, command.GetType().Name)));
-
-            // run the command
-            dynamoModel.ExecuteCommand(command);
-
-            // clean up or show failure messages
+            try
+            {
+                // run the command
+                dynamoModel.ExecuteCommand(command);
+            }
+            catch (Exception e)
+            {
+                // clean up or show failure messages
+                Log(LogMessage.Error(string.Format("{0}, from {1}", e.Message, extnDetails)));
+            }
             
         }
 
