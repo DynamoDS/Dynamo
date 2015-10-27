@@ -24,6 +24,7 @@ using SharpDX;
 using TestServices;
 using Color = System.Windows.Media.Color;
 using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
+using Dynamo.Views;
 using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
 
 namespace WpfVisualizationTests
@@ -633,6 +634,24 @@ namespace WpfVisualizationTests
             Assert.IsTrue(bPreviewVm.IsGridVisible, "Background grid has not appeared");
             Assert.IsTrue(bPreviewVm.Model3DDictionary
                 .ContainsKey(HelixWatch3DViewModel.DefaultGridName), "Background grid has not appeared");
+        }
+
+        [Test]
+        public void HelixWatch3DViewModel_ChangeBackgroundVisibility_CanNavigateButtonsAreCorrect()
+        {
+            var bPreviewVm = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
+            Assert.IsNotNull(bPreviewVm, "HelixWatch3D has not been loaded");
+            bPreviewVm.Active = false;
+
+            Assert.IsFalse(bPreviewVm.Active, "Background has not been turned off");
+            var currentWorkspace = View.WorkspaceTabs.ChildrenOfType<WorkspaceView>().First();
+            Assert.AreEqual(Visibility.Hidden, currentWorkspace.statusBarPanel.Visibility, "Navigation buttons were not hidden");
+
+            // turn on background
+            ViewModel.ToggleFullscreenWatchShowingCommand.Execute(null);
+
+            Assert.IsTrue(bPreviewVm.Active, "Background has not been turned on");
+            Assert.AreEqual(Visibility.Visible, currentWorkspace.statusBarPanel.Visibility, "Navigation buttons did not appear");
         }
 
         #endregion
