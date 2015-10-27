@@ -1188,18 +1188,21 @@ namespace Dynamo.Models
                         OnWorkspaceOpening(xmlDoc);
 
                         // TODO: #4258
-                        // Remove this ResetEngine call when multiple home workspaces is supported.
-                        // This call formerly lived in DynamoViewModel
-                        ResetEngine();
-
-                        // TODO: #4258
                         // The following logic to start periodic evaluation will need to be moved
                         // inside of the HomeWorkspaceModel's constructor.  It cannot be there today
                         // as it causes an immediate crash due to the above ResetEngine call.
                         var hws = ws as HomeWorkspaceModel;
-                        if (hws != null && hws.RunSettings.RunType == RunType.Periodic)
+                        if (hws != null)
                         {
-                            hws.StartPeriodicEvaluation();
+                            // TODO: #4258
+                            // Remove this ResetEngine call when multiple home workspaces is supported.
+                            // This call formerly lived in DynamoViewModel
+                            ResetEngine();
+
+                            if (hws.RunSettings.RunType == RunType.Periodic)
+                            {
+                                hws.StartPeriodicEvaluation();
+                            }
                         }
 
                         CurrentWorkspace = ws;
