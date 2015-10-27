@@ -61,6 +61,15 @@ namespace Display.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The list of colors must not be a jagged list..
+        /// </summary>
+        internal static string JaggedListExceptionMessage {
+            get {
+                return ResourceManager.GetString("JaggedListExceptionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You must provide some colors..
         /// </summary>
         internal static string NoColorsExceptionMessage {
@@ -75,6 +84,15 @@ namespace Display.Properties {
         internal static string NoVertexExceptionMessage {
             get {
                 return ResourceManager.GetString("NoVertexExceptionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must supply a two dimensional list of Colors..
+        /// </summary>
+        internal static string TwoDimensionalListExceptionMessage {
+            get {
+                return ResourceManager.GetString("TwoDimensionalListExceptionMessage", resourceCulture);
             }
         }
         

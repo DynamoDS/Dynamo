@@ -116,12 +116,12 @@ namespace Display
 
             if (!colors.Any())
             {
-                throw new ArgumentException("You must supply some colors");
+                throw new ArgumentException(Resources.NoColorsExceptionMessage);
             }
 
             if (colors.Length == 1)
             {
-                throw new ArgumentException("You must supply a two dimensional list of Colors.");
+                throw new ArgumentException(Resources.TwoDimensionalListExceptionMessage);
             }
 
             var size = colors[0].Count();
@@ -129,7 +129,7 @@ namespace Display
             {
                 if (list.Count() != size)
                 {
-                    throw new ArgumentException("The list of colors must not be a jagged list.");
+                    throw new ArgumentException(Resources.JaggedListExceptionMessage);
                 }
             }
 
