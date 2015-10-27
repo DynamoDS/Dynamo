@@ -393,6 +393,11 @@ namespace Dynamo.Nodes
                     if (inputSymbol.Contains('='))
                         defaultValue = node.RightNode;
 
+                    if (parseParam.Errors != null && parseParam.Errors.Any())
+                        this.Error(parseParam.Errors.First().Message);
+                    else if (parseParam.Warnings != null && parseParam.Warnings.Any())
+                        this.Warning(parseParam.Warnings.First().Message);
+
                     return identifier != null;
                 }
             }
