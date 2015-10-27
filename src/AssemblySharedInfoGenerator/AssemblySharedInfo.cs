@@ -45,11 +45,7 @@ using System.Runtime.InteropServices;
 // to distinguish one build from another. AssemblyFileVersion is specified
 // in AssemblyVersionInfo.cs so that it can be easily incremented by the
 // automated build process.
-<<<<<<< HEAD
-[assembly: AssemblyVersion("0.9.1.2981")]
-=======
-[assembly: AssemblyVersion("0.9.1.2985")]
->>>>>>> master
+[assembly: AssemblyVersion("0.9.1.2995")]
 
 
 // By default, the "Product version" shown in the file properties window is
@@ -68,8 +64,4 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-<<<<<<< HEAD
-[assembly: AssemblyFileVersion("0.9.1.2981")]
-=======
-[assembly: AssemblyFileVersion("0.9.1.2985")]
->>>>>>> master
+[assembly: AssemblyFileVersion("0.9.1.2995")]
