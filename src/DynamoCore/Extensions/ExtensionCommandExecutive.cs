@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 
 namespace Dynamo.Extensions
 {
-    internal class ExtensionCommandExecutive : ICommandExecutive
+    internal class ExtensionCommandExecutive : ICommandExecutive, ILogSource
     {
         private readonly DynamoModel dynamoModel;
 
@@ -29,5 +30,7 @@ namespace Dynamo.Extensions
             // clean up or show failure messages
             
         }
+
+        public event Action<ILogMessage> MessageLogged;
     }
 }

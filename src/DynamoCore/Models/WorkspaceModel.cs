@@ -294,10 +294,10 @@ namespace Dynamo.Models
         /// <summary>
         /// Implement to record node modification for undo/redo
         /// </summary>
-        /// <param name="nodeModel"></param>
-        public void RecordModelForModification(ModelBase nodeModel)
+        /// <param name="models"></param>
+        public void RecordModelsForModification(IEnumerable<ModelBase> models)
         {
-            RecordModelForModification(nodeModel, undoRecorder);
+            RecordModelsForModification(models.ToList(), undoRecorder);
         }
 
         /// <summary>
