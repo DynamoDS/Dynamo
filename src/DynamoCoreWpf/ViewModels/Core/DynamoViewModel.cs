@@ -875,7 +875,7 @@ namespace Dynamo.ViewModels
 
         private void Paste(object parameter)
         {
-            model.Paste();
+            OnRequestPaste();
             RaiseCanExecuteUndoRedo();
         }
 

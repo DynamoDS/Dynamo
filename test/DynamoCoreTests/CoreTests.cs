@@ -260,8 +260,8 @@ namespace Dynamo.Tests
             CurrentDynamoModel.Paste();
             Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
-            Assert.AreEqual(14, CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(1).X);
-            Assert.AreEqual(11, CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(1).Y);
+            Assert.AreEqual(22, CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(1).X);
+            Assert.AreEqual(21, CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(1).Y);
         }
 
         [Test]
@@ -292,11 +292,11 @@ namespace Dynamo.Tests
             CurrentDynamoModel.Paste();
             Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
-            Assert.AreEqual(17, CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(2).X);
-            Assert.AreEqual(17, CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(2).Y);
+            Assert.AreEqual(22, CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(2).X);
+            Assert.AreEqual(21, CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(2).Y);
 
-            Assert.AreEqual(20, CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(3).X);
-            Assert.AreEqual(23, CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(3).Y);
+            Assert.AreEqual(25, CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(3).X);
+            Assert.AreEqual(27, CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(3).Y);
         }
 
         [Test]
