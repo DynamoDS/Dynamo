@@ -367,7 +367,7 @@
                                                          Width="13" />
                                         <TextBlock Foreground="{Binding IsDetailedMode, 
                                                                               Converter={StaticResource CompactLayoutForegroundConverter}}"
-                                                   Text="Compact"
+                                                   Text="{x:Static p:Resources.CompactLayoutTitle}"
                                                    FontSize="13" />
                                     </StackPanel>
                                 </ControlTemplate>
@@ -391,7 +391,7 @@
                                                       Width="13" />
                                     <TextBlock Foreground="{Binding IsDetailedMode, 
                                                                               Converter={StaticResource DetailedLayoutForegroundConverter}}"
-                                               Text="Detailed"
+                                               Text="{x:Static p:Resources.DetailedLayoutTitle}"
                                                FontSize="13" />
                                 </StackPanel>
                             </ControlTemplate>
