@@ -8,6 +8,7 @@
              xmlns:vm="clr-namespace:Dynamo.Wpf.ViewModels"
              xmlns:views="clr-namespace:Dynamo.UI.Views"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:search="clr-namespace:Dynamo.Search"
              mc:Ignorable="d"
              d:DesignHeight="525"
              d:DesignWidth="350">
@@ -86,7 +87,11 @@
                                                    Text="{Binding Description}"
                                                    Foreground="{StaticResource SearchDarkGreyTextColor}"
                                                    TextWrapping="Wrap"
-                                                   TextTrimming="CharacterEllipsis" />
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Visibility="{Binding DataContext.IsDetailedMode, 
+                                                                        RelativeSource={RelativeSource FindAncestor, 
+                                                                        AncestorType={x:Type search:SearchView}},
+                                                                        Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                                     </StackPanel>
                                 </Grid>
 

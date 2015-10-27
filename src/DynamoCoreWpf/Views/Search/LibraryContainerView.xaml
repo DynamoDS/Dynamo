@@ -326,7 +326,7 @@
                VerticalOffset="3"
                HorizontalOffset="-10">
             <ContentControl Style="{StaticResource LibraryPopupContentStyle}">
-                <WrapPanel Background="#01000000">
+                <WrapPanel>
                     <!-- Compact layout button -->
                     <Border BorderThickness="0,0,1,0"
                             BorderBrush="{StaticResource SearchDarkGreyTextColor}">
