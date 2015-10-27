@@ -353,7 +353,8 @@
                     <Border BorderThickness="0,0,1,0"
                             BorderBrush="{StaticResource SearchDarkGreyTextColor}">
                         <Button Name="CompactButton"
-                                Command="{Binding CompactLayoutCommand}">
+                                Command="{Binding ToggleLayoutCommand}"
+                                CommandParameter="Compact">
                             <Button.Template>
                                 <ControlTemplate>
                                     <StackPanel Orientation="Horizontal"
@@ -377,7 +378,8 @@
 
                     <!-- Detailed layout button -->
                     <Button Name="DetailedButton"
-                            Command="{Binding DetailedLayoutCommand}">
+                            Command="{Binding ToggleLayoutCommand}"
+                            CommandParameter="Detailed">
                         <Button.Template>
                             <ControlTemplate>
                                 <StackPanel Orientation="Horizontal"

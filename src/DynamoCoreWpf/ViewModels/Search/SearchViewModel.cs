@@ -1038,14 +1038,21 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        internal void SetDetailedLayout(object parameter)
+        internal void ToggleLayout(object parameter)
         {
-            IsDetailedMode = true;
-        }
-
-        internal void SetCompactLayout(object parameter)
-        {
-            IsDetailedMode = false;
+            var mode = parameter as String;
+            switch (mode)
+            {
+                case "Compact":
+                    IsDetailedMode = false;
+                    break;
+                case "Detailed":
+                    IsDetailedMode = true;
+                    break;
+                default:
+                    IsDetailedMode = false;
+                    break;
+            }
         }
 
         #endregion
