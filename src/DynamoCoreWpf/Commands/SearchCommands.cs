@@ -58,5 +58,31 @@ namespace Dynamo.ViewModels
         {
             get { return dynamoViewModel.ShowPackageManagerSearchCommand; }
         }
+
+        private DelegateCommand detailedLayout;
+        public DelegateCommand DetailedLayoutCommand
+        {
+            get
+            {
+                if (detailedLayout == null)
+                {
+                    detailedLayout = new DelegateCommand(SetDetailedLayout);
+                }
+                return detailedLayout;
+            }
+        }
+
+        private DelegateCommand compactLayout;
+        public DelegateCommand CompactLayoutCommand
+        {
+            get
+            {
+                if (compactLayout == null)
+                {
+                    compactLayout = new DelegateCommand(SetCompactLayout);
+                }
+                return compactLayout;
+            }
+        }
     }
 }

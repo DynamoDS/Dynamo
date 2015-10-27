@@ -1824,4 +1824,27 @@
         </Setter>
     </Style>
 
+    <Style x:Key="LibraryPopupContentStyle"
+           TargetType="ContentControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ContentControl">
+                    <Grid>
+                        <Border Background="{StaticResource FilterPopupBackgroundColor}"
+                                BorderBrush="{StaticResource FilterPopupBorderColor}"
+                                BorderThickness="1"
+                                Margin="0,11,0,0"
+                                CornerRadius="5">
+                            <ContentPresenter />
+                        </Border>
+                        <Path x:Name="arrow"
+                              Fill="{StaticResource FilterPopupBackgroundColor}"
+                              Stroke="{StaticResource FilterPopupBorderColor}"
+                              Data="M 5 12 L 15 0 L 25 12" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>
