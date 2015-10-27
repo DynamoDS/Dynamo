@@ -355,6 +355,40 @@ namespace DynamoCoreWpfTests
         }
 
         [Test, RequiresSTA]
+        public void TestCreateAndConnectNodeCommand()
+        {
+            // Create the command in completely unpredictable states. These 
+            // states should properly be serialized and deserialized across 
+            // two instances of the same command.
+            // 
+            Guid newNodeGuid = Guid.NewGuid();
+            Guid existingNodeGuid = Guid.NewGuid();
+
+            double x = randomizer.NextDouble() * 1000;
+            double y = randomizer.NextDouble() * 1000;
+
+            var cmdOne = new DynamoModel.CreateAndConnectNodeCommand(newNodeGuid, existingNodeGuid, 
+                "dummyNode", 0, 1, x, y, false, false);
+
+            var cmdTwo = DuplicateAndCompare(cmdOne);
+
+            Assert.AreEqual(cmdOne.NewNodeName, cmdTwo.NewNodeName);
+            Assert.AreEqual(cmdOne.X, cmdTwo.X, 0.000001);
+            Assert.AreEqual(cmdOne.Y, cmdTwo.Y, 0.000001);
+            Assert.AreEqual(cmdOne.InputPortIndex, cmdTwo.InputPortIndex);
+            Assert.AreEqual(cmdOne.OutputPortIndex, cmdTwo.OutputPortIndex);
+            Assert.AreEqual(cmdOne.CreateAsDownstreamNode, cmdTwo.CreateAsDownstreamNode);
+            Assert.AreEqual(cmdOne.AddNewNodeToSelection, cmdTwo.AddNewNodeToSelection);
+            Assert.AreEqual(cmdOne.ModelGuid, cmdTwo.ModelGuid);
+            Assert.AreEqual(cmdOne.ModelGuids.ElementAt(1), cmdTwo.ModelGuids.ElementAt(1));
+
+            // A RecordableCommand should be created in "recording mode" by default, 
+            // and only deserialized commands should be marked as "in playback mode".
+            Assert.AreEqual(false, cmdOne.IsInPlaybackMode);
+            Assert.AreEqual(true, cmdTwo.IsInPlaybackMode);
+        }
+
+        [Test, RequiresSTA]
         public void TestCreateNoteCommand()
         {
             // Create the command in completely unpredictable states. These 
