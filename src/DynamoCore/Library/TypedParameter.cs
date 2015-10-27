@@ -22,7 +22,10 @@ namespace Dynamo.Library
             Type = type;
             DefaultValue = defaultValue;
 
-            defaultValueString = shortArgumentName;
+            if (defaultValue != null)
+                defaultValueString = defaultValue.ToString();
+            else
+                defaultValueString = shortArgumentName;
         }
 
         public FunctionDescriptor Function { get; private set; }

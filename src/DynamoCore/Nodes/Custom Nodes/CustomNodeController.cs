@@ -25,8 +25,8 @@ namespace Dynamo.Nodes
                 return;
 
             var inputs = Definition.DisplayParameters.Zip(Definition.Parameters, (dp, p) => Tuple.Create(dp, p.Description, p.DefaultValue));
-            foreach (var p in inputs)
-                model.InPortData.Add(new PortData(p.Item1, p.Item2, p.Item3));
+            foreach (var p in Definition.Parameters)
+                model.InPortData.Add(new PortData(p.Name, p.Description, p.DefaultValue));
         }
 
         protected override void InitializeOutputs(NodeModel model)

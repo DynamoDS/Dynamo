@@ -315,9 +315,7 @@ namespace Dynamo.Nodes
                         }
                         else
                         {
-                            if (defaultValue == null)
-                                nickName = identifierNode.Value;
-
+                            nickName = identifierNode.Value;
                             type = identifierNode.datatype;
                         }
                     }
@@ -336,6 +334,11 @@ namespace Dynamo.Nodes
             private set;
         }
 
+        public string GetDisplayName()
+        {
+            return string.IsNullOrEmpty(nickName) ? AstIdentifierBase : nickName;
+        }
+       
         public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
         {
             return
