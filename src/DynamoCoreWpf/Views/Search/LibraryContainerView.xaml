@@ -9,6 +9,7 @@
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:controls="clr-namespace:Dynamo.Wpf.Controls"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              d:DataContext="{d:DesignInstance ViewModels:SearchViewModel, IsDesignTimeCreatable=False}"
              mc:Ignorable="d"
              Visibility="Visible"
@@ -362,8 +363,10 @@
                     <Border BorderThickness="0,0,1,0"
                             BorderBrush="{StaticResource SearchDarkGreyTextColor}">
                         <Button Name="CompactButton"
-                                Command="{Binding ToggleLayoutCommand}"
-                                CommandParameter="Compact">
+                                Command="{Binding ToggleLayoutCommand}">
+                            <Button.CommandParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </Button.CommandParameter>
                             <Button.Template>
                                 <ControlTemplate>
                                     <StackPanel Orientation="Horizontal"
@@ -387,8 +390,10 @@
 
                     <!-- Detailed layout button -->
                     <Button Name="DetailedButton"
-                            Command="{Binding ToggleLayoutCommand}"
-                            CommandParameter="Detailed">
+                            Command="{Binding ToggleLayoutCommand}">
+                        <Button.CommandParameter>
+                            <system:Boolean>True</system:Boolean>
+                        </Button.CommandParameter>
                         <Button.Template>
                             <ControlTemplate>
                                 <StackPanel Orientation="Horizontal"

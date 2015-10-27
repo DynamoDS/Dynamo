@@ -1040,19 +1040,7 @@ namespace Dynamo.ViewModels
 
         internal void ToggleLayout(object parameter)
         {
-            var mode = parameter as String;
-            switch (mode)
-            {
-                case "Compact":
-                    IsDetailedMode = false;
-                    break;
-                case "Detailed":
-                    IsDetailedMode = true;
-                    break;
-                default:
-                    IsDetailedMode = false;
-                    break;
-            }
+            IsDetailedMode = (bool)parameter;
         }
 
         #endregion
