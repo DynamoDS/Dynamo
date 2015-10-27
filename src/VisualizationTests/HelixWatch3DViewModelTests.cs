@@ -861,7 +861,7 @@ namespace WpfVisualizationTests
         {
             if (geometry is PointGeometryModel3D || geometry is LineGeometryModel3D)
             {
-                return geometry.Geometry.Colors.All(c => c == HelixWatch3DViewModel.defaultDeadColor);
+                return geometry.Geometry.Colors.All(c => c == HelixWatch3DViewModel.DefaultDeadColor);
             }
 
             if (geometry is DynamoGeometryModel3D)
@@ -876,12 +876,12 @@ namespace WpfVisualizationTests
         {
             if (geometry is PointGeometryModel3D)
             {
-                return geometry.Geometry.Colors.All(c => c == HelixWatch3DViewModel.defaultPointColor);
+                return geometry.Geometry.Colors.All(c => c == HelixWatch3DViewModel.DefaultPointColor);
             }
 
             if (geometry is LineGeometryModel3D)
             {
-                return geometry.Geometry.Colors.All(c => c == HelixWatch3DViewModel.defaultLineColor);
+                return geometry.Geometry.Colors.All(c => c == HelixWatch3DViewModel.DefaultLineColor);
             }
 
             if (geometry is DynamoGeometryModel3D)

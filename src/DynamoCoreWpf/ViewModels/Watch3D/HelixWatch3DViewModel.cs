@@ -92,10 +92,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private readonly Color4 defaultSelectionColor = new Color4(new Color3(0, 158.0f / 255.0f, 1.0f));
         private readonly Color4 defaultMaterialColor = new Color4(new Color3(1.0f, 1.0f, 1.0f));
         private readonly Size defaultPointSize = new Size(6, 6);
-        internal static readonly Color4 defaultLineColor = new Color4(new Color3(0, 0, 0));
-        internal static readonly Color4 defaultPointColor = new Color4(new Color3(0, 0, 0));
-        internal static readonly Color4 defaultDeadColor = new Color4(new Color3(0.7f,0.7f,0.7f));
-        internal static readonly float defaultDeadAlpha = 0.1f;
+        private static readonly Color4 defaultLineColor = new Color4(new Color3(0, 0, 0));
+        private static readonly Color4 defaultPointColor = new Color4(new Color3(0, 0, 0));
+        private static readonly Color4 defaultDeadColor = new Color4(new Color3(0.7f,0.7f,0.7f));
+        private static readonly float defaultDeadAlphaScale = 0.2f;
 
         internal const string DefaultGridName = "Grid";
         internal const string DefaultAxesName = "Axes";
@@ -178,6 +178,21 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         #endregion
 
         #region properties
+
+        internal static Color4 DefaultLineColor
+        {
+            get { return defaultLineColor; }
+        }
+
+        internal static Color4 DefaultPointColor
+        {
+            get { return defaultPointColor; }
+        }
+
+        internal static Color4 DefaultDeadColor
+        {
+            get { return defaultDeadColor; }
+        }
 
         internal Dictionary<string, Model3D> Model3DDictionary
         {
@@ -1265,7 +1280,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     if (drawDead)
                     {
                         meshGeometry3D.RequiresPerVertexColoration = true;
-                        mesh.Colors.AddRange(m.Colors.Select(c=>new Color4(c.Red, c.Green, c.Blue, 0.1f)));
+                        mesh.Colors.AddRange(m.Colors.Select(c=>new Color4(c.Red, c.Green, c.Blue, c.Alpha * defaultDeadAlphaScale)));
                     }
                     else
                     {
