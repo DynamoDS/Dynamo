@@ -3,19 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dynamo.Logging;
 using Dynamo.Models;
 
 namespace Dynamo.Extensions
 {
     /// <summary>
-    /// 
+    /// Interface to Dynamo's recordable command framework
     /// </summary>
-    public interface ICommandExecutive
+    public interface ICommandExecutive : ILogSource
     {
         /// <summary>
-        /// 
+        /// Endpoint method to execute any commands deriving from RecordableCommand
         /// </summary>
         /// <param name="command"></param>
-        void ExecuteCommand(DynamoModel.RecordableCommand command);
+        /// <param name="uniqueId"></param>
+        /// <param name="extensionName"></param>
+        void ExecuteCommand(DynamoModel.RecordableCommand command, string uniqueId, string extensionName);
     }
 }

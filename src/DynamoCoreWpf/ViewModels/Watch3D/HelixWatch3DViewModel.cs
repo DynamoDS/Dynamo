@@ -1196,13 +1196,18 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             if (args.Viewport == null) return;
 
             var vm = viewModel as DynamoViewModel;
+            if(vm == null) return;
+
             foreach (var node in vm.Model.CurrentWorkspace.Nodes)
             {
                 var foundNode = node.AstIdentifierBase.Contains(
                     ((PointGeometryModel3D) e.OriginalSource).Name);
+
                 if (!foundNode) continue;
+
                 DynamoSelection.Instance.ClearSelection();
                 vm.Model.AddToSelection(node);
+                break;
             }
         }
 

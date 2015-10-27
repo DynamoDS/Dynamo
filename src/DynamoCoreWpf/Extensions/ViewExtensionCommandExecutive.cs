@@ -3,39 +3,35 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Dynamo.Interfaces;
+using Dynamo.Extensions;
 using Dynamo.Logging;
 using Dynamo.Models;
+using Dynamo.ViewModels;
+using LogMessage = Dynamo.Logging.LogMessage;
 
-namespace Dynamo.Extensions
+namespace Dynamo.Wpf.Extensions
 {
-    internal class ExtensionCommandExecutive : ICommandExecutive
+    internal class ViewExtensionCommandExecutive : ICommandExecutive
     {
-        private readonly DynamoModel dynamoModel;
+        private readonly DynamoViewModel dynamoViewModel;
 
-        public ExtensionCommandExecutive(DynamoModel model)
+        public ViewExtensionCommandExecutive(DynamoViewModel model)
         {
-            dynamoModel = model;
-            MessageLogged += (message) => { dynamoModel.Logger.Log(message); };
+            dynamoViewModel = model;
+            MessageLogged += (message) => { dynamoViewModel.Model.Logger.Log(message); };
         }
 
         public void ExecuteCommand(DynamoModel.RecordableCommand command, string uniqueId, string extensionName)
         {
-            // log that the command is being executed
-            if (dynamoModel.DebugSettings.VerboseLogging)
-            {
-                dynamoModel.Logger.Log("Command: " + command);
-            }
-
             Log(LogMessage.Info(string.Format(
-                "ExtensionCommandExecutive ( UniqueId: {0}, Name: {1}, commandTypeName: {2} )", 
+                "ViewExtensionCommandExecutive ( UniqueId: {0}, Name: {1}, commandTypeName: {2} )",
                 uniqueId, extensionName, command.GetType().Name)));
 
             // run the command
-            dynamoModel.ExecuteCommand(command);
+            dynamoViewModel.ExecuteCommand(command);
 
             // clean up or show failure messages
-            
+
         }
 
         public event Action<ILogMessage> MessageLogged;
