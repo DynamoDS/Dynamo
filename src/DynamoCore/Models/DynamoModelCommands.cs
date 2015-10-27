@@ -70,7 +70,7 @@ namespace Dynamo.Models
         {
             using (CurrentWorkspace.UndoRecorder.BeginActionGroup())
             {
-                var newNode = command.NewNode;
+                var newNode = CreateNodeFromNameorType(command.ModelGuid, command.NewNodeName);
                 var existingNode = CurrentWorkspace.GetModelInternal(command.ModelGuids.ElementAt(1)) as NodeModel;
                 
                 if(newNode == null || existingNode == null) return;
@@ -148,6 +148,24 @@ namespace Dynamo.Models
 
             // Then, we have to figure out what kind of node to make, based on the name.
 
+            NodeModel node = CreateNodeFromNameorType(nodeId, name);
+            if (node != null) return node;
+
+            // And if that didn't work, then it must be a custom node.
+            if (Guid.TryParse(name, out customNodeId))
+            {
+                node = CustomNodeManager.CreateCustomNodeInstance(customNodeId);
+                node.GUID = nodeId;
+                return node;
+            }
+
+            // We're out of ideas, log an error.
+            Logger.LogError("Could not create instance of node with name: " + name);
+            return null;
+        }
+
+        private NodeModel CreateNodeFromNameorType(Guid nodeId, string name)
+        {
             NodeModel node;
 
             // First, we check for a DSFunction by looking for a FunctionDescriptor
@@ -165,20 +183,8 @@ namespace Dynamo.Models
             if (NodeFactory.CreateNodeFromTypeName(name, out node))
             {
                 node.GUID = nodeId;
-                return node;
             }
-
-            // And if that didn't work, then it must be a custom node.
-            if (Guid.TryParse(name, out customNodeId))
-            {
-                node = CustomNodeManager.CreateCustomNodeInstance(customNodeId);
-                node.GUID = nodeId;
-                return node;
-            }
-
-            // We're out of ideas, log an error.
-            Logger.LogError("Could not create instance of node with name: " + name);
-            return null;
+            return node;
         }
 
         void CreateNoteImpl(CreateNoteCommand command)

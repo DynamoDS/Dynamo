@@ -699,9 +699,28 @@ namespace Dynamo.Models
         [DataContract]
         public class CreateAndConnectNodeCommand : ModelBasedRecordableCommand
         {
-            private void SetProperties(double x, double y, int outPortIndex, int inPortIndex,
-                bool createAsDownstreamNode, bool addNewNodeToSelection)
+            
+            #region Public Class Methods
+
+            /// <summary>
+            /// Creates a new CreateAndConnectNodeCommand with the given inputs
+            /// </summary>
+            /// <param name="newNodeGuid"></param>
+            /// <param name="existingNodeGuid"></param>
+            /// <param name="newNodeName">The name of node to create</param>
+            /// <param name="outPortIndex"></param>
+            /// <param name="inPortIndex"></param>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <param name="createAsDownstreamNode">
+            /// new node to be created as downstream or upstream node wrt the existing node
+            /// </param>
+            /// <param name="addNewNodeToSelection">select the new node after it is created by default</param>
+            internal CreateAndConnectNodeCommand(Guid newNodeGuid, Guid existingNodeGuid, string newNodeName, int outPortIndex, int inPortIndex, 
+                double x, double y, bool createAsDownstreamNode, bool addNewNodeToSelection)
+                : base(new[] { newNodeGuid, existingNodeGuid })
             {
+                NewNodeName = newNodeName;
                 OutputPortIndex = outPortIndex;
                 InputPortIndex = inPortIndex;
                 X = x;
@@ -711,54 +730,12 @@ namespace Dynamo.Models
                 AddNewNodeToSelection = addNewNodeToSelection;
             }
 
-            #region Public Class Methods
-
-            /// <summary>
-            /// Creates a new CreateAndConnectNodeCommand given a new node and an existing node to connect to
-            /// </summary>
-            /// <param name="newNode"></param>
-            /// <param name="existingNode"></param>
-            /// <param name="outPortIndex"></param>
-            /// <param name="inPortIndex"></param>
-            /// <param name="x"></param>
-            /// <param name="y"></param>
-            /// <param name="createAsDownstreamNode">
-            /// new node to be created as downstream or upstream node wrt the existing node
-            /// </param>
-            /// <param name="addNewNodeToSelection">select the new node after it is created by default</param>
-            public CreateAndConnectNodeCommand(NodeModel newNode, NodeModel existingNode, int outPortIndex, int inPortIndex,
-                double x, double y, bool createAsDownstreamNode, bool addNewNodeToSelection)
-                : base(newNode != null && existingNode != null ? new[] { newNode.GUID, existingNode.GUID } : new[] { Guid.Empty })
-            {
-                NewNode = newNode;
-
-                SetProperties(x, y, outPortIndex, inPortIndex, createAsDownstreamNode, addNewNodeToSelection);
-            }
-
-            /// <summary>
-            /// Creates a new CreateAndConnectNodeCommand with the given inputs
-            /// </summary>
-            /// <param name="nodeGuids"></param>
-            /// <param name="outPortIndex"></param>
-            /// <param name="inPortIndex"></param>
-            /// <param name="x"></param>
-            /// <param name="y"></param>
-            /// <param name="createAsDownstreamNode">
-            /// new node to be created as downstream or upstream node wrt the existing node
-            /// </param>
-            /// <param name="addNewNodeToSelection">select the new node after it is created by default</param>
-            internal CreateAndConnectNodeCommand(IEnumerable<Guid> nodeGuids, int outPortIndex, int inPortIndex, 
-                double x, double y, bool createAsDownstreamNode, bool addNewNodeToSelection)
-                : base(nodeGuids)
-            {
-                SetProperties(x, y, outPortIndex, inPortIndex, createAsDownstreamNode, addNewNodeToSelection);
-            }
-
             #endregion
 
             #region Public Command Properties
 
-            internal NodeModel NewNode { get; private set; }
+            [DataMember]
+            public string NewNodeName { get; private set; }
 
             [DataMember]
             internal int OutputPortIndex { get; private set; }
@@ -792,6 +769,7 @@ namespace Dynamo.Models
                 base.SerializeCore(element);
 
                 var helper = new XmlElementHelper(element);
+                helper.SetAttribute("NewNodeName", NewNodeName);
                 helper.SetAttribute("X", X);
                 helper.SetAttribute("Y", Y);
                 helper.SetAttribute("CreateAsDownstreamNode", CreateAsDownstreamNode);
@@ -806,18 +784,21 @@ namespace Dynamo.Models
             internal static CreateAndConnectNodeCommand DeserializeCore(XmlElement element)
             {
                 var helper = new XmlElementHelper(element);
+                string newNodeName = helper.ReadString("NewNodeName");
                 double x = helper.ReadDouble("X");
                 double y = helper.ReadDouble("Y");
                 bool createAsDownstreamNode = helper.ReadBoolean("CreateAsDownstreamNode");
                 bool addNewNodeToSelection = helper.ReadBoolean("AddNewNodeToSelection");
 
                 var guids = DeserializeGuid(element, helper).ToList();
+                var newNodeGuid = guids.ElementAt(0);
+                var existingNodeGuid = guids.ElementAt(1);
 
                 int outPortIndex = helper.ReadInteger("OutPortIndex");
                 int inPortIndex = helper.ReadInteger("InPortIndex");
 
-                return new CreateAndConnectNodeCommand(guids, outPortIndex, inPortIndex, x, y,
-                    createAsDownstreamNode, addNewNodeToSelection);
+                return new CreateAndConnectNodeCommand(newNodeGuid, existingNodeGuid, newNodeName, outPortIndex, inPortIndex, 
+                    x, y, createAsDownstreamNode, addNewNodeToSelection);
             }
 
         }
