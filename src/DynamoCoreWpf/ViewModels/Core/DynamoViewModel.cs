@@ -35,7 +35,7 @@ namespace Dynamo.ViewModels
 {
     public interface IDynamoViewModel : INotifyPropertyChanged
     {
-        ObservableCollection<WorkspaceViewModel> Workspaces { get; set; }
+        ObservableCollection<WorkspaceViewModel> Workspaces { get; set; } 
     }
 
     public partial class DynamoViewModel : ViewModelBase, IDynamoViewModel

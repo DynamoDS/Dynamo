@@ -23,7 +23,6 @@ namespace Dynamo.Wpf.Extensions
         private readonly DynamoViewModel dynamoViewModel;
         public readonly Menu dynamoMenu;
 
-
         /// <summary>
         /// A reference to the background preview viewmodel for geometry selection,
         /// hit testing, mouse and keyboard event handling for events in the background preview 
