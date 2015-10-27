@@ -334,11 +334,6 @@ namespace Dynamo.Nodes
             private set;
         }
 
-        public string GetDisplayName()
-        {
-            return string.IsNullOrEmpty(nickName) ? AstIdentifierBase : nickName;
-        }
-       
         public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
         {
             return
