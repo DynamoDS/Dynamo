@@ -2147,6 +2147,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Filter results.
+        /// </summary>
+        public static string FilterIconTooltip {
+            get {
+                return ResourceManager.GetString("FilterIconTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You do not have write permission to {0}..
         /// </summary>
         public static string FolderNotWritableError {
@@ -2575,6 +2584,15 @@ namespace Dynamo.Wpf.Properties {
         public static string LacingShortestToolTip {
             get {
                 return ResourceManager.GetString("LacingShortestToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View layout.
+        /// </summary>
+        public static string LayoutIconTooltip {
+            get {
+                return ResourceManager.GetString("LayoutIconTooltip", resourceCulture);
             }
         }
         
@@ -4170,6 +4188,15 @@ namespace Dynamo.Wpf.Properties {
         public static string ShowClassicNodeLibrary {
             get {
                 return ResourceManager.GetString("ShowClassicNodeLibrary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show/hide.
+        /// </summary>
+        public static string ShowHideLibraryIconTooltip {
+            get {
+                return ResourceManager.GetString("ShowHideLibraryIconTooltip", resourceCulture);
             }
         }
         

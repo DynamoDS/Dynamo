@@ -62,6 +62,9 @@
                                  Margin="5,0,5,0"
                                  Height="10"
                                  Width="10">
+                    <fa:ImageAwesome.ToolTip>
+                        <TextBlock Text="{x:Static p:Resources.FilterIconTooltip}" />
+                    </fa:ImageAwesome.ToolTip>
                     <fa:ImageAwesome.Style>
                         <Style TargetType="{x:Type fa:ImageAwesome}"
                                BasedOn="{StaticResource LibraryIconsStyle}">
@@ -87,6 +90,9 @@
                                  Margin="5,0,5,0"
                                  Height="10"
                                  Width="10">
+                    <fa:ImageAwesome.ToolTip>
+                        <TextBlock Text="{x:Static p:Resources.LayoutIconTooltip}" />
+                    </fa:ImageAwesome.ToolTip>
                     <fa:ImageAwesome.Style>
                         <Style TargetType="{x:Type fa:ImageAwesome}"
                                BasedOn="{StaticResource LibraryIconsStyle}">
@@ -129,6 +135,9 @@
                         <Image.RenderTransform>
                             <RotateTransform Angle="180" />
                         </Image.RenderTransform>
+                        <Image.ToolTip>
+                            <TextBlock Text="{x:Static p:Resources.ShowHideLibraryIconTooltip}" />
+                        </Image.ToolTip>
                     </Image>
                 </Button.Content>
             </Button>

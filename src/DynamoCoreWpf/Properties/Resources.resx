@@ -1953,4 +1953,13 @@ Do you want to install the latest Dynamo update?</value>
   <data name="DetailedLayoutTitle" xml:space="preserve">
     <value>Detailed</value>
   </data>
+  <data name="FilterIconTooltip" xml:space="preserve">
+    <value>Filter results</value>
+  </data>
+  <data name="LayoutIconTooltip" xml:space="preserve">
+    <value>View layout</value>
+  </data>
+  <data name="ShowHideLibraryIconTooltip" xml:space="preserve">
+    <value>Show/hide</value>
+  </data>
 </root>
