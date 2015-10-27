@@ -57,13 +57,24 @@
                     Margin="0,5,0,5">
                 <fa:ImageAwesome Name="Filter"
                                  Icon="filter"
-                                 Foreground="{Binding IsAnySearchResult, 
-                                                      Converter={StaticResource FilterIconForegroundConverter}}"
                                  IsHitTestVisible="{Binding IsAnySearchResult}"
                                  MouseLeftButtonUp="OnFilterMouseLeftButtonUp"
                                  Margin="5,0,5,0"
                                  Height="10"
-                                 Width="10" />
+                                 Width="10">
+                    <fa:ImageAwesome.Style>
+                        <Style TargetType="{x:Type fa:ImageAwesome}"
+                               BasedOn="{StaticResource LibraryIconsStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsOpen, ElementName=FilterPopup}"
+                                             Value="True">
+                                    <Setter Property="Foreground"
+                                            Value="White" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </fa:ImageAwesome.Style>
+                </fa:ImageAwesome>
             </Border>
             <Border Grid.Column="2"
                     BorderBrush="{StaticResource FilterIconColor}"
@@ -71,13 +82,24 @@
                     Margin="0,5,0,5">
                 <fa:ImageAwesome Name="ViewLayoutSelector"
                                  Icon="list"
-                                 Foreground="{Binding IsAnySearchResult, 
-                                                      Converter={StaticResource FilterIconForegroundConverter}}"
                                  IsHitTestVisible="{Binding IsAnySearchResult}"
                                  MouseLeftButtonUp="OnViewLayoutSelectorMouseLeftButtonUp"
                                  Margin="5,0,5,0"
                                  Height="10"
-                                 Width="10" />
+                                 Width="10">
+                    <fa:ImageAwesome.Style>
+                        <Style TargetType="{x:Type fa:ImageAwesome}"
+                               BasedOn="{StaticResource LibraryIconsStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsOpen, ElementName=LayoutPopup}"
+                                             Value="True">
+                                    <Setter Property="Foreground"
+                                            Value="White" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </fa:ImageAwesome.Style>
+                </fa:ImageAwesome>
             </Border>
             <Button Mouse.MouseEnter="OnLibraryExpanderMouseEnter"
                     Mouse.MouseLeave="OnLibraryExpanderMouseLeave"
