@@ -713,12 +713,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// on the selected nodes. If you're in a custom node, returns all identifiers
         /// for the outputs from instances of those custom nodes in the graph. etc.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>An <see cref="IEnumerable"/> of <see cref="string"/> containing the output identifiers found in the context.</returns>
         private IEnumerable<string> FindIdentifiersForContext()
         {
             IEnumerable<string> idents = null;
 
-            var hs = (HomeWorkspaceModel)model.Workspaces.FirstOrDefault(ws => ws is HomeWorkspaceModel);
+            var hs = model.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
             if (hs == null)
             {
                 return idents;
@@ -1125,13 +1125,19 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             return model.CurrentWorkspace is CustomNodeWorkspaceModel;
         }
 
+        /// <summary>
+        /// Given a collection of render packages, generates
+        /// corresponding <see cref="GeometryModel3D"/> objects for visualization, and
+        /// attaches them to the visual scene.
+        /// </summary>
+        /// <param name="packages">An <see cref="IEnumerable"/> of <see cref="HelixRenderPackage"/>.</param>
         private void AggregateRenderPackages(IEnumerable<HelixRenderPackage> packages)
         {
             
             IEnumerable<string> customNodeIdents = null;
             if (InCustomNode())
             {
-                var hs = model.Workspaces.FirstOrDefault(ws => ws is HomeWorkspaceModel);
+                var hs = model.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
                 if (hs != null)
                 {
                     customNodeIdents = FindIdentifiersForCustomNodes((HomeWorkspaceModel)hs);
@@ -1503,10 +1509,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         /// <summary>
-        /// Find all output identifiers for custom nodes in the provided workspace. 
+        /// Find all output identifiers for all custom nodes in the provided workspace. 
         /// </summary>
         /// <param name="workspace">A workspace</param>
-        /// <returns></returns>
+        /// <returns>An <see cref="IEnumerable"/> of <see cref="string"/> containing all output identifiers for 
+        /// all custom nodes in the provided workspace, or null if the workspace is null.</returns>
         internal static IEnumerable<string> FindIdentifiersForCustomNodes(HomeWorkspaceModel workspace)
         {
             if (workspace == null)
@@ -1515,8 +1522,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
 
             // Remove the output identifier appended to the custom node outputs.
-            const string pattern = "_out[0-9]";
-            var rgx = new Regex(pattern);
+            var rgx = new Regex("_out[0-9]");
 
             var customNodes = workspace.Nodes.Where(n => n is Function);
             var idents = new List<string>();
