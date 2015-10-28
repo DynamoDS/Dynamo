@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Threading;
+using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
@@ -20,6 +21,7 @@ using Dynamo.Services;
 using Dynamo.UI;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
+using Dynamo.Visualization;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.UI;
@@ -33,16 +35,7 @@ namespace Dynamo.ViewModels
 {
     public interface IDynamoViewModel : INotifyPropertyChanged
     {
-        ObservableCollection<WorkspaceViewModel> Workspaces { get; set; }
-
-        /// <summary>
-        /// Executes node and connector creation commands to create node1 and connect it to node2
-        /// </summary>
-        /// <param name="node1">input node to create</param>
-        /// <param name="node2">node to connect to</param>
-        /// <param name="portIndex1">output port of input node</param>
-        /// <param name="portIndex2">input node of given node</param>
-        void CreateAndConnectInputNode(NodeModel node1, NodeModel node2, int portIndex1, int portIndex2);
+        ObservableCollection<WorkspaceViewModel> Workspaces { get; set; } 
     }
 
     public partial class DynamoViewModel : ViewModelBase, IDynamoViewModel
@@ -501,26 +494,6 @@ namespace Dynamo.ViewModels
             RegisterWatch3DViewModel(BackgroundPreviewViewModel, RenderPackageFactoryViewModel.Factory);
         }
 
-
-        public void CreateAndConnectInputNode(NodeModel node1, NodeModel node2, int portIndex1, int portIndex2)
-        {
-            var command = new DynamoModel.CreateNodeCommand(node1, 0, 0, true, true);
-            
-            if (null != this.automationSettings)
-                this.automationSettings.RecordCommand(command);
-
-            model.AddNodeToCurrentWorkspace(node1, centered: false, addToSelection: false);
-            CurrentSpace.RecordCreatedModel(node1);
-
-            var mode = DynamoModel.MakeConnectionCommand.Mode.Begin;
-            var cmd = new DynamoModel.MakeConnectionCommand(node1.GUID, portIndex1, PortType.Output, mode);
-            ExecuteCommand(cmd);
-
-            mode = DynamoModel.MakeConnectionCommand.Mode.End;
-            cmd = new DynamoModel.MakeConnectionCommand(node2.GUID, portIndex2, PortType.Input, mode);
-            ExecuteCommand(cmd);
-        }
-
         /// <summary>
         /// Sets up the provided <see cref="DefaultWatch3DViewModel"/> object and 
         /// adds it to the Watch3DViewModels collection.
@@ -717,11 +690,10 @@ namespace Dynamo.ViewModels
 
         private void ModelWorkspaceCleared(WorkspaceModel workspace)
         {
-            this.UndoCommand.RaiseCanExecuteChanged();
-            this.RedoCommand.RaiseCanExecuteChanged();
+            RaiseCanExecuteUndoRedo();
 
             // Reset workspace state
-            this.CurrentSpaceViewModel.CancelActiveState();
+            CurrentSpaceViewModel.CancelActiveState();
         }
 
         public void ReturnFocusToSearch()
@@ -899,6 +871,12 @@ namespace Dynamo.ViewModels
             }
 
             return true;
+        }
+
+        private void Paste(object parameter)
+        {
+            OnRequestPaste();
+            RaiseCanExecuteUndoRedo();
         }
 
         /// <summary>
@@ -1527,6 +1505,18 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        public void ToggleBackgroundGridVisibility(object parameter)
+        {
+            if (!CanToggleBackgroundGridVisibility(parameter)) return;
+
+            BackgroundPreviewViewModel.IsGridVisible = !BackgroundPreviewViewModel.IsGridVisible;
+        }
+
+        internal bool CanToggleBackgroundGridVisibility(object parameter)
+        {
+            return BackgroundPreviewViewModel != null && BackgroundPreviewViewModel.Active;
+        }
+
         public void GoToWorkspace(object parameter)
         {
             if (parameter is Guid && model.CustomNodeManager.Contains((Guid)parameter))
@@ -1783,6 +1773,12 @@ namespace Dynamo.ViewModels
         {
             var workspace = model.CurrentWorkspace;
             return ((null == workspace) ? false : workspace.CanRedo);
+        }
+
+        internal void RaiseCanExecuteUndoRedo()
+        {
+            UndoCommand.RaiseCanExecuteChanged();
+            RedoCommand.RaiseCanExecuteChanged();
         }
 
         public void ToggleConsoleShowing(object parameter)

@@ -6,6 +6,7 @@ using NUnit.Framework;
 using DynNodes = Dynamo.Nodes;
 using System.Xml;
 using System.IO;
+using Dynamo.Configuration;
 using ProtoCore.AST.AssociativeAST;
 using DynamoUtilities;
 
@@ -603,15 +604,15 @@ namespace Dynamo.Tests
             //9. When original is ImportFromCSV
 
             // case 1
-            result = Dynamo.Nodes.Utilities.WrapText("", Dynamo.UI.Configurations.MaxLengthRowClassButtonTitle);
+            result = Dynamo.Nodes.Utilities.WrapText("", Configurations.MaxLengthRowClassButtonTitle);
             Assert.AreEqual(new List<string>() { }, result);
 
             // case 2
-            result = Dynamo.Nodes.Utilities.WrapText(null, Dynamo.UI.Configurations.MaxLengthRowClassButtonTitle);
+            result = Dynamo.Nodes.Utilities.WrapText(null, Configurations.MaxLengthRowClassButtonTitle);
             Assert.AreEqual(new List<string>() { }, result);
 
             // case 3
-            result = Dynamo.Nodes.Utilities.WrapText("    ", Dynamo.UI.Configurations.MaxLengthRowClassButtonTitle);
+            result = Dynamo.Nodes.Utilities.WrapText("    ", Configurations.MaxLengthRowClassButtonTitle);
             Assert.AreEqual(new List<string>() { }, result);
 
             // case 4

@@ -194,7 +194,7 @@ e;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         [Category("SmokeTest")]
         public void T11_TestInClassScope()
         {
@@ -1323,7 +1323,7 @@ y1 = a..b..2;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         [Category("ModifierBlock")] 
         public void T58_Modifier_Block_On_User_Defined_Classes()
         {
@@ -1504,7 +1504,7 @@ if(c < 1)
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void T60_Defect_1467525_5()
         {
             String code =
@@ -1530,7 +1530,7 @@ class A
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void T60_Defect_1467525_6()
         {
             String code =
@@ -1611,7 +1611,7 @@ test = foo();
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void T61_Defect_1467546_4()
         {
             String code =
@@ -1635,7 +1635,7 @@ test = A.foo();
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void T61_Defect_1467546_5()
         {
             String code =
@@ -1699,7 +1699,7 @@ b = a + 1;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void T61_Defect_1467546_8()
         {
             String code =

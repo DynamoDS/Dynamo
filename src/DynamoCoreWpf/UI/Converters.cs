@@ -24,6 +24,8 @@ using DynamoUnits;
 using RestSharp.Contrib;
 using System.Text;
 using System.Windows.Controls.Primitives;
+using Dynamo.Configuration;
+using Dynamo.Logging;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using HelixToolkit.Wpf.SharpDX;

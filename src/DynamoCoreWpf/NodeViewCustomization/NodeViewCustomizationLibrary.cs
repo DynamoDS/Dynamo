@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using Dynamo.Controls;
 using Dynamo.Interfaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 
 namespace Dynamo.Wpf

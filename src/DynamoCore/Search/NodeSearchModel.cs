@@ -1,8 +1,8 @@
 ﻿using System.Xml;
+using Dynamo.Configuration;
 using Dynamo.Models;
 using Dynamo.Search.Interfaces;
 using Dynamo.Search.SearchElements;
-using Dynamo.UI;
 using DynamoUtilities;
 
 namespace Dynamo.Search

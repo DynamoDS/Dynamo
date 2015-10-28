@@ -9,6 +9,7 @@ using Dynamo.Utilities;
 using Dynamo.Extensions;
 using Dynamo.Interfaces;
 using Dynamo.Selection;
+using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
 
 namespace Dynamo.Wpf.Extensions
@@ -22,17 +23,11 @@ namespace Dynamo.Wpf.Extensions
         private readonly DynamoViewModel dynamoViewModel;
         public readonly Menu dynamoMenu;
 
-
         /// <summary>
         /// A reference to the background preview viewmodel for geometry selection,
         /// hit testing, mouse and keyboard event handling for events in the background preview 
         /// </summary>
         public IWatch3DViewModel BackgroundPreviewViewModel { get { return dynamoViewModel.BackgroundPreviewViewModel; } }
-
-        /// <summary>
-        /// Reference to the Dynamo ViewModel to be able to execute node creation commands
-        /// </summary>
-        public IDynamoViewModel ViewModel { get { return dynamoViewModel; } }
 
         /// <summary>
         /// A reference to the factory for creating render packages in the extension
@@ -74,6 +69,15 @@ namespace Dynamo.Wpf.Extensions
             AddItemToMenu(type, separatorObj, index);
         }
 
+        private ICommandExecutive commandExecutive;
+        /// <summary>
+        /// View Extension specific implementation to execute Recordable commands on DynamoViewModel
+        /// </summary>
+        public override ICommandExecutive CommandExecutive
+        {
+            get { return commandExecutive ?? (commandExecutive = new ViewExtensionCommandExecutive(dynamoViewModel)); }
+        }
+
         /// <summary>
         /// Event raised when there's a change in selection of nodes in the workspace.
         /// This event is subscribed to in the extension for any callback necessary for this event
@@ -112,11 +116,14 @@ namespace Dynamo.Wpf.Extensions
         private MenuItem SearchForMenuItem(MenuBarType type)
         {
             var dynamoMenuItems = dynamoMenu.Items.OfType<MenuItem>();
-            return dynamoMenuItems.First(item => item.Header.ToString() == "_" + type);
+            return dynamoMenuItems.First(item => item.Header.ToString() == type.ToDisplayString());
         }
 
     }
-
+    /// <summary>
+    /// An enum that represents the different possible 
+    /// MenuBars which ViewExtensions may add items to.
+    /// </summary>
     public enum MenuBarType
     {
         File,
@@ -124,4 +131,5 @@ namespace Dynamo.Wpf.Extensions
         View,
         Help
     }
+
 }

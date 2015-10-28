@@ -38,6 +38,15 @@ namespace Dynamo.Extensions
             }
         }
 
+        private ICommandExecutive commandExecutive;
+        /// <summary>
+        /// Extension specific implementation to execute Recordable commands on DynamoModel
+        /// </summary>
+        public virtual ICommandExecutive CommandExecutive 
+        {
+            get { return commandExecutive ?? (commandExecutive = new ExtensionCommandExecutive(dynamoModel)); }
+        }
+
         public event Action<IWorkspaceModel> CurrentWorkspaceChanged;
         private void OnCurrentWorkspaceModelChanged(IWorkspaceModel ws)
         {

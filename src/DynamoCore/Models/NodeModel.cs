@@ -23,6 +23,7 @@ using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 using ProtoCore.DSASM;
 using System.Reflection;
+using Dynamo.Visualization;
 
 namespace Dynamo.Models
 {
@@ -592,10 +593,10 @@ namespace Dynamo.Models
         /// <returns>Identifier corresponding to the given output port.</returns>
         public virtual IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
         {
-            if (outputIndex < 0 || outputIndex > OutPortData.Count)
+            if (outputIndex < 0 || outputIndex > OutPorts.Count)
                 throw new ArgumentOutOfRangeException("outputIndex", @"Index must correspond to an OutPortData index.");
 
-            if (OutPortData.Count <= 1)
+            if (OutPorts.Count <= 1)
                 return AstIdentifierForPreview;
             else
             {
@@ -768,7 +769,7 @@ namespace Dynamo.Models
                 };
             }
 
-            if (OutPortData.Count == 1)
+            if (OutPorts.Count == 1)
             {
                 var firstOuputIdent = GetAstIdentifierForOutputIndex(0);
                 if (!AstIdentifierForPreview.Equals(firstOuputIdent))
@@ -1111,6 +1112,8 @@ namespace Dynamo.Models
         [Obsolete("RegisterInputPorts is deprecated, please use the InPortNamesAttribute, InPortDescriptionsAttribute, and InPortTypesAttribute instead.")]
         public void RegisterInputPorts()
         {
+            RaisesModificationEvents = false;
+
             var inputs = new List<PortData>();
 
             // Old version of input ports registration.
@@ -1158,6 +1161,9 @@ namespace Dynamo.Models
             //Configure Snap Edges
             ConfigureSnapEdges(inPorts);
             areInputPortsRegistered = true;
+
+            RaisesModificationEvents = true;
+            OnNodeModified();
         }
 
         /// <summary>
@@ -1166,6 +1172,8 @@ namespace Dynamo.Models
         [Obsolete("RegisterOutputPorts is deprecated, please use the OutPortNamesAttribute, OutPortDescriptionsAttribute, and OutPortTypesAttribute instead.")]
         public void RegisterOutputPorts()
         {
+            RaisesModificationEvents = false;
+
             var outputs = new List<PortData>();
 
             // Old version of output ports registration.
@@ -1213,6 +1221,9 @@ namespace Dynamo.Models
             //configure snap edges
             ConfigureSnapEdges(outPorts);
             areOutputPortsRegistered = true;
+
+            RaisesModificationEvents = true;
+            OnNodeModified();
         }
 
         /// <summary>
@@ -1787,8 +1798,6 @@ namespace Dynamo.Models
             var task = asyncTask as UpdateRenderPackageAsyncTask;
             if (task.RenderPackages.Any())
             {
-                //cachedMirrorData = GetCachedValueFromEngine(task.EngineController);
-
                 var packages = new List<IRenderPackage>();
                 
                 packages.AddRange(task.RenderPackages);

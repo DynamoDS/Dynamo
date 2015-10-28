@@ -197,6 +197,9 @@ namespace Dynamo.Models
                     case "ApplyPresetCommand":
                         command = ApplyPresetCommand.DeserializeCore(element);
                         break;
+                    case "CreateAndConnectNodeCommand":
+                        command = CreateAndConnectNodeCommand.DeserializeCore(element);
+                        break;
                 }
 
                 if (null != command)
@@ -687,6 +690,117 @@ namespace Dynamo.Models
             }
 
             #endregion
+        }
+
+        /// <summary>
+        /// Command used to create a new upstream/downstream node and connect
+        /// it to an existing node in a single step
+        /// </summary>
+        [DataContract]
+        public class CreateAndConnectNodeCommand : ModelBasedRecordableCommand
+        {
+            
+            #region Public Class Methods
+
+            /// <summary>
+            /// Creates a new CreateAndConnectNodeCommand with the given inputs
+            /// </summary>
+            /// <param name="newNodeGuid"></param>
+            /// <param name="existingNodeGuid"></param>
+            /// <param name="newNodeName">The name of node to create</param>
+            /// <param name="outPortIndex"></param>
+            /// <param name="inPortIndex"></param>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <param name="createAsDownstreamNode">
+            /// new node to be created as downstream or upstream node wrt the existing node
+            /// </param>
+            /// <param name="addNewNodeToSelection">select the new node after it is created by default</param>
+            public CreateAndConnectNodeCommand(Guid newNodeGuid, Guid existingNodeGuid, string newNodeName, int outPortIndex, int inPortIndex, 
+                double x, double y, bool createAsDownstreamNode, bool addNewNodeToSelection)
+                : base(new[] { newNodeGuid, existingNodeGuid })
+            {
+                NewNodeName = newNodeName;
+                OutputPortIndex = outPortIndex;
+                InputPortIndex = inPortIndex;
+                X = x;
+                Y = y;
+
+                CreateAsDownstreamNode = createAsDownstreamNode;
+                AddNewNodeToSelection = addNewNodeToSelection;
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            [DataMember]
+            public string NewNodeName { get; private set; }
+
+            [DataMember]
+            internal int OutputPortIndex { get; private set; }
+            
+            [DataMember]
+            internal int InputPortIndex { get; private set; }
+
+            [DataMember]
+            internal double X { get; private set; }
+
+            [DataMember]
+            internal double Y { get; private set; }
+
+            [DataMember]
+            internal bool CreateAsDownstreamNode { get; private set; }
+
+            [DataMember]
+            internal bool AddNewNodeToSelection { get; private set; }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoModel dynamoModel)
+            {
+                dynamoModel.CreateAndConnectNodeImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                base.SerializeCore(element);
+
+                var helper = new XmlElementHelper(element);
+                helper.SetAttribute("NewNodeName", NewNodeName);
+                helper.SetAttribute("X", X);
+                helper.SetAttribute("Y", Y);
+                helper.SetAttribute("CreateAsDownstreamNode", CreateAsDownstreamNode);
+                helper.SetAttribute("AddNewNodeToSelection", AddNewNodeToSelection);
+
+                helper.SetAttribute("OutPortIndex", OutputPortIndex);
+                helper.SetAttribute("InPortIndex", InputPortIndex);
+            }
+
+            #endregion
+
+            internal static CreateAndConnectNodeCommand DeserializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                string newNodeName = helper.ReadString("NewNodeName");
+                double x = helper.ReadDouble("X");
+                double y = helper.ReadDouble("Y");
+                bool createAsDownstreamNode = helper.ReadBoolean("CreateAsDownstreamNode");
+                bool addNewNodeToSelection = helper.ReadBoolean("AddNewNodeToSelection");
+
+                var guids = DeserializeGuid(element, helper).ToList();
+                var newNodeGuid = guids.ElementAt(0);
+                var existingNodeGuid = guids.ElementAt(1);
+
+                int outPortIndex = helper.ReadInteger("OutPortIndex");
+                int inPortIndex = helper.ReadInteger("InPortIndex");
+
+                return new CreateAndConnectNodeCommand(newNodeGuid, existingNodeGuid, newNodeName, outPortIndex, inPortIndex, 
+                    x, y, createAsDownstreamNode, addNewNodeToSelection);
+            }
+
         }
 
         /// <summary>

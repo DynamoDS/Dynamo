@@ -26,8 +26,8 @@ namespace Dynamo.Interfaces
         /// <summary>
         /// Implement to record node modification for undo/redo
         /// </summary>
-        /// <param name="nodeModel"></param>
-        void RecordModelForModification(ModelBase nodeModel);
+        /// <param name="models"></param>
+        void RecordModelsForModification(IEnumerable<ModelBase> models);
 
         /// <summary>
         /// Returns all zero touch nodes in the workspace that match the given names

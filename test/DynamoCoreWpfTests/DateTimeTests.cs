@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Dynamo;
+using Dynamo.Configuration;
 using Dynamo.Tests;
 using NUnit.Framework;
 using DateTime = DSCoreNodesUI.DateTime;

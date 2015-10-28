@@ -7,6 +7,7 @@ using Dynamo.Models;
 using Dynamo.Interfaces;
 
 using DSCoreNodesUI.Properties;
+using Dynamo.Visualization;
 using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
 

@@ -110,5 +110,13 @@ namespace Dynamo.ViewModels
                 RequestPresetsWarningPrompt();
         }
 
+        internal event Action RequestPaste;
+        private void OnRequestPaste()
+        {
+            if (RequestPaste != null)
+            {
+                RequestPaste();
+            }
+        }
     }
 }

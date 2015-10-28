@@ -11,13 +11,17 @@ namespace Dynamo.TestInfrastructure
     {
         //Convienence state, the presence of this state cache means that
         //usage of this mutator should be short lived
-        protected DynamoViewModel DynamoViewModel;
-        protected DynamoModel DynamoModel;
+        protected readonly DynamoViewModel DynamoViewModel;
+        protected readonly DynamoModel DynamoModel;
+
+        private const int MAX_TIME_WAIT = 20000;
+        private readonly ManualResetEvent executionWaitHandle = new ManualResetEvent(false);
 
         protected AbstractMutator(DynamoViewModel dynamoViewModel)
         {
             this.DynamoViewModel = dynamoViewModel;
             this.DynamoModel = dynamoViewModel.Model;
+            this.DynamoModel.EvaluationCompleted += (s, e) => executionWaitHandle.Set();
         }
 
         /// <summary>
@@ -25,7 +29,6 @@ namespace Dynamo.TestInfrastructure
         /// </summary>
         /// <returns></returns>
         public abstract int Mutate(NodeModel node);
-                                                                                                   
 
         public abstract bool RunTest(NodeModel node, EngineController engine, StreamWriter writer);
 
@@ -42,28 +45,26 @@ namespace Dynamo.TestInfrastructure
             get { return 10; }
         }
 
-
-
-
         // TODO(lukechurch): Move this to a support class
         protected void ExecuteAndWait()
         {
+            executionWaitHandle.Reset();
+            
             DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
             {
-                DynamoModel.RunCancelCommand runCancel =
-                    new DynamoModel.RunCancelCommand(false, false);
+                var runCancel = new DynamoModel.RunCancelCommand(false, false);
                 DynamoViewModel.ExecuteCommand(runCancel);
             }));
 
-            SpinWaitForExecution();
+            WaitForExecution();
         }
 
-        // TODO(lukechurch): Move this to use event waiting rather than spin waiting
-        protected void SpinWaitForExecution()
+        private void WaitForExecution()
         {
-            while (!DynamoViewModel.HomeSpace.RunSettings.RunEnabled)
+            if (!executionWaitHandle.WaitOne(MAX_TIME_WAIT))
             {
-                Thread.Sleep(10);
+                throw new TimeoutException("Execution has been taking too long. " +
+                        "Mutation Test timed out: " + MAX_TIME_WAIT + " ms");
             }
         }
     }

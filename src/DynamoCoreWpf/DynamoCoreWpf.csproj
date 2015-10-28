@@ -152,6 +152,8 @@
     <Compile Include="Extensions\IViewExtension.cs" />
     <Compile Include="Extensions\IViewExtensionLoader.cs" />
     <Compile Include="Extensions\IViewExtensionManager.cs" />
+    <Compile Include="Extensions\MenuBarTypeExtensions.cs" />
+    <Compile Include="Extensions\ViewExtensionCommandExecutive.cs" />
     <Compile Include="Extensions\ViewExtensionLoader.cs" />
     <Compile Include="Extensions\ViewExtensionManager.cs" />
     <Compile Include="Extensions\ViewLoadedParams.cs" />
@@ -167,6 +169,7 @@
     <Compile Include="Rendering\RenderPackageExtensions.cs" />
     <Compile Include="Services\IconServices.cs" />
     <Compile Include="UI\ClassObjectTemplateSelector.cs" />
+    <Compile Include="UI\DraggedAdorner.cs" />
     <Compile Include="UI\HeaderTemplateSelector.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
