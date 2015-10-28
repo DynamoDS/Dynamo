@@ -1,7 +1,9 @@
-﻿using System.Windows.Threading;
+﻿using System.Windows.Input;
+using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using ProtoCore.Mirror;
 using System;
@@ -198,12 +200,6 @@ namespace Dynamo.UI.Controls
 
         #region Private Class Methods - Generic Helpers
 
-        private void CenterHorizontallyOnHostCanvas()
-        {
-            var widthDifference = HostingCanvas.ActualWidth - this.ActualWidth;
-            SetValue(Canvas.LeftProperty, widthDifference * 0.5);
-        }
-
         private void BeginNextTransition()
         {
             // A run completed while in transition, we must refresh
@@ -326,7 +322,7 @@ namespace Dynamo.UI.Controls
                         }
                         else
                         {
-                            newContent = mirrorData.StringData;
+                            newContent = mirrorData.StringData.Substring(0, mirrorData.StringData.IndexOf('('));
                         }
                     }
                 },
@@ -414,16 +410,23 @@ namespace Dynamo.UI.Controls
             this.smallContentGrid.Measure(maxSize);
             Size smallContentGridSize = this.smallContentGrid.DesiredSize;
 
+            // Condensed bubble should be the same width as node or wider.
+            if (smallContentGridSize.Width == 0)
+            {
+                var nodeView = WpfUtilities.FindUpVisualTree<NodeView>(this);                
+                smallContentGridSize.Width = nodeView.ActualWidth;
+            }
+
             foreach (UIElement child in smallContentGrid.Children)
             {
                 child.Measure(maxSize);
                 if (child.DesiredSize.Width > smallContentGridSize.Width)
                 {
-                    smallContentGridSize.Width = child.DesiredSize.Width + 10;
+                    smallContentGridSize.Width = child.DesiredSize.Width;
                 }
                 if (child.DesiredSize.Height > smallContentGridSize.Height)
                 {
-                    smallContentGridSize.Height = child.DesiredSize.Height + 10;
+                    smallContentGridSize.Height = child.DesiredSize.Height;
                 }
             }
 
@@ -493,8 +496,6 @@ namespace Dynamo.UI.Controls
         {
             if (this.IsHidden == false)
                 throw new InvalidOperationException();
-
-            CenterHorizontallyOnHostCanvas();
 
             // To prevent another transition from being started and
             // indicate a new transition is about to be started
@@ -651,6 +652,12 @@ namespace Dynamo.UI.Controls
             SetCurrentStateAndNotify(State.Condensed);
             largeContentGrid.Visibility = System.Windows.Visibility.Hidden;
             BeginNextTransition(); // See if there's any more requests.
+        }
+
+
+        private void OnPreviewControlMouseLeave(object sender, MouseEventArgs e)
+        {
+            TransitionToState(State.Condensed);
         }
 
         #endregion

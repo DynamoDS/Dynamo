@@ -13,8 +13,8 @@
              PreviewKeyUp="OnPreviewKeyUp"
              MouseLeftButtonDown="topControl_MouseLeftButtonDown"
              MouseRightButtonDown="topControl_MouseRightButtonDown"
-             MouseEnter="OnPreviewIconMouseEnter"
-             MouseLeave="OnPreviewIconMouseLeave">
+             MouseEnter="OnNodeViewMouseEnter"
+             MouseLeave="OnNodeViewMouseLeave">
     <Grid Name="grid"
           x:FieldModifier="public"
           HorizontalAlignment="Left">
@@ -366,10 +366,9 @@
                 Grid.Row="4"
                 Grid.Column="0"
                 Grid.ColumnSpan="3"
-                Margin="4"
-                HorizontalAlignment="Center"
-                Background="Blue">
-        </Canvas>
+                Margin="0,4,0,0"
+                HorizontalAlignment="Left"
+                Background="Blue"/>
 
         <Canvas ClipToBounds="False"
                 Grid.Row="4"

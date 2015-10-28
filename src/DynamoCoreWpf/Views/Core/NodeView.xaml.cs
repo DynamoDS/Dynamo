@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Dynamo.Models;
 using Dynamo.Prompts;
 using Dynamo.Selection;
@@ -25,6 +26,7 @@ namespace Dynamo.Controls
         public delegate void UpdateLayoutDelegate(FrameworkElement el);       
         private NodeViewModel viewModel = null;
         private PreviewControl previewControl = null;
+        private readonly DispatcherTimer dispatcherTimer = new DispatcherTimer();
 
         public NodeView TopControl
         {
@@ -78,6 +80,7 @@ namespace Dynamo.Controls
 
             Panel.SetZIndex(this, 1);
 
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 5);
         }
 
         private void OnNodeViewUnloaded(object sender, RoutedEventArgs e)
@@ -365,7 +368,7 @@ namespace Dynamo.Controls
 
         #region Preview Control Related Event Handlers
 
-        private void OnPreviewIconMouseEnter(object sender, MouseEventArgs e)
+        private void OnNodeViewMouseEnter(object sender, MouseEventArgs e)
         {
             if (PreviewControl.IsInTransition) // In transition state, come back later.
                 return;
@@ -379,21 +382,31 @@ namespace Dynamo.Controls
             }
         }
 
-        private void OnPreviewIconMouseLeave(object sender, MouseEventArgs e)
+        private void OnNodeViewMouseLeave(object sender, MouseEventArgs e)
         {
-            RefreshPreviewIconDisplay();
-
             if (PreviewControl.IsInTransition) // In transition state, come back later.
                 return;
 
-            if (PreviewControl.IsCondensed)
-                PreviewControl.TransitionToState(PreviewControl.State.Hidden);
+            dispatcherTimer.Start();
+            dispatcherTimer.Tick += (s, args) =>
+            {
+                if (PreviewControl.IsInTransition) // In transition state, come back later.
+                    return;
+
+                if (!PreviewControl.IsMouseOver)
+                {
+                    PreviewControl.TransitionToState(PreviewControl.State.Hidden);
+                }
+                if (PreviewControl.IsCondensed && PreviewControl.IsMouseOver)
+                {
+                    PreviewControl.TransitionToState(PreviewControl.State.Expanded);
+                }
+                dispatcherTimer.Stop();
+            };
         }
 
         private void OnPreviewControlStateChanged(object sender, EventArgs e)
         {
-            RefreshPreviewIconDisplay();
-
             var preview = sender as PreviewControl;
             // If the preview is in a transition, return directly to avoid another
             // transition
@@ -416,12 +429,6 @@ namespace Dynamo.Controls
                 if (preview.IsCondensed != false)
                     preview.TransitionToState(PreviewControl.State.Hidden);
             }
-        }
-
-        private void RefreshPreviewIconDisplay()
-        {
-            if (previewControl == null)
-                return;
         }
 
         #endregion

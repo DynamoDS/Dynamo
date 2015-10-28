@@ -9,10 +9,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Dynamo.Controls"
              mc:Ignorable="d"
-             Width="{Binding RelativeSource={RelativeSource FindAncestor, 
-                             AncestorType={x:Type controls:NodeView}}, 
-                             Path=ActualWidth}"
-             Height="300">
+             MouseLeave="OnPreviewControlMouseLeave">
 
     <UserControl.Resources>
 
@@ -124,7 +121,7 @@
     </UserControl.Resources>
 
     <Grid Name="outerContainer"
-          HorizontalAlignment="Center"
+          HorizontalAlignment="Left"
           VerticalAlignment="Top">
 
         <Grid Name="centralizedGrid"
@@ -133,14 +130,16 @@
             <Border CornerRadius="2"
                     Background="White"
                     BorderThickness="1"
-                    BorderBrush="#aaaaaa"></Border>
+                    BorderBrush="#aaaaaa" />
 
             <Grid Name="smallContentGrid"
-                  Margin="{StaticResource PreviewContentMargin}"
                   Visibility="Collapsed"
-                  HorizontalAlignment="Center"
-                  VerticalAlignment="Center">
-                <TextBlock>null</TextBlock>
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Center"
+                  MinWidth="{Binding RelativeSource={RelativeSource FindAncestor, 
+                             AncestorType={x:Type controls:NodeView}}, 
+                             Path=ActualWidth}">
+                <TextBlock Margin="{StaticResource PreviewContentMargin}">null</TextBlock>
             </Grid>
 
             <Grid Name="largeContentGrid"
