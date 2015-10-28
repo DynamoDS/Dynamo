@@ -135,10 +135,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             preferences.IsBackgroundPreviewActive = active;
 
-            if (active == false && CanNavigateBackground)
+            if (active) return;
+
+            if (CanNavigateBackground)
             {
                 CanNavigateBackground = false;
             }
+
+            IsGridVisible = false;
         }
 
         public event Action<Model3D> RequestAttachToScene;
@@ -468,8 +472,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
             }
 
-            RaisePropertyChanged("SceneItems");
-            OnRequestViewRefresh();
+            OnSceneItemsChanged();
         }
 
         protected override void OnWorkspaceCleared(WorkspaceModel workspace)
@@ -602,8 +605,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             renderTimer.Start();
 #endif
 
-            RaisePropertyChanged("SceneItems");
-            OnRequestViewRefresh();
+            OnSceneItemsChanged();
         }
 
         public override void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
@@ -630,8 +632,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             if (!requestUpdate) return;
 
-            RaisePropertyChanged("SceneItems");
-            OnRequestViewRefresh();
+            OnSceneItemsChanged();
         }
 
         protected override void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -704,6 +705,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         #endregion
 
         #region private methods
+
+        private void OnSceneItemsChanged()
+        {
+            RaisePropertyChanged("SceneItems");
+            OnRequestViewRefresh();
+        }
    
         private KeyValuePair<string, Model3D>[] FindAllGeometryModel3DsForNode(string identifier)
         {
@@ -944,24 +951,27 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private void SetGridVisibility()
         {
-            //return if there is nothing to change
-            if (Model3DDictionary.ContainsKey(DefaultGridName) == isGridVisible) return;
-
-            if (isGridVisible)
+            lock (Model3DDictionaryMutex)
             {
-                if (!gridModel3D.IsAttached)
+                //return if there is nothing to change
+                if (Model3DDictionary.ContainsKey(DefaultGridName) == isGridVisible) return;
+
+                if (isGridVisible)
                 {
-                    OnRequestAttachToScene(gridModel3D);
+                    if (!gridModel3D.IsAttached)
+                    {
+                        OnRequestAttachToScene(gridModel3D);
+                    }
+
+                    Model3DDictionary[DefaultGridName] = gridModel3D;
                 }
-
-                Model3DDictionary[DefaultGridName] = gridModel3D;
-            }
-            else
-            {
-                Model3DDictionary.Remove(DefaultGridName);
+                else
+                {
+                    Model3DDictionary.Remove(DefaultGridName);
+                }
             }
 
-            RaisePropertyChanged("SceneItems");
+            OnSceneItemsChanged();
         }
 
         private static void DrawGridPatch(
