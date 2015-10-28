@@ -367,9 +367,6 @@ namespace Dynamo.Controls
 
         private void OnPreviewIconMouseEnter(object sender, MouseEventArgs e)
         {
-            previewInnerRect.Visibility = Visibility.Visible;
-            previewOuterRect.Fill = FrozenResources.PreviewIconHoverBrush;
-
             if (PreviewControl.IsInTransition) // In transition state, come back later.
                 return;
 
@@ -385,26 +382,12 @@ namespace Dynamo.Controls
         private void OnPreviewIconMouseLeave(object sender, MouseEventArgs e)
         {
             RefreshPreviewIconDisplay();
-            previewInnerRect.Visibility = Visibility.Hidden;
 
             if (PreviewControl.IsInTransition) // In transition state, come back later.
                 return;
 
             if (PreviewControl.IsCondensed)
                 PreviewControl.TransitionToState(PreviewControl.State.Hidden);
-        }
-
-        private void OnPreviewIconMouseClicked(object sender, MouseEventArgs e)
-        {
-            if (PreviewControl.IsInTransition) // In transition state, come back later.
-                return;
-
-            if (PreviewControl.IsCondensed)
-                PreviewControl.TransitionToState(PreviewControl.State.Expanded);
-            else if (PreviewControl.IsExpanded)
-                PreviewControl.TransitionToState(PreviewControl.State.Condensed);
-
-            previewOuterRect.Fill = FrozenResources.PreviewIconClickedBrush;
         }
 
         private void OnPreviewControlStateChanged(object sender, EventArgs e)
@@ -419,16 +402,16 @@ namespace Dynamo.Controls
                 return;
             }
 
-            if (previewIcon.IsMouseOver)
+            if (this.IsMouseOver)
             {
-                // The mouse is currently over the preview icon, so if the 
+                // The mouse is currently over the node, so if the 
                 // preview control is hidden, bring it into condensed state.
                 if (preview.IsHidden != false)
                     preview.TransitionToState(PreviewControl.State.Condensed);
             }
             else
             {
-                // The mouse is no longer over the preview icon, if the preview 
+                // The mouse is no longer over the node, if the preview 
                 // control is currently in condensed state, hide it from view.
                 if (preview.IsCondensed != false)
                     preview.TransitionToState(PreviewControl.State.Hidden);
@@ -439,17 +422,6 @@ namespace Dynamo.Controls
         {
             if (previewControl == null)
                 return;
-
-            if (previewControl.IsHidden)
-                previewOuterRect.Fill = FrozenResources.PreviewIconNormalBrush;
-            else if (previewControl.IsCondensed)
-                previewOuterRect.Fill = FrozenResources.PreviewIconHoverBrush;
-            else if (previewControl.IsExpanded)
-                previewOuterRect.Fill = FrozenResources.PreviewIconPinnedBrush;
-            else if (previewControl.IsInTransition)
-            {
-                // No changes, those will come after transition is done.
-            }
         }
 
         #endregion

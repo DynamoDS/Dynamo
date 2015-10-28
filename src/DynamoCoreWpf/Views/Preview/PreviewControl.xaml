@@ -7,9 +7,11 @@
              xmlns:sys="clr-namespace:System.Windows;assembly=PresentationCore"
              xmlns:fwk="clr-namespace:System.Windows;assembly=PresentationFramework"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:Dynamo.UI.Controls"
+             xmlns:controls="clr-namespace:Dynamo.Controls"
              mc:Ignorable="d"
-             Width="500"
+             Width="{Binding RelativeSource={RelativeSource FindAncestor, 
+                             AncestorType={x:Type controls:NodeView}}, 
+                             Path=ActualWidth}"
              Height="300">
 
     <UserControl.Resources>
