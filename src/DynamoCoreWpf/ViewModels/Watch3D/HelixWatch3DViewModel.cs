@@ -18,6 +18,7 @@ using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Selection;
+using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Rendering;
 using DynamoUtilities;
@@ -1098,6 +1099,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                         pointGeometry3D.Geometry = points;
                         pointGeometry3D.Name = baseId;
+                        pointGeometry3D.MouseDown3D += pointGeometry3D_MouseDown3D;
                     }
 
                     var l = rp.Lines;
@@ -1184,6 +1186,28 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
 
                 AttachAllGeometryModel3DToRenderHost();
+            }
+        }
+
+        void pointGeometry3D_MouseDown3D(object sender, RoutedEventArgs e)
+        {
+            var args = e as Mouse3DEventArgs;
+            if (args == null) return;
+            if (args.Viewport == null) return;
+
+            var vm = viewModel as DynamoViewModel;
+            if(vm == null) return;
+
+            foreach (var node in vm.Model.CurrentWorkspace.Nodes)
+            {
+                var foundNode = node.AstIdentifierBase.Contains(
+                    ((PointGeometryModel3D) e.OriginalSource).Name);
+
+                if (!foundNode) continue;
+
+                DynamoSelection.Instance.ClearSelection();
+                vm.Model.AddToSelection(node);
+                break;
             }
         }
 
