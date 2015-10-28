@@ -71,6 +71,8 @@ namespace Dynamo.Models
             using (CurrentWorkspace.UndoRecorder.BeginActionGroup())
             {
                 var newNode = CreateNodeFromNameOrType(command.ModelGuid, command.NewNodeName);
+                newNode.X = command.X;
+                newNode.Y = command.Y;
                 var existingNode = CurrentWorkspace.GetModelInternal(command.ModelGuids.ElementAt(1)) as NodeModel;
                 
                 if(newNode == null || existingNode == null) return;
