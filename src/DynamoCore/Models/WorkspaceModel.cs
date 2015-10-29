@@ -1430,21 +1430,6 @@ namespace Dynamo.Models
                         node.OutPortData.Any() && node.OutPorts.Any(port => !port.Connectors.Any()));
         }
 
-        public IEnumerable<DSFunctionBase> GetZTNodesForMatchingNames(IEnumerable<string> nodeNames)
-        {
-            var nodeModels = new List<DSFunctionBase>();
-            foreach (var nodeName in nodeNames)
-            {
-                var creationName = nodeName;
-
-                // Find zero touch nodes that match a given name
-                var ztNodes = Nodes.OfType<DSFunction>().Where(n => n.CreationName == creationName);
-
-                nodeModels.AddRange(ztNodes);
-            }
-            return nodeModels;
-        }
-
         public void ReportPosition()
         {
             RaisePropertyChanged("Position");
