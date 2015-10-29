@@ -447,6 +447,11 @@
                                   Command="{Binding Path=NodeFromSelectionCommand}"
                                   Name="nodeFromSelection"
                                   InputGestureText="Ctrl + D" />
+                        <MenuItem Focusable="False"                                
+                                  Header="{x:Static p:Resources.NodesIsFrozen}"
+                                  Command="{Binding Path=NodeFromSelectionCommand}"
+                                  Name="nodesIsFrozen"
+                                  InputGestureText="Ctrl + D" />
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewEditMenuSelectAll}"
                                   Command="{Binding SelectAllCommand}"

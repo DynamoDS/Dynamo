@@ -3112,6 +3112,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Frozen.
+        /// </summary>
+        public static string NodesIsFrozen {
+            get {
+                return ResourceManager.GetString("NodesIsFrozen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to none.
         /// </summary>
         public static string NoneString {

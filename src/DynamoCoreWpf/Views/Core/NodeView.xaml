@@ -54,6 +54,9 @@
                 <MenuItem Name="addtoGroup"
                           Header="{x:Static p:Resources.ContextAddGroupFromSelection}"
                           Command="{Binding Path=AddToGroupCommand}" />
+                <MenuItem Name="nodeIsFrozen"
+                          Header="{x:Static p:Resources.NodesIsFrozen}"
+                          Command="{Binding Path=AddToGroupCommand}" />
                 <MenuItem Header="{x:Static p:Resources.ContextMenuLacing}"
                           Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter},Mode=OneWay}">
                     <MenuItem IsCheckable="True"

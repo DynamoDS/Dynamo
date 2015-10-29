@@ -1951,4 +1951,8 @@ Do you want to install the latest Dynamo update?</value>
   <data name="BackgroundPreviewCreationFailureMessage" xml:space="preserve">
     <value>There was an error creating a background preview in Dynamo. This could be due to a lack of graphics resources on your machine. See the log for more information.</value>
   </data>
+  <data name="NodesIsFrozen" xml:space="preserve">
+    <value>Frozen</value>
+    <comment>Context menu item</comment>
+  </data>
 </root>
