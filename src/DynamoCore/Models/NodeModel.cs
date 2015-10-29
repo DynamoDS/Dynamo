@@ -44,6 +44,7 @@ namespace Dynamo.Models
         private string persistentWarning = "";
         private bool areInputPortsRegistered;
         private bool areOutputPortsRegistered;
+        private bool isFrozen;
 
         /// <summary>
         /// The cached value of this node. The cachedValue object is protected by the cachedValueMutex
@@ -613,6 +614,27 @@ namespace Dynamo.Models
         public virtual ProtoCore.Type GetTypeHintForOutput(int index)
         {
              return ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeVar);
+        }
+
+      
+        /// <summary>
+        /// Gets or sets a value indicating whether this node is frozen.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this node is frozen; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsFrozen
+        {
+            get
+            {
+                return isFrozen;
+            }
+
+            set
+            {
+                isFrozen = value;
+                RaisePropertyChanged("IsFrozen");
+            }
         }
         #endregion
 
