@@ -68,16 +68,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         event Action<object, MouseEventArgs> ViewMouseMove;
 
         /// <summary>
-        /// Event to be raised for a mouse enter event in the Watch view
-        /// </summary>
-        event Action<object, MouseEventArgs> ViewMouseEnter;
-
-        /// <summary>
-        /// Event to be raised for a mouse leave event in the Watch view
-        /// </summary>
-        event Action<object, MouseEventArgs> ViewMouseLeave;
-
-        /// <summary>
         /// 
         /// </summary>
         event PropertyChangedEventHandler PropertyChanged;

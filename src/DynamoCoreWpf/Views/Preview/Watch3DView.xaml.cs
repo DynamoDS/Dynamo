@@ -92,15 +92,6 @@ namespace Dynamo.Controls
                 ViewModel.OnViewMouseMove(sender, args);
             };
 
-            watch_view.MouseEnter += (sender, args) =>
-            {
-                ViewModel.OnViewMouseEnter(sender, args);
-            };
-
-            watch_view.MouseLeave += (sender, args) =>
-            {
-                ViewModel.OnViewMouseLeave(sender, args);
-            };
         }
 
         private void UnregisterButtonHandlers()
