@@ -91,7 +91,6 @@ namespace Dynamo.Controls
             {
                 ViewModel.OnViewMouseMove(sender, args);
             };
-
         }
 
         private void UnregisterButtonHandlers()
