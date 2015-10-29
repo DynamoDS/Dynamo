@@ -219,7 +219,7 @@
                            Command="{Binding DynamoViewModel.AddAnnotationCommand}" />
 
                 <MenuItem  Header="{x:Static p:Resources.NodesIsFrozen}"
-                           Command="{Binding DynamoViewModel.AddAnnotationCommand}" />
+                           Command="{Binding DynamoViewModel.MakeNodesFrozenCommand}" />
 
                 <MenuItem  Header="{x:Static p:Resources.ContextMenuNodesFromGeometry}"
                            Visibility="{Binding Path=CanFindNodesFromElements, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"

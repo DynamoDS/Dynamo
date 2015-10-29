@@ -1793,6 +1793,13 @@ namespace Dynamo.Models
             OnWorkspaceCleared(CurrentWorkspace);
         }
 
+        /// <summary>
+        /// Makes the current node and the downstream nodes frozen.
+        /// </summary>
+        internal void MakeNodesFrozen()
+        {
+            
+        }
         #endregion
 
         #region private methods

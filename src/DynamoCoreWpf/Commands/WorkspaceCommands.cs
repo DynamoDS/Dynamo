@@ -213,7 +213,7 @@ namespace Dynamo.ViewModels
                 return _showInCanvasSearchCommand;
             }
         }
-
+      
         #endregion
 
         #region Properties for Command Data Binding

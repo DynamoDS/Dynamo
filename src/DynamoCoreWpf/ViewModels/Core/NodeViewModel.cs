@@ -954,6 +954,16 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        private void MakeNodesFrozen(object parameters)
+        {
+            DynamoViewModel.MakeNodesFrozenCommand.Execute(null);
+        }
+
+        private bool CanNodesBeFrozen(object parameters)
+        {
+            return DynamoSelection.Instance.Selection.Any();
+        }
+
         private void UngroupNode(object parameters)
         {
             WorkspaceViewModel.DynamoViewModel.UngroupModelCommand.Execute(null);

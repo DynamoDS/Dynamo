@@ -56,7 +56,7 @@
                           Command="{Binding Path=AddToGroupCommand}" />
                 <MenuItem Name="nodeIsFrozen"
                           Header="{x:Static p:Resources.NodesIsFrozen}"
-                          Command="{Binding Path=AddToGroupCommand}" />
+                          Command="{Binding Path=MakeNodesFrozenCommand}" />
                 <MenuItem Header="{x:Static p:Resources.ContextMenuLacing}"
                           Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter},Mode=OneWay}">
                     <MenuItem IsCheckable="True"

@@ -22,6 +22,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand _createGroupCommand;
         private DelegateCommand _ungroupCommand;
         private DelegateCommand _addToGroupCommand;
+        private DelegateCommand _makeNodesFrozenCommand;
 
         public DelegateCommand RenameCommand
         {
@@ -194,6 +195,19 @@ namespace Dynamo.ViewModels
                         new DelegateCommand(AddToGroup, CanAddToGroup);
 
                 return _addToGroupCommand;
+            }
+        }
+
+        internal DelegateCommand MakeNodesFrozenCommand
+        {
+            get
+            {
+                if (_makeNodesFrozenCommand == null)
+                {
+                    _makeNodesFrozenCommand = new DelegateCommand(MakeNodesFrozen, CanNodesBeFrozen);
+                }
+
+                return _makeNodesFrozenCommand;
             }
         }
         

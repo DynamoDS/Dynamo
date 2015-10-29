@@ -78,6 +78,7 @@ namespace Dynamo.ViewModels
             CloseGalleryCommand = new DelegateCommand(p => OnRequestShowHideGallery(false), o => true);
             ShowNewPresetsDialogCommand = new DelegateCommand(ShowNewPresetStateDialogAndMakePreset, CanShowNewPresetStateDialog);
             NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
+            MakeNodesFrozenCommand = new DelegateCommand(_ => model.MakeNodesFrozen(), CanNodesBeFrozen);
        }
 
         public DelegateCommand OpenCommand { get; set; }
@@ -153,5 +154,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand CloseGalleryCommand { get; set; }
         public DelegateCommand ShowNewPresetsDialogCommand { get; set; }
         public DelegateCommand NodeFromSelectionCommand { get; set; }
+        public DelegateCommand MakeNodesFrozenCommand { get; set; }
     }
 }
