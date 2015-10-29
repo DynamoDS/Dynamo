@@ -278,9 +278,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             switch (propertyChangedEventArgs.PropertyName)
             {
                 case "CanNavigateBackground":
-                    if (CanNavigateBackgroundPropertyChanged != null)
+                    var handler = CanNavigateBackgroundPropertyChanged;
+                    if (handler != null)
                     {
-                        CanNavigateBackgroundPropertyChanged(CanNavigateBackground);
+                        handler(CanNavigateBackground);
                     }
                     break;
             }
