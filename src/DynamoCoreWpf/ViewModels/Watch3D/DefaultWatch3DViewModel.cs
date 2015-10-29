@@ -258,12 +258,32 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private void RegisterEventHandlers()
         {
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionChangedHandler;
+            PropertyChanged += OnPropertyChanged;
 
             LogVisualizationCapabilities();
 
             RegisterModelEventhandlers(model);
 
             RegisterWorkspaceEventHandlers(model);
+        }
+
+        /// <summary>
+        /// Event to be handled when the background preview is toggled on or off
+        /// On/off state is passed using the bool parameter
+        /// </summary>
+        public event Action<bool> CanNavigateBackgroundPropertyChanged;
+
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            switch (propertyChangedEventArgs.PropertyName)
+            {
+                case "CanNavigateBackground":
+                    if (CanNavigateBackgroundPropertyChanged != null)
+                    {
+                        CanNavigateBackgroundPropertyChanged(CanNavigateBackground);
+                    }
+                    break;
+            }
         }
 
         private void UnregisterEventHandlers()

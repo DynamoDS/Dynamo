@@ -92,8 +92,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private readonly Color4 defaultSelectionColor = new Color4(new Color3(0, 158.0f / 255.0f, 1.0f));
         private readonly Color4 defaultMaterialColor = new Color4(new Color3(1.0f, 1.0f, 1.0f));
         private readonly Size defaultPointSize = new Size(6, 6);
+        private readonly Size highlightSize = new Size(8, 8);
         private readonly Color4 defaultLineColor = new Color4(new Color3(0, 0, 0));
         private readonly Color4 defaultPointColor = new Color4(new Color3(0, 0, 0));
+        private readonly Color4 highlightColor = new Color4(new Color3(1.0f, 0.0f, 0.0f));
 
         internal const string DefaultGridName = "Grid";
         internal const string DefaultAxesName = "Axes";
@@ -1230,23 +1232,21 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 var geometries = FindAllGeometryModel3DsForNode(node.AstIdentifierBase);
                 foreach (var geometry in geometries)
                 {
-                    //AnimationExtensions.AnimateOpacity(geometry.Value, 0.5, 200);
                     var pointGeom = geometry.Value as PointGeometryModel3D;
-                    if (pointGeom != null)
-                    {
-                        if (highlightOn)
-                        {
-                            //pointGeom.Color = Color.Green;
-                            //pointGeom.Opacity = 0.5;
-                            pointGeom.Size = new Size(10, 10);
-                            //OnRequestAttachToScene(pointGeom);
-                        }
-                        else
-                        {
-                            pointGeom.Size = new Size(6, 6);
-                        }
-                    }
+                    
+                    if (pointGeom == null) continue;
+                    
+                    var points = pointGeom.Geometry;
+                    points.Colors.Clear();
+                    
+                    points.Colors.AddRange(highlightOn
+                        ? Enumerable.Repeat(highlightColor, points.Positions.Count)
+                        : Enumerable.Repeat(defaultPointColor, points.Positions.Count));
 
+                    pointGeom.Size = highlightOn ? highlightSize : defaultPointSize;
+
+                    pointGeom.Detach();
+                    OnRequestAttachToScene(pointGeom);
                 }
             }
         }
