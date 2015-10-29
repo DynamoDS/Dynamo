@@ -45,6 +45,7 @@ namespace Dynamo.Models
         private bool areInputPortsRegistered;
         private bool areOutputPortsRegistered;
         private bool isFrozen;
+        private bool canExecute;
 
         /// <summary>
         /// The cached value of this node. The cachedValue object is protected by the cachedValueMutex
@@ -634,6 +635,26 @@ namespace Dynamo.Models
             {
                 isFrozen = value;
                 RaisePropertyChanged("IsFrozen");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this node is explictly frozen.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [run state]; otherwise, <c>false</c>.
+        /// </value>
+        public bool CanExecute
+        {
+            get
+            {
+                return canExecute;
+            }
+
+            set
+            {
+                canExecute = value;
+                RaisePropertyChanged("RunState");
             }
         }
         #endregion

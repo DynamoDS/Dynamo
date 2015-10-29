@@ -2419,6 +2419,11 @@ namespace Dynamo.Models
             
             return document.OuterXml;
         }
+
+        internal void MakeNodesFrozen()
+        {
+            
+        }
         
         #region ILogSource implementation
         public event Action<ILogMessage> MessageLogged;

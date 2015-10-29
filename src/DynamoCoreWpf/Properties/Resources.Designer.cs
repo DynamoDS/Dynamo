@@ -3112,11 +3112,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Frozen.
+        ///   Looks up a localized string similar to Run.
         /// </summary>
-        public static string NodesIsFrozen {
+        public static string NodesRunStatus {
             get {
-                return ResourceManager.GetString("NodesIsFrozen", resourceCulture);
+                return ResourceManager.GetString("NodesRunStatus", resourceCulture);
             }
         }
         

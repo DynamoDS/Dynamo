@@ -1798,7 +1798,7 @@ namespace Dynamo.Models
         /// </summary>
         internal void MakeNodesFrozen()
         {
-            
+            this.CurrentWorkspace.MakeNodesFrozen();
         }
         #endregion
 

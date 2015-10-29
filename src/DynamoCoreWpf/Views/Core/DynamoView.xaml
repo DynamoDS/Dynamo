@@ -448,7 +448,7 @@
                                   Name="nodeFromSelection"
                                   InputGestureText="Ctrl + D" />
                         <MenuItem Focusable="False"                                
-                                  Header="{x:Static p:Resources.NodesIsFrozen}"
+                                  Header="{x:Static p:Resources.NodesRunStatus}"
                                   Command="{Binding Path=MakeNodesFrozenCommand}"
                                   Name="nodesIsFrozen"
                                   />

@@ -152,6 +152,8 @@
                     </MenuItem>
                     
                 </MenuItem>
+                <MenuItem  Header="{x:Static p:Resources.NodesRunStatus}"
+                           Command="{Binding DynamoViewModel.MakeNodesFrozenCommand}" />
 
                 <MenuItem IsEnabled="{Binding Path=IsGeometryOperationEnabled}"
                           Header="{x:Static  p:Resources.ContextMenuShowAllGeometry}"
@@ -218,9 +220,7 @@
                 <MenuItem  Header="{x:Static p:Resources.ContextCreateGroupFromSelection}"
                            Command="{Binding DynamoViewModel.AddAnnotationCommand}" />
 
-                <MenuItem  Header="{x:Static p:Resources.NodesIsFrozen}"
-                           Command="{Binding DynamoViewModel.MakeNodesFrozenCommand}" />
-
+               
                 <MenuItem  Header="{x:Static p:Resources.ContextMenuNodesFromGeometry}"
                            Visibility="{Binding Path=CanFindNodesFromElements, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                            Command="{Binding FindNodesFromSelectionCommand}" />
