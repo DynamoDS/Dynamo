@@ -52,8 +52,7 @@
                                                VerticalAlignment="Top"
                                                FontSize="13">
                                                 <Run Text="{Binding Name, Mode=OneWay}"
-                                                     Foreground="{StaticResource NodeNameForeground}"
-                                                     FontWeight="SemiBold" />
+                                                     Foreground="{StaticResource NodeNameForeground}" />
                                                 <Run Text="{Binding Parameters, Mode=OneWay}"
                                                      Foreground="{StaticResource CommonSidebarTextColor}" />
                                     </TextBlock>
@@ -84,7 +83,7 @@
                                                          Width="10"
                                                          Margin="4,4,4,4" />
                                         <TextBlock Text="{Binding Category}"
-                                                   Foreground="{StaticResource SearchDarkGreyTextColor}"
+                                                   Foreground="{StaticResource CommonSidebarTextColor}"
                                                    FontStyle="Italic" />
                                     </StackPanel>
                                 </StackPanel>
