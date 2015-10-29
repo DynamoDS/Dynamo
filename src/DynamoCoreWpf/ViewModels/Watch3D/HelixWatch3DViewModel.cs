@@ -879,6 +879,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             SetGridVisibility();
 
+            if (!model3DDictionary.ContainsKey(DefaultGridName))
+            {
+                Model3DDictionary.Add(DefaultGridName, gridModel3D);
+            }
+
             var axesModel3D = new DynamoLineGeometryModel3D
             {
                 Geometry = Axes,
@@ -951,27 +956,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private void SetGridVisibility()
         {
-            lock (Model3DDictionaryMutex)
-            {
-                //return if there is nothing to change
-                if (Model3DDictionary.ContainsKey(DefaultGridName) == isGridVisible) return;
-
-                if (isGridVisible)
-                {
-                    if (!gridModel3D.IsAttached)
-                    {
-                        OnRequestAttachToScene(gridModel3D);
-                    }
-
-                    Model3DDictionary[DefaultGridName] = gridModel3D;
-                }
-                else
-                {
-                    Model3DDictionary.Remove(DefaultGridName);
-                }
-            }
-
-            OnSceneItemsChanged();
+            var visibility = isGridVisible ? Visibility.Visible : Visibility.Hidden;
+            //return if there is nothing to change
+            if (gridModel3D.Visibility == visibility) return;
+            
+            gridModel3D.Visibility = visibility;
+            OnRequestViewRefresh();
         }
 
         private static void DrawGridPatch(
