@@ -735,7 +735,7 @@ namespace Dynamo.ViewModels
                 model.Copy();
                 if (model.ClipBoard.Any())
                 {
-                    model.Paste(targetPoint);
+                    model.Paste(targetPoint, false);
                     owningWorkspace.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
                     owningWorkspace.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
                 }

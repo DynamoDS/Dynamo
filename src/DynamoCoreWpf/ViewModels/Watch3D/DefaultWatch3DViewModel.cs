@@ -493,8 +493,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in derived classes
         }
 
-        internal event Func<MouseEventArgs, Ray3D> RequestClickRay;
-        public Ray3D GetClickRay(MouseEventArgs args)
+        internal event Func<MouseEventArgs, IRay> RequestClickRay;
+
+        /// <summary>
+        /// Returns a 3D ray from the camera to the given mouse location
+        /// in world coordinates that can be used to perform a hit-test 
+        /// on objects in the view
+        /// </summary>
+        /// <param name="args">mouse click location in screen coordinates</param>
+        /// <returns></returns>
+        public IRay GetClickRay(MouseEventArgs args)
         {
             return RequestClickRay != null ? RequestClickRay(args) : null;
         }

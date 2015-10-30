@@ -716,7 +716,7 @@ namespace Dynamo.Models
             /// new node to be created as downstream or upstream node wrt the existing node
             /// </param>
             /// <param name="addNewNodeToSelection">select the new node after it is created by default</param>
-            internal CreateAndConnectNodeCommand(Guid newNodeGuid, Guid existingNodeGuid, string newNodeName, int outPortIndex, int inPortIndex, 
+            public CreateAndConnectNodeCommand(Guid newNodeGuid, Guid existingNodeGuid, string newNodeName, int outPortIndex, int inPortIndex, 
                 double x, double y, bool createAsDownstreamNode, bool addNewNodeToSelection)
                 : base(new[] { newNodeGuid, existingNodeGuid })
             {
