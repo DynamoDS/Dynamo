@@ -5,8 +5,9 @@
                     xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCore"
                     xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
                     xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
-                    xmlns:avalonedit="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit" 
-                    xmlns:dynui="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf">
+                    xmlns:avalonedit="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit"
+                    xmlns:dynui="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf"
+                    xmlns:fa="http://schemas.fontawesome.io/icons/">
 
     <ResourceDictionary.MergedDictionaries>
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
@@ -1822,6 +1823,43 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <Style x:Key="LibraryPopupContentStyle"
+           TargetType="ContentControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ContentControl">
+                    <Grid>
+                        <Border Background="{StaticResource FilterPopupBackgroundColor}"
+                                BorderBrush="{StaticResource FilterPopupBorderColor}"
+                                BorderThickness="1"
+                                Margin="0,11,0,0"
+                                CornerRadius="5">
+                            <ContentPresenter />
+                        </Border>
+                        <Path x:Name="arrow"
+                              Fill="{StaticResource FilterPopupBackgroundColor}"
+                              Stroke="{StaticResource FilterPopupBorderColor}"
+                              Data="M 5 12 L 15 0 L 25 12" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="LibraryIconsStyle"
+           TargetType="{x:Type fa:ImageAwesome}">
+        <Setter Property="Foreground"
+                Value="{Binding IsAnySearchResult, 
+                                Converter={StaticResource FilterIconForegroundConverter}}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="True">
+                <Setter Property="Foreground"
+                        Value="White" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
 </ResourceDictionary>

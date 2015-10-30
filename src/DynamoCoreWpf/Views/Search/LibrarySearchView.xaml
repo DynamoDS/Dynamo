@@ -8,6 +8,7 @@
              xmlns:vm="clr-namespace:Dynamo.Wpf.ViewModels"
              xmlns:views="clr-namespace:Dynamo.UI.Views"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:search="clr-namespace:Dynamo.Search"
              mc:Ignorable="d"
              d:DesignHeight="525"
              d:DesignWidth="350">
@@ -21,76 +22,72 @@
 
             <DataTemplate x:Key="SearchItemTemplate"
                           DataType="{x:Type vm:NodeSearchElementViewModel}">
-                <Button Command="{Binding ClickedCommand}">
+                <Button Command="{Binding ClickedCommand}"
+                        Margin="15,7,15,9">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
 
-                            <!-- Grey line between nodes -->
-                            <Border BorderThickness="0,0,0,1"
-                                    SnapsToDevicePixels="true"
-                                    BorderBrush="{StaticResource SearchElementLineDeterminerColor}"
-                                    Margin="15,0,15,0"
-                                    Padding="0,7,0,9">
+                            <!-- Transparent, yet clickable background -->
+                            <Grid Background="#01000000">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-                                <!-- Transparent, yet clickable background -->
-                                <Grid Background="#01000000">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
+                                <!-- Node icon -->
+                                <Image Grid.Column="0"
+                                       Source="{Binding SmallIcon}"
+                                       Height="32"
+                                       Width="32"
+                                       VerticalAlignment="Top"
+                                       HorizontalAlignment="Left"
+                                       Margin="0,0,10,0" />
 
-                                    <!-- Node icon -->
-                                    <Image Grid.Column="0"
-                                           Source="{Binding SmallIcon}"
-                                           Height="32"
-                                           Width="32"
-                                           VerticalAlignment="Top"
-                                           HorizontalAlignment="Left"
-                                           Margin="0,0,10,0" />
+                                <StackPanel Grid.Column="1"
+                                            Orientation="Vertical">
+
+                                    <!-- Node name -->
+                                    <TextBlock Name="memberName"
+                                               HorizontalAlignment="Left"
+                                               VerticalAlignment="Top"
+                                               FontSize="13">
+                                                <Run Text="{Binding Name, Mode=OneWay}"
+                                                     Foreground="{StaticResource NodeNameForeground}" />
+                                                <Run Text="{Binding Parameters, Mode=OneWay}"
+                                                     Foreground="{StaticResource CommonSidebarTextColor}" />
+                                    </TextBlock>
+
+                                    <!-- Node description -->
+                                    <TextBlock Name="memberDescription"
+                                               FontSize="11"
+                                               MaxHeight="50"
+                                               Text="{Binding Description}"
+                                               Foreground="{StaticResource SearchDarkGreyTextColor}"
+                                               TextWrapping="Wrap"
+                                               TextTrimming="CharacterEllipsis"
+                                               Visibility="{Binding DataContext.IsDetailedMode, 
+                                                                        RelativeSource={RelativeSource FindAncestor, 
+                                                                        AncestorType={x:Type search:SearchView}},
+                                                                        Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
 
                                     <!-- Node class, group icon, node category -->
-                                    <StackPanel Grid.Column="1"
-                                                Orientation="Vertical">
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="{Binding Class}"
-                                                       TextDecorations="Underline"
-                                                       Foreground="{StaticResource CommonSidebarTextColor}" />
-                                            <fa:ImageAwesome Icon="{Binding GroupIconName}"
-                                                             Foreground="{Binding Group, 
-                                                                                  Converter={StaticResource ElementGroupToColorConverter}}"
-                                                             VerticalAlignment="Center"
-                                                             HorizontalAlignment="Center"
-                                                             Height="10"
-                                                             Width="10"
-                                                             Margin="4,4,4,4" />
-                                            <TextBlock Text="{Binding Category}"
-                                                       Foreground="{StaticResource SearchDarkGreyTextColor}"
-                                                       FontStyle="Italic" />
-                                        </StackPanel>
-
-                                        <!-- Node name -->
-                                        <TextBlock Name="memberName"
-                                                   HorizontalAlignment="Left"
-                                                   VerticalAlignment="Top"
-                                                   FontSize="13">
-                                                <Run Text="{Binding Name, Mode=OneWay}"
-                                                     Foreground="{StaticResource CommonSidebarTextColor}" />
-                                                <Run Text="{Binding Parameters, Mode=OneWay}"
-                                                     Foreground="{StaticResource SearchDarkGreyTextColor}" />
-                                        </TextBlock>
-
-                                        <!-- Node description -->
-                                        <TextBlock Name="memberDescription"
-                                                   FontSize="11"
-                                                   MaxHeight="50"
-                                                   Text="{Binding Description}"
-                                                   Foreground="{StaticResource SearchDarkGreyTextColor}"
-                                                   TextWrapping="Wrap"
-                                                   TextTrimming="CharacterEllipsis" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Class}"
+                                                   Foreground="{StaticResource CommonSidebarTextColor}" />
+                                        <fa:ImageAwesome Icon="{Binding GroupIconName}"
+                                                         Foreground="{Binding Group, 
+                                                                              Converter={StaticResource ElementGroupToColorConverter}}"
+                                                         VerticalAlignment="Center"
+                                                         HorizontalAlignment="Center"
+                                                         Height="10"
+                                                         Width="10"
+                                                         Margin="4,4,4,4" />
+                                        <TextBlock Text="{Binding Category}"
+                                                   Foreground="{StaticResource CommonSidebarTextColor}"
+                                                   FontStyle="Italic" />
                                     </StackPanel>
-                                </Grid>
-
-                            </Border>
+                                </StackPanel>
+                            </Grid>
                         </ControlTemplate>
                     </Button.Template>
                 </Button>

@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
-using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Xml;
 using SystemTestServices;
@@ -12,7 +11,6 @@ using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Selection;
 using Dynamo.Tests;
 using Dynamo.UI;
 using Dynamo.Utilities;
@@ -20,13 +18,14 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoCoreWpfTests.Utility;
 using DynamoShapeManager;
-using HelixToolkit.Wpf;
 using HelixToolkit.Wpf.SharpDX;
 using NUnit.Framework;
 using SharpDX;
 using TestServices;
 using Color = System.Windows.Media.Color;
 using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
+using Dynamo.Views;
+using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
 
 namespace WpfVisualizationTests
 {
@@ -38,6 +37,11 @@ namespace WpfVisualizationTests
     /// </summary>
     public class VisualizationTest : SystemTestBase
     {
+        protected IEnumerable<Model3D> BackgroundPreviewGeometry
+        {
+            get { return ((HelixWatch3DViewModel)ViewModel.BackgroundPreviewViewModel).SceneItems; }
+        }
+
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
@@ -90,17 +94,26 @@ namespace WpfVisualizationTests
 
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
         }
+
+        protected void OpenVisualizationTest(string fileName)
+        {
+            string relativePath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                string.Format(@"core\visualization\{0}", fileName));
+
+            if (!File.Exists(relativePath))
+            {
+                throw new FileNotFoundException("The specified .dyn file could not be found.");
+            }
+
+            ViewModel.OpenCommand.Execute(relativePath);
+        }
     }
 
     [TestFixture]
     public class HelixWatch3DViewModelTests : VisualizationTest
     {
-        private IEnumerable<Model3D> BackgroundPreviewGeometry
-        {
-            get { return ((HelixWatch3DViewModel)ViewModel.BackgroundPreviewViewModel).SceneItems; }
-        } 
-
-        private Watch3DView BackgroundPreview
+        protected Watch3DView BackgroundPreview
         {
             get
             {
@@ -433,76 +446,6 @@ namespace WpfVisualizationTests
 
         #endregion
 
-        #region custom node tests
-
-        [Test]
-        public void CustomNodes_Render()
-        {
-            CustomNodeInfo info;
-            Assert.IsTrue(
-                ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(
-                    Path.Combine(
-                        GetTestDirectory(ExecutingDirectory),
-                        @"core\visualization\Points.dyf"),
-                    true,
-                    out info));
-
-            OpenVisualizationTest("ASM_customNode.dyn");
-
-            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
-
-            //ensure that we have some visualizations
-            Assert.Greater(BackgroundPreviewGeometry.TotalPoints(), 0);
-        }
-
-        [Test]
-        public void CustomNode_DoesNotRender()
-        {
-            // Regression test for defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5165
-            // To verify when some geometry nodes are converted to custom node,
-            // their render packages shouldn't be carried over to custom work
-            // space.
-            var model = ViewModel.Model;
-
-            OpenVisualizationTest("visualize_line_incustom.dyn");
-
-            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
-
-            Assert.AreEqual(1, BackgroundPreviewGeometry.TotalCurves());
-
-            // Convert a DSFunction node Line.ByPointDirectionLength to custom node.
-            var workspace = model.CurrentWorkspace;
-            var node = workspace.Nodes.OfType<DSFunction>().First();
-
-            List<NodeModel> selectionSet = new List<NodeModel>() { node };
-            var customWorkspace = model.CustomNodeManager.Collapse(
-                selectionSet.AsEnumerable(),
-                model.CurrentWorkspace,
-                true,
-                new FunctionNamePromptEventArgs
-                {
-                    Category = "Testing",
-                    Description = "",
-                    Name = "__VisualizationTest__",
-                    Success = true
-                }) as CustomNodeWorkspaceModel;
-            ViewModel.HomeSpace.Run();
-
-            // Switch to custom workspace
-            model.OpenCustomNodeWorkspace(customWorkspace.CustomNodeId);
-            var customSpace = ViewModel.Model.CurrentWorkspace;
-
-            // Select that node
-            DynamoSelection.Instance.Selection.Add(node);
-
-            // No preview in the background
-            Assert.AreEqual(0, BackgroundPreviewGeometry.TotalPoints());
-            Assert.AreEqual(0, BackgroundPreviewGeometry.TotalCurves());
-            Assert.AreEqual(0, BackgroundPreviewGeometry.TotalMeshes());
-        }
-
-        #endregion
-
         #region watch 3d tests
 
         [Test]
@@ -693,6 +636,24 @@ namespace WpfVisualizationTests
                 .ContainsKey(HelixWatch3DViewModel.DefaultGridName), "Background grid has not appeared");
         }
 
+        [Test]
+        public void HelixWatch3DViewModel_ChangeBackgroundVisibility_CanNavigateButtonsAreCorrect()
+        {
+            var bPreviewVm = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
+            Assert.IsNotNull(bPreviewVm, "HelixWatch3D has not been loaded");
+            bPreviewVm.Active = false;
+
+            Assert.IsFalse(bPreviewVm.Active, "Background has not been turned off");
+            var currentWorkspace = View.WorkspaceTabs.ChildrenOfType<WorkspaceView>().First();
+            Assert.AreEqual(Visibility.Hidden, currentWorkspace.statusBarPanel.Visibility, "Navigation buttons were not hidden");
+
+            // turn on background
+            ViewModel.ToggleFullscreenWatchShowingCommand.Execute(null);
+
+            Assert.IsTrue(bPreviewVm.Active, "Background has not been turned on");
+            Assert.AreEqual(Visibility.Visible, currentWorkspace.statusBarPanel.Visibility, "Navigation buttons did not appear");
+        }
+
         #endregion
 
         #region dynamo view tests
@@ -749,20 +710,6 @@ namespace WpfVisualizationTests
             RunCurrentModel();
 
             Assert.True(BackgroundPreviewGeometry.HasAnyColorMappedMeshes());
-        }
-
-        private void OpenVisualizationTest(string fileName)
-        {
-            string relativePath = Path.Combine(
-                GetTestDirectory(ExecutingDirectory),
-                string.Format(@"core\visualization\{0}",fileName));
-
-            if (!File.Exists(relativePath))
-            {
-                throw new FileNotFoundException("The specified .dyn file could not be found.");
-            }
-
-            ViewModel.OpenCommand.Execute(relativePath);
         }
 
         [Test]
@@ -899,9 +846,69 @@ namespace WpfVisualizationTests
                 : 0;
         }
 
+        /// <summary>
+        /// Returns the total number of DynamoGeometryModel3D objects.
+        /// 
+        /// Each DynamoGeometryModel3D object may contain more than one mesh.
+        /// </summary>
+        /// <param name="dictionary"></param>
+        /// <returns></returns>
         public static int TotalMeshes(this IEnumerable<Model3D> dictionary)
         {
             return dictionary.Count(g => g is DynamoGeometryModel3D && !keyList.Contains(g.Name));
+        }
+
+        public static IEnumerable<DynamoGeometryModel3D> Meshes(this IEnumerable<Model3D> geometry)
+        {
+            var candidates = geometry.Where(g => g is DynamoGeometryModel3D && !keyList.Contains(g.Name));
+            return candidates.Cast<DynamoGeometryModel3D>();
+        }
+
+        public static IEnumerable<LineGeometryModel3D> Curves(this IEnumerable<Model3D> geometry)
+        {
+            var candidates = geometry.Where(g => g is LineGeometryModel3D && !keyList.Contains(g.Name));
+            return candidates.Cast<LineGeometryModel3D>();
+        }
+
+        public static IEnumerable<PointGeometryModel3D> Points(this IEnumerable<Model3D> geometry)
+        {
+            var candidates = geometry.Where(g => g is PointGeometryModel3D && !keyList.Contains(g.Name));
+            return candidates.Cast<PointGeometryModel3D>();
+        }
+
+        public static bool IsDead(this GeometryModel3D geometry)
+        {
+            if (geometry is PointGeometryModel3D || geometry is LineGeometryModel3D)
+            {
+                return geometry.Geometry.Colors.All(c => c == HelixWatch3DViewModel.DefaultDeadColor);
+            }
+
+            if (geometry is DynamoGeometryModel3D)
+            {
+                return geometry.Geometry.Colors.All(c => c.Alpha < 1.0f);
+            }
+
+            return false;
+        }
+
+        public static bool IsAlive(this GeometryModel3D geometry)
+        {
+            if (geometry is PointGeometryModel3D)
+            {
+                return geometry.Geometry.Colors.All(c => c == HelixWatch3DViewModel.DefaultPointColor);
+            }
+
+            if (geometry is LineGeometryModel3D)
+            {
+                return geometry.Geometry.Colors.All(c => c == HelixWatch3DViewModel.DefaultLineColor);
+            }
+
+            if (geometry is DynamoGeometryModel3D)
+            {
+                return geometry.Geometry.Colors.All(c => c.Alpha == 1.0f);
+            }
+
+            return false;
         }
 
         public static int TotalCurves(this IEnumerable<Model3D> dictionary)
