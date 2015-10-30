@@ -1,0 +1,26 @@
+<Workspace Version="0.9.1.2957" X="0" Y="0" zoom="1" Name="Sphere" Description="Custom node which creates a sphere." ID="37ea8235-2bb8-4b73-a57c-3a064d4d1bac" Category="Ian">
+  <NamespaceResolutionMap>
+    <ClassMap partialName="Point" resolvedName="Autodesk.DesignScript.Geometry.Point" assemblyName="ProtoGeometry.dll" />
+  </NamespaceResolutionMap>
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="2f69b779-416e-44b5-8e7d-19fcc27f6242" type="Dynamo.Nodes.DSFunction" nickname="Sphere.ByCenterPointRadius" x="593.860046612229" y="6.50562246725815" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Sphere.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="d29ec0ba-bf99-4bb9-9da2-7d94f406d478" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="250" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" CodeText="Point.ByCoordinates(5,5,5);&#xA;3;" ShouldFocus="false" />
+    <Dynamo.Nodes.Output guid="a2af7bbf-7371-47b5-beb9-aa283b53b025" type="Dynamo.Nodes.Output" nickname="Output" x="858.860046612229" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False">
+      <Symbol value="Sphere" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="2f69b779-416e-44b5-8e7d-19fcc27f6242" start_index="0" end="a2af7bbf-7371-47b5-beb9-aa283b53b025" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d29ec0ba-bf99-4bb9-9da2-7d94f406d478" start_index="0" end="2f69b779-416e-44b5-8e7d-19fcc27f6242" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d29ec0ba-bf99-4bb9-9da2-7d94f406d478" start_index="1" end="2f69b779-416e-44b5-8e7d-19fcc27f6242" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="-4.64632291674661" eyeY="8.51132148962508" eyeZ="10.6783907309627" lookX="4.19532996731561" lookY="-7.67603468341782" lookZ="-11.1088508981501" upX="0.123728702933714" upY="0.936672213357938" upZ="-0.327622356886716" />
+  </Cameras>
+</Workspace>

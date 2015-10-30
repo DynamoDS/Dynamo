@@ -43,7 +43,7 @@ namespace Dynamo.Models
         {
             get
             {
-                return currentPasteOffset == 0 ? PasteOffsetStep : currentPasteOffset;
+                return currentPasteOffset + PasteOffsetStep;
             }
         }
 
@@ -289,6 +289,15 @@ namespace Dynamo.Models
 
             var handler = ConnectorDeleted;
             if (handler != null) handler(obj);
+        }
+
+        /// <summary>
+        /// Implement to record node modification for undo/redo
+        /// </summary>
+        /// <param name="models"></param>
+        public void RecordModelsForModification(IEnumerable<ModelBase> models)
+        {
+            RecordModelsForModification(models.ToList(), undoRecorder);
         }
 
         /// <summary>
@@ -2438,6 +2447,7 @@ namespace Dynamo.Models
             }
         }
 
-        #endregion       
+        #endregion
+
     }
 }

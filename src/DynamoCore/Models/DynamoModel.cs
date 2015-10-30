@@ -1188,18 +1188,21 @@ namespace Dynamo.Models
                         OnWorkspaceOpening(xmlDoc);
 
                         // TODO: #4258
-                        // Remove this ResetEngine call when multiple home workspaces is supported.
-                        // This call formerly lived in DynamoViewModel
-                        ResetEngine();
-
-                        // TODO: #4258
                         // The following logic to start periodic evaluation will need to be moved
                         // inside of the HomeWorkspaceModel's constructor.  It cannot be there today
                         // as it causes an immediate crash due to the above ResetEngine call.
                         var hws = ws as HomeWorkspaceModel;
-                        if (hws != null && hws.RunSettings.RunType == RunType.Periodic)
+                        if (hws != null)
                         {
-                            hws.StartPeriodicEvaluation();
+                            // TODO: #4258
+                            // Remove this ResetEngine call when multiple home workspaces is supported.
+                            // This call formerly lived in DynamoViewModel
+                            ResetEngine();
+
+                            if (hws.RunSettings.RunType == RunType.Periodic)
+                            {
+                                hws.StartPeriodicEvaluation();
+                            }
                         }
 
                         CurrentWorkspace = ws;
@@ -1523,13 +1526,16 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="node"></param>
         /// <param name="centered"></param>
-        public void AddNodeToCurrentWorkspace(NodeModel node, bool centered)
+        public void AddNodeToCurrentWorkspace(NodeModel node, bool centered, bool addToSelection = true)
         {
             CurrentWorkspace.AddAndRegisterNode(node, centered);
 
             //TODO(Steve): This should be moved to WorkspaceModel.AddNode when all workspaces have their own selection -- MAGN-5707
-            DynamoSelection.Instance.ClearSelection();
-            DynamoSelection.Instance.Selection.Add(node);
+            if (addToSelection)
+            {
+                DynamoSelection.Instance.ClearSelection();
+                DynamoSelection.Instance.Selection.Add(node);
+            }
 
             //TODO(Steve): Make sure we're not missing something with TransformCoordinates. -- MAGN-5708
         }
@@ -1569,27 +1575,11 @@ namespace Dynamo.Models
         /// </summary>
         public void Paste()
         {
-            // Provide a small offset when pasting so duplicate pastes aren't directly on top of each other
-            CurrentWorkspace.IncrementPasteOffset();
-
             var locatableModels = ClipBoard.Where(model => model is NoteModel || model is NodeModel);
-            var orderedItems = locatableModels.OrderBy(item => item.CenterX + item.CenterY);
-
-            // Search for the rightmost item. It's item with the biggest X, Y coordinates of center.
-            var rightMostItem = orderedItems.Last();
-
-            // Search for the leftmost item. It's item with the smallest X, Y coordinates of center.
-            var leftMostItem = orderedItems.First();
-
-            // Compute shift so that left most item will appear at right most item place with offset.
-            var shiftX = rightMostItem.X + rightMostItem.Width + CurrentWorkspace.CurrentPasteOffset - leftMostItem.X;
-            var shiftY = rightMostItem.Y + CurrentWorkspace.CurrentPasteOffset - leftMostItem.Y;
-
-
-            var x = shiftX + locatableModels.Min(m => m.X);
-            var y = shiftY + locatableModels.Min(m => m.Y);
+            var x = locatableModels.Min(m => m.X);
+            var y = locatableModels.Min(m => m.Y);
             var targetPoint = new Point2D(x, y);
-            
+
             Paste(targetPoint);
         }
 
@@ -1597,8 +1587,16 @@ namespace Dynamo.Models
         ///     Paste ISelectable objects from the clipboard to the workspace at specified point.
         /// </summary>
         /// <param name="targetPoint">Location where data will be pasted</param>
-        public void Paste(Point2D targetPoint)
+        /// <param name="useOffset">Indicates whether we will use current workspace offset or paste nodes
+        /// directly in this point. </param>
+        public void Paste(Point2D targetPoint, bool useOffset = true)
         {
+            if (useOffset)
+            {
+                // Provide a small offset when pasting so duplicate pastes aren't directly on top of each other
+                CurrentWorkspace.IncrementPasteOffset();
+            }
+
             //clear the selection so we can put the
             //paste contents in
             DynamoSelection.Instance.ClearSelection();
@@ -1665,11 +1663,12 @@ namespace Dynamo.Models
             
             var shiftX = targetPoint.X - newItems.Min(item => item.X);
             var shiftY = targetPoint.Y - newItems.Min(item => item.Y);
+            var offset = useOffset ? CurrentWorkspace.CurrentPasteOffset : 0;
 
             foreach (var model in newItems)
             {
-                model.X = model.X + shiftX;
-                model.Y = model.Y + shiftY;
+                model.X = model.X + shiftX + offset;
+                model.Y = model.Y + shiftY + offset;
             }
 
             // Add the new NodeModel's to the Workspace

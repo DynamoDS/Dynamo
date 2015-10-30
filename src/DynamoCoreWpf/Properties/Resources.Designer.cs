@@ -1958,6 +1958,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show Grid.
+        /// </summary>
+        public static string DynamoViewViewMenuShowGrid {
+            get {
+                return ResourceManager.GetString("DynamoViewViewMenuShowGrid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Zoom.
         /// </summary>
         public static string DynamoViewViewMenuZoom {

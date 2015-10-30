@@ -120,7 +120,9 @@ limitations under the License.
     <Compile Include="Core\Threading\Disposable.cs" />
     <Compile Include="Engine\LinkedListOfList.cs" />
     <Compile Include="Extensions\EnumExtension.cs" />
+    <Compile Include="Extensions\ExtensionCommandExecutive.cs" />
     <Compile Include="Extensions\ExtensionLibraryLoader.cs" />
+    <Compile Include="Extensions\ICommandExecutive.cs" />
     <Compile Include="Interfaces\ICustomNodeManager.cs" />
     <Compile Include="Core\PulseMaker.cs" />
     <Compile Include="Core\NodeGraph.cs" />
