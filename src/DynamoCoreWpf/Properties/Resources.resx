@@ -1951,4 +1951,19 @@ Do you want to install the latest Dynamo update?</value>
   <data name="BackgroundPreviewCreationFailureMessage" xml:space="preserve">
     <value>There was an error creating a background preview in Dynamo. This could be due to a lack of graphics resources on your machine. See the log for more information.</value>
   </data>
+  <data name="CompactLayoutTitle" xml:space="preserve">
+    <value>Compact</value>
+  </data>
+  <data name="DetailedLayoutTitle" xml:space="preserve">
+    <value>Detailed</value>
+  </data>
+  <data name="FilterIconTooltip" xml:space="preserve">
+    <value>Filter results</value>
+  </data>
+  <data name="LayoutIconTooltip" xml:space="preserve">
+    <value>View layout</value>
+  </data>
+  <data name="ShowHideLibraryIconTooltip" xml:space="preserve">
+    <value>Show/hide</value>
+  </data>
 </root>

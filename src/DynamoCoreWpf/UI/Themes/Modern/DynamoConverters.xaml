@@ -172,4 +172,12 @@
                                       TrueBrush="White"
                                       FalseBrush="{StaticResource SearchDarkGreyTextColor}">
     </controls:BooleanToBrushConverter>
+    <controls:BooleanToBrushConverter x:Key="CompactLayoutForegroundConverter"
+                                      TrueBrush="{StaticResource FilterIconColor}"
+                                      FalseBrush="{StaticResource CommonSidebarTextColor}">
+    </controls:BooleanToBrushConverter>
+    <controls:BooleanToBrushConverter x:Key="DetailedLayoutForegroundConverter"
+                                      TrueBrush="{StaticResource CommonSidebarTextColor}"
+                                      FalseBrush="{StaticResource FilterIconColor}">
+    </controls:BooleanToBrushConverter>
 </ResourceDictionary>

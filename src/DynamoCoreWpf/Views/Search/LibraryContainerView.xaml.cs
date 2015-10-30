@@ -381,5 +381,10 @@ namespace Dynamo.Search
         {
             FilterPopup.IsOpen = true;
         }
+
+        private void OnViewLayoutSelectorMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            LayoutPopup.IsOpen = true;
+        }
     }
 }
