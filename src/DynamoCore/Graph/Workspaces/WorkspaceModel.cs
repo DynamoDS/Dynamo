@@ -16,7 +16,6 @@ using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
-using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Properties;
@@ -2178,8 +2177,8 @@ namespace Dynamo.Graph.Workspaces
             }
 
             /*
-            if (typeName.Equals("Dynamo.Nodes.DSFunction") ||
-                typeName.Equals("Dynamo.Nodes.DSVarArgFunction"))
+            if (typeName.Equals("Dynamo.Graph.Nodes.DSFunction") ||
+                typeName.Equals("Dynamo.Graph.Nodes.DSVarArgFunction"))
             {
                 // For DSFunction and DSVarArgFunction node types, the type name
                 // is actually embedded within "name" attribute (for an example,

@@ -8,7 +8,6 @@ using System.Windows;
 using System.Windows.Input;
 using Dynamo.Core;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Selection;
 using Dynamo.Wpf.Interfaces;
@@ -20,7 +19,6 @@ using Dynamo.PackageManager.UI;
 using System.Reflection;
 using System.IO;
 using System.Threading;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 

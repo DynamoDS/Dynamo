@@ -4,11 +4,11 @@ using System.Linq;
 using System.Xml;
 
 using DSCoreNodesUI;
+using DSCoreNodesUI.Input;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
-using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Tests;
 
@@ -394,7 +394,7 @@ namespace DynamoCoreWpfTests
             var element = dummyNode.Serialize(xmlDocument, SaveContext.File);
 
             // Dummy node should be serialized to its original node
-            Assert.AreEqual(element.Name, "Dynamo.Nodes.DSFunction");
+            Assert.AreEqual(element.Name, "Dynamo.Graph.Nodes.DSFunction");
         }
 
         [Test]

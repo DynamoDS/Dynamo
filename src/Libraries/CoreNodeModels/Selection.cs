@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
-
-using Dynamo.Interfaces;
-using Dynamo.Models;
+using DSCoreNodesUI;
 using Dynamo.Logging;
 using DSCoreNodesUI.Properties;
 using Dynamo.Graph;

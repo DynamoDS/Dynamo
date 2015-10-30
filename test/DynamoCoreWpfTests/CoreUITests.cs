@@ -5,11 +5,9 @@ using System.Threading;
 using System.Windows;
 
 using SystemTestServices;
-
-using Dynamo;
+using DSCoreNodesUI.Input;
 using Dynamo.Configuration;
 using Dynamo.Controls;
-using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
@@ -20,7 +18,6 @@ using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.ViewModels.Watch3D;
 using NUnit.Framework;
 using DynamoCoreWpfTests.Utility;
 

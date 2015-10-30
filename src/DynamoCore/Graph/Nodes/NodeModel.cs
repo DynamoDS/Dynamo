@@ -359,7 +359,7 @@ namespace Dynamo.Graph.Nodes
             {
                 Type type = GetType();
                 object[] attribs = type.GetCustomAttributes(typeof(NodeNameAttribute), false);
-                if (type.Namespace == "Dynamo.Nodes" && !type.IsAbstract && attribs.Length > 0
+                if (type.Namespace == "Dynamo.Graph.Nodes" && !type.IsAbstract && attribs.Length > 0
                     && type.IsSubclassOf(typeof(NodeModel)))
                 {
                     var elCatAttrib = attribs[0] as NodeNameAttribute;
@@ -396,7 +396,7 @@ namespace Dynamo.Graph.Nodes
             Type type = GetType();
             object[] attribs = type.GetCustomAttributes(typeof(NodeCategoryAttribute), false);
             
-            if (type.Namespace != "Dynamo.Nodes" || type.IsAbstract || attribs.Length <= 0
+            if (type.Namespace != "Dynamo.Graph.Nodes" || type.IsAbstract || attribs.Length <= 0
                 || !type.IsSubclassOf(typeof(NodeModel))) 
                 return "";
 

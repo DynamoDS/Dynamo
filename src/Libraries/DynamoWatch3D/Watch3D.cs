@@ -15,19 +15,17 @@ using Dynamo.Core.Threading;
 using Dynamo.Engine;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
-using Dynamo.Interfaces;
-using Dynamo.Models;
-using Dynamo.Utilities;
 using Dynamo.Logging;
+using Dynamo.Utilities;
 using Dynamo.Visualization;
 using Dynamo.Wpf;
-using Dynamo.Wpf.Rendering; 
+using Dynamo.Wpf.Rendering;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoWatch3D.Properties;
 using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
 
-namespace Dynamo.Nodes
+namespace DynamoWatch3D
 {
     public class Watch3DNodeViewCustomization : INodeViewCustomization<Watch3D>
     {

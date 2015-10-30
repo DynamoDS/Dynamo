@@ -8,8 +8,6 @@ using System.Text.RegularExpressions;
 
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Models;
-using Dynamo.Nodes;
-
 using System.Windows;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Dynamo.Nodes;
 using NUnit.Framework;
-using DSCoreNodesUI;
 using System.Xml;
+using DSCoreNodesUI.Input;
+using DSCoreNodesUI.Logic;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using PythonNodeModels;
@@ -287,11 +287,11 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestAnd.dyn"));
 
             var workspace = CurrentDynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSCore.Logic.And>(
+            var logicn1 = workspace.NodeFromWorkspace<And>(
                 "0ac391e1-d11a-40ed-96b2-d3aabbdad5c7");
-            var logicn2 = workspace.NodeFromWorkspace<DSCore.Logic.And>(
+            var logicn2 = workspace.NodeFromWorkspace<And>(
                 "0dff8bbb-6a02-444c-8c96-c44c6a248357");
-            var logicn3 = workspace.NodeFromWorkspace<DSCore.Logic.And>(
+            var logicn3 = workspace.NodeFromWorkspace<And>(
                  "4a61ddb0-999d-412d-9330-52f0a982b214");
 
             Assert.AreEqual(5, workspace.Nodes.Count());
@@ -313,11 +313,11 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestAnd_NumberInput.dyn"));
 
             var workspace = CurrentDynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSCore.Logic.And>(
+            var logicn1 = workspace.NodeFromWorkspace<And>(
                 "0ac391e1-d11a-40ed-96b2-d3aabbdad5c7");
-            var logicn2 = workspace.NodeFromWorkspace<DSCore.Logic.And>(
+            var logicn2 = workspace.NodeFromWorkspace<And>(
                 "0dff8bbb-6a02-444c-8c96-c44c6a248357");
-            var logicn3 = workspace.NodeFromWorkspace<DSCore.Logic.And>(
+            var logicn3 = workspace.NodeFromWorkspace<And>(
                  "4a61ddb0-999d-412d-9330-52f0a982b214");
 
             Assert.AreEqual(5, workspace.Nodes.Count());
@@ -339,11 +339,11 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestOr.dyn"));
 
             var workspace = CurrentDynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSCore.Logic.Or>(
+            var logicn1 = workspace.NodeFromWorkspace<Or>(
                 "64cfe13f-370c-446e-9f51-58d60278cdff");
-            var logicn2 = workspace.NodeFromWorkspace<DSCore.Logic.Or>(
+            var logicn2 = workspace.NodeFromWorkspace<Or>(
                 "a0b23231-737f-44f6-aa12-640ee5390fa5");
-            var logicn3 = workspace.NodeFromWorkspace<DSCore.Logic.Or>(
+            var logicn3 = workspace.NodeFromWorkspace<Or>(
                  "60a2b505-f173-4f65-a42e-cdd3708900f8");
 
             Assert.AreEqual(5, workspace.Nodes.Count());
@@ -365,11 +365,11 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestOr_NumberInput.dyn"));
 
             var workspace = CurrentDynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSCore.Logic.Or>(
+            var logicn1 = workspace.NodeFromWorkspace<Or>(
                 "64cfe13f-370c-446e-9f51-58d60278cdff");
-            var logicn2 = workspace.NodeFromWorkspace<DSCore.Logic.Or>(
+            var logicn2 = workspace.NodeFromWorkspace<Or>(
                 "a0b23231-737f-44f6-aa12-640ee5390fa5");
-            var logicn3 = workspace.NodeFromWorkspace<DSCore.Logic.Or>(
+            var logicn3 = workspace.NodeFromWorkspace<Or>(
                  "60a2b505-f173-4f65-a42e-cdd3708900f8");
 
             Assert.AreEqual(5, workspace.Nodes.Count());
@@ -1912,7 +1912,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(4, workspace.Nodes.Count());
             Assert.AreEqual(3, workspace.Connectors.Count());
 
-            var path = workspace.NodeFromWorkspace<Dynamo.Nodes.StringInput>("1651f446-1b0f-4d5b-be59-c59bf9f80142");
+            var path = workspace.NodeFromWorkspace<StringInput>("1651f446-1b0f-4d5b-be59-c59bf9f80142");
             string fullPath = Path.Combine(TempFolder, "filewriter.txt");
             path.Value = fullPath;
 

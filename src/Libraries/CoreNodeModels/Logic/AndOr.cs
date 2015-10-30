@@ -1,16 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-
-using Dynamo.Models;
-using Dynamo.Nodes;
-using ProtoCore.AST.AssociativeAST;
-using ProtoCore.DSASM;
 using Autodesk.DesignScript.Runtime;
 using DSCoreNodesUI.Properties;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
+using ProtoCore.AST.AssociativeAST;
+using ProtoCore.DSASM;
 
-namespace DSCore.Logic
+namespace DSCoreNodesUI.Logic
 {
     /// <summary>
     /// Abstract base class for short-circuiting binary logic operators.

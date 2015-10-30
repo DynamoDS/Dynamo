@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using DSCoreNodesUI.Properties;
 using Dynamo.Core.Threading;
 using Dynamo.Engine;
-using Dynamo.Models;
-using Dynamo.Interfaces;
-
-using DSCoreNodesUI.Properties;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Visualization;
 using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
 
-namespace Dynamo.Nodes
+namespace DSCoreNodesUI
 {
     [NodeName("Watch")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]

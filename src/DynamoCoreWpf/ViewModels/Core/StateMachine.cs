@@ -11,9 +11,6 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Utilities;
 using DynCmd = Dynamo.Models.DynamoModel;
-
-using Dynamo.Nodes;
-using Dynamo.UI;
 using ModifierKeys = System.Windows.Input.ModifierKeys;
 using Point = System.Windows.Point;
 

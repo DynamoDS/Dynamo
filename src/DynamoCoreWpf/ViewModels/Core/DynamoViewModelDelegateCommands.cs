@@ -1,5 +1,4 @@
 ﻿using Dynamo.Graph.Nodes.CustomNodes;
-using Dynamo.Nodes;
 using Dynamo.Wpf.ViewModels;
 using Microsoft.Practices.Prism.Commands;
 using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;

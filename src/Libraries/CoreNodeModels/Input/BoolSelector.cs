@@ -1,12 +1,9 @@
 ﻿using System.Collections.Generic;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
-using Dynamo.Models;
-using Dynamo.Nodes;
-
 using ProtoCore.AST.AssociativeAST;
 
-namespace DSCoreNodesUI
+namespace DSCoreNodesUI.Input
 {
     public abstract class Bool : BasicInteractive<bool>
     {

@@ -15,8 +15,8 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoShapeManager;
 using NUnit.Framework;
-using Dynamo.UI;
 using System.Reflection;
+using DSCoreNodesUI.Input;
 using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
@@ -5213,7 +5213,7 @@ namespace DynamoCoreWpfTests
                 var workspace = ViewModel.Model.CurrentWorkspace;
                 // give absolute path
                 string directory = Path.Combine(TestDirectory, @"core\recorded");
-                var textFileName = workspace.NodeFromWorkspace<DSCore.File.Filename>("3a22370f-7f07-4bd6-b4fb-5680ec82e8d4");
+                var textFileName = workspace.NodeFromWorkspace<Filename>("3a22370f-7f07-4bd6-b4fb-5680ec82e8d4");
                 textFileName.Value = Path.Combine(directory, textFileName.Value);
 
                 switch (commandTag)

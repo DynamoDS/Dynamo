@@ -3,23 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
-using Dynamo.Engine.CodeGeneration;
-using Dynamo.Models;
-using Dynamo.Nodes;
-using DSCoreNodesUI.Properties;
-
 using Autodesk.DesignScript.Runtime;
-using Dynamo.Graph;
+using DSCoreNodesUI.Properties;
+using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
 
-
-namespace DSCore.File
+namespace DSCoreNodesUI.Input
 {
     [SupressImportIntoVM]
-    public abstract class FileSystemBrowser : DSCoreNodesUI.String
+    public abstract class FileSystemBrowser : String
     {
         protected FileSystemBrowser(string tip)
             : base()
@@ -192,7 +186,7 @@ namespace DSCore.File
     public class FileObject : FileSystemObject<FileInfo>
     {
         public FileObject()
-            : base(IO.File.FromPath)
+            : base(DSCore.IO.File.FromPath)
         {
             InPortData.Add(new PortData("path", Resources.FileObjectPortDataPathToolTip));
             OutPortData.Add(new PortData("file", Resources.FileObjectPortDataResultToolTip));
@@ -247,7 +241,7 @@ namespace DSCore.File
     public class DirectoryObject : FileSystemObject<DirectoryInfo>
     {
         public DirectoryObject()
-            : base(IO.Directory.FromPath)
+            : base(DSCore.IO.Directory.FromPath)
         {
             InPortData.Add(new PortData("path", Resources.DirectoryObjectPortDataPathToolTip));
             OutPortData.Add(new PortData("directory", Resources.DirectoryObjectPortDataResultToolTip));

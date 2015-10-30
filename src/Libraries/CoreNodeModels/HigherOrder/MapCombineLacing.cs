@@ -1,11 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Runtime;
-using Dynamo.Models;
-using Dynamo.Nodes;
 using ProtoCore.AST.AssociativeAST;
 using DSCoreNodesUI.Properties;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 
 namespace DSCore

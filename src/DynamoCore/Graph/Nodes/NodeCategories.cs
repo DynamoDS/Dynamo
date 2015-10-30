@@ -51,7 +51,7 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         /// <para>This method patches the fullyQualifiedName of a given type. It 
-        /// updates the given name to its newer form (i.e. "Dynamo.Nodes.Xyz")
+        /// updates the given name to its newer form (i.e. "Dynamo.Graph.Nodes.Xyz")
         /// if it matches the older form (e.g. "Dynamo.Elements.Xyz").</para>
         /// <para>The method also attempts to update "XYZ/UV" convention to 
         /// "Xyz/Uv" to comply with the new Dynamo naming convention.</para>
@@ -59,7 +59,7 @@ namespace Dynamo.Graph.Nodes
         /// <param name="fullyQualifiedName">A fully qualified name. An example
         /// of this would be "Dynamo.Elements.dynNode".</param>
         /// <returns>The processed fully qualified name. For an example, the 
-        /// name "Dynamo.Elements.UV" will be returned as "Dynamo.Nodes.Uv".
+        /// name "Dynamo.Elements.UV" will be returned as "Dynamo.Graph.Nodes.Uv".
         /// </returns>
         public static string PreprocessTypeName(string fullyQualifiedName)
         {
@@ -68,12 +68,12 @@ namespace Dynamo.Graph.Nodes
 
             // older files will have nodes in the Dynamo.Elements namespace
             const string oldPrefix = "Dynamo.Elements.";
-            const string newPrefix = "Dynamo.Nodes.";
+            const string newPrefix = "Dynamo.Graph.Nodes.";
             string className;
 
             // Attempt to extract the class name out of the fully qualified 
             // name, regardless of whether it is in the form of the older 
-            // "Dynamo.Elements.XxxYyy" or the newer "Dynamo.Nodes.XxxYyy".
+            // "Dynamo.Elements.XxxYyy" or the newer "Dynamo.Graph.Nodes.XxxYyy".
             // 
             if (fullyQualifiedName.StartsWith(oldPrefix))
                 className = fullyQualifiedName.Substring(oldPrefix.Length);

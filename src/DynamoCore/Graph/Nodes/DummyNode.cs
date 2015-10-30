@@ -20,7 +20,7 @@ namespace Dynamo.Graph.Nodes
 
         public DummyNode()
         {
-            LegacyNodeName = "Dynamo.Nodes.DummyNode";
+            LegacyNodeName = "Dynamo.Graph.Nodes.DummyNode";
             LegacyAssembly = string.Empty;
             NodeNature = Nature.Unresolved;
             Description = GetDescription();
