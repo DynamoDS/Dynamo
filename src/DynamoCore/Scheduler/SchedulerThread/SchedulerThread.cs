@@ -1,7 +1,7 @@
-﻿using Dynamo.Interfaces;
-using System.Threading;
+﻿using System.Threading;
+using Dynamo.Scheduler.DynamoScheduler;
 
-namespace Dynamo.Core.Threading
+namespace Dynamo.Scheduler.SchedulerThread
 {
     class DynamoSchedulerThread : ISchedulerThread
     {

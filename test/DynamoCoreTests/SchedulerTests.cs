@@ -5,6 +5,8 @@ using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Scheduler.DynamoScheduler;
+using Dynamo.Scheduler.SchedulerThread;
 using DynamoShapeManager;
 
 using NUnit.Framework;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dynamo.Scheduler.DynamoScheduler;
 using NUnit.Framework;
 using Dynamo.Extensions;
 using System.IO;
@@ -29,7 +30,7 @@ namespace Dynamo.Tests
                 {
                     StartInTestMode = true,
                     Extensions = new List<IExtension> { extMock.Object },
-                    ProcessMode = Core.Threading.TaskProcessMode.Synchronous
+                    ProcessMode = TaskProcessMode.Synchronous
                 });
         }
 

@@ -13,6 +13,7 @@ using Dynamo.Migration;
 using Dynamo.Nodes;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
+using Dynamo.Scheduler.DynamoScheduler;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Interfaces;

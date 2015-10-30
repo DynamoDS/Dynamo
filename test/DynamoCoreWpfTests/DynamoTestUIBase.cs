@@ -8,6 +8,7 @@ using Dynamo;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Models;
+using Dynamo.Scheduler.DynamoScheduler;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoShapeManager;
@@ -65,7 +66,7 @@ namespace DynamoCoreWpfTests
                     StartInTestMode = true,
                     PathResolver = pathResolver,
                     GeometryFactoryPath = preloader.GeometryFactoryPath,
-                    ProcessMode = Dynamo.Core.Threading.TaskProcessMode.Synchronous
+                    ProcessMode = TaskProcessMode.Synchronous
                 });
 
             ViewModel = DynamoViewModel.Start(

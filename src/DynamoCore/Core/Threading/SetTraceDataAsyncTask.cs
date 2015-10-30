@@ -4,6 +4,7 @@ using System.Linq;
 
 using Dynamo.Engine;
 using Dynamo.Models;
+using Dynamo.Scheduler.DynamoScheduler;
 
 namespace Dynamo.Core.Threading
 {

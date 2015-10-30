@@ -19,6 +19,8 @@ using Dynamo.Migration;
 using Dynamo.Models.NodeLoaders;
 using Dynamo.Nodes;
 using Dynamo.Properties;
+using Dynamo.Scheduler.DynamoScheduler;
+using Dynamo.Scheduler.SchedulerThread;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;

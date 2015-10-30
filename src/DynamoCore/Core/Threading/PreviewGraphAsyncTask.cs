@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 using Dynamo.Engine;
 using Dynamo.Models;
-
+using Dynamo.Scheduler.DynamoScheduler;
 using ProtoScript.Runners;
 
 using BuildWarning = ProtoCore.BuildData.WarningEntry;

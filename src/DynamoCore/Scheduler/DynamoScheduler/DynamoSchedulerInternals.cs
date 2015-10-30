@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
+using Dynamo.Core.Threading;
+using Dynamo.Scheduler.SchedulerThread;
 
-using Dynamo.Interfaces;
-
-namespace Dynamo.Core.Threading
+namespace Dynamo.Scheduler.DynamoScheduler
 {
-    using TaskState = TaskStateChangedEventArgs.State;
-
     partial class DynamoScheduler
     {
         #region Private Class Data Members
@@ -57,7 +53,7 @@ namespace Dynamo.Core.Threading
 
         #region Private Class Helper Methods
 
-        private void NotifyTaskStateChanged(AsyncTask task, TaskState state)
+        private void NotifyTaskStateChanged(AsyncTask task, TaskStateChangedEventArgs.State state)
         {
             var stateChangedHandler = TaskStateChanged;
             if (stateChangedHandler == null)
@@ -66,7 +62,7 @@ namespace Dynamo.Core.Threading
             var e = new TaskStateChangedEventArgs(task, state);
             stateChangedHandler(this, e);
 
-            if (state == TaskState.Discarded)
+            if (state == TaskStateChangedEventArgs.State.Discarded)
             {
                 task.HandleTaskDiscarded();
             }
@@ -150,15 +146,15 @@ namespace Dynamo.Core.Threading
 
         private void ProcessTaskInternal(AsyncTask asyncTask)
         {
-            NotifyTaskStateChanged(asyncTask, TaskState.ExecutionStarting);
+            NotifyTaskStateChanged(asyncTask, TaskStateChangedEventArgs.State.ExecutionStarting);
 
             var executionState = asyncTask.Execute()
-                ? TaskState.ExecutionCompleted
-                : TaskState.ExecutionFailed;
+                ? TaskStateChangedEventArgs.State.ExecutionCompleted
+                : TaskStateChangedEventArgs.State.ExecutionFailed;
 
             NotifyTaskStateChanged(asyncTask, executionState);
             asyncTask.HandleTaskCompletion();
-            NotifyTaskStateChanged(asyncTask, TaskState.CompletionHandled);
+            NotifyTaskStateChanged(asyncTask, TaskStateChangedEventArgs.State.CompletionHandled);
         }
 
         #endregion

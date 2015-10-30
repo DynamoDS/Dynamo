@@ -11,6 +11,7 @@ using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Scheduler.DynamoScheduler;
 using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.Utilities;
@@ -592,8 +593,8 @@ namespace DynamoCoreWpfTests
                 {
                     StartInTestMode = startInTestMode,
                     ProcessMode = startInTestMode 
-                        ? Dynamo.Core.Threading.TaskProcessMode.Synchronous 
-                        : Dynamo.Core.Threading.TaskProcessMode.Asynchronous
+                        ? TaskProcessMode.Synchronous 
+                        : TaskProcessMode.Asynchronous
                 });
 
             ViewModel = DynamoViewModel.Start(

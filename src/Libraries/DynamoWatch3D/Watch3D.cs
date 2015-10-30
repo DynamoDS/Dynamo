@@ -15,6 +15,7 @@ using Dynamo.Core.Threading;
 using Dynamo.Engine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Scheduler.DynamoScheduler;
 using Dynamo.Utilities;
 using Dynamo.Logging;
 using Dynamo.Visualization;

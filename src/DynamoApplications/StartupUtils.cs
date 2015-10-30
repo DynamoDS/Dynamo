@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dynamo.Interfaces;
+using Dynamo.Scheduler.DynamoScheduler;
 using DynamoShapeManager;
 using System.Reflection;
 using System.IO;
@@ -182,7 +183,7 @@ namespace Dynamo.Applications
             var config = new DynamoModel.DefaultStartConfiguration()
                   {
                       GeometryFactoryPath = geometryFactoryPath,
-                      ProcessMode = Core.Threading.TaskProcessMode.Asynchronous
+                      ProcessMode = TaskProcessMode.Asynchronous
                   };
 
             config.UpdateManager = CLImode ? null : InitializeUpdateManager();
