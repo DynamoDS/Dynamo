@@ -14,10 +14,17 @@ using Dynamo.Core;
 using Dynamo.Core.Threading;
 using Dynamo.Engine;
 using Dynamo.Extensions;
+using Dynamo.Graph;
+using Dynamo.Graph.Annotations;
+using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Nodes.NodeLoaders;
+using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Graph.Notes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Migration;
-using Dynamo.Models.NodeLoaders;
-using Dynamo.Nodes;
 using Dynamo.Properties;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
@@ -35,7 +42,7 @@ using ProtoCore.Exceptions;
 using ProtoCore.Runtime;
 using Compiler = ProtoAssociative.Compiler;
 // Dynamo package manager
-using Utils = Dynamo.Nodes.Utilities;
+using Utils = Dynamo.Graph.Nodes.Utilities;
 using DefaultUpdateManager = Dynamo.UpdateManager.UpdateManager;
 using FunctionGroup = Dynamo.Engine.FunctionGroup;
 

@@ -7,6 +7,8 @@ using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Logging;
 using DSCoreNodesUI.Properties;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Nodes
 {

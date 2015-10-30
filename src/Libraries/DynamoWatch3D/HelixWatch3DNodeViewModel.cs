@@ -4,6 +4,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
+using Dynamo.Graph;
+using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D

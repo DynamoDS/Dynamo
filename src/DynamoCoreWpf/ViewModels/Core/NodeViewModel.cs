@@ -11,6 +11,10 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 
 using System.Windows;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Selection;
 using Dynamo.Wpf.ViewModels.Core;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;

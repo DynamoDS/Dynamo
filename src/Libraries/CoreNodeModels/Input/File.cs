@@ -10,6 +10,8 @@ using Dynamo.Nodes;
 using DSCoreNodesUI.Properties;
 
 using Autodesk.DesignScript.Runtime;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
 

@@ -16,6 +16,8 @@ using ProtoCore.DSASM;
 using ProtoCore.Namespace;
 using String = DSCoreNodesUI.String;
 using Dynamo.Engine.CodeGeneration;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Nodes
 {

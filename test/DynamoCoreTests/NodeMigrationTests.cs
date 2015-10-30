@@ -5,7 +5,8 @@ using Dynamo.Nodes;
 using NUnit.Framework;
 using DSCoreNodesUI;
 using System.Xml;
-
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using PythonNodeModels;
 
 namespace Dynamo.Tests
@@ -1961,7 +1962,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, workspace.Connectors.Count());
 
             // check that no nodes are migrated to dummy nodes
-            Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is Dynamo.Nodes.DummyNode));
+            Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is DummyNode));
 
             // check that the node is migrated to a DSFunction nicknamed "ReferencePoint.ByPoint"
             StringAssert.Contains("Reference", workspace.NodeFromWorkspace<DSFunction>(
@@ -1980,7 +1981,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, workspace.Connectors.Count());
 
             // check that no nodes are migrated to dummy nodes
-            Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is Dynamo.Nodes.DummyNode));
+            Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is DummyNode));
 
             // check that the node is migrated to a DSFunction nicknamed "FamilyInstance.ByPoint"
             StringAssert.Contains("Instance", workspace.NodeFromWorkspace<DSFunction>(
@@ -1999,7 +2000,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, workspace.Connectors.Count());
 
             // check that no nodes are migrated to dummy nodes
-            Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is Dynamo.Nodes.DummyNode));
+            Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is DummyNode));
 
             // check that the node is migrated to a DSFunction nicknamed "ModelCurve.ByCurve"
             StringAssert.Contains("Model", workspace.NodeFromWorkspace<DSFunction>(
@@ -2017,7 +2018,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(6, workspace.Connectors.Count());
 
             // check that no nodes are migrated to dummy nodes
-            Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is Dynamo.Nodes.DummyNode));
+            Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is DummyNode));
 
             // check that the node is migrated to a PythonNode which retains the old script
             StringAssert.Contains("OUT = OUT", workspace.NodeFromWorkspace<PythonNode>(
@@ -2035,7 +2036,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(6, workspace.Connectors.Count());
 
             // check that no nodes are migrated to dummy nodes
-            Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is Dynamo.Nodes.DummyNode));
+            Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is DummyNode));
 
             // check that some of the nodes are Excel nodes
             Assert.AreEqual(4, workspace.Nodes.AsQueryable().Count(x => x.NickName.Contains("Excel")));
@@ -2142,7 +2143,7 @@ namespace Dynamo.Tests
             int unresolvedNodeCount = 0;
             string str = "\n";
 
-            foreach (var node in nodes.OfType<Dynamo.Nodes.DummyNode>())
+            foreach (var node in nodes.OfType<DummyNode>())
             {
                 if (node.NodeNature == DummyNode.Nature.Unresolved)
                 {

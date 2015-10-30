@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using Dynamo;
 using Dynamo.Configuration;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using ProtoCore.AST.AssociativeAST;

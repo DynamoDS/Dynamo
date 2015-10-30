@@ -7,6 +7,8 @@ using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using Autodesk.DesignScript.Runtime;
 using DSCoreNodesUI.Properties;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 
 namespace DSCore.Logic
 {

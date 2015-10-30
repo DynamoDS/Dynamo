@@ -9,6 +9,9 @@ using System.Threading;
 using Dynamo;
 using Dynamo.Configuration;
 using Dynamo.Controls;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Tests;
@@ -234,15 +237,15 @@ namespace SystemTestServices
             var model = ViewModel.Model;
             var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
             Assert.IsNotNull(node);
-            return node.State == Dynamo.Models.ElementState.Error ||
-                    node.State == Dynamo.Models.ElementState.Warning;
+            return node.State == ElementState.Error ||
+                    node.State == ElementState.Warning;
         }
 
         protected void AssertNoDummyNodes()
         {
             var nodes = ViewModel.Model.CurrentWorkspace.Nodes;
 
-            double dummyNodesCount = nodes.OfType<Dynamo.Nodes.DummyNode>().Count();
+            double dummyNodesCount = nodes.OfType<DummyNode>().Count();
             if (dummyNodesCount >= 1)
             {
                 Assert.Fail("Number of dummy nodes found in Sample: " + dummyNodesCount);

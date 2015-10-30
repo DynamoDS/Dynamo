@@ -4,13 +4,14 @@ using System.Windows.Data;
 using System.Windows.Media;
 
 using Dynamo.Controls;
+using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Nodes;
 
 namespace Dynamo.Wpf
 {
-    public class OutputNodeViewCustomization : INodeViewCustomization<Dynamo.Nodes.Output>
+    public class OutputNodeViewCustomization : INodeViewCustomization<Output>
     {
-        public void CustomizeView(Nodes.Output outputNodeModel, NodeView nodeView)
+        public void CustomizeView(Output outputNodeModel, NodeView nodeView)
         {
             //add a text box to the input grid of the control
             var tb = new DynamoTextBox(outputNodeModel.Symbol)

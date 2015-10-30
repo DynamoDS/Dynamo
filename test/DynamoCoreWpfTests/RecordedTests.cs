@@ -18,6 +18,12 @@ using NUnit.Framework;
 using Dynamo.UI;
 using System.Reflection;
 using Dynamo.Configuration;
+using Dynamo.Graph;
+using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Notes;
+using Dynamo.Graph.Workspaces;
 using TestServices;
 
 using PythonNodeModels;
@@ -2602,8 +2608,8 @@ namespace DynamoCoreWpfTests
                     var node1 = GetNode("37da4958-1b88-408b-b09d-3deba0ba3835");
                     var node2 = GetNode("b12ce9c8-8c23-43c4-987d-759c6f623998");
 
-                    Assert.NotNull(node1 as Dynamo.Nodes.DummyNode);
-                    Assert.NotNull(node2 as Dynamo.Nodes.DummyNode);
+                    Assert.NotNull(node1 as DummyNode);
+                    Assert.NotNull(node2 as DummyNode);
                 }
                 else if (commandTag == "Delete1")
                 {

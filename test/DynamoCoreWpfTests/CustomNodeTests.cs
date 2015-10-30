@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using NUnit.Framework;
 using Dynamo.Tests;
 using Dynamo.Nodes;

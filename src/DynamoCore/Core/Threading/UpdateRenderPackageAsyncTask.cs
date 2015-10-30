@@ -8,6 +8,8 @@ using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 
 using Dynamo.Engine;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.Properties;
 using Dynamo.Interfaces;

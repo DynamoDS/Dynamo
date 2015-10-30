@@ -3,7 +3,6 @@ using Dynamo.Engine.CodeCompletion;
 using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Logging;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM.Mirror;
@@ -21,6 +20,8 @@ using RuntimeWarning = ProtoCore.Runtime.WarningEntry;
 using ProtoCore.Utils;
 using Dynamo.Engine.NodeToCode;
 using Dynamo.Engine.CodeGeneration;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Engine
 {

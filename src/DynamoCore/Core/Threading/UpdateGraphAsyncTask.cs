@@ -10,6 +10,9 @@ using ProtoScript.Runners;
 using BuildWarning = ProtoCore.BuildData.WarningEntry;
 using RuntimeWarning = ProtoCore.Runtime.WarningEntry;
 using System.Diagnostics;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Core.Threading
 {

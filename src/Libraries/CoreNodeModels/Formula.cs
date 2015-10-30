@@ -4,6 +4,8 @@ using System.Linq;
 using System.Xml;
 
 using Dynamo.Core;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;

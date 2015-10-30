@@ -15,6 +15,8 @@ using DSCoreNodesUI;
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Core;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.Migration;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -268,7 +270,7 @@ namespace UnitsUI
     [NodeDescription("AreaFromStringDescription",typeof(UnitsUI.Properties.Resources))]
     [NodeSearchTags("AreaFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
     [IsDesignScriptCompatible]
-    [NodeDeprecatedAttribute]
+    [NodeDeprecated]
     public class AreaFromString : MeasurementInputBase
     {
         public AreaFromString()
@@ -301,7 +303,7 @@ namespace UnitsUI
     [NodeDescription("VolumeFromStringDescription",typeof(UnitsUI.Properties.Resources))]
     [NodeSearchTags("VolumeFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
     [IsDesignScriptCompatible]
-    [NodeDeprecatedAttribute]
+    [NodeDeprecated]
     public class VolumeFromString : MeasurementInputBase
     {
         public VolumeFromString()

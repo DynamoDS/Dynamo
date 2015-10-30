@@ -4,6 +4,10 @@ using System.IO;
 using System.Linq;
 
 using Dynamo.Engine.CodeCompletion;
+using Dynamo.Graph;
+using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;

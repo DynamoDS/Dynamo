@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 
 using DSCore.File;
-
+using Dynamo.Graph.Nodes;
 using Dynamo.Nodes;
 using NUnit.Framework;
 
@@ -440,7 +440,7 @@ namespace Dynamo.Tests
         {
             OpenModel(Path.Combine(TestDirectory, @"core\customast\begin-test.dyn"));
 
-            var dummy = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.DummyNode>();
+            var dummy = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DummyNode>();
             Assert.IsNotNull(dummy);
 
             const string textAndFileName = @"test.txt";

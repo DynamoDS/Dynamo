@@ -15,6 +15,8 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Views;
 using NUnit.Framework;
 using System.Text.RegularExpressions;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 

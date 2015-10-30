@@ -20,6 +20,9 @@ using Dynamo.PackageManager.UI;
 using System.Reflection;
 using System.IO;
 using System.Threading;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.ViewModels
 {
@@ -297,7 +300,7 @@ namespace Dynamo.ViewModels
             return AuthenticationManager.HasAuthProvider;
         }
 
-        public void PublishCustomNode(Dynamo.Nodes.Function m)
+        public void PublishCustomNode(Function m)
         {
             CustomNodeInfo currentFunInfo;
             if (DynamoViewModel.Model.CustomNodeManager.TryGetNodeInfo(
@@ -319,7 +322,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool CanPublishCustomNode(Dynamo.Nodes.Function m)
+        public bool CanPublishCustomNode(Function m)
         {
             return AuthenticationManager.HasAuthProvider && m != null;
         }

@@ -13,6 +13,8 @@ using Autodesk.DesignScript.Interfaces;
 using Dynamo.Controls;
 using Dynamo.Core.Threading;
 using Dynamo.Engine;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Utilities;

@@ -5,6 +5,8 @@ using NUnit.Framework;
 using Dynamo.Models;
 using System.Collections.Generic;
 using System.Linq;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Tests
 {

@@ -21,6 +21,8 @@
         xmlns:preview="clr-namespace:Dynamo.Wpf.Views.Preview"
         xmlns:watch3D="clr-namespace:Dynamo.Wpf.ViewModels.Watch3D"
         xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
+        xmlns:graph="clr-namespace:Dynamo.Graph;assembly=DynamoCore"
+        xmlns:workspaces="clr-namespace:Dynamo.Graph.Workspaces;assembly=DynamoCore"
         x:Name="_this"
         Height="768"
         Width="1024"
@@ -1340,7 +1342,7 @@
                                                     <MultiDataTrigger>
                                                         <MultiDataTrigger.Conditions>
                                                             <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
-                                                                       Value="{x:Type models:HomeWorkspaceModel}" />
+                                                                       Value="{x:Type workspaces:HomeWorkspaceModel}" />
                                                             <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
                                                                        Value="Unsaved" />
                                                         </MultiDataTrigger.Conditions>
@@ -1351,7 +1353,7 @@
                                                     <MultiDataTrigger>
                                                         <MultiDataTrigger.Conditions>
                                                             <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
-                                                                       Value="{x:Type models:HomeWorkspaceModel}" />
+                                                                       Value="{x:Type workspaces:HomeWorkspaceModel}" />
                                                             <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
                                                                        Value="Saved" />
                                                         </MultiDataTrigger.Conditions>
@@ -1362,7 +1364,7 @@
                                                     <MultiDataTrigger>
                                                         <MultiDataTrigger.Conditions>
                                                             <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
-                                                                       Value="{x:Type models:CustomNodeWorkspaceModel}" />
+                                                                       Value="{x:Type workspaces:CustomNodeWorkspaceModel}" />
                                                             <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
                                                                        Value="Unsaved" />
                                                         </MultiDataTrigger.Conditions>
@@ -1373,7 +1375,7 @@
                                                     <MultiDataTrigger>
                                                         <MultiDataTrigger.Conditions>
                                                             <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
-                                                                       Value="{x:Type models:CustomNodeWorkspaceModel}" />
+                                                                       Value="{x:Type workspaces:CustomNodeWorkspaceModel}" />
                                                             <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
                                                                        Value="Saved" />
                                                         </MultiDataTrigger.Conditions>

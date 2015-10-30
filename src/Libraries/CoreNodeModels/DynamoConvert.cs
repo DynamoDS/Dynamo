@@ -7,6 +7,8 @@ using DynamoConversions;
 using ProtoCore.AST.AssociativeAST;
 using System.Xml;
 using System.Globalization;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 
 namespace DSCoreNodesUI
 {

@@ -3,6 +3,8 @@ using System.Linq;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using DSCoreNodesUI.Properties;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI

@@ -7,6 +7,11 @@ using System.Linq;
 using System.IO;
 using System.Threading;
 using Dynamo.Engine;
+using Dynamo.Graph;
+using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.TestInfrastructure
 {

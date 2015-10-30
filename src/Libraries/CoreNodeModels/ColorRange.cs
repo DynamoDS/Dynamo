@@ -12,6 +12,8 @@ using ProtoCore.Mirror;
 using System.Globalization;
 
 using Dynamo.Engine;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 
 namespace DSCoreNodesUI
 {
@@ -23,7 +25,7 @@ namespace DSCoreNodesUI
 
     [InPortNames("colors", "indices", "value")]
     [InPortTypes("Color[]", "double[]", "double")]
-    [InPortDescriptionsAttribute(typeof(Resources),
+    [InPortDescriptions(typeof(Resources),
         "ColorRangePortDataColorsToolTip",
         "ColorRangePortDataIndicesToolTip",
         "ColorRangePortDataValueToolTip")]

@@ -14,6 +14,9 @@ using System.Reflection;
 using System.Threading;
 using System.Globalization;
 using Dynamo.Engine.NodeToCode;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Interfaces;
 
 namespace Dynamo.Tests

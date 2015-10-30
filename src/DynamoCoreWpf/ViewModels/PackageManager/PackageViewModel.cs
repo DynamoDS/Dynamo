@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
+using Dynamo.Graph;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 

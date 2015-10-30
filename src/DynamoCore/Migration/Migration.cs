@@ -10,6 +10,10 @@ using Dynamo.Logging;
 using System.Collections.Generic;
 using System.IO;
 using Dynamo.Configuration;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.NodeLoaders;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Migration
 {
@@ -248,7 +252,7 @@ namespace Dynamo.Migration
             foreach (XmlElement elNode in elNodesList.ChildNodes)
             {
                 string typeName = elNode.Attributes["type"].Value;
-                typeName = Nodes.Utilities.PreprocessTypeName(typeName);
+                typeName = Graph.Nodes.Utilities.PreprocessTypeName(typeName);
 
                 Type type;
                 if (!nodeFactory.ResolveType(typeName, out type)

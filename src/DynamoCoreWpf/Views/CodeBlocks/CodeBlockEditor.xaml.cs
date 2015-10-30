@@ -19,6 +19,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml;
 ﻿using Dynamo.Configuration;
+﻿using Dynamo.Graph.Nodes;
 ﻿using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.UI.Controls

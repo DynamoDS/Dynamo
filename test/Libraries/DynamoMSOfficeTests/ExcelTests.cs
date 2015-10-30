@@ -9,6 +9,9 @@ using Dynamo.Configuration;
 using NUnit.Framework;
 using ProtoCore.Mirror;
 using Dynamo.Engine.CodeCompletion;
+using Dynamo.Graph;
+using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.Nodes;
 
@@ -378,7 +381,7 @@ namespace Dynamo.Tests
             var watch = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("de5c9439-bc4c-408d-9484-798d8d8b8aed");
             ViewModel.HomeSpace.Run();
            
-            Assert.IsTrue(watch.State == Models.ElementState.Warning);
+            Assert.IsTrue(watch.State == ElementState.Warning);
            
 
         }
@@ -1037,7 +1040,7 @@ namespace Dynamo.Tests
 
             ViewModel.HomeSpace.Run();
             Assert.IsNull(watch.CachedValue.Data);
-            Assert.IsTrue(watch.State == Models.ElementState.Warning);
+            Assert.IsTrue(watch.State == ElementState.Warning);
             if (fileAttributes == FileAttributes.ReadOnly)
                 File.SetAttributes(filePath, FileAttributes.Normal);
 

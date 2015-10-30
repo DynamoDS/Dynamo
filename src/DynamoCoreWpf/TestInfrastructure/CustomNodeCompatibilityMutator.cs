@@ -12,6 +12,10 @@ using Dynamo.Configuration;
 using DynamoUtilities;
 using Dynamo.Core;
 using Dynamo.Engine;
+using Dynamo.Graph;
+using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Utilities;
 
 namespace Dynamo.TestInfrastructure

@@ -5,6 +5,7 @@ using System.Windows.Controls;
 
 using Dynamo.Controls;
 using Dynamo.Core;
+using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Wpf;

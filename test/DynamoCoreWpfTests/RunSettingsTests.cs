@@ -15,6 +15,8 @@ using Dynamo.Wpf.ViewModels;
 using NUnit.Framework;
 using ProtoCore.Mirror;
 using System;
+using Dynamo.Graph;
+using Dynamo.Graph.Workspaces;
 
 namespace DynamoCoreWpfTests
 {

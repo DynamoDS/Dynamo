@@ -5,6 +5,8 @@ using System.Linq;
 using System;
 
 using Autodesk.DesignScript.Geometry;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using NUnit.Framework;
 

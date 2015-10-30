@@ -9,6 +9,11 @@ using Dynamo.Selection;
 
 using NUnit.Framework;
 using System.Collections;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Tests
 {

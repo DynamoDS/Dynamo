@@ -4,6 +4,8 @@ using System.Text;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Core;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.Nodes;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;

@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Linq;
 using Dynamo.Annotations;
 using Dynamo.Configuration;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Search.Interfaces;

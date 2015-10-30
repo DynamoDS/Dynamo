@@ -5,6 +5,9 @@ using ProtoCore.AST.AssociativeAST;
 using System.Collections.Generic;
 
 using DSCoreNodesUI.Properties;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
+
 namespace DSCoreNodesUI.StringNodes
 {
     /// <summary>

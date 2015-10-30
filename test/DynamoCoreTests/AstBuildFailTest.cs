@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
-
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using NUnit.Framework;
 

@@ -8,6 +8,9 @@ using Dynamo.Selection;
 using Dynamo.Nodes;
 using Dynamo.Models;
 using System.IO;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Tests
 {

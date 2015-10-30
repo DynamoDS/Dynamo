@@ -1,6 +1,9 @@
 using System;
 using System.Windows.Controls;
 using Dynamo.Controls;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
