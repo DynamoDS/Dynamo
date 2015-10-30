@@ -15,6 +15,7 @@ namespace DSCoreNodesUI
     [NodeDescription("WatchNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeSearchTags("WatchNodeSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("Dynamo.Nodes.Watch")]
     public class Watch : NodeModel
     {
         public event Action<Object> EvaluationComplete;

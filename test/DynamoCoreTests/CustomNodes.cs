@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Selection;
 
 using NUnit.Framework;

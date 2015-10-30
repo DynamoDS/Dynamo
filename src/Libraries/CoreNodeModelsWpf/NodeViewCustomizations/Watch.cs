@@ -6,17 +6,12 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Threading;
 using DSCoreNodesUI;
-using DSCoreNodesUI.Logic;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Core.Threading;
-using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Interfaces;
-using Dynamo.Models;
-using Dynamo.UI;
-using Dynamo.Nodes;
 using Dynamo.ViewModels;
 using ProtoCore.AST.AssociativeAST;
 

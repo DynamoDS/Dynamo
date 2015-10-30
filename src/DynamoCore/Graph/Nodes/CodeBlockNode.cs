@@ -26,6 +26,7 @@ namespace Dynamo.Graph.Nodes
     [NodeDescription("CodeBlockDescription",typeof(Dynamo.Properties.Resources))]
     [NodeSearchTags("CodeBlockSearchTags", typeof(Dynamo.Properties.Resources))]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("Dynamo.Nodes.CodeBlockNodeModel")]
     public class CodeBlockNodeModel : NodeModel
     {
         private readonly List<Statement> codeStatements = new List<Statement>();

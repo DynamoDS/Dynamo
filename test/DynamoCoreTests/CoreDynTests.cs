@@ -6,7 +6,6 @@ using System.Threading;
 using DSCoreNodesUI;
 using DSCoreNodesUI.Input;
 using Dynamo.Graph.Nodes;
-using Dynamo.Nodes;
 using NUnit.Framework;
 
 using String = System.String;

@@ -166,7 +166,7 @@ namespace DynamoWatch3D
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeDescription("Watch3DDescription",typeof(Resources))]
     [NodeSearchTags("Watch3DSearchTags", typeof(Resources))]
-    [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview", "Dynamo.Nodes.3DPreview")]
+    [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview", "Dynamo.Nodes.3DPreview", "Dynamo.Nodes.Watch3D")]
     [IsDesignScriptCompatible]
     public class Watch3D : NodeModel
     {

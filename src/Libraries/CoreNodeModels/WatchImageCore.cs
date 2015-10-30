@@ -13,6 +13,7 @@ namespace DSCoreNodesUI
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeSearchTags("WatchImageSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("Dynamo.Nodes.WatchImageCore")]
     public class WatchImageCore : NodeModel
     {
         public WatchImageCore()

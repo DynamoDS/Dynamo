@@ -1,17 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Runtime;
-using ProtoCore.AST.AssociativeAST;
 using DSCoreNodesUI.Properties;
 using Dynamo.Graph.Nodes;
+using ProtoCore.AST.AssociativeAST;
 
-namespace DSCore
+namespace DSCoreNodesUI.HigherOrder
 {
     [NodeName("List.Map")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
     [NodeDescription("ListMapDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeSearchTags("ListMapSearchTags",typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("DSCore.Map")]
     public class Map : NodeModel
     {
         public Map()
@@ -83,6 +84,7 @@ namespace DSCore
     [NodeDescription("ListCombineDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeSearchTags("ListCombineSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("DSCore.Combine")]
     public class Combine : CombinatorNode
     {
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -108,6 +110,7 @@ namespace DSCore
     [NodeDescription("ListForEachDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeSearchTags("ListForEachSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("DSCore.ForEach")]
     public class ForEach : CombinatorNode
     {
         public ForEach() : base(2) { }
@@ -135,6 +138,7 @@ namespace DSCore
     [NodeDescription("ListLaceShortestDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeSearchTags("ListLaceShortestSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("DSCore.LaceShortest")]
     public class LaceShortest : CombinatorNode
     {
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -160,6 +164,7 @@ namespace DSCore
     [NodeDescription("ListLaceLongestDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeSearchTags("ListLaceLongestSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("DSCore.LaceLongest")]
     public class LaceLongest : CombinatorNode
     {
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -186,6 +191,7 @@ namespace DSCore
     [NodeDescription("ListCartesianProductDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeSearchTags("ListCartesianProductSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("DSCore.CartesianProduct")]
     public class CartesianProduct : CombinatorNode
     {
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -272,6 +278,7 @@ namespace DSCore
     [NodeDescription("ListReduceDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeSearchTags("ListReduceSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("DSCore.Reduce")]
     public class Reduce : VariableInputNode
     {
         private readonly PortData reductorPort;
@@ -360,6 +367,7 @@ namespace DSCore
     [NodeDescription("ListScanDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeSearchTags("ListScanSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("DSCore.ScanList")]
     public class ScanList : VariableInputNode
     {
         private readonly PortData reductorPort;
@@ -448,6 +456,7 @@ namespace DSCore
     [NodeDescription("ListFilterDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeSearchTags("ListFilterSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("DSCore.Filter")]
     public class Filter : NodeModel
     {
         public Filter()
@@ -491,6 +500,7 @@ namespace DSCore
     [NodeDescription("ReplaceByConditionDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeSearchTags("ReplaceByConditionSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("DSCore.Replace")]
     public class Replace : NodeModel
     {
         public Replace()

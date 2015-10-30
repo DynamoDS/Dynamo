@@ -11,6 +11,7 @@ namespace DSCoreNodesUI.Input
     [NodeDescription("DateTimeDescription", typeof(Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("DSCoreNodesUI.DateTime")]
     public class DateTime : BasicInteractive<System.DateTime>
     {
         public DateTime()

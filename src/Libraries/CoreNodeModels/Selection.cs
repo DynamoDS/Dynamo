@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
-using DSCoreNodesUI;
-using Dynamo.Logging;
 using DSCoreNodesUI.Properties;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
+using Dynamo.Logging;
 
-namespace Dynamo.Nodes
+namespace DSCoreNodesUI
 {
     public delegate List<string> ElementsSelectionDelegate(string message,
     SelectionType selectionType, SelectionObjectType objectType);

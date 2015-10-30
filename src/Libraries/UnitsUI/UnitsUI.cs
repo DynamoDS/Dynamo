@@ -11,25 +11,18 @@ using System.Xml;
 using DSCore;
 
 using DSCoreNodesUI;
-
-using Dynamo;
 using Dynamo.Controls;
-using Dynamo.Core;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Migration;
-using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.UI;
 using Dynamo.UI.Prompts;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
 
 using DynamoUnits;
 using ProtoCore.AST.AssociativeAST;
 using UnitsUI.Properties;
-using ProtoCore.Namespace;
 
 namespace UnitsUI
 {

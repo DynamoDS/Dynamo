@@ -2069,8 +2069,8 @@ namespace Dynamo.Tests
                 Assert.Fail("the content of the unresolved node has been changed after saving");
             }
 
-            oldNodes = docOld.GetElementsByTagName("Dynamo.Nodes.DSFunction");
-            newNodes = docNew.GetElementsByTagName("Dynamo.Nodes.DSFunction");
+            oldNodes = docOld.GetElementsByTagName("Dynamo.Graph.Nodes.DSFunction");
+            newNodes = docNew.GetElementsByTagName("Dynamo.Graph.Nodes.DSFunction");
             if (!oldNodes[0].InnerXml.Equals(newNodes[0].InnerXml))
             {
                 Assert.Fail("the content of the unresolved node has been changed after saving");
@@ -2102,15 +2102,15 @@ namespace Dynamo.Tests
             XmlDocument docNew = new XmlDocument();
             docNew.Load(newPath);
 
-            XmlNodeList oldNodes = docOld.GetElementsByTagName("Dynamo.Nodes.Now");
-            XmlNodeList newNodes = docNew.GetElementsByTagName("Dynamo.Nodes.Now");
+            XmlNodeList oldNodes = docOld.GetElementsByTagName("Dynamo.Graph.Nodes.Now");
+            XmlNodeList newNodes = docNew.GetElementsByTagName("Dynamo.Graph.Nodes.Now");
             if (!oldNodes[0].InnerXml.Equals(newNodes[0].InnerXml))
             {
                 Assert.Fail("the content of the deprecated node has been changed after saving");
             }
 
-            oldNodes = docOld.GetElementsByTagName("Dynamo.Nodes.Future");
-            newNodes = docNew.GetElementsByTagName("Dynamo.Nodes.Future");
+            oldNodes = docOld.GetElementsByTagName("Dynamo.Graph.Nodes.Future");
+            newNodes = docNew.GetElementsByTagName("Dynamo.Graph.Nodes.Future");
             if (!oldNodes[0].InnerXml.Equals(newNodes[0].InnerXml))
             {
                 Assert.Fail("the content of the deprecated node has been changed after saving");

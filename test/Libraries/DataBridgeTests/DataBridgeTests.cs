@@ -3,7 +3,6 @@ using DSCoreNodesUI;
 using Dynamo;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
-using Dynamo.Nodes;
 using Dynamo.Tests;
 
 using NUnit.Framework;

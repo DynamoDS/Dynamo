@@ -21,6 +21,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
     [IsInteractive(false)]
     [NodeSearchable(false)]
     [IsMetaNode]
+    [AlsoKnownAs("Dynamo.Nodes.Function")]
     public class Function 
         : FunctionCallBase<CustomNodeController<CustomNodeDefinition>, CustomNodeDefinition>
     {
@@ -252,6 +253,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
     [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("Dynamo.Nodes.Symbol")]
     public class Symbol : NodeModel
     {
         private string inputSymbol = String.Empty;
@@ -420,6 +422,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
     [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("Dynamo.Nodes.Output")]
     public class Output : NodeModel
     {
         private string symbol = "";

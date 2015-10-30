@@ -11,6 +11,7 @@ namespace Dynamo.Graph.Nodes
     [IsVisibleInDynamoLibrary(false)]
     [NodeSearchable(false)]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("Dynamo.Nodes.DummyNode")]
     public class DummyNode : NodeModel
     {
         public enum Nature
