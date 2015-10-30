@@ -268,6 +268,46 @@ namespace Dynamo.ViewModels
 
         public RunSettingsViewModel RunSettingsViewModel { get; protected set; }
 
+        /// <summary>
+        /// Gets a value indicating whether [node run checked].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [node run checked]; otherwise, <c>false</c>.
+        /// </value>
+        public bool NodeRunChecked
+        {
+            get
+            {
+                if (DynamoSelection.Instance.Selection.Count() == 1)
+                {
+                    var nodemodel = DynamoSelection.Instance.Selection.Cast<NodeModel>().First();
+                    var nodevm = _nodes.First(x => x.NodeLogic == nodemodel);
+                    return nodevm.NodeRunChecked;
+                }
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether [node run enabled].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [node run enabled]; otherwise, <c>false</c>.
+        /// </value>
+        public bool NodeRunEnabled
+        {
+            get
+            {
+                if (DynamoSelection.Instance.Selection.Count() == 1)
+                {
+                    var nodemodel = DynamoSelection.Instance.Selection.Cast<NodeModel>().First();
+                    var nodevm = _nodes.First(x => x.NodeLogic == nodemodel);
+                    return nodevm.NodeRunEnabled;
+                }
+                return true;
+            } 
+        }
+
         #endregion
 
         public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel dynamoViewModel)
@@ -351,6 +391,12 @@ namespace Dynamo.ViewModels
                 case "CurrentSpace":
                     // When workspace is changed(e.g. from home to custom), close InCanvasSearch.
                     OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
+                    break;
+                case "NodeRunChecked":
+                    RaisePropertyChanged("NodeRunChecked");
+                    break;
+                case "NodeRunEnabled":
+                    RaisePropertyChanged("NodeRunEnabled");
                     break;
             }
         }

@@ -771,7 +771,7 @@ namespace Dynamo.Controls
             dynamoViewModel.CopyCommand.RaiseCanExecuteChanged();
             dynamoViewModel.PasteCommand.RaiseCanExecuteChanged();
             dynamoViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
-            dynamoViewModel.MakeNodesFrozenCommand.RaiseCanExecuteChanged();
+            dynamoViewModel.ComputeRunStateOfTheNodeCommand.RaiseCanExecuteChanged();
 
         }
 

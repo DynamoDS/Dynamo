@@ -11,6 +11,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 
 using System.Windows;
+using System.Windows.Documents;
 using Dynamo.Selection;
 using Dynamo.Wpf.ViewModels.Core;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
@@ -40,7 +41,8 @@ namespace Dynamo.ViewModels
         NodeModel nodeLogic;
         private double zIndex = 3;
         private string astText = string.Empty;
-
+        private bool nodeRunChecked = true;
+        private bool nodeRunEnabled = true;
         #endregion
 
         #region public members
@@ -327,6 +329,74 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether this model is frozen.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is frozen; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsFrozen
+        {
+            get
+            {              
+                return NodeModel.IsFrozen;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether Run property on the node is checked
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if node is not frozen and CanExecute; otherwise, <c>false</c>.
+        /// </value>        
+        public bool NodeRunChecked
+        {
+            get { return nodeRunChecked; }
+            set
+            {
+                nodeRunChecked = value;
+                RaisePropertyChanged("NodeRunChecked");
+            }
+        }
+
+        public bool NodeRunEnabled
+        {
+            get { return nodeRunEnabled; }
+            set
+            {
+                nodeRunEnabled = value;
+                RaisePropertyChanged("NodeRunEnabled");
+            }
+        }
+
+        private void ToggleNodeRunState()
+        {
+            //case 1 : if the node is not frozen and can run. Default case.
+            if (!NodeModel.IsFrozen && NodeModel.CanExecute)
+            {
+                NodeRunChecked = true;
+                NodeRunEnabled = true;
+            }
+            //case 2 : if the node is frozen but can execute. True for parents
+            else if (NodeModel.IsFrozen && NodeModel.CanExecute)
+            {
+                NodeRunChecked = true;
+                NodeRunEnabled = false;
+            }
+            //case 3 : if the node is frozen and cannot execute because parent is frozen
+            else if (NodeModel.IsFrozen && !NodeModel.CanExecute)
+            {
+                NodeRunChecked = false;
+                NodeRunEnabled = true;
+            }
+            //case 3 : if the node is not frozen and cannot execute. 
+            else if (!NodeModel.IsFrozen && !NodeModel.CanExecute)
+            {
+                NodeRunChecked = false;
+                NodeRunEnabled = false;
+            }
+        }
+        
         #endregion
 
         #region events
@@ -409,6 +479,7 @@ namespace Dynamo.ViewModels
            CreateGroupCommand.RaiseCanExecuteChanged();
            AddToGroupCommand.RaiseCanExecuteChanged();
            UngroupCommand.RaiseCanExecuteChanged();
+           ComputeRunStateOfTheNodeCommand.RaiseCanExecuteChanged();
         }
 
         void DebugSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -488,7 +559,6 @@ namespace Dynamo.ViewModels
                 case "CurrentWorkspace":
                     RaisePropertyChanged("NodeVisibility");
                     break;
-
             }
         }
 
@@ -555,6 +625,11 @@ namespace Dynamo.ViewModels
                 case "CanUpdatePeriodically":
                     RaisePropertyChanged("EnablePeriodicUpdate");
                     RaisePropertyChanged("PeriodicUpdateVisibility");
+                    break;
+                case "IsFrozen":
+                case "CanExecute":
+                    ToggleNodeRunState();
+                    RaisePropertyChanged("IsFrozen");                         
                     break;
             }
         }
@@ -954,14 +1029,14 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private void MakeNodesFrozen(object parameters)
+        private void ComputeRunStateOfTheNode(object parameters)
         {
-            DynamoViewModel.MakeNodesFrozenCommand.Execute(null);
+            DynamoViewModel.ComputeRunStateOfTheNodeCommand.Execute(null);
         }
 
-        private bool CanNodesBeFrozen(object parameters)
+        private bool CanSetTheRunStateOftheNode(object parameters)
         {
-            return DynamoSelection.Instance.Selection.Any();
+            return DynamoSelection.Instance.Selection.Count() == 1;
         }
 
         private void UngroupNode(object parameters)

@@ -45,7 +45,7 @@ namespace Dynamo.Models
         private bool areInputPortsRegistered;
         private bool areOutputPortsRegistered;
         private bool isFrozen;
-        private bool canExecute;
+        private bool canExecute = true;
 
         /// <summary>
         /// The cached value of this node. The cachedValue object is protected by the cachedValueMutex
@@ -619,7 +619,7 @@ namespace Dynamo.Models
 
       
         /// <summary>
-        /// Gets or sets a value indicating whether this node is frozen.
+        /// Gets or sets a value indicating whether this node is explictly frozen.
         /// </summary>
         /// <value>
         ///   <c>true</c> if this node is frozen; otherwise, <c>false</c>.
@@ -633,16 +633,17 @@ namespace Dynamo.Models
 
             set
             {
-                isFrozen = value;
-                RaisePropertyChanged("IsFrozen");
+                isFrozen = value;                
+                RaisePropertyChanged("IsFrozen");               
             }
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this node is explictly frozen.
+        /// Gets or sets a value indicating whether this node is implictly frozen.
+        /// this property controls the checked behavior
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [run state]; otherwise, <c>false</c>.
+        ///   <c>true</c> if the node is implictly frozen; otherwise, <c>false</c>.
         /// </value>
         public bool CanExecute
         {
@@ -653,12 +654,12 @@ namespace Dynamo.Models
 
             set
             {
-                canExecute = value;
-                RaisePropertyChanged("RunState");
+                canExecute = value;               
+                RaisePropertyChanged("CanExecute");               
             }
         }
-        #endregion
-
+       
+        #endregion     
         protected NodeModel()
         {
             InPortData = new ObservableCollection<PortData>();

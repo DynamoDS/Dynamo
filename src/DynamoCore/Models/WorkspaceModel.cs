@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Xml;
 
@@ -2420,9 +2421,72 @@ namespace Dynamo.Models
             return document.OuterXml;
         }
 
-        internal void MakeNodesFrozen()
+        /// <summary>
+        /// Compute the Run state of the nodes. 
+        /// A node can be in one of the state : Freeze and cannot execute, Freeze but can execute.
+        /// Freeze and cannot execute is true for parent node and Freeze but can execute 
+        /// is true for all the child nodes. 
+        /// Case 1 : If the parent node is frozen, parent node will be in frozen and cannot execute state
+        /// and all the child nodes will be in Frozen and CanExecute state. This is the default case.
+        /// Case 2 : If any of the child node is in frozen and cannot execute state, then making the child node 
+        /// unfreeze will get the state as "not frozen and cannot execute state". This is the case if current 
+        /// parent nodes parent is frozen.
+        /// </summary>
+        internal void ComputeRunStateOfTheNodes()
         {
+            //First,Toggel the parent node run state.
+            var selectedNodes = DynamoSelection.Instance.Selection.Cast<NodeModel>().ToList();
+            foreach (var snode in selectedNodes)
+            {
+                snode.IsFrozen = !snode.IsFrozen;
+                //if parent is frozen, then they cannot execute.
+                snode.CanExecute = !snode.CanExecute;
+            }           
+            //Second, toggle the downstream node  run state.      
+            foreach (var node in selectedNodes)
+            {
+                var isFreezable = node.IsFrozen;
+                
+                var nodesToUpdate = new List<NodeModel>();                  
+                GetDownstreamNodes(node,nodesToUpdate);
+                var updateNodes = nodesToUpdate.ToList().Skip(1);
+                foreach (var unode in updateNodes)
+                {
+                    unode.IsFrozen = isFreezable;
+                    if (!unode.CanExecute)
+                    {
+                        unode.IsFrozen = !isFreezable;
+                        //explictly set true for the node that
+                        //is in non executing / non frozen state
+                        isFreezable = true;
+                    }
+                    else
+                    {
+                        isFreezable = unode.IsFrozen;
+                    }                                        
+                }                 
+            }
+        }
+
+        /// <summary>
+        /// Gets the downstream nodes.
+        /// </summary>
+        /// <param name="node">The node.</param>
+        /// <param name="gathered">The gathered.</param>
+        private void GetDownstreamNodes(NodeModel node, ICollection<NodeModel> gathered)
+        {
+            if (gathered.Contains(node)) // Considered this node before, bail.
+                return;
             
+            gathered.Add(node);
+
+            var sets = node.OutputNodes.Values;
+            var outputNodes = sets.SelectMany(set => set.Select(t => t.Item2)).Distinct();
+            foreach (var outputNode in outputNodes)
+            {                
+                // Recursively get all downstream nodes.
+                GetDownstreamNodes(outputNode, gathered);
+            }
         }
         
         #region ILogSource implementation

@@ -163,7 +163,7 @@ namespace Dynamo.Views
             ViewModel.DynamoViewModel.UngroupAnnotationCommand.RaiseCanExecuteChanged();
             ViewModel.DynamoViewModel.UngroupModelCommand.RaiseCanExecuteChanged();
             ViewModel.DynamoViewModel.AddModelsToGroupModelCommand.RaiseCanExecuteChanged();
-            ViewModel.DynamoViewModel.MakeNodesFrozenCommand.RaiseCanExecuteChanged();
+            ViewModel.DynamoViewModel.ComputeRunStateOfTheNodeCommand.RaiseCanExecuteChanged();
         }
 
         /// <summary>

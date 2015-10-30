@@ -1796,9 +1796,9 @@ namespace Dynamo.Models
         /// <summary>
         /// Makes the current node and the downstream nodes frozen.
         /// </summary>
-        internal void MakeNodesFrozen()
+        internal void ComputeRunStateOfTheNode()
         {
-            this.CurrentWorkspace.MakeNodesFrozen();
+            this.CurrentWorkspace.ComputeRunStateOfTheNodes();
         }
         #endregion
 

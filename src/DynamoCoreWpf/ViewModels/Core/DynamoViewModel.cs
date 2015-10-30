@@ -402,6 +402,28 @@ namespace Dynamo.ViewModels
             get { return BackgroundPreviewViewModel.Active; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether Run is checked
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [node run checked]; otherwise, <c>false</c>.
+        /// </value>
+        public bool NodeRunChecked
+        {
+            get
+            {
+                return currentWorkspaceViewModel.NodeRunChecked;
+            }
+        }
+
+        public bool NodeRunEnabled
+        {
+            get
+            {
+                return currentWorkspaceViewModel.NodeRunEnabled;
+            }
+        }
+
         #endregion
 
         public struct StartConfiguration
@@ -874,9 +896,13 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        internal bool CanNodesBeFrozen(object parameters)
+        internal bool CanSetRunStateOfTheNode(object parameters)
         {
-            return DynamoSelection.Instance.Selection.Any();
+            //Get the RUN STATE of the current node and
+            //set that value in Edit Menu and workspace context menu.
+            RaisePropertyChanged("NodeRunChecked");
+            RaisePropertyChanged("NodeRunEnabled");
+            return true;
         }
 
         private void Paste(object parameter)

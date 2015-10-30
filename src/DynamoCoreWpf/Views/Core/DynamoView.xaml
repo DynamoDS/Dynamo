@@ -449,7 +449,9 @@
                                   InputGestureText="Ctrl + D" />
                         <MenuItem Focusable="False"                                
                                   Header="{x:Static p:Resources.NodesRunStatus}"
-                                  Command="{Binding Path=MakeNodesFrozenCommand}"
+                                  IsChecked="{Binding NodeRunChecked, Mode=OneWay}"
+                                  IsEnabled="{Binding NodeRunEnabled, Mode=OneWay}"
+                                  Command="{Binding Path=ComputeRunStateOfTheNodeCommand}"
                                   Name="nodesIsFrozen"
                                   />
                         <MenuItem Focusable="False"

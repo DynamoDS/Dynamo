@@ -80,10 +80,12 @@
                 </MenuItem>
                 <MenuItem Name="nodeIsFrozen"
                           Header="{x:Static p:Resources.NodesRunStatus}"
-                          Command="{Binding Path=MakeNodesFrozenCommand}" />
+                          IsChecked="{Binding NodeRunChecked,Mode=OneWay}"   
+                          IsEnabled="{Binding NodeRunEnabled, Mode=OneWay}"
+                          Command="{Binding Path=ComputeRunStateOfTheNodeCommand}" />
                 <MenuItem Name="isVisible_cm"
                           Header="{x:Static p:Resources.NodeContextMenuPreview}"
-                          IsChecked="{Binding Path=IsVisible,Mode=OneWay}"
+                          IsChecked="{Binding Path=IsVisible,Mode=OneWay}"                          
                           Command="{Binding Path=ToggleIsVisibleCommand}"
                           Visibility="{Binding Path=ShowsVisibilityToggles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                 <MenuItem Name="isUpstreamVisible_cm"
