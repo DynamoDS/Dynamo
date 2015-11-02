@@ -1,10 +1,8 @@
 ﻿using System;
-
 using Dynamo.Engine;
-
 using ProtoCore.Mirror;
 
-namespace Dynamo.Core.Threading
+namespace Dynamo.Scheduler
 {
     struct QueryMirrorDataParams
     {

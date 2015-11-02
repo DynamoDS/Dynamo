@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-using Dynamo.Annotations;
-using Dynamo.Interfaces;
-using Dynamo.Models;
 
-namespace Dynamo.Core.Threading
+namespace Dynamo.Scheduler
 {
-    using TaskState = TaskStateChangedEventArgs.State;
-
     public class TaskStateChangedEventArgs : EventArgs
     {
         public enum State
@@ -161,7 +155,7 @@ namespace Dynamo.Core.Threading
             if (ProcessMode == TaskProcessMode.Synchronous)
             {
                 asyncTask.MarkTaskAsScheduled();
-                NotifyTaskStateChanged(asyncTask, TaskState.Scheduled);
+                NotifyTaskStateChanged(asyncTask, TaskStateChangedEventArgs.State.Scheduled);
                 ProcessTaskInternal(asyncTask);
                 return;
             }
@@ -170,7 +164,7 @@ namespace Dynamo.Core.Threading
             {
                 taskQueue.Add(asyncTask); // Append new task to the end
                 asyncTask.MarkTaskAsScheduled(); // Update internal time-stamp.
-                NotifyTaskStateChanged(asyncTask, TaskState.Scheduled);
+                NotifyTaskStateChanged(asyncTask, TaskStateChangedEventArgs.State.Scheduled);
 
                 // Mark the queue as being updated. This causes the next call
                 // to "ProcessNextTask" method to post process the task queue.
@@ -240,7 +234,7 @@ namespace Dynamo.Core.Threading
                 // 
                 foreach (var droppedTask in droppedTasks)
                 {
-                    NotifyTaskStateChanged(droppedTask, TaskState.Discarded);
+                    NotifyTaskStateChanged(droppedTask, TaskStateChangedEventArgs.State.Discarded);
                 } 
             }
 

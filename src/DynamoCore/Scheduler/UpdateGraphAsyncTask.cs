@@ -1,20 +1,16 @@
-﻿using System.Linq;
- using System;
+﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using Dynamo.Engine;
-using Dynamo.Models;
-
+using ProtoCore.BuildData;
 using ProtoScript.Runners;
 
 using BuildWarning = ProtoCore.BuildData.WarningEntry;
 using RuntimeWarning = ProtoCore.Runtime.WarningEntry;
-using System.Diagnostics;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 
-namespace Dynamo.Core.Threading
+namespace Dynamo.Scheduler
 {
     class UpdateGraphAsyncTask : AsyncTask
     {
@@ -109,8 +105,8 @@ namespace Dynamo.Core.Threading
         {
             if (engineController.IsDisposed)
             {
-                BuildWarnings = new Dictionary<Guid, List<BuildWarning>>();
-                RuntimeWarnings = new Dictionary<Guid, List<RuntimeWarning>>();
+                BuildWarnings = new Dictionary<Guid, List<WarningEntry>>();
+                RuntimeWarnings = new Dictionary<Guid, List<ProtoCore.Runtime.WarningEntry>>();
             }
             else
             {
@@ -189,8 +185,8 @@ namespace Dynamo.Core.Threading
         #region Public Class Properties
 
         internal WorkspaceModel TargetedWorkspace { get; private set; }
-        internal IDictionary<Guid, List<BuildWarning>> BuildWarnings { get; private set; }
-        internal IDictionary<Guid, List<RuntimeWarning>> RuntimeWarnings { get; private set; }
+        internal IDictionary<Guid, List<WarningEntry>> BuildWarnings { get; private set; }
+        internal IDictionary<Guid, List<ProtoCore.Runtime.WarningEntry>> RuntimeWarnings { get; private set; }
 
         #endregion
 

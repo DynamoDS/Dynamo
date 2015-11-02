@@ -1,20 +1,13 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
-
 using Dynamo.Engine;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
-
 using ProtoScript.Runners;
 
-using BuildWarning = ProtoCore.BuildData.WarningEntry;
-using RuntimeWarning = ProtoCore.BuildData.WarningEntry;
-using Dynamo.Interfaces;
-
-namespace Dynamo.Core.Threading
+namespace Dynamo.Scheduler
 {
     class PreviewGraphAsyncTask : AsyncTask
     {

@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Threading;
 
-namespace Dynamo.Core.Threading
+namespace Dynamo.Scheduler
 {
     public struct TimeStamp
     {

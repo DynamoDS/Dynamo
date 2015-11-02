@@ -49,14 +49,14 @@
       <HintPath>$(NunitPath)\nunit.framework.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="ProtoGeometry, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
+    <Reference Include="ProtoGeometry, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\DesignScript\ProtoGeometry.dll</HintPath>
+      <HintPath>..\..\..\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="ProtoInterface, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
+    <Reference Include="ProtoInterface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\DesignScript\ProtoInterface.dll</HintPath>
+      <HintPath>..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />

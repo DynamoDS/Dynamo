@@ -14,6 +14,7 @@ using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
+using Dynamo.Scheduler;
 using Dynamo.Tests;
 using Dynamo.UI;
 using Dynamo.Utilities;
@@ -82,7 +83,7 @@ namespace WpfVisualizationTests
                     PathResolver = pathResolver,
                     GeometryFactoryPath = preloader.GeometryFactoryPath,
                     UpdateManager = this.UpdateManager,
-                    ProcessMode = Dynamo.Core.Threading.TaskProcessMode.Synchronous
+                    ProcessMode = TaskProcessMode.Synchronous
                 });
 
             ViewModel = DynamoViewModel.Start(

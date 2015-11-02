@@ -8,10 +8,10 @@ using System.Windows.Threading;
 using DSCoreNodesUI;
 using Dynamo.Configuration;
 using Dynamo.Controls;
-using Dynamo.Core.Threading;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Interfaces;
+using Dynamo.Scheduler;
 using Dynamo.ViewModels;
 using ProtoCore.AST.AssociativeAST;
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Dynamo.Core.Threading
+namespace Dynamo.Scheduler
 {
     public delegate void AsyncTaskCompletedHandler(AsyncTask asyncTask);
 

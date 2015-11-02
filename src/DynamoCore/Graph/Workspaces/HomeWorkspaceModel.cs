@@ -5,7 +5,6 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Xml;
 using Dynamo.Core;
-using Dynamo.Core.Threading;
 using Dynamo.Engine;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
@@ -13,6 +12,7 @@ using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
 using Dynamo.Models;
+using Dynamo.Scheduler;
 using ProtoCore;
 using ProtoCore.Namespace;
 
