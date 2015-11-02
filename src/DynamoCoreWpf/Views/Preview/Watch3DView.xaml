@@ -43,7 +43,7 @@
                 <MenuItem Header="{x:Static p:Resources.Watch3DViewContextMenuSwitchView}" 
                           Command="{Binding Path=ToggleCanNavigateBackgroundCommand}">
                     <MenuItem.Visibility>
-                        <Binding Path="IsBackgroundPreview"
+                        <Binding Path="Active"
                                  Mode="OneWay"
                                  Converter="{StaticResource BoolToVisibilityCollapsedConverter}"/>
                     </MenuItem.Visibility>

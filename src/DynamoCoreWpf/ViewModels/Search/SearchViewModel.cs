@@ -138,6 +138,23 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private bool isDetailedMode;
+        /// <summary>
+        ///  The property specifies which layout(detailed or compact) is used in search view.
+        /// </summary>
+        public bool IsDetailedMode
+        {
+            get
+            {
+                return isDetailedMode;
+            }
+            set
+            {
+                isDetailedMode = value;
+                RaisePropertyChanged("IsDetailedMode");
+            }
+        }
+
         /// <summary>
         ///     Items that were found during search.
         /// </summary>
@@ -746,6 +763,8 @@ namespace Dynamo.ViewModels
             FilteredResults = searchResults;
             UpdateSearchCategories();
 
+            IsDetailedMode = true;
+
             RaisePropertyChanged("FilteredResults");
         }
 
@@ -1017,6 +1036,11 @@ namespace Dynamo.ViewModels
         internal bool CanFocusSearch(object parameter)
         {
             return true;
+        }
+
+        internal void ToggleLayout(object parameter)
+        {
+            IsDetailedMode = (bool)parameter;
         }
 
         #endregion
