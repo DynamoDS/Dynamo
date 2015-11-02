@@ -2188,7 +2188,7 @@ namespace Dynamo.Graph.Workspaces
             }
             */
 
-            if (typeName.StartsWith("Dynamo.Models.ConnectorModel"))
+            if (typeName.Contains("ConnectorModel"))
             {
                 var connector = NodeGraph.LoadConnectorFromXml(modelData,
                     Nodes.ToDictionary(node => node.GUID));
@@ -2211,7 +2211,7 @@ namespace Dynamo.Graph.Workspaces
                     OnConnectorAdded(connector); // Update view-model and view.
                 }
             }
-            else if (typeName.StartsWith("Dynamo.Models.NoteModel"))
+            else if (typeName.Contains("NoteModel"))
             {
                 var noteModel = NodeGraph.LoadNoteFromXml(modelData);
                 AddNote(noteModel);
@@ -2226,7 +2226,7 @@ namespace Dynamo.Graph.Workspaces
                     }
                 }
             }
-            else if (typeName.StartsWith("Dynamo.Models.AnnotationModel"))
+            else if (typeName.Contains("AnnotationModel"))
             {
                 var selectedNodes = this.Nodes == null ? null : this.Nodes.Where(s => s.IsSelected);
                 var selectedNotes = this.Notes == null ? null : this.Notes.Where(s => s.IsSelected);

@@ -49,6 +49,7 @@ namespace DSCoreNodesUI.Input
     [NodeDescription("BooleanDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeSearchTags("BooleanSelectorSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("DSCoreNodesUI.BoolSelector")]
     public class BoolSelector : Bool
     {
         public BoolSelector()
