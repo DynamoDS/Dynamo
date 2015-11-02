@@ -152,6 +152,7 @@ namespace Display
         /// The number of colors must match the number of vertices. Attempting pass a list of colors which does not
         /// have the same number of Colors as the list of points will throw an exception.</param>
         /// <returns>A Display object.</returns>
+        [IsVisibleInDynamoLibrary(false)]
         public static Display ByPointsColors(Point[] points, Color[] colors)
         {
             if(points == null)
