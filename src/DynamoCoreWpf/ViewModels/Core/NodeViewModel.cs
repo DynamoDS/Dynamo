@@ -359,6 +359,12 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether [node run enabled].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [node run enabled]; otherwise, <c>false</c>.
+        /// </value>
         public bool NodeRunEnabled
         {
             get { return nodeRunEnabled; }
@@ -371,29 +377,35 @@ namespace Dynamo.ViewModels
 
         private void ToggleNodeRunState()
         {
+            var tt = NodeModel.NickName;
+            //Node temporary state
+            if (NodeModel.CanExecute == null)
+            {
+                NodeRunChecked = false;
+                NodeRunEnabled = false;
+            }
             //case 1 : if the node is not frozen and can run. Default case.
-            if (!NodeModel.IsFrozen && NodeModel.CanExecute)
+            else if (!NodeModel.IsFrozen && (bool) NodeModel.CanExecute)
             {
                 NodeRunChecked = true;
                 NodeRunEnabled = true;
             }
             //case 2 : if the node is frozen but can execute. True for parents
-            else if (NodeModel.IsFrozen && NodeModel.CanExecute)
+            else if (NodeModel.IsFrozen && (bool) NodeModel.CanExecute)
             {
                 NodeRunChecked = true;
                 NodeRunEnabled = false;
             }
-            //case 3 : if the node is frozen and cannot execute because parent is frozen
-            else if (NodeModel.IsFrozen && !NodeModel.CanExecute)
+            //case 3 : if the node is frozen and cannot execute because the node is explictly frozen
+            else if (NodeModel.IsFrozen && (bool) !NodeModel.CanExecute)
             {
                 NodeRunChecked = false;
                 NodeRunEnabled = true;
-            }
-            //case 3 : if the node is not frozen and cannot execute. 
-            else if (!NodeModel.IsFrozen && !NodeModel.CanExecute)
+            } 
+            else if (!NodeModel.IsFrozen && (bool) !NodeModel.CanExecute)
             {
                 NodeRunChecked = false;
-                NodeRunEnabled = false;
+                NodeRunEnabled = true;
             }
         }
         
@@ -628,8 +640,7 @@ namespace Dynamo.ViewModels
                     break;
                 case "IsFrozen":
                 case "CanExecute":
-                    ToggleNodeRunState();
-                    RaisePropertyChanged("IsFrozen");                         
+                    ToggleNodeRunState();                                         
                     break;
             }
         }

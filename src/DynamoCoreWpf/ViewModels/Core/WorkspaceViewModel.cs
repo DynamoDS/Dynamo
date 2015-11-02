@@ -298,7 +298,8 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (DynamoSelection.Instance.Selection.Count() == 1)
+                if (DynamoSelection.Instance.Selection.Count() == 1
+                    && _nodes.Any())
                 {
                     var nodemodel = DynamoSelection.Instance.Selection.Cast<NodeModel>().First();
                     var nodevm = _nodes.First(x => x.NodeLogic == nodemodel);
