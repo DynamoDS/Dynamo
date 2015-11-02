@@ -10,11 +10,11 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using DSCore;
 using Dynamo.Controls;
+using Dynamo.Scheduler;
 using Dynamo.UI;
 
 using DSCoreNodesUI;
 using Dynamo.Configuration;
-using Dynamo.Core.Threading;
 using Dynamo.Models;
 using Dynamo.ViewModels;
 using ProtoCore.Mirror;

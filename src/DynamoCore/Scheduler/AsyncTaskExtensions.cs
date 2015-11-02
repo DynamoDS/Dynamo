@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using Dynamo.Utilities;
 
-namespace Dynamo.Core.Threading
+namespace Dynamo.Scheduler
 {
     /// <summary>
     ///     Tools for working productively with AsyncTask's

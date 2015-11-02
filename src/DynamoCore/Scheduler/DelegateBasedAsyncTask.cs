@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Dynamo.Core.Threading
+namespace Dynamo.Scheduler
 {
     /// <summary>
     /// DelegateBasedAsyncTask allows for a delegate or System.Action object 

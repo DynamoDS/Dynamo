@@ -117,7 +117,7 @@ limitations under the License.
     <Compile Include="Configuration\DebugSettings.cs" />
     <Compile Include="Configuration\Context.cs" />
     <Compile Include="Core\DynamoMigrator.cs" />
-    <Compile Include="Core\Threading\Disposable.cs" />
+    <Compile Include="Scheduler\Disposable.cs" />
     <Compile Include="Engine\LinkedListOfList.cs" />
     <Compile Include="Extensions\EnumExtension.cs" />
     <Compile Include="Extensions\ExtensionCommandExecutive.cs" />
@@ -150,7 +150,7 @@ limitations under the License.
     <Compile Include="Models\PresetModel.cs" />
     <Compile Include="Library\MemberDocumentNode.cs" />
     <Compile Include="Models\RunSettings.cs" />
-    <Compile Include="Core\Threading\AsyncTaskExtensions.cs" />
+    <Compile Include="Scheduler\AsyncTaskExtensions.cs" />
     <Compile Include="Configuration\IPathResolver.cs" />
     <Compile Include="Search\Interfaces\ISearchCategory.cs" />
     <Compile Include="Search\Interfaces\ISearchEntry.cs" />
@@ -178,23 +178,23 @@ limitations under the License.
     <Compile Include="Search\SearchElementGroup.cs" />
     <Compile Include="Nodes\CodeBlockUtils.cs" />
     <Compile Include="Core\NotificationObject.cs" />
-    <Compile Include="Core\Threading\QueryMirrorDataAsyncTask.cs" />
-    <Compile Include="Core\Threading\PreviewGraphAsyncTask.cs" />
-    <Compile Include="Core\Threading\UpdateRenderPackageAsyncTask.cs" />
+    <Compile Include="Scheduler\QueryMirrorDataAsyncTask.cs" />
+    <Compile Include="Scheduler\PreviewGraphAsyncTask.cs" />
+    <Compile Include="Scheduler\UpdateRenderPackageAsyncTask.cs" />
     <Compile Include="Engine\CodeCompletionServices.cs" />
     <Compile Include="Models\DynamoModelCommands.cs" />
-    <Compile Include="Core\Threading\AsyncTask.cs" />
-    <Compile Include="Core\Threading\CompileCustomNodeAsyncTask.cs" />
-    <Compile Include="Core\Threading\DelegateBasedAsyncTask.cs" />
-    <Compile Include="Core\Threading\DynamoScheduler.cs" />
-    <Compile Include="Core\Threading\DynamoSchedulerInternals.cs" />
-    <Compile Include="Core\Threading\SchedulerThread.cs" />
-    <Compile Include="Core\Threading\SetTraceDataAsyncTask.cs" />
-    <Compile Include="Core\Threading\TimeStampGenerator.cs" />
-    <Compile Include="Core\Threading\UpdateGraphAsyncTask.cs" />
+    <Compile Include="Scheduler\AsyncTask.cs" />
+    <Compile Include="Scheduler\CompileCustomNodeAsyncTask.cs" />
+    <Compile Include="Scheduler\DelegateBasedAsyncTask.cs" />
+    <Compile Include="Scheduler\DynamoScheduler.cs" />
+    <Compile Include="Scheduler\DynamoSchedulerInternals.cs" />
+    <Compile Include="Scheduler\SchedulerThread.cs" />
+    <Compile Include="Scheduler\SetTraceDataAsyncTask.cs" />
+    <Compile Include="Scheduler\TimeStampGenerator.cs" />
+    <Compile Include="Scheduler\UpdateGraphAsyncTask.cs" />
     <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="Engine\SyncDataManager.cs" />
-    <Compile Include="Interfaces\ISchedulerThread.cs" />
+    <Compile Include="Scheduler\ISchedulerThread.cs" />
     <Compile Include="Library\DocumentationServices.cs" />
     <Compile Include="Library\FunctionDescriptor.cs" />
     <Compile Include="Library\FunctionGroup.cs" />
@@ -344,6 +344,7 @@ limitations under the License.
   <ItemGroup>
     <Resource Include="BuiltInAndOperators\BuiltIn.Migrations.xml" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild">
     <ItemGroup>
