@@ -3,18 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
-
 using Dynamo.Engine;
 using Dynamo.Models;
-using Dynamo.Properties;
-using Dynamo.Interfaces;
 using Dynamo.Visualization;
 using ProtoCore.Mirror;
 
-namespace Dynamo.Core.Threading
+namespace Dynamo.Scheduler
 {
     class UpdateRenderPackageParams
     {
