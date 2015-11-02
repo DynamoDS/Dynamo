@@ -852,7 +852,9 @@ namespace Dynamo.Models
 
         private void InitializeIncludedNodes()
         {
+            var customNodeData = new TypeLoadData(typeof(Function));
             NodeFactory.AddLoader(new CustomNodeLoader(CustomNodeManager, IsTestMode));
+            NodeFactory.AddAlsoKnownAs(customNodeData.Type, customNodeData.AlsoKnownAs);
 
             var dsFuncData = new TypeLoadData(typeof(DSFunction));
             var dsVarArgFuncData = new TypeLoadData(typeof(DSVarArgFunction));
