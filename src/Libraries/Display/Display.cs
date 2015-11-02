@@ -145,7 +145,8 @@ namespace Display
         /// <param name="points">A list of Points. 
         /// 
         /// Only triangular meshes are currently supported. Each triplet of points in the list will form one 
-        /// triangle in the mesh. Attempting to pass a list of vertices whose count is not divisble by 3 will throw an exception.</param>
+        /// triangle in the mesh. Points should be ordered CCW. 
+        /// Attempting to pass a list of vertices whose count is not divisble by 3 will throw an exception.</param>
         /// <param name="colors">A list of colors. 
         /// 
         /// The number of colors must match the number of vertices. Attempting pass a list of colors which does not
