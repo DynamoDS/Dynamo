@@ -15,6 +15,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
     /// </summary>
     [NodeName("Function Node w/ VarArgs"), NodeDescription("FunctionNodeDescription", typeof(Properties.Resources)),
      IsInteractive(false), IsVisibleInDynamoLibrary(false), NodeSearchable(false), IsMetaNode]
+    [AlsoKnownAs("Dynamo.Nodes.DSVarArgFunction")]
     public class DSVarArgFunction : DSFunctionBase
     {
         public DSVarArgFunction(FunctionDescriptor descriptor)
