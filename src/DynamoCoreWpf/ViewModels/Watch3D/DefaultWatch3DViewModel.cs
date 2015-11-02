@@ -256,12 +256,33 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private void RegisterEventHandlers()
         {
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionChangedHandler;
+            PropertyChanged += OnPropertyChanged;
 
             LogVisualizationCapabilities();
 
             RegisterModelEventhandlers(model);
 
             RegisterWorkspaceEventHandlers(model);
+        }
+
+        /// <summary>
+        /// Event to be handled when the background preview is toggled on or off
+        /// On/off state is passed using the bool parameter
+        /// </summary>
+        public event Action<bool> CanNavigateBackgroundPropertyChanged;
+
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            switch (propertyChangedEventArgs.PropertyName)
+            {
+                case "CanNavigateBackground":
+                    var handler = CanNavigateBackgroundPropertyChanged;
+                    if (handler != null)
+                    {
+                        handler(CanNavigateBackground);
+                    }
+                    break;
+            }
         }
 
         private void UnregisterEventHandlers()
@@ -425,6 +446,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in derived classes.
         }
 
+        public virtual void HighlightNodeGraphics(IEnumerable<NodeModel> nodes)
+        {
+            // Override in derived classes.
+        }
+
+        public virtual void UnHighlightNodeGraphics(IEnumerable<NodeModel> nodes)
+        {
+            // Override in derived classes.
+        }
+
         private void RegisterNodeEventHandlers(NodeModel node)
         {
             node.PropertyChanged += OnNodePropertyChanged;
@@ -525,6 +556,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var handler = ViewMouseMove;
             if (handler != null) handler(sender, e);
         }
+
 
         protected virtual void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
