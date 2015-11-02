@@ -68,12 +68,12 @@ namespace Dynamo.Graph.Nodes
 
             // older files will have nodes in the Dynamo.Elements namespace
             const string oldPrefix = "Dynamo.Elements.";
-            const string newPrefix = "Dynamo.Graph.Nodes.";
+            const string newPrefix = "Dynamo.Nodes.";
             string className;
 
             // Attempt to extract the class name out of the fully qualified 
             // name, regardless of whether it is in the form of the older 
-            // "Dynamo.Elements.XxxYyy" or the newer "Dynamo.Graph.Nodes.XxxYyy".
+            // "Dynamo.Elements.XxxYyy" or the newer "Dynamo.Nodes.XxxYyy".
             // 
             if (fullyQualifiedName.StartsWith(oldPrefix))
                 className = fullyQualifiedName.Substring(oldPrefix.Length);

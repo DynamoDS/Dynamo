@@ -394,7 +394,7 @@ namespace DynamoCoreWpfTests
             var element = dummyNode.Serialize(xmlDocument, SaveContext.File);
 
             // Dummy node should be serialized to its original node
-            Assert.AreEqual(element.Name, "Dynamo.Graph.Nodes.DSFunction");
+            Assert.AreEqual(element.Name, "Dynamo.Graph.Nodes.ZeroTouch.DSFunction");
         }
 
         [Test]

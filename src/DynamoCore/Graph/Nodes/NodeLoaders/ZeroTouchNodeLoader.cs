@@ -135,7 +135,7 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
             // "DSVarArgFunction" is a "VariableInputNode", therefore it will 
             // have "inputcount" as one of the attributes. If such attribute 
             // does not exist, throw an ArgumentException.
-            if (element.Name.Equals("Dynamo.Graph.Nodes.DSVarArgFunction"))
+            if (element.Name.Equals("Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction"))
             {
                 var inputCountAttrib = element.Attributes["inputcount"];
 

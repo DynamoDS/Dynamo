@@ -2069,8 +2069,8 @@ namespace Dynamo.Tests
                 Assert.Fail("the content of the unresolved node has been changed after saving");
             }
 
-            oldNodes = docOld.GetElementsByTagName("Dynamo.Graph.Nodes.DSFunction");
-            newNodes = docNew.GetElementsByTagName("Dynamo.Graph.Nodes.DSFunction");
+            oldNodes = docOld.GetElementsByTagName("Dynamo.Graph.Nodes.ZeroTouch.DSFunction");
+            newNodes = docNew.GetElementsByTagName("Dynamo.Graph.Nodes.ZeroTouch.DSFunction");
             if (!oldNodes[0].InnerXml.Equals(newNodes[0].InnerXml))
             {
                 Assert.Fail("the content of the unresolved node has been changed after saving");

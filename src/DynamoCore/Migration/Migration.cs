@@ -575,8 +575,8 @@ namespace Dynamo.Migration
         public static XmlElement CreateFunctionNode(XmlDocument document, XmlElement oldNode,
             int nodeIndex, string assembly, string nickname, string signature)
         {
-            XmlElement element = document.CreateElement("Dynamo.Graph.Nodes.DSFunction");
-            element.SetAttribute("type", "Dynamo.Graph.Nodes.DSFunction");
+            XmlElement element = document.CreateElement("Dynamo.Graph.Nodes.ZeroTouch.DSFunction");
+            element.SetAttribute("type", "Dynamo.Graph.Nodes.ZeroTouch.DSFunction");
             element.SetAttribute("assembly", assembly);
             element.SetAttribute("nickname", nickname);
             element.SetAttribute("function", signature);
@@ -600,8 +600,8 @@ namespace Dynamo.Migration
         public static XmlElement CreateVarArgFunctionNode(XmlDocument document, XmlElement oldNode,
             int nodeIndex, string assembly, string nickname, string signature, string inputcount)
         {
-            XmlElement element = document.CreateElement("Dynamo.Graph.Nodes.DSVarArgFunction");
-            element.SetAttribute("type", "Dynamo.Graph.Nodes.DSVarArgFunction");
+            XmlElement element = document.CreateElement("Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction");
+            element.SetAttribute("type", "Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction");
             element.SetAttribute("assembly", assembly);
             element.SetAttribute("nickname", nickname);
             element.SetAttribute("function", signature);
@@ -675,7 +675,7 @@ namespace Dynamo.Migration
         /// <summary>
         /// Call this method to create a XmlElement with a set of attributes 
         /// carried over from the source XmlElement. The new XmlElement will 
-        /// have a name of "Dynamo.Graph.Nodes.DSFunction".
+        /// have a name of "Dynamo.Graph.Nodes.ZeroTouch.DSFunction".
         /// </summary>
         /// <param name="srcElement">The source XmlElement object.</param>
         /// <param name="attribNames">The list of attribute names whose values 
@@ -685,7 +685,7 @@ namespace Dynamo.Migration
         /// be created in the resulting XmlElement.</param>
         /// <returns>Returns the resulting XmlElement with specified attributes
         /// duplicated from srcElement. The resulting XmlElement will also have
-        /// a mandatory "type" attribute with value "Dynamo.Graph.Nodes.DSFunction".
+        /// a mandatory "type" attribute with value "Dynamo.Graph.Nodes.ZeroTouch.DSFunction".
         /// </returns>
         /// 
         public static XmlElement CreateFunctionNodeFrom(
@@ -697,7 +697,7 @@ namespace Dynamo.Migration
                 throw new ArgumentException("Argument cannot be empty", "attribNames");
 
             XmlDocument document = srcElement.OwnerDocument;
-            XmlElement dstElement = document.CreateElement("Dynamo.Graph.Nodes.DSFunction");
+            XmlElement dstElement = document.CreateElement("Dynamo.Graph.Nodes.ZeroTouch.DSFunction");
 
             foreach (string attribName in attribNames)
             {
@@ -705,7 +705,7 @@ namespace Dynamo.Migration
                 dstElement.SetAttribute(attribName, value);
             }
 
-            dstElement.SetAttribute("type", "Dynamo.Graph.Nodes.DSFunction");
+            dstElement.SetAttribute("type", "Dynamo.Graph.Nodes.ZeroTouch.DSFunction");
             return dstElement;
         }
 
@@ -774,7 +774,7 @@ namespace Dynamo.Migration
         /// <param name="srcElement">The source XmlElement to duplicate.</param>
         /// <returns>Returns the duplicated XmlElement with all attributes 
         /// found in the source XmlElement. The resulting XmlElement will also 
-        /// have a mandatory "type" attribute with value "Dynamo.Graph.Nodes.DSFunction".
+        /// have a mandatory "type" attribute with value "Dynamo.Graph.Nodes.ZeroTouch.DSFunction".
         /// </returns>
         /// 
         public static XmlElement CreateFunctionNodeFrom(XmlElement srcElement)
@@ -783,12 +783,12 @@ namespace Dynamo.Migration
                 throw new ArgumentNullException("srcElement");
 
             XmlDocument document = srcElement.OwnerDocument;
-            XmlElement dstElement = document.CreateElement("Dynamo.Graph.Nodes.DSFunction");
+            XmlElement dstElement = document.CreateElement("Dynamo.Graph.Nodes.ZeroTouch.DSFunction");
 
             foreach (XmlAttribute attribute in srcElement.Attributes)
                 dstElement.SetAttribute(attribute.Name, attribute.Value);
 
-            dstElement.SetAttribute("type", "Dynamo.Graph.Nodes.DSFunction");
+            dstElement.SetAttribute("type", "Dynamo.Graph.Nodes.ZeroTouch.DSFunction");
             return dstElement;
         }
 
@@ -801,12 +801,12 @@ namespace Dynamo.Migration
             string childNumberString = childNumber.ToString();
 
             XmlDocument document = srcElement.OwnerDocument;
-            XmlElement dstElement = document.CreateElement("Dynamo.Graph.Nodes.DSVarArgFunction");
+            XmlElement dstElement = document.CreateElement("Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction");
 
             foreach (XmlAttribute attribute in srcElement.Attributes)
                 dstElement.SetAttribute(attribute.Name, attribute.Value);
 
-            dstElement.SetAttribute("type", "Dynamo.Graph.Nodes.DSVarArgFunction");
+            dstElement.SetAttribute("type", "Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction");
             dstElement.SetAttribute("inputcount", childNumberString);
             return dstElement;
         }

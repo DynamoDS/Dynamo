@@ -20,7 +20,7 @@ namespace DSCoreNodesUI.Input
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("StringInputNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
-    [AlsoKnownAs("Dynamo.Nodes.StringInput")]
+    [AlsoKnownAs("Dynamo.Nodes.StringInput", "Dynamo.Nodes.dynStringInput")]
     public class StringInput : String
     {
         public StringInput()
@@ -112,7 +112,7 @@ namespace DSCoreNodesUI.Input
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("DoubleInputNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
-    [AlsoKnownAs("Dynamo.Nodes.DoubleInput")]
+    [AlsoKnownAs("Dynamo.Nodes.DoubleInput", "Dynamo.Nodes.dynDoubleInput")]
     public class DoubleInput : NodeModel
     {
         public DoubleInput()

@@ -2177,8 +2177,8 @@ namespace Dynamo.Graph.Workspaces
             }
 
             /*
-            if (typeName.Equals("Dynamo.Graph.Nodes.DSFunction") ||
-                typeName.Equals("Dynamo.Graph.Nodes.DSVarArgFunction"))
+            if (typeName.Equals("Dynamo.Graph.Nodes.ZeroTouch.DSFunction") ||
+                typeName.Equals("Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction"))
             {
                 // For DSFunction and DSVarArgFunction node types, the type name
                 // is actually embedded within "name" attribute (for an example,
