@@ -9,7 +9,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
     /// </summary>
     [NodeName("Function Node"), NodeDescription("DSFunctionNodeDescription",typeof(Properties.Resources)),
      IsInteractive(false), IsVisibleInDynamoLibrary(false), NodeSearchable(false), IsMetaNode]
-    [AlsoKnownAs("Dynamo.Nodes.ZeroTouch.DSFunction")]
+    [AlsoKnownAs("Dynamo.Nodes.DSFunction")]
     public class DSFunction : DSFunctionBase
     {
         public DSFunction(FunctionDescriptor descriptor) 
