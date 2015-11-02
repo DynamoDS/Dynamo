@@ -52,13 +52,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// Highlight geometry corresponding to their respective nodes 
         /// </summary>
         /// <param name="nodes"></param>
-        void HighlightGeometry(IEnumerable<NodeModel> nodes);
+        void HighlightNodeGraphics(IEnumerable<NodeModel> nodes);
 
         /// <summary>
         /// Unhighlight geometry corresponding to their respective nodes 
         /// </summary>
         /// <param name="nodes"></param>
-        void UnHighlightGeometry(IEnumerable<NodeModel> nodes);
+        void UnHighlightNodeGraphics(IEnumerable<NodeModel> nodes);
 
         #region Watch view Events to be handled by extensions
 

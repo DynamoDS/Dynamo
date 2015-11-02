@@ -1345,17 +1345,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        public override void HighlightGeometry(IEnumerable<NodeModel> nodes)
+        public override void HighlightNodeGraphics(IEnumerable<NodeModel> nodes)
         {
-            HighlightGeometryOnOff(nodes, true);
+            HighlightGraphicsOnOff(nodes, true);
         }
 
-        public override void UnHighlightGeometry(IEnumerable<NodeModel> nodes)
+        public override void UnHighlightNodeGraphics(IEnumerable<NodeModel> nodes)
         {
-            HighlightGeometryOnOff(nodes, false);
+            HighlightGraphicsOnOff(nodes, false);
         }
 
-        private void HighlightGeometryOnOff(IEnumerable<NodeModel> nodes, bool highlightOn)
+        private void HighlightGraphicsOnOff(IEnumerable<NodeModel> nodes, bool highlightOn)
         {
             foreach (var node in nodes)
             {
