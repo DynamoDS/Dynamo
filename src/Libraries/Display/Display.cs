@@ -359,6 +359,23 @@ namespace Display
                 var ptB = vertices[i+1];
                 var ptC = vertices[i+2];
 
+                if (ptA.IsAlmostEqualTo(ptB) ||
+                    ptB.IsAlmostEqualTo(ptC) ||
+                    ptA.IsAlmostEqualTo(ptC))
+                {
+                    continue;
+                }
+
+                var alongLine = false;
+                using (var l = Line.ByStartPointEndPoint(ptA, ptC))
+                {
+                    alongLine = ptB.DistanceTo(l) < 0.00001;
+                }
+                if (alongLine)
+                {
+                    continue;
+                }
+
                 var cA = colors[i];
                 var cB = colors[i+1];
                 var cC = colors[i+2];
