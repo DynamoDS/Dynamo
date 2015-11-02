@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Dynamo.Core.Threading;
-using Dynamo.Scheduler.SchedulerThread;
 
-namespace Dynamo.Scheduler.DynamoScheduler
+namespace Dynamo.Scheduler
 {
     partial class DynamoScheduler
     {

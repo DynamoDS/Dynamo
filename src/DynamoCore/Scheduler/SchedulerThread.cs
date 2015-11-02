@@ -1,7 +1,6 @@
 ﻿using System.Threading;
-using Dynamo.Scheduler.DynamoScheduler;
 
-namespace Dynamo.Scheduler.SchedulerThread
+namespace Dynamo.Scheduler
 {
     class DynamoSchedulerThread : ISchedulerThread
     {

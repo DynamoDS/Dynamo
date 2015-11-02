@@ -3,20 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 
-using Dynamo;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.Scheduler.DynamoScheduler;
+using Dynamo.Scheduler;
 using Dynamo.Tests;
 using Dynamo.UpdateManager;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.ViewModels.Core;
-using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoShapeManager;
 
 using NUnit.Framework;

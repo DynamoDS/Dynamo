@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
-using Dynamo.Scheduler.DynamoScheduler;
+using Dynamo.Scheduler;
 using Dynamo.Selection;
 
 using NUnit.Framework;

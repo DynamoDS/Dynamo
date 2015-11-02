@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using Dynamo.Core.Threading;
-using Dynamo.Scheduler.SchedulerThread;
 
-namespace Dynamo.Scheduler.DynamoScheduler
+namespace Dynamo.Scheduler
 {
     public class TaskStateChangedEventArgs : EventArgs
     {

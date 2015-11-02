@@ -8,18 +8,15 @@ using System.Windows.Media;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Core;
-using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;
-using Dynamo.Scheduler.DynamoScheduler;
+using Dynamo.Scheduler;
 using Dynamo.Selection;
-using Dynamo.Services;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
 using Dynamo.Visualization;
 using Dynamo.Wpf.Properties;
-using HelixToolkit.Wpf.SharpDX;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {

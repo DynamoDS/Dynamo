@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using Dynamo.Engine;
 using Dynamo.Models;
-using Dynamo.Scheduler.DynamoScheduler;
 
-namespace Dynamo.Core.Threading
+namespace Dynamo.Scheduler
 {
     class SetTraceDataAsyncTask : AsyncTask
     {

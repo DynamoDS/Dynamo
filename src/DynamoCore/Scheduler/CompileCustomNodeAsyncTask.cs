@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-
 using Dynamo.Engine;
-using Dynamo.Models;
-using Dynamo.Scheduler.DynamoScheduler;
-using ProtoCore.AST.AssociativeAST;
-
 using ProtoScript.Runners;
 
-namespace Dynamo.Core.Threading
+namespace Dynamo.Scheduler
 {
     class CompileCustomNodeParams
     {

@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Dynamo.Models;
-using Dynamo.Scheduler.DynamoScheduler;
+using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.ViewModels;
 using DynamoShapeManager;
 using NUnit.Framework;
 
-using ProtoCore.Mirror;
 using System.Reflection;
 using System.IO;
 using Dynamo.Wpf.ViewModels.Watch3D;

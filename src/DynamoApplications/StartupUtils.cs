@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Dynamo.Interfaces;
-using Dynamo.Scheduler.DynamoScheduler;
+using Dynamo.Scheduler;
 using DynamoShapeManager;
 using System.Reflection;
 using System.IO;

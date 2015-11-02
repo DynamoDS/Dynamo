@@ -10,7 +10,7 @@ using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Scheduler.DynamoScheduler;
+using Dynamo.Scheduler;
 using Dynamo.Tests;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;

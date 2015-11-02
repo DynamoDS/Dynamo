@@ -6,17 +6,15 @@ using System.Windows;
 
 using SystemTestServices;
 
-using Dynamo;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Scheduler.DynamoScheduler;
+using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.ViewModels.Watch3D;
 using NUnit.Framework;
 using DynamoCoreWpfTests.Utility;
 

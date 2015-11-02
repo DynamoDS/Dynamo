@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
 
-using Dynamo.Core.Threading;
 using Dynamo.Engine;
 using Dynamo.Models;
-using Dynamo.Interfaces;
 
 using DSCoreNodesUI.Properties;
-using Dynamo.Scheduler.DynamoScheduler;
+using Dynamo.Scheduler;
 using Dynamo.Visualization;
 using ProtoCore.AST.AssociativeAST;
 
