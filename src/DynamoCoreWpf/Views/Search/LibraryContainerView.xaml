@@ -373,16 +373,37 @@
                                                 Margin="5,5,5,5">
                                         <fa:ImageAwesome Name="CompactLayoutIcon"
                                                          Icon="list"
-                                                         Foreground="{Binding IsDetailedMode, 
-                                                                              Converter={StaticResource CompactLayoutForegroundConverter}}"
                                                          Margin="5,0,5,0"
                                                          Height="13"
                                                          Width="13" />
-                                        <TextBlock Foreground="{Binding IsDetailedMode, 
-                                                                              Converter={StaticResource CompactLayoutForegroundConverter}}"
+                                        <TextBlock Name="CompactLayoutTextBlock"
                                                    Text="{x:Static p:Resources.CompactLayoutTitle}"
                                                    FontSize="13" />
                                     </StackPanel>
+                                    <ControlTemplate.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <!-- Case, when detailed mode is selected and mouse is over compact button. -->
+                                                <Condition Binding="{Binding IsDetailedMode}"
+                                                           Value="True" />
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, 
+                                                                             Path=IsMouseOver}"
+                                                           Value="True" />
+                                            </MultiDataTrigger.Conditions>
+
+                                            <MultiDataTrigger.Setters>
+                                                <Setter TargetName="CompactLayoutIcon"
+                                                        Property="Foreground"
+                                                        Value="Red" />
+                                                <Setter TargetName="CompactLayoutTextBlock"
+                                                        Property="Foreground"
+                                                        Value="Red" />
+                                                <Setter Property="Foreground"
+                                                        Value="Red" />
+                                            </MultiDataTrigger.Setters>
+                                        </MultiDataTrigger>
+
+                                    </ControlTemplate.Triggers>
                                 </ControlTemplate>
                             </Button.Template>
                         </Button>
