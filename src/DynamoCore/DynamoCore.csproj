@@ -181,7 +181,7 @@ limitations under the License.
     <Compile Include="Scheduler\QueryMirrorDataAsyncTask.cs" />
     <Compile Include="Scheduler\PreviewGraphAsyncTask.cs" />
     <Compile Include="Scheduler\UpdateRenderPackageAsyncTask.cs" />
-    <Compile Include="Engine\CodeCompletionServices.cs" />
+    <Compile Include="Engine\CodeCompletion\CodeCompletionServices.cs" />
     <Compile Include="Models\DynamoModelCommands.cs" />
     <Compile Include="Scheduler\AsyncTask.cs" />
     <Compile Include="Scheduler\CompileCustomNodeAsyncTask.cs" />
@@ -220,11 +220,11 @@ limitations under the License.
     <Compile Include="Nodes\ZeroTouch\UnresolvedFunctionException.cs" />
     <Compile Include="Search\BrowserItem.cs" />
     <Compile Include="Logging\StabilityTracking.cs" />
-    <Compile Include="Engine\AstBuilder.cs" />
+    <Compile Include="Engine\CodeGeneration\AstBuilder.cs" />
     <Compile Include="Library\FunctionType.cs" />
     <Compile Include="Engine\EngineController.cs" />
     <Compile Include="Engine\LiveRunnerServices.cs" />
-    <Compile Include="Engine\NodeToCode.cs" />
+    <Compile Include="Engine\NodeToCode\NodeToCode.cs" />
     <Compile Include="Models\CustomNodeWorkspaceModel.cs" />
     <Compile Include="Models\HomeWorkspaceModel.cs" />
     <Compile Include="Nodes\CodeBlockNode.cs" />
