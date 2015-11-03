@@ -1075,11 +1075,33 @@ namespace Dynamo.Models
 
             foreach (NoteModel note in Notes)
             {
-                // Link a note to the nearest node
-                GraphLayout.Node nd = combinedGraph.Nodes.OrderBy(node =>
-                    Math.Pow(node.X + node.Width / 2 - note.X - note.Width / 2, 2) +
-                    Math.Pow(node.Y + node.Height / 2 - note.Y - note.Height / 2, 2)).FirstOrDefault();
+                AnnotationModel group = Annotations.Where(
+                    g => g.SelectedModels.Contains(note)).ToList().FirstOrDefault();
 
+                GraphLayout.Node nd = null;
+
+                if (!isGroupLayout || group == null)
+                {
+                    // If note is not part of a group, link to the nearest node in the graph
+                    nd = combinedGraph.Nodes.OrderBy(node =>
+                        Math.Pow(node.X + node.Width / 2 - note.X - note.Width / 2, 2) +
+                        Math.Pow(node.Y + node.Height / 2 - note.Y - note.Height / 2, 2)).FirstOrDefault();
+                }
+                else
+                {
+                    // If note is part of a group, link to the nearest node in the group
+                    NodeModel ndm = group.SelectedModels.OfType<NodeModel>().OrderBy(node =>
+                        Math.Pow(node.X + node.Width / 2 - note.X - note.Width / 2, 2) +
+                        Math.Pow(node.Y + node.Height / 2 - note.Y - note.Height / 2, 2)).FirstOrDefault();
+
+                    // If the nearest point is a node model
+                    nd = combinedGraph.FindNode(ndm.GUID);
+
+                    // If the nearest point is a group model
+                    nd = nd ?? combinedGraph.FindNode(group.GUID);
+                }
+
+                // Otherwise, leave the note unchanged
                 if (nd != null)
                 {
                     nd.LinkNote(note, note.Width, note.Height);
@@ -1099,7 +1121,7 @@ namespace Dynamo.Models
                 foreach (AnnotationModel group in DynamoSelection.Instance.Selection.OfType<AnnotationModel>())
                 {
                     List<GraphLayout.Node> cluster = new List<GraphLayout.Node>();
-                    cluster.AddRange(group.SelectedModels.Select(x => combinedGraph.FindNode(x.GUID)));
+                    cluster.AddRange(group.SelectedModels.OfType<NodeModel>().Select(x => combinedGraph.FindNode(x.GUID)));
                     SubgraphClusters.Add(cluster);
                 }
             }
@@ -1131,7 +1153,7 @@ namespace Dynamo.Models
                 {
                     if (group.IsSelected)
                     {
-                        group.Deselect();
+                        group.SelectedModels.OfType<NodeModel>().ToList().ForEach(x => x.IsSelected = false);
                         undoItems.AddRange(group.SelectedModels);
                     }
                 }
