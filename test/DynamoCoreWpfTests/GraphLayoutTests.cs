@@ -368,7 +368,7 @@ namespace Dynamo.Tests
             AssertNoOverlap();
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void GraphLayoutComplex()
         {
             OpenModel(GetDynPath("GraphLayoutComplex.dyn"));
