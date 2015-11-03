@@ -125,7 +125,7 @@ limitations under the License.
     <Compile Include="Extensions\ICommandExecutive.cs" />
     <Compile Include="Graph\Nodes\CustomNodes\ICustomNodeManager.cs" />
     <Compile Include="Core\PulseMaker.cs" />
-    <Compile Include="Core\NodeGraph.cs" />
+    <Compile Include="Graph\NodeGraph.cs" />
     <Compile Include="Extensions\ExtensionLoader.cs" />
     <Compile Include="Extensions\ExtensionManager.cs" />
     <Compile Include="Interfaces\IDynamoModel.cs" />

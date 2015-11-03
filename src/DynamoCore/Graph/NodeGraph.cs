@@ -2,20 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
-using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
-using Dynamo.Models;
 using Dynamo.Utilities;
-using ProtoCore.AST;
 using ProtoCore.Namespace;
-using Dynamo.Interfaces;
 
-namespace Dynamo.Core
+namespace Dynamo.Graph
 {
     public class NodeGraph
     {
