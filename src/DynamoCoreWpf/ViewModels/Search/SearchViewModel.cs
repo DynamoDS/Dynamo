@@ -188,7 +188,7 @@ namespace Dynamo.ViewModels
                                                                        .Select(cat => cat.Name)
                                                                        .Contains(x.Category));
 
-            //  Ping analytics.
+            // Report selected categories to instrumentation
             StringBuilder strBuilder = new StringBuilder();
             foreach (var category in SearchCategories)
             {
@@ -202,10 +202,10 @@ namespace Dynamo.ViewModels
                 {
                     strBuilder.Append("Unselected");
                 }
-                strBuilder.Append("; ");
+                strBuilder.Append(", ");
             }
 
-            InstrumentationLogger.LogPiiInfo("Filter categories:", strBuilder.ToString().Trim());
+            InstrumentationLogger.LogPiiInfo("Filter categories", strBuilder.ToString().Trim());
         }
 
         /// <summary>
