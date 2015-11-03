@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Windows;
-using DynamoCore;
-using Dynamo.Services;
-using RestSharp.Contrib;
 using System.Windows.Controls;
 using System.Reflection;
 
@@ -56,7 +53,7 @@ namespace Dynamo.Wpf.Authentication
             return navigateSuccess;
         }
 
-        internal void ShowShapewaysLogin(ShapewaysClient client) 
+        internal void ShowShapewaysLogin(ShapewaysClient.ShapewaysClient client) 
         {
             context.Send((_) =>
             {

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Dynamo.Models;
-using Dynamo.Services;
+using ShapewaysClient;
 
 namespace Dynamo.Logging
 {
