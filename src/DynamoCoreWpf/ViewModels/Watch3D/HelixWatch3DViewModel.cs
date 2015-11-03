@@ -24,6 +24,7 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Rendering;
 using DynamoUtilities;
+using HelixToolkit.Wpf;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
 using SharpDX;
@@ -93,6 +94,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private readonly Color4 defaultSelectionColor = new Color4(new Color3(0, 158.0f / 255.0f, 1.0f));
         private readonly Color4 defaultMaterialColor = new Color4(new Color3(1.0f, 1.0f, 1.0f));
         private readonly Size defaultPointSize = new Size(6, 6);
+        private readonly Size highlightSize = new Size(8, 8);
+        private readonly Color4 highlightColor = new Color4(new Color3(1.0f, 0.0f, 0.0f));
+
         private static readonly Color4 defaultLineColor = new Color4(new Color3(0, 0, 0));
         private static readonly Color4 defaultPointColor = new Color4(new Color3(0, 0, 0));
         private static readonly Color4 defaultDeadColor = new Color4(new Color3(0.7f,0.7f,0.7f));
@@ -1318,6 +1322,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+
         void pointGeometry3D_MouseDown3D(object sender, RoutedEventArgs e)
         {
             var args = e as Mouse3DEventArgs;
@@ -1337,6 +1342,42 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 DynamoSelection.Instance.ClearSelection();
                 vm.Model.AddToSelection(node);
                 break;
+            }
+        }
+
+        public override void HighlightNodeGraphics(IEnumerable<NodeModel> nodes)
+        {
+            HighlightGraphicsOnOff(nodes, true);
+        }
+
+        public override void UnHighlightNodeGraphics(IEnumerable<NodeModel> nodes)
+        {
+            HighlightGraphicsOnOff(nodes, false);
+        }
+
+        private void HighlightGraphicsOnOff(IEnumerable<NodeModel> nodes, bool highlightOn)
+        {
+            foreach (var node in nodes)
+            {
+                var geometries = FindAllGeometryModel3DsForNode(node.AstIdentifierBase);
+                foreach (var geometry in geometries)
+                {
+                    var pointGeom = geometry.Value as PointGeometryModel3D;
+                    
+                    if (pointGeom == null) continue;
+                    
+                    var points = pointGeom.Geometry;
+                    points.Colors.Clear();
+                    
+                    points.Colors.AddRange(highlightOn
+                        ? Enumerable.Repeat(highlightColor, points.Positions.Count)
+                        : Enumerable.Repeat(defaultPointColor, points.Positions.Count));
+
+                    pointGeom.Size = highlightOn ? highlightSize : defaultPointSize;
+
+                    pointGeom.Detach();
+                    OnRequestAttachToScene(pointGeom);
+                }
             }
         }
 

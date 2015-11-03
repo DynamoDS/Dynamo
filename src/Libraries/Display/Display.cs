@@ -5,6 +5,7 @@ using Analysis;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
+using Display.Properties;
 using DSCore;
 using Math = DSCore.Math;
 
@@ -14,9 +15,11 @@ namespace Display
     {
         #region private members
 
+        private readonly Point[] vertices;
         private readonly Geometry geometry;
         private readonly Color singleColor;
         private readonly Color[][] colorMap;
+        private readonly Color[] meshVertexColors;
 
         #endregion
 
@@ -54,6 +57,12 @@ namespace Display
             } 
         }
 
+        private Display(Point[] vertices, Color[] colors)
+        {
+            this.vertices = vertices;
+            meshVertexColors = colors;
+        }
+
         #endregion
 
         #region static constructors
@@ -81,11 +90,19 @@ namespace Display
 
         /// <summary>
         /// Display color values on a surface.
+        /// 
+        /// The colors provided are converted internally to an image texture which is
+        /// mapped to the surface. 
         /// </summary>
-        /// <param name="surface">The surface on which to apply the colors.</param>
-        /// <param name="colors">A two dimensional list of Colors.</param>
+        /// <param name="surface">The surface on which to apply the colors.
+        /// </param>
+        /// <param name="colors">A two dimensional list of Colors.
+        /// 
+        /// The list of colors must be square. Attempting to pass a jagged array
+        /// will result in an exception. </param>
         /// <returns>A Display object.</returns>
-        public static Display BySurfaceColors(Surface surface, Color[][] colors)
+        public static Display BySurfaceColors(Surface surface, 
+            [DefaultArgument("{{Color.ByARGB(255,255,0,0),Color.ByARGB(255,255,255,0)},{Color.ByARGB(255,0,255,255),Color.ByARGB(255,0,0,255)}};")] Color[][] colors)
         {
             if (surface == null)
             {
@@ -99,12 +116,12 @@ namespace Display
 
             if (!colors.Any())
             {
-                throw new ArgumentException("You must supply some colors");
+                throw new ArgumentException(Resources.NoColorsExceptionMessage);
             }
 
             if (colors.Length == 1)
             {
-                throw new ArgumentException("You must supply a two dimensional list of Colors.");
+                throw new ArgumentException(Resources.TwoDimensionalListExceptionMessage);
             }
 
             var size = colors[0].Count();
@@ -112,11 +129,63 @@ namespace Display
             {
                 if (list.Count() != size)
                 {
-                    throw new ArgumentException("The list of colors must not be a jagged list.");
+                    throw new ArgumentException(Resources.JaggedListExceptionMessage);
                 }
             }
 
             return new Display(surface, colors);
+        }
+
+        /// <summary>
+        /// Create a colored mesh using points and colors.
+        /// 
+        /// The list of points supplied is used to construct a triangulated mesh, with
+        /// non-joined vertices.
+        /// </summary>
+        /// <param name="points">A list of Points. 
+        /// 
+        /// Only triangular meshes are currently supported. Each triplet of points in the list will form one 
+        /// triangle in the mesh. Points should be ordered CCW. 
+        /// Attempting to pass a list of vertices whose count is not divisble by 3 will throw an exception.</param>
+        /// <param name="colors">A list of colors. 
+        /// 
+        /// The number of colors must match the number of vertices. Attempting pass a list of colors which does not
+        /// have the same number of Colors as the list of points will throw an exception.</param>
+        /// <returns>A Display object.</returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public static Display ByPointsColors(Point[] points, Color[] colors)
+        {
+            if(points == null)
+            {
+                throw new ArgumentNullException("points");
+            }
+
+            if (!points.Any())
+            {
+                throw new ArgumentException(Resources.NoVertexExceptionMessage, "points");
+            }
+
+            if (points.Count() %3 != 0)
+            {
+                throw new ArgumentException(Resources.VerticesDivisibleByThreeExceptionMessage);
+            }
+
+            if(colors == null)
+            {
+                throw new ArgumentNullException("colors");
+            }
+
+            if (!colors.Any())
+            {
+                throw new ArgumentException(Resources.NoColorsExceptionMessage, "colors");
+            }
+
+            if (colors.Count() != points.Count())
+            {
+                throw new ArgumentException(Resources.VertexColorCountMismatchExceptionMessage, "colors");
+            }
+
+            return new Display(points, colors);
         }
 
         #endregion
@@ -126,11 +195,19 @@ namespace Display
         [IsVisibleInDynamoLibrary(false)]
         public void Tessellate(IRenderPackage package, TessellationParameters parameters)
         {
+            if(vertices != null)
+            {
+                CreateVertexColoredMesh(vertices, meshVertexColors, package, parameters);
+                return;
+            }
+
             if (singleColor != null)
             {
                 CreateGeometryRenderData(singleColor, package, parameters);
+                return;
             }
-            else if (colorMap != null)
+
+            if (colorMap != null)
             {
                 if (!colorMap.Any())
                 {
@@ -138,6 +215,7 @@ namespace Display
                 }
 
                 CreateColorMapOnSurface(colorMap, package, parameters);
+                return;
             }
         }
 
@@ -270,6 +348,58 @@ namespace Display
             var t = expRange*value;
             var finalExp = (int)Math.Pow(2, (int)(lowestPower + t));
             return finalExp;
+        }
+
+        private static void CreateVertexColoredMesh(Point[] vertices, Color[] colors, IRenderPackage package, TessellationParameters parameters)
+        {
+            package.RequiresPerVertexColoration = true;
+
+            for (var i = 0; i <= vertices.Count()-3; i+=3)
+            {
+                var ptA = vertices[i];
+                var ptB = vertices[i+1];
+                var ptC = vertices[i+2];
+
+                if (ptA.IsAlmostEqualTo(ptB) ||
+                    ptB.IsAlmostEqualTo(ptC) ||
+                    ptA.IsAlmostEqualTo(ptC))
+                {
+                    continue;
+                }
+
+                var alongLine = false;
+                using (var l = Line.ByStartPointEndPoint(ptA, ptC))
+                {
+                    alongLine = ptB.DistanceTo(l) < 0.00001;
+                }
+                if (alongLine)
+                {
+                    continue;
+                }
+
+                var cA = colors[i];
+                var cB = colors[i+1];
+                var cC = colors[i+2];
+
+                var s1 = ptB.AsVector().Subtract(ptA.AsVector()).Normalized();
+                var s2 = ptC.AsVector().Subtract(ptA.AsVector()).Normalized();
+                var n = s1.Cross(s2);
+
+                package.AddTriangleVertex(ptA.X, ptA.Y, ptA.Z);
+                package.AddTriangleVertexNormal(n.X, n.Y, n.Z);
+                package.AddTriangleVertexColor(cA.Red, cA.Green, cA.Blue, cA.Alpha);
+                package.AddTriangleVertexUV(0, 0);
+
+                package.AddTriangleVertex(ptB.X, ptB.Y, ptB.Z);
+                package.AddTriangleVertexNormal(n.X, n.Y, n.Z);
+                package.AddTriangleVertexColor(cB.Red, cB.Green, cB.Blue, cB.Alpha);
+                package.AddTriangleVertexUV(0, 0);
+
+                package.AddTriangleVertex(ptC.X, ptC.Y, ptC.Z);
+                package.AddTriangleVertexNormal(n.X, n.Y, n.Z);
+                package.AddTriangleVertexColor(cC.Red, cC.Green, cC.Blue, cC.Alpha);
+                package.AddTriangleVertexUV(0, 0);
+            }
         }
 
         #endregion

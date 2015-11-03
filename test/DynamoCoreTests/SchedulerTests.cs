@@ -1,10 +1,8 @@
 ﻿using System.IO;
 using System.Reflection;
-
-using Dynamo.Core.Threading;
-using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Scheduler;
 using DynamoShapeManager;
 
 using NUnit.Framework;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
@@ -186,6 +187,25 @@ namespace Dynamo.ViewModels
             FilteredResults = searchResults.Where(x => allowedCategories
                                                                        .Select(cat => cat.Name)
                                                                        .Contains(x.Category));
+
+            // Report selected categories to instrumentation
+            StringBuilder strBuilder = new StringBuilder();
+            foreach (var category in SearchCategories)
+            {
+                strBuilder.Append(category.Name);
+                strBuilder.Append(" : ");
+                if (category.IsSelected)
+                {
+                    strBuilder.Append("Selected");
+                }
+                else
+                {
+                    strBuilder.Append("Unselected");
+                }
+                strBuilder.Append(", ");
+            }
+
+            InstrumentationLogger.LogPiiInfo("Filter categories", strBuilder.ToString().Trim());
         }
 
         /// <summary>

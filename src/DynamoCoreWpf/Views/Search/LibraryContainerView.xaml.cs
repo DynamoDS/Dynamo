@@ -7,6 +7,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 using Dynamo.Controls;
+using Dynamo.Logging;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -380,6 +381,8 @@ namespace Dynamo.Search
         private void OnFilterMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             FilterPopup.IsOpen = true;
+
+            InstrumentationLogger.LogAnonymousEvent("FilterButtonClicked","Search UX");
         }
 
         private void OnViewLayoutSelectorMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
