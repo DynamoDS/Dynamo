@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Xml;
 using Dynamo.Engine;
 using Dynamo.Graph.Nodes.ZeroTouch;
@@ -97,7 +98,10 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
             if (descriptor.IsVarArg)
             {
                 result = new DSVarArgFunction(descriptor);
-                if (nodeElement.Name != typeof(DSVarArgFunction).FullName)
+
+                var akas = typeof (DSVarArgFunction).GetCustomAttribute<AlsoKnownAsAttribute>().Values;
+                if (nodeElement.Name != typeof (DSVarArgFunction).FullName &&
+                    akas.All(aka => aka != nodeElement.Name))
                 {
                     VariableInputNodeController.SerializeInputCount(
                         nodeElement,
@@ -105,7 +109,9 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
                 }
             }
             else
+            {
                 result = new DSFunction(descriptor);
+            }
 
             result.Deserialize(nodeElement, context);
 
