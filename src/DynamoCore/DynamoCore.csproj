@@ -175,7 +175,7 @@ limitations under the License.
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Interfaces\ICustomNodeSource.cs" />
     <Compile Include="Search\SearchLibrary.cs" />
-    <Compile Include="Search\SearchElementGroup.cs" />
+    <Compile Include="Search\SearchElements\SearchElementGroup.cs" />
     <Compile Include="Nodes\CodeBlockUtils.cs" />
     <Compile Include="Core\NotificationObject.cs" />
     <Compile Include="Scheduler\QueryMirrorDataAsyncTask.cs" />
@@ -249,7 +249,7 @@ limitations under the License.
     <Compile Include="Search\BrowserInternalElement.cs" />
     <Compile Include="Core\CustomNodeManager.cs" />
     <Compile Include="Core\NodeModelAssemblyLoader.cs" />
-    <Compile Include="Search\SearchElementBase.cs" />
+    <Compile Include="Search\SearchElements\SearchElementBase.cs" />
     <Compile Include="Nodes\NodeCategories.cs" />
     <Compile Include="Models\ConnectorModel.cs" />
     <Compile Include="Nodes\Custom Nodes\Function.cs" />
