@@ -23,7 +23,7 @@
             <DataTemplate x:Key="SearchItemTemplate"
                           DataType="{x:Type vm:NodeSearchElementViewModel}">
                 <Button Command="{Binding ClickedCommand}"
-                        Margin="15,7,15,9">
+                        Margin="15,9,15,9">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
 
@@ -73,7 +73,7 @@
                                     <!-- Node class, group icon, node category -->
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="{Binding Class}"
-                                                   Foreground="{StaticResource CommonSidebarTextColor}" />
+                                                   Foreground="{StaticResource NodeCategoryForeground}" />
                                         <fa:ImageAwesome Icon="{Binding GroupIconName}"
                                                          Foreground="{Binding Group, 
                                                                               Converter={StaticResource ElementGroupToColorConverter}}"
@@ -83,7 +83,7 @@
                                                          Width="10"
                                                          Margin="4,4,4,4" />
                                         <TextBlock Text="{Binding Category}"
-                                                   Foreground="{StaticResource CommonSidebarTextColor}"
+                                                   Foreground="{StaticResource NodeCategoryForeground}"
                                                    FontStyle="Italic" />
                                     </StackPanel>
                                 </StackPanel>
