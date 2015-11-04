@@ -361,7 +361,8 @@
                 <WrapPanel>
                     <!-- Compact layout button -->
                     <Border BorderThickness="0,0,1,0"
-                            BorderBrush="{StaticResource SearchDarkGreyTextColor}">
+                            BorderBrush="{StaticResource SearchDarkGreyTextColor}"
+                            Style="{StaticResource LayoutButtonStyle}">
                         <Button Name="CompactButton"
                                 Command="{Binding ToggleLayoutCommand}">
                             <Button.CommandParameter>
@@ -374,7 +375,7 @@
                                         <fa:ImageAwesome Name="CompactLayoutIcon"
                                                          Icon="list"
                                                          Foreground="{Binding IsDetailedMode, 
-                                                                              Converter={StaticResource CompactLayoutForegroundConverter}}"
+                                                                              Converter={StaticResource CompactLayoutForegroundConverter}}"                                                         
                                                          Margin="5,0,5,0"
                                                          Height="13"
                                                          Width="13" />
@@ -389,30 +390,32 @@
                     </Border>
 
                     <!-- Detailed layout button -->
-                    <Button Name="DetailedButton"
-                            Command="{Binding ToggleLayoutCommand}">
-                        <Button.CommandParameter>
-                            <system:Boolean>True</system:Boolean>
-                        </Button.CommandParameter>
-                        <Button.Template>
-                            <ControlTemplate>
-                                <StackPanel Orientation="Horizontal"
-                                            Margin="5,5,5,5">
-                                    <fa:ImageAwesome  Name="DetailedLayoutIcon"
-                                                      Foreground="{Binding IsDetailedMode, 
+                    <Border Style="{StaticResource LayoutButtonStyle}">
+                        <Button Name="DetailedButton"
+                                Command="{Binding ToggleLayoutCommand}">
+                            <Button.CommandParameter>
+                                <system:Boolean>True</system:Boolean>
+                            </Button.CommandParameter>
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <StackPanel Orientation="Horizontal"
+                                                Margin="5,5,5,5">
+                                        <fa:ImageAwesome  Name="DetailedLayoutIcon"
+                                                          Foreground="{Binding IsDetailedMode, 
                                                                               Converter={StaticResource DetailedLayoutForegroundConverter}}"
-                                                      Icon="ThList"
-                                                      Margin="5,0,5,0"
-                                                      Height="13"
-                                                      Width="13" />
-                                    <TextBlock Foreground="{Binding IsDetailedMode, 
+                                                          Icon="ThList"
+                                                          Margin="5,0,5,0"
+                                                          Height="13"
+                                                          Width="13" />
+                                        <TextBlock Foreground="{Binding IsDetailedMode, 
                                                                               Converter={StaticResource DetailedLayoutForegroundConverter}}"
-                                               Text="{x:Static p:Resources.DetailedLayoutTitle}"
-                                               FontSize="13" />
-                                </StackPanel>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
+                                                   Text="{x:Static p:Resources.DetailedLayoutTitle}"
+                                                   FontSize="13" />
+                                    </StackPanel>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </Border>
                 </WrapPanel>
             </ContentControl>
         </Popup>
