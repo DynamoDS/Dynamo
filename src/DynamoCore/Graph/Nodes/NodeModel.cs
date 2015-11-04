@@ -1763,8 +1763,9 @@ namespace Dynamo.Graph.Nodes
         /// <param name="factory">An IRenderPackageFactory which will be used to generate IRenderPackage objects.</param>
         /// <param name="forceUpdate">Normally, render packages are only generated when the node's IsUpdated parameter is true.
         /// By setting forceUpdate to true, the render packages will be updated.</param>
-        public virtual void
-            RequestVisualUpdateAsync(IScheduler scheduler, EngineController engine, IRenderPackageFactory factory, bool forceUpdate = false)
+        /// <returns>Flag which indicates if geometry update has been scheduled</returns>
+        public virtual bool RequestVisualUpdateAsync(IScheduler scheduler, 
+            EngineController engine, IRenderPackageFactory factory, bool forceUpdate = false)
         {
             var initParams = new UpdateRenderPackageParams()
             {
@@ -1777,10 +1778,11 @@ namespace Dynamo.Graph.Nodes
             };
 
             var task = new UpdateRenderPackageAsyncTask(scheduler);
-            if (!task.Initialize(initParams)) return;
+            if (!task.Initialize(initParams)) return false;
 
             task.Completed += OnRenderPackageUpdateCompleted;
             scheduler.ScheduleForExecution(task);
+            return true;
         }
 
         /// <summary>

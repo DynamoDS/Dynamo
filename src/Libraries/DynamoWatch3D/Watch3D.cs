@@ -311,10 +311,11 @@ namespace DynamoWatch3D
             }
         }
 
-        public override void RequestVisualUpdateAsync(
+        public override bool RequestVisualUpdateAsync(
             IScheduler scheduler, EngineController engine, IRenderPackageFactory factory, bool forceUpdate = false)
         {
             // No visualization update is required for this node type.
+            return false;
         }
     }
 }
