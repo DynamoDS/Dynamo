@@ -361,7 +361,8 @@
                 <WrapPanel>
                     <!-- Compact layout button -->
                     <Border BorderThickness="0,0,1,0"
-                            BorderBrush="{StaticResource SearchDarkGreyTextColor}">
+                            BorderBrush="{StaticResource SearchDarkGreyTextColor}"
+                            Style="{StaticResource LayoutButtonStyle}">
                         <Button Name="CompactButton"
                                 Command="{Binding ToggleLayoutCommand}">
                             <Button.CommandParameter>
@@ -372,68 +373,49 @@
                                     <StackPanel Orientation="Horizontal"
                                                 Margin="5,5,5,5">
                                         <fa:ImageAwesome Name="CompactLayoutIcon"
+                                                         Foreground="{Binding IsDetailedMode, 
+                                                                              Converter={StaticResource CompactLayoutForegroundConverter}}"
                                                          Icon="list"
                                                          Margin="5,0,5,0"
                                                          Height="13"
                                                          Width="13" />
-                                        <TextBlock Name="CompactLayoutTextBlock"
+                                        <TextBlock Foreground="{Binding IsDetailedMode, 
+                                                                              Converter={StaticResource CompactLayoutForegroundConverter}}"
                                                    Text="{x:Static p:Resources.CompactLayoutTitle}"
                                                    FontSize="13" />
                                     </StackPanel>
-                                    <ControlTemplate.Triggers>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <!-- Case, when detailed mode is selected and mouse is over compact button. -->
-                                                <Condition Binding="{Binding IsDetailedMode}"
-                                                           Value="True" />
-                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, 
-                                                                             Path=IsMouseOver}"
-                                                           Value="True" />
-                                            </MultiDataTrigger.Conditions>
-
-                                            <MultiDataTrigger.Setters>
-                                                <Setter TargetName="CompactLayoutIcon"
-                                                        Property="Foreground"
-                                                        Value="Red" />
-                                                <Setter TargetName="CompactLayoutTextBlock"
-                                                        Property="Foreground"
-                                                        Value="Red" />
-                                                <Setter Property="Foreground"
-                                                        Value="Red" />
-                                            </MultiDataTrigger.Setters>
-                                        </MultiDataTrigger>
-
-                                    </ControlTemplate.Triggers>
                                 </ControlTemplate>
                             </Button.Template>
                         </Button>
                     </Border>
 
                     <!-- Detailed layout button -->
-                    <Button Name="DetailedButton"
-                            Command="{Binding ToggleLayoutCommand}">
-                        <Button.CommandParameter>
-                            <system:Boolean>True</system:Boolean>
-                        </Button.CommandParameter>
-                        <Button.Template>
-                            <ControlTemplate>
-                                <StackPanel Orientation="Horizontal"
-                                            Margin="5,5,5,5">
-                                    <fa:ImageAwesome  Name="DetailedLayoutIcon"
-                                                      Foreground="{Binding IsDetailedMode, 
+                    <Border Style="{StaticResource LayoutButtonStyle}">
+                        <Button Name="DetailedButton"
+                                Command="{Binding ToggleLayoutCommand}">
+                            <Button.CommandParameter>
+                                <system:Boolean>True</system:Boolean>
+                            </Button.CommandParameter>
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <StackPanel Orientation="Horizontal"
+                                                Margin="5,5,5,5">
+                                        <fa:ImageAwesome  Name="DetailedLayoutIcon"
+                                                          Foreground="{Binding IsDetailedMode, 
                                                                               Converter={StaticResource DetailedLayoutForegroundConverter}}"
-                                                      Icon="ThList"
-                                                      Margin="5,0,5,0"
-                                                      Height="13"
-                                                      Width="13" />
-                                    <TextBlock Foreground="{Binding IsDetailedMode, 
+                                                          Icon="ThList"
+                                                          Margin="5,0,5,0"
+                                                          Height="13"
+                                                          Width="13" />
+                                        <TextBlock Foreground="{Binding IsDetailedMode, 
                                                                               Converter={StaticResource DetailedLayoutForegroundConverter}}"
-                                               Text="{x:Static p:Resources.DetailedLayoutTitle}"
-                                               FontSize="13" />
-                                </StackPanel>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
+                                                   Text="{x:Static p:Resources.DetailedLayoutTitle}"
+                                                   FontSize="13" />
+                                    </StackPanel>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </Border>
                 </WrapPanel>
             </ContentControl>
         </Popup>
