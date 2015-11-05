@@ -5,7 +5,6 @@ using System.Linq;
 using Dynamo.Annotations;
 using Dynamo.Configuration;
 using Dynamo.Models;
-using Dynamo.Search.Interfaces;
 
 namespace Dynamo.Search.SearchElements
 {

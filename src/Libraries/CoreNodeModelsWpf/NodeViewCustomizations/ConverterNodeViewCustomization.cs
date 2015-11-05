@@ -1,6 +1,6 @@
 ﻿using DSCoreNodesUI.Input;
 using Dynamo.Controls;
-using Dynamo.Search.Interfaces;
+using Dynamo.Search;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Controls;
 using DSCoreNodesUI;

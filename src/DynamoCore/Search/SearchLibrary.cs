@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dynamo.Search.Interfaces;
 
 namespace Dynamo.Search
 {

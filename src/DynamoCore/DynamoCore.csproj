@@ -152,8 +152,8 @@ limitations under the License.
     <Compile Include="Models\RunSettings.cs" />
     <Compile Include="Scheduler\AsyncTaskExtensions.cs" />
     <Compile Include="Configuration\IPathResolver.cs" />
-    <Compile Include="Search\Interfaces\ISearchCategory.cs" />
-    <Compile Include="Search\Interfaces\ISearchEntry.cs" />
+    <Compile Include="Search\ISearchCategory.cs" />
+    <Compile Include="Search\ISearchEntry.cs" />
     <Compile Include="Search\NodeSearchModel.cs" />
     <Compile Include="Search\SearchElements\CodeBlockNodeSearchElement.cs" />
     <Compile Include="Search\SearchElements\CustomNodeSearchElement.cs" />
@@ -164,7 +164,7 @@ limitations under the License.
     <Compile Include="Core\AuthenticationManager.cs" />
     <Compile Include="Services\ShapewaysClient.cs" />
     <Compile Include="Models\NodeModelExtensions.cs" />
-    <Compile Include="Search\Interfaces\ISource.cs" />
+    <Compile Include="Search\ISource.cs" />
     <Compile Include="Models\RecordableCommands.cs" />
     <Compile Include="Properties\Resources.en-US.Designer.cs">
       <AutoGen>True</AutoGen>
