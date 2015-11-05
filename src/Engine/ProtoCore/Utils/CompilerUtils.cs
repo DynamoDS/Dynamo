@@ -177,6 +177,11 @@ namespace ProtoCore.Utils
             get { return this.warnings; }
         }
 
+        public AST.Node Comment
+        {
+            get; set;
+        }
+
         #endregion
     }
 
@@ -256,7 +261,9 @@ namespace ProtoCore.Utils
             string postfixGuid = parseParams.PostfixGuid.ToString().Replace("-", "_");
 
             // Parse code to generate AST and add temporaries to non-assignment nodes
-            IEnumerable<ProtoCore.AST.Node> astNodes = ParseUserCode(core, parseParams.OriginalCode, postfixGuid);
+            List<ProtoCore.AST.Node> astNodes;
+            AST.Node comment;
+            ParseUserCode(core, parseParams.OriginalCode, postfixGuid, out astNodes, out comment);
 
             // Catch the syntax errors and errors for unsupported 
             // language constructs thrown by compile expression
@@ -267,6 +274,7 @@ namespace ProtoCore.Utils
                 return false;
             }
             parseParams.AppendParsedNodes(astNodes);
+            parseParams.Comment = comment;
 
             // Compile the code to get the resultant unboundidentifiers  
             // and any errors or warnings that were caught by the compiler and cache them in parseParams
@@ -336,36 +344,37 @@ namespace ProtoCore.Utils
             }
         }
 
-        private static IEnumerable<ProtoCore.AST.Node> ParseUserCode(ProtoCore.Core core, string expression, string postfixGuid)
+        private static void ParseUserCode(ProtoCore.Core core, string expression, string postfixGuid, out List<AST.Node> astNodes, out AST.Node commentNode)
         {
-            IEnumerable<ProtoCore.AST.Node> astNodes = new List<ProtoCore.AST.Node>();
+            astNodes = new List<ProtoCore.AST.Node>();
+            commentNode = null;
 
-            if (expression == null)
-                return astNodes;
-
-            expression = expression.Replace("\r\n", "\n");
-
-            try
+            if (expression != null)
             {
-                return ParseUserCodeCore(core, expression);
-            }
-            catch
-            {
-                // For modifier blocks, language blocks, etc. that are currently ignored
-                return astNodes;
+                expression = expression.Replace("\r\n", "\n");
+
+                try
+                {
+                    ParseUserCodeCore(core, expression, out astNodes, out commentNode);
+                }
+                catch
+                {
+                    // For modifier blocks, language blocks, etc. that are currently ignored
+                }
             }
         }
 
-        private static IEnumerable<AST.Node> ParseUserCodeCore(Core core, string expression)
+        private static void ParseUserCodeCore(Core core, string expression, out List<AST.Node> astNodes, out AST.Node commentNode)
         {
-            List<ProtoCore.AST.Node> astNodes = new List<ProtoCore.AST.Node>();
+            astNodes = new List<ProtoCore.AST.Node>();
 
             core.ResetForPrecompilation();
             core.IsParsingCodeBlockNode = true;
             core.ParsingMode = ParseMode.AllowNonAssignment;
 
-            var codeBlockNode = ParserUtils.ParseWithCore(expression, core);
-            List<AST.Node> nodes = ParserUtils.GetAstNodes(codeBlockNode);
+            ParseResult parseResult = ParserUtils.ParseWithCore(expression, core);
+            commentNode = parseResult.CommentNode;
+            List<AST.Node> nodes = ParserUtils.GetAstNodes(parseResult.CodeNode);
             Validity.Assert(nodes != null);
 
             int index = 0;
@@ -441,7 +450,6 @@ namespace ProtoCore.Utils
                     }
                 }
             }
-            return astNodes;
         }
 
         private static void GetInputLines(IEnumerable<Node> astNodes,

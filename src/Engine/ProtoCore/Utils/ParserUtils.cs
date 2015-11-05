@@ -5,6 +5,19 @@ using System.Text.RegularExpressions;
 
 namespace ProtoCore.Utils
 {
+    public class ParseResult
+    {
+        public AST.Node CodeNode
+        {
+            get; set;
+        }
+
+        public AST.Node CommentNode
+        {
+            get; set;
+        }
+    }
+
     /// <summary>
     /// These are string manipulation utility functions that focus on lexing and parsing heuristics
     /// </summary>
@@ -97,7 +110,8 @@ namespace ProtoCore.Utils
             core.IsParsingCodeBlockNode = true;
             core.IsParsingPreloadedAssembly = false;
 
-            return ParseWithCore(code, core);
+            var parseResult = ParseWithCore(code, core);
+            return parseResult.CodeNode;
         }
 
         /// <summary>
@@ -131,12 +145,15 @@ namespace ProtoCore.Utils
         /// <param name="code"></param>
         /// <param name="core"></param>
         /// <returns></returns>
-        public static ProtoCore.AST.Node ParseWithCore(string code, ProtoCore.Core core)
+        public static ParseResult ParseWithCore(string code, ProtoCore.Core core)
         {
             var p = CreateParser(code, core);
             p.Parse();
 
-            return p.root;
+            ParseResult result = new ParseResult();
+            result.CodeNode = p.root;
+            result.CommentNode = p.commentNode;
+            return result;
         }
 
         /// <summary>
@@ -167,7 +184,8 @@ namespace ProtoCore.Utils
                     expression += ";";
 
                 expression = "__dummy = " + expression;
-                astNode = ParserUtils.ParseWithCore(expression, core);
+                ParseResult parseResult = ParserUtils.ParseWithCore(expression, core);
+                astNode = parseResult.CodeNode;
             }
             catch (ProtoCore.BuildHaltException ex)
             {
