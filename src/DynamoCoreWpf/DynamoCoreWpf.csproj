@@ -1218,6 +1218,10 @@
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ShapewaysClient\ShapewaysClient.csproj">
+      <Project>{756ceba5-4e20-4403-8448-c3c47957975b}</Project>
+      <Name>ShapewaysClient</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\StartPage\icon-customnode.png" />

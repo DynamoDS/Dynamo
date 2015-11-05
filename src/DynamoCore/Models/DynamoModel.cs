@@ -22,7 +22,6 @@ using Dynamo.Scheduler;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
-using Dynamo.Services;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.Logging;
@@ -31,8 +30,8 @@ using DynamoServices;
 using DynamoUnits;
 using Greg;
 using ProtoCore;
-using ProtoCore.Exceptions;
 using ProtoCore.Runtime;
+
 using Compiler = ProtoAssociative.Compiler;
 // Dynamo package manager
 using Utils = Dynamo.Nodes.Utilities;
