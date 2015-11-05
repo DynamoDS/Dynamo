@@ -8,17 +8,15 @@ using System.Windows.Media;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Core;
-using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;
+using Dynamo.Scheduler;
 using Dynamo.Selection;
-using Dynamo.Services;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
 using Dynamo.Visualization;
 using Dynamo.Wpf.Properties;
-using HelixToolkit.Wpf.SharpDX;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -63,6 +61,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected List<NodeModel> recentlyAddedNodes = new List<NodeModel>();
         protected bool active;
+        protected bool isGridVisible;
         private readonly List<IRenderPackage> currentTaggedPackages = new List<IRenderPackage>();
 
         /// <summary>
@@ -86,6 +85,22 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 RaisePropertyChanged("Active");
 
                 OnActiveStateChanged();
+            }
+        }
+
+        /// <summary>
+        /// A flag indicating whether the grid is visible in 3D.
+        /// </summary>
+        public virtual bool IsGridVisible
+        {
+            get { return isGridVisible; }
+            set
+            {
+                if (isGridVisible == value) return;
+
+                isGridVisible = value;
+                preferences.IsBackgroundGridVisible = value;
+                RaisePropertyChanged("IsGridVisible");
             }
         }
 
@@ -193,6 +208,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             Name = Resources.BackgroundPreviewDefaultName;
             Active = parameters.Preferences.IsBackgroundPreviewActive;
+            isGridVisible = parameters.Preferences.IsBackgroundGridVisible;
             logger = parameters.Logger;
 
             RegisterEventHandlers();
@@ -240,12 +256,33 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private void RegisterEventHandlers()
         {
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionChangedHandler;
+            PropertyChanged += OnPropertyChanged;
 
             LogVisualizationCapabilities();
 
             RegisterModelEventhandlers(model);
 
             RegisterWorkspaceEventHandlers(model);
+        }
+
+        /// <summary>
+        /// Event to be handled when the background preview is toggled on or off
+        /// On/off state is passed using the bool parameter
+        /// </summary>
+        public event Action<bool> CanNavigateBackgroundPropertyChanged;
+
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            switch (propertyChangedEventArgs.PropertyName)
+            {
+                case "CanNavigateBackground":
+                    var handler = CanNavigateBackgroundPropertyChanged;
+                    if (handler != null)
+                    {
+                        handler(CanNavigateBackground);
+                    }
+                    break;
+            }
         }
 
         private void UnregisterEventHandlers()
@@ -409,6 +446,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in derived classes.
         }
 
+        public virtual void HighlightNodeGraphics(IEnumerable<NodeModel> nodes)
+        {
+            // Override in derived classes.
+        }
+
+        public virtual void UnHighlightNodeGraphics(IEnumerable<NodeModel> nodes)
+        {
+            // Override in derived classes.
+        }
+
         private void RegisterNodeEventHandlers(NodeModel node)
         {
             node.PropertyChanged += OnNodePropertyChanged;
@@ -475,8 +522,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in derived classes
         }
 
-        internal event Func<MouseEventArgs, Ray3D> RequestClickRay;
-        public Ray3D GetClickRay(MouseEventArgs args)
+        internal event Func<MouseEventArgs, IRay> RequestClickRay;
+
+        /// <summary>
+        /// Returns a 3D ray from the camera to the given mouse location
+        /// in world coordinates that can be used to perform a hit-test 
+        /// on objects in the view
+        /// </summary>
+        /// <param name="args">mouse click location in screen coordinates</param>
+        /// <returns></returns>
+        public IRay GetClickRay(MouseEventArgs args)
         {
             return RequestClickRay != null ? RequestClickRay(args) : null;
         }
@@ -501,6 +556,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var handler = ViewMouseMove;
             if (handler != null) handler(sender, e);
         }
+
 
         protected virtual void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
         {

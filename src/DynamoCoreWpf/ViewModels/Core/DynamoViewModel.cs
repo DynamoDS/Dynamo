@@ -875,7 +875,7 @@ namespace Dynamo.ViewModels
 
         private void Paste(object parameter)
         {
-            model.Paste();
+            OnRequestPaste();
             RaiseCanExecuteUndoRedo();
         }
 
@@ -1501,6 +1501,18 @@ namespace Dynamo.ViewModels
         }
 
         internal bool CanToggleFullscreenWatchShowing(object parameter)
+        {
+            return true;
+        }
+
+        public void ToggleBackgroundGridVisibility(object parameter)
+        {
+            if (BackgroundPreviewViewModel == null || !BackgroundPreviewViewModel.Active) return;
+
+            BackgroundPreviewViewModel.IsGridVisible = !BackgroundPreviewViewModel.IsGridVisible;
+        }
+
+        internal bool CanToggleBackgroundGridVisibility(object parameter)
         {
             return true;
         }

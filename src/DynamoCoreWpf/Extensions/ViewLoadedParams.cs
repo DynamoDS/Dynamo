@@ -69,6 +69,15 @@ namespace Dynamo.Wpf.Extensions
             AddItemToMenu(type, separatorObj, index);
         }
 
+        private ICommandExecutive commandExecutive;
+        /// <summary>
+        /// View Extension specific implementation to execute Recordable commands on DynamoViewModel
+        /// </summary>
+        public override ICommandExecutive CommandExecutive
+        {
+            get { return commandExecutive ?? (commandExecutive = new ViewExtensionCommandExecutive(dynamoViewModel)); }
+        }
+
         /// <summary>
         /// Event raised when there's a change in selection of nodes in the workspace.
         /// This event is subscribed to in the extension for any callback necessary for this event

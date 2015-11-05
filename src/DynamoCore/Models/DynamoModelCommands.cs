@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using Dynamo.Core;
 using Dynamo.Nodes;
@@ -65,6 +66,51 @@ namespace Dynamo.Models
             CurrentWorkspace.RecordCreatedModel(node);
         }
 
+        void CreateAndConnectNodeImpl(CreateAndConnectNodeCommand command)
+        {
+            using (CurrentWorkspace.UndoRecorder.BeginActionGroup())
+            {
+                var newNode = CreateNodeFromNameOrType(command.ModelGuid, command.NewNodeName);
+                newNode.X = command.X;
+                newNode.Y = command.Y;
+                var existingNode = CurrentWorkspace.GetModelInternal(command.ModelGuids.ElementAt(1)) as NodeModel;
+                
+                if(newNode == null || existingNode == null) return;
+
+                AddNodeToCurrentWorkspace(newNode, false, command.AddNewNodeToSelection);
+                CurrentWorkspace.UndoRecorder.RecordCreationForUndo(newNode);
+
+                PortModel inPortModel, outPortModel;
+                if (command.CreateAsDownstreamNode)
+                {
+                    // Connect output port of Existing Node to input port of New node
+                    outPortModel = existingNode.OutPorts[command.OutputPortIndex];
+                    inPortModel = newNode.InPorts[command.InputPortIndex];
+                }
+                else
+                {
+                    // Connect output port of New Node to input port of existing node
+                    outPortModel = newNode.OutPorts[command.OutputPortIndex];
+                    inPortModel = existingNode.InPorts[command.InputPortIndex];
+                }
+
+                var models = GetConnectorsToAddAndDelete(inPortModel, outPortModel);
+
+                foreach (var modelPair in models)
+                {
+                    switch (modelPair.Value)
+                    {
+                        case UndoRedoRecorder.UserAction.Creation:
+                            CurrentWorkspace.UndoRecorder.RecordCreationForUndo(modelPair.Key);
+                            break;
+                        case UndoRedoRecorder.UserAction.Deletion:
+                            CurrentWorkspace.UndoRecorder.RecordDeletionForUndo(modelPair.Key);
+                            break;
+                    }
+                }
+            }
+        }
+
         NodeModel GetNodeFromCommand(CreateNodeCommand command)
         {
             if (command.Node != null)
@@ -104,6 +150,24 @@ namespace Dynamo.Models
 
             // Then, we have to figure out what kind of node to make, based on the name.
 
+            NodeModel node = CreateNodeFromNameOrType(nodeId, name);
+            if (node != null) return node;
+
+            // And if that didn't work, then it must be a custom node.
+            if (Guid.TryParse(name, out customNodeId))
+            {
+                node = CustomNodeManager.CreateCustomNodeInstance(customNodeId);
+                node.GUID = nodeId;
+                return node;
+            }
+
+            // We're out of ideas, log an error.
+            Logger.LogError("Could not create instance of node with name: " + name);
+            return null;
+        }
+
+        private NodeModel CreateNodeFromNameOrType(Guid nodeId, string name)
+        {
             NodeModel node;
 
             // First, we check for a DSFunction by looking for a FunctionDescriptor
@@ -121,20 +185,8 @@ namespace Dynamo.Models
             if (NodeFactory.CreateNodeFromTypeName(name, out node))
             {
                 node.GUID = nodeId;
-                return node;
             }
-
-            // And if that didn't work, then it must be a custom node.
-            if (Guid.TryParse(name, out customNodeId))
-            {
-                node = CustomNodeManager.CreateCustomNodeInstance(customNodeId);
-                node.GUID = nodeId;
-                return node;
-            }
-
-            // We're out of ideas, log an error.
-            Logger.LogError("Could not create instance of node with name: " + name);
-            return null;
+            return node;
         }
 
         void CreateNoteImpl(CreateNoteCommand command)
@@ -245,43 +297,54 @@ namespace Dynamo.Models
                 return;
             
             PortModel portModel = isInPort ? node.InPorts[portIndex] : node.OutPorts[portIndex];
+
+            var models = GetConnectorsToAddAndDelete(portModel, activeStartPort);
+
+            WorkspaceModel.RecordModelsForUndo(models, CurrentWorkspace.UndoRecorder);
+            activeStartPort = null;
+        }
+
+        static Dictionary<ModelBase, UndoRedoRecorder.UserAction> GetConnectorsToAddAndDelete(
+            PortModel endPort, PortModel startPort)
+        {
             ConnectorModel connectorToRemove = null;
 
             // Remove connector if one already exists
-            if (portModel.Connectors.Count > 0 && portModel.PortType == PortType.Input)
+            if (endPort.Connectors.Count > 0 && endPort.PortType == PortType.Input)
             {
-                connectorToRemove = portModel.Connectors[0];
+                connectorToRemove = endPort.Connectors[0];
                 connectorToRemove.Delete();
             }
 
             // We could either connect from an input port to an output port, or 
             // another way around (in which case we swap first and second ports).
-            PortModel firstPort, second;
-            if (portModel.PortType != PortType.Input)
+            PortModel firstPort, secondPort;
+            if (endPort.PortType != PortType.Input)
             {
-                firstPort = portModel;
-                second = activeStartPort;
+                firstPort = endPort;
+                secondPort = startPort;
             }
             else
             {
                 // Create the new connector model
-                firstPort = activeStartPort;
-                second = portModel;
+                firstPort = startPort;
+                secondPort = endPort;
             }
 
             ConnectorModel newConnectorModel = ConnectorModel.Make(
                 firstPort.Owner,
-                second.Owner,
+                secondPort.Owner,
                 firstPort.Index,
-                second.Index);
+                secondPort.Index);
 
             // Record the creation of connector in the undo recorder.
             var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
             if (connectorToRemove != null)
+            {
                 models.Add(connectorToRemove, UndoRedoRecorder.UserAction.Deletion);
+            }
             models.Add(newConnectorModel, UndoRedoRecorder.UserAction.Creation);
-            WorkspaceModel.RecordModelsForUndo(models, CurrentWorkspace.UndoRecorder);
-            activeStartPort = null;
+            return models;
         }
 
         void DeleteModelImpl(DeleteModelCommand command)

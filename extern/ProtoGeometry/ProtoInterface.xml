@@ -2969,6 +2969,14 @@
             </summary>
             <search>import,load,open</search>
         </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.FromNativePointer(System.IntPtr)">
+            <summary>
+            Call this method to convert a given native pointer to a bunch 
+            of geometries. This method is meant only for internal use.
+            </summary>
+            <param name="nativePointer">Input opaque native pointer</param>
+            <returns>Returns geometries that are extracted out of the pointer.</returns>
+        </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.DeserializeFromSAB(System.Byte[])">
             <summary>
             Takes a SAB file as input, and deserializes the ASM geometry into

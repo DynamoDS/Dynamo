@@ -1277,7 +1277,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A cyclic dependency exists between &apos;{0}&apos; and &apos;{1}&apos;.
+        ///   Looks up a localized string similar to A cyclic dependency exists between two variables.
         /// </summary>
         public static string kInvalidStaticCyclicDependency {
             get {

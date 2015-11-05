@@ -1,7 +1,7 @@
 ﻿using System.Windows.Threading;
 using Dynamo.Controls;
-using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
+using Dynamo.Scheduler;
 using Dynamo.ViewModels;
 using ProtoCore.Mirror;
 using System;
