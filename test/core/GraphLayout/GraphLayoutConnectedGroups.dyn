@@ -70,7 +70,10 @@
     <Dynamo.Models.ConnectorModel start="da57af46-b231-4206-a0c4-5704695acfd9" start_index="0" end="ce17d82e-d510-4e5e-bcf3-46faa1672d98" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="b4ad9290-2703-4530-ab37-f241310a4616" start_index="0" end="d1846005-5570-4aff-af03-b4c510c6b285" end_index="0" portType="0" />
   </Connectors>
-  <Notes />
+  <Notes>
+    <Dynamo.Models.NoteModel guid="458cec10-5a60-4acf-93f0-76f933f463ca" text="This is a note" x="706.085368327469" y="-254.72474954846" />
+    <Dynamo.Models.NoteModel guid="f1bf1119-6610-4432-bc77-49ff9025c415" text="This is a note" x="323.931828936944" y="-18.6793635507272" />
+  </Notes>
   <Annotations>
     <Dynamo.Models.AnnotationModel guid="508fe6d8-c560-44a4-b0fc-0aff8af79323" annotationText="&lt;Click here to edit the group title&gt;" left="201.365465710663" top="-316.881933664516" width="656.642249826003" height="371.575992390672" fontSize="14" InitialTop="-286.881933664516" InitialHeight="371.575992390672" TextblockHeight="20" backgrouund="#FFBB87C6">
       <Models ModelGuid="7d03321c-aa1b-48c9-810c-d0b63e199f22" />
@@ -79,6 +82,8 @@
       <Models ModelGuid="97fdff50-38a7-47f8-9167-441db4c59c22" />
       <Models ModelGuid="942ecaa8-7557-469e-8f1d-fea057446cad" />
       <Models ModelGuid="2e504b57-8c99-4f52-9442-7a2bcfd63c8d" />
+      <Models ModelGuid="458cec10-5a60-4acf-93f0-76f933f463ca" />
+      <Models ModelGuid="f1bf1119-6610-4432-bc77-49ff9025c415" />
     </Dynamo.Models.AnnotationModel>
     <Dynamo.Models.AnnotationModel guid="4745884a-8db2-42d7-b470-64e8c9063089" annotationText="&lt;Click here to edit the group title&gt;" left="932.59515237349" top="-79.8049773279723" width="656.642249826" height="371.575992390673" fontSize="14" InitialTop="-49.8049773279723" InitialHeight="371.575992390673" TextblockHeight="20" backgrouund="#FFFF7BAC">
       <Models ModelGuid="cb7a2190-3551-4a0a-b484-b546a7387e46" />
