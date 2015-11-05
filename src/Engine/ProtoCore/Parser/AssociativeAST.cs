@@ -37,15 +37,49 @@ namespace ProtoCore.AST.AssociativeAST
 
     public class CommentNode : AssociativeNode
     {
-        public enum CommentType { Inline, Block }
-        public CommentType Type { get; private set; }
-        public string Value { get; private set; }
+        public enum CommentType
+        {
+            Inline,
+            Block
+        }
+
+        public CommentType Type
+        {
+            get; private set;
+        }
+        
+        public string Value
+        {
+            get; private set;
+        }
+
         public CommentNode(int col, int line, string value, CommentType type)
         {
             this.col = col;
             this.line = line;
-            Value = value;
             Type = type;
+
+            Value = string.Empty;
+            if (!string.IsNullOrEmpty(value))
+            {
+                if (Type == CommentType.Inline)
+                {
+                    int start = value.IndexOf("//");
+                    if (start != 0)
+                    {
+                        Value = value.Substring(start + 2);
+                    }
+                }
+                else
+                {
+                    int start = value.IndexOf("/*");
+                    int end = value.IndexOf("*/");
+                    if (start >= 0 && end >= 0)
+                    {
+                        Value = value.Substring(start + 2, end - start - 2);
+                    }
+                }
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
