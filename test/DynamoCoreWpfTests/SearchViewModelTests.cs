@@ -729,6 +729,33 @@ namespace Dynamo.Tests
 
         #endregion
 
+        #region Selection of category
+
+        [Test]
+        [Category("UnitTests")]
+        public void SelectAllSearchCategories()
+        {
+            var element = CreateCustomNode("AMember", "CategoryA");
+            model.Add(element);
+
+            element = CreateCustomNode("BMember", "CategoryB");
+            model.Add(element);
+
+            viewModel.Visible = true;
+            viewModel.SearchAndUpdateResults("member");
+            Assert.AreEqual(2, viewModel.FilteredResults.Count());
+
+            Assert.IsTrue(viewModel.SearchCategories.All(c => c.IsSelected));
+
+            viewModel.UnSelectAllCategories();
+            Assert.IsTrue(viewModel.SearchCategories.All(c => c.IsSelected == false));
+
+            viewModel.SelectAllCategories(null);
+            Assert.IsTrue(viewModel.SearchCategories.All(c => c.IsSelected));
+        }
+
+        #endregion
+
         #region Helpers
 
         private static NodeSearchElement CreateCustomNode(string name, string category,

@@ -47,6 +47,11 @@ namespace Dynamo.Wpf.ViewModels
         public ICommand ClickCommand { get; private set; }
 
         /// <summary>
+        /// Fires, when "only" textblock is clicked.
+        /// </summary>
+        public ICommand OnlyClickCommand { get; private set; }
+
+        /// <summary>
         /// Creates search category, it's used in Search UI to filter nodes.
         /// </summary>
         /// <param name="title">name of category, e.g. Core, BuiltIn etc.</param>
@@ -56,6 +61,12 @@ namespace Dynamo.Wpf.ViewModels
             isSelected = true;
 
             ClickCommand = new DelegateCommand(ToggleSelect);
+            OnlyClickCommand = new DelegateCommand(SelectOnlyThisCategory);
+        }
+
+        private void SelectOnlyThisCategory(object obj)
+        {
+            IsSelected = true;
         }
 
         private void ToggleSelect(object obj)
