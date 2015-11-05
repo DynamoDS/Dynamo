@@ -2432,21 +2432,39 @@ namespace Dynamo.Models
         /// unfreeze will get the state as "not frozen and cannot execute state". This is the case if current 
         /// parent nodes parent is frozen.
         /// </summary>
-        internal void ComputeRunStateOfTheNodes()
+        internal void ComputeRunStateOfTheNodes(object parameter)
         {
-            //First,Toggel the parent node run state.
-            var selectedNodes = DynamoSelection.Instance.Selection.Cast<NodeModel>().ToList();
-            foreach (var snode in selectedNodes)
+            var model = parameter as NodeModel;
+            //usually during undo, only one of the node is toggled.
+            if (model != null)
             {
-                snode.IsFrozen = !snode.IsFrozen;
-                //if parent is frozen, then they cannot execute.
-                snode.CanExecute = !snode.CanExecute;
-            }           
-            //Second, toggle the downstream node  run state.      
-            foreach (var node in selectedNodes)
-            {   
-                ToggleRunStateOfDownStreamNodes(node);               
+                //flip the can execute.
+                model.CanExecute = !model.CanExecute;
+
+                ToggleRunStateOfDownStreamNodes(model);
             }
+            //This is executed when RUN is changed on Dynamo Menu.
+            else
+            {
+                //First,Toggle the parent node run state.
+                var selectedNodes = DynamoSelection.Instance.Selection.Cast<NodeModel>().ToList();
+                foreach (var snode in selectedNodes)
+                {
+                    snode.IsFrozen = !snode.IsFrozen;
+                    //if parent is frozen, then they cannot execute.
+                    snode.CanExecute = !snode.CanExecute;
+                }
+                //Second, toggle the downstream node  run state.      
+                foreach (var node in selectedNodes)
+                {
+                    ToggleRunStateOfDownStreamNodes(node);
+                }
+            }
+
+            //Assuming more than one node is changed,
+            //call request run on the workspace.
+            HasUnsavedChanges = true;
+            this.RequestRun();
         }
 
         /// <summary>
@@ -2460,11 +2478,11 @@ namespace Dynamo.Models
         ///  | UnFrozen / Executing     |       True     |      True   |
         ///  | Frozen / Null            |       False    |      True   |
         ///  -----------------------------------------------------------
-        ///  Frozen/Executing is true for all nodes that are implictly frozen
-        ///  Frozen/ not executing is true for all nodes that are explictly frozen
+        ///  Frozen/Executing is true for all nodes that are implictly frozen.
+        ///  Frozen/ not executing is true for all nodes that are explictly frozen.
         ///  Unfrozen/Executing is the default node state.
         ///  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        ///  | Frozen / Null state is a temporary state. If node is explictly         |  
+        ///  | Frozen / Null state is a temporary state. If a node is explictly       |  
         ///  | set to freeze, and if any other node is trying to unfreeze explcitly   |
         ///  | set node, then the node enters this temporary state. In this state,    |
         ///  | the run state of the node cannot be modified by other nodes            |
@@ -2473,16 +2491,13 @@ namespace Dynamo.Models
         /// <param name="node">The node.</param>       
         private void ToggleRunStateOfDownStreamNodes(NodeModel node)
         {           
-
             var sets = node.OutputNodes.Values;
             var outputNodes = sets.SelectMany(set => set.Select(t => t.Item2)).Distinct().ToList();
 
             foreach (var outputNode in outputNodes)
             {                                
-                //a node can be a parent or child. in parent, the node will
-                // be frozen and  cannot execute state. in child the node will be
-                // frozen and can execute state. at any time, if a node encountered 
-                // is a parent that is frozen, then do not alter the state.               
+                //If any of the node is trying to set explictly set nodes, then
+                // node enters temporary state
                 if (outputNode.IsFrozen && outputNode.CanExecute != null &&
                     (bool)!outputNode.CanExecute)
                 {
@@ -2491,17 +2506,19 @@ namespace Dynamo.Models
                 }
                 else
                 {
-                    //set the run state of the node.  
+                    //set the run state of the node. Check if any of the parent node is
+                    //in frozen state
                     outputNode.IsFrozen = CheckIfUpstreamNodeIsFrozen(outputNode);
-
                 }
                                 
                 if (outputNode.CanExecute == null)
                 {                    
-                    //if the node is in temporary state, then it is always frozen
+                    //if the node is in temporary state, then it is always frozen.
                     outputNode.IsFrozen = true;
-                    //if the parent node is trying to unfreeze the child node, which
-                    // is explictly frozen
+
+                    //if the command is to set the temporary node to unfreeze implictly
+                    //then the node enters Frozen / Not executing state. This is the original
+                    //state of the explictly set nodes.
                     if (!node.IsFrozen)
                     {                       
                         outputNode.CanExecute = false;

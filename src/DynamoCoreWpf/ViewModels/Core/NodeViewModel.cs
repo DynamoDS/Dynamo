@@ -341,6 +341,28 @@ namespace Dynamo.ViewModels
             {              
                 return NodeModel.IsFrozen;
             }
+            set
+            {
+                NodeModel.IsFrozen = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether this model can execute though it is frozen
+        /// </summary>
+        /// <value>
+        /// The can execute.
+        /// </value>
+        public bool? CanExecute
+        {
+            get
+            {
+                return NodeModel.CanExecute;
+            }
+            set
+            {
+                NodeModel.CanExecute = value;
+            }
         }
 
         /// <summary>
@@ -351,7 +373,10 @@ namespace Dynamo.ViewModels
         /// </value>        
         public bool NodeRunChecked
         {
-            get { return nodeRunChecked; }
+            get
+            {                
+                return nodeRunChecked;
+            }
             set
             {
                 nodeRunChecked = value;
@@ -367,7 +392,10 @@ namespace Dynamo.ViewModels
         /// </value>
         public bool NodeRunEnabled
         {
-            get { return nodeRunEnabled; }
+            get
+            {               
+                return nodeRunEnabled;
+            }
             set
             {
                 nodeRunEnabled = value;
@@ -375,7 +403,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void ToggleNodeRunState()
+        private void SetNodeRunState()
         {
             var tt = NodeModel.NickName;
             //Node temporary state
@@ -477,6 +505,7 @@ namespace Dynamo.ViewModels
             ShowExecutionPreview = workspaceViewModel.DynamoViewModel.ShowRunPreview;
             IsNodeAddedRecently = true;
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
+            SetNodeRunState();
         }
 
         public NodeViewModel(WorkspaceViewModel workspaceViewModel, NodeModel logic, Size preferredSize)
@@ -640,7 +669,10 @@ namespace Dynamo.ViewModels
                     break;
                 case "IsFrozen":
                 case "CanExecute":
-                    ToggleNodeRunState();                                         
+                    SetNodeRunState();                                         
+                    break;
+                case "NodeRunState":
+                    WorkspaceViewModel.ComputeRunStateOfTheNode(this.nodeLogic);
                     break;
             }
         }
@@ -1041,8 +1073,8 @@ namespace Dynamo.ViewModels
         }
 
         private void ComputeRunStateOfTheNode(object parameters)
-        {
-            DynamoViewModel.ComputeRunStateOfTheNodeCommand.Execute(null);
+        {            
+            WorkspaceViewModel.ComputeRunStateOfTheNode(this.nodeLogic);
         }
 
         private bool CanSetTheRunStateOftheNode(object parameters)

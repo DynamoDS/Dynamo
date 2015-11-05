@@ -1792,14 +1792,7 @@ namespace Dynamo.Models
 
             OnWorkspaceCleared(CurrentWorkspace);
         }
-
-        /// <summary>
-        /// Makes the current node and the downstream nodes frozen.
-        /// </summary>
-        internal void ComputeRunStateOfTheNode()
-        {
-            this.CurrentWorkspace.ComputeRunStateOfTheNodes();
-        }
+       
         #endregion
 
         #region private methods

@@ -14,6 +14,7 @@ using Dynamo.Utilities;
 using System.Windows.Input;
 using Dynamo.Configuration;
 using Dynamo.Core;
+using Dynamo.Nodes;
 using Dynamo.Wpf.ViewModels;
 
 using Function = Dynamo.Nodes.Function;
@@ -278,7 +279,8 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (DynamoSelection.Instance.Selection.Count() == 1)
+                if (DynamoSelection.Instance.Selection.Count() == 1 &&
+                    _nodes.Any())
                 {
                     var nodemodel = DynamoSelection.Instance.Selection.Cast<NodeModel>().First();
                     var nodevm = _nodes.First(x => x.NodeLogic == nodemodel);
@@ -842,6 +844,20 @@ namespace Dynamo.ViewModels
         private static bool CanAlignSelected(object parameter)
         {
             return DynamoSelection.Instance.Selection.Count > 1;
+        }
+
+        internal void ComputeRunStateOfTheNode(NodeModel node)
+        {
+            if (node != null)
+            {
+                var oldFrozen = (!node.IsFrozen).ToString();
+                var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
+                    new[] {node.GUID}, "IsFrozen", oldFrozen);
+
+                DynamoViewModel.Model.ExecuteCommand(command);                                               
+            }
+
+            this.Model.ComputeRunStateOfTheNodes(node); 
         }
 
         private void Paste(object param)

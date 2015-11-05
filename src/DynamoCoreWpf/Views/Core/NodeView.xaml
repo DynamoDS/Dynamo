@@ -80,8 +80,8 @@
                 </MenuItem>
                 <MenuItem Name="nodeIsFrozen"
                           Header="{x:Static p:Resources.NodesRunStatus}"
-                          IsChecked="{Binding NodeRunChecked,Mode=TwoWay}"   
-                          IsEnabled="{Binding NodeRunEnabled, Mode=TwoWay}"
+                          IsChecked="{Binding NodeRunChecked,Mode=OneWay}"   
+                          IsEnabled="{Binding NodeRunEnabled, Mode=OneWay}"
                           Command="{Binding Path=ComputeRunStateOfTheNodeCommand}" />
                 <MenuItem Name="isVisible_cm"
                           Header="{x:Static p:Resources.NodeContextMenuPreview}"

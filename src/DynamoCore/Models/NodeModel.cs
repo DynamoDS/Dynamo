@@ -634,7 +634,7 @@ namespace Dynamo.Models
             set
             {
                 isFrozen = value;                
-                RaisePropertyChanged("IsFrozen");               
+                RaisePropertyChanged("IsFrozen");
             }
         }
 
@@ -654,7 +654,7 @@ namespace Dynamo.Models
 
             set
             {
-                canExecute = value;
+                canExecute = value; 
                 RaisePropertyChanged("CanExecute");
             }
         }
@@ -1572,6 +1572,25 @@ namespace Dynamo.Models
                     if (bool.TryParse(value, out newUpstreamVisibilityValue))
                         IsUpstreamVisible = newUpstreamVisibilityValue;
                     return true;
+
+                case "IsFrozen":
+                    bool newIsFrozen;
+                    if (bool.TryParse(value, out newIsFrozen))
+                    {
+                        IsFrozen = newIsFrozen;
+                    }                   
+                    return true;
+
+                case "CanExecute":
+                    bool newCanExecute;
+                    if (value == "null")
+                    {
+                        CanExecute = null;
+                        return true;
+                    }
+                    if (bool.TryParse(value, out newCanExecute))
+                        CanExecute = newCanExecute;
+                    return true;
             }
 
             return base.UpdateValueCore(updateValueParams);
@@ -1602,6 +1621,8 @@ namespace Dynamo.Models
             helper.SetAttribute("isUpstreamVisible", IsUpstreamVisible);
             helper.SetAttribute("lacing", ArgumentLacing.ToString());
             helper.SetAttribute("isSelectedInput", IsSelectedInput.ToString());
+            helper.SetAttribute("IsFrozen", IsFrozen);
+            helper.SetAttribute("CanExecute",  CanExecute);
 
             var portsWithDefaultValues =
                 inPorts.Select((port, index) => new { port, index })
@@ -1653,6 +1674,8 @@ namespace Dynamo.Models
             isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
             IsSelectedInput = helper.ReadBoolean("isSelectedInput", true);
+            IsFrozen = helper.ReadBoolean("IsFrozen", false);            
+            CanExecute = helper.ReadBoolean("CanExecute",null);
 
             var portInfoProcessed = new HashSet<int>();
 
@@ -1693,10 +1716,12 @@ namespace Dynamo.Models
                 RaisePropertyChanged("ArgumentLacing");
                 RaisePropertyChanged("IsVisible");
                 RaisePropertyChanged("IsUpstreamVisible");
+                RaisePropertyChanged("NodeRunState");
 
                 // Notify listeners that the position of the node has changed,
                 // then all connected connectors will also redraw themselves.
                 ReportPosition();
+                
             }
         }
 

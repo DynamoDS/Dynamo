@@ -217,13 +217,14 @@ namespace Dynamo.Core.Threading
 
         /// <summary>
         /// Call this method to recursively gather downstream nodes of a given node.
+        /// Get only those nodes that are in RUN state.
         /// </summary>
         /// <param name="node">A NodeModel whose downstream nodes are to be gathered.</param>
         /// <param name="gathered">A list of all downstream nodes.</param>
         /// 
         private static void GetDownstreamNodes(NodeModel node, ICollection<NodeModel> gathered)
         {
-            if (gathered.Contains(node)) // Considered this node before, bail.
+            if (gathered.Contains(node) || node.IsFrozen) // Considered this node before, bail.
                 return;
 
             gathered.Add(node);
