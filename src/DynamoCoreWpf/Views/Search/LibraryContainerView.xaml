@@ -283,7 +283,7 @@
                HorizontalOffset="-10">
             <ContentControl Style="{StaticResource LibraryPopupContentStyle}">
                 <StackPanel Orientation="Vertical">
-                    <TextBlock Text="Select All"
+                    <TextBlock Text="{x:Static p:Resources.SelectAllTitle}"
                                HorizontalAlignment="Right"
                                Style="{StaticResource FilterTextBlockStyle}"
                                Margin="0,0,3,0">
@@ -341,11 +341,12 @@
                                                        Text="{Binding Name}"
                                                        Foreground="{Binding IsSelected, 
                                                                         Converter={StaticResource FilterIsSelertedCategoryForegroundConverter}}"
-                                                       FontStyle="Italic" />
+                                                       FontStyle="Italic"
+                                                       Margin="0,0,5,0" />
 
                                             <TextBlock Name="OnlyTextBlock"
                                                        Grid.Column="2"
-                                                       Text="only"
+                                                       Text="{x:Static p:Resources.OnlyTitle}"
                                                        Style="{StaticResource FilterTextBlockStyle}"
                                                        HorizontalAlignment="Right"
                                                        Margin="0,0,2,0"
