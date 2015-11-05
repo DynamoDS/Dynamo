@@ -65,7 +65,7 @@ namespace ProtoCore.AST.AssociativeAST
                 if (Type == CommentType.Inline)
                 {
                     int start = value.IndexOf("//");
-                    if (start != 0)
+                    if (start >= 0)
                     {
                         Value = value.Substring(start + 2);
                     }
