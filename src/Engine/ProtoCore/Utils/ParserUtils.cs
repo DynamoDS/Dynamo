@@ -82,6 +82,21 @@ namespace ProtoCore.Utils
             return identifiers;
         }
 
+        public static List<ProtoCore.AST.Node> GetCommentNodes(ProtoCore.AST.Node codeBlockNode)
+        {
+            var nodes = new List<AST.Node>();
+            var cbn = codeBlockNode as AST.AssociativeAST.CodeBlockNode;
+            if (cbn != null)
+            {
+                foreach (var n in cbn.Body)
+                {
+                    if (n is AST.AssociativeAST.CommentNode)
+                        nodes.Add(n);
+                }
+            }
+            return nodes;
+        }
+
         public static List<ProtoCore.AST.Node> GetAstNodes(ProtoCore.AST.Node codeBlockNode)
         {
             List<ProtoCore.AST.Node> nodes = new List<ProtoCore.AST.Node>();

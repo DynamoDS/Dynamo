@@ -300,7 +300,8 @@ namespace Dynamo.Nodes
                     //    x : type
                     //    x : type = default_value
                     IdentifierNode identifierNode;
-                    if (!TryParseInputSymbol(inputSymbol, out identifierNode, out defaultValue))
+                    string comment;
+                    if (!TryParseInputExpression(inputSymbol, out identifierNode, out defaultValue, out comment))
                     {
                         this.Warning(Properties.Resources.WarningInvalidInput);
                     }
@@ -363,12 +364,14 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        private bool TryParseInputSymbol(string inputSymbol, 
-                                         out IdentifierNode identifier, 
-                                         out AssociativeNode defaultValue)
+        private bool TryParseInputExpression(string inputSymbol, 
+                                             out IdentifierNode identifier, 
+                                             out AssociativeNode defaultValue,
+                                             out string comment)
         {
             identifier = null;
             defaultValue = null;
+            comment = null;
 
             var parseString = InputSymbol;
             parseString += ";";
@@ -382,6 +385,12 @@ namespace Dynamo.Nodes
                 parseParam.ParsedNodes != null &&
                 parseParam.ParsedNodes.Any())
             {
+                var parsedComments = parseParam.ParsedComments;
+                if (parsedComments != null && parsedComments.Any())
+                {
+                    comment = String.Join("\n", parsedComments.Select(c => (c as CommentNode).Value));
+                }
+
                 var node = parseParam.ParsedNodes.First() as BinaryExpressionNode;
                 Validity.Assert(node != null);
 
