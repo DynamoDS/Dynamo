@@ -23,8 +23,7 @@
                                    Padding="3 3 0 0"
                                    Background="#88FFFFFF"
                                    MaxWidth="500"
-                                   Height="24"
-                                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                   ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                    ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
         </Border>
     </Grid>
