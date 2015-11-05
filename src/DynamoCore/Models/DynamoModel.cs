@@ -30,10 +30,7 @@ using DynamoServices;
 using DynamoUnits;
 using Greg;
 using ProtoCore;
-using ProtoCore.Exceptions;
 using ProtoCore.Runtime;
-
-using ShapewaysClient;
 
 using Compiler = ProtoAssociative.Compiler;
 // Dynamo package manager
