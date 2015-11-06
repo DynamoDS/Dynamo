@@ -73,6 +73,7 @@
   <Notes>
     <Dynamo.Models.NoteModel guid="458cec10-5a60-4acf-93f0-76f933f463ca" text="This is a note" x="706.085368327469" y="-254.72474954846" />
     <Dynamo.Models.NoteModel guid="f1bf1119-6610-4432-bc77-49ff9025c415" text="This is a note" x="323.931828936944" y="-18.6793635507272" />
+    <Dynamo.Models.NoteModel guid="96838ac9-4384-44da-9252-11b7ed9bc98d" text="This is another note." x="609.719800472365" y="273.731590302109" />
   </Notes>
   <Annotations>
     <Dynamo.Models.AnnotationModel guid="508fe6d8-c560-44a4-b0fc-0aff8af79323" annotationText="&lt;Click here to edit the group title&gt;" left="201.365465710663" top="-316.881933664516" width="656.642249826003" height="371.575992390672" fontSize="14" InitialTop="-286.881933664516" InitialHeight="371.575992390672" TextblockHeight="20" backgrouund="#FFBB87C6">
