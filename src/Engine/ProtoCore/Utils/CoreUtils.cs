@@ -729,8 +729,11 @@ namespace ProtoCore.Utils
         {
             Validity.Assert(null != core);
             List<AssociativeNode> astList = new List<AssociativeNode>();
-            var cbn = ProtoCore.Utils.ParserUtils.Parse(code) as CodeBlockNode;
-            astList.AddRange(cbn.Body);
+            var cbn = ParserUtils.Parse(code);
+            if (cbn != null)
+            {
+                astList.AddRange(cbn.Body);
+            }
             return astList;
         }
 

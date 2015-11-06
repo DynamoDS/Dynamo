@@ -91,9 +91,9 @@ namespace ProtoCore.Utils
             return identifiers;
         }
 
-        public static List<AST.Node> GetAstNodes(AST.AssociativeAST.CodeBlockNode codeBlockNode)
+        public static List<AST.AssociativeAST.AssociativeNode> GetAstNodes(AST.AssociativeAST.CodeBlockNode codeBlockNode)
         {
-            var nodes = new List<ProtoCore.AST.Node>();
+            var nodes = new List<AST.AssociativeAST.AssociativeNode>();
             if (codeBlockNode != null)
             {
                 nodes.AddRange(codeBlockNode.Body);
@@ -105,7 +105,7 @@ namespace ProtoCore.Utils
         /// Parses designscript code and returns a ProtoAST CodeBlockNode
         /// </summary>
         /// <param name="code"> Source code to parse </param>
-        public static AST.Node Parse(string code)
+        public static AST.AssociativeAST.CodeBlockNode Parse(string code)
         {
             Validity.Assert(code != null);
 
