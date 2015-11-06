@@ -6,124 +6,118 @@ namespace ProtoCore.Utils
 {
     public static class CoreUtils
     {
-        public static void InsertPredefinedAndBuiltinMethods(Core core, AST.Node root, bool builtinMethodsLoaded)
+        public static void InsertPredefinedAndBuiltinMethods(Core core, CodeBlockNode root)
         {
             if (DSASM.InterpreterMode.kNormal == core.Options.RunMode)
             {
                 if (core.Options.AssocOperatorAsMethod)
                 {
-                    CoreUtils.InsertPredefinedMethod(core, root, builtinMethodsLoaded);
+                    InsertPredefinedMethod(core, root);
                 }
-                CoreUtils.InsertBuiltInMethods(core, root, builtinMethodsLoaded);
+                InsertBuiltInMethods(core, root);
             }
         }
 
-        
-    public static IdentifierNode BuildAssocIdentifier(Core core, string name, PrimitiveType type = PrimitiveType.kTypeVar)
-    {
-        var ident = new IdentifierNode();
-        ident.Name = ident.Value = name;
-        ident.datatype = TypeSystem.BuildPrimitiveTypeObject(type, 0);
-        return ident;
-    }
-
-    private static FunctionDefinitionNode GenerateBuiltInMethodSignatureNode(Lang.BuiltInMethods.BuiltInMethod method)
-    {
-        FunctionDefinitionNode fDef = new FunctionDefinitionNode();
-        fDef.Name = Lang.BuiltInMethods.GetMethodName(method.ID);
-        fDef.ReturnType = method.ReturnType;
-        fDef.IsExternLib = true;
-        fDef.IsBuiltIn = true;
-        fDef.BuiltInMethodId = method.ID;
-        fDef.Signature = new ArgumentSignatureNode();
-        fDef.MethodAttributes = method.MethodAttributes;
-
-        foreach (KeyValuePair<string, Type> param in method.Parameters)
+        public static IdentifierNode BuildAssocIdentifier(Core core, string name, PrimitiveType type = PrimitiveType.kTypeVar)
         {
-            VarDeclNode arg = new VarDeclNode();
-            arg.NameNode = new IdentifierNode { Name = param.Key, Value = param.Key };
-            arg.ArgumentType = param.Value;
-            fDef.Signature.AddArgument(arg);
+            var ident = new IdentifierNode();
+            ident.Name = ident.Value = name;
+            ident.datatype = TypeSystem.BuildPrimitiveTypeObject(type, 0);
+            return ident;
         }
 
-        return fDef;
-    }
-        
-	private static void InsertBuiltInMethods(Core core, AST.Node root, bool builtinMethodsLoaded)
-    {
-        if (!builtinMethodsLoaded)
+        private static FunctionDefinitionNode GenerateBuiltInMethodSignatureNode(Lang.BuiltInMethods.BuiltInMethod method)
+        {
+            FunctionDefinitionNode fDef = new FunctionDefinitionNode();
+            fDef.Name = Lang.BuiltInMethods.GetMethodName(method.ID);
+            fDef.ReturnType = method.ReturnType;
+            fDef.IsExternLib = true;
+            fDef.IsBuiltIn = true;
+            fDef.BuiltInMethodId = method.ID;
+            fDef.Signature = new ArgumentSignatureNode();
+            fDef.MethodAttributes = method.MethodAttributes;
+
+            foreach (KeyValuePair<string, Type> param in method.Parameters)
+            {
+                VarDeclNode arg = new VarDeclNode();
+                arg.NameNode = new IdentifierNode { Name = param.Key, Value = param.Key };
+                arg.ArgumentType = param.Value;
+                fDef.Signature.AddArgument(arg);
+            }
+
+            return fDef;
+        }
+
+        private static void InsertBuiltInMethods(Core core, AST.Node root)
         {
             Lang.BuiltInMethods builtInMethods = new Lang.BuiltInMethods(core);
             foreach (Lang.BuiltInMethods.BuiltInMethod method in builtInMethods.Methods)
-			{
-				(root as CodeBlockNode).Body.Add(GenerateBuiltInMethodSignatureNode(method));
-			}
-		}
-    }
+            {
+                (root as CodeBlockNode).Body.Add(GenerateBuiltInMethodSignatureNode(method));
+            }
+        }
 
-    private static void InsertBinaryOperationMethod(Core core, AST.Node root, Operator op, PrimitiveType r, PrimitiveType op1, PrimitiveType op2, int retRank = 0, int op1rank = 0, int op2rank = 0)
-    {
-        FunctionDefinitionNode funcDefNode = new FunctionDefinitionNode();
-        funcDefNode.access = CompilerDefinitions.AccessModifier.kPublic;
-        funcDefNode.IsAssocOperator = true;
-        funcDefNode.IsBuiltIn = true;
-        funcDefNode.Name = Op.GetOpFunction(op);
-        funcDefNode.ReturnType = new Type() { Name = core.TypeSystem.GetType((int)r), UID = (int)r, rank = retRank};
-        ArgumentSignatureNode args = new ArgumentSignatureNode();
-        args.AddArgument(new VarDeclNode()
+        private static void InsertBinaryOperationMethod(Core core, CodeBlockNode root, Operator op, PrimitiveType r, PrimitiveType op1, PrimitiveType op2, int retRank = 0, int op1rank = 0, int op2rank = 0)
         {
-            access = CompilerDefinitions.AccessModifier.kPublic,
-            NameNode = BuildAssocIdentifier(core, DSASM.Constants.kLHS),
-            ArgumentType = new Type { Name = core.TypeSystem.GetType((int)op1), UID = (int)op1, rank = op1rank}
-        });
-        args.AddArgument(new VarDeclNode()
+            FunctionDefinitionNode funcDefNode = new FunctionDefinitionNode();
+            funcDefNode.access = CompilerDefinitions.AccessModifier.kPublic;
+            funcDefNode.IsAssocOperator = true;
+            funcDefNode.IsBuiltIn = true;
+            funcDefNode.Name = Op.GetOpFunction(op);
+            funcDefNode.ReturnType = new Type() { Name = core.TypeSystem.GetType((int)r), UID = (int)r, rank = retRank };
+            ArgumentSignatureNode args = new ArgumentSignatureNode();
+            args.AddArgument(new VarDeclNode()
+            {
+                Access = CompilerDefinitions.AccessModifier.kPublic,
+                NameNode = BuildAssocIdentifier(core, DSASM.Constants.kLHS),
+                ArgumentType = new Type { Name = core.TypeSystem.GetType((int)op1), UID = (int)op1, rank = op1rank }
+            });
+            args.AddArgument(new VarDeclNode()
+            {
+                Access = CompilerDefinitions.AccessModifier.kPublic,
+                NameNode = BuildAssocIdentifier(core, DSASM.Constants.kRHS),
+                ArgumentType = new Type { Name = core.TypeSystem.GetType((int)op2), UID = (int)op2, rank = op2rank }
+            });
+            funcDefNode.Signature = args;
+
+            CodeBlockNode body = new CodeBlockNode();
+            IdentifierNode _return = BuildAssocIdentifier(core, DSDefinitions.Keyword.Return, PrimitiveType.kTypeReturn);
+
+            IdentifierNode lhs = BuildAssocIdentifier(core, DSASM.Constants.kLHS);
+            IdentifierNode rhs = BuildAssocIdentifier(core, DSASM.Constants.kRHS);
+            body.Body.Add(new BinaryExpressionNode() { LeftNode = _return, Optr = DSASM.Operator.assign, RightNode = new BinaryExpressionNode() { LeftNode = lhs, RightNode = rhs, Optr = op } });
+            funcDefNode.FunctionBody = body;
+            root.Body.Add(funcDefNode);
+        }
+
+        // The following methods are used to insert methods to the bottom of the AST and convert operator to these method calls 
+        // to support replication on operators 
+        private static void InsertUnaryOperationMethod(Core core, CodeBlockNode root, UnaryOperator op, PrimitiveType r, PrimitiveType operand)
         {
-            access = CompilerDefinitions.AccessModifier.kPublic,
-            NameNode = BuildAssocIdentifier(core, DSASM.Constants.kRHS),
-            ArgumentType = new Type { Name = core.TypeSystem.GetType((int)op2), UID = (int)op2, rank = op2rank}
-        });
-        funcDefNode.Signature = args;
+            FunctionDefinitionNode funcDefNode = new FunctionDefinitionNode();
+            funcDefNode.access = CompilerDefinitions.AccessModifier.kPublic;
+            funcDefNode.IsAssocOperator = true;
+            funcDefNode.IsBuiltIn = true;
+            funcDefNode.Name = Op.GetUnaryOpFunction(op);
+            funcDefNode.ReturnType = new Type() { Name = core.TypeSystem.GetType((int)r), UID = (int)r };
+            ArgumentSignatureNode args = new ArgumentSignatureNode();
+            args.AddArgument(new VarDeclNode()
+            {
+                Access = CompilerDefinitions.AccessModifier.kPublic,
+                NameNode = BuildAssocIdentifier(core, "%param"),
+                ArgumentType = new Type { Name = core.TypeSystem.GetType((int)operand), UID = (int)operand }
+            });
+            funcDefNode.Signature = args;
 
-        CodeBlockNode body = new CodeBlockNode();
-        IdentifierNode _return = BuildAssocIdentifier(core, DSDefinitions.Keyword.Return, PrimitiveType.kTypeReturn);
+            CodeBlockNode body = new CodeBlockNode();
+            IdentifierNode _return = BuildAssocIdentifier(core, DSDefinitions.Keyword.Return, PrimitiveType.kTypeReturn);
+            IdentifierNode param = BuildAssocIdentifier(core, "%param");
+            body.Body.Add(new BinaryExpressionNode() { LeftNode = _return, Optr = DSASM.Operator.assign, RightNode = new UnaryExpressionNode() { Expression = param, Operator = op } });
+            funcDefNode.FunctionBody = body;
+            root.Body.Add(funcDefNode);
+        }
 
-        IdentifierNode lhs = BuildAssocIdentifier(core, DSASM.Constants.kLHS);
-        IdentifierNode rhs = BuildAssocIdentifier(core, DSASM.Constants.kRHS);
-        body.Body.Add(new BinaryExpressionNode() { LeftNode = _return, Optr = DSASM.Operator.assign, RightNode = new BinaryExpressionNode() { LeftNode = lhs, RightNode = rhs, Optr = op } });
-        funcDefNode.FunctionBody = body;
-        (root as CodeBlockNode).Body.Add(funcDefNode);
-    }
-
-	// The following methods are used to insert methods to the bottom of the AST and convert operator to these method calls 
-	// to support replication on operators 
-	private static void InsertUnaryOperationMethod(Core core, AST.Node root, UnaryOperator op, PrimitiveType r, PrimitiveType operand)
-    {
-        FunctionDefinitionNode funcDefNode = new FunctionDefinitionNode();
-        funcDefNode.access = CompilerDefinitions.AccessModifier.kPublic;
-        funcDefNode.IsAssocOperator = true;
-        funcDefNode.IsBuiltIn = true;
-        funcDefNode.Name = Op.GetUnaryOpFunction(op);
-        funcDefNode.ReturnType = new Type() { Name = core.TypeSystem.GetType((int)r), UID = (int)r };
-        ArgumentSignatureNode args = new ArgumentSignatureNode();
-        args.AddArgument(new VarDeclNode()
-        {
-            access = CompilerDefinitions.AccessModifier.kPublic,
-            NameNode = BuildAssocIdentifier(core, "%param"),
-            ArgumentType = new Type { Name = core.TypeSystem.GetType((int)operand), UID = (int)operand }
-        });
-        funcDefNode.Signature = args;
-
-        CodeBlockNode body = new CodeBlockNode();
-        IdentifierNode _return = BuildAssocIdentifier(core, DSDefinitions.Keyword.Return, PrimitiveType.kTypeReturn);
-        IdentifierNode param = BuildAssocIdentifier(core, "%param");
-        body.Body.Add(new BinaryExpressionNode() { LeftNode = _return, Optr = DSASM.Operator.assign, RightNode = new UnaryExpressionNode() { Expression = param, Operator = op } });
-        funcDefNode.FunctionBody = body;
-        (root as CodeBlockNode).Body.Add(funcDefNode);
-    }
-
-    private static void InsertPredefinedMethod(Core core, AST.Node root, bool builtinMethodsLoaded)
-    {
-        if (!builtinMethodsLoaded)
+        private static void InsertPredefinedMethod(Core core, CodeBlockNode root)
         {
             InsertBinaryOperationMethod(core, root, Operator.add, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar);
             InsertBinaryOperationMethod(core, root, Operator.sub, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar);
@@ -141,8 +135,7 @@ namespace ProtoCore.Utils
             InsertUnaryOperationMethod(core, root, UnaryOperator.Not, PrimitiveType.kTypeBool, PrimitiveType.kTypeBool);
             InsertUnaryOperationMethod(core, root, UnaryOperator.Neg, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar);
         }
-    }
-	
+
 
         public static string GetLanguageString(Language language)
         {
@@ -367,7 +360,7 @@ namespace ProtoCore.Utils
             return varname.StartsWith(DSASM.Constants.kTempDefaultArg);
         }
 
-        public static FunctionDotCallNode GenerateCallDotNode(AssociativeNode lhs, 
+        public static FunctionDotCallNode GenerateCallDotNode(AssociativeNode lhs,
             FunctionCallNode rhsCall, Core core = null)
         {
             // The function name to call
@@ -568,7 +561,7 @@ namespace ProtoCore.Utils
 
             while (leftNode is IdentifierListNode)
             {
-                rightNode = ((IdentifierListNode) leftNode).RightNode;
+                rightNode = ((IdentifierListNode)leftNode).RightNode;
                 if (rightNode is FunctionCallNode)
                 {
                     intermediateNodes.Clear();
@@ -578,7 +571,7 @@ namespace ProtoCore.Utils
                     intermediateNodes.Insert(0, rightNode);
                 }
                 leftNode = ((IdentifierListNode)leftNode).LeftNode;
-                
+
             }
             if (leftNode is FunctionCallNode)
             {
@@ -602,7 +595,7 @@ namespace ProtoCore.Utils
             var identifierNode = identifierList as IdentifierNode;
             Validity.Assert(identListNode != null || identifierNode != null);
 
-            string partialName = identListNode != null ? 
+            string partialName = identListNode != null ?
                 GetIdentifierStringUntilFirstParenthesis(identListNode) : identifierList.Name;
 
             string[] classNames = classTable.GetAllMatchingClasses(partialName);
@@ -642,9 +635,9 @@ namespace ProtoCore.Utils
             //throw new NotImplementedException();
             var ci = classTable.IndexOf(className);
 
-            if (ci == DSASM.Constants.kInvalidIndex) 
+            if (ci == DSASM.Constants.kInvalidIndex)
                 return string.Empty;
-            
+
             var classNode = classTable.ClassNodes[ci];
             return classNode.ExternLib;
         }
@@ -687,7 +680,7 @@ namespace ProtoCore.Utils
         public static AssociativeNode CreateNodeByCombiningIdentifiers(IList<AssociativeNode> nodeList)
         {
             int count = nodeList.Count;
-            if(count == 0)
+            if (count == 0)
                 return null;
 
             if (count == 1)
@@ -815,7 +808,7 @@ namespace ProtoCore.Utils
             return false;
         }
 
-        
+
         public static StackValue BuildStackValueForPrimitive(AssociativeNode node)
         {
             Validity.Assert(IsPrimitiveASTNode(node) == true);

@@ -784,9 +784,9 @@ public Node root { get; set; }
 	void DesignScriptParser() {
 		Node node = null; 
 		Hydrogen(out node);
-		if (!core.IsParsingPreloadedAssembly && !core.IsParsingCodeBlockNode)
+		if (!core.IsParsingPreloadedAssembly && !core.IsParsingCodeBlockNode && !builtinMethodsLoaded)
 		{
-		   ProtoCore.Utils.CoreUtils.InsertPredefinedAndBuiltinMethods(core, node, builtinMethodsLoaded);
+		   CoreUtils.InsertPredefinedAndBuiltinMethods(core, node as CodeBlockNode);
 		   root = node;
 		}
 		else
@@ -838,9 +838,9 @@ public Node root { get; set; }
 		if (rootImport && null != imh && imh.RootImportNode.CodeNode.Body.Count != 0)
 		   (codeblock as ProtoCore.AST.AssociativeAST.CodeBlockNode).Body.Add(imh.RootImportNode);
 		
-		if (rootImport && core.IsParsingPreloadedAssembly)
+		if (rootImport && core.IsParsingPreloadedAssembly && !builtinMethodsLoaded)
 		{
-		ProtoCore.Utils.CoreUtils.InsertPredefinedAndBuiltinMethods(core, codeblock, builtinMethodsLoaded);
+		CoreUtils.InsertPredefinedAndBuiltinMethods(core, codeblock);
 		core.ImportNodes = codeblock;
 		}
 		
@@ -1536,7 +1536,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 	void Associative_vardecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic, bool isStatic = false, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null) {
 		ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
 		ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode(); 
-		varDeclNode.access = access;
+		varDeclNode.Access = access;
 		varDeclNode.Attributes = attrs;
 		varDeclNode.IsStatic = isStatic;
 		
@@ -1869,7 +1869,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 	void Associative_ArgDecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic) {
 		ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
 		ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode(); 
-		varDeclNode.access = access;
+		varDeclNode.Access = access;
 		
 		Expect(1);
 		if (IsKeyWord(t.val, true))

@@ -77,7 +77,7 @@ namespace ProtoAssociative
                         if (!core.builtInsLoaded)
                         {
                             // Load the built-in methods manually
-                            ProtoCore.Utils.CoreUtils.InsertPredefinedAndBuiltinMethods(core, codeBlockNode, false);
+                            CoreUtils.InsertPredefinedAndBuiltinMethods(core, codeBlockNode as ProtoCore.AST.AssociativeAST.CodeBlockNode);
                             core.builtInsLoaded = true;
                         }
                     }

@@ -44,9 +44,9 @@ Hydrogen<out Node codeBlockNode>
                                if (rootImport && null != imh && imh.RootImportNode.CodeNode.Body.Count != 0)
                                    (codeblock as ProtoCore.AST.AssociativeAST.CodeBlockNode).Body.Add(imh.RootImportNode);
                             .)
-                            (. if (rootImport && core.IsParsingPreloadedAssembly)
+                            (. if (rootImport && core.IsParsingPreloadedAssembly && !builtinMethodsLoaded)
         {
-                ProtoCore.Utils.CoreUtils.InsertPredefinedAndBuiltinMethods(core, codeblock, builtinMethodsLoaded);
+            CoreUtils.InsertPredefinedAndBuiltinMethods(core, codeblock);
             core.ImportNodes = codeblock;
         }
 .)

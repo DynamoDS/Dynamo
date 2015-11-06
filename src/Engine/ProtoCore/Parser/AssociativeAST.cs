@@ -1031,7 +1031,7 @@ namespace ProtoCore.AST.AssociativeAST
                 Name = rhs.ArgumentType.Name
             };
             NameNode = NodeUtils.Clone(rhs.NameNode);
-            access = rhs.access;
+            Access = rhs.Access;
             IsStatic = rhs.IsStatic;
             ExternalAttributes = rhs.ExternalAttributes;
         }
@@ -1039,7 +1039,7 @@ namespace ProtoCore.AST.AssociativeAST
         public List<AssociativeNode> Attributes { get; set; }
         public Type ArgumentType { get; set; }
         public AssociativeNode NameNode { get; set; }
-        public ProtoCore.CompilerDefinitions.AccessModifier access { get; set; }
+        public CompilerDefinitions.AccessModifier Access { get; set; }
         public bool IsStatic { get; set; }
         public ExternalAttributes ExternalAttributes { get; set; }
 

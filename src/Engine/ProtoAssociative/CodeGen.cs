@@ -4673,7 +4673,7 @@ namespace ProtoAssociative
         {
             var argument = new ProtoCore.AST.AssociativeAST.VarDeclNode()
             {
-                access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
+                Access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
                 NameNode =AstFactory.BuildIdentifier(Constants.kTempArg),
                 ArgumentType = argType
             };
@@ -4849,7 +4849,7 @@ namespace ProtoAssociative
                 // It is possible that fail to allocate variable. In that 
                 // case we should remove initializing expression from 
                 // cnode's defaultArgExprList
-                int symbolIndex = AllocateMemberVariable(thisClassIndex, thisClassIndex, varIdent.Value, vardecl.ArgumentType.rank, vardecl.access, vardecl.IsStatic);
+                int symbolIndex = AllocateMemberVariable(thisClassIndex, thisClassIndex, varIdent.Value, vardecl.ArgumentType.rank, vardecl.Access, vardecl.IsStatic);
                 if (symbolIndex == ProtoCore.DSASM.Constants.kInvalidIndex)
                 {
                     Validity.Assert(thisClass.DefaultArgExprList.Count > 0);
@@ -6983,7 +6983,7 @@ namespace ProtoAssociative
 
             VarDeclNode thisPtrArg = new ProtoCore.AST.AssociativeAST.VarDeclNode()
             {
-                access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
+                Access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
                 NameNode = ident,
                 ArgumentType = new ProtoCore.Type { Name = className, UID = procOverload.classIndex, rank = 0 }
             };
