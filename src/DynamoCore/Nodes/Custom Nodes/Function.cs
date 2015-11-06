@@ -383,7 +383,6 @@ namespace Dynamo.Nodes
             var parseParam = new ParseParam(this.GUID, parseString, resolver);
 
             if (EngineController.CompilationServices.PreCompileCodeBlock(ref parseParam) &&
-                parseParam.ParsedNodes != null &&
                 parseParam.ParsedNodes.Any())
             {
                 var parsedComments = parseParam.ParsedComments;

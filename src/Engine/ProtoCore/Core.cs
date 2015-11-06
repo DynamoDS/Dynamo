@@ -270,10 +270,6 @@ namespace ProtoCore
         // This is the AST node list of default imported libraries needed for Graph Compiler
         public CodeBlockNode ImportNodes { get; set; }
 
-        // The root AST node obtained from parsing an expression in a Graph node in GraphUI
-        public List<Node> AstNodeList { get; set; }
-
-
         public enum ErrorType
         {
             OK,
@@ -572,9 +568,6 @@ namespace ProtoCore
                 BuildStatus = new BuildStatus(this, Options.BuildOptWarningAsError);
             }
             
-            if (AstNodeList != null) 
-                AstNodeList.Clear();
-
             ExpressionUID = 0;
             ForLoopBlockIndex = Constants.kInvalidIndex;
         }

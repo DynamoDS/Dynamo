@@ -64,14 +64,6 @@ namespace ProtoAssociative
                         // TODO Jun: Set this flag inside a persistent object
                         core.builtInsLoaded = true;
                         codeBlockNode = parseResult.CodeBlockNode;
-                        if (codeBlockNode == null)
-                        {
-                            core.AstNodeList = new List<ProtoCore.AST.Node>();
-                        }
-                        else
-                        {
-                            core.AstNodeList = ParserUtils.GetAstNodes(parseResult.CodeBlockNode);
-                        }
                     }
                     else
                     {
