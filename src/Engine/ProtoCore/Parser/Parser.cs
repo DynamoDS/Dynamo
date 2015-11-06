@@ -1545,7 +1545,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		   errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
 		}
 		NodeUtils.SetNodeLocation(varDeclNode, t);
-		tNode = ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, t.val);
+		tNode = AstFactory.BuildIdentifier(t.val);
 		NodeUtils.SetNodeLocation(tNode, t);
 		varDeclNode.NameNode = tNode;
 		
@@ -1720,7 +1720,9 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		    SynErr(String.Format(Resources.InvalidReturnStatement, la.val));
 		}
 		
-		node = ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, t.val, (ProtoCore.PrimitiveType)ltype);
+		var identNode = AstFactory.BuildIdentifier(t.val);
+		identNode.datatype = TypeSystem.BuildPrimitiveTypeObject((ProtoCore.PrimitiveType)ltype, 0);
+		node = identNode;
 		NodeUtils.SetNodeLocation(node, t);
 		
 	}
@@ -1780,7 +1782,9 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		ProtoCore.AST.AssociativeAST.CodeBlockNode functionBody = new ProtoCore.AST.AssociativeAST.CodeBlockNode(); 
 		
 		ProtoCore.AST.AssociativeAST.BinaryExpressionNode binaryExpr = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-		binaryExpr.LeftNode = ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, "return", ProtoCore.PrimitiveType.kTypeReturn);
+		IdentifierNode returnNode = AstFactory.BuildIdentifier("return");
+		returnNode.datatype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeReturn, 0);
+		binaryExpr.LeftNode = returnNode;
 		ProtoCore.AST.AssociativeAST.AssociativeNode expr;
 		
 		Associative_Expression(out expr);
@@ -1875,7 +1879,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		{
 		   errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
 		}
-		tNode = ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, t.val);
+		tNode = AstFactory.BuildIdentifier(t.val);
 		NodeUtils.SetNodeLocation(tNode, t);
 		varDeclNode.NameNode = tNode;
 		NodeUtils.CopyNodeLocation(varDeclNode, tNode);

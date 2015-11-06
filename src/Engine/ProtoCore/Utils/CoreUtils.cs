@@ -17,15 +17,6 @@ namespace ProtoCore.Utils
                 InsertBuiltInMethods(core, root);
             }
         }
-
-        public static IdentifierNode BuildAssocIdentifier(Core core, string name, PrimitiveType type = PrimitiveType.kTypeVar)
-        {
-            var ident = new IdentifierNode();
-            ident.Name = ident.Value = name;
-            ident.datatype = TypeSystem.BuildPrimitiveTypeObject(type, 0);
-            return ident;
-        }
-
         private static FunctionDefinitionNode GenerateBuiltInMethodSignatureNode(Lang.BuiltInMethods.BuiltInMethod method)
         {
             FunctionDefinitionNode fDef = new FunctionDefinitionNode();
@@ -48,12 +39,12 @@ namespace ProtoCore.Utils
             return fDef;
         }
 
-        private static void InsertBuiltInMethods(Core core, AST.Node root)
+        private static void InsertBuiltInMethods(Core core, CodeBlockNode root)
         {
             Lang.BuiltInMethods builtInMethods = new Lang.BuiltInMethods(core);
             foreach (Lang.BuiltInMethods.BuiltInMethod method in builtInMethods.Methods)
             {
-                (root as CodeBlockNode).Body.Add(GenerateBuiltInMethodSignatureNode(method));
+                root.Body.Add(GenerateBuiltInMethodSignatureNode(method));
             }
         }
 
@@ -69,23 +60,24 @@ namespace ProtoCore.Utils
             args.AddArgument(new VarDeclNode()
             {
                 Access = CompilerDefinitions.AccessModifier.kPublic,
-                NameNode = BuildAssocIdentifier(core, DSASM.Constants.kLHS),
+                NameNode = AstFactory.BuildIdentifier(DSASM.Constants.kLHS),
                 ArgumentType = new Type { Name = core.TypeSystem.GetType((int)op1), UID = (int)op1, rank = op1rank }
             });
             args.AddArgument(new VarDeclNode()
             {
                 Access = CompilerDefinitions.AccessModifier.kPublic,
-                NameNode = BuildAssocIdentifier(core, DSASM.Constants.kRHS),
+                NameNode = AstFactory.BuildIdentifier(DSASM.Constants.kRHS),
                 ArgumentType = new Type { Name = core.TypeSystem.GetType((int)op2), UID = (int)op2, rank = op2rank }
             });
             funcDefNode.Signature = args;
 
             CodeBlockNode body = new CodeBlockNode();
-            IdentifierNode _return = BuildAssocIdentifier(core, DSDefinitions.Keyword.Return, PrimitiveType.kTypeReturn);
 
-            IdentifierNode lhs = BuildAssocIdentifier(core, DSASM.Constants.kLHS);
-            IdentifierNode rhs = BuildAssocIdentifier(core, DSASM.Constants.kRHS);
-            body.Body.Add(new BinaryExpressionNode() { LeftNode = _return, Optr = DSASM.Operator.assign, RightNode = new BinaryExpressionNode() { LeftNode = lhs, RightNode = rhs, Optr = op } });
+            var lhs = AstFactory.BuildIdentifier(DSASM.Constants.kLHS);
+            var rhs = AstFactory.BuildIdentifier(DSASM.Constants.kRHS);
+            var binaryExpr = AstFactory.BuildBinaryExpression(lhs, rhs, op);
+            body.Body.Add(AstFactory.BuildReturnStatement(binaryExpr));
+
             funcDefNode.FunctionBody = body;
             root.Body.Add(funcDefNode);
         }
@@ -104,15 +96,14 @@ namespace ProtoCore.Utils
             args.AddArgument(new VarDeclNode()
             {
                 Access = CompilerDefinitions.AccessModifier.kPublic,
-                NameNode = BuildAssocIdentifier(core, "%param"),
+                NameNode = AstFactory.BuildIdentifier("%param"),
                 ArgumentType = new Type { Name = core.TypeSystem.GetType((int)operand), UID = (int)operand }
             });
             funcDefNode.Signature = args;
 
             CodeBlockNode body = new CodeBlockNode();
-            IdentifierNode _return = BuildAssocIdentifier(core, DSDefinitions.Keyword.Return, PrimitiveType.kTypeReturn);
-            IdentifierNode param = BuildAssocIdentifier(core, "%param");
-            body.Body.Add(new BinaryExpressionNode() { LeftNode = _return, Optr = DSASM.Operator.assign, RightNode = new UnaryExpressionNode() { Expression = param, Operator = op } });
+            IdentifierNode param = AstFactory.BuildIdentifier("%param");
+            body.Body.Add(AstFactory.BuildReturnStatement(new UnaryExpressionNode() { Expression = param, Operator = op }));
             funcDefNode.FunctionBody = body;
             root.Body.Add(funcDefNode);
         }

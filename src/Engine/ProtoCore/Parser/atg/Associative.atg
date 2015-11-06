@@ -604,7 +604,7 @@ Associative_vardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, Prot
                                             errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                                         }
                                         NodeUtils.SetNodeLocation(varDeclNode, t);
-                                        tNode = ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, t.val);
+                                        tNode = AstFactory.BuildIdentifier(t.val);
                                         NodeUtils.SetNodeLocation(tNode, t);
                                         varDeclNode.NameNode = tNode;
                                     .)  
@@ -682,7 +682,7 @@ Associative_ArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, Proto
                                         {
                                             errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                                         }
-                                        tNode = ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, t.val);
+                                        tNode = AstFactory.BuildIdentifier(t.val);
                                         NodeUtils.SetNodeLocation(tNode, t);
                                         varDeclNode.NameNode = tNode;
                                         NodeUtils.CopyNodeLocation(varDeclNode, tNode);
@@ -798,7 +798,9 @@ Associative_FunctionalMethodBodySingleLine<out ProtoCore.AST.AssociativeAST.Asso
                                             ProtoCore.AST.AssociativeAST.CodeBlockNode functionBody = new ProtoCore.AST.AssociativeAST.CodeBlockNode(); 
 
                                             ProtoCore.AST.AssociativeAST.BinaryExpressionNode binaryExpr = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-                                            binaryExpr.LeftNode = ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, "return", ProtoCore.PrimitiveType.kTypeReturn);
+                                            IdentifierNode returnNode = AstFactory.BuildIdentifier("return");
+                                            returnNode.datatype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeReturn, 0);
+                                            binaryExpr.LeftNode = returnNode;
                                             ProtoCore.AST.AssociativeAST.AssociativeNode expr;
                                         .)
     Associative_Expression<out expr>
@@ -1945,7 +1947,9 @@ Associative_Ident<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                      SynErr(String.Format(Resources.InvalidReturnStatement, la.val));
                 }
                 
-                node = ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, t.val, (ProtoCore.PrimitiveType)ltype);
+                var identNode = AstFactory.BuildIdentifier(t.val);
+                identNode.datatype = TypeSystem.BuildPrimitiveTypeObject((ProtoCore.PrimitiveType)ltype, 0);
+                node = identNode;
                 NodeUtils.SetNodeLocation(node, t);
             .)
 .
