@@ -13,6 +13,11 @@ namespace Dynamo.Nodes
      IsInteractive(false), IsVisibleInDynamoLibrary(false), NodeSearchable(false), IsMetaNode]
     public class DSFunction : DSFunctionBase
     {
+        public override bool IsInputNode
+        {
+            get { return false; }
+        }
+
         public DSFunction(FunctionDescriptor descriptor) 
             : base(new ZeroTouchNodeController<FunctionDescriptor>(descriptor)) 
         { }
