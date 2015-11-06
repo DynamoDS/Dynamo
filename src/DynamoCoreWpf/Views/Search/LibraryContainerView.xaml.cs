@@ -389,5 +389,10 @@ namespace Dynamo.Search
         {
             LayoutPopup.IsOpen = true;
         }
+
+        private void OnOnlyTextBlockMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            viewModel.UnSelectAllCategories();
+        }
     }
 }

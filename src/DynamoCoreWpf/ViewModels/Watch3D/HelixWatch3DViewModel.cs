@@ -144,14 +144,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             preferences.IsBackgroundPreviewActive = active;
 
-            if (active) return;
-
-            if (CanNavigateBackground)
+            if (!active && CanNavigateBackground)
             {
                 CanNavigateBackground = false;
             }
 
-            IsGridVisible = false;
+            RaisePropertyChanged("IsGridVisible");
         }
 
         public event Action<Model3D> RequestAttachToScene;
@@ -299,7 +297,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public override bool IsGridVisible
         {
-            get { return isGridVisible; }
+            get { return isGridVisible && Active; }
             set
             {
                 if (isGridVisible == value) return;

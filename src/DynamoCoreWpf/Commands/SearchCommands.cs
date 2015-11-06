@@ -71,5 +71,18 @@ namespace Dynamo.ViewModels
                 return toggleLayoutCommand;
             }
         }
+
+        private DelegateCommand selectAllCategoriesCommand;
+        public DelegateCommand SelectAllCategoriesCommand
+        {
+            get
+            {
+                if (selectAllCategoriesCommand == null)
+                {
+                    selectAllCategoriesCommand = new DelegateCommand(SelectAllCategories);
+                }
+                return selectAllCategoriesCommand;
+            }
+        }        
     }
 }

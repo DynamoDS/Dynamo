@@ -1858,6 +1858,38 @@
                      Value="True">
                 <Setter Property="Foreground"
                         Value="White" />
+                <Setter Property="Cursor"
+                        Value="Hand" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="LayoutButtonStyle"
+           TargetType="{x:Type Border}">
+        <Setter Property="Background"
+                Value="#01000000" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="True">
+                <Setter Property="Background"
+                        Value="{StaticResource FilterPopupBorderColor}" />
+                <Setter Property="Cursor"
+                        Value="Hand" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="FilterTextBlockStyle"
+           TargetType="{x:Type TextBlock}">
+        <Setter Property="Foreground"
+                Value="{StaticResource NodeNameForeground}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="True">
+                <Setter Property="TextBlock.TextDecorations"
+                        Value="Underline" />
+                <Setter Property="Cursor"
+                        Value="Hand" />
             </Trigger>
         </Style.Triggers>
     </Style>
