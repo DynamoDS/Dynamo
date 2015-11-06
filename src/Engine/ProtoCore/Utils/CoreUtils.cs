@@ -72,14 +72,12 @@ namespace ProtoCore.Utils
         ArgumentSignatureNode args = new ArgumentSignatureNode();
         args.AddArgument(new VarDeclNode()
         {
-            memregion = DSASM.MemoryRegion.kMemStack,
             access = CompilerDefinitions.AccessModifier.kPublic,
             NameNode = BuildAssocIdentifier(core, DSASM.Constants.kLHS),
             ArgumentType = new Type { Name = core.TypeSystem.GetType((int)op1), UID = (int)op1, rank = op1rank}
         });
         args.AddArgument(new VarDeclNode()
         {
-            memregion = DSASM.MemoryRegion.kMemStack,
             access = CompilerDefinitions.AccessModifier.kPublic,
             NameNode = BuildAssocIdentifier(core, DSASM.Constants.kRHS),
             ArgumentType = new Type { Name = core.TypeSystem.GetType((int)op2), UID = (int)op2, rank = op2rank}
@@ -109,7 +107,6 @@ namespace ProtoCore.Utils
         ArgumentSignatureNode args = new ArgumentSignatureNode();
         args.AddArgument(new VarDeclNode()
         {
-            memregion = DSASM.MemoryRegion.kMemStack,
             access = CompilerDefinitions.AccessModifier.kPublic,
             NameNode = BuildAssocIdentifier(core, "%param"),
             ArgumentType = new Type { Name = core.TypeSystem.GetType((int)operand), UID = (int)operand }

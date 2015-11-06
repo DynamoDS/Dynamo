@@ -4673,7 +4673,6 @@ namespace ProtoAssociative
         {
             var argument = new ProtoCore.AST.AssociativeAST.VarDeclNode()
             {
-                memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
                 access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
                 NameNode =AstFactory.BuildIdentifier(Constants.kTempArg),
                 ArgumentType = argType
@@ -6984,7 +6983,6 @@ namespace ProtoAssociative
 
             VarDeclNode thisPtrArg = new ProtoCore.AST.AssociativeAST.VarDeclNode()
             {
-                memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
                 access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
                 NameNode = ident,
                 ArgumentType = new ProtoCore.Type { Name = className, UID = procOverload.classIndex, rank = 0 }

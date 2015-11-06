@@ -593,15 +593,10 @@ Associative_vardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, Prot
                                     (.
                                         ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
                                         ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode(); 
-                                        varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemStack;
                                         varDeclNode.access = access;
                                         varDeclNode.Attributes = attrs;
                                         varDeclNode.IsStatic = isStatic;
                                     .)
-
-//    [
-//        kw_heap_alloc               (. varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemHeap; .)
-//    ]
 
     (
         ident                       (. 
@@ -679,7 +674,6 @@ Associative_ArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, Proto
                                     (.
                                         ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
                                         ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode(); 
-                                        varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemStack;
                                         varDeclNode.access = access;
                                     .)
 

@@ -1536,7 +1536,6 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 	void Associative_vardecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic, bool isStatic = false, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null) {
 		ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
 		ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode(); 
-		varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemStack;
 		varDeclNode.access = access;
 		varDeclNode.Attributes = attrs;
 		varDeclNode.IsStatic = isStatic;
@@ -1870,7 +1869,6 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 	void Associative_ArgDecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic) {
 		ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
 		ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode(); 
-		varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemStack;
 		varDeclNode.access = access;
 		
 		Expect(1);
