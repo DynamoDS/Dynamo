@@ -93,12 +93,11 @@ namespace ProtoCore.Utils
 
     public class ParseParam
     {
-        private List<string> temporaries;
         private Dictionary<string, string> unboundIdentifiers;
-        private List<ProtoCore.AST.Node> parsedNodes;
-        private List<ProtoCore.AST.Node> commentNodes;
-        private List<ProtoCore.BuildData.ErrorEntry> errors;
-        private List<ProtoCore.BuildData.WarningEntry> warnings;
+        private List<Node> parsedNodes;
+        private List<Node> commentNodes;
+        private List<BuildData.ErrorEntry> errors;
+        private List<BuildData.WarningEntry> warnings;
         
         public ParseParam(System.Guid postfixGuid, System.String code, ElementResolver elementResolver)
         {
@@ -161,13 +160,7 @@ namespace ProtoCore.Utils
 
         public System.Guid PostfixGuid { get; private set; }
         public System.String OriginalCode { get; private set; }
-        public System.String ProcessedCode { get; internal set; }
         public ElementResolver ElementResolver { get; private set; }
-
-        public IEnumerable<System.String> Temporaries
-        {
-            get { return this.temporaries; }
-        }
 
         public IDictionary<string, string> UnboundIdentifiers
         {
@@ -387,9 +380,8 @@ namespace ProtoCore.Utils
 
             ParseResult parseResult = ParserUtils.ParseWithCore(expression, core);
 
-            commentNodes = ParserUtils.GetCommentNodes(parseResult.CommentNode);
-
-            List<AST.Node> nodes = ParserUtils.GetAstNodes(parseResult.CodeNode);
+            commentNodes = ParserUtils.GetAstNodes(parseResult.CommentBlockNode);
+            List<AST.Node> nodes = ParserUtils.GetAstNodes(parseResult.CodeBlockNode);
             Validity.Assert(nodes != null);
 
             int index = 0;
