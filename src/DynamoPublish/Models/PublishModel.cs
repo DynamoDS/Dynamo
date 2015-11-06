@@ -20,6 +20,8 @@ using Dynamo.Logging;
 using Reach.Data;
 using Reach.Exceptions;
 using Reach.Upload;
+using RestSharp;
+using System.Windows;
 
 namespace Dynamo.Publish.Models
 {
@@ -311,7 +313,35 @@ namespace Dynamo.Publish.Models
 
             try
             {
-                result = await Task.Run(() => this.Send(workspace, workspaceProperties));
+                result = await Task.Run(() =>
+                {
+                    var req = new RestRequest("checkCustomizer")
+                    {
+                        Method = Method.POST,
+                        RequestFormat = RestSharp.DataFormat.Json
+                    };
+
+                    req.AddBody(new
+                    {
+                        name = workspaceProperties.Name
+                    });
+
+                    var restClient = new RestClient(serverUrl);
+                    authenticationProvider.SignRequest(ref req, restClient);
+
+                    var check = restClient.Execute(req);
+
+                    if (check.StatusCode == HttpStatusCode.OK)
+                    {
+                        MessageBoxResult decision = MessageBox.Show("A customizer by this name already exists, do you want to overwrite it?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                        if (decision == MessageBoxResult.Yes)
+                        {
+                            return this.Send(workspace, workspaceProperties);
+                        }
+                    }
+                    return this.Send(workspace, workspaceProperties);
+
+                });
             }
             catch (InvalidNodesException ex)
             {
