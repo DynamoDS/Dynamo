@@ -846,8 +846,9 @@ namespace Dynamo.ViewModels
             return DynamoSelection.Instance.Selection.Count > 1;
         }
 
-        internal void ComputeRunStateOfTheNode(NodeModel node)
+        private void ComputeRunStateOfTheNode(object param)
         {
+            var node = param as NodeModel;
             if (node != null)
             {
                 var oldFrozen = (!node.IsFrozen).ToString();
@@ -858,6 +859,11 @@ namespace Dynamo.ViewModels
             }
 
             this.Model.ComputeRunStateOfTheNodes(node); 
+        }
+
+        private bool CanComputeRunStateOfTheNode(object parameter)
+        {
+            return DynamoSelection.Instance.Selection.Count() == 1;
         }
 
         private void Paste(object param)

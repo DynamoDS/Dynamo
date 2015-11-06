@@ -1716,6 +1716,9 @@ namespace Dynamo.Models
                 RaisePropertyChanged("ArgumentLacing");
                 RaisePropertyChanged("IsVisible");
                 RaisePropertyChanged("IsUpstreamVisible");
+
+                //Compute the node run state for undo.
+                CanExecute = !CanExecute;
                 RaisePropertyChanged("NodeRunState");
 
                 // Notify listeners that the position of the node has changed,

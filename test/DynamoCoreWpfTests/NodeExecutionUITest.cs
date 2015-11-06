@@ -51,7 +51,8 @@ namespace DynamoCoreWpfTests
             DynamoSelection.Instance.Selection.Add(addNode);
 
             //Freeze the node
-            ViewModel.ComputeRunStateOfTheNodeCommand.Execute(null);
+            addNode.IsFrozen = true;
+            ViewModel.CurrentSpaceViewModel.Model.ComputeRunStateOfTheNodes(addNode);
 
             //Check the RUN property. Assuming only one node is selected
             //this property is fetched from Nodeviewmodel. Context Menu on Workspace,
@@ -92,11 +93,8 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(model.CurrentWorkspace.Connectors.Count(), 2);
 
             //Now Freeze the NumberNode1.
-            DynamoSelection.Instance.ClearSelection();
-            DynamoSelection.Instance.Selection.Add(numberNode1);
-
-            //Freeze the node
-            ViewModel.ComputeRunStateOfTheNodeCommand.Execute(null);
+            numberNode1.IsFrozen = true;
+            ViewModel.CurrentSpaceViewModel.Model.ComputeRunStateOfTheNodes(numberNode1);
 
             //Get the ViewModel of the number node and check the RUN property.
             var numberNodevm = ViewModel.CurrentSpaceViewModel.Nodes.First(x => x.NodeLogic == numberNode1);
@@ -145,11 +143,8 @@ namespace DynamoCoreWpfTests
 
             //Now Freeze the add node. This node has two input nodes. Note that
             //input nodes are not frozen.
-            DynamoSelection.Instance.ClearSelection();
-            DynamoSelection.Instance.Selection.Add(addNode);
-
-            //Freeze the node
-            ViewModel.ComputeRunStateOfTheNodeCommand.Execute(null);
+            addNode.IsFrozen = true;
+            ViewModel.CurrentSpaceViewModel.Model.ComputeRunStateOfTheNodes(addNode);
 
             //Get the ViewModel of add node and check the RUN property.
             //This node should be in Frozen and not Executing state.
@@ -159,11 +154,9 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(addNodeVm.NodeRunEnabled, true);
 
             //Now freeze NumberNode1.
-            DynamoSelection.Instance.ClearSelection();
-            DynamoSelection.Instance.Selection.Add(numberNode1);
+            numberNode1.IsFrozen = true;
+            ViewModel.CurrentSpaceViewModel.Model.ComputeRunStateOfTheNodes(numberNode1);
 
-            //Freeze the node
-            ViewModel.ComputeRunStateOfTheNodeCommand.Execute(null);
             //Get the ViewModel of add node and check the RUN property.
             //This node should be in Frozen and not Executing state.
             var numberNode1Vm= ViewModel.CurrentSpaceViewModel.Nodes.First(x => x.NodeLogic == numberNode1);
@@ -215,10 +208,8 @@ namespace DynamoCoreWpfTests
             var numberNode2Vm = ViewModel.CurrentSpaceViewModel.Nodes.First(x => x.NodeLogic == numberNode2);
             Assert.IsNotNull(numberNode2Vm);
 
-            //freeze number node1
-            numberNode1.IsFrozen = true;
-
-            ViewModel.CurrentSpaceViewModel.ComputeRunStateOfTheNode(numberNode1);
+            //freeze number node1.            
+            ViewModel.CurrentSpaceViewModel.ComputeRunStateOfTheNodeCommand.Execute(numberNode1);
            
             Assert.AreEqual(numberNode1Vm.NodeRunChecked, false);
             Assert.AreEqual(numberNode1Vm.NodeRunEnabled, true);
@@ -228,9 +219,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(addNodeVm.NodeRunEnabled, false);
 
             //freeze number node2
-            numberNode2.IsFrozen = true;
-
-            ViewModel.ComputeRunStateOfTheNodeCommand.Execute(numberNode2);
+            ViewModel.CurrentSpaceViewModel.ComputeRunStateOfTheNodeCommand.Execute(numberNode2);
 
             Assert.AreEqual(numberNode2Vm.NodeRunChecked, false);
             Assert.AreEqual(numberNode2Vm.NodeRunEnabled, true);

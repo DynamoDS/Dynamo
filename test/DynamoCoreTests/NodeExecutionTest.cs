@@ -27,6 +27,8 @@ namespace Dynamo.Tests
             Assert.AreEqual(addNode.IsFrozen, false);
 
             addNode.IsFrozen = true;
+            model.CurrentWorkspace.ComputeRunStateOfTheNodes(addNode);
+
             Assert.AreEqual(addNode.IsFrozen, true);
         }
 
@@ -59,12 +61,9 @@ namespace Dynamo.Tests
             //Check the value
             AssertPreviewValue(addNode.GUID.ToString(),3);
 
-            //Add the number node to selection and call run state on the workspace.
-            //this should freeze the number node.
-            DynamoSelection.Instance.ClearSelection();
-            DynamoSelection.Instance.Selection.Add(numberNode1);
-                             
-            model.CurrentWorkspace.ComputeRunStateOfTheNodes(null);
+            //Freeeze the numbernode1 and compute the run state of other nodes.           
+            numberNode1.IsFrozen = true;
+            model.CurrentWorkspace.ComputeRunStateOfTheNodes(numberNode1);
 
             //change the value of number node1.
             numberNode1.Value = "3.0";
@@ -111,20 +110,16 @@ namespace Dynamo.Tests
             AssertPreviewValue(addNode.GUID.ToString(),3);
 
             //freeze add node
-            DynamoSelection.Instance.ClearSelection();
-            DynamoSelection.Instance.Selection.Add(addNode);
-
-            model.CurrentWorkspace.ComputeRunStateOfTheNodes(null);
+            addNode.IsFrozen = true;
+            model.CurrentWorkspace.ComputeRunStateOfTheNodes(addNode);
             
             // the add node must be frozen and not executing state
             Assert.AreEqual(addNode.IsFrozen, true);
             Assert.AreEqual(addNode.CanExecute, false);
 
             //freeze number node.
-            DynamoSelection.Instance.ClearSelection();
-            DynamoSelection.Instance.Selection.Add(numberNode1);
-
-            model.CurrentWorkspace.ComputeRunStateOfTheNodes(null);
+            numberNode1.IsFrozen = true;
+            model.CurrentWorkspace.ComputeRunStateOfTheNodes(numberNode1);
 
             //change the value on number node 1
             numberNode1.Value = "3.0";
@@ -172,10 +167,8 @@ namespace Dynamo.Tests
 
             //Add the number node to selection and call run state on the workspace.
             //this should freeze the number node.
-            DynamoSelection.Instance.ClearSelection();
-            DynamoSelection.Instance.Selection.Add(numberNode1);
-
-            model.CurrentWorkspace.ComputeRunStateOfTheNodes(null);
+            numberNode1.IsFrozen = true;
+            model.CurrentWorkspace.ComputeRunStateOfTheNodes(numberNode1);
 
             // the number node must be frozen and not executing state
             Assert.AreEqual(numberNode1.IsFrozen, true);
@@ -194,12 +187,10 @@ namespace Dynamo.Tests
             //check the value of add node. it should not change.
             AssertPreviewValue(addNode.GUID.ToString(), 3);
 
-            //Add the number node to selection and call run state on the workspace.
-            //this should un freeze the number node.
-            DynamoSelection.Instance.ClearSelection();
-            DynamoSelection.Instance.Selection.Add(numberNode1);
+            //unfreeze the input node
+            numberNode1.IsFrozen = false;
+            model.CurrentWorkspace.ComputeRunStateOfTheNodes(numberNode1);
 
-            model.CurrentWorkspace.ComputeRunStateOfTheNodes(null);
             Assert.AreEqual(numberNode1.IsFrozen, false);
             
             //Now the add node should be in unfreeze state
@@ -239,20 +230,16 @@ namespace Dynamo.Tests
             AssertPreviewValue(addNode.GUID.ToString(), 3);
 
             //freeze add node
-            DynamoSelection.Instance.ClearSelection();
-            DynamoSelection.Instance.Selection.Add(addNode);
-
-            model.CurrentWorkspace.ComputeRunStateOfTheNodes(null);
+            addNode.IsFrozen = true;
+            model.CurrentWorkspace.ComputeRunStateOfTheNodes(addNode);
 
             // the add node must be frozen and not executing state
             Assert.AreEqual(addNode.IsFrozen, true);
             Assert.AreEqual(addNode.CanExecute, false);
 
             //freeze number node.
-            DynamoSelection.Instance.ClearSelection();
-            DynamoSelection.Instance.Selection.Add(numberNode1);
-
-            model.CurrentWorkspace.ComputeRunStateOfTheNodes(null);
+            numberNode1.IsFrozen = true;
+            model.CurrentWorkspace.ComputeRunStateOfTheNodes(numberNode1);
 
             // the number node must be frozen and not executing state
             Assert.AreEqual(numberNode1.IsFrozen, true);
@@ -269,10 +256,8 @@ namespace Dynamo.Tests
             AssertPreviewValue(addNode.GUID.ToString(), 3);
 
             //now unfreeze number node.
-            DynamoSelection.Instance.ClearSelection();
-            DynamoSelection.Instance.Selection.Add(numberNode1);
-
-            model.CurrentWorkspace.ComputeRunStateOfTheNodes(null);
+            numberNode1.IsFrozen = false;
+            model.CurrentWorkspace.ComputeRunStateOfTheNodes(numberNode1);
 
             //now number node is not frozen
             Assert.AreEqual(numberNode1.IsFrozen, false);
@@ -316,11 +301,12 @@ namespace Dynamo.Tests
             AssertPreviewValue(addNode.GUID.ToString(), 3);
 
             //now freeze both the number nodes.
-            DynamoSelection.Instance.Selection.Clear();
-            DynamoSelection.Instance.Selection.Add(numberNode1);
-            DynamoSelection.Instance.Selection.Add(numberNode2);
+            numberNode1.IsFrozen = true;
+            model.CurrentWorkspace.ComputeRunStateOfTheNodes(numberNode1);
 
-            model.CurrentWorkspace.ComputeRunStateOfTheNodes(null);
+            numberNode2.IsFrozen = true;
+            model.CurrentWorkspace.ComputeRunStateOfTheNodes(numberNode2);
+
             //Number nodes in frozen and not executing state
             Assert.AreEqual(numberNode1.IsFrozen , true);
             Assert.AreEqual(numberNode1.CanExecute, false);
@@ -339,11 +325,9 @@ namespace Dynamo.Tests
             //addnode should not change the value.
             AssertPreviewValue(addNode.GUID.ToString(),3);
             
-            //unfreeze one of the number node
-            DynamoSelection.Instance.Selection.Clear();
-            DynamoSelection.Instance.Selection.Add(numberNode1);
-
-            model.CurrentWorkspace.ComputeRunStateOfTheNodes(null);
+            //unfreeze one of the number node          
+            numberNode1.IsFrozen = false;
+            model.CurrentWorkspace.ComputeRunStateOfTheNodes(numberNode1);
 
             //Number nodes in frozen and not executing state
             Assert.AreEqual(numberNode1.IsFrozen, false);
@@ -360,10 +344,8 @@ namespace Dynamo.Tests
             AssertPreviewValue(addNode.GUID.ToString(), 5);
 
             //now unfreeze the other node.
-            DynamoSelection.Instance.Selection.Clear();
-            DynamoSelection.Instance.Selection.Add(numberNode2);
-
-            model.CurrentWorkspace.ComputeRunStateOfTheNodes(null);
+            numberNode2.IsFrozen = false;
+            model.CurrentWorkspace.ComputeRunStateOfTheNodes(numberNode2);
 
             Assert.AreEqual(numberNode2.IsFrozen, false);
             Assert.AreEqual(numberNode2.CanExecute, true);
@@ -404,18 +386,15 @@ namespace Dynamo.Tests
 
             //check the value
             AssertPreviewValue(addNode.GUID.ToString(), 3);
-
-            //now freeze first number node.
-            DynamoSelection.Instance.Selection.Clear();
-            DynamoSelection.Instance.Selection.Add(numberNode1);
-
+           
             //Record for undo.
             model.ExecuteCommand(
                     new DynCmd.UpdateModelValueCommand(
                         Guid.Empty, numberNode1.GUID, "IsFrozen",
                          numberNode1.IsFrozen.ToString()));
+            numberNode1.IsFrozen = true;
            
-            model.CurrentWorkspace.ComputeRunStateOfTheNodes(null);
+            model.CurrentWorkspace.ComputeRunStateOfTheNodes(numberNode1);
 
             //Number nodes in frozen and not executing state
             Assert.AreEqual(numberNode1.IsFrozen, true);
@@ -428,15 +407,14 @@ namespace Dynamo.Tests
             //check the value
             AssertPreviewValue(addNode.GUID.ToString(), 3);
            
-            //undo.
+            //undo the freeze on numbernode1
             model.CurrentWorkspace.Undo();
-
+            //since the undo is on model here, calling compute run state
+            model.CurrentWorkspace.ComputeRunStateOfTheNodes(numberNode1);
+            
             //Now change the value on number node1
             numberNode1.Value = "3.0";
-
-            //compute the state of the nodes based on numbernode2.
-            model.CurrentWorkspace.ComputeRunStateOfTheNodes(numberNode2);
-             
+            
             //now the first number node unfreeze mode.
             Assert.AreEqual(numberNode1.IsFrozen, false);
             Assert.AreEqual(numberNode1.CanExecute, true);

@@ -111,8 +111,15 @@ namespace Dynamo.Utilities
         public bool? ReadBoolean(string attribName, bool? defaultValue)
         {            
             XmlAttribute attrib = internalElement.Attributes[attribName];
-            if (null == attrib || attrib.Value == "")
+            if (null == attrib)
+            {
+                return true;
+            }
+
+            if (attrib.Value == "")
+            {
                 return defaultValue;
+            }
 
             return Boolean.Parse(attrib.Value);
         }

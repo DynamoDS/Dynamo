@@ -155,7 +155,7 @@
                 <MenuItem  Header="{x:Static p:Resources.NodesRunStatus}"
                            IsChecked="{Binding  NodeRunChecked,Mode=OneWay}"
                            IsEnabled="{Binding NodeRunEnabled, Mode=OneWay}"
-                           Command="{Binding DynamoViewModel.ComputeRunStateOfTheNodeCommand}" />
+                           Command="{Binding ComputeRunStateOfTheNodeCommand}" />
 
                 <MenuItem IsEnabled="{Binding Path=IsGeometryOperationEnabled}"
                           Header="{x:Static  p:Resources.ContextMenuShowAllGeometry}"

@@ -672,7 +672,9 @@ namespace Dynamo.ViewModels
                     SetNodeRunState();                                         
                     break;
                 case "NodeRunState":
-                    WorkspaceViewModel.ComputeRunStateOfTheNode(this.nodeLogic);
+                    //This is during UNDO. Canexecute is serialized but this is
+                    //not stored as part of UNDO.                    
+                    WorkspaceViewModel.Model.ComputeRunStateOfTheNodes(this.nodeLogic);
                     break;
             }
         }
@@ -1073,8 +1075,8 @@ namespace Dynamo.ViewModels
         }
 
         private void ComputeRunStateOfTheNode(object parameters)
-        {            
-            WorkspaceViewModel.ComputeRunStateOfTheNode(this.nodeLogic);
+        {
+            WorkspaceViewModel.ComputeRunStateOfTheNodeCommand.Execute(this.nodeLogic);
         }
 
         private bool CanSetTheRunStateOftheNode(object parameters)

@@ -1869,7 +1869,7 @@ namespace Dynamo.ViewModels
 
         internal void ComputeRunStateOfTheNode(object parameter)
         {
-            this.CurrentSpaceViewModel.ComputeRunStateOfTheNode(null);
+            this.CurrentSpaceViewModel.ComputeRunStateOfTheNodeCommand.Execute(null);
             RaiseCanExecuteUndoRedo();
         }
 

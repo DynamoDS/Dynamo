@@ -28,6 +28,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand _showHideAllUpstreamPreviewCommand;
         private DelegateCommand _showInCanvasSearchCommand;
         private DelegateCommand _pasteCommand;
+        private DelegateCommand _computeRunStateCommand;
 
         #endregion
 
@@ -211,6 +212,19 @@ namespace Dynamo.ViewModels
                     _showInCanvasSearchCommand = new DelegateCommand(OnRequestShowInCanvasSearch);
 
                 return _showInCanvasSearchCommand;
+            }
+        }
+
+        public DelegateCommand ComputeRunStateOfTheNodeCommand
+        {
+            get
+            {
+                if (_computeRunStateCommand == null)
+                {
+                    _computeRunStateCommand = new DelegateCommand(ComputeRunStateOfTheNode, CanComputeRunStateOfTheNode);
+                }
+
+                return _computeRunStateCommand;
             }
         }
       

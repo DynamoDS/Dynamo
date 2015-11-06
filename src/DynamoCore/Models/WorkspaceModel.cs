@@ -2438,9 +2438,7 @@ namespace Dynamo.Models
             //usually during undo, only one of the node is toggled.
             if (model != null)
             {
-                //flip the can execute.
                 model.CanExecute = !model.CanExecute;
-
                 ToggleRunStateOfDownStreamNodes(model);
             }
             //This is executed when RUN is changed on Dynamo Menu.
