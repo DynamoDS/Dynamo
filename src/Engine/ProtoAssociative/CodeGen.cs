@@ -5163,8 +5163,6 @@ namespace ProtoAssociative
                                 currentClassScope = globalClassIndex;
                                 ix = 0;
                             }
-                            ProtoCore.AST.AssociativeAST.VarDeclNode varnode = classDecl.varlist[ix++] as ProtoCore.AST.AssociativeAST.VarDeclNode;
-                            sn.Attributes = PopulateAttributes((varnode).Attributes);
                         }
                     }
                 }

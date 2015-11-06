@@ -593,8 +593,7 @@ Associative_vardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, Prot
                                     (.
                                         ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
                                         ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode(); 
-                                        varDeclNode.access = access;
-                                        varDeclNode.Attributes = attrs;
+                                        varDeclNode.Access = access;
                                         varDeclNode.IsStatic = isStatic;
                                     .)
 
@@ -674,7 +673,7 @@ Associative_ArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, Proto
                                     (.
                                         ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
                                         ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode(); 
-                                        varDeclNode.access = access;
+                                        varDeclNode.Access = access;
                                     .)
 
     (

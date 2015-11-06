@@ -1017,13 +1017,11 @@ namespace ProtoCore.AST.AssociativeAST
     {
         public VarDeclNode()
         {
-            Attributes = new List<AssociativeNode>();
         }
 
         public VarDeclNode(VarDeclNode rhs)
             : base(rhs)
         {
-            Attributes = rhs.Attributes.Select(NodeUtils.Clone).ToList();
             ArgumentType = new Type
             {
                 UID = rhs.ArgumentType.UID,
@@ -1036,7 +1034,6 @@ namespace ProtoCore.AST.AssociativeAST
             ExternalAttributes = rhs.ExternalAttributes;
         }
 
-        public List<AssociativeNode> Attributes { get; set; }
         public Type ArgumentType { get; set; }
         public AssociativeNode NameNode { get; set; }
         public CompilerDefinitions.AccessModifier Access { get; set; }
@@ -1074,9 +1071,8 @@ namespace ProtoCore.AST.AssociativeAST
                 return false;
 
             return ArgumentType.Equals(otherNode.ArgumentType) &&
-                   EqualityComparer<AssociativeNode>.Default.Equals(NameNode, otherNode.NameNode) && 
-                   IsStatic == otherNode.IsStatic && 
-                   Attributes.SequenceEqual(otherNode.Attributes);
+                   EqualityComparer<AssociativeNode>.Default.Equals(NameNode, otherNode.NameNode) &&
+                   IsStatic == otherNode.IsStatic;
         }
 
         public override int GetHashCode()
@@ -1085,10 +1081,8 @@ namespace ProtoCore.AST.AssociativeAST
             var nameNodeHashCode =
                 (NameNode == null ? base.GetHashCode() : NameNode.GetHashCode());
             var isStaticHashCode = IsStatic? 1 : 0;
-            var attributesHashCode =
-                (Attributes == null ? base.GetHashCode() : Attributes.GetHashCode());
 
-            return argumentTypeHashCode ^ nameNodeHashCode ^ isStaticHashCode ^ attributesHashCode;
+            return argumentTypeHashCode ^ nameNodeHashCode ^ isStaticHashCode;
         }
 
         public override void Accept(AssociativeAstVisitor visitor)

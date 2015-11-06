@@ -1537,7 +1537,6 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
 		ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode(); 
 		varDeclNode.Access = access;
-		varDeclNode.Attributes = attrs;
 		varDeclNode.IsStatic = isStatic;
 		
 		Expect(1);
