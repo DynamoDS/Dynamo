@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Dynamo.Search.Interfaces
+namespace Dynamo.Search
 {
     /// <summary>
     ///     A search category.
