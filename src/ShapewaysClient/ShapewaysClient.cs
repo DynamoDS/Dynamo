@@ -1,13 +1,8 @@
 ﻿using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Contrib;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Dynamo.Annotations;
 
-namespace Dynamo.Services
+namespace ShapewaysClient
 {
     /// <summary>
     ///     Class provides the interaction between Dynamo client and Shapeways API
@@ -70,7 +65,7 @@ namespace Dynamo.Services
         }
 
         /// <summary>
-        /// Upload an STL model to Shapeways service using obtained credantials
+        /// Upload an STL model to Shapeways service using obtained credentials
         /// </summary>
         /// <param name="rawData">Raw STL geometry data</param>
         /// <param name="filename">Gives a name to your uploaded file</param>

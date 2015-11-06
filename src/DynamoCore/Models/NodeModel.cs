@@ -8,11 +8,11 @@ using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 
 using Dynamo.Core;
-using Dynamo.Core.Threading;
 using Dynamo.Migration;
 using Dynamo.Nodes;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
+using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Interfaces;

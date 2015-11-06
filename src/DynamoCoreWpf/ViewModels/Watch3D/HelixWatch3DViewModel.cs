@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -17,11 +18,13 @@ using Autodesk.DesignScript.Interfaces;
 using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Rendering;
 using DynamoUtilities;
+using HelixToolkit.Wpf;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
 using SharpDX;
@@ -91,8 +94,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private readonly Color4 defaultSelectionColor = new Color4(new Color3(0, 158.0f / 255.0f, 1.0f));
         private readonly Color4 defaultMaterialColor = new Color4(new Color3(1.0f, 1.0f, 1.0f));
         private readonly Size defaultPointSize = new Size(6, 6);
-        private readonly Color4 defaultLineColor = new Color4(new Color3(0, 0, 0));
-        private readonly Color4 defaultPointColor = new Color4(new Color3(0, 0, 0));
+        private readonly Size highlightSize = new Size(8, 8);
+        private readonly Color4 highlightColor = new Color4(new Color3(1.0f, 0.0f, 0.0f));
+
+        private static readonly Color4 defaultLineColor = new Color4(new Color3(0, 0, 0));
+        private static readonly Color4 defaultPointColor = new Color4(new Color3(0, 0, 0));
+        private static readonly Color4 defaultDeadColor = new Color4(new Color3(0.7f,0.7f,0.7f));
+        private static readonly float defaultDeadAlphaScale = 0.2f;
 
         internal const string DefaultGridName = "Grid";
         internal const string DefaultAxesName = "Axes";
@@ -136,10 +144,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             preferences.IsBackgroundPreviewActive = active;
 
-            if (active == false && CanNavigateBackground)
+            if (!active && CanNavigateBackground)
             {
                 CanNavigateBackground = false;
             }
+
+            RaisePropertyChanged("IsGridVisible");
         }
 
         public event Action<Model3D> RequestAttachToScene;
@@ -175,6 +185,21 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         #endregion
 
         #region properties
+
+        internal static Color4 DefaultLineColor
+        {
+            get { return defaultLineColor; }
+        }
+
+        internal static Color4 DefaultPointColor
+        {
+            get { return defaultPointColor; }
+        }
+
+        internal static Color4 DefaultDeadColor
+        {
+            get { return defaultDeadColor; }
+        }
 
         internal Dictionary<string, Model3D> Model3DDictionary
         {
@@ -272,7 +297,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public override bool IsGridVisible
         {
-            get { return isGridVisible; }
+            get { return isGridVisible && Active; }
             set
             {
                 if (isGridVisible == value) return;
@@ -469,8 +494,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
             }
 
-            RaisePropertyChanged("SceneItems");
-            OnRequestViewRefresh();
+            OnSceneItemsChanged();
         }
 
         protected override void OnWorkspaceCleared(WorkspaceModel workspace)
@@ -561,6 +585,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             switch (e.PropertyName)
             {
                 case "CachedValue":
+                    Debug.WriteLine(string.Format("Requesting render packages for {0}", node.GUID));
                     node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
                     break;
 
@@ -584,6 +609,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public override void GenerateViewGeometryFromRenderPackagesAndRequestUpdate(IEnumerable<IRenderPackage> taskPackages)
         {
+            foreach (var p in taskPackages)
+            {
+                Debug.WriteLine(string.Format("Processing render packages for {0}", p.Description));
+            }
+
             recentlyAddedNodes.Clear();
 
 #if DEBUG
@@ -603,8 +633,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             renderTimer.Start();
 #endif
 
-            RaisePropertyChanged("SceneItems");
-            OnRequestViewRefresh();
+            OnSceneItemsChanged();
         }
 
         public override void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
@@ -631,8 +660,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             if (!requestUpdate) return;
 
-            RaisePropertyChanged("SceneItems");
-            OnRequestViewRefresh();
+            OnSceneItemsChanged();
         }
 
         protected override void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -641,34 +669,84 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 case "CurrentWorkspace":
                     OnClear();
-                    foreach (var node in model.CurrentWorkspace.Nodes)
+
+                    IEnumerable<NodeModel> nodesToRender = null;
+
+                    // Get the nodes to render from the current home workspace. For custom
+                    // nodes, this will get the workspace in which the custom node is placed.
+                    // This will need to be adapted when multiple home workspaces are supported,
+                    // so that a specific workspace can be selected to act as the preview context.
+
+                    var hs = model.Workspaces.FirstOrDefault(i => i is HomeWorkspaceModel);
+                    if (hs != null)
+                    {
+                        nodesToRender = hs.Nodes;
+                    }
+
+                    if (nodesToRender == null)
+                    {
+                        return;
+                    }
+
+                    foreach (var node in nodesToRender)
                     {
                         node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory, true);
                     }
+
                     break;
             }
         }
 
         protected override void ZoomToFit(object parameter)
         {
-            if (!DynamoSelection.Instance.Selection.Any())
-            {
-                OnRequestZoomToFit(ComputeBoundsForGeometry(SceneItems.Where(item=>item is GeometryModel3D).Cast<GeometryModel3D>().ToArray()));
-            }
-
-            var selNodes = DynamoSelection.Instance.Selection.Where(s => s is NodeModel).Cast<NodeModel>().ToArray();
-            if (!selNodes.Any()) return;
-
+            var idents = FindIdentifiersForContext();
             var geoms = SceneItems.Where(item => item is GeometryModel3D).Cast<GeometryModel3D>();
-            var idents = FindIdentifiersForSelectedNodes(selNodes);
-            var selGeoms = FindGeometryForIdentifiers(geoms, idents);
-            var selectionBounds = ComputeBoundsForGeometry(selGeoms.ToArray());
+            var targetGeoms = FindGeometryForIdentifiers(geoms, idents);
+            var selectionBounds = ComputeBoundsForGeometry(targetGeoms.ToArray());
 
             // Don't zoom if there is no valid bounds.
             if (selectionBounds.Equals(new BoundingBox())) return;
 
             OnRequestZoomToFit(selectionBounds);
         }
+
+        /// <summary>
+        /// Finds all output identifiers based on the context.
+        /// 
+        /// Ex. If there are nodes selected, returns all identifiers for outputs
+        /// on the selected nodes. If you're in a custom node, returns all identifiers
+        /// for the outputs from instances of those custom nodes in the graph. etc.
+        /// </summary>
+        /// <returns>An <see cref="IEnumerable"/> of <see cref="string"/> containing the output identifiers found in the context.</returns>
+        private IEnumerable<string> FindIdentifiersForContext()
+        {
+            IEnumerable<string> idents = null;
+
+            var hs = model.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
+            if (hs == null)
+            {
+                return idents;
+            }
+
+            if (InCustomNode())
+            {
+                idents = FindIdentifiersForCustomNodes(hs);
+            }
+            else
+            {
+                if (DynamoSelection.Instance.Selection.Any())
+                {
+                    var selNodes = DynamoSelection.Instance.Selection.Where(s => s is NodeModel).Cast<NodeModel>().ToArray();
+                    idents = FindIdentifiersForSelectedNodes(selNodes);
+                }
+                else
+                {
+                    idents = AllOutputIdentifiersInWorkspace(hs);
+                }
+            }
+
+            return idents;
+        } 
 
         protected override bool CanToggleCanNavigateBackground(object parameter)
         {
@@ -705,6 +783,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         #endregion
 
         #region private methods
+
+        private void OnSceneItemsChanged()
+        {
+            RaisePropertyChanged("SceneItems");
+            OnRequestViewRefresh();
+        }
    
         private KeyValuePair<string, Model3D>[] FindAllGeometryModel3DsForNode(string identifier)
         {
@@ -873,6 +957,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             SetGridVisibility();
 
+            if (!model3DDictionary.ContainsKey(DefaultGridName))
+            {
+                Model3DDictionary.Add(DefaultGridName, gridModel3D);
+            }
+
             var axesModel3D = new DynamoLineGeometryModel3D
             {
                 Geometry = Axes,
@@ -945,24 +1034,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private void SetGridVisibility()
         {
+            var visibility = isGridVisible ? Visibility.Visible : Visibility.Hidden;
             //return if there is nothing to change
-            if (Model3DDictionary.ContainsKey(DefaultGridName) == isGridVisible) return;
-
-            if (isGridVisible)
-            {
-                if (!gridModel3D.IsAttached)
-                {
-                    OnRequestAttachToScene(gridModel3D);
-                }
-
-                Model3DDictionary[DefaultGridName] = gridModel3D;
-            }
-            else
-            {
-                Model3DDictionary.Remove(DefaultGridName);
-            }
-
-            RaisePropertyChanged("SceneItems");
+            if (gridModel3D.Visibility == visibility) return;
+            
+            gridModel3D.Visibility = visibility;
+            OnRequestViewRefresh();
         }
 
         private static void DrawGridPatch(
@@ -1046,8 +1123,30 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        private bool InCustomNode()
+        {
+            return model.CurrentWorkspace is CustomNodeWorkspaceModel;
+        }
+
+        /// <summary>
+        /// Given a collection of render packages, generates
+        /// corresponding <see cref="GeometryModel3D"/> objects for visualization, and
+        /// attaches them to the visual scene.
+        /// </summary>
+        /// <param name="packages">An <see cref="IEnumerable"/> of <see cref="HelixRenderPackage"/>.</param>
         private void AggregateRenderPackages(IEnumerable<HelixRenderPackage> packages)
         {
+            
+            IEnumerable<string> customNodeIdents = null;
+            if (InCustomNode())
+            {
+                var hs = model.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
+                if (hs != null)
+                {
+                    customNodeIdents = FindIdentifiersForCustomNodes((HomeWorkspaceModel)hs);
+                }
+            }
+
             lock (Model3DDictionaryMutex)
             {
                 foreach (var rp in packages)
@@ -1065,6 +1164,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         baseId = baseId.Split(':')[0];
                     }
                     var id = baseId;
+
+                    var drawDead = InCustomNode() && !customNodeIdents.Contains(baseId);
 
                     var p = rp.Points;
                     if (p.Positions.Any())
@@ -1087,10 +1188,19 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         var startIdx = points.Positions.Count;
 
                         points.Positions.AddRange(p.Positions);
-                        points.Colors.AddRange(p.Colors.Any()
-                            ? p.Colors
-                            : Enumerable.Repeat(defaultPointColor, points.Positions.Count));
-                        points.Indices.AddRange(p.Indices.Select(i => i + startIdx));
+
+                        if (drawDead)
+                        {
+                            points.Colors.AddRange(Enumerable.Repeat(defaultDeadColor, points.Positions.Count));
+                        }
+                        else
+                        {
+                            points.Colors.AddRange(p.Colors.Any()
+                              ? p.Colors
+                              : Enumerable.Repeat(defaultPointColor, points.Positions.Count));
+                            points.Indices.AddRange(p.Indices.Select(i => i + startIdx));
+                        }
+                        
 
                         if (rp.DisplayLabels)
                         {
@@ -1125,9 +1235,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         var startIdx = lineSet.Positions.Count;
 
                         lineSet.Positions.AddRange(l.Positions);
-                        lineSet.Colors.AddRange(l.Colors.Any()
-                            ? l.Colors
-                            : Enumerable.Repeat(defaultLineColor, l.Positions.Count));
+                        if (drawDead)
+                        {
+                            lineSet.Colors.AddRange(Enumerable.Repeat(defaultDeadColor, l.Positions.Count));
+                        }
+                        else
+                        {
+                            lineSet.Colors.AddRange(l.Colors.Any()
+                             ? l.Colors
+                             : Enumerable.Repeat(defaultLineColor, l.Positions.Count));
+                        }
+                        
                         lineSet.Indices.AddRange(l.Indices.Any()
                             ? l.Indices.Select(i => i + startIdx)
                             : Enumerable.Range(startIdx, startIdx + l.Positions.Count));
@@ -1165,7 +1283,20 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     var idxCount = mesh.Positions.Count;
 
                     mesh.Positions.AddRange(m.Positions);
-                    mesh.Colors.AddRange(m.Colors);
+
+                    // If we are in a custom node, and the current
+                    // package's id is NOT one of the output ids of custom nodes
+                    // in the graph, then draw the geometry with transparency.
+                    if (drawDead)
+                    {
+                        meshGeometry3D.RequiresPerVertexColoration = true;
+                        mesh.Colors.AddRange(m.Colors.Select(c=>new Color4(c.Red, c.Green, c.Blue, c.Alpha * defaultDeadAlphaScale)));
+                    }
+                    else
+                    {
+                        mesh.Colors.AddRange(m.Colors);
+                    }
+
                     mesh.Normals.AddRange(m.Normals);
                     mesh.TextureCoordinates.AddRange(m.TextureCoordinates);
                     mesh.Indices.AddRange(m.Indices.Select(i => i + idxCount));
@@ -1189,6 +1320,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+
         void pointGeometry3D_MouseDown3D(object sender, RoutedEventArgs e)
         {
             var args = e as Mouse3DEventArgs;
@@ -1208,6 +1340,42 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 DynamoSelection.Instance.ClearSelection();
                 vm.Model.AddToSelection(node);
                 break;
+            }
+        }
+
+        public override void HighlightNodeGraphics(IEnumerable<NodeModel> nodes)
+        {
+            HighlightGraphicsOnOff(nodes, true);
+        }
+
+        public override void UnHighlightNodeGraphics(IEnumerable<NodeModel> nodes)
+        {
+            HighlightGraphicsOnOff(nodes, false);
+        }
+
+        private void HighlightGraphicsOnOff(IEnumerable<NodeModel> nodes, bool highlightOn)
+        {
+            foreach (var node in nodes)
+            {
+                var geometries = FindAllGeometryModel3DsForNode(node.AstIdentifierBase);
+                foreach (var geometry in geometries)
+                {
+                    var pointGeom = geometry.Value as PointGeometryModel3D;
+                    
+                    if (pointGeom == null) continue;
+                    
+                    var points = pointGeom.Geometry;
+                    points.Colors.Clear();
+                    
+                    points.Colors.AddRange(highlightOn
+                        ? Enumerable.Repeat(highlightColor, points.Positions.Count)
+                        : Enumerable.Repeat(defaultPointColor, points.Positions.Count));
+
+                    pointGeom.Size = highlightOn ? highlightSize : defaultPointSize;
+
+                    pointGeom.Detach();
+                    OnRequestAttachToScene(pointGeom);
+                }
             }
         }
 
@@ -1402,6 +1570,57 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             return selectedNodes.SelectMany(n => n.OutPorts.Select(p => n.GetAstIdentifierForOutputIndex(p.Index).Value));
         }
+
+        /// <summary>
+        /// Find all output identifiers for all custom nodes in the provided workspace. 
+        /// </summary>
+        /// <param name="workspace">A workspace</param>
+        /// <returns>An <see cref="IEnumerable"/> of <see cref="string"/> containing all output identifiers for 
+        /// all custom nodes in the provided workspace, or null if the workspace is null.</returns>
+        internal static IEnumerable<string> FindIdentifiersForCustomNodes(HomeWorkspaceModel workspace)
+        {
+            if (workspace == null)
+            {
+                return null;
+            }
+
+            // Remove the output identifier appended to the custom node outputs.
+            var rgx = new Regex("_out[0-9]");
+
+            var customNodes = workspace.Nodes.Where(n => n is Function);
+            var idents = new List<string>();
+            foreach (var n in customNodes)
+            {
+                if (n.IsPartiallyApplied)
+                {
+                    // Find output identifiers for the connected map node
+                    var mapOutportsIdents =
+                        n.OutPorts.SelectMany(
+                            np => np.Connectors.SelectMany(
+                                    c => c.End.Owner.OutPorts.Select(
+                                            mp => rgx.Replace(mp.Owner.GetAstIdentifierForOutputIndex(mp.Index).Value, ""))));
+                    
+                    idents.AddRange(mapOutportsIdents);
+                }
+                else
+                {
+                    idents.AddRange(n.OutPorts.Select(p => rgx.Replace(n.GetAstIdentifierForOutputIndex(p.Index).Value, "")));
+                }
+            }
+            return idents;
+        }
+
+        internal static IEnumerable<string> AllOutputIdentifiersInWorkspace(HomeWorkspaceModel workspace)
+        {
+            if (workspace == null)
+            {
+                return null;
+            }
+
+            return
+                workspace.Nodes
+                    .SelectMany(n => n.OutPorts.Select(p => n.GetAstIdentifierForOutputIndex(p.Index).Value));
+        } 
 
         internal static IEnumerable<GeometryModel3D> FindGeometryForIdentifiers(IEnumerable<GeometryModel3D> geometry, IEnumerable<string> identifiers)
         {
