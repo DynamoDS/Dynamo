@@ -97,4 +97,6 @@
     <SolidColorBrush x:Key="SelectedFilterButtonTextColor" Color="#4D4D4D" />
     <SolidColorBrush x:Key="FilterCategoryIsNotSelectedColor" Color="#737373" />
     <SolidColorBrush x:Key="NodeNameForeground" Color="#ffffff" />
+    <SolidColorBrush x:Key="UnSelectedLayoutForeground" Color="#999999" />
+    <SolidColorBrush x:Key="NodeCategoryForeground" Color="#b3b3b3" />
 </ResourceDictionary>

@@ -7,7 +7,6 @@ using System.Threading;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
-using Dynamo.Services;
 
 namespace Dynamo.Logging
 {

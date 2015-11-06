@@ -3184,6 +3184,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to only.
+        /// </summary>
+        public static string OnlyTitle {
+            get {
+                return ResourceManager.GetString("OnlyTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open {0} Definition....
         /// </summary>
         public static string OpenDynamoDefinitionDialogTitle {
@@ -4161,6 +4170,15 @@ namespace Dynamo.Wpf.Properties {
         public static string SearchViewTopResult {
             get {
                 return ResourceManager.GetString("SearchViewTopResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select All.
+        /// </summary>
+        public static string SelectAllTitle {
+            get {
+                return ResourceManager.GetString("SelectAllTitle", resourceCulture);
             }
         }
         
