@@ -1858,6 +1858,8 @@
                      Value="True">
                 <Setter Property="Foreground"
                         Value="White" />
+                <Setter Property="Cursor"
+                        Value="Hand" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -1871,6 +1873,8 @@
                      Value="True">
                 <Setter Property="Background"
                         Value="{StaticResource FilterPopupBorderColor}" />
+                <Setter Property="Cursor"
+                        Value="Hand" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -1884,6 +1888,8 @@
                      Value="True">
                 <Setter Property="TextBlock.TextDecorations"
                         Value="Underline" />
+                <Setter Property="Cursor"
+                        Value="Hand" />
             </Trigger>
         </Style.Triggers>
     </Style>
