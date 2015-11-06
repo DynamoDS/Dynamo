@@ -288,6 +288,8 @@ namespace Dynamo.Nodes
                 var type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
                 AssociativeNode defaultValue = null;
 
+                string comment = null;
+
                 if (substrings.Count() > 2)
                 {
                     this.Warning(Properties.Resources.WarningInvalidInput);
@@ -300,7 +302,6 @@ namespace Dynamo.Nodes
                     //    x : type
                     //    x : type = default_value
                     IdentifierNode identifierNode;
-                    string comment;
                     if (!TryParseInputExpression(inputSymbol, out identifierNode, out defaultValue, out comment))
                     {
                         this.Warning(Properties.Resources.WarningInvalidInput);
@@ -322,7 +323,7 @@ namespace Dynamo.Nodes
                     }
                 }
 
-                Parameter = new TypedParameter(nickName, type, defaultValue);
+                Parameter = new TypedParameter(nickName, type, defaultValue, null, comment);
 
                 OnNodeModified();
                 RaisePropertyChanged("InputSymbol");
