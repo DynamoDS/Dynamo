@@ -13,7 +13,7 @@ using System.Windows.Media;
 
 using Dynamo.Models;
 using Dynamo.PackageManager;
-using Dynamo.Search;
+using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.UI.Controls;
 using Dynamo.UpdateManager;
