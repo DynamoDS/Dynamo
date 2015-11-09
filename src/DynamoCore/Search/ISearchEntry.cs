@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Dynamo.Search.Interfaces
+namespace Dynamo.Search
 {
     /// <summary>
     ///     Has a collection of strings that can be used to identifiy the instance

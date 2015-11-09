@@ -78,11 +78,6 @@ limitations under the License.
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\greg\Greg.dll</HintPath>
     </Reference>
-    <Reference Include="ICSharpCode.AvalonEdit, Version=4.3.1.9429, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\avalonEdit\ICSharpCode.AvalonEdit.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\extern\Newtonsoft.json\Newtonsoft.Json.dll</HintPath>
       <HintPath>..\..\extern\Newtonsoft.JsonBin\Newtonsoft.Json.dll</HintPath>
@@ -152,8 +147,8 @@ limitations under the License.
     <Compile Include="Models\RunSettings.cs" />
     <Compile Include="Scheduler\AsyncTaskExtensions.cs" />
     <Compile Include="Configuration\IPathResolver.cs" />
-    <Compile Include="Search\Interfaces\ISearchCategory.cs" />
-    <Compile Include="Search\Interfaces\ISearchEntry.cs" />
+    <Compile Include="Search\ISearchCategory.cs" />
+    <Compile Include="Search\ISearchEntry.cs" />
     <Compile Include="Search\NodeSearchModel.cs" />
     <Compile Include="Search\SearchElements\CodeBlockNodeSearchElement.cs" />
     <Compile Include="Search\SearchElements\CustomNodeSearchElement.cs" />
@@ -162,9 +157,8 @@ limitations under the License.
     <Compile Include="Search\SearchElements\NodeSearchElement.cs" />
     <Compile Include="Search\SearchElements\ZeroTouchSearchElement.cs" />
     <Compile Include="Core\AuthenticationManager.cs" />
-    <Compile Include="Services\ShapewaysClient.cs" />
     <Compile Include="Models\NodeModelExtensions.cs" />
-    <Compile Include="Interfaces\ISource.cs" />
+    <Compile Include="Search\ISource.cs" />
     <Compile Include="Models\RecordableCommands.cs" />
     <Compile Include="Properties\Resources.en-US.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -175,13 +169,13 @@ limitations under the License.
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Interfaces\ICustomNodeSource.cs" />
     <Compile Include="Search\SearchLibrary.cs" />
-    <Compile Include="Search\SearchElementGroup.cs" />
+    <Compile Include="Search\SearchElements\SearchElementGroup.cs" />
     <Compile Include="Nodes\CodeBlockUtils.cs" />
     <Compile Include="Core\NotificationObject.cs" />
     <Compile Include="Scheduler\QueryMirrorDataAsyncTask.cs" />
     <Compile Include="Scheduler\PreviewGraphAsyncTask.cs" />
     <Compile Include="Scheduler\UpdateRenderPackageAsyncTask.cs" />
-    <Compile Include="Engine\CodeCompletionServices.cs" />
+    <Compile Include="Engine\CodeCompletion\CodeCompletionServices.cs" />
     <Compile Include="Models\DynamoModelCommands.cs" />
     <Compile Include="Scheduler\AsyncTask.cs" />
     <Compile Include="Scheduler\CompileCustomNodeAsyncTask.cs" />
@@ -220,11 +214,11 @@ limitations under the License.
     <Compile Include="Nodes\ZeroTouch\UnresolvedFunctionException.cs" />
     <Compile Include="Search\BrowserItem.cs" />
     <Compile Include="Logging\StabilityTracking.cs" />
-    <Compile Include="Engine\AstBuilder.cs" />
+    <Compile Include="Engine\CodeGeneration\AstBuilder.cs" />
     <Compile Include="Library\FunctionType.cs" />
     <Compile Include="Engine\EngineController.cs" />
     <Compile Include="Engine\LiveRunnerServices.cs" />
-    <Compile Include="Engine\NodeToCode.cs" />
+    <Compile Include="Engine\NodeToCode\NodeToCode.cs" />
     <Compile Include="Models\CustomNodeWorkspaceModel.cs" />
     <Compile Include="Models\HomeWorkspaceModel.cs" />
     <Compile Include="Nodes\CodeBlockNode.cs" />
@@ -249,7 +243,7 @@ limitations under the License.
     <Compile Include="Search\BrowserInternalElement.cs" />
     <Compile Include="Core\CustomNodeManager.cs" />
     <Compile Include="Core\NodeModelAssemblyLoader.cs" />
-    <Compile Include="Search\SearchElementBase.cs" />
+    <Compile Include="Search\SearchElements\SearchElementBase.cs" />
     <Compile Include="Nodes\NodeCategories.cs" />
     <Compile Include="Models\ConnectorModel.cs" />
     <Compile Include="Nodes\Custom Nodes\Function.cs" />

@@ -1063,6 +1063,22 @@ namespace Dynamo.ViewModels
             IsDetailedMode = (bool)parameter;
         }
 
+        internal void UnSelectAllCategories()
+        {
+            foreach (var category in SearchCategories)
+            {
+                category.IsSelected = false;
+            }
+        }
+
+        internal void SelectAllCategories(object parameter)
+        {
+            foreach (var category in SearchCategories)
+            {
+                category.IsSelected = true;
+            }
+        }
+
         #endregion
     }
 }
