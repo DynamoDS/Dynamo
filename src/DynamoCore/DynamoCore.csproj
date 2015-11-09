@@ -236,8 +236,8 @@ limitations under the License.
     <Compile Include="Models\ModelBase.cs" />
     <Compile Include="Models\NoteModel.cs" />
     <Compile Include="Models\PortModel.cs" />
-    <Compile Include="UpdateManager\BinaryVersion.cs" />
-    <Compile Include="UpdateManager\UpdateManager.cs" />
+    <Compile Include="Updates\BinaryVersion.cs" />
+    <Compile Include="Updates\UpdateManager.cs" />
     <Compile Include="Configuration\Configurations.cs" />
     <Compile Include="Migration\MigrationReport.cs" />
     <Compile Include="Search\BrowserInternalElement.cs" />

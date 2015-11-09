@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
 
-using Dynamo.UpdateManager;
+using Dynamo.Updates;
 
 using Microsoft.Practices.Prism.ViewModel;
 

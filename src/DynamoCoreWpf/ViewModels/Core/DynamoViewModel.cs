@@ -19,7 +19,7 @@ using Dynamo.PackageManager;
 using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.UI;
-using Dynamo.UpdateManager;
+using Dynamo.Updates;
 using Dynamo.Utilities;
 using Dynamo.Visualization;
 using Dynamo.Wpf.Interfaces;

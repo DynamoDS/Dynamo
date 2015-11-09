@@ -13,7 +13,7 @@
         d:DataContext="{d:DesignInstance viewModels:DynamoViewModel, IsDesignTimeCreatable=False}"
         mc:Ignorable="d"
         xmlns:ui="clr-namespace:Dynamo.UI"
-        xmlns:um="clr-namespace:Dynamo.UpdateManager;assembly=DynamoCore"
+        xmlns:um="clr-namespace:Dynamo.Updates;assembly=DynamoCore"
         xmlns:ui1="clr-namespace:Dynamo.UI;assembly=DynamoCore"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
         xmlns:controls1="clr-namespace:Dynamo.Wpf.Controls"

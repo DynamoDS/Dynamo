@@ -13,7 +13,7 @@ using Dynamo.Core;
 using Dynamo.Logging;
 using Microsoft.Win32;
 
-namespace Dynamo.UpdateManager
+namespace Dynamo.Updates
 {
     public delegate void UpdateDownloadedEventHandler(object sender, UpdateDownloadedEventArgs e);
     public delegate void ShutdownRequestedEventHandler(IUpdateManager updateManager);
