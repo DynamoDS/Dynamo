@@ -309,44 +309,45 @@ namespace Dynamo.Publish.Models
 
             State = UploadState.Uploading;
 
-            IReachHttpResponse result;
+            IReachHttpResponse result = null;
 
             try
             {
-                result = await Task.Run(() =>
+                var customizerExists = await this.CheckCustomizer(workspaceProperties.Name);
+
+                if (customizerExists) // there is a customizer with specified name
                 {
-                    var req = new RestRequest("checkCustomizer")
+                    MessageBoxResult decision =
+                        MessageBox.Show("A customizer by this name already exists, do you want to overwrite it?",
+                            "Confirmation",
+                            MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (decision == MessageBoxResult.Yes)
                     {
-                        Method = Method.POST,
-                        RequestFormat = RestSharp.DataFormat.Json
-                    };
-
-                    req.AddBody(new
-                    {
-                        name = workspaceProperties.Name
-                    });
-
-                    var restClient = new RestClient(serverUrl);
-                    authenticationProvider.SignRequest(ref req, restClient);
-
-                    var check = restClient.Execute(req);
-
-                    if (check.StatusCode == HttpStatusCode.OK)
-                    {
-                        MessageBoxResult decision = MessageBox.Show("A customizer by this name already exists, do you want to overwrite it?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                        if (decision == MessageBoxResult.Yes)
-                        {
-                            return this.Send(workspace, workspaceProperties);
-                        }
+                        result = await this.Send(workspace, workspaceProperties);
                     }
-                    return this.Send(workspace, workspaceProperties);
-
-                });
+                }
+                else
+                {
+                    result = await this.Send(workspace, workspaceProperties);
+                }
             }
             catch (InvalidNodesException ex)
             {
                 InvalidNodeNames = ex.InvalidNodeNames;
                 Error = UploadErrorType.InvalidNodes;
+                return;
+            }
+            catch (CheckCustomizerException)
+            {
+                Error = UploadErrorType.UnknownServerError;
+                return;
+            }
+
+            if (result == null)
+            {
+                // user doesn't want to override existing customizer
+                State = UploadState.Uninitialized;
+                Error = UploadErrorType.None;
                 return;
             }
 
@@ -375,7 +376,7 @@ namespace Dynamo.Publish.Models
         /// Sends workspace and its' dependencies to Flood.
         /// </summary>
         /// <returns>String which is response from server.</returns>
-        private IReachHttpResponse Send(HomeWorkspaceModel workspace, WorkspaceProperties workspaceProperties = null)
+        private Task<IReachHttpResponse> Send(HomeWorkspaceModel workspace, WorkspaceProperties workspaceProperties = null)
         {
             if (reachClient == null)
             {
@@ -390,6 +391,16 @@ namespace Dynamo.Publish.Models
                     workspace,
                     dependencies.CustomNodeWorkspaces,
                     workspaceProperties);
+        }
+
+        private Task<bool> CheckCustomizer(string name)
+        {
+            if (reachClient == null)
+            {
+                reachClient = new WorkspaceStorageClient(authenticationProvider, serverUrl);
+            }
+
+            return reachClient.CheckCustomizer(name);
         }
 
         internal void ClearState()
