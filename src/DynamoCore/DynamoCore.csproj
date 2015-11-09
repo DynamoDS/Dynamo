@@ -147,8 +147,8 @@ limitations under the License.
     <Compile Include="Models\RunSettings.cs" />
     <Compile Include="Scheduler\AsyncTaskExtensions.cs" />
     <Compile Include="Configuration\IPathResolver.cs" />
-    <Compile Include="Search\Interfaces\ISearchCategory.cs" />
-    <Compile Include="Search\Interfaces\ISearchEntry.cs" />
+    <Compile Include="Search\ISearchCategory.cs" />
+    <Compile Include="Search\ISearchEntry.cs" />
     <Compile Include="Search\NodeSearchModel.cs" />
     <Compile Include="Search\SearchElements\CodeBlockNodeSearchElement.cs" />
     <Compile Include="Search\SearchElements\CustomNodeSearchElement.cs" />
@@ -158,7 +158,7 @@ limitations under the License.
     <Compile Include="Search\SearchElements\ZeroTouchSearchElement.cs" />
     <Compile Include="Core\AuthenticationManager.cs" />
     <Compile Include="Graph\Nodes\NodeModelExtensions.cs" />
-    <Compile Include="Interfaces\ISource.cs" />
+    <Compile Include="Search\ISource.cs" />
     <Compile Include="Models\RecordableCommands.cs" />
     <Compile Include="Properties\Resources.en-US.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -169,13 +169,13 @@ limitations under the License.
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Graph\Nodes\CustomNodes\ICustomNodeSource.cs" />
     <Compile Include="Search\SearchLibrary.cs" />
-    <Compile Include="Search\SearchElementGroup.cs" />
     <Compile Include="Graph\Nodes\CodeBlockUtils.cs" />
+    <Compile Include="Search\SearchElements\SearchElementGroup.cs" />
     <Compile Include="Core\NotificationObject.cs" />
     <Compile Include="Scheduler\QueryMirrorDataAsyncTask.cs" />
     <Compile Include="Scheduler\PreviewGraphAsyncTask.cs" />
     <Compile Include="Scheduler\UpdateRenderPackageAsyncTask.cs" />
-    <Compile Include="Engine\CodeCompletionServices.cs" />
+    <Compile Include="Engine\CodeCompletion\CodeCompletionServices.cs" />
     <Compile Include="Models\DynamoModelCommands.cs" />
     <Compile Include="Scheduler\AsyncTask.cs" />
     <Compile Include="Scheduler\CompileCustomNodeAsyncTask.cs" />
@@ -214,14 +214,14 @@ limitations under the License.
     <Compile Include="Graph\Nodes\ZeroTouch\UnresolvedFunctionException.cs" />
     <Compile Include="Search\BrowserItem.cs" />
     <Compile Include="Logging\StabilityTracking.cs" />
-    <Compile Include="Engine\AstBuilder.cs" />
+    <Compile Include="Engine\CodeGeneration\AstBuilder.cs" />
     <Compile Include="Library\FunctionType.cs" />
     <Compile Include="Engine\EngineController.cs" />
     <Compile Include="Engine\LiveRunnerServices.cs" />
-    <Compile Include="Engine\NodeToCode.cs" />
     <Compile Include="Graph\Workspaces\CustomNodeWorkspaceModel.cs" />
     <Compile Include="Graph\Workspaces\HomeWorkspaceModel.cs" />
     <Compile Include="Graph\Nodes\CodeBlockNode.cs" />
+    <Compile Include="Engine\NodeToCode\NodeToCode.cs" />
     <Compile Include="Migration\WorkspaceMigrations.cs" />
     <Compile Include="Graph\Nodes\ZeroTouch\DSFunction.cs" />
     <Compile Include="Migration\Migration.cs" />
@@ -243,7 +243,6 @@ limitations under the License.
     <Compile Include="Search\BrowserInternalElement.cs" />
     <Compile Include="Core\CustomNodeManager.cs" />
     <Compile Include="Core\NodeModelAssemblyLoader.cs" />
-    <Compile Include="Search\SearchElementBase.cs" />
     <Compile Include="Graph\Nodes\NodeCategories.cs" />
     <Compile Include="Graph\Connectors\ConnectorModel.cs" />
     <Compile Include="Graph\Nodes\CustomNodes\Function.cs" />
@@ -252,6 +251,7 @@ limitations under the License.
     <Compile Include="Graph\Nodes\NodeLoaders\CodeBlockNodeLoader.cs" />
     <Compile Include="Graph\Nodes\NodeLoaders\CustomNodeLoader.cs" />
     <Compile Include="Graph\Nodes\NodeLoaders\ZeroTouchNodeLoader.cs" />
+    <Compile Include="Search\SearchElements\SearchElementBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

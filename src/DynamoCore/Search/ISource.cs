@@ -1,6 +1,6 @@
 using System;
 
-namespace Dynamo.Interfaces
+namespace Dynamo.Search
 {
     /// <summary>
     ///     Has an event that produces items.

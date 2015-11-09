@@ -1,4 +1,4 @@
-﻿namespace Dynamo.Search
+﻿namespace Dynamo.Search.SearchElements
 {
     public enum SearchElementGroup
     {
