@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Dynamo.Logging;
 
 namespace Dynamo.Wpf
 {
@@ -14,11 +15,11 @@ namespace Dynamo.Wpf
             this.assembly = assem;
         }
 
-        public IDictionary<Type, IEnumerable<Type>> GetCustomizations()
+        public IDictionary<Type, IEnumerable<Type>> GetCustomizations(ILogger logger)
         {
             return NodeViewCustomizationLoader
-                .LoadCustomizations(this.assembly)
-                .GetCustomizations();
+                .LoadCustomizations(this.assembly, logger)
+                .GetCustomizations(logger);
         }
     }
 }

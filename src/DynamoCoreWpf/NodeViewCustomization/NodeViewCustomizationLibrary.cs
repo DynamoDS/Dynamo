@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 
 using Dynamo.Controls;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
-using Dynamo.Interfaces;
 using Dynamo.Logging;
-using Dynamo.Models;
 
 namespace Dynamo.Wpf
 {
@@ -78,7 +75,7 @@ namespace Dynamo.Wpf
 
         internal void Add(INodeViewCustomizations cs)
         {
-            var custs = cs.GetCustomizations();
+            var custs = cs.GetCustomizations(logger);
 
             foreach (var pair in custs)
             {
@@ -87,7 +84,7 @@ namespace Dynamo.Wpf
 
                 foreach (var custType in custTypes)
                 {
-                    this.Add(nodeModelType, InternalNodeViewCustomization.Create(nodeModelType, custType));
+                    Add(nodeModelType, InternalNodeViewCustomization.Create(nodeModelType, custType));
                 }
             }
         }
