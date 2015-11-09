@@ -33,7 +33,7 @@ namespace Dynamo.UI.Controls
         private readonly DynamoViewModel dynamoViewModel;
         private readonly CodeBlockNodeModel nodeModel;
         private CompletionWindow completionWindow;
-        private CodeBlockMethodInsightWindow insightWindow;
+        private CodeCompletionMethodInsightWindow insightWindow;
         private bool isDisposed;
 
         public CodeBlockEditor()
@@ -97,13 +97,13 @@ namespace Dynamo.UI.Controls
                 dynamoViewModel.CurrentSpace.ElementResolver).Select(x => new CodeCompletionData(x));
         }
 
-        internal IEnumerable<CodeBlockInsightItem> GetFunctionSignatures(string code, string functionName, string functionPrefix)
+        internal IEnumerable<CodeCompletionInsightItem> GetFunctionSignatures(string code, string functionName, string functionPrefix)
         {
             var engineController = dynamoViewModel.EngineController;
 
             return engineController.CodeCompletionServices.GetFunctionSignatures(
                 code, functionName, functionPrefix, dynamoViewModel.CurrentSpace.ElementResolver).
-                Select(x => new CodeBlockInsightItem(x));
+                Select(x => new CodeCompletionInsightItem(x));
         }
 
         internal new bool Focus()
@@ -307,7 +307,7 @@ namespace Dynamo.UI.Controls
             completionWindow.Show();
         }
 
-        private void ShowInsightWindow(IEnumerable<CodeBlockInsightItem> items)
+        private void ShowInsightWindow(IEnumerable<CodeCompletionInsightItem> items)
         {
             if (items == null)
                 return;
@@ -316,7 +316,7 @@ namespace Dynamo.UI.Controls
             {
                 insightWindow.Close();
             }
-            insightWindow = new CodeBlockMethodInsightWindow(this.InnerTextEditor.TextArea);
+            insightWindow = new CodeCompletionMethodInsightWindow(this.InnerTextEditor.TextArea);
             foreach (var item in items)
             {
                 insightWindow.Items.Add(item);

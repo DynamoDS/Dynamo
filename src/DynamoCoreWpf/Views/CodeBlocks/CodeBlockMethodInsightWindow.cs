@@ -13,16 +13,16 @@ namespace Dynamo.UI
     /// <summary>
     /// This class represents the tooltip for completion of function signatures
     /// </summary>
-    class CodeBlockMethodInsightWindow : OverloadInsightWindow
+    class CodeCompletionMethodInsightWindow : OverloadInsightWindow
     {
         private Caret caret;
-        private CodeBlockInsightItem oldSelectedItem;
+        private CodeCompletionInsightItem oldSelectedItem;
 
         sealed class CodeBlockMethodOverloadProvider : IOverloadProvider
         {
-            private readonly CodeBlockMethodInsightWindow insightWindow;
+            private readonly CodeCompletionMethodInsightWindow insightWindow;
 
-            public CodeBlockMethodOverloadProvider(CodeBlockMethodInsightWindow insightWindow)
+            public CodeBlockMethodOverloadProvider(CodeCompletionMethodInsightWindow insightWindow)
             {
                 this.insightWindow = insightWindow;
                 insightWindow.items.CollectionChanged += OnInsightWindowItemsChanged;
@@ -90,7 +90,7 @@ namespace Dynamo.UI
             {
                 get
                 {
-                    CodeBlockInsightItem item = insightWindow.SelectedItem;
+                    CodeCompletionInsightItem item = insightWindow.SelectedItem;
                     return item != null ? item.Header : null;
                 }
             }
@@ -99,7 +99,7 @@ namespace Dynamo.UI
             {
                 get
                 {
-                    CodeBlockInsightItem item = insightWindow.SelectedItem;
+                    CodeCompletionInsightItem item = insightWindow.SelectedItem;
                     return item != null ? item.Content : null;
                 }
             }
@@ -113,7 +113,7 @@ namespace Dynamo.UI
             }
         }
 
-        public CodeBlockMethodInsightWindow(TextArea textArea)
+        public CodeCompletionMethodInsightWindow(TextArea textArea)
             : base(textArea)
         {
             this.Provider = new CodeBlockMethodOverloadProvider(this);
@@ -125,11 +125,11 @@ namespace Dynamo.UI
             AttachEvents();
         }
 
-        readonly ObservableCollection<CodeBlockInsightItem> items = new ObservableCollection<CodeBlockInsightItem>();
+        readonly ObservableCollection<CodeCompletionInsightItem> items = new ObservableCollection<CodeCompletionInsightItem>();
         /// <summary>
         /// List of overload items for a given method
         /// </summary>
-        public IList<CodeBlockInsightItem> Items
+        public IList<CodeCompletionInsightItem> Items
         {
 
             get { return items; }
@@ -138,7 +138,7 @@ namespace Dynamo.UI
         /// <summary>
         /// Selected overload item
         /// </summary>
-        public CodeBlockInsightItem SelectedItem
+        public CodeCompletionInsightItem SelectedItem
         {
 
             get
@@ -215,13 +215,13 @@ namespace Dynamo.UI
     /// This class represents the individual item in the list of 
     /// function overload items in the function signature insight window
     /// </summary>
-    sealed class CodeBlockInsightItem : NotificationObject
+    sealed class CodeCompletionInsightItem : NotificationObject
     {
         public readonly string Signature;
 
         public readonly string MethodName;
 
-        public CodeBlockInsightItem(CompletionData completionData)
+        public CodeCompletionInsightItem(CompletionData completionData)
         {
             this.Signature = completionData.Stub;
             this.MethodName = completionData.Text;
