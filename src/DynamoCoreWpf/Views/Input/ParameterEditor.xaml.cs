@@ -25,6 +25,7 @@ namespace Dynamo.UI.Controls
         private NodeViewModel nodeViewModel;
         private DynamoViewModel dynamoViewModel;
         private CompletionWindow completionWindow;
+        private CodeCompletionMethodInsightWindow insightWindow;
 
         public ParameterEditor(NodeViewModel nodeViewModel)
         {
@@ -40,18 +41,31 @@ namespace Dynamo.UI.Controls
             InitializeSyntaxHighlighter();
         }
 
-        /// <summary>
-        /// Get all types that matched with partial name
-        /// </summary>
-        /// <param name="partialName"></param>
-        /// <returns></returns>
-        private IEnumerable<ICompletionData> GetMatchedTypes(string partialName)
+        private IEnumerable<ICompletionData> GetCompletionData(string code, string stringToComplete)
         {
-            var engineController = this.dynamoViewModel.Model.EngineController;
+            var engineController =
+                dynamoViewModel.EngineController;
 
-            return engineController.CodeCompletionServices
-                                   .SearchTypes(partialName, dynamoViewModel.CurrentSpace.ElementResolver)
-                                   .Select(x => new CodeCompletionData(x));
+            return engineController.CodeCompletionServices.GetCompletionsOnType(
+                code, stringToComplete, dynamoViewModel.CurrentSpace.ElementResolver).
+                Select(x => new CodeCompletionData(x));
+        }
+
+        internal IEnumerable<ICompletionData> SearchCompletions(string stringToComplete, Guid guid)
+        {
+            var engineController = dynamoViewModel.EngineController;
+
+            return engineController.CodeCompletionServices.SearchCompletions(stringToComplete, guid,
+                dynamoViewModel.CurrentSpace.ElementResolver).Select(x => new CodeCompletionData(x));
+        }
+
+        internal IEnumerable<CodeCompletionInsightItem> GetFunctionSignatures(string code, string functionName, string functionPrefix)
+        {
+            var engineController = dynamoViewModel.EngineController;
+
+            return engineController.CodeCompletionServices.GetFunctionSignatures(
+                code, functionName, functionPrefix, dynamoViewModel.CurrentSpace.ElementResolver).
+                Select(x => new CodeCompletionInsightItem(x));
         }
 
         #region Properties
@@ -126,19 +140,70 @@ namespace Dynamo.UI.Controls
 
         private void OnTextAreaTextEntered(object sender, TextCompositionEventArgs e)
         {
-            if (!InnerTextEditor.Text.Contains(':'))
-                return;
+            try
+            {
+                int startPos = this.InnerTextEditor.CaretOffset;
+                var code = this.InnerTextEditor.Text.Substring(0, startPos);
 
-            string type = InnerTextEditor.Text.Split(':').Last().Trim();
-            var types = this.GetMatchedTypes(type);
-            if (types == null || !types.Any())
-                return;
+                if (e.Text == ".")
+                {
+                    if (CodeCompletionParser.IsInsideCommentOrString(code, startPos))
+                        return;
 
-            int index = InnerTextEditor.Text.IndexOf(':');
-            if (index < 0 || InnerTextEditor.CaretOffset <= index)
-                return;
+                    string stringToComplete = CodeCompletionParser.GetStringToComplete(code).Trim('.');
 
-            ShowCompletionWindow(types, InnerTextEditor.Text.Length - type.Length);
+                    var completions = this.GetCompletionData(code, stringToComplete);
+
+                    if (!completions.Any())
+                        return;
+
+                    ShowCompletionWindow(completions);
+                }
+                // Complete function signatures
+                else if (e.Text == "(")
+                {
+                    if (CodeCompletionParser.IsInsideCommentOrString(code, startPos))
+                        return;
+
+                    string functionName;
+                    string functionPrefix;
+                    CodeCompletionParser.GetFunctionToComplete(code, out functionName, out functionPrefix);
+
+                    var insightItems = this.GetFunctionSignatures(code, functionName, functionPrefix);
+
+                    ShowInsightWindow(insightItems);
+                }
+                else if (e.Text == ")")
+                {
+                    if (insightWindow != null)
+                        insightWindow.Close();
+                }
+                else if (completionWindow == null && (char.IsLetterOrDigit(e.Text[0]) || e.Text[0] == '_'))
+                {
+
+                    // Begin completion while typing only if the previous character already typed in
+                    // is a white space or non-alphanumeric character
+                    if (startPos > 1 && char.IsLetterOrDigit(InnerTextEditor.Document.GetCharAt(startPos - 2)))
+                        return;
+
+                    if (CodeCompletionParser.IsInsideCommentOrString(code, startPos))
+                        return;
+
+                    // Autocomplete as you type
+                    // complete global methods (builtins), all classes, symbols local to codeblock node
+                    string stringToComplete = CodeCompletionParser.GetStringToComplete(code);
+
+                    var completions = this.SearchCompletions(stringToComplete, nodeViewModel.NodeModel.GUID);
+
+                    if (!completions.Any())
+                        return;
+
+                    ShowCompletionWindow(completions, completeWhenTyping: true);
+                }
+            }
+            catch (System.Exception ex)
+            {
+            }
         }
 
         /// <summary>
@@ -195,26 +260,70 @@ namespace Dynamo.UI.Controls
         }
         #endregion
 
-        private void ShowCompletionWindow(IEnumerable<ICompletionData> completions, int offset)
+        private void ShowInsightWindow(IEnumerable<CodeCompletionInsightItem> items)
         {
+            if (items == null)
+                return;
+
+            if (insightWindow != null)
+            {
+                insightWindow.Close();
+            }
+            insightWindow = new CodeCompletionMethodInsightWindow(this.InnerTextEditor.TextArea);
+            foreach (var item in items)
+            {
+                insightWindow.Items.Add(item);
+            }
+            if (insightWindow.Items.Count > 0)
+            {
+                insightWindow.SelectedItem = insightWindow.Items[0];
+            }
+            else
+            {
+                // don't open insight window when there are no items
+                return;
+            }
+            insightWindow.Closed += delegate
+            {
+                insightWindow = null;
+            };
+            insightWindow.Show();
+        }
+
+        private void ShowCompletionWindow(IEnumerable<ICompletionData> completions, bool completeWhenTyping = false)
+        {
+            // TODO: Need to make this more efficient by instantiating 'completionWindow'
+            // just once and updating its contents each time
+
             // This implementation has been referenced from
             // http://www.codeproject.com/Articles/42490/Using-AvalonEdit-WPF-Text-Editor
             if (completionWindow != null)
             {
                 completionWindow.Close();
             }
+            completionWindow = new CompletionWindow(this.InnerTextEditor.TextArea)
+            {
+                AllowsTransparency = true,
+                SizeToContent = SizeToContent.WidthAndHeight
+            };nodeModel
 
-            completionWindow = new CompletionWindow(this.InnerTextEditor.TextArea);
-            completionWindow.AllowsTransparency = true;
-            completionWindow.SizeToContent = SizeToContent.WidthAndHeight;
-            completionWindow.StartOffset = offset; 
-            completionWindow.CloseWhenCaretAtBeginning = true;
+            if (completeWhenTyping)
+            {
+                // As opposed to complete on '.', in complete while typing mode 
+                // the first character typed should also be considered for matches
+                // while generating options in completion window
+                completionWindow.StartOffset--;
+
+                // As opposed to complete on '.', in complete while typing mode 
+                // erasing the first character of the string being completed
+                // should close the completion window
+                completionWindow.CloseWhenCaretAtBeginning = true;
+            }
 
             var data = completionWindow.CompletionList.CompletionData;
+
             foreach (var completion in completions)
-            {
                 data.Add(completion);
-            }
 
             completionWindow.Closed += delegate
             {
