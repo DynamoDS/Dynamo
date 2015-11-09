@@ -1,21 +1,19 @@
 ﻿using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Xml;
 using Dynamo.Configuration;
 using DynCmd = Dynamo.Models.DynamoModel;
+using Dynamo.Wpf.Views;
 
 namespace Dynamo.UI.Controls
 {
@@ -53,7 +51,7 @@ namespace Dynamo.UI.Controls
 
             return engineController.CodeCompletionServices
                                    .SearchTypes(partialName, dynamoViewModel.CurrentSpace.ElementResolver)
-                                   .Select(x => new CodeBlockCompletionData(x));
+                                   .Select(x => new CodeCompletionData(x));
         }
 
         #region Properties
@@ -98,24 +96,9 @@ namespace Dynamo.UI.Controls
             // Highlighting Digits
             var rules = InnerTextEditor.SyntaxHighlighting.MainRuleSet.Rules;
 
-            rules.Add(CreateClassHighlightRule());
-        }
-
-        private HighlightingRule CreateClassHighlightRule()
-        {
-            Color color = (Color)ColorConverter.ConvertFromString("#2E998F");
-            var classHighlightRule = new HighlightingRule();
-            classHighlightRule.Color = new HighlightingColor()
-            {
-                Foreground = new Dynamo.Wpf.Views.CodeBlockEditorUtils.CustomizedBrush(color)
-            };
-
-            var engineController = dynamoViewModel.Model.EngineController;
-            var wordList = engineController.CodeCompletionServices.GetClasses();
-            String regex = String.Format(@"\b({0})({0})?\b", String.Join("|", wordList));
-            classHighlightRule.Regex = new Regex(regex);
-
-            return classHighlightRule;
+            rules.Add(CodeHighlightingRuleFactory.CreateNumberHighlightingRule());
+            rules.Add(CodeHighlightingRuleFactory.CreateClassHighlightRule(dynamoViewModel.EngineController));
+            rules.Add(CodeHighlightingRuleFactory.CreateMethodHighlightRule(dynamoViewModel.EngineController));
         }
 
         #endregion

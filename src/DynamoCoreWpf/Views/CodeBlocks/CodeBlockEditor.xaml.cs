@@ -86,7 +86,7 @@ namespace Dynamo.UI.Controls
 
             return engineController.CodeCompletionServices.GetCompletionsOnType(
                 code, stringToComplete, dynamoViewModel.CurrentSpace.ElementResolver).
-                Select(x => new CodeBlockCompletionData(x));
+                Select(x => new CodeCompletionData(x));
         }
 
         internal IEnumerable<ICompletionData> SearchCompletions(string stringToComplete, Guid guid)
@@ -94,7 +94,7 @@ namespace Dynamo.UI.Controls
             var engineController = dynamoViewModel.EngineController;
 
             return engineController.CodeCompletionServices.SearchCompletions(stringToComplete, guid,
-                dynamoViewModel.CurrentSpace.ElementResolver).Select(x => new CodeBlockCompletionData(x));
+                dynamoViewModel.CurrentSpace.ElementResolver).Select(x => new CodeCompletionData(x));
         }
 
         internal IEnumerable<CodeBlockInsightItem> GetFunctionSignatures(string code, string functionName, string functionPrefix)
@@ -158,50 +158,11 @@ namespace Dynamo.UI.Controls
             // Highlighting Digits
             var rules = this.InnerTextEditor.SyntaxHighlighting.MainRuleSet.Rules;
 
-            rules.Add(CodeBlockEditorUtils.CreateDigitRule());
-            rules.Add(CreateClassHighlightRule());
-            rules.Add(CreateMethodHighlightRule());
+            rules.Add(CodeHighlightingRuleFactory.CreateNumberHighlightingRule());
+            rules.Add(CodeHighlightingRuleFactory.CreateClassHighlightRule(dynamoViewModel.EngineController));
+            rules.Add(CodeHighlightingRuleFactory.CreateMethodHighlightRule(dynamoViewModel.EngineController));
         }
 
-        private HighlightingRule CreateClassHighlightRule()
-        {
-            Color color = (Color)ColorConverter.ConvertFromString("#2E998F");
-            var classHighlightRule = new HighlightingRule
-            {
-                Color = new HighlightingColor()
-                {
-                    Foreground = new CodeBlockEditorUtils.CustomizedBrush(color)
-                }
-            };
-
-            var engineController = dynamoViewModel.EngineController;
-
-            var wordList = engineController.CodeCompletionServices.GetClasses();
-            String regex = String.Format(@"\b({0})({0})?\b", String.Join("|", wordList));
-            classHighlightRule.Regex = new Regex(regex);
-
-            return classHighlightRule;
-        }
-
-        private HighlightingRule CreateMethodHighlightRule()
-        {
-            Color color = (Color)ColorConverter.ConvertFromString("#417693");
-            var methodHighlightRule = new HighlightingRule
-            {
-                Color = new HighlightingColor()
-                {
-                    Foreground = new CodeBlockEditorUtils.CustomizedBrush(color)
-                }
-            };
-
-            var engineController = dynamoViewModel.EngineController;
-
-            var wordList = engineController.CodeCompletionServices.GetGlobals();
-            String regex = String.Format(@"\b({0})({0})?\b", String.Join("|", wordList));
-            methodHighlightRule.Regex = new Regex(regex);
-
-            return methodHighlightRule;
-        }
 
         #endregion
 
