@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading;
-
+using DSCoreNodesUI.Input;
 using Dynamo.Tests;
 using DynamoConversions;
-using Dynamo.Nodes;
 using NUnit.Framework;
 using DynamoConverter = DSCoreNodesUI.DynamoConvert;
 

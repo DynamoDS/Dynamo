@@ -3,6 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.Interfaces;
 using Dynamo.Library;
 using Dynamo.Models;

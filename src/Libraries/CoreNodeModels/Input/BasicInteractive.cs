@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Xml;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 
-using Dynamo.Models;
-using ProtoCore.AST.AssociativeAST;
-
-namespace DSCoreNodesUI
+namespace DSCoreNodesUI.Input
 {
     public abstract class BasicInteractive<T> : NodeModel
     {

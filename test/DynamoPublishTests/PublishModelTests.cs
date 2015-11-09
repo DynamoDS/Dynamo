@@ -15,6 +15,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Reach.Upload;
 using System.Net;
+using Dynamo.Graph;
+using Dynamo.Graph.Workspaces;
 
 namespace DynamoPublishTests
 {

@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using Dynamo;
 using Dynamo.Configuration;
-using Dynamo.Models;
-using Dynamo.Nodes;
+using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
 
-namespace DSCoreNodesUI
+namespace DSCoreNodesUI.Input
 {
     [NodeName("Date Time")]
     [NodeDescription("DateTimeDescription", typeof(Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("DSCoreNodesUI.DateTime")]
     public class DateTime : BasicInteractive<System.DateTime>
     {
         public DateTime()

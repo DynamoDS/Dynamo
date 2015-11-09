@@ -67,6 +67,8 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="ProtoInterface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="SharpDX, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">

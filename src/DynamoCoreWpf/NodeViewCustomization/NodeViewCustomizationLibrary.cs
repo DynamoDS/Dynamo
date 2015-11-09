@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 
 using Dynamo.Controls;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;

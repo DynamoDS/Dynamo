@@ -5,9 +5,13 @@ using System.Threading;
 using System.Windows;
 
 using SystemTestServices;
-
+using DSCoreNodesUI.Input;
 using Dynamo.Configuration;
 using Dynamo.Controls;
+using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Scheduler;
