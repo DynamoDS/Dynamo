@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Dynamo.Logging;
+using Dynamo.Wpf.Properties;
 
 namespace Dynamo.Wpf
 {
@@ -40,7 +41,7 @@ namespace Dynamo.Wpf
             }
             catch (Exception ex)
             {
-                logger.Log(String.Format("There was an error finding node view customizations for {0}. Contact the author of this assembly for more information.", assem.FullName));
+                logger.Log(string.Format(Resources.NodeViewCustomizationFindErrorMessage, assem.FullName));
                 logger.Log(ex.Message);
             }
 
