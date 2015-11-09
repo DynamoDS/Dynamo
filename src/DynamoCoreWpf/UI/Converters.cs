@@ -16,7 +16,7 @@ using Dynamo.PackageManager;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.UI.Controls;
-using Dynamo.UpdateManager;
+using Dynamo.Updates;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;

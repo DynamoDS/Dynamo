@@ -14,7 +14,7 @@ using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
 using Dynamo.Tests;
-using Dynamo.UpdateManager;
+using Dynamo.Updates;
 using Dynamo.ViewModels;
 using DynamoShapeManager;
 

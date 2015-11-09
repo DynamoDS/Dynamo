@@ -233,11 +233,11 @@ limitations under the License.
     <Compile Include="Logging\Log.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Models\DynamoModel.cs" />
+    <Compile Include="Updates\BinaryVersion.cs" />
+    <Compile Include="Updates\UpdateManager.cs" />
     <Compile Include="Graph\ModelBase.cs" />
     <Compile Include="Graph\Notes\NoteModel.cs" />
     <Compile Include="Graph\Nodes\PortModel.cs" />
-    <Compile Include="UpdateManager\BinaryVersion.cs" />
-    <Compile Include="UpdateManager\UpdateManager.cs" />
     <Compile Include="Configuration\Configurations.cs" />
     <Compile Include="Migration\MigrationReport.cs" />
     <Compile Include="Search\BrowserInternalElement.cs" />

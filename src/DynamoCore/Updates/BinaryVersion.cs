@@ -1,4 +1,4 @@
-﻿namespace Dynamo.UpdateManager
+﻿namespace Dynamo.Updates
 {
     public class BinaryVersion
     {
