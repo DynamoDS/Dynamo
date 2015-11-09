@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Dynamo.Models;
+using Dynamo.Logging;
 
 namespace Dynamo.Wpf
 {
@@ -11,29 +11,37 @@ namespace Dynamo.Wpf
         private static Dictionary<Assembly, INodeViewCustomizations> cache = 
             new Dictionary<Assembly, INodeViewCustomizations>();
 
-        public static INodeViewCustomizations LoadCustomizations(Assembly assem)
+        public static INodeViewCustomizations LoadCustomizations(Assembly assem, ILogger logger)
         {
             if (cache.ContainsKey(assem)) return cache[assem];
 
             var types = new Dictionary<Type, IEnumerable<Type>>();
 
-            var customizerType = typeof(INodeViewCustomization<>);
-            var customizerImps  =  assem.GetTypes().Where(t => !t.IsAbstract && ImplementsGeneric(customizerType, t));
-
-            foreach (var customizerImp in customizerImps)
+            try
             {
-                var nodeModelType = GetCustomizerTypeParameters(customizerImp);
+                var customizerType = typeof (INodeViewCustomization<>);
+                var customizerImps = assem.GetTypes().Where(t => !t.IsAbstract && ImplementsGeneric(customizerType, t));
 
-                if (nodeModelType == null) continue;
+                foreach (var customizerImp in customizerImps)
+                {
+                    var nodeModelType = GetCustomizerTypeParameters(customizerImp);
 
-                if (types.ContainsKey(nodeModelType))
-                {
-                    types[nodeModelType] = types[nodeModelType].Concat(new[] { customizerImp });
+                    if (nodeModelType == null) continue;
+
+                    if (types.ContainsKey(nodeModelType))
+                    {
+                        types[nodeModelType] = types[nodeModelType].Concat(new[] {customizerImp});
+                    }
+                    else
+                    {
+                        types.Add(nodeModelType, new[] {customizerImp});
+                    }
                 }
-                else
-                {
-                    types.Add(nodeModelType, new[] { customizerImp });
-                }
+            }
+            catch (Exception ex)
+            {
+                logger.Log(String.Format("There was an error finding node view customizations for {0}. Contact the author of this assembly for more information.", assem.FullName));
+                logger.Log(ex.Message);
             }
 
             return new NodeViewCustomizations(types);
