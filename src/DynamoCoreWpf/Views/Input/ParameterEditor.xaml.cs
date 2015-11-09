@@ -305,7 +305,7 @@ namespace Dynamo.UI.Controls
             {
                 AllowsTransparency = true,
                 SizeToContent = SizeToContent.WidthAndHeight
-            };nodeModel
+            };
 
             if (completeWhenTyping)
             {
