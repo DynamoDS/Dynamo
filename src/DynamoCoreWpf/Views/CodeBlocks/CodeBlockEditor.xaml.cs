@@ -76,7 +76,7 @@ namespace Dynamo.UI.Controls
             this.InnerTextEditor.TextArea.TextEntering += OnTextAreaTextEntering;
             this.InnerTextEditor.TextArea.TextEntered += OnTextAreaTextEntered;
 
-            InitializeSyntaxHighlighter();
+            CodeHighlightingRuleFactory.CreateHighlightingRules(InnerTextEditor, dynamoViewModel.EngineController);
         }
 
         private IEnumerable<ICompletionData> GetCompletionData(string code, string stringToComplete)
@@ -144,27 +144,6 @@ namespace Dynamo.UI.Controls
         
         #endregion
 
-        #region Syntax highlighting helper methods
-
-        private void InitializeSyntaxHighlighter()
-        {
-            var stream = GetType().Assembly.GetManifestResourceStream(
-                "Dynamo.Wpf.UI.Resources." + Configurations.HighlightingFile);
-
-            Debug.Assert(stream != null);
-            this.InnerTextEditor.SyntaxHighlighting = HighlightingLoader.Load(
-                new XmlTextReader(stream), HighlightingManager.Instance);
-
-            // Highlighting Digits
-            var rules = this.InnerTextEditor.SyntaxHighlighting.MainRuleSet.Rules;
-
-            rules.Add(CodeHighlightingRuleFactory.CreateNumberHighlightingRule());
-            rules.Add(CodeHighlightingRuleFactory.CreateClassHighlightRule(dynamoViewModel.EngineController));
-            rules.Add(CodeHighlightingRuleFactory.CreateMethodHighlightRule(dynamoViewModel.EngineController));
-        }
-
-
-        #endregion
 
         #region Auto-complete event handlers
 

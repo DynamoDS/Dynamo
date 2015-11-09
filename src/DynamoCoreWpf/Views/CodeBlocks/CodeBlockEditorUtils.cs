@@ -7,6 +7,9 @@ using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Rendering;
 using Dynamo.Engine;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using System.Xml;
+using Dynamo.Configuration;
 
 namespace Dynamo.Wpf.Views
 {
@@ -122,5 +125,20 @@ namespace Dynamo.Wpf.Views
             }
         }
 
+        public static void CreateHighlightingRules(ICSharpCode.AvalonEdit.TextEditor editor, EngineController controller)
+        {
+            var stream = typeof(CodeHighlightingRuleFactory).Assembly.GetManifestResourceStream(
+                            "Dynamo.Wpf.UI.Resources." + Configurations.HighlightingFile);
+
+            editor.SyntaxHighlighting = HighlightingLoader.Load(
+                new XmlTextReader(stream), HighlightingManager.Instance);
+
+            // Highlighting Digits
+            var rules = editor.SyntaxHighlighting.MainRuleSet.Rules;
+
+            rules.Add(CodeHighlightingRuleFactory.CreateNumberHighlightingRule());
+            rules.Add(CodeHighlightingRuleFactory.CreateClassHighlightRule(controller));
+            rules.Add(CodeHighlightingRuleFactory.CreateMethodHighlightRule(controller));
+        }
     }
 }

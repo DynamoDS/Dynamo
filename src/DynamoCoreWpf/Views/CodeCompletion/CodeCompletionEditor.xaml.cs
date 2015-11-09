@@ -1,33 +1,42 @@
 ﻿using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Views;
 using ICSharpCode.AvalonEdit.CodeCompletion;
-using ICSharpCode.AvalonEdit.Highlighting;
-using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Xml;
-using Dynamo.Configuration;
-using DynCmd = Dynamo.Models.DynamoModel;
-using Dynamo.Wpf.Views;
 
 namespace Dynamo.UI.Controls
 {
+    // TODO: Merge CodeCOmpletionEditor with CodeBlockEditor
+
     /// <summary>
-    /// Auto-completion control for input parameter.
+    /// Interaction logic for CodeCompletionEditor.xaml
     /// </summary>
-    public partial class ParameterEditor : UserControl
+    public partial class CodeCompletionEditor : UserControl
     {
-        private NodeViewModel nodeViewModel;
-        private DynamoViewModel dynamoViewModel;
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public CodeCompletionEditor()
+        {
+            InitializeComponent();
+        }
+
+        protected NodeViewModel nodeViewModel;
+        protected DynamoViewModel dynamoViewModel;
         private CompletionWindow completionWindow;
         private CodeCompletionMethodInsightWindow insightWindow;
 
-        public ParameterEditor(NodeViewModel nodeViewModel)
+        /// <summary>
+        /// Create CodeCOmpletionEditor with NodeViewModel
+        /// </summary>
+        /// <param name="nodeViewModel"></param>
+        public CodeCompletionEditor(NodeViewModel nodeViewModel)
         {
             InitializeComponent();
 
@@ -38,8 +47,24 @@ namespace Dynamo.UI.Controls
             this.InnerTextEditor.TextArea.TextEntering += OnTextAreaTextEntering;
             this.InnerTextEditor.TextArea.TextEntered += OnTextAreaTextEntered;
 
-            InitializeSyntaxHighlighter();
+            CodeHighlightingRuleFactory.CreateHighlightingRules(InnerTextEditor, dynamoViewModel.EngineController);
         }
+
+        /// <summary>
+        /// Derived class overrides this function to handle escape event.
+        /// </summary>
+        protected virtual void OnEscape()
+        {
+        }
+
+        /// <summary>
+        /// Derived class overrides this function to handle the commit of code.
+        /// </summary>
+        /// <param name="code"></param>
+        protected virtual void OnCommitChange(string code)
+        {
+        }
+
 
         private IEnumerable<ICompletionData> GetCompletionData(string code, string stringToComplete)
         {
@@ -51,7 +76,7 @@ namespace Dynamo.UI.Controls
                 Select(x => new CodeCompletionData(x));
         }
 
-        internal IEnumerable<ICompletionData> SearchCompletions(string stringToComplete, Guid guid)
+        private IEnumerable<ICompletionData> SearchCompletions(string stringToComplete, Guid guid)
         {
             var engineController = dynamoViewModel.EngineController;
 
@@ -59,7 +84,7 @@ namespace Dynamo.UI.Controls
                 dynamoViewModel.CurrentSpace.ElementResolver).Select(x => new CodeCompletionData(x));
         }
 
-        internal IEnumerable<CodeCompletionInsightItem> GetFunctionSignatures(string code, string functionName, string functionPrefix)
+        private IEnumerable<CodeCompletionInsightItem> GetFunctionSignatures(string code, string functionName, string functionPrefix)
         {
             var engineController = dynamoViewModel.EngineController;
 
@@ -69,8 +94,7 @@ namespace Dynamo.UI.Controls
         }
 
         #region Properties
-
-        public string Parameter
+        public string Code
         {
             get
             {
@@ -80,39 +104,6 @@ namespace Dynamo.UI.Controls
             {
                 InnerTextEditor.Text = value;
             }
-        }
-        #endregion
-
-        #region Dependency Property
-        public static readonly DependencyProperty ParameterProperty = 
-            DependencyProperty.Register(
-                "Parameter", 
-                typeof(string),
-                typeof(ParameterEditor), 
-                new PropertyMetadata((obj, args) =>
-                {
-                    var target = (ParameterEditor)obj;
-                    target.Parameter = (string)args.NewValue;
-                })
-            );
-        #endregion
-
-        #region Syntax highlighting helper methods
-
-        private void InitializeSyntaxHighlighter()
-        {
-            var stream = GetType().Assembly.GetManifestResourceStream(
-                "Dynamo.Wpf.UI.Resources." + Configurations.HighlightingFile);
-
-            InnerTextEditor.SyntaxHighlighting = HighlightingLoader.Load(
-                new XmlTextReader(stream), HighlightingManager.Instance);
-
-            // Highlighting Digits
-            var rules = InnerTextEditor.SyntaxHighlighting.MainRuleSet.Rules;
-
-            rules.Add(CodeHighlightingRuleFactory.CreateNumberHighlightingRule());
-            rules.Add(CodeHighlightingRuleFactory.CreateClassHighlightRule(dynamoViewModel.EngineController));
-            rules.Add(CodeHighlightingRuleFactory.CreateMethodHighlightRule(dynamoViewModel.EngineController));
         }
 
         #endregion
@@ -214,15 +205,7 @@ namespace Dynamo.UI.Controls
         {
             InnerTextEditor.TextArea.ClearSelection();
 
-            var lastInput = (nodeViewModel.NodeModel as Symbol).InputSymbol;
-            if (lastInput.Equals(InnerTextEditor.Text))
-                return;
-
-            nodeViewModel.DynamoViewModel.ExecuteCommand(
-                new DynCmd.UpdateModelValueCommand(
-                    nodeViewModel.WorkspaceViewModel.Model.Guid,
-                    nodeViewModel.NodeModel.GUID, "InputSymbol",
-                    InnerTextEditor.Text));
+            OnCommitChange(InnerTextEditor.Text);
         }
 
         /// <summary>
@@ -246,16 +229,7 @@ namespace Dynamo.UI.Controls
                     return;
                 }
 
-                var text = this.InnerTextEditor.Text;
-                var input = DataContext as Symbol;
-                if (input == null || input.InputSymbol != null && text.Equals(input.InputSymbol))
-                {
-                    dynamoViewModel.ReturnFocusToSearch();
-                }
-                else
-                {
-                    this.InnerTextEditor.Text = (DataContext as Symbol).InputSymbol;
-                }
+                OnEscape();
             }
         }
         #endregion
