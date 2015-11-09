@@ -744,7 +744,7 @@ namespace Dynamo.Core
                     new HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>>(
                         selectedNodeSet.SelectMany(
                             node =>
-                                Enumerable.Range(0, node.InPortData.Count)
+                                Enumerable.Range(0, node.InPorts.Count)
                                 .Where(node.HasConnectedInput)
                                 .Select(data => Tuple.Create(node, data, node.InputNodes[data]))
                                 .Where(input => !selectedNodeSet.Contains(input.Item3.Item2))));
@@ -753,7 +753,7 @@ namespace Dynamo.Core
                     new HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>>(
                         selectedNodeSet.SelectMany(
                             node =>
-                                Enumerable.Range(0, node.OutPortData.Count)
+                                Enumerable.Range(0, node.OutPorts.Count)
                                 .Where(node.HasOutput)
                                 .SelectMany(
                                     data =>
@@ -958,7 +958,7 @@ namespace Dynamo.Core
 
                         node = new Symbol
                         {
-                            InputSymbol = inputReceiverNode.InPortData[inputReceiverData].NickName,
+                            InputSymbol = inputReceiverNode.InPorts[inputReceiverData].PortName,
                             X = 0
                         };
 
@@ -1056,7 +1056,7 @@ namespace Dynamo.Core
                             //Create Symbol Node
                             var node = new Output
                             {
-                                Symbol = outputSenderNode.OutPortData[outputSenderData].NickName,
+                                Symbol = outputSenderNode.OutPorts[outputSenderData].PortName,
                                 X = rightMost + 75 - leftShift
                             };
 
