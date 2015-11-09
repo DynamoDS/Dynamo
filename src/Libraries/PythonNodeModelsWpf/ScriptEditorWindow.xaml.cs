@@ -4,7 +4,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml;
 using Dynamo.Controls;
-using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Python;
 using Dynamo.ViewModels;

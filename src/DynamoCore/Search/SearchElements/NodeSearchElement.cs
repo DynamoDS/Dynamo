@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using Dynamo.Annotations;
 using Dynamo.Configuration;
-using Dynamo.Models;
+using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Search.SearchElements
 {

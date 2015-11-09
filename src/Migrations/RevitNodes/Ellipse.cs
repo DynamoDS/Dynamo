@@ -2,6 +2,8 @@
 using System.Linq;
 using Dynamo.Migration;
 using System.Xml;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Nodes
 {

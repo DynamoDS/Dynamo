@@ -4,7 +4,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Xml;
 using DSCoreNodesUI.Properties;
-using Dynamo.Models;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 
 namespace DSCoreNodesUI
 {
