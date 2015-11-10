@@ -3148,7 +3148,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run.
+        ///   Looks up a localized string similar to Freeze.
         /// </summary>
         public static string NodesRunStatus {
             get {

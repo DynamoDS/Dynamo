@@ -1951,7 +1951,7 @@ Do you want to install the latest Dynamo update?</value>
     <value>There was an error creating a background preview in Dynamo. This could be due to a lack of graphics resources on your machine. See the log for more information.</value>
   </data>
   <data name="NodesRunStatus" xml:space="preserve">
-    <value>Run</value>
+    <value>Freeze</value>
     <comment>Context menu item</comment>
   </data>
   <data name="CompactLayoutTitle" xml:space="preserve">
