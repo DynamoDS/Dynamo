@@ -77,7 +77,7 @@ namespace Dynamo.Tests
             Assert.IsNotNull(dstElement);
             Assert.AreEqual(2, dstElement.Attributes.Count);
             Assert.AreEqual("", dstElement.Attributes["dummy"].Value);
-            Assert.AreEqual("Dynamo.Nodes.DSFunction", dstElement.Attributes["type"].Value);
+            Assert.AreEqual("Dynamo.Graph.Nodes.ZeroTouch.DSFunction", dstElement.Attributes["type"].Value);
         }
 
         [Test]
@@ -100,7 +100,7 @@ namespace Dynamo.Tests
 
             Assert.AreEqual("", dstElement.Attributes["dummy"].Value);
             Assert.AreEqual("yeah", dstElement.Attributes["isUpstreamVisible"].Value);
-            Assert.AreEqual("Dynamo.Nodes.DSFunction", dstElement.Attributes["type"].Value);
+            Assert.AreEqual("Dynamo.Graph.Nodes.ZeroTouch.DSFunction", dstElement.Attributes["type"].Value);
         }
 
         [Test]
@@ -123,7 +123,7 @@ namespace Dynamo.Tests
             Assert.IsNotNull(dstElement);
             Assert.IsNotNull(dstElement.Attributes);
             Assert.AreEqual(1, dstElement.Attributes.Count);
-            Assert.AreEqual("Dynamo.Nodes.DSFunction", dstElement.Attributes["type"].Value);
+            Assert.AreEqual("Dynamo.Graph.Nodes.ZeroTouch.DSFunction", dstElement.Attributes["type"].Value);
         }
 
         [Test]
@@ -143,7 +143,7 @@ namespace Dynamo.Tests
             Assert.AreEqual("1", dstElement.Attributes["one"].Value);
             Assert.AreEqual("2", dstElement.Attributes["two"].Value);
             Assert.AreEqual("3", dstElement.Attributes["three"].Value);
-            Assert.AreEqual("Dynamo.Nodes.DSFunction", dstElement.Attributes["type"].Value);
+            Assert.AreEqual("Dynamo.Graph.Nodes.ZeroTouch.DSFunction", dstElement.Attributes["type"].Value);
         }
 
         [Test]
@@ -166,7 +166,7 @@ namespace Dynamo.Tests
             Assert.IsNotNull(dstElement);
             Assert.IsNotNull(dstElement.Attributes);
             Assert.AreEqual(2, dstElement.Attributes.Count);
-            Assert.AreEqual("Dynamo.Nodes.DSVarArgFunction", dstElement.Attributes["type"].Value);
+            Assert.AreEqual("Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction", dstElement.Attributes["type"].Value);
             Assert.AreEqual("0", dstElement.Attributes["inputcount"].Value);
         }
 
@@ -187,7 +187,7 @@ namespace Dynamo.Tests
             Assert.AreEqual("1", dstElement.Attributes["one"].Value);
             Assert.AreEqual("2", dstElement.Attributes["two"].Value);
             Assert.AreEqual("3", dstElement.Attributes["three"].Value);
-            Assert.AreEqual("Dynamo.Nodes.DSVarArgFunction", dstElement.Attributes["type"].Value);
+            Assert.AreEqual("Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction", dstElement.Attributes["type"].Value);
             Assert.AreEqual("0", dstElement.Attributes["inputcount"].Value);
         }
 
@@ -205,7 +205,7 @@ namespace Dynamo.Tests
             Assert.IsNotNull(dstElement);
             Assert.IsNotNull(dstElement.Attributes);
             Assert.AreEqual(2, dstElement.Attributes.Count);
-            Assert.AreEqual("Dynamo.Nodes.DSVarArgFunction", dstElement.Attributes["type"].Value);
+            Assert.AreEqual("Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction", dstElement.Attributes["type"].Value);
             Assert.AreEqual("2", dstElement.Attributes["inputcount"].Value);
         }
 
@@ -271,7 +271,7 @@ namespace Dynamo.Tests
             Assert.AreEqual("true", attribs["isVisible"].Value);
             Assert.AreEqual("false", attribs["isUpstreamVisible"].Value);
             Assert.AreEqual("Disabled", attribs["lacing"].Value);
-            Assert.AreEqual("Dynamo.Nodes.CodeBlockNodeModel", attribs["type"].Value);
+            Assert.AreEqual("Dynamo.Graph.Nodes.CodeBlockNodeModel", attribs["type"].Value);
             Assert.AreEqual(string.Empty, attribs["CodeText"].Value);
             Assert.AreEqual("false", attribs["ShouldFocus"].Value);
             Assert.AreEqual("Code Block", attribs["nickname"].Value);
@@ -327,8 +327,8 @@ namespace Dynamo.Tests
             Assert.AreEqual("2", attribs["b"].Value);
             Assert.AreEqual("3", attribs["c"].Value);
 
-            Assert.AreEqual("Dynamo.Nodes.DummyNode", dummy.Name);
-            Assert.AreEqual("Dynamo.Nodes.DummyNode", attribs["type"].Value);
+            Assert.AreEqual("Dynamo.Graph.Nodes.DummyNode", dummy.Name);
+            Assert.AreEqual("Dynamo.Graph.Nodes.DummyNode", attribs["type"].Value);
             Assert.AreEqual("OldNamespace.OldClass", attribs["legacyNodeName"].Value);
             Assert.AreEqual("Deprecated", attribs["nodeNature"].Value);
             Assert.AreEqual("6", attribs["inputCount"].Value);
@@ -353,8 +353,8 @@ namespace Dynamo.Tests
             Assert.AreEqual("2", attribs["b"].Value);
             Assert.AreEqual("3", attribs["c"].Value);
 
-            Assert.AreEqual("Dynamo.Nodes.DummyNode", dummy.Name);
-            Assert.AreEqual("Dynamo.Nodes.DummyNode", attribs["type"].Value);
+            Assert.AreEqual("Dynamo.Graph.Nodes.DummyNode", dummy.Name);
+            Assert.AreEqual("Dynamo.Graph.Nodes.DummyNode", attribs["type"].Value);
             Assert.AreEqual("OldNamespace.OldClass", attribs["legacyNodeName"].Value);
             Assert.AreEqual("Unresolved", attribs["nodeNature"].Value);
             Assert.AreEqual("6", attribs["inputCount"].Value);

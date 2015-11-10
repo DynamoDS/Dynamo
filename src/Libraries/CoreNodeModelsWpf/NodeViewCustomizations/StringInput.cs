@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-
+using DSCoreNodesUI.Input;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.UI.Prompts;

@@ -1,14 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-
-using Dynamo.Models;
-using Dynamo.Nodes;
-using ProtoCore.AST.AssociativeAST;
-using ProtoCore.DSASM;
 using Autodesk.DesignScript.Runtime;
 using DSCoreNodesUI.Properties;
+using Dynamo.Graph.Nodes;
+using ProtoCore.AST.AssociativeAST;
+using ProtoCore.DSASM;
 
-namespace DSCore.Logic
+namespace DSCoreNodesUI.Logic
 {
     /// <summary>
     /// Abstract base class for short-circuiting binary logic operators.
@@ -67,6 +65,7 @@ namespace DSCore.Logic
     [NodeCategory(BuiltinNodeCategories.LOGIC)]
     [NodeDescription("AndDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("DSCore.Logic.And")]
     public class And : BinaryLogic
     {
         public And() : base(Operator.and) { }
@@ -79,6 +78,7 @@ namespace DSCore.Logic
     [NodeCategory(BuiltinNodeCategories.LOGIC)]
     [NodeDescription("OrDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("DSCore.Logic.Or")]
     public class Or : BinaryLogic
     {
         public Or() : base(Operator.or) { }

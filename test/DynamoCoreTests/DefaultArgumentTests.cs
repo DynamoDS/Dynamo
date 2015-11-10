@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Nodes;
 using NUnit.Framework;
 
@@ -82,7 +85,7 @@ namespace Dynamo.Tests
             result = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>(
                 Guid.Parse("40623ca5-8bbb-427a-b014-a9ac40378b51"));
 
-            Assert.IsTrue(result.State == Models.ElementState.Warning);
+            Assert.IsTrue(result.State == ElementState.Warning);
         }
     }
 }

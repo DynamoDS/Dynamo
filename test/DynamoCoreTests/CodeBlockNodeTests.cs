@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
+using DSCoreNodesUI;
 using Dynamo.Engine.CodeCompletion;
-using Dynamo.Models;
-using Dynamo.Nodes;
-using Dynamo.Utilities;
+using Dynamo.Graph;
+using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using NUnit.Framework;
 
 using ProtoCore.AST.AssociativeAST;

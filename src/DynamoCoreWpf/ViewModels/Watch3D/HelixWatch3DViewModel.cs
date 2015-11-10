@@ -16,9 +16,10 @@ using System.Windows.Media.Media3D;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Controls;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
-using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
@@ -144,14 +145,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             preferences.IsBackgroundPreviewActive = active;
 
-            if (active) return;
-
-            if (CanNavigateBackground)
+            if (!active && CanNavigateBackground)
             {
                 CanNavigateBackground = false;
             }
 
-            IsGridVisible = false;
+            RaisePropertyChanged("IsGridVisible");
         }
 
         public event Action<Model3D> RequestAttachToScene;
@@ -299,7 +298,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public override bool IsGridVisible
         {
-            get { return isGridVisible; }
+            get { return isGridVisible && Active; }
             set
             {
                 if (isGridVisible == value) return;

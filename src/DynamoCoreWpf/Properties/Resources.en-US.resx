@@ -1965,4 +1965,13 @@ Do you want to install the latest Dynamo update?</value>
   <data name="ShowHideLibraryIconTooltip" xml:space="preserve">
     <value>Show/hide</value>
   </data>
+  <data name="OnlyTitle" xml:space="preserve">
+    <value>only</value>
+  </data>
+  <data name="SelectAllTitle" xml:space="preserve">
+    <value>Select All</value>
+  </data>
+  <data name="NodeViewCustomizationFindErrorMessage" xml:space="preserve">
+    <value>There was an error while finding node view customizations for {0}. Contact the author of this assembly for more information.</value>
+  </data>
 </root>

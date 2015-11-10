@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 
@@ -85,12 +88,12 @@ namespace Dynamo.Search.SearchElements
                         var parameter = subNode.Attributes[0].Value;
                         if (parameter != string.Empty)
                         {
-                            if ((subNode.ParentNode.Name == "Dynamo.Nodes.Symbol") ||
-                                (subNode.ParentNode.Name == "Dynamo.Nodes.dynSymbol"))
+                            if ((subNode.ParentNode.Name == "Dynamo.Graph.Nodes.Symbol") ||
+                                (subNode.ParentNode.Name == "Dynamo.Graph.Nodes.dynSymbol"))
                                 inputParameters.Add(Tuple.Create(parameter, ""));
 
-                            if ((subNode.ParentNode.Name == "Dynamo.Nodes.Output") ||
-                                (subNode.ParentNode.Name == "Dynamo.Nodes.dynOutput"))
+                            if ((subNode.ParentNode.Name == "Dynamo.Graph.Nodes.Output") ||
+                                (subNode.ParentNode.Name == "Dynamo.Graph.Nodes.dynOutput"))
                                 outputParameters.Add(parameter);
                         }
                     }

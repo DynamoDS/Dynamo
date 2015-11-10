@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Dynamo.Logging;
 
-namespace Dynamo.Interfaces
+namespace DSCoreNodesUI
 {
     public enum SelectionType
     {

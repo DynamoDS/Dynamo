@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using System.IO;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Selection;
 
@@ -365,7 +368,7 @@ namespace Dynamo.Tests
             AssertNoOverlap();
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void GraphLayoutComplex()
         {
             OpenModel(GetDynPath("GraphLayoutComplex.dyn"));

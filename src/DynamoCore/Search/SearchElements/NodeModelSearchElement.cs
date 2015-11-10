@@ -1,4 +1,6 @@
 using System;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.Utilities;
 

@@ -13,6 +13,8 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Threading;
 using System.Linq;
+using Dynamo.Graph;
+using Dynamo.Graph.Workspaces;
 using Reach;
 using Reach.Data;
 

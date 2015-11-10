@@ -13,17 +13,23 @@ using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Extensions;
+using Dynamo.Graph;
+using Dynamo.Graph.Annotations;
+using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Nodes.NodeLoaders;
+using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Graph.Notes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Migration;
-using Dynamo.Models.NodeLoaders;
-using Dynamo.Nodes;
 using Dynamo.Properties;
 using Dynamo.Scheduler;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
-using Dynamo.Services;
-using Dynamo.UpdateManager;
+using Dynamo.Updates;
 using Dynamo.Utilities;
 using Dynamo.Logging;
 
@@ -31,12 +37,12 @@ using DynamoServices;
 using DynamoUnits;
 using Greg;
 using ProtoCore;
-using ProtoCore.Exceptions;
 using ProtoCore.Runtime;
+
 using Compiler = ProtoAssociative.Compiler;
 // Dynamo package manager
-using Utils = Dynamo.Nodes.Utilities;
-using DefaultUpdateManager = Dynamo.UpdateManager.UpdateManager;
+using Utils = Dynamo.Graph.Nodes.Utilities;
+using DefaultUpdateManager = Dynamo.Updates.UpdateManager;
 using FunctionGroup = Dynamo.Engine.FunctionGroup;
 
 namespace Dynamo.Models
@@ -845,7 +851,9 @@ namespace Dynamo.Models
 
         private void InitializeIncludedNodes()
         {
+            var customNodeData = new TypeLoadData(typeof(Function));
             NodeFactory.AddLoader(new CustomNodeLoader(CustomNodeManager, IsTestMode));
+            NodeFactory.AddAlsoKnownAs(customNodeData.Type, customNodeData.AlsoKnownAs);
 
             var dsFuncData = new TypeLoadData(typeof(DSFunction));
             var dsVarArgFuncData = new TypeLoadData(typeof(DSVarArgFunction));

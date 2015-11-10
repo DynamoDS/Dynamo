@@ -3,7 +3,7 @@ using System.Linq;
 using Dynamo.Engine;
 using Dynamo.Library;
 using NUnit.Framework;
-using Utils = Dynamo.Nodes.Utilities;
+using Utils = Dynamo.Graph.Nodes.Utilities;
 
 namespace Dynamo.Tests
 {

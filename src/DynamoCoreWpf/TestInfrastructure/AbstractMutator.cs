@@ -4,6 +4,8 @@ using System;
 using System.IO;
 using Dynamo.Engine;
 using System.Threading;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 
 namespace Dynamo.TestInfrastructure
 {

@@ -8,6 +8,8 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
 using Dynamo.Configuration;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Nodes;
@@ -1061,6 +1063,22 @@ namespace Dynamo.ViewModels
         internal void ToggleLayout(object parameter)
         {
             IsDetailedMode = (bool)parameter;
+        }
+
+        internal void UnSelectAllCategories()
+        {
+            foreach (var category in SearchCategories)
+            {
+                category.IsSelected = false;
+            }
+        }
+
+        internal void SelectAllCategories(object parameter)
+        {
+            foreach (var category in SearchCategories)
+            {
+                category.IsSelected = true;
+            }
         }
 
         #endregion

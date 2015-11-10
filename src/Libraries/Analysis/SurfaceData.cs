@@ -4,8 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
+using Dynamo.Graph.Nodes;
 using Dynamo.Models;
-using Dynamo.Nodes;
 
 namespace Analysis
 {

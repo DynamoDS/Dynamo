@@ -1,5 +1,4 @@
 ﻿using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -9,9 +8,10 @@ using System.Threading;
 using Autodesk.DesignScript.Runtime;
 using System.Reflection;
 using Dynamo.Configuration;
-using DynamoUtilities;
-using Dynamo.Core;
 using Dynamo.Engine;
+using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Utilities;
 
 namespace Dynamo.TestInfrastructure
@@ -317,7 +317,7 @@ namespace Dynamo.TestInfrastructure
                     }
 
                     if (!NodeModelAssemblyLoader.IsNodeSubType(t) && 
-                        t.Namespace != "Dynamo.Nodes") /*&& attribs.Length > 0*/
+                        t.Namespace != "Dynamo.Graph.Nodes") /*&& attribs.Length > 0*/
                         continue;
 
                     //if we are running in revit (or any context other than NONE) 
