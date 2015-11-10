@@ -6,10 +6,12 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
 using System.Xml;
+using Dynamo.Graph;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using DynCmd = Dynamo.Models.DynamoModel;
-using NodeUtils = Dynamo.Nodes.Utilities;
+using NodeUtils = Dynamo.Graph.Nodes.Utilities;
 using Dynamo.UI;
 
 namespace Dynamo.ViewModels

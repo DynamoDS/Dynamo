@@ -1,5 +1,4 @@
 ﻿using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -7,6 +6,10 @@ using System.Linq;
 using System.IO;
 using System.Threading;
 using Dynamo.Engine;
+using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.TestInfrastructure
 {

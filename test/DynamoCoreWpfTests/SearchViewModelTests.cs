@@ -55,20 +55,20 @@ namespace Dynamo.Tests
         public void ShortenCategoryNameTests()
         {
             var categoryName = "";
-            var result = Nodes.Utilities.ShortenCategoryName(categoryName);
+            var result = Graph.Nodes.Utilities.ShortenCategoryName(categoryName);
             Assert.AreEqual(string.Empty, result);
 
             categoryName = null;
-            result = Nodes.Utilities.ShortenCategoryName(categoryName);
+            result = Graph.Nodes.Utilities.ShortenCategoryName(categoryName);
             Assert.AreEqual(string.Empty, result);
 
             categoryName = "Category1";
-            result = Nodes.Utilities.ShortenCategoryName(categoryName);
+            result = Graph.Nodes.Utilities.ShortenCategoryName(categoryName);
             Assert.AreEqual("Category1", result);
 
             categoryName = "Cat1 Cat" + Configurations.CategoryDelimiterWithSpaces + "Cat2 Cat" +
                                     Configurations.CategoryDelimiterWithSpaces + "Cat3";
-            result = Nodes.Utilities.ShortenCategoryName(categoryName);
+            result = Graph.Nodes.Utilities.ShortenCategoryName(categoryName);
             Assert.AreEqual("Cat1 Cat" + Configurations.CategoryDelimiterWithSpaces + "Cat2 Cat" +
                                       Configurations.CategoryDelimiterWithSpaces + "Cat3", result);
 
@@ -78,7 +78,7 @@ namespace Dynamo.Tests
                            "TenSymbol" + Configurations.CategoryDelimiterWithSpaces +
                            "TenSymbol" + Configurations.CategoryDelimiterWithSpaces +
                            "MoreSymbols";
-            result = Nodes.Utilities.ShortenCategoryName(categoryName);
+            result = Graph.Nodes.Utilities.ShortenCategoryName(categoryName);
             Assert.AreEqual("TenSymbol" + Configurations.CategoryDelimiterWithSpaces +
                            "..." + Configurations.CategoryDelimiterWithSpaces +
                            "TenSymbol" + Configurations.CategoryDelimiterWithSpaces +

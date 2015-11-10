@@ -7,10 +7,13 @@ using System.Windows;
 using System.Windows.Media.Media3D;
 using System.Xml;
 using SystemTestServices;
+using DSCoreNodesUI.Input;
 using Dynamo;
 using Dynamo.Controls;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Scheduler;
 using Dynamo.Tests;
 using Dynamo.UI;
@@ -26,6 +29,7 @@ using TestServices;
 using Color = System.Windows.Media.Color;
 using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 using Dynamo.Views;
+using DynamoWatch3D;
 using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
 
 namespace WpfVisualizationTests

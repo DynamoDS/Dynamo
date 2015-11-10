@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using System;
 using Autodesk.DesignScript.Geometry;
 using ProtoCore.AST.AssociativeAST;
@@ -13,6 +12,8 @@ using ProtoCore.Utils;
 using Dynamo.Core;
 using ProtoCore.Namespace;
 using Dynamo.Engine.CodeGeneration;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.Interfaces;
 
 namespace Dynamo.Engine.NodeToCode

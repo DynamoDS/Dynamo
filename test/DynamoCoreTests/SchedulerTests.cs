@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Reflection;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Scheduler;
 using DynamoShapeManager;
 
@@ -11,7 +10,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
+using DSCoreNodesUI.Input;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using TestServices;
 
 namespace Dynamo.Tests

@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
-
-using DSCore.File;
-
-using Dynamo.Nodes;
+using DSCoreNodesUI;
+using DSCoreNodesUI.Input;
+using Dynamo.Graph.Nodes;
 using NUnit.Framework;
 
 using String = System.String;
@@ -440,7 +439,7 @@ namespace Dynamo.Tests
         {
             OpenModel(Path.Combine(TestDirectory, @"core\customast\begin-test.dyn"));
 
-            var dummy = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.DummyNode>();
+            var dummy = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DummyNode>();
             Assert.IsNotNull(dummy);
 
             const string textAndFileName = @"test.txt";

@@ -4,7 +4,8 @@ using System.IO;
 using System.Net;
 
 using SystemTestServices;
-
+using Dynamo.Graph;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Tests;
 

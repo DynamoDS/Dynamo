@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
+using DSCoreNodesUI.Input;
+using Dynamo.Graph.Nodes;
 using NUnit.Framework;
 using Dynamo.Tests;
-using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Models;
 

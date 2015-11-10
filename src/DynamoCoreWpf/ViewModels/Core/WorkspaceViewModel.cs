@@ -14,9 +14,15 @@ using Dynamo.Utilities;
 using System.Windows.Input;
 using Dynamo.Configuration;
 using Dynamo.Core;
+using Dynamo.Graph;
+using Dynamo.Graph.Annotations;
+using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Notes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Wpf.ViewModels;
 
-using Function = Dynamo.Nodes.Function;
+using Function = Dynamo.Graph.Nodes.CustomNodes.Function;
 
 namespace Dynamo.ViewModels
 {

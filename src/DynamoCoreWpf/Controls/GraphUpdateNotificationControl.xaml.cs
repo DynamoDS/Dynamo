@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-using Dynamo.UpdateManager;
+using Dynamo.Updates;
 
 namespace DynamoCore.UI.Controls
 {

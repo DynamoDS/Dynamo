@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Dynamo.Graph;
+using Dynamo.Graph.Connectors;
 using Dynamo.Models;
 
 namespace Dynamo.Interfaces

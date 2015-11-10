@@ -4,6 +4,8 @@ using System.Windows;
 using System.Windows.Controls;
 
 using Dynamo.Controls;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;

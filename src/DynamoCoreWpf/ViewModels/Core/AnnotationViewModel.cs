@@ -7,6 +7,8 @@ using System.Windows.Media;
 using Dynamo.Models;
 using System;
 using System.Windows.Input;
+using Dynamo.Graph;
+using Dynamo.Graph.Annotations;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
