@@ -4,8 +4,11 @@ using System.Linq;
 using System.Xml;
 
 using DSCoreNodesUI;
-
-using Dynamo.Models;
+using DSCoreNodesUI.Input;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Nodes;
 using Dynamo.Tests;
 
@@ -335,7 +338,7 @@ namespace DynamoCoreWpfTests
             ViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
 
             var workspace = ViewModel.Model.CurrentWorkspace;
-            var dummyNode = workspace.NodeFromWorkspace<Dynamo.Nodes.DummyNode>(
+            var dummyNode = workspace.NodeFromWorkspace<DummyNode>(
                 Guid.Parse("37bffbb9-3438-4c6c-81d6-7b41b5fb5b87"));
 
             Assert.IsNotNull(dummyNode);
@@ -358,7 +361,7 @@ namespace DynamoCoreWpfTests
             ViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
 
             var workspace = ViewModel.Model.CurrentWorkspace;
-            var dummyNode = workspace.NodeFromWorkspace<Dynamo.Nodes.DummyNode>(
+            var dummyNode = workspace.NodeFromWorkspace<DummyNode>(
                 Guid.Parse("37bffbb9-3438-4c6c-81d6-7b41b5fb5b87"));
 
             Assert.IsNotNull(dummyNode);
@@ -384,7 +387,7 @@ namespace DynamoCoreWpfTests
             ViewModel.OpenCommand.Execute(Path.Combine(folder, "dummyNode.dyn"));
 
             var workspace = ViewModel.Model.CurrentWorkspace;
-            var dummyNode = workspace.Nodes.OfType<Dynamo.Nodes.DummyNode>().FirstOrDefault();
+            var dummyNode = workspace.Nodes.OfType<DummyNode>().FirstOrDefault();
 
             Assert.IsNotNull(dummyNode);
             var xmlDocument = new XmlDocument();

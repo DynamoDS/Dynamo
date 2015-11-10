@@ -5,17 +5,20 @@ using System.Threading;
 using System.Windows;
 
 using SystemTestServices;
-
-using Dynamo;
+using DSCoreNodesUI.Input;
 using Dynamo.Configuration;
 using Dynamo.Controls;
+using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.ViewModels.Watch3D;
 using NUnit.Framework;
 using DynamoCoreWpfTests.Utility;
 
@@ -592,8 +595,8 @@ namespace DynamoCoreWpfTests
                 {
                     StartInTestMode = startInTestMode,
                     ProcessMode = startInTestMode 
-                        ? Dynamo.Core.Threading.TaskProcessMode.Synchronous 
-                        : Dynamo.Core.Threading.TaskProcessMode.Asynchronous
+                        ? TaskProcessMode.Synchronous 
+                        : TaskProcessMode.Asynchronous
                 });
 
             ViewModel = DynamoViewModel.Start(

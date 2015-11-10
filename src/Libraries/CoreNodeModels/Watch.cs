@@ -1,23 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-
-using Dynamo.Core.Threading;
-using Dynamo.Engine;
-using Dynamo.Models;
-using Dynamo.Interfaces;
-
 using DSCoreNodesUI.Properties;
+using Dynamo.Engine;
+using Dynamo.Graph.Nodes;
+using Dynamo.Scheduler;
 using Dynamo.Visualization;
 using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
 
-namespace Dynamo.Nodes
+namespace DSCoreNodesUI
 {
     [NodeName("Watch")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeDescription("WatchNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeSearchTags("WatchNodeSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("Dynamo.Nodes.Watch")]
     public class Watch : NodeModel
     {
         public event Action<Object> EvaluationComplete;

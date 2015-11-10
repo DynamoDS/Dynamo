@@ -983,7 +983,7 @@
         pkPIgSP97X/zFMhR/AzVqe/Q4cDQ6/0CJ8pVpcprG5IAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="Dynamo.Nodes.DoubleInput.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Dynamo.Graph.Nodes.DoubleInput.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAALxSURBVHhe7ZntTSQxDIa3BEqgBErg70n3gxIogRLo
@@ -1002,7 +1002,7 @@
         HA7fUXKrtxBwES8AAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="Dynamo.Nodes.DoubleInput.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Dynamo.Graph.Nodes.DoubleInput.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADUSURBVFhH7ZPLDcIwEERdQkpICSkhVyQOlJASKIEO
@@ -1012,7 +1012,7 @@
         hDewsnxnAO997AAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="Dynamo.Nodes.StringInput.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Dynamo.Graph.Nodes.StringInput.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAANwSURBVHhe7ZndTeUwEEYpgRIogRJ4XWkfKIESKIEO
@@ -1033,7 +1033,7 @@
         AAAAAPhHXF39AS/YiOrTK71HAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="Dynamo.Nodes.StringInput.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Dynamo.Graph.Nodes.StringInput.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADdSURBVFhH7ZJdDYNAEIRPAhIqAQm8NulDJSABCTio
@@ -1043,7 +1043,7 @@
         YV0PgiAIgh8lpTdvRJ60O5zeZwAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="Dynamo.Nodes.Watch.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Dynamo.Graph.Nodes.Watch.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAVeSURBVHhe7ZzLcdw6EEUVgkNwCArBzsAhOASFoAxU
@@ -1072,7 +1072,7 @@
         JEmSJEmSJEmSJEmSJEmSJEmSJAnAzc3/oJWFL832Us4AAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="Dynamo.Nodes.Watch.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Dynamo.Graph.Nodes.Watch.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAGOSURBVFhH7ZbNTcNAEIVTQkqghJQQOqCElBA6cAeW
@@ -1085,7 +1085,7 @@
         AwsW/AOsVt8QPPSqk8vfsQAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="Dynamo.Nodes.WatchImageCore.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Dynamo.Graph.Nodes.WatchImageCore.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAT/SURBVHhe7ZzNbeQ4EEYdwoQwITgEbwYTwoTgEHzc
@@ -1113,7 +1113,7 @@
         AElFTkSuQmCC
 </value>
   </data>
-  <data name="Dynamo.Nodes.WatchImageCore.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Dynamo.Graph.Nodes.WatchImageCore.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAF6SURBVFhH7Za7ccJAFEVVgkqgBEqQO6AEEueUQAfM

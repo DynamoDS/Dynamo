@@ -6,7 +6,8 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
-using Dynamo.Models;
+
+using Dynamo.Graph.Nodes;
 using Dynamo.Prompts;
 using Dynamo.Selection;
 using Dynamo.UI;

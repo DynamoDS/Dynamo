@@ -11,21 +11,21 @@ using System.Windows.Threading;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Controls;
-using Dynamo.Core.Threading;
 using Dynamo.Engine;
-using Dynamo.Interfaces;
-using Dynamo.Models;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
+using Dynamo.Scheduler;
 using Dynamo.Utilities;
 using Dynamo.Logging;
 using Dynamo.Visualization;
 using Dynamo.Wpf;
-using Dynamo.Wpf.Rendering; 
+using Dynamo.Wpf.Rendering;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoWatch3D.Properties;
 using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
 
-namespace Dynamo.Nodes
+namespace DynamoWatch3D
 {
     public class Watch3DNodeViewCustomization : INodeViewCustomization<Watch3D>
     {
@@ -166,7 +166,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeDescription("Watch3DDescription",typeof(Resources))]
     [NodeSearchTags("Watch3DSearchTags", typeof(Resources))]
-    [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview", "Dynamo.Nodes.3DPreview")]
+    [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview", "Dynamo.Nodes.3DPreview", "Dynamo.Nodes.Watch3D")]
     [IsDesignScriptCompatible]
     public class Watch3D : NodeModel
     {

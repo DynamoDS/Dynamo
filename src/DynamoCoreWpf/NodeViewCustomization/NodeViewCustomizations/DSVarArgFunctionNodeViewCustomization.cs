@@ -6,12 +6,13 @@ using Dynamo.Nodes;
 using Dynamo.Controls;
 using System.Windows;
 using System.Windows.Controls;
+using Dynamo.Graph.Nodes.ZeroTouch;
 
 namespace Dynamo.Wpf
 {
     internal class DSVarArgFunctionNodeViewCustomization : INodeViewCustomization<DSVarArgFunction>
     {
-        public void CustomizeView(Nodes.DSVarArgFunction nodeModel, NodeView nodeView)
+        public void CustomizeView(DSVarArgFunction nodeModel, NodeView nodeView)
         {
             var addButton = new DynamoNodeButton(nodeView.ViewModel.NodeModel, "AddInPort") { Content = "+", Width = 20 };
             var subButton = new DynamoNodeButton(nodeView.ViewModel.NodeModel, "RemoveInPort") { Content = "-", Width = 20 };

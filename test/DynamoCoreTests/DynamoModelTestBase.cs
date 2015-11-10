@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Dynamo.Graph;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Tests;
 using Dynamo.Utilities;
@@ -101,7 +104,7 @@ namespace Dynamo
                 StartInTestMode = true,
                 GeometryFactoryPath = preloader.GeometryFactoryPath,
                 Preferences = settings,
-                ProcessMode = Core.Threading.TaskProcessMode.Synchronous
+                ProcessMode = TaskProcessMode.Synchronous
             };
         }
 

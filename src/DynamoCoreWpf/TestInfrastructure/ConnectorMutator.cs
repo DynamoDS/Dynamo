@@ -8,6 +8,9 @@ using System.Linq;
 using System.IO;
 using System.Threading;
 using Dynamo.Engine;
+using Dynamo.Graph;
+using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Nodes;
 
 namespace Dynamo.TestInfrastructure
 {

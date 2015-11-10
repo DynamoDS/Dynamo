@@ -1,5 +1,7 @@
 ﻿using SystemTestServices;
 using DSCoreNodesUI;
+using Dynamo.Graph;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;

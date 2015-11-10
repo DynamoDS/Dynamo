@@ -3,7 +3,6 @@ using System.Diagnostics;
 using CSharpAnalytics;
 using CSharpAnalytics.Protocols.Measurement;
 using Dynamo.Models;
-using Dynamo.Services;
 using Microsoft.Win32;
 
 namespace Dynamo.Logging

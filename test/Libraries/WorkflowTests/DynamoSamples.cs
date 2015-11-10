@@ -2,9 +2,10 @@
 using System.IO;
 using Autodesk.DesignScript.Geometry;
 using NUnit.Framework;
-using Dynamo.Models;
 using System.Collections.Generic;
 using System.Linq;
+using DSCoreNodesUI.Input;
+using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Tests
 {
@@ -505,7 +506,7 @@ namespace Dynamo.Tests
         {
             OpenSampleModel(@"en-US\ImportExport\ImportExport_CSV to Stuff.dyn");
 
-            var filename = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+            var filename = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Filename>();
 
             string resultPath = SampleDirectory + "Data\\helix.csv";
           
@@ -531,7 +532,7 @@ namespace Dynamo.Tests
         {
             OpenSampleModel(@"en-US\ImportExport\ImportExport_Data To Excel.dyn");
 
-            var filename = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+            var filename = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Filename>();
 
             string resultPath = Path.Combine(TempFolder, "icosohedron_points.csv");
 
@@ -559,7 +560,7 @@ namespace Dynamo.Tests
         {
             OpenSampleModel(@"en-US\ImportExport\ImportExport_Excel to Dynamo.dyn");
 
-            var filename = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+            var filename = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Filename>();
 
             string resultPath = SampleDirectory + "Data\\helix.xlsx";
 

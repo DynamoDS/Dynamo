@@ -11,19 +11,25 @@ using System.Threading;
 using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Core;
-using Dynamo.Core.Threading;
 using Dynamo.Engine;
 using Dynamo.Extensions;
+using Dynamo.Graph;
+using Dynamo.Graph.Annotations;
+using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Nodes.NodeLoaders;
+using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Graph.Notes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Migration;
-using Dynamo.Models.NodeLoaders;
-using Dynamo.Nodes;
 using Dynamo.Properties;
+using Dynamo.Scheduler;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
-using Dynamo.Services;
-using Dynamo.UpdateManager;
+using Dynamo.Updates;
 using Dynamo.Utilities;
 using Dynamo.Logging;
 
@@ -31,12 +37,12 @@ using DynamoServices;
 using DynamoUnits;
 using Greg;
 using ProtoCore;
-using ProtoCore.Exceptions;
 using ProtoCore.Runtime;
+
 using Compiler = ProtoAssociative.Compiler;
 // Dynamo package manager
-using Utils = Dynamo.Nodes.Utilities;
-using DefaultUpdateManager = Dynamo.UpdateManager.UpdateManager;
+using Utils = Dynamo.Graph.Nodes.Utilities;
+using DefaultUpdateManager = Dynamo.Updates.UpdateManager;
 using FunctionGroup = Dynamo.Engine.FunctionGroup;
 
 namespace Dynamo.Models
@@ -845,7 +851,9 @@ namespace Dynamo.Models
 
         private void InitializeIncludedNodes()
         {
+            var customNodeData = new TypeLoadData(typeof(Function));
             NodeFactory.AddLoader(new CustomNodeLoader(CustomNodeManager, IsTestMode));
+            NodeFactory.AddAlsoKnownAs(customNodeData.Type, customNodeData.AlsoKnownAs);
 
             var dsFuncData = new TypeLoadData(typeof(DSFunction));
             var dsVarArgFuncData = new TypeLoadData(typeof(DSVarArgFunction));
@@ -1188,18 +1196,21 @@ namespace Dynamo.Models
                         OnWorkspaceOpening(xmlDoc);
 
                         // TODO: #4258
-                        // Remove this ResetEngine call when multiple home workspaces is supported.
-                        // This call formerly lived in DynamoViewModel
-                        ResetEngine();
-
-                        // TODO: #4258
                         // The following logic to start periodic evaluation will need to be moved
                         // inside of the HomeWorkspaceModel's constructor.  It cannot be there today
                         // as it causes an immediate crash due to the above ResetEngine call.
                         var hws = ws as HomeWorkspaceModel;
-                        if (hws != null && hws.RunSettings.RunType == RunType.Periodic)
+                        if (hws != null)
                         {
-                            hws.StartPeriodicEvaluation();
+                            // TODO: #4258
+                            // Remove this ResetEngine call when multiple home workspaces is supported.
+                            // This call formerly lived in DynamoViewModel
+                            ResetEngine();
+
+                            if (hws.RunSettings.RunType == RunType.Periodic)
+                            {
+                                hws.StartPeriodicEvaluation();
+                            }
                         }
 
                         CurrentWorkspace = ws;

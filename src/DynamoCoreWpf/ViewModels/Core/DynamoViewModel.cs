@@ -13,13 +13,18 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Engine;
+using Dynamo.Graph;
+using Dynamo.Graph.Annotations;
+using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.UI;
-using Dynamo.UpdateManager;
+using Dynamo.Updates;
 using Dynamo.Utilities;
 using Dynamo.Visualization;
 using Dynamo.Wpf.Interfaces;
@@ -1507,14 +1512,14 @@ namespace Dynamo.ViewModels
 
         public void ToggleBackgroundGridVisibility(object parameter)
         {
-            if (!CanToggleBackgroundGridVisibility(parameter)) return;
+            if (BackgroundPreviewViewModel == null || !BackgroundPreviewViewModel.Active) return;
 
             BackgroundPreviewViewModel.IsGridVisible = !BackgroundPreviewViewModel.IsGridVisible;
         }
 
         internal bool CanToggleBackgroundGridVisibility(object parameter)
         {
-            return BackgroundPreviewViewModel != null && BackgroundPreviewViewModel.Active;
+            return true;
         }
 
         public void GoToWorkspace(object parameter)

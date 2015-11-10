@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Configuration;
 using Dynamo.Search;
+using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.ViewModels;
 using Microsoft.Practices.Prism.Commands;
