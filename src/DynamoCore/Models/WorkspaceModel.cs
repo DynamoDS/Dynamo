@@ -2456,23 +2456,19 @@ namespace Dynamo.Models
         /// </summary>
         internal void ComputeRunStateOfTheNodes(object parameter)
         {
-            var model = parameter as NodeModel;
-            //usually during undo, only one of the node is toggled.
+            var model = parameter as NodeModel;           
             if (model != null)
-            {
-                model.CanExecute = !model.CanExecute;
+            {                
                 ToggleRunStateOfDownStreamNodes(model);
             }
-            //This is executed when RUN is changed on Dynamo Menu.
+            //This is executed when Freeze is changed on Dynamo Menu.
             else
             {
                 //First,Toggle the parent node run state.
                 var selectedNodes = DynamoSelection.Instance.Selection.Cast<NodeModel>().ToList();
                 foreach (var snode in selectedNodes)
                 {
-                    snode.IsFrozen = !snode.IsFrozen;
-                    //if parent is frozen, then they cannot execute.
-                    snode.CanExecute = !snode.CanExecute;
+                    snode.IsFrozen = !snode.IsFrozen;                     
                 }
                 //Second, toggle the downstream node  run state.      
                 foreach (var node in selectedNodes)
@@ -2515,35 +2511,9 @@ namespace Dynamo.Models
             var outputNodes = sets.SelectMany(set => set.Select(t => t.Item2)).Distinct().ToList();
 
             foreach (var outputNode in outputNodes)
-            {                                
-                //If any of the node is trying to set explictly set nodes, then
-                // node enters temporary state
-                if (outputNode.IsFrozen && outputNode.CanExecute != null &&
-                    (bool)!outputNode.CanExecute)
-                {
-                    //Move the node to a temporary state                    
-                    outputNode.CanExecute = null;
-                }
-                else
-                {
-                    //set the run state of the node. Check if any of the parent node is
-                    //in frozen state
-                    outputNode.IsFrozen = CheckIfUpstreamNodeIsFrozen(outputNode);
-                }
-                                
-                if (outputNode.CanExecute == null)
-                {                    
-                    //if the node is in temporary state, then it is always frozen.
-                    outputNode.IsFrozen = true;
-
-                    //if the command is to set the temporary node to unfreeze implictly
-                    //then the node enters Frozen / Not executing state. This is the original
-                    //state of the explictly set nodes.
-                    if (!node.IsFrozen)
-                    {                       
-                        outputNode.CanExecute = false;
-                    }
-                }
+            {
+                //set the frozen on child nodes.
+                outputNode.IsFrozen = CheckIfUpstreamNodeIsFrozen(outputNode);
                 // Recursively get all downstream nodes.
                 ToggleRunStateOfDownStreamNodes(outputNode);
             }

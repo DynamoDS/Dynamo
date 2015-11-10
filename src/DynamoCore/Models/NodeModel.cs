@@ -45,8 +45,7 @@ namespace Dynamo.Models
         private bool areInputPortsRegistered;
         private bool areOutputPortsRegistered;
         private bool isFrozen;
-        private bool? canExecute = true;
-
+      
         /// <summary>
         /// The cached value of this node. The cachedValue object is protected by the cachedValueMutex
         /// as it may be accessed from multiple threads concurrently. 
@@ -638,27 +637,6 @@ namespace Dynamo.Models
             }
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether this node is implictly frozen.
-        /// this property controls the checked behavior
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if the node is implictly frozen; otherwise, <c>false</c>.
-        /// </value>
-        public bool? CanExecute
-        {
-            get
-            {
-                return canExecute;
-            }
-
-            set
-            {
-                canExecute = value; 
-                RaisePropertyChanged("CanExecute");
-            }
-        }
-       
         #endregion     
         protected NodeModel()
         {
@@ -1579,18 +1557,7 @@ namespace Dynamo.Models
                     {
                         IsFrozen = newIsFrozen;
                     }                   
-                    return true;
-
-                case "CanExecute":
-                    bool newCanExecute;
-                    if (value == "null")
-                    {
-                        CanExecute = null;
-                        return true;
-                    }
-                    if (bool.TryParse(value, out newCanExecute))
-                        CanExecute = newCanExecute;
-                    return true;
+                    return true;               
             }
 
             return base.UpdateValueCore(updateValueParams);
@@ -1622,8 +1589,7 @@ namespace Dynamo.Models
             helper.SetAttribute("lacing", ArgumentLacing.ToString());
             helper.SetAttribute("isSelectedInput", IsSelectedInput.ToString());
             helper.SetAttribute("IsFrozen", IsFrozen);
-            helper.SetAttribute("CanExecute",  CanExecute);
-
+           
             var portsWithDefaultValues =
                 inPorts.Select((port, index) => new { port, index })
                    .Where(x => x.port.UsingDefaultValue);
@@ -1675,8 +1641,7 @@ namespace Dynamo.Models
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
             IsSelectedInput = helper.ReadBoolean("isSelectedInput", true);
             IsFrozen = helper.ReadBoolean("IsFrozen", false);            
-            CanExecute = helper.ReadBoolean("CanExecute",null);
-
+           
             var portInfoProcessed = new HashSet<int>();
 
             //read port information
@@ -1717,8 +1682,7 @@ namespace Dynamo.Models
                 RaisePropertyChanged("IsVisible");
                 RaisePropertyChanged("IsUpstreamVisible");
 
-                //Compute the node run state for undo.
-                CanExecute = !CanExecute;
+                //Compute the node run state for undo.                
                 RaisePropertyChanged("NodeRunState");
 
                 // Notify listeners that the position of the node has changed,

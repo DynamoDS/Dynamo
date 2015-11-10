@@ -41,7 +41,7 @@ namespace Dynamo.ViewModels
         NodeModel nodeLogic;
         private double zIndex = 3;
         private string astText = string.Empty;
-        private bool nodeRunChecked = true;
+        private bool nodeRunChecked;
         private bool nodeRunEnabled = true;
         #endregion
 
@@ -346,25 +346,7 @@ namespace Dynamo.ViewModels
                 NodeModel.IsFrozen = value;
             }
         }
-
-        /// <summary>
-        /// Gets a value indicating whether this model can execute though it is frozen
-        /// </summary>
-        /// <value>
-        /// The can execute.
-        /// </value>
-        public bool? CanExecute
-        {
-            get
-            {
-                return NodeModel.CanExecute;
-            }
-            set
-            {
-                NodeModel.CanExecute = value;
-            }
-        }
-
+        
         /// <summary>
         /// Gets a value indicating whether Run property on the node is checked
         /// </summary>
@@ -405,36 +387,36 @@ namespace Dynamo.ViewModels
 
         private void SetNodeRunState()
         {
-            var tt = NodeModel.NickName;
-            //Node temporary state
-            if (NodeModel.CanExecute == null)
-            {
-                NodeRunChecked = false;
-                NodeRunEnabled = false;
-            }
-            //case 1 : if the node is not frozen and can run. Default case.
-            else if (!NodeModel.IsFrozen && (bool) NodeModel.CanExecute)
-            {
-                NodeRunChecked = true;
-                NodeRunEnabled = true;
-            }
-            //case 2 : if the node is frozen but can execute. True for parents
-            else if (NodeModel.IsFrozen && (bool) NodeModel.CanExecute)
-            {
-                NodeRunChecked = true;
-                NodeRunEnabled = false;
-            }
-            //case 3 : if the node is frozen and cannot execute because the node is explictly frozen
-            else if (NodeModel.IsFrozen && (bool) !NodeModel.CanExecute)
-            {
-                NodeRunChecked = false;
-                NodeRunEnabled = true;
-            } 
-            else if (!NodeModel.IsFrozen && (bool) !NodeModel.CanExecute)
-            {
-                NodeRunChecked = false;
-                NodeRunEnabled = true;
-            }
+            //var tt = NodeModel.NickName;
+            ////Node temporary state
+            //if (NodeModel.CanExecute == null)
+            //{
+            //    NodeRunChecked = false;
+            //    NodeRunEnabled = false;
+            //}
+            ////case 1 : if the node is not frozen and can run. Default case.
+            //else if (!NodeModel.IsFrozen && (bool) NodeModel.CanExecute)
+            //{
+            //    NodeRunChecked = true;
+            //    NodeRunEnabled = true;
+            //}
+            ////case 2 : if the node is frozen but can execute. True for parents
+            //else if (NodeModel.IsFrozen && (bool) NodeModel.CanExecute)
+            //{
+            //    NodeRunChecked = true;
+            //    NodeRunEnabled = false;
+            //}
+            ////case 3 : if the node is frozen and cannot execute because the node is explictly frozen
+            //else if (NodeModel.IsFrozen && (bool) !NodeModel.CanExecute)
+            //{
+            //    NodeRunChecked = false;
+            //    NodeRunEnabled = true;
+            //} 
+            //else if (!NodeModel.IsFrozen && (bool) !NodeModel.CanExecute)
+            //{
+            //    NodeRunChecked = false;
+            //    NodeRunEnabled = true;
+            //}
         }
         
         #endregion
