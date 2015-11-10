@@ -9,6 +9,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Dynamo.Controls"
              mc:Ignorable="d"
+             MouseMove="OnPreviewControlMouseMove"
              MouseLeave="OnPreviewControlMouseLeave">
 
     <UserControl.Resources>

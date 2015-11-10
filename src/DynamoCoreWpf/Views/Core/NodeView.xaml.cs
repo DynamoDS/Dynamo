@@ -389,19 +389,18 @@ namespace Dynamo.Controls
                 return;
 
             dispatcherTimer.Start();
+            // Give user some time to move mouse over preview control.
             dispatcherTimer.Tick += (s, args) =>
             {
                 if (PreviewControl.IsInTransition) // In transition state, come back later.
                     return;
 
+                // If mouse in not over preview control, we can hide preview control.
                 if (!PreviewControl.IsMouseOver)
                 {
                     PreviewControl.TransitionToState(PreviewControl.State.Hidden);
                 }
-                if (PreviewControl.IsCondensed && PreviewControl.IsMouseOver)
-                {
-                    PreviewControl.TransitionToState(PreviewControl.State.Expanded);
-                }
+
                 dispatcherTimer.Stop();
             };
         }

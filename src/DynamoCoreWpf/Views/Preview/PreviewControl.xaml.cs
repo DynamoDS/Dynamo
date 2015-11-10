@@ -654,6 +654,13 @@ namespace Dynamo.UI.Controls
             BeginNextTransition(); // See if there's any more requests.
         }
 
+        private void OnPreviewControlMouseMove(object sender, MouseEventArgs e)
+        {
+            if (IsMouseOver && IsCondensed && !IsInTransition)
+            {
+                TransitionToState(State.Expanded);
+            }
+        }
 
         private void OnPreviewControlMouseLeave(object sender, MouseEventArgs e)
         {
