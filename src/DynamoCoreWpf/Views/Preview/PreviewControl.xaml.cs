@@ -73,6 +73,11 @@ namespace Dynamo.UI.Controls
         private bool queuedRefresh;
         private MirrorData queuedMirrorData;
 
+        /// <summary>
+        ///     Indicates whether preview should stay open, when mouse leaves control.
+        /// </summary>
+        internal bool StaysOpen;
+
         #endregion
 
         #region Public Class Operational Methods
@@ -402,7 +407,8 @@ namespace Dynamo.UI.Controls
 
         private Size ComputeSmallContentSize()
         {
-            Size maxSize = new Size(){
+            Size maxSize = new Size()
+            {
                 Width = Configurations.MaxCondensedPreviewWidth,
                 Height = Configurations.MaxCondensedPreviewHeight
             };
@@ -413,7 +419,7 @@ namespace Dynamo.UI.Controls
             // Condensed bubble should be the same width as node or wider.
             if (smallContentGridSize.Width == 0)
             {
-                var nodeView = WpfUtilities.FindUpVisualTree<NodeView>(this);                
+                var nodeView = WpfUtilities.FindUpVisualTree<NodeView>(this);
                 smallContentGridSize.Width = nodeView.ActualWidth;
             }
 
@@ -560,7 +566,8 @@ namespace Dynamo.UI.Controls
 
             RefreshExpandedDisplay(() =>
                 {
-                    this.largeContentGrid.Visibility = System.Windows.Visibility.Visible;
+                    this.largeContentGrid.Visibility = Visibility.Visible;
+                    bubbleTools.Visibility = Visibility.Visible;
                     // The real transition starts
                     SetCurrentStateAndNotify(State.InTransition);
 
@@ -646,11 +653,12 @@ namespace Dynamo.UI.Controls
             smallContentGrid.Visibility = System.Windows.Visibility.Hidden;
             BeginNextTransition(); // See if there's any more requests.
         }
-        
+
         private void OnPreviewControlCondensed(object sender, EventArgs e)
         {
             SetCurrentStateAndNotify(State.Condensed);
-            largeContentGrid.Visibility = System.Windows.Visibility.Hidden;
+            largeContentGrid.Visibility = Visibility.Hidden;
+            bubbleTools.Visibility = Visibility.Hidden;
             BeginNextTransition(); // See if there's any more requests.
         }
 
@@ -664,7 +672,15 @@ namespace Dynamo.UI.Controls
 
         private void OnPreviewControlMouseLeave(object sender, MouseEventArgs e)
         {
-            TransitionToState(State.Condensed);
+            if (!StaysOpen)
+            {
+                TransitionToState(State.Condensed);
+            }
+        }
+
+        private void OnMapPinMouseClick(object sender, MouseButtonEventArgs e)
+        {
+            StaysOpen = !StaysOpen;
         }
 
         #endregion

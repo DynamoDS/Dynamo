@@ -395,8 +395,8 @@ namespace Dynamo.Controls
                 if (PreviewControl.IsInTransition) // In transition state, come back later.
                     return;
 
-                // If mouse in not over preview control, we can hide preview control.
-                if (!PreviewControl.IsMouseOver)
+                // If mouse in not over preview control or preview control is not pined, we can hide preview control.
+                if (!PreviewControl.IsMouseOver && !PreviewControl.StaysOpen)
                 {
                     PreviewControl.TransitionToState(PreviewControl.State.Hidden);
                 }
@@ -415,18 +415,18 @@ namespace Dynamo.Controls
                 return;
             }
 
-            if (this.IsMouseOver)
+            if (IsMouseOver)
             {
                 // The mouse is currently over the node, so if the 
                 // preview control is hidden, bring it into condensed state.
-                if (preview.IsHidden != false)
+                if (preview.IsHidden)
                     preview.TransitionToState(PreviewControl.State.Condensed);
             }
             else
             {
                 // The mouse is no longer over the node, if the preview 
                 // control is currently in condensed state, hide it from view.
-                if (preview.IsCondensed != false)
+                if (preview.IsCondensed)
                     preview.TransitionToState(PreviewControl.State.Hidden);
             }
         }
