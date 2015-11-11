@@ -1,17 +1,14 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Media;
-
 using Dynamo.Controls;
-using Dynamo.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.UI.Controls;
 
 namespace Dynamo.Wpf
 {
-    public class SymbolViewCustomization : INodeViewCustomization<Dynamo.Nodes.Symbol>
+    public class SymbolViewCustomization : INodeViewCustomization<Symbol>
     {
-        public void CustomizeView(Dynamo.Nodes.Symbol symbol, NodeView nodeView)
+        public void CustomizeView(Symbol symbol, NodeView nodeView)
         {
             var input = new ParameterEditor(nodeView.ViewModel);
 

@@ -5,6 +5,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 
 using Dynamo.Controls;
+using Dynamo.Graph.Nodes;
 using Dynamo.Nodes;
 using Dynamo.UI.Controls;
 

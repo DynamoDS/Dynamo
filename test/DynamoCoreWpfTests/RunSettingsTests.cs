@@ -7,14 +7,12 @@ using System.Windows.Media;
 using System.Linq;
 
 using SystemTestServices;
-
+using DSCoreNodesUI.Input;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Wpf.ViewModels;
 
 using NUnit.Framework;
-using ProtoCore.Mirror;
-using System;
+using Dynamo.Graph.Workspaces;
 
 namespace DynamoCoreWpfTests
 {

@@ -1,4 +1,5 @@
-﻿using Dynamo.Nodes;
+﻿using Dynamo.Graph.Nodes;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Views;

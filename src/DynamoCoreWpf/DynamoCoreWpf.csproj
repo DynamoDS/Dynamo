@@ -1219,6 +1219,7 @@
     <ProjectReference Include="..\ShapewaysClient\ShapewaysClient.csproj">
       <Project>{756ceba5-4e20-4403-8448-c3c47957975b}</Project>
       <Name>ShapewaysClient</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

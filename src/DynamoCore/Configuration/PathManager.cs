@@ -7,6 +7,8 @@ using System.Reflection;
 using Dynamo.Interfaces;
 using System.Globalization;
 using Dynamo.Configuration;
+using Dynamo.Graph;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Properties;
 using DynamoUtilities;

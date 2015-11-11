@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
-
+using DSCoreNodesUI.Input;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using NUnit.Framework;
 
@@ -96,7 +97,7 @@ namespace Dynamo.Tests
             Assert.True(ws.HasRunWithoutCrash);
 
             // Update the number input to ensure another run takes place
-            var n = ws.Nodes.OfType<Nodes.DoubleInput>().First();
+            var n = ws.Nodes.OfType<DoubleInput>().First();
             CurrentDynamoModel.ExecuteCommand(
                 new DynamoModel.UpdateModelValueCommand(n.GUID, "Value", "3.0"));
 

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Dynamo.Engine;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using ProtoScript.Runners;
 

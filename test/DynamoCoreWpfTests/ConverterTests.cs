@@ -8,6 +8,9 @@ using System.Windows.Controls;
 using System.Windows.Media;
 
 using Dynamo.Controls;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Models;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
@@ -219,7 +222,7 @@ namespace Dynamo.Tests
         {
             var converter = new ElementTypeToBoolConverter();
             var NseVM = new NodeSearchElementViewModel(
-                new NodeModelSearchElement(new TypeLoadData(typeof(Nodes.Symbol))), null);
+                new NodeModelSearchElement(new TypeLoadData(typeof(Symbol))), null);
             var NcVM = new NodeCategoryViewModel("");
             var RncVM = new RootNodeCategoryViewModel("");
             var CncVM = new ClassesNodeCategoryViewModel(RncVM);

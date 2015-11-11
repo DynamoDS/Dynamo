@@ -16,6 +16,8 @@ using System.Windows;
 
 using Dynamo.Logging;
 using Dynamo.Configuration;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Wpf.ViewModels
 {

@@ -4,6 +4,9 @@ using Dynamo.Nodes;
 using Dynamo.Models;
 using System.Collections.Generic;
 using System.Linq;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 
 
 namespace Dynamo.Tests
@@ -1246,10 +1249,10 @@ namespace Dynamo.Tests
 			Assert.AreEqual(15, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			// check that max & min nodes are loaded as DSFunction
-			var maxNoKey = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>("3db0d46d-fea6-4fc9-8c51-a8110f919c5f");
-			var minNoKey = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>("ef9a3ab0-b4c2-440d-9291-5807bc92e26f");
-			var maxWithKey = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>("a8ad0bfb-25f2-4ddc-aea6-927bdc739753");
-			var minWithKey = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>("2b2b1e9c-2ae1-4ba2-8b82-e01311df5429");
+			var maxNoKey = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("3db0d46d-fea6-4fc9-8c51-a8110f919c5f");
+			var minNoKey = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("ef9a3ab0-b4c2-440d-9291-5807bc92e26f");
+			var maxWithKey = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("a8ad0bfb-25f2-4ddc-aea6-927bdc739753");
+			var minWithKey = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("2b2b1e9c-2ae1-4ba2-8b82-e01311df5429");
 
 			// check that the nodes are migrated based on whether the key is connected or not
 			Assert.AreEqual(1, maxNoKey.InPortData.Count);
@@ -1307,7 +1310,7 @@ namespace Dynamo.Tests
 			Assert.AreEqual(8, workspace.Nodes.Count());
 			Assert.AreEqual(8, workspace.Connectors.Count());
 
-			var addToList = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>("31d0eb4e-8657-4eb1-a852-5e9b766eddd7");
+			var addToList = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("31d0eb4e-8657-4eb1-a852-5e9b766eddd7");
             var actual = addToList.GetValue(0, CurrentDynamoModel.EngineController).GetElements();
 			var childList = actual[2].GetElements();
 
@@ -1474,7 +1477,7 @@ namespace Dynamo.Tests
 			Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 			Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
-			var takeFromList = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>("14cb6593-24d8-4ffc-8ee5-9f4247449fc2");
+			var takeFromList = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("14cb6593-24d8-4ffc-8ee5-9f4247449fc2");
             var firstOutput = takeFromList.GetValue(0, CurrentDynamoModel.EngineController).GetElements();
 			var child = firstOutput[0].GetElements();
 			var child1 = firstOutput[4].GetElements();
@@ -2103,7 +2106,7 @@ namespace Dynamo.Tests
 			Assert.AreEqual(11, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 			Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
-			var joinList = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSVarArgFunction>("1304807f-6d18-4aef-b4cb-9cb8f469993e");
+			var joinList = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSVarArgFunction>("1304807f-6d18-4aef-b4cb-9cb8f469993e");
             var actual = joinList.GetValue(0, CurrentDynamoModel.EngineController).GetElements();
 			var actualChild1 = actual[5].GetElements();
 			var actualChild2 = actual[6].GetElements();

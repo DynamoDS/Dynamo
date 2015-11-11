@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
-using Dynamo.Models;
-using Dynamo.Nodes;
-using DSCoreNodesUI;
+using DSCoreNodesUI.Input;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using NUnit.Framework;
 using ProtoCore.Mirror;
 

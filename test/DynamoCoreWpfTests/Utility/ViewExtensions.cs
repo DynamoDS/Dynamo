@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Controls;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.Views;

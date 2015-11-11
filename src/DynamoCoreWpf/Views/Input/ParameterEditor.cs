@@ -1,7 +1,7 @@
 ﻿using Dynamo.ViewModels;
 using System.Windows;
-using Dynamo.Nodes;
 using DynCmd = Dynamo.Models.DynamoModel;
+using Dynamo.Graph.Nodes.CustomNodes;
 
 namespace Dynamo.UI.Controls
 {

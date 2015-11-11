@@ -18,6 +18,8 @@ using RuntimeWarning = ProtoCore.Runtime.WarningEntry;
 using ProtoCore.Utils;
 using Dynamo.Engine.NodeToCode;
 using Dynamo.Engine.CodeGeneration;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Engine
 {

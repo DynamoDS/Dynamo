@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using Autodesk.DesignScript.Interfaces;
-using Dynamo.Models;
-
+using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {

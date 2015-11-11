@@ -1,4 +1,7 @@
 ﻿using System;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 using ProtoCore.Lang;
 using ProtoScript.Runners;
 

@@ -7,6 +7,8 @@ using System;
 using System.Windows.Controls;
 using System.Linq;
 using System.Windows;
+using Dynamo.Graph;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Publish.Properties;

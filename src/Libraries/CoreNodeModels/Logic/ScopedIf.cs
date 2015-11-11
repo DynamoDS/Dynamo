@@ -2,10 +2,9 @@
 using System.Linq;
 
 using Dynamo.Engine.CodeGeneration;
-using Dynamo.Models;
-using Dynamo.Nodes;
 using DSCoreNodesUI.Properties;
-
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 

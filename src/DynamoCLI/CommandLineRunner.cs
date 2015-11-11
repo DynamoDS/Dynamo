@@ -9,6 +9,7 @@ using Dynamo.Models;
 using Dynamo.Core;
 using DynamoUtilities;
 using Dynamo.Applications;
+using Dynamo.Graph;
 
 namespace DynamoCLI
 {

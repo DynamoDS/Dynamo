@@ -784,9 +784,9 @@ public Node root { get; set; }
 	void DesignScriptParser() {
 		Node node = null; 
 		Hydrogen(out node);
-		if (!core.IsParsingPreloadedAssembly && !core.IsParsingCodeBlockNode)
+		if (!core.IsParsingPreloadedAssembly && !core.IsParsingCodeBlockNode && !builtinMethodsLoaded)
 		{
-		   ProtoCore.Utils.CoreUtils.InsertPredefinedAndBuiltinMethods(core, node, builtinMethodsLoaded);
+		   CoreUtils.InsertPredefinedAndBuiltinMethods(core, node as CodeBlockNode);
 		   root = node;
 		}
 		else
@@ -838,9 +838,9 @@ public Node root { get; set; }
 		if (rootImport && null != imh && imh.RootImportNode.CodeNode.Body.Count != 0)
 		   (codeblock as ProtoCore.AST.AssociativeAST.CodeBlockNode).Body.Add(imh.RootImportNode);
 		
-		if (rootImport && core.IsParsingPreloadedAssembly)
+		if (rootImport && core.IsParsingPreloadedAssembly && !builtinMethodsLoaded)
 		{
-		ProtoCore.Utils.CoreUtils.InsertPredefinedAndBuiltinMethods(core, codeblock, builtinMethodsLoaded);
+		CoreUtils.InsertPredefinedAndBuiltinMethods(core, codeblock);
 		core.ImportNodes = codeblock;
 		}
 		
@@ -1536,9 +1536,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 	void Associative_vardecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic, bool isStatic = false, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null) {
 		ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
 		ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode(); 
-		varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemStack;
-		varDeclNode.access = access;
-		varDeclNode.Attributes = attrs;
+		varDeclNode.Access = access;
 		varDeclNode.IsStatic = isStatic;
 		
 		Expect(1);
@@ -1547,7 +1545,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		   errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
 		}
 		NodeUtils.SetNodeLocation(varDeclNode, t);
-		tNode = ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, t.val);
+		tNode = AstFactory.BuildIdentifier(t.val);
 		NodeUtils.SetNodeLocation(tNode, t);
 		varDeclNode.NameNode = tNode;
 		
@@ -1722,7 +1720,9 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		    SynErr(String.Format(Resources.InvalidReturnStatement, la.val));
 		}
 		
-		node = ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, t.val, (ProtoCore.PrimitiveType)ltype);
+		var identNode = AstFactory.BuildIdentifier(t.val);
+		identNode.datatype = TypeSystem.BuildPrimitiveTypeObject((ProtoCore.PrimitiveType)ltype, 0);
+		node = identNode;
 		NodeUtils.SetNodeLocation(node, t);
 		
 	}
@@ -1782,7 +1782,9 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		ProtoCore.AST.AssociativeAST.CodeBlockNode functionBody = new ProtoCore.AST.AssociativeAST.CodeBlockNode(); 
 		
 		ProtoCore.AST.AssociativeAST.BinaryExpressionNode binaryExpr = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-		binaryExpr.LeftNode = ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, "return", ProtoCore.PrimitiveType.kTypeReturn);
+		IdentifierNode returnNode = AstFactory.BuildIdentifier("return");
+		returnNode.datatype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeReturn, 0);
+		binaryExpr.LeftNode = returnNode;
 		ProtoCore.AST.AssociativeAST.AssociativeNode expr;
 		
 		Associative_Expression(out expr);
@@ -1870,15 +1872,14 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 	void Associative_ArgDecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic) {
 		ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
 		ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode(); 
-		varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemStack;
-		varDeclNode.access = access;
+		varDeclNode.Access = access;
 		
 		Expect(1);
 		if (IsKeyWord(t.val, true))
 		{
 		   errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
 		}
-		tNode = ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, t.val);
+		tNode = AstFactory.BuildIdentifier(t.val);
 		NodeUtils.SetNodeLocation(tNode, t);
 		varDeclNode.NameNode = tNode;
 		NodeUtils.CopyNodeLocation(varDeclNode, tNode);

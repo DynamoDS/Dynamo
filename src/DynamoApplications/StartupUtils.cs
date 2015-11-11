@@ -8,7 +8,7 @@ using DynamoShapeManager;
 using System.Reflection;
 using System.IO;
 using Dynamo.Models;
-using Dynamo.UpdateManager;
+using Dynamo.Updates;
 using Microsoft.Win32;
 using System.Diagnostics;
 using System.Threading;
@@ -167,7 +167,7 @@ namespace Dynamo.Applications
         private static IUpdateManager InitializeUpdateManager()
         {
             var cfg = UpdateManagerConfiguration.GetSettings(new SandboxLookUp());
-            var um = new Dynamo.UpdateManager.UpdateManager(cfg);
+            var um = new Dynamo.Updates.UpdateManager(cfg);
             Debug.Assert(cfg.DynamoLookUp != null);
             return um;
         }

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Engine;
+using Dynamo.Graph;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 
 namespace Dynamo.Scheduler

@@ -5,8 +5,7 @@ using System.Windows.Media;
 
 using Dynamo.Controls;
 using Dynamo.Nodes;
-using Dynamo.UI;
-using DSCore.File;
+using DSCoreNodesUI.Input;
 using Dynamo.Configuration;
 using Dynamo.Wpf;
 

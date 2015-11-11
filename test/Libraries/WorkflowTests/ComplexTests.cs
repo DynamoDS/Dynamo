@@ -2,11 +2,11 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using System;
-
 using Autodesk.DesignScript.Geometry;
-using Dynamo.Models;
+using DSCoreNodesUI.Input;
+using Dynamo.Graph.Nodes;
 using NUnit.Framework;
+using Directory = DSCoreNodesUI.Input.Directory;
 
 
 namespace Dynamo.Tests
@@ -585,19 +585,19 @@ namespace Dynamo.Tests
             Assert.AreEqual(11, workspace.Nodes.Count());
 
             // give absolute path
-            var textFileName = workspace.NodeFromWorkspace<DSCore.File.Filename>("545b092b-8b2c-4cd4-b15e-9e4162dd4579");
+            var textFileName = workspace.NodeFromWorkspace<Filename>("545b092b-8b2c-4cd4-b15e-9e4162dd4579");
             textFileName.Value = Path.Combine(directory, textFileName.Value);
 
-            textFileName = workspace.NodeFromWorkspace<DSCore.File.Filename>("23f8f80b-eca7-4651-a082-7e2cce93c88d");
+            textFileName = workspace.NodeFromWorkspace<Filename>("23f8f80b-eca7-4651-a082-7e2cce93c88d");
             textFileName.Value = Path.Combine(directory, textFileName.Value);
 
-            var imgFileName = workspace.NodeFromWorkspace<DSCore.File.Filename>("c20d8f16-4bf7-465f-93ca-6afd05fe02a2");
+            var imgFileName = workspace.NodeFromWorkspace<Filename>("c20d8f16-4bf7-465f-93ca-6afd05fe02a2");
             imgFileName.Value = Path.Combine(directory, imgFileName.Value);
 
-            var imgDirectory = workspace.NodeFromWorkspace<DSCore.File.Directory>("729b5ffd-7813-4e09-94a2-74a1e4619c5f");
+            var imgDirectory = workspace.NodeFromWorkspace<Directory>("729b5ffd-7813-4e09-94a2-74a1e4619c5f");
             imgDirectory.Value = directory;
 
-            var xlsxFileName = workspace.NodeFromWorkspace<DSCore.File.Filename>("b8f8f48b-c546-4ae8-b7f6-45e52310e361");
+            var xlsxFileName = workspace.NodeFromWorkspace<Filename>("b8f8f48b-c546-4ae8-b7f6-45e52310e361");
             xlsxFileName.Value = Path.Combine(directory, xlsxFileName.Value);
 
             // run the graph
