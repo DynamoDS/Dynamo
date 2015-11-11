@@ -2,14 +2,14 @@
 <package >
   <metadata>
     <id>DynamoVisualProgramming.Core</id>
-    <version>0.9.0-beta1</version>
+    <version>0.9.0</version>
     <authors>Autodesk</authors>
     <owners>Autodesk</owners>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
     <projectUrl>https://github.com/DynamoDS/Dynamo</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Unit and system test infrastructure for Dynamo.</description>
-    <summary>This package contains the core assemblies for Dynamo.</summary>
+    <description>Dynamo core assemblies.</description>
+    <summary>This package contains the core assemblies for Dynamo including the entry point for every Dynamo, the DynamoModel class.</summary>
     <copyright>Copyright Autodesk 2015</copyright>
     <iconUrl>https://raw.githubusercontent.com/DynamoDS/Dynamo/master/doc/distrib/Images/logo_square_32x32.png</iconUrl>
     <dependencies>
