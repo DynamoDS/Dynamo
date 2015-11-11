@@ -251,7 +251,7 @@ namespace Dynamo.ViewModels
             }
             private set
             {
-                searchCategories = value;
+                searchCategories = value.OrderBy(category => category.Name);
                 RaisePropertyChanged("SearchCategories");
             }
         }
