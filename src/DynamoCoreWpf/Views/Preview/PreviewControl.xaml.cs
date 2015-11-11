@@ -1,4 +1,5 @@
 ﻿using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.Interfaces;
@@ -77,6 +78,13 @@ namespace Dynamo.UI.Controls
         ///     Indicates whether preview should stay open, when mouse leaves control.
         /// </summary>
         internal bool StaysOpen;
+
+        private const string baseUrl = @"pack://application:,,,/DynamoCoreWpf;component/UI/Images/";
+
+        private readonly BitmapImage pinIconBitmap =
+            new BitmapImage(new Uri(baseUrl + "pinned.png"));
+        private readonly BitmapImage unpinIconBitmap =
+            new BitmapImage(new Uri(baseUrl + "unpinned.png"));
 
         #endregion
 
@@ -681,6 +689,7 @@ namespace Dynamo.UI.Controls
         private void OnMapPinMouseClick(object sender, MouseButtonEventArgs e)
         {
             StaysOpen = !StaysOpen;
+            PinnIcon.Source = StaysOpen ? pinIconBitmap : unpinIconBitmap;
         }
 
         #endregion

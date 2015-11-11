@@ -8,8 +8,8 @@
              xmlns:fwk="clr-namespace:System.Windows;assembly=PresentationFramework"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Dynamo.Controls"
-             xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              mc:Ignorable="d"
              MouseMove="OnPreviewControlMouseMove"
              MouseLeave="OnPreviewControlMouseLeave">
@@ -173,25 +173,24 @@
                 VerticalAlignment="Top"
                 Visibility="Collapsed">
             <StackPanel Orientation="Vertical">
-                <fa:ImageAwesome Name="SearchIcon"
+                <!--<fa:ImageAwesome Name="SearchIcon"
                                  Icon="search"
                                  Height="10"
                                  Width="10"
                                  Margin="5,5,5,5"
-                                 Foreground="{StaticResource BubblePreviewIconColor}" />
-                <fa:ImageAwesome Name="PinIcon"
-                                 Icon="MapPin"
-                                 Height="10"
-                                 Width="10"
-                                 Margin="5,5,5,5"
-                                 Foreground="{StaticResource BubblePreviewIconColor}"
-                                 MouseLeftButtonDown="OnMapPinMouseClick" />
-                <fa:ImageAwesome Name="ArrowIcon"
+                                 Foreground="{StaticResource BubblePreviewIconColor}" />-->
+                <Image Name="PinnIcon"
+                       Source="/DynamoCoreWpf;component/UI/Images/unpinned.png"
+                       MouseLeftButtonDown="OnMapPinMouseClick"
+                       Height="15"
+                       Width="15"
+                       Margin="2,2,2,2" />
+                <!--<fa:ImageAwesome Name="ArrowIcon"
                                  Icon="ArrowCircleRight"
                                  Height="10"
                                  Width="10"
                                  Margin="5,5,5,5"
-                                 Foreground="{StaticResource BubblePreviewIconColor}" />
+                                 Foreground="{StaticResource BubblePreviewIconColor}" />-->
             </StackPanel>
         </Border>
 
