@@ -10,7 +10,6 @@
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:ui="clr-namespace:Dynamo.UI"
-             xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              mc:Ignorable="d"
              MouseMove="OnPreviewControlMouseMove"
              MouseLeave="OnPreviewControlMouseLeave">
@@ -146,7 +145,7 @@
               VerticalAlignment="Top">
             <Border Background="White"
                     BorderThickness="1"
-                    BorderBrush="{StaticResource MemberButtonText}" />
+                    BorderBrush="{StaticResource BubblePreviewBorderColor}" />
 
             <Grid Name="smallContentGrid"
                   Visibility="Collapsed"
@@ -170,7 +169,7 @@
                 Name="bubbleTools"
                 Background="White"
                 BorderThickness="1"
-                BorderBrush="{StaticResource MemberButtonText}"
+                BorderBrush="{StaticResource BubblePreviewBorderColor}"
                 VerticalAlignment="Top"
                 Visibility="Collapsed">
             <StackPanel Orientation="Vertical">
@@ -179,20 +178,20 @@
                                  Height="10"
                                  Width="10"
                                  Margin="5,5,5,5"
-                                 Foreground="{StaticResource VariableTypeTextColor}" />
+                                 Foreground="{StaticResource BubblePreviewIconColor}" />
                 <fa:ImageAwesome Name="PinIcon"
                                  Icon="MapPin"
                                  Height="10"
                                  Width="10"
                                  Margin="5,5,5,5"
-                                 Foreground="{StaticResource VariableTypeTextColor}"
+                                 Foreground="{StaticResource BubblePreviewIconColor}"
                                  MouseLeftButtonDown="OnMapPinMouseClick" />
                 <fa:ImageAwesome Name="ArrowIcon"
                                  Icon="ArrowCircleRight"
                                  Height="10"
                                  Width="10"
                                  Margin="5,5,5,5"
-                                 Foreground="{StaticResource VariableTypeTextColor}" />                
+                                 Foreground="{StaticResource BubblePreviewIconColor}" />
             </StackPanel>
         </Border>
 

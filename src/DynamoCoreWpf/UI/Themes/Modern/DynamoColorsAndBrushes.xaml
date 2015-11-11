@@ -99,4 +99,8 @@
     <SolidColorBrush x:Key="NodeNameForeground" Color="#ffffff" />
     <SolidColorBrush x:Key="UnSelectedLayoutForeground" Color="#999999" />
     <SolidColorBrush x:Key="NodeCategoryForeground" Color="#b3b3b3" />
+    
+    <!-- Bubble preview -->
+    <SolidColorBrush x:Key="BubblePreviewBorderColor" Color="#aaaaaa" />
+    <SolidColorBrush x:Key="BubblePreviewIconColor" Color="#777777" />
 </ResourceDictionary>
