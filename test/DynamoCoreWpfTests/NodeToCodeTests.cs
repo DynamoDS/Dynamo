@@ -1,12 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+using DSCoreNodesUI.Input;
 using NUnit.Framework;
 using Dynamo.Tests;
 using Dynamo.Selection;
-using Dynamo.Nodes;
 
 namespace DynamoCoreWpfTests
 {

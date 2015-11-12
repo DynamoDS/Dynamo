@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Dynamo.Configuration;
 using Dynamo.Core;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.Interfaces;
 using Dynamo.Migration;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Logging;
 using Dynamo.Utilities;
 using DynamoUtilities;
@@ -164,7 +166,7 @@ namespace Dynamo.Models
         /// <returns>True if the type is node.</returns>
         public static bool IsNodeSubType(Type t)
         {
-            return //t.Namespace == "Dynamo.Nodes" &&
+            return //t.Namespace == "Dynamo.Graph.Nodes" &&
                 !t.IsAbstract &&
                     t.IsSubclassOf(typeof(NodeModel))
                     && t.GetConstructor(Type.EmptyTypes) != null;

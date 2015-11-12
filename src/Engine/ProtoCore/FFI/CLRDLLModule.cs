@@ -844,8 +844,7 @@ namespace ProtoFFI
         private ProtoCore.AST.AssociativeAST.VarDeclNode ParseArgumentDeclaration(string parameterName, Type parameterType)
         {
             ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode();
-            varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemStack;
-            varDeclNode.access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic;
+            varDeclNode.Access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic;
 
             ProtoCore.AST.AssociativeAST.IdentifierNode identifierNode = 
                 new ProtoCore.AST.AssociativeAST.IdentifierNode

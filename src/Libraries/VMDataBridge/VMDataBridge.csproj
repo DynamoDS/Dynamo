@@ -36,8 +36,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ProtoInterface">
-      <HintPath>..\..\..\bin\AnyCPU\Debug\ProtoInterface.dll</HintPath>
+    <Reference Include="ProtoInterface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />

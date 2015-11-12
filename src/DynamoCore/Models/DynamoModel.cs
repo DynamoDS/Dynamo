@@ -9,20 +9,27 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Threading;
 using System.Xml;
+using Dynamo.Configuration;
 using Dynamo.Core;
-using Dynamo.Core.Threading;
 using Dynamo.Engine;
 using Dynamo.Extensions;
+using Dynamo.Graph;
+using Dynamo.Graph.Annotations;
+using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Nodes.NodeLoaders;
+using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Graph.Notes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Migration;
-using Dynamo.Models.NodeLoaders;
-using Dynamo.Nodes;
 using Dynamo.Properties;
+using Dynamo.Scheduler;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
-using Dynamo.Services;
-using Dynamo.UpdateManager;
+using Dynamo.Updates;
 using Dynamo.Utilities;
 using Dynamo.Logging;
 
@@ -30,12 +37,12 @@ using DynamoServices;
 using DynamoUnits;
 using Greg;
 using ProtoCore;
-using ProtoCore.Exceptions;
 using ProtoCore.Runtime;
+
 using Compiler = ProtoAssociative.Compiler;
 // Dynamo package manager
-using Utils = Dynamo.Nodes.Utilities;
-using DefaultUpdateManager = Dynamo.UpdateManager.UpdateManager;
+using Utils = Dynamo.Graph.Nodes.Utilities;
+using DefaultUpdateManager = Dynamo.Updates.UpdateManager;
 using FunctionGroup = Dynamo.Engine.FunctionGroup;
 
 namespace Dynamo.Models
@@ -440,7 +447,7 @@ namespace Dynamo.Models
         {
             // where necessary, assign defaults
             if (string.IsNullOrEmpty(configuration.Context))
-                configuration.Context = Core.Context.NONE;
+                configuration.Context = Configuration.Context.NONE;
 
             return new DynamoModel(configuration);
         }
@@ -844,7 +851,9 @@ namespace Dynamo.Models
 
         private void InitializeIncludedNodes()
         {
+            var customNodeData = new TypeLoadData(typeof(Function));
             NodeFactory.AddLoader(new CustomNodeLoader(CustomNodeManager, IsTestMode));
+            NodeFactory.AddAlsoKnownAs(customNodeData.Type, customNodeData.AlsoKnownAs);
 
             var dsFuncData = new TypeLoadData(typeof(DSFunction));
             var dsVarArgFuncData = new TypeLoadData(typeof(DSVarArgFunction));
@@ -1082,12 +1091,24 @@ namespace Dynamo.Models
         /// Call this method to reset the virtual machine, avoiding a race 
         /// condition by using a thread join inside the vm executive.
         /// TODO(Luke): Push this into a resync call with the engine controller
+        ///
+        /// Tracked in MAGN-5167.
+        /// As some async tasks use engine controller, for example 
+        /// CompileCustomNodeAsyncTask and UpdateGraphAsyncTask, it is possible
+        /// that engine controller is reset *before* tasks get executed. For
+        /// example, opening custom node will schedule a CompileCustomNodeAsyncTask
+        /// firstly and then reset engine controller. 
+        /// 
+        /// We should make sure engine controller is reset after all tasks that
+        /// depend on it get executed, or those tasks are thrown away if safe to 
+        /// do that. 
         /// </summary>
         /// <param name="markNodesAsDirty">Set this parameter to true to force 
         ///     reset of the execution substrait. Note that setting this parameter 
         ///     to true will have a negative performance impact.</param>
         public virtual void ResetEngine(bool markNodesAsDirty = false)
         {
+            
             ResetEngineInternal();
             foreach (var workspaceModel in Workspaces.OfType<HomeWorkspaceModel>())
             {
@@ -1175,18 +1196,21 @@ namespace Dynamo.Models
                         OnWorkspaceOpening(xmlDoc);
 
                         // TODO: #4258
-                        // Remove this ResetEngine call when multiple home workspaces is supported.
-                        // This call formerly lived in DynamoViewModel
-                        ResetEngine();
-
-                        // TODO: #4258
                         // The following logic to start periodic evaluation will need to be moved
                         // inside of the HomeWorkspaceModel's constructor.  It cannot be there today
                         // as it causes an immediate crash due to the above ResetEngine call.
                         var hws = ws as HomeWorkspaceModel;
-                        if (hws != null && hws.RunSettings.RunType == RunType.Periodic)
+                        if (hws != null)
                         {
-                            hws.StartPeriodicEvaluation();
+                            // TODO: #4258
+                            // Remove this ResetEngine call when multiple home workspaces is supported.
+                            // This call formerly lived in DynamoViewModel
+                            ResetEngine();
+
+                            if (hws.RunSettings.RunType == RunType.Periodic)
+                            {
+                                hws.StartPeriodicEvaluation();
+                            }
                         }
 
                         CurrentWorkspace = ws;
@@ -1510,13 +1534,16 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="node"></param>
         /// <param name="centered"></param>
-        public void AddNodeToCurrentWorkspace(NodeModel node, bool centered)
+        public void AddNodeToCurrentWorkspace(NodeModel node, bool centered, bool addToSelection = true)
         {
             CurrentWorkspace.AddAndRegisterNode(node, centered);
 
             //TODO(Steve): This should be moved to WorkspaceModel.AddNode when all workspaces have their own selection -- MAGN-5707
-            DynamoSelection.Instance.ClearSelection();
-            DynamoSelection.Instance.Selection.Add(node);
+            if (addToSelection)
+            {
+                DynamoSelection.Instance.ClearSelection();
+                DynamoSelection.Instance.Selection.Add(node);
+            }
 
             //TODO(Steve): Make sure we're not missing something with TransformCoordinates. -- MAGN-5708
         }
@@ -1556,27 +1583,11 @@ namespace Dynamo.Models
         /// </summary>
         public void Paste()
         {
-            // Provide a small offset when pasting so duplicate pastes aren't directly on top of each other
-            CurrentWorkspace.IncrementPasteOffset();
-
             var locatableModels = ClipBoard.Where(model => model is NoteModel || model is NodeModel);
-            var orderedItems = locatableModels.OrderBy(item => item.CenterX + item.CenterY);
-
-            // Search for the rightmost item. It's item with the biggest X, Y coordinates of center.
-            var rightMostItem = orderedItems.Last();
-
-            // Search for the leftmost item. It's item with the smallest X, Y coordinates of center.
-            var leftMostItem = orderedItems.First();
-
-            // Compute shift so that left most item will appear at right most item place with offset.
-            var shiftX = rightMostItem.X + rightMostItem.Width + CurrentWorkspace.CurrentPasteOffset - leftMostItem.X;
-            var shiftY = rightMostItem.Y + CurrentWorkspace.CurrentPasteOffset - leftMostItem.Y;
-
-
-            var x = shiftX + locatableModels.Min(m => m.X);
-            var y = shiftY + locatableModels.Min(m => m.Y);
+            var x = locatableModels.Min(m => m.X);
+            var y = locatableModels.Min(m => m.Y);
             var targetPoint = new Point2D(x, y);
-            
+
             Paste(targetPoint);
         }
 
@@ -1584,8 +1595,16 @@ namespace Dynamo.Models
         ///     Paste ISelectable objects from the clipboard to the workspace at specified point.
         /// </summary>
         /// <param name="targetPoint">Location where data will be pasted</param>
-        public void Paste(Point2D targetPoint)
+        /// <param name="useOffset">Indicates whether we will use current workspace offset or paste nodes
+        /// directly in this point. </param>
+        public void Paste(Point2D targetPoint, bool useOffset = true)
         {
+            if (useOffset)
+            {
+                // Provide a small offset when pasting so duplicate pastes aren't directly on top of each other
+                CurrentWorkspace.IncrementPasteOffset();
+            }
+
             //clear the selection so we can put the
             //paste contents in
             DynamoSelection.Instance.ClearSelection();
@@ -1652,11 +1671,12 @@ namespace Dynamo.Models
             
             var shiftX = targetPoint.X - newItems.Min(item => item.X);
             var shiftY = targetPoint.Y - newItems.Min(item => item.Y);
+            var offset = useOffset ? CurrentWorkspace.CurrentPasteOffset : 0;
 
             foreach (var model in newItems)
             {
-                model.X = model.X + shiftX;
-                model.Y = model.Y + shiftY;
+                model.X = model.X + shiftX + offset;
+                model.Y = model.Y + shiftY + offset;
             }
 
             // Add the new NodeModel's to the Workspace

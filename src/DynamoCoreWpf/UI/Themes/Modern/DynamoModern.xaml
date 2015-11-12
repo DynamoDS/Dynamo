@@ -5,8 +5,9 @@
                     xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCore"
                     xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
                     xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
-                    xmlns:avalonedit="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit" 
-                    xmlns:dynui="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf">
+                    xmlns:avalonedit="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit"
+                    xmlns:dynui="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf"
+                    xmlns:fa="http://schemas.fontawesome.io/icons/">
 
     <ResourceDictionary.MergedDictionaries>
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
@@ -52,8 +53,9 @@
     <Color x:Key="HeaderTopColor">#FFC5CBF9</Color>
     <Color x:Key="DatagridCurrentCellBorderColor">Black</Color>
     <Color x:Key="SliderTrackDarkColor">#FFC5CBF9</Color>
-
     <Color x:Key="NavButtonFrameColor">#FF3843C4</Color>
+
+    <clr:Double x:Key="NodeNickNameHeight">27</clr:Double>
 
     <!--InfoBubble colors-->
     <SolidColorBrush x:Key="InfoBubbleBackNormalBrush"
@@ -1821,6 +1823,75 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <Style x:Key="LibraryPopupContentStyle"
+           TargetType="ContentControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ContentControl">
+                    <Grid>
+                        <Border Background="{StaticResource FilterPopupBackgroundColor}"
+                                BorderBrush="{StaticResource FilterPopupBorderColor}"
+                                BorderThickness="1"
+                                Margin="0,11,0,0"
+                                CornerRadius="5">
+                            <ContentPresenter />
+                        </Border>
+                        <Path x:Name="arrow"
+                              Fill="{StaticResource FilterPopupBackgroundColor}"
+                              Stroke="{StaticResource FilterPopupBorderColor}"
+                              Data="M 5 12 L 15 0 L 25 12" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="LibraryIconsStyle"
+           TargetType="{x:Type fa:ImageAwesome}">
+        <Setter Property="Foreground"
+                Value="{Binding IsAnySearchResult, 
+                                Converter={StaticResource FilterIconForegroundConverter}}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="True">
+                <Setter Property="Foreground"
+                        Value="White" />
+                <Setter Property="Cursor"
+                        Value="Hand" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="LayoutButtonStyle"
+           TargetType="{x:Type Border}">
+        <Setter Property="Background"
+                Value="#01000000" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="True">
+                <Setter Property="Background"
+                        Value="{StaticResource FilterPopupBorderColor}" />
+                <Setter Property="Cursor"
+                        Value="Hand" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="FilterTextBlockStyle"
+           TargetType="{x:Type TextBlock}">
+        <Setter Property="Foreground"
+                Value="{StaticResource NodeNameForeground}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="True">
+                <Setter Property="TextBlock.TextDecorations"
+                        Value="Underline" />
+                <Setter Property="Cursor"
+                        Value="Hand" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
 </ResourceDictionary>

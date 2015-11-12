@@ -6,7 +6,7 @@ using System.Windows.Data;
 
 using Dynamo.Controls;
 using Dynamo.ViewModels;
-using DSCoreNodesUI;
+using DSCoreNodesUI.Input;
 
 namespace Dynamo.Wpf.Nodes
 {

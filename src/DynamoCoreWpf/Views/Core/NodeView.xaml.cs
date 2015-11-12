@@ -5,6 +5,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.Prompts;
 using Dynamo.Selection;
@@ -99,13 +101,12 @@ namespace Dynamo.Controls
         /// <param name="eventArgs"></param>
         private void OnSizeChanged(object sender, EventArgs eventArgs)
         {
-            if (ViewModel != null)
+            if (ViewModel == null || ViewModel.PreferredSize.HasValue) return;
+
+            var size = new [] { ActualWidth, nodeBorder.ActualHeight };
+            if (ViewModel.SetModelSizeCommand.CanExecute(size))
             {
-                var size = new double[] { ActualWidth, nodeBorder.ActualHeight };
-                if (ViewModel.SetModelSizeCommand.CanExecute(size))
-                {
-                    ViewModel.SetModelSizeCommand.Execute(size);
-                }
+                ViewModel.SetModelSizeCommand.Execute(size);
             }
         }
 
@@ -127,8 +128,15 @@ namespace Dynamo.Controls
             // can be sent as a result of DataContext becoming DisconnectedItem too,
             // but ViewModel should not be updated in that case (hence the null-check).
             // 
-            if (null == ViewModel)
-                ViewModel = e.NewValue as NodeViewModel;
+            if (null != ViewModel) return;
+ 
+            ViewModel = e.NewValue as NodeViewModel;
+            if (!ViewModel.PreferredSize.HasValue) return;
+
+            var size = ViewModel.PreferredSize.Value;
+            nodeBorder.Width = size.Width;
+            nodeBorder.Height = size.Height;
+            nodeBorder.RenderSize = size;
         }
 
         private void OnNodeViewLoaded(object sender, RoutedEventArgs e)
@@ -144,9 +152,8 @@ namespace Dynamo.Controls
             ViewModel.RequestShowNodeRename += ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection += ViewModel_RequestsSelection;
             ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
-           
         }
-      
+
         void NodeLogic_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)

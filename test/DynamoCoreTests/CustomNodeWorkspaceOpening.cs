@@ -1,9 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
-
-using Dynamo.Models;
-using Dynamo.Nodes;
-
+using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Workspaces;
 using NUnit.Framework;
 
 namespace Dynamo.Tests

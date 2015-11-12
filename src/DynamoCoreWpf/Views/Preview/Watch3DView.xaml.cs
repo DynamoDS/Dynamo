@@ -153,21 +153,9 @@ namespace Dynamo.Controls
 
         private void ViewModelRequestAttachToSceneHandler(Model3D model3D)
         {
-            if (model3D is GeometryModel3D)
+            if (!model3D.IsAttached && View != null && View.RenderHost != null)
             {
-                if (View != null && View.RenderHost != null && !model3D.IsAttached)
-                {
-                    model3D.Attach(View.RenderHost);
-                }
-            }
-            else
-            {
-                //This is for Directional Light. When a watch is attached,
-                //Directional light has to be attached one more time.
-                if (!model3D.IsAttached && View != null && View.RenderHost != null)
-                {
-                    model3D.Attach(View.RenderHost);
-                }
+                model3D.Attach(View.RenderHost);
             }
         }
 
@@ -217,11 +205,23 @@ namespace Dynamo.Controls
 
         #endregion
 
-        public Ray3D GetClickRay(MouseEventArgs mouseButtonEventArgs)
+        private IRay GetClickRay(MouseEventArgs args)
         {
-            var mousePos = mouseButtonEventArgs.GetPosition(this);
+            var mousePos = args.GetPosition(this);
 
-            return View.Point2DToRay3D(new Point(mousePos.X, mousePos.Y));
+            var ray = View.Point2DToRay3D(new Point(mousePos.X, mousePos.Y));
+
+            if (ray == null) return null;
+
+            var position = new Point3D(0, 0, 0);
+            var normal = new Vector3D(0, 0, 1);
+            var pt3D = ray.PlaneIntersection(position, normal);
+
+            if (pt3D == null) return null;
+
+            return new Ray3(ray.Origin, ray.Direction);
         }
     }
+
+    
 }

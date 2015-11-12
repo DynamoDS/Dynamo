@@ -3,16 +3,25 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using Dynamo.Graph;
+using Dynamo.Graph.Annotations;
+using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Nodes.NodeLoaders;
+using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Graph.Notes;
+using Dynamo.Graph.Presets;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Migration;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Logging;
 using ProtoCore.AST;
 using ProtoCore.Namespace;
-using Symbol = Dynamo.Nodes.Symbol;
+using Symbol = Dynamo.Graph.Nodes.CustomNodes.Symbol;
 using Dynamo.Library;
 using Dynamo.Properties;
 
@@ -744,7 +753,7 @@ namespace Dynamo.Core
                     new HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>>(
                         selectedNodeSet.SelectMany(
                             node =>
-                                Enumerable.Range(0, node.InPortData.Count)
+                                Enumerable.Range(0, node.InPorts.Count)
                                 .Where(node.HasConnectedInput)
                                 .Select(data => Tuple.Create(node, data, node.InputNodes[data]))
                                 .Where(input => !selectedNodeSet.Contains(input.Item3.Item2))));
@@ -753,7 +762,7 @@ namespace Dynamo.Core
                     new HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>>(
                         selectedNodeSet.SelectMany(
                             node =>
-                                Enumerable.Range(0, node.OutPortData.Count)
+                                Enumerable.Range(0, node.OutPorts.Count)
                                 .Where(node.HasOutput)
                                 .SelectMany(
                                     data =>
@@ -958,7 +967,7 @@ namespace Dynamo.Core
 
                         node = new Symbol
                         {
-                            InputSymbol = inputReceiverNode.InPortData[inputReceiverData].NickName,
+                            InputSymbol = inputReceiverNode.InPorts[inputReceiverData].PortName,
                             X = 0
                         };
 
@@ -1056,7 +1065,7 @@ namespace Dynamo.Core
                             //Create Symbol Node
                             var node = new Output
                             {
-                                Symbol = outputSenderNode.OutPortData[outputSenderData].NickName,
+                                Symbol = outputSenderNode.OutPorts[outputSenderData].PortName,
                                 X = rightMost + 75 - leftShift
                             };
 

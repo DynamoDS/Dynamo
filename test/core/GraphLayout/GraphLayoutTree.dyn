@@ -40,7 +40,10 @@
     <Dynamo.Models.ConnectorModel start="15feece7-b122-4514-a00e-f031136e336f" start_index="0" end="6a34a52a-a23f-4962-bb0a-971ffd5cd6be" end_index="2" portType="0" />
     <Dynamo.Models.ConnectorModel start="28b87b8c-b25a-4f4e-8954-e2452bb0588f" start_index="0" end="a93dc4ad-9f2a-4158-b994-363ce737a070" end_index="0" portType="0" />
   </Connectors>
-  <Notes />
+  <Notes>
+    <Dynamo.Models.NoteModel guid="84796624-0188-444f-8053-20d636a7ccaf" text="This is a note." x="-3540.14554067101" y="-3670.53429668482" />
+    <Dynamo.Models.NoteModel guid="e8939575-e8c8-4786-864e-3083ba267611" text="This is another note." x="-2412.23413237467" y="-3693.4991720698" />
+  </Notes>
   <Annotations />
   <Presets />
   <Cameras>

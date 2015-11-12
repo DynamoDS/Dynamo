@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>DynamoVisualProgramming.Tests</id>
-    <version>0.9.0.0</version>
+    <version>0.9.1-beta1</version>
     <authors>Autodesk</authors>
     <owners>Autodesk</owners>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>

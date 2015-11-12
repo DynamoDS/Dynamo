@@ -44,7 +44,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void SimpleCtorResolution04()
         {
             String code =
@@ -55,7 +55,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestMethodOverload1()
         {
             string code =
@@ -67,7 +67,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestMethodOverload2()
         {
             string code =
@@ -79,7 +79,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestMethodOverload3()
         {
             string code =
@@ -91,7 +91,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestMethodOverload4()
         {
             string code =
@@ -103,7 +103,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestMethodResolutionOverInheritance()
         {
             string code =
@@ -127,7 +127,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestMethodOverlaodAndArrayInput2()
         {
             string code =
@@ -139,7 +139,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestMethodOverlaodAndArrayInput3()
         {
             string code =
@@ -150,7 +150,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestMethodOverlaodAndArrayInput4()
         {
             string code =
@@ -164,7 +164,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestMethodOverlaodAndArrayInput4Min()
         {
             string code =
@@ -205,7 +205,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestMethodOverlaodAndArrayInput5()
         {
             string code =
@@ -216,7 +216,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestMethodOverlaodAndArrayInput6()
         {
             string code =
@@ -238,7 +238,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestMethodWithArrayInput2()
         {
             string code = @"                            class A                            {                            }                            class B extends A                            {                            }                            def Test(arr : A[])                            {                                    return = 123;                            }                            a = {B.B(), A.A(), B.B()};                            val = Test(a);                            ";
@@ -273,7 +273,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestMethodWithOverrides()
         {
             string code = @"                            class A                            {	                            def foo(x : double)                                { return = 1; }                            }                            class B extends A                            {                                def foo(x : double)                                { return = 2; }                            }                                                        a = A.A();                            val1 = a.foo(0.0);                                                      //  b = B.B();                                                      //  val2 =b.foo(0.0);                            ";
@@ -284,7 +284,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored")]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestOverridenMethod()
         {
             string code = @"                            class A                            {	                            def foo(x : double)                                { return = 1; }                            }                            class B extends A                            {                                def foo(x : double)                                { return = 2; }                            }                                                      //  a = A.A();                          //  val1 = a.foo(0.0);                                                      b = B.B();                                                      val2 =b.foo(0.0);                            ";

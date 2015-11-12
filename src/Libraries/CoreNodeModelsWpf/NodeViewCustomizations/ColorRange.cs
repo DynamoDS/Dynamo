@@ -10,10 +10,11 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using DSCore;
 using Dynamo.Controls;
+using Dynamo.Scheduler;
 using Dynamo.UI;
 
 using DSCoreNodesUI;
-using Dynamo.Core.Threading;
+using Dynamo.Configuration;
 using Dynamo.Models;
 using Dynamo.ViewModels;
 using ProtoCore.Mirror;
@@ -62,7 +63,7 @@ namespace Dynamo.Wpf.Nodes
             });
 
             // then update on the ui thread
-            t.ThenPost((_) =>
+            t.ThenSend((_) =>
             {
                 var bmp = CreateColorRangeBitmap(colorRange);
                 gradientImage.Source = bmp;

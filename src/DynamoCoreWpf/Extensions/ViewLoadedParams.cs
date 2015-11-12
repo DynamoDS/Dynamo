@@ -9,6 +9,7 @@ using Dynamo.Utilities;
 using Dynamo.Extensions;
 using Dynamo.Interfaces;
 using Dynamo.Selection;
+using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
 
 namespace Dynamo.Wpf.Extensions
@@ -66,6 +67,15 @@ namespace Dynamo.Wpf.Extensions
         public void AddSeparator(MenuBarType type, Separator separatorObj, int index = -1)
         {
             AddItemToMenu(type, separatorObj, index);
+        }
+
+        private ICommandExecutive commandExecutive;
+        /// <summary>
+        /// View Extension specific implementation to execute Recordable commands on DynamoViewModel
+        /// </summary>
+        public override ICommandExecutive CommandExecutive
+        {
+            get { return commandExecutive ?? (commandExecutive = new ViewExtensionCommandExecutive(dynamoViewModel)); }
         }
 
         /// <summary>

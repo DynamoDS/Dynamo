@@ -1,4 +1,7 @@
 ﻿using System.Linq;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;

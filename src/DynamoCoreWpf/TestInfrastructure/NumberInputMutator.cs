@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using Dynamo.Engine;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 
 namespace Dynamo.TestInfrastructure
 {
@@ -57,18 +59,8 @@ namespace Dynamo.TestInfrastructure
             writer.Flush();
             writer.WriteLine("### - Beginning re-exec");
 
-            DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
-            {
-                DynamoModel.RunCancelCommand runCancel =
-                    new DynamoModel.RunCancelCommand(false, false);
+            ExecuteAndWait();
 
-                DynamoViewModel.ExecuteCommand(runCancel);
-            }));
-            Thread.Sleep(10);
-            while (!DynamoViewModel.HomeSpace.RunSettings.RunEnabled)
-            {
-                Thread.Sleep(10);
-            }
             writer.WriteLine("### - re-exec complete");
             writer.Flush();
 

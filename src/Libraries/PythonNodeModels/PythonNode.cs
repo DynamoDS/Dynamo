@@ -9,10 +9,9 @@ using System.Xml;
 using Autodesk.DesignScript.Runtime;
 
 using DSIronPython;
-
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.Models;
-using Dynamo.Nodes;
-
 using ProtoCore.AST.AssociativeAST;
 
 namespace PythonNodeModels

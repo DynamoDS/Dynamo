@@ -18,6 +18,7 @@
 
   <link rel="stylesheet" href="{{ base_url }}/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="{{ base_url }}/css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="{{ base_url }}/css/theme_mobile.css" type="text/css" />
   <link rel="stylesheet" href="{{ base_url }}/css/highlight.css">
   {%- for path in extra_css %}
   <link href="{{ path }}" rel="stylesheet">
@@ -63,7 +64,7 @@
     </div>   
 	</div>   
         {% include "searchbox.html" %}
-	<div class ="wy-page-title "style= "font-size:30px; position:absolute;"">
+	<div class ="wy-page-title" id="page-title">
       Dynamo API Documentation
 	</div>
    </div>
@@ -87,9 +88,9 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       {# MOBILE NAV, TRIGGLES SIDE NAV ON TOGGLE #}
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" id="nav-wy-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="{{ homepage_url }}">{{ site_name }}</a>
+        <a href="{{ homepage_url }}"> Dynamo API Documentation </a>
       </nav>
 
       {# PAGE CONTENT #}

@@ -1,5 +1,4 @@
 ﻿using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -8,9 +7,11 @@ using System.IO;
 using System.Threading;
 using Autodesk.DesignScript.Runtime;
 using System.Reflection;
-using DynamoUtilities;
-using Dynamo.Core;
+using Dynamo.Configuration;
 using Dynamo.Engine;
+using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Utilities;
 
 namespace Dynamo.TestInfrastructure
@@ -91,17 +92,7 @@ namespace Dynamo.TestInfrastructure
                     writer.WriteLine("### - undo complete");
                     writer.Flush();
 
-                    DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
-                    {
-                        DynamoModel.RunCancelCommand runCancel =
-                            new DynamoModel.RunCancelCommand(false, false);
-
-                        DynamoViewModel.ExecuteCommand(runCancel);
-                    }));
-                    while (!DynamoViewModel.HomeSpace.RunSettings.RunEnabled)
-                    {
-                        Thread.Sleep(10);
-                    }
+                    ExecuteAndWait();
 
                     writer.WriteLine("### - Beginning test of CustomNode");
                     if (node.OutPorts.Count > 0)
@@ -326,7 +317,7 @@ namespace Dynamo.TestInfrastructure
                     }
 
                     if (!NodeModelAssemblyLoader.IsNodeSubType(t) && 
-                        t.Namespace != "Dynamo.Nodes") /*&& attribs.Length > 0*/
+                        t.Namespace != "Dynamo.Graph.Nodes") /*&& attribs.Length > 0*/
                         continue;
 
                     //if we are running in revit (or any context other than NONE) 

@@ -167,7 +167,7 @@ import(""DSCoreNodes.dll"");
 
 
         [Test]
-        [Category("DSDefinedClass_Ignored_InlineInDSClass")]
+        [Ignore][Category("DSDefinedClass_Ignored_InlineInDSClass")]
         [Category("Replication")]
         public void T004_Inline_Inside_Class_Constructor_and_replication()
         {
@@ -359,7 +359,7 @@ a = c > 1 ? a : a + 1;
 
 
         [Test]
-        [Category("DSDefinedClass_Ignored_InlineInDSClass")]
+        [Ignore][Category("DSDefinedClass_Ignored_InlineInDSClass")]
         public void T012_Defect_1467288_2()
         {
             string code =
@@ -405,7 +405,7 @@ test = foo({1,2});
 
 
         [Test]
-        [Category("DSDefinedClass_Ignored_InlineDSClassConstructor")]
+        [Ignore][Category("DSDefinedClass_Ignored_InlineDSClassConstructor")]
         public void T012_Defect_1467288_4()
         {
             string code =
@@ -431,7 +431,7 @@ a = x.a;
 
 
         [Test]
-        [Category("DSDefinedClass_Ignored_InlineDSClassConstructor")]
+        [Ignore][Category("DSDefinedClass_Ignored_InlineDSClassConstructor")]
         public void T012_Defect_1467288_5()
         {
             string code =
@@ -455,7 +455,7 @@ a = x.a;
 
 
         [Test]
-        [Category("DSDefinedClass_Ignored_InlineDSClassConstructor")]
+        [Ignore][Category("DSDefinedClass_Ignored_InlineDSClassConstructor")]
         public void T012_Defect_1467288_6()
         {
             string code =
@@ -976,7 +976,7 @@ test = foo();
 
 
         [Test]
-        [Category("DSDefinedClass_Ignored_InlineDSClassConstructor")]
+        [Ignore][Category("DSDefinedClass_Ignored_InlineDSClassConstructor")]
         public void T021_1467442_4()
         {
             string code = @"

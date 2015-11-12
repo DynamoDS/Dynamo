@@ -385,9 +385,12 @@ namespace ProtoAssociative
 
                 string symbol1 = firstNode.updateNodeRefList[0].nodeList[0].symbol.name;
                 string symbol2 = lastNode.updateNodeRefList[0].nodeList[0].symbol.name;
-                string message = String.Format(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency, symbol1, symbol2);
 
-                core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency, message, core.CurrentDSFileName);
+                foreach (var n in dependencyList.GroupBy(x => x.guid).Select(y => y.First()))
+                {
+                    core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency,
+                        ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency, core.CurrentDSFileName, graphNode: n);
+                }
                 firstNode.isCyclic = true;
 
                 cyclicSymbol1 = firstNode.updateNodeRefList[0].nodeList[0].symbol;
@@ -4670,8 +4673,7 @@ namespace ProtoAssociative
         {
             var argument = new ProtoCore.AST.AssociativeAST.VarDeclNode()
             {
-                memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
-                access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
+                Access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
                 NameNode =AstFactory.BuildIdentifier(Constants.kTempArg),
                 ArgumentType = argType
             };
@@ -4847,7 +4849,7 @@ namespace ProtoAssociative
                 // It is possible that fail to allocate variable. In that 
                 // case we should remove initializing expression from 
                 // cnode's defaultArgExprList
-                int symbolIndex = AllocateMemberVariable(thisClassIndex, thisClassIndex, varIdent.Value, vardecl.ArgumentType.rank, vardecl.access, vardecl.IsStatic);
+                int symbolIndex = AllocateMemberVariable(thisClassIndex, thisClassIndex, varIdent.Value, vardecl.ArgumentType.rank, vardecl.Access, vardecl.IsStatic);
                 if (symbolIndex == ProtoCore.DSASM.Constants.kInvalidIndex)
                 {
                     Validity.Assert(thisClass.DefaultArgExprList.Count > 0);
@@ -5161,8 +5163,6 @@ namespace ProtoAssociative
                                 currentClassScope = globalClassIndex;
                                 ix = 0;
                             }
-                            ProtoCore.AST.AssociativeAST.VarDeclNode varnode = classDecl.varlist[ix++] as ProtoCore.AST.AssociativeAST.VarDeclNode;
-                            sn.Attributes = PopulateAttributes((varnode).Attributes);
                         }
                     }
                 }
@@ -6981,8 +6981,7 @@ namespace ProtoAssociative
 
             VarDeclNode thisPtrArg = new ProtoCore.AST.AssociativeAST.VarDeclNode()
             {
-                memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
-                access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
+                Access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
                 NameNode = ident,
                 ArgumentType = new ProtoCore.Type { Name = className, UID = procOverload.classIndex, rank = 0 }
             };

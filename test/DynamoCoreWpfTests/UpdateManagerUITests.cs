@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using Dynamo.UI.Controls;
-using Dynamo.UpdateManager;
+using Dynamo.Updates;
 using Moq;
 using NUnit.Framework;
 using SystemTestServices;

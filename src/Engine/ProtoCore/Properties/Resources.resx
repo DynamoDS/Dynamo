@@ -298,7 +298,7 @@
     <value>Internal error, please report: Statement continue cause function to abnormally return null. (fd67aaee)</value>
   </data>
   <data name="kInvalidStaticCyclicDependency" xml:space="preserve">
-    <value>A cyclic dependency exists between '{0}' and '{1}'</value>
+    <value>A cyclic dependency exists between two variables</value>
   </data>
   <data name="kInvalidThis" xml:space="preserve">
     <value>'this' can only be used in methods that are members of a class</value>

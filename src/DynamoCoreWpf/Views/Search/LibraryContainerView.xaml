@@ -8,7 +8,7 @@
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
-             xmlns:controls="clr-namespace:Dynamo.Wpf.Controls"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              d:DataContext="{d:DesignInstance ViewModels:SearchViewModel, IsDesignTimeCreatable=False}"
              mc:Ignorable="d"
              Visibility="Visible"
@@ -41,6 +41,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <Label Grid.Column="0"
@@ -56,19 +57,61 @@
                     Margin="0,5,0,5">
                 <fa:ImageAwesome Name="Filter"
                                  Icon="filter"
-                                 Foreground="{Binding IsAnySearchResult, 
-                                                      Converter={StaticResource FilterIconForegroundConverter}}"
                                  IsHitTestVisible="{Binding IsAnySearchResult}"
                                  MouseLeftButtonUp="OnFilterMouseLeftButtonUp"
                                  Margin="5,0,5,0"
                                  Height="10"
-                                 Width="10" />
+                                 Width="10">
+                    <fa:ImageAwesome.ToolTip>
+                        <TextBlock Text="{x:Static p:Resources.FilterIconTooltip}" />
+                    </fa:ImageAwesome.ToolTip>
+                    <fa:ImageAwesome.Style>
+                        <Style TargetType="{x:Type fa:ImageAwesome}"
+                               BasedOn="{StaticResource LibraryIconsStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsOpen, ElementName=FilterPopup}"
+                                             Value="True">
+                                    <Setter Property="Foreground"
+                                            Value="White" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </fa:ImageAwesome.Style>
+                </fa:ImageAwesome>
+            </Border>
+            <Border Grid.Column="2"
+                    BorderBrush="{StaticResource FilterIconColor}"
+                    BorderThickness="0,0,1,0"
+                    Margin="0,5,0,5">
+                <fa:ImageAwesome Name="ViewLayoutSelector"
+                                 Icon="list"
+                                 IsHitTestVisible="{Binding IsAnySearchResult}"
+                                 MouseLeftButtonUp="OnViewLayoutSelectorMouseLeftButtonUp"
+                                 Margin="5,0,5,0"
+                                 Height="10"
+                                 Width="10">
+                    <fa:ImageAwesome.ToolTip>
+                        <TextBlock Text="{x:Static p:Resources.LayoutIconTooltip}" />
+                    </fa:ImageAwesome.ToolTip>
+                    <fa:ImageAwesome.Style>
+                        <Style TargetType="{x:Type fa:ImageAwesome}"
+                               BasedOn="{StaticResource LibraryIconsStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsOpen, ElementName=LayoutPopup}"
+                                             Value="True">
+                                    <Setter Property="Foreground"
+                                            Value="White" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </fa:ImageAwesome.Style>
+                </fa:ImageAwesome>
             </Border>
             <Button Mouse.MouseEnter="OnLibraryExpanderMouseEnter"
                     Mouse.MouseLeave="OnLibraryExpanderMouseLeave"
                     Click="OnLibraryExpanderClick"
                     Template="{DynamicResource BackgroundButton}"
-                    Grid.Column="2"
+                    Grid.Column="3"
                     VerticalAlignment="Center">
                 <Button.Resources>
                     <ControlTemplate x:Key="BackgroundButton"
@@ -92,6 +135,9 @@
                         <Image.RenderTransform>
                             <RotateTransform Angle="180" />
                         </Image.RenderTransform>
+                        <Image.ToolTip>
+                            <TextBlock Text="{x:Static p:Resources.ShowHideLibraryIconTooltip}" />
+                        </Image.ToolTip>
                     </Image>
                 </Button.Content>
             </Button>
@@ -234,25 +280,25 @@
                Placement="Bottom"
                PlacementTarget="{Binding ElementName=Filter}"
                VerticalOffset="3"
-               HorizontalOffset="-160">
-            <Grid>
-                <Border Background="{StaticResource FilterPopupBackgroundColor}"
-                        BorderBrush="{StaticResource FilterPopupBorderColor}"
-                        BorderThickness="1"
-                        Margin="0,11,0,0"
-                        CornerRadius="5">
-                    <ItemsControl ItemsSource="{Binding SearchCategories}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <controls:FilterPanel MaxItemPerRow="3" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
+               HorizontalOffset="-10">
+            <ContentControl Style="{StaticResource LibraryPopupContentStyle}">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="{x:Static p:Resources.SelectAllTitle}"
+                               HorizontalAlignment="Right"
+                               Style="{StaticResource FilterTextBlockStyle}"
+                               Margin="0,5,5,5">
+                        <TextBlock.InputBindings>
+                            <MouseBinding Command="{Binding SelectAllCategoriesCommand}"
+                                          MouseAction="LeftClick" />
+                        </TextBlock.InputBindings>
+                    </TextBlock>
 
+                    <ItemsControl ItemsSource="{Binding SearchCategories}"
+                                  Margin="3,0,3,5">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-
-                                <!-- Search category button -->
-                                <Button Command="{Binding ClickCommand}">
+                                <Button Name="CategoryButton"
+                                        Command="{Binding ClickCommand}">
 
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
@@ -260,57 +306,140 @@
                                         </ControlTemplate>
                                     </Button.Template>
 
-                                    <Border Background="{Binding IsSelected, 
-                                                                 Converter={StaticResource FilterIsSelertedCategoryToBrushConverter}}"
-                                            CornerRadius="3"
-                                            Padding="3"
-                                            Margin="3">
-
-                                        <WrapPanel Orientation="Horizontal">
-
-                                            <!-- Search category name -->
-                                            <TextBlock Text="{Binding Name}"
-                                                       Foreground="{StaticResource SelectedFilterButtonTextColor}"
-                                                       FontStyle="Italic" />
-
-                                            <!-- We didn't use checkbox, because the whole button should be clickable.
-                                                 And it's easier just add color converters than create new template for check box. -->
-
+                                    <Border Style="{StaticResource LayoutButtonStyle}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <!-- We didn't use checkbox, because the whole button should be clickable. -->
                                             <!-- "CheckBox" background-->
-                                            <Border Height="10"
+                                            <Border Grid.Column="0"
+                                                    Height="10"
                                                     Width="10"
-                                                    Margin="3,0,0,0"
-                                                    Background="{Binding IsSelected, 
-                                                                 Converter={StaticResource FilterIsSelertedCheckBoxForegroundConverter}}"
-                                                    CornerRadius="2">
+                                                    Margin="3,0,3,0"
+                                                    CornerRadius="1"
+                                                    Background="White">
 
-                                                <!-- "CheckBox" cross -->
+                                                <!-- "CheckBox" mark -->
+
                                                 <Path Width="7"
                                                       Height="7"
                                                       x:Name="CheckMark"
                                                       SnapsToDevicePixels="False"
                                                       Stroke="{StaticResource SelectedFilterButtonTextColor}"
                                                       StrokeThickness="2"
-                                                      Data="M 0 0 L 7 7 M 0 7 L 7 0"
+                                                      Data="M 0 3 L 3 6 M 3 6 L 7 0"
                                                       Visibility="{Binding IsSelected, 
                                                                        Converter={StaticResource BooleanToVisibilityConverter}}" />
+
                                             </Border>
 
-                                        </WrapPanel>
+                                            <TextBlock Name="CategoryName"
+                                                       Grid.Column="1"
+                                                       Text="{Binding Name}"
+                                                       Foreground="{Binding IsSelected, 
+                                                                        Converter={StaticResource FilterIsSelertedCategoryForegroundConverter}}"
+                                                       FontStyle="Italic"
+                                                       Margin="0,0,5,0" />
+
+                                            <TextBlock Name="OnlyTextBlock"
+                                                       Grid.Column="2"
+                                                       Text="{x:Static p:Resources.OnlyTitle}"
+                                                       Style="{StaticResource FilterTextBlockStyle}"
+                                                       HorizontalAlignment="Right"
+                                                       Margin="0,0,2,0"
+                                                       PreviewMouseLeftButtonDown="OnOnlyTextBlockMouseDown"
+                                                       Visibility="{Binding RelativeSource={
+                                                                            RelativeSource FindAncestor, 
+                                                                            AncestorType={x:Type Border}}, 
+                                                                            Path=IsMouseOver,
+                                                                            Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                <TextBlock.InputBindings>
+                                                    <MouseBinding Command="{Binding OnlyClickCommand}"
+                                                                  MouseAction="LeftClick" />
+                                                </TextBlock.InputBindings>
+                                            </TextBlock>
+                                        </Grid>
                                     </Border>
                                 </Button>
-
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
-
                     </ItemsControl>
-                </Border>
+                </StackPanel>
+            </ContentControl>
+        </Popup>
 
-                <Path x:Name="arrow"
-                      Fill="{StaticResource FilterPopupBackgroundColor}"
-                      Stroke="{StaticResource FilterPopupBorderColor}"
-                      Data="M 155 12 L 165 0 L 175 12" />
-            </Grid>
+        <!-- View layout popup-->
+        <Popup Name="LayoutPopup"
+               StaysOpen="False"
+               AllowsTransparency="True"
+               Placement="Bottom"
+               PlacementTarget="{Binding ElementName=ViewLayoutSelector}"
+               VerticalOffset="3"
+               HorizontalOffset="-10">
+            <ContentControl Style="{StaticResource LibraryPopupContentStyle}">
+                <WrapPanel>
+                    <!-- Compact layout button -->
+                    <Border BorderThickness="0,0,1,0"
+                            BorderBrush="{StaticResource SearchDarkGreyTextColor}"
+                            Style="{StaticResource LayoutButtonStyle}">
+                        <Button Name="CompactButton"
+                                Command="{Binding ToggleLayoutCommand}">
+                            <Button.CommandParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </Button.CommandParameter>
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <StackPanel Orientation="Horizontal"
+                                                Margin="5,5,5,5">
+                                        <fa:ImageAwesome Name="CompactLayoutIcon"
+                                                         Icon="list"
+                                                         Foreground="{Binding IsDetailedMode, 
+                                                                              Converter={StaticResource CompactLayoutForegroundConverter}}"
+                                                         Margin="5,0,5,0"
+                                                         Height="13"
+                                                         Width="13" />
+                                        <TextBlock Foreground="{Binding IsDetailedMode, 
+                                                                              Converter={StaticResource CompactLayoutForegroundConverter}}"
+                                                   Text="{x:Static p:Resources.CompactLayoutTitle}"
+                                                   FontSize="13" />
+                                    </StackPanel>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </Border>
+
+                    <!-- Detailed layout button -->
+                    <Border Style="{StaticResource LayoutButtonStyle}">
+                        <Button Name="DetailedButton"
+                                Command="{Binding ToggleLayoutCommand}">
+                            <Button.CommandParameter>
+                                <system:Boolean>True</system:Boolean>
+                            </Button.CommandParameter>
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <StackPanel Orientation="Horizontal"
+                                                Margin="5,5,5,5">
+                                        <fa:ImageAwesome  Name="DetailedLayoutIcon"
+                                                          Foreground="{Binding IsDetailedMode, 
+                                                                              Converter={StaticResource DetailedLayoutForegroundConverter}}"
+                                                          Icon="ThList"
+                                                          Margin="5,0,5,0"
+                                                          Height="13"
+                                                          Width="13" />
+                                        <TextBlock Foreground="{Binding IsDetailedMode, 
+                                                                              Converter={StaticResource DetailedLayoutForegroundConverter}}"
+                                                   Text="{x:Static p:Resources.DetailedLayoutTitle}"
+                                                   FontSize="13" />
+                                    </StackPanel>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </Border>
+                </WrapPanel>
+            </ContentControl>
         </Popup>
     </Grid>
 

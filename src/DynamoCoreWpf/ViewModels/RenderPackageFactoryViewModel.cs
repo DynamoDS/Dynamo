@@ -1,5 +1,6 @@
 ﻿using Dynamo.Interfaces;
 using Dynamo.ViewModels;
+using Dynamo.Visualization;
 using Dynamo.Wpf.Rendering;
 
 namespace Dynamo.Wpf.ViewModels
