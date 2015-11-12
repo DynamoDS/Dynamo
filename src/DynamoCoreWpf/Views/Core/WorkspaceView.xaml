@@ -245,7 +245,9 @@
                 <Separator />
 
                 <MenuItem Header="{x:Static p:Resources.ContextMenuGeometryView}"
-                          Command="{Binding DynamoViewModel.BackgroundPreviewViewModel.ToggleCanNavigateBackgroundCommand}" />
+                          Command="{Binding DynamoViewModel.BackgroundPreviewViewModel.ToggleCanNavigateBackgroundCommand}"
+                          Visibility="{Binding DynamoViewModel.BackgroundPreviewViewModel.Active, 
+                          Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
                 <MenuItem Header="{x:Static p:Resources.ContextMenuPan}"
                           Command="{Binding DynamoViewModel.BackgroundPreviewViewModel.TogglePanCommand}">
                     <MenuItem.IsChecked>
@@ -350,10 +352,11 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Top"
                     Height="Auto">
-                <StackPanel.IsEnabled>
+                <StackPanel.Visibility>
                     <Binding Path="DataContext.BackgroundPreviewViewModel.Active"
-                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
-                </StackPanel.IsEnabled>
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
+                             Converter="{StaticResource BooleanToVisibilityConverter}"/>
+                </StackPanel.Visibility>
                 <ui:ImageCheckBox Width="56"
                               Height="30"
                               Margin="4,4,0,4"

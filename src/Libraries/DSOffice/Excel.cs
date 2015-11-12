@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 using Microsoft.Office.Interop.Excel;
 using DynamoServices;
 using Autodesk.DesignScript.Runtime;
+using Dynamo.Graph.Nodes;
 using ProtoCore.DSASM;
 using Dynamo.Models;
-using Dynamo.Nodes;
 
 namespace DSOffice
 {
@@ -89,9 +89,6 @@ namespace DSOffice
             {
                 excel = new Microsoft.Office.Interop.Excel.Application();
             }
-
-            // KILLDYNSETTINGS - is this safe
-            AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
 
             excel.Visible = ShowOnStartup;
             excel.DisplayAlerts = false;

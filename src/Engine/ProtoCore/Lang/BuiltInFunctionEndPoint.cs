@@ -524,8 +524,15 @@ namespace ProtoCore.Lang
 
             if (!isValidThisPointer || (!thisObject.IsPointer && !thisObject.IsArray))
             {
-                runtimeCore.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer, Resources.kDeferencingNonPointer);
-                return StackValue.Null;
+                if (ArrayUtils.IsEmpty(lhs, runtimeCore))
+                { 
+                    return lhs;
+                }
+                else
+                {
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer, Resources.kDeferencingNonPointer);
+                    return StackValue.Null;
+                }
             }
 
             int stackPtr = rmem.Stack.Count - 1;

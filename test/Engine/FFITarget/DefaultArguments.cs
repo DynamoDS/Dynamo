@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 
 using Autodesk.DesignScript.Interfaces;
-using Dynamo.Nodes;
 
 namespace FFITarget
 {

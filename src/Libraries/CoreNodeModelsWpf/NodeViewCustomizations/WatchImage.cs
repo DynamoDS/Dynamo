@@ -2,10 +2,9 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows;
-using System.Windows.Media;
+using DSCoreNodesUI;
 using Dynamo.Controls;
-using Dynamo.Models;
-using Dynamo.Nodes;
+using Dynamo.Graph.Nodes;
 using Dynamo.Utilities;
 using Image = System.Windows.Controls.Image;
 

@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Dynamo.Models;
-using Dynamo.Nodes;
 using DSCoreNodesUI.Properties;
+using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI
@@ -16,7 +15,7 @@ namespace DSCoreNodesUI
     {
         public CreateList()
         {
-            InPortData.Add(new PortData("index0", Resources.CreateListPortDataIndex0ToolTip));
+            InPortData.Add(new PortData("item0", Resources.CreateListPortDataIndex0ToolTip));
             OutPortData.Add(new PortData("list", Resources.CreateListPortDataResultToolTip));
 
             RegisterAllPorts();
@@ -26,7 +25,7 @@ namespace DSCoreNodesUI
 
         protected override string GetInputName(int index)
         {
-            return "index" + index;
+            return "item" + index;
         }
 
         protected override string GetInputTooltip(int index)

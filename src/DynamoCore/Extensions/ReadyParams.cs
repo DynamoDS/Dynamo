@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Extensions
 {
@@ -36,6 +37,15 @@ namespace Dynamo.Extensions
             {
                 return dynamoModel.CurrentWorkspace;
             }
+        }
+
+        private ICommandExecutive commandExecutive;
+        /// <summary>
+        /// Extension specific implementation to execute Recordable commands on DynamoModel
+        /// </summary>
+        public virtual ICommandExecutive CommandExecutive 
+        {
+            get { return commandExecutive ?? (commandExecutive = new ExtensionCommandExecutive(dynamoModel)); }
         }
 
         public event Action<IWorkspaceModel> CurrentWorkspaceChanged;

@@ -1,7 +1,7 @@
 ﻿using System.Windows.Threading;
 using Dynamo.Controls;
-using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
+using Dynamo.Scheduler;
 using Dynamo.ViewModels;
 using ProtoCore.Mirror;
 using System;
@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media.Animation;
+using Dynamo.Configuration;
 using Dynamo.Extensions;
 
 namespace Dynamo.UI.Controls

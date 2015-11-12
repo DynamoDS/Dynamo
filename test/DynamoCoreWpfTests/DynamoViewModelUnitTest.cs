@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Dynamo.Models;
+using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.ViewModels;
 using DynamoShapeManager;
 using NUnit.Framework;
 
-using ProtoCore.Mirror;
 using System.Reflection;
 using System.IO;
 using Dynamo.Wpf.ViewModels.Watch3D;
@@ -125,7 +125,7 @@ namespace Dynamo.Tests
                     PathResolver = pathResolver,
                     StartInTestMode = true,
                     GeometryFactoryPath = preloader.GeometryFactoryPath,
-                    ProcessMode = Core.Threading.TaskProcessMode.Synchronous
+                    ProcessMode = TaskProcessMode.Synchronous
                 });
 
             var watch3DViewParams = new Watch3DViewModelStartupParams(model);

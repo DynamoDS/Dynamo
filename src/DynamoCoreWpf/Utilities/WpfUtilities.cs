@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 
 namespace Dynamo.Utilities
@@ -70,6 +71,18 @@ namespace Dynamo.Utilities
                     yield return childType;
                 }
             }
+        }
+
+        /// <summary>
+        /// Computes rectangle taking into account relative element.
+        /// </summary>
+        /// <returns>Rectangle</returns>
+        public static Rect BoundsRelativeTo(this FrameworkElement element,
+                                         Visual relativeTo)
+        {
+            return
+              element.TransformToVisual(relativeTo)
+                     .TransformBounds(LayoutInformation.GetLayoutSlot(element));
         }
     }
 }

@@ -13,6 +13,8 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Threading;
 using System.Linq;
+using Dynamo.Graph;
+using Dynamo.Graph.Workspaces;
 using Reach;
 using Reach.Data;
 
@@ -218,7 +220,7 @@ namespace Dynamo.Publish.ViewModels
                 throw new InvalidOperationException("The CurrentWorkspaceModel must be of type " + typeof(HomeWorkspaceModel).Name);
             }
 
-            model.SendAsynchronously(workspace, workspaceProperties);
+            model.SendAsync(workspace, workspaceProperties);
         }
 
         private void Visit(object _)
@@ -315,11 +317,17 @@ namespace Dynamo.Publish.ViewModels
                 case PublishModel.UploadErrorType.AuthenticationFailed:
                     UploadStateMessage = Resources.AuthenticationFailedMessage;
                     break;
+                case PublishModel.UploadErrorType.EmptyWorkspace:
+                    UploadStateMessage = Resources.EmptyWorkspaceMessage;
+                    break;
                 case PublishModel.UploadErrorType.AuthProviderNotFound:
                     UploadStateMessage = Resources.AuthManagerNotFoundMessage;
                     break;
                 case PublishModel.UploadErrorType.ServerNotFound:
                     UploadStateMessage = Resources.ServerNotFoundMessage;
+                    break;
+                case PublishModel.UploadErrorType.Unauthorized:
+                    UploadStateMessage = Resources.PublishUnauthorizedMessage;
                     break;
                 case PublishModel.UploadErrorType.InvalidNodes:
                     var nodeList = String.Join(", ", model.InvalidNodeNames);

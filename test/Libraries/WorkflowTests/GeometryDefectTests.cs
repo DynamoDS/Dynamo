@@ -4,6 +4,8 @@ using System.Linq;
 using NUnit.Framework;
 using Dynamo.Models;
 using Autodesk.DesignScript.Geometry;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Tests
 {   

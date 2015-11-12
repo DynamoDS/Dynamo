@@ -1,4 +1,4 @@
-﻿using Dynamo.Nodes;
+﻿using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Wpf.ViewModels;
 using Microsoft.Practices.Prism.Commands;
 using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
@@ -39,6 +39,7 @@ namespace Dynamo.ViewModels
             DeleteCommand = new DelegateCommand(Delete, CanDelete);
             ExitCommand = new DelegateCommand(Exit, CanExit);
             ToggleFullscreenWatchShowingCommand = new DelegateCommand(ToggleFullscreenWatchShowing, CanToggleFullscreenWatchShowing);
+            ToggleBackgroundGridVisibilityCommand = new DelegateCommand(ToggleBackgroundGridVisibility, CanToggleBackgroundGridVisibility);
             AlignSelectedCommand = new DelegateCommand(AlignSelected, CanAlignSelected); ;
             UndoCommand = new DelegateCommand(Undo, CanUndo);
             RedoCommand = new DelegateCommand(Redo, CanRedo);
@@ -114,6 +115,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand AlignSelectedCommand { get; set; }
         public DelegateCommand PostUIActivationCommand { get; set; }
         public DelegateCommand ToggleFullscreenWatchShowingCommand { get; set; }
+        public DelegateCommand ToggleBackgroundGridVisibilityCommand { get; set; }
         public DelegateCommand SelectAllCommand { get; set; }
         public DelegateCommand SaveImageCommand { get; set; }
         public DelegateCommand ShowSaveImageDialogAndSaveResultCommand { get; set; }

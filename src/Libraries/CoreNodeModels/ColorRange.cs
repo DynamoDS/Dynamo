@@ -4,14 +4,13 @@ using System.ComponentModel;
 using System.Linq;
 
 using DSCore;
-using Dynamo.Models;
-using Dynamo.Nodes;
 using DSCoreNodesUI.Properties;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using System.Globalization;
 
 using Dynamo.Engine;
+using Dynamo.Graph.Nodes;
 
 namespace DSCoreNodesUI
 {
@@ -23,7 +22,7 @@ namespace DSCoreNodesUI
 
     [InPortNames("colors", "indices", "value")]
     [InPortTypes("Color[]", "double[]", "double")]
-    [InPortDescriptionsAttribute(typeof(Resources),
+    [InPortDescriptions(typeof(Resources),
         "ColorRangePortDataColorsToolTip",
         "ColorRangePortDataIndicesToolTip",
         "ColorRangePortDataValueToolTip")]
@@ -72,15 +71,34 @@ namespace DSCoreNodesUI
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            var buildColorRangeNode =
+            if (!HasConnectedInput(0) && !HasConnectedInput(1) && !HasConnectedInput(2))
+            {
+                return new[] {AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode())};
+            }
+            AssociativeNode buildColorRangeNode = null;
+
+            // If either of the first two inputs does not have a connector
+            // then build a default color range.
+            if (!HasConnectedInput(0) || !HasConnectedInput(1))
+            {
+                buildColorRangeNode =
+                    AstFactory.BuildFunctionCall(
+                        new Func<ColorRange1D>(ColorRange1D.Default),
+                        new List<AssociativeNode>());
+            }
+            else
+            {
+                buildColorRangeNode =
                 AstFactory.BuildFunctionCall(
                     new Func<List<Color>, List<double>, ColorRange1D>(ColorRange1D.ByColorsAndParameters),
-                    new List<AssociativeNode>(){inputAstNodes[0], inputAstNodes[1]});
+                    new List<AssociativeNode>() { inputAstNodes[0], inputAstNodes[1] });
+            }
 
+            // The last inputAstNode is assumed to be the value.
             var functionCall =
                 AstFactory.BuildFunctionCall(
                     new Func<ColorRange1D,double, Color>(ColorRange1D.GetColorAtParameter),
-                    new List<AssociativeNode>(){buildColorRangeNode, inputAstNodes[2]});
+                    new List<AssociativeNode>(){buildColorRangeNode, inputAstNodes.Last()});
 
             return new[]
             {
@@ -94,7 +112,7 @@ namespace DSCoreNodesUI
             List<double> parameters;
 
             // If there are colors supplied
-            if (InPorts[0].Connectors.Any())
+            if (HasConnectedInput(0))
             {
                 var colorsNode = InPorts[0].Connectors[0].Start.Owner;
                 var colorsIndex = InPorts[0].Connectors[0].Start.Index;
@@ -104,11 +122,12 @@ namespace DSCoreNodesUI
             }
             else
             {
-                colors = DefaultColorRanges.Analysis;
+                colors = new List<Color>();
+                colors.AddRange(DefaultColorRanges.Analysis);
             }
 
             // If there are indices supplied
-            if (InPorts[1].Connectors.Any())
+            if (HasConnectedInput(1))
             {
                 var valuesNode = InPorts[1].Connectors[0].Start.Owner;
                 var valuesIndex = InPorts[1].Connectors[0].Start.Index;

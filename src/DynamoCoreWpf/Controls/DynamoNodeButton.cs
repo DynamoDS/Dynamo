@@ -2,6 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 
 using Dynamo.Controls;
+using Dynamo.Graph;
 using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.Utilities;

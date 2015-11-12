@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Autodesk.DesignScript.Geometry;
 
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Utilities;
 using DynamoConversions;
 
@@ -13,6 +12,8 @@ using GeometryUI.Properties;
 using ProtoCore.AST.AssociativeAST;
 using System.Xml;
 using System.Globalization;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 
 namespace GeometryUI
 {

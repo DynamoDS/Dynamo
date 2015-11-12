@@ -16,6 +16,4 @@ mkdir .\%test%\tools
 copy %base%\TestServices.dll .\%test%\lib\%framework%\TestServices.dll
 copy %base%\SystemTestServices.dll .\%test%\lib\%framework%\SystemTestServices.dll
 
-copy %base%\TestServices.dll.config .\%test%\content\TestServices.dll.config
-
 nuget pack .\%test%\Tests.nuspec

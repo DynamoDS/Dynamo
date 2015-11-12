@@ -124,6 +124,15 @@ namespace Dynamo.Publish.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You cannot publish an empty workspace..
+        /// </summary>
+        public static string EmptyWorkspaceMessage {
+            get {
+                return ResourceManager.GetString("EmptyWorkspaceMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed.
         /// </summary>
         public static string FailedMessage {
@@ -390,6 +399,15 @@ namespace Dynamo.Publish.Properties {
         public static string PublishButtonTitle {
             get {
                 return ResourceManager.GetString("PublishButtonTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sorry, it doesn&apos;t look like you&apos;re authorized to publish a customizer..
+        /// </summary>
+        public static string PublishUnauthorizedMessage {
+            get {
+                return ResourceManager.GetString("PublishUnauthorizedMessage", resourceCulture);
             }
         }
         

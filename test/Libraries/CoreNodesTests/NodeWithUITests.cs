@@ -8,13 +8,13 @@
 // responsible in setting "AssemblyResolve" callback that will eventually help 
 // resolving the path to LibG.Managed.dll. But the set-up fixture wasn't called due 
 // to the fact that it was residing in a different namespace (Dynamo.Tests) 
-// while "NodeSampleTests" resides in "Dynamo.Nodes". So by relocating the 
+// while "NodeSampleTests" resides in "Dynamo.Graph.Nodes". So by relocating the 
 // "NodeSampleTests" to "Dynamo.Tests" helps NUnit locating the "Setup" class. 
 // 
 
 using System.Collections.Generic;
 using System.Linq;
-using Dynamo.Models;
+using Dynamo.Graph;
 using NUnit.Framework;
 using ProtoCore.AST.AssociativeAST;
 using DoubleSlider = DSCoreNodesUI.Input.DoubleSlider;

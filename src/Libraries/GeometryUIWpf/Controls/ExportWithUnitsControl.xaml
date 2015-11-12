@@ -7,7 +7,8 @@
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              xmlns:controls="clr-namespace:Dynamo.Controls;assembly=CoreNodeModelsWpf"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
-             xmlns:conversions="clr-namespace:DynamoConversions;assembly=DynamoConversions"  
+             xmlns:conversions="clr-namespace:DynamoConversions;assembly=DynamoConversions"
+             xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
              mc:Ignorable="d" Width="250" Height="Auto">
 
     <UserControl.Resources>
@@ -38,7 +39,7 @@
             VerticalAlignment="Center"
             FontSize="12"
             FontFamily="{StaticResource OpenSansSemibold}"
-            Height ="{x:Static ui2:Configurations.PortHeightInPixels}"/>
+            Height ="{x:Static configuration:Configurations.PortHeightInPixels}"/>
 
         <TextBlock 
             Text=""
@@ -47,7 +48,7 @@
             VerticalAlignment="Center"
             FontSize="12"
             FontFamily="{StaticResource OpenSansSemibold}"
-            Height ="{x:Static ui2:Configurations.PortHeightInPixels}"/>
+            Height ="{x:Static configuration:Configurations.PortHeightInPixels}"/>
         
         <Grid Grid.Row="2">
 
@@ -65,12 +66,12 @@
             FontSize="13"
             FontWeight="SemiBold"
             FontFamily="{StaticResource OpenSansSemibold}"
-            Height ="{x:Static ui2:Configurations.PortHeightInPixels}"/>
+            Height ="{x:Static configuration:Configurations.PortHeightInPixels}"/>
 
             <ComboBox Name="SelectExportedUnit"
                 Grid.Column="1"
                 ItemsSource="{Binding SelectedExportedUnitsSource}"
-                Height ="{x:Static ui2:Configurations.PortHeightInPixels}"
+                Height ="{x:Static configuration:Configurations.PortHeightInPixels}"
                 SelectedItem="{Binding SelectedExportedUnit}">
 
                 <ComboBox.ItemTemplate>

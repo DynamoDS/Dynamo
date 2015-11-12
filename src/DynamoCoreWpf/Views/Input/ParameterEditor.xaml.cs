@@ -1,7 +1,4 @@
-﻿using Dynamo.Nodes;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using ICSharpCode.AvalonEdit;
+﻿using Dynamo.ViewModels;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
@@ -14,6 +11,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml;
+using Dynamo.Configuration;
+using Dynamo.Graph.Nodes.CustomNodes;
 using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.UI.Controls

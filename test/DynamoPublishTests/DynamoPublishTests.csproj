@@ -69,11 +69,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\test\DynamoCoreTests\DynamoCoreTests.csproj">
-      <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
-      <Name>DynamoCoreTests</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\src\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
@@ -82,7 +77,12 @@
     <ProjectReference Include="..\..\src\DynamoPublish\DynamoPublish.csproj">
       <Project>{8eda9f32-9d7d-4d55-9950-52fd695970a9}</Project>
       <Name>DynamoPublish</Name>
-      <Private>True</Private>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\test\DynamoCoreTests\DynamoCoreTests.csproj">
+      <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
+      <Name>DynamoCoreTests</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

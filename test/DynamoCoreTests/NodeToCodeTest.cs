@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
-
+using Dynamo.Scheduler;
 using Dynamo.Selection;
 
 using NUnit.Framework;
@@ -14,6 +14,9 @@ using System.Reflection;
 using System.Threading;
 using System.Globalization;
 using Dynamo.Engine.NodeToCode;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Interfaces;
 
 namespace Dynamo.Tests
@@ -1289,7 +1292,7 @@ namespace Dynamo.Tests
         /// <param name="dynFilePath"></param>
         protected void MutationTest(string dynFilePath)
         {
-            CurrentDynamoModel.Scheduler.ProcessMode = Core.Threading.TaskProcessMode.Asynchronous;
+            CurrentDynamoModel.Scheduler.ProcessMode = TaskProcessMode.Asynchronous;
 
             RunModel(dynFilePath);
             // Block until all tasks are executed

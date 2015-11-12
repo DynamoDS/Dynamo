@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Dynamo.Logging;
 
 namespace Dynamo.Wpf
 {
@@ -12,7 +13,7 @@ namespace Dynamo.Wpf
             customizations = customizationMap ?? new Dictionary<Type, IEnumerable<Type>>();
         }
 
-        public IDictionary<Type, IEnumerable<Type>> GetCustomizations()
+        public IDictionary<Type, IEnumerable<Type>> GetCustomizations(ILogger logger)
         {
             return customizations;
         }

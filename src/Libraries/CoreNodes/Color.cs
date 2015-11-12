@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
@@ -363,10 +365,11 @@ namespace DSCore
                 parameters = new List<double>();
 
             // If there's no colors supplied, then supply
-            // a red->blue gradient.
+            // a default gradient
             if (!colors.Any())
             {
-                colors = DefaultColorRanges.Analysis;
+                colors = new List<Color>();
+                colors.AddRange(DefaultColorRanges.Analysis);
             }
 
             // If there's no parameters supplied, then set the parameters
@@ -470,12 +473,35 @@ namespace DSCore
             return Color.Lerp(c1.Color, c2.Color, (parameter - c1.Parameter) / (c2.Parameter - c1.Parameter));
         }
 
+        /// <summary>
+        /// Create a ColorRange1D with the default color scheme.
+        /// </summary>
+        /// <returns></returns>
+        public static ColorRange1D Default()
+        {
+            return new ColorRange1D(DefaultColorRanges.Analysis, new [] {0.0,0.5,1.0});
+        }
+
+        public override string ToString()
+        {
+            var result = base.ToString();
+            using (var sw = new StringWriter())
+            {
+                sw.WriteLine("Color Range:");
+                foreach (var ci in indexedColors)
+                {
+                    sw.WriteLine(string.Format("\t{0}:{1}", ci.Color, ci.Parameter));
+                }
+                result = sw.ToString();
+            }
+            return result;
+        }
     }
 
     [IsVisibleInDynamoLibrary(false)]
     public static class DefaultColorRanges
     {
-        public static List<Color> Analysis = new List<Color>
+        public static readonly IEnumerable<Color> Analysis = new List<Color>
         {
             Color.ByARGB(255,255,100,100), // orange
             Color.ByARGB(255,255,255,0), // yellow

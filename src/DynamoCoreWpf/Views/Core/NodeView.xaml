@@ -7,6 +7,7 @@
              xmlns:dynamo="clr-namespace:Dynamo;assembly=DynamoCore"
              xmlns:dynamo1="clr-namespace:Dynamo.UI;assembly=DynamoCore"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+             xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
              Height="Auto"
              Width="Auto"
              Name="topControl"
@@ -23,7 +24,7 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto" MaxHeight="{StaticResource NodeNickNameHeight}"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -213,7 +214,7 @@
                    TextAlignment="Center"
                    IsHitTestVisible="False"
                    Canvas.ZIndex="12"
-                   Height="27"
+                   Height="{StaticResource NodeNickNameHeight}"
                    Background="{x:Null}"
                    Style="{StaticResource SZoomFadeText}">
             <TextBlock.Foreground>
@@ -265,7 +266,7 @@
                   HorizontalAlignment="Stretch"
                   Canvas.ZIndex="21"
                   IsEnabled="{Binding Path=IsInteractionEnabled}"
-                  MinHeight="{Binding Source={x:Static dynamo1:Configurations.PortHeightInPixels}}">
+                  MinHeight="{Binding Source={x:Static configuration:Configurations.PortHeightInPixels}}">
             </Grid>
 
         </Grid>
