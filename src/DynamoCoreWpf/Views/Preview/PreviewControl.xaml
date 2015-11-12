@@ -168,7 +168,7 @@
         <Border Grid.Column="1"
                 Name="bubbleTools"
                 Background="White"
-                BorderThickness="1"
+                BorderThickness="0,1,1,1"
                 BorderBrush="{StaticResource BubblePreviewBorderColor}"
                 VerticalAlignment="Top"
                 Visibility="Collapsed">
