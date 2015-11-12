@@ -1221,7 +1221,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redundant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("Failure")]
         public void T042_1467555_cartesion_product_in_dot_operation_1()
         {
@@ -1473,7 +1473,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_Redunadant")]
+        [Ignore][Category("DSDefinedClass_Ignored_Redunadant")]
         public void T0121_InstanceCall_Int_SingleGuides()
         {
             string code =
@@ -1484,7 +1484,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_ReplicationGuidesWithinDSDefinedClass")]
+        [Ignore][Category("DSDefinedClass_Ignored_ReplicationGuidesWithinDSDefinedClass")]
         [Category("Failure")]
         public void T0122_ReplicationGudes_Inside_ClassAndFunctionBody()
         {
@@ -1570,7 +1570,7 @@ namespace ProtoTest.TD.Associative
 
         [Test]
         [Category("ModifierBlock")] 
-        [Category("DSDefinedClass_Ignored_ModifierBlock")]
+        [Ignore][Category("DSDefinedClass_Ignored_ModifierBlock")]
         [Category("Failure")]
         public void T0127_ReplicationGudes_ModifierBlock()
         {
@@ -1588,7 +1588,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_ReplicationGuidesWithinDSDefinedClass")]
+        [Ignore][Category("DSDefinedClass_Ignored_ReplicationGuidesWithinDSDefinedClass")]
         [Category("Failure")]
         public void T0128_ReplicationGudes_InlineCondition()
         {
@@ -1769,7 +1769,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void T0142_ReplicationGudes_On_Both_Instance_And_Method_Call()
         {
             string code =
@@ -1785,7 +1785,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Failure")]
         public void T0143_ReplicationGudes_On_Both_Instance_And_Method_Call()
         {

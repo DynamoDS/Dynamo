@@ -721,9 +721,9 @@ DesignScriptParser
 =                           (. Node node = null; .)
     Hydrogen<out node>       
         (. 
-            if (!core.IsParsingPreloadedAssembly && !core.IsParsingCodeBlockNode)
+            if (!core.IsParsingPreloadedAssembly && !core.IsParsingCodeBlockNode && !builtinMethodsLoaded)
             {
-                ProtoCore.Utils.CoreUtils.InsertPredefinedAndBuiltinMethods(core, node, builtinMethodsLoaded);
+                CoreUtils.InsertPredefinedAndBuiltinMethods(core, node as CodeBlockNode);
                 root = node;
             }
             else
