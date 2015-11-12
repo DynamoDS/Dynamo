@@ -500,6 +500,13 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
             thisTest.Verify("x", v);                    
         }
 
+        [Test]
+        public void DotCallOnEmptyList()
+        {
+            string code = @"x = {{}, {}}; y = x.foo();";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", new object [] { new object [] { }, new object [] { } });
+        }
 
         [Test]
         public void T020_Replication_Var()
