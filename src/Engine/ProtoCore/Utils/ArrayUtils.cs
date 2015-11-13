@@ -457,5 +457,20 @@ namespace ProtoCore.Utils
                 return zippedIndices;
             }
         }
+
+        /// <summary>
+        /// Return if an array is an empty list or all its elements are empty lists.
+        /// </summary>
+        /// <param name="arrayPointer"></param>
+        /// <param name="runtimeCore"></param>
+        /// <returns></returns>
+        public static bool IsEmpty(StackValue arrayPointer, RuntimeCore runtimeCore)
+        {
+            if (!arrayPointer.IsArray)
+                return false;
+
+            var array = runtimeCore.Heap.ToHeapObject<DSArray>(arrayPointer);
+            return array.Values.All(v => IsEmpty(v, runtimeCore));
+        }
    }
 }

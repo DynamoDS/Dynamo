@@ -141,7 +141,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool isDetailedMode;
+        private bool isDetailedMode = true;
         /// <summary>
         ///  The property specifies which layout(detailed or compact) is used in search view.
         /// </summary>
@@ -251,7 +251,7 @@ namespace Dynamo.ViewModels
             }
             private set
             {
-                searchCategories = value;
+                searchCategories = value.OrderBy(category => category.Name);
                 RaisePropertyChanged("SearchCategories");
             }
         }
@@ -784,8 +784,6 @@ namespace Dynamo.ViewModels
 
             FilteredResults = searchResults;
             UpdateSearchCategories();
-
-            IsDetailedMode = true;
 
             RaisePropertyChanged("FilteredResults");
         }

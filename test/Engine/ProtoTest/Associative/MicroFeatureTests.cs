@@ -1436,7 +1436,7 @@ r8 = a[z];
             // Test calling a function on an empty array
             string code = @"p = {};x = p.f();";
             thisTest.RunScriptSource(code, "");
-            thisTest.Verify("x", null);
+            thisTest.Verify("x", new object[] { });
         }
 
 

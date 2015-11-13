@@ -410,7 +410,7 @@ o = {0.800000,0.810000}
         }
 
         [Test]
-        [Category("DSDefinedClass_ToBePorted_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T11_RangeExpressionUsingClasses()
         {
@@ -529,7 +529,7 @@ a1;a2;a3;a4;
         }
 
         [Test]
-        [Category("DSDefinedClass_ToBePorted_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T14_RangeExpressionUsingClassMethods()
         {
@@ -853,7 +853,7 @@ b;
         }
 
         [Test]
-        [Category("DSDefinedClass_ToBePorted_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T22_RangeExpressionsUsingClassMethods_2()
         {
@@ -884,7 +884,7 @@ d;
         }
 
         [Test]
-        [Category("DSDefinedClass_ToBePorted_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T23_RangeExpressionsUsingClassMethods_3()
         {
             //string err = "1467069 - Sprint 23: rev 2634: 328588 An array cannot be used to index into an array, must throw warning";
@@ -1604,7 +1604,7 @@ c=twice(4);
         }
 
         [Test]
-        [Category("DSDefinedClass_ToBePorted_DSDefinedClassSemantics")]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T27_RangeExpression_class_return_1463472_2()
         {
             string code = @"
