@@ -42,8 +42,8 @@ namespace Dynamo.ViewModels
         NodeModel nodeLogic;
         private double zIndex = 3;
         private string astText = string.Empty;
-        private bool nodeRunChecked;
-        private bool nodeRunEnabled = true;
+        private bool isexplictFrozen;
+        private bool canToggleFrozen = true;
         #endregion
 
         #region public members
@@ -354,7 +354,7 @@ namespace Dynamo.ViewModels
         /// <value>
         ///   <c>true</c> if node is not frozen and CanExecute; otherwise, <c>false</c>.
         /// </value>        
-        public bool NodeRunChecked
+        public bool IsExplicitFrozen
         {
             get
             {    
@@ -375,7 +375,7 @@ namespace Dynamo.ViewModels
         /// <value>
         ///   <c>true</c> if [node run enabled]; otherwise, <c>false</c>.
         /// </value>
-        public bool NodeRunEnabled
+        public bool CanToggleFrozen
         {
             get
             {
@@ -515,8 +515,8 @@ namespace Dynamo.ViewModels
            AddToGroupCommand.RaiseCanExecuteChanged();
            UngroupCommand.RaiseCanExecuteChanged();
            ComputeRunStateOfTheNodeCommand.RaiseCanExecuteChanged();
-           RaisePropertyChanged("NodeRunChecked");
-           RaisePropertyChanged("NodeRunEnabled");
+           RaisePropertyChanged("IsExplicitFrozen");
+           RaisePropertyChanged("CanToggleFrozen");
         }
 
         void DebugSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -662,11 +662,7 @@ namespace Dynamo.ViewModels
                 case "CanUpdatePeriodically":
                     RaisePropertyChanged("EnablePeriodicUpdate");
                     RaisePropertyChanged("PeriodicUpdateVisibility");
-                    break;
-                case "IsFrozen":
-                    RaisePropertyChanged("NodeRunChecked");
-                    RaisePropertyChanged("NodeRunEnabled");                                                   
-                    break;               
+                    break;                             
             }
         }
 

@@ -406,29 +406,7 @@ namespace Dynamo.ViewModels
         {
             get { return BackgroundPreviewViewModel.Active; }
         }
-
-        /// <summary>
-        /// Gets a value indicating whether Run is checked
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if [node run checked]; otherwise, <c>false</c>.
-        /// </value>
-        public bool NodeRunChecked
-        {
-            get
-            {
-                return currentWorkspaceViewModel.NodeRunChecked;
-            }
-        }
-
-        public bool NodeRunEnabled
-        {
-            get
-            {
-                return currentWorkspaceViewModel.NodeRunEnabled;
-            }
-        }
-
+        
         #endregion
 
         public struct StartConfiguration

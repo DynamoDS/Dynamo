@@ -151,12 +151,7 @@
                         </MenuItem.IsChecked>
                     </MenuItem>
                     
-                </MenuItem>
-                <MenuItem  Header="{x:Static p:Resources.NodesRunStatus}"
-                           IsChecked="{Binding  NodeRunChecked,Mode=OneWay}"
-                           IsEnabled="{Binding NodeRunEnabled, Mode=OneWay}"
-                           Command="{Binding ComputeRunStateOfTheNodeCommand}" />
-
+                </MenuItem>                
                 <MenuItem IsEnabled="{Binding Path=IsGeometryOperationEnabled}"
                           Header="{x:Static  p:Resources.ContextMenuShowAllGeometry}"
                           Command="{Binding Path=ShowHideAllGeometryPreviewCommand}"
