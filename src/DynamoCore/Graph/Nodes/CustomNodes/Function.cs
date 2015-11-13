@@ -386,7 +386,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                 parseParam.ParsedNodes.Any())
             {
                 var parsedComments = parseParam.ParsedComments;
-                if (parsedComments != null && parsedComments.Any())
+                if (parsedComments.Any())
                 {
                     comment = String.Join("\n", parsedComments.Select(c => (c as CommentNode).Value));
                 }
@@ -400,9 +400,9 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     if (inputSymbol.Contains('='))
                         defaultValue = node.RightNode;
 
-                    if (parseParam.Errors != null && parseParam.Errors.Any())
+                    if (parseParam.Errors.Any())
                         this.Error(parseParam.Errors.First().Message);
-                    else if (parseParam.Warnings != null && parseParam.Warnings.Any())
+                    else if (parseParam.Warnings.Any())
                         this.Warning(parseParam.Warnings.First().Message);
 
                     return identifier != null;

@@ -13,7 +13,7 @@ using System.Windows.Input;
 
 namespace Dynamo.UI.Controls
 {
-    // TODO: Merge CodeCOmpletionEditor with CodeBlockEditor
+    // TODO: Merge CodeCompletionEditor with CodeBlockEditor
 
     /// <summary>
     /// Interaction logic for CodeCompletionEditor.xaml
