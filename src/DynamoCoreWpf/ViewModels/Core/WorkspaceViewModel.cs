@@ -1116,8 +1116,7 @@ namespace Dynamo.ViewModels
             AlignSelectedCommand.RaiseCanExecuteChanged();
             ShowHideAllUpstreamPreviewCommand.RaiseCanExecuteChanged();
             ShowHideAllGeometryPreviewCommand.RaiseCanExecuteChanged();
-            SetArgumentLacingCommand.RaiseCanExecuteChanged();
-            ComputeRunStateOfTheNodeCommand.RaiseCanExecuteChanged();
+            SetArgumentLacingCommand.RaiseCanExecuteChanged();           
             RaisePropertyChanged("HasSelection");
             RaisePropertyChanged("IsGeometryOperationEnabled");
             RaisePropertyChanged("AnyNodeVisible");
