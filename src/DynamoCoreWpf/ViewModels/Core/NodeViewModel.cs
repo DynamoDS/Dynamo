@@ -499,25 +499,9 @@ namespace Dynamo.ViewModels
 
             ShowExecutionPreview = workspaceViewModel.DynamoViewModel.ShowRunPreview;
             IsNodeAddedRecently = true;
-            DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
-            WorkspaceViewModel.PropertyChanged +=WorkspaceViewModel_PropertyChanged;
+            DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;             
         }
-
-        private void WorkspaceViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "NodeRunChecked":
-                    RaisePropertyChanged("NodeRunChecked");
-                    break;
-
-                case "NodeRunEnabled":
-                    RaisePropertyChanged("NodeRunEnabled");
-                    break;
-
-            }
-        }
-
+ 
         public NodeViewModel(WorkspaceViewModel workspaceViewModel, NodeModel logic, Size preferredSize)
             :this(workspaceViewModel, logic)
         {
