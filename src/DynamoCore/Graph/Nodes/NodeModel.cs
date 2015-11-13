@@ -602,7 +602,7 @@ namespace Dynamo.Graph.Nodes
             else
             {
                 string id = AstIdentifierBase + "_out" + outputIndex;
-                return AstFactory.BuildIdentifier(id);
+               return AstFactory.BuildIdentifier(id);
             }
         }
 
@@ -618,9 +618,9 @@ namespace Dynamo.Graph.Nodes
 
       
         /// <summary>
-        /// Gets or sets a value indicating whether the node is frozen.
-        /// If the node is set to freeze by the user, then Freeze always true.
-        /// Otherwise, if any of the node has input node frozen, then Freeze is true.        
+        /// A flag indicating whether the node is frozen.
+        /// When a node is frozen, the node, and all nodes downstream will not participate in execution.
+        /// This will return true if any upstream node is frozen or if the node was explicitly frozen.        
         /// </summary>
         /// <value>
         ///   <c>true</c> if this node is frozen; otherwise, <c>false</c>.
@@ -629,13 +629,7 @@ namespace Dynamo.Graph.Nodes
         {
             get
             {
-                var gatheredInputFrozenNodes = new List<NodeModel>();
-                CheckIfAnyUpstreamNodeIsFrozen(this, gatheredInputFrozenNodes);
-
-                if (gatheredInputFrozenNodes.Any())
-                    return true;
- 
-                return explictFrozen;
+                return IsAnyUpstreamFrozen() || explictFrozen;               
             }
             set
             {
@@ -643,28 +637,44 @@ namespace Dynamo.Graph.Nodes
                 OnNodeModified();
             }
         }
-
-        private void CheckIfAnyUpstreamNodeIsFrozen(NodeModel node, List<NodeModel> listInputNodes )
+       
+        #endregion   
+  
+        #region freeze execution
+        /// <summary>
+        /// Determines whether any of the upstream node is frozen.
+        /// </summary>
+        /// <returns></returns>
+        internal bool IsAnyUpstreamFrozen()
         {
-            if (listInputNodes.Contains(node))
-                return;
+            bool ret = false;
+            return CheckIfAnyUpstreamNodeIsFrozen(this, ref ret);
+        }
 
-            var sets = node.InputNodes.Values;             
+        private bool CheckIfAnyUpstreamNodeIsFrozen(NodeModel node, ref bool ret)
+        {
+            if (node.explictFrozen)
+            {
+                ret = true;
+                return true;
+            }
+
+            var sets = node.InputNodes.Values;
             var inpNodes = sets.Where(x => x != null).Select(z => z.Item2).Distinct();
             foreach (var inode in inpNodes)
             {
-                if (inode.explictFrozen)
+                if (node.explictFrozen)
                 {
-                    listInputNodes.Add(inode);
                     break;
                 }
 
-                CheckIfAnyUpstreamNodeIsFrozen(inode, listInputNodes);
+                CheckIfAnyUpstreamNodeIsFrozen(inode, ref ret);
             }
-             
-        }
 
-        #endregion     
+            return ret;
+        }
+        #endregion  
+
         protected NodeModel()
         {
             InPortData = new ObservableCollection<PortData>();
