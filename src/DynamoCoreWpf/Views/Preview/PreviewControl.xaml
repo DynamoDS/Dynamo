@@ -9,6 +9,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              mc:Ignorable="d"
              MouseMove="OnPreviewControlMouseMove"
@@ -179,12 +180,43 @@
                                  Width="10"
                                  Margin="5,5,5,5"
                                  Foreground="{StaticResource BubblePreviewIconColor}" />-->
-                <Image Name="PinnIcon"
-                       Source="/DynamoCoreWpf;component/UI/Images/unpinned.png"
-                       MouseLeftButtonDown="OnMapPinMouseClick"
-                       Height="15"
-                       Width="15"
-                       Margin="2,2,2,2" />
+                <Border BorderThickness="0"
+                        MouseLeftButtonDown="OnMapPinMouseClick">
+                    <fa:ImageAwesome Name="PinnIcon"
+                                     Icon="MapPin"
+                                     Foreground="{Binding RelativeSource={RelativeSource FindAncestor, 
+                                                          AncestorType={x:Type uicontrols:PreviewControl}}, 
+                                                          Path=StaysOpen,
+                                                          Converter={StaticResource PinIconForegroundConverter}}"
+                                     Height="16"
+                                     Width="12"
+                                     Margin="5,5,5,5" />
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, 
+                                                          AncestorType={x:Type uicontrols:PreviewControl}}, 
+                                                          Path=StaysOpen}"
+                                             Value="True">
+                                    <Setter Property="Background"
+                                            Value="{StaticResource PinnedIconBackgroundColor}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, 
+                                                          AncestorType={x:Type uicontrols:PreviewControl}}, 
+                                                          Path=StaysOpen}"
+                                             Value="False">
+                                    <Setter Property="Background"
+                                            Value="{StaticResource UnpinnedIconBackgroundColor}" />
+                                </DataTrigger>
+                                <Trigger Property="IsMouseOver"
+                                         Value="True">
+                                    <Setter Property="Background"
+                                            Value="{StaticResource PinnedIconHoverBackgroundColor}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                </Border>
                 <!--<fa:ImageAwesome Name="ArrowIcon"
                                  Icon="ArrowCircleRight"
                                  Height="10"

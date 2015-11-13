@@ -74,18 +74,23 @@ namespace Dynamo.UI.Controls
         private bool queuedRefresh;
         private MirrorData queuedMirrorData;
 
+        private static readonly DependencyProperty StaysOpenProperty =
+            DependencyProperty.Register("StaysOpen", typeof(bool), typeof(PreviewControl));
+
         /// <summary>
         ///     Indicates whether preview should stay open, when mouse leaves control.
         /// </summary>
-        internal bool StaysOpen;
-
-        private const string baseUrl = @"pack://application:,,,/DynamoCoreWpf;component/UI/Images/";
-
-        private readonly BitmapImage pinIconBitmap =
-            new BitmapImage(new Uri(baseUrl + "pinned.png"));
-        private readonly BitmapImage unpinIconBitmap =
-            new BitmapImage(new Uri(baseUrl + "unpinned.png"));
-
+        public bool StaysOpen
+        {
+            get
+            {
+                return (bool)GetValue(StaysOpenProperty);
+            }
+            set
+            {
+                SetValue(StaysOpenProperty, value);
+            }
+        }
         #endregion
 
         #region Public Class Operational Methods
@@ -689,7 +694,6 @@ namespace Dynamo.UI.Controls
         private void OnMapPinMouseClick(object sender, MouseButtonEventArgs e)
         {
             StaysOpen = !StaysOpen;
-            PinnIcon.Source = StaysOpen ? pinIconBitmap : unpinIconBitmap;
         }
 
         #endregion
