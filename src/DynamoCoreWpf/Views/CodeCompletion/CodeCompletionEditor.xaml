@@ -16,7 +16,7 @@
                                    FontFamily="Consolas"
                                    WordWrap="False"
                                    Foreground="#444"
-                                   Padding="3 3 0 0"
+                                   Padding="3 0 3 0"
                                    Background="#88FFFFFF"
                                    MaxWidth="677"
                                    ScrollViewer.HorizontalScrollBarVisibility="Auto"
