@@ -44,11 +44,20 @@ namespace Dynamo.UI.Controls
             this.nodeViewModel = nodeViewModel;
             this.dynamoViewModel = nodeViewModel.DynamoViewModel;
             this.DataContext = nodeViewModel.NodeModel;
+            this.InnerTextEditor.TextChanged += OnTextChanged;
             this.InnerTextEditor.TextArea.LostFocus += OnTextAreaLostFocus;
             this.InnerTextEditor.TextArea.TextEntering += OnTextAreaTextEntering;
             this.InnerTextEditor.TextArea.TextEntered += OnTextAreaTextEntered;
 
             CodeHighlightingRuleFactory.CreateHighlightingRules(InnerTextEditor, dynamoViewModel.EngineController);
+        }
+
+        /// <summary>
+        /// Set focus to the editor.
+        /// </summary>
+        public void SetFocus()
+        {
+            InnerTextEditor.Focus();
         }
 
         /// <summary>
@@ -111,22 +120,31 @@ namespace Dynamo.UI.Controls
 
         #region Event handlers
 
+        private void OnTextChanged(object sender, EventArgs e)
+        {
+            if (WatermarkLabel.Visibility == Visibility.Visible)
+                WatermarkLabel.Visibility = Visibility.Collapsed;
+        }
+
         private void OnTextAreaTextEntering(object sender, TextCompositionEventArgs e)
         {
-            if (e.Text.Length > 0)
+            if (e.Text.Length == 0 || completionWindow == null)
+                return;
+
+            try
             {
                 char currentChar = e.Text[0];
-                if (completionWindow != null)
+                if (currentChar == '\t' || currentChar == '.' || currentChar == '\n' || currentChar == '\r')
                 {
-                    if (currentChar == '\n' || currentChar == '\r')
-                    {
-                        completionWindow.CompletionList.RequestInsertion(e);
-                    }
-                    else if (!char.IsLetterOrDigit(currentChar))
-                    {
-                        completionWindow.Close();
-                    }
+                    completionWindow.CompletionList.RequestInsertion(e);
                 }
+                else if (!char.IsLetterOrDigit(currentChar))
+                {
+                    completionWindow.Close();
+                }
+            }
+            catch (Exception)
+            {
             }
         }
 
@@ -193,7 +211,7 @@ namespace Dynamo.UI.Controls
                     ShowCompletionWindow(completions, completeWhenTyping: true);
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception)
             {
             }
         }
@@ -237,27 +255,24 @@ namespace Dynamo.UI.Controls
 
         private void ShowInsightWindow(IEnumerable<CodeCompletionInsightItem> items)
         {
-            if (items == null)
+            if (items == null || !items.Any())
                 return;
 
             if (insightWindow != null)
             {
                 insightWindow.Close();
             }
+
             insightWindow = new CodeCompletionMethodInsightWindow(this.InnerTextEditor.TextArea);
             foreach (var item in items)
             {
                 insightWindow.Items.Add(item);
             }
-            if (insightWindow.Items.Count > 0)
-            {
-                insightWindow.SelectedItem = insightWindow.Items[0];
-            }
-            else
-            {
-                // don't open insight window when there are no items
+
+            if (insightWindow.Items.Count <= 0)
                 return;
-            }
+
+            insightWindow.SelectedItem = insightWindow.Items[0];
             insightWindow.Closed += delegate
             {
                 insightWindow = null;
@@ -276,6 +291,7 @@ namespace Dynamo.UI.Controls
             {
                 completionWindow.Close();
             }
+
             completionWindow = new CompletionWindow(this.InnerTextEditor.TextArea)
             {
                 AllowsTransparency = true,
