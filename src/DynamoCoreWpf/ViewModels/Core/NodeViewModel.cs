@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Collections.ObjectModel;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -12,6 +14,7 @@ using Dynamo.Nodes;
 
 using System.Windows;
 using System.Windows.Documents;
+using Dynamo.Controls;
 using Dynamo.Selection;
 using Dynamo.Wpf.ViewModels.Core;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
@@ -348,7 +351,7 @@ namespace Dynamo.ViewModels
         }
         
         /// <summary>
-        /// Gets a value indicating whether Run property on the node is checked
+        /// Gets a value indicating whether Freeze property on the node is checked
         /// </summary>
         /// <value>
         ///   <c>true</c> if node is not frozen and CanExecute; otherwise, <c>false</c>.
@@ -356,18 +359,20 @@ namespace Dynamo.ViewModels
         public bool NodeRunChecked
         {
             get
-            {                
-                return nodeRunChecked;
-            }
-            set
-            {
-                nodeRunChecked = value;
-                RaisePropertyChanged("NodeRunChecked");
-            }
+            {    
+                //if the node is freeze by the user, then always
+                //check the Freeze property     
+                if (this.NodeLogic.explictFrozen)
+                {                   
+                    return true;
+                }
+                
+                return false;
+            }             
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether [node run enabled].
+        /// Gets or sets a value indicating whether the freeze property is enabled.
         /// </summary>
         /// <value>
         ///   <c>true</c> if [node run enabled]; otherwise, <c>false</c>.
@@ -375,50 +380,60 @@ namespace Dynamo.ViewModels
         public bool NodeRunEnabled
         {
             get
-            {               
-                return nodeRunEnabled;
-            }
-            set
             {
-                nodeRunEnabled = value;
-                RaisePropertyChanged("NodeRunEnabled");
+                //this is the default case.
+                if (!this.NodeLogic.explictFrozen &&
+                      !this.NodeLogic.IsFrozen)
+                {
+                    return true;
+                }
+
+                //If any of the node is set to freeze by the user and 
+                // if that node is frozen by itself, then disable the Freeze property
+                var checklist = new List<NodeModel>();
+                CheckIfAnyParentAndChildAreExplictlyFrozen(this.NodeLogic,checklist);
+                if (this.nodeLogic.explictFrozen && checklist.Any())
+                {
+                    return false;
+                }
+                               
+                //if the node is set to freeze by the user     
+                // then enable the Freeze property
+                if (this.NodeLogic.explictFrozen)                   
+                {
+                    return true;
+                }
+                                
+                return false;
             }
+            
         }
 
-        private void SetNodeRunState()
+        /// <summary>
+        /// For the given node, this traverses the graph upstream to check
+        /// if any of the node in upstream is explictly frozen.
+        /// </summary>
+        /// <param name="node">The node.</param>
+        /// <param name="checkNodesList">The check nodes list.</param>
+        private void CheckIfAnyParentAndChildAreExplictlyFrozen(NodeModel node,List<NodeModel> checkNodesList )
         {
-            //var tt = NodeModel.NickName;
-            ////Node temporary state
-            //if (NodeModel.CanExecute == null)
-            //{
-            //    NodeRunChecked = false;
-            //    NodeRunEnabled = false;
-            //}
-            ////case 1 : if the node is not frozen and can run. Default case.
-            //else if (!NodeModel.IsFrozen && (bool) NodeModel.CanExecute)
-            //{
-            //    NodeRunChecked = true;
-            //    NodeRunEnabled = true;
-            //}
-            ////case 2 : if the node is frozen but can execute. True for parents
-            //else if (NodeModel.IsFrozen && (bool) NodeModel.CanExecute)
-            //{
-            //    NodeRunChecked = true;
-            //    NodeRunEnabled = false;
-            //}
-            ////case 3 : if the node is frozen and cannot execute because the node is explictly frozen
-            //else if (NodeModel.IsFrozen && (bool) !NodeModel.CanExecute)
-            //{
-            //    NodeRunChecked = false;
-            //    NodeRunEnabled = true;
-            //} 
-            //else if (!NodeModel.IsFrozen && (bool) !NodeModel.CanExecute)
-            //{
-            //    NodeRunChecked = false;
-            //    NodeRunEnabled = true;
-            //}
+            var sets = node.InputNodes.Values;
+            var inputNodes = sets.Where(x=> x!=null).Select(z => z.Item2).Distinct();
+
+            foreach (var inode in inputNodes)
+            {
+                if (inode.explictFrozen)
+                {
+                    checkNodesList.Add(inode);
+                    break;
+                }
+
+                CheckIfAnyParentAndChildAreExplictlyFrozen(inode, checkNodesList);
+                
+            }
+
         }
-        
+                
         #endregion
 
         #region events
@@ -487,7 +502,22 @@ namespace Dynamo.ViewModels
             ShowExecutionPreview = workspaceViewModel.DynamoViewModel.ShowRunPreview;
             IsNodeAddedRecently = true;
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
-            SetNodeRunState();
+            WorkspaceViewModel.PropertyChanged +=WorkspaceViewModel_PropertyChanged;
+        }
+
+        private void WorkspaceViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "NodeRunChecked":
+                    RaisePropertyChanged("NodeRunChecked");
+                    break;
+
+                case "NodeRunEnabled":
+                    RaisePropertyChanged("NodeRunEnabled");
+                    break;
+
+            }
         }
 
         public NodeViewModel(WorkspaceViewModel workspaceViewModel, NodeModel logic, Size preferredSize)
@@ -650,14 +680,9 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("PeriodicUpdateVisibility");
                     break;
                 case "IsFrozen":
-                case "CanExecute":
-                    SetNodeRunState();                                         
-                    break;
-                case "NodeRunState":
-                    //This is during UNDO. Canexecute is serialized but this is
-                    //not stored as part of UNDO.                    
-                    WorkspaceViewModel.Model.ComputeRunStateOfTheNodes(this.nodeLogic);
-                    break;
+                    RaisePropertyChanged("NodeRunChecked");
+                    RaisePropertyChanged("NodeRunEnabled");                                                   
+                    break;               
             }
         }
 

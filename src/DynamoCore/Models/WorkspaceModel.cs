@@ -810,7 +810,7 @@ namespace Dynamo.Models
         {
             node.Modified += NodeModified;
             node.ConnectorAdded += OnConnectorAdded;
-
+            
             var functionNode = node as Function;
             if (functionNode != null)
             {
@@ -818,7 +818,7 @@ namespace Dynamo.Models
                 functionNode.Controller.SyncWithDefinitionEnd += OnSyncWithDefinitionEnd;
             }
         }
-
+       
         protected virtual void RequestRun()
         {
             
@@ -2442,90 +2442,7 @@ namespace Dynamo.Models
             
             return document.OuterXml;
         }
-
-        /// <summary>
-        /// Compute the Run state of the nodes. 
-        /// A node can be in one of the state : Freeze and cannot execute, Freeze but can execute.
-        /// Freeze and cannot execute is true for parent node and Freeze but can execute 
-        /// is true for all the child nodes. 
-        /// Case 1 : If the parent node is frozen, parent node will be in frozen and cannot execute state
-        /// and all the child nodes will be in Frozen and CanExecute state. This is the default case.
-        /// Case 2 : If any of the child node is in frozen and cannot execute state, then making the child node 
-        /// unfreeze will get the state as "not frozen and cannot execute state". This is the case if current 
-        /// parent nodes parent is frozen.
-        /// </summary>
-        internal void ComputeRunStateOfTheNodes(object parameter)
-        {
-            var model = parameter as NodeModel;           
-            if (model != null)
-            {                
-                ToggleRunStateOfDownStreamNodes(model);
-            }
-            //This is executed when Freeze is changed on Dynamo Menu.
-            else
-            {
-                //First,Toggle the parent node run state.
-                var selectedNodes = DynamoSelection.Instance.Selection.Cast<NodeModel>().ToList();
-                foreach (var snode in selectedNodes)
-                {
-                    snode.IsFrozen = !snode.IsFrozen;                     
-                }
-                //Second, toggle the downstream node  run state.      
-                foreach (var node in selectedNodes)
-                {
-                    ToggleRunStateOfDownStreamNodes(node);
-                }
-            }
-
-            //Assuming more than one node is changed,
-            //call request run on the workspace.
-            HasUnsavedChanges = true;
-            this.RequestRun();
-        }
-
-        /// <summary>
-        /// Toggle the Run State of the node. 
-        /// Below table shows the state of the node.
-        ///  -----------------------------------------------------------
-        ///  | NodeState                |  RunChecked    |  RunEnabled |
-        ///  -----------------------------------------------------------  
-        ///  | Frozen / Executing       |       True     |      False  |
-        ///  | Frozen / Not Executing   |       False    |      True   |
-        ///  | UnFrozen / Executing     |       True     |      True   |
-        ///  | Frozen / Null            |       False    |      True   |
-        ///  -----------------------------------------------------------
-        ///  Frozen/Executing is true for all nodes that are implictly frozen.
-        ///  Frozen/ not executing is true for all nodes that are explictly frozen.
-        ///  Unfrozen/Executing is the default node state.
-        ///  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        ///  | Frozen / Null state is a temporary state. If a node is explictly       |  
-        ///  | set to freeze, and if any other node is trying to unfreeze explcitly   |
-        ///  | set node, then the node enters this temporary state. In this state,    |
-        ///  | the run state of the node cannot be modified by other nodes            |
-        ///  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++              
-        /// </summary>
-        /// <param name="node">The node.</param>       
-        private void ToggleRunStateOfDownStreamNodes(NodeModel node)
-        {           
-            var sets = node.OutputNodes.Values;
-            var outputNodes = sets.SelectMany(set => set.Select(t => t.Item2)).Distinct().ToList();
-
-            foreach (var outputNode in outputNodes)
-            {
-                //set the frozen on child nodes.
-                outputNode.IsFrozen = CheckIfUpstreamNodeIsFrozen(outputNode);
-                // Recursively get all downstream nodes.
-                ToggleRunStateOfDownStreamNodes(outputNode);
-            }
-        }
-
-        private bool CheckIfUpstreamNodeIsFrozen(NodeModel node)
-        {
-            var sets = node.InputNodes.Values;
-            var inputNodes = sets.Select(z => z.Item2).Distinct();
-            return inputNodes.Any(set => set.IsFrozen);
-        }
-        
+         
         #region ILogSource implementation
         public event Action<ILogMessage> MessageLogged;
 

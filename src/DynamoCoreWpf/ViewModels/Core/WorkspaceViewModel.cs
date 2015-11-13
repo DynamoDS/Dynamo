@@ -851,14 +851,18 @@ namespace Dynamo.ViewModels
             var node = param as NodeModel;
             if (node != null)
             {
-                var oldFrozen = (!node.IsFrozen).ToString();
+                var oldFrozen = (!node.explictFrozen).ToString();
                 var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
                     new[] {node.GUID}, "IsFrozen", oldFrozen);
 
                 DynamoViewModel.Model.ExecuteCommand(command);                                               
             }
-
-            this.Model.ComputeRunStateOfTheNodes(node); 
+            else if(DynamoSelection.Instance.Selection.Any())
+            {
+                node = DynamoSelection.Instance.Selection.Cast<NodeModel>().First();
+                node.IsFrozen = !node.IsFrozen;
+            }   
+                     
         }
 
         private bool CanComputeRunStateOfTheNode(object parameter)
@@ -1157,11 +1161,14 @@ namespace Dynamo.ViewModels
             ShowHideAllUpstreamPreviewCommand.RaiseCanExecuteChanged();
             ShowHideAllGeometryPreviewCommand.RaiseCanExecuteChanged();
             SetArgumentLacingCommand.RaiseCanExecuteChanged();
+            ComputeRunStateOfTheNodeCommand.RaiseCanExecuteChanged();
             RaisePropertyChanged("HasSelection");
             RaisePropertyChanged("IsGeometryOperationEnabled");
             RaisePropertyChanged("AnyNodeVisible");
             RaisePropertyChanged("AnyNodeUpstreamVisible");
             RaisePropertyChanged("SelectionArgumentLacing");
+            RaisePropertyChanged("NodeRunChecked");
+            RaisePropertyChanged("NodeRunEnabled");
         }
     }
 

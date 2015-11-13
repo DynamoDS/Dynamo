@@ -44,7 +44,9 @@ namespace Dynamo.Models
         private string persistentWarning = "";
         private bool areInputPortsRegistered;
         private bool areOutputPortsRegistered;
-        private bool isFrozen;
+
+        //this is true only when the node is set to freeze by the user.
+        internal bool explictFrozen;
       
         /// <summary>
         /// The cached value of this node. The cachedValue object is protected by the cachedValueMutex
@@ -96,7 +98,7 @@ namespace Dynamo.Models
         }
 
         internal event DispatchedToUIThreadHandler DispatchedToUI;
-
+      
         #endregion
 
         #region public properties
@@ -618,7 +620,9 @@ namespace Dynamo.Models
 
       
         /// <summary>
-        /// Gets or sets a value indicating whether this node is explictly frozen.
+        /// Gets or sets a value indicating whether the node is frozen.
+        /// If the node is set to freeze by the user, then Freeze always true.
+        /// Otherwise, if any of the node has input node frozen, then Freeze is true.        
         /// </summary>
         /// <value>
         ///   <c>true</c> if this node is frozen; otherwise, <c>false</c>.
@@ -627,14 +631,40 @@ namespace Dynamo.Models
         {
             get
             {
-                return isFrozen;
-            }
+                var gatheredInputFrozenNodes = new List<NodeModel>();
+                CheckIfAnyUpstreamNodeIsFrozen(this, gatheredInputFrozenNodes);
 
+                if (gatheredInputFrozenNodes.Any())
+                    return true;
+ 
+                return explictFrozen;
+            }
             set
             {
-                isFrozen = value;                
+                explictFrozen = value;                 
                 RaisePropertyChanged("IsFrozen");
+                OnNodeModified();
             }
+        }
+
+        private void CheckIfAnyUpstreamNodeIsFrozen(NodeModel node, List<NodeModel> listInputNodes )
+        {
+            if (listInputNodes.Contains(node))
+                return;
+
+            var sets = node.InputNodes.Values;             
+            var inpNodes = sets.Where(x => x != null).Select(z => z.Item2).Distinct();
+            foreach (var inode in inpNodes)
+            {
+                if (inode.explictFrozen)
+                {
+                    listInputNodes.Add(inode);
+                    break;
+                }
+
+                CheckIfAnyUpstreamNodeIsFrozen(inode, listInputNodes);
+            }
+             
         }
 
         #endregion     
@@ -1588,7 +1618,7 @@ namespace Dynamo.Models
             helper.SetAttribute("isUpstreamVisible", IsUpstreamVisible);
             helper.SetAttribute("lacing", ArgumentLacing.ToString());
             helper.SetAttribute("isSelectedInput", IsSelectedInput.ToString());
-            helper.SetAttribute("IsFrozen", IsFrozen);
+            helper.SetAttribute("IsFrozen", explictFrozen);
            
             var portsWithDefaultValues =
                 inPorts.Select((port, index) => new { port, index })
@@ -1640,7 +1670,7 @@ namespace Dynamo.Models
             isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
             IsSelectedInput = helper.ReadBoolean("isSelectedInput", true);
-            IsFrozen = helper.ReadBoolean("IsFrozen", false);            
+            explictFrozen = helper.ReadBoolean("IsFrozen", false);            
            
             var portInfoProcessed = new HashSet<int>();
 
@@ -1681,9 +1711,6 @@ namespace Dynamo.Models
                 RaisePropertyChanged("ArgumentLacing");
                 RaisePropertyChanged("IsVisible");
                 RaisePropertyChanged("IsUpstreamVisible");
-
-                //Compute the node run state for undo.                
-                RaisePropertyChanged("NodeRunState");
 
                 // Notify listeners that the position of the node has changed,
                 // then all connected connectors will also redraw themselves.
