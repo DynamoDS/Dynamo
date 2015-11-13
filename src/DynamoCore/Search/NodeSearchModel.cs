@@ -12,6 +12,8 @@ namespace Dynamo.Search
     /// </summary>
     public class NodeSearchModel : SearchLibrary<NodeSearchElement, NodeModel>
     {
+        private PreferenceSettings preferences;
+
         private bool isDetailedMode;
 
         /// <summary>
@@ -22,24 +24,19 @@ namespace Dynamo.Search
             get { return isDetailedMode; }
             set
             {
-                if (isDetailedMode != value)
-                {
-                    isDetailedMode = value;
-                    OnSearchModeChanged();
-                }
+
+                isDetailedMode = value;
+                preferences.ShowDetailedLayout = isDetailedMode;
             }
         }
 
         /// <summary>
-        /// Fires, when search mode changed.
+        /// Node search model constructor.
         /// </summary>
-        public event Action<bool> SearchModeChanged;
-        private void OnSearchModeChanged()
+        /// <param name="preferenceSettings">Settings, that Dynamo uses every session.</param>
+        public NodeSearchModel(PreferenceSettings preferenceSettings = null)
         {
-            if (SearchModeChanged != null)
-            {
-                SearchModeChanged(isDetailedMode);
-            }
+            preferences = preferenceSettings;
         }
 
         public override void Add(NodeSearchElement entry)

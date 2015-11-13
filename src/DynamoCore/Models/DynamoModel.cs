@@ -531,10 +531,9 @@ namespace Dynamo.Models
                 pathManager.LoadCustomPackageFolders(PreferenceSettings.CustomPackageFolders);
 
 
-            SearchModel = new NodeSearchModel();
+            SearchModel = new NodeSearchModel(PreferenceSettings);
             SearchModel.ItemProduced +=
                 node => ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, true));
-            SearchModel.SearchModeChanged += SaveSearchMode;
             SearchModel.IsDetailedMode = PreferenceSettings.ShowDetailedLayout;
 
             NodeFactory = new NodeFactory();
@@ -2020,11 +2019,6 @@ namespace Dynamo.Models
 
             if (args.PropertyName == "EnablePresetOptions")
                 OnPropertyChanged("EnablePresetOptions");
-        }
-
-        private void SaveSearchMode(bool isDetailed)
-        {
-            PreferenceSettings.ShowDetailedLayout = isDetailed;
         }
 
         #endregion
