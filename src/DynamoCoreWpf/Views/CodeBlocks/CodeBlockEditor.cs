@@ -38,6 +38,8 @@ namespace Dynamo.UI.Controls
             {
                 Loaded += (obj, args) => SetFocus(); 
             }
+
+            WatermarkLabel.Text = Properties.Resources.WatermarkLabelText;
         }
 
         /// <summary>
