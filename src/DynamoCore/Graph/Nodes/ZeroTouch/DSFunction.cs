@@ -12,9 +12,9 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
     [AlsoKnownAs("Dynamo.Nodes.DSFunction")]
     public class DSFunction : DSFunctionBase
     {
-        public override bool IsInputNode
+        public override bool? IsInputNode
         {
-            get { return false; }
+            get { return null; }
         }
 
         public DSFunction(FunctionDescriptor descriptor) 

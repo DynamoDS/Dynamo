@@ -52,9 +52,9 @@ namespace Dynamo.Graph.Nodes
             public const string TOOL_TIP_FOR_TEMP_VARIABLE = "Statement Output";
         }
 
-        public override bool IsInputNode
+        public override bool? IsInputNode
         {
-            get { return false; }
+            get{ return null;}
         }
 
         #region Public Methods
