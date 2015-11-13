@@ -296,6 +296,7 @@
     <Compile Include="Views\About\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\CodeBlocks\CodeBlockEditor.cs" />
     <Compile Include="Views\Core\DynamoOpenFileDialog.cs" />
     <Compile Include="Views\Gallery\GalleryView.xaml.cs">
       <DependentUpon>GalleryView.xaml</DependentUpon>
@@ -321,9 +322,6 @@
       <DependentUpon>BrowserWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\CodeBlocks\CodeBlockCompletionData.cs" />
-    <Compile Include="Views\CodeBlocks\CodeBlockEditor.xaml.cs">
-      <DependentUpon>CodeBlockEditor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\CodeBlocks\CodeBlockMethodInsightWindow.cs" />
     <Compile Include="Views\CodeBlocks\CodeBlockEditorUtils.cs" />
     <Compile Include="Views\Core\AnnotationView.xaml.cs">
@@ -1093,10 +1091,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\BrowserWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\CodeBlocks\CodeBlockEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
