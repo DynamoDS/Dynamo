@@ -1,8 +1,7 @@
-﻿using System.Xml;
+﻿using System;
+using System.Xml;
 using Dynamo.Configuration;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
-using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using DynamoUtilities;
 
@@ -13,6 +12,36 @@ namespace Dynamo.Search
     /// </summary>
     public class NodeSearchModel : SearchLibrary<NodeSearchElement, NodeModel>
     {
+        private bool isDetailedMode;
+
+        /// <summary>
+        ///  The property specifies which layout(detailed or compact) is used.
+        /// </summary>
+        public bool IsDetailedMode
+        {
+            get { return isDetailedMode; }
+            set
+            {
+                if (isDetailedMode != value)
+                {
+                    isDetailedMode = value;
+                    OnSearchModeChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Fires, when search mode changed.
+        /// </summary>
+        public event Action<bool> SearchModeChanged;
+        private void OnSearchModeChanged()
+        {
+            if (SearchModeChanged != null)
+            {
+                SearchModeChanged(isDetailedMode);
+            }
+        }
+
         public override void Add(NodeSearchElement entry)
         {
             SearchElementGroup group = SearchElementGroup.None;

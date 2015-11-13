@@ -141,7 +141,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool isDetailedMode = true;
         /// <summary>
         ///  The property specifies which layout(detailed or compact) is used in search view.
         /// </summary>
@@ -149,11 +148,11 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return isDetailedMode;
+                return Model.IsDetailedMode;
             }
             set
             {
-                isDetailedMode = value;
+                Model.IsDetailedMode = value;
                 RaisePropertyChanged("IsDetailedMode");
             }
         }

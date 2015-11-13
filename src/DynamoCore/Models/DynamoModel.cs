@@ -534,6 +534,8 @@ namespace Dynamo.Models
             SearchModel = new NodeSearchModel();
             SearchModel.ItemProduced +=
                 node => ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, true));
+            SearchModel.SearchModeChanged += SaveSearchMode;
+            SearchModel.IsDetailedMode = PreferenceSettings.ShowDetailedLayout;
 
             NodeFactory = new NodeFactory();
             NodeFactory.MessageLogged += LogMessage;
@@ -2018,6 +2020,11 @@ namespace Dynamo.Models
 
             if (args.PropertyName == "EnablePresetOptions")
                 OnPropertyChanged("EnablePresetOptions");
+        }
+
+        private void SaveSearchMode(bool isDetailed)
+        {
+            PreferenceSettings.ShowDetailedLayout = isDetailed;
         }
 
         #endregion
