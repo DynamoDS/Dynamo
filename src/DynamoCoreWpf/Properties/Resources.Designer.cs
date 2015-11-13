@@ -3155,6 +3155,7 @@ namespace Dynamo.Wpf.Properties {
             get { return ResourceManager.GetString("NodesRunStatus", resourceCulture); }
         }
 
+        /// <summary>
         ///   Looks up a localized string similar to There was an error while finding node view customizations for {0}. Contact the author of this assembly for more information..
         /// </summary>
         public static string NodeViewCustomizationFindErrorMessage {
