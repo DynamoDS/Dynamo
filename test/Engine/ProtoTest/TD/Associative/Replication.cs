@@ -4397,6 +4397,7 @@ test = foo ( {arr, arr },  { arr, arr} );
         }
 
         [Test]
+        [Ignore]
         [Category("DSDefinedClass_DSClassSemantics")]
         [Category("Replication")]
         public void T84_Defect_1467313_4()

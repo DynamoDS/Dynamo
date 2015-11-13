@@ -2662,7 +2662,7 @@ namespace ProtoCore
                 buildStatus.LogSemanticError(string.Format(Resources.UnknownAttribute, anode.Function.Name), core.CurrentDSFileName, anode.line, anode.col);
             }
             ProtoCore.DSASM.AttributeEntry attribute = new ProtoCore.DSASM.AttributeEntry();
-            attribute.ClassIndex = cix;
+            attribute.ClassNode = core.ClassTable.ClassNodes[cix];
             attribute.Arguments = new List<Node>();
             foreach (dynamic attr in anode.FormalArguments)
             {
@@ -2674,6 +2674,7 @@ namespace ProtoCore
                 attribute.Arguments.Add(attr as ProtoCore.AST.Node);
             }
 
+            /*
             // TODO(Jiong): Do a check on the number of arguments 
             bool hasMatchedConstructor = false;
             foreach (ProtoCore.DSASM.ProcedureNode pn in core.ClassTable.ClassNodes[cix].ProcTable.procList)
@@ -2689,7 +2690,7 @@ namespace ProtoCore
                 buildStatus.LogSemanticError(string.Format(Resources.NoConstructorForAttribute, anode.Function.Name, attribute.Arguments.Count), core.CurrentDSFileName, anode.line, anode.col);
                 return null;
             }
-            
+             * */
             return attribute;
         }
 

@@ -328,6 +328,7 @@ namespace ProtoCore
         public BuildStatus BuildStatus { get; private set; }
 
         public TypeSystem TypeSystem { get; set; }
+        public InternalAttributes internalAttributes { get; set; }
 
         // The global class table and function tables
         public ClassTable ClassTable { get; set; }
@@ -619,6 +620,9 @@ namespace ProtoCore
             TypeSystem.SetClassTable(ClassTable);
             ProcNode = null;
             ProcTable = new ProcedureTable(Constants.kGlobalScope);
+
+            // Initialize internal attributes
+            internalAttributes = new InternalAttributes(ClassTable);
 
             //Initialize the function pointer table
             FunctionPointerTable = new FunctionPointerTable();
