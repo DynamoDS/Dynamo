@@ -60,6 +60,42 @@ namespace Dynamo.UI.Controls
             InnerTextEditor.Focus();
         }
 
+        #region Dependency Property
+        /// <summary>
+        /// Dependency property.
+        /// </summary>
+        public static readonly DependencyProperty CodeProperty =
+            DependencyProperty.Register(
+                "Code",
+                typeof(string),
+                typeof(CodeCompletionEditor),
+                new PropertyMetadata((obj, args) =>
+                {
+                    var target = (CodeCompletionEditor)obj;
+                    target.Code = (string)args.NewValue;
+                })
+            );
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Set the content of the editor.
+        /// </summary>
+        public string Code
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                InnerTextEditor.Text = value;
+            }
+        }
+
+        #endregion
+
         /// <summary>
         /// Derived class overrides this function to handle escape event.
         /// </summary>
@@ -102,21 +138,6 @@ namespace Dynamo.UI.Controls
                 code, functionName, functionPrefix, dynamoViewModel.CurrentSpace.ElementResolver).
                 Select(x => new CodeCompletionInsightItem(x));
         }
-
-        #region Properties
-        public string Code
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                InnerTextEditor.Text = value;
-            }
-        }
-
-        #endregion
 
         #region Event handlers
 

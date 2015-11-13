@@ -10,20 +10,6 @@ namespace Dynamo.UI.Controls
     /// </summary>
     public class ParameterEditor : CodeCompletionEditor
     {
-        #region Dependency Property
-        public static readonly DependencyProperty ParameterProperty =
-            DependencyProperty.Register(
-                "Parameter",
-                typeof(string),
-                typeof(ParameterEditor),
-                new PropertyMetadata((obj, args) =>
-                {
-                    var target = (ParameterEditor)obj;
-                    target.Code = (string)args.NewValue;
-                })
-            );
-        #endregion
-
         public ParameterEditor(NodeViewModel viewModel) : base(viewModel)
         {
         }
