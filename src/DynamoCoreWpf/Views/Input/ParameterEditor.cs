@@ -1,7 +1,6 @@
-﻿using Dynamo.ViewModels;
-using System.Windows;
-using DynCmd = Dynamo.Models.DynamoModel;
+﻿using DynCmd = Dynamo.Models.DynamoModel;
 using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Controls;
 
 namespace Dynamo.UI.Controls
 {
@@ -10,7 +9,7 @@ namespace Dynamo.UI.Controls
     /// </summary>
     public class ParameterEditor : CodeCompletionEditor
     {
-        public ParameterEditor(NodeViewModel viewModel) : base(viewModel)
+        public ParameterEditor(NodeView view) : base(view)
         {
         }
 

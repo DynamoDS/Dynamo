@@ -18,7 +18,7 @@
                                    Foreground="#444"
                                    Padding="3 3 0 0"
                                    Background="#88FFFFFF"
-                                   MaxWidth="500"
+                                   MaxWidth="677"
                                    ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                    ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
         </Border>

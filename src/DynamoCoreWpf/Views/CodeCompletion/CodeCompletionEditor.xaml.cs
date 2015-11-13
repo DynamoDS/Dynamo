@@ -1,5 +1,5 @@
-﻿using Dynamo.Graph.Nodes;
-using Dynamo.Nodes;
+﻿using Dynamo.Controls;
+using Dynamo.Graph.Nodes;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Views;
@@ -30,18 +30,20 @@ namespace Dynamo.UI.Controls
 
         protected NodeViewModel nodeViewModel;
         protected DynamoViewModel dynamoViewModel;
+        protected bool isDisposed;
         private CompletionWindow completionWindow;
         private CodeCompletionMethodInsightWindow insightWindow;
 
         /// <summary>
         /// Create CodeCOmpletionEditor with NodeViewModel
         /// </summary>
-        /// <param name="nodeViewModel"></param>
-        public CodeCompletionEditor(NodeViewModel nodeViewModel)
+        /// <param name="nodeView"></param>
+        public CodeCompletionEditor(NodeView nodeView)
         {
             InitializeComponent();
 
-            this.nodeViewModel = nodeViewModel;
+            nodeView.Unloaded += (obj, args) => isDisposed = true;
+            this.nodeViewModel = nodeView.ViewModel;
             this.dynamoViewModel = nodeViewModel.DynamoViewModel;
             this.DataContext = nodeViewModel.NodeModel;
             this.InnerTextEditor.TextChanged += OnTextChanged;
@@ -243,6 +245,9 @@ namespace Dynamo.UI.Controls
         /// <param name="e"></param>
         private void OnTextAreaLostFocus(object sender, RoutedEventArgs e)
         {
+            if (isDisposed)
+                return;
+
             InnerTextEditor.TextArea.ClearSelection();
 
             OnCommitChange(InnerTextEditor.Text);

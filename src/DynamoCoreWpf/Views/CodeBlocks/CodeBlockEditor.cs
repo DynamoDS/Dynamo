@@ -1,24 +1,7 @@
-﻿﻿using System.Diagnostics;
-﻿using Dynamo.Controls;
+﻿﻿using Dynamo.Controls;
 ﻿using Dynamo.Core;
-﻿using Dynamo.Nodes;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using Dynamo.Wpf.Views;
-using ICSharpCode.AvalonEdit;
-using ICSharpCode.AvalonEdit.CodeCompletion;
-using ICSharpCode.AvalonEdit.Highlighting;
-using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Xml;
-﻿using Dynamo.Configuration;
 ﻿using Dynamo.Graph.Nodes;
 ﻿using DynCmd = Dynamo.Models.DynamoModel;
 
@@ -27,31 +10,20 @@ namespace Dynamo.UI.Controls
     /// <summary>
     /// Interaction logic for CodeBlockEditor.xaml
     /// </summary>
-    public partial class CodeBlockEditor : UserControl
+    public partial class CodeBlockEditor : CodeCompletionEditor 
     {
         private bool createdForNewCodeBlock;
-        private readonly NodeViewModel nodeViewModel;
-        private readonly DynamoViewModel dynamoViewModel;
-        private readonly CodeBlockNodeModel nodeModel;
-        private CompletionWindow completionWindow;
-        private CodeCompletionMethodInsightWindow insightWindow;
-        private bool isDisposed;
+        private readonly CodeBlockNodeModel codeBlockNode;
 
         public CodeBlockEditor()
         {
             InitializeComponent();
-            WatermarkLabel.Text = Properties.Resources.WatermarkLabelText;
         }
 
-        public CodeBlockEditor(NodeView nodeView): this()
+        public CodeBlockEditor(NodeView nodeView): base(nodeView)
         {
-           
-            this.nodeViewModel = nodeView.ViewModel;
-            this.dynamoViewModel = nodeViewModel.DynamoViewModel;
-            this.DataContext = nodeViewModel.NodeModel;
-            this.nodeModel = nodeViewModel.NodeModel as CodeBlockNodeModel;
-            
-            if (nodeModel == null)
+            this.codeBlockNode = nodeViewModel.NodeModel as CodeBlockNodeModel;
+            if (codeBlockNode == null)
             {
                 throw new InvalidOperationException(
                     "Should not be used for nodes other than code block");
@@ -60,278 +32,33 @@ namespace Dynamo.UI.Controls
             // Determines if this editor is created for a new code block node.
             // In cases like an undo/redo operation, the editor is created for 
             // an existing code block node.
-            createdForNewCodeBlock = string.IsNullOrEmpty(nodeModel.Code);
-
-            // Register text editing events            
-            this.InnerTextEditor.TextChanged += InnerTextEditor_TextChanged;
-            this.InnerTextEditor.TextArea.LostFocus += TextArea_LostFocus;
-            nodeView.Unloaded += (obj, args) => isDisposed = true;
+            createdForNewCodeBlock = string.IsNullOrEmpty(codeBlockNode.Code);
 
             // the code block should not be in focus upon undo/redo actions on node
-            if (this.nodeModel.ShouldFocus)
+            if (codeBlockNode.ShouldFocus)
             {
-                this.Loaded += (obj, args) => this.InnerTextEditor.TextArea.Focus();
-            }
-
-            // Register auto-completion callbacks
-            this.InnerTextEditor.TextArea.TextEntering += OnTextAreaTextEntering;
-            this.InnerTextEditor.TextArea.TextEntered += OnTextAreaTextEntered;
-
-            CodeHighlightingRuleFactory.CreateHighlightingRules(InnerTextEditor, dynamoViewModel.EngineController);
-        }
-
-        private IEnumerable<ICompletionData> GetCompletionData(string code, string stringToComplete)
-        {
-            var engineController =
-                dynamoViewModel.EngineController;
-
-            return engineController.CodeCompletionServices.GetCompletionsOnType(
-                code, stringToComplete, dynamoViewModel.CurrentSpace.ElementResolver).
-                Select(x => new CodeCompletionData(x));
-        }
-
-        internal IEnumerable<ICompletionData> SearchCompletions(string stringToComplete, Guid guid)
-        {
-            var engineController = dynamoViewModel.EngineController;
-
-            return engineController.CodeCompletionServices.SearchCompletions(stringToComplete, guid,
-                dynamoViewModel.CurrentSpace.ElementResolver).Select(x => new CodeCompletionData(x));
-        }
-
-        internal IEnumerable<CodeCompletionInsightItem> GetFunctionSignatures(string code, string functionName, string functionPrefix)
-        {
-            var engineController = dynamoViewModel.EngineController;
-
-            return engineController.CodeCompletionServices.GetFunctionSignatures(
-                code, functionName, functionPrefix, dynamoViewModel.CurrentSpace.ElementResolver).
-                Select(x => new CodeCompletionInsightItem(x));
-        }
-
-        internal new bool Focus()
-        {
-            return InternalEditor.Focus();
-        }
-
-        #region Generic Properties
-        internal TextEditor InternalEditor
-        {
-            get { return this.InnerTextEditor; }
-        }
-
-        public string Code
-        {
-            get
-            {
-                // Since this property a one way binding from source (CodeBlockNodeModel) to 
-                // target (this class), the getter should never be called
-                throw new NotImplementedException();
-
-            }
-            set
-            {
-                this.InnerTextEditor.Text = value;
-            }
-        }
-        #endregion
-
-        #region Dependency Property
-        public static readonly DependencyProperty CodeProperty = DependencyProperty.Register("Code", typeof(string),
-            typeof(CodeBlockEditor), new PropertyMetadata((obj, args) =>
-            {
-                var target = (CodeBlockEditor)obj;
-                target.Code = (string)args.NewValue;
-            })
-        );
-        
-        #endregion
-
-
-        #region Auto-complete event handlers
-
-        private void OnTextAreaTextEntering(object sender, TextCompositionEventArgs e)
-        {
-            try
-            {
-                if (e.Text.Length > 0 && completionWindow != null)
-                {
-                    char currentChar = e.Text[0];
-                    // If a completion item is highlighted and the user types
-                    // any of the following characters, only then is it selected and inserted
-                    // and the code completion window closed
-                    if (currentChar == '\t' || currentChar == '.' || currentChar == '\n' || currentChar == '\r')
-                    {
-                        completionWindow.CompletionList.RequestInsertion(e);
-                    }
-                    else if (!char.IsLetterOrDigit(currentChar) && currentChar != '_')
-                    {
-                        // In all other cases where what is being typed is not alpha-numeric 
-                        // we want to get rid of the completion window 
-                        completionWindow.Close();
-                    }
-                }
-            }
-            catch (System.Exception ex)
-            {
+                Loaded += (obj, args) => SetFocus(); 
             }
         }
 
-        private void OnTextAreaTextEntered(object sender, TextCompositionEventArgs e)
-        {
-            try
-            {
-                int startPos = this.InnerTextEditor.CaretOffset;
-                var code = this.InnerTextEditor.Text.Substring(0, startPos);
-
-                if (e.Text == ".")
-                {
-                    if (CodeCompletionParser.IsInsideCommentOrString(code, startPos))
-                        return;
-
-                    string stringToComplete = CodeCompletionParser.GetStringToComplete(code).Trim('.');
-
-                    var completions = this.GetCompletionData(code, stringToComplete);
-
-                    if (!completions.Any())
-                        return;
-
-                    ShowCompletionWindow(completions);
-                }
-                // Complete function signatures
-                else if (e.Text == "(")
-                {
-                    if (CodeCompletionParser.IsInsideCommentOrString(code, startPos))
-                        return;
-
-                    string functionName;
-                    string functionPrefix;
-                    CodeCompletionParser.GetFunctionToComplete(code, out functionName, out functionPrefix);
-
-                    var insightItems = this.GetFunctionSignatures(code, functionName, functionPrefix);
-
-                    ShowInsightWindow(insightItems);
-                }
-                else if (e.Text == ")")
-                {
-                    if (insightWindow != null)
-                        insightWindow.Close();
-                }
-                else if (completionWindow == null && (char.IsLetterOrDigit(e.Text[0]) || e.Text[0] == '_'))
-                {
-                    
-                    // Begin completion while typing only if the previous character already typed in
-                    // is a white space or non-alphanumeric character
-                    if (startPos > 1 && char.IsLetterOrDigit(InternalEditor.Document.GetCharAt(startPos - 2)))
-                        return;
-
-                    if (CodeCompletionParser.IsInsideCommentOrString(code, startPos))
-                        return;
-
-                    // Autocomplete as you type
-                    // complete global methods (builtins), all classes, symbols local to codeblock node
-                    string stringToComplete = CodeCompletionParser.GetStringToComplete(code);
-
-                    var completions = this.SearchCompletions(stringToComplete, nodeModel.GUID);
-
-                    if (!completions.Any())
-                        return;
-
-                    ShowCompletionWindow(completions, completeWhenTyping: true);
-                }
-            }
-            catch (System.Exception ex)
-            {
-            }
-        }
-
-
-        private void ShowCompletionWindow(IEnumerable<ICompletionData> completions, bool completeWhenTyping = false)
-        {
-            // TODO: Need to make this more efficient by instantiating 'completionWindow'
-            // just once and updating its contents each time
-
-            // This implementation has been referenced from
-            // http://www.codeproject.com/Articles/42490/Using-AvalonEdit-WPF-Text-Editor
-            if (completionWindow != null)
-            {
-                completionWindow.Close();
-            }
-            completionWindow = new CompletionWindow(this.InnerTextEditor.TextArea)
-            {
-                AllowsTransparency = true,
-                SizeToContent = SizeToContent.WidthAndHeight
-            };
-
-            if (completeWhenTyping)
-            {
-                // As opposed to complete on '.', in complete while typing mode 
-                // the first character typed should also be considered for matches
-                // while generating options in completion window
-                completionWindow.StartOffset--;
-
-                // As opposed to complete on '.', in complete while typing mode 
-                // erasing the first character of the string being completed
-                // should close the completion window
-                completionWindow.CloseWhenCaretAtBeginning = true;
-            }
-
-            var data = completionWindow.CompletionList.CompletionData;
-
-            foreach (var completion in completions)
-                data.Add(completion);
-
-            completionWindow.Closed += delegate
-            {
-                completionWindow = null;
-            };
-
-            completionWindow.Show();
-        }
-
-        private void ShowInsightWindow(IEnumerable<CodeCompletionInsightItem> items)
-        {
-            if (items == null)
-                return;
-
-            if (insightWindow != null)
-            {
-                insightWindow.Close();
-            }
-            insightWindow = new CodeCompletionMethodInsightWindow(this.InnerTextEditor.TextArea);
-            foreach (var item in items)
-            {
-                insightWindow.Items.Add(item);
-            }
-            if (insightWindow.Items.Count > 0)
-            {
-                insightWindow.SelectedItem = insightWindow.Items[0];
-            }
-            else
-            {
-                // don't open insight window when there are no items
-                return;
-            }
-            insightWindow.Closed += delegate
-            {
-                insightWindow = null;
-            };
-            insightWindow.Show();
-        }
-
-        #endregion
-
-        #region Generic Event Handlers
         /// <summary>
-        /// Called when the CBN is committed and the underlying source data 
-        /// needs to be updated with the text typed in the CBN
+        /// Handle on escape event.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void TextArea_LostFocus(object sender, RoutedEventArgs e)
+        protected override void OnEscape()
         {
-            if(isDisposed)
-                return;
+            var text = InnerTextEditor.Text;
+            if (codeBlockNode.Code != null && text.Equals(codeBlockNode.Code))
+                dynamoViewModel.ReturnFocusToSearch();
+            
+            if (string.IsNullOrEmpty(text))
+            {
+                dynamoViewModel.ExecuteCommand(
+                   new DynCmd.DeleteModelCommand(codeBlockNode.GUID));
+            }
+        }
 
-            InnerTextEditor.TextArea.ClearSelection();
+        protected override void OnCommitChange(string code)
+        {
             var recorder = nodeViewModel.WorkspaceViewModel.Model.UndoRecorder;
 
             if (string.IsNullOrEmpty(InnerTextEditor.Text))
@@ -342,54 +69,18 @@ namespace Dynamo.UI.Controls
             createdForNewCodeBlock = false; // First commit is now over.
         }
 
-        void InnerTextEditor_TextChanged(object sender, EventArgs e)
-        {
-            if (WatermarkLabel.Visibility == Visibility.Visible)
-                WatermarkLabel.Visibility = Visibility.Collapsed;
-
-        }       
-        #endregion
-
-        #region Private Helper Methods
-
-        private void OnRequestReturnFocusToSearch()
-        {
-            dynamoViewModel.ReturnFocusToSearch();
-        }
-
-        private void HandleEscape()
-        {
-            if (completionWindow != null)
-            {
-                completionWindow.Close();
-                return;
-            }
-
-            var text = this.InnerTextEditor.Text;
-            var cb = DataContext as CodeBlockNodeModel;
-          
-            if (cb == null || cb.Code != null && text.Equals(cb.Code))
-                OnRequestReturnFocusToSearch();
-            
-            if (text == "")
-            {
-                nodeViewModel.DynamoViewModel.ExecuteCommand(
-                   new DynCmd.DeleteModelCommand(nodeModel.GUID));
-            }
-        }
-
         private void CommitChanges(UndoRedoRecorder recorder)
         {
             // Code block editor can lose focus in many scenarios (e.g. switching 
             // of tabs or application), if there has not been any changes, do not
             // commit the change.
             // 
-            if (!nodeModel.Code.Equals(InnerTextEditor.Text))
+            if (!codeBlockNode.Code.Equals(InnerTextEditor.Text))
             {
                 nodeViewModel.DynamoViewModel.ExecuteCommand(
                     new DynCmd.UpdateModelValueCommand(
                         nodeViewModel.WorkspaceViewModel.Model.Guid,
-                        nodeModel.GUID,
+                        codeBlockNode.GUID,
                         "Code", InnerTextEditor.Text));
             }
 
@@ -414,7 +105,7 @@ namespace Dynamo.UI.Controls
                 // ... and record this new node as new creation.
                 using (recorder.BeginActionGroup())
                 {
-                    recorder.RecordCreationForUndo(nodeModel);
+                    recorder.RecordCreationForUndo(codeBlockNode);
                 }
             }
         }
@@ -446,34 +137,8 @@ namespace Dynamo.UI.Controls
                 // If the editing was started for an existing code block node,
                 // and user deletes the text contents, it should be restored to 
                 // the original codes.
-                InnerTextEditor.Text = nodeModel.Code;               
+                InnerTextEditor.Text = codeBlockNode.Code;               
             }
         }
-
-        #endregion
-
-        #region Key Press Event Handlers
-        /// <summary>
-        /// To allow users to remove focus by pressing Shift Enter. Uses two bools (shift / enter)
-        /// and sets them when pressed/released
-        /// </summary>        
-        protected override void OnPreviewKeyDown(KeyEventArgs e)
-        {
-            if (e.KeyboardDevice.Modifiers.HasFlag(System.Windows.Input.ModifierKeys.Shift))
-            {
-                if (e.Key == Key.Enter || e.Key == Key.Return)
-                {
-                    OnRequestReturnFocusToSearch();
-                }
-            }
-            else if (e.Key == Key.Escape)
-            {
-                HandleEscape();
-            }
-        }
-
-        #endregion
     }
-
-
 }
