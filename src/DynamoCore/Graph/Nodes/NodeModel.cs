@@ -43,7 +43,7 @@ namespace Dynamo.Graph.Nodes
         private bool areInputPortsRegistered;
         private bool areOutputPortsRegistered;
 
-        //this is true only when the node is set to freeze by the user.
+        //A flag indicating whether the node has been explicitly frozen.
         internal bool explictFrozen;
       
         /// <summary>

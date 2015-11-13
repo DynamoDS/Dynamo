@@ -349,10 +349,10 @@ namespace Dynamo.ViewModels
         }
         
         /// <summary>
-        /// Gets a value indicating whether Freeze property on the node is checked
+        /// A flag indicating whether the node is set to freeze by the user.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if node is not frozen and CanExecute; otherwise, <c>false</c>.
+        ///  This will return true if the freeze is set by the user. otherwise false.
         /// </value>        
         public bool IsExplicitFrozen
         {
@@ -370,10 +370,11 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the freeze property is enabled.
+        /// A flag indicating whether the underlying NodeModel's IsFrozen property can be toggled.      
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [node run enabled]; otherwise, <c>false</c>.
+        ///  This will return false if this node is not the root of the freeze operation, otherwise it will return 
+        ///  true.
         /// </value>
         public bool CanToggleFrozen
         {
