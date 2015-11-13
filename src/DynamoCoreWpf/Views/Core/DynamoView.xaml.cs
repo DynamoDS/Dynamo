@@ -775,9 +775,7 @@ namespace Dynamo.Controls
         {
             dynamoViewModel.CopyCommand.RaiseCanExecuteChanged();
             dynamoViewModel.PasteCommand.RaiseCanExecuteChanged();
-            dynamoViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
-            dynamoViewModel.ComputeRunStateOfTheNodeCommand.RaiseCanExecuteChanged();
-
+            dynamoViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();           
         }
 
         void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)

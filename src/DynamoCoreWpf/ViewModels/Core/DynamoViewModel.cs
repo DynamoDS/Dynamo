@@ -1872,12 +1872,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal void ComputeRunStateOfTheNode(object parameter)
-        {
-            this.CurrentSpaceViewModel.ComputeRunStateOfTheNodeCommand.Execute(null);
-            RaiseCanExecuteUndoRedo();
-        }
-
         internal bool CanSetConnectorType(object parameters)
         {
             //parameter object will be BEZIER or POLYLINE

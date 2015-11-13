@@ -442,13 +442,7 @@
                                   Command="{Binding Path=NodeFromSelectionCommand}"
                                   Name="nodeFromSelection"
                                   InputGestureText="Ctrl + D" />
-                        <MenuItem Focusable="False"                                
-                                  Header="{x:Static p:Resources.NodesRunStatus}"
-                                  IsChecked="{Binding NodeRunChecked, Mode=OneWay}"
-                                  IsEnabled="{Binding NodeRunEnabled, Mode=OneWay}"
-                                  Command="{Binding Path=ComputeRunStateOfTheNodeCommand}"
-                                  Name="nodesIsFrozen"
-                                  />
+                       
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewEditMenuSelectAll}"
                                   Command="{Binding SelectAllCommand}"
