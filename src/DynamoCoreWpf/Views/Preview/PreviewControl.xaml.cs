@@ -340,7 +340,14 @@ namespace Dynamo.UI.Controls
                         }
                         else
                         {
-                            newContent = mirrorData.StringData.Substring(0, mirrorData.StringData.IndexOf('('));
+                            if (String.IsNullOrEmpty(mirrorData.StringData))
+                            {
+                                newContent = String.Empty;
+                                return;
+                            }
+
+                            int index = mirrorData.StringData.IndexOf('(');
+                            newContent = index != -1 ? mirrorData.StringData.Substring(0, index) : mirrorData.StringData;
                         }
                     }
                 },
@@ -433,7 +440,10 @@ namespace Dynamo.UI.Controls
             if (smallContentGridSize.Width == 0)
             {
                 var nodeView = WpfUtilities.FindUpVisualTree<NodeView>(this);
-                smallContentGridSize.Width = nodeView.ActualWidth;
+                if (nodeView != null)
+                {
+                    smallContentGridSize.Width = nodeView.ActualWidth;
+                }
             }
 
             foreach (UIElement child in smallContentGrid.Children)
@@ -579,7 +589,7 @@ namespace Dynamo.UI.Controls
 
             RefreshExpandedDisplay(() =>
                 {
-                    this.largeContentGrid.Visibility = Visibility.Visible;
+                    largeContentGrid.Visibility = Visibility.Visible;
                     bubbleTools.Visibility = Visibility.Visible;
                     // The real transition starts
                     SetCurrentStateAndNotify(State.InTransition);
