@@ -1637,6 +1637,7 @@ b = 33;
         }
 
         [Test]
+        [Ignore]
         [Category("ExpressionInterpreterRunner")]
         public void TestWatchExpressionInNestedBlock1()
         {

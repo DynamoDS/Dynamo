@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Library;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore;
 
@@ -109,9 +111,11 @@ namespace Dynamo
             //Find function entry point, and then compile
             var inputNodes = nodeModels.OfType<Symbol>().ToList();
             var parameters = inputNodes.Select(x => new TypedParameter(
-                                                   x.GetAstIdentifierForOutputIndex(0).Value, 
+                                                   x.GetAstIdentifierForOutputIndex(0).Value,
                                                    x.Parameter.Type, 
-                                                   x.Parameter.DefaultValue));
+                                                   x.Parameter.DefaultValue,
+                                                   null,
+                                                   x.Parameter.Summary));
             var displayParameters = inputNodes.Select(x => x.Parameter.Name);
 
             #endregion

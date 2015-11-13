@@ -7,6 +7,8 @@ using Dynamo.Properties;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
 using System.Runtime.Serialization;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Newtonsoft.Json.Serialization;
 
 namespace Dynamo.Models

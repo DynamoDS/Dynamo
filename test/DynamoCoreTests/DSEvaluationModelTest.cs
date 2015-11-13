@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
-using Dynamo.Models;
-using Dynamo.Nodes;
-
+using DSCoreNodesUI;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using NUnit.Framework;
 
 
@@ -541,7 +540,7 @@ namespace Dynamo.Tests
             RunModel(@"core\dsevaluation\BasicRuntimeWarning.dyn");
             var guid = Guid.Parse("0fc83562-2cfe-4a63-84f8-f6836cbaf9c5");
             var node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.GUID == guid);
-            Assert.IsTrue(node.State != Models.ElementState.Warning);
+            Assert.IsTrue(node.State != ElementState.Warning);
         }
 
         [Test]

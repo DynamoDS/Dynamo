@@ -7,6 +7,9 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 
 namespace ProtoTest.FFITests
 {

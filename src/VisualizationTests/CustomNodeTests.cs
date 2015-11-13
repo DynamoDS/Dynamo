@@ -3,10 +3,13 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using Dynamo;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Selection;
-using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 
 namespace WpfVisualizationTests

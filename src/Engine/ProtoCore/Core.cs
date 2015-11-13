@@ -270,10 +270,6 @@ namespace ProtoCore
         // This is the AST node list of default imported libraries needed for Graph Compiler
         public CodeBlockNode ImportNodes { get; set; }
 
-        // The root AST node obtained from parsing an expression in a Graph node in GraphUI
-        public List<Node> AstNodeList { get; set; }
-
-
         public enum ErrorType
         {
             OK,
@@ -328,6 +324,7 @@ namespace ProtoCore
         public BuildStatus BuildStatus { get; private set; }
 
         public TypeSystem TypeSystem { get; set; }
+        public InternalAttributes internalAttributes { get; set; }
 
         // The global class table and function tables
         public ClassTable ClassTable { get; set; }
@@ -572,9 +569,6 @@ namespace ProtoCore
                 BuildStatus = new BuildStatus(this, Options.BuildOptWarningAsError);
             }
             
-            if (AstNodeList != null) 
-                AstNodeList.Clear();
-
             ExpressionUID = 0;
             ForLoopBlockIndex = Constants.kInvalidIndex;
         }
@@ -619,6 +613,9 @@ namespace ProtoCore
             TypeSystem.SetClassTable(ClassTable);
             ProcNode = null;
             ProcTable = new ProcedureTable(Constants.kGlobalScope);
+
+            // Initialize internal attributes
+            internalAttributes = new InternalAttributes(ClassTable);
 
             //Initialize the function pointer table
             FunctionPointerTable = new FunctionPointerTable();

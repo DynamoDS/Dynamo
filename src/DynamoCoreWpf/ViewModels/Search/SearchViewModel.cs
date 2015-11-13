@@ -8,6 +8,8 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
 using Dynamo.Configuration;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Nodes;
@@ -139,7 +141,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool isDetailedMode;
+        private bool isDetailedMode = true;
         /// <summary>
         ///  The property specifies which layout(detailed or compact) is used in search view.
         /// </summary>
@@ -249,7 +251,7 @@ namespace Dynamo.ViewModels
             }
             private set
             {
-                searchCategories = value;
+                searchCategories = value.OrderBy(category => category.Name);
                 RaisePropertyChanged("SearchCategories");
             }
         }
@@ -783,8 +785,6 @@ namespace Dynamo.ViewModels
             FilteredResults = searchResults;
             UpdateSearchCategories();
 
-            IsDetailedMode = true;
-
             RaisePropertyChanged("FilteredResults");
         }
 
@@ -1061,6 +1061,22 @@ namespace Dynamo.ViewModels
         internal void ToggleLayout(object parameter)
         {
             IsDetailedMode = (bool)parameter;
+        }
+
+        internal void UnSelectAllCategories()
+        {
+            foreach (var category in SearchCategories)
+            {
+                category.IsSelected = false;
+            }
+        }
+
+        internal void SelectAllCategories(object parameter)
+        {
+            foreach (var category in SearchCategories)
+            {
+                category.IsSelected = true;
+            }
         }
 
         #endregion

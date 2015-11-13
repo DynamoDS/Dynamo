@@ -1,11 +1,9 @@
-﻿using Dynamo.Models;
-using Dynamo.Nodes;
+﻿using System.Collections.Generic;
+using DSCoreNodesUI.Properties;
+using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
 
-using System.Collections.Generic;
-
-using DSCoreNodesUI.Properties;
-namespace DSCoreNodesUI.StringNodes
+namespace DSCoreNodesUI
 {
     /// <summary>
     /// Base class to represent a single input string node. It supports 
@@ -59,6 +57,7 @@ namespace DSCoreNodesUI.StringNodes
     [NodeCategory("Core.String.Actions")]
     [NodeSearchTags("FromObjectSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("DSCoreNodesUI.StringNodes.FromObject")]
     public class FromObject: ToStringNodeBase 
     {
         public FromObject() : base("__ToStringFromObject")
@@ -75,6 +74,7 @@ namespace DSCoreNodesUI.StringNodes
     [NodeCategory("Core.String.Actions")]
     [NodeSearchTags("FromArraySearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("DSCoreNodesUI.StringNodes.FromArray")]
     public class FromArray : ToStringNodeBase 
     {
         public FromArray() : base("__ToStringFromArray")

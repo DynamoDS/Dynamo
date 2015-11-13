@@ -2,8 +2,9 @@
 using System.Linq;
 using NUnit.Framework;
 using System.IO;
-using Dynamo.Nodes;
-using Dynamo.Models;
+using DSCoreNodesUI;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 
 namespace Dynamo.Tests
 {
@@ -69,7 +70,7 @@ namespace Dynamo.Tests
 
             RunModel(testFilePath);
 
-            var stringConcat = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSVarArgFunction>
+            var stringConcat = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSVarArgFunction>
                 ("eb4d8a34-5437-4064-ad52-db5c58a95451");
             Assert.AreEqual(ElementState.Warning, stringConcat.State);
 

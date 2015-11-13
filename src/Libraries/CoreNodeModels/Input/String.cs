@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Web;
-using Dynamo.Models;
+using Dynamo.Graph;
 using ProtoCore.AST.AssociativeAST;
 
-namespace DSCoreNodesUI
+namespace DSCoreNodesUI.Input
 {
     public abstract class String : BasicInteractive<string>
     {

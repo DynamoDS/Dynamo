@@ -1,9 +1,12 @@
 ﻿using DSCoreNodesUI.Input;
 using Dynamo.Controls;
-using Dynamo.Search.Interfaces;
+using Dynamo.Search;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Controls;
 using DSCoreNodesUI;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using DynamoConversions;
 using ProtoCore.AST;

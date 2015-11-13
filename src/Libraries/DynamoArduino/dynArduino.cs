@@ -6,7 +6,8 @@ using System.Xml;
 using System.IO.Ports;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Controls;
-using Dynamo.Models;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.Wpf;
 using Dynamo.Nodes.Properties;
 

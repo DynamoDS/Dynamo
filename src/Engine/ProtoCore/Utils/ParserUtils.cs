@@ -6,6 +6,28 @@ using System.Text.RegularExpressions;
 namespace ProtoCore.Utils
 {
     /// <summary>
+    /// Parse result.
+    /// </summary>
+    public class ParseResult
+    {
+        /// <summary>
+        /// All code related AST nodes will be saved in a CodeBlockNode.
+        /// </summary>
+        public AST.AssociativeAST.CodeBlockNode CodeBlockNode
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// All comment related AST nodes will be saved in a CodeBlockNode.
+        /// </summary>
+        public AST.AssociativeAST.CodeBlockNode CommentBlockNode
+        {
+            get; set;
+        }
+    }
+
+    /// <summary>
     /// These are string manipulation utility functions that focus on lexing and parsing heuristics
     /// </summary>
     public static class ParserUtils
@@ -69,16 +91,12 @@ namespace ProtoCore.Utils
             return identifiers;
         }
 
-        public static List<ProtoCore.AST.Node> GetAstNodes(ProtoCore.AST.Node codeBlockNode)
+        public static List<AST.AssociativeAST.AssociativeNode> GetAstNodes(AST.AssociativeAST.CodeBlockNode codeBlockNode)
         {
-            List<ProtoCore.AST.Node> nodes = new List<ProtoCore.AST.Node>();
-            ProtoCore.AST.AssociativeAST.CodeBlockNode cbn = codeBlockNode as ProtoCore.AST.AssociativeAST.CodeBlockNode;
-            if (cbn != null)
+            var nodes = new List<AST.AssociativeAST.AssociativeNode>();
+            if (codeBlockNode != null)
             {
-                foreach (var n in cbn.Body)
-                {
-                    nodes.Add(n);
-                }
+                nodes.AddRange(codeBlockNode.Body);
             }
             return nodes;
         }
@@ -87,17 +105,18 @@ namespace ProtoCore.Utils
         /// Parses designscript code and returns a ProtoAST CodeBlockNode
         /// </summary>
         /// <param name="code"> Source code to parse </param>
-        public static ProtoCore.AST.Node Parse(string code)
+        public static AST.AssociativeAST.CodeBlockNode Parse(string code)
         {
             Validity.Assert(code != null);
 
-            ProtoCore.Core core = new ProtoCore.Core(new ProtoCore.Options());
-            core.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-            core.ParsingMode = ProtoCore.ParseMode.AllowNonAssignment;
+            Core core = new Core(new Options());
+            core.Options.ExecutionMode = ExecutionMode.Serial;
+            core.ParsingMode = ParseMode.AllowNonAssignment;
             core.IsParsingCodeBlockNode = true;
             core.IsParsingPreloadedAssembly = false;
 
-            return ParseWithCore(code, core);
+            var parseResult = ParseWithCore(code, core);
+            return parseResult.CodeBlockNode;
         }
 
         /// <summary>
@@ -131,12 +150,15 @@ namespace ProtoCore.Utils
         /// <param name="code"></param>
         /// <param name="core"></param>
         /// <returns></returns>
-        public static ProtoCore.AST.Node ParseWithCore(string code, ProtoCore.Core core)
+        public static ParseResult ParseWithCore(string code, ProtoCore.Core core)
         {
             var p = CreateParser(code, core);
             p.Parse();
 
-            return p.root;
+            ParseResult result = new ParseResult();
+            result.CodeBlockNode = p.root as AST.AssociativeAST.CodeBlockNode;
+            result.CommentBlockNode = p.commentNode as AST.AssociativeAST.CodeBlockNode;
+            return result;
         }
 
         /// <summary>
@@ -145,7 +167,7 @@ namespace ProtoCore.Utils
         /// <param name="expression"></param>
         /// <param name="core"></param>
         /// <returns></returns>
-        public static ProtoCore.AST.AssociativeAST.AssociativeNode ParseRHSExpression(string expression, ProtoCore.Core core)
+        public static AST.AssociativeAST.AssociativeNode ParseRHSExpression(string expression, Core core)
         {
             if (string.IsNullOrEmpty(expression))
                 throw new ArgumentException("expression");
@@ -156,10 +178,10 @@ namespace ProtoCore.Utils
             var currentParsingMode = core.ParsingMode;
             var currentParsingFlag = core.IsParsingCodeBlockNode;
 
-            core.ParsingMode = ProtoCore.ParseMode.AllowNonAssignment;
+            core.ParsingMode = ParseMode.AllowNonAssignment;
             core.IsParsingCodeBlockNode = true;
 
-            ProtoCore.AST.Node astNode = null;
+            AST.AssociativeAST.CodeBlockNode cbn = null;
             try
             {
                 expression = expression.Trim();
@@ -167,27 +189,21 @@ namespace ProtoCore.Utils
                     expression += ";";
 
                 expression = "__dummy = " + expression;
-                astNode = ParserUtils.ParseWithCore(expression, core);
+                ParseResult parseResult = ParseWithCore(expression, core);
+                cbn = parseResult.CodeBlockNode;
             }
-            catch (ProtoCore.BuildHaltException ex)
+            catch (BuildHaltException)
             {
             }
 
             core.ParsingMode = currentParsingMode;
             core.IsParsingCodeBlockNode = currentParsingFlag;
 
-            if (astNode == null)
+            if (cbn == null || !cbn.Body.Any())
                 return null;
 
-            var cbn = astNode as ProtoCore.AST.AssociativeAST.CodeBlockNode;
-            if (cbn != null && cbn.Body.Any())
-            {
-                var expr = cbn.Body[0] as ProtoCore.AST.AssociativeAST.BinaryExpressionNode;
-                if (expr != null)
-                    return expr.RightNode;
-            }
-
-            return null;
+            var expr = cbn.Body[0] as AST.AssociativeAST.BinaryExpressionNode;
+            return expr == null ? null : expr.RightNode;
         }
     }
 }

@@ -51,6 +51,8 @@
       <HintPath>..\..\extern\IronPython\Microsoft.Dynamic.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Prism, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Scripting, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
@@ -104,7 +106,7 @@
     <ProjectReference Include="..\..\..\src\Libraries\PythonNodeModels\PythonNodeModels.csproj">
       <Project>{8872ca17-c10d-43b9-8393-5c5a57065eb0}</Project>
       <Name>PythonNodeModels</Name>
-	  <Private>False</Private>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>

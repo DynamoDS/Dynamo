@@ -3146,13 +3146,20 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("NodeHelpWindowNodeType", resourceCulture);
             }
         }
-        
-        /// <summary>
+
+        /// <summary> 
         ///   Looks up a localized string similar to Freeze.
         /// </summary>
-        public static string NodesRunStatus {
+        public static string NodesRunStatus
+        {
+            get { return ResourceManager.GetString("NodesRunStatus", resourceCulture); }
+        }
+
+        ///   Looks up a localized string similar to There was an error while finding node view customizations for {0}. Contact the author of this assembly for more information..
+        /// </summary>
+        public static string NodeViewCustomizationFindErrorMessage {
             get {
-                return ResourceManager.GetString("NodesRunStatus", resourceCulture);
+                return ResourceManager.GetString("NodeViewCustomizationFindErrorMessage", resourceCulture); 
             }
         }
         
@@ -3189,6 +3196,15 @@ namespace Dynamo.Wpf.Properties {
         public static string OKButton {
             get {
                 return ResourceManager.GetString("OKButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to only.
+        /// </summary>
+        public static string OnlyTitle {
+            get {
+                return ResourceManager.GetString("OnlyTitle", resourceCulture);
             }
         }
         
@@ -4170,6 +4186,15 @@ namespace Dynamo.Wpf.Properties {
         public static string SearchViewTopResult {
             get {
                 return ResourceManager.GetString("SearchViewTopResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select All.
+        /// </summary>
+        public static string SelectAllTitle {
+            get {
+                return ResourceManager.GetString("SelectAllTitle", resourceCulture);
             }
         }
         

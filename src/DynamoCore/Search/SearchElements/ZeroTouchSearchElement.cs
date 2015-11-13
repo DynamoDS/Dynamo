@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Engine;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using System.Text;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -92,10 +94,10 @@ namespace Dynamo.Search.SearchElements
 
         private string GetIconName()
         {
-            string name = Nodes.Utilities.NormalizeAsResourceName(functionDescriptor.QualifiedName);
+            string name = Graph.Nodes.Utilities.NormalizeAsResourceName(functionDescriptor.QualifiedName);
 
             if (string.IsNullOrEmpty(name))
-                name = Nodes.Utilities.NormalizeAsResourceName(functionDescriptor.FunctionName);
+                name = Graph.Nodes.Utilities.NormalizeAsResourceName(functionDescriptor.FunctionName);
 
             // Usual case.
             if (!functionDescriptor.IsOverloaded)
@@ -104,15 +106,15 @@ namespace Dynamo.Search.SearchElements
             // Case for overloaded methods.
             if (name == functionDescriptor.QualifiedName)
             {
-                return Nodes.Utilities.TypedParametersToString(functionDescriptor);
+                return Graph.Nodes.Utilities.TypedParametersToString(functionDescriptor);
             }
             else
             {
                 // Some nodes contain names with invalid symbols like %, <, >, etc. In this 
                 // case the value of "FunctionDescriptor.Name" property should be used. For 
                 // an example, "DynamoUnits.SUnit.%" to be renamed as "DynamoUnits.SUnit.mod".
-                string shortName = Nodes.Utilities.NormalizeAsResourceName(functionDescriptor.FunctionName);
-                return Nodes.Utilities.TypedParametersToString(functionDescriptor, name + shortName);
+                string shortName = Graph.Nodes.Utilities.NormalizeAsResourceName(functionDescriptor.FunctionName);
+                return Graph.Nodes.Utilities.TypedParametersToString(functionDescriptor, name + shortName);
             }
         }
     }

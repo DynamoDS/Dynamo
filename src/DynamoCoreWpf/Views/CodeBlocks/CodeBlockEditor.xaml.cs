@@ -19,6 +19,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml;
 ﻿using Dynamo.Configuration;
+﻿using Dynamo.Graph.Nodes;
 ﻿using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.UI.Controls
@@ -33,7 +34,7 @@ namespace Dynamo.UI.Controls
         private readonly DynamoViewModel dynamoViewModel;
         private readonly CodeBlockNodeModel nodeModel;
         private CompletionWindow completionWindow;
-        private CodeBlockMethodInsightWindow insightWindow;
+        private CodeCompletionMethodInsightWindow insightWindow;
         private bool isDisposed;
 
         public CodeBlockEditor()
@@ -76,7 +77,7 @@ namespace Dynamo.UI.Controls
             this.InnerTextEditor.TextArea.TextEntering += OnTextAreaTextEntering;
             this.InnerTextEditor.TextArea.TextEntered += OnTextAreaTextEntered;
 
-            InitializeSyntaxHighlighter();
+            CodeHighlightingRuleFactory.CreateHighlightingRules(InnerTextEditor, dynamoViewModel.EngineController);
         }
 
         private IEnumerable<ICompletionData> GetCompletionData(string code, string stringToComplete)
@@ -86,7 +87,7 @@ namespace Dynamo.UI.Controls
 
             return engineController.CodeCompletionServices.GetCompletionsOnType(
                 code, stringToComplete, dynamoViewModel.CurrentSpace.ElementResolver).
-                Select(x => new CodeBlockCompletionData(x));
+                Select(x => new CodeCompletionData(x));
         }
 
         internal IEnumerable<ICompletionData> SearchCompletions(string stringToComplete, Guid guid)
@@ -94,16 +95,16 @@ namespace Dynamo.UI.Controls
             var engineController = dynamoViewModel.EngineController;
 
             return engineController.CodeCompletionServices.SearchCompletions(stringToComplete, guid,
-                dynamoViewModel.CurrentSpace.ElementResolver).Select(x => new CodeBlockCompletionData(x));
+                dynamoViewModel.CurrentSpace.ElementResolver).Select(x => new CodeCompletionData(x));
         }
 
-        internal IEnumerable<CodeBlockInsightItem> GetFunctionSignatures(string code, string functionName, string functionPrefix)
+        internal IEnumerable<CodeCompletionInsightItem> GetFunctionSignatures(string code, string functionName, string functionPrefix)
         {
             var engineController = dynamoViewModel.EngineController;
 
             return engineController.CodeCompletionServices.GetFunctionSignatures(
                 code, functionName, functionPrefix, dynamoViewModel.CurrentSpace.ElementResolver).
-                Select(x => new CodeBlockInsightItem(x));
+                Select(x => new CodeCompletionInsightItem(x));
         }
 
         internal new bool Focus()
@@ -144,66 +145,6 @@ namespace Dynamo.UI.Controls
         
         #endregion
 
-        #region Syntax highlighting helper methods
-
-        private void InitializeSyntaxHighlighter()
-        {
-            var stream = GetType().Assembly.GetManifestResourceStream(
-                "Dynamo.Wpf.UI.Resources." + Configurations.HighlightingFile);
-
-            Debug.Assert(stream != null);
-            this.InnerTextEditor.SyntaxHighlighting = HighlightingLoader.Load(
-                new XmlTextReader(stream), HighlightingManager.Instance);
-
-            // Highlighting Digits
-            var rules = this.InnerTextEditor.SyntaxHighlighting.MainRuleSet.Rules;
-
-            rules.Add(CodeBlockEditorUtils.CreateDigitRule());
-            rules.Add(CreateClassHighlightRule());
-            rules.Add(CreateMethodHighlightRule());
-        }
-
-        private HighlightingRule CreateClassHighlightRule()
-        {
-            Color color = (Color)ColorConverter.ConvertFromString("#2E998F");
-            var classHighlightRule = new HighlightingRule
-            {
-                Color = new HighlightingColor()
-                {
-                    Foreground = new CodeBlockEditorUtils.CustomizedBrush(color)
-                }
-            };
-
-            var engineController = dynamoViewModel.EngineController;
-
-            var wordList = engineController.CodeCompletionServices.GetClasses();
-            String regex = String.Format(@"\b({0})({0})?\b", String.Join("|", wordList));
-            classHighlightRule.Regex = new Regex(regex);
-
-            return classHighlightRule;
-        }
-
-        private HighlightingRule CreateMethodHighlightRule()
-        {
-            Color color = (Color)ColorConverter.ConvertFromString("#417693");
-            var methodHighlightRule = new HighlightingRule
-            {
-                Color = new HighlightingColor()
-                {
-                    Foreground = new CodeBlockEditorUtils.CustomizedBrush(color)
-                }
-            };
-
-            var engineController = dynamoViewModel.EngineController;
-
-            var wordList = engineController.CodeCompletionServices.GetGlobals();
-            String regex = String.Format(@"\b({0})({0})?\b", String.Join("|", wordList));
-            methodHighlightRule.Regex = new Regex(regex);
-
-            return methodHighlightRule;
-        }
-
-        #endregion
 
         #region Auto-complete event handlers
 
@@ -346,7 +287,7 @@ namespace Dynamo.UI.Controls
             completionWindow.Show();
         }
 
-        private void ShowInsightWindow(IEnumerable<CodeBlockInsightItem> items)
+        private void ShowInsightWindow(IEnumerable<CodeCompletionInsightItem> items)
         {
             if (items == null)
                 return;
@@ -355,7 +296,7 @@ namespace Dynamo.UI.Controls
             {
                 insightWindow.Close();
             }
-            insightWindow = new CodeBlockMethodInsightWindow(this.InnerTextEditor.TextArea);
+            insightWindow = new CodeCompletionMethodInsightWindow(this.InnerTextEditor.TextArea);
             foreach (var item in items)
             {
                 insightWindow.Items.Add(item);

@@ -15,6 +15,8 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Views;
 using NUnit.Framework;
 using System.Text.RegularExpressions;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 
@@ -162,7 +164,7 @@ namespace DynamoCoreWpfTests
         {
             string text = "{-2468.2342E+04, dfsgdfg34534, 34534.345345, 23423, -98.7, 0..10..2, -555};";
 
-            var rule = CodeBlockEditorUtils.CreateDigitRule().Regex;
+            var rule = CodeHighlightingRuleFactory.CreateNumberHighlightingRule().Regex;
             var matches = rule.Matches(text);
 
             // Expected results (8):

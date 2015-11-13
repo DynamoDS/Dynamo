@@ -1,3 +1,5 @@
+
+[InternalClass]
 class _FunctionObject
 {
     def DoEvaluation(param:var[]..[])
@@ -6,6 +8,7 @@ class _FunctionObject
     }
 }
 
+[InternalClass]
 class _SingleFunctionObject extends _FunctionObject
 {
     __functionPointers : function;
@@ -96,6 +99,7 @@ class _SingleFunctionObject extends _FunctionObject
     }
 }
 
+[InternalClass]
 class _ComposedFunctionObject extends _FunctionObject
 {
     __funcs : _FunctionObject[];

@@ -13,10 +13,10 @@ using System.Windows.Media;
 
 using Dynamo.Models;
 using Dynamo.PackageManager;
-using Dynamo.Search;
+using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.UI.Controls;
-using Dynamo.UpdateManager;
+using Dynamo.Updates;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
@@ -25,6 +25,9 @@ using RestSharp.Contrib;
 using System.Text;
 using System.Windows.Controls.Primitives;
 using Dynamo.Configuration;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels.Watch3D;
@@ -1842,11 +1845,11 @@ namespace Dynamo.Controls
                     int maxRowLength = Configurations.MaxLengthRowClassButtonTitle;
                     int maxRowNumbers = Configurations.MaxRowNumber;
 
-                    var words = Dynamo.Nodes.Utilities.WrapText(text, maxRowLength);
+                    var words = Graph.Nodes.Utilities.WrapText(text, maxRowLength);
                     if (words.Count() > maxRowNumbers)
-                        words = Dynamo.Nodes.Utilities.ReduceRowCount(words.ToList(), maxRowNumbers);
+                        words = Graph.Nodes.Utilities.ReduceRowCount(words.ToList(), maxRowNumbers);
 
-                    words = Dynamo.Nodes.Utilities.TruncateRows(words, maxRowLength);
+                    words = Graph.Nodes.Utilities.TruncateRows(words, maxRowLength);
                     text = String.Join("\n", words);
 
                     return text;
