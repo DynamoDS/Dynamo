@@ -652,19 +652,14 @@ namespace Dynamo.Graph.Nodes
         }
 
         private bool CheckIfAnyUpstreamNodeIsFrozen(NodeModel node, ref bool ret)
-        {
-            if (node.explictFrozen)
-            {
-                ret = true;
-                return true;
-            }
-
+        {             
             var sets = node.InputNodes.Values;
             var inpNodes = sets.Where(x => x != null).Select(z => z.Item2).Distinct();
             foreach (var inode in inpNodes)
             {
-                if (node.explictFrozen)
+                if (inode.explictFrozen)
                 {
+                    ret = true;
                     break;
                 }
 

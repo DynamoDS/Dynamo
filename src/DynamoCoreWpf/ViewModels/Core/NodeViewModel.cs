@@ -388,10 +388,8 @@ namespace Dynamo.ViewModels
                 }
 
                 //If any of the node is set to freeze by the user and 
-                // if that node is frozen by itself, then disable the Freeze property
-                var checklist = new List<NodeModel>();
-                CheckIfAnyParentAndChildAreExplictlyFrozen(this.NodeLogic,checklist);
-                if (this.nodeLogic.explictFrozen && checklist.Any())
+                // if that node is frozen by itself, then disable the Freeze property                              
+                if (this.nodeLogic.explictFrozen && NodeModel.IsAnyUpstreamFrozen())
                 {
                     return false;
                 }
@@ -408,31 +406,6 @@ namespace Dynamo.ViewModels
             
         }
 
-        /// <summary>
-        /// For the given node, this traverses the graph upstream to check
-        /// if any of the node in upstream is explictly frozen.
-        /// </summary>
-        /// <param name="node">The node.</param>
-        /// <param name="checkNodesList">The check nodes list.</param>
-        private void CheckIfAnyParentAndChildAreExplictlyFrozen(NodeModel node,List<NodeModel> checkNodesList )
-        {
-            var sets = node.InputNodes.Values;
-            var inputNodes = sets.Where(x=> x!=null).Select(z => z.Item2).Distinct();
-
-            foreach (var inode in inputNodes)
-            {
-                if (inode.explictFrozen)
-                {
-                    checkNodesList.Add(inode);
-                    break;
-                }
-
-                CheckIfAnyParentAndChildAreExplictlyFrozen(inode, checkNodesList);
-                
-            }
-
-        }
-                
         #endregion
 
         #region events
