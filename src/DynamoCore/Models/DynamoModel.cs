@@ -533,8 +533,7 @@ namespace Dynamo.Models
 
             SearchModel = new NodeSearchModel(PreferenceSettings);
             SearchModel.ItemProduced +=
-                node => ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, true));
-            SearchModel.IsDetailedMode = PreferenceSettings.ShowDetailedLayout;
+                node => ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, true));            
 
             NodeFactory = new NodeFactory();
             NodeFactory.MessageLogged += LogMessage;
