@@ -558,7 +558,7 @@ namespace ProtoTest.ProtoAST
 
             foreach (var stmt in statements)
             {
-                var cbn = ProtoCore.Utils.ParserUtils.Parse(stmt) as ProtoCore.AST.AssociativeAST.CodeBlockNode;
+                var cbn = ProtoCore.Utils.ParserUtils.Parse(stmt);
                 if (cbn != null)
                 {
                     foreach (var item in cbn.Body)
@@ -574,7 +574,7 @@ namespace ProtoTest.ProtoAST
 
             foreach (var stmt in new_statements)
             {
-                var cbn = ProtoCore.Utils.ParserUtils.Parse(stmt) as ProtoCore.AST.AssociativeAST.CodeBlockNode;
+                var cbn = ProtoCore.Utils.ParserUtils.Parse(stmt);
                 if (cbn != null)
                 {
                     foreach (var item in cbn.Body)
