@@ -9,12 +9,16 @@ namespace Dynamo.UI.Controls
     /// </summary>
     public class ParameterEditor : CodeCompletionEditor
     {
+        /// <summary>
+        /// Create input editor by the view of symbol node.
+        /// </summary>
+        /// <param name="view"></param>
         public ParameterEditor(NodeView view) : base(view)
         {
         }
 
         /// <summary>
-        /// Handler for Esc.
+        /// Handle escape. 
         /// </summary>
         protected override void OnEscape()
         {
@@ -30,7 +34,7 @@ namespace Dynamo.UI.Controls
             }
         }
 
-        protected override void OnCommitChange(string code)
+        protected override void OnCommitChange()
         {
             var lastInput = (nodeViewModel.NodeModel as Symbol).InputSymbol;
             if (lastInput.Equals(InnerTextEditor.Text))
@@ -40,7 +44,7 @@ namespace Dynamo.UI.Controls
                 new DynCmd.UpdateModelValueCommand(
                     nodeViewModel.WorkspaceViewModel.Model.Guid,
                     nodeViewModel.NodeModel.GUID, "InputSymbol",
-                    code));
+                    InnerTextEditor.Text));
         }
     }
 }

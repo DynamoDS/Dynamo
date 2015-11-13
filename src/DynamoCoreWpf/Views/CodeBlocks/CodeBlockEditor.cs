@@ -8,18 +8,17 @@ using System.Windows;
 namespace Dynamo.UI.Controls
 {
     /// <summary>
-    /// Interaction logic for CodeBlockEditor.xaml
+    /// Code block editor.
     /// </summary>
     public partial class CodeBlockEditor : CodeCompletionEditor 
     {
         private bool createdForNewCodeBlock;
         private readonly CodeBlockNodeModel codeBlockNode;
 
-        public CodeBlockEditor()
-        {
-            InitializeComponent();
-        }
-
+        /// <summary>
+        /// Create code block editor by the view of code block node.
+        /// </summary>
+        /// <param name="nodeView"></param>
         public CodeBlockEditor(NodeView nodeView): base(nodeView)
         {
             this.codeBlockNode = nodeViewModel.NodeModel as CodeBlockNodeModel;
@@ -42,7 +41,7 @@ namespace Dynamo.UI.Controls
         }
 
         /// <summary>
-        /// Handle on escape event.
+        /// Handle escape.
         /// </summary>
         protected override void OnEscape()
         {
@@ -57,7 +56,7 @@ namespace Dynamo.UI.Controls
             }
         }
 
-        protected override void OnCommitChange(string code)
+        protected override void OnCommitChange()
         {
             var recorder = nodeViewModel.WorkspaceViewModel.Model.UndoRecorder;
 

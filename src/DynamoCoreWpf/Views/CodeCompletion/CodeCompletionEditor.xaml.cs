@@ -109,7 +109,7 @@ namespace Dynamo.UI.Controls
         /// Derived class overrides this function to handle the commit of code.
         /// </summary>
         /// <param name="code"></param>
-        protected virtual void OnCommitChange(string code)
+        protected virtual void OnCommitChange()
         {
         }
 
@@ -250,7 +250,7 @@ namespace Dynamo.UI.Controls
 
             InnerTextEditor.TextArea.ClearSelection();
 
-            OnCommitChange(InnerTextEditor.Text);
+            OnCommitChange();
         }
 
         /// <summary>
