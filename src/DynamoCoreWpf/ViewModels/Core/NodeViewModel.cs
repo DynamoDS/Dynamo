@@ -344,7 +344,7 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                NodeModel.IsFrozen = value;
+                NodeModel.IsFrozen = value;                
             }
         }
         
@@ -515,6 +515,8 @@ namespace Dynamo.ViewModels
            AddToGroupCommand.RaiseCanExecuteChanged();
            UngroupCommand.RaiseCanExecuteChanged();
            ComputeRunStateOfTheNodeCommand.RaiseCanExecuteChanged();
+           RaisePropertyChanged("NodeRunChecked");
+           RaisePropertyChanged("NodeRunEnabled");
         }
 
         void DebugSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)

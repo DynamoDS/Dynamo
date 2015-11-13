@@ -639,8 +639,7 @@ namespace Dynamo.Graph.Nodes
             }
             set
             {
-                explictFrozen = value;                 
-                RaisePropertyChanged("IsFrozen");
+                explictFrozen = value;                                 
                 OnNodeModified();
             }
         }
