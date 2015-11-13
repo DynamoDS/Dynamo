@@ -18,7 +18,7 @@ namespace Dynamo.Tests
     {
         [Test]
         [Category("UnitTests")]
-        public void FreezeANodeTest()
+        public void Freeze_ANode_Test()
         {
             //Add a Node
             var model = CurrentDynamoModel;
@@ -34,7 +34,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void ParentNodeFreezeTest()
+        public void ParentNode_Freeze_Test()
         {
             var model = CurrentDynamoModel;
             //create some numbers
@@ -79,7 +79,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void ParentNodeEntersTemporaryRunStateTest()
+        public void ParentNode_Enters_TemporaryState_Test()
         {
             var model = CurrentDynamoModel;
             //create some numbers
@@ -130,7 +130,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void UnFreezeParentNodeUnfreezesChildNodes()
+        public void UnFreeze_ParentNode_UnfreezesChildNodes_Test()
         {
             var model = CurrentDynamoModel;
             //create some numbers
@@ -190,7 +190,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void UnfreezeParentNodeMakesATemporaryStateNodeSwitchBackToPreviousState()
+        public void Unfreeze_ParentNode_MakesATemporaryStateNode_SwitchBackToPreviousState_Test()
         {
             var model = CurrentDynamoModel;
             //create some numbers
@@ -254,7 +254,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void NodeAttachedTThatHasParentsShouldNotUnfreezeUntilAllParentsUnfreeze()
+        public void Node_AttachedTThatHasParents_ShouldNotUnfreeze_UntilAllParentsUnfreeze_Test()
         {
             var model = CurrentDynamoModel;
             //create some numbers
@@ -329,7 +329,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void UndoFreezeOnParentNode()
+        public void Undo_Freeze_OnParentNode_Test()
         {
             var model = CurrentDynamoModel;
             //create some numbers

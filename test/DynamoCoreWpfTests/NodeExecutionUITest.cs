@@ -22,7 +22,7 @@ namespace DynamoCoreWpfTests
         //case 1 : Node in Freeze and Not execute state. True for all parent nodes.
         [Test]
         [Category("DynamoUI")]
-        public void NodeInFreezeNotExecuteStateTest()
+        public void Node_InFreeze_NotExecuteState_Test()
         {
             //Create a Node
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
@@ -47,7 +47,7 @@ namespace DynamoCoreWpfTests
         //case 2 : Node in Freeze and execute state. True for all child nodes.
         [Test]
         [Category("DynamoUI")]
-        public void NodeInFreezeExecuteStateTest()
+        public void Node_InFreeze_ExecuteState_Test()
         {
             var model = ViewModel.Model;
             //create some numbers
@@ -95,7 +95,7 @@ namespace DynamoCoreWpfTests
         //case 3 : Node in Freeze and temporary state. 
         [Test]
         [Category("DynamoUI")]
-        public void NodeInTemporaryFreezeState()
+        public void Node_InTemporaryFreeze_State()
         {
             var model = ViewModel.Model;
             //create some numbers
@@ -151,7 +151,7 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("DynamoUI")]
-        public void UndoFreezeTest()
+        public void Undo_Freeze_Test()
         {
             var model = ViewModel.Model;
             //create some numbers
