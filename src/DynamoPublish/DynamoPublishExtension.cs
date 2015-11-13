@@ -13,6 +13,7 @@ using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Publish.Properties;
 using Greg;
+using Reach.Messages.Data;
 using Reach.Upload;
 
 namespace Dynamo.Publish
@@ -111,7 +112,8 @@ namespace Dynamo.Publish
 
             item.Click += (sender, args) =>
             {
-                var model = new PublishModel(startupParams.AuthProvider, startupParams.CustomNodeManager);
+                var model = new PublishModel(startupParams.AuthProvider, 
+                    startupParams.CustomNodeManager, ConvertCameraData(loadedParams.BackgroundPreviewViewModel.GetCameraInformation()));
                 model.MessageLogged += this.OnMessageLogged;
 
                 var viewModel = new PublishViewModel(model)
@@ -197,6 +199,22 @@ namespace Dynamo.Publish
             }
         }
 
+        private CameraData ConvertCameraData(Wpf.ViewModels.Watch3D.CameraData data)
+        {
+            return new CameraData
+            {
+                Name = data.Name,
+                EyeX = data.EyePosition.X,
+                EyeY = data.EyePosition.Y,
+                EyeZ = data.EyePosition.Z,
+                LookX = data.LookDirection.X,
+                LookY = data.LookDirection.Y,
+                LookZ = data.LookDirection.Z,
+                UpX = data.UpDirection.X,
+                UpY = data.UpDirection.Y,
+                UpZ = data.UpDirection.Z
+            };
+        }
 
         /// <summary>
         /// Searches for given menu item. 

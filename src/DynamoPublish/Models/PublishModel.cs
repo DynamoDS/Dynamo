@@ -14,6 +14,7 @@ using Dynamo.Logging;
 using Reach.Data;
 using Reach.Exceptions;
 using Reach.Upload;
+using Reach.Messages.Data;
 
 namespace Dynamo.Publish.Models
 {
@@ -113,6 +114,7 @@ namespace Dynamo.Publish.Models
         private static string serverUrl;
         private static string page;
         private readonly Regex serverResponceRegex;
+        private readonly CameraData cameraData;
 
         private static string managerURL;
         public static string ManagerURL
@@ -227,7 +229,8 @@ namespace Dynamo.Publish.Models
             managerURL = appSettings.Settings["ManagerPage"].Value;
         }
 
-        internal PublishModel(IAuthProvider dynamoAuthenticationProvider, ICustomNodeManager dynamoCustomNodeManager)
+        internal PublishModel(IAuthProvider dynamoAuthenticationProvider, 
+            ICustomNodeManager dynamoCustomNodeManager, CameraData dynamoCameraData)
         {
             // Here we throw exceptions if any of the required static fields are not set
             // This prevents these exceptions from being thrown in the static constructor.
@@ -242,14 +245,16 @@ namespace Dynamo.Publish.Models
 
             authenticationProvider = dynamoAuthenticationProvider;
             customNodeManager = dynamoCustomNodeManager;
+            cameraData = dynamoCameraData;
 
             serverResponceRegex = new Regex(Resources.WorkspacesSendSucceededServerResponse, RegexOptions.IgnoreCase);
 
             State = UploadState.Uninitialized;
         }
 
-        internal PublishModel(IAuthProvider provider, ICustomNodeManager manager, IWorkspaceStorageClient client) :
-            this(provider, manager)
+        internal PublishModel(IAuthProvider provider, ICustomNodeManager manager, 
+            IWorkspaceStorageClient client, CameraData cameraData) :
+            this(provider, manager, cameraData)
         {
             reachClient = client;
         }
@@ -353,6 +358,7 @@ namespace Dynamo.Publish.Models
             return reachClient.Send(
                     workspace,
                     dependencies.CustomNodeWorkspaces,
+                    cameraData,
                     workspaceProperties);
         }
 

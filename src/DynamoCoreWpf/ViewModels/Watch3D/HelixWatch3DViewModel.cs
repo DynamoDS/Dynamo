@@ -711,6 +711,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             OnRequestZoomToFit(selectionBounds);
         }
 
+        public override CameraData GetCameraInformation()
+        {
+            return camera.ToCameraData(Name);
+        }
+
         /// <summary>
         /// Finds all output identifiers based on the context.
         /// 
