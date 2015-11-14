@@ -518,7 +518,7 @@ namespace Dynamo.Graph.Nodes
                     }
                 }
 
-                if (parseParam.Errors != null && parseParam.Errors.Any())
+                if (parseParam.Errors.Any())
                 {
                     errorMessage = string.Join("\n", parseParam.Errors.Select(m => m.Message));
                     ProcessError();

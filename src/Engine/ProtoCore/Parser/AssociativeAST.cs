@@ -37,15 +37,49 @@ namespace ProtoCore.AST.AssociativeAST
 
     public class CommentNode : AssociativeNode
     {
-        public enum CommentType { Inline, Block }
-        public CommentType Type { get; private set; }
-        public string Value { get; private set; }
+        public enum CommentType
+        {
+            Inline,
+            Block
+        }
+
+        public CommentType Type
+        {
+            get; private set;
+        }
+        
+        public string Value
+        {
+            get; private set;
+        }
+
         public CommentNode(int col, int line, string value, CommentType type)
         {
             this.col = col;
             this.line = line;
-            Value = value;
             Type = type;
+
+            Value = string.Empty;
+            if (!string.IsNullOrEmpty(value))
+            {
+                if (Type == CommentType.Inline)
+                {
+                    int start = value.IndexOf("//");
+                    if (start >= 0)
+                    {
+                        Value = value.Substring(start + 2);
+                    }
+                }
+                else
+                {
+                    int start = value.IndexOf("/*");
+                    int end = value.IndexOf("*/");
+                    if (start >= 0 && end >= 0)
+                    {
+                        Value = value.Substring(start + 2, end - start - 2);
+                    }
+                }
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -1017,15 +1051,11 @@ namespace ProtoCore.AST.AssociativeAST
     {
         public VarDeclNode()
         {
-            memregion = MemoryRegion.kInvalidRegion;
-            Attributes = new List<AssociativeNode>();
         }
 
         public VarDeclNode(VarDeclNode rhs)
             : base(rhs)
         {
-            Attributes = rhs.Attributes.Select(NodeUtils.Clone).ToList();
-            memregion = rhs.memregion;
             ArgumentType = new Type
             {
                 UID = rhs.ArgumentType.UID,
@@ -1033,16 +1063,14 @@ namespace ProtoCore.AST.AssociativeAST
                 Name = rhs.ArgumentType.Name
             };
             NameNode = NodeUtils.Clone(rhs.NameNode);
-            access = rhs.access;
+            Access = rhs.Access;
             IsStatic = rhs.IsStatic;
             ExternalAttributes = rhs.ExternalAttributes;
         }
 
-        public List<AssociativeNode> Attributes { get; set; }
-        public MemoryRegion memregion { get; set; }
         public Type ArgumentType { get; set; }
         public AssociativeNode NameNode { get; set; }
-        public ProtoCore.CompilerDefinitions.AccessModifier access { get; set; }
+        public CompilerDefinitions.AccessModifier Access { get; set; }
         public bool IsStatic { get; set; }
         public ExternalAttributes ExternalAttributes { get; set; }
 
@@ -1076,25 +1104,19 @@ namespace ProtoCore.AST.AssociativeAST
             if (null == otherNode)
                 return false;
 
-            return memregion == otherNode.memregion  &&
-                   ArgumentType.Equals(otherNode.ArgumentType) &&
-                   EqualityComparer<AssociativeNode>.Default.Equals(NameNode, otherNode.NameNode) && 
-                   IsStatic == otherNode.IsStatic && 
-                   Attributes.SequenceEqual(otherNode.Attributes);
+            return ArgumentType.Equals(otherNode.ArgumentType) &&
+                   EqualityComparer<AssociativeNode>.Default.Equals(NameNode, otherNode.NameNode) &&
+                   IsStatic == otherNode.IsStatic;
         }
 
         public override int GetHashCode()
         {
-            var memregionHashCode = memregion.GetHashCode();
             var argumentTypeHashCode = ArgumentType.GetHashCode();
             var nameNodeHashCode =
                 (NameNode == null ? base.GetHashCode() : NameNode.GetHashCode());
             var isStaticHashCode = IsStatic? 1 : 0;
-            var attributesHashCode =
-                (Attributes == null ? base.GetHashCode() : Attributes.GetHashCode());
 
-            return memregionHashCode ^ argumentTypeHashCode ^ 
-                nameNodeHashCode ^ isStaticHashCode ^ attributesHashCode;
+            return argumentTypeHashCode ^ nameNodeHashCode ^ isStaticHashCode;
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -3392,7 +3414,6 @@ namespace ProtoCore.AST.AssociativeAST
             var result = new ImperativeAST.VarDeclNode
             {
                 ArgumentType = aNode.ArgumentType,
-                memregion = aNode.memregion,
                 NameNode = aNode.NameNode.ToImperativeAST()
             };
             CopyProps(aNode, result);

@@ -4673,8 +4673,7 @@ namespace ProtoAssociative
         {
             var argument = new ProtoCore.AST.AssociativeAST.VarDeclNode()
             {
-                memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
-                access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
+                Access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
                 NameNode =AstFactory.BuildIdentifier(Constants.kTempArg),
                 ArgumentType = argType
             };
@@ -4850,7 +4849,7 @@ namespace ProtoAssociative
                 // It is possible that fail to allocate variable. In that 
                 // case we should remove initializing expression from 
                 // cnode's defaultArgExprList
-                int symbolIndex = AllocateMemberVariable(thisClassIndex, thisClassIndex, varIdent.Value, vardecl.ArgumentType.rank, vardecl.access, vardecl.IsStatic);
+                int symbolIndex = AllocateMemberVariable(thisClassIndex, thisClassIndex, varIdent.Value, vardecl.ArgumentType.rank, vardecl.Access, vardecl.IsStatic);
                 if (symbolIndex == ProtoCore.DSASM.Constants.kInvalidIndex)
                 {
                     Validity.Assert(thisClass.DefaultArgExprList.Count > 0);
@@ -4922,11 +4921,42 @@ namespace ProtoAssociative
             unPopulatedClasses.Remove(thisClassIndex);
         }
 
+        /// <summary>
+        /// Determines if a class is allowed to be codegened based on certain conditions in the class node
+        /// </summary>
+        /// <param name="classNode"></param>
+        /// <returns></returns>
+        private bool IsClassAllowed(ClassDeclNode classDecl)
+        {
+            // If its an FFI class, it is allowed
+            if (classDecl.IsExternLib)
+            {
+                return true;
+            }
+
+            // Check the class attributes
+            if (classDecl.Attributes != null)
+            {
+                // If at least one attribute is internal then the class is allowed
+                List<AttributeEntry> attributesList = PopulateAttributes(classDecl.Attributes);
+                if (attributesList.Where(a => a.IsInternalClassAttribute()).Count() > 0)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         private void EmitClassDeclNode(AssociativeNode node, ref ProtoCore.Type inferedType, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone,
             GraphNode graphNode = null)
         {
             ClassDeclNode classDecl = node as ClassDeclNode;
-
+            
+            // Restrict classes 
+            if (!IsClassAllowed(classDecl))
+            {
+                return;
+            }
             // Handling n-pass on class declaration
             if (ProtoCore.CompilerDefinitions.Associative.CompilePass.kClassName == compilePass)
             {
@@ -5139,6 +5169,7 @@ namespace ProtoAssociative
                     {
                         thisClass.Attributes = PopulateAttributes(classDecl.Attributes);
                     }
+
                     // member variable
                     int ix = -1;
                     int currentClassScope = -1;
@@ -5164,8 +5195,6 @@ namespace ProtoAssociative
                                 currentClassScope = globalClassIndex;
                                 ix = 0;
                             }
-                            ProtoCore.AST.AssociativeAST.VarDeclNode varnode = classDecl.varlist[ix++] as ProtoCore.AST.AssociativeAST.VarDeclNode;
-                            sn.Attributes = PopulateAttributes((varnode).Attributes);
                         }
                     }
                 }
@@ -6984,8 +7013,7 @@ namespace ProtoAssociative
 
             VarDeclNode thisPtrArg = new ProtoCore.AST.AssociativeAST.VarDeclNode()
             {
-                memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
-                access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
+                Access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
                 NameNode = ident,
                 ArgumentType = new ProtoCore.Type { Name = className, UID = procOverload.classIndex, rank = 0 }
             };
