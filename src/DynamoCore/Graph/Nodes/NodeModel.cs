@@ -1544,7 +1544,7 @@ namespace Dynamo.Graph.Nodes
             helper.SetAttribute("isVisible", IsVisible);
             helper.SetAttribute("isUpstreamVisible", IsUpstreamVisible);
             helper.SetAttribute("lacing", ArgumentLacing.ToString());
-            helper.SetAttribute("isInput", IsInputNode.ToString());
+            helper.SetAttribute("isSelectedInput", IsInputNode.ToString());
 
             var portsWithDefaultValues =
                 inPorts.Select((port, index) => new { port, index })
@@ -1595,7 +1595,7 @@ namespace Dynamo.Graph.Nodes
             isVisible = helper.ReadBoolean("isVisible", true);
             isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
-            IsInputNode = helper.ReadBoolean("isInput", true);
+            IsInputNode = helper.ReadBoolean("isSelectedInput", true);
 
             var portInfoProcessed = new HashSet<int>();
 
