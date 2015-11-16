@@ -157,18 +157,6 @@ public Node root { get; set; }
         return sb.ToString();
     }
 
-    
-    public List<Node> GetParsedASTList(ProtoCore.AST.AssociativeAST.CodeBlockNode codeBlockNode)
-    {
-        Validity.Assert(null != codeBlockNode);
-        List<Node> astNodes = new List<Node>();
-        for (int n = 0; n < stmtsParsed; n++)
-        {
-            astNodes.Add(codeBlockNode.Body[n]);
-        }
-        return astNodes;
-    }
-
     private bool IsIdentList()
     {
         Token pt = la;
@@ -380,20 +368,6 @@ public Node root { get; set; }
         return isPostFixedRepGuide;
     }
 
-
-    private bool IsPostfixedNumber(string number)
-    {
-        if (number.Length > 1)
-        {
-            char lastChar = number[number.Length-1];
-            if (lastChar == ProtoCore.DSASM.Constants.kLongestPostfix)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private bool IsNumber()
     {
         Token pt = la;
@@ -405,22 +379,6 @@ public Node root { get; set; }
 
         return ((_number == pt.kind) || (_float == pt.kind));
     }
-
-    /*
-    private bool IsTypedVariable()
-    {
-        Token pt = la;
-
-        if (_ident == pt.kind) {
-            pt = scanner.Peek();
-            scanner.ResetPeek();
-            if (":" == pt.val) 
-                return true;
-        }
-        scanner.ResetPeek();
-        return false;
-    }
-    */
 
     private bool IsLocalVariable()
     {
@@ -536,18 +494,6 @@ public Node root { get; set; }
         return isAssignmentStatement;
     }
 
-    private string GetImportedModuleFullPath(string moduleLocation)
-    {
-        string fileName = moduleLocation.Replace("\"", String.Empty);
-        string filePath = FileUtils.GetDSFullPathName(fileName, core.Options);
-
-        if (File.Exists(filePath))
-            return filePath;
-
-        SemErr(String.Format(Resources.NoSuchFileOrDirectoryToImport,fileName));
-        return null;
-    }
-
     private bool NotDefaultArg()
     {
         Token pt = la;          
@@ -578,10 +524,10 @@ public Node root { get; set; }
         return true;    
     }
 
-    private ProtoCore.AST.AssociativeAST.AssociativeNode GenerateBinaryOperatorMethodCallNode(Operator op, ProtoCore.AST.AssociativeAST.AssociativeNode op1, ProtoCore.AST.AssociativeAST.AssociativeNode op2)
+    private AssociativeNode GenerateBinaryOperatorMethodCallNode(Operator op, ProtoCore.AST.AssociativeAST.AssociativeNode op1, ProtoCore.AST.AssociativeAST.AssociativeNode op2)
     {
-        ProtoCore.AST.AssociativeAST.FunctionCallNode funCallNode = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
-        ProtoCore.AST.AssociativeAST.IdentifierNode funcName = new ProtoCore.AST.AssociativeAST.IdentifierNode { Value = ProtoCore.DSASM.Op.GetOpFunction(op), Name = ProtoCore.DSASM.Op.GetOpFunction(op) };
+        FunctionCallNode funCallNode = new FunctionCallNode();
+        IdentifierNode funcName = new IdentifierNode { Value = ProtoCore.DSASM.Op.GetOpFunction(op), Name = ProtoCore.DSASM.Op.GetOpFunction(op) };
         funCallNode.Function = funcName;
         funCallNode.Name = ProtoCore.DSASM.Op.GetOpFunction(op);
         funCallNode.FormalArguments.Add(op1); funCallNode.FormalArguments.Add(op2);
@@ -590,10 +536,10 @@ public Node root { get; set; }
         return funCallNode;
     }
 
- 	private ProtoCore.AST.AssociativeAST.AssociativeNode GenerateUnaryOperatorMethodCallNode(UnaryOperator op, ProtoCore.AST.AssociativeAST.AssociativeNode operand)
+ 	private AssociativeNode GenerateUnaryOperatorMethodCallNode(UnaryOperator op, ProtoCore.AST.AssociativeAST.AssociativeNode operand)
     {
-        ProtoCore.AST.AssociativeAST.FunctionCallNode funCallNode = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
-        ProtoCore.AST.AssociativeAST.IdentifierNode funcName = new ProtoCore.AST.AssociativeAST.IdentifierNode { Value = ProtoCore.DSASM.Op.GetUnaryOpFunction(op), Name = ProtoCore.DSASM.Op.GetUnaryOpFunction(op) };
+        FunctionCallNode funCallNode = new FunctionCallNode();
+        IdentifierNode funcName = new IdentifierNode { Value = ProtoCore.DSASM.Op.GetUnaryOpFunction(op), Name = ProtoCore.DSASM.Op.GetUnaryOpFunction(op) };
         funCallNode.Function = funcName;
         funCallNode.Name = ProtoCore.DSASM.Op.GetUnaryOpFunction(op);
         funCallNode.FormalArguments.Add(operand);
@@ -602,11 +548,9 @@ public Node root { get; set; }
         return funCallNode;
     }
 
-
-
-    ProtoCore.AST.ImperativeAST.IdentifierNode BuildImperativeIdentifier(string name, ProtoCore.PrimitiveType type = ProtoCore.PrimitiveType.kTypeVar)
+    private AST.ImperativeAST.IdentifierNode BuildImperativeIdentifier(string name, ProtoCore.PrimitiveType type = ProtoCore.PrimitiveType.kTypeVar)
     {
-        var ident = new ProtoCore.AST.ImperativeAST.IdentifierNode();
+        var ident = new AST.ImperativeAST.IdentifierNode();
         ident.Name = ident.Value = name;
         ident.datatype = TypeSystem.BuildPrimitiveTypeObject(type, 0);
         return ident;
@@ -933,10 +877,7 @@ public Node root { get; set; }
 		   imh = this.ImportModuleHandler;
 		}
 		
-		//string origModuleName = core.CurrentDSFileName;
-		//core.CurrentDSFileName = moduleName;
 		node = imh.Import(moduleName, typeName, alias);
-		//core.CurrentDSFileName = origModuleName;
 		
 	}
 
@@ -1761,9 +1702,6 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		}
 		ProtoCore.AST.AssociativeAST.AssociativeNode argumentSignature = null;
 		returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
-		
-		// TODO Jun: Luke made changes to array representation, handle this
-		//returnType.IsArray = false;
 		
 		if (la.kind == 50) {
 			Associative_TypeRestriction(out returnType);

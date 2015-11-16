@@ -150,10 +150,7 @@ Import_Statement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
             imh = this.ImportModuleHandler;
         }
 
-        //string origModuleName = core.CurrentDSFileName;
-        //core.CurrentDSFileName = moduleName;
         node = imh.Import(moduleName, typeName, alias);
-        //core.CurrentDSFileName = origModuleName;
     .)
 .
 
@@ -524,9 +521,6 @@ ident                           (. methodName = t.val; .)
                                     }
                                     ProtoCore.AST.AssociativeAST.AssociativeNode argumentSignature = null;
                                     returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
-
-                                    // TODO Jun: Luke made changes to array representation, handle this
-                                    //returnType.IsArray = false;
                                 .)
 [
     Associative_TypeRestriction<out returnType>
@@ -706,20 +700,6 @@ Associative_ArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, Proto
         ]
     ]
                                     (.  varDeclNode.ArgumentType = argtype; .)          
-
-//    [
-//        '=' 
-//                                    (. ProtoCore.AST.AssociativeAST.AssociativeNode rhsNode; .)     
-//        Associative_Expression<out rhsNode>         
-//                                    (.
-//                                        ProtoCore.AST.AssociativeAST.BinaryExpressionNode bNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-//                                        bNode.line = varDeclNode.line; bNode.col = varDeclNode.col; 
-//                                        bNode.LeftNode = tNode;
-//                                        bNode.RightNode = rhsNode;
-//                                        bNode.Optr = Operator.assign;
-//                                        varDeclNode.NameNode = bNode;       
-//                                        .)  
-//    ]
                                       (. node = varDeclNode; .)
 .
 

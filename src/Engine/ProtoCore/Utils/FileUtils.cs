@@ -65,35 +65,6 @@ namespace ProtoCore.Utils
             return fileName;
         }
 
-        /// <summary>
-        /// Loads a given file from the search path defined via options include directories.
-        /// </summary>
-        /// <param name="fileName">Name of the assembly file</param>
-        /// <param name="options">Options structure for search path, if options 
-        /// is null it will search only in the executing assembly path or the
-        /// current directory.</param>
-        /// <returns>Loaded Assembly or null if load failed</returns>
-        public static Assembly LoadAssembly(string fileName, Options options = null)
-        {
-            string filePath = GetDSFullPathName(fileName, options);
-            try
-            {
-                return ProtoFFI.FFIExecutionManager.Instance.LoadAssembly(filePath);
-            }
-            catch (System.IO.FileNotFoundException)
-            {
-                return null;
-            }
-            catch (System.IO.FileLoadException)
-            {
-                return null;
-            }
-            catch (System.IO.FileFormatException)
-            {
-                return null;
-            }
-        }
-
         private static bool GetFullPath(string fileName, string hintPath, out string fullPath)
         {
             string directoryPath = Directory.Exists(hintPath) ? hintPath : Path.GetDirectoryName(hintPath);
