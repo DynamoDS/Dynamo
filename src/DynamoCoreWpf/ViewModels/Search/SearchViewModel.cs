@@ -207,7 +207,7 @@ namespace Dynamo.ViewModels
                 strBuilder.Append(", ");
             }
 
-            InstrumentationLogger.LogPiiInfo("Filter categories", strBuilder.ToString().Trim());
+            InstrumentationLogger.LogPiiInfo("Filter-categories", strBuilder.ToString().Trim());
         }
 
         /// <summary>
