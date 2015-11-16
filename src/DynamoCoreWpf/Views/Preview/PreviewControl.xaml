@@ -157,10 +157,12 @@
                 <TextBlock Margin="{StaticResource PreviewContentMargin}">null</TextBlock>
             </Grid>
 
-            <Grid Name="largeContentGrid"
-                  Margin="{StaticResource PreviewContentMargin}"
+            <Grid Name="largeContentGrid"                 
                   MaxWidth="{StaticResource MaxContentGridWidth}"
                   MaxHeight="{StaticResource MaxContentGridHeight}"
+                  MinWidth="{Binding RelativeSource={RelativeSource FindAncestor, 
+                             AncestorType={x:Type controls:NodeView}}, 
+                             Path=ActualWidth}"
                   Visibility="Collapsed">
             </Grid>
         </Grid>

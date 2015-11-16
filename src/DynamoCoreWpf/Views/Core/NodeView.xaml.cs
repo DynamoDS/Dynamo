@@ -6,7 +6,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Threading;
 
 using Dynamo.Graph.Nodes;
 using Dynamo.Prompts;
@@ -80,6 +79,7 @@ namespace Dynamo.Controls
             DataContextChanged += OnDataContextChanged;
 
             Panel.SetZIndex(this, 1);
+
         }
 
         private void OnNodeViewUnloaded(object sender, RoutedEventArgs e)

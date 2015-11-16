@@ -382,8 +382,11 @@ namespace Dynamo.UI.Controls
                 {
                     if (largeContentGrid.Children.Count == 0)
                     {
-                        var tree = new WatchTree();
-                        tree.DataContext = new WatchViewModel();
+                        var tree = new WatchTree
+                        {
+                            Margin = (System.Windows.Thickness) this.Resources["PreviewContentMargin"],
+                            DataContext = new WatchViewModel()
+                        };
                         largeContentGrid.Children.Add(tree);
                     }
 
