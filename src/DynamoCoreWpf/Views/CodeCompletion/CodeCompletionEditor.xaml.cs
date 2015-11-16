@@ -13,8 +13,6 @@ using System.Windows.Input;
 
 namespace Dynamo.UI.Controls
 {
-    // TODO: Merge CodeCompletionEditor with CodeBlockEditor
-
     /// <summary>
     /// Interaction logic for CodeCompletionEditor.xaml
     /// </summary>
@@ -29,8 +27,16 @@ namespace Dynamo.UI.Controls
         }
 
         protected NodeViewModel nodeViewModel;
-        protected DynamoViewModel dynamoViewModel;
-        protected bool isDisposed;
+
+        /// <summary>
+        /// If the editor has been disposed. 
+        /// </summary>
+        protected bool IsDisposed
+        {
+            get; private set;
+        }
+
+        private DynamoViewModel dynamoViewModel;
         private CompletionWindow completionWindow;
         private CodeCompletionMethodInsightWindow insightWindow;
 
@@ -42,7 +48,7 @@ namespace Dynamo.UI.Controls
         {
             InitializeComponent();
 
-            nodeView.Unloaded += (obj, args) => isDisposed = true;
+            nodeView.Unloaded += (obj, args) => IsDisposed = true;
             this.nodeViewModel = nodeView.ViewModel;
             this.dynamoViewModel = nodeViewModel.DynamoViewModel;
             this.DataContext = nodeViewModel.NodeModel;
@@ -108,11 +114,31 @@ namespace Dynamo.UI.Controls
         /// <summary>
         /// Derived class overrides this function to handle the commit of code.
         /// </summary>
-        /// <param name="code"></param>
         protected virtual void OnCommitChange()
         {
         }
 
+        /// <summary>
+        /// Update the value of specified property of node to the input code.
+        /// </summary>
+        /// <param name="property"></param>
+        protected void UpdateNodeValue(string property)
+        {
+            dynamoViewModel.ExecuteCommand(
+                new Models.DynamoModel.UpdateModelValueCommand(
+                    nodeViewModel.WorkspaceViewModel.Model.Guid,
+                    nodeViewModel.NodeModel.GUID, 
+                    property,
+                    InnerTextEditor.Text));
+        }
+
+        /// <summary>
+        /// Return focus to the Dynamo.
+        /// </summary>
+        protected void ReturnFocus()
+        {
+            dynamoViewModel.ReturnFocusToSearch();
+        }
 
         private IEnumerable<ICompletionData> GetCompletionData(string code, string stringToComplete)
         {
@@ -245,7 +271,7 @@ namespace Dynamo.UI.Controls
         /// <param name="e"></param>
         private void OnTextAreaLostFocus(object sender, RoutedEventArgs e)
         {
-            if (isDisposed)
+            if (IsDisposed)
                 return;
 
             InnerTextEditor.TextArea.ClearSelection();
@@ -263,7 +289,7 @@ namespace Dynamo.UI.Controls
             {
                 if (e.Key == Key.Enter || e.Key == Key.Return)
                 {
-                    dynamoViewModel.ReturnFocusToSearch();
+                    ReturnFocus();
                 }
             }
             else if (e.Key == Key.Escape)

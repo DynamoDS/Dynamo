@@ -1,7 +1,6 @@
 ﻿﻿using Dynamo.Controls;
 ﻿using Dynamo.Core;
 using System;
-using System.Windows;
 ﻿using Dynamo.Graph.Nodes;
 ﻿using DynCmd = Dynamo.Models.DynamoModel;
 
@@ -42,18 +41,15 @@ namespace Dynamo.UI.Controls
             WatermarkLabel.Text = Properties.Resources.WatermarkLabelText;
         }
 
-        /// <summary>
-        /// Handle escape.
-        /// </summary>
         protected override void OnEscape()
         {
             var text = InnerTextEditor.Text;
             if (codeBlockNode.Code != null && text.Equals(codeBlockNode.Code))
-                dynamoViewModel.ReturnFocusToSearch();
+                ReturnFocus();
             
             if (string.IsNullOrEmpty(text))
             {
-                dynamoViewModel.ExecuteCommand(
+                nodeViewModel.DynamoViewModel.ExecuteCommand(
                    new DynCmd.DeleteModelCommand(codeBlockNode.GUID));
             }
         }
@@ -78,11 +74,7 @@ namespace Dynamo.UI.Controls
             // 
             if (!codeBlockNode.Code.Equals(InnerTextEditor.Text))
             {
-                nodeViewModel.DynamoViewModel.ExecuteCommand(
-                    new DynCmd.UpdateModelValueCommand(
-                        nodeViewModel.WorkspaceViewModel.Model.Guid,
-                        codeBlockNode.GUID,
-                        "Code", InnerTextEditor.Text));
+                UpdateNodeValue("Code");
             }
 
             if (createdForNewCodeBlock)
