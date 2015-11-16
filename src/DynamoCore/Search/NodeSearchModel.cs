@@ -14,19 +14,22 @@ namespace Dynamo.Search
     {
         private PreferenceSettings preferences;
 
-        private bool isDetailedMode;
-
         /// <summary>
         ///  The property specifies which layout(detailed or compact) is used.
         /// </summary>
         public bool IsDetailedMode
         {
-            get { return isDetailedMode; }
+            get
+            {
+                if (preferences != null)
+                {
+                    return preferences.ShowDetailedLayout;
+                }
+                return true;
+            }
             set
             {
-
-                isDetailedMode = value;
-                preferences.ShowDetailedLayout = isDetailedMode;
+                preferences.ShowDetailedLayout = value;
             }
         }
 
