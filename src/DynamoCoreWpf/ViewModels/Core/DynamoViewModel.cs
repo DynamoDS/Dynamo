@@ -878,16 +878,7 @@ namespace Dynamo.ViewModels
 
             return true;
         }
-
-        internal bool CanSetRunStateOfTheNode(object parameters)
-        {
-            //Get the RUN STATE of the current node and
-            //set that value in Edit Menu and workspace context menu.
-            RaisePropertyChanged("NodeRunChecked");
-            RaisePropertyChanged("NodeRunEnabled");
-            return true;
-        }
-
+       
         private void Paste(object parameter)
         {
             OnRequestPaste();

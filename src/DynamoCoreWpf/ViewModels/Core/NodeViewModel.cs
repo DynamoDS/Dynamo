@@ -352,7 +352,7 @@ namespace Dynamo.ViewModels
         /// A flag indicating whether the node is set to freeze by the user.
         /// </summary>
         /// <value>
-        ///  This will return true if the freeze is set by the user. otherwise false.
+        ///  Returns true if the node has been frozen explicitly by the user, otherwise false.
         /// </value>        
         public bool IsExplicitFrozen
         {
@@ -360,7 +360,7 @@ namespace Dynamo.ViewModels
             {    
                 //if the node is freeze by the user, then always
                 //check the Freeze property     
-                if (this.NodeLogic.explictFrozen)
+                if (this.NodeLogic.isFrozenExplicitly)
                 {                   
                     return true;
                 }
@@ -381,7 +381,7 @@ namespace Dynamo.ViewModels
             get
             {
                 //this is the default case.
-                if (!this.NodeLogic.explictFrozen &&
+                if (!this.NodeLogic.isFrozenExplicitly &&
                       !this.NodeLogic.IsFrozen)
                 {
                     return true;
@@ -389,14 +389,14 @@ namespace Dynamo.ViewModels
 
                 //If any of the node is set to freeze by the user and 
                 // if that node is frozen by itself, then disable the Freeze property                              
-                if (this.nodeLogic.explictFrozen && NodeModel.IsAnyUpstreamFrozen())
+                if (this.nodeLogic.isFrozenExplicitly && NodeModel.IsAnyUpstreamFrozen())
                 {
                     return false;
                 }
                                
                 //if the node is set to freeze by the user     
                 // then enable the Freeze property
-                if (this.NodeLogic.explictFrozen)                   
+                if (this.NodeLogic.isFrozenExplicitly)                   
                 {
                     return true;
                 }
@@ -1037,7 +1037,20 @@ namespace Dynamo.ViewModels
 
         private void ComputeRunStateOfTheNode(object parameters)
         {
-            WorkspaceViewModel.ComputeRunStateOfTheNodeCommand.Execute(this.nodeLogic);
+            var node = this.nodeLogic;
+            if (node != null)
+            {
+                var oldFrozen = (!node.isFrozenExplicitly).ToString();
+                var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
+                    new[] { node.GUID }, "IsFrozen", oldFrozen);
+
+                DynamoViewModel.Model.ExecuteCommand(command);
+            }
+            else if (DynamoSelection.Instance.Selection.Any())
+            {
+                node = DynamoSelection.Instance.Selection.Cast<NodeModel>().First();
+                node.IsFrozen = !node.IsFrozen;
+            }   
         }
 
         private bool CanSetTheRunStateOftheNode(object parameters)

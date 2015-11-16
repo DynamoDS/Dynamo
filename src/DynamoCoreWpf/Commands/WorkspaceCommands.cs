@@ -217,20 +217,7 @@ namespace Dynamo.ViewModels
                 return _showInCanvasSearchCommand;
             }
         }
-
-        public DelegateCommand ComputeRunStateOfTheNodeCommand
-        {
-            get
-            {
-                if (_computeRunStateCommand == null)
-                {
-                    _computeRunStateCommand = new DelegateCommand(ComputeRunStateOfTheNode, CanComputeRunStateOfTheNode);
-                }
-
-                return _computeRunStateCommand;
-            }
-        }
-      
+         
         #endregion
 
         #region Properties for Command Data Binding

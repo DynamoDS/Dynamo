@@ -801,31 +801,7 @@ namespace Dynamo.ViewModels
         {
             return DynamoSelection.Instance.Selection.Count > 1;
         }
-
-        private void ComputeRunStateOfTheNode(object param)
-        {
-            var node = param as NodeModel;
-            if (node != null)
-            {
-                var oldFrozen = (!node.explictFrozen).ToString();
-                var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
-                    new[] {node.GUID}, "IsFrozen", oldFrozen);
-
-                DynamoViewModel.Model.ExecuteCommand(command);                                               
-            }
-            else if(DynamoSelection.Instance.Selection.Any())
-            {
-                node = DynamoSelection.Instance.Selection.Cast<NodeModel>().First();
-                node.IsFrozen = !node.IsFrozen;
-            }   
-                     
-        }
-
-        private bool CanComputeRunStateOfTheNode(object parameter)
-        {
-            return DynamoSelection.Instance.Selection.Count() == 1;
-        }
-
+        
         private void Paste(object param)
         {
             var point = InCanvasSearchViewModel.InCanvasSearchPosition;

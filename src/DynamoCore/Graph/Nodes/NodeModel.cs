@@ -44,7 +44,7 @@ namespace Dynamo.Graph.Nodes
         private bool areOutputPortsRegistered;
 
         //A flag indicating whether the node has been explicitly frozen.
-        internal bool explictFrozen;
+        internal bool isFrozenExplicitly;
       
         /// <summary>
         /// The cached value of this node. The cachedValue object is protected by the cachedValueMutex
@@ -629,11 +629,11 @@ namespace Dynamo.Graph.Nodes
         {
             get
             {
-                return IsAnyUpstreamFrozen() || explictFrozen;               
+                return IsAnyUpstreamFrozen() || isFrozenExplicitly;               
             }
             set
             {
-                explictFrozen = value;                                 
+                isFrozenExplicitly = value;                                 
                 OnNodeModified();
             }
         }
@@ -657,7 +657,7 @@ namespace Dynamo.Graph.Nodes
             var inpNodes = sets.Where(x => x != null).Select(z => z.Item2).Distinct();
             foreach (var inode in inpNodes)
             {
-                if (inode.explictFrozen)
+                if (inode.isFrozenExplicitly)
                 {
                     ret = true;
                     break;
@@ -1620,7 +1620,7 @@ namespace Dynamo.Graph.Nodes
             helper.SetAttribute("isUpstreamVisible", IsUpstreamVisible);
             helper.SetAttribute("lacing", ArgumentLacing.ToString());
             helper.SetAttribute("isSelectedInput", IsSelectedInput.ToString());
-            helper.SetAttribute("IsFrozen", explictFrozen);
+            helper.SetAttribute("IsFrozen", isFrozenExplicitly);
            
             var portsWithDefaultValues =
                 inPorts.Select((port, index) => new { port, index })
@@ -1672,7 +1672,7 @@ namespace Dynamo.Graph.Nodes
             isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
             IsSelectedInput = helper.ReadBoolean("isSelectedInput", true);
-            explictFrozen = helper.ReadBoolean("IsFrozen", false);            
+            isFrozenExplicitly = helper.ReadBoolean("IsFrozen", false);            
            
             var portInfoProcessed = new HashSet<int>();
 
