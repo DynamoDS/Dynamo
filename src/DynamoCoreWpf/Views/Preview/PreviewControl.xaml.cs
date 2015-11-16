@@ -86,11 +86,12 @@ namespace Dynamo.UI.Controls
             {
                 return (bool)GetValue(StaysOpenProperty);
             }
-            set
+            private set
             {
                 SetValue(StaysOpenProperty, value);
             }
         }
+
         #endregion
 
         #region Public Class Operational Methods
@@ -101,6 +102,7 @@ namespace Dynamo.UI.Controls
             this.nodeViewModel = nodeViewModel;
             InitializeComponent();
             Loaded += OnPreviewControlLoaded;
+            StaysOpen = false;
         }
 
         /// <summary>
@@ -193,24 +195,6 @@ namespace Dynamo.UI.Controls
             {
                 return currentState == State.InTransition ||
                         currentState == State.PreTransition;
-            }
-        }
-
-        private Canvas HostingCanvas
-        {
-            get
-            {
-                if (this.hostingCanvas == null)
-                {
-                    this.hostingCanvas = this.Parent as Canvas;
-                    if (this.hostingCanvas == null)
-                    {
-                        var message = "PreviewControl must be a child of Canvas";
-                        throw new InvalidOperationException(message);
-                    }
-                }
-
-                return this.hostingCanvas;
             }
         }
 
@@ -536,9 +520,10 @@ namespace Dynamo.UI.Controls
                     var smallContentSize = ComputeSmallContentSize();
                     UpdateAnimatorTargetSize(SizeAnimator.PhaseIn, smallContentSize);
 
-                    this.centralizedGrid.Opacity = 0.0;
-                    this.centralizedGrid.Visibility = System.Windows.Visibility.Visible;
-                    this.smallContentGrid.Visibility = System.Windows.Visibility.Visible;
+                    centralizedGrid.Opacity = 0.0;
+                    centralizedGrid.Visibility = Visibility.Visible;
+                    smallContentGrid.Visibility = Visibility.Visible;
+                    expandBorder.Visibility = Visibility.Visible;
 
                     // The real transition starts
                     SetCurrentStateAndNotify(State.InTransition);
@@ -551,6 +536,9 @@ namespace Dynamo.UI.Controls
         {
             if (this.IsCondensed == false)
                 throw new InvalidOperationException();
+
+            bubbleTools.Visibility = Visibility.Collapsed;
+            expandBorder.Visibility = Visibility.Collapsed;
 
             SetCurrentStateAndNotify(State.InTransition);
             phaseOutStoryboard.Begin(this, true);
@@ -567,7 +555,9 @@ namespace Dynamo.UI.Controls
 
             RefreshCondensedDisplay(() =>
                 {
-                    this.smallContentGrid.Visibility = System.Windows.Visibility.Visible;
+                    smallContentGrid.Visibility = Visibility.Visible;
+                    bubbleTools.Visibility = Visibility.Collapsed;
+                    expandBorder.Visibility = Visibility.Visible;
 
                     // The real transition starts
                     SetCurrentStateAndNotify(State.InTransition);
@@ -591,9 +581,10 @@ namespace Dynamo.UI.Controls
                 {
                     largeContentGrid.Visibility = Visibility.Visible;
                     bubbleTools.Visibility = Visibility.Visible;
+                    expandBorder.Visibility = Visibility.Collapsed;
+
                     // The real transition starts
                     SetCurrentStateAndNotify(State.InTransition);
-
                     var largeContentSize = ComputeLargeContentSize();
                     UpdateAnimatorTargetSize(SizeAnimator.Expansion, largeContentSize);
                     this.expandStoryboard.Begin(this, true);
@@ -673,21 +664,18 @@ namespace Dynamo.UI.Controls
         private void OnPreviewControlExpanded(object sender, EventArgs e)
         {
             SetCurrentStateAndNotify(State.Expanded);
-            smallContentGrid.Visibility = System.Windows.Visibility.Hidden;
             BeginNextTransition(); // See if there's any more requests.
         }
 
         private void OnPreviewControlCondensed(object sender, EventArgs e)
         {
             SetCurrentStateAndNotify(State.Condensed);
-            largeContentGrid.Visibility = Visibility.Hidden;
-            bubbleTools.Visibility = Visibility.Hidden;
             BeginNextTransition(); // See if there's any more requests.
         }
 
-        private void OnPreviewControlMouseMove(object sender, MouseEventArgs e)
+        private void OnExpandBorderMouseMove(object sender, MouseEventArgs e)
         {
-            if (IsMouseOver && IsCondensed && !IsInTransition)
+            if (IsMouseOver && IsCondensed)
             {
                 TransitionToState(State.Expanded);
             }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -27,7 +28,6 @@ namespace Dynamo.Controls
         public delegate void UpdateLayoutDelegate(FrameworkElement el);       
         private NodeViewModel viewModel = null;
         private PreviewControl previewControl = null;
-        private readonly DispatcherTimer dispatcherTimer = new DispatcherTimer();
 
         public NodeView TopControl
         {
@@ -80,8 +80,6 @@ namespace Dynamo.Controls
             DataContextChanged += OnDataContextChanged;
 
             Panel.SetZIndex(this, 1);
-
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 5);
         }
 
         private void OnNodeViewUnloaded(object sender, RoutedEventArgs e)
@@ -383,26 +381,19 @@ namespace Dynamo.Controls
             }
         }
 
-        private void OnNodeViewMouseLeave(object sender, MouseEventArgs e)
+        private async void OnNodeViewMouseLeave(object sender, MouseEventArgs e)
         {
             if (PreviewControl.IsInTransition) // In transition state, come back later.
                 return;
 
-            dispatcherTimer.Start();
             // Give user some time to move mouse over preview control.
-            dispatcherTimer.Tick += (s, args) =>
+            await Task.Delay(30);
+            // If mouse in not over node/preview control and preview control is not pined, we can hide preview control.
+            if (!IsMouseOver && !PreviewControl.IsMouseOver && !PreviewControl.StaysOpen)
             {
-                if (PreviewControl.IsInTransition) // In transition state, come back later.
-                    return;
+                PreviewControl.TransitionToState(PreviewControl.State.Hidden);
+            }
 
-                // If mouse in not over preview control or preview control is not pined, we can hide preview control.
-                if (!PreviewControl.IsMouseOver && !PreviewControl.StaysOpen)
-                {
-                    PreviewControl.TransitionToState(PreviewControl.State.Hidden);
-                }
-
-                dispatcherTimer.Stop();
-            };
         }
 
         private void OnPreviewControlStateChanged(object sender, EventArgs e)

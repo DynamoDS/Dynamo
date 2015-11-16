@@ -12,7 +12,6 @@
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              mc:Ignorable="d"
-             MouseMove="OnPreviewControlMouseMove"
              MouseLeave="OnPreviewControlMouseLeave">
 
     <UserControl.Resources>
@@ -224,6 +223,22 @@
                                  Margin="5,5,5,5"
                                  Foreground="{StaticResource BubblePreviewIconColor}" />-->
             </StackPanel>
+        </Border>
+
+        <Border Grid.Column="1"
+                Name="expandBorder"
+                BorderThickness="0,1,1,1"
+                BorderBrush="{StaticResource BubblePreviewBorderColor}"
+                Background="White"
+                VerticalAlignment="Top"
+                Visibility="Visible"
+                MouseMove="OnExpandBorderMouseMove">
+            <fa:ImageAwesome Name="ExpandIcon"
+                             Icon="CaretRight"
+                             Foreground="{StaticResource UnpinnedIconForegroundColor}"
+                             Height="6"
+                             Width="6"
+                             Margin="5,5,5,5" />
         </Border>
 
     </Grid>
