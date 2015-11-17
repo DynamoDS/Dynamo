@@ -4,6 +4,7 @@ using Dynamo.Publish.ViewModels;
 using Dynamo.Publish.Views;
 using Dynamo.Wpf.Extensions;
 using System;
+using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Linq;
 using System.Windows;
@@ -112,13 +113,13 @@ namespace Dynamo.Publish
 
             item.Click += (sender, args) =>
             {
-                var model = new PublishModel(startupParams.AuthProvider, 
-                    startupParams.CustomNodeManager, ConvertCameraData(loadedParams.BackgroundPreviewViewModel.GetCameraInformation()));
+                var model = new PublishModel(startupParams.AuthProvider, startupParams.CustomNodeManager);
                 model.MessageLogged += this.OnMessageLogged;
 
                 var viewModel = new PublishViewModel(model)
                 {
-                    CurrentWorkspaceModel = loadedParams.CurrentWorkspaceModel
+                    CurrentWorkspaceModel = loadedParams.CurrentWorkspaceModel,
+                    Cameras = ConvertCameraData(loadedParams.BackgroundPreviewViewModel.GetCameraInformation())
                 };
 
                 var window = new PublishView(viewModel)
@@ -199,20 +200,23 @@ namespace Dynamo.Publish
             }
         }
 
-        private CameraData ConvertCameraData(Wpf.ViewModels.Watch3D.CameraData data)
+        private static IEnumerable<CameraData> ConvertCameraData(Wpf.ViewModels.Watch3D.CameraData data)
         {
-            return new CameraData
+            return new[]
             {
-                Name = data.Name,
-                EyeX = data.EyePosition.X,
-                EyeY = data.EyePosition.Y,
-                EyeZ = data.EyePosition.Z,
-                LookX = data.LookDirection.X,
-                LookY = data.LookDirection.Y,
-                LookZ = data.LookDirection.Z,
-                UpX = data.UpDirection.X,
-                UpY = data.UpDirection.Y,
-                UpZ = data.UpDirection.Z
+                new CameraData
+                {
+                    Name = data.Name,
+                    EyeX = data.EyePosition.X,
+                    EyeY = data.EyePosition.Y,
+                    EyeZ = data.EyePosition.Z,
+                    LookX = data.LookDirection.X,
+                    LookY = data.LookDirection.Y,
+                    LookZ = data.LookDirection.Z,
+                    UpX = data.UpDirection.X,
+                    UpY = data.UpDirection.Y,
+                    UpZ = data.UpDirection.Z
+                }
             };
         }
 

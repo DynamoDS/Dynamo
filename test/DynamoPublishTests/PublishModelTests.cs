@@ -44,11 +44,10 @@ namespace DynamoPublishTests
 
             client.Setup(c =>
                 // If it's sent any workspace or any custom nodes, result always will be successful.
-                c.Send(It.IsAny<HomeWorkspaceModel>(), It.IsAny<IEnumerable<CustomNodeWorkspaceModel>>(), It.IsAny<CameraData>(), null)).Returns(successMock);
+                c.Send(It.IsAny<HomeWorkspaceModel>(), It.IsAny<IEnumerable<CustomNodeWorkspaceModel>>(), null)).Returns(successMock);
 
             // Create publish model.
-            publishModel = new PublishModel(authenticationProvider.Object, 
-                CurrentDynamoModel.CustomNodeManager, client.Object, CameraData.CreateDefaultCameraData());            
+            publishModel = new PublishModel(authenticationProvider.Object, CurrentDynamoModel.CustomNodeManager, client.Object);            
         }
 
         private void AssertNumberOfDeps(int numDeps)
