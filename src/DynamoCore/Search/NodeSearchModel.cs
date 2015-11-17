@@ -12,36 +12,6 @@ namespace Dynamo.Search
     /// </summary>
     public class NodeSearchModel : SearchLibrary<NodeSearchElement, NodeModel>
     {
-        private PreferenceSettings preferences;
-
-        /// <summary>
-        ///  The property specifies which layout(detailed or compact) is used.
-        /// </summary>
-        public bool IsDetailedMode
-        {
-            get
-            {
-                if (preferences != null)
-                {
-                    return preferences.ShowDetailedLayout;
-                }
-                return true;
-            }
-            set
-            {
-                preferences.ShowDetailedLayout = value;
-            }
-        }
-
-        /// <summary>
-        /// Node search model constructor.
-        /// </summary>
-        /// <param name="preferenceSettings">Settings, that Dynamo uses every session.</param>
-        public NodeSearchModel(PreferenceSettings preferenceSettings = null)
-        {
-            preferences = preferenceSettings;
-        }
-
         public override void Add(NodeSearchElement entry)
         {
             SearchElementGroup group = SearchElementGroup.None;

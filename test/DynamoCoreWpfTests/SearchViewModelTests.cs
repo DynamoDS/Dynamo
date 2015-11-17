@@ -756,24 +756,6 @@ namespace Dynamo.Tests
 
         #endregion
 
-        #region Layout changes
-
-        [Test]
-        [Category("UnitTests")]
-        public void CompactLayout()
-        {
-            model = new NodeSearchModel(new PreferenceSettings());
-            viewModel = new SearchViewModel(model);
-
-            viewModel.IsDetailedMode = false;
-            Assert.IsFalse(model.IsDetailedMode);
-
-            viewModel.IsDetailedMode = true;
-            Assert.IsTrue(model.IsDetailedMode);
-        }
-
-        #endregion
-
         #region Helpers
 
         private static NodeSearchElement CreateCustomNode(string name, string category,
