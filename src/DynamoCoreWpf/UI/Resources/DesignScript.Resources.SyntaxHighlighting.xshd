@@ -30,6 +30,10 @@
       <Span name="LineComment" stopateol="true" color="#309130">
         <Begin>//</Begin>
       </Span>
+      <Span name="MultiLineComment" stopateol="false" color="#309130">
+        <Begin>/*</Begin>
+        <End>*/</End>
+      </Span>
       <Span name="String" stopateol="true" color="#885D3B" escapecharacter="\">
         <Begin>"</Begin>
         <End>"</End>
