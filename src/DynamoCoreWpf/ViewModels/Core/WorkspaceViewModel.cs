@@ -10,16 +10,15 @@ using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.Utilities;
-
 using System.Windows.Input;
-using Dynamo.Configuration;
-using Dynamo.Core;
+using Dynamo.Configuration;  
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
+ 
 using Dynamo.Wpf.ViewModels;
 
 using Function = Dynamo.Graph.Nodes.CustomNodes.Function;
@@ -273,7 +272,7 @@ namespace Dynamo.ViewModels
         public Action FindNodesFromElements { get; set; }
 
         public RunSettingsViewModel RunSettingsViewModel { get; protected set; }
-
+         
         #endregion
 
         public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel dynamoViewModel)
@@ -357,7 +356,7 @@ namespace Dynamo.ViewModels
                 case "CurrentSpace":
                     // When workspace is changed(e.g. from home to custom), close InCanvasSearch.
                     OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
-                    break;
+                    break;                
             }
         }
 
@@ -802,7 +801,7 @@ namespace Dynamo.ViewModels
         {
             return DynamoSelection.Instance.Selection.Count > 1;
         }
-
+        
         private void Paste(object param)
         {
             var point = InCanvasSearchViewModel.InCanvasSearchPosition;
@@ -1093,12 +1092,12 @@ namespace Dynamo.ViewModels
             AlignSelectedCommand.RaiseCanExecuteChanged();
             ShowHideAllUpstreamPreviewCommand.RaiseCanExecuteChanged();
             ShowHideAllGeometryPreviewCommand.RaiseCanExecuteChanged();
-            SetArgumentLacingCommand.RaiseCanExecuteChanged();
+            SetArgumentLacingCommand.RaiseCanExecuteChanged();           
             RaisePropertyChanged("HasSelection");
             RaisePropertyChanged("IsGeometryOperationEnabled");
             RaisePropertyChanged("AnyNodeVisible");
             RaisePropertyChanged("AnyNodeUpstreamVisible");
-            RaisePropertyChanged("SelectionArgumentLacing");
+            RaisePropertyChanged("SelectionArgumentLacing");            
         }
     }
 

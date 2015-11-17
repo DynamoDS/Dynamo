@@ -31,6 +31,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand _showHideAllUpstreamPreviewCommand;
         private DelegateCommand _showInCanvasSearchCommand;
         private DelegateCommand _pasteCommand;
+        private DelegateCommand _computeRunStateCommand;
 
         #endregion
 
@@ -216,7 +217,7 @@ namespace Dynamo.ViewModels
                 return _showInCanvasSearchCommand;
             }
         }
-
+         
         #endregion
 
         #region Properties for Command Data Binding

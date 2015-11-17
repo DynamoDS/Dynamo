@@ -43,6 +43,9 @@ namespace Dynamo.Graph.Nodes
         private bool areInputPortsRegistered;
         private bool areOutputPortsRegistered;
 
+        ///A flag indicating whether the node has been explicitly frozen.
+        internal bool isFrozenExplicitly;
+      
         /// <summary>
         /// The cached value of this node. The cachedValue object is protected by the cachedValueMutex
         /// as it may be accessed from multiple threads concurrently. 
@@ -93,7 +96,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         internal event DispatchedToUIThreadHandler DispatchedToUI;
-
+      
         #endregion
 
         #region public properties
@@ -599,7 +602,7 @@ namespace Dynamo.Graph.Nodes
             else
             {
                 string id = AstIdentifierBase + "_out" + outputIndex;
-                return AstFactory.BuildIdentifier(id);
+               return AstFactory.BuildIdentifier(id);
             }
         }
 
@@ -612,7 +615,60 @@ namespace Dynamo.Graph.Nodes
         {
              return ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeVar);
         }
-        #endregion
+
+      
+        /// <summary>
+        /// A flag indicating whether the node is frozen.
+        /// When a node is frozen, the node, and all nodes downstream will not participate in execution.
+        /// This will return true if any upstream node is frozen or if the node was explicitly frozen.        
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this node is frozen; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsFrozen
+        {
+            get
+            {
+                return IsAnyUpstreamFrozen() || isFrozenExplicitly;               
+            }
+            set
+            {
+                isFrozenExplicitly = value;                                 
+                OnNodeModified();
+            }
+        }
+       
+        #endregion   
+  
+        #region freeze execution
+        /// <summary>
+        /// Determines whether any of the upstream node is frozen.
+        /// </summary>
+        /// <returns></returns>
+        internal bool IsAnyUpstreamFrozen()
+        {
+            bool ret = false;
+            return CheckIfAnyUpstreamNodeIsFrozen(this, ref ret);
+        }
+
+        private bool CheckIfAnyUpstreamNodeIsFrozen(NodeModel node, ref bool ret)
+        {             
+            var sets = node.InputNodes.Values;
+            var inpNodes = sets.Where(x => x != null).Select(z => z.Item2).Distinct();
+            foreach (var inode in inpNodes)
+            {
+                if (inode.isFrozenExplicitly)
+                {
+                    ret = true;
+                    break;
+                }
+
+                CheckIfAnyUpstreamNodeIsFrozen(inode, ref ret);
+            }
+
+            return ret;
+        }
+        #endregion  
 
         protected NodeModel()
         {
@@ -1526,6 +1582,14 @@ namespace Dynamo.Graph.Nodes
                     if (bool.TryParse(value, out newUpstreamVisibilityValue))
                         IsUpstreamVisible = newUpstreamVisibilityValue;
                     return true;
+
+                case "IsFrozen":
+                    bool newIsFrozen;
+                    if (bool.TryParse(value, out newIsFrozen))
+                    {
+                        IsFrozen = newIsFrozen;
+                    }                   
+                    return true;               
             }
 
             return base.UpdateValueCore(updateValueParams);
@@ -1556,7 +1620,8 @@ namespace Dynamo.Graph.Nodes
             helper.SetAttribute("isUpstreamVisible", IsUpstreamVisible);
             helper.SetAttribute("lacing", ArgumentLacing.ToString());
             helper.SetAttribute("isSelectedInput", IsSelectedInput.ToString());
-
+            helper.SetAttribute("IsFrozen", isFrozenExplicitly);
+           
             var portsWithDefaultValues =
                 inPorts.Select((port, index) => new { port, index })
                    .Where(x => x.port.UsingDefaultValue);
@@ -1607,7 +1672,8 @@ namespace Dynamo.Graph.Nodes
             isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
             IsSelectedInput = helper.ReadBoolean("isSelectedInput", true);
-
+            isFrozenExplicitly = helper.ReadBoolean("IsFrozen", false);            
+           
             var portInfoProcessed = new HashSet<int>();
 
             //read port information
@@ -1651,6 +1717,7 @@ namespace Dynamo.Graph.Nodes
                 // Notify listeners that the position of the node has changed,
                 // then all connected connectors will also redraw themselves.
                 ReportPosition();
+                
             }
         }
 

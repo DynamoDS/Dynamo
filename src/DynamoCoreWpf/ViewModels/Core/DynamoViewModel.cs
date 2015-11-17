@@ -405,7 +405,7 @@ namespace Dynamo.ViewModels
         {
             get { return BackgroundPreviewViewModel.Active; }
         }
-
+        
         #endregion
 
         public struct StartConfiguration
@@ -877,7 +877,7 @@ namespace Dynamo.ViewModels
 
             return true;
         }
-
+       
         private void Paste(object parameter)
         {
             OnRequestPaste();

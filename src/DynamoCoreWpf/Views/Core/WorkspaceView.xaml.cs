@@ -167,7 +167,7 @@ namespace Dynamo.Views
             ViewModel.DynamoViewModel.AddAnnotationCommand.RaiseCanExecuteChanged();
             ViewModel.DynamoViewModel.UngroupAnnotationCommand.RaiseCanExecuteChanged();
             ViewModel.DynamoViewModel.UngroupModelCommand.RaiseCanExecuteChanged();
-            ViewModel.DynamoViewModel.AddModelsToGroupModelCommand.RaiseCanExecuteChanged();
+            ViewModel.DynamoViewModel.AddModelsToGroupModelCommand.RaiseCanExecuteChanged();           
         }
 
         /// <summary>
