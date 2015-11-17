@@ -40,7 +40,7 @@ namespace DynamoCoreWpfTests
             //Check the Freeze property. Assuming only one node is selected
             //this property is fetched from Nodeviewmodel. Context Menu on Workspace,
             //Context menu on Node and Edit Menu toolbar refers to the same location.
-            Assert.AreEqual(addNodeVm.IsExplicitFrozen, true);
+            Assert.AreEqual(addNodeVm.IsFrozenExplicitly, true);
             Assert.AreEqual(addNodeVm.CanToggleFrozen, true);
         }
 
@@ -81,14 +81,14 @@ namespace DynamoCoreWpfTests
             //Get the ViewModel of the number node and check the Freeze property.
             var numberNodevm = ViewModel.CurrentSpaceViewModel.Nodes.First(x => x.NodeLogic == numberNode1);
             Assert.IsNotNull(numberNodevm);
-            Assert.AreEqual(numberNodevm.IsExplicitFrozen, true);
+            Assert.AreEqual(numberNodevm.IsFrozenExplicitly, true);
             Assert.AreEqual(numberNodevm.CanToggleFrozen, true);
 
             //Get the ViewModel of add node and check the Freeze property. This node is a child node of numbernode1.
             //so this node should be in Frozen and Executing state.
             var addNodeVm = ViewModel.CurrentSpaceViewModel.Nodes.First(x => x.NodeLogic == addNode);
             Assert.IsNotNull(addNodeVm);
-            Assert.AreEqual(addNodeVm.IsExplicitFrozen, false);
+            Assert.AreEqual(addNodeVm.IsFrozenExplicitly, false);
             Assert.AreEqual(addNodeVm.CanToggleFrozen, false);
         }
 
@@ -131,7 +131,7 @@ namespace DynamoCoreWpfTests
             //This node should be in Frozen and not Executing state.
             var addNodeVm = ViewModel.CurrentSpaceViewModel.Nodes.First(x => x.NodeLogic == addNode);
             Assert.IsNotNull(addNodeVm);
-            Assert.AreEqual(addNodeVm.IsExplicitFrozen, true);
+            Assert.AreEqual(addNodeVm.IsFrozenExplicitly, true);
             Assert.AreEqual(addNodeVm.CanToggleFrozen, true);
 
             //Now freeze NumberNode1.
@@ -141,11 +141,11 @@ namespace DynamoCoreWpfTests
             //This node should be in Frozen and not Executing state.
             var numberNode1Vm = ViewModel.CurrentSpaceViewModel.Nodes.First(x => x.NodeLogic == numberNode1);
             Assert.IsNotNull(numberNode1Vm);
-            Assert.AreEqual(numberNode1Vm.IsExplicitFrozen, true);
+            Assert.AreEqual(numberNode1Vm.IsFrozenExplicitly, true);
             Assert.AreEqual(numberNode1Vm.CanToggleFrozen, true);
 
             //Now check the add node. Freeze property will be unchecked and disabled.
-            Assert.AreEqual(addNodeVm.IsExplicitFrozen, true);
+            Assert.AreEqual(addNodeVm.IsFrozenExplicitly, true);
             Assert.AreEqual(addNodeVm.CanToggleFrozen, false);
         }
 
@@ -191,41 +191,41 @@ namespace DynamoCoreWpfTests
             //freeze number node1.            
             numberNode1Vm.ToggleIsFrozenCommand.Execute(null);
 
-            Assert.AreEqual(numberNode1Vm.IsExplicitFrozen, true);
+            Assert.AreEqual(numberNode1Vm.IsFrozenExplicitly, true);
             Assert.AreEqual(numberNode1Vm.CanToggleFrozen, true);
 
             //add node is in frozen executing state
-            Assert.AreEqual(addNodeVm.IsExplicitFrozen, false);
+            Assert.AreEqual(addNodeVm.IsFrozenExplicitly, false);
             Assert.AreEqual(addNodeVm.CanToggleFrozen, false);
 
             //freeze number node2
             numberNode2Vm.ToggleIsFrozenCommand.Execute(null);
 
-            Assert.AreEqual(numberNode2Vm.IsExplicitFrozen, true);
+            Assert.AreEqual(numberNode2Vm.IsFrozenExplicitly, true);
             Assert.AreEqual(numberNode2Vm.CanToggleFrozen, true);
 
             //add node is in frozen executing state
-            Assert.AreEqual(addNodeVm.IsExplicitFrozen, false);
+            Assert.AreEqual(addNodeVm.IsFrozenExplicitly, false);
             Assert.AreEqual(addNodeVm.CanToggleFrozen, false);
 
             ViewModel.CurrentSpace.Undo();
 
             //numbernode2 unfreeze
-            Assert.AreEqual(numberNode2Vm.IsExplicitFrozen, false);
+            Assert.AreEqual(numberNode2Vm.IsFrozenExplicitly, false);
             Assert.AreEqual(numberNode2Vm.CanToggleFrozen, true);
 
             //add node is in frozen executing state
-            Assert.AreEqual(addNodeVm.IsExplicitFrozen, false);
+            Assert.AreEqual(addNodeVm.IsFrozenExplicitly, false);
             Assert.AreEqual(addNodeVm.CanToggleFrozen, false);
 
             ViewModel.CurrentSpace.Undo();
 
             //numbernode1 unfreeze
-            Assert.AreEqual(numberNode1Vm.IsExplicitFrozen, false);
+            Assert.AreEqual(numberNode1Vm.IsFrozenExplicitly, false);
             Assert.AreEqual(numberNode1Vm.CanToggleFrozen, true);
 
             //add node is in normal state
-            Assert.AreEqual(addNodeVm.IsExplicitFrozen, false);
+            Assert.AreEqual(addNodeVm.IsFrozenExplicitly, false);
             Assert.AreEqual(addNodeVm.CanToggleFrozen, true);
 
         }

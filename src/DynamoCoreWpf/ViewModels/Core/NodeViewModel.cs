@@ -354,7 +354,7 @@ namespace Dynamo.ViewModels
         /// <value>
         ///  Returns true if the node has been frozen explicitly by the user, otherwise false.
         /// </value>        
-        public bool IsExplicitFrozen
+        public bool IsFrozenExplicitly
         {
             get
             {    
@@ -489,7 +489,7 @@ namespace Dynamo.ViewModels
            AddToGroupCommand.RaiseCanExecuteChanged();
            UngroupCommand.RaiseCanExecuteChanged();
            ToggleIsFrozenCommand.RaiseCanExecuteChanged();
-           RaisePropertyChanged("IsExplicitFrozen");
+           RaisePropertyChanged("IsFrozenExplicitly");
            RaisePropertyChanged("CanToggleFrozen");
         }
 
