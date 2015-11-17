@@ -19,8 +19,7 @@ namespace Dynamo.Tests
         [Test]
         [Category("UnitTests")]
         public void Freeze_ANode_Test()
-        {
-            //Add a Node
+        {           
             var model = CurrentDynamoModel;
             var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
             model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
