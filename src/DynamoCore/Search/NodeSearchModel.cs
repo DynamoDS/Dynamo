@@ -1,5 +1,4 @@
-﻿using System;
-using System.Xml;
+﻿using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Search.SearchElements;

@@ -159,8 +159,8 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                if (dynamoViewModel.Model.PreferenceSettings.ShowDetailedLayout != value
-                    && dynamoViewModel.Model.PreferenceSettings != null)
+                if (dynamoViewModel.Model.PreferenceSettings != null
+                    && dynamoViewModel.Model.PreferenceSettings.ShowDetailedLayout != value)
                 {
                     dynamoViewModel.Model.PreferenceSettings.ShowDetailedLayout = value;
                     RaisePropertyChanged("IsDetailedMode");
