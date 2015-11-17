@@ -118,18 +118,6 @@
       <Project>{A4794476-7D0E-41C0-AD83-4AB929C0A46C}</Project>
       <Name>ProtoScript</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\System\IntegrationTests\IntegrationTests.csproj">
-      <Project>{1254d922-643b-4f0b-82bd-e9e02399b040}</Project>
-      <Name>IntegrationTests</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\FFITarget\FFITarget.csproj">
-      <Project>{c70fe632-5500-4c57-b3d6-9b5574137551}</Project>
-      <Name>FFITarget</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ProtoTest\ProtoTest.csproj">
-      <Project>{6E1177DB-5E4F-4E2E-82E7-902437E56AED}</Project>
-      <Name>ProtoTest</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
