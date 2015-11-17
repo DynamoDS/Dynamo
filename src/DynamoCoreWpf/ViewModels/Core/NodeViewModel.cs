@@ -488,7 +488,7 @@ namespace Dynamo.ViewModels
            CreateGroupCommand.RaiseCanExecuteChanged();
            AddToGroupCommand.RaiseCanExecuteChanged();
            UngroupCommand.RaiseCanExecuteChanged();
-           ComputeRunStateOfTheNodeCommand.RaiseCanExecuteChanged();
+           ToggleIsFrozenCommand.RaiseCanExecuteChanged();
            RaisePropertyChanged("IsExplicitFrozen");
            RaisePropertyChanged("CanToggleFrozen");
         }
@@ -1035,7 +1035,7 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private void ComputeRunStateOfTheNode(object parameters)
+        private void ToggleIsFrozen(object parameters)
         {
             var node = this.nodeLogic;
             if (node != null)
@@ -1053,7 +1053,7 @@ namespace Dynamo.ViewModels
             }   
         }
 
-        private bool CanSetTheRunStateOftheNode(object parameters)
+        private bool CanToggleIsFrozen(object parameters)
         {
             return DynamoSelection.Instance.Selection.Count() == 1;
         }

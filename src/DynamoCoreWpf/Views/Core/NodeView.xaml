@@ -82,7 +82,7 @@
                           Header="{x:Static p:Resources.NodesRunStatus}"
                           IsChecked="{Binding IsExplicitFrozen,Mode=OneWay}"   
                           IsEnabled="{Binding CanToggleFrozen, Mode=OneWay}"
-                          Command="{Binding Path=ComputeRunStateOfTheNodeCommand}" />
+                          Command="{Binding Path=ToggleIsFrozenCommand}" />
                 <MenuItem Name="isVisible_cm"
                           Header="{x:Static p:Resources.NodeContextMenuPreview}"
                           IsChecked="{Binding Path=IsVisible,Mode=OneWay}"                          

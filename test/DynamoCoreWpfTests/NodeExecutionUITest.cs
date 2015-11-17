@@ -189,7 +189,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(numberNode2Vm);
 
             //freeze number node1.            
-            numberNode1Vm.ComputeRunStateOfTheNodeCommand.Execute(null);
+            numberNode1Vm.ToggleIsFrozenCommand.Execute(null);
 
             Assert.AreEqual(numberNode1Vm.IsExplicitFrozen, true);
             Assert.AreEqual(numberNode1Vm.CanToggleFrozen, true);
@@ -199,7 +199,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(addNodeVm.CanToggleFrozen, false);
 
             //freeze number node2
-            numberNode2Vm.ComputeRunStateOfTheNodeCommand.Execute(null);
+            numberNode2Vm.ToggleIsFrozenCommand.Execute(null);
 
             Assert.AreEqual(numberNode2Vm.IsExplicitFrozen, true);
             Assert.AreEqual(numberNode2Vm.CanToggleFrozen, true);
