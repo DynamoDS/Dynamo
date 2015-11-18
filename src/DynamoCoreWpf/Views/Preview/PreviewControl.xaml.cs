@@ -80,7 +80,7 @@ namespace Dynamo.UI.Controls
         /// <summary>
         ///     Indicates whether preview should stay open, when mouse leaves control.
         /// </summary>
-        public bool StaysOpen
+        internal bool StaysOpen
         {
             get
             {
