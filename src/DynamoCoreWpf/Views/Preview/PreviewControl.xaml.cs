@@ -684,14 +684,6 @@ namespace Dynamo.UI.Controls
             }
         }
 
-        private void OnPreviewControlMouseLeave(object sender, MouseEventArgs e)
-        {
-            if (!StaysOpen)
-            {
-                TransitionToState(State.Condensed);
-            }
-        }
-
         private void OnMapPinMouseClick(object sender, MouseButtonEventArgs e)
         {
             StaysOpen = !StaysOpen;
