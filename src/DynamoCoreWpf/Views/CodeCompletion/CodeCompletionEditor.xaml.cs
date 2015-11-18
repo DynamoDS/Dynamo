@@ -94,6 +94,8 @@ namespace Dynamo.UI.Controls
         {
             get
             {
+                // Since this property a one way binding from source (for example, CodeBlockNodeModel)
+                // to target (this class), the getter should never be called.
                 throw new NotImplementedException();
             }
             set

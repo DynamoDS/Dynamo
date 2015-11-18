@@ -23,7 +23,6 @@
                                    ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
         </Border>
         <TextBlock x:Name="WatermarkLabel"
-                   
                    Foreground="#777777"
                    FontFamily="Consolas"
                    FontSize="14.67px"
