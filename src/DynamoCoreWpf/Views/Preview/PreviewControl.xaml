@@ -29,6 +29,7 @@
             <clr:Double x:Key="MaxContentGridHeight">288</clr:Double>
 
             <clr:Double x:Key="PhasedOutPosition">-32.0</clr:Double>
+            <clr:Double x:Key="PhasedInPosition">-20.0</clr:Double>
             <clr:TimeSpan x:Key="ResizeBeginTime">0:0:0.2</clr:TimeSpan>
             <sys:Duration x:Key="AnimationDuration">0:0:0.2</sys:Duration>
 
@@ -50,7 +51,7 @@
                 <DoubleAnimation Storyboard.TargetName="thisPreviewControl"
                                  Storyboard.TargetProperty="(Canvas.Top)"
                                  From="{StaticResource PhasedOutPosition}"
-                                 To="0.0"
+                                 To="{StaticResource PhasedInPosition}"
                                  Duration="{StaticResource AnimationDuration}" />
             </Storyboard>
 
@@ -130,14 +131,23 @@
 
     <Grid Name="outerContainer"
           HorizontalAlignment="Left"
-          VerticalAlignment="Top">
+          VerticalAlignment="Top"
+          Background="#01000000">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
+        <Grid.RowDefinitions>
+            <!-- Invisible part, where user can move mouse. 
+            It's used, because when mouse is at the edge of the node, preview starts "jumping". -->
+            <RowDefinition Height="20" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
         <Grid Grid.Column="0"
+              Grid.Row="1"
               Name="centralizedGrid"
               Width="{StaticResource MinPreviewControlWidth}"
               Height="{StaticResource MinPreviewControlHeight}"
@@ -167,6 +177,7 @@
         </Grid>
 
         <Border Grid.Column="1"
+                Grid.Row="1"
                 Name="bubbleTools"
                 Background="White"
                 BorderThickness="0,1,1,1"
@@ -227,6 +238,7 @@
         </Border>
 
         <Border Grid.Column="1"
+                Grid.Row="1"
                 Name="expandBorder"
                 BorderThickness="0,1,1,1"
                 BorderBrush="{StaticResource BubblePreviewBorderColor}"
