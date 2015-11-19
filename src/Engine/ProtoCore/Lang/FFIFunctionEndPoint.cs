@@ -92,7 +92,8 @@ namespace ProtoCore.Lang
                     bool isStaticCall = svThisPtr.IsPointer && Constants.kInvalidPointer == (int)svThisPtr.opdata;
                     if (isStaticCall)
                     {
-                        thisPtrIndex = formalParameters.Count - 1;
+                        stackFrame.ThisPtr = formalParameters[thisPtrIndex]; 
+                        // thisPtrIndex = formalParameters.Count - 1;
                     }
                     argTypes.RemoveAt(thisPtrIndex);
 
