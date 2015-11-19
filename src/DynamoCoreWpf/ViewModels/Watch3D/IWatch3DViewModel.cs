@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using Autodesk.DesignScript.Interfaces;
@@ -58,6 +59,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <param name="args">mouse click location in screen coordinates</param>
         /// <returns></returns>
         IRay GetClickRay(MouseEventArgs args);
+
+        /// <summary>
+        /// Returns information about camera position in background 3D preview
+        /// </summary>
+        /// <returns>Information about camera position</returns>
+        CameraData GetCameraInformation();
 
         /// <summary>
         /// Converts render packages into drawable geometry primitives 
