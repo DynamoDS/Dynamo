@@ -2116,6 +2116,12 @@ namespace Dynamo.Tests
                 Assert.Fail("the content of the deprecated node has been changed after saving");
             }
         }
+
+        [Test]
+        public void Test_Watch3D_Migration()
+        {
+            TestMigration("TestMigration_Watch3D.dyn");
+        }
         #endregion
 
         #region Private Helper Methods

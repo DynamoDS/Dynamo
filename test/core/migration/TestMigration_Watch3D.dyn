@@ -1,0 +1,23 @@
+<Workspace Version="0.9.0.0" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="92cf5568-943b-4d2c-a995-64ba3cbccc21" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="92" y="114.2" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" CodeText="2;" ShouldFocus="true" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="5d1824b7-a260-4f86-985d-265ff6bec53c" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Cuboid.ByLengths" x="261.6" y="144.4" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Cuboid.ByLengths@double,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <DynamoWatch3D.Watch3D guid="e6c191da-5cb5-49ae-94fe-ae954c14aa10" type="DynamoWatch3D.Watch3D" nickname="Watch 3D" x="451.2" y="115.6" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False">
+      <view width="200" height="200" />
+    </DynamoWatch3D.Watch3D>
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="92cf5568-943b-4d2c-a995-64ba3cbccc21" start_index="0" end="5d1824b7-a260-4f86-985d-265ff6bec53c" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="92cf5568-943b-4d2c-a995-64ba3cbccc21" start_index="0" end="5d1824b7-a260-4f86-985d-265ff6bec53c" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="92cf5568-943b-4d2c-a995-64ba3cbccc21" start_index="0" end="5d1824b7-a260-4f86-985d-265ff6bec53c" end_index="2" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="5d1824b7-a260-4f86-985d-265ff6bec53c" start_index="0" end="e6c191da-5cb5-49ae-94fe-ae954c14aa10" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+</Workspace>

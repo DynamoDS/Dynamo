@@ -1961,6 +1961,21 @@ namespace Dynamo.Nodes
         }
     }
 
+    [AlsoKnownAs("DynamoWatch3D.Watch3D")]
+    public class Watch3D : MigrationNode
+    {
+        [NodeMigration(from: "0.9.0.0", to: "0.9.1.0")]
+        public static NodeMigrationData Migrate_0900_to_0910(NodeMigrationData data)
+        {
+           XmlElement xmlNode = data.MigratedNodes.ElementAt(0);
+           var element = MigrationManager.CloneAndChangeName(xmlNode, "Watch3DNodeModels.Watch3D", "Watch3D", true);
+
+            var migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(element);
+            return migrationData;
+        }
+    }
+
     public class ConcatStrings : MigrationNode
     {
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]

@@ -1043,7 +1043,7 @@
         YV0PgiAIgh8lpTdvRJ60O5zeZwAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="Dynamo.Graph.Nodes.Watch.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="DSCoreNodesUI.Watch.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAVeSURBVHhe7ZzLcdw6EEUVgkNwCArBzsAhOASFoAxU
@@ -1072,7 +1072,7 @@
         JEmSJEmSJEmSJEmSJEmSJEmSJAnAzc3/oJWFL832Us4AAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="Dynamo.Graph.Nodes.Watch.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="DSCoreNodesUI.Watch.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAGOSURBVFhH7ZbNTcNAEIVTQkqghJQQOqCElBA6cAeW
@@ -1085,7 +1085,7 @@
         AwsW/AOsVt8QPPSqk8vfsQAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="Dynamo.Graph.Nodes.WatchImageCore.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="DSCoreNodesUI.WatchImageCore.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAT/SURBVHhe7ZzNbeQ4EEYdwoQwITgEbwYTwoTgEHzc
@@ -1113,7 +1113,7 @@
         AElFTkSuQmCC
 </value>
   </data>
-  <data name="Dynamo.Graph.Nodes.WatchImageCore.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="DSCoreNodesUI.WatchImageCore.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAF6SURBVFhH7Za7ccJAFEVVgkqgBEqQO6AEEueUQAfM

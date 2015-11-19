@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DynamoWatch3D.Properties {
+namespace Watch3DNodeModelsWpf.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace DynamoWatch3D.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DynamoWatch3D.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Watch3DNodeModelsWpf.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,42 +57,6 @@ namespace DynamoWatch3D.Properties {
             }
             set {
                 resourceCulture = value;
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Shows a dynamic preview of geometry..
-        /// </summary>
-        internal static string Watch3DDescription {
-            get {
-                return ResourceManager.GetString("Watch3DDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Incoming geometry objects..
-        /// </summary>
-        internal static string Watch3DPortDataInputToolTip {
-            get {
-                return ResourceManager.GetString("Watch3DPortDataInputToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Watch contents, passed through.
-        /// </summary>
-        internal static string Watch3DPortDataOutputToolTip {
-            get {
-                return ResourceManager.GetString("Watch3DPortDataOutputToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to panel;3dview;view;inspect;debug;watch geo;watch3d;.
-        /// </summary>
-        internal static string Watch3DSearchTags {
-            get {
-                return ResourceManager.GetString("Watch3DSearchTags", resourceCulture);
             }
         }
         
