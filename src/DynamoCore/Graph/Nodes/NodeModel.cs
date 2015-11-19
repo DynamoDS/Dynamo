@@ -633,8 +633,20 @@ namespace Dynamo.Graph.Nodes
             }
             set
             {
-                isFrozenExplicitly = value;                                 
-                OnNodeModified();
+                isFrozenExplicitly = value;    
+                RaisePropertyChanged("IsFrozen");      
+                //If the node is Unfreezed then Mark all the downstream nodes as
+                // modified. This is essential recompiling the AST.
+                if (!value)
+                {                   
+                    MarkDownStreamNodesAsModified(this);                    
+                    OnNodeModified();
+                }
+                //If the node is frozen, then do not execute the graph immediately.
+                else
+                {
+                    OnToggleNodeFreeze();
+                }
             }
         }
        
@@ -667,6 +679,18 @@ namespace Dynamo.Graph.Nodes
             }
 
             return ret;
+        }
+
+        private void MarkDownStreamNodesAsModified(NodeModel node)
+        {                         
+            var sets = node.OutputNodes.Values;
+            var outputNodes = sets.SelectMany(set => set.Select(t => t.Item2)).Distinct();
+            foreach (var outputNode in outputNodes)
+            {
+                outputNode.executionHint = ExecutionHints.Modified;     
+                // Recursively get all downstream nodes.
+                MarkDownStreamNodesAsModified(outputNode);
+            }
         }
         #endregion  
 
@@ -745,6 +769,16 @@ namespace Dynamo.Graph.Nodes
 
             MarkNodeAsModified(forceExecute);           
             var handler = Modified;
+            if (handler != null) handler(this);
+        }
+
+        public event Action<NodeModel> ToggleNodeFreeze;
+        public virtual void OnToggleNodeFreeze()
+        {
+            if (!RaisesModificationEvents)
+                return;
+
+            var handler = ToggleNodeFreeze;
             if (handler != null) handler(this);
         }
 
@@ -1217,7 +1251,7 @@ namespace Dynamo.Graph.Nodes
             areInputPortsRegistered = true;
 
             RaisesModificationEvents = true;
-            OnNodeModified();
+            //OnNodeModified();
         }
 
         /// <summary>

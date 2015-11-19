@@ -602,6 +602,37 @@ namespace Dynamo.Engine
             syncDataManager.DeleteNodes(node.GUID);
         }
 
+        /// <summary>
+        /// When a node is in freeze state, the node and its dependencies are
+        /// deleted from AST
+        /// </summary>
+        /// <param name="node">The node.</param>
+        public void DeleteFrozenNodesFromAST(NodeModel node)
+        {
+            List<NodeModel> gathered = new List<NodeModel>();
+            GetDownstreamNodes(node, gathered);
+            foreach (var iNode in gathered)
+            {
+                syncDataManager.DeleteNodes(iNode.GUID);               
+            }
+        }
+
+        private static void GetDownstreamNodes(NodeModel node, ICollection<NodeModel> gathered)
+        {
+            if (gathered.Contains(node)) // Considered this node before, bail.pu
+                return;
+
+            gathered.Add(node);
+
+            var sets = node.OutputNodes.Values;
+            var outputNodes = sets.SelectMany(set => set.Select(t => t.Item2)).Distinct();
+            foreach (var outputNode in outputNodes)
+            {
+                // Recursively get all downstream nodes.
+                GetDownstreamNodes(outputNode, gathered);
+            }
+        }
+
         #region Node2Code
 
         internal NodeToCodeResult ConvertNodesToCode(IEnumerable<NodeModel> graph, IEnumerable<NodeModel> nodes, INamingProvider namingProvider = null)
