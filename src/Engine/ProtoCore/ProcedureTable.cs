@@ -34,7 +34,7 @@ namespace ProtoCore.DSASM
         public ExternalAttributes Attributes;
     }
 
-    [System.Diagnostics.DebuggerDisplay("{Name}, procId={ProcID}, classScope={ClassScope}")]
+    [System.Diagnostics.DebuggerDisplay("{Name}, procId={ID}, classScope={ClassID}")]
     public class ProcedureNode
     {
         /// <summary>
