@@ -5122,6 +5122,7 @@ namespace ProtoAssociative
                                 // def f() { return = 1 }
                                 // def f(%this : A) { return = %this.f()}
                                 //
+                                thisProc.procNode.IsStatic = true;
                                 BuildThisFunctionBody(thisProc);
                             }
 
