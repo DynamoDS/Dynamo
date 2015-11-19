@@ -379,11 +379,6 @@ namespace Dynamo.Controls
 
                 PreviewControl.TransitionToState(PreviewControl.State.Condensed);
             }
-
-            if (PreviewControl.IsExpanded && !PreviewControl.StaysOpen)
-            {
-                PreviewControl.TransitionToState(PreviewControl.State.Condensed);
-            }
         }
 
         private async void OnNodeViewMouseLeave(object sender, MouseEventArgs e)
@@ -401,13 +396,7 @@ namespace Dynamo.Controls
                 {
                     PreviewControl.TransitionToState(PreviewControl.State.Hidden);
                 }
-                // If preview is expanded, first condense it, then it will be hidden.
-                if (PreviewControl.IsExpanded)
-                {
-                    PreviewControl.TransitionToState(PreviewControl.State.Condensed);
-                }
             }
-
         }
 
         private void OnPreviewControlStateChanged(object sender, EventArgs e)

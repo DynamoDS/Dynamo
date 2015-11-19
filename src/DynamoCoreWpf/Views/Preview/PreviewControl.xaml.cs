@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Dynamo.Controls;
@@ -384,7 +385,7 @@ namespace Dynamo.UI.Controls
                     {
                         var tree = new WatchTree
                         {
-                            Margin = (System.Windows.Thickness) this.Resources["PreviewContentMargin"],
+                            Margin = (System.Windows.Thickness)this.Resources["PreviewContentMargin"],
                             DataContext = new WatchViewModel()
                         };
                         largeContentGrid.Children.Add(tree);
@@ -526,7 +527,6 @@ namespace Dynamo.UI.Controls
                     centralizedGrid.Opacity = 0.0;
                     centralizedGrid.Visibility = Visibility.Visible;
                     smallContentGrid.Visibility = Visibility.Visible;
-                    expandBorder.Visibility = Visibility.Visible;
 
                     // The real transition starts
                     SetCurrentStateAndNotify(State.InTransition);
@@ -541,7 +541,6 @@ namespace Dynamo.UI.Controls
                 throw new InvalidOperationException();
 
             bubbleTools.Visibility = Visibility.Collapsed;
-            expandBorder.Visibility = Visibility.Collapsed;
 
             SetCurrentStateAndNotify(State.InTransition);
             phaseOutStoryboard.Begin(this, true);
@@ -560,7 +559,6 @@ namespace Dynamo.UI.Controls
                 {
                     smallContentGrid.Visibility = Visibility.Visible;
                     bubbleTools.Visibility = Visibility.Collapsed;
-                    expandBorder.Visibility = Visibility.Visible;
 
                     // The real transition starts
                     SetCurrentStateAndNotify(State.InTransition);
@@ -584,7 +582,6 @@ namespace Dynamo.UI.Controls
                 {
                     largeContentGrid.Visibility = Visibility.Visible;
                     bubbleTools.Visibility = Visibility.Visible;
-                    expandBorder.Visibility = Visibility.Collapsed;
 
                     // The real transition starts
                     SetCurrentStateAndNotify(State.InTransition);
@@ -676,11 +673,20 @@ namespace Dynamo.UI.Controls
             BeginNextTransition(); // See if there's any more requests.
         }
 
-        private void OnExpandBorderMouseMove(object sender, MouseEventArgs e)
+        private async void OnPreviewMouseEnter(object sender, MouseEventArgs e)
         {
+            await Task.Delay(20);
             if (IsMouseOver && IsCondensed)
             {
                 TransitionToState(State.Expanded);
+            }
+        }
+
+        private void OnPreviewMouseLeave(object sender, MouseEventArgs e)
+        {
+            if (!StaysOpen)
+            {
+                TransitionToState(State.Condensed);
             }
         }
 
@@ -690,5 +696,6 @@ namespace Dynamo.UI.Controls
         }
 
         #endregion
+
     }
 }

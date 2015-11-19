@@ -11,7 +11,9 @@
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
-             mc:Ignorable="d">
+             mc:Ignorable="d"
+             MouseEnter="OnPreviewMouseEnter"
+             MouseLeave="OnPreviewMouseLeave">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -110,7 +112,7 @@
                                  Duration="{StaticResource AnimationDuration}" />
                 <DoubleAnimation Storyboard.TargetName="thisPreviewControl"
                                  Storyboard.TargetProperty="(Canvas.Top)"
-                                 From="0.0"
+                                 From="{StaticResource PhasedInPosition}"
                                  To="{StaticResource PhasedOutPosition}"
                                  Duration="{StaticResource AnimationDuration}" />
             </Storyboard>
@@ -164,6 +166,13 @@
                              AncestorType={x:Type controls:NodeView}}, 
                              Path=ActualWidth}">
                 <TextBlock Margin="{StaticResource PreviewContentMargin}">null</TextBlock>
+                <fa:ImageAwesome Name="ExpandIcon"
+                                 Icon="CaretRight"
+                                 Foreground="{StaticResource UnpinnedIconForegroundColor}"
+                                 HorizontalAlignment="Right"
+                                 Height="6"
+                                 Width="6"
+                                 Margin="5,5,5,5" />
             </Grid>
 
             <Grid Name="largeContentGrid"                 
@@ -235,23 +244,6 @@
                                  Margin="5,5,5,5"
                                  Foreground="{StaticResource BubblePreviewIconColor}" />-->
             </StackPanel>
-        </Border>
-
-        <Border Grid.Column="1"
-                Grid.Row="1"
-                Name="expandBorder"
-                BorderThickness="0,1,1,1"
-                BorderBrush="{StaticResource BubblePreviewBorderColor}"
-                Background="White"
-                VerticalAlignment="Top"
-                Visibility="Visible"
-                MouseMove="OnExpandBorderMouseMove">
-            <fa:ImageAwesome Name="ExpandIcon"
-                             Icon="CaretRight"
-                             Foreground="{StaticResource UnpinnedIconForegroundColor}"
-                             Height="6"
-                             Width="6"
-                             Margin="5,5,5,5" />
         </Border>
 
     </Grid>
