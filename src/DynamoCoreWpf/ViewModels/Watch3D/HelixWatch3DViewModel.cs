@@ -1328,13 +1328,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         /// <summary>
-        /// Updates the Geometry model for special Render packages starting with
-        /// descriptions as defined in RenderDescriptions.
+        /// Updates or replaces the GeometryModel3D for special IRenderPackage. Special 
+        /// IRenderPackage has a Description field that starts with a string value defined 
+        /// in RenderDescriptions. See RenderDescriptions for details of possible values.
         /// </summary>
-        /// <param name="rp">Renderpackage</param>
-        /// <param name="id">id of the package</param>
-        /// <returns>True if input is special render package and successfully 
-        /// updated the geometry model.</returns>
+        /// <param name="rp">The target HelixRenderPackage object</param>
+        /// <param name="id">id of the HelixRenderPackage object</param>
+        /// <returns>Returns true if rp is a special render package, and its GeometryModel3D
+        /// is successfully updated.</returns>
         private bool UpdateGeometryModelForSpecialRenderPackage(HelixRenderPackage rp, string id)
         {
             int desclength = RenderDescriptions.ManipulatorAxis.Length;
