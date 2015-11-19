@@ -391,11 +391,7 @@ namespace Dynamo.Controls
             // If mouse in not over node/preview control and preview control is not pined, we can hide preview control.
             if (!IsMouseOver && !PreviewControl.IsMouseOver && !PreviewControl.StaysOpen)
             {
-                // If preview is condensed, then hide it.
-                if (PreviewControl.IsCondensed)
-                {
-                    PreviewControl.TransitionToState(PreviewControl.State.Hidden);
-                }
+                PreviewControl.TransitionToState(PreviewControl.State.Hidden);
             }
         }
 
