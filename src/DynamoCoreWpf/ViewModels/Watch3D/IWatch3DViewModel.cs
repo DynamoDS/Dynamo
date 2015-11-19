@@ -18,6 +18,34 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     }
 
     /// <summary>
+    /// These constants are defined to specify special render packages, so that
+    /// they can be rendered differently.
+    /// 
+    /// If a render package description starts with any of the following constants
+    /// that will be rendered differently.
+    /// 
+    /// We need to ensure that all the strings are of same length and starts with 
+    /// an alphabet. Usually these are taken from the last part of a GUID.
+    /// </summary>
+    public struct RenderDescriptions
+    {
+        /// <summary>
+        /// Draws line strip segment as a 3D arrow.
+        /// </summary>
+        public const string ManipulatorAxis   = "B0C5DE5EB5CA";
+
+        /// <summary>
+        /// Draws line strip segment as thin(0.3) line to represent axis line.
+        /// </summary>
+        public const string AxisLine          = "C4F6AC80953B";
+
+        /// <summary>
+        /// Draws a line strip segment as little thinner(0.7) line to represent a plane.
+        /// </summary>
+        public const string ManipulatorPlane  = "E75B2B0E31F1";
+    }
+
+    /// <summary>
     /// An interface to expose API's on the Watch UI Viewmodel to extensions
     /// </summary>
     public interface IWatch3DViewModel
