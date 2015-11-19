@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-using System.Windows.Input;
-using System.Windows.Media.Imaging;
+﻿using System.Windows.Input;
 using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.Interfaces;
@@ -673,9 +671,8 @@ namespace Dynamo.UI.Controls
             BeginNextTransition(); // See if there's any more requests.
         }
 
-        private async void OnPreviewMouseEnter(object sender, MouseEventArgs e)
+        private void OnPreviewMouseEnter(object sender, MouseEventArgs e)
         {
-            await Task.Delay(20);
             if (IsMouseOver && IsCondensed)
             {
                 TransitionToState(State.Expanded);

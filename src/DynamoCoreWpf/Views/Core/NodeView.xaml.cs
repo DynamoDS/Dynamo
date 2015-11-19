@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -381,13 +380,11 @@ namespace Dynamo.Controls
             }
         }
 
-        private async void OnNodeViewMouseLeave(object sender, MouseEventArgs e)
+        private void OnNodeViewMouseLeave(object sender, MouseEventArgs e)
         {
             if (PreviewControl.IsInTransition) // In transition state, come back later.
                 return;
 
-            // Give user some time to move mouse over preview control.
-            await Task.Delay(30);
             // If mouse in not over node/preview control and preview control is not pined, we can hide preview control.
             if (!IsMouseOver && !PreviewControl.IsMouseOver && !PreviewControl.StaysOpen)
             {
