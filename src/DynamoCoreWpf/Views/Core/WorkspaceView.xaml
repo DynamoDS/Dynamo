@@ -151,8 +151,7 @@
                         </MenuItem.IsChecked>
                     </MenuItem>
                     
-                </MenuItem>
-
+                </MenuItem>                
                 <MenuItem IsEnabled="{Binding Path=IsGeometryOperationEnabled}"
                           Header="{x:Static  p:Resources.ContextMenuShowAllGeometry}"
                           Command="{Binding Path=ShowHideAllGeometryPreviewCommand}"
@@ -218,6 +217,7 @@
                 <MenuItem  Header="{x:Static p:Resources.ContextCreateGroupFromSelection}"
                            Command="{Binding DynamoViewModel.AddAnnotationCommand}" />
 
+               
                 <MenuItem  Header="{x:Static p:Resources.ContextMenuNodesFromGeometry}"
                            Visibility="{Binding Path=CanFindNodesFromElements, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                            Command="{Binding FindNodesFromSelectionCommand}" />

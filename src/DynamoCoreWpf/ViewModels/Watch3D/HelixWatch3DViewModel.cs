@@ -711,6 +711,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             OnRequestZoomToFit(selectionBounds);
         }
 
+        public override CameraData GetCameraInformation()
+        {
+            return camera.ToCameraData(Name);
+        }
+
         /// <summary>
         /// Finds all output identifiers based on the context.
         /// 
@@ -1158,13 +1163,19 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     // with `points`, `lines`, or `mesh`. For each RenderPackage, we check whether the geometry dictionary
                     // has entries for the points, lines, or mesh already. If so, we add the RenderPackage's geometry
                     // to those geometry objects.
-
+                    
                     var baseId = rp.Description;
                     if (baseId.IndexOf(":", StringComparison.Ordinal) > 0)
                     {
                         baseId = baseId.Split(':')[0];
                     }
                     var id = baseId;
+                    //If this render package belongs to special render package, then create
+                    //and update the corresponding GeometryModel. Sepcial renderpackage are
+                    //defined based on its description containing one of the constants from
+                    //RenderDescriptions struct.
+                    if (UpdateGeometryModelForSpecialRenderPackage(rp, id))
+                        continue;
 
                     var drawDead = InCustomNode() && !customNodeIdents.Contains(baseId);
 
@@ -1318,6 +1329,63 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
 
                 AttachAllGeometryModel3DToRenderHost();
+            }
+        }
+
+        /// <summary>
+        /// Updates or replaces the GeometryModel3D for special IRenderPackage. Special 
+        /// IRenderPackage has a Description field that starts with a string value defined 
+        /// in RenderDescriptions. See RenderDescriptions for details of possible values.
+        /// </summary>
+        /// <param name="rp">The target HelixRenderPackage object</param>
+        /// <param name="id">id of the HelixRenderPackage object</param>
+        /// <returns>Returns true if rp is a special render package, and its GeometryModel3D
+        /// is successfully updated.</returns>
+        private bool UpdateGeometryModelForSpecialRenderPackage(HelixRenderPackage rp, string id)
+        {
+            int desclength = RenderDescriptions.ManipulatorAxis.Length;
+            if (rp.Description.Length < desclength)
+                return false;
+
+            string description = rp.Description.Substring(0, desclength);
+            Model3D model = null;
+            Model3DDictionary.TryGetValue(id, out model);
+            switch(description)
+            {
+                case RenderDescriptions.ManipulatorAxis:
+                    var manipulator = model as DynamoGeometryModel3D;
+                    if (null == manipulator)
+                        manipulator = CreateDynamoGeometryModel3D(rp);
+                    
+                    var mb = new MeshBuilder();
+                    mb.AddArrow(rp.Lines.Positions[0], rp.Lines.Positions[1], 0.3, 2, 64);
+                    manipulator.Geometry = mb.ToMeshGeometry3D();
+                    
+                    if (rp.Lines.Colors[0].Red == 1)
+                        manipulator.Material = PhongMaterials.Red;
+                    else if (rp.Lines.Colors[0].Green == 1)
+                        manipulator.Material = PhongMaterials.Green;
+                    else if (rp.Lines.Colors[0].Blue == 1)
+                        manipulator.Material = PhongMaterials.Blue;
+
+                    Model3DDictionary[id] = manipulator;
+                    return true;
+                case RenderDescriptions.AxisLine:
+                    var centerline = model as DynamoLineGeometryModel3D;
+                    if (null == centerline)
+                        centerline = CreateLineGeometryModel3D(rp, 0.3);
+                    centerline.Geometry = rp.Lines;
+                    Model3DDictionary[id] = centerline;
+                    return true;
+                case RenderDescriptions.ManipulatorPlane:
+                    var plane = model as DynamoLineGeometryModel3D;
+                    if (null == plane)
+                        plane = CreateLineGeometryModel3D(rp, 0.7);
+                    plane.Geometry = rp.Lines;
+                    Model3DDictionary[id] = plane;
+                    return true;
+                default:
+                    return false;
             }
         }
 

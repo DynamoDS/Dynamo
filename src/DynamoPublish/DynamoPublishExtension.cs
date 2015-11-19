@@ -4,6 +4,7 @@ using Dynamo.Publish.ViewModels;
 using Dynamo.Publish.Views;
 using Dynamo.Wpf.Extensions;
 using System;
+using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Linq;
 using System.Windows;
@@ -13,6 +14,7 @@ using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Publish.Properties;
 using Greg;
+using Reach.Messages.Data;
 using Reach.Upload;
 
 namespace Dynamo.Publish
@@ -116,7 +118,8 @@ namespace Dynamo.Publish
 
                 var viewModel = new PublishViewModel(model)
                 {
-                    CurrentWorkspaceModel = loadedParams.CurrentWorkspaceModel
+                    CurrentWorkspaceModel = loadedParams.CurrentWorkspaceModel,
+                    Cameras = ConvertCameraData(loadedParams.BackgroundPreviewViewModel.GetCameraInformation())
                 };
 
                 var window = new PublishView(viewModel)
@@ -197,6 +200,25 @@ namespace Dynamo.Publish
             }
         }
 
+        private static IEnumerable<CameraData> ConvertCameraData(Wpf.ViewModels.Watch3D.CameraData data)
+        {
+            return new[]
+            {
+                new CameraData
+                {
+                    Name = data.Name,
+                    EyeX = data.EyePosition.X,
+                    EyeY = data.EyePosition.Y,
+                    EyeZ = data.EyePosition.Z,
+                    LookX = data.LookDirection.X,
+                    LookY = data.LookDirection.Y,
+                    LookZ = data.LookDirection.Z,
+                    UpX = data.UpDirection.X,
+                    UpY = data.UpDirection.Y,
+                    UpZ = data.UpDirection.Z
+                }
+            };
+        }
 
         /// <summary>
         /// Searches for given menu item. 
