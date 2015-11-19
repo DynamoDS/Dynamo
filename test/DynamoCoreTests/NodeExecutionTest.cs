@@ -247,8 +247,13 @@ namespace Dynamo.Tests
             //to frozen and not executing state
             Assert.AreEqual(addNode.IsFrozen, true);
             
-            //check the value on add node. 
-            AssertPreviewValue(addNode.GUID.ToString(), 5);
+            //check the value on add node. Add node is not executed in the run,
+            // becuase the frozen nodes are removed from AST. So the value of add node
+            // should be 0. But the cached value should be 3, which is from the previous execution.
+            AssertPreviewValue(addNode.GUID.ToString(), 0);
+            Assert.IsNotNull(addNode.CachedValue.Data);
+            Assert.AreEqual(Convert.ToInt32(addNode.CachedValue.Data),3);
+
         }
 
         [Test]
@@ -310,10 +315,7 @@ namespace Dynamo.Tests
             
             //add node should still be in frozen and can execute state
             Assert.AreEqual(addNode.IsFrozen, true);
-            
-            //addnode should change the value.
-            AssertPreviewValue(addNode.GUID.ToString(), 5);
-
+                      
             //now unfreeze the other node.
             numberNode2.IsFrozen = false;
             

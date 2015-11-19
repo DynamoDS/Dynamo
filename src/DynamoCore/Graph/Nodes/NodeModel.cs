@@ -764,7 +764,7 @@ namespace Dynamo.Graph.Nodes
         public event Action<NodeModel> Modified;
         public virtual void OnNodeModified(bool forceExecute = false)
         {
-            if (!RaisesModificationEvents)
+            if (!RaisesModificationEvents || IsFrozen)
                 return;
 
             MarkNodeAsModified(forceExecute);           
@@ -1706,7 +1706,7 @@ namespace Dynamo.Graph.Nodes
             isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
             IsSelectedInput = helper.ReadBoolean("isSelectedInput", true);
-            isFrozenExplicitly = helper.ReadBoolean("IsFrozen", false);            
+            IsFrozen = helper.ReadBoolean("IsFrozen", false);            
            
             var portInfoProcessed = new HashSet<int>();
 
@@ -1747,7 +1747,7 @@ namespace Dynamo.Graph.Nodes
                 RaisePropertyChanged("ArgumentLacing");
                 RaisePropertyChanged("IsVisible");
                 RaisePropertyChanged("IsUpstreamVisible");
-
+               
                 // Notify listeners that the position of the node has changed,
                 // then all connected connectors will also redraw themselves.
                 ReportPosition();
