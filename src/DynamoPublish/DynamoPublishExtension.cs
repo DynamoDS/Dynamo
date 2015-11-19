@@ -109,7 +109,7 @@ namespace Dynamo.Publish
             item.Header = Resources.DynamoViewMenuItemPublishTitle;
 
             var isEnabled = loadedParams.CurrentWorkspaceModel is HomeWorkspaceModel && startupParams.AuthProvider != null;
-            item.IsEnabled = true;//isEnabled;
+            item.IsEnabled = isEnabled;
 
             item.Click += (sender, args) =>
             {
