@@ -1251,7 +1251,7 @@ namespace Dynamo.Graph.Nodes
             areInputPortsRegistered = true;
 
             RaisesModificationEvents = true;
-            //OnNodeModified();
+            OnNodeModified();
         }
 
         /// <summary>
