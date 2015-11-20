@@ -1,7 +1,5 @@
-﻿using Dynamo.ViewModels;
-using System.Windows;
-using DynCmd = Dynamo.Models.DynamoModel;
-using Dynamo.Graph.Nodes.CustomNodes;
+﻿using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Controls;
 
 namespace Dynamo.UI.Controls
 {
@@ -10,52 +8,37 @@ namespace Dynamo.UI.Controls
     /// </summary>
     public class ParameterEditor : CodeCompletionEditor
     {
-        #region Dependency Property
-        public static readonly DependencyProperty ParameterProperty =
-            DependencyProperty.Register(
-                "Parameter",
-                typeof(string),
-                typeof(ParameterEditor),
-                new PropertyMetadata((obj, args) =>
-                {
-                    var target = (ParameterEditor)obj;
-                    target.Code = (string)args.NewValue;
-                })
-            );
-        #endregion
-
-        public ParameterEditor(NodeViewModel viewModel) : base(viewModel)
-        {
-        }
+        private Symbol input;
 
         /// <summary>
-        /// Handler for Esc.
+        /// Create input editor by the view of symbol node.
         /// </summary>
+        /// <param name="view"></param>
+        public ParameterEditor(NodeView view) : base(view)
+        {
+            input = nodeViewModel.NodeModel as Symbol;
+        }
+
         protected override void OnEscape()
         {
             var text = InnerTextEditor.Text;
-            var input = DataContext as Symbol;
-            if (input == null || input.InputSymbol != null && text.Equals(input.InputSymbol))
+            if (input.InputSymbol != null && text.Equals(input.InputSymbol))
             {
-                dynamoViewModel.ReturnFocusToSearch();
+                ReturnFocus();
             }
             else
             {
-                InnerTextEditor.Text = (DataContext as Symbol).InputSymbol;
+                InnerTextEditor.Text = input.InputSymbol;
             }
         }
 
-        protected override void OnCommitChange(string code)
+        protected override void OnCommitChange()
         {
-            var lastInput = (nodeViewModel.NodeModel as Symbol).InputSymbol;
+            var lastInput = input.InputSymbol;
             if (lastInput.Equals(InnerTextEditor.Text))
                 return;
 
-            dynamoViewModel.ExecuteCommand(
-                new DynCmd.UpdateModelValueCommand(
-                    nodeViewModel.WorkspaceViewModel.Model.Guid,
-                    nodeViewModel.NodeModel.GUID, "InputSymbol",
-                    code));
+            UpdateNodeValue("InputSymbol");
         }
     }
 }

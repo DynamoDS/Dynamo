@@ -382,16 +382,16 @@
             <ContentControl Style="{StaticResource LibraryPopupContentStyle}">
                 <WrapPanel>
                     <!-- Compact layout button -->
-                    <Border BorderThickness="0,0,1,0"
-                            BorderBrush="{StaticResource SearchDarkGreyTextColor}"
-                            Style="{StaticResource LayoutButtonStyle}">
-                        <Button Name="CompactButton"
-                                Command="{Binding ToggleLayoutCommand}">
-                            <Button.CommandParameter>
-                                <system:Boolean>False</system:Boolean>
-                            </Button.CommandParameter>
-                            <Button.Template>
-                                <ControlTemplate>
+                    <Button Name="CompactButton"
+                            Command="{Binding ToggleLayoutCommand}">
+                        <Button.CommandParameter>
+                            <system:Boolean>False</system:Boolean>
+                        </Button.CommandParameter>
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Border BorderThickness="0,0,1,0"
+                                        BorderBrush="{StaticResource SearchDarkGreyTextColor}"
+                                        Style="{StaticResource LayoutButtonStyle}">
                                     <StackPanel Orientation="Horizontal"
                                                 Margin="5,5,5,5">
                                         <fa:ImageAwesome Name="CompactLayoutIcon"
@@ -406,20 +406,21 @@
                                                    Text="{x:Static p:Resources.CompactLayoutTitle}"
                                                    FontSize="13" />
                                     </StackPanel>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>
-                    </Border>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
 
                     <!-- Detailed layout button -->
-                    <Border Style="{StaticResource LayoutButtonStyle}">
-                        <Button Name="DetailedButton"
-                                Command="{Binding ToggleLayoutCommand}">
-                            <Button.CommandParameter>
-                                <system:Boolean>True</system:Boolean>
-                            </Button.CommandParameter>
-                            <Button.Template>
-                                <ControlTemplate>
+
+                    <Button Name="DetailedButton"
+                            Command="{Binding ToggleLayoutCommand}">
+                        <Button.CommandParameter>
+                            <system:Boolean>True</system:Boolean>
+                        </Button.CommandParameter>
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Border Style="{StaticResource LayoutButtonStyle}">
                                     <StackPanel Orientation="Horizontal"
                                                 Margin="5,5,5,5">
                                         <fa:ImageAwesome  Name="DetailedLayoutIcon"
@@ -434,10 +435,11 @@
                                                    Text="{x:Static p:Resources.DetailedLayoutTitle}"
                                                    FontSize="13" />
                                     </StackPanel>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>
-                    </Border>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
                 </WrapPanel>
             </ContentControl>
         </Popup>

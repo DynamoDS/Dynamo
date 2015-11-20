@@ -7462,9 +7462,6 @@ namespace ProtoAssociative
                 }
 
 
-                // Move the pointer to FX
-                StackValue opFX = StackValue.BuildRegister(Registers.FX);
-
                 ProtoCore.DSASM.SymbolNode firstSymbol = leftNodeRef.nodeList[0].symbol;
                 if (null != firstSymbol)
                 {

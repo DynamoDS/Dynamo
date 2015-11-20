@@ -53,7 +53,7 @@
                           Command="{Binding Path=UngroupCommand}" />
                 <MenuItem Name="addtoGroup"
                           Header="{x:Static p:Resources.ContextAddGroupFromSelection}"
-                          Command="{Binding Path=AddToGroupCommand}" />
+                          Command="{Binding Path=AddToGroupCommand}" />               
                 <MenuItem Header="{x:Static p:Resources.ContextMenuLacing}"
                           Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter},Mode=OneWay}">
                     <MenuItem IsCheckable="True"
@@ -78,9 +78,14 @@
                               CommandParameter="CrossProduct"
                               Header="{x:Static p:Resources.ContextMenuLacingCrossProduct}" />
                 </MenuItem>
+                <MenuItem Name="nodeIsFrozen"
+                          Header="{x:Static p:Resources.NodesRunStatus}"
+                          IsChecked="{Binding IsFrozenExplicitly,Mode=OneWay}"   
+                          IsEnabled="{Binding CanToggleFrozen, Mode=OneWay}"
+                          Command="{Binding Path=ToggleIsFrozenCommand}" />
                 <MenuItem Name="isVisible_cm"
                           Header="{x:Static p:Resources.NodeContextMenuPreview}"
-                          IsChecked="{Binding Path=IsVisible,Mode=OneWay}"
+                          IsChecked="{Binding Path=IsVisible,Mode=OneWay}"                          
                           Command="{Binding Path=ToggleIsVisibleCommand}"
                           Visibility="{Binding Path=ShowsVisibilityToggles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                 <MenuItem Name="isUpstreamVisible_cm"

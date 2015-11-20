@@ -472,7 +472,7 @@ namespace Dynamo.Tests
             AssertPreviewValue("56f3c0fd-d39c-46cb-a4ea-4f266f7a9fce", true);
         }
 
-        [Test, Category("RegressionTests")]
+        [Test, Category("Failure")]
         public void CyclicDependency_Defect8827()
         {
             string openPath = Path.Combine(TestDirectory,

@@ -1,5 +1,5 @@
-﻿using Dynamo.Graph.Nodes;
-using Dynamo.Nodes;
+﻿using Dynamo.Controls;
+using Dynamo.Graph.Nodes;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Views;
@@ -13,8 +13,6 @@ using System.Windows.Input;
 
 namespace Dynamo.UI.Controls
 {
-    // TODO: Merge CodeCompletionEditor with CodeBlockEditor
-
     /// <summary>
     /// Interaction logic for CodeCompletionEditor.xaml
     /// </summary>
@@ -29,27 +27,84 @@ namespace Dynamo.UI.Controls
         }
 
         protected NodeViewModel nodeViewModel;
-        protected DynamoViewModel dynamoViewModel;
+
+        /// <summary>
+        /// If the editor has been disposed. 
+        /// </summary>
+        protected bool IsDisposed
+        {
+            get; private set;
+        }
+
+        private DynamoViewModel dynamoViewModel;
         private CompletionWindow completionWindow;
         private CodeCompletionMethodInsightWindow insightWindow;
 
         /// <summary>
         /// Create CodeCOmpletionEditor with NodeViewModel
         /// </summary>
-        /// <param name="nodeViewModel"></param>
-        public CodeCompletionEditor(NodeViewModel nodeViewModel)
+        /// <param name="nodeView"></param>
+        public CodeCompletionEditor(NodeView nodeView)
         {
             InitializeComponent();
 
-            this.nodeViewModel = nodeViewModel;
+            nodeView.Unloaded += (obj, args) => IsDisposed = true;
+            this.nodeViewModel = nodeView.ViewModel;
             this.dynamoViewModel = nodeViewModel.DynamoViewModel;
             this.DataContext = nodeViewModel.NodeModel;
+            this.InnerTextEditor.TextChanged += OnTextChanged;
             this.InnerTextEditor.TextArea.LostFocus += OnTextAreaLostFocus;
             this.InnerTextEditor.TextArea.TextEntering += OnTextAreaTextEntering;
             this.InnerTextEditor.TextArea.TextEntered += OnTextAreaTextEntered;
 
             CodeHighlightingRuleFactory.CreateHighlightingRules(InnerTextEditor, dynamoViewModel.EngineController);
         }
+
+        /// <summary>
+        /// Set focus to the editor.
+        /// </summary>
+        public void SetFocus()
+        {
+            InnerTextEditor.Focus();
+        }
+
+        #region Dependency Property
+        /// <summary>
+        /// Dependency property.
+        /// </summary>
+        public static readonly DependencyProperty CodeProperty =
+            DependencyProperty.Register(
+                "Code",
+                typeof(string),
+                typeof(CodeCompletionEditor),
+                new PropertyMetadata((obj, args) =>
+                {
+                    var target = (CodeCompletionEditor)obj;
+                    target.Code = (string)args.NewValue;
+                })
+            );
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Set the content of the editor.
+        /// </summary>
+        public string Code
+        {
+            get
+            {
+                // Since this property a one way binding from source (for example, CodeBlockNodeModel)
+                // to target (this class), the getter should never be called.
+                throw new NotImplementedException();
+            }
+            set
+            {
+                InnerTextEditor.Text = value;
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// Derived class overrides this function to handle escape event.
@@ -61,11 +116,31 @@ namespace Dynamo.UI.Controls
         /// <summary>
         /// Derived class overrides this function to handle the commit of code.
         /// </summary>
-        /// <param name="code"></param>
-        protected virtual void OnCommitChange(string code)
+        protected virtual void OnCommitChange()
         {
         }
 
+        /// <summary>
+        /// Update the value of specified property of node to the input code.
+        /// </summary>
+        /// <param name="property"></param>
+        protected void UpdateNodeValue(string property)
+        {
+            dynamoViewModel.ExecuteCommand(
+                new Models.DynamoModel.UpdateModelValueCommand(
+                    nodeViewModel.WorkspaceViewModel.Model.Guid,
+                    nodeViewModel.NodeModel.GUID, 
+                    property,
+                    InnerTextEditor.Text));
+        }
+
+        /// <summary>
+        /// Return focus to the Dynamo.
+        /// </summary>
+        protected void ReturnFocus()
+        {
+            dynamoViewModel.ReturnFocusToSearch();
+        }
 
         private IEnumerable<ICompletionData> GetCompletionData(string code, string stringToComplete)
         {
@@ -94,39 +169,33 @@ namespace Dynamo.UI.Controls
                 Select(x => new CodeCompletionInsightItem(x));
         }
 
-        #region Properties
-        public string Code
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                InnerTextEditor.Text = value;
-            }
-        }
-
-        #endregion
-
         #region Event handlers
+
+        private void OnTextChanged(object sender, EventArgs e)
+        {
+            if (WatermarkLabel.Visibility == Visibility.Visible)
+                WatermarkLabel.Visibility = Visibility.Collapsed;
+        }
 
         private void OnTextAreaTextEntering(object sender, TextCompositionEventArgs e)
         {
-            if (e.Text.Length > 0)
+            if (e.Text.Length == 0 || completionWindow == null)
+                return;
+
+            try
             {
                 char currentChar = e.Text[0];
-                if (completionWindow != null)
+                if (currentChar == '\t' || currentChar == '.' || currentChar == '\n' || currentChar == '\r')
                 {
-                    if (currentChar == '\n' || currentChar == '\r')
-                    {
-                        completionWindow.CompletionList.RequestInsertion(e);
-                    }
-                    else if (!char.IsLetterOrDigit(currentChar))
-                    {
-                        completionWindow.Close();
-                    }
+                    completionWindow.CompletionList.RequestInsertion(e);
                 }
+                else if (!char.IsLetterOrDigit(currentChar))
+                {
+                    completionWindow.Close();
+                }
+            }
+            catch (Exception)
+            {
             }
         }
 
@@ -193,7 +262,7 @@ namespace Dynamo.UI.Controls
                     ShowCompletionWindow(completions, completeWhenTyping: true);
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception)
             {
             }
         }
@@ -204,9 +273,12 @@ namespace Dynamo.UI.Controls
         /// <param name="e"></param>
         private void OnTextAreaLostFocus(object sender, RoutedEventArgs e)
         {
+            if (IsDisposed)
+                return;
+
             InnerTextEditor.TextArea.ClearSelection();
 
-            OnCommitChange(InnerTextEditor.Text);
+            OnCommitChange();
         }
 
         /// <summary>
@@ -219,7 +291,7 @@ namespace Dynamo.UI.Controls
             {
                 if (e.Key == Key.Enter || e.Key == Key.Return)
                 {
-                    dynamoViewModel.ReturnFocusToSearch();
+                    ReturnFocus();
                 }
             }
             else if (e.Key == Key.Escape)
@@ -237,27 +309,24 @@ namespace Dynamo.UI.Controls
 
         private void ShowInsightWindow(IEnumerable<CodeCompletionInsightItem> items)
         {
-            if (items == null)
+            if (items == null || !items.Any())
                 return;
 
             if (insightWindow != null)
             {
                 insightWindow.Close();
             }
+
             insightWindow = new CodeCompletionMethodInsightWindow(this.InnerTextEditor.TextArea);
             foreach (var item in items)
             {
                 insightWindow.Items.Add(item);
             }
-            if (insightWindow.Items.Count > 0)
-            {
-                insightWindow.SelectedItem = insightWindow.Items[0];
-            }
-            else
-            {
-                // don't open insight window when there are no items
+
+            if (insightWindow.Items.Count <= 0)
                 return;
-            }
+
+            insightWindow.SelectedItem = insightWindow.Items[0];
             insightWindow.Closed += delegate
             {
                 insightWindow = null;
@@ -276,6 +345,7 @@ namespace Dynamo.UI.Controls
             {
                 completionWindow.Close();
             }
+
             completionWindow = new CompletionWindow(this.InnerTextEditor.TextArea)
             {
                 AllowsTransparency = true,

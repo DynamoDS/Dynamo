@@ -10,6 +10,7 @@ using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using ProtoCore.Namespace;
 using ProtoCore.Utils;
+using ProtoCore.BuildData;
 
 namespace Dynamo.Graph.Nodes.CustomNodes
 {
@@ -401,9 +402,17 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                         defaultValue = node.RightNode;
 
                     if (parseParam.Errors.Any())
+                    {
                         this.Error(parseParam.Errors.First().Message);
+                    }
                     else if (parseParam.Warnings.Any())
-                        this.Warning(parseParam.Warnings.First().Message);
+                    {
+                        var warnings = parseParam.Warnings.Where(w => w.ID != WarningID.kIdUnboundIdentifier);
+                        if (warnings.Any())
+                        {
+                            this.Warning(parseParam.Warnings.First().Message);
+                        }
+                    }
 
                     return identifier != null;
                 }
