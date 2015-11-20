@@ -636,7 +636,11 @@ namespace Dynamo.ViewModels
                 case "CanUpdatePeriodically":
                     RaisePropertyChanged("EnablePeriodicUpdate");
                     RaisePropertyChanged("PeriodicUpdateVisibility");
-                    break;                             
+                    break;   
+                case "IsFrozen":
+                    RaisePropertyChanged("IsFrozenExplicitly");
+                    RaisePropertyChanged("CanToggleFrozen");
+                    break;
             }
         }
 
