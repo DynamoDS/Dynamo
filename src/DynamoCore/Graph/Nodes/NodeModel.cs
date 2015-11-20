@@ -633,8 +633,7 @@ namespace Dynamo.Graph.Nodes
             }
             set
             {
-                isFrozenExplicitly = value;    
-                RaisePropertyChanged("IsFrozen");      
+                isFrozenExplicitly = value;                    
                 //If the node is Unfreezed then Mark all the downstream nodes as
                 // modified. This is essential recompiling the AST.
                 if (!value)
@@ -648,7 +647,7 @@ namespace Dynamo.Graph.Nodes
                     OnToggleNodeFreeze();
                 }
 
-                RaisePropertyChanged("IsFrozen");
+                RaisePropertyChanged("IsFrozen");     
             }
         }
        
