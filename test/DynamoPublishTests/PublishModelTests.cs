@@ -17,6 +17,7 @@ using Reach.Upload;
 using System.Net;
 using Dynamo.Graph;
 using Dynamo.Graph.Workspaces;
+using Reach.Messages.Data;
 
 namespace DynamoPublishTests
 {
@@ -46,8 +47,7 @@ namespace DynamoPublishTests
                 c.Send(It.IsAny<HomeWorkspaceModel>(), It.IsAny<IEnumerable<CustomNodeWorkspaceModel>>(), null)).Returns(successMock);
 
             // Create publish model.
-            publishModel = new PublishModel(authenticationProvider.Object, 
-                CurrentDynamoModel.CustomNodeManager, client.Object);            
+            publishModel = new PublishModel(authenticationProvider.Object, CurrentDynamoModel.CustomNodeManager, client.Object);            
         }
 
         private void AssertNumberOfDeps(int numDeps)
