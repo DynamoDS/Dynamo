@@ -1660,7 +1660,7 @@ namespace Dynamo.Graph.Nodes
             isVisible = helper.ReadBoolean("isVisible", true);
             isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
-            IsInputNode = helper.ReadBoolean("isSelectedInput", true);
+            IsInputNode = helper.ReadNullableBoolean("isSelectedInput");
             isFrozenExplicitly = helper.ReadBoolean("IsFrozen", false);            
            
             var portInfoProcessed = new HashSet<int>();
