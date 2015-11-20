@@ -684,13 +684,32 @@ namespace Dynamo.Graph.Nodes
 
         private void MarkDownStreamNodesAsModified(NodeModel node)
         {                         
+            HashSet<NodeModel> gathered = new HashSet<NodeModel>();
+            GetDownstreamNodes(node,gathered);
+            foreach (var iNode in gathered)
+            {
+                iNode.executionHint = ExecutionHints.Modified;                
+            }
+        }
+
+        /// <summary>
+        /// Gets the downstream nodes for the given node.
+        /// </summary>
+        /// <param name="node">The node.</param>
+        /// <param name="gathered">The gathered.</param>
+        internal void GetDownstreamNodes(NodeModel node, HashSet<NodeModel> gathered)
+        {
+            if (gathered.Contains(node)) // Considered this node before, bail.pu
+                return;
+
+            gathered.Add(node);
+
             var sets = node.OutputNodes.Values;
-            var outputNodes = sets.SelectMany(set => set.Select(t => t.Item2)).Distinct();
+            var outputNodes = sets.SelectMany(set => set.Select(t => t.Item2));
             foreach (var outputNode in outputNodes)
             {
-                outputNode.executionHint = ExecutionHints.Modified;     
                 // Recursively get all downstream nodes.
-                MarkDownStreamNodesAsModified(outputNode);
+                GetDownstreamNodes(outputNode, gathered);
             }
         }
         #endregion  
