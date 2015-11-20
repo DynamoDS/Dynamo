@@ -1,21 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ImportGroup Label="PropertySheets">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS.props" />
-    <Import Project="..\..\packages\SharpDX.2.6.3\build\SharpDX.targets" Condition="Exists('..\..\packages\SharpDX.2.6.3\build\SharpDX.targets')" />
-    <Import Project="..\..\packages\SharpDX.Toolkit.2.6.3\build\SharpDX.Toolkit.targets" Condition="Exists('..\..\packages\SharpDX.Toolkit.2.6.3\build\SharpDX.Toolkit.targets')" />
-    <Import Project="$(SolutionDir)Config/DynamoWpf.targets" />
   </ImportGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}</ProjectGuid>
+    <ProjectGuid>{ECEB213E-9E05-47D4-8D33-7A63CCD28619}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DynamoWatch3D</RootNamespace>
-    <AssemblyName>DynamoWatch3D</AssemblyName>
+    <RootNamespace>Watch3DNodeModelsWpf</RootNamespace>
+    <AssemblyName>Watch3DNodeModelsWpf</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -27,10 +23,9 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -39,24 +34,23 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Cyotek.Drawing.BitmapFont, Version=1.0.2.0, Culture=neutral, PublicKeyToken=58daa28b0b2de221, processorArchitecture=MSIL">
+    <Reference Include="Cyotek.Drawing.BitmapFont">
       <HintPath>..\..\packages\Cyotek.Drawing.BitmapFont.1.0.2.0\lib\net20\Cyotek.Drawing.BitmapFont.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="HelixToolkit, Version=2015.1.629.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
+    <Reference Include="HelixToolkit">
       <HintPath>..\..\packages\HelixToolkit.2015.1.629\lib\portable-net4+sl4+wp71+win8\HelixToolkit.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="HelixToolkit.Wpf, Version=2015.1.629.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
+    <Reference Include="HelixToolkit.Wpf">
       <HintPath>..\..\packages\HelixToolkit.Wpf.2015.1.629\lib\net45\HelixToolkit.Wpf.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="HelixToolkit.Wpf.SharpDX, Version=2015.1.629.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
+    <Reference Include="HelixToolkit.Wpf.SharpDX">
       <HintPath>..\..\packages\HelixToolkit.Wpf.SharpDX.2015.1.629\lib\net45\HelixToolkit.Wpf.SharpDX.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
@@ -66,70 +60,69 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="ProtoInterface">
       <HintPath>..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="SharpDX">
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="SharpDX.D3DCompiler">
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.D3DCompiler.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="SharpDX.D3DCompiler, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\SharpDX.2.6.3\build\..\Bin\DirectX11-Signed-net40\SharpDX.D3DCompiler.dll</HintPath>
-    </Reference>
     <Reference Include="SharpDX.Direct2D1">
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.Direct2D1.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="SharpDX.Direct2D1, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\SharpDX.2.6.3\build\..\Bin\DirectX11-Signed-net40\SharpDX.Direct2D1.dll</HintPath>
-    </Reference>
     <Reference Include="SharpDX.Direct3D11">
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.Direct3D11.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="SharpDX.Direct3D11.Effects">
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.Direct3D11.Effects.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="SharpDX.Direct3D9">
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.Direct3D9.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="SharpDX.DXGI">
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.DXGI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="SharpDX.Toolkit">
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.Toolkit.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="SharpDX.Toolkit.Graphics">
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.Toolkit.Graphics.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
-      <Link>AssemblySharedInfo.cs</Link>
-    </Compile>
     <Compile Include="HelixWatch3DNodeViewModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
+      <DependentUpon>Resources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Properties\Resources.en-US.Designer.cs">
+      <DependentUpon>Resources.en-US.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.en-US.resx</DependentUpon>
     </Compile>
-    <Compile Include="Watch3D.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Watch3DNodeViewCustomization.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCoreWpf\DynamoCoreWpf.csproj">
@@ -142,31 +135,25 @@
       <Name>DynamoCore</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\DynamoUtilities\DynamoUtilities.csproj">
-      <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
-      <Name>DynamoUtilities</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Engine\ProtoCore\ProtoCore.csproj">
-      <Project>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</Project>
-      <Name>ProtoCore</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\VMDataBridge\VMDataBridge.csproj">
-      <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>
+      <Project>{CCB6E56B-2DA1-4EBA-A1F9-E8510E129D12}</Project>
       <Name>VMDataBridge</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Watch3DNodeModels\Watch3DNodeModels.csproj">
+      <Project>{DE1B55BA-E438-4B53-AF3B-65E9009CE007}</Project>
+      <Name>Watch3DNodeModels</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DynamoWatch3DImages.resx" />
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.en-US.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -177,28 +164,20 @@
     <Content Include="sharpdx_direct3d11_effects_x86.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
-  <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
-    <!-- Get System.Drawing.dll -->
-    <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v2.0">
-      <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
-    </GetReferenceAssemblyPaths>
-    <!-- Get assembly -->
-    <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
-      <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
-    </GetAssemblyIdentity>
-    <!-- Generate customization dll -->
-    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)DynamoWatch3DImages.resx" OutputResources="$(ProjectDir)DynamoWatch3DImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    <AL TargetType="library" EmbedResources="$(ProjectDir)DynamoWatch3DImages.resources" OutputAssembly="$(OutDir)DynamoWatch3D.customization.dll" Version="%(AssemblyInfo.Version)" />
-  </Target>
+  <Import Project="..\..\packages\SharpDX.2.6.3\build\SharpDX.targets" Condition="Exists('..\..\packages\SharpDX.2.6.3\build\SharpDX.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\..\packages\SharpDX.2.6.3\build\SharpDX.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\SharpDX.2.6.3\build\SharpDX.targets'))" />
     <Error Condition="!Exists('..\..\packages\SharpDX.Toolkit.2.6.3\build\SharpDX.Toolkit.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\SharpDX.Toolkit.2.6.3\build\SharpDX.Toolkit.targets'))" />
   </Target>
+  <Import Project="..\..\packages\SharpDX.Toolkit.2.6.3\build\SharpDX.Toolkit.targets" Condition="Exists('..\..\packages\SharpDX.Toolkit.2.6.3\build\SharpDX.Toolkit.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
 </Project>
