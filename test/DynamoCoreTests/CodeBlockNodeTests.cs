@@ -1043,7 +1043,7 @@ var06 = g;
 
             var members = type.GetMembers();
 
-            var expected = new[] { "CodeCompletionClass", "StaticFunction", "StaticProp" };
+            var expected = new[] { "AddWithValueContainer", "CodeCompletionClass", "IsEqualTo", "OverloadedAdd", "StaticFunction", "StaticProp"};
             AssertCompletions(members, expected);
         }
 
