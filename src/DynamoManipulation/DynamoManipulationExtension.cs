@@ -1,0 +1,204 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Windows.Input;
+using Dynamo.Extensions;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Visualization;
+using Dynamo.Wpf.Extensions;
+using Dynamo.Wpf.ViewModels.Watch3D;
+using DoubleSlider = DSCoreNodesUI.Input.DoubleSlider;
+
+namespace Dynamo.Manipulation
+{
+    public class DynamoManipulationExtension : IViewExtension
+    {
+        private IEnumerable<NodeModel> manipulatorNodes;
+        private ManipulatorDaemon manipulatorDaemon;
+        private ViewLoadedParams viewLoadedParams;
+
+        internal IWatch3DViewModel BackgroundPreviewViewModel { get; private set; }
+        internal IRenderPackageFactory RenderPackageFactory { get; private set; }
+        internal IWorkspaceModel WorkspaceModel { get; private set; }
+        internal ICommandExecutive CommandExecutive { get; private set; }
+
+        public Dictionary<Type, IEnumerable<INodeManipulatorFactory>> ManipulatorCreators { get; set; }
+
+        #region IViewExtension implementation
+
+        public string UniqueId
+        {
+            get { return "58B0496A-E3F8-43D9-86D2-94823D1D0F98"; }
+        }
+
+        public string Name
+        {
+            get { return "DynamoManipulationExtension"; }
+        }
+
+        public void Dispose()
+        {
+            manipulatorDaemon.KillAll();
+
+            UnregisterEventHandlers();
+        }
+
+        public void Startup(ViewStartupParams p)
+        {
+            manipulatorDaemon = ManipulatorDaemon.Create(new NodeManipulatorFactoryLoader());
+        }
+
+        public void Loaded(ViewLoadedParams p)
+        {
+            viewLoadedParams = p;
+
+            WorkspaceModel = p.CurrentWorkspaceModel;
+            BackgroundPreviewViewModel = p.BackgroundPreviewViewModel;
+            RenderPackageFactory = p.RenderPackageFactory;
+            CommandExecutive = p.CommandExecutive;
+
+            RegisterEventHandlers();
+        }
+
+        private void RegisterEventHandlers()
+        {
+            viewLoadedParams.SelectionCollectionChanged += UpdateManipulators;
+            viewLoadedParams.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
+
+            BackgroundPreviewViewModel.CanNavigateBackgroundPropertyChanged += Watch3DViewModelNavigateBackgroundPropertyChanged;
+            BackgroundPreviewViewModel.ViewMouseDown += Watch3DViewModelOnViewMouseDown;
+        }
+
+        private void UnregisterEventHandlers()
+        {
+            viewLoadedParams.SelectionCollectionChanged -= UpdateManipulators;
+            viewLoadedParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
+
+            BackgroundPreviewViewModel.CanNavigateBackgroundPropertyChanged -= Watch3DViewModelNavigateBackgroundPropertyChanged;
+            BackgroundPreviewViewModel.ViewMouseDown -= Watch3DViewModelOnViewMouseDown;
+        }
+
+        private void Watch3DViewModelOnViewMouseDown(object o, MouseButtonEventArgs mouseButtonEventArgs)
+        {
+            BackgroundPreviewViewModel.HighlightNodeGraphics(manipulatorNodes);
+        }
+
+        private void Watch3DViewModelNavigateBackgroundPropertyChanged(bool canNavigateBackground)
+        {
+            if (canNavigateBackground)
+            {
+                // if switching to geometry view
+                // Get the Model3D objects corresponding to the nodes and highlight them
+                var nodes = GetZeroTouchNodesForMatchingNames();
+                manipulatorNodes = nodes.Where(InspectInputsForNode);
+
+                BackgroundPreviewViewModel.HighlightNodeGraphics(manipulatorNodes);
+            }
+            else
+            {
+                // if switching to node view
+                BackgroundPreviewViewModel.UnHighlightNodeGraphics(manipulatorNodes);
+            }
+
+        }
+
+        private IEnumerable<DSFunctionBase> GetZeroTouchNodesForMatchingNames()
+        {
+            var nodes = WorkspaceModel.Nodes;
+            var nodeNames = manipulatorDaemon.NodeNames;
+            var nodeModels = new List<DSFunctionBase>();
+            foreach (var nodeName in nodeNames)
+            {
+                var creationName = nodeName;
+
+                // Find zero touch nodes that match a given name
+                var ztNodes = nodes.OfType<DSFunction>().Where(n => n.CreationName == creationName);
+
+                nodeModels.AddRange(ztNodes);
+            }
+            return nodeModels;
+        }
+
+        /// <summary>
+        /// For each node in nodes, inspect inputs and filter only those nodes
+        /// that have at least one slider input or no input
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        private static bool InspectInputsForNode(NodeModel node)
+        {
+            bool manipulable = false;
+            for (int i = 0; i < node.InPorts.Count; i++)
+            {
+                Tuple<int, NodeModel> val;
+                if (node.InputNodes.TryGetValue(i, out val))
+                {
+                    if (val != null)
+                    {
+                        if (val.Item2 is DoubleSlider)
+                        {
+                            manipulable = true;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        manipulable = true;
+                        break;
+                    }
+                }
+                else
+                {
+                    manipulable = true;
+                    break;
+                }
+            }
+            return manipulable;
+        }
+
+        public void Shutdown()
+        {
+            
+        }
+
+        #endregion
+
+        private void OnCurrentWorkspaceChanged(IWorkspaceModel wsm)
+        {
+            // update the workspace when a new Dynamo file is opened
+            // so that it always references the current workspace
+            WorkspaceModel = wsm;
+            manipulatorNodes = new List<NodeModel>();
+        }
+
+        private void UpdateManipulators(NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action != NotifyCollectionChangedAction.Move)
+            {
+                if (e.OldItems != null)
+                {
+                    foreach (var nm in e.OldItems.OfType<NodeModel>())
+                    {
+                        manipulatorDaemon.KillManipulators(nm);
+                    }
+                }
+            }
+
+            if (e.Action == NotifyCollectionChangedAction.Reset)
+            {
+                manipulatorDaemon.KillAll();
+            }
+
+            if (e.NewItems == null) return;
+
+            foreach (var nm in e.NewItems.OfType<NodeModel>())
+            {
+                manipulatorDaemon.CreateManipulator(nm, this);
+            }
+        }
+
+    }
+}
