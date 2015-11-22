@@ -506,6 +506,59 @@ namespace Dynamo.Tests
             Assert.AreEqual(0,csPreview.Origin.X );
             Assert.AreEqual(0,csPreview.Origin.Y);
             Assert.AreEqual(0, csPreview.Origin.Z); 
-        }       
+        }
+
+
+        [Test]
+        public void VoronoiByParameterOnSurface_MAGN_8039()
+        {
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-8039
+
+            string openPath = Path.Combine(TestDirectory,
+            @"core\WorkflowTestFiles\GeometryDefects\Voronoi.ByParameterOnSurface_MAGN_8039.dyn");
+
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(11, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+
+            var VoronoiNodeID = "2fdd3ad8-dc1e-4087-be18-196732d41d7a";
+
+            for (int i = 0; i <= 10; i++)
+            {
+                var allLines = GetPreviewValueAtIndex(VoronoiNodeID, i) as Line;
+                Assert.IsNotNull(allLines);
+            }
+        }
+
+        [Test]
+        public void NurbsSurfaceWeights_MAGN_7970()
+        {
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7970
+
+            string openPath = Path.Combine(TestDirectory,
+            @"core\WorkflowTestFiles\GeometryDefects\NurbsSurfaceWeights_MAGN_7970.dyn");
+
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(15, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(20, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+
+            // Surface created using NurbsSurface.ByControlPointsWeightsKnots
+            var nurbsSurfaceWeights = GetFlattenedPreviewValues("92c2dd46-c73f-4e73-868f-19ae619eab26");
+            Assert.AreEqual(nurbsSurfaceWeights, new object[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 });
+
+            // Surface created using NurbsSurface.ByControlPoints
+            var nurbsSurfaceWeights1 = GetFlattenedPreviewValues("51525d19-3de9-4329-8249-6ddfb45aa8ac");
+            Assert.AreEqual(nurbsSurfaceWeights1, new object[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 });
+
+        }
+
     }
 }
