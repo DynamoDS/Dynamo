@@ -206,9 +206,9 @@ namespace Dynamo.Models
         public IPathManager PathManager { get { return pathManager; } }
 
         /// <summary>
-        ///     The context that Dynamo is running under.
+        ///     The context that Dynamo is running under. E.g. Dynamo Standalone or DynamoStudio.
         /// </summary>
-        public readonly string Context;
+        public readonly DynamoAppContext ApplicationContext;
 
         /// <summary>
         ///     Manages all extensions for Dynamo
@@ -398,7 +398,7 @@ namespace Dynamo.Models
 
         public interface IStartConfiguration
         {
-            string Context { get; set; }
+            DynamoAppContext ApplicationContext { get; set; }
             string DynamoCorePath { get; set; }
             IPreferences Preferences { get; set; }
             IPathResolver PathResolver { get; set; }
@@ -416,7 +416,7 @@ namespace Dynamo.Models
         /// </summary>
         public struct DefaultStartConfiguration : IStartConfiguration
         {
-            public string Context { get; set; }
+            public DynamoAppContext ApplicationContext { get; set; }
             public string DynamoCorePath { get; set; }
             public IPreferences Preferences { get; set; }
             public IPathResolver PathResolver { get; set; }
@@ -445,10 +445,6 @@ namespace Dynamo.Models
         /// <returns></returns>
         public static DynamoModel Start(IStartConfiguration configuration)
         {
-            // where necessary, assign defaults
-            if (string.IsNullOrEmpty(configuration.Context))
-                configuration.Context = Configuration.Context.NONE;
-
             return new DynamoModel(configuration);
         }
 
@@ -466,7 +462,7 @@ namespace Dynamo.Models
             var exceptions = new List<Exception>();
             pathManager.EnsureDirectoryExistence(exceptions);
 
-            Context = config.Context;
+            ApplicationContext = config.ApplicationContext;
             IsTestMode = config.StartInTestMode;
             DebugSettings = new DebugSettings();
             Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory);
@@ -582,7 +578,7 @@ namespace Dynamo.Models
             {
                 var startupParams = new StartupParams(config.AuthProvider,
                     pathManager, new ExtensionLibraryLoader(this), CustomNodeManager,
-                    GetType().Assembly.GetName().Version, preferences);
+                    GetType().Assembly.GetName().Version, preferences, ApplicationContext);
 
                 foreach (var ext in extensions)
                 {
@@ -914,7 +910,7 @@ namespace Dynamo.Models
             List<TypeLoadData> modelTypes;
             List<TypeLoadData> migrationTypes;
             Loader.LoadNodeModelsAndMigrations(pathManager.NodeDirectories,
-                Context, out modelTypes, out migrationTypes);
+                ApplicationContext, out modelTypes, out migrationTypes);
 
             // Load NodeModels
             foreach (var type in modelTypes)
@@ -959,7 +955,7 @@ namespace Dynamo.Models
             }
 
             var nodes = new List<TypeLoadData>();
-            Loader.LoadNodesFromAssembly(assem, Context, nodes, new List<TypeLoadData>());
+            Loader.LoadNodesFromAssembly(assem, ApplicationContext, nodes, new List<TypeLoadData>());
 
             foreach (var type in nodes)
             {

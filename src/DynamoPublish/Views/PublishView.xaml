@@ -4,7 +4,6 @@
         xmlns:resx="clr-namespace:Dynamo.Publish.Properties"
         xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
         xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
-        Title="{x:Static resx:Resources.PublishViewTitle}"
         SizeToContent="Height"  
         ResizeMode="NoResize"
         MaxHeight="750"
@@ -85,7 +84,6 @@
                          Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          Style="{StaticResource PublishTextBoxStyle}" />
                 <TextBlock Name="textBlockDefaultName"
-                           Text="{x:Static resx:Resources.PublishViewDefaultNameTitle}"
                            Grid.Row="1"
                            Margin="5,0,5,0"
                            Foreground="#FF808080"
@@ -180,16 +178,22 @@
                         Margin="0,10,5,0"
                         Style="{StaticResource STextButton}" />
 
-                <TextBlock Name="manageTextBlock"
-                           Text="{x:Static resx:Resources.ManageButtonTitle}"
+                <TextBlock Name="manageTextBlock"                           
                            Foreground="SteelBlue"
                            Grid.Row="2"
                            Grid.Column="0"
                            VerticalAlignment="Center"
                            MouseDown="OnMouseDown" />
 
-                <TextBlock Grid.Row="3" Grid.ColumnSpan="2" FontStyle="Italic" Name ="Privacy" Foreground="{StaticResource PublishViewTextColor}" TextWrapping="Wrap" Padding="0,10" FontSize="12" FontFamily="{StaticResource OpenSansRegular}"
-                       Text ="{x:Static resx:Resources.InviteIntegrity}"/>
+                <TextBlock Grid.Row="3"
+                           Grid.ColumnSpan="2"
+                           FontStyle="Italic"
+                           Name="Privacy"
+                           Foreground="{StaticResource PublishViewTextColor}"
+                           TextWrapping="Wrap"
+                           Padding="0,10"
+                           FontSize="12"
+                           FontFamily="{StaticResource OpenSansRegular}" />
 
             </Grid>
 

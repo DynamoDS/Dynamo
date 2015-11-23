@@ -75,8 +75,8 @@ namespace Dynamo.Models
         /// <param name="context"></param>
         /// <param name="modelTypes"></param>
         /// <param name="migrationTypes"></param>
-        public void LoadNodeModelsAndMigrations(IEnumerable<string> nodeDirectories, 
-            string context, out List<TypeLoadData> modelTypes, out List<TypeLoadData> migrationTypes)
+        public void LoadNodeModelsAndMigrations(IEnumerable<string> nodeDirectories,
+            DynamoAppContext context, out List<TypeLoadData> modelTypes, out List<TypeLoadData> migrationTypes)
         {
             var loadedAssembliesByPath = new Dictionary<string, Assembly>();
             var loadedAssembliesByName = new Dictionary<string, Assembly>();
@@ -192,7 +192,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <Returns>The list of node types loaded from this assembly</Returns>
         public void LoadNodesFromAssembly(
-            Assembly assembly, string context, List<TypeLoadData> nodeModels,
+            Assembly assembly, DynamoAppContext context, List<TypeLoadData> nodeModels,
             List<TypeLoadData> migrationTypes)
         {
             if (assembly == null)
@@ -228,12 +228,12 @@ namespace Dynamo.Models
                     //and have the elementname attribute
                     if (IsNodeSubType(t))
                     {
-                        //if we are running in revit (or any context other than NONE) use the DoNotLoadOnPlatforms attribute, 
+                        //if we are running in revit (or any context other than Standalone) use the DoNotLoadOnPlatforms attribute, 
                         //if available, to discern whether we should load this type
-                        if (context.Equals(Context.NONE)
+                        if (context.Equals(DynamoAppContext.DynamoStandalone)
                             || !t.GetCustomAttributes<DoNotLoadOnPlatformsAttribute>(false)
                                 .SelectMany(attr => attr.Values)
-                                .Any(e => e.Contains(context)))
+                                .Any(e => e.Contains(context.ToString())))
                         {
                             nodeModels.Add(new TypeLoadData(t));
                         }

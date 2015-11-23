@@ -181,6 +181,7 @@ namespace Dynamo.Applications
 
             var config = new DynamoModel.DefaultStartConfiguration()
                   {
+                      ApplicationContext = Dynamo.Configuration.DynamoAppContext.DynamoStandalone,
                       GeometryFactoryPath = geometryFactoryPath,
                       ProcessMode = TaskProcessMode.Asynchronous
                   };

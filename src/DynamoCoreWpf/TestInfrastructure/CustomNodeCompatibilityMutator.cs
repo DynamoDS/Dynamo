@@ -320,11 +320,11 @@ namespace Dynamo.TestInfrastructure
                         t.Namespace != "Dynamo.Graph.Nodes") /*&& attribs.Length > 0*/
                         continue;
 
-                    //if we are running in revit (or any context other than NONE) 
+                    //if we are running in revit (or any context other than Standalone) 
                     //use the DoNotLoadOnPlatforms attribute, 
                     
                     //if available, to discern whether we should load this type
-                    if (!DynamoViewModel.Model.Context.Equals(Context.NONE))
+                    if (!DynamoViewModel.Model.ApplicationContext.Equals(DynamoAppContext.DynamoStandalone))
                     {
 
                         object[] platformExclusionAttribs = 
@@ -337,7 +337,7 @@ namespace Dynamo.TestInfrastructure
                             //if the attribute's values contain the context stored on the controller
                             //then skip loading this type.
 
-                            if (exclusions.Reverse().Any(e => e.Contains(DynamoViewModel.Model.Context)))
+                            if (exclusions.Reverse().Any(e => e.Contains(DynamoViewModel.Model.ApplicationContext.ToString())))
                                 continue;
 
                             //utility was late for Vasari release, 

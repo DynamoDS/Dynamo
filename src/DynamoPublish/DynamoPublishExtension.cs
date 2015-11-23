@@ -29,6 +29,17 @@ namespace Dynamo.Publish
         private MenuItem inviteMenuItem; 
         private MenuItem manageCustomizersMenuItem;
         private Separator separator = new Separator();
+
+        /// <summary>
+        /// Indicates whether dynamo is running as dynamo studio or any other instance(e.g. Revit or Standalone).
+        /// </summary>
+        private bool isDynamoProRunning
+        {
+            get
+            {
+                return startupParams.ApplicationContext == Configuration.DynamoAppContext.DynamoStudio;                
+            }
+        }
  
         #region IViewExtension implementation
 
@@ -58,10 +69,13 @@ namespace Dynamo.Publish
             manageCustomizersMenuItem = GenerateManageCustomizersMenuItem();
             p.AddMenuItem(MenuBarType.File, manageCustomizersMenuItem, 12);
 
-            inviteMenuItem = GenerateInviteMenuItem();
-            p.AddMenuItem(MenuBarType.File, inviteMenuItem, 11);
+            p.AddSeparator(MenuBarType.File, separator, 13);
 
-            p.AddSeparator(MenuBarType.File, separator, 14);
+            if (!isDynamoProRunning)
+            {
+                inviteMenuItem = GenerateInviteMenuItem();
+                p.AddMenuItem(MenuBarType.File, inviteMenuItem, 11);
+            }
 
             p.CurrentWorkspaceChanged += CurrentWorkspaceChanged;
 
@@ -105,15 +119,20 @@ namespace Dynamo.Publish
 
         private MenuItem GenerateMenuItem()
         {
-            var item = new MenuItem();
-            item.Header = Resources.DynamoViewMenuItemPublishTitle;
+            var item = new MenuItem
+            {
+                Header =
+                    isDynamoProRunning
+                        ? Resources.DynamoProViewMenuItemPublishTitle
+                        : Resources.DynamoViewMenuItemPublishTitle
+            };
 
             var isEnabled = loadedParams.CurrentWorkspaceModel is HomeWorkspaceModel && startupParams.AuthProvider != null;
             item.IsEnabled = isEnabled;
 
             item.Click += (sender, args) =>
             {
-                var model = new PublishModel(startupParams.AuthProvider, startupParams.CustomNodeManager);
+                var model = new PublishModel(startupParams.AuthProvider, startupParams.CustomNodeManager, isDynamoProRunning);
                 model.MessageLogged += this.OnMessageLogged;
 
                 var viewModel = new PublishViewModel(model)
@@ -171,8 +190,12 @@ namespace Dynamo.Publish
 
         private MenuItem GenerateManageCustomizersMenuItem()
         {
-            var item = new MenuItem();
-            item.Header = Resources.ManageButtonTitle;
+            var item = new MenuItem
+            {
+                Header = isDynamoProRunning
+                         ? Resources.DynamoProManageMenuButtonTitle
+                         : Resources.ManageButtonTitle
+            };
 
             item.Click += (sender, args) =>
             {
