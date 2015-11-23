@@ -648,22 +648,31 @@ namespace Dynamo.Graph.Nodes
         internal bool IsAnyUpstreamFrozen()
         {
             bool ret = false;
-            return CheckIfAnyUpstreamNodeIsFrozen(this, ref ret);
+            List<NodeModel> nodes = new List<NodeModel>();
+            return CheckIfAnyUpstreamNodeIsFrozen(this, nodes, ref ret);
         }
 
-        private bool CheckIfAnyUpstreamNodeIsFrozen(NodeModel node, ref bool ret)
+        private bool CheckIfAnyUpstreamNodeIsFrozen(NodeModel node, List<NodeModel> nodes, ref bool ret)
         {             
             var sets = node.InputNodes.Values;
             var inpNodes = sets.Where(x => x != null).Select(z => z.Item2).Distinct();
             foreach (var inode in inpNodes)
             {
+                //If there is a cyclic-dependency, stop traversing this branch
+                if (nodes.Contains(inode))
+                {
+                    continue;
+                }
+
                 if (inode.isFrozenExplicitly)
                 {
                     ret = true;
                     break;
                 }
 
-                CheckIfAnyUpstreamNodeIsFrozen(inode, ref ret);
+                List<NodeModel> newNodes = new List<NodeModel>(nodes);
+                newNodes.Add(inode);
+                CheckIfAnyUpstreamNodeIsFrozen(inode, newNodes, ref ret);
             }
 
             return ret;
