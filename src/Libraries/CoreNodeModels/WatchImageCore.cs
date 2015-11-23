@@ -31,10 +31,11 @@ namespace DSCoreNodesUI
             yield return AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputAstNodes[0]);
         }
 
-        public override void RequestVisualUpdateAsync(
+        public override bool RequestVisualUpdateAsync(
             IScheduler scheduler, EngineController engine, IRenderPackageFactory factory, bool forceUpdate = false)
         {
             //Do nothing
+            return false;
         }
     }
 
