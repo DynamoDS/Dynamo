@@ -93,7 +93,6 @@ namespace ProtoCore.Lang
                     if (isStaticCall)
                     {
                         stackFrame.ThisPtr = formalParameters[thisPtrIndex]; 
-                        // thisPtrIndex = formalParameters.Count - 1;
                     }
                     argTypes.RemoveAt(thisPtrIndex);
 
