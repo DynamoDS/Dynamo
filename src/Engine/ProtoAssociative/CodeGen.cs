@@ -5097,6 +5097,13 @@ namespace ProtoAssociative
                     if (funcDef == null || funcDef.IsStatic)
                         continue;
 
+                    bool isGetterSetter = CoreUtils.IsGetterSetter(funcDef.Name);
+
+                    var classsShortName = classDecl.className.Split('.').Last();
+                    var thisPtrArgName = classsShortName.ToLower();
+                    if (thisPtrArgName == classsShortName)
+                        thisPtrArgName = Constants.kThisPointerArgName;
+
                     // This is a function, create its parameterized this pointer overload
                     ThisPointerProcOverload thisProc = new ThisPointerProcOverload();
                     thisProc.classIndex = globalClassIndex;
@@ -5104,7 +5111,7 @@ namespace ProtoAssociative
                     var thisPtrArg = new VarDeclNode()
                     {
                         Access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
-                        NameNode = AstFactory.BuildIdentifier(Constants.kThisPointerArgName),
+                        NameNode = AstFactory.BuildIdentifier(thisPtrArgName),
                         ArgumentType = new ProtoCore.Type { Name = classDecl.className, UID = globalClassIndex, rank = 0 }
                     };
                     thisProc.procNode.Signature.Arguments.Insert(0, thisPtrArg);
