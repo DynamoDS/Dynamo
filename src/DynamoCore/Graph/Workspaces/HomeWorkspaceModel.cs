@@ -254,6 +254,16 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
+        /// When a node is frozen, then the node and its dependencies should be 
+        /// deleted from the current AST
+        /// </summary>
+        /// <param name="node">The node.</param>
+        protected override void OnToggleNodeFreeze(NodeModel node)
+        {
+            EngineController.DeleteFrozenNodesFromAST(node);
+        }
+
+        /// <summary>
         /// Called when a node is added to the workspace and event handlers are to be added
         /// </summary>
         /// <param name="node">The node itself</param>
