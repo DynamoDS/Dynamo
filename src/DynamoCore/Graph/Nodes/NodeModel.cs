@@ -642,9 +642,10 @@ namespace Dynamo.Graph.Nodes
                     OnNodeModified();
                 }
                 //If the node is frozen, then do not execute the graph immediately.
+                // delete the node and its downstream nodes from AST.
                 else
                 {
-                    OnToggleNodeFreeze();
+                    OnUpdateASTCollection();
                 }                   
             }
         }
@@ -790,10 +791,14 @@ namespace Dynamo.Graph.Nodes
             if (handler != null) handler(this);
         }
 
-        public event Action<NodeModel> ToggleNodeFreeze;
-        public virtual void OnToggleNodeFreeze()
+        /// <summary>
+        /// Event fired when the node's DesignScript AST should be updated.
+        /// This event deletes the frozen nodes from AST collection.
+        /// </summary>
+        public event Action<NodeModel> UpdateASTCollection;
+        public virtual void OnUpdateASTCollection()
         {            
-            var handler = ToggleNodeFreeze;
+            var handler = UpdateASTCollection;
             if (handler != null) handler(this);
         }
 

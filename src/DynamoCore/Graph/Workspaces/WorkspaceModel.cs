@@ -808,7 +808,7 @@ namespace Dynamo.Graph.Workspaces
         {
             node.Modified += NodeModified;
             node.ConnectorAdded += OnConnectorAdded;
-            node.ToggleNodeFreeze +=OnToggleNodeFreeze;
+            node.UpdateASTCollection +=OnToggleNodeFreeze;
             
             var functionNode = node as Function;
             if (functionNode != null)
