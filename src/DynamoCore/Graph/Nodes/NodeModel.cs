@@ -794,10 +794,7 @@ namespace Dynamo.Graph.Nodes
 
         public event Action<NodeModel> ToggleNodeFreeze;
         public virtual void OnToggleNodeFreeze()
-        {
-            if (!RaisesModificationEvents)
-                return;
-
+        {            
             var handler = ToggleNodeFreeze;
             if (handler != null) handler(this);
         }
