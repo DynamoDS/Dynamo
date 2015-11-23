@@ -428,6 +428,9 @@ namespace Dynamo.Manipulation
             var gizmos = GetGizmos(true);
             foreach (var item in gizmos)
             {
+                // Append node AST identifier to gizmo name
+                // so that it gets added to package description
+                item.Name += string.Format("_{0}", Node.AstIdentifierBase);
                 packages.AddRange(item.GetDrawables(RenderPackageFactory));
             }
 

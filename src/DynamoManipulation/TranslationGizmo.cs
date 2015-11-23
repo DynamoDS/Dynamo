@@ -19,7 +19,7 @@ namespace Dynamo.Manipulation
         /// <summary>
         /// Unique name of the Gizmo
         /// </summary>
-        string Name { get; }
+        string Name { get; set; }
 
         /// <summary>
         /// Base position of the Gizmo
