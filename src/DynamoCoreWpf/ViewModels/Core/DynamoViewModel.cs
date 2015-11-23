@@ -1439,8 +1439,8 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Return all nodes from the current selection whose
-        /// IsInputNode property is true or null.
+        /// Return all nodes from the current selection which are
+        /// CodeBlockNodeModels or whose IsInputNode property is true.
         /// </summary>
         /// <returns>A collection of input nodes.</returns>
         internal IEnumerable<NodeModel> GetSelectedInputNodesForPresets()
