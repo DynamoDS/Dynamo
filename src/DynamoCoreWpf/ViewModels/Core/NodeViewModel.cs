@@ -636,11 +636,7 @@ namespace Dynamo.ViewModels
                 case "CanUpdatePeriodically":
                     RaisePropertyChanged("EnablePeriodicUpdate");
                     RaisePropertyChanged("PeriodicUpdateVisibility");
-                    break;   
-                case "IsFrozen":
-                    RaisePropertyChanged("IsFrozenExplicitly");
-                    RaisePropertyChanged("CanToggleFrozen");
-                    break;
+                    break;                 
             }
         }
 
@@ -1054,7 +1050,11 @@ namespace Dynamo.ViewModels
             {
                 node = DynamoSelection.Instance.Selection.Cast<NodeModel>().First();
                 node.IsFrozen = !node.IsFrozen;
-            }   
+            }
+
+            RaisePropertyChanged("IsFrozenExplicitly");
+            RaisePropertyChanged("CanToggleFrozen");
+            RaisePropertyChanged("IsFrozen");
         }
 
         private bool CanToggleIsFrozen(object parameters)

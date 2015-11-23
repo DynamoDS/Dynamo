@@ -645,9 +645,7 @@ namespace Dynamo.Graph.Nodes
                 else
                 {
                     OnToggleNodeFreeze();
-                }
-
-                RaisePropertyChanged("IsFrozen");     
+                }                   
             }
         }
        
