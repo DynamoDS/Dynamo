@@ -430,7 +430,7 @@ namespace Dynamo.Manipulation
             {
                 // Append node AST identifier to gizmo name
                 // so that it gets added to package description
-                item.Name += string.Format("_{0}", Node.AstIdentifierBase);
+                item.Name = string.Format("{0}_{1}", item.Name, Node.AstIdentifierBase);
                 packages.AddRange(item.GetDrawables(RenderPackageFactory));
             }
 
