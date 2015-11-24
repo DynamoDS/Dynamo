@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace ProtoCore.DSASM
 {
-    [System.Diagnostics.DebuggerDisplay("{Name}, classId = {ClassID}")]
+    [System.Diagnostics.DebuggerDisplay("{Name}, classId = {ID}")]
     public class ClassNode
     {
         public string Name { get; set; }
