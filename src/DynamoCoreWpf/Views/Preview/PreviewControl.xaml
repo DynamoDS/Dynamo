@@ -166,13 +166,14 @@
                              AncestorType={x:Type controls:NodeView}}, 
                              Path=ActualWidth}">
                 <TextBlock Margin="{StaticResource PreviewContentMargin}">null</TextBlock>
-                <fa:ImageAwesome Name="ExpandIcon"
-                                 Icon="CaretRight"
-                                 Foreground="{StaticResource UnpinnedIconForegroundColor}"
-                                 HorizontalAlignment="Right"
-                                 Height="6"
-                                 Width="6"
-                                 Margin="5,5,5,5" />
+
+                <Image x:Name="ExpandIcon"
+                       Source="/DynamoCoreWpf;component/UI/Images/bubble-arrow.png"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Bottom"
+                       Height="6"
+                       Width="6"
+                       Margin="5,5,5,5" />
             </Grid>
 
             <Grid Name="largeContentGrid"                 
