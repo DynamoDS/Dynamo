@@ -85,47 +85,6 @@ namespace ProtoCore.DSASM
             this.codeBlockId = codeBlockId;
         }
 
-        public SymbolNode(
-            string name,
-            string forArrayName,
-            int index,
-            int heapIndex,
-            int functionIndex,
-            ProtoCore.Type datatype,
-            ProtoCore.Type enforcedType,
-            int size,
-            int datasize,
-            bool isArgument,
-            int runtimeIndex,
-            MemoryRegion memregion = MemoryRegion.kInvalidRegion,
-            bool isArray = false,
-            List<int> arraySizeList = null,
-            int scope = -1,
-            ProtoCore.CompilerDefinitions.AccessModifier access = CompilerDefinitions.AccessModifier.kPublic,
-            bool isStatic = false,
-            int codeBlockId = Constants.kInvalidIndex)
-        {
-            this.name = name;
-            isTemp = name.StartsWith("%");
-            this.index = index;
-            this.functionIndex = functionIndex;
-            this.absoluteFunctionIndex = functionIndex;
-            this.datatype = datatype;
-            this.staticType = enforcedType;
-            this.size = size;
-            this.datasize = datasize;
-            this.isArgument = isArgument;
-            this.arraySizeList = arraySizeList;
-            this.memregion = memregion;
-            this.classScope = scope;
-            this.absoluteClassScope = scope;
-            runtimeTableIndex = runtimeIndex;
-            this.access = access;
-            this.isStatic = isStatic;
-            this.codeBlockId = codeBlockId;
-            this.forArrayName = forArrayName;
-        }
-
         public override bool Equals(object obj)
         {
             var rhs = obj as SymbolNode;
