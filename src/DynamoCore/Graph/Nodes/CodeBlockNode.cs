@@ -881,9 +881,9 @@ namespace Dynamo.Graph.Nodes
             else if (astNode is ExprListNode)
             {
                 var node = astNode as ExprListNode;
-                for (int i = 0; i < node.list.Count; ++i)
+                for (int i = 0; i < node.Exprs.Count; ++i)
                 {
-                    MapIdentifiers(node.list[i]);
+                    MapIdentifiers(node.Exprs[i]);
                 }
                 MapIdentifiers(node.ArrayDimensions);
             }
@@ -901,9 +901,9 @@ namespace Dynamo.Graph.Nodes
             else if (astNode is RangeExprNode)
             {
                 var node = astNode as RangeExprNode;
-                MapIdentifiers(node.FromNode);
-                MapIdentifiers(node.ToNode);
-                MapIdentifiers(node.StepNode);
+                MapIdentifiers(node.From);
+                MapIdentifiers(node.To);
+                MapIdentifiers(node.Step);
                 MapIdentifiers(node.ArrayDimensions);
             }
             else if (astNode is BinaryExpressionNode)
@@ -993,7 +993,7 @@ namespace Dynamo.Graph.Nodes
             else if (astNode is ExprListNode)
             {
                 var currentNode = astNode as ExprListNode;
-                foreach (AssociativeNode node in currentNode.list)
+                foreach (AssociativeNode node in currentNode.Exprs)
                     GetReferencedVariables(node, refVariableList);
             }
             else if (astNode is FunctionDotCallNode)
@@ -1011,9 +1011,9 @@ namespace Dynamo.Graph.Nodes
             else if (astNode is RangeExprNode)
             {
                 var currentNode = astNode as RangeExprNode;
-                GetReferencedVariables(currentNode.FromNode, refVariableList);
-                GetReferencedVariables(currentNode.ToNode, refVariableList);
-                GetReferencedVariables(currentNode.StepNode, refVariableList);
+                GetReferencedVariables(currentNode.From, refVariableList);
+                GetReferencedVariables(currentNode.To, refVariableList);
+                GetReferencedVariables(currentNode.Step, refVariableList);
             }
             else if (astNode is BinaryExpressionNode)
             {

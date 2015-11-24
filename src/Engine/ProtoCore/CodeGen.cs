@@ -2730,7 +2730,7 @@ namespace ProtoCore
             else if (node is ProtoCore.AST.AssociativeAST.ExprListNode)
             {
                 ProtoCore.AST.AssociativeAST.ExprListNode arraynode = node as ProtoCore.AST.AssociativeAST.ExprListNode;
-                foreach (ProtoCore.AST.Node subnode in arraynode.list)
+                foreach (ProtoCore.AST.Node subnode in arraynode.Exprs)
                 {
                     if (!IsConstantExpression(subnode))
                         return false;
@@ -2750,7 +2750,7 @@ namespace ProtoCore
             else if (node is ProtoCore.AST.AssociativeAST.RangeExprNode)
             {
                 ProtoCore.AST.AssociativeAST.RangeExprNode rangenode = node as ProtoCore.AST.AssociativeAST.RangeExprNode;
-                return IsConstantExpression(rangenode.FromNode) && IsConstantExpression(rangenode.ToNode) && (rangenode.StepNode == null || IsConstantExpression(rangenode.StepNode));
+                return IsConstantExpression(rangenode.From) && IsConstantExpression(rangenode.To) && (rangenode.Step == null || IsConstantExpression(rangenode.Step));
             }
             else if (node is ProtoCore.AST.ImperativeAST.RangeExprNode)
             {

@@ -851,7 +851,7 @@ namespace Dynamo.Graph.Nodes
                                           ArrayDimensions =
                                               new ArrayNode
                                               {
-                                                  Expr = new StringNode { value = outNode.NickName }
+                                                  Expr = new StringNode { Value = outNode.NickName }
                                               }
                                       },
                                       GetAstIdentifierForOutputIndex(index))));

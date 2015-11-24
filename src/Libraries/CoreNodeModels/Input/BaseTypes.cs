@@ -483,11 +483,11 @@ namespace DSCoreNodesUI.Input
             {
                 var rangeExpr = new RangeExprNode
                 {
-                    FromNode = _start.GetAstNode(idLookup),
-                    ToNode = _count.GetAstNode(idLookup),
-                    StepNode = _step.GetAstNode(idLookup),
+                    From = _start.GetAstNode(idLookup),
+                    To = _count.GetAstNode(idLookup),
+                    Step = _step.GetAstNode(idLookup),
                     HasRangeAmountOperator = true,
-                    stepoperator = RangeStepOperator.stepsize
+                    StepOperator = RangeStepOperator.stepsize
                 };
                 return rangeExpr;
             }
@@ -573,10 +573,10 @@ namespace DSCoreNodesUI.Input
             {
                 var rangeExpr = new RangeExprNode
                 {
-                    FromNode = _start.GetAstNode(idLookup),
-                    ToNode = _end.GetAstNode(idLookup),
-                    StepNode = _step.GetAstNode(idLookup),
-                    stepoperator = GetRangeExpressionOperator()
+                    From = _start.GetAstNode(idLookup),
+                    To = _end.GetAstNode(idLookup),
+                    Step = _step.GetAstNode(idLookup),
+                    StepOperator = GetRangeExpressionOperator()
                 };
                 return rangeExpr;
             }
