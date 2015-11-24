@@ -142,6 +142,14 @@ namespace Dynamo.Publish.ViewModels
         }
 
         /// <summary>
+        /// Indicates whether Dynamo running in DynamoStudio.
+        /// </summary>
+        internal bool IsDynamoProRunning
+        {
+            get { return model.IsDynamoProRunning; }
+        }
+
+        /// <summary>
         ///     The currently active workspace model in the process of being
         ///     published as a customizer.
         /// </summary>
@@ -274,7 +282,9 @@ namespace Dynamo.Publish.ViewModels
         {
             if (String.IsNullOrWhiteSpace(Name))
             {
-                UploadStateMessage = Resources.ProvideWorskspaceNameMessage;
+                UploadStateMessage = IsDynamoProRunning
+                                     ? Resources.DynamoProProvideWorskspaceNameMessage
+                                     : Resources.ProvideWorskspaceNameMessage;
                 IsReadyToUpload = false;
                 return false;
             }

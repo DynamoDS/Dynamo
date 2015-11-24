@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Dynamo.Configuration;
 using Dynamo.Interfaces;
 using Dynamo.Scheduler;
 using DynamoShapeManager;
@@ -181,6 +182,7 @@ namespace Dynamo.Applications
 
             var config = new DynamoModel.DefaultStartConfiguration()
                   {
+                      ApplicationContext = DynamoAppContext.DynamoStandalone,
                       GeometryFactoryPath = geometryFactoryPath,
                       ProcessMode = TaskProcessMode.Asynchronous
                   };

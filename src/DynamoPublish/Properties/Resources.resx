@@ -279,4 +279,28 @@
   <data name="EmptyWorkspaceMessage" xml:space="preserve">
     <value>You cannot publish an empty workspace.</value>
   </data>
+  <data name="DynamoProInviteIntegrity" xml:space="preserve">
+    <value>Not all nodes are allowed in shared workspaces, including Revit nodes. Your data could be lost or corrupted at any time during the beta period. Your data could be exposed to other users during the beta period.</value>
+  </data>
+  <data name="DynamoProManageButtonTitle" xml:space="preserve">
+    <value>Manage Shared Workspaces...</value>
+  </data>
+  <data name="DynamoProManageMenuButtonTitle" xml:space="preserve">
+    <value>Manage Shared Workspaces (Beta)...</value>
+  </data>
+  <data name="DynamoProProvideWorskspaceNameMessage" xml:space="preserve">
+    <value>Please provide a name.</value>
+  </data>
+  <data name="DynamoProPublishViewDefaultDescriptionTitle" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="DynamoProPublishViewDefaultNameTitle" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="DynamoProPublishViewTitle" xml:space="preserve">
+    <value>Share Workspace (Beta)...</value>
+  </data>
+  <data name="DynamoProViewMenuItemPublishTitle" xml:space="preserve">
+    <value>Share Workspace (Beta)...</value>
+  </data>
 </root>

@@ -140,6 +140,7 @@ namespace Dynamo.Publish.Models
             }
         }
 
+        internal readonly bool IsDynamoProRunning;
 
         private UploadState state;
         /// <summary>
@@ -228,7 +229,8 @@ namespace Dynamo.Publish.Models
             managerURL = appSettings.Settings["ManagerPage"].Value;
         }
 
-        internal PublishModel(IAuthProvider dynamoAuthenticationProvider, ICustomNodeManager dynamoCustomNodeManager)
+        internal PublishModel(IAuthProvider dynamoAuthenticationProvider, ICustomNodeManager dynamoCustomNodeManager,
+                              bool isDynamoPro = false)
         {
             // Here we throw exceptions if any of the required static fields are not set
             // This prevents these exceptions from being thrown in the static constructor.
@@ -241,6 +243,7 @@ namespace Dynamo.Publish.Models
             if (String.IsNullOrWhiteSpace(managerURL))
                 throw new Exception(Resources.ManagerErrorMessage);
 
+            IsDynamoProRunning = isDynamoPro;
             authenticationProvider = dynamoAuthenticationProvider;
             customNodeManager = dynamoCustomNodeManager;
 
@@ -249,8 +252,9 @@ namespace Dynamo.Publish.Models
             State = UploadState.Uninitialized;
         }
 
-        internal PublishModel(IAuthProvider provider, ICustomNodeManager manager, IWorkspaceStorageClient client) :
-            this(provider, manager)
+        internal PublishModel(IAuthProvider provider, ICustomNodeManager manager,
+                              IWorkspaceStorageClient client, bool isDynamoPro = false) :
+            this(provider, manager, isDynamoPro)
         {
             reachClient = client;
         }

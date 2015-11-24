@@ -29,12 +29,35 @@ namespace Dynamo.Publish.Views
         public PublishView(PublishViewModel viewModel)
         {
             Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
+
             InitializeComponent();
+            updateTextBlocks(viewModel.IsDynamoProRunning);
+
             DataContext = viewModel;
             this.viewModel = viewModel;
             viewModel.UIDispatcher = Dispatcher;
 
             Closed += OnPublishViewClosed;
+        }
+
+        private void updateTextBlocks(bool isProVersion)
+        {
+            if (isProVersion)
+            {
+                Title = Properties.Resources.DynamoProPublishViewTitle;
+                textBlockDefaultName.Text = Properties.Resources.DynamoProPublishViewDefaultNameTitle;
+                textBlockDefaultDescription.Text = Properties.Resources.DynamoProPublishViewDefaultDescriptionTitle;
+                Privacy.Text = Properties.Resources.DynamoProInviteIntegrity;
+                manageTextBlock.Text = Properties.Resources.DynamoProManageButtonTitle;
+            }
+            else
+            {
+                Title = Properties.Resources.PublishViewTitle;
+                textBlockDefaultName.Text = Properties.Resources.PublishViewDefaultNameTitle;
+                textBlockDefaultDescription.Text = Properties.Resources.PublishViewDefaultDescriptionTitle;
+                Privacy.Text = Properties.Resources.InviteIntegrity;
+                manageTextBlock.Text = Properties.Resources.ManageButtonTitle;
+            }
         }
 
         private void OnMouseDown(object sender, MouseButtonEventArgs e)

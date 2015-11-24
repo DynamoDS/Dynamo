@@ -1,4 +1,5 @@
-﻿using Dynamo.Core;
+﻿using Dynamo.Configuration;
+using Dynamo.Core;
 using Dynamo.Interfaces;
 using Greg;
 using System;
@@ -34,9 +35,12 @@ namespace Dynamo.Extensions
         public Version DynamoVersion { get { return dynamoVersion; } }
         private readonly Version dynamoVersion;
 
+        public DynamoAppContext ApplicationContext { get { return applicationContext; } }
+        private readonly DynamoAppContext applicationContext;
+
         public StartupParams(IAuthProvider provider, IPathManager pathManager,
             ILibraryLoader libraryLoader, ICustomNodeManager customNodeManager,
-            Version dynamoVersion, IPreferences preferences)
+            Version dynamoVersion, IPreferences preferences, DynamoAppContext appContext)
         {
             this.authProvider = provider;
             this.pathManager = pathManager;
@@ -44,6 +48,7 @@ namespace Dynamo.Extensions
             this.customNodeManager = customNodeManager;
             this.dynamoVersion = dynamoVersion;
             this.preferences = preferences;
+            this.applicationContext = appContext;
         }
     }
 }

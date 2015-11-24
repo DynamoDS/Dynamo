@@ -2,14 +2,16 @@
 
 namespace Dynamo.Configuration
 {
-    public static class Context
+    public enum DynamoAppContext
     {
-        // TODO: MAGN-7242
-        public const string NONE = "None";
-        public const string REVIT_2014 = "Revit 2014";
-        public const string REVIT_2015 = "Revit 2015";
-        public const string VASARI_2014 = "Vasari 2014";
+        DynamoStandalone,
+        DynamoRevit,
+        DynamoStudio,
+        DynamoVasari
+    }
 
+    public static class Context
+    {        
         /// <summary>
         ///     Check if the operating system running Dynamo is 
         ///     a Unix-based one or not.  This will return true 
