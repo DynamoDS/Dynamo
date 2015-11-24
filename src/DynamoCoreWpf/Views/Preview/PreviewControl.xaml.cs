@@ -432,12 +432,14 @@ namespace Dynamo.UI.Controls
                 }
             }
 
+            double generalWidth = 0;
             foreach (UIElement child in smallContentGrid.Children)
             {
                 child.Measure(maxSize);
-                if (child.DesiredSize.Width > smallContentGridSize.Width)
+                if (generalWidth + child.DesiredSize.Width > smallContentGridSize.Width)
                 {
-                    smallContentGridSize.Width = child.DesiredSize.Width;
+                    smallContentGridSize.Width = generalWidth + child.DesiredSize.Width;
+                    generalWidth = smallContentGridSize.Width;
                 }
                 if (child.DesiredSize.Height > smallContentGridSize.Height)
                 {
