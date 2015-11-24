@@ -1176,7 +1176,7 @@ namespace ProtoCore.Lang
             {
                 switch (svOp.opdata)
                 {
-                    case (int)ProtoCore.DSASM.RangeStepOperator.stepsize:
+                    case (int)ProtoCore.DSASM.RangeStepOperator.StepSize:
                         {
                             decimal stepsize = (start > end) ? -1 : 1;
                             if (hasStep)
@@ -1188,7 +1188,7 @@ namespace ProtoCore.Lang
                             return GenerateRangeByStepSize(start, end, stepsize, isIntRange);
                             break;
                         }
-                    case (int)ProtoCore.DSASM.RangeStepOperator.num:
+                    case (int)ProtoCore.DSASM.RangeStepOperator.Number:
                         {
                             decimal stepnum = new decimal(Math.Round(svStep.IsDouble ? svStep.RawDoubleValue : svStep.RawIntValue));
                             if (stepnum > 0)
@@ -1197,7 +1197,7 @@ namespace ProtoCore.Lang
                             }
                             break;
                         }
-                    case (int)ProtoCore.DSASM.RangeStepOperator.approxsize:
+                    case (int)ProtoCore.DSASM.RangeStepOperator.ApproximateSize:
                         {
                             decimal astepsize = new decimal(svStep.IsDouble ? svStep.RawDoubleValue : svStep.RawIntValue);
                             if (astepsize != 0)

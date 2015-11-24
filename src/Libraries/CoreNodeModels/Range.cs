@@ -38,10 +38,10 @@ namespace DSCoreNodesUI
                     GetAstIdentifierForOutputIndex(0),
                     new RangeExprNode
                     {
-                        FromNode = inputAstNodes[0],
-                        ToNode = inputAstNodes[1],
-                        StepNode = inputAstNodes[2],
-                        stepoperator = ProtoCore.DSASM.RangeStepOperator.stepsize
+                        From = inputAstNodes[0],
+                        To = inputAstNodes[1],
+                        Step = inputAstNodes[2],
+                        StepOperator = ProtoCore.DSASM.RangeStepOperator.StepSize
                     })
 
             };
@@ -80,11 +80,11 @@ namespace DSCoreNodesUI
                     GetAstIdentifierForOutputIndex(0),
                     new RangeExprNode 
                     {
-                        FromNode = inputAstNodes[0],
-                        ToNode = inputAstNodes[1],
-                        StepNode = inputAstNodes[2],
+                        From = inputAstNodes[0],
+                        To = inputAstNodes[1],
+                        Step = inputAstNodes[2],
                         HasRangeAmountOperator = true,
-                        stepoperator = ProtoCore.DSASM.RangeStepOperator.stepsize                     
+                        StepOperator = ProtoCore.DSASM.RangeStepOperator.StepSize                     
                     })
             };
         }

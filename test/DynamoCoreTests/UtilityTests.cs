@@ -790,7 +790,7 @@ namespace Dynamo.Tests
                 TypeSwitch.Case<IntNode>(n => v = n.Value),
                 TypeSwitch.Case<DoubleNode>(n => v = n.Value),
                 TypeSwitch.Case<BooleanNode>(n => v = n.Value),
-                TypeSwitch.Case<StringNode>(n => v = n.value),
+                TypeSwitch.Case<StringNode>(n => v = n.Value),
                 TypeSwitch.Default(() => v = null));
             Assert.AreEqual(v, 1.2);
 
@@ -801,7 +801,7 @@ namespace Dynamo.Tests
                 TypeSwitch.Case<IntNode>(n => v = n.Value),
                 TypeSwitch.Case<DoubleNode>(n => v = n.Value),
                 TypeSwitch.Case<BooleanNode>(n => v = n.Value),
-                TypeSwitch.Case<StringNode>(n => v = n.value),
+                TypeSwitch.Case<StringNode>(n => v = n.Value),
                 TypeSwitch.Default(() => v = null));
             Assert.AreEqual(v, 42);
 

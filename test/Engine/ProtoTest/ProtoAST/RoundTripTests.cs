@@ -311,7 +311,7 @@ namespace ProtoTest.ProtoAST
 
             // Create the class node AST
             ProtoCore.AST.AssociativeAST.ClassDeclNode classDefNode = new ProtoCore.AST.AssociativeAST.ClassDeclNode();
-            classDefNode.className = "bar";
+            classDefNode.ClassName = "bar";
 
             // Create the property AST
             ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode();
@@ -323,7 +323,7 @@ namespace ProtoTest.ProtoAST
                 rank = 0,
                 UID = (int)ProtoCore.PrimitiveType.kTypeInt
             };
-            classDefNode.varlist.Add(varDeclNode);
+            classDefNode.Variables.Add(varDeclNode);
 
             astList.Add(classDefNode);
             astListcopy.Add(new ProtoCore.AST.AssociativeAST.ClassDeclNode(classDefNode));
@@ -453,10 +453,10 @@ namespace ProtoTest.ProtoAST
 
             // Create the class node AST
             ProtoCore.AST.AssociativeAST.ClassDeclNode classDefNode = new ProtoCore.AST.AssociativeAST.ClassDeclNode();
-            classDefNode.className = "bar";
+            classDefNode.ClassName = "bar";
 
             // Add the member function 'foo'
-            classDefNode.funclist.Add(funcDefNode);
+            classDefNode.Procedures.Add(funcDefNode);
 
 
             // Create the property AST
@@ -469,7 +469,7 @@ namespace ProtoTest.ProtoAST
                 rank = 0,
                 UID = (int)ProtoCore.PrimitiveType.kTypeInt
             };
-            classDefNode.varlist.Add(varDeclNode);
+            classDefNode.Variables.Add(varDeclNode);
 
 
             // Add the constructed class AST
