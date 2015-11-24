@@ -17,7 +17,8 @@
              MouseLeftButtonDown="topControl_MouseLeftButtonDown"
              MouseRightButtonDown="topControl_MouseRightButtonDown"
              Canvas.Left="{Binding Left, Mode=TwoWay}"
-             Canvas.Top="{Binding Top, Mode=TwoWay}">
+             Canvas.Top="{Binding Top, Mode=TwoWay}"
+             Background="Transparent" Opacity="0.3">
     <Grid Name="grid"
           x:FieldModifier="public"
           HorizontalAlignment="Left">
@@ -160,14 +161,15 @@
                    Grid.Row="1"
                    Grid.ColumnSpan="3"
                    Grid.RowSpan="3"
-                   Canvas.ZIndex="10">
-            <Rectangle.Fill>
+                   Canvas.ZIndex="10">             
+            <Rectangle.Fill>                
                 <Binding Path="State"
                          UpdateSourceTrigger="PropertyChanged"
                          Mode="OneWay"
                          ConverterParameter="BodyBackground"
-                         Converter="{StaticResource StateToColorConverter}">
-                </Binding>
+                         Converter="{StaticResource StateToColorConverter}">                     
+                </Binding>      
+                
             </Rectangle.Fill>
         </Rectangle>
 
