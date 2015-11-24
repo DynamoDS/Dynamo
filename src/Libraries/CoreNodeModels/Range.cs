@@ -41,7 +41,7 @@ namespace DSCoreNodesUI
                         From = inputAstNodes[0],
                         To = inputAstNodes[1],
                         Step = inputAstNodes[2],
-                        StepOperator = ProtoCore.DSASM.RangeStepOperator.stepsize
+                        StepOperator = ProtoCore.DSASM.RangeStepOperator.StepSize
                     })
 
             };
@@ -84,7 +84,7 @@ namespace DSCoreNodesUI
                         To = inputAstNodes[1],
                         Step = inputAstNodes[2],
                         HasRangeAmountOperator = true,
-                        StepOperator = ProtoCore.DSASM.RangeStepOperator.stepsize                     
+                        StepOperator = ProtoCore.DSASM.RangeStepOperator.StepSize                     
                     })
             };
         }

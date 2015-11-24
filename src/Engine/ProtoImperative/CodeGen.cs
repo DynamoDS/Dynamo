@@ -2124,23 +2124,23 @@ namespace ProtoImperative
                     var tident = b.LeftNode as TypedIdentifierNode;
                     if (tident != null)
                     {
-                        int castUID = tident.datatype.UID;
+                        int castUID = tident.DataType.UID;
                         if ((int)PrimitiveType.kInvalidType == castUID)
                         {
-                            castUID = core.ClassTable.IndexOf(tident.datatype.Name);
+                            castUID = core.ClassTable.IndexOf(tident.DataType.Name);
                         }
 
                         if ((int)PrimitiveType.kInvalidType == castUID)
                         {
-                            string message = String.Format(ProtoCore.Properties.Resources.kTypeUndefined, tident.datatype.Name);
+                            string message = String.Format(ProtoCore.Properties.Resources.kTypeUndefined, tident.DataType.Name);
                             buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, core.CurrentDSFileName, b.line, b.col, graphNode);
                             castType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kInvalidType, 0);
-                            castType.Name = tident.datatype.Name;
-                            castType.rank = tident.datatype.rank;
+                            castType.Name = tident.DataType.Name;
+                            castType.rank = tident.DataType.rank;
                         }
                         else
                         {
-                            castType = core.TypeSystem.BuildTypeObject(castUID, tident.datatype.rank);
+                            castType = core.TypeSystem.BuildTypeObject(castUID, tident.DataType.rank);
                         }
                     }
 
@@ -2586,28 +2586,28 @@ namespace ProtoImperative
 
             // Do some static checking...probably it is not necessary. 
             // Need to move these checkings to built-in function.
-            if ((range.FromNode is IntNode || range.FromNode is DoubleNode) &&
-                (range.ToNode is IntNode || range.ToNode is DoubleNode) &&
-                (range.StepNode == null || (range.StepNode != null && (range.StepNode is IntNode || range.StepNode is DoubleNode))))
+            if ((range.From is IntNode || range.From is DoubleNode) &&
+                (range.To is IntNode || range.To is DoubleNode) &&
+                (range.Step == null || (range.Step != null && (range.Step is IntNode || range.Step is DoubleNode))))
             {
-                double current = (range.FromNode is IntNode) ? (range.FromNode as IntNode).Value : (range.FromNode as DoubleNode).Value;
-                double end = (range.ToNode is IntNode) ? (range.ToNode as IntNode).Value : (range.ToNode as DoubleNode).Value;
-                ProtoCore.DSASM.RangeStepOperator stepoperator = range.stepoperator;
+                double current = (range.From is IntNode) ? (range.From as IntNode).Value : (range.From as DoubleNode).Value;
+                double end = (range.To is IntNode) ? (range.To as IntNode).Value : (range.To as DoubleNode).Value;
+                ProtoCore.DSASM.RangeStepOperator stepoperator = range.StepOperator;
 
                 double step = 1;
-                if (range.StepNode != null)
+                if (range.Step != null)
                 {
-                    step = (range.StepNode is IntNode) ? (range.StepNode as IntNode).Value : (range.StepNode as DoubleNode).Value;
+                    step = (range.Step is IntNode) ? (range.Step as IntNode).Value : (range.Step as DoubleNode).Value;
                 }
 
                 bool hasAmountOp = range.HasRangeAmountOperator;
                 string warningMsg = String.Empty;
 
-                if (stepoperator == ProtoCore.DSASM.RangeStepOperator.stepsize)
+                if (stepoperator == ProtoCore.DSASM.RangeStepOperator.StepSize)
                 {
                     if (!hasAmountOp)
                     {
-                        if (range.StepNode == null && end < current)
+                        if (range.Step == null && end < current)
                         {
                             step = -1;
                         }
@@ -2622,13 +2622,13 @@ namespace ProtoImperative
                         }
                     }
                 }
-                else if (stepoperator == ProtoCore.DSASM.RangeStepOperator.num)
+                else if (stepoperator == ProtoCore.DSASM.RangeStepOperator.Number)
                 {
                     if (hasAmountOp)
                     {
                         warningMsg = ProtoCore.Properties.Resources.kRangeExpressionConflictOperator;
                     }
-                    else if (range.StepNode != null && !(range.StepNode is IntNode))
+                    else if (range.Step != null && !(range.Step is IntNode))
                     {
                         warningMsg = ProtoCore.Properties.Resources.kRangeExpressionWithNonIntegerStepNumber;
                     }
@@ -2637,7 +2637,7 @@ namespace ProtoImperative
                         warningMsg = ProtoCore.Properties.Resources.kRangeExpressionWithNegativeStepNumber;
                     }
                 }
-                else if (stepoperator == ProtoCore.DSASM.RangeStepOperator.approxsize)
+                else if (stepoperator == ProtoCore.DSASM.RangeStepOperator.ApproximateSize)
                 {
                     if (hasAmountOp)
                     {
@@ -2654,8 +2654,8 @@ namespace ProtoImperative
                     buildStatus.LogWarning(WarningID.kInvalidRangeExpression,
                                            warningMsg,
                                            core.CurrentDSFileName,
-                                           range.StepNode.line,
-                                           range.StepNode.col,
+                                           range.Step.line,
+                                           range.Step.col,
                                            graphNode);
                     EmitNullNode(new NullNode(), ref inferedType);
                     return;
@@ -2663,15 +2663,15 @@ namespace ProtoImperative
             }
 
             IntNode op = null;
-            switch (range.stepoperator)
+            switch (range.StepOperator)
             {
-                case ProtoCore.DSASM.RangeStepOperator.stepsize:
+                case ProtoCore.DSASM.RangeStepOperator.StepSize:
                     op = new IntNode(0);
                     break;
-                case ProtoCore.DSASM.RangeStepOperator.num:
+                case ProtoCore.DSASM.RangeStepOperator.Number:
                     op = new IntNode(1);
                     break;
-                case ProtoCore.DSASM.RangeStepOperator.approxsize:
+                case ProtoCore.DSASM.RangeStepOperator.ApproximateSize:
                     op = new IntNode(2);
                     break;
                 default:
@@ -2683,11 +2683,11 @@ namespace ProtoImperative
                 Constants.kFunctionRangeExpression,
                 new List<ImperativeNode> 
                 { 
-                    range.FromNode, 
-                    range.ToNode, 
-                    range.StepNode ?? new NullNode(),
+                    range.From, 
+                    range.To, 
+                    range.Step ?? new NullNode(),
                     op, 
-                    new BooleanNode(range.StepNode != null),
+                    new BooleanNode(range.Step != null),
                     new BooleanNode(range.HasRangeAmountOperator) 
                 });
 
@@ -3240,7 +3240,7 @@ namespace ProtoImperative
         {
             var ident = new IdentifierNode();
             ident.Name = ident.Value = name;
-            ident.datatype = TypeSystem.BuildPrimitiveTypeObject(type, 0);
+            ident.DataType = TypeSystem.BuildPrimitiveTypeObject(type, 0);
 
             return ident;
         }

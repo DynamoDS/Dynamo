@@ -552,7 +552,7 @@ public Node root { get; set; }
     {
         var ident = new AST.ImperativeAST.IdentifierNode();
         ident.Name = ident.Value = name;
-        ident.datatype = TypeSystem.BuildPrimitiveTypeObject(type, 0);
+        ident.DataType = TypeSystem.BuildPrimitiveTypeObject(type, 0);
         return ident;
     }
 
@@ -952,7 +952,6 @@ public Node root { get; set; }
 		f.IsExternLib = isExternLib; 
 		f.IsDNI = isDNI; 
 		f.ExternLibName = externLibName; 
-		f.Name = methodName; 
 		f.Name = methodName; 
 		f.Pattern = pattern; 
 		f.ReturnType = returnType; 
@@ -2445,14 +2444,14 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 	}
 
 	void Associative_rangeStepOperator(out RangeStepOperator op) {
-		op = RangeStepOperator.stepsize; 
+		op = RangeStepOperator.StepSize; 
 		if (la.kind == 64 || la.kind == 65) {
 			if (la.kind == 65) {
 				Get();
-				op = RangeStepOperator.num; 
+				op = RangeStepOperator.Number; 
 			} else {
 				Get();
-				op = RangeStepOperator.approxsize; 
+				op = RangeStepOperator.ApproximateSize; 
 			}
 		}
 	}
@@ -3304,15 +3303,15 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			   var unknownType = new ProtoCore.Type();
 			   unknownType.UID = ProtoCore.DSASM.Constants.kInvalidIndex;
 			   unknownType.Name = t.val; 
-			   typedVar.datatype = unknownType;
+			   typedVar.DataType = unknownType;
 			}
 			else
 			{
-			   typedVar.datatype = core.TypeSystem.BuildTypeObject(type, 0);
+			   typedVar.DataType = core.TypeSystem.BuildTypeObject(type, 0);
 			}
 			
 			if (la.kind == 8) {
-				var datatype = typedVar.datatype; 
+				var datatype = typedVar.DataType; 
 				Get();
 				Expect(9);
 				datatype.rank = 1; 
@@ -3330,7 +3329,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 						}
 					}
 				}
-				typedVar.datatype = datatype; 
+				typedVar.DataType = datatype; 
 			}
 			node = typedVar; 
 		} else if (IsLocalVariable()) {
@@ -3366,15 +3365,15 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			   var unknownType = new ProtoCore.Type();
 			   unknownType.UID = ProtoCore.DSASM.Constants.kInvalidIndex;
 			   unknownType.Name = t.val; 
-			   typedVar.datatype = unknownType;
+			   typedVar.DataType = unknownType;
 			}
 			else
 			{
-			   typedVar.datatype = core.TypeSystem.BuildTypeObject(type, 0);
+			   typedVar.DataType = core.TypeSystem.BuildTypeObject(type, 0);
 			}
 			
 			if (la.kind == 8) {
-				var datatype = typedVar.datatype; 
+				var datatype = typedVar.DataType; 
 				Get();
 				Expect(9);
 				datatype.rank = 1; 
@@ -3392,7 +3391,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 						}
 					}
 				}
-				typedVar.datatype = datatype; 
+				typedVar.DataType = datatype; 
 			}
 			node = typedVar; 
 		} else if (la.kind == 1 || la.kind == 10 || la.kind == 46) {
@@ -3697,8 +3696,8 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Imperative_rel(out node);
 		if (la.kind == 22) {
 			ProtoCore.AST.ImperativeAST.RangeExprNode rnode = new ProtoCore.AST.ImperativeAST.RangeExprNode(); 
-			rnode.FromNode = node;
-			NodeUtils.SetNodeStartLocation(rnode, rnode.FromNode);
+			rnode.From = node;
+			NodeUtils.SetNodeStartLocation(rnode, rnode.From);
 			bool hasAmountOperator = false;
 			
 			Get();
@@ -3707,17 +3706,17 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			}
 			rnode.HasRangeAmountOperator = hasAmountOperator; 
 			Imperative_rel(out node);
-			rnode.ToNode = node;
-			NodeUtils.SetNodeEndLocation(rnode, rnode.ToNode);
+			rnode.To = node;
+			NodeUtils.SetNodeEndLocation(rnode, rnode.To);
 			
 			if (la.kind == 22) {
 				RangeStepOperator op; 
 				Get();
 				Imperative_rangeStepOperator(out op);
-				rnode.stepoperator = op; 
+				rnode.StepOperator = op; 
 				Imperative_rel(out node);
-				rnode.StepNode = node;
-				NodeUtils.SetNodeEndLocation(rnode, rnode.StepNode);
+				rnode.Step = node;
+				NodeUtils.SetNodeEndLocation(rnode, rnode.Step);
 				
 			}
 			node = rnode; 
@@ -3790,10 +3789,10 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		if (la.kind == 64 || la.kind == 65) {
 			if (la.kind == 65) {
 				Get();
-				op = RangeStepOperator.num; 
+				op = RangeStepOperator.Number; 
 			} else {
 				Get();
-				op = RangeStepOperator.approxsize; 
+				op = RangeStepOperator.ApproximateSize; 
 			}
 		}
 	}
@@ -3890,7 +3889,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		
 		node = new ProtoCore.AST.ImperativeAST.CharNode() 
 		{ 
-		   value = t.val.Substring(1, t.val.Length - 2),
+		   Value = t.val.Substring(1, t.val.Length - 2),
 		   line = t.line,
 		   col = t.col
 		}; 
@@ -3902,7 +3901,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Expect(4);
 		node = new ProtoCore.AST.ImperativeAST.StringNode() 
 		{ 
-		   value = GetEscapedString(t.val.Length <= 2 ? "" : t.val.Substring(1, t.val.Length - 2)), 
+		   Value = GetEscapedString(t.val.Length <= 2 ? "" : t.val.Substring(1, t.val.Length - 2)), 
 		   line = t.line,
 		   col = t.col
 		}; 
@@ -4014,10 +4013,6 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		NodeUtils.SetNodeLocation(varDeclNode, la);
 		varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemStack;
 		
-		if (la.kind == 29) {
-			Get();
-			varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemHeap; 
-		}
 		Expect(1);
 		if (IsKeyWord(t.val, true))
 		{
@@ -4112,7 +4107,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Expect(10);
 		args = new ProtoCore.AST.ImperativeAST.ArgumentSignatureNode(); 
 		ProtoCore.AST.ImperativeAST.ImperativeNode argdecl; 
-		if (la.kind == 1 || la.kind == 29) {
+		if (la.kind == 1) {
 			if (NotDefaultArg()) { 
 			Imperative_ArgDecl(out argdecl);
 			args.AddArgument(argdecl as ProtoCore.AST.ImperativeAST.VarDeclNode); 
@@ -4125,7 +4120,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			}
 			} 
 		}
-		if (la.kind == 1 || la.kind == 29 || la.kind == 48) {
+		if (la.kind == 1 || la.kind == 48) {
 			if (la.kind == 48) {
 				Get();
 			}

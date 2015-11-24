@@ -2755,7 +2755,7 @@ namespace ProtoCore
             else if (node is ProtoCore.AST.ImperativeAST.RangeExprNode)
             {
                 ProtoCore.AST.ImperativeAST.RangeExprNode rangenode = node as ProtoCore.AST.ImperativeAST.RangeExprNode;
-                return IsConstantExpression(rangenode.FromNode) && IsConstantExpression(rangenode.ToNode) && (rangenode.StepNode == null || IsConstantExpression(rangenode.StepNode));
+                return IsConstantExpression(rangenode.From) && IsConstantExpression(rangenode.To) && (rangenode.Step == null || IsConstantExpression(rangenode.Step));
             }
 
             return false;

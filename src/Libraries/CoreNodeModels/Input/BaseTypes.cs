@@ -487,7 +487,7 @@ namespace DSCoreNodesUI.Input
                     To = _count.GetAstNode(idLookup),
                     Step = _step.GetAstNode(idLookup),
                     HasRangeAmountOperator = true,
-                    StepOperator = RangeStepOperator.stepsize
+                    StepOperator = RangeStepOperator.StepSize
                 };
                 return rangeExpr;
             }
@@ -566,7 +566,7 @@ namespace DSCoreNodesUI.Input
 
             protected virtual RangeStepOperator GetRangeExpressionOperator()
             {
-                return RangeStepOperator.stepsize;
+                return RangeStepOperator.StepSize;
             }
 
             public AssociativeNode GetAstNode(Dictionary<string, AssociativeNode> idLookup)
@@ -604,7 +604,7 @@ namespace DSCoreNodesUI.Input
 
             protected override RangeStepOperator GetRangeExpressionOperator()
             {
-                return RangeStepOperator.num;
+                return RangeStepOperator.Number;
             }
         }
 
@@ -643,7 +643,7 @@ namespace DSCoreNodesUI.Input
 
             protected override RangeStepOperator GetRangeExpressionOperator()
             {
-                return RangeStepOperator.approxsize;
+                return RangeStepOperator.ApproximateSize;
             }
         }
 

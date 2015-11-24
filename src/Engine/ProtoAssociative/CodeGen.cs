@@ -4397,7 +4397,7 @@ namespace ProtoAssociative
 
                 switch (stepOp)
                 {
-                    case ProtoCore.DSASM.RangeStepOperator.stepsize:
+                    case ProtoCore.DSASM.RangeStepOperator.StepSize:
 
                         if (!hasAmountOperator)
                         {
@@ -4420,7 +4420,7 @@ namespace ProtoAssociative
 
                        break;
 
-                    case ProtoCore.DSASM.RangeStepOperator.num:
+                    case ProtoCore.DSASM.RangeStepOperator.Number:
 
                        if (hasAmountOperator)
                        {
@@ -4448,7 +4448,7 @@ namespace ProtoAssociative
 
                        break;
 
-                    case ProtoCore.DSASM.RangeStepOperator.approxsize:
+                    case ProtoCore.DSASM.RangeStepOperator.ApproximateSize:
                         if (hasAmountOperator)
                         {
                             isStepValid = false;
@@ -4486,13 +4486,13 @@ namespace ProtoAssociative
             IntNode op = null;
             switch (stepOp)
             {
-                case RangeStepOperator.stepsize:
+                case RangeStepOperator.StepSize:
                     op = new IntNode(0);
                     break;
-                case RangeStepOperator.num:
+                case RangeStepOperator.Number:
                     op = new IntNode(1);
                     break;
-                case RangeStepOperator.approxsize:
+                case RangeStepOperator.ApproximateSize:
                     op = new IntNode(2);
                     break;
                 default:

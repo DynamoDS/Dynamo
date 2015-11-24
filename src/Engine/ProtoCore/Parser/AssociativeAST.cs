@@ -2194,10 +2194,10 @@ namespace ProtoCore.AST.AssociativeAST
                 buf.Append("..");
                 switch (StepOperator)
                 {
-                    case RangeStepOperator.approxsize:
+                    case RangeStepOperator.ApproximateSize:
                         buf.Append("~");
                         break;
-                    case RangeStepOperator.num:
+                    case RangeStepOperator.Number:
                         buf.Append("#");
                         break;
                 }
@@ -3158,7 +3158,7 @@ namespace ProtoCore.AST.AssociativeAST
 
             var result = new ImperativeAST.CharNode
             {
-                value = aNode.Value
+                Value = aNode.Value
             };
             CopyProps(aNode, result);
             return result;
@@ -3293,7 +3293,7 @@ namespace ProtoCore.AST.AssociativeAST
             {
                 ArrayDimensions = aNode.ArrayDimensions.ToImperativeNode(),
                 Value = aNode.Value,
-                datatype = aNode.datatype
+                DataType = aNode.datatype
             };
             CopyProps(aNode, result);
             return result;
@@ -3352,10 +3352,10 @@ namespace ProtoCore.AST.AssociativeAST
             var result = new ImperativeAST.RangeExprNode
             {
                 ArrayDimensions = aNode.ArrayDimensions.ToImperativeNode(),
-                FromNode = aNode.From.ToImperativeAST(),
-                StepNode = aNode.Step.ToImperativeAST(),
-                ToNode = aNode.To.ToImperativeAST(),
-                stepoperator = aNode.StepOperator
+                From = aNode.From.ToImperativeAST(),
+                Step = aNode.Step.ToImperativeAST(),
+                To = aNode.To.ToImperativeAST(),
+                StepOperator = aNode.StepOperator
             };
             CopyProps(aNode, result);
             return result;
@@ -3367,7 +3367,7 @@ namespace ProtoCore.AST.AssociativeAST
 
             var result = new ImperativeAST.StringNode
             {
-                value = aNode.Value
+                Value = aNode.Value
             };
             CopyProps(aNode, result);
             return result;
@@ -3381,7 +3381,7 @@ namespace ProtoCore.AST.AssociativeAST
             {
                 ArrayDimensions = aNode.ArrayDimensions.ToImperativeNode(),
                 Value = aNode.Value,
-                datatype = aNode.datatype
+                DataType = aNode.datatype
             };
             CopyProps(aNode, result);
             return result;
