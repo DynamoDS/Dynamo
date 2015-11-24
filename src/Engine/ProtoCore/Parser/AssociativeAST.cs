@@ -3224,7 +3224,7 @@ namespace ProtoCore.AST.AssociativeAST
             var result = new ImperativeAST.ExprListNode
             {
                 ArrayDimensions = aNode.ArrayDimensions.ToImperativeNode(),
-                list = aNode.Exprs.Select(ToImperativeAST).ToList()
+                Exprs = aNode.Exprs.Select(ToImperativeAST).ToList()
             };
             CopyProps(aNode, result);
             return result;

@@ -2986,7 +2986,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			Imperative_stmtlist(out body);
 			Expect(47);
 		} else SynErr(105);
-		funcDecl.localVars = localVarCount;
+		funcDecl.LocalVariableCount = localVarCount;
 		NodeUtils.SetNodeEndLocation(funcDecl.FunctionBody, t);
 		funcDecl.FunctionBody.Body = body;
 		node = funcDecl; 
@@ -3201,22 +3201,22 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Expect(10);
 		int idLine = la.line; int idCol = la.col; 
 		Imperative_Ident(out node);
-		loopNode.loopVar = node; loopNode.loopVar.line = idLine; loopNode.loopVar.col = idCol; 
+		loopNode.LoopVariable = node; loopNode.LoopVariable.line = idLine; loopNode.LoopVariable.col = idCol; 
 		Expect(66);
 		loopNode.KwInLine = t.line; loopNode.KwInCol = t.col; int exprLine = la.line; int exprCol = la.col; 
 		Imperative_expr(out node);
-		loopNode.expression = node; if (loopNode.expression != null) {  loopNode.expression.line = exprLine; loopNode.expression.col = exprCol; } 
+		loopNode.Expression = node; if (loopNode.Expression != null) {  loopNode.Expression.line = exprLine; loopNode.Expression.col = exprCol; } 
 		Expect(11);
 		if (la.kind == 46) {
 			Get();
 			Imperative_stmtlist(out body);
-			loopNode.body = body; 
+			loopNode.Body = body; 
 			Expect(47);
 			NodeUtils.SetNodeEndLocation(loopNode, t); 
 		} else if (StartOf(21)) {
 			ProtoCore.AST.ImperativeAST.ImperativeNode singleStmt = null; 
 			Imperative_stmt(out singleStmt);
-			loopNode.body.Add(singleStmt); 
+			loopNode.Body.Add(singleStmt); 
 		} else SynErr(113);
 		forloop = loopNode;
 		
@@ -3785,7 +3785,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 	}
 
 	void Imperative_rangeStepOperator(out RangeStepOperator op) {
-		op = RangeStepOperator.stepsize; 
+		op = RangeStepOperator.StepSize; 
 		if (la.kind == 64 || la.kind == 65) {
 			if (la.kind == 65) {
 				Get();
@@ -3994,11 +3994,11 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		
 		if (StartOf(4)) {
 			Imperative_expr(out node);
-			exprlist.list.Add(node); 
+			exprlist.Exprs.Add(node); 
 			while (la.kind == 48) {
 				Get();
 				Imperative_expr(out node);
-				exprlist.list.Add(node); 
+				exprlist.Exprs.Add(node); 
 			}
 		}
 		Expect(47);

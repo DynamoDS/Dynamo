@@ -1218,7 +1218,7 @@ namespace ProtoImperative
                 localProcedure = new ProtoCore.DSASM.ProcedureNode();
                 localProcedure.Name = funcDef.Name;
                 localProcedure.PC = pc;
-                localProcedure.LocalCount = funcDef.localVars;
+                localProcedure.LocalCount = funcDef.LocalVariableCount;
                 var returnType = new ProtoCore.Type();
                 returnType.UID = core.TypeSystem.GetType(funcDef.ReturnType.Name);
                 returnType.rank = funcDef.ReturnType.rank;
@@ -1839,14 +1839,14 @@ namespace ProtoImperative
                     if (bNode.RightNode is ExprListNode)
                     {
                         ExprListNode exprlist = bNode.RightNode as ExprListNode;
-                        int size = datasize * exprlist.list.Count;
+                        int size = datasize * exprlist.Exprs.Count;
 
                         symnode = Allocate(tVar.Value, globalProcIndex, type, size, datasize, tVar.ArrayDimensions, varNode.memregion);
                         symindex = symnode.symbolTableIndex;
 
-                        for (int n = 0; n < exprlist.list.Count; ++n)
+                        for (int n = 0; n < exprlist.Exprs.Count; ++n)
                         {
-                            DfsTraverse(exprlist.list[n], ref inferedType);
+                            DfsTraverse(exprlist.Exprs[n], ref inferedType);
 
                             ArrayNode array = new ArrayNode();
                             array.Expr = nodeBuilder.BuildIdentfier(n.ToString(), PrimitiveType.kTypeInt);
@@ -2390,10 +2390,10 @@ namespace ProtoImperative
                 ProtoCore.Type type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVoid, 0);
 
                 // val = null; 
-                IdentifierNode loopvar = nodeBuilder.BuildIdentfier(forNode.loopVar.Name) as IdentifierNode;
+                IdentifierNode loopvar = nodeBuilder.BuildIdentfier(forNode.LoopVariable.Name) as IdentifierNode;
                 {
-                    loopvar.ArrayName = forNode.expression.Name;
-                    ProtoCore.Utils.NodeUtils.CopyNodeLocation(loopvar, forNode.loopVar);
+                    loopvar.ArrayName = forNode.Expression.Name;
+                    ProtoCore.Utils.NodeUtils.CopyNodeLocation(loopvar, forNode.LoopVariable);
                     BinaryExpressionNode loopvarInit = new BinaryExpressionNode();
                     loopvarInit.Optr = ProtoCore.DSASM.Operator.assign;
                     loopvarInit.LeftNode = loopvar;
@@ -2414,14 +2414,14 @@ namespace ProtoImperative
                 // index into it. 
                 string identName = GetForExprIdent();
                 var arrayExpr = nodeBuilder.BuildIdentfier(identName);
-                NodeUtils.CopyNodeLocation(arrayExpr, forNode.expression);
+                NodeUtils.CopyNodeLocation(arrayExpr, forNode.Expression);
                 BinaryExpressionNode arrayexprAssignment = new BinaryExpressionNode();
                 arrayexprAssignment.Optr = ProtoCore.DSASM.Operator.assign;
                 arrayexprAssignment.LeftNode = arrayExpr;
-                arrayexprAssignment.RightNode = forNode.expression;
+                arrayexprAssignment.RightNode = forNode.Expression;
                 NodeUtils.UpdateBinaryExpressionLocation(arrayexprAssignment);
 
-                switch (forNode.expression.GetType().ToString())
+                switch (forNode.Expression.GetType().ToString())
                 {
                     case "ProtoCore.AST.ImperativeAST.IdentifierNode":
                     case "ProtoCore.AST.ImperativeAST.ExprListNode":
@@ -2524,13 +2524,13 @@ namespace ProtoImperative
 
                 // Append the array indexing and key increment expressions into 
                 // the for-loop body
-                forNode.body.Insert(0, arrayIndexing);
-                forNode.body.Insert(1, nextKey);
+                forNode.Body.Insert(0, arrayIndexing);
+                forNode.Body.Insert(1, nextKey);
 
                 // Construct and populate the equivalent while node
                 WhileStmtNode whileStatement = new WhileStmtNode();
                 whileStatement.Expr = condition;
-                whileStatement.Body = forNode.body;
+                whileStatement.Body = forNode.Body;
                 whileStatement.endLine = node.endLine;
                 whileStatement.endCol = node.endCol;
 

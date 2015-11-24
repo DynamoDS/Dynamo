@@ -2740,7 +2740,7 @@ namespace ProtoCore
             else if (node is ProtoCore.AST.ImperativeAST.ExprListNode)
             {
                 ProtoCore.AST.ImperativeAST.ExprListNode arraynode = node as ProtoCore.AST.ImperativeAST.ExprListNode;
-                foreach (ProtoCore.AST.Node subnode in arraynode.list)
+                foreach (ProtoCore.AST.Node subnode in arraynode.Exprs)
                 {
                     if (!IsConstantExpression(subnode))
                         return false;
