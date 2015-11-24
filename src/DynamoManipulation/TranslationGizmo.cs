@@ -182,12 +182,16 @@ namespace Dynamo.Manipulation
             {
                 axes.Add(axis3);
                 if (axis2 != null)
+                {
                     planes.Add(Plane.ByOriginXAxisYAxis(Origin, axis2, axis3));
+                }
                 planes.Add(Plane.ByOriginXAxisYAxis(Origin, axis3, axis1));
             }
 
             if (axes.Count == 1 && hitAxis != null)
+            {
                 hitAxis = axes.First();
+            }
         }
 
         #endregion
@@ -331,7 +335,9 @@ namespace Dynamo.Manipulation
             hitObject = HitTest(source, direction);
             hitAxis = hitObject as Vector;
             if (hitAxis == null)
+            {
                 hitPlane = hitObject as Plane;
+            }
 
             return hitObject != null;
         }
@@ -348,7 +354,9 @@ namespace Dynamo.Manipulation
             using (var ray = GetRayGeometry(newPosition, viewDirection))
             {
                 if (hitPlane != null)
+                {
                     hitPoint = hitPlane.Intersect(ray).FirstOrDefault() as Point;
+                }
                 else if (hitAxis != null)
                 {
                     var axis = hitAxis.Cross(viewDirection);
@@ -362,12 +370,16 @@ namespace Dynamo.Manipulation
                     else
                     {
                         using (var axisLine = RayExtensions.ToOriginCenteredLine(Origin, hitAxis))
+                        {
                             hitPoint = axisLine.ClosestPointTo(ray);
+                        }
                     }
                 }
             }
             if (hitPoint == null)
+            {
                 return Vector.ByCoordinates(0, 0, 0);
+            }
 
             return Vector.ByTwoPoints(Origin, hitPoint);
         }
