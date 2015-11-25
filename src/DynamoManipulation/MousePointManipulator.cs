@@ -118,9 +118,18 @@ namespace Dynamo.Manipulation
         /// <summary>
         /// Returns all the gizmos supported by this manipulator
         /// </summary>
+        /// <param name="createIfNone">Whether to create new gizmo if not already present.</param>
         /// <returns>List of Gizmo</returns>
-        protected override IEnumerable<IGizmo> GetGizmos()
+        protected override IEnumerable<IGizmo> GetGizmos(bool createIfNone)
         {
+            //Don't create a new gizmo if not requested
+            if (gizmo == null && !createIfNone)
+                yield break;
+
+            //No axis data, so no gizmo.
+            if (!indexedAxisNodePairs.Any())
+                yield break;
+
             UpdateGizmo();
 
             yield return gizmo;

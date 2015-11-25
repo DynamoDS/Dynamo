@@ -153,5 +153,4 @@ namespace Watch3DNodeModelsWpf
 
         }
     }
-
 }

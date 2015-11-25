@@ -64,8 +64,9 @@ namespace Dynamo.Manipulation
         /// <summary>
         /// Returns list of Gizmos used by this manipulator.
         /// </summary>
+        /// <param name="createIfNone">Whether to create new gizmo if not already present.</param>
         /// <returns>List of Gizmos.</returns>
-        protected abstract IEnumerable<IGizmo> GetGizmos();
+        protected abstract IEnumerable<IGizmo> GetGizmos(bool createIfNone);
 
         /// <summary>
         /// Implement to analyze inputs to the manipulator node and initialize them
@@ -108,7 +109,7 @@ namespace Dynamo.Manipulation
         /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
-            var gizmos = GetGizmos();
+            var gizmos = GetGizmos(false);
             foreach (var item in gizmos)
             {
                 BackgroundPreviewViewModel.DeleteGeometryForIdentifier(item.Name);
@@ -140,7 +141,7 @@ namespace Dynamo.Manipulation
             UpdatePosition();
             GizmoInAction = null; //Reset Drag.
 
-            var gizmos = GetGizmos();
+            var gizmos = GetGizmos(false);
             if (!Active || null == gizmos || !gizmos.Any())
                 return;
 
@@ -424,9 +425,15 @@ namespace Dynamo.Manipulation
         public IEnumerable<IRenderPackage> BuildRenderPackage()
         {
             var packages = new List<IRenderPackage>();
-            var gizmos = GetGizmos();
+            var gizmos = GetGizmos(true);
             foreach (var item in gizmos)
             {
+                // Append node AST identifier to gizmo name
+                // so that it gets added to package description
+                if (!item.Name.Contains(Node.AstIdentifierBase))
+                {
+                    item.Name = string.Format("{0}_{1}", item.Name, Node.AstIdentifierBase);
+                }
                 packages.AddRange(item.GetDrawables(RenderPackageFactory));
             }
 
