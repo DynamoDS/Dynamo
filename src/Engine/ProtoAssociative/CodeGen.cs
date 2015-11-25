@@ -5136,10 +5136,15 @@ namespace ProtoAssociative
                         BuildThisFunctionBody(thisProc);
                     }
 
-                    // Emit the newly defined overloads
-                    DfsTraverse(thisProc.procNode, ref inferedType);
                     thisPtrOverloadList.Add(thisProc.procNode);
                 }
+
+                foreach (var overloadFunc in thisPtrOverloadList)
+                {
+                    // Emit the newly defined overloads
+                    DfsTraverse(overloadFunc, ref inferedType);
+                }
+
                 classDecl.Procedures.AddRange(thisPtrOverloadList);
 
                 if (!classDecl.IsExternLib)
