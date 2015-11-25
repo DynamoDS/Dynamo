@@ -413,14 +413,14 @@ namespace Dynamo.UI.Controls
 
         private Size ComputeSmallContentSize()
         {
-            Size maxSize = new Size()
+            var maxSize = new Size()
             {
                 Width = Configurations.MaxCondensedPreviewWidth,
                 Height = Configurations.MaxCondensedPreviewHeight
             };
 
-            this.smallContentGrid.Measure(maxSize);
-            Size smallContentGridSize = this.smallContentGrid.DesiredSize;
+            smallContentGrid.Measure(maxSize);
+            Size smallContentGridSize = smallContentGrid.DesiredSize;
 
             // Condensed bubble should be the same width as node or wider.
             if (smallContentGridSize.Width == 0)
@@ -432,21 +432,31 @@ namespace Dynamo.UI.Controls
                 }
             }
 
-            double generalWidth = 0;
+            // Count children size.
+            var childrenSize = new Size() { Width = 0, Height = 0 };
             foreach (UIElement child in smallContentGrid.Children)
             {
                 child.Measure(maxSize);
-                if (generalWidth + child.DesiredSize.Width > smallContentGridSize.Width)
+
+                childrenSize.Width += child.DesiredSize.Width;
+                if (child.DesiredSize.Height > childrenSize.Height)
                 {
-                    smallContentGridSize.Width = generalWidth + child.DesiredSize.Width;
-                    generalWidth = smallContentGridSize.Width;
-                }
-                if (child.DesiredSize.Height > smallContentGridSize.Height)
-                {
-                    smallContentGridSize.Height = child.DesiredSize.Height;
+                    childrenSize.Height = child.DesiredSize.Height;
                 }
             }
 
+            // If children are smaller, update smallContentGridSize.
+            if (childrenSize.Height < smallContentGridSize.Height)
+            {
+                smallContentGridSize.Height = childrenSize.Height;
+            }
+            if (childrenSize.Width < smallContentGridSize.Width)
+            {
+                // But don't make it smaller, then min width.
+                smallContentGridSize.Width = childrenSize.Width < smallContentGrid.MinWidth
+                    ? smallContentGrid.MinWidth
+                    : childrenSize.Width;
+            }
             // Add padding since we are sizing the centralizedGrid.
             return ContentToControlSize(smallContentGridSize);
         }
