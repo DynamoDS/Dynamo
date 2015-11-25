@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using ProtoCore.DSASM;
 using ProtoCore.AST.AssociativeAST;
 
@@ -756,7 +757,33 @@ namespace ProtoCore.Utils
             return codeblock;
         }
 
-        public static ProcedureNode GetFirstVisibleProcedure(string name, List<Type> argTypeList, CodeBlock codeblock)
+        public static ProcedureNode GetFunctionByName(string name, CodeBlock codeBlock)
+        {
+            if (null == codeBlock)
+            {
+                return null;
+            }
+
+            CodeBlock searchBlock = codeBlock;
+            while (null != searchBlock)
+            {
+                if (null == searchBlock.procedureTable)
+                {
+                    searchBlock = searchBlock.parent;
+                    continue;
+                }
+
+                // The class table is passed just to check for coercion values
+                var procNode = searchBlock.procedureTable.GetFunctionsByName(name).FirstOrDefault();
+                if (procNode != null)
+                    return procNode;
+
+                searchBlock = searchBlock.parent;
+            }
+            return null;
+        }
+
+        public static ProcedureNode GetFunctionBySignature(string name, List<Type> argTypeList, CodeBlock codeblock)
         {
             if (null == codeblock)
             {
@@ -776,7 +803,7 @@ namespace ProtoCore.Utils
                 int procIndex = searchBlock.procedureTable.IndexOf(name, argTypeList);
                 if (Constants.kInvalidIndex != procIndex)
                 {
-                    return searchBlock.procedureTable.procList[procIndex];
+                    return searchBlock.procedureTable.Procedures[procIndex];
                 }
                 searchBlock = searchBlock.parent;
             }

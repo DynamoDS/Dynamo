@@ -155,7 +155,7 @@ namespace ProtoCore.Lang
         public static string GetMethodName(StackValue pointer, Interpreter dsi)
         {
             Validity.Assert(pointer.IsFunctionPointer);
-            return dsi.runtime.exe.procedureTable[0].procList[(int)pointer.opdata].Name;
+            return dsi.runtime.exe.procedureTable[0].Procedures[(int)pointer.opdata].Name;
         }
     }
 }
