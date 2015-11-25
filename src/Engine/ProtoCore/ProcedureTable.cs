@@ -173,10 +173,6 @@ namespace ProtoCore.DSASM
         {
             get; set;
         }
-        public Dictionary<string, List<UpdateNode>> UpdatedArgumentArrays
-        {
-            get; set;
-        }
         /// <summary>
         /// The list of graphnodes that this function owns
         /// </summary>
@@ -202,7 +198,6 @@ namespace ProtoCore.DSASM
             UpdatedGlobalVariables = new Stack<AssociativeGraph.UpdateNodeRef>();
             UpdatedProperties = new Stack<AssociativeGraph.UpdateNodeRef>();
             UpdatedArgumentProperties = new Dictionary<string, List<AssociativeGraph.UpdateNodeRef>>();
-            UpdatedArgumentArrays = new Dictionary<string, List<AssociativeGraph.UpdateNode>>();
             GraphNodeList = new List<GraphNode>();
         }
 
@@ -234,7 +229,6 @@ namespace ProtoCore.DSASM
             UpdatedGlobalVariables = new Stack<AssociativeGraph.UpdateNodeRef>();
             UpdatedProperties = new Stack<AssociativeGraph.UpdateNodeRef>();
             UpdatedArgumentProperties = new Dictionary<string, List<AssociativeGraph.UpdateNodeRef>>();
-            UpdatedArgumentArrays = new Dictionary<string, List<AssociativeGraph.UpdateNode>>();
             GraphNodeList = new List<GraphNode>();
         }
 
@@ -250,6 +244,19 @@ namespace ProtoCore.DSASM
                    ClassID == rhs.ClassID && 
                    LocalCount == rhs.LocalCount && 
                    Name.Equals(rhs.Name);
+        }
+
+        /// <summary>
+        /// Return true if two procedure nodes have same signature.
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public bool Matches(string name, List<ProtoCore.Type> argumentTypes)
+        {
+            if (argumentTypes == null)
+                throw new ArgumentNullException("argumentTypes");
+
+            return Name == name && ArgumentTypes.SequenceEqual(argumentTypes);
         }
     }
 
@@ -379,22 +386,7 @@ namespace ProtoCore.DSASM
 
         public ProcedureNode GetFunctionBySignature(string name, List<ProtoCore.Type> args)
         {
-            for (int n = 0; n < Procedures.Count; ++n)
-            {
-                var procedure = Procedures[n];
-                if (!name.Equals(procedure.Name) || args.Count != procedure.ArgumentTypes.Count)
-                    continue;
-
-                bool match = procedure.ArgumentTypes
-                                      .Zip(args, (t1, t2) => new { t1, t2 })
-                                      .All(t => t.t1.UID == t.t2.UID 
-                                             && t.t1.IsIndexable == t.t2.IsIndexable 
-                                             && t.t1.rank == t.t2.rank);
-                if (match)
-                    return procedure;
-            }
-
-            return null;
+            return Procedures.FirstOrDefault(p => p.Matches(name, args));
         }
     }
 }
