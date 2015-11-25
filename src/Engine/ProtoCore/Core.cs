@@ -409,13 +409,12 @@ namespace ProtoCore
             foreach (CodeBlock block in CodeBlockList)
             {
                 // Update the current function definition in the current block
-                int index = block.procedureTable.IndexOfHash(hash);
+                procNode = block.procedureTable.Procedures.FirstOrDefault(p => p.HashID == hash);
+                int index = procNode == null ? Constants.kInvalidIndex: procNode.ID; 
                 if (Constants.kInvalidIndex == index)
                     continue;
 
-                procNode = block.procedureTable.Procedures[index];
-
-                block.procedureTable.SetInactive(index);
+                procNode.IsActive = false;
 
                 // Remove staled graph nodes
                 var graph = block.instrStream.dependencyGraph;

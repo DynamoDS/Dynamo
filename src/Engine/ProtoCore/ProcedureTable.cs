@@ -420,29 +420,5 @@ namespace ProtoCore.DSASM
             }
             return ProtoCore.DSASM.Constants.kInvalidIndex;
         }
-
-        public int IndexOfHash(int hash)
-        {
-            for (int n = 0; n < Procedures.Count; ++n)
-            {
-                if (hash == Procedures[n].HashID)
-                {
-                    return n;
-                }
-            }
-            return ProtoCore.DSASM.Constants.kInvalidIndex;
-        }
-
-        /// <summary>
-        /// This sets the procedure node to be inactive by modifiying its name
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="args"></param>
-        public void SetInactive(int index)
-        {
-            if (index < 0 || index >= Procedures.Count)
-                throw new ArgumentOutOfRangeException();
-            Procedures[index].IsActive = false;
-        }
     }
 }
