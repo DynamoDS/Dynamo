@@ -26,10 +26,11 @@ using HelixToolkit.Wpf.SharpDX;
 using NUnit.Framework;
 using SharpDX;
 using TestServices;
+using Watch3DNodeModels;
+using Watch3DNodeModelsWpf;
 using Color = System.Windows.Media.Color;
 using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 using Dynamo.Views;
-using DynamoWatch3D;
 using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
 
 namespace WpfVisualizationTests

@@ -131,7 +131,4 @@
     <value>panel;3dview;view;inspect;debug;watch geo;watch3d;</value>
     <comment>Search Tags for Watch 3D</comment>
   </data>
-  <data name="ZoomToFit" xml:space="preserve">
-    <value>Zoom to Fit</value>
-  </data>
 </root>
