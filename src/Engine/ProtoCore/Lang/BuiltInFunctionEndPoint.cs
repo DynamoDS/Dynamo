@@ -595,6 +595,7 @@ namespace ProtoCore.Lang
             int procIndex = classNode.ProcTable.IndexOfFirst(functionName);
             ProcedureNode procNode = null;
 
+
             // Trace hierarchy chain to find out the procedure node.
             if (Constants.kInvalidIndex == procIndex)
             {

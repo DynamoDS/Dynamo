@@ -301,7 +301,7 @@ namespace ProtoCore.DSASM
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public IEnumerable<ProcedureNode> GetFunctionsBy(string name)
+        public IEnumerable<ProcedureNode> GetFunctionsByName(string name)
         {
             return Procedures.Where(p => p.Name.Equals(name));
         }
@@ -313,7 +313,7 @@ namespace ProtoCore.DSASM
         /// <param name="name"></param>
         /// <param name="argumentNumber"></param>
         /// <returns></returns>
-        public IEnumerable<ProcedureNode> GetFunctionsBy(string name, int argumentNumber)
+        public IEnumerable<ProcedureNode> GetFunctionsByNameAndArgumentNumber(string name, int argumentNumber)
         {
             return Procedures.Where(p =>
             {
@@ -325,34 +325,6 @@ namespace ProtoCore.DSASM
             }).OrderBy(p => p.ArgumentTypes.Count - argumentNumber);
         }
         
-        public ProcedureNode GetFirst(string name, int argCount)
-        {
-            ProcedureNode procReturn = null;
-            for (int n = 0; n < Procedures.Count; ++n)
-            {
-                if (name == Procedures[n].Name && argCount == Procedures[n].ArgumentTypes.Count)
-                {
-                    procReturn = Procedures[n];
-                    break;
-                }
-            }
-            return procReturn;
-        }
-
-        public ProcedureNode GetFirstStatic(string name)
-        {
-            ProcedureNode procReturn = null;
-            for (int n = 0; n < Procedures.Count; ++n)
-            {
-                if (name == Procedures[n].Name && Procedures[n].IsStatic)
-                {
-                    procReturn = Procedures[n];
-                    break;
-                }
-            }
-            return procReturn;
-        }
-
         public int IndexOf(string name, List<ProtoCore.Type> argTypeList, bool isStaticOrConstructor = false)
         {
             int currentProcedure = ProtoCore.DSASM.Constants.kInvalidIndex;

@@ -250,7 +250,7 @@ namespace ProtoCore.DSASM
                 return null;
             }
 
-            ProcedureNode procNode = ProcTable.GetFunctionsBy(procName).FirstOrDefault();
+            ProcedureNode procNode = ProcTable.GetFunctionsByName(procName).FirstOrDefault();
             if (procNode != null)
             {
                 return procNode;
@@ -271,7 +271,7 @@ namespace ProtoCore.DSASM
         public ProcedureNode GetFirstMemberFunctionBy(string procName, int argCount)
         {
             if (ProcTable == null)            {                return null;            }
-            ProcedureNode procNode = ProcTable.GetFunctionsBy(procName, argCount).FirstOrDefault();
+            ProcedureNode procNode = ProcTable.GetFunctionsByNameAndArgumentNumber(procName, argCount).FirstOrDefault();
             if (procNode != null)
             {
                 return procNode;
@@ -296,7 +296,7 @@ namespace ProtoCore.DSASM
                 return null;
             }
 
-            return  ProcTable.GetFunctionsBy(procName, argCount)
+            return  ProcTable.GetFunctionsByNameAndArgumentNumber(procName, argCount)
                           .Where(p => p.IsConstructor)
                           .FirstOrDefault();
         }
@@ -308,7 +308,7 @@ namespace ProtoCore.DSASM
                 return null;
             }
 
-            ProcedureNode procNode = ProcTable.GetFunctionsBy(procName)
+            ProcedureNode procNode = ProcTable.GetFunctionsByName(procName)
                                            .Where(p => p.IsStatic)
                                            .FirstOrDefault();
             if (procNode != null)
@@ -335,7 +335,7 @@ namespace ProtoCore.DSASM
                 return null;
             }
 
-            ProcedureNode procNode = ProcTable.GetFunctionsBy(procName, argCount)
+            ProcedureNode procNode = ProcTable.GetFunctionsByNameAndArgumentNumber(procName, argCount)
                                            .Where(p => p.IsStatic)
                                            .FirstOrDefault();
             if (procNode != null)
