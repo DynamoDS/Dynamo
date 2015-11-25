@@ -3627,7 +3627,7 @@ namespace ProtoCore.DSASM
                     {
                         procName = exe.procedureTable[blockId].Procedures[procId].Name;
                         CodeBlock codeblock = ProtoCore.Utils.CoreUtils.GetCodeBlock(exe.CodeBlocks, blockId);
-                        procNode = CoreUtils.GetFirstVisibleProcedure(procName, arglist, codeblock);
+                        procNode = CoreUtils.GetFunctionBySignature(procName, arglist, codeblock);
                     }
                     else
                     {
