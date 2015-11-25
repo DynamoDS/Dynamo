@@ -638,7 +638,7 @@ namespace ProtoImperative
             // global function. 
             if ((procNode == null) && (procName != ProtoCore.DSASM.Constants.kFunctionPointerCall))
             {
-                procNode = CoreUtils.GetFirstVisibleProcedure(procName, arglist, codeBlock);
+                procNode = CoreUtils.GetFunctionBySignature(procName, arglist, codeBlock);
                 if (null != procNode)
                 {
                     type = ProtoCore.DSASM.Constants.kGlobalScope;
@@ -1005,7 +1005,7 @@ namespace ProtoImperative
             {
                 //check if it is a function instance
                 ProtoCore.DSASM.ProcedureNode procNode = null;
-                procNode = CoreUtils.GetFirstVisibleProcedure(t.Name, null, codeBlock);
+                procNode = CoreUtils.GetFunctionBySignature(t.Name, null, codeBlock);
                 if (null != procNode)
                 {
                     if (ProtoCore.DSASM.Constants.kInvalidIndex != procNode.ID)
@@ -1147,7 +1147,7 @@ namespace ProtoImperative
                 }
 
                 if (globalProcIndex != ProtoCore.DSASM.Constants.kInvalidIndex && core.ProcNode == null)
-                    core.ProcNode = codeBlock.procedureTable.procList[globalProcIndex];
+                    core.ProcNode = codeBlock.procedureTable.Procedures[globalProcIndex];
 
                 core.Compilers[langblock.codeblock.language].Compile(out blockId, codeBlock, langblock.codeblock, context, codeBlock.EventSink, langblock.CodeBlockNode);
 
@@ -1285,8 +1285,9 @@ namespace ProtoImperative
                 }
 
                 // Get the exisitng procedure that was added on the previous pass
-                globalProcIndex = codeBlock.procedureTable.IndexOfExact(funcDef.Name, argList, false);
-                localProcedure = codeBlock.procedureTable.procList[globalProcIndex];
+                var procNode = codeBlock.procedureTable.GetFunctionBySignature(funcDef.Name, argList);
+                globalProcIndex = procNode == null ? Constants.kInvalidIndex : procNode.ID;
+                localProcedure = codeBlock.procedureTable.Procedures[globalProcIndex];
 
 
                 Validity.Assert(null != localProcedure);
