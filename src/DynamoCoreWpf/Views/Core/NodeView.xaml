@@ -24,7 +24,7 @@
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsFrozen}" Value="True">
                     <Setter Property="Background" Value="Transparent"/>
-                    <Setter Property="Opacity" Value ="0.3"/>
+                    <Setter Property="Opacity" Value ="0.5"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
