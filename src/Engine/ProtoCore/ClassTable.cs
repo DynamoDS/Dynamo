@@ -364,12 +364,9 @@ namespace ProtoCore.DSASM
 
             Validity.Assert(null != variableName && variableName.Length > 0);
             string getterName = ProtoCore.DSASM.Constants.kGetterPrefix + variableName;
-            int index = ProcTable.IndexOfFirst(getterName);
-            if (ProtoCore.DSASM.Constants.kInvalidIndex == index)
-            {
-                return null;
-            }
-            return ProcTable.Procedures[index];
+
+            var procNode = ProcTable.GetFunctionsByName(getterName).FirstOrDefault();
+            return procNode;
         }
 
         public bool IsMemberVariable(SymbolNode symbol)

@@ -408,17 +408,5 @@ namespace ProtoCore.DSASM
             }
             return ProtoCore.DSASM.Constants.kInvalidIndex;
         }
-
-        public int IndexOfFirst(string name)
-        {
-            for (int n = 0; n < Procedures.Count; ++n)
-            {
-                if (name == Procedures[n].Name)
-                {
-                    return n;
-                }
-            }
-            return ProtoCore.DSASM.Constants.kInvalidIndex;
-        }
     }
 }
