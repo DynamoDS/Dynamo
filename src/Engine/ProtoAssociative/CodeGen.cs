@@ -1528,7 +1528,7 @@ namespace ProtoAssociative
                     (globalProcIndex != Constants.kInvalidIndex) &&
                     (globalClassIndex == inferedType.UID))
                 {
-                    ProcedureNode contextProcNode = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.procList[globalProcIndex];
+                    ProcedureNode contextProcNode = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.Procedures[globalProcIndex];
                     if (contextProcNode.IsConstructor &&
                         string.Equals(contextProcNode.Name, procCallNode.Name) &&
                         contextProcNode.RuntimeIndex == procCallNode.RuntimeIndex)
@@ -1819,7 +1819,7 @@ namespace ProtoAssociative
                     (globalProcIndex != Constants.kInvalidIndex) && 
                     (globalClassIndex == inferedType.UID))
                 {
-                    ProcedureNode contextProcNode = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.procList[globalProcIndex];
+                    ProcedureNode contextProcNode = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.Procedures[globalProcIndex];
                     if (contextProcNode.IsConstructor &&
                         string.Equals(contextProcNode.Name, procNode.Name) &&
                         contextProcNode.RuntimeIndex == procNode.RuntimeIndex)
@@ -3844,11 +3844,11 @@ namespace ProtoAssociative
                 int functionBlock = context.MemoryState.CurrentStackFrame.FunctionBlock;
 
                 if (globalClassIndex != -1)
-                    localProcedure = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.procList[globalProcIndex];
+                    localProcedure = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.Procedures[globalProcIndex];
                 else
                 {
                     // TODO: to investigate whethter to use the table under executable or in core.FuncTable - Randy, Jun
-                    localProcedure = core.DSExecutable.procedureTable[functionBlock].procList[globalProcIndex];
+                    localProcedure = core.DSExecutable.procedureTable[functionBlock].Procedures[globalProcIndex];
                 }
             }
 
@@ -3992,7 +3992,7 @@ namespace ProtoAssociative
             {
                 var classNode = core.ClassTable.ClassNodes[i];
                 if (classNode.ProcTable != null &&
-                    classNode.ProcTable.procList.Exists(procNode => procNode.Name == ProtoCore.DSASM.Constants.kStaticPropertiesInitializer && procNode.IsStatic))
+                    classNode.ProcTable.Procedures.Exists(procNode => procNode.Name == ProtoCore.DSASM.Constants.kStaticPropertiesInitializer && procNode.IsStatic))
                 {
                     // classname.%_init_static_properties();
                     var thisClass =AstFactory.BuildIdentifier(classNode.Name);
@@ -4574,9 +4574,9 @@ namespace ProtoAssociative
                 if (globalProcIndex != ProtoCore.DSASM.Constants.kInvalidIndex && core.ProcNode == null)
                 {
                     if (globalClassIndex != ProtoCore.DSASM.Constants.kInvalidIndex)
-                        core.ProcNode = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.procList[globalProcIndex];
+                        core.ProcNode = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.Procedures[globalProcIndex];
                     else
-                        core.ProcNode = codeBlock.procedureTable.procList[globalProcIndex];
+                        core.ProcNode = codeBlock.procedureTable.Procedures[globalProcIndex];
                 }
 
                 ProtoCore.AssociativeGraph.GraphNode propagateGraphNode = null;
@@ -4634,9 +4634,9 @@ namespace ProtoAssociative
                 if (globalProcIndex != ProtoCore.DSASM.Constants.kInvalidIndex && core.ProcNode == null)
                 {
                     if (globalClassIndex != ProtoCore.DSASM.Constants.kInvalidIndex)
-                        core.ProcNode = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.procList[globalProcIndex];
+                        core.ProcNode = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.Procedures[globalProcIndex];
                     else
-                        core.ProcNode = codeBlock.procedureTable.procList[globalProcIndex];
+                        core.ProcNode = codeBlock.procedureTable.Procedures[globalProcIndex];
                 }
 
                 core.Compilers[langblock.codeblock.language].Compile(
@@ -5258,7 +5258,7 @@ namespace ProtoAssociative
                 {
                     int cidx = core.ClassTable.ClassNodes[bidx].ProcTable.IndexOf(baseConstructorName, argTypeList);
                     if ((cidx != ProtoCore.DSASM.Constants.kInvalidIndex) &&
-                        core.ClassTable.ClassNodes[bidx].ProcTable.procList[cidx].IsConstructor)
+                        core.ClassTable.ClassNodes[bidx].ProcTable.Procedures[cidx].IsConstructor)
                     {
                         ctorIndex = cidx;
                         baseIndex = bidx;
@@ -5331,7 +5331,7 @@ namespace ProtoAssociative
 
                 localProcedure.MethodAttribute = funcDef.MethodAttributes;
 
-                int peekFunctionindex = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.procList.Count;
+                int peekFunctionindex = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.Procedures.Count;
 
                 // Append arg symbols
                 List<KeyValuePair<string, ProtoCore.Type>> argsToBeAllocated = new List<KeyValuePair<string, ProtoCore.Type>>();
@@ -5390,7 +5390,7 @@ namespace ProtoAssociative
                 globalProcIndex = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.IndexOfExact(funcDef.Name, argList, false);
 
                 Validity.Assert(null == localProcedure);
-                localProcedure = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.procList[globalProcIndex];
+                localProcedure = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.Procedures[globalProcIndex];
 
                 Validity.Assert(null != localProcedure);
                 localProcedure.Attributes = PopulateAttributes(funcDef.Attributes);
@@ -5466,7 +5466,7 @@ namespace ProtoAssociative
 
                     // All locals have been stack allocated, update the local count of this function
                     localProcedure.LocalCount = core.BaseOffset;
-                    core.ClassTable.ClassNodes[globalClassIndex].ProcTable.procList[globalProcIndex].LocalCount = core.BaseOffset;
+                    core.ClassTable.ClassNodes[globalClassIndex].ProcTable.Procedures[globalProcIndex].LocalCount = core.BaseOffset;
 
                     // Update the param stack indices of this function
                     foreach (ProtoCore.DSASM.SymbolNode symnode in core.ClassTable.ClassNodes[globalClassIndex].Symbols.symbolList.Values)
@@ -5661,11 +5661,11 @@ namespace ProtoAssociative
 
                 if (ProtoCore.DSASM.Constants.kInvalidIndex == globalClassIndex)
                 {
-                    peekFunctionindex = codeBlock.procedureTable.procList.Count;
+                    peekFunctionindex = codeBlock.procedureTable.Procedures.Count;
                 }
                 else
                 {
-                    peekFunctionindex = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.procList.Count;
+                    peekFunctionindex = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.Procedures.Count;
                 }
 
                 // Append arg symbols
@@ -5742,12 +5742,12 @@ namespace ProtoAssociative
                 if (ProtoCore.DSASM.Constants.kInvalidIndex == globalClassIndex)
                 {
                     globalProcIndex = codeBlock.procedureTable.IndexOfExact(funcDef.Name, argList, false);
-                    localProcedure = codeBlock.procedureTable.procList[globalProcIndex];
+                    localProcedure = codeBlock.procedureTable.Procedures[globalProcIndex];
                 }
                 else
                 {
                     globalProcIndex = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.IndexOfExact(funcDef.Name, argList, funcDef.IsAutoGeneratedThisProc);
-                    localProcedure = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.procList[globalProcIndex];
+                    localProcedure = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.Procedures[globalProcIndex];
                 }
 
                 Validity.Assert(null != localProcedure);
@@ -5825,7 +5825,7 @@ namespace ProtoAssociative
                     }
                     else
                     {
-                        core.ClassTable.ClassNodes[globalClassIndex].ProcTable.procList[localProcedure.ID].LocalCount = core.BaseOffset;
+                        core.ClassTable.ClassNodes[globalClassIndex].ProcTable.Procedures[localProcedure.ID].LocalCount = core.BaseOffset;
 
                         // Update the param stack indices of this function
                         foreach (ProtoCore.DSASM.SymbolNode symnode in core.ClassTable.ClassNodes[globalClassIndex].Symbols.symbolList.Values)
@@ -7508,7 +7508,7 @@ namespace ProtoAssociative
             if (globalClassIndex != Constants.kGlobalScope && globalProcIndex != Constants.kGlobalScope)
             {
                 ClassNode thisClass = core.ClassTable.ClassNodes[globalClassIndex];
-                ProcedureNode procNode = thisClass.ProcTable.procList[globalProcIndex];
+                ProcedureNode procNode = thisClass.ProcTable.Procedures[globalProcIndex];
 
                 IdentifierNode identNode = (binaryExpr.LeftNode as IdentifierNode);
                 string identName = identNode.Value;

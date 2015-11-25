@@ -606,14 +606,14 @@ namespace ProtoCore.Lang
                     procIndex = currentClassNode.ProcTable.IndexOfFirst(functionName);
                     if (Constants.kInvalidIndex != procIndex)
                     {
-                        procNode = currentClassNode.ProcTable.procList[procIndex];
+                        procNode = currentClassNode.ProcTable.Procedures[procIndex];
                         break;
                     }
                 }
             }
             else
             {
-                procNode = classNode.ProcTable.procList[procIndex];
+                procNode = classNode.ProcTable.Procedures[procIndex];
             }
 
             // If the function still isn't found, then it may be a function 
@@ -635,7 +635,7 @@ namespace ProtoCore.Lang
                             // Functions pointed to are all in the global scope
                             thisObjectType = ProtoCore.DSASM.Constants.kGlobalScope;
                             procIndex = (int)svFunctionPtr.opdata;
-                            procNode = runtime.exe.procedureTable[0].procList[procIndex];
+                            procNode = runtime.exe.procedureTable[0].Procedures[procIndex];
                             functionName = procNode.Name;
                         }
                     }

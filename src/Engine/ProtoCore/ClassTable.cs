@@ -211,7 +211,7 @@ namespace ProtoCore.DSASM
             {
                 int myClassIndex = TypeSystem.classTable.IndexOf(Name);
                 functionHostClassIndex = myClassIndex;
-                procNode = ProcTable.procList[functionIndex];
+                procNode = ProcTable.Procedures[functionIndex];
 
                 if (classScope == ProtoCore.DSASM.Constants.kInvalidIndex)
                 {
@@ -369,7 +369,7 @@ namespace ProtoCore.DSASM
             {
                 return null;
             }
-            return ProcTable.procList[index];
+            return ProcTable.Procedures[index];
         }
 
         public bool IsMemberVariable(SymbolNode symbol)
@@ -394,7 +394,7 @@ namespace ProtoCore.DSASM
                 }
                 else
                 {
-                    foreach (ProcedureNode procNode in ProcTable.procList)
+                    foreach (ProcedureNode procNode in ProcTable.Procedures)
                     {
                         if (CoreUtils.IsDisposeMethod(procNode.Name) && procNode.ArgumentInfos.Count == 0)
                         {

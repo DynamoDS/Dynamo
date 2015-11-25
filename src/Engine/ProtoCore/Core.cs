@@ -413,7 +413,7 @@ namespace ProtoCore
                 if (Constants.kInvalidIndex == index)
                     continue;
 
-                procNode = block.procedureTable.procList[index];
+                procNode = block.procedureTable.Procedures[index];
 
                 block.procedureTable.SetInactive(index);
 
@@ -799,7 +799,7 @@ namespace ProtoCore
 
                 if (function != Constants.kInvalidIndex &&
                     searchBlock.procedureTable != null &&
-                    searchBlock.procedureTable.procList.Count > function &&   // Note: This check assumes we can not define functions inside a fucntion 
+                    searchBlock.procedureTable.Procedures.Count > function &&   // Note: This check assumes we can not define functions inside a fucntion 
                     symbolIndex == Constants.kInvalidIndex)
                     symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, Constants.kInvalidIndex);
             }
@@ -833,7 +833,7 @@ namespace ProtoCore
                     // we need to search twice only when we are searching directly inside the function, 
                     if (function != Constants.kInvalidIndex &&
                         searchBlock.procedureTable != null &&
-                        searchBlock.procedureTable.procList.Count > function && // Note: This check assumes we can not define functions inside a fucntion 
+                        searchBlock.procedureTable.Procedures.Count > function && // Note: This check assumes we can not define functions inside a fucntion 
                         symbolIndex == Constants.kInvalidIndex)
 
                         symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, Constants.kInvalidIndex);
@@ -887,8 +887,8 @@ namespace ProtoCore
         {
             if (CodeBlockType.kLanguage == codeBlock.blockType || CodeBlockType.kFunction == codeBlock.blockType)
             {
-                Validity.Assert(codeBlock.procedureTable.runtimeIndex < RuntimeTableIndex);
-                procTable[codeBlock.procedureTable.runtimeIndex] = codeBlock.procedureTable;
+                Validity.Assert(codeBlock.procedureTable.RuntimeIndex < RuntimeTableIndex);
+                procTable[codeBlock.procedureTable.RuntimeIndex] = codeBlock.procedureTable;
             }
 
             foreach (CodeBlock child in codeBlock.children)

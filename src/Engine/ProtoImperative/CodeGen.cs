@@ -1147,7 +1147,7 @@ namespace ProtoImperative
                 }
 
                 if (globalProcIndex != ProtoCore.DSASM.Constants.kInvalidIndex && core.ProcNode == null)
-                    core.ProcNode = codeBlock.procedureTable.procList[globalProcIndex];
+                    core.ProcNode = codeBlock.procedureTable.Procedures[globalProcIndex];
 
                 core.Compilers[langblock.codeblock.language].Compile(out blockId, codeBlock, langblock.codeblock, context, codeBlock.EventSink, langblock.CodeBlockNode);
 
@@ -1286,7 +1286,7 @@ namespace ProtoImperative
 
                 // Get the exisitng procedure that was added on the previous pass
                 globalProcIndex = codeBlock.procedureTable.IndexOfExact(funcDef.Name, argList, false);
-                localProcedure = codeBlock.procedureTable.procList[globalProcIndex];
+                localProcedure = codeBlock.procedureTable.Procedures[globalProcIndex];
 
 
                 Validity.Assert(null != localProcedure);

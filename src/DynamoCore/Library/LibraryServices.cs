@@ -433,7 +433,7 @@ namespace Dynamo.Engine
                 var functionTable = LibraryManagementCore.CodeBlockList[0].procedureTable;
                 var classTable = LibraryManagementCore.ClassTable;
 
-                int functionNumber = functionTable.procList.Count;
+                int functionNumber = functionTable.Procedures.Count;
                 int classNumber = classTable.ClassNodes.Count;
 
                 CompilerUtils.TryLoadAssemblyIntoCore(LibraryManagementCore, library);
@@ -461,7 +461,7 @@ namespace Dynamo.Engine
                     ImportClass(library, classNode);
                 }
 
-                var loadedFunctions = functionTable.procList.Skip(functionNumber);
+                var loadedFunctions = functionTable.Procedures.Skip(functionNumber);
                 foreach (var globalFunction in loadedFunctions)
                 {
                     ImportProcedure(library, globalFunction);
@@ -649,7 +649,7 @@ namespace Dynamo.Engine
 
             var builtins = LibraryManagementCore.CodeBlockList[0]
                                                 .procedureTable
-                                                .procList
+                                                .Procedures
                                                 .Where(p =>
                     !p.Name.StartsWith(Constants.kInternalNamePrefix) &&
                     !p.Name.Equals("Break"));
@@ -915,7 +915,7 @@ namespace Dynamo.Engine
 
         private void ImportClass(string library, ClassNode classNode)
         {
-            foreach (ProcedureNode proc in classNode.ProcTable.procList)
+            foreach (ProcedureNode proc in classNode.ProcTable.Procedures)
                 ImportProcedure(library, proc);
         }
 

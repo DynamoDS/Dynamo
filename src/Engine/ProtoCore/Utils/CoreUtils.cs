@@ -776,7 +776,7 @@ namespace ProtoCore.Utils
                 int procIndex = searchBlock.procedureTable.IndexOf(name, argTypeList);
                 if (Constants.kInvalidIndex != procIndex)
                 {
-                    return searchBlock.procedureTable.procList[procIndex];
+                    return searchBlock.procedureTable.Procedures[procIndex];
                 }
                 searchBlock = searchBlock.parent;
             }
