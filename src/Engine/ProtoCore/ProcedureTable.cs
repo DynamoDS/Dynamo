@@ -34,7 +34,7 @@ namespace ProtoCore.DSASM
         public ExternalAttributes Attributes;
     }
 
-    [System.Diagnostics.DebuggerDisplay("{name}, procId={procId}, classScope={classScope}")]
+    [System.Diagnostics.DebuggerDisplay("{Name}, ID={ID}, ClassID={ClassID}")]
     public class ProcedureNode
     {
         /// <summary>
@@ -65,6 +65,18 @@ namespace ProtoCore.DSASM
         {
             get; set;
         }
+
+        /// <summary>
+        /// Number of non default argument
+        /// </summary>
+        public int NonDefaultArgumentCount
+        {
+            get
+            {
+                return ArgumentTypes.Count - ArgumentInfos.Count(a => a.IsDefault);
+            }
+        }
+
         /// <summary>
         /// List of arguments' information (default value) 
         /// </summary>
@@ -262,9 +274,29 @@ namespace ProtoCore.DSASM
 
     public class ProcedureTable
     {
-        public int RuntimeIndex { get; private set; }
-        public List<ProcedureNode> Procedures { get; set; }
+        /// <summary>
+        /// The index of this procedure table in the executable's procedure
+        /// table list.
+        /// </summary>
+        public int RuntimeIndex
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// All procedure nodes defined in this procedure table.
+        /// </summary>
+        public List<ProcedureNode> Procedures
+        {
+            get;
+            private set;
+        }
         
+        /// <summary>
+        /// Create an empty procedure table.
+        /// </summary>
+        /// <param name="runtimeindex"></param>
         public ProcedureTable(int runtimeindex)
         {
             RuntimeIndex = runtimeindex;
@@ -303,7 +335,7 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Return all functions whose names are 'name'
+        /// Return function with specified name. 
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
@@ -313,24 +345,37 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Return all functions whose names are 'name' and the number of
-        /// parameters are 'argumentNumber'
+        /// Return all functions with specified name and the number of argument.
+        ///
+        /// It also returns function that has default arguments but the total 
+        /// parameter number is larger that the specified argument number.
         /// </summary>
         /// <param name="name"></param>
         /// <param name="argumentNumber"></param>
         /// <returns></returns>
         public IEnumerable<ProcedureNode> GetFunctionsByNameAndArgumentNumber(string name, int argumentNumber)
         {
-            return Procedures.Where(p =>
+            return GetFunctionsByName(name).Where(p =>
             {
-                int defaultArgumentNumber = p.ArgumentInfos.Count(X => X.DefaultExpression != null);
+                int defaultArgumentNumber = p.ArgumentInfos.Count(x => x.IsDefault);
                 int parameterNumber = p.ArgumentTypes.Count;
-                return p.Name.Equals(name) &&
-                       (argumentNumber <= parameterNumber) &&
+                return (argumentNumber <= parameterNumber) &&
                        (argumentNumber - parameterNumber <= defaultArgumentNumber);
             }).OrderBy(p => p.ArgumentTypes.Count - argumentNumber);
         }
-        
+
+        /// <summary>
+        /// Return function with specified signature.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public ProcedureNode GetFunctionBySignature(string name, List<Type> args)
+        {
+            return Procedures.FirstOrDefault(p => p.Matches(name, args));
+        }
+
+        // TODO: To be deleted.
         public int IndexOf(string name, List<ProtoCore.Type> argTypeList, bool isStaticOrConstructor = false)
         {
             int currentProcedure = ProtoCore.DSASM.Constants.kInvalidIndex;
@@ -382,11 +427,6 @@ namespace ProtoCore.DSASM
                 }
             }
             return currentProcedure;
-        }
-
-        public ProcedureNode GetFunctionBySignature(string name, List<ProtoCore.Type> args)
-        {
-            return Procedures.FirstOrDefault(p => p.Matches(name, args));
         }
     }
 }
