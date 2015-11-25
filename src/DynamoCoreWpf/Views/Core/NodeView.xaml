@@ -8,6 +8,7 @@
              xmlns:dynamo1="clr-namespace:Dynamo.UI;assembly=DynamoCore"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
+             xmlns:controls="clr-namespace:Dynamo.Controls"
              Height="Auto"
              Width="Auto"
              Name="topControl"
@@ -17,8 +18,17 @@
              MouseLeftButtonDown="topControl_MouseLeftButtonDown"
              MouseRightButtonDown="topControl_MouseRightButtonDown"
              Canvas.Left="{Binding Left, Mode=TwoWay}"
-             Canvas.Top="{Binding Top, Mode=TwoWay}"
-             Background="Transparent" Opacity="0.3">
+             Canvas.Top="{Binding Top, Mode=TwoWay}">
+    <UserControl.Resources>
+        <Style TargetType="{x:Type controls:NodeView}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsFrozen}" Value="True">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="Opacity" Value ="0.3"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     <Grid Name="grid"
           x:FieldModifier="public"
           HorizontalAlignment="Left">
