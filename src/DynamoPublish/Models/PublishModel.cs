@@ -16,6 +16,7 @@ using Reach.Exceptions;
 using Reach.Upload;
 using RestSharp;
 using System.Windows;
+using Newtonsoft.Json;
 
 namespace Dynamo.Publish.Models
 {
@@ -224,7 +225,8 @@ namespace Dynamo.Publish.Models
             var appSettings = (AppSettingsSection)config.GetSection("appSettings");
 
             // set the static fields
-            serverUrl = appSettings.Settings["ServerUrl"].Value;
+            //serverUrl = appSettings.Settings["ServerUrl"].Value;
+            serverUrl = "http://127.0.0.1:3000";
             page = appSettings.Settings["Page"].Value;
             managerURL = appSettings.Settings["ManagerPage"].Value;
         }
@@ -304,44 +306,56 @@ namespace Dynamo.Publish.Models
             State = UploadState.Uploading;
 
             IReachHttpResponse result = null;
+            IEnumerable<Workspace> wss = null;
 
             try
             {
-                var customizerExists = await this.CheckCustomizer(workspaceProperties.Name);
-
-                if (customizerExists) // there is a customizer with specified name
-                {
-                    MessageBoxResult decision =
-                        MessageBox.Show("A customizer by this name already exists, do you want to overwrite it?",
-                            "Confirmation",
-                            MessageBoxButton.YesNo, MessageBoxImage.Question);
-                    if (decision == MessageBoxResult.Yes)
-                    {
-                        result = await this.Send(workspace, workspaceProperties);
-                    }
-                }
-                else
-                {
-                    result = await this.Send(workspace, workspaceProperties);
-                }
+                wss = await this.GetWorkspaces(workspaceProperties.Name);
             }
-            catch (InvalidNodesException ex)
-            {
-                InvalidNodeNames = ex.InvalidNodeNames;
-                Error = UploadErrorType.InvalidNodes;
-                return;
-            }
-            catch (CheckCustomizerException)
+            catch (LookupWorkspacesException)
             {
                 Error = UploadErrorType.UnknownServerError;
                 return;
             }
 
-            if (result == null)
+            var customizerExists = false;
+            foreach (var ws in wss)
+            {
+                if (ws.Name == workspaceProperties.Name)
+                {
+                    customizerExists = true;
+                    break;
+                }
+            }
+            var publishWorkspace = true;
+            if (customizerExists)
+            {
+                MessageBoxResult decision =
+                        MessageBox.Show("A customizer by this name already exists, do you want to overwrite it?",
+                            "Confirmation",
+                            MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (decision == MessageBoxResult.No)
+                {
+                    publishWorkspace = false;
+                }
+            }
+
+            if (!publishWorkspace)
             {
                 // user doesn't want to override existing customizer
                 State = UploadState.Uninitialized;
                 Error = UploadErrorType.None;
+                return;
+            }
+
+            try
+            {
+                result = await this.Send(workspace, workspaceProperties);
+            }
+            catch (InvalidNodesException ex)
+            {
+                InvalidNodeNames = ex.InvalidNodeNames;
+                Error = UploadErrorType.InvalidNodes;
                 return;
             }
 
@@ -387,14 +401,14 @@ namespace Dynamo.Publish.Models
                     workspaceProperties);
         }
 
-        private Task<bool> CheckCustomizer(string name)
+        private Task<IEnumerable<Workspace>> GetWorkspaces(string name)
         {
             if (reachClient == null)
             {
                 reachClient = new WorkspaceStorageClient(authenticationProvider, serverUrl);
             }
 
-            return reachClient.CheckCustomizer(name);
+            return reachClient.LookupWorkspaces(name);
         }
 
         internal void ClearState()
@@ -402,5 +416,16 @@ namespace Dynamo.Publish.Models
             State = UploadState.Uninitialized;
             Error = UploadErrorType.None;
         }
+    }
+
+    sealed class CheckCustomizerResponse
+    {
+        public IEnumerable<WorkspaceInfo> Workspaces;
+    }
+
+    sealed class WorkspaceInfo
+    {
+        public string Name;
+        public bool IsCustomizer;
     }
 }
