@@ -1003,6 +1003,14 @@ namespace Dynamo.Tests
             RunModel(dynFilePath);
             AssertPreviewValue("ea031ca8-9c49-4d14-a702-54022cb60e0f", 5);
         }
+
+        [Test]
+        public void TestCallingStaticMethod()
+        {
+            var dynFilePath = Path.Combine(TestDirectory, @"core\dsevaluation\TestCallingStaticMethod.dyn");
+            RunModel(dynFilePath);
+            AssertPreviewValue("dc61bae7-a661-477f-a438-ace939d958f4", 5.0);
+        }
     }
 
     [Category("DSCustomNode")]
