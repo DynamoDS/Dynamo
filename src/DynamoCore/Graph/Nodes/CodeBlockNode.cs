@@ -877,6 +877,7 @@ namespace Dynamo.Graph.Nodes
             {
                 var node = astNode as ArrayNode;
                 MapIdentifiers(node.Expr);
+                MapIdentifiers(node.Type);
             }
             else if (astNode is ExprListNode)
             {
