@@ -110,6 +110,7 @@ namespace Dynamo.Scheduler
             previewIdentifierName = initParams.PreviewIdentifierName;
 
             nodeGuid = nodeModel.GUID;
+            nodeModel.WasInvolvedInExecution = false;
             return true;
         }
 
