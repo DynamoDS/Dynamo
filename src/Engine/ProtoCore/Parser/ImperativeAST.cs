@@ -69,6 +69,11 @@ namespace ProtoCore.AST.ImperativeAST
             return eqLangBlockProperties && eqLangblockContents && eqAttribute;
         }
 
+        public override int GetHashCode()
+        {
+            return Attributes == null ? base.GetHashCode() : Attributes.GetHashCode();
+        }
+
         public override string ToString()
         {
             StringBuilder buf = new StringBuilder();
@@ -138,6 +143,10 @@ namespace ProtoCore.AST.ImperativeAST
 
             return arrayDimEqual;
         }
+        public override int GetHashCode()
+        {
+            return ArrayDimensions == null ? base.GetHashCode() : ArrayDimensions.GetHashCode();
+        }
 
         public override string ToString()
         {
@@ -172,6 +181,13 @@ namespace ProtoCore.AST.ImperativeAST
 
             return otherNode != null
                 && EqualityComparer<ImperativeNode>.Default.Equals(Expression, otherNode.Expression);
+        }
+        public override int GetHashCode()
+        {
+            var ExpressionHashCode =
+                (Expression == null ? base.GetHashCode() : Expression.GetHashCode());
+
+            return ExpressionHashCode;
         }
 
         public override void Accept(ImperativeAstVisitor visitor)
@@ -231,6 +247,11 @@ namespace ProtoCore.AST.ImperativeAST
                     base.Equals(otherNode);
         }
 
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
         public override string ToString()
         {
             return Value.Replace("%", string.Empty) + base.ToString();
@@ -280,6 +301,11 @@ namespace ProtoCore.AST.ImperativeAST
             var otherNode = other as IntNode;
             return null != otherNode && Value.Equals(otherNode.Value);
         }
+        public override int GetHashCode()
+        {
+            var valueHashCode = Convert.ToInt32(Value);
+            return valueHashCode;
+        }
 
         public override string ToString()
         {
@@ -321,6 +347,12 @@ namespace ProtoCore.AST.ImperativeAST
             return Value.Equals(otherNode.Value);
         }
 
+        public override int GetHashCode()
+        {
+            var valueHashCode = Convert.ToInt32(Value);
+            return valueHashCode;
+        }
+
         public override string ToString()
         {
             return Value.ToString(CultureInfo.InvariantCulture);
@@ -360,6 +392,14 @@ namespace ProtoCore.AST.ImperativeAST
             return Value == otherNode.Value;
         }
 
+        public override int GetHashCode()
+        {
+            var valueHashCode =
+                (Value ? 10357 : 10463);
+
+            return valueHashCode;
+        }
+
         public override string ToString()
         {
             return Value.ToString();
@@ -395,6 +435,14 @@ namespace ProtoCore.AST.ImperativeAST
                 return false;
 
             return EqualityComparer<string>.Default.Equals(Value, otherNode.Value);
+        }
+
+        public override int GetHashCode()
+        {
+            var valueHashCode =
+                (Value == null ? base.GetHashCode() : Value.GetHashCode());
+
+            return valueHashCode;
         }
 
         public override string ToString()
@@ -435,6 +483,14 @@ namespace ProtoCore.AST.ImperativeAST
             return Value.Equals(otherNode.Value);
         }
 
+        public override int GetHashCode()
+        {
+            var valueHashCode =
+                (Value == null ? base.GetHashCode() : Value.GetHashCode());
+
+            return valueHashCode;
+        }
+
         public override string ToString()
         {
             return "\"" + Value + "\"";
@@ -461,6 +517,11 @@ namespace ProtoCore.AST.ImperativeAST
         public override bool Equals(object other)
         {
             return other is NullNode;
+        }
+
+        public override int GetHashCode()
+        {
+            return 10099;
         }
 
         public override void Accept(ImperativeAstVisitor visitor)
@@ -512,6 +573,16 @@ namespace ProtoCore.AST.ImperativeAST
 
             return EqualityComparer<ImperativeNode>.Default.Equals(Expr, otherNode.Expr) &&
                    EqualityComparer<ImperativeNode>.Default.Equals(Type, otherNode.Type);
+        }
+
+        public override int GetHashCode()
+        {
+            var exprHashCode =
+                (Expr == null ? base.GetHashCode() : Expr.GetHashCode());
+            var typeHashCode =
+                (Type == null ? base.GetHashCode() : Type.GetHashCode());
+
+            return exprHashCode ^ typeHashCode;
         }
 
         public override string ToString()
@@ -581,6 +652,16 @@ namespace ProtoCore.AST.ImperativeAST
             return EqualityComparer<ImperativeNode>.Default.Equals(Function, otherNode.Function) &&
                    FormalArguments.SequenceEqual(otherNode.FormalArguments) &&
                    base.Equals(otherNode);
+        }
+
+        public override int GetHashCode()
+        {
+            var functionHashCode =
+                (Function == null ? base.GetHashCode() : Function.GetHashCode());
+            var formalArgumentsHashCode =
+                (FormalArguments == null ? base.GetHashCode() : FormalArguments.GetHashCode());
+
+            return functionHashCode ^ formalArgumentsHashCode;
         }
 
         public override string ToString()
@@ -674,6 +755,15 @@ namespace ProtoCore.AST.ImperativeAST
                    EqualityComparer<ImperativeNode>.Default.Equals(NameNode, otherNode.NameNode);
         }
 
+        public override int GetHashCode()
+        {
+            var argumentTypeHashCode = ArgumentType.GetHashCode();
+            var nameNodeHashCode =
+                (NameNode == null ? base.GetHashCode() : NameNode.GetHashCode());
+
+            return argumentTypeHashCode ^ nameNodeHashCode;
+        }
+
         public override string ToString()
         {
             StringBuilder buf = new StringBuilder();
@@ -726,6 +816,14 @@ namespace ProtoCore.AST.ImperativeAST
             return null != otherNode && Arguments.SequenceEqual(otherNode.Arguments);
         }
 
+        public override int GetHashCode()
+        {
+            var argumentsHashCode =
+                (Arguments == null ? base.GetHashCode() : Arguments.GetHashCode());
+
+            return argumentsHashCode;
+        }
+
         public override string ToString()
         {
             StringBuilder buf = new StringBuilder();
@@ -774,6 +872,14 @@ namespace ProtoCore.AST.ImperativeAST
         {
             var otherNode = other as ExprListNode;
             return null != otherNode && Exprs.SequenceEqual(otherNode.Exprs);
+        }
+
+        public override int GetHashCode()
+        {
+            var listHashCode =
+                (Exprs == null ? base.GetHashCode() : Exprs.GetHashCode());
+
+            return listHashCode;
         }
 
         public override string ToString()
@@ -832,6 +938,14 @@ namespace ProtoCore.AST.ImperativeAST
             return null != otherNode && Body.SequenceEqual(otherNode.Body);
         }
 
+        public override int GetHashCode()
+        {
+            var bodyHashCode =
+                (Body == null ? base.GetHashCode() : Body.GetHashCode());
+
+            return bodyHashCode;
+        }
+
         public override string ToString()
         {
             StringBuilder buf = new StringBuilder();
@@ -879,6 +993,18 @@ namespace ProtoCore.AST.ImperativeAST
             return equalSignature && equalBody;
         }
 
+        public override int GetHashCode()
+        {
+            var signatureHashCode =
+                (Signature == null ? base.GetHashCode() : Signature.GetHashCode());
+            var returnTypeHashCode = ReturnType.GetHashCode();
+            var attributesHashCode =
+                (Attributes == null ? base.GetHashCode() : Attributes.GetHashCode());
+
+            return signatureHashCode ^
+                returnTypeHashCode ^ attributesHashCode;
+        }
+
         public override void Accept(ImperativeAstVisitor visitor)
         {
             visitor.VisitFunctionDefinitionNode(this);
@@ -908,6 +1034,18 @@ namespace ProtoCore.AST.ImperativeAST
             return ConditionExpression.Equals(otherNode.ConditionExpression) &&
                    TrueExpression.Equals(otherNode.TrueExpression) &&
                    FalseExpression.Equals(otherNode.FalseExpression);
+        }
+
+        public override int GetHashCode()
+        {
+            var conditionExpressionHashCode =
+                (ConditionExpression == null ? base.GetHashCode() : ConditionExpression.GetHashCode());
+            var trueExpressionHashCode =
+                (TrueExpression == null ? base.GetHashCode() : TrueExpression.GetHashCode());
+            var falseExpressionHashCode =
+                (FalseExpression == null ? base.GetHashCode() : FalseExpression.GetHashCode());
+
+            return conditionExpressionHashCode ^ trueExpressionHashCode ^ falseExpressionHashCode;
         }
 
         public override string ToString()
@@ -973,6 +1111,17 @@ namespace ProtoCore.AST.ImperativeAST
             return LeftNode.Equals(otherNode.LeftNode) &&
                    Optr.Equals(otherNode.Optr) &&
                    RightNode.Equals(otherNode.RightNode);
+        }
+
+        public override int GetHashCode()
+        {
+            var leftNodeHashCode =
+                (LeftNode == null ? base.GetHashCode() : LeftNode.GetHashCode());
+            var optrHashCode = Optr.GetHashCode();
+            var rightNodeHashCode =
+                (RightNode == null ? base.GetHashCode() : RightNode.GetHashCode());
+
+            return leftNodeHashCode ^ optrHashCode ^ rightNodeHashCode;
         }
 
         public override string ToString()
@@ -1050,6 +1199,11 @@ namespace ProtoCore.AST.ImperativeAST
             return Expr.Equals(otherNode.Expr)
                     && otherNode != null && Body.SequenceEqual(otherNode.Body)
                     && ElseIfBodyPosition.Equals(otherNode.ElseIfBodyPosition);
+        }
+
+        public override int GetHashCode()
+        {
+            return Expr.GetHashCode();
         }
 
         public override string ToString()
@@ -1178,6 +1332,11 @@ namespace ProtoCore.AST.ImperativeAST
                     && ElseBody != null && ElseBody.SequenceEqual(otherNode.ElseBody);
         }
 
+        public override int GetHashCode()
+        {
+            return IfExprNode.GetHashCode();
+        }
+
         public override string ToString()
         {
             StringBuilder buf = new StringBuilder();
@@ -1270,6 +1429,11 @@ namespace ProtoCore.AST.ImperativeAST
             return Expr.Equals(otherNode.Expr) && otherNode != null && Body.SequenceEqual(otherNode.Body);
         }
 
+        public override int GetHashCode()
+        {
+            return Expr.GetHashCode();
+        }
+
         public override string ToString()
         {
             StringBuilder buf = new StringBuilder();
@@ -1335,6 +1499,15 @@ namespace ProtoCore.AST.ImperativeAST
                    Expression.Equals(otherNode.Expression);
         }
 
+        public override int GetHashCode()
+        {
+            var operatorHashCode = Operator.GetHashCode();
+            var expressionHashCode =
+                (Expression == null ? base.GetHashCode() : Expression.GetHashCode());
+
+            return operatorHashCode ^ expressionHashCode;
+        }
+
         public override void Accept(ImperativeAstVisitor visitor)
         {
             visitor.VisitUnaryExpressionNode(this);
@@ -1381,6 +1554,20 @@ namespace ProtoCore.AST.ImperativeAST
                    StepOperator.Equals(otherNode.StepOperator) &&
                    ((Step == otherNode.Step) || (Step != null && Step.Equals(otherNode.Step))) &&
                    HasRangeAmountOperator == otherNode.HasRangeAmountOperator;
+        }
+
+        public override int GetHashCode()
+        {
+            var fromNodeHashCode =
+                (From == null ? base.GetHashCode() : From.GetHashCode());
+            var toNodeHashCode =
+                (To == null ? base.GetHashCode() : To.GetHashCode());
+            var stepNodeHashCode =
+                (Step == null ? base.GetHashCode() : Step.GetHashCode());
+            var hasRangeAmountOperatorHashCode = HasRangeAmountOperator ? 1 : 0;
+
+            return fromNodeHashCode ^ toNodeHashCode ^
+                stepNodeHashCode ^ hasRangeAmountOperatorHashCode;
         }
 
         // Check if this can be unified associative range expr 
@@ -1478,6 +1665,11 @@ namespace ProtoCore.AST.ImperativeAST
                     && otherNode != null && Body.SequenceEqual(otherNode.Body);
         }
 
+        public override int GetHashCode()
+        {
+            return LoopVariable.GetHashCode() ^ Expression.GetHashCode();
+        }
+
         public override string ToString()
         {
             StringBuilder buf = new StringBuilder();
@@ -1547,6 +1739,17 @@ namespace ProtoCore.AST.ImperativeAST
                    Optr.Equals(otherNode.Optr);
         }
 
+        public override int GetHashCode()
+        {
+            var LeftNodeHashCode =
+                (LeftNode == null ? base.GetHashCode() : LeftNode.GetHashCode());
+            var RightNodeHashCode =
+                (RightNode == null ? base.GetHashCode() : RightNode.GetHashCode());
+            var OptrHashCode = Optr.GetHashCode();
+
+            return LeftNodeHashCode ^ RightNodeHashCode ^ OptrHashCode;
+        }
+
         public override string ToString()
         {
             return LeftNode.ToString() + "." + RightNode.ToString();
@@ -1573,11 +1776,6 @@ namespace ProtoCore.AST.ImperativeAST
             return buf.ToString();
         }
 
-        public override bool Equals(object other)
-        {
-            return other is BreakNode;
-        }
-
         public override void Accept(ImperativeAstVisitor visitor)
         {
             visitor.VisitBreakNode(this);
@@ -1597,11 +1795,6 @@ namespace ProtoCore.AST.ImperativeAST
             buf.Append(ProtoCore.DSDefinitions.Keyword.Continue);
             buf.Append(";");
             return buf.ToString();
-        }
-
-        public override bool Equals(object other)
-        {
-            return other is ContinueNode;
         }
 
         public override void Accept(ImperativeAstVisitor visitor)
