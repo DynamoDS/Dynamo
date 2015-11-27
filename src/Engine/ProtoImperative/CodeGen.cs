@@ -3153,10 +3153,6 @@ namespace ProtoImperative
             {
                 EmitLanguageBlockNode(node, ref inferedType, graphNode);
             }
-            else if (node is ConstructorDefinitionNode)
-            {
-                EmitConstructorDefinitionNode(node);
-            }
             else if (node is FunctionDefinitionNode)
             {
                 EmitFunctionDefinitionNode(node, ref inferedType);
