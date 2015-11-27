@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using ProtoCore.AST.ImperativeAST;
 using ProtoCore.AST;
+using System.Collections.Generic;
 
 namespace ProtoCore.SyntaxAnalysis
 {
@@ -372,6 +369,271 @@ namespace ProtoCore.SyntaxAnalysis
         public virtual TResult VisitIfStmtPositionNode(IfStmtPositionNode node)
         {
             return DefaultVisit(node);
+        }
+    }
+
+    public class ImperativeAstReplacer : ImperativeAstVisitor<ImperativeNode>
+    {
+        public override ImperativeNode DefaultVisit(ImperativeNode node)
+        {
+            return node;
+        }
+
+        public override ImperativeNode VisitLanguageBlockNode(LanguageBlockNode node)
+        {
+            var cbn = node.CodeBlockNode as CodeBlockNode;
+            if (cbn == null)
+            {
+                return base.VisitLanguageBlockNode(node);
+            }
+
+            var nodeList = cbn.Body.Select(astNode => astNode.Accept(this)).ToList();
+            cbn.Body = nodeList;
+            return node;
+        }
+
+        public override ImperativeNode VisitGroupExpressionNode(GroupExpressionNode node)
+        {
+            var newExpression = node.Expression.Accept(this);
+
+            if (node.Expression != newExpression)
+                node.Expression = newExpression;
+
+            return node;
+        }
+
+        public override ImperativeNode VisitIdentifierNode(IdentifierNode node)
+        {
+            if (node.ArrayDimensions != null)
+            {
+                var newArrayDimensions = node.ArrayDimensions.Accept(this);
+                if (node.ArrayDimensions != newArrayDimensions)
+                    node.ArrayDimensions = newArrayDimensions as ArrayNode;
+            }
+
+            return node;
+        }
+
+        public override ImperativeNode VisitTypedIdentifierNode(TypedIdentifierNode node)
+        {
+            return VisitIdentifierNode(node);
+        }
+
+        public override ImperativeNode VisitIdentifierListNode(IdentifierListNode node)
+        {
+            var newLeftNode = node.LeftNode.Accept(this);
+            if (newLeftNode != node.LeftNode)
+                node.LeftNode = newLeftNode;
+
+            var newRightNode = node.RightNode.Accept(this);
+            if (newRightNode != node.RightNode)
+                node.RightNode = newRightNode;
+
+            return node;
+        }
+
+        public override ImperativeNode VisitFunctionCallNode(FunctionCallNode node)
+        {
+            List<ImperativeNode> arguments = new List<ImperativeNode>();
+            for (int i = 0; i < node.FormalArguments.Count; ++i)
+            {
+                var newArgument = node.FormalArguments[i].Accept(this);
+                if (node.FormalArguments[i] != newArgument)
+                    node.FormalArguments[i] = newArgument;
+            }
+
+            if (node.ArrayDimensions != null)
+            {
+                var newArrayDimensions = node.ArrayDimensions.Accept(this);
+                if (node.ArrayDimensions != newArrayDimensions)
+                    node.ArrayDimensions = newArrayDimensions as ArrayNode;
+            }
+
+            return node;
+        }
+
+        public override ImperativeNode VisitFunctionDefinitionNode(FunctionDefinitionNode node)
+        {
+            var nodeList = node.FunctionBody.Body.Select(astNode => astNode.Accept(this)).ToList();
+            node.FunctionBody.Body = nodeList;
+            return node;
+        }
+
+        public override ImperativeNode VisitBinaryExpressionNode(BinaryExpressionNode node)
+        {
+            var newLeftNode = node.LeftNode.Accept(this);
+            if (node.LeftNode != newLeftNode)
+                node.LeftNode = newLeftNode;
+
+            var newRightNode = node.RightNode.Accept(this);
+            if (node.RightNode != newRightNode)
+                node.RightNode = newRightNode;
+
+            return node;
+        }
+
+        public override ImperativeNode VisitUnaryExpressionNode(UnaryExpressionNode node)
+        {
+            var newExpression = node.Expression.Accept(this);
+            if (node.Expression != newExpression)
+                node.Expression = newExpression;
+
+            return node;
+        }
+
+        public override ImperativeNode VisitRangeExprNode(RangeExprNode node)
+        {
+            var newFromNode = node.From.Accept(this);
+            if (node.From != newFromNode)
+                node.From = newFromNode;
+
+            var newToNode = node.To.Accept(this);
+            if (node.To != newToNode)
+                node.To = newToNode;
+
+            if (node.Step != null)
+            {
+                var newStepNode = node.Step.Accept(this);
+                if (node.Step != newStepNode)
+                    node.Step = newStepNode;
+            }
+
+            return node;
+        }
+
+        public override ImperativeNode VisitExprListNode(ExprListNode node)
+        {
+            List<ImperativeNode> items = new List<ImperativeNode>();
+            for (int i = 0; i < node.Exprs.Count; ++i)
+            {
+                var newItem = node.Exprs[i].Accept(this);
+                if (node.Exprs[i] != newItem)
+                    node.Exprs[i] = newItem;
+            }
+
+            if (node.ArrayDimensions != null)
+            {
+                var newArrayDimensions = node.ArrayDimensions.Accept(this);
+                if (node.ArrayDimensions != newArrayDimensions)
+                    node.ArrayDimensions = newArrayDimensions as ArrayNode;
+            }
+
+            return node;
+        }
+
+        public override ImperativeNode VisitArrayNode(ArrayNode node)
+        {
+            var newExpr = node.Expr.Accept(this);
+            if (node.Expr != newExpr)
+                node.Expr = newExpr;
+
+            if (node.Type != null)
+            {
+                var newType = node.Type.Accept(this);
+                if (node.Type != newType)
+                    node.Type = newType;
+            }
+
+            return node;
+        }
+
+        public override ImperativeNode VisitInlineConditionalNode(InlineConditionalNode node)
+        {
+            var newCondition = node.ConditionExpression.Accept(this);
+            if (node.ConditionExpression != newCondition)
+                node.ConditionExpression = newCondition;
+
+            var newTrueExpr = node.TrueExpression.Accept(this);
+            if (node.TrueExpression != newTrueExpr)
+                node.TrueExpression = newTrueExpr;
+
+            var newFalseExpr = node.FalseExpression.Accept(this);
+            if (node.FalseExpression != newFalseExpr)
+                node.FalseExpression = newFalseExpr;
+
+            return node;
+        }
+
+        public override ImperativeNode VisitIfStatementNode(IfStmtNode node)
+        {
+            var newIfExpr = node.IfExprNode.Accept(this);
+            if (node.IfExprNode != newIfExpr)
+                node.IfExprNode = newIfExpr;
+
+            for (int i = 0; i < node.IfBody.Count; ++i)
+            {
+                var newItem = node.IfBody[i].Accept(this);
+                if (node.IfBody[i] != newItem)
+                    node.IfBody[i] = newItem;
+            }
+
+            for (int i = 0; i < node.ElseIfList.Count; ++i)
+            {
+                var newElseIf = node.ElseIfList[i].Accept(this);
+                if (node.ElseIfList[i] != newElseIf)
+                    node.ElseIfList[i] = newElseIf as ElseIfBlock;
+            }
+
+            for (int i = 0; i < node.ElseBody.Count; ++i)
+            {
+                var newElseIf = node.ElseBody[i].Accept(this);
+                if (node.ElseBody[i] != newElseIf)
+                    node.ElseBody[i] = newElseIf;
+            }
+
+            return node;
+        }
+
+        public override ImperativeNode VisitElseIfNode(ElseIfBlock node)
+        {
+            var newExpr = node.Expr.Accept(this);
+            if (node.Expr != newExpr)
+                node.Expr = newExpr;
+
+            for (int i = 0; i < node.Body.Count; ++i)
+            {
+                var newItem = node.Body[i].Accept(this);
+                if (node.Body[i] != newItem)
+                    node.Body[i] = newItem;
+            }
+
+            return node;
+        }
+
+        public override ImperativeNode VisitWhileStatementNode(WhileStmtNode node)
+        {
+            var newExpr = node.Expr.Accept(this);
+            if (node.Expr != newExpr)
+                node.Expr = newExpr;
+
+            for (int i = 0; i < node.Body.Count; ++i)
+            {
+                var newItem = node.Body[i].Accept(this);
+                if (node.Body[i] != newItem)
+                    node.Body[i] = newItem;
+            }
+
+            return node;
+        }
+
+        public override ImperativeNode VisitForLoopNode(ForLoopNode node)
+        {
+            var newLoopVar = node.LoopVariable.Accept(this);
+            if (node.LoopVariable != newLoopVar)
+                node.LoopVariable = newLoopVar;
+
+            var newExpr = node.Expression.Accept(this);
+            if (node.Expression != newExpr)
+                node.Expression = newExpr;
+
+            for (int i = 0; i < node.Body.Count; ++i)
+            {
+                var newItem = node.Body[i].Accept(this);
+                if (node.Body[i] != newItem)
+                    node.Body[i] = newItem;
+            }
+
+            return node;
         }
     }
 }
