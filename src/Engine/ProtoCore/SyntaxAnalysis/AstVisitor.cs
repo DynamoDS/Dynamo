@@ -442,6 +442,11 @@ namespace ProtoCore.SyntaxAnalysis
             return node;
         }
 
+        public override AssociativeNode VisitTypedIdentifierNode(TypedIdentifierNode node)
+        {
+            return VisitIdentifierNode(node);
+        }
+
         public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
         {
             var newLeftNode = node.LeftNode.Accept(this);
