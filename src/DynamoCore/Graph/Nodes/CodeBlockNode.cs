@@ -881,6 +881,16 @@ namespace Dynamo.Graph.Nodes
                 node.Function.Accept(this);
                 return base.VisitFunctionCallNode(node);
             }
+
+            public override AssociativeNode VisitFunctionDefinitionNode(FunctionDefinitionNode node)
+            {
+                return node;
+            }
+
+            public override AssociativeNode VisitLanguageBlockNode(LanguageBlockNode node)
+            {
+                return node;
+            }
         }
 
         #endregion
