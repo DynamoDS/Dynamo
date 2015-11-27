@@ -991,6 +991,17 @@ var06 = g;
             AssertPreviewValue("7cbc2d85-d837-4969-8eba-36f672c77d6f", 6);
             AssertPreviewValue("ebb49227-2e2b-4861-b824-1574ba89b455", 6);
         }
+
+        [Test]
+        public void TestImperativeInCBN01()
+        {
+            // Run complicated imperative code in code block node
+            string openPath = Path.Combine(TestDirectory, @"core\dsevaluation\TestImperativeInCBN.dyn");
+            RunModel(openPath);
+
+            AssertPreviewValue("27fba61c-ba19-4575-90a7-f856f74b4887", 49);
+        }
+
         #endregion
 
 
