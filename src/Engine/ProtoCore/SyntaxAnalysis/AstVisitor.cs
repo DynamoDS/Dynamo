@@ -564,6 +564,13 @@ namespace ProtoCore.SyntaxAnalysis
                     node.Exprs[i] = newItem;
             }
 
+            if (node.ArrayDimensions != null)
+            {
+                var newArrayDimensions = node.ArrayDimensions.Accept(this);
+                if (node.ArrayDimensions != newArrayDimensions)
+                    node.ArrayDimensions = newArrayDimensions as ArrayNode;
+            }
+
             return node;
         }
 
