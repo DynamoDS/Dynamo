@@ -18,12 +18,13 @@ using ProtoCore.Utils;
 using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 using Node = ProtoCore.AST.Node;
 using Operator = ProtoCore.DSASM.Operator;
+using ProtoCore.SyntaxAnalysis;
 
 namespace Dynamo.Graph.Nodes
 {
     [NodeName("Code Block")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("CodeBlockDescription",typeof(Dynamo.Properties.Resources))]
+    [NodeDescription("CodeBlockDescription", typeof(Dynamo.Properties.Resources))]
     [NodeSearchTags("CodeBlockSearchTags", typeof(Dynamo.Properties.Resources))]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("Dynamo.Nodes.CodeBlockNodeModel")]
@@ -40,7 +41,7 @@ namespace Dynamo.Graph.Nodes
         private bool shouldFocus = true;
         public bool ShouldFocus
         {
-            get { return shouldFocus;  }
+            get { return shouldFocus; }
             internal set { shouldFocus = value; }
         }
 
@@ -186,7 +187,7 @@ namespace Dynamo.Graph.Nodes
             if (code != null && code.Equals(newCode))
                 return;
 
-            if (newCode == null) 
+            if (newCode == null)
                 code = null;
             else
             {
@@ -209,7 +210,7 @@ namespace Dynamo.Graph.Nodes
                 LoadAndCreateConnectors(inportConnections, outportConnections);
 
                 RaisePropertyChanged("Code");
-                
+
                 ReportPosition();
 
                 ClearRuntimeError();
@@ -248,7 +249,7 @@ namespace Dynamo.Graph.Nodes
             string value = updateValueParams.PropertyValue;
             ElementResolver workspaceElementResolver = updateValueParams.ElementResolver;
 
-            if (name != "Code") 
+            if (name != "Code")
                 return base.UpdateValueCore(updateValueParams);
 
             value = CodeBlockUtils.FormatUserText(value);
@@ -410,10 +411,10 @@ namespace Dynamo.Graph.Nodes
             BinaryExpressionNode expr = statement.AstNode as BinaryExpressionNode;
             if (expr == null || expr.Optr != Operator.assign)
                 return type;
-            
+
             var core = libraryServices.LibraryManagementCore;
 
-            if (expr.RightNode is IdentifierListNode) 
+            if (expr.RightNode is IdentifierListNode)
             {
                 var identListNode = expr.RightNode as IdentifierListNode;
                 var funcNode = identListNode.RightNode as FunctionCallNode;
@@ -467,7 +468,7 @@ namespace Dynamo.Graph.Nodes
 
             ProcessCode(ref errorMessage, ref warningMessage);
             RaisePropertyChanged("Code");
-            
+
             ClearRuntimeError();
             if (!string.IsNullOrEmpty(errorMessage))
             {
@@ -482,7 +483,7 @@ namespace Dynamo.Graph.Nodes
             OnNodeModified();
         }
 
-        private void ProcessCode(ref string errorMessage, ref string warningMessage, 
+        private void ProcessCode(ref string errorMessage, ref string warningMessage,
             ElementResolver workspaceElementResolver = null)
         {
             code = CodeBlockUtils.FormatUserText(code);
@@ -553,7 +554,7 @@ namespace Dynamo.Graph.Nodes
                 else
                 {
                     inputIdentifiers.Clear();
-                    inputPortNames.Clear();                    
+                    inputPortNames.Clear();
                 }
             }
             catch (Exception e)
@@ -590,7 +591,8 @@ namespace Dynamo.Graph.Nodes
                 return;
 
             var duplicatedNode = new IdentifierNode(identifierNode);
-            MapIdentifiers(duplicatedNode);
+            var identMapper = new IdentifierInPlaceMapper(libraryServices.LibraryManagementCore, ShouldBeRenamed, LocalizeIdentifier);
+            duplicatedNode.Accept(identMapper);
 
             // Of course, if we just needed "duplicatedNode.Value" we would not 
             // have to clone the original "IdentifierNode". In addition to 
@@ -835,6 +837,7 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+
         private void MapIdentifiers(Node astNode)
         {
             if (astNode == null)
@@ -915,10 +918,38 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        private bool ShouldBeRenamed(string ident)
+        {
+            return GetDefinedVariableNames().Contains(ident) && !ident.Equals(AstIdentifierForPreview.Value); 
+        } 
+
         private string LocalizeIdentifier(string identifierName)
         {
             var guid = GUID.ToString().Replace("-", string.Empty);
             return string.Format("{0}_{1}", identifierName, guid);
+        }
+
+        private class IdentifierInPlaceMapper : AstReplacer
+        {
+            private ProtoCore.Core core;
+            private Func<string, string> mapper;
+            private Func<string, bool> cond;
+
+            public IdentifierInPlaceMapper(ProtoCore.Core core, Func<string, bool> cond, Func<string, string> mapper)
+            {
+                this.core = core;
+                this.cond = cond;
+                this.mapper = mapper;
+            }
+
+            public override AssociativeNode VisitIdentifierNode(IdentifierNode node)
+            {
+                var variable = node.Value;
+                if (cond(variable))
+                    node.Value = node.Name = mapper(variable);
+
+                return base.VisitIdentifierNode(node);
+            }
         }
 
         #endregion
