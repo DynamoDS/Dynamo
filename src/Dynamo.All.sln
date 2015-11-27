@@ -214,6 +214,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShapewaysClient", "ShapewaysClient\ShapewaysClient.csproj", "{756CEBA5-4E20-4403-8448-C3C47957975B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watch3DNodeModels", "Libraries\Watch3DNodeModels\Watch3DNodeModels.csproj", "{31183026-DE70-49CB-BC7C-0DFD0A088F62}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoManipulation", "DynamoManipulation\DynamoManipulation.csproj", "{33F88E8C-CC3C-4237-8AA9-CC891EFCABFA}"
 EndProject
 Global
