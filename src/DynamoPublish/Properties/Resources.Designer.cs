@@ -538,7 +538,7 @@ namespace Dynamo.Publish.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to /customize-[0-9,a-z]*.
+        ///   Looks up a localized string similar to /[0-9,a-z]*.
         /// </summary>
         public static string WorkspacesSendSucceededServerResponse {
             get {
