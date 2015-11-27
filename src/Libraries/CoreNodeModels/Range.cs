@@ -32,6 +32,20 @@ namespace DSCoreNodesUI
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
+            // Set default values.
+            if (!HasConnectedInput(0))
+            {
+                inputAstNodes[0] = new IntNode(0);
+            }
+            if (!HasConnectedInput(1))
+            {
+                inputAstNodes[1] = new IntNode(9);
+            }
+            if (!HasConnectedInput(2))
+            {
+                inputAstNodes[2] = new IntNode(1);
+            }
+
             return new[]
             {
                 AstFactory.BuildAssignment(
@@ -74,6 +88,20 @@ namespace DSCoreNodesUI
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
+            // Set default values.
+            if (!HasConnectedInput(0))
+            {
+                inputAstNodes[0] = new IntNode(0);
+            }
+            if (!HasConnectedInput(1))
+            {
+                inputAstNodes[1] = new IntNode(10);
+            }
+            if (!HasConnectedInput(2))
+            {
+                inputAstNodes[2] = new IntNode(1);
+            }
+
             return new[]
             {
                 AstFactory.BuildAssignment(
