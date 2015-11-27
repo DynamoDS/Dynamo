@@ -12,6 +12,7 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Utilities;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore.AST;
 using ProtoCore.BuildData;
 using ProtoCore.Namespace;
 using ProtoCore.Utils;
@@ -19,6 +20,7 @@ using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 using Node = ProtoCore.AST.Node;
 using Operator = ProtoCore.DSASM.Operator;
 using ProtoCore.SyntaxAnalysis;
+using ProtoCore.DSASM;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -854,6 +856,35 @@ namespace Dynamo.Graph.Nodes
             return string.Format("{0}_{1}", identifierName, guid);
         }
 
+        private class ImperativeIdentifierInPlaceMapper : ImperativeAstReplacer
+        {
+            private ProtoCore.Core core;
+            private Func<string, bool> cond;
+            private Func<string, string> mapper;
+
+            public ImperativeIdentifierInPlaceMapper(ProtoCore.Core core, Func<string, bool> cond, Func<string, string> mapper)
+            {
+                this.core = core;
+                this.cond = cond;
+                this.mapper = mapper;
+            }
+
+            public override ProtoCore.AST.ImperativeAST.ImperativeNode VisitIdentifierNode(ProtoCore.AST.ImperativeAST.IdentifierNode node)
+            {
+                var variable = node.Value;
+                if (cond(variable))
+                    node.Value = node.Name = mapper(variable);
+
+                return base.VisitIdentifierNode(node);
+            }
+
+            public override ProtoCore.AST.ImperativeAST.ImperativeNode VisitFunctionCallNode(ProtoCore.AST.ImperativeAST.FunctionCallNode node)
+            {
+                node.Function.Accept(this);
+                return base.VisitFunctionCallNode(node);
+            }
+        }
+
         private class IdentifierInPlaceMapper : AstReplacer
         {
             private ProtoCore.Core core;
@@ -884,11 +915,22 @@ namespace Dynamo.Graph.Nodes
 
             public override AssociativeNode VisitFunctionDefinitionNode(FunctionDefinitionNode node)
             {
+                // Not applying renaming to function defintion node, otherwise
+                // function defintion would depend on variables that defined in
+                // code block node, and there are implicit dependency between
+                // code block node that uses this funciton and code block node
+                // that defines this function.
                 return node;
             }
 
             public override AssociativeNode VisitLanguageBlockNode(LanguageBlockNode node)
             {
+                var impCbn = node.CodeBlockNode as ProtoCore.AST.ImperativeAST.ImperativeNode;
+                if (impCbn != null)
+                {
+                    var replacer = new ImperativeIdentifierInPlaceMapper(core, cond, mapper);
+                    impCbn.Accept(replacer);
+                }
                 return node;
             }
         }

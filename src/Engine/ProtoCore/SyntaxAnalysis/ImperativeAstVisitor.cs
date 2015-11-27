@@ -392,6 +392,17 @@ namespace ProtoCore.SyntaxAnalysis
             return node;
         }
 
+        public override ImperativeNode VisitCodeBlockNode(CodeBlockNode node)
+        {
+            for (int i = 0; i < node.Body.Count; ++i)
+            {
+                var newItem = node.Body[i].Accept(this);
+                if (node.Body[i] != newItem)
+                    node.Body[i] = newItem;
+            }
+            return node;
+        }
+
         public override ImperativeNode VisitGroupExpressionNode(GroupExpressionNode node)
         {
             var newExpression = node.Expression.Accept(this);
