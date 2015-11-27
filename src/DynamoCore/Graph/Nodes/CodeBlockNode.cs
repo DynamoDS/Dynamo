@@ -297,6 +297,7 @@ namespace Dynamo.Graph.Nodes
                 return Enumerable.Empty<AssociativeNode>();
             }
 
+            var identMapper = new IdentifierInPlaceMapper(libraryServices.LibraryManagementCore, ShouldBeRenamed, LocalizeIdentifier);
             var resultNodes = new List<AssociativeNode>();
 
             // Define unbound variables if necessary
@@ -309,7 +310,7 @@ namespace Dynamo.Graph.Nodes
                     {
                         var identNode = AstFactory.BuildIdentifier(ident);
                         if (context != CompilationContext.NodeToCode)
-                            MapIdentifiers(identNode);
+                            identNode.Accept(identMapper);
                         return AstFactory.BuildAssignment(identNode, rhs);
                     });
                 resultNodes.AddRange(initStatments);
@@ -318,7 +319,9 @@ namespace Dynamo.Graph.Nodes
             foreach (var astNode in codeStatements.Select(stmnt => NodeUtils.Clone(stmnt.AstNode)))
             {
                 if (context != CompilationContext.NodeToCode)
-                    MapIdentifiers(astNode);
+                {
+                    (astNode as AssociativeNode).Accept(identMapper);
+                }
                 resultNodes.Add(astNode as AssociativeNode);
             }
 
@@ -381,7 +384,10 @@ namespace Dynamo.Graph.Nodes
             var mappedIdent = NodeUtils.Clone(identNode);
 
             if (!forRawName)
-                MapIdentifiers(mappedIdent);
+            {
+                var identMapper = new IdentifierInPlaceMapper(libraryServices.LibraryManagementCore, ShouldBeRenamed, LocalizeIdentifier);
+                mappedIdent.Accept(identMapper);
+            }
 
             return mappedIdent as IdentifierNode;
         }
