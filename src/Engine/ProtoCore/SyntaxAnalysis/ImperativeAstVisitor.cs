@@ -445,6 +445,10 @@ namespace ProtoCore.SyntaxAnalysis
 
         public override ImperativeNode VisitFunctionCallNode(FunctionCallNode node)
         {
+            var func = node.Function.Accept(this);
+            if (node.Function != func)
+                node.Function = func;
+
             List<ImperativeNode> arguments = new List<ImperativeNode>();
             for (int i = 0; i < node.FormalArguments.Count; ++i)
             {

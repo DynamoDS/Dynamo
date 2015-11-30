@@ -877,12 +877,6 @@ namespace Dynamo.Graph.Nodes
 
                 return base.VisitIdentifierNode(node);
             }
-
-            public override ProtoCore.AST.ImperativeAST.ImperativeNode VisitFunctionCallNode(ProtoCore.AST.ImperativeAST.FunctionCallNode node)
-            {
-                node.Function.Accept(this);
-                return base.VisitFunctionCallNode(node);
-            }
         }
 
         private class IdentifierInPlaceMapper : AstReplacer

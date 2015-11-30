@@ -26,7 +26,8 @@ namespace ProtoTest.UtilsTests
 
             var newIdent = new IdentifierNode(node);
             newIdent.Value = newVariable;
-            return newIdent;
+
+            return base.VisitIdentifierNode(newIdent);
         }
     }
 
@@ -99,7 +100,7 @@ namespace ProtoTest.UtilsTests
         }
 
         [Test]
-        public void TestReplaceArrayIndexing()
+        public void TestArrayIndexing()
         {
             TestMapping(@"
 [Imperative]
