@@ -77,6 +77,7 @@ namespace Dynamo.Manipulation
 
         public string Name { get; set; }
 
+        protected IWatch3DViewModel BackgroundPreviewViewModel { get; private set; }
         protected Point origin;
 
         public Point Origin
@@ -90,8 +91,9 @@ namespace Dynamo.Manipulation
 
         public Point CameraPosition { get; protected set; }
 
-        internal Gizmo(Point origin, Point cameraPosition)
+        internal Gizmo(IWatch3DViewModel backgroundPreviewViewModel, Point origin, Point cameraPosition)
         {
+            BackgroundPreviewViewModel = backgroundPreviewViewModel;
             this.origin = origin;
             CameraPosition = cameraPosition;
         }
