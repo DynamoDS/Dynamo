@@ -392,14 +392,21 @@ namespace ProtoCore.SyntaxAnalysis
             return node;
         }
 
+        protected List<ImperativeNode> VisitNodeList(List<ImperativeNode> nodes)
+        {
+            for (int i = 0; i < nodes.Count; ++i)
+            {
+                var newItem = nodes[i].Accept(this);
+                if (nodes[i] != newItem)
+                    nodes[i] = newItem;
+            }
+
+            return nodes;
+        }
+
         public override ImperativeNode VisitCodeBlockNode(CodeBlockNode node)
         {
-            for (int i = 0; i < node.Body.Count; ++i)
-            {
-                var newItem = node.Body[i].Accept(this);
-                if (node.Body[i] != newItem)
-                    node.Body[i] = newItem;
-            }
+            node.Body = VisitNodeList(node.Body); 
             return node;
         }
 
@@ -449,13 +456,7 @@ namespace ProtoCore.SyntaxAnalysis
             if (node.Function != func)
                 node.Function = func;
 
-            List<ImperativeNode> arguments = new List<ImperativeNode>();
-            for (int i = 0; i < node.FormalArguments.Count; ++i)
-            {
-                var newArgument = node.FormalArguments[i].Accept(this);
-                if (node.FormalArguments[i] != newArgument)
-                    node.FormalArguments[i] = newArgument;
-            }
+            node.FormalArguments = VisitNodeList(node.FormalArguments); 
 
             if (node.ArrayDimensions != null)
             {
@@ -518,13 +519,7 @@ namespace ProtoCore.SyntaxAnalysis
 
         public override ImperativeNode VisitExprListNode(ExprListNode node)
         {
-            List<ImperativeNode> items = new List<ImperativeNode>();
-            for (int i = 0; i < node.Exprs.Count; ++i)
-            {
-                var newItem = node.Exprs[i].Accept(this);
-                if (node.Exprs[i] != newItem)
-                    node.Exprs[i] = newItem;
-            }
+            node.Exprs = VisitNodeList(node.Exprs);
 
             if (node.ArrayDimensions != null)
             {
@@ -575,26 +570,9 @@ namespace ProtoCore.SyntaxAnalysis
             if (node.IfExprNode != newIfExpr)
                 node.IfExprNode = newIfExpr;
 
-            for (int i = 0; i < node.IfBody.Count; ++i)
-            {
-                var newItem = node.IfBody[i].Accept(this);
-                if (node.IfBody[i] != newItem)
-                    node.IfBody[i] = newItem;
-            }
-
-            for (int i = 0; i < node.ElseIfList.Count; ++i)
-            {
-                var newElseIf = node.ElseIfList[i].Accept(this);
-                if (node.ElseIfList[i] != newElseIf)
-                    node.ElseIfList[i] = newElseIf as ElseIfBlock;
-            }
-
-            for (int i = 0; i < node.ElseBody.Count; ++i)
-            {
-                var newElseIf = node.ElseBody[i].Accept(this);
-                if (node.ElseBody[i] != newElseIf)
-                    node.ElseBody[i] = newElseIf;
-            }
+            node.IfBody = VisitNodeList(node.IfBody);
+            node.ElseIfList = VisitNodeList(node.ElseIfList.Cast<ImperativeNode>().ToList()).Cast<ElseIfBlock>().ToList();
+            node.ElseBody = VisitNodeList(node.ElseBody);
 
             return node;
         }
@@ -605,13 +583,7 @@ namespace ProtoCore.SyntaxAnalysis
             if (node.Expr != newExpr)
                 node.Expr = newExpr;
 
-            for (int i = 0; i < node.Body.Count; ++i)
-            {
-                var newItem = node.Body[i].Accept(this);
-                if (node.Body[i] != newItem)
-                    node.Body[i] = newItem;
-            }
-
+            node.Body = VisitNodeList(node.Body);
             return node;
         }
 
@@ -621,13 +593,7 @@ namespace ProtoCore.SyntaxAnalysis
             if (node.Expr != newExpr)
                 node.Expr = newExpr;
 
-            for (int i = 0; i < node.Body.Count; ++i)
-            {
-                var newItem = node.Body[i].Accept(this);
-                if (node.Body[i] != newItem)
-                    node.Body[i] = newItem;
-            }
-
+            node.Body = VisitNodeList(node.Body);
             return node;
         }
 
@@ -641,13 +607,7 @@ namespace ProtoCore.SyntaxAnalysis
             if (node.Expression != newExpr)
                 node.Expression = newExpr;
 
-            for (int i = 0; i < node.Body.Count; ++i)
-            {
-                var newItem = node.Body[i].Accept(this);
-                if (node.Body[i] != newItem)
-                    node.Body[i] = newItem;
-            }
-
+            node.Body = VisitNodeList(node.Body);
             return node;
         }
     }
