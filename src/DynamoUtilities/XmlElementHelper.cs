@@ -107,7 +107,22 @@ namespace Dynamo.Utilities
 
             return result;
         }
-       
+
+        /// <summary>
+        /// Attempt to read a nullable boolean value from an attribute's value.
+        /// </summary>
+        /// <param name="attribName">The name of the attribute whose value you want to inspect.</param>
+        /// <returns>True or false if the attribute has a value or null if none is defined.</returns>
+        public bool? ReadNullableBoolean(string attribName)
+        {
+            bool result;
+            var attrib = internalElement.Attributes[attribName];
+            if (null == attrib || (!bool.TryParse(attrib.Value, out result)))
+                return null;
+
+            return result;
+        }
+
         public string ReadString(string attribName)
         {
             XmlAttribute attrib = GetGuaranteedAttribute(attribName);

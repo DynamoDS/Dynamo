@@ -52,6 +52,11 @@ namespace Dynamo.Graph.Nodes
             public const string TOOL_TIP_FOR_TEMP_VARIABLE = "Statement Output";
         }
 
+        public override bool? IsInputNode
+        {
+            get{ return null;}
+        }
+
         #region Public Methods
 
         public CodeBlockNodeModel(LibraryServices libraryServices)

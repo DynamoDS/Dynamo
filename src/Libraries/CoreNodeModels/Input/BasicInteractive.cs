@@ -43,6 +43,7 @@ namespace DSCoreNodesUI.Input
             Type type = typeof(T);
             OutPortData.Add(new PortData("", type.Name));
             RegisterAllPorts();
+            isInputNode = true;
         }
 
         public override string PrintExpression()
@@ -53,6 +54,14 @@ namespace DSCoreNodesUI.Input
         public override bool IsConvertible
         {
             get { return true; }
+        }
+
+        public override bool? IsInputNode
+        {
+            get
+            {
+                return isInputNode;
+            }
         }
 
         #region Serialization/Deserialization Methods
