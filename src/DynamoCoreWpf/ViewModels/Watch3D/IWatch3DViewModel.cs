@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using Autodesk.DesignScript.Interfaces;
@@ -61,6 +62,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         IRay GetClickRay(MouseEventArgs args);
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        Point3D? GetCameraPosition();
+
+        /// <summary>
         /// Returns information about camera position in background 3D preview
         /// </summary>
         /// <returns>Information about camera position</returns>
@@ -115,6 +122,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// On/off state is passed using the bool parameter
         /// </summary>
         event Action<bool> CanNavigateBackgroundPropertyChanged;
+
+        /// <summary>
+        /// Camera changed events to be handled for zoom/pan/rotate events in watch view
+        /// </summary>
+        event Action<object, RoutedEventArgs> ViewCameraChanged;
 
         #endregion
     }

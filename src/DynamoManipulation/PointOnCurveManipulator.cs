@@ -50,8 +50,7 @@ namespace Dynamo.Manipulation
         /// <returns></returns>
         protected override IEnumerable<IGizmo> GetGizmos(bool createOrUpdate)
         {
-            if (gizmo == null && !createOrUpdate)
-                yield break;
+            if (gizmo == null && !createOrUpdate) yield break;
 
             if (createOrUpdate)
             {
@@ -64,9 +63,10 @@ namespace Dynamo.Manipulation
         private void UpdateGizmo()
         {
             if (null == gizmo)
-                gizmo = new TranslationGizmo(pointOnCurve, tangent, 6);
-            else
-                gizmo.UpdateGeometry(pointOnCurve, tangent, null, null, 6);
+            {
+                gizmo = new TranslationGizmo(pointOnCurve, CameraPosition, tangent, 6);
+            }
+            else gizmo.UpdateGeometry(pointOnCurve, CameraPosition, tangent, null, null, 6);
         }
 
         protected override void AssignInputNodes()

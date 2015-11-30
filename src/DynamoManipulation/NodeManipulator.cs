@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using Autodesk.DesignScript.Geometry;
@@ -14,6 +15,8 @@ using Dynamo.Models;
 using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using ProtoCore.Mirror;
+using Point = Autodesk.DesignScript.Geometry.Point;
+using Vector = Autodesk.DesignScript.Geometry.Vector;
 
 namespace Dynamo.Manipulation
 {
@@ -40,6 +43,9 @@ namespace Dynamo.Manipulation
         private const double NewNodeOffsetX = 350;
         private const double NewNodeOffsetY = 50;
         private Point newPosition;
+        private Point3D? cameraPosition;
+
+        protected bool Active { get; set; }
 
         protected NodeModel Node { get; set; }
 
@@ -55,9 +61,15 @@ namespace Dynamo.Manipulation
 
         protected string ExtensionName { get; private set; }
         
-        protected bool Active { get; set; }
-
         protected IGizmo GizmoInAction { get; private set; }
+
+        protected Point CameraPosition {
+            get
+            {
+                return cameraPosition != null ? 
+                    Point.ByCoordinates(cameraPosition.Value.X, cameraPosition.Value.Y, cameraPosition.Value.Z) : null;
+            }
+        }
 
         #endregion
 
@@ -217,6 +229,8 @@ namespace Dynamo.Manipulation
             
             AttachBaseHandlers();
 
+            // Initialize camera position wrt draw manipulator
+            cameraPosition = BackgroundPreviewViewModel.GetCameraPosition();
             DrawManipulator();
         }
 
@@ -363,8 +377,18 @@ namespace Dynamo.Manipulation
             BackgroundPreviewViewModel.ViewMouseMove += MouseMove;
             BackgroundPreviewViewModel.ViewMouseDown += MouseDown;
             BackgroundPreviewViewModel.ViewMouseUp += MouseUp;
+            BackgroundPreviewViewModel.ViewCameraChanged += OnViewCameraChanged;
 
             Node.RequestRenderPackages += GenerateRenderPackages;
+        }
+
+        private void OnViewCameraChanged(object o, RoutedEventArgs routedEventArgs)
+        {
+            cameraPosition = routedEventArgs.Source as Point3D?;
+           
+            // Redraw Gizmos
+            var packages = BuildRenderPackage();
+            BackgroundPreviewViewModel.AddGeometryForRenderPackages(packages);
         }
 
         /// <summary>
