@@ -95,7 +95,7 @@ namespace Dynamo.Manipulation
             //If we are not in Home workspace, or not in Automatic execution mode do nothing.
             var settings = GetRunSettings(WorkspaceModel);
             
-            return settings != null && settings.RunEnabled && settings.RunType == RunType.Automatic;
+            return settings != null && settings.RunType == RunType.Automatic;
         }
 
         internal ICommandExecutive CommandExecutive { get; private set; }
