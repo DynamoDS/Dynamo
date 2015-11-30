@@ -629,7 +629,8 @@ namespace Dynamo.Graph.Nodes
         {
             get
             {
-                return IsAnyUpstreamFrozen() || isFrozenExplicitly;               
+                return isFrozenExplicitly || IsAnyParentFrozen();
+                
             }
             set
             {
@@ -653,6 +654,28 @@ namespace Dynamo.Graph.Nodes
         #endregion   
   
         #region freeze execution
+
+        /// <summary>
+        /// Determines whether any of the immediate parent node is frozen
+        /// </summary>
+        /// <returns></returns>
+        private bool IsAnyParentFrozen()
+        {
+            var node = this;
+            bool parentFrozen = false;
+            var sets = node.InputNodes.Values;
+            var inpNodes = sets.Where(x => x != null).Select(z => z.Item2).Distinct();
+            foreach (var inode in inpNodes)
+            {
+                if (inode.isFrozenExplicitly || inode.IsFrozen)
+                {
+                    parentFrozen = true;
+                    break;
+                }
+            }
+
+            return parentFrozen;
+        }
         /// <summary>
         /// Determines whether any of the upstream node is frozen.
         /// </summary>
@@ -1776,6 +1799,7 @@ namespace Dynamo.Graph.Nodes
                 RaisePropertyChanged("ArgumentLacing");
                 RaisePropertyChanged("IsVisible");
                 RaisePropertyChanged("IsUpstreamVisible");
+                RaisePropertyChanged("IsFrozen");
                
                 // Notify listeners that the position of the node has changed,
                 // then all connected connectors will also redraw themselves.
