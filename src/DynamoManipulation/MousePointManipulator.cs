@@ -40,6 +40,11 @@ namespace Dynamo.Manipulation
        
         #region overridden methods
 
+        protected override bool CanMoveGizmo(IGizmo gizmo)
+        {
+            return base.CanMoveGizmo(gizmo);
+        }
+
         protected override void AssignInputNodes()
         {
             //Default axes
@@ -220,28 +225,17 @@ namespace Dynamo.Manipulation
 
             if (origin == null)
             {
-                origin = Point.Origin();
+                origin = Point.Origin(); //First time initialization
             }
 
-            // hack: to prevent node mirror value lookup from throwing an exception
-            var previousOrigin = Point.ByCoordinates(origin.X, origin.Y, origin.Z);
-            try
-            {
-                //Node output could be a collection, consider the first item as origin.
-                Point pt = GetFirstValueFromNode(Node) as Point;
-                origin = pt != null ? Point.ByCoordinates(pt.X, pt.Y, pt.Z) : origin;
-            }
-            catch (Exception)
-            {
-                origin = previousOrigin;
-            }
+            //Node output could be a collection, consider the first item as origin.
+            Point pt = GetFirstValueFromNode(Node) as Point;
+            if (null == pt) return; //The node output is not Point, could be a function object.
 
-            if (origin == null)
-            {
-                origin = Point.Origin();
-                return;
-            }
-
+            //Don't cache pt directly here, we need to create a copy, because 
+            //pt may be GC'ed by VM.
+            origin = Point.ByCoordinates(pt.X, pt.Y, pt.Z);
+            
             Active = true;
         }
 

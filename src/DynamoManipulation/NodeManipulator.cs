@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 using Autodesk.DesignScript.Geometry;
@@ -109,11 +110,7 @@ namespace Dynamo.Manipulation
         /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
-            var gizmos = GetGizmos(false);
-            foreach (var item in gizmos)
-            {
-                BackgroundPreviewViewModel.DeleteGeometryForIdentifier(item.Name);
-            }
+            HideGizmos();
         }
 
         /// <summary>
@@ -142,7 +139,7 @@ namespace Dynamo.Manipulation
             GizmoInAction = null; //Reset Drag.
 
             var gizmos = GetGizmos(false);
-            if (!Active || null == gizmos || !gizmos.Any())
+            if (!Active || !IsEnabled() || null == gizmos || !gizmos.Any())
                 return;
 
             var ray = BackgroundPreviewViewModel.GetClickRay(mouseButtonEventArgs);
@@ -211,7 +208,7 @@ namespace Dynamo.Manipulation
             CommandExecutive = manipulatorContext.CommandExecutive;
             UniqueId = manipulatorContext.UniqueId;
             ExtensionName = manipulatorContext.Name;
-                
+            
             AttachBaseHandlers();
 
             DrawManipulator();
@@ -373,9 +370,6 @@ namespace Dynamo.Manipulation
         /// <returns>List of render packages</returns>
         private IEnumerable<IRenderPackage> GenerateRenderPackages()
         {
-            // Currently collections are not being supported
-            //if(Node.CachedValue.IsCollection) return new List<IRenderPackage>();
-
             var packages = new List<IRenderPackage>();
 
             AssignInputNodes();
@@ -387,7 +381,7 @@ namespace Dynamo.Manipulation
 
             UpdatePosition();
 
-            if (!Active)
+            if (!Active || !IsEnabled())
             {
                 return packages;
             }
@@ -405,6 +399,18 @@ namespace Dynamo.Manipulation
             BackgroundPreviewViewModel.ViewMouseUp -= MouseUp;
 
             Node.RequestRenderPackages -= GenerateRenderPackages;
+        }
+
+        /// <summary>
+        /// Removes Gizmos from background preview.
+        /// </summary>
+        private void HideGizmos()
+        {
+            var gizmos = GetGizmos(false);
+            foreach (var item in gizmos)
+            {
+                BackgroundPreviewViewModel.DeleteGeometryForIdentifier(item.Name);
+            }
         }
 
         #endregion
@@ -438,6 +444,21 @@ namespace Dynamo.Manipulation
             }
 
             return packages;
+        }
+
+        /// <summary>
+        /// Checks if manipulator is enabled or not. Manipulator is enabled 
+        /// only if node is not frozen or not setup as partially applied function 
+        /// or Run setting is set to Automatic.
+        /// </summary>
+        /// <returns>True if enabled and can be manipulated.</returns>
+        public bool IsEnabled()
+        {
+            if (Node.IsFrozen) return false;
+
+            if (Node.CachedValue.IsNull) return false;
+
+            return true;
         }
         #endregion
     }

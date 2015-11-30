@@ -91,23 +91,17 @@ namespace Dynamo.Manipulation
             if (pointOnCurve == null)
                 pointOnCurve = curve.StartPoint;
 
-            var oldPoint = Point.ByCoordinates(pointOnCurve.X, pointOnCurve.Y, pointOnCurve.Z);
-            try
-            {
-                //Node output could be a collection, consider the first item as origin.
-                Point pt = GetFirstValueFromNode(Node) as Point;
-                if (pt != null)
-                {
-                    var param = curve.ParameterAtPoint(pt);
-                    tangent = curve.TangentAtParameter(param);
-                    pointOnCurve = Point.ByCoordinates(pt.X, pt.Y, pt.Z);
-                }
-            }
-            catch (Exception)
-            {
-                pointOnCurve = oldPoint;
-            }
+            //Node output could be a collection, consider the first item as origin.
+            Point pt = GetFirstValueFromNode(Node) as Point;
+            if (pt == null) return; //The node output is not Point, could be a function object.
 
+            var param = curve.ParameterAtPoint(pt);
+            tangent = curve.TangentAtParameter(param);
+            
+            //Don't cache pt directly here, need to create a copy, because 
+            //pt may be GC'ed by VM.
+            pointOnCurve = Point.ByCoordinates(pt.X, pt.Y, pt.Z); 
+        
             Active = tangent != null;
         }
 
