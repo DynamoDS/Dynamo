@@ -6331,6 +6331,19 @@ o = foo(a, 1);
             thisTest.Verify("o", new Object[] {  });   
         }
     
+        [Test]
+        public void TestReplicationInInlineConditional()
+        {
+            string code =
+@"
+cond = {true, false};
+vs1 = {2, 4};
+vs2 = {3, 5, 7};
+r = cond<1L> ? vs1<1L> : vs2<1L>;";
+
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r", new object[] { 2, 5, 7 });
+        }
     }
 
 }
