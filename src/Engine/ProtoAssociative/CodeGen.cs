@@ -3141,18 +3141,33 @@ namespace ProtoAssociative
                 DFSEmitSSA_AST(ilnode.ConditionExpression, ssaStack, ref inlineExpressionASTList);
                 AssociativeNode cexpr = ssaStack.Pop();
                 ilnode.ConditionExpression = cexpr is BinaryExpressionNode ? (cexpr as BinaryExpressionNode).LeftNode : cexpr;
+                var namenode = ilnode.ConditionExpression as ArrayNameNode;
+                if (namenode != null)
+                {
+                    namenode.ReplicationGuides = GetReplicationGuides(cexpr is BinaryExpressionNode ? (cexpr as BinaryExpressionNode).RightNode : cexpr);
+                }
                 astlist.AddRange(inlineExpressionASTList);
                 inlineExpressionASTList.Clear();
 
                 DFSEmitSSA_AST(ilnode.TrueExpression, ssaStack, ref inlineExpressionASTList);
                 cexpr = ssaStack.Pop();
                 ilnode.TrueExpression = cexpr is BinaryExpressionNode ? (cexpr as BinaryExpressionNode).LeftNode : cexpr;
+                namenode = ilnode.TrueExpression as ArrayNameNode;
+                if (namenode != null)
+                {
+                    namenode.ReplicationGuides = GetReplicationGuides(cexpr is BinaryExpressionNode ? (cexpr as BinaryExpressionNode).RightNode : cexpr);
+                }
                 astlist.AddRange(inlineExpressionASTList);
                 inlineExpressionASTList.Clear();
 
                 DFSEmitSSA_AST(ilnode.FalseExpression, ssaStack, ref inlineExpressionASTList);
                 cexpr = ssaStack.Pop();
                 ilnode.FalseExpression = cexpr is BinaryExpressionNode ? (cexpr as BinaryExpressionNode).LeftNode : cexpr;
+                namenode = ilnode.FalseExpression as ArrayNameNode;
+                if (namenode != null)
+                {
+                    namenode.ReplicationGuides = GetReplicationGuides(cexpr is BinaryExpressionNode ? (cexpr as BinaryExpressionNode).RightNode : cexpr);
+                }
                 astlist.AddRange(inlineExpressionASTList);
                 inlineExpressionASTList.Clear();
 
