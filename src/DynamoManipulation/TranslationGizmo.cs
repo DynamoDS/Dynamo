@@ -89,6 +89,7 @@ namespace Dynamo.Manipulation
         /// <summary>
         /// Constructs planar gizmo, can be manipulated in two directions.
         /// </summary>
+        /// <param name="backgroundPreviewViewModel"></param>
         /// <param name="origin">Position of the gizmo</param>
         /// <param name="cameraPosition"></param>
         /// <param name="axis1">First axis of freedom</param>
@@ -105,14 +106,16 @@ namespace Dynamo.Manipulation
         /// <summary>
         /// Construcs a 3D gizmo, can be manipulated in all three directions.
         /// </summary>
+        /// <param name="backgroundPreviewViewModel"></param>
         /// <param name="origin">Position of the gizmo</param>
         /// <param name="cameraPosition"></param>
         /// <param name="axis1">First axis of freedom</param>
         /// <param name="axis2">Second axis of freedom</param>
         /// <param name="axis3">Third axis of freedom</param>
         /// <param name="size">Visual size of the Gizmo</param>
-        public TranslationGizmo(Point origin, Point cameraPosition, Vector axis1, Vector axis2, Vector axis3, double size)
-            : base(origin, cameraPosition)
+        public TranslationGizmo(IWatch3DViewModel backgroundPreviewViewModel, 
+            Point origin, Point cameraPosition, Vector axis1, Vector axis2, Vector axis3, double size)
+            : base(backgroundPreviewViewModel, origin, cameraPosition)
         {
             ReferenceCoordinateSystem = CoordinateSystem.Identity();
             UpdateGeometry(origin, cameraPosition, axis1, axis2, axis3, size);
