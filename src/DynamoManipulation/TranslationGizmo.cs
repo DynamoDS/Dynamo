@@ -52,7 +52,18 @@ namespace Dynamo.Manipulation
         /// <returns>List of render packages.</returns>
         IEnumerable<IRenderPackage> GetDrawables(IRenderPackageFactory factory);
 
+        /// <summary>
+        /// Get packages for drawables to be highlighted on gizmo during mouse over
+        /// </summary>
+        /// <param name="factory"></param>
+        /// <returns></returns>
         IEnumerable<IRenderPackage> GetDrawablesForMouseOverHighlight(IRenderPackageFactory factory);
+
+        /// <summary>
+        /// Delete all transient geometry used to highlight gizmo during mouse over 
+        /// </summary>
+        /// <param name="backgroundPreviewViewModel"></param>
+        void UnhighlightDrawablesForMouseOver(IWatch3DViewModel backgroundPreviewViewModel);
     }
 
     /// <summary>
@@ -448,6 +459,12 @@ namespace Dynamo.Manipulation
                 drawables.Add(package);
             }
             return drawables;
+        }
+
+        public void UnhighlightDrawablesForMouseOver(IWatch3DViewModel backgroundPreviewViewModel)
+        {
+            // Delete all transient geometry used to highlight gizmo
+            backgroundPreviewViewModel.DeleteGeometryForIdentifier(RenderDescriptions.AxisLine);
         }
 
         #endregion

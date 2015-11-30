@@ -194,12 +194,13 @@ namespace Dynamo.Manipulation
                 var gizmos = GetGizmos(false);
                 foreach (var item in gizmos)
                 {
-                    // Delete all transient axis line geometry
-                    BackgroundPreviewViewModel.DeleteGeometryForIdentifier(RenderDescriptions.AxisLine);
+                    // Delete all transient geometry used to highlight gizmo
+                    item.UnhighlightDrawablesForMouseOver(BackgroundPreviewViewModel);
 
                     object hitObject;
                     if (item.HitTest(clickRay.GetOriginPoint(), clickRay.GetDirectionVector(), out hitObject))
                     {
+                        // Draw transient drawables for gizmo during mouse over
                         var packages = item.GetDrawablesForMouseOverHighlight(RenderPackageFactory);
                         BackgroundPreviewViewModel.AddGeometryForRenderPackages(packages);
                     }
