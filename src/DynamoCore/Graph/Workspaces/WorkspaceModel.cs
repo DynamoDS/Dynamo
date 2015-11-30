@@ -410,6 +410,14 @@ namespace Dynamo.Graph.Workspaces
             } 
         }
 
+        public IEnumerable<NodeModel> CurrentSelection
+        {
+            get
+            {
+                return DynamoSelection.Instance.Selection.OfType<NodeModel>();
+            }
+        }
+
         /// <summary>
         /// List of subgraphs for graph layout algorithm.
         /// </summary>
