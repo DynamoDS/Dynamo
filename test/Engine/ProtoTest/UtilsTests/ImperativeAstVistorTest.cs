@@ -211,6 +211,7 @@ namespace ProtoTest.UtilsTests
 }");
         }
 
+        [Test]
         public void TestForLoop()
         {
             TestMapping(@"
@@ -231,6 +232,7 @@ namespace ProtoTest.UtilsTests
 }");
         }
 
+        [Test]
         public void TestWhileLoop()
         {
             TestMapping(@"
@@ -248,6 +250,55 @@ namespace ProtoTest.UtilsTests
     while (a1 < 100) {
         bar = bar + a1;
     }
+}");
+        }
+
+        [Test]
+        public void TestUnaryExpression()
+        {
+            TestMapping(
+@"
+[Imperative]
+{
+    foo = -a;
+}
+",
+@"
+[Imperative]
+{
+    bar = -a1;
+}");
+        }
+
+        [Test]
+        public void TestTypedIdentifier()
+        {
+            TestMapping(
+@"
+[Imperative]
+{
+    a : int = b;
+}",
+@"
+[Imperative]
+{
+    a1: int = b1;
+}");
+        }
+
+        [Test]
+        public void TestGroupExpression()
+        {
+            TestMapping(
+@"
+[Imperative]
+{
+    foo = (a + b(c)) * d;
+}",
+@"
+[Imperative]
+{
+    bar = (a1 + b1(c1)) * d;
 }");
         }
     }
