@@ -53,17 +53,18 @@ namespace Dynamo.Manipulation
         IEnumerable<IRenderPackage> GetDrawables(IRenderPackageFactory factory);
 
         /// <summary>
-        /// Get packages for drawables to be highlighted on gizmo during mouse over
-        /// </summary>
-        /// <param name="factory"></param>
-        /// <returns></returns>
-        IEnumerable<IRenderPackage> GetDrawablesForMouseOverHighlight(IRenderPackageFactory factory);
-
-        /// <summary>
-        /// Delete all transient geometry used to highlight gizmo during mouse over 
+        /// Highlight gizmo drawables or create transient geometry to highlight the gizmo during mouse over
         /// </summary>
         /// <param name="backgroundPreviewViewModel"></param>
-        void UnhighlightDrawablesForMouseOver(IWatch3DViewModel backgroundPreviewViewModel);
+        /// <param name="factory"></param>
+        /// <returns></returns>
+        void HighlightGizmo(IWatch3DViewModel backgroundPreviewViewModel, IRenderPackageFactory factory);
+
+        /// <summary>
+        /// Unhighlight gizmo drawables or delete all transient geometry used to highlight gizmo during mouse over 
+        /// </summary>
+        /// <param name="backgroundPreviewViewModel"></param>
+        void UnhighlightGizmo(IWatch3DViewModel backgroundPreviewViewModel);
     }
 
     /// <summary>
@@ -419,27 +420,34 @@ namespace Dynamo.Manipulation
                 DrawPlane(ref package, plane, p++);
                 drawables.Add(package);
             }
+            drawables.AddRange(GetDrawablesForTransientGeometry(factory));
 
-            if(null != hitAxis)
-            {
-                IRenderPackage package = factory.CreateRenderPackage();
-                DrawAxisLine(ref package, hitAxis, "xAxisLine");
-                drawables.Add(package);
-            }
-            if(null != hitPlane)
-            {
-                IRenderPackage package = factory.CreateRenderPackage();
-                DrawAxisLine(ref package, hitPlane.XAxis, "xAxisLine");
-                drawables.Add(package);
-                
-                package = factory.CreateRenderPackage();
-                DrawAxisLine(ref package, hitPlane.YAxis, "yAxisLine");
-                drawables.Add(package);
-            }
             return drawables;
         }
 
-        public IEnumerable<IRenderPackage> GetDrawablesForMouseOverHighlight(IRenderPackageFactory factory)
+        public void HighlightGizmo(IWatch3DViewModel backgroundPreviewViewModel, 
+            IRenderPackageFactory factory)
+        {
+            var drawables = GetDrawablesForTransientGeometry(factory);
+            backgroundPreviewViewModel.AddGeometryForRenderPackages(drawables);
+        }
+
+        public void UnhighlightGizmo(IWatch3DViewModel backgroundPreviewViewModel)
+        {
+            // Delete all transient geometry used to highlight gizmo
+            backgroundPreviewViewModel.DeleteGeometryForIdentifier(RenderDescriptions.AxisLine);
+        }
+
+        #endregion
+
+        #region Helper methods to draw the gizmo
+
+        /// <summary>
+        /// Returns drawables for transient geometry associated with Gizmo
+        /// </summary>
+        /// <param name="factory"></param>
+        /// <returns></returns>
+        private List<IRenderPackage> GetDrawablesForTransientGeometry(IRenderPackageFactory factory)
         {
             var drawables = new List<IRenderPackage>();
             if (null != hitAxis)
@@ -460,16 +468,6 @@ namespace Dynamo.Manipulation
             }
             return drawables;
         }
-
-        public void UnhighlightDrawablesForMouseOver(IWatch3DViewModel backgroundPreviewViewModel)
-        {
-            // Delete all transient geometry used to highlight gizmo
-            backgroundPreviewViewModel.DeleteGeometryForIdentifier(RenderDescriptions.AxisLine);
-        }
-
-        #endregion
-
-        #region Helper methods to draw the gizmo
 
         /// <summary>
         /// Draws axis line

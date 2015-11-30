@@ -41,6 +41,13 @@ namespace Dynamo.Manipulation
 
         #region abstract method implementation
 
+        /// <summary>
+        /// Returns all the gizmos supported by this manipulator
+        /// </summary>
+        /// <param name="createOrUpdate">
+        /// If true: Create a new gizmo or update a gizmo if already present.
+        /// If false: Query for existing gizmos</param>
+        /// <returns></returns>
         protected override IEnumerable<IGizmo> GetGizmos(bool createOrUpdate)
         {
             if (gizmo == null && !createOrUpdate)

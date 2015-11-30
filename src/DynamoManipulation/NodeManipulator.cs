@@ -66,7 +66,9 @@ namespace Dynamo.Manipulation
         /// <summary>
         /// Returns list of Gizmos used by this manipulator.
         /// </summary>
-        /// <param name="createOrUpdate">Whether to create new gizmo or to update an existing one.</param>
+        /// <param name="createOrUpdate">
+        /// Create new gizmos or update existing ones gizmos if parameter is true
+        /// otherwise simply query for existing gizmos if false.</param>
         /// <returns>List of Gizmos.</returns>
         protected abstract IEnumerable<IGizmo> GetGizmos(bool createOrUpdate);
 
@@ -186,21 +188,7 @@ namespace Dynamo.Manipulation
 
             if (GizmoInAction == null)
             {
-                // Check for mouse over highlights on gizmo
-                var gizmos = GetGizmos(false);
-                foreach (var item in gizmos)
-                {
-                    // Delete all transient geometry used to highlight gizmo
-                    item.UnhighlightDrawablesForMouseOver(BackgroundPreviewViewModel);
-
-                    object hitObject;
-                    if (item.HitTest(clickRay.GetOriginPoint(), clickRay.GetDirectionVector(), out hitObject))
-                    {
-                        // Draw transient drawables for gizmo during mouse over
-                        var packages = item.GetDrawablesForMouseOverHighlight(RenderPackageFactory);
-                        BackgroundPreviewViewModel.AddGeometryForRenderPackages(packages);
-                    }
-                }
+                HighlightGizmoOnRollOver(clickRay);
                 return;
             }
 
@@ -428,6 +416,25 @@ namespace Dynamo.Manipulation
             foreach (var item in gizmos)
             {
                 BackgroundPreviewViewModel.DeleteGeometryForIdentifier(item.Name);
+            }
+        }
+
+        /// <summary>
+        /// Highlights/Unhighlights Gizmo drawables on mouse roll-over
+        /// </summary>
+        /// <param name="clickRay"></param>
+        private void HighlightGizmoOnRollOver(IRay clickRay)
+        {
+            var gizmos = GetGizmos(false);
+            foreach (var item in gizmos)
+            {
+                item.UnhighlightGizmo(BackgroundPreviewViewModel);
+
+                object hitObject;
+                if (item.HitTest(clickRay.GetOriginPoint(), clickRay.GetDirectionVector(), out hitObject))
+                {
+                    item.HighlightGizmo(BackgroundPreviewViewModel, RenderPackageFactory);
+                }
             }
         }
 
