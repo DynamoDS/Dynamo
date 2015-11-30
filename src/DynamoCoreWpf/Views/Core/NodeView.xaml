@@ -8,6 +8,7 @@
              xmlns:dynamo1="clr-namespace:Dynamo.UI;assembly=DynamoCore"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
+             xmlns:controls="clr-namespace:Dynamo.Controls"
              Height="Auto"
              Width="Auto"
              Name="topControl"
@@ -18,6 +19,16 @@
              MouseRightButtonDown="topControl_MouseRightButtonDown"
              Canvas.Left="{Binding Left, Mode=TwoWay}"
              Canvas.Top="{Binding Top, Mode=TwoWay}">
+    <UserControl.Resources>
+        <Style TargetType="{x:Type controls:NodeView}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsFrozen}" Value="True">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="Opacity" Value ="0.5"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     <Grid Name="grid"
           x:FieldModifier="public"
           HorizontalAlignment="Left">
@@ -160,14 +171,15 @@
                    Grid.Row="1"
                    Grid.ColumnSpan="3"
                    Grid.RowSpan="3"
-                   Canvas.ZIndex="10">
-            <Rectangle.Fill>
+                   Canvas.ZIndex="10">             
+            <Rectangle.Fill>                
                 <Binding Path="State"
                          UpdateSourceTrigger="PropertyChanged"
                          Mode="OneWay"
                          ConverterParameter="BodyBackground"
-                         Converter="{StaticResource StateToColorConverter}">
-                </Binding>
+                         Converter="{StaticResource StateToColorConverter}">                     
+                </Binding>      
+                
             </Rectangle.Fill>
         </Rectangle>
 
