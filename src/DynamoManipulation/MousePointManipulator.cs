@@ -92,30 +92,6 @@ namespace Dynamo.Manipulation
         }
 
         /// <summary>
-        /// Creates a new Gizmo or Updates existing Gizmo with new axes and origin.
-        /// This method is called every time Gizmo's are requested.
-        /// </summary>
-        private void UpdateGizmo()
-        {
-            var axes = new Vector[] { null, null, null };
-            //Extract axis information from the axis node pairs.
-            int index = 0;
-            foreach (var item in indexedAxisNodePairs)
-            {
-                axes[index++] = item.Value.Item1;
-            }
-
-            if (null == gizmo)
-            {
-                gizmo = new TranslationGizmo(origin, axes[0], axes[1], axes[2], 6);
-            }
-            else
-            {
-                gizmo.UpdateGeometry(origin, axes[0], axes[1], axes[2], 6);
-            }
-        }
-
-        /// <summary>
         /// Returns all the gizmos supported by this manipulator
         /// </summary>
         /// <param name="createIfNone">Whether to create new gizmo if not already present.</param>
@@ -157,7 +133,6 @@ namespace Dynamo.Manipulation
                 }
             }
 
-            int count = indexedAxisNodePairs.Count;
             var nodes = new Dictionary<int, NodeModel>(2); //placeholder for new nodes.
             foreach (var item in indexedAxisNodePairs)
             {
@@ -250,6 +225,31 @@ namespace Dynamo.Manipulation
         #region helpers
 
         /// <summary>
+        /// Creates a new Gizmo or Updates existing Gizmo with new axes and origin.
+        /// This method is called every time Gizmo's are requested.
+        /// </summary>
+        private void UpdateGizmo()
+        {
+            var axes = new Vector[] { null, null, null };
+            //Extract axis information from the axis node pairs.
+            int index = 0;
+            foreach (var item in indexedAxisNodePairs)
+            {
+                axes[index++] = item.Value.Item1;
+            }
+
+            if (null == gizmo)
+            {
+                gizmo = new TranslationGizmo(origin, axes[0], axes[1], axes[2], 6);
+            }
+            else
+            {
+                gizmo.UpdateGeometry(origin, axes[0], axes[1], axes[2], 6);
+            }
+        }
+
+
+        /// <summary>
         /// Decomposes given vector in natural axes and returns first axis.
         /// </summary>
         /// <param name="vector"></param>
@@ -289,54 +289,5 @@ namespace Dynamo.Manipulation
         }
 
         #endregion
-    }
-
-    internal static class PointExtensions
-    {
-        public static Point ToPoint(this Point3D point)
-        {
-            return Point.ByCoordinates(point.X, point.Y, point.Z);
-        }
-
-        public static Vector ToVector(this Vector3D vec)
-        {
-            return Vector.ByCoordinates(vec.X, vec.Y, vec.Z);
-        }
-    }
-
-    internal static class RayExtensions
-    {
-        private const double axisScaleFactor = 100;
-        private const double rayScaleFactor = 10000;
-
-        public static Line ToLine(this IRay ray)
-        {
-            var origin = ray.Origin.ToPoint();
-            var direction = ray.Direction.ToVector();
-            return Line.ByStartPointEndPoint(origin, origin.Add(direction.Scale(rayScaleFactor)));
-        }
-
-        public static Line ToOriginCenteredLine(this IRay ray)
-        {
-            var origin = ray.Origin.ToPoint();
-            var direction = ray.Direction.ToVector();
-            return ToOriginCenteredLine(origin, direction);
-        }
-
-        public static Line ToOriginCenteredLine(Point origin, Vector axis)
-        {
-            return Line.ByStartPointEndPoint(origin.Add(axis.Scale(-axisScaleFactor)),
-                origin.Add(axis.Scale(axisScaleFactor)));
-        }
-
-        public static Point GetOriginPoint(this IRay ray)
-        {
-            return ray.Origin.ToPoint();
-        }
-
-        public static Vector GetDirectionVector(this IRay ray)
-        {
-            return ray.Direction.ToVector();
-        }
     }
 }

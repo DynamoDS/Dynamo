@@ -60,6 +60,8 @@ namespace Dynamo.Controls
 
             if (ViewModel == null) return;
 
+            UnRegisterViewEventHandlers();
+
             ViewModel.RequestAttachToScene -= ViewModelRequestAttachToSceneHandler;
             ViewModel.RequestCreateModels -= RequestCreateModelsHandler;
             ViewModel.RequestViewRefresh -= RequestViewRefreshHandler;
@@ -92,6 +94,13 @@ namespace Dynamo.Controls
                 ViewModel.OnViewMouseMove(sender, args);
             };
         }
+
+        private void UnRegisterViewEventHandlers()
+        {
+            watch_view.MouseDown -= ViewModel.OnViewMouseDown;
+            watch_view.MouseUp -= ViewModel.OnViewMouseUp;
+            watch_view.MouseMove -= ViewModel.OnViewMouseMove;
+         }		         
 
         private void UnregisterButtonHandlers()
         {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
+using System.Windows.Media.Media3D;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using DSCoreNodesUI.Input;
@@ -148,9 +149,9 @@ namespace Dynamo.Manipulation
             var ray = BackgroundPreviewViewModel.GetClickRay(mouseButtonEventArgs);
             if (ray == null) return;
 
-            object hitObject;
             foreach (var item in gizmos)
             {
+                object hitObject;
                 if (item.HitTest(ray.GetOriginPoint(), ray.GetDirectionVector(), out hitObject))
                 {
                     GizmoInAction = item;
@@ -184,15 +185,32 @@ namespace Dynamo.Manipulation
         /// <param name="mouseEventArgs"></param>
         protected virtual void MouseMove(object sender, MouseEventArgs mouseEventArgs)
         {
-            if (!CanMoveGizmo(GizmoInAction))
-                return;
-
             var clickRay = BackgroundPreviewViewModel.GetClickRay(mouseEventArgs);
             if (clickRay == null) return;
 
-            var offset = GizmoInAction.GetOffset(clickRay.GetOriginPoint(), clickRay.GetDirectionVector());
-            if (offset.Length < 0.01)
+            if (GizmoInAction == null)
+            {
+                // Check for mouse over highlights on gizmo
+                var gizmos = GetGizmos(false);
+                foreach (var item in gizmos)
+                {
+                    // Delete all transient axis line geometry
+                    BackgroundPreviewViewModel.DeleteGeometryForIdentifier(RenderDescriptions.AxisLine);
+
+                    object hitObject;
+                    if (item.HitTest(clickRay.GetOriginPoint(), clickRay.GetDirectionVector(), out hitObject))
+                    {
+                        var packages = item.GetDrawablesForMouseOverHighlight(RenderPackageFactory);
+                        BackgroundPreviewViewModel.AddGeometryForRenderPackages(packages);
+                    }
+                }
                 return;
+            }
+
+            if (!CanMoveGizmo(GizmoInAction)) return;
+
+            var offset = GizmoInAction.GetOffset(clickRay.GetOriginPoint(), clickRay.GetDirectionVector());
+            if (offset.Length < 0.01) return;
 
             newPosition = OnGizmoMoved(GizmoInAction, offset);
         }
@@ -441,6 +459,57 @@ namespace Dynamo.Manipulation
         }
         #endregion
     }
+
+
+    internal static class PointExtensions
+    {
+        public static Point ToPoint(this Point3D point)
+        {
+            return Point.ByCoordinates(point.X, point.Y, point.Z);
+        }
+
+        public static Vector ToVector(this Vector3D vec)
+        {
+            return Vector.ByCoordinates(vec.X, vec.Y, vec.Z);
+        }
+    }
+
+    internal static class RayExtensions
+    {
+        private const double axisScaleFactor = 100;
+        private const double rayScaleFactor = 10000;
+
+        public static Line ToLine(this IRay ray)
+        {
+            var origin = ray.Origin.ToPoint();
+            var direction = ray.Direction.ToVector();
+            return Line.ByStartPointEndPoint(origin, origin.Add(direction.Scale(rayScaleFactor)));
+        }
+
+        public static Line ToOriginCenteredLine(this IRay ray)
+        {
+            var origin = ray.Origin.ToPoint();
+            var direction = ray.Direction.ToVector();
+            return ToOriginCenteredLine(origin, direction);
+        }
+
+        public static Line ToOriginCenteredLine(Point origin, Vector axis)
+        {
+            return Line.ByStartPointEndPoint(origin.Add(axis.Scale(-axisScaleFactor)),
+                origin.Add(axis.Scale(axisScaleFactor)));
+        }
+
+        public static Point GetOriginPoint(this IRay ray)
+        {
+            return ray.Origin.ToPoint();
+        }
+
+        public static Vector GetDirectionVector(this IRay ray)
+        {
+            return ray.Direction.ToVector();
+        }
+    }
+
 
     public class CompositeManipulator : INodeManipulator
     {
