@@ -16,6 +16,12 @@ using Dynamo.Publish.Properties;
 using Greg;
 using Reach.Messages.Data;
 using Reach.Upload;
+using System.Threading.Tasks;
+using Greg.AuthProviders;
+using System.Reflection;
+using System.IO;
+using Dynamo.PackageManager.UI;
+using System.Configuration;
 
 namespace Dynamo.Publish
 {
@@ -29,6 +35,7 @@ namespace Dynamo.Publish
         private MenuItem inviteMenuItem; 
         private MenuItem manageCustomizersMenuItem;
         private Separator separator = new Separator();
+        private ShareWorkspaceClient shareWorkspaceClient;
  
         #region IViewExtension implementation
 
@@ -101,7 +108,7 @@ namespace Dynamo.Publish
 
         #endregion
 
-        #region Helpers
+        #region Helpers        
 
         private MenuItem GenerateMenuItem()
         {
@@ -111,29 +118,105 @@ namespace Dynamo.Publish
             var isEnabled = loadedParams.CurrentWorkspaceModel is HomeWorkspaceModel && startupParams.AuthProvider != null;
             item.IsEnabled = isEnabled;
 
+            // Open the configuration file using the dll location.
+            var config = ConfigurationManager.OpenExeConfiguration(typeof(PublishModel).Assembly.Location);
+            // Get the appSettings section.
+            var appSettings = (AppSettingsSection)config.GetSection("appSettings");
+            var needsTou = Convert.ToBoolean(appSettings.Settings["NeedsTou"].Value);
+
+            // TOU is not necessary
+            if (!needsTou)
+            {
+                item.Click += (sender, args) => { _processPublish(); };
+                return item;
+            }
+
+            var baseUrl = appSettings.Settings["BaseUrl"].Value;
+
+            shareWorkspaceClient = new ShareWorkspaceClient(baseUrl, startupParams.AuthProvider);
+
             item.Click += (sender, args) =>
             {
-                var model = new PublishModel(startupParams.AuthProvider, startupParams.CustomNodeManager);
-                model.MessageLogged += this.OnMessageLogged;
-
-                var viewModel = new PublishViewModel(model)
+                //_processPublish();
+                Task<bool>.Factory.StartNew(() => shareWorkspaceClient.GetTermsOfUseAcceptanceStatus()).
+                ContinueWith(t =>
                 {
-                    CurrentWorkspaceModel = loadedParams.CurrentWorkspaceModel,
-                    Cameras = ConvertCameraData(loadedParams.BackgroundPreviewViewModel.GetCameraInformation())
-                };
+                    // The above GetTermsOfUseAcceptanceStatus call will get the
+                    // user to sign-in. If the user cancels that sign-in dialog 
+                    // without signing in, we won't show the terms of use dialog,
+                    // simply return from here.
+                    // 
+                    if (startupParams.AuthProvider.LoginState != LoginState.LoggedIn)
+                        return;
 
-                var window = new PublishView(viewModel)
-                {
-                    Owner = loadedParams.DynamoWindow,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                };
+                    var termsOfUseAccepted = t.Result;
+                    if (termsOfUseAccepted)
+                    {
+                        // Terms of use accepted, proceed to publish.
+                        _processPublish();
+                    }
+                    else
+                    {
+                        // Prompt user to accept the terms of use.
+                        ShowTermsOfUseForPublishing();
+                    }
 
-                window.ShowDialog();
-
-                model.MessageLogged -= this.OnMessageLogged;
+                }, TaskScheduler.FromCurrentSynchronizationContext());
             };
 
             return item;
+        }
+
+        private void _processPublish()
+        {
+            var model = new PublishModel(startupParams.AuthProvider, startupParams.CustomNodeManager);
+            model.MessageLogged += this.OnMessageLogged;
+
+            var viewModel = new PublishViewModel(model)
+            {
+                CurrentWorkspaceModel = loadedParams.CurrentWorkspaceModel,
+                Cameras = ConvertCameraData(loadedParams.BackgroundPreviewViewModel.GetCameraInformation())
+            };
+
+            var window = new PublishView(viewModel)
+            {
+                Owner = loadedParams.DynamoWindow,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+
+            window.ShowDialog();
+
+            model.MessageLogged -= this.OnMessageLogged;
+        }
+
+        internal static bool ShowTermsOfUseDialog()
+        {
+            var executingAssemblyPathName = Assembly.GetExecutingAssembly().Location;
+            var rootModuleDirectory = Path.GetDirectoryName(executingAssemblyPathName);
+            var touFilePath = Path.Combine(rootModuleDirectory, "TermsOfUse.rtf");
+
+            var termsOfUseView = new TermsOfUseView(touFilePath);
+            termsOfUseView.ShowDialog();
+            return termsOfUseView.AcceptedTermsOfUse;
+        }
+
+        private void ShowTermsOfUseForPublishing()
+        {
+            if (!ShowTermsOfUseDialog())
+                return; // Terms of use not accepted.
+
+            // If user accepts the terms of use, then update the record on 
+            // the server, before proceeding to show the publishing dialog. 
+            // This method is invoked on the UI thread, so when the server call 
+            // returns, invoke the publish dialog on the UI thread's context.
+            // 
+            Task<bool>.Factory.StartNew(() => shareWorkspaceClient.SetTermsOfUseAcceptanceStatus()).
+                ContinueWith(t =>
+                {
+                    if (t.Result)
+                        _processPublish();
+                },
+                TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         /// <summary>
