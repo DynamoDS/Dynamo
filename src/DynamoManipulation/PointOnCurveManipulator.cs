@@ -41,12 +41,15 @@ namespace Dynamo.Manipulation
 
         #region abstract method implementation
 
-        protected override IEnumerable<IGizmo> GetGizmos(bool createIfNone)
+        protected override IEnumerable<IGizmo> GetGizmos(bool createOrUpdate)
         {
-            if (gizmo == null && !createIfNone)
+            if (gizmo == null && !createOrUpdate)
                 yield break;
 
-            UpdateGizmo();
+            if (createOrUpdate)
+            {
+                UpdateGizmo();
+            }
 
             yield return gizmo;
         }

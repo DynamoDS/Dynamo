@@ -66,9 +66,9 @@ namespace Dynamo.Manipulation
         /// <summary>
         /// Returns list of Gizmos used by this manipulator.
         /// </summary>
-        /// <param name="createIfNone">Whether to create new gizmo if not already present.</param>
+        /// <param name="createOrUpdate">Whether to create new gizmo or to update an existing one.</param>
         /// <returns>List of Gizmos.</returns>
-        protected abstract IEnumerable<IGizmo> GetGizmos(bool createIfNone);
+        protected abstract IEnumerable<IGizmo> GetGizmos(bool createOrUpdate);
 
         /// <summary>
         /// Implement to analyze inputs to the manipulator node and initialize them
@@ -140,8 +140,7 @@ namespace Dynamo.Manipulation
             GizmoInAction = null; //Reset Drag.
 
             var gizmos = GetGizmos(false);
-            if (!Active || !IsEnabled() || null == gizmos || !gizmos.Any())
-                return;
+            if (!Active || !IsEnabled() || null == gizmos || !gizmos.Any()) return;
 
             var ray = BackgroundPreviewViewModel.GetClickRay(mouseButtonEventArgs);
             if (ray == null) return;
