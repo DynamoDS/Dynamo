@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.IO;
 using System.Linq;  
@@ -21,6 +22,7 @@ using Dynamo.Models;
 using Dynamo.Properties;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using DynamoServices;
 using ProtoCore.Namespace;
 using Utils = Dynamo.Graph.Nodes.Utilities;
 
@@ -74,6 +76,7 @@ namespace Dynamo.Graph.Workspaces
         private readonly UndoRedoRecorder undoRecorder;
         private bool hasNodeInSyncWithDefinition;
         private Guid guid;
+        private bool workspaceLoaded;
 
         #endregion
 
@@ -268,6 +271,10 @@ namespace Dynamo.Graph.Workspaces
             RegisterConnector(obj);
             var handler = ConnectorAdded;
             if (handler != null) handler(obj);
+            if (workspaceLoaded)
+            {
+                obj.End.Owner.ComputeUpstreamNodes();               
+            }
         }
 
         private void RegisterConnector(ConnectorModel connector)
@@ -288,6 +295,10 @@ namespace Dynamo.Graph.Workspaces
 
             var handler = ConnectorDeleted;
             if (handler != null) handler(obj);
+            if (workspaceLoaded)
+            {
+                obj.End.Owner.ComputeUpstreamNodes();
+            }
         }
 
         /// <summary>
@@ -688,7 +699,18 @@ namespace Dynamo.Graph.Workspaces
             foreach (var connector in Connectors)
                 RegisterConnector(connector);
 
-            SetModelEventOnAnnotation();
+            SetModelEventOnAnnotation(); 
+            WorkspaceEvents.WorkspaceAdded +=WorkspaceEvents_WorkspaceAdded;
+        }
+
+        private void WorkspaceEvents_WorkspaceAdded(WorkspacesModificationEventArgs args)
+        {
+            if (args.Id == this.Guid)
+            {
+                this.workspaceLoaded = true;
+                var frozenNodes = nodes.Where(x => x.isFrozenExplicitly).ToList();
+                frozenNodes.ForEach(z => z.ComputeUpstreamNodes());
+            }
         }
 
         /// <summary>
@@ -719,6 +741,7 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         public virtual void Clear()
         {
+            this.workspaceLoaded = false;
             Log(Resources.ClearingWorkSpace);
 
             DynamoSelection.Instance.ClearSelection();

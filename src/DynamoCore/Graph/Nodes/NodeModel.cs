@@ -45,7 +45,7 @@ namespace Dynamo.Graph.Nodes
 
         ///A flag indicating whether the node has been explicitly frozen.
         internal bool isFrozenExplicitly;
-      
+
         /// <summary>
         /// The cached value of this node. The cachedValue object is protected by the cachedValueMutex
         /// as it may be accessed from multiple threads concurrently. 
@@ -73,6 +73,8 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public virtual string CreationName { get { return this.Name; } }
 
+        public HashSet<NodeModel> Upstream = new HashSet<NodeModel>();
+
         #endregion
 
         #region events
@@ -96,7 +98,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         internal event DispatchedToUIThreadHandler DispatchedToUI;
-      
+
         #endregion
 
         #region public properties
@@ -106,7 +108,7 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         [Obsolete("InPortData is deprecated, please use the InPortNamesAttribute, InPortDescriptionsAttribute, and InPortTypesAttribute instead.")]
         public ObservableCollection<PortData> InPortData { get; private set; }
-        
+
         /// <summary>
         ///     Definitions for the Output Ports of this NodeModel.
         /// </summary>
@@ -398,9 +400,9 @@ namespace Dynamo.Graph.Nodes
         {
             Type type = GetType();
             object[] attribs = type.GetCustomAttributes(typeof(NodeCategoryAttribute), false);
-            
+
             if (type.Namespace != "Dynamo.Graph.Nodes" || type.IsAbstract || attribs.Length <= 0
-                || !type.IsSubclassOf(typeof(NodeModel))) 
+                || !type.IsSubclassOf(typeof(NodeModel)))
                 return "";
 
             var elCatAttrib = attribs[0] as NodeCategoryAttribute;
@@ -558,7 +560,7 @@ namespace Dynamo.Graph.Nodes
             get { return displayLabels; }
             set
             {
-                if (displayLabels == value) 
+                if (displayLabels == value)
                     return;
 
                 displayLabels = value;
@@ -602,7 +604,7 @@ namespace Dynamo.Graph.Nodes
             else
             {
                 string id = AstIdentifierBase + "_out" + outputIndex;
-               return AstFactory.BuildIdentifier(id);
+                return AstFactory.BuildIdentifier(id);
             }
         }
 
@@ -613,10 +615,47 @@ namespace Dynamo.Graph.Nodes
         /// <returns></returns>
         public virtual ProtoCore.Type GetTypeHintForOutput(int index)
         {
-             return ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeVar);
+            return ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeVar);
         }
 
-      
+        public void ComputeUpstreamNodes()
+        {
+            //first compute upstream nodes for this node
+            this.Upstream = new HashSet<NodeModel>();
+            var inpNodes = this.InputNodes.Values;
+
+            foreach (var inputnode in inpNodes.Where(x => x != null))
+            {
+                this.Upstream.Add(inputnode.Item2);
+                foreach (var upstreamNode in inputnode.Item2.Upstream) 
+                {
+                    this.Upstream.Add(upstreamNode);
+                }
+            }
+
+            //then for downstream nodes
+            HashSet<NodeModel> downStreamNodes = new HashSet<NodeModel>();
+            this.GetDownstreamNodes(this, downStreamNodes);
+
+            foreach (var downstreamNode in downStreamNodes)
+            {
+                downstreamNode.Upstream = new HashSet<NodeModel>();
+                var currentinpNodes = downstreamNode.InputNodes.Values;
+
+                foreach (var inputnode in currentinpNodes.Where(x => x != null))
+                {
+                    downstreamNode.Upstream.Add(inputnode.Item2);
+                    foreach (var upstreamNode in inputnode.Item2.Upstream)
+                    {
+                        downstreamNode.Upstream.Add(upstreamNode);
+                    }
+                }
+              
+            }
+
+            RaisePropertyChanged("IsFrozen");
+        }
+
         /// <summary>
         /// A flag indicating whether the node is frozen.
         /// When a node is frozen, the node, and all nodes downstream will not participate in execution.
@@ -629,66 +668,42 @@ namespace Dynamo.Graph.Nodes
         {
             get
             {
-                return isFrozenExplicitly || IsAnyParentFrozen();
-                
+                return IsAnyUpstreamFrozen() || isFrozenExplicitly;
             }
             set
             {
-                isFrozenExplicitly = value;                    
+                isFrozenExplicitly = value;
                 //If the node is Unfreezed then Mark all the downstream nodes as
                 // modified. This is essential recompiling the AST.
                 if (!value)
-                {                   
-                    MarkDownStreamNodesAsModified(this);                    
-                    OnNodeModified();
+                { 
+                    MarkDownStreamNodesAsModified(this);
+                    OnNodeModified();                   
                 }
                 //If the node is frozen, then do not execute the graph immediately.
                 // delete the node and its downstream nodes from AST.
                 else
                 {
-                    OnUpdateASTCollection();
-                }                   
-            }
-        }
-       
-        #endregion   
-  
-        #region freeze execution
-
-        /// <summary>
-        /// Determines whether any of the immediate parent node is frozen
-        /// </summary>
-        /// <returns></returns>
-        private bool IsAnyParentFrozen()
-        {
-            var node = this;
-            bool parentFrozen = false;
-            var sets = node.InputNodes.Values;
-            var inpNodes = sets.Where(x => x != null).Select(z => z.Item2).Distinct();
-            foreach (var inode in inpNodes)
-            {
-                if (inode.isFrozenExplicitly || inode.IsFrozen)
-                {
-                    parentFrozen = true;
-                    break;
+                    ComputeUpstreamNodes();
+                    OnUpdateASTCollection();                  
                 }
             }
-
-            return parentFrozen;
         }
+
+        #endregion
+
+        #region freeze execution
         /// <summary>
         /// Determines whether any of the upstream node is frozen.
         /// </summary>
         /// <returns></returns>
         internal bool IsAnyUpstreamFrozen()
         {
-            bool ret = false;
-            List<NodeModel> nodes = new List<NodeModel>();
-            return CheckIfAnyUpstreamNodeIsFrozen(this, nodes, ref ret);
+            return Upstream.Any(x => x.isFrozenExplicitly);
         }
 
         private bool CheckIfAnyUpstreamNodeIsFrozen(NodeModel node, List<NodeModel> nodes, ref bool ret)
-        {             
+        {
             var sets = node.InputNodes.Values;
             var inpNodes = sets.Where(x => x != null).Select(z => z.Item2).Distinct();
             foreach (var inode in inpNodes)
@@ -714,15 +729,16 @@ namespace Dynamo.Graph.Nodes
         }
 
         private void MarkDownStreamNodesAsModified(NodeModel node)
-        {                         
+        {
             HashSet<NodeModel> gathered = new HashSet<NodeModel>();
-            GetDownstreamNodes(node,gathered);
+            GetDownstreamNodes(node, gathered);
             foreach (var iNode in gathered)
             {
-                iNode.executionHint = ExecutionHints.Modified;                
+                iNode.executionHint = ExecutionHints.Modified;
             }
         }
 
+        
         /// <summary>
         /// Gets the downstream nodes for the given node.
         /// </summary>
@@ -743,7 +759,7 @@ namespace Dynamo.Graph.Nodes
                 GetDownstreamNodes(outputNode, gathered);
             }
         }
-        #endregion  
+        #endregion
 
         protected NodeModel()
         {
@@ -777,7 +793,7 @@ namespace Dynamo.Graph.Nodes
 
             RaisesModificationEvents = true;
         }
-     
+
         /// <summary>
         ///     Gets the most recent value of this node stored in an EngineController that has evaluated it.
         /// </summary>
@@ -817,8 +833,8 @@ namespace Dynamo.Graph.Nodes
         {
             if (!RaisesModificationEvents || IsFrozen)
                 return;
-
-            MarkNodeAsModified(forceExecute);           
+           
+            MarkNodeAsModified(forceExecute);
             var handler = Modified;
             if (handler != null) handler(this);
         }
@@ -829,7 +845,7 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public event Action<NodeModel> UpdateASTCollection;
         public virtual void OnUpdateASTCollection()
-        {            
+        {
             var handler = UpdateASTCollection;
             if (handler != null) handler(this);
         }
@@ -901,9 +917,9 @@ namespace Dynamo.Graph.Nodes
                 var fullName = this.GetType().ToString();
                 var astNodeFullName = AstFactory.BuildStringNode(fullName);
                 var arguments = new List<AssociativeNode> { astNodeFullName };
-                var func = AstFactory.BuildFunctionCall(Constants.kNodeAstFailed, arguments); 
+                var func = AstFactory.BuildFunctionCall(Constants.kNodeAstFailed, arguments);
 
-                return new []
+                return new[]
                 {
                     AstFactory.BuildAssignment(AstIdentifierForPreview, func)
                 };
@@ -1020,7 +1036,7 @@ namespace Dynamo.Graph.Nodes
                 return true;
             }
         }
-        
+
         internal void ConnectInput(int inputData, int outputData, NodeModel node)
         {
             inputNodes[inputData] = Tuple.Create(outputData, node);
@@ -1174,7 +1190,7 @@ namespace Dynamo.Graph.Nodes
             State = ElementState.Error;
             ToolTipText = p;
         }
-        
+
         /// <summary>
         /// Set a warning on a node. 
         /// </summary>
@@ -1504,7 +1520,7 @@ namespace Dynamo.Graph.Nodes
 
                         InPorts.Add(p);
                     }
-                    
+
                     return p;
 
                 case PortType.Output:
@@ -1580,7 +1596,7 @@ namespace Dynamo.Graph.Nodes
 
             if (Enumerable.Range(0, InPorts.Count).All(HasInput))
             {
-                s += "(" + nick;                
+                s += "(" + nick;
                 foreach (int data in Enumerable.Range(0, InPorts.Count))
                 {
                     Tuple<int, NodeModel> input;
@@ -1592,7 +1608,7 @@ namespace Dynamo.Graph.Nodes
             else
             {
                 s += "(lambda (" + string.Join(" ", InPorts.Where((_, i) => !HasInput(i)).Select(x => x.PortName))
-                     + ") (" + nick;                
+                     + ") (" + nick;
                 foreach (int data in Enumerable.Range(0, InPorts.Count))
                 {
                     s += " ";
@@ -1627,7 +1643,7 @@ namespace Dynamo.Graph.Nodes
             string name = updateValueParams.PropertyName;
             string value = updateValueParams.PropertyValue;
 
-            switch(name)
+            switch (name)
             {
                 case "NickName":
                     NickName = value;
@@ -1641,7 +1657,7 @@ namespace Dynamo.Graph.Nodes
                     var arr = value.Split(';');
                     for (int i = 0; i < arr.Length; i++)
                     {
-                        var useDef = !bool.Parse(arr[i]); 
+                        var useDef = !bool.Parse(arr[i]);
                         // do not set true, if default value is disabled
                         if (!useDef || InPorts[i].DefaultValueEnabled)
                         {
@@ -1674,8 +1690,8 @@ namespace Dynamo.Graph.Nodes
                     if (bool.TryParse(value, out newIsFrozen))
                     {
                         IsFrozen = newIsFrozen;
-                    }                   
-                    return true;               
+                    }
+                    return true;
             }
 
             return base.UpdateValueCore(updateValueParams);
@@ -1707,7 +1723,7 @@ namespace Dynamo.Graph.Nodes
             helper.SetAttribute("lacing", ArgumentLacing.ToString());
             helper.SetAttribute("isSelectedInput", IsSelectedInput.ToString());
             helper.SetAttribute("IsFrozen", isFrozenExplicitly);
-           
+
             var portsWithDefaultValues =
                 inPorts.Select((port, index) => new { port, index })
                    .Where(x => x.port.UsingDefaultValue);
@@ -1734,8 +1750,8 @@ namespace Dynamo.Graph.Nodes
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            var helper = new XmlElementHelper(nodeElement); 
-            
+            var helper = new XmlElementHelper(nodeElement);
+
             if (context != SaveContext.Copy)
                 GUID = helper.ReadGuid("guid", GUID);
 
@@ -1758,8 +1774,8 @@ namespace Dynamo.Graph.Nodes
             isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
             IsSelectedInput = helper.ReadBoolean("isSelectedInput", true);
-            IsFrozen = helper.ReadBoolean("IsFrozen", false);            
-           
+            isFrozenExplicitly = helper.ReadBoolean("IsFrozen", false);
+
             var portInfoProcessed = new HashSet<int>();
 
             //read port information
@@ -1800,11 +1816,11 @@ namespace Dynamo.Graph.Nodes
                 RaisePropertyChanged("IsVisible");
                 RaisePropertyChanged("IsUpstreamVisible");
                 RaisePropertyChanged("IsFrozen");
-               
+
                 // Notify listeners that the position of the node has changed,
                 // then all connected connectors will also redraw themselves.
                 ReportPosition();
-                
+
             }
         }
 
@@ -1813,7 +1829,7 @@ namespace Dynamo.Graph.Nodes
         #region Dirty Management
         //TODO: Refactor Property into Automatic with private(?) setter
         //TODO: Add RequestRecalc() method to replace setter --steve
-       
+
         /// <summary>
         /// Execution scenarios for a Node to be re-executed
         /// </summary>
@@ -1841,7 +1857,7 @@ namespace Dynamo.Graph.Nodes
         {
             executionHint = ExecutionHints.Modified;
 
-            if(forceExecute)
+            if (forceExecute)
                 executionHint |= ExecutionHints.ForceExecute;
         }
 
@@ -1857,7 +1873,7 @@ namespace Dynamo.Graph.Nodes
         #endregion
 
         #region Visualization Related Methods
-        
+
         /// <summary>
         /// Call this method to asynchronously update the cached MirrorData for 
         /// this NodeModel through DynamoScheduler. AstIdentifierForPreview is 
@@ -1900,8 +1916,8 @@ namespace Dynamo.Graph.Nodes
             var task = asyncTask as QueryMirrorDataAsyncTask;
             if (task == null)
             {
-                throw new InvalidOperationException("Expected a " + typeof(QueryMirrorDataAsyncTask).Name 
-                    + ", but got a " + asyncTask.GetType().Name );
+                throw new InvalidOperationException("Expected a " + typeof(QueryMirrorDataAsyncTask).Name
+                    + ", but got a " + asyncTask.GetType().Name);
             }
 
             this.CachedValue = task.MirrorData;
@@ -1918,7 +1934,7 @@ namespace Dynamo.Graph.Nodes
         /// <param name="forceUpdate">Normally, render packages are only generated when the node's IsUpdated parameter is true.
         /// By setting forceUpdate to true, the render packages will be updated.</param>
         /// <returns>Flag which indicates if geometry update has been scheduled</returns>
-        public virtual bool RequestVisualUpdateAsync(IScheduler scheduler, 
+        public virtual bool RequestVisualUpdateAsync(IScheduler scheduler,
             EngineController engine, IRenderPackageFactory factory, bool forceUpdate = false)
         {
             var initParams = new UpdateRenderPackageParams()
@@ -1953,7 +1969,7 @@ namespace Dynamo.Graph.Nodes
             if (task.RenderPackages.Any())
             {
                 var packages = new List<IRenderPackage>();
-                
+
                 packages.AddRange(task.RenderPackages);
                 packages.AddRange(OnRequestRenderPackages());
 
@@ -2059,12 +2075,12 @@ namespace Dynamo.Graph.Nodes
         }
 
         protected bool ShouldDisplayPreviewCore { get; set; }
-        
+
         public event Action<NodeModel, IEnumerable<IRenderPackage>> RenderPackagesUpdated;
 
         private void OnRenderPackagesUpdated(IEnumerable<IRenderPackage> packages)
         {
-            if(RenderPackagesUpdated != null)
+            if (RenderPackagesUpdated != null)
             {
                 RenderPackagesUpdated(this, packages);
             }
@@ -2104,7 +2120,7 @@ namespace Dynamo.Graph.Nodes
         Middle,
         Last
     }
-    
+
     [Flags]
     public enum SnapExtensionEdges
     {
@@ -2116,7 +2132,7 @@ namespace Dynamo.Graph.Nodes
     public delegate void PortsChangedHandler(object sender, EventArgs e);
 
     internal delegate void DispatchedToUIThreadHandler(object sender, UIDispatcherEventArgs e);
-    
+
     public class UIDispatcherEventArgs : EventArgs
     {
         public UIDispatcherEventArgs(Action a)
