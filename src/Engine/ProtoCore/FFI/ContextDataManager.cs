@@ -178,10 +178,10 @@ namespace ProtoFFI
             func.Value = func.Name = ProtoCore.DSASM.Constants.kImportData;
 
             var paramAppName = new ProtoCore.AST.AssociativeAST.StringNode();
-            paramAppName.Value = appname;
+            paramAppName.value = appname;
 
             var paramConnectionString = new ProtoCore.AST.AssociativeAST.StringNode();
-            paramConnectionString.Value = connectionstring;
+            paramConnectionString.value = connectionstring;
 
             var funcCall = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
             funcCall.Function = func;

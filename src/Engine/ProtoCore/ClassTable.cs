@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace ProtoCore.DSASM
 {
-    [System.Diagnostics.DebuggerDisplay("{Name}, classId = {ID}")]
+    [System.Diagnostics.DebuggerDisplay("{name}, classId = {classId}")]
     public class ClassNode
     {
         public string Name { get; set; }
@@ -211,7 +211,7 @@ namespace ProtoCore.DSASM
             {
                 int myClassIndex = TypeSystem.classTable.IndexOf(Name);
                 functionHostClassIndex = myClassIndex;
-                procNode = ProcTable.Procedures[functionIndex];
+                procNode = ProcTable.procList[functionIndex];
 
                 if (classScope == ProtoCore.DSASM.Constants.kInvalidIndex)
                 {
@@ -250,7 +250,7 @@ namespace ProtoCore.DSASM
                 return null;
             }
 
-            ProcedureNode procNode = ProcTable.GetFunctionsByName(procName).FirstOrDefault();
+            ProcedureNode procNode = ProcTable.GetFunctionsBy(procName).FirstOrDefault();
             if (procNode != null)
             {
                 return procNode;
@@ -271,7 +271,7 @@ namespace ProtoCore.DSASM
         public ProcedureNode GetFirstMemberFunctionBy(string procName, int argCount)
         {
             if (ProcTable == null)            {                return null;            }
-            ProcedureNode procNode = ProcTable.GetFunctionsByNameAndArgumentNumber(procName, argCount).FirstOrDefault();
+            ProcedureNode procNode = ProcTable.GetFunctionsBy(procName, argCount).FirstOrDefault();
             if (procNode != null)
             {
                 return procNode;
@@ -296,7 +296,7 @@ namespace ProtoCore.DSASM
                 return null;
             }
 
-            return  ProcTable.GetFunctionsByNameAndArgumentNumber(procName, argCount)
+            return  ProcTable.GetFunctionsBy(procName, argCount)
                           .Where(p => p.IsConstructor)
                           .FirstOrDefault();
         }
@@ -308,7 +308,7 @@ namespace ProtoCore.DSASM
                 return null;
             }
 
-            ProcedureNode procNode = ProcTable.GetFunctionsByName(procName)
+            ProcedureNode procNode = ProcTable.GetFunctionsBy(procName)
                                            .Where(p => p.IsStatic)
                                            .FirstOrDefault();
             if (procNode != null)
@@ -335,7 +335,7 @@ namespace ProtoCore.DSASM
                 return null;
             }
 
-            ProcedureNode procNode = ProcTable.GetFunctionsByNameAndArgumentNumber(procName, argCount)
+            ProcedureNode procNode = ProcTable.GetFunctionsBy(procName, argCount)
                                            .Where(p => p.IsStatic)
                                            .FirstOrDefault();
             if (procNode != null)
@@ -364,9 +364,12 @@ namespace ProtoCore.DSASM
 
             Validity.Assert(null != variableName && variableName.Length > 0);
             string getterName = ProtoCore.DSASM.Constants.kGetterPrefix + variableName;
-
-            var procNode = ProcTable.GetFunctionsByName(getterName).FirstOrDefault();
-            return procNode;
+            int index = ProcTable.IndexOfFirst(getterName);
+            if (ProtoCore.DSASM.Constants.kInvalidIndex == index)
+            {
+                return null;
+            }
+            return ProcTable.procList[index];
         }
 
         public bool IsMemberVariable(SymbolNode symbol)
@@ -391,7 +394,7 @@ namespace ProtoCore.DSASM
                 }
                 else
                 {
-                    foreach (ProcedureNode procNode in ProcTable.Procedures)
+                    foreach (ProcedureNode procNode in ProcTable.procList)
                     {
                         if (CoreUtils.IsDisposeMethod(procNode.Name) && procNode.ArgumentInfos.Count == 0)
                         {

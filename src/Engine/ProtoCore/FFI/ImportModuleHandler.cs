@@ -153,12 +153,12 @@ namespace ProtoFFI
                 if (classNode != null)
                 {
                     ProtoCore.AST.AssociativeAST.ClassDeclNode importedClass = null;
-                    if (TryGetClassNode(importedCodeBlock, classNode.ClassName, out importedClass))
+                    if (TryGetClassNode(importedCodeBlock, classNode.className, out importedClass))
                     {
                         bool dummyClassNode = IsEmptyClassNode(classNode);
                         bool dummyImportClass = IsEmptyClassNode(importedClass);
 
-                        Validity.Assert(dummyImportClass || dummyClassNode, string.Format("{0} is imported more than once!!", classNode.ClassName));
+                        Validity.Assert(dummyImportClass || dummyClassNode, string.Format("{0} is imported more than once!!", classNode.className));
                         if (dummyImportClass && !dummyClassNode)
                         {
                             importedNode.CodeNode.Body.Remove(importedClass);
@@ -182,10 +182,10 @@ namespace ProtoFFI
             if (classNode.IsExternLib && null == classNode.ExternLibName)
                 return true;
 
-            if (classNode.Procedures.Count > 0)
+            if (classNode.funclist.Count > 0)
                 return false;
 
-            if (classNode.Variables.Count > 0)
+            if (classNode.varlist.Count > 0)
                 return false;
 
             return true;
@@ -215,7 +215,7 @@ namespace ProtoFFI
             foreach (var item in node.Body)
             {
                 ProtoCore.AST.AssociativeAST.ClassDeclNode clsnode = item as ProtoCore.AST.AssociativeAST.ClassDeclNode;
-                if (clsnode != null && clsnode.ClassName == typeName)
+                if (clsnode != null && clsnode.className == typeName)
                 {
                     classNode = clsnode;
                     return true;

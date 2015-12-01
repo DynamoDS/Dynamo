@@ -48,11 +48,6 @@ namespace Dynamo.Utilities
             internalElement.SetAttribute(name, value.ToString());
         }
 
-        public void SetAttribute(string name, bool? value)
-        {
-            internalElement.SetAttribute(name, value.ToString());
-        }
-
         #endregion
 
         #region Attributes - Read Methods
@@ -107,7 +102,7 @@ namespace Dynamo.Utilities
 
             return result;
         }
-       
+
         public string ReadString(string attribName)
         {
             XmlAttribute attrib = GetGuaranteedAttribute(attribName);
@@ -164,8 +159,6 @@ namespace Dynamo.Utilities
         }
 
         #endregion
-
-       
     }
 }
 

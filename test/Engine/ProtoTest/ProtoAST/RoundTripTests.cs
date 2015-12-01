@@ -311,7 +311,7 @@ namespace ProtoTest.ProtoAST
 
             // Create the class node AST
             ProtoCore.AST.AssociativeAST.ClassDeclNode classDefNode = new ProtoCore.AST.AssociativeAST.ClassDeclNode();
-            classDefNode.ClassName = "bar";
+            classDefNode.className = "bar";
 
             // Create the property AST
             ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode();
@@ -323,7 +323,7 @@ namespace ProtoTest.ProtoAST
                 rank = 0,
                 UID = (int)ProtoCore.PrimitiveType.kTypeInt
             };
-            classDefNode.Variables.Add(varDeclNode);
+            classDefNode.varlist.Add(varDeclNode);
 
             astList.Add(classDefNode);
             astListcopy.Add(new ProtoCore.AST.AssociativeAST.ClassDeclNode(classDefNode));
@@ -453,10 +453,10 @@ namespace ProtoTest.ProtoAST
 
             // Create the class node AST
             ProtoCore.AST.AssociativeAST.ClassDeclNode classDefNode = new ProtoCore.AST.AssociativeAST.ClassDeclNode();
-            classDefNode.ClassName = "bar";
+            classDefNode.className = "bar";
 
             // Add the member function 'foo'
-            classDefNode.Procedures.Add(funcDefNode);
+            classDefNode.funclist.Add(funcDefNode);
 
 
             // Create the property AST
@@ -469,7 +469,7 @@ namespace ProtoTest.ProtoAST
                 rank = 0,
                 UID = (int)ProtoCore.PrimitiveType.kTypeInt
             };
-            classDefNode.Variables.Add(varDeclNode);
+            classDefNode.varlist.Add(varDeclNode);
 
 
             // Add the constructed class AST
@@ -558,7 +558,7 @@ namespace ProtoTest.ProtoAST
 
             foreach (var stmt in statements)
             {
-                var cbn = ProtoCore.Utils.ParserUtils.Parse(stmt);
+                var cbn = ProtoCore.Utils.ParserUtils.Parse(stmt) as ProtoCore.AST.AssociativeAST.CodeBlockNode;
                 if (cbn != null)
                 {
                     foreach (var item in cbn.Body)
@@ -574,7 +574,7 @@ namespace ProtoTest.ProtoAST
 
             foreach (var stmt in new_statements)
             {
-                var cbn = ProtoCore.Utils.ParserUtils.Parse(stmt);
+                var cbn = ProtoCore.Utils.ParserUtils.Parse(stmt) as ProtoCore.AST.AssociativeAST.CodeBlockNode;
                 if (cbn != null)
                 {
                     foreach (var item in cbn.Body)

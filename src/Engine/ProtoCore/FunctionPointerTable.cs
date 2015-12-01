@@ -34,11 +34,11 @@ namespace ProtoCore.DSASM
 
                 if (classScope != Constants.kGlobalScope)
                 {
-                    procNode = runtimeCore.DSExecutable.classTable.ClassNodes[classScope].ProcTable.Procedures[functionIndex];
+                    procNode = runtimeCore.DSExecutable.classTable.ClassNodes[classScope].ProcTable.procList[functionIndex];
                 }
                 else
                 {
-                    procNode = runtimeCore.DSExecutable.CompleteCodeBlocks[blockId].procedureTable.Procedures[functionIndex];
+                    procNode = runtimeCore.DSExecutable.CompleteCodeBlocks[blockId].procedureTable.procList[functionIndex];
                 }
 
                 return true;

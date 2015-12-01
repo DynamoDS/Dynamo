@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;  
+using System.Linq;
 using System.Xml;
 using Dynamo.Core;
 using Dynamo.Engine;
@@ -410,14 +410,6 @@ namespace Dynamo.Graph.Workspaces
             } 
         }
 
-        public IEnumerable<NodeModel> CurrentSelection
-        {
-            get
-            {
-                return DynamoSelection.Instance.Selection.OfType<NodeModel>();
-            }
-        }
-
         /// <summary>
         /// List of subgraphs for graph layout algorithm.
         /// </summary>
@@ -816,8 +808,7 @@ namespace Dynamo.Graph.Workspaces
         {
             node.Modified += NodeModified;
             node.ConnectorAdded += OnConnectorAdded;
-            node.UpdateASTCollection +=OnToggleNodeFreeze;
-            
+
             var functionNode = node as Function;
             if (functionNode != null)
             {
@@ -826,11 +817,6 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        protected virtual void OnToggleNodeFreeze(NodeModel obj)
-        {
-             
-        }
-       
         protected virtual void RequestRun()
         {
             
@@ -2454,7 +2440,7 @@ namespace Dynamo.Graph.Workspaces
             
             return document.OuterXml;
         }
-         
+        
         #region ILogSource implementation
         public event Action<ILogMessage> MessageLogged;
 

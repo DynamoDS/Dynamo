@@ -10,12 +10,11 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Media.Imaging;
-using Dynamo.Engine;
-using ProtoCore.Namespace;
+
 
 namespace Dynamo.UI
 {
-    class CodeCompletionData : ICompletionData
+    class CodeBlockCompletionData : ICompletionData
     {
         #region Class data members
 
@@ -46,13 +45,13 @@ namespace Dynamo.UI
 
         #endregion
 
-        public CodeCompletionData(CompletionData completionData)
+        public CodeBlockCompletionData(CompletionData completionData)
         {
             this.Text = completionData.Text;
             this.Stub = completionData.Stub;
             //this.Description = completionData.Description;
             
-            if (CodeCompletionData.TypeToIcon == null)
+            if (CodeBlockCompletionData.TypeToIcon == null)
             {
                 var assembly = Assembly.GetExecutingAssembly();
 

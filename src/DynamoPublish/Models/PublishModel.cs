@@ -14,7 +14,6 @@ using Dynamo.Logging;
 using Reach.Data;
 using Reach.Exceptions;
 using Reach.Upload;
-using Reach.Messages.Data;
 
 namespace Dynamo.Publish.Models
 {

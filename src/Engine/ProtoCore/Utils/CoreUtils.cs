@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using ProtoCore.DSASM;
 using ProtoCore.AST.AssociativeAST;
 
@@ -52,7 +51,7 @@ namespace ProtoCore.Utils
         private static void InsertBinaryOperationMethod(Core core, CodeBlockNode root, Operator op, PrimitiveType r, PrimitiveType op1, PrimitiveType op2, int retRank = 0, int op1rank = 0, int op2rank = 0)
         {
             FunctionDefinitionNode funcDefNode = new FunctionDefinitionNode();
-            funcDefNode.Access = CompilerDefinitions.AccessModifier.kPublic;
+            funcDefNode.access = CompilerDefinitions.AccessModifier.kPublic;
             funcDefNode.IsAssocOperator = true;
             funcDefNode.IsBuiltIn = true;
             funcDefNode.Name = Op.GetOpFunction(op);
@@ -88,7 +87,7 @@ namespace ProtoCore.Utils
         private static void InsertUnaryOperationMethod(Core core, CodeBlockNode root, UnaryOperator op, PrimitiveType r, PrimitiveType operand)
         {
             FunctionDefinitionNode funcDefNode = new FunctionDefinitionNode();
-            funcDefNode.Access = CompilerDefinitions.AccessModifier.kPublic;
+            funcDefNode.access = CompilerDefinitions.AccessModifier.kPublic;
             funcDefNode.IsAssocOperator = true;
             funcDefNode.IsBuiltIn = true;
             funcDefNode.Name = Op.GetUnaryOpFunction(op);
@@ -362,7 +361,7 @@ namespace ProtoCore.Utils
             foreach (AssociativeNode arg in rhsCall.FormalArguments)
             {
                 // The function arguments
-                argList.Exprs.Add(arg);
+                argList.list.Add(arg);
             }
 
 
@@ -414,12 +413,12 @@ namespace ProtoCore.Utils
                 if (fIdent.ArrayDimensions != null)
                 {
                     arrayDimExperList = CoreUtils.BuildArrayExprList(fIdent.ArrayDimensions);
-                    dimCount = arrayDimExperList.Exprs.Count;
+                    dimCount = arrayDimExperList.list.Count;
                 }
                 else if (rhsCall.ArrayDimensions != null)
                 {
                     arrayDimExperList = CoreUtils.BuildArrayExprList(rhsCall.ArrayDimensions);
-                    dimCount = arrayDimExperList.Exprs.Count;
+                    dimCount = arrayDimExperList.list.Count;
                 }
                 else
                 {
@@ -463,7 +462,7 @@ namespace ProtoCore.Utils
             while (arrayNode is ArrayNode)
             {
                 ArrayNode array = arrayNode as ArrayNode;
-                exprlist.Exprs.Add(array.Expr);
+                exprlist.list.Add(array.Expr);
                 arrayNode = array.Type;
             }
             return exprlist;
@@ -757,33 +756,7 @@ namespace ProtoCore.Utils
             return codeblock;
         }
 
-        public static ProcedureNode GetFunctionByName(string name, CodeBlock codeBlock)
-        {
-            if (null == codeBlock)
-            {
-                return null;
-            }
-
-            CodeBlock searchBlock = codeBlock;
-            while (null != searchBlock)
-            {
-                if (null == searchBlock.procedureTable)
-                {
-                    searchBlock = searchBlock.parent;
-                    continue;
-                }
-
-                // The class table is passed just to check for coercion values
-                var procNode = searchBlock.procedureTable.GetFunctionsByName(name).FirstOrDefault();
-                if (procNode != null)
-                    return procNode;
-
-                searchBlock = searchBlock.parent;
-            }
-            return null;
-        }
-
-        public static ProcedureNode GetFunctionBySignature(string name, List<Type> argTypeList, CodeBlock codeblock)
+        public static ProcedureNode GetFirstVisibleProcedure(string name, List<Type> argTypeList, CodeBlock codeblock)
         {
             if (null == codeblock)
             {
@@ -803,7 +776,7 @@ namespace ProtoCore.Utils
                 int procIndex = searchBlock.procedureTable.IndexOf(name, argTypeList);
                 if (Constants.kInvalidIndex != procIndex)
                 {
-                    return searchBlock.procedureTable.Procedures[procIndex];
+                    return searchBlock.procedureTable.procList[procIndex];
                 }
                 searchBlock = searchBlock.parent;
             }

@@ -1,18 +1,18 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Text.RegularExpressions;
+
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Models;
-using System.Windows; 
+using System.Windows;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
-using Dynamo.Graph.Workspaces; 
+using Dynamo.Graph.Workspaces;
 using Dynamo.Selection;
 using Dynamo.Wpf.ViewModels.Core;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
@@ -42,8 +42,7 @@ namespace Dynamo.ViewModels
         NodeModel nodeLogic;
         private double zIndex = 3;
         private string astText = string.Empty;
-        private bool isexplictFrozen;
-        private bool canToggleFrozen = true;
+
         #endregion
 
         #region public members
@@ -330,82 +329,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        /// <summary>
-        /// Gets a value indicating whether this model is frozen.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is frozen; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsFrozen
-        {
-            get
-            {              
-                return NodeModel.IsFrozen;
-            }
-            set
-            {
-                NodeModel.IsFrozen = value;                    
-            }
-        }
-        
-        /// <summary>
-        /// A flag indicating whether the node is set to freeze by the user.
-        /// </summary>
-        /// <value>
-        ///  Returns true if the node has been frozen explicitly by the user, otherwise false.
-        /// </value>        
-        public bool IsFrozenExplicitly
-        {
-            get
-            {    
-                //if the node is freeze by the user, then always
-                //check the Freeze property     
-                if (this.NodeLogic.isFrozenExplicitly)
-                {                   
-                    return true;
-                }
-                
-                return false;
-            }             
-        }
-
-        /// <summary>
-        /// A flag indicating whether the underlying NodeModel's IsFrozen property can be toggled.      
-        /// </summary>
-        /// <value>
-        ///  This will return false if this node is not the root of the freeze operation, otherwise it will return 
-        ///  true.
-        /// </value>
-        public bool CanToggleFrozen
-        {
-            get
-            {
-                //this is the default case.
-                if (!this.NodeLogic.isFrozenExplicitly &&
-                      !this.NodeLogic.IsFrozen)
-                {
-                    return true;
-                }
-
-                //If any of the node is set to freeze by the user and 
-                // if that node is frozen by itself, then disable the Freeze property                              
-                if (this.nodeLogic.isFrozenExplicitly && NodeModel.IsAnyUpstreamFrozen())
-                {
-                    return false;
-                }
-                               
-                //if the node is set to freeze by the user     
-                // then enable the Freeze property
-                if (this.NodeLogic.isFrozenExplicitly)                   
-                {
-                    return true;
-                }
-                                
-                return false;
-            }
-            
-        }
-
         #endregion
 
         #region events
@@ -473,9 +396,9 @@ namespace Dynamo.ViewModels
 
             ShowExecutionPreview = workspaceViewModel.DynamoViewModel.ShowRunPreview;
             IsNodeAddedRecently = true;
-            DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;             
+            DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
         }
- 
+
         public NodeViewModel(WorkspaceViewModel workspaceViewModel, NodeModel logic, Size preferredSize)
             :this(workspaceViewModel, logic)
         {
@@ -488,9 +411,6 @@ namespace Dynamo.ViewModels
            CreateGroupCommand.RaiseCanExecuteChanged();
            AddToGroupCommand.RaiseCanExecuteChanged();
            UngroupCommand.RaiseCanExecuteChanged();
-           ToggleIsFrozenCommand.RaiseCanExecuteChanged();
-           RaisePropertyChanged("IsFrozenExplicitly");
-           RaisePropertyChanged("CanToggleFrozen");
         }
 
         void DebugSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -570,6 +490,7 @@ namespace Dynamo.ViewModels
                 case "CurrentWorkspace":
                     RaisePropertyChanged("NodeVisibility");
                     break;
+
             }
         }
 
@@ -636,7 +557,7 @@ namespace Dynamo.ViewModels
                 case "CanUpdatePeriodically":
                     RaisePropertyChanged("EnablePeriodicUpdate");
                     RaisePropertyChanged("PeriodicUpdateVisibility");
-                    break;                 
+                    break;
             }
         }
 
@@ -1033,54 +954,6 @@ namespace Dynamo.ViewModels
             }
 
             return true;
-        }
-
-        private void ToggleIsFrozen(object parameters)
-        {
-            var node = this.nodeLogic;
-            if (node != null)
-            {
-                var oldFrozen = (!node.isFrozenExplicitly).ToString();
-                var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
-                    new[] { node.GUID }, "IsFrozen", oldFrozen);
-
-                DynamoViewModel.Model.ExecuteCommand(command);
-            }
-            else if (DynamoSelection.Instance.Selection.Any())
-            {
-                node = DynamoSelection.Instance.Selection.Cast<NodeModel>().First();
-                node.IsFrozen = !node.IsFrozen;
-            }
-
-            RaisePropertyChanged("IsFrozenExplicitly");
-            RaisePropertyChanged("CanToggleFrozen");
-            RaisePropertyChanged("IsFrozen");
-
-            RaisePropertyChangedOnDownStreamNodes();
-        }
-
-        private bool CanToggleIsFrozen(object parameters)
-        {
-            return DynamoSelection.Instance.Selection.Count() == 1;
-        }
-
-        /// <summary>
-        /// When a node is frozen, raise the IsFrozen property changed event on
-        /// all its downstream nodes, to ensure UI updates correctly.
-        /// </summary>
-        private void RaisePropertyChangedOnDownStreamNodes()
-        {
-            HashSet<NodeModel> nodes = new HashSet<NodeModel>();
-            this.nodeLogic.GetDownstreamNodes(this.nodeLogic, nodes);
-
-            foreach (var inode in nodes)
-            {
-                var current = this.WorkspaceViewModel.Nodes.FirstOrDefault(x => x.NodeLogic == inode);
-                if (current != null)
-                {
-                    current.RaisePropertyChanged("IsFrozen");
-                }
-            }
         }
 
         private void UngroupNode(object parameters)

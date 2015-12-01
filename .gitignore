@@ -86,5 +86,3 @@ src/AssemblySharedInfoGenerator/AssemblySharedInfo.cs
 /src/Libraries/PythonNodeModels/*.resources
 /test/core/dsevaluation/DSFiles/test.ds
 GregStandaloneAuth.dll
-/src/Libraries/Watch3DNodeModels/*.resources
-*.resources

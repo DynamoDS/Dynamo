@@ -141,6 +141,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private bool isDetailedMode = true;
         /// <summary>
         ///  The property specifies which layout(detailed or compact) is used in search view.
         /// </summary>
@@ -148,23 +149,12 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (dynamoViewModel.Model.PreferenceSettings != null)
-                {
-                    return dynamoViewModel.Model.PreferenceSettings.ShowDetailedLayout;
-                }
-                else
-                {
-                    return true;
-                }
+                return isDetailedMode;
             }
             set
             {
-                if (dynamoViewModel.Model.PreferenceSettings != null
-                    && dynamoViewModel.Model.PreferenceSettings.ShowDetailedLayout != value)
-                {
-                    dynamoViewModel.Model.PreferenceSettings.ShowDetailedLayout = value;
-                    RaisePropertyChanged("IsDetailedMode");
-                }
+                isDetailedMode = value;
+                RaisePropertyChanged("IsDetailedMode");
             }
         }
 
@@ -217,7 +207,7 @@ namespace Dynamo.ViewModels
                 strBuilder.Append(", ");
             }
 
-            InstrumentationLogger.LogPiiInfo("Filter-categories", strBuilder.ToString().Trim());
+            InstrumentationLogger.LogPiiInfo("Filter categories", strBuilder.ToString().Trim());
         }
 
         /// <summary>
@@ -261,7 +251,7 @@ namespace Dynamo.ViewModels
             }
             private set
             {
-                searchCategories = value.OrderBy(category => category.Name);
+                searchCategories = value;
                 RaisePropertyChanged("SearchCategories");
             }
         }

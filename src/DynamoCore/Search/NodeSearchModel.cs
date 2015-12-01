@@ -1,6 +1,8 @@
 ﻿using System.Xml;
 using Dynamo.Configuration;
+using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
+using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using DynamoUtilities;
 

@@ -166,11 +166,6 @@ namespace Dynamo.Configuration
         /// </summary>
         public bool ShowEdges { get; set; }
 
-        /// <summary>
-        /// Indicates whether show detailed or compact layout during search.
-        /// </summary>
-        public bool ShowDetailedLayout { get; set; }
-
         /// Indicates the default state of the "Open in Manual Mode"
         /// checkbox in OpenFileDialog
         /// </summary>
@@ -200,7 +195,6 @@ namespace Dynamo.Configuration
             maxNumRecentFiles = DefaultMaxNumRecentFiles;
             ShowEdges = false;
             OpenFileInManualExecutionMode = false;
-            ShowDetailedLayout = true;
 
             BackupInterval = 60000; // 1 minute
             BackupFilesCount = 1;

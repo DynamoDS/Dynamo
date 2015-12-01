@@ -22,7 +22,6 @@ namespace Dynamo.ViewModels
         private DelegateCommand _createGroupCommand;
         private DelegateCommand _ungroupCommand;
         private DelegateCommand _addToGroupCommand;
-        private DelegateCommand _computeRunStateOfTheNodeCommand;
 
         public DelegateCommand RenameCommand
         {
@@ -195,19 +194,6 @@ namespace Dynamo.ViewModels
                         new DelegateCommand(AddToGroup, CanAddToGroup);
 
                 return _addToGroupCommand;
-            }
-        }
-
-        public DelegateCommand ToggleIsFrozenCommand
-        {
-            get
-            {
-                if (_computeRunStateOfTheNodeCommand == null)
-                {
-                    _computeRunStateOfTheNodeCommand = new DelegateCommand(ToggleIsFrozen, CanToggleIsFrozen);
-                }
-
-                return _computeRunStateOfTheNodeCommand;
             }
         }
         

@@ -980,17 +980,6 @@ var06 = g;
             Assert.AreEqual(0, CurrentDynamoModel.LibraryServices.LibraryManagementCore.BuildStatus.Warnings.Count());
         }
 
-
-        [Test]
-        [Category("RegressionTests")]
-        public void TestMultipleIndexingInCodeBlockNode()
-        {
-            string openPath = Path.Combine(TestDirectory, @"core\dsevaluation\TestVariableIndexingInCBN.dyn");
-            RunModel(openPath);
-
-            AssertPreviewValue("7cbc2d85-d837-4969-8eba-36f672c77d6f", 6);
-            AssertPreviewValue("ebb49227-2e2b-4861-b824-1574ba89b455", 6);
-        }
         #endregion
 
 
@@ -1054,7 +1043,7 @@ var06 = g;
 
             var members = type.GetMembers();
 
-            var expected = new[] { "AddWithValueContainer", "CodeCompletionClass", "IsEqualTo", "OverloadedAdd", "StaticFunction", "StaticProp"};
+            var expected = new[] { "CodeCompletionClass", "StaticFunction", "StaticProp" };
             AssertCompletions(members, expected);
         }
 

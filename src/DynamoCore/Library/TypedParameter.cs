@@ -13,7 +13,7 @@ namespace Dynamo.Library
         private string summary = null; // Indicating that it is not initialized.
         private readonly string defaultValueString;
 
-        public TypedParameter(string parameter, ProtoCore.Type type, AssociativeNode defaultValue = null, string shortArgumentName = null, string summary = null)
+        public TypedParameter(string parameter, ProtoCore.Type type, AssociativeNode defaultValue = null, string shortArgumentName = null)
         {
             if (parameter == null)
                 throw new ArgumentNullException("parameter");
@@ -22,12 +22,7 @@ namespace Dynamo.Library
             Type = type;
             DefaultValue = defaultValue;
 
-            if (defaultValue != null)
-                defaultValueString = defaultValue.ToString();
-            else
-                defaultValueString = shortArgumentName;
-
-            this.summary = summary;
+            defaultValueString = shortArgumentName;
         }
 
         public FunctionDescriptor Function { get; private set; }
@@ -35,7 +30,7 @@ namespace Dynamo.Library
         public ProtoCore.Type Type { get; private set; }
         public AssociativeNode DefaultValue { get; private set; }
 
-        public string Summary
+        private string Summary
         {
             get
             {

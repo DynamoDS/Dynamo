@@ -150,7 +150,10 @@ Import_Statement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
             imh = this.ImportModuleHandler;
         }
 
+        //string origModuleName = core.CurrentDSFileName;
+        //core.CurrentDSFileName = moduleName;
         node = imh.Import(moduleName, typeName, alias);
+        //core.CurrentDSFileName = origModuleName;
     .)
 .
 
@@ -210,7 +213,7 @@ Associative_classdecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, Li
                                                 (. ProtoCore.AST.AssociativeAST.ClassDeclNode classnode = new ProtoCore.AST.AssociativeAST.ClassDeclNode(); .)
                                                 (. NodeUtils.SetNodeLocation(classnode, la); classnode.Attributes = attrs; .)
     kw_class        
-    ident                                       (. classnode.ClassName = t.val; .)      
+    ident                                       (. classnode.className = t.val; .)      
                                                 (. isInClass = true;
                                                     if (IsKeyWord(t.val, true))
                                                     {
@@ -220,11 +223,11 @@ Associative_classdecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, Li
     [
         kw_extend
         ident                                   (.
-                                                    classnode.BaseClasses = new List<string>();
-                                                    classnode.BaseClasses.Add(t.val); 
+                                                    classnode.superClass = new List<string>();
+                                                    classnode.superClass.Add(t.val); 
                                                 .)
         {
-            ident                               (. classnode.BaseClasses.Add(t.val); .)  
+            ident                               (. classnode.superClass.Add(t.val); .)  
         }
     ]
     '{'
@@ -243,9 +246,9 @@ Associative_classdecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, Li
                     Associative_constructordecl<out constr, access, attributes>     
                                                 (. if (String.IsNullOrEmpty(constr.Name))
                                                    {
-                                                       constr.Name= classnode.ClassName;
+                                                       constr.Name= classnode.className;
                                                    }
-                                                   classnode.Procedures.Add(constr); 
+                                                   classnode.funclist.Add(constr); 
                                                 .)
                 )
                 |
@@ -258,13 +261,13 @@ Associative_classdecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, Li
                         (
                                                 (. ProtoCore.AST.AssociativeAST.AssociativeNode funcnode; .)
                             Associative_functiondecl<out funcnode, attributes, access, isStatic>      
-                                                (. classnode.Procedures.Add(funcnode); .)
+                                                (. classnode.funclist.Add(funcnode); .)
                         )
                         |
                         (   
                                                 (. ProtoCore.AST.AssociativeAST.AssociativeNode varnode = null; .)  
                             Associative_vardecl<out varnode, access, isStatic, attributes>    
-                                                (. classnode.Variables.Add(varnode); .)
+                                                (. classnode.varlist.Add(varnode); .)
 
                                                 (. 
                                                    if (la.val != ";")
@@ -389,15 +392,16 @@ Associative_constructordecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode co
                                 var returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
                             
                                 constr.Name = methodName; 
+                                constr.Pattern = null; 
                                 constr.ReturnType = returnType;
                                 constr.Signature = argumentSignature as ProtoCore.AST.AssociativeAST.ArgumentSignatureNode;
-                                constr.Access = access; 
+                                constr.access = access; 
                                 constr.Attributes = attrs;
                                 ProtoCore.AST.AssociativeAST.AssociativeNode functionBody = null; 
                             .)
     [
         ':'                                         (. ProtoCore.AST.AssociativeAST.AssociativeNode bnode; .)
-        Associative_BaseConstructorCall<out bnode>  (. constr.BaseConstructor = bnode as ProtoCore.AST.AssociativeAST.FunctionCallNode; .)
+        Associative_BaseConstructorCall<out bnode>  (. constr.baseConstr = bnode as ProtoCore.AST.AssociativeAST.FunctionCallNode; .)
     ]
 (
     Associative_FunctionalMethodBodyMultiLine<out functionBody> 
@@ -485,9 +489,10 @@ Associative_functiondecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node,
                                 f.IsDNI = isDNI; 
                                 f.ExternLibName = externLibName; 
                                 f.Name = methodName; 
+                                f.Name = methodName; 
                                 f.Pattern = pattern; 
                                 f.ReturnType = returnType; 
-                                f.Access = access;
+                                f.access = access;
                                 f.Attributes = attrs;
                                 f.Signature = argumentSignature as ProtoCore.AST.AssociativeAST.ArgumentSignatureNode; 
                                 f.IsStatic = isStatic;
@@ -519,6 +524,9 @@ ident                           (. methodName = t.val; .)
                                     }
                                     ProtoCore.AST.AssociativeAST.AssociativeNode argumentSignature = null;
                                     returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
+
+                                    // TODO Jun: Luke made changes to array representation, handle this
+                                    //returnType.IsArray = false;
                                 .)
 [
     Associative_TypeRestriction<out returnType>
@@ -698,6 +706,20 @@ Associative_ArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, Proto
         ]
     ]
                                     (.  varDeclNode.ArgumentType = argtype; .)          
+
+//    [
+//        '=' 
+//                                    (. ProtoCore.AST.AssociativeAST.AssociativeNode rhsNode; .)     
+//        Associative_Expression<out rhsNode>         
+//                                    (.
+//                                        ProtoCore.AST.AssociativeAST.BinaryExpressionNode bNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
+//                                        bNode.line = varDeclNode.line; bNode.col = varDeclNode.col; 
+//                                        bNode.LeftNode = tNode;
+//                                        bNode.RightNode = rhsNode;
+//                                        bNode.Optr = Operator.assign;
+//                                        varDeclNode.NameNode = bNode;       
+//                                        .)  
+//    ]
                                       (. node = varDeclNode; .)
 .
 
@@ -1577,22 +1599,22 @@ Associative_RangeExpr<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
     Associative_ArithmeticExpression<out node>
     [
                                         (.  ProtoCore.AST.AssociativeAST.RangeExprNode rnode = new ProtoCore.AST.AssociativeAST.RangeExprNode(); 
-                                            rnode.From = node; NodeUtils.SetNodeStartLocation(rnode, node);
+                                            rnode.FromNode = node; NodeUtils.SetNodeStartLocation(rnode, node);
                                             bool hasRangeAmountOperator = false;
                                         .)
         rangeop
         [Associative_rangeAmountOperator<out hasRangeAmountOperator>]
                                         (. rnode.HasRangeAmountOperator = hasRangeAmountOperator; .)
         Associative_ArithmeticExpression<out node>  
-                                        (. rnode.To = node; 
+                                        (. rnode.ToNode = node; 
                                             NodeUtils.SetNodeEndLocation(rnode, node);
                                         .)
         [                               (. RangeStepOperator op; .)
             rangeop
             Associative_rangeStepOperator<out op>   
-                                        (. rnode.StepOperator = op; .)
+                                        (. rnode.stepoperator = op; .)
             Associative_ArithmeticExpression<out node> 
-                                        (. rnode.Step = node;
+                                        (. rnode.StepNode = node;
                                            NodeUtils.SetNodeEndLocation(rnode, node);
                                         .)
         ]
@@ -1665,13 +1687,13 @@ Associative_rangeAmountOperator<out bool hasRangeAmountOperator>
 
 Associative_rangeStepOperator<out RangeStepOperator op>
 =               
-    (. op = RangeStepOperator.StepSize; .)
+    (. op = RangeStepOperator.stepsize; .)
 [ 
     '#'     
-    (. op = RangeStepOperator.Number; .)
+    (. op = RangeStepOperator.num; .)
     | 
     '~'           
-    (. op = RangeStepOperator.ApproximateSize; .)
+    (. op = RangeStepOperator.approxsize; .)
 ]
 .
 
@@ -1841,7 +1863,7 @@ Associative_Char<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 
                 node = new ProtoCore.AST.AssociativeAST.CharNode() 
                 { 
-                    Value = t.val.Substring(1, t.val.Length - 2),
+                    value = t.val.Substring(1, t.val.Length - 2),
                     line = t.line,
                     col = t.col
                 }; 
@@ -1854,7 +1876,7 @@ Associative_String<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
             (. 
                 node = new ProtoCore.AST.AssociativeAST.StringNode() 
                 { 
-                    Value = GetEscapedString(t.val.Length <= 2 ? "" : t.val.Substring(1, t.val.Length - 2)),
+                    value = GetEscapedString(t.val.Length <= 2 ? "" : t.val.Substring(1, t.val.Length - 2)),
                 }; 
                 NodeUtils.SetNodeLocation(node, t);
             .)
@@ -1938,10 +1960,10 @@ Associative_ArrayExprList<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                                         (. NodeUtils.SetNodeStartLocation(exprlist, t); .)
     [
                                         
-        Associative_Expression<out node>            (. exprlist.Exprs.Add(node); .)
+        Associative_Expression<out node>            (. exprlist.list.Add(node); .)
         {
             ','
-            Associative_Expression<out node>        (. exprlist.Exprs.Add(node); .)
+            Associative_Expression<out node>        (. exprlist.list.Add(node); .)
         }
                                         
     ]
@@ -2104,7 +2126,7 @@ Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                                                         var newarray = groupExprNode.ArrayDimensions;
                                                         while (newarray != null)
                                                         {
-                                                            arrayExpr.Exprs.Add(newarray.Expr);
+                                                            arrayExpr.list.Add(newarray.Expr);
                                                             newdims++;
                                                             newarray = (newarray.Type as ProtoCore.AST.AssociativeAST.ArrayNode);
                                                         }

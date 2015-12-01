@@ -78,7 +78,6 @@
     <Compile Include="TestNamespaceResolution.cs" />
     <Compile Include="TestObjects.cs" />
     <Compile Include="TestPersistentNodeValues.cs" />
-    <Compile Include="TestThisOverload.cs" />
     <Compile Include="TestUpdateCount.cs" />
   </ItemGroup>
   <ItemGroup>
