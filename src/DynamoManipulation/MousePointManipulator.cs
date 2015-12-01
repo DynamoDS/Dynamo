@@ -239,11 +239,11 @@ namespace Dynamo.Manipulation
 
             if (null == gizmo)
             {
-                gizmo = new TranslationGizmo(BackgroundPreviewViewModel, origin, CameraPosition, axes[0], axes[1], axes[2], 6);
+                gizmo = new TranslationGizmo(BackgroundPreviewViewModel, RenderPackageFactory, origin, axes[0], axes[1], axes[2], 6);
             }
             else
             {
-                gizmo.UpdateGeometry(origin, CameraPosition, axes[0], axes[1], axes[2], 6);
+                gizmo.UpdateGeometry(origin, axes[0], axes[1], axes[2], 6);
             }
         }
 

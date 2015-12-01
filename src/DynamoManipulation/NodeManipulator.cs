@@ -43,11 +43,10 @@ namespace Dynamo.Manipulation
         private const double NewNodeOffsetX = 350;
         private const double NewNodeOffsetY = 50;
         private Point newPosition;
-        private Point3D? cameraPosition;
 
         protected bool Active { get; set; }
 
-        protected NodeModel Node { get; set; }
+        protected NodeModel Node { get; private set; }
 
         protected IWorkspaceModel WorkspaceModel { get; private set; }
 
@@ -63,14 +62,7 @@ namespace Dynamo.Manipulation
         
         protected IGizmo GizmoInAction { get; private set; }
 
-        protected Point CameraPosition {
-            get
-            {
-                return cameraPosition != null ? 
-                    Point.ByCoordinates(cameraPosition.Value.X, cameraPosition.Value.Y, cameraPosition.Value.Z) : null;
-            }
-        }
-
+        
         #endregion
 
         #region abstract methods
@@ -184,8 +176,13 @@ namespace Dynamo.Manipulation
         protected virtual void MouseUp(object sender, MouseButtonEventArgs e)
         {
             GizmoInAction = null;
-            //Delete all transient axis line geometry
-            BackgroundPreviewViewModel.DeleteGeometryForIdentifier(RenderDescriptions.AxisLine);
+            
+            //Delete all transient graphics for gizmos
+            var gizmos = GetGizmos(false);
+            foreach (var gizmo in gizmos)
+            {
+                gizmo.HideTransientGraphics();
+            }
         }
 
         /// <summary>
@@ -229,8 +226,6 @@ namespace Dynamo.Manipulation
             
             AttachBaseHandlers();
 
-            // Initialize camera position wrt draw manipulator
-            cameraPosition = BackgroundPreviewViewModel.GetCameraPosition();
             DrawManipulator();
         }
 
@@ -377,18 +372,8 @@ namespace Dynamo.Manipulation
             BackgroundPreviewViewModel.ViewMouseMove += MouseMove;
             BackgroundPreviewViewModel.ViewMouseDown += MouseDown;
             BackgroundPreviewViewModel.ViewMouseUp += MouseUp;
-            BackgroundPreviewViewModel.ViewCameraChanged += OnViewCameraChanged;
 
             Node.RequestRenderPackages += GenerateRenderPackages;
-        }
-
-        private void OnViewCameraChanged(object o, RoutedEventArgs routedEventArgs)
-        {
-            cameraPosition = routedEventArgs.Source as Point3D?;
-           
-            // Redraw Gizmos
-            var packages = BuildRenderPackage();
-            BackgroundPreviewViewModel.AddGeometryForRenderPackages(packages);
         }
 
         /// <summary>
@@ -440,6 +425,7 @@ namespace Dynamo.Manipulation
             foreach (var item in gizmos)
             {
                 BackgroundPreviewViewModel.DeleteGeometryForIdentifier(item.Name);
+                item.Dispose();
             }
         }
 
@@ -452,12 +438,12 @@ namespace Dynamo.Manipulation
             var gizmos = GetGizmos(false);
             foreach (var item in gizmos)
             {
-                item.UnhighlightGizmo(BackgroundPreviewViewModel);
+                item.UnhighlightGizmo();
 
                 object hitObject;
                 if (item.HitTest(clickRay.GetOriginPoint(), clickRay.GetDirectionVector(), out hitObject))
                 {
-                    item.HighlightGizmo(BackgroundPreviewViewModel, RenderPackageFactory);
+                    item.HighlightGizmo();
                 }
             }
         }
@@ -489,7 +475,7 @@ namespace Dynamo.Manipulation
                 {
                     item.Name = string.Format("{0}_{1}", item.Name, Node.AstIdentifierBase);
                 }
-                packages.AddRange(item.GetDrawables(RenderPackageFactory));
+                packages.AddRange(item.GetDrawables());
             }
 
             return packages;

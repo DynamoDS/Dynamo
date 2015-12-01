@@ -64,9 +64,9 @@ namespace Dynamo.Manipulation
         {
             if (null == gizmo)
             {
-                gizmo = new TranslationGizmo(pointOnCurve, CameraPosition, tangent, 6);
+                gizmo = new TranslationGizmo(BackgroundPreviewViewModel, RenderPackageFactory, pointOnCurve, tangent, 6);
             }
-            else gizmo.UpdateGeometry(pointOnCurve, CameraPosition, tangent, null, null, 6);
+            else gizmo.UpdateGeometry(pointOnCurve, tangent, null, null, 6);
         }
 
         protected override void AssignInputNodes()

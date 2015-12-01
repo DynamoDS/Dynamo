@@ -74,66 +74,64 @@ namespace Dynamo.Manipulation
         /// Constructs a linear gizmo, can be moved in one direction only.
         /// </summary>
         /// <param name="backgroundPreviewViewModel"></param>
-        /// <param name="origin">Position of the gizmo.</param>
-        /// <param name="cameraPosition"></param>
+        /// <param name="factory"></param>
+        /// <param name="pointOrigin">Position of the gizmo.</param>
         /// <param name="axis1">Axis of freedom</param>
         /// <param name="size">Visual size of the Gizmo</param>
         public TranslationGizmo(IWatch3DViewModel backgroundPreviewViewModel, 
-            Point origin, Point cameraPosition, Vector axis1, double size)
-            : base(backgroundPreviewViewModel, origin, cameraPosition) 
+            IRenderPackageFactory factory, Point pointOrigin, Vector axis1, double size)
+            : base(backgroundPreviewViewModel, factory, pointOrigin) 
         {
             ReferenceCoordinateSystem = CoordinateSystem.Identity();
-            UpdateGeometry(origin, cameraPosition, axis1, null, null, size);
+            UpdateGeometry(pointOrigin, axis1, null, null, size);
         }
 
         /// <summary>
         /// Constructs planar gizmo, can be manipulated in two directions.
         /// </summary>
         /// <param name="backgroundPreviewViewModel"></param>
-        /// <param name="origin">Position of the gizmo</param>
-        /// <param name="cameraPosition"></param>
+        /// <param name="factory"></param>
+        /// <param name="pointOrigin">Position of the gizmo</param>
         /// <param name="axis1">First axis of freedom</param>
         /// <param name="axis2">Second axis of freedom</param>
         /// <param name="size">Visual size of the Gizmo</param>
-        public TranslationGizmo(IWatch3DViewModel backgroundPreviewViewModel, 
-            Point origin, Point cameraPosition, Vector axis1, Vector axis2, double size)
-            : base(backgroundPreviewViewModel, origin, cameraPosition)
+        public TranslationGizmo(IWatch3DViewModel backgroundPreviewViewModel,
+            IRenderPackageFactory factory, Point pointOrigin, Vector axis1, Vector axis2, double size)
+            : base(backgroundPreviewViewModel, factory, pointOrigin)
         {
             ReferenceCoordinateSystem = CoordinateSystem.Identity();
-            UpdateGeometry(origin, cameraPosition, axis1, axis2, null, size);
+            UpdateGeometry(pointOrigin, axis1, axis2, null, size);
         }
 
         /// <summary>
         /// Construcs a 3D gizmo, can be manipulated in all three directions.
         /// </summary>
         /// <param name="backgroundPreviewViewModel"></param>
-        /// <param name="origin">Position of the gizmo</param>
-        /// <param name="cameraPosition"></param>
+        /// <param name="factory"></param>
+        /// <param name="pointOrigin">Position of the gizmo</param>
         /// <param name="axis1">First axis of freedom</param>
         /// <param name="axis2">Second axis of freedom</param>
         /// <param name="axis3">Third axis of freedom</param>
         /// <param name="size">Visual size of the Gizmo</param>
-        public TranslationGizmo(IWatch3DViewModel backgroundPreviewViewModel, 
-            Point origin, Point cameraPosition, Vector axis1, Vector axis2, Vector axis3, double size)
-            : base(backgroundPreviewViewModel, origin, cameraPosition)
+        public TranslationGizmo(IWatch3DViewModel backgroundPreviewViewModel,
+            IRenderPackageFactory factory, Point pointOrigin, Vector axis1, Vector axis2, Vector axis3, double size)
+            : base(backgroundPreviewViewModel, factory, pointOrigin)
         {
             ReferenceCoordinateSystem = CoordinateSystem.Identity();
-            UpdateGeometry(origin, cameraPosition, axis1, axis2, axis3, size);
+            UpdateGeometry(pointOrigin, axis1, axis2, axis3, size);
         }
 
         /// <summary>
         /// Construcs a 3D gizmo, can be manipulated in all three directions.
         /// </summary>
-        /// <param name="pointOrigin">Position of the gizmo</param>
-        /// <param name="cameraPosition"></param>
+        /// <param name="origin">Position of the gizmo</param>
         /// <param name="axis1">First axis of freedom</param>
         /// <param name="axis2">Second axis of freedom</param>
         /// <param name="axis3">Third axis of freedom</param>
         /// <param name="size">Visual size of the Gizmo</param>
-        internal void UpdateGeometry(Point pointOrigin, Point cameraPosition, Vector axis1, Vector axis2, Vector axis3, double size)
+        internal void UpdateGeometry(Point origin, Vector axis1, Vector axis2, Vector axis3, double size)
         {
-            if (axis1 == null)
-                throw new ArgumentNullException("axis1");
+            if (axis1 == null) throw new ArgumentNullException("axis1");
 
             //Reset the dataset, but don't reset the cached hitAxis or hitPlane.
             //hitAxis and hitPlane are used to compute the offset for a move.
@@ -141,8 +139,7 @@ namespace Dynamo.Manipulation
             planes.Clear();
             
             scale = size;
-            CameraPosition = cameraPosition;
-            this.origin = pointOrigin;
+            PointOrigin = origin;
 
             axes.Add(axis1);
             if (axis2 != null)
@@ -296,7 +293,12 @@ namespace Dynamo.Manipulation
         /// Reference coordinate system for the Gizmo
         /// </summary>
         public CoordinateSystem ReferenceCoordinateSystem { get; set; }
-        
+
+        protected override void RedrawCore()
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Performs hit test on Gizmo to find out hit object. The returned 
         /// hitObject could be either axis vector or a plane.
@@ -364,14 +366,13 @@ namespace Dynamo.Manipulation
         /// <summary>
         /// Gets drawables to render this Gizmo
         /// </summary>
-        /// <param name="factory">Render package factory</param>
         /// <returns>List of render package</returns>
-        public override IEnumerable<IRenderPackage> GetDrawables(IRenderPackageFactory factory)
+        public override IEnumerable<IRenderPackage> GetDrawables()
         {
             List<IRenderPackage> drawables = new List<IRenderPackage>();
             foreach (var axis in axes)
             {
-                IRenderPackage package = factory.CreateRenderPackage();
+                IRenderPackage package = RenderPackageFactory.CreateRenderPackage();
                 DrawAxis(ref package, axis);
                 drawables.Add(package);
             }
@@ -379,26 +380,30 @@ namespace Dynamo.Manipulation
             var p = Planes.xyPlane;
             foreach (var plane in planes)
             {
-                IRenderPackage package = factory.CreateRenderPackage();
+                IRenderPackage package = RenderPackageFactory.CreateRenderPackage();
                 DrawPlane(ref package, plane, p++);
                 drawables.Add(package);
             }
-            drawables.AddRange(GetDrawablesForTransientGeometry(factory));
+            drawables.AddRange(GetDrawablesForTransientGraphics());
 
             return drawables;
         }
 
-        public override void HighlightGizmo(IWatch3DViewModel backgroundPreviewViewModel, 
-            IRenderPackageFactory factory)
+        public override void HighlightGizmo()
         {
-            var drawables = GetDrawablesForTransientGeometry(factory);
-            backgroundPreviewViewModel.AddGeometryForRenderPackages(drawables);
+            var drawables = GetDrawablesForTransientGraphics();
+            BackgroundPreviewViewModel.AddGeometryForRenderPackages(drawables);
         }
 
-        public override void UnhighlightGizmo(IWatch3DViewModel backgroundPreviewViewModel)
+        public override void UnhighlightGizmo()
         {
             // Delete all transient geometry used to highlight gizmo
-            backgroundPreviewViewModel.DeleteGeometryForIdentifier(RenderDescriptions.AxisLine);
+            HideTransientGraphics();
+        }
+
+        public override void HideTransientGraphics()
+        {
+            BackgroundPreviewViewModel.DeleteGeometryForIdentifier(RenderDescriptions.AxisLine);
         }
 
         #endregion
@@ -408,24 +413,23 @@ namespace Dynamo.Manipulation
         /// <summary>
         /// Returns drawables for transient geometry associated with Gizmo
         /// </summary>
-        /// <param name="factory"></param>
         /// <returns></returns>
-        private List<IRenderPackage> GetDrawablesForTransientGeometry(IRenderPackageFactory factory)
+        private List<IRenderPackage> GetDrawablesForTransientGraphics()
         {
             var drawables = new List<IRenderPackage>();
             if (null != hitAxis)
             {
-                IRenderPackage package = factory.CreateRenderPackage();
+                IRenderPackage package = RenderPackageFactory.CreateRenderPackage();
                 DrawAxisLine(ref package, hitAxis, "xAxisLine");
                 drawables.Add(package);
             }
             if (null != hitPlane)
             {
-                IRenderPackage package = factory.CreateRenderPackage();
+                IRenderPackage package = RenderPackageFactory.CreateRenderPackage();
                 DrawAxisLine(ref package, hitPlane.XAxis, "xAxisLine");
                 drawables.Add(package);
 
-                package = factory.CreateRenderPackage();
+                package = RenderPackageFactory.CreateRenderPackage();
                 DrawAxisLine(ref package, hitPlane.YAxis, "yAxisLine");
                 drawables.Add(package);
             }

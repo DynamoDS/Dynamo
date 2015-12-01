@@ -3,17 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Autodesk.DesignScript.Geometry;
+using System.Windows;
+using System.Windows.Media.Media3D;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
+using Point = Autodesk.DesignScript.Geometry.Point;
+using Vector = Autodesk.DesignScript.Geometry.Vector;
 
 namespace Dynamo.Manipulation
 {
     /// <summary>
     /// Interface to define visuals of a manipulator, called Gizmo.
     /// </summary>
-    public interface IGizmo
+    public interface IGizmo : IDisposable
     {
         /// <summary>
         /// Unique name of the Gizmo
@@ -52,61 +55,101 @@ namespace Dynamo.Manipulation
         /// <summary>
         /// Gets render package for all the drawables of this Gizmo.
         /// </summary>
-        /// <param name="factory">Render package factory</param>
         /// <returns>List of render packages.</returns>
-        IEnumerable<IRenderPackage> GetDrawables(IRenderPackageFactory factory);
+        IEnumerable<IRenderPackage> GetDrawables();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        void HideTransientGraphics();
 
         /// <summary>
         /// Highlight gizmo drawables or create transient geometry to highlight the gizmo during mouse over
         /// </summary>
-        /// <param name="backgroundPreviewViewModel"></param>
-        /// <param name="factory"></param>
         /// <returns></returns>
-        void HighlightGizmo(IWatch3DViewModel backgroundPreviewViewModel, IRenderPackageFactory factory);
+        void HighlightGizmo();
 
         /// <summary>
         /// Unhighlight gizmo drawables or delete all transient geometry used to highlight gizmo during mouse over 
         /// </summary>
-        /// <param name="backgroundPreviewViewModel"></param>
-        void UnhighlightGizmo(IWatch3DViewModel backgroundPreviewViewModel);
+        void UnhighlightGizmo();
     }
 
     internal abstract class Gizmo : IGizmo
     {
         private const double zDepth = 1.0;
 
-        public string Name { get; set; }
+        private Point3D? cameraPosition;
 
         protected IWatch3DViewModel BackgroundPreviewViewModel { get; private set; }
-        protected Point origin;
+
+        protected IRenderPackageFactory RenderPackageFactory { get; private set; }
+
+        protected Point PointOrigin { get; set; }
+
+        public string Name { get; set; }
 
         public Point Origin
         {
             get
             {
-                var vec = Vector.ByTwoPoints(CameraPosition, origin).Normalized();
-                return CameraPosition.Add(vec.Scale(zDepth));
+                var cameraPos = CameraPosition;
+                var vec = Vector.ByTwoPoints(cameraPos, PointOrigin).Normalized();
+                return cameraPos.Add(vec.Scale(zDepth));
             }
         }
 
-        public Point CameraPosition { get; protected set; }
+        public Point CameraPosition
+        {
+            get
+            {
+                return cameraPosition != null ?
+                    Point.ByCoordinates(cameraPosition.Value.X, cameraPosition.Value.Y, cameraPosition.Value.Z) : null;
+            }
+        }
 
-        internal Gizmo(IWatch3DViewModel backgroundPreviewViewModel, Point origin, Point cameraPosition)
+
+        internal Gizmo(IWatch3DViewModel backgroundPreviewViewModel, IRenderPackageFactory factory, Point pointOrigin)
         {
             BackgroundPreviewViewModel = backgroundPreviewViewModel;
-            this.origin = origin;
-            CameraPosition = cameraPosition;
+            BackgroundPreviewViewModel.ViewCameraChanged += OnViewCameraChanged;
+            RenderPackageFactory = factory;
+
+            PointOrigin = pointOrigin;
+            cameraPosition = BackgroundPreviewViewModel.GetCameraPosition();
+        }
+
+        protected abstract void RedrawCore();
+
+        private void Redraw()
+        {
+            RedrawCore();
+            BackgroundPreviewViewModel.AddGeometryForRenderPackages(GetDrawables());
+        }
+
+        private void OnViewCameraChanged(object o, RoutedEventArgs routedEventArgs)
+        {
+            cameraPosition = routedEventArgs.Source as Point3D?;
+
+            // Redraw Gizmos
+            Redraw();
         }
 
         public abstract bool HitTest(Point source, Vector direction, out object hitObject);
 
         public abstract Vector GetOffset(Point newPosition, Vector viewDirection);
 
-        public abstract IEnumerable<IRenderPackage> GetDrawables(IRenderPackageFactory factory);
+        public abstract IEnumerable<IRenderPackage> GetDrawables();
 
-        public abstract void HighlightGizmo(IWatch3DViewModel backgroundPreviewViewModel, IRenderPackageFactory factory);
+        public abstract void HighlightGizmo();
 
-        public abstract void UnhighlightGizmo(IWatch3DViewModel backgroundPreviewViewModel);
+        public abstract void UnhighlightGizmo();
 
+        public abstract void HideTransientGraphics();
+
+        public void Dispose()
+        {
+            BackgroundPreviewViewModel.ViewCameraChanged -= OnViewCameraChanged;
+        }
     }
 }
