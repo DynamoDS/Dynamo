@@ -392,7 +392,7 @@ namespace ProtoCore.SyntaxAnalysis
             return node;
         }
 
-        protected List<ImperativeNode> VisitNodeList(List<ImperativeNode> nodes)
+        public List<ImperativeNode> VisitNodeList(List<ImperativeNode> nodes)
         {
             for (int i = 0; i < nodes.Count; ++i)
             {

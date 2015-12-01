@@ -880,6 +880,30 @@ namespace Dynamo.Graph.Nodes
             public override ProtoCore.AST.ImperativeAST.ImperativeNode VisitIdentifierListNode(ProtoCore.AST.ImperativeAST.IdentifierListNode node)
             {
                 node.LeftNode = node.LeftNode.Accept(this);
+
+                var rightNode = node.RightNode;
+                while (rightNode != null)
+                {
+                    if (rightNode is ProtoCore.AST.ImperativeAST.FunctionCallNode)
+                    {
+                        var funcCall = rightNode as ProtoCore.AST.ImperativeAST.FunctionCallNode;
+                        funcCall.FormalArguments = VisitNodeList(funcCall.FormalArguments);
+                        if (funcCall.ArrayDimensions != null)
+                        {
+                            funcCall.ArrayDimensions = funcCall.ArrayDimensions.Accept(this) as ProtoCore.AST.ImperativeAST.ArrayNode;
+                        }
+                        break;
+                    }
+                    else if (rightNode is ProtoCore.AST.ImperativeAST.IdentifierListNode)
+                    {
+                        rightNode = (rightNode as ProtoCore.AST.ImperativeAST.IdentifierListNode).RightNode;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
                 return node;
             }
         }
@@ -906,15 +930,33 @@ namespace Dynamo.Graph.Nodes
                 return base.VisitIdentifierNode(node);
             }
 
-            public override AssociativeNode VisitFunctionCallNode(FunctionCallNode node)
-            {
-                node.Function.Accept(this);
-                return base.VisitFunctionCallNode(node);
-            }
-
             public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
             {
                 node.LeftNode = node.LeftNode.Accept(this);
+
+                var rightNode = node.RightNode;
+                while (rightNode != null)
+                {
+                    if (rightNode is FunctionCallNode)
+                    {
+                        var funcCall = rightNode as FunctionCallNode;
+                        funcCall.FormalArguments = VisitNodeList(funcCall.FormalArguments);
+                        if (funcCall.ArrayDimensions != null)
+                        {
+                            funcCall.ArrayDimensions = funcCall.ArrayDimensions.Accept(this) as ArrayNode;
+                        }
+                        break;
+                    }
+                    else if (rightNode is IdentifierListNode)
+                    {
+                        rightNode = (rightNode as IdentifierListNode).RightNode;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
                 return node;
             }
 
