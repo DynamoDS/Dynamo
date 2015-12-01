@@ -26,6 +26,10 @@
             <DataTrigger Binding="{Binding Path=IsConnecting, Mode=OneWay}" Value="True">
                 <Setter Property="StrokeDashArray" Value="2"/>
             </DataTrigger>
+            <DataTrigger Binding="{Binding Path=IsFrozen, Mode=OneWay}" Value="True">
+                <Setter Property="StrokeDashArray" Value="2"/>
+                <Setter Property="Opacity" Value="0.5"/>               
+            </DataTrigger>
         </Style.Triggers>
     </Style>
     
@@ -39,12 +43,12 @@
 
             <Canvas Canvas.Top="0" Canvas.Left="0" ZIndex="1">
                 
-                <Ellipse Name="endDot" Width="8" Height="8" Margin="-5"  Fill="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}" IsHitTestVisible="False"
+                <Ellipse  Name="endDot" Width="8" Height="8" Margin="-5"  Fill="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}" IsHitTestVisible="False"
                  Canvas.Top="{Binding CurvePoint3.Y}" Canvas.Left="{Binding CurvePoint3.X}" Canvas.ZIndex="1"/>
 
-                <Ellipse Name="startDot" Width="8" Height="8" Margin="-5"  Fill="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}" IsHitTestVisible="False"
+                <Ellipse  Name="startDot" Width="8" Height="8" Margin="-5"  Fill="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}" IsHitTestVisible="False"
                  Canvas.Top="{Binding CurvePoint0.Y}" Canvas.Left="{Binding CurvePoint0.X}" Canvas.ZIndex="1"/>
-
+                             
             </Canvas>
 
             <Path Stroke="{DynamicResource BConnectorSelection}" StrokeThickness="3" IsHitTestVisible="{Binding IsHitTestVisible}"
@@ -91,6 +95,13 @@
             </Path>
 
         </Grid>
+        <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding Path=IsFrozen, Mode=OneWay}" Value="True">               
+                <Setter TargetName="endDot"  Property="Opacity" Value="0.5"/>
+                <Setter TargetName="startDot" Property="Opacity" Value="0.5"/>
+            </DataTrigger>
+         </DataTemplate.Triggers>
+
     </DataTemplate>
 
 </ResourceDictionary>

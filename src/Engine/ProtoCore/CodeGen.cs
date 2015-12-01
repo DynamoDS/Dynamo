@@ -1996,7 +1996,7 @@ namespace ProtoCore
             }
             inferedType.UID = isBooleanOp ? (int)PrimitiveType.kTypeBool : inferedType.UID;
 
-            String value = (String)cNode.value;
+            String value = (String)cNode.Value;
             if (value.Length > 1)
             {
                 buildStatus.LogSyntaxError(Resources.TooManyCharacters, null, node.line, node.col);
@@ -2046,7 +2046,7 @@ namespace ProtoCore
                 EmitPush(opNumGuides);
             }
 
-            string value = (string)sNode.value;
+            string value = (string)sNode.Value;
             StackValue svString = core.Heap.AllocateFixedString(value);
             if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
             {
@@ -2303,20 +2303,20 @@ namespace ProtoCore
 
                 bool isExprListNode = (ltNode is ProtoCore.AST.ImperativeAST.ExprListNode || ltNode is ProtoCore.AST.AssociativeAST.ExprListNode);
                 bool isStringNode = (ltNode is ProtoCore.AST.ImperativeAST.StringNode || ltNode is ProtoCore.AST.AssociativeAST.StringNode);
-                while ((isExprListNode && ltNode.list.Count > 0) || isStringNode)
+                while ((isExprListNode && ltNode.Exprs.Count > 0) || isStringNode)
                 {
                     rank++;
                     if (isStringNode)
                         break;
 
-                    ltNode = ltNode.list[0];
+                    ltNode = ltNode.Exprs[0];
                     isExprListNode = (ltNode is ProtoCore.AST.ImperativeAST.ExprListNode || ltNode is ProtoCore.AST.AssociativeAST.ExprListNode);
                     isStringNode = (ltNode is ProtoCore.AST.ImperativeAST.StringNode || ltNode is ProtoCore.AST.AssociativeAST.StringNode);
                 }
             }
 
             int commonType = (int)PrimitiveType.kTypeVoid;
-            foreach (Node listNode in exprlist.list)
+            foreach (Node listNode in exprlist.Exprs)
             {
                 bool emitReplicationGuideFlag = emitReplicationGuide;
                 emitReplicationGuide = false;
@@ -2345,8 +2345,8 @@ namespace ProtoCore
                 return;
             }
 
-            EmitInstrConsole(ProtoCore.DSASM.kw.alloca, exprlist.list.Count.ToString());
-            EmitPopArray(exprlist.list.Count);
+            EmitInstrConsole(ProtoCore.DSASM.kw.alloca, exprlist.Exprs.Count.ToString());
+            EmitPopArray(exprlist.Exprs.Count);
 
             if (exprlist.ArrayDimensions != null)
             {
@@ -2662,7 +2662,7 @@ namespace ProtoCore
                 buildStatus.LogSemanticError(string.Format(Resources.UnknownAttribute, anode.Function.Name), core.CurrentDSFileName, anode.line, anode.col);
             }
             ProtoCore.DSASM.AttributeEntry attribute = new ProtoCore.DSASM.AttributeEntry();
-            attribute.ClassIndex = cix;
+            attribute.ClassNode = core.ClassTable.ClassNodes[cix];
             attribute.Arguments = new List<Node>();
             foreach (dynamic attr in anode.FormalArguments)
             {
@@ -2673,23 +2673,6 @@ namespace ProtoCore
                 }
                 attribute.Arguments.Add(attr as ProtoCore.AST.Node);
             }
-
-            // TODO(Jiong): Do a check on the number of arguments 
-            bool hasMatchedConstructor = false;
-            foreach (ProtoCore.DSASM.ProcedureNode pn in core.ClassTable.ClassNodes[cix].ProcTable.procList)
-            {
-                if (pn.IsConstructor && pn.ArgumentInfos.Count == attribute.Arguments.Count)
-                {
-                    hasMatchedConstructor = true;
-                    break;
-                }
-            }
-            if (!hasMatchedConstructor)
-            {
-                buildStatus.LogSemanticError(string.Format(Resources.NoConstructorForAttribute, anode.Function.Name, attribute.Arguments.Count), core.CurrentDSFileName, anode.line, anode.col);
-                return null;
-            }
-            
             return attribute;
         }
 
@@ -2729,7 +2712,7 @@ namespace ProtoCore
             else if (node is ProtoCore.AST.AssociativeAST.ExprListNode)
             {
                 ProtoCore.AST.AssociativeAST.ExprListNode arraynode = node as ProtoCore.AST.AssociativeAST.ExprListNode;
-                foreach (ProtoCore.AST.Node subnode in arraynode.list)
+                foreach (ProtoCore.AST.Node subnode in arraynode.Exprs)
                 {
                     if (!IsConstantExpression(subnode))
                         return false;
@@ -2739,7 +2722,7 @@ namespace ProtoCore
             else if (node is ProtoCore.AST.ImperativeAST.ExprListNode)
             {
                 ProtoCore.AST.ImperativeAST.ExprListNode arraynode = node as ProtoCore.AST.ImperativeAST.ExprListNode;
-                foreach (ProtoCore.AST.Node subnode in arraynode.list)
+                foreach (ProtoCore.AST.Node subnode in arraynode.Exprs)
                 {
                     if (!IsConstantExpression(subnode))
                         return false;
@@ -2749,12 +2732,12 @@ namespace ProtoCore
             else if (node is ProtoCore.AST.AssociativeAST.RangeExprNode)
             {
                 ProtoCore.AST.AssociativeAST.RangeExprNode rangenode = node as ProtoCore.AST.AssociativeAST.RangeExprNode;
-                return IsConstantExpression(rangenode.FromNode) && IsConstantExpression(rangenode.ToNode) && (rangenode.StepNode == null || IsConstantExpression(rangenode.StepNode));
+                return IsConstantExpression(rangenode.From) && IsConstantExpression(rangenode.To) && (rangenode.Step == null || IsConstantExpression(rangenode.Step));
             }
             else if (node is ProtoCore.AST.ImperativeAST.RangeExprNode)
             {
                 ProtoCore.AST.ImperativeAST.RangeExprNode rangenode = node as ProtoCore.AST.ImperativeAST.RangeExprNode;
-                return IsConstantExpression(rangenode.FromNode) && IsConstantExpression(rangenode.ToNode) && (rangenode.StepNode == null || IsConstantExpression(rangenode.StepNode));
+                return IsConstantExpression(rangenode.From) && IsConstantExpression(rangenode.To) && (rangenode.Step == null || IsConstantExpression(rangenode.Step));
             }
 
             return false;
