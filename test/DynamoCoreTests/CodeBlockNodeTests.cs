@@ -1111,6 +1111,14 @@ var06 = g;
             RunModel(openPath);
             AssertPreviewValue("a17ce868-60c4-41cf-ad12-fdbb6e79284e", -100);
         }
+
+        [Test]
+        public void TestPropertyAccessing()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\cbn_renaming\TestPropertyAccessing.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("30c24391-9361-4b53-834f-912e9faf9586", 2);
+        }
     }
 
     public class CodeBlockCompletionTests

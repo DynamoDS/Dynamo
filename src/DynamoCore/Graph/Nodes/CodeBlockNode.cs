@@ -912,6 +912,12 @@ namespace Dynamo.Graph.Nodes
                 return base.VisitFunctionCallNode(node);
             }
 
+            public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
+            {
+                node.LeftNode = node.LeftNode.Accept(this);
+                return node;
+            }
+
             public override AssociativeNode VisitFunctionDefinitionNode(FunctionDefinitionNode node)
             {
                 // Not applying renaming to function defintion node, otherwise
