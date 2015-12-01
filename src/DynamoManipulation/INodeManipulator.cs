@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Media.Media3D;
-using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Graph.Nodes;
-using Dynamo.Visualization;
-using Dynamo.Wpf.ViewModels.Watch3D;
 
 namespace Dynamo.Manipulation
 {
@@ -30,16 +26,6 @@ namespace Dynamo.Manipulation
     /// </summary>
     public interface INodeManipulator : IDisposable
     {
-        //NodeModel Node { get; }
-
-        //Point Origin { get; }
-
-        //IWatch3DViewModel BackgroundPreviewViewModel { get; }
-
-        //IRenderPackageFactory RenderPackageFactory { get; }
-
-        //Point3D? CameraPosition { get; }
-
         IEnumerable<IRenderPackage> BuildRenderPackage();
     }
 }
