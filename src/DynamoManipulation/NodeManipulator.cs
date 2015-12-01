@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
+using System.Windows.Media.Media3D;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using DSCoreNodesUI.Input;
@@ -65,9 +66,11 @@ namespace Dynamo.Manipulation
         /// <summary>
         /// Returns list of Gizmos used by this manipulator.
         /// </summary>
-        /// <param name="createIfNone">Whether to create new gizmo if not already present.</param>
+        /// <param name="createOrUpdate">
+        /// Create new gizmos or update existing ones gizmos if parameter is true
+        /// otherwise simply query for existing gizmos if false.</param>
         /// <returns>List of Gizmos.</returns>
-        protected abstract IEnumerable<IGizmo> GetGizmos(bool createIfNone);
+        protected abstract IEnumerable<IGizmo> GetGizmos(bool createOrUpdate);
 
         /// <summary>
         /// Implement to analyze inputs to the manipulator node and initialize them
@@ -139,15 +142,14 @@ namespace Dynamo.Manipulation
             GizmoInAction = null; //Reset Drag.
 
             var gizmos = GetGizmos(false);
-            if (!Active || !IsEnabled() || null == gizmos || !gizmos.Any())
-                return;
+            if (!Active || !IsEnabled() || null == gizmos || !gizmos.Any()) return;
 
             var ray = BackgroundPreviewViewModel.GetClickRay(mouseButtonEventArgs);
             if (ray == null) return;
 
-            object hitObject;
             foreach (var item in gizmos)
             {
+                object hitObject;
                 if (item.HitTest(ray.GetOriginPoint(), ray.GetDirectionVector(), out hitObject))
                 {
                     GizmoInAction = item;
@@ -181,15 +183,19 @@ namespace Dynamo.Manipulation
         /// <param name="mouseEventArgs"></param>
         protected virtual void MouseMove(object sender, MouseEventArgs mouseEventArgs)
         {
-            if (!CanMoveGizmo(GizmoInAction))
-                return;
-
             var clickRay = BackgroundPreviewViewModel.GetClickRay(mouseEventArgs);
             if (clickRay == null) return;
 
-            var offset = GizmoInAction.GetOffset(clickRay.GetOriginPoint(), clickRay.GetDirectionVector());
-            if (offset.Length < 0.01)
+            if (GizmoInAction == null)
+            {
+                HighlightGizmoOnRollOver(clickRay);
                 return;
+            }
+
+            if (!CanMoveGizmo(GizmoInAction)) return;
+
+            var offset = GizmoInAction.GetOffset(clickRay.GetOriginPoint(), clickRay.GetDirectionVector());
+            if (offset.Length < 0.01) return;
 
             newPosition = OnGizmoMoved(GizmoInAction, offset);
         }
@@ -413,6 +419,25 @@ namespace Dynamo.Manipulation
             }
         }
 
+        /// <summary>
+        /// Highlights/Unhighlights Gizmo drawables on mouse roll-over
+        /// </summary>
+        /// <param name="clickRay"></param>
+        private void HighlightGizmoOnRollOver(IRay clickRay)
+        {
+            var gizmos = GetGizmos(false);
+            foreach (var item in gizmos)
+            {
+                item.UnhighlightGizmo(BackgroundPreviewViewModel);
+
+                object hitObject;
+                if (item.HitTest(clickRay.GetOriginPoint(), clickRay.GetDirectionVector(), out hitObject))
+                {
+                    item.HighlightGizmo(BackgroundPreviewViewModel, RenderPackageFactory);
+                }
+            }
+        }
+
         #endregion
 
         #region Interface methods
@@ -462,6 +487,57 @@ namespace Dynamo.Manipulation
         }
         #endregion
     }
+
+
+    internal static class PointExtensions
+    {
+        public static Point ToPoint(this Point3D point)
+        {
+            return Point.ByCoordinates(point.X, point.Y, point.Z);
+        }
+
+        public static Vector ToVector(this Vector3D vec)
+        {
+            return Vector.ByCoordinates(vec.X, vec.Y, vec.Z);
+        }
+    }
+
+    internal static class RayExtensions
+    {
+        private const double axisScaleFactor = 100;
+        private const double rayScaleFactor = 10000;
+
+        public static Line ToLine(this IRay ray)
+        {
+            var origin = ray.Origin.ToPoint();
+            var direction = ray.Direction.ToVector();
+            return Line.ByStartPointEndPoint(origin, origin.Add(direction.Scale(rayScaleFactor)));
+        }
+
+        public static Line ToOriginCenteredLine(this IRay ray)
+        {
+            var origin = ray.Origin.ToPoint();
+            var direction = ray.Direction.ToVector();
+            return ToOriginCenteredLine(origin, direction);
+        }
+
+        public static Line ToOriginCenteredLine(Point origin, Vector axis)
+        {
+            return Line.ByStartPointEndPoint(origin.Add(axis.Scale(-axisScaleFactor)),
+                origin.Add(axis.Scale(axisScaleFactor)));
+        }
+
+        public static Point GetOriginPoint(this IRay ray)
+        {
+            return ray.Origin.ToPoint();
+        }
+
+        public static Vector GetDirectionVector(this IRay ray)
+        {
+            return ray.Direction.ToVector();
+        }
+    }
+
 
     public class CompositeManipulator : INodeManipulator
     {

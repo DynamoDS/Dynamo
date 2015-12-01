@@ -51,6 +51,20 @@ namespace Dynamo.Manipulation
         /// <param name="factory">Render package factory</param>
         /// <returns>List of render packages.</returns>
         IEnumerable<IRenderPackage> GetDrawables(IRenderPackageFactory factory);
+
+        /// <summary>
+        /// Highlight gizmo drawables or create transient geometry to highlight the gizmo during mouse over
+        /// </summary>
+        /// <param name="backgroundPreviewViewModel"></param>
+        /// <param name="factory"></param>
+        /// <returns></returns>
+        void HighlightGizmo(IWatch3DViewModel backgroundPreviewViewModel, IRenderPackageFactory factory);
+
+        /// <summary>
+        /// Unhighlight gizmo drawables or delete all transient geometry used to highlight gizmo during mouse over 
+        /// </summary>
+        /// <param name="backgroundPreviewViewModel"></param>
+        void UnhighlightGizmo(IWatch3DViewModel backgroundPreviewViewModel);
     }
 
     /// <summary>
@@ -84,12 +98,12 @@ namespace Dynamo.Manipulation
         /// <summary>
         /// List of axis available for manipulation
         /// </summary>
-        private List<Vector> axes = new List<Vector>();
+        private readonly List<Vector> axes = new List<Vector>();
 
         /// <summary>
         /// List of planes available for manipulation
         /// </summary>
-        private List<Plane> planes = new List<Plane>();
+        private readonly List<Plane> planes = new List<Plane>();
 
         /// <summary>
         /// Scale to draw the gizmo
@@ -406,29 +420,54 @@ namespace Dynamo.Manipulation
                 DrawPlane(ref package, plane, p++);
                 drawables.Add(package);
             }
+            drawables.AddRange(GetDrawablesForTransientGeometry(factory));
 
-            if(null != hitAxis)
+            return drawables;
+        }
+
+        public void HighlightGizmo(IWatch3DViewModel backgroundPreviewViewModel, 
+            IRenderPackageFactory factory)
+        {
+            var drawables = GetDrawablesForTransientGeometry(factory);
+            backgroundPreviewViewModel.AddGeometryForRenderPackages(drawables);
+        }
+
+        public void UnhighlightGizmo(IWatch3DViewModel backgroundPreviewViewModel)
+        {
+            // Delete all transient geometry used to highlight gizmo
+            backgroundPreviewViewModel.DeleteGeometryForIdentifier(RenderDescriptions.AxisLine);
+        }
+
+        #endregion
+
+        #region Helper methods to draw the gizmo
+
+        /// <summary>
+        /// Returns drawables for transient geometry associated with Gizmo
+        /// </summary>
+        /// <param name="factory"></param>
+        /// <returns></returns>
+        private List<IRenderPackage> GetDrawablesForTransientGeometry(IRenderPackageFactory factory)
+        {
+            var drawables = new List<IRenderPackage>();
+            if (null != hitAxis)
             {
                 IRenderPackage package = factory.CreateRenderPackage();
                 DrawAxisLine(ref package, hitAxis, "xAxisLine");
                 drawables.Add(package);
             }
-            if(null != hitPlane)
+            if (null != hitPlane)
             {
                 IRenderPackage package = factory.CreateRenderPackage();
                 DrawAxisLine(ref package, hitPlane.XAxis, "xAxisLine");
                 drawables.Add(package);
-                
+
                 package = factory.CreateRenderPackage();
                 DrawAxisLine(ref package, hitPlane.YAxis, "yAxisLine");
                 drawables.Add(package);
             }
             return drawables;
         }
-
-        #endregion
-
-        #region Helper methods to draw the gizmo
 
         /// <summary>
         /// Draws axis line
@@ -458,7 +497,7 @@ namespace Dynamo.Manipulation
         /// <param name="name"></param>
         private void DrawPlane(ref IRenderPackage package, Plane plane, Planes name)
         {
-            package.Description = string.Format("{0}_{1}_{2}", RenderDescriptions.ManipulatorPlane, Name, name.ToString()); 
+            package.Description = string.Format("{0}_{1}_{2}", RenderDescriptions.ManipulatorPlane, Name, name); 
             var p1 = Origin.Add(plane.XAxis.Scale(scale/2));
             var p2 = p1.Add(plane.YAxis.Scale(scale/2));
             var p3 = Origin.Add(plane.YAxis.Scale(scale/2));
@@ -482,7 +521,7 @@ namespace Dynamo.Manipulation
         private void DrawAxis(ref IRenderPackage package, Vector axis)
         {
             var axisType = GetAlignedAxis(axis);
-            package.Description = string.Format("{0}_{1}_{2}", RenderDescriptions.ManipulatorAxis, Name, axisType.ToString());
+            package.Description = string.Format("{0}_{1}_{2}", RenderDescriptions.ManipulatorAxis, Name, axisType);
 
             using (var axisEnd = Origin.Add(axis.Scale(scale)))
             {
