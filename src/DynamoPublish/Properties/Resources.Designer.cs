@@ -106,6 +106,24 @@ namespace Dynamo.Publish.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A customizer by this name already exists, do you want to overwrite it?.
+        /// </summary>
+        public static string CustomizerOverrideContent {
+            get {
+                return ResourceManager.GetString("CustomizerOverrideContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirmation.
+        /// </summary>
+        public static string CustomizerOverrideHeader {
+            get {
+                return ResourceManager.GetString("CustomizerOverrideHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Custom node workspace {0} is not available to be published..
         /// </summary>
         public static string CustomNodeDefinitionNotFoundErrorMessage {

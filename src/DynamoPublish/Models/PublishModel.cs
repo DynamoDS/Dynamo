@@ -226,8 +226,7 @@ namespace Dynamo.Publish.Models
             var appSettings = (AppSettingsSection)config.GetSection("appSettings");
 
             // set the static fields
-            //serverUrl = appSettings.Settings["ServerUrl"].Value;
-            serverUrl = "http://127.0.0.1:3000";
+            serverUrl = appSettings.Settings["ServerUrl"].Value;
             page = appSettings.Settings["Page"].Value;
             managerURL = appSettings.Settings["ManagerPage"].Value;
         }
@@ -332,8 +331,8 @@ namespace Dynamo.Publish.Models
             if (customizerExists)
             {
                 MessageBoxResult decision =
-                        MessageBox.Show("A customizer by this name already exists, do you want to overwrite it?",
-                            "Confirmation",
+                        MessageBox.Show(Resources.CustomizerOverrideContent,
+                            Resources.CustomizerOverrideHeader,
                             MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if (decision == MessageBoxResult.No)
                 {
