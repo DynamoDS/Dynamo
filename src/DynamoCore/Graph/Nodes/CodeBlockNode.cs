@@ -20,7 +20,6 @@ using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 using Node = ProtoCore.AST.Node;
 using Operator = ProtoCore.DSASM.Operator;
 using ProtoCore.SyntaxAnalysis;
-using ProtoCore.DSASM;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -876,6 +875,12 @@ namespace Dynamo.Graph.Nodes
                     node.Value = node.Name = mapper(variable);
 
                 return base.VisitIdentifierNode(node);
+            }
+
+            public override ProtoCore.AST.ImperativeAST.ImperativeNode VisitIdentifierListNode(ProtoCore.AST.ImperativeAST.IdentifierListNode node)
+            {
+                node.LeftNode = node.LeftNode.Accept(this);
+                return node;
             }
         }
 

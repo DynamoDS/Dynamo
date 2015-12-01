@@ -1,0 +1,16 @@
+<Workspace Version="0.9.1.3340" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="1a7eaa10-83b9-417f-b1e4-805bdcc1baea" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="107" y="59" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" CodeText="foo = 21;&#xA;bar = 42;&#xA;&#xA;[Imperative]&#xA;{&#xA;    return = foo + bar;&#xA;};" ShouldFocus="false" />
+    <DSCoreNodesUI.Watch guid="0959d53a-76f9-4bd2-b407-5e409856b55e" type="DSCoreNodesUI.Watch" nickname="Watch" x="403.5" y="109.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="1a7eaa10-83b9-417f-b1e4-805bdcc1baea" start_index="2" end="0959d53a-76f9-4bd2-b407-5e409856b55e" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>

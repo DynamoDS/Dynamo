@@ -1023,6 +1023,16 @@ var06 = g;
         }
     }
 
+    public class CodeBlockNodeRenamingTests : DynamoModelTestBase
+    {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSCoreNodes.dll");
+
+            base.GetLibrariesToPreload(libraries);
+        }
+    }
 
     public class CodeBlockCompletionTests
     {
