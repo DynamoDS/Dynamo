@@ -62,10 +62,10 @@ namespace Dynamo.Manipulation
         private Vector hitAxis = null;
         private Plane hitPlane = null;
 
-        /// <summary>
-        /// Name of the gizmo.
-        /// </summary>
-        private string name = "gizmo";
+        ///// <summary>
+        ///// Name of the gizmo.
+        ///// </summary>
+        //private string name = "gizmo";
 
         #endregion
 
@@ -74,66 +74,53 @@ namespace Dynamo.Manipulation
         /// <summary>
         /// Constructs a linear gizmo, can be moved in one direction only.
         /// </summary>
-        /// <param name="backgroundPreviewViewModel"></param>
-        /// <param name="factory"></param>
-        /// <param name="cameraPosition"></param>
-        /// <param name="pointOrigin">Position of the gizmo.</param>
+        /// <param name="manipulator"></param>
         /// <param name="axis1">Axis of freedom</param>
         /// <param name="size">Visual size of the Gizmo</param>
-        public TranslationGizmo(IWatch3DViewModel backgroundPreviewViewModel,
-            IRenderPackageFactory factory, Point3D cameraPosition, Point pointOrigin, Vector axis1, double size)
-            : base(backgroundPreviewViewModel, factory, cameraPosition, pointOrigin) 
+        public TranslationGizmo(NodeManipulator manipulator, Vector axis1, double size)
+            : base(manipulator) 
         {
             ReferenceCoordinateSystem = CoordinateSystem.Identity();
-            UpdateGeometry(pointOrigin, axis1, null, null, size);
+            UpdateGeometry(axis1, null, null, size);
         }
 
         /// <summary>
         /// Constructs planar gizmo, can be manipulated in two directions.
         /// </summary>
-        /// <param name="backgroundPreviewViewModel"></param>
-        /// <param name="factory"></param>
-        /// <param name="cameraPosition"></param>
-        /// <param name="pointOrigin">Position of the gizmo</param>
+        /// <param name="manipulator"></param>
         /// <param name="axis1">First axis of freedom</param>
         /// <param name="axis2">Second axis of freedom</param>
         /// <param name="size">Visual size of the Gizmo</param>
-        public TranslationGizmo(IWatch3DViewModel backgroundPreviewViewModel,
-            IRenderPackageFactory factory, Point3D cameraPosition, Point pointOrigin, Vector axis1, Vector axis2, double size)
-            : base(backgroundPreviewViewModel, factory, cameraPosition, pointOrigin)
+        public TranslationGizmo(NodeManipulator manipulator, Vector axis1, Vector axis2, double size)
+            : base(manipulator)
         {
             ReferenceCoordinateSystem = CoordinateSystem.Identity();
-            UpdateGeometry(pointOrigin, axis1, axis2, null, size);
+            UpdateGeometry(axis1, axis2, null, size);
         }
 
         /// <summary>
         /// Construcs a 3D gizmo, can be manipulated in all three directions.
         /// </summary>
-        /// <param name="backgroundPreviewViewModel"></param>
-        /// <param name="factory"></param>
-        /// <param name="cameraPosition"></param>
-        /// <param name="pointOrigin">Position of the gizmo</param>
+        /// <param name="manipulator"></param>
         /// <param name="axis1">First axis of freedom</param>
         /// <param name="axis2">Second axis of freedom</param>
         /// <param name="axis3">Third axis of freedom</param>
         /// <param name="size">Visual size of the Gizmo</param>
-        public TranslationGizmo(IWatch3DViewModel backgroundPreviewViewModel,
-            IRenderPackageFactory factory, Point3D cameraPosition, Point pointOrigin, Vector axis1, Vector axis2, Vector axis3, double size)
-            : base(backgroundPreviewViewModel, factory, cameraPosition, pointOrigin)
+        public TranslationGizmo(NodeManipulator manipulator, Vector axis1, Vector axis2, Vector axis3, double size)
+            : base(manipulator)
         {
             ReferenceCoordinateSystem = CoordinateSystem.Identity();
-            UpdateGeometry(pointOrigin, axis1, axis2, axis3, size);
+            UpdateGeometry(axis1, axis2, axis3, size);
         }
 
         /// <summary>
         /// Construcs a 3D gizmo, can be manipulated in all three directions.
         /// </summary>
-        /// <param name="origin">Position of the gizmo</param>
         /// <param name="axis1">First axis of freedom</param>
         /// <param name="axis2">Second axis of freedom</param>
         /// <param name="axis3">Third axis of freedom</param>
         /// <param name="size">Visual size of the Gizmo</param>
-        internal void UpdateGeometry(Point origin, Vector axis1, Vector axis2, Vector axis3, double size)
+        internal void UpdateGeometry(Vector axis1, Vector axis2, Vector axis3, double size)
         {
             if (axis1 == null) throw new ArgumentNullException("axis1");
 
@@ -143,7 +130,6 @@ namespace Dynamo.Manipulation
             planes.Clear();
             
             scale = size;
-            PointOrigin = origin;
 
             axes.Add(axis1);
             if (axis2 != null)
@@ -274,14 +260,14 @@ namespace Dynamo.Manipulation
 
         #region interface methods
 
-        /// <summary>
-        /// Name of the Gizmo
-        /// </summary>
-        public string Name 
-        {
-            get { return name; }
-            set { name = value; }
-        }
+        ///// <summary>
+        ///// Name of the Gizmo
+        ///// </summary>
+        //public string Name 
+        //{
+        //    get { return name; }
+        //    set { name = value; }
+        //}
 
         ///// <summary>
         ///// Origin of the Gizmo
@@ -377,18 +363,18 @@ namespace Dynamo.Manipulation
         public override IEnumerable<IRenderPackage> GetDrawables()
         {
             List<IRenderPackage> drawables = new List<IRenderPackage>();
-            foreach (var axis in axes)
+            for (int i = 0; i < axes.Count; i++)
             {
                 IRenderPackage package = RenderPackageFactory.CreateRenderPackage();
-                DrawAxis(ref package, axis);
+                DrawAxis(ref package, axes[i]);
                 drawables.Add(package);
             }
 
             var p = Planes.xyPlane;
-            foreach (var plane in planes)
+            for (int i = 0; i < planes.Count; i++)
             {
                 IRenderPackage package = RenderPackageFactory.CreateRenderPackage();
-                DrawPlane(ref package, plane, p++);
+                DrawPlane(ref package, planes[i], p++);
                 drawables.Add(package);
             }
             drawables.AddRange(GetDrawablesForTransientGraphics());

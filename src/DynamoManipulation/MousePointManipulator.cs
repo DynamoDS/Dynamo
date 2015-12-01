@@ -26,6 +26,7 @@ namespace Dynamo.Manipulation
     public class MousePointManipulator : NodeManipulator
     {
         private Point origin;
+        internal override Point Origin { get { return origin; } }
 
         private Point expectedPosition;
 
@@ -239,11 +240,11 @@ namespace Dynamo.Manipulation
 
             if (null == gizmo)
             {
-                gizmo = new TranslationGizmo(BackgroundPreviewViewModel, RenderPackageFactory, CameraPosition.Value, origin, axes[0], axes[1], axes[2], 6);
+                gizmo = new TranslationGizmo(this, axes[0], axes[1], axes[2], 2);
             }
             else
             {
-                gizmo.UpdateGeometry(origin, axes[0], axes[1], axes[2], 6);
+                gizmo.UpdateGeometry(axes[0], axes[1], axes[2], 2);
             }
         }
 

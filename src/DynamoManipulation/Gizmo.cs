@@ -8,6 +8,7 @@ using System.Windows.Media.Media3D;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
+using ProtoCore.AST;
 using Point = Autodesk.DesignScript.Geometry.Point;
 using Vector = Autodesk.DesignScript.Geometry.Vector;
 
@@ -72,17 +73,39 @@ namespace Dynamo.Manipulation
 
     internal abstract class Gizmo : IGizmo
     {
-        private const double zDepth = 1.0;
+        private const double zDepth = 10.0;
+
+        private readonly NodeManipulator manipulator;
 
         private Point3D? cameraPosition;
 
-        protected IWatch3DViewModel BackgroundPreviewViewModel { get; private set; }
+        protected IWatch3DViewModel BackgroundPreviewViewModel
+        {
+            get { return manipulator.BackgroundPreviewViewModel; }
+        }
 
-        protected IRenderPackageFactory RenderPackageFactory { get; private set; }
+        protected IRenderPackageFactory RenderPackageFactory
+        {
+            get { return manipulator.RenderPackageFactory; }
+        }
 
-        protected Point PointOrigin { get; set; }
+        protected Point PointOrigin
+        {
+            get { return manipulator.Origin; }
+        }
 
-        public string Name { get; set; }
+        private string name = "gizmo";
+        public string Name 
+        { 
+            get { return name; }
+            set
+            {
+                if (!name.Contains(value))
+                {
+                    name = string.Format("{0}_{1}", name, value);
+                }
+            } 
+        }
 
         public Point Origin
         {
@@ -98,16 +121,15 @@ namespace Dynamo.Manipulation
             }
         }
 
-        internal Gizmo(IWatch3DViewModel backgroundPreviewViewModel, IRenderPackageFactory factory, 
-            Point3D cameraPosition, Point pointOrigin)
+        internal Gizmo(NodeManipulator manipulator)
         {
-            BackgroundPreviewViewModel = backgroundPreviewViewModel;
-            BackgroundPreviewViewModel.ViewCameraChanged += OnViewCameraChanged;
-            RenderPackageFactory = factory;
+            this.manipulator = manipulator;
 
-            PointOrigin = pointOrigin;
-            //cameraPosition = BackgroundPreviewViewModel.GetCameraPosition();
-            this.cameraPosition = cameraPosition;
+            Name = manipulator.Node.AstIdentifierBase;
+            
+            BackgroundPreviewViewModel.ViewCameraChanged += OnViewCameraChanged;
+
+            cameraPosition = manipulator.CameraPosition;
         }
 
         /// <summary>

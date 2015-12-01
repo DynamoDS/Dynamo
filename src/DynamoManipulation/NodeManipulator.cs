@@ -46,13 +46,7 @@ namespace Dynamo.Manipulation
 
         protected bool Active { get; set; }
 
-        protected NodeModel Node { get; private set; }
-
         protected IWorkspaceModel WorkspaceModel { get; private set; }
-
-        protected IWatch3DViewModel BackgroundPreviewViewModel { get; private set; }
-
-        protected IRenderPackageFactory RenderPackageFactory { get; private set; }
 
         protected ICommandExecutive CommandExecutive { get; private set; }
 
@@ -62,8 +56,16 @@ namespace Dynamo.Manipulation
         
         protected IGizmo GizmoInAction { get; private set; }
 
-        protected Point3D? CameraPosition { get; private set; }
-        
+        internal NodeModel Node { get; private set; }
+
+        internal abstract Point Origin { get; }
+
+        internal IWatch3DViewModel BackgroundPreviewViewModel { get; private set; }
+
+        internal IRenderPackageFactory RenderPackageFactory { get; private set; }
+
+        internal Point3D? CameraPosition { get; private set; }
+
         #endregion
 
         #region abstract methods
@@ -472,12 +474,12 @@ namespace Dynamo.Manipulation
             var gizmos = GetGizmos(true);
             foreach (var item in gizmos)
             {
-                // Append node AST identifier to gizmo name
-                // so that it gets added to package description
-                if (!item.Name.Contains(Node.AstIdentifierBase))
-                {
-                    item.Name = string.Format("{0}_{1}", item.Name, Node.AstIdentifierBase);
-                }
+                //// Append node AST identifier to gizmo name
+                //// so that it gets added to package description
+                //if (!item.Name.Contains(Node.AstIdentifierBase))
+                //{
+                //    item.Name = string.Format("{0}_{1}", item.Name, Node.AstIdentifierBase);
+                //}
                 packages.AddRange(item.GetDrawables());
             }
 

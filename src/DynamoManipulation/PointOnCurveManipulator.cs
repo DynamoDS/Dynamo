@@ -41,6 +41,11 @@ namespace Dynamo.Manipulation
 
         #region abstract method implementation
 
+        internal override Point Origin
+        {
+            get { return pointOnCurve; }
+        }
+
         /// <summary>
         /// Returns all the gizmos supported by this manipulator
         /// </summary>
@@ -64,9 +69,9 @@ namespace Dynamo.Manipulation
         {
             if (null == gizmo)
             {
-                gizmo = new TranslationGizmo(BackgroundPreviewViewModel, RenderPackageFactory, CameraPosition.Value, pointOnCurve, tangent, 6);
+                gizmo = new TranslationGizmo(this, tangent, 2);
             }
-            else gizmo.UpdateGeometry(pointOnCurve, tangent, null, null, 6);
+            else gizmo.UpdateGeometry(tangent, null, null, 2);
         }
 
         protected override void AssignInputNodes()
