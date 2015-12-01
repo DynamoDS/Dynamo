@@ -108,7 +108,7 @@ namespace Dynamo.Publish
 
         #endregion
 
-        #region Helpers        
+        #region Helpers
 
         private MenuItem GenerateMenuItem()
         {
