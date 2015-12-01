@@ -170,10 +170,14 @@
       <Name>CoreNodeModels</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\DynamoWatch3D\Watch3D.csproj">
+    <ProjectReference Include="..\Libraries\Watch3DNodeModelsWpf\Watch3DNodeModelsWpf.csproj">
       <Project>{b9e338ca-6677-4772-b01d-1fceabcdaaab}</Project>
-      <Name>Watch3D</Name>
+      <Name>Watch3DNodeModelsWpf</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\Watch3DNodeModels\Watch3DNodeModels.csproj">
+      <Project>{31183026-DE70-49CB-BC7C-0DFD0A088F62}</Project>
+      <Name>Watch3DNodeModels</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
       <Project>{263FA9C1-F81E-4A8E-95E0-8CDAE20F177B}</Project>

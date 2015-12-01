@@ -62,6 +62,7 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NodeExecutionTest.cs" />
     <Compile Include="AnnotationModelTest.cs" />
     <Compile Include="AstBuilderTest.cs" />
     <Compile Include="AsyncTaskExtensionsTests.cs" />
@@ -165,7 +166,7 @@
     <ProjectReference Include="..\..\src\Libraries\PythonNodeModels\PythonNodeModels.csproj">
       <Project>{8872ca17-c10d-43b9-8393-5c5a57065eb0}</Project>
       <Name>PythonNodeModels</Name>
-	  <Private>False</Private>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
       <Project>{263fa9c1-f81e-4a8e-95e0-8cdae20f177b}</Project>

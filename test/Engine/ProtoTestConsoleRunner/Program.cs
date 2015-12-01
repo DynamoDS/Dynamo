@@ -1,9 +1,7 @@
-﻿
-using System;
+﻿using System;
 using ProtoCore;
 using ProtoScript.Runners;
 using ProtoCore.DSASM.Mirror;
-using ProtoTest.TD;
 using System.IO;
 
 namespace ProtoTestConsoleRunner
@@ -17,6 +15,10 @@ namespace ProtoTestConsoleRunner
                 Console.WriteLine("Cannot find file " + filename);
                 return;
             }
+
+            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+
             var opts = new Options();
             opts.ExecutionMode = ExecutionMode.Serial;
             ProtoCore.Core core = new Core(opts);
@@ -29,7 +31,9 @@ namespace ProtoTestConsoleRunner
             ProtoScriptRunner runner = new ProtoScriptRunner();
 
             RuntimeCore runtimeCore = runner.LoadAndExecute(filename, core);
-            ExecutionMirror mirror = runtimeCore.Mirror;
+            long ms = sw.ElapsedMilliseconds;
+            sw.Stop();
+            Console.WriteLine(ms);
         }
 
         static void DevRun()
@@ -66,7 +70,8 @@ namespace ProtoTestConsoleRunner
         {
             if (args.Length >= 1)
             {
-                Run(args[0], true);
+                bool verbose = args.Length >= 2 && args[1] == "-v";
+                Run(args[0], verbose);
             }
             else
             {

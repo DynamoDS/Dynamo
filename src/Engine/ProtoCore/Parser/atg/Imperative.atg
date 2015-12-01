@@ -217,15 +217,15 @@ Imperative_decoratedIdentifier<out ProtoCore.AST.ImperativeAST.ImperativeNode no
                                            var unknownType = new ProtoCore.Type();
                                            unknownType.UID = ProtoCore.DSASM.Constants.kInvalidIndex;
                                            unknownType.Name = t.val; 
-                                           typedVar.datatype = unknownType;
+                                           typedVar.DataType = unknownType;
                                        }
                                        else
                                        {
-                                           typedVar.datatype = core.TypeSystem.BuildTypeObject(type, 0);
+                                           typedVar.DataType = core.TypeSystem.BuildTypeObject(type, 0);
                                        }
                                     .)
 
-                [                   (. var datatype = typedVar.datatype; .)
+                [                   (. var datatype = typedVar.DataType; .)
                     openbracket closebracket    
                                     (. datatype.rank = 1; .)
                     [
@@ -239,7 +239,7 @@ Imperative_decoratedIdentifier<out ProtoCore.AST.ImperativeAST.ImperativeNode no
                             } 
                         )
                     ]
-                                    (. typedVar.datatype = datatype; .)
+                                    (. typedVar.DataType = datatype; .)
                 ]
                                     (. node = typedVar; .)
 
@@ -285,15 +285,15 @@ Imperative_decoratedIdentifier<out ProtoCore.AST.ImperativeAST.ImperativeNode no
                                            var unknownType = new ProtoCore.Type();
                                            unknownType.UID = ProtoCore.DSASM.Constants.kInvalidIndex;
                                            unknownType.Name = t.val; 
-                                           typedVar.datatype = unknownType;
+                                           typedVar.DataType = unknownType;
                                        }
                                        else
                                        {
-                                           typedVar.datatype = core.TypeSystem.BuildTypeObject(type, 0);
+                                           typedVar.DataType = core.TypeSystem.BuildTypeObject(type, 0);
                                        }
                                     .)
 
-                [                   (. var datatype = typedVar.datatype; .)
+                [                   (. var datatype = typedVar.DataType; .)
                     openbracket closebracket    
                                     (. datatype.rank = 1; .)
                     [
@@ -307,7 +307,7 @@ Imperative_decoratedIdentifier<out ProtoCore.AST.ImperativeAST.ImperativeNode no
                             } 
                         )
                     ]
-                                    (. typedVar.datatype = datatype; .)
+                                    (. typedVar.DataType = datatype; .)
                 ]
                                     (. node = typedVar; .)
 
@@ -477,22 +477,22 @@ Imperative_forloop<out ProtoCore.AST.ImperativeAST.ImperativeNode forloop>
                                         .)
         kw_for                          (. NodeUtils.SetNodeLocation(loopNode, t); loopNode.KwForLine = t.line; loopNode.KwForCol = t.col; .)
         '('												(. int idLine = la.line; int idCol = la.col; .)
-            Imperative_Ident<out node>             (. loopNode.loopVar = node; loopNode.loopVar.line = idLine; loopNode.loopVar.col = idCol; .)   
+            Imperative_Ident<out node>             (. loopNode.LoopVariable = node; loopNode.LoopVariable.line = idLine; loopNode.LoopVariable.col = idCol; .)   
         "in"							(. loopNode.KwInLine = t.line; loopNode.KwInCol = t.col; int exprLine = la.line; int exprCol = la.col; .)
-            Imperative_expr<out node>               (. loopNode.expression = node; if (loopNode.expression != null) {  loopNode.expression.line = exprLine; loopNode.expression.col = exprCol; } .)
+            Imperative_expr<out node>               (. loopNode.Expression = node; if (loopNode.Expression != null) {  loopNode.Expression.line = exprLine; loopNode.Expression.col = exprCol; } .)
         ')'
         (
             (
                 '{'                                         
                 Imperative_stmtlist<out body>   
-                    (.  loopNode.body = body; .)
+                    (.  loopNode.Body = body; .)
                 '}'
 
                     (.  NodeUtils.SetNodeEndLocation(loopNode, t); .)
             )
             |
             (                               (. ProtoCore.AST.ImperativeAST.ImperativeNode singleStmt = null; .)
-                Imperative_stmt<out singleStmt>     (. loopNode.body.Add(singleStmt); .)
+                Imperative_stmt<out singleStmt>     (. loopNode.Body.Add(singleStmt); .)
             )
         )                                                   
         (.
@@ -637,23 +637,23 @@ Imperative_RangeExpr<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
 Imperative_rel<out node>
 [
                                     (.  ProtoCore.AST.ImperativeAST.RangeExprNode rnode = new ProtoCore.AST.ImperativeAST.RangeExprNode(); 
-                                        rnode.FromNode = node;
-                                        NodeUtils.SetNodeStartLocation(rnode, rnode.FromNode);
+                                        rnode.From = node;
+                                        NodeUtils.SetNodeStartLocation(rnode, rnode.From);
                                         bool hasAmountOperator = false;
                                     .)
     rangeop
     [Imperative_rangeAmountOperator<out hasAmountOperator>]
                                     (. rnode.HasRangeAmountOperator = hasAmountOperator; .)
     Imperative_rel<out node>                    (.
-                                                    rnode.ToNode = node;
-                                                    NodeUtils.SetNodeEndLocation(rnode, rnode.ToNode);
+                                                    rnode.To = node;
+                                                    NodeUtils.SetNodeEndLocation(rnode, rnode.To);
                                                 .)
     [                                           (. RangeStepOperator op; .)
         rangeop
-        Imperative_rangeStepOperator<out op>    (. rnode.stepoperator = op; .)  
+        Imperative_rangeStepOperator<out op>    (. rnode.StepOperator = op; .)  
         Imperative_rel<out node>                (.
-                                                    rnode.StepNode = node;
-                                                    NodeUtils.SetNodeEndLocation(rnode, rnode.StepNode);
+                                                    rnode.Step = node;
+                                                    NodeUtils.SetNodeEndLocation(rnode, rnode.Step);
                                                 .)
     ]                                           (. node = rnode; .)
 ]
@@ -741,7 +741,7 @@ Imperative_Char<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
 
                         node = new ProtoCore.AST.ImperativeAST.CharNode() 
                         { 
-                            value = t.val.Substring(1, t.val.Length - 2),
+                            Value = t.val.Substring(1, t.val.Length - 2),
                             line = t.line,
                             col = t.col
                         }; 
@@ -754,7 +754,7 @@ Imperative_String<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
     textstring      (. 
                         node = new ProtoCore.AST.ImperativeAST.StringNode() 
                         { 
-                            value = GetEscapedString(t.val.Length <= 2 ? "" : t.val.Substring(1, t.val.Length - 2)), 
+                            Value = GetEscapedString(t.val.Length <= 2 ? "" : t.val.Substring(1, t.val.Length - 2)), 
                             line = t.line,
                             col = t.col
                         }; 
@@ -985,10 +985,10 @@ Imperative_ExprList<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                                     .)
             [
                                     
-                Imperative_expr<out node>          (. exprlist.list.Add(node); .)
+                Imperative_expr<out node>          (. exprlist.Exprs.Add(node); .)
                 {
                     ','
-                    Imperative_expr<out node>      (. exprlist.list.Add(node); .)
+                    Imperative_expr<out node>      (. exprlist.Exprs.Add(node); .)
                 }
          
             ]
@@ -1006,11 +1006,6 @@ Imperative_ArgDecl<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                                         NodeUtils.SetNodeLocation(varDeclNode, la);
                                         varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemStack;
                                     .)
-
-    [
-        kw_heap               (. varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemHeap; .)
-    ]
-
     (
         ident                       (. 
                                         if (IsKeyWord(t.val, true))
@@ -1114,7 +1109,7 @@ Imperative_functiondecl<.out ProtoCore.AST.ImperativeAST.ImperativeNode node, Li
         )
     )
                                             (. 
-                                                funcDecl.localVars = localVarCount;
+                                                funcDecl.LocalVariableCount = localVarCount;
                                                 NodeUtils.SetNodeEndLocation(funcDecl.FunctionBody, t);
                                                 funcDecl.FunctionBody.Body = body;
                                                 node = funcDecl; 
@@ -1336,11 +1331,11 @@ Imperative_rangeAmountOperator<out bool hasAmountOperator>
 .
 
 Imperative_rangeStepOperator<out RangeStepOperator op>
-                        (. op = RangeStepOperator.stepsize; .)
+                        (. op = RangeStepOperator.StepSize; .)
 = 
     [
-        '#'             (. op = RangeStepOperator.num; .)
-        | '~'           (. op = RangeStepOperator.approxsize; .)
+        '#'             (. op = RangeStepOperator.Number; .)
+        | '~'           (. op = RangeStepOperator.ApproximateSize; .)
     ]
 .
 

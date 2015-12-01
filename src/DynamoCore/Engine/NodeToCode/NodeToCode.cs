@@ -520,10 +520,10 @@ namespace Dynamo.Engine.NodeToCode
             if (forDefinition)
                 return false;
 
-            if (node.FromNode.Accept(this) || node.ToNode.Accept(this))
+            if (node.From.Accept(this) || node.To.Accept(this))
                 return true;
 
-            return node.StepNode != null ? node.StepNode.Accept(this) : false;
+            return node.Step != null ? node.Step.Accept(this) : false;
         }
 
         public override bool VisitExprListNode(ExprListNode node)
@@ -531,7 +531,7 @@ namespace Dynamo.Engine.NodeToCode
             if (forDefinition)
                 return false;
 
-            if (node.list.Any(e => e.Accept(this)))
+            if (node.Exprs.Any(e => e.Accept(this)))
                 return true;
 
             return node.ArrayDimensions != null ? node.ArrayDimensions.Accept(this) : false;

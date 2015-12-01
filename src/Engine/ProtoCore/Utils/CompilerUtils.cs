@@ -93,17 +93,21 @@ namespace ProtoCore.Utils
 
     public class ParseParam
     {
-        private List<string> temporaries;
         private Dictionary<string, string> unboundIdentifiers;
-        private List<ProtoCore.AST.Node> parsedNodes;
-        private List<ProtoCore.BuildData.ErrorEntry> errors;
-        private List<ProtoCore.BuildData.WarningEntry> warnings;
+        private List<AssociativeNode> parsedNodes;
+        private List<AssociativeNode> commentNodes;
+        private List<BuildData.ErrorEntry> errors;
+        private List<BuildData.WarningEntry> warnings;
         
         public ParseParam(System.Guid postfixGuid, System.String code, ElementResolver elementResolver)
         {
             this.PostfixGuid = postfixGuid;
             this.OriginalCode = code;
             this.ElementResolver = elementResolver;
+            this.parsedNodes = new List<AssociativeNode>();
+            this.commentNodes = new List<AssociativeNode>();
+            this.errors = new List<BuildData.ErrorEntry>();
+            this.warnings = new List<BuildData.WarningEntry>();
         }
 
         public void AppendUnboundIdentifier(string displayName, string identifier)
@@ -115,10 +119,10 @@ namespace ProtoCore.Utils
                 this.unboundIdentifiers.Add(displayName, identifier);
         }
 
-        public void AppendParsedNodes(IEnumerable<ProtoCore.AST.Node> parsedNodes)
+        public void AppendParsedNodes(IEnumerable<AssociativeNode> parsedNodes)
         {
-            if (this.parsedNodes == null)
-                this.parsedNodes = new List<ProtoCore.AST.Node>();
+            if (parsedNodes == null || !parsedNodes.Any())
+                return;
 
             this.parsedNodes.AddRange(parsedNodes);
         }
@@ -128,43 +132,44 @@ namespace ProtoCore.Utils
             if (errors == null || (errors.Count() <= 0))
                 return;
 
-            if (this.errors == null)
-                this.errors = new List<ProtoCore.BuildData.ErrorEntry>();
-
             this.errors.AddRange(errors);
         }
 
         public void AppendWarnings(IEnumerable<ProtoCore.BuildData.WarningEntry> warnings)
         {
-            if (warnings == null || (warnings.Count() <= 0))
+            if (warnings == null || !warnings.Any())
                 return;
 
-            if (this.warnings == null)
-                this.warnings = new List<ProtoCore.BuildData.WarningEntry>();
-
             this.warnings.AddRange(warnings);
+        }
+
+        public void AppendComments(IEnumerable<AssociativeNode> commentNodes)
+        {
+            if (commentNodes == null || !commentNodes.Any())
+                return;
+
+            this.commentNodes.AddRange(commentNodes);
         }
 
         #region Public Class Properties
 
         public System.Guid PostfixGuid { get; private set; }
         public System.String OriginalCode { get; private set; }
-        public System.String ProcessedCode { get; internal set; }
         public ElementResolver ElementResolver { get; private set; }
-
-        public IEnumerable<System.String> Temporaries
-        {
-            get { return this.temporaries; }
-        }
 
         public IDictionary<string, string> UnboundIdentifiers
         {
             get { return unboundIdentifiers; }
         }
 
-        public IEnumerable<ProtoCore.AST.Node> ParsedNodes
+        public IEnumerable<AssociativeNode> ParsedNodes
         {
             get { return this.parsedNodes; }
+        }
+
+        public IEnumerable<AssociativeNode> ParsedComments
+        {
+            get { return this.commentNodes; }
         }
 
         public IEnumerable<ProtoCore.BuildData.ErrorEntry> Errors
@@ -256,7 +261,9 @@ namespace ProtoCore.Utils
             string postfixGuid = parseParams.PostfixGuid.ToString().Replace("-", "_");
 
             // Parse code to generate AST and add temporaries to non-assignment nodes
-            IEnumerable<ProtoCore.AST.Node> astNodes = ParseUserCode(core, parseParams.OriginalCode, postfixGuid);
+            List<AssociativeNode> astNodes;
+            List<AssociativeNode> comments;
+            ParseUserCode(core, parseParams.OriginalCode, postfixGuid, out astNodes, out comments);
 
             // Catch the syntax errors and errors for unsupported 
             // language constructs thrown by compile expression
@@ -267,6 +274,7 @@ namespace ProtoCore.Utils
                 return false;
             }
             parseParams.AppendParsedNodes(astNodes);
+            parseParams.AppendComments(comments);
 
             // Compile the code to get the resultant unboundidentifiers  
             // and any errors or warnings that were caught by the compiler and cache them in parseParams
@@ -336,36 +344,39 @@ namespace ProtoCore.Utils
             }
         }
 
-        private static IEnumerable<ProtoCore.AST.Node> ParseUserCode(ProtoCore.Core core, string expression, string postfixGuid)
+        private static void ParseUserCode(ProtoCore.Core core, string expression, string postfixGuid, out List<AssociativeNode> astNodes, out List<AssociativeNode> commentNodes)
         {
-            IEnumerable<ProtoCore.AST.Node> astNodes = new List<ProtoCore.AST.Node>();
-
-            if (expression == null)
-                return astNodes;
-
-            expression = expression.Replace("\r\n", "\n");
-
-            try
+            if (expression != null)
             {
-                return ParseUserCodeCore(core, expression);
+                expression = expression.Replace("\r\n", "\n");
+
+                try
+                {
+                    ParseUserCodeCore(core, expression, out astNodes, out commentNodes);
+                    return;
+                }
+                catch
+                {
+                    // For modifier blocks, language blocks, etc. that are currently ignored
+                }
             }
-            catch
-            {
-                // For modifier blocks, language blocks, etc. that are currently ignored
-                return astNodes;
-            }
+
+            astNodes = new List<AssociativeNode>();
+            commentNodes = new List<AssociativeNode>();
         }
 
-        private static IEnumerable<AST.Node> ParseUserCodeCore(Core core, string expression)
+        private static void ParseUserCodeCore(Core core, string expression, out List<AssociativeNode> astNodes, out List<AssociativeNode> commentNodes)
         {
-            List<ProtoCore.AST.Node> astNodes = new List<ProtoCore.AST.Node>();
+            astNodes = new List<AssociativeNode>();
 
             core.ResetForPrecompilation();
             core.IsParsingCodeBlockNode = true;
             core.ParsingMode = ParseMode.AllowNonAssignment;
 
-            var codeBlockNode = ParserUtils.ParseWithCore(expression, core);
-            List<AST.Node> nodes = ParserUtils.GetAstNodes(codeBlockNode);
+            ParseResult parseResult = ParserUtils.ParseWithCore(expression, core);
+
+            commentNodes = ParserUtils.GetAstNodes(parseResult.CommentBlockNode);
+            var nodes = ParserUtils.GetAstNodes(parseResult.CodeBlockNode);
             Validity.Assert(nodes != null);
 
             int index = 0;
@@ -441,7 +452,6 @@ namespace ProtoCore.Utils
                     }
                 }
             }
-            return astNodes;
         }
 
         private static void GetInputLines(IEnumerable<Node> astNodes,

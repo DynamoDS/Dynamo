@@ -766,9 +766,9 @@ namespace ProtoTest.LiveRunner
             // Build the AST trees
             // x = 1..10;
             ProtoCore.AST.AssociativeAST.RangeExprNode rangeExpr = new ProtoCore.AST.AssociativeAST.RangeExprNode();
-            rangeExpr.FromNode = new ProtoCore.AST.AssociativeAST.IntNode(0);
-            rangeExpr.ToNode = new ProtoCore.AST.AssociativeAST.IntNode(5);
-            rangeExpr.StepNode = new ProtoCore.AST.AssociativeAST.IntNode(1);
+            rangeExpr.From = new ProtoCore.AST.AssociativeAST.IntNode(0);
+            rangeExpr.To = new ProtoCore.AST.AssociativeAST.IntNode(5);
+            rangeExpr.Step = new ProtoCore.AST.AssociativeAST.IntNode(1);
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
                 rangeExpr,

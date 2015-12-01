@@ -653,7 +653,7 @@ namespace ProtoCore.DSASM
             bool isCallingMemberFunction = Constants.kInvalidIndex != classIndex;
             if (isCallingMemberFunction)
             {
-                fNode = exe.classTable.ClassNodes[classIndex].ProcTable.procList[functionIndex];
+                fNode = exe.classTable.ClassNodes[classIndex].ProcTable.Procedures[functionIndex];
 
                 if (depth > 0 && fNode.IsConstructor)
                 {
@@ -665,7 +665,7 @@ namespace ProtoCore.DSASM
             else
             {
                 // Global function
-                fNode = exe.procedureTable[blockDeclId].procList[functionIndex];
+                fNode = exe.procedureTable[blockDeclId].Procedures[functionIndex];
             }
 
             // Build the arg values list
@@ -967,7 +967,7 @@ namespace ProtoCore.DSASM
             Validity.Assert(arrayDim.IsArrayDimension);
 
             ClassNode classNode = exe.classTable.ClassNodes[classIndex];
-            ProcedureNode procNode = classNode.ProcTable.procList[procIndex];
+            ProcedureNode procNode = classNode.ProcTable.Procedures[procIndex];
 
             // Get all arguments and replications 
             var arguments = new List<StackValue>();
@@ -3625,13 +3625,13 @@ namespace ProtoCore.DSASM
 
                     if (Constants.kGlobalScope == classId)
                     {
-                        procName = exe.procedureTable[blockId].procList[procId].Name;
+                        procName = exe.procedureTable[blockId].Procedures[procId].Name;
                         CodeBlock codeblock = ProtoCore.Utils.CoreUtils.GetCodeBlock(exe.CodeBlocks, blockId);
-                        procNode = CoreUtils.GetFirstVisibleProcedure(procName, arglist, codeblock);
+                        procNode = CoreUtils.GetFunctionBySignature(procName, arglist, codeblock);
                     }
                     else
                     {
-                        procNode = exe.classTable.ClassNodes[classId].ProcTable.procList[procId];
+                        procNode = exe.classTable.ClassNodes[classId].ProcTable.Procedures[procId];
                         isMemberFunctionPointer = !procNode.IsConstructor && !procNode.IsStatic;                        
                     }
                     type = classId;
@@ -3847,9 +3847,9 @@ namespace ProtoCore.DSASM
         {
             if (Constants.kGlobalScope != classIndex)
             {
-                return exe.classTable.ClassNodes[classIndex].ProcTable.procList[functionIndex];
+                return exe.classTable.ClassNodes[classIndex].ProcTable.Procedures[functionIndex];
             }
-            return exe.procedureTable[blockId].procList[functionIndex];
+            return exe.procedureTable[blockId].Procedures[functionIndex];
         }
 
         private void GetLocalAndParamCount(int blockId, int classIndex, int functionIndex, out int localCount, out int paramCount)
@@ -3858,13 +3858,13 @@ namespace ProtoCore.DSASM
 
             if (Constants.kGlobalScope != classIndex)
             {
-                localCount = exe.classTable.ClassNodes[classIndex].ProcTable.procList[functionIndex].LocalCount;
-                paramCount = exe.classTable.ClassNodes[classIndex].ProcTable.procList[functionIndex].ArgumentTypes.Count;
+                localCount = exe.classTable.ClassNodes[classIndex].ProcTable.Procedures[functionIndex].LocalCount;
+                paramCount = exe.classTable.ClassNodes[classIndex].ProcTable.Procedures[functionIndex].ArgumentTypes.Count;
             }
             else
             {
-                localCount = exe.procedureTable[blockId].procList[functionIndex].LocalCount;
-                paramCount = exe.procedureTable[blockId].procList[functionIndex].ArgumentTypes.Count;
+                localCount = exe.procedureTable[blockId].Procedures[functionIndex].LocalCount;
+                paramCount = exe.procedureTable[blockId].Procedures[functionIndex].ArgumentTypes.Count;
             }
         }
 
@@ -5422,11 +5422,11 @@ namespace ProtoCore.DSASM
             ProcedureNode fNode;
             if (ci != Constants.kInvalidIndex)
             {
-                fNode = exe.classTable.ClassNodes[ci].ProcTable.procList[fi];
+                fNode = exe.classTable.ClassNodes[ci].ProcTable.Procedures[fi];
             }
             else
             {
-                fNode = exe.procedureTable[blockId].procList[fi];
+                fNode = exe.procedureTable[blockId].Procedures[fi];
             }
 
             // Disabling support for stepping into replicating function calls temporarily 

@@ -219,6 +219,11 @@ namespace Dynamo.ViewModels
                 return PreviewState.None;
             }
         }
+         
+        public bool IsFrozen
+        {
+            get { return Nodevm.IsFrozen; }            
+        }
 #endregion
 
         /// <summary>
@@ -258,6 +263,9 @@ namespace Dynamo.ViewModels
             {
                 case "ShowExecutionPreview":
                     RaisePropertyChanged("PreviewState");
+                    break;
+                case "IsFrozen":
+                    RaisePropertyChanged("IsFrozen");
                     break;
             }
         }

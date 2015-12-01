@@ -102,6 +102,7 @@
     </Compile>
     <Compile Include="AssociativeGraph.cs" />
     <Compile Include="DSASM\HeapObjects.cs" />
+    <Compile Include="Lang\InternalAttributes.cs" />
     <Compile Include="SyntaxAnalysis\AstVisitor.cs" />
     <Compile Include="AttributeEntry.cs" />
     <Compile Include="BuildStatus.cs" />

@@ -442,6 +442,7 @@
                                   Command="{Binding Path=NodeFromSelectionCommand}"
                                   Name="nodeFromSelection"
                                   InputGestureText="Ctrl + D" />
+                       
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewEditMenuSelectAll}"
                                   Command="{Binding SelectAllCommand}"

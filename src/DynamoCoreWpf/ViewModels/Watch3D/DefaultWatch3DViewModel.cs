@@ -439,6 +439,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             DeleteGeometryForIdentifier(node.AstIdentifierBase);
         }
 
+        public virtual CameraData GetCameraInformation()
+        {
+            // Override in derived classes.
+            return null;
+        }
+
         public virtual void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages)
         {
             // Override in inherited classes.
