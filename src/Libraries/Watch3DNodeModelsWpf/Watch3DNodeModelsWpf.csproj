@@ -14,8 +14,8 @@
     <ProjectGuid>{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DynamoWatch3D</RootNamespace>
-    <AssemblyName>DynamoWatch3D</AssemblyName>
+    <RootNamespace>Watch3DNodeModelsWpf</RootNamespace>
+    <AssemblyName>Watch3DNodeModelsWpf</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -128,7 +128,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.en-US.resx</DependentUpon>
     </Compile>
-    <Compile Include="Watch3D.cs" />
+    <Compile Include="Watch3DNodeViewCustomization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -157,9 +157,13 @@
       <Name>VMDataBridge</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\Watch3DNodeModels\Watch3DNodeModels.csproj">
+      <Project>{31183026-DE70-49CB-BC7C-0DFD0A088F62}</Project>
+      <Name>Watch3DNodeModels</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DynamoWatch3DImages.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -181,19 +185,6 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
-  <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
-    <!-- Get System.Drawing.dll -->
-    <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v2.0">
-      <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
-    </GetReferenceAssemblyPaths>
-    <!-- Get assembly -->
-    <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
-      <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
-    </GetAssemblyIdentity>
-    <!-- Generate customization dll -->
-    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)DynamoWatch3DImages.resx" OutputResources="$(ProjectDir)DynamoWatch3DImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    <AL TargetType="library" EmbedResources="$(ProjectDir)DynamoWatch3DImages.resources" OutputAssembly="$(OutDir)DynamoWatch3D.customization.dll" Version="%(AssemblyInfo.Version)" />
-  </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>

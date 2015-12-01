@@ -160,11 +160,11 @@ namespace ProtoCore.SyntaxAnalysis
 
         public virtual void VisitRangeExprNode(RangeExprNode node)
         {
-            node.FromNode.Accept(this);
-            node.ToNode.Accept(this);
+            node.From.Accept(this);
+            node.To.Accept(this);
 
-            if (node.StepNode != null)
-                node.StepNode.Accept(this);
+            if (node.Step != null)
+                node.Step.Accept(this);
 
             if (node.ArrayDimensions != null)
                 node.ArrayDimensions.Accept(this);
@@ -172,9 +172,9 @@ namespace ProtoCore.SyntaxAnalysis
 
         public virtual void VisitExprListNode(ExprListNode node)
         {
-            for (int i = 0; i < node.list.Count; ++i)
+            for (int i = 0; i < node.Exprs.Count; ++i)
             {
-                node.list[i].Accept(this);
+                node.Exprs[i].Accept(this);
             }
 
             if (node.ArrayDimensions != null)
@@ -536,19 +536,19 @@ namespace ProtoCore.SyntaxAnalysis
 
         public override AssociativeNode VisitRangeExprNode(RangeExprNode node)
         {
-            var newFromNode = node.FromNode.Accept(this);
-            if (node.FromNode != newFromNode)
-                node.FromNode = newFromNode;
+            var newFromNode = node.From.Accept(this);
+            if (node.From != newFromNode)
+                node.From = newFromNode;
 
-            var newToNode = node.ToNode.Accept(this);
-            if (node.ToNode != newToNode)
-                node.ToNode = newToNode;
+            var newToNode = node.To.Accept(this);
+            if (node.To != newToNode)
+                node.To = newToNode;
 
-            if (node.StepNode != null)
+            if (node.Step != null)
             {
-                var newStepNode = node.StepNode.Accept(this);
-                if (node.StepNode != newStepNode)
-                    node.StepNode = newStepNode;
+                var newStepNode = node.Step.Accept(this);
+                if (node.Step != newStepNode)
+                    node.Step = newStepNode;
             }
 
             return node;
@@ -557,11 +557,11 @@ namespace ProtoCore.SyntaxAnalysis
         public override AssociativeNode VisitExprListNode(ExprListNode node)
         {
             List<AssociativeNode> items = new List<AssociativeNode>();
-            for (int i = 0; i < node.list.Count; ++i)
+            for (int i = 0; i < node.Exprs.Count; ++i)
             {
-                var newItem = node.list[i].Accept(this);
-                if (node.list[i] != newItem)
-                    node.list[i] = newItem;
+                var newItem = node.Exprs[i].Accept(this);
+                if (node.Exprs[i] != newItem)
+                    node.Exprs[i] = newItem;
             }
 
             return node;

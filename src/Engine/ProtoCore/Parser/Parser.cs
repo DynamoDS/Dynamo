@@ -157,18 +157,6 @@ public Node root { get; set; }
         return sb.ToString();
     }
 
-    
-    public List<Node> GetParsedASTList(ProtoCore.AST.AssociativeAST.CodeBlockNode codeBlockNode)
-    {
-        Validity.Assert(null != codeBlockNode);
-        List<Node> astNodes = new List<Node>();
-        for (int n = 0; n < stmtsParsed; n++)
-        {
-            astNodes.Add(codeBlockNode.Body[n]);
-        }
-        return astNodes;
-    }
-
     private bool IsIdentList()
     {
         Token pt = la;
@@ -380,20 +368,6 @@ public Node root { get; set; }
         return isPostFixedRepGuide;
     }
 
-
-    private bool IsPostfixedNumber(string number)
-    {
-        if (number.Length > 1)
-        {
-            char lastChar = number[number.Length-1];
-            if (lastChar == ProtoCore.DSASM.Constants.kLongestPostfix)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private bool IsNumber()
     {
         Token pt = la;
@@ -405,22 +379,6 @@ public Node root { get; set; }
 
         return ((_number == pt.kind) || (_float == pt.kind));
     }
-
-    /*
-    private bool IsTypedVariable()
-    {
-        Token pt = la;
-
-        if (_ident == pt.kind) {
-            pt = scanner.Peek();
-            scanner.ResetPeek();
-            if (":" == pt.val) 
-                return true;
-        }
-        scanner.ResetPeek();
-        return false;
-    }
-    */
 
     private bool IsLocalVariable()
     {
@@ -536,18 +494,6 @@ public Node root { get; set; }
         return isAssignmentStatement;
     }
 
-    private string GetImportedModuleFullPath(string moduleLocation)
-    {
-        string fileName = moduleLocation.Replace("\"", String.Empty);
-        string filePath = FileUtils.GetDSFullPathName(fileName, core.Options);
-
-        if (File.Exists(filePath))
-            return filePath;
-
-        SemErr(String.Format(Resources.NoSuchFileOrDirectoryToImport,fileName));
-        return null;
-    }
-
     private bool NotDefaultArg()
     {
         Token pt = la;          
@@ -578,10 +524,10 @@ public Node root { get; set; }
         return true;    
     }
 
-    private ProtoCore.AST.AssociativeAST.AssociativeNode GenerateBinaryOperatorMethodCallNode(Operator op, ProtoCore.AST.AssociativeAST.AssociativeNode op1, ProtoCore.AST.AssociativeAST.AssociativeNode op2)
+    private AssociativeNode GenerateBinaryOperatorMethodCallNode(Operator op, ProtoCore.AST.AssociativeAST.AssociativeNode op1, ProtoCore.AST.AssociativeAST.AssociativeNode op2)
     {
-        ProtoCore.AST.AssociativeAST.FunctionCallNode funCallNode = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
-        ProtoCore.AST.AssociativeAST.IdentifierNode funcName = new ProtoCore.AST.AssociativeAST.IdentifierNode { Value = ProtoCore.DSASM.Op.GetOpFunction(op), Name = ProtoCore.DSASM.Op.GetOpFunction(op) };
+        FunctionCallNode funCallNode = new FunctionCallNode();
+        IdentifierNode funcName = new IdentifierNode { Value = ProtoCore.DSASM.Op.GetOpFunction(op), Name = ProtoCore.DSASM.Op.GetOpFunction(op) };
         funCallNode.Function = funcName;
         funCallNode.Name = ProtoCore.DSASM.Op.GetOpFunction(op);
         funCallNode.FormalArguments.Add(op1); funCallNode.FormalArguments.Add(op2);
@@ -590,10 +536,10 @@ public Node root { get; set; }
         return funCallNode;
     }
 
- 	private ProtoCore.AST.AssociativeAST.AssociativeNode GenerateUnaryOperatorMethodCallNode(UnaryOperator op, ProtoCore.AST.AssociativeAST.AssociativeNode operand)
+ 	private AssociativeNode GenerateUnaryOperatorMethodCallNode(UnaryOperator op, ProtoCore.AST.AssociativeAST.AssociativeNode operand)
     {
-        ProtoCore.AST.AssociativeAST.FunctionCallNode funCallNode = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
-        ProtoCore.AST.AssociativeAST.IdentifierNode funcName = new ProtoCore.AST.AssociativeAST.IdentifierNode { Value = ProtoCore.DSASM.Op.GetUnaryOpFunction(op), Name = ProtoCore.DSASM.Op.GetUnaryOpFunction(op) };
+        FunctionCallNode funCallNode = new FunctionCallNode();
+        IdentifierNode funcName = new IdentifierNode { Value = ProtoCore.DSASM.Op.GetUnaryOpFunction(op), Name = ProtoCore.DSASM.Op.GetUnaryOpFunction(op) };
         funCallNode.Function = funcName;
         funCallNode.Name = ProtoCore.DSASM.Op.GetUnaryOpFunction(op);
         funCallNode.FormalArguments.Add(operand);
@@ -602,13 +548,11 @@ public Node root { get; set; }
         return funCallNode;
     }
 
-
-
-    ProtoCore.AST.ImperativeAST.IdentifierNode BuildImperativeIdentifier(string name, ProtoCore.PrimitiveType type = ProtoCore.PrimitiveType.kTypeVar)
+    private AST.ImperativeAST.IdentifierNode BuildImperativeIdentifier(string name, ProtoCore.PrimitiveType type = ProtoCore.PrimitiveType.kTypeVar)
     {
-        var ident = new ProtoCore.AST.ImperativeAST.IdentifierNode();
+        var ident = new AST.ImperativeAST.IdentifierNode();
         ident.Name = ident.Value = name;
-        ident.datatype = TypeSystem.BuildPrimitiveTypeObject(type, 0);
+        ident.DataType = TypeSystem.BuildPrimitiveTypeObject(type, 0);
         return ident;
     }
 
@@ -784,9 +728,9 @@ public Node root { get; set; }
 	void DesignScriptParser() {
 		Node node = null; 
 		Hydrogen(out node);
-		if (!core.IsParsingPreloadedAssembly && !core.IsParsingCodeBlockNode)
+		if (!core.IsParsingPreloadedAssembly && !core.IsParsingCodeBlockNode && !builtinMethodsLoaded)
 		{
-		   ProtoCore.Utils.CoreUtils.InsertPredefinedAndBuiltinMethods(core, node, builtinMethodsLoaded);
+		   CoreUtils.InsertPredefinedAndBuiltinMethods(core, node as CodeBlockNode);
 		   root = node;
 		}
 		else
@@ -838,9 +782,9 @@ public Node root { get; set; }
 		if (rootImport && null != imh && imh.RootImportNode.CodeNode.Body.Count != 0)
 		   (codeblock as ProtoCore.AST.AssociativeAST.CodeBlockNode).Body.Add(imh.RootImportNode);
 		
-		if (rootImport && core.IsParsingPreloadedAssembly)
+		if (rootImport && core.IsParsingPreloadedAssembly && !builtinMethodsLoaded)
 		{
-		ProtoCore.Utils.CoreUtils.InsertPredefinedAndBuiltinMethods(core, codeblock, builtinMethodsLoaded);
+		CoreUtils.InsertPredefinedAndBuiltinMethods(core, codeblock);
 		core.ImportNodes = codeblock;
 		}
 		
@@ -933,10 +877,7 @@ public Node root { get; set; }
 		   imh = this.ImportModuleHandler;
 		}
 		
-		//string origModuleName = core.CurrentDSFileName;
-		//core.CurrentDSFileName = moduleName;
 		node = imh.Import(moduleName, typeName, alias);
-		//core.CurrentDSFileName = origModuleName;
 		
 	}
 
@@ -1012,10 +953,9 @@ public Node root { get; set; }
 		f.IsDNI = isDNI; 
 		f.ExternLibName = externLibName; 
 		f.Name = methodName; 
-		f.Name = methodName; 
 		f.Pattern = pattern; 
 		f.ReturnType = returnType; 
-		f.access = access;
+		f.Access = access;
 		f.Attributes = attrs;
 		f.Signature = argumentSignature as ProtoCore.AST.AssociativeAST.ArgumentSignatureNode; 
 		f.IsStatic = isStatic;
@@ -1039,7 +979,7 @@ public Node root { get; set; }
 		NodeUtils.SetNodeLocation(classnode, la); classnode.Attributes = attrs; 
 		Expect(24);
 		Expect(1);
-		classnode.className = t.val; 
+		classnode.ClassName = t.val; 
 		isInClass = true;
 		if (IsKeyWord(t.val, true))
 		{
@@ -1049,12 +989,12 @@ public Node root { get; set; }
 		if (la.kind == 28) {
 			Get();
 			Expect(1);
-			classnode.superClass = new List<string>();
-			classnode.superClass.Add(t.val); 
+			classnode.BaseClasses = new List<string>();
+			classnode.BaseClasses.Add(t.val); 
 			
 			while (la.kind == 1) {
 				Get();
-				classnode.superClass.Add(t.val); 
+				classnode.BaseClasses.Add(t.val); 
 			}
 		}
 		Expect(46);
@@ -1072,9 +1012,9 @@ public Node root { get; set; }
 				Associative_constructordecl(out constr, access, attributes);
 				if (String.IsNullOrEmpty(constr.Name))
 				{
-				   constr.Name= classnode.className;
+				   constr.Name= classnode.ClassName;
 				}
-				classnode.funclist.Add(constr); 
+				classnode.Procedures.Add(constr); 
 				
 			} else if (StartOf(8)) {
 				bool isStatic = false; 
@@ -1085,11 +1025,11 @@ public Node root { get; set; }
 				if (la.kind == 26 || la.kind == 27) {
 					ProtoCore.AST.AssociativeAST.AssociativeNode funcnode; 
 					Associative_functiondecl(out funcnode, attributes, access, isStatic);
-					classnode.funclist.Add(funcnode); 
+					classnode.Procedures.Add(funcnode); 
 				} else if (la.kind == 1) {
 					ProtoCore.AST.AssociativeAST.AssociativeNode varnode = null; 
 					Associative_vardecl(out varnode, access, isStatic, attributes);
-					classnode.varlist.Add(varnode); 
+					classnode.Variables.Add(varnode); 
 					if (la.val != ";")
 					   SynErr(Resources.SemiColonExpected);  
 					
@@ -1514,10 +1454,9 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		var returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
 		
 		constr.Name = methodName; 
-		constr.Pattern = null; 
 		constr.ReturnType = returnType;
 		constr.Signature = argumentSignature as ProtoCore.AST.AssociativeAST.ArgumentSignatureNode;
-		constr.access = access; 
+		constr.Access = access; 
 		constr.Attributes = attrs;
 		ProtoCore.AST.AssociativeAST.AssociativeNode functionBody = null; 
 		
@@ -1525,7 +1464,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			Get();
 			ProtoCore.AST.AssociativeAST.AssociativeNode bnode; 
 			Associative_BaseConstructorCall(out bnode);
-			constr.baseConstr = bnode as ProtoCore.AST.AssociativeAST.FunctionCallNode; 
+			constr.BaseConstructor = bnode as ProtoCore.AST.AssociativeAST.FunctionCallNode; 
 		}
 		Associative_FunctionalMethodBodyMultiLine(out functionBody);
 		constr.FunctionBody = functionBody as ProtoCore.AST.AssociativeAST.CodeBlockNode; 
@@ -1536,9 +1475,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 	void Associative_vardecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic, bool isStatic = false, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null) {
 		ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
 		ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode(); 
-		varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemStack;
-		varDeclNode.access = access;
-		varDeclNode.Attributes = attrs;
+		varDeclNode.Access = access;
 		varDeclNode.IsStatic = isStatic;
 		
 		Expect(1);
@@ -1547,7 +1484,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		   errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
 		}
 		NodeUtils.SetNodeLocation(varDeclNode, t);
-		tNode = ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, t.val);
+		tNode = AstFactory.BuildIdentifier(t.val);
 		NodeUtils.SetNodeLocation(tNode, t);
 		varDeclNode.NameNode = tNode;
 		
@@ -1722,7 +1659,9 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		    SynErr(String.Format(Resources.InvalidReturnStatement, la.val));
 		}
 		
-		node = ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, t.val, (ProtoCore.PrimitiveType)ltype);
+		var identNode = AstFactory.BuildIdentifier(t.val);
+		identNode.datatype = TypeSystem.BuildPrimitiveTypeObject((ProtoCore.PrimitiveType)ltype, 0);
+		node = identNode;
 		NodeUtils.SetNodeLocation(node, t);
 		
 	}
@@ -1762,9 +1701,6 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		ProtoCore.AST.AssociativeAST.AssociativeNode argumentSignature = null;
 		returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
 		
-		// TODO Jun: Luke made changes to array representation, handle this
-		//returnType.IsArray = false;
-		
 		if (la.kind == 50) {
 			Associative_TypeRestriction(out returnType);
 		}
@@ -1782,7 +1718,9 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		ProtoCore.AST.AssociativeAST.CodeBlockNode functionBody = new ProtoCore.AST.AssociativeAST.CodeBlockNode(); 
 		
 		ProtoCore.AST.AssociativeAST.BinaryExpressionNode binaryExpr = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-		binaryExpr.LeftNode = ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, "return", ProtoCore.PrimitiveType.kTypeReturn);
+		IdentifierNode returnNode = AstFactory.BuildIdentifier("return");
+		returnNode.datatype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeReturn, 0);
+		binaryExpr.LeftNode = returnNode;
 		ProtoCore.AST.AssociativeAST.AssociativeNode expr;
 		
 		Associative_Expression(out expr);
@@ -1870,15 +1808,14 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 	void Associative_ArgDecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic) {
 		ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
 		ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode(); 
-		varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemStack;
-		varDeclNode.access = access;
+		varDeclNode.Access = access;
 		
 		Expect(1);
 		if (IsKeyWord(t.val, true))
 		{
 		   errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
 		}
-		tNode = ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, t.val);
+		tNode = AstFactory.BuildIdentifier(t.val);
 		NodeUtils.SetNodeLocation(tNode, t);
 		varDeclNode.NameNode = tNode;
 		NodeUtils.CopyNodeLocation(varDeclNode, tNode);
@@ -2449,7 +2386,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Associative_ArithmeticExpression(out node);
 		if (la.kind == 22) {
 			ProtoCore.AST.AssociativeAST.RangeExprNode rnode = new ProtoCore.AST.AssociativeAST.RangeExprNode(); 
-			rnode.FromNode = node; NodeUtils.SetNodeStartLocation(rnode, node);
+			rnode.From = node; NodeUtils.SetNodeStartLocation(rnode, node);
 			bool hasRangeAmountOperator = false;
 			
 			Get();
@@ -2458,16 +2395,16 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			}
 			rnode.HasRangeAmountOperator = hasRangeAmountOperator; 
 			Associative_ArithmeticExpression(out node);
-			rnode.ToNode = node; 
+			rnode.To = node; 
 			NodeUtils.SetNodeEndLocation(rnode, node);
 			
 			if (la.kind == 22) {
 				RangeStepOperator op; 
 				Get();
 				Associative_rangeStepOperator(out op);
-				rnode.stepoperator = op; 
+				rnode.StepOperator = op; 
 				Associative_ArithmeticExpression(out node);
-				rnode.StepNode = node;
+				rnode.Step = node;
 				NodeUtils.SetNodeEndLocation(rnode, node);
 				
 			}
@@ -2507,14 +2444,14 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 	}
 
 	void Associative_rangeStepOperator(out RangeStepOperator op) {
-		op = RangeStepOperator.stepsize; 
+		op = RangeStepOperator.StepSize; 
 		if (la.kind == 64 || la.kind == 65) {
 			if (la.kind == 65) {
 				Get();
-				op = RangeStepOperator.num; 
+				op = RangeStepOperator.Number; 
 			} else {
 				Get();
-				op = RangeStepOperator.approxsize; 
+				op = RangeStepOperator.ApproximateSize; 
 			}
 		}
 	}
@@ -2657,7 +2594,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		
 		node = new ProtoCore.AST.AssociativeAST.CharNode() 
 		{ 
-		   value = t.val.Substring(1, t.val.Length - 2),
+		   Value = t.val.Substring(1, t.val.Length - 2),
 		   line = t.line,
 		   col = t.col
 		}; 
@@ -2669,7 +2606,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Expect(4);
 		node = new ProtoCore.AST.AssociativeAST.StringNode() 
 		{ 
-		   value = GetEscapedString(t.val.Length <= 2 ? "" : t.val.Substring(1, t.val.Length - 2)),
+		   Value = GetEscapedString(t.val.Length <= 2 ? "" : t.val.Substring(1, t.val.Length - 2)),
 		}; 
 		NodeUtils.SetNodeLocation(node, t);
 		
@@ -2681,11 +2618,11 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		NodeUtils.SetNodeStartLocation(exprlist, t); 
 		if (StartOf(4)) {
 			Associative_Expression(out node);
-			exprlist.list.Add(node); 
+			exprlist.Exprs.Add(node); 
 			while (la.kind == 48) {
 				Get();
 				Associative_Expression(out node);
-				exprlist.list.Add(node); 
+				exprlist.Exprs.Add(node); 
 			}
 		}
 		Expect(47);
@@ -2826,7 +2763,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			           var newarray = groupExprNode.ArrayDimensions;
 			           while (newarray != null)
 			           {
-			               arrayExpr.list.Add(newarray.Expr);
+			               arrayExpr.Exprs.Add(newarray.Expr);
 			               newdims++;
 			               newarray = (newarray.Type as ProtoCore.AST.AssociativeAST.ArrayNode);
 			           }
@@ -3049,7 +2986,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			Imperative_stmtlist(out body);
 			Expect(47);
 		} else SynErr(105);
-		funcDecl.localVars = localVarCount;
+		funcDecl.LocalVariableCount = localVarCount;
 		NodeUtils.SetNodeEndLocation(funcDecl.FunctionBody, t);
 		funcDecl.FunctionBody.Body = body;
 		node = funcDecl; 
@@ -3264,22 +3201,22 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Expect(10);
 		int idLine = la.line; int idCol = la.col; 
 		Imperative_Ident(out node);
-		loopNode.loopVar = node; loopNode.loopVar.line = idLine; loopNode.loopVar.col = idCol; 
+		loopNode.LoopVariable = node; loopNode.LoopVariable.line = idLine; loopNode.LoopVariable.col = idCol; 
 		Expect(66);
 		loopNode.KwInLine = t.line; loopNode.KwInCol = t.col; int exprLine = la.line; int exprCol = la.col; 
 		Imperative_expr(out node);
-		loopNode.expression = node; if (loopNode.expression != null) {  loopNode.expression.line = exprLine; loopNode.expression.col = exprCol; } 
+		loopNode.Expression = node; if (loopNode.Expression != null) {  loopNode.Expression.line = exprLine; loopNode.Expression.col = exprCol; } 
 		Expect(11);
 		if (la.kind == 46) {
 			Get();
 			Imperative_stmtlist(out body);
-			loopNode.body = body; 
+			loopNode.Body = body; 
 			Expect(47);
 			NodeUtils.SetNodeEndLocation(loopNode, t); 
 		} else if (StartOf(21)) {
 			ProtoCore.AST.ImperativeAST.ImperativeNode singleStmt = null; 
 			Imperative_stmt(out singleStmt);
-			loopNode.body.Add(singleStmt); 
+			loopNode.Body.Add(singleStmt); 
 		} else SynErr(113);
 		forloop = loopNode;
 		
@@ -3366,15 +3303,15 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			   var unknownType = new ProtoCore.Type();
 			   unknownType.UID = ProtoCore.DSASM.Constants.kInvalidIndex;
 			   unknownType.Name = t.val; 
-			   typedVar.datatype = unknownType;
+			   typedVar.DataType = unknownType;
 			}
 			else
 			{
-			   typedVar.datatype = core.TypeSystem.BuildTypeObject(type, 0);
+			   typedVar.DataType = core.TypeSystem.BuildTypeObject(type, 0);
 			}
 			
 			if (la.kind == 8) {
-				var datatype = typedVar.datatype; 
+				var datatype = typedVar.DataType; 
 				Get();
 				Expect(9);
 				datatype.rank = 1; 
@@ -3392,7 +3329,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 						}
 					}
 				}
-				typedVar.datatype = datatype; 
+				typedVar.DataType = datatype; 
 			}
 			node = typedVar; 
 		} else if (IsLocalVariable()) {
@@ -3428,15 +3365,15 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			   var unknownType = new ProtoCore.Type();
 			   unknownType.UID = ProtoCore.DSASM.Constants.kInvalidIndex;
 			   unknownType.Name = t.val; 
-			   typedVar.datatype = unknownType;
+			   typedVar.DataType = unknownType;
 			}
 			else
 			{
-			   typedVar.datatype = core.TypeSystem.BuildTypeObject(type, 0);
+			   typedVar.DataType = core.TypeSystem.BuildTypeObject(type, 0);
 			}
 			
 			if (la.kind == 8) {
-				var datatype = typedVar.datatype; 
+				var datatype = typedVar.DataType; 
 				Get();
 				Expect(9);
 				datatype.rank = 1; 
@@ -3454,7 +3391,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 						}
 					}
 				}
-				typedVar.datatype = datatype; 
+				typedVar.DataType = datatype; 
 			}
 			node = typedVar; 
 		} else if (la.kind == 1 || la.kind == 10 || la.kind == 46) {
@@ -3759,8 +3696,8 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Imperative_rel(out node);
 		if (la.kind == 22) {
 			ProtoCore.AST.ImperativeAST.RangeExprNode rnode = new ProtoCore.AST.ImperativeAST.RangeExprNode(); 
-			rnode.FromNode = node;
-			NodeUtils.SetNodeStartLocation(rnode, rnode.FromNode);
+			rnode.From = node;
+			NodeUtils.SetNodeStartLocation(rnode, rnode.From);
 			bool hasAmountOperator = false;
 			
 			Get();
@@ -3769,17 +3706,17 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			}
 			rnode.HasRangeAmountOperator = hasAmountOperator; 
 			Imperative_rel(out node);
-			rnode.ToNode = node;
-			NodeUtils.SetNodeEndLocation(rnode, rnode.ToNode);
+			rnode.To = node;
+			NodeUtils.SetNodeEndLocation(rnode, rnode.To);
 			
 			if (la.kind == 22) {
 				RangeStepOperator op; 
 				Get();
 				Imperative_rangeStepOperator(out op);
-				rnode.stepoperator = op; 
+				rnode.StepOperator = op; 
 				Imperative_rel(out node);
-				rnode.StepNode = node;
-				NodeUtils.SetNodeEndLocation(rnode, rnode.StepNode);
+				rnode.Step = node;
+				NodeUtils.SetNodeEndLocation(rnode, rnode.Step);
 				
 			}
 			node = rnode; 
@@ -3848,14 +3785,14 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 	}
 
 	void Imperative_rangeStepOperator(out RangeStepOperator op) {
-		op = RangeStepOperator.stepsize; 
+		op = RangeStepOperator.StepSize; 
 		if (la.kind == 64 || la.kind == 65) {
 			if (la.kind == 65) {
 				Get();
-				op = RangeStepOperator.num; 
+				op = RangeStepOperator.Number; 
 			} else {
 				Get();
-				op = RangeStepOperator.approxsize; 
+				op = RangeStepOperator.ApproximateSize; 
 			}
 		}
 	}
@@ -3952,7 +3889,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		
 		node = new ProtoCore.AST.ImperativeAST.CharNode() 
 		{ 
-		   value = t.val.Substring(1, t.val.Length - 2),
+		   Value = t.val.Substring(1, t.val.Length - 2),
 		   line = t.line,
 		   col = t.col
 		}; 
@@ -3964,7 +3901,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Expect(4);
 		node = new ProtoCore.AST.ImperativeAST.StringNode() 
 		{ 
-		   value = GetEscapedString(t.val.Length <= 2 ? "" : t.val.Substring(1, t.val.Length - 2)), 
+		   Value = GetEscapedString(t.val.Length <= 2 ? "" : t.val.Substring(1, t.val.Length - 2)), 
 		   line = t.line,
 		   col = t.col
 		}; 
@@ -4057,11 +3994,11 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		
 		if (StartOf(4)) {
 			Imperative_expr(out node);
-			exprlist.list.Add(node); 
+			exprlist.Exprs.Add(node); 
 			while (la.kind == 48) {
 				Get();
 				Imperative_expr(out node);
-				exprlist.list.Add(node); 
+				exprlist.Exprs.Add(node); 
 			}
 		}
 		Expect(47);
@@ -4076,10 +4013,6 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		NodeUtils.SetNodeLocation(varDeclNode, la);
 		varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemStack;
 		
-		if (la.kind == 29) {
-			Get();
-			varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemHeap; 
-		}
 		Expect(1);
 		if (IsKeyWord(t.val, true))
 		{
@@ -4174,7 +4107,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Expect(10);
 		args = new ProtoCore.AST.ImperativeAST.ArgumentSignatureNode(); 
 		ProtoCore.AST.ImperativeAST.ImperativeNode argdecl; 
-		if (la.kind == 1 || la.kind == 29) {
+		if (la.kind == 1) {
 			if (NotDefaultArg()) { 
 			Imperative_ArgDecl(out argdecl);
 			args.AddArgument(argdecl as ProtoCore.AST.ImperativeAST.VarDeclNode); 
@@ -4187,7 +4120,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			}
 			} 
 		}
-		if (la.kind == 1 || la.kind == 29 || la.kind == 48) {
+		if (la.kind == 1 || la.kind == 48) {
 			if (la.kind == 48) {
 				Get();
 			}

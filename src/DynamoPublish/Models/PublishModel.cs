@@ -14,6 +14,7 @@ using Dynamo.Logging;
 using Reach.Data;
 using Reach.Exceptions;
 using Reach.Upload;
+using Reach.Messages.Data;
 using RestSharp;
 using System.Windows;
 using Newtonsoft.Json;

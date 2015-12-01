@@ -1800,7 +1800,7 @@ namespace Dynamo.Models
 
             OnWorkspaceCleared(CurrentWorkspace);
         }
-
+       
         #endregion
 
         #region private methods

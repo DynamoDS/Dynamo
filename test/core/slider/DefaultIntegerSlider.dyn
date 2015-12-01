@@ -1,0 +1,16 @@
+<Workspace Version="0.9.1.3304" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <DSCoreNodesUI.Input.IntegerSlider guid="35e5118e-c118-4690-bcef-ca5e601eac72" type="DSCoreNodesUI.Input.IntegerSlider" nickname="Integer Slider" x="561" y="218" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false">
+      <System.Int32>1</System.Int32>
+      <Range min="0" max="100" step="1" />
+    </DSCoreNodesUI.Input.IntegerSlider>
+  </Elements>
+  <Connectors />
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>

@@ -32,16 +32,30 @@ namespace DSCoreNodesUI
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
+            // Set default values.
+            if (!HasConnectedInput(0))
+            {
+                inputAstNodes[0] = new IntNode(0);
+            }
+            if (!HasConnectedInput(1))
+            {
+                inputAstNodes[1] = new IntNode(9);
+            }
+            if (!HasConnectedInput(2))
+            {
+                inputAstNodes[2] = new IntNode(1);
+            }
+
             return new[]
             {
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
                     new RangeExprNode
                     {
-                        FromNode = inputAstNodes[0],
-                        ToNode = inputAstNodes[1],
-                        StepNode = inputAstNodes[2],
-                        stepoperator = ProtoCore.DSASM.RangeStepOperator.stepsize
+                        From = inputAstNodes[0],
+                        To = inputAstNodes[1],
+                        Step = inputAstNodes[2],
+                        StepOperator = ProtoCore.DSASM.RangeStepOperator.StepSize
                     })
 
             };
@@ -74,17 +88,31 @@ namespace DSCoreNodesUI
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
+            // Set default values.
+            if (!HasConnectedInput(0))
+            {
+                inputAstNodes[0] = new IntNode(0);
+            }
+            if (!HasConnectedInput(1))
+            {
+                inputAstNodes[1] = new IntNode(10);
+            }
+            if (!HasConnectedInput(2))
+            {
+                inputAstNodes[2] = new IntNode(1);
+            }
+
             return new[]
             {
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
                     new RangeExprNode 
                     {
-                        FromNode = inputAstNodes[0],
-                        ToNode = inputAstNodes[1],
-                        StepNode = inputAstNodes[2],
+                        From = inputAstNodes[0],
+                        To = inputAstNodes[1],
+                        Step = inputAstNodes[2],
                         HasRangeAmountOperator = true,
-                        stepoperator = ProtoCore.DSASM.RangeStepOperator.stepsize                     
+                        StepOperator = ProtoCore.DSASM.RangeStepOperator.StepSize                     
                     })
             };
         }
