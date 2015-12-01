@@ -29,11 +29,6 @@ namespace Dynamo.Manipulation
         Point Origin { get; }
 
         /// <summary>
-        /// 
-        /// </summary>
-        Point CameraPosition { get; }
-
-        /// <summary>
         /// Performs hit test based on view projection ray and returns the
         /// object which is hit. The hit object could be an axis, plane or
         /// rotational arc etc.
@@ -93,32 +88,31 @@ namespace Dynamo.Manipulation
         {
             get
             {
-                var cameraPos = CameraPosition;
+                var cameraPos = cameraPosition != null ?
+                    Point.ByCoordinates(cameraPosition.Value.X, cameraPosition.Value.Y, cameraPosition.Value.Z) : null;
+
+                if (cameraPos == null) throw new Exception("camera position is null");
+
                 var vec = Vector.ByTwoPoints(cameraPos, PointOrigin).Normalized();
                 return cameraPos.Add(vec.Scale(zDepth));
             }
         }
 
-        public Point CameraPosition
-        {
-            get
-            {
-                return cameraPosition != null ?
-                    Point.ByCoordinates(cameraPosition.Value.X, cameraPosition.Value.Y, cameraPosition.Value.Z) : null;
-            }
-        }
-
-
-        internal Gizmo(IWatch3DViewModel backgroundPreviewViewModel, IRenderPackageFactory factory, Point pointOrigin)
+        internal Gizmo(IWatch3DViewModel backgroundPreviewViewModel, IRenderPackageFactory factory, 
+            Point3D cameraPosition, Point pointOrigin)
         {
             BackgroundPreviewViewModel = backgroundPreviewViewModel;
             BackgroundPreviewViewModel.ViewCameraChanged += OnViewCameraChanged;
             RenderPackageFactory = factory;
 
             PointOrigin = pointOrigin;
-            cameraPosition = BackgroundPreviewViewModel.GetCameraPosition();
+            //cameraPosition = BackgroundPreviewViewModel.GetCameraPosition();
+            this.cameraPosition = cameraPosition;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected abstract void RedrawCore();
 
         private void Redraw()

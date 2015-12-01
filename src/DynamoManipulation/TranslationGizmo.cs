@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using System.Windows.Media.Media3D;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Visualization;
@@ -75,12 +76,13 @@ namespace Dynamo.Manipulation
         /// </summary>
         /// <param name="backgroundPreviewViewModel"></param>
         /// <param name="factory"></param>
+        /// <param name="cameraPosition"></param>
         /// <param name="pointOrigin">Position of the gizmo.</param>
         /// <param name="axis1">Axis of freedom</param>
         /// <param name="size">Visual size of the Gizmo</param>
-        public TranslationGizmo(IWatch3DViewModel backgroundPreviewViewModel, 
-            IRenderPackageFactory factory, Point pointOrigin, Vector axis1, double size)
-            : base(backgroundPreviewViewModel, factory, pointOrigin) 
+        public TranslationGizmo(IWatch3DViewModel backgroundPreviewViewModel,
+            IRenderPackageFactory factory, Point3D cameraPosition, Point pointOrigin, Vector axis1, double size)
+            : base(backgroundPreviewViewModel, factory, cameraPosition, pointOrigin) 
         {
             ReferenceCoordinateSystem = CoordinateSystem.Identity();
             UpdateGeometry(pointOrigin, axis1, null, null, size);
@@ -91,13 +93,14 @@ namespace Dynamo.Manipulation
         /// </summary>
         /// <param name="backgroundPreviewViewModel"></param>
         /// <param name="factory"></param>
+        /// <param name="cameraPosition"></param>
         /// <param name="pointOrigin">Position of the gizmo</param>
         /// <param name="axis1">First axis of freedom</param>
         /// <param name="axis2">Second axis of freedom</param>
         /// <param name="size">Visual size of the Gizmo</param>
         public TranslationGizmo(IWatch3DViewModel backgroundPreviewViewModel,
-            IRenderPackageFactory factory, Point pointOrigin, Vector axis1, Vector axis2, double size)
-            : base(backgroundPreviewViewModel, factory, pointOrigin)
+            IRenderPackageFactory factory, Point3D cameraPosition, Point pointOrigin, Vector axis1, Vector axis2, double size)
+            : base(backgroundPreviewViewModel, factory, cameraPosition, pointOrigin)
         {
             ReferenceCoordinateSystem = CoordinateSystem.Identity();
             UpdateGeometry(pointOrigin, axis1, axis2, null, size);
@@ -108,14 +111,15 @@ namespace Dynamo.Manipulation
         /// </summary>
         /// <param name="backgroundPreviewViewModel"></param>
         /// <param name="factory"></param>
+        /// <param name="cameraPosition"></param>
         /// <param name="pointOrigin">Position of the gizmo</param>
         /// <param name="axis1">First axis of freedom</param>
         /// <param name="axis2">Second axis of freedom</param>
         /// <param name="axis3">Third axis of freedom</param>
         /// <param name="size">Visual size of the Gizmo</param>
         public TranslationGizmo(IWatch3DViewModel backgroundPreviewViewModel,
-            IRenderPackageFactory factory, Point pointOrigin, Vector axis1, Vector axis2, Vector axis3, double size)
-            : base(backgroundPreviewViewModel, factory, pointOrigin)
+            IRenderPackageFactory factory, Point3D cameraPosition, Point pointOrigin, Vector axis1, Vector axis2, Vector axis3, double size)
+            : base(backgroundPreviewViewModel, factory, cameraPosition, pointOrigin)
         {
             ReferenceCoordinateSystem = CoordinateSystem.Identity();
             UpdateGeometry(pointOrigin, axis1, axis2, axis3, size);
@@ -294,9 +298,12 @@ namespace Dynamo.Manipulation
         /// </summary>
         public CoordinateSystem ReferenceCoordinateSystem { get; set; }
 
+        /// <summary>
+        /// Update gizmo drawables for current location of Gizmo Origin 
+        /// </summary>
         protected override void RedrawCore()
         {
-            throw new NotImplementedException();
+            // None required as they'll be redrawn based on current location of Origin
         }
 
         /// <summary>

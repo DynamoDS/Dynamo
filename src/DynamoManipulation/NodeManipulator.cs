@@ -62,6 +62,7 @@ namespace Dynamo.Manipulation
         
         protected IGizmo GizmoInAction { get; private set; }
 
+        protected Point3D? CameraPosition { get; private set; }
         
         #endregion
 
@@ -225,6 +226,8 @@ namespace Dynamo.Manipulation
             ExtensionName = manipulatorContext.Name;
             
             AttachBaseHandlers();
+
+            CameraPosition = BackgroundPreviewViewModel.GetCameraPosition();
 
             DrawManipulator();
         }

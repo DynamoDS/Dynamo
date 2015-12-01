@@ -64,7 +64,7 @@ namespace Dynamo.Manipulation
         {
             if (null == gizmo)
             {
-                gizmo = new TranslationGizmo(BackgroundPreviewViewModel, RenderPackageFactory, pointOnCurve, tangent, 6);
+                gizmo = new TranslationGizmo(BackgroundPreviewViewModel, RenderPackageFactory, CameraPosition.Value, pointOnCurve, tangent, 6);
             }
             else gizmo.UpdateGeometry(pointOnCurve, tangent, null, null, 6);
         }
