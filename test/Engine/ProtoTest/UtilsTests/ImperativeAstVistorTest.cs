@@ -29,6 +29,12 @@ namespace ProtoTest.UtilsTests
 
             return base.VisitIdentifierNode(newIdent);
         }
+
+        public override ImperativeNode VisitIdentifierListNode(IdentifierListNode node)
+        {
+            node.LeftNode = node.LeftNode.Accept(this);
+            return node;
+        }
     }
 
     [TestFixture]
@@ -299,6 +305,24 @@ namespace ProtoTest.UtilsTests
 [Imperative]
 {
     bar = (a1 + b1(c1)) * d;
+}");
+        }
+
+        [Test]
+        public void TestPropertyAccessing()
+        {
+            TestMapping(
+@"
+[Imperative]
+{
+    foo = Autodesk.foo();
+    t = foo.foo;
+}",
+@"
+[Imperative]
+{
+    bar = Autodesk.foo();
+    t = bar.foo;
 }");
         }
     }
