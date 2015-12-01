@@ -10,14 +10,14 @@ namespace Dynamo.Wpf
     {
         public void CustomizeView(Symbol symbol, NodeView nodeView)
         {
-            var input = new ParameterEditor(nodeView);
+            var input = new ParameterEditor(nodeView.ViewModel);
 
             nodeView.inputGrid.Children.Add(input);
             Grid.SetColumn(input, 0);
             Grid.SetRow(input, 0);
 
             input.DataContext = this;
-            input.SetBinding(ParameterEditor.CodeProperty,
+            input.SetBinding(ParameterEditor.ParameterProperty,
                 new Binding("InputSymbol")
                 {
                     Mode = BindingMode.OneWay,

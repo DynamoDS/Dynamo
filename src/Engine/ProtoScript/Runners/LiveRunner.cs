@@ -793,7 +793,7 @@ namespace ProtoScript.Runners
                         {
                             if (assocNode is BinaryExpressionNode)
                             {
-                                if (gnode.exprUID == (assocNode as BinaryExpressionNode).ExpressionUID)
+                                if (gnode.exprUID == (assocNode as BinaryExpressionNode).exprUID)
                                 {
                                     // Check if the procedure associatied with this graphnode matches thename and arg count of the modified proc
                                     if (null != gnode.firstProc)
@@ -859,7 +859,7 @@ namespace ProtoScript.Runners
                                 if (prevIdent.Equals(rnode))
                                 {
                                     newNode.InheritID(prevBinaryNode.ID);
-                                    newNode.ExpressionUID = prevBinaryNode.ExpressionUID;
+                                    newNode.exprUID = prevBinaryNode.exprUID;
                                 }
                             }
                         }
@@ -941,7 +941,7 @@ namespace ProtoScript.Runners
                                                 if (prevIdent.Equals(bnode.LeftNode as IdentifierNode))
                                                 {
                                                     bnode.InheritID(prevBinaryNode.ID);
-                                                    bnode.ExpressionUID = prevBinaryNode.ExpressionUID;
+                                                    bnode.exprUID = prevBinaryNode.exprUID;
                                                 }
                                             }
                                         }

@@ -296,15 +296,10 @@
     <Compile Include="Views\About\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CodeBlocks\CodeBlockEditor.cs" />
     <Compile Include="Views\Core\DynamoOpenFileDialog.cs" />
     <Compile Include="Views\Gallery\GalleryView.xaml.cs">
       <DependentUpon>GalleryView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CodeCompletion\CodeCompletionEditor.xaml.cs">
-      <DependentUpon>CodeCompletionEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Input\ParameterEditor.cs" />
     <Compile Include="Views\PackageManager\PackagePathView.xaml.cs">
       <DependentUpon>PackagePathView.xaml</DependentUpon>
     </Compile>
@@ -322,6 +317,9 @@
       <DependentUpon>BrowserWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\CodeBlocks\CodeBlockCompletionData.cs" />
+    <Compile Include="Views\CodeBlocks\CodeBlockEditor.xaml.cs">
+      <DependentUpon>CodeBlockEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\CodeBlocks\CodeBlockMethodInsightWindow.cs" />
     <Compile Include="Views\CodeBlocks\CodeBlockEditorUtils.cs" />
     <Compile Include="Views\Core\AnnotationView.xaml.cs">
@@ -329,6 +327,9 @@
     </Compile>
     <Compile Include="Views\Core\DynamoView.xaml.cs">
       <DependentUpon>DynamoView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Input\ParameterEditor.xaml.cs">
+      <DependentUpon>ParameterEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Preview\InfoBubbleView.xaml.cs">
       <DependentUpon>InfoBubbleView.xaml</DependentUpon>
@@ -1074,10 +1075,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\CodeCompletion\CodeCompletionEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\PackageManager\PackagePathView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1091,6 +1088,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\BrowserWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\CodeBlocks\CodeBlockEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -1140,6 +1141,12 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\PackageManager\PackageManagerSearchView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Views\Input\ParameterEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

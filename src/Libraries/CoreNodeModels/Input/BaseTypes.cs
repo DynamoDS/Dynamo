@@ -483,11 +483,11 @@ namespace DSCoreNodesUI.Input
             {
                 var rangeExpr = new RangeExprNode
                 {
-                    From = _start.GetAstNode(idLookup),
-                    To = _count.GetAstNode(idLookup),
-                    Step = _step.GetAstNode(idLookup),
+                    FromNode = _start.GetAstNode(idLookup),
+                    ToNode = _count.GetAstNode(idLookup),
+                    StepNode = _step.GetAstNode(idLookup),
                     HasRangeAmountOperator = true,
-                    StepOperator = RangeStepOperator.StepSize
+                    stepoperator = RangeStepOperator.stepsize
                 };
                 return rangeExpr;
             }
@@ -566,17 +566,17 @@ namespace DSCoreNodesUI.Input
 
             protected virtual RangeStepOperator GetRangeExpressionOperator()
             {
-                return RangeStepOperator.StepSize;
+                return RangeStepOperator.stepsize;
             }
 
             public AssociativeNode GetAstNode(Dictionary<string, AssociativeNode> idLookup)
             {
                 var rangeExpr = new RangeExprNode
                 {
-                    From = _start.GetAstNode(idLookup),
-                    To = _end.GetAstNode(idLookup),
-                    Step = _step.GetAstNode(idLookup),
-                    StepOperator = GetRangeExpressionOperator()
+                    FromNode = _start.GetAstNode(idLookup),
+                    ToNode = _end.GetAstNode(idLookup),
+                    StepNode = _step.GetAstNode(idLookup),
+                    stepoperator = GetRangeExpressionOperator()
                 };
                 return rangeExpr;
             }
@@ -604,7 +604,7 @@ namespace DSCoreNodesUI.Input
 
             protected override RangeStepOperator GetRangeExpressionOperator()
             {
-                return RangeStepOperator.Number;
+                return RangeStepOperator.num;
             }
         }
 
@@ -643,7 +643,7 @@ namespace DSCoreNodesUI.Input
 
             protected override RangeStepOperator GetRangeExpressionOperator()
             {
-                return RangeStepOperator.ApproximateSize;
+                return RangeStepOperator.approxsize;
             }
         }
 

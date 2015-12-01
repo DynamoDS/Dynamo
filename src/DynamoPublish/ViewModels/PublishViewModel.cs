@@ -17,7 +17,6 @@ using Dynamo.Graph;
 using Dynamo.Graph.Workspaces;
 using Reach;
 using Reach.Data;
-using Reach.Messages.Data;
 
 namespace Dynamo.Publish.ViewModels
 {
@@ -148,11 +147,6 @@ namespace Dynamo.Publish.ViewModels
         public IWorkspaceModel CurrentWorkspaceModel { get; set; }
 
         /// <summary>
-        ///     The information about current cameras to publish with customizer
-        /// </summary>
-        public IEnumerable<CameraData> Cameras { get; set; } 
-
-        /// <summary>
         ///     The URL of the customizer management page.
         /// </summary>
         public string ManagerURL
@@ -216,8 +210,7 @@ namespace Dynamo.Publish.ViewModels
             var workspaceProperties = new WorkspaceProperties
             {
                 Name = Name,
-                Description = Description,
-                Cameras = Cameras
+                Description = Description
             };
 
             var workspace = CurrentWorkspaceModel as HomeWorkspaceModel;

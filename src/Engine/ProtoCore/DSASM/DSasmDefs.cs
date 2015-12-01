@@ -63,9 +63,9 @@ namespace ProtoCore.DSASM
 
     public enum RangeStepOperator
     {
-        StepSize,
-        Number,
-        ApproximateSize
+        stepsize,
+        num,
+        approxsize
     }
 
     //@TODO(Jun): This should be an enumeration, not a bunch of consts?

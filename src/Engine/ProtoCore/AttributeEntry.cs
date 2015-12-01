@@ -4,12 +4,7 @@ namespace ProtoCore.DSASM
 {
     public class AttributeEntry
     {
-        public ClassNode ClassNode { get; set; }
+        public int ClassIndex { get; set; }
         public List<ProtoCore.AST.Node> Arguments { get; set; }
-
-        public bool IsInternalClassAttribute()
-        {
-            return ClassNode.Name.StartsWith(InternalAttributes.kInternalClassName);
-        }
     }
 }

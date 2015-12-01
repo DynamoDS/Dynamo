@@ -7,20 +7,19 @@ using Autodesk.DesignScript.Interfaces;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Wpf.ViewModels.Watch3D;
-using Watch3DNodeModels;
 
-namespace Watch3DNodeModelsWpf
+namespace DynamoWatch3D
 {
     public class HelixWatch3DNodeViewModel : HelixWatch3DViewModel
     {
-        private readonly Watch3D watchNode;
+        private readonly DynamoWatch3D.Watch3D watchNode;
 
         public override bool IsBackgroundPreview
         {
             get { return false; }
         }
 
-        public HelixWatch3DNodeViewModel(Watch3D node, Watch3DViewModelStartupParams parameters):
+        public HelixWatch3DNodeViewModel(DynamoWatch3D.Watch3D node, Watch3DViewModelStartupParams parameters):
             base(parameters)
         {
             watchNode = node;

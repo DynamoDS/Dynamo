@@ -5,7 +5,6 @@
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
-             xmlns:controls="clr-namespace:Dynamo.Controls"
              Height="Auto"
              Width="Auto"
              Name="topControl"
@@ -16,16 +15,6 @@
              MouseRightButtonDown="topControl_MouseRightButtonDown"
              MouseEnter="OnNodeViewMouseEnter"
              MouseLeave="OnNodeViewMouseLeave">
-    <UserControl.Resources>
-        <Style TargetType="{x:Type controls:NodeView}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding IsFrozen}" Value="True">
-                    <Setter Property="Background" Value="Transparent"/>
-                    <Setter Property="Opacity" Value ="0.5"/>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-    </UserControl.Resources>
     <Grid Name="grid"
           x:FieldModifier="public"
           HorizontalAlignment="Left">
@@ -61,7 +50,7 @@
                           Command="{Binding Path=UngroupCommand}" />
                 <MenuItem Name="addtoGroup"
                           Header="{x:Static p:Resources.ContextAddGroupFromSelection}"
-                          Command="{Binding Path=AddToGroupCommand}" />               
+                          Command="{Binding Path=AddToGroupCommand}" />
                 <MenuItem Header="{x:Static p:Resources.ContextMenuLacing}"
                           Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter},Mode=OneWay}">
                     <MenuItem IsCheckable="True"
@@ -86,14 +75,9 @@
                               CommandParameter="CrossProduct"
                               Header="{x:Static p:Resources.ContextMenuLacingCrossProduct}" />
                 </MenuItem>
-                <MenuItem Name="nodeIsFrozen"
-                          Header="{x:Static p:Resources.NodesRunStatus}"
-                          IsChecked="{Binding IsFrozenExplicitly,Mode=OneWay}"   
-                          IsEnabled="{Binding CanToggleFrozen, Mode=OneWay}"
-                          Command="{Binding Path=ToggleIsFrozenCommand}" />
                 <MenuItem Name="isVisible_cm"
                           Header="{x:Static p:Resources.NodeContextMenuPreview}"
-                          IsChecked="{Binding Path=IsVisible,Mode=OneWay}"                          
+                          IsChecked="{Binding Path=IsVisible,Mode=OneWay}"
                           Command="{Binding Path=ToggleIsVisibleCommand}"
                           Visibility="{Binding Path=ShowsVisibilityToggles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                 <MenuItem Name="isUpstreamVisible_cm"
@@ -168,15 +152,14 @@
                    Grid.Row="1"
                    Grid.ColumnSpan="3"
                    Grid.RowSpan="3"
-                   Canvas.ZIndex="10">             
-            <Rectangle.Fill>                
+                   Canvas.ZIndex="10">
+            <Rectangle.Fill>
                 <Binding Path="State"
                          UpdateSourceTrigger="PropertyChanged"
                          Mode="OneWay"
                          ConverterParameter="BodyBackground"
-                         Converter="{StaticResource StateToColorConverter}">                     
-                </Binding>      
-                
+                         Converter="{StaticResource StateToColorConverter}">
+                </Binding>
             </Rectangle.Fill>
         </Rectangle>
 

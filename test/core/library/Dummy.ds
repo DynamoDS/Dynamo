@@ -1,4 +1,14 @@
-def foo()
+class Dummy
 {
-    return = 42;
+    value :int;
+
+    constructor Dummy(v)
+    {
+        value = v;
+    }
+    
+    def GetValue()
+    {
+        return = value;
+    }
 }

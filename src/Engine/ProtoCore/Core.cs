@@ -270,6 +270,10 @@ namespace ProtoCore
         // This is the AST node list of default imported libraries needed for Graph Compiler
         public CodeBlockNode ImportNodes { get; set; }
 
+        // The root AST node obtained from parsing an expression in a Graph node in GraphUI
+        public List<Node> AstNodeList { get; set; }
+
+
         public enum ErrorType
         {
             OK,
@@ -324,7 +328,6 @@ namespace ProtoCore
         public BuildStatus BuildStatus { get; private set; }
 
         public TypeSystem TypeSystem { get; set; }
-        public InternalAttributes internalAttributes { get; set; }
 
         // The global class table and function tables
         public ClassTable ClassTable { get; set; }
@@ -409,12 +412,13 @@ namespace ProtoCore
             foreach (CodeBlock block in CodeBlockList)
             {
                 // Update the current function definition in the current block
-                procNode = block.procedureTable.Procedures.FirstOrDefault(p => p.HashID == hash);
-                int index = procNode == null ? Constants.kInvalidIndex: procNode.ID; 
+                int index = block.procedureTable.IndexOfHash(hash);
                 if (Constants.kInvalidIndex == index)
                     continue;
 
-                procNode.IsActive = false;
+                procNode = block.procedureTable.procList[index];
+
+                block.procedureTable.SetInactive(index);
 
                 // Remove staled graph nodes
                 var graph = block.instrStream.dependencyGraph;
@@ -568,6 +572,9 @@ namespace ProtoCore
                 BuildStatus = new BuildStatus(this, Options.BuildOptWarningAsError);
             }
             
+            if (AstNodeList != null) 
+                AstNodeList.Clear();
+
             ExpressionUID = 0;
             ForLoopBlockIndex = Constants.kInvalidIndex;
         }
@@ -612,9 +619,6 @@ namespace ProtoCore
             TypeSystem.SetClassTable(ClassTable);
             ProcNode = null;
             ProcTable = new ProcedureTable(Constants.kGlobalScope);
-
-            // Initialize internal attributes
-            internalAttributes = new InternalAttributes(ClassTable);
 
             //Initialize the function pointer table
             FunctionPointerTable = new FunctionPointerTable();
@@ -798,7 +802,7 @@ namespace ProtoCore
 
                 if (function != Constants.kInvalidIndex &&
                     searchBlock.procedureTable != null &&
-                    searchBlock.procedureTable.Procedures.Count > function &&   // Note: This check assumes we can not define functions inside a fucntion 
+                    searchBlock.procedureTable.procList.Count > function &&   // Note: This check assumes we can not define functions inside a fucntion 
                     symbolIndex == Constants.kInvalidIndex)
                     symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, Constants.kInvalidIndex);
             }
@@ -832,7 +836,7 @@ namespace ProtoCore
                     // we need to search twice only when we are searching directly inside the function, 
                     if (function != Constants.kInvalidIndex &&
                         searchBlock.procedureTable != null &&
-                        searchBlock.procedureTable.Procedures.Count > function && // Note: This check assumes we can not define functions inside a fucntion 
+                        searchBlock.procedureTable.procList.Count > function && // Note: This check assumes we can not define functions inside a fucntion 
                         symbolIndex == Constants.kInvalidIndex)
 
                         symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, Constants.kInvalidIndex);
@@ -886,8 +890,8 @@ namespace ProtoCore
         {
             if (CodeBlockType.kLanguage == codeBlock.blockType || CodeBlockType.kFunction == codeBlock.blockType)
             {
-                Validity.Assert(codeBlock.procedureTable.RuntimeIndex < RuntimeTableIndex);
-                procTable[codeBlock.procedureTable.RuntimeIndex] = codeBlock.procedureTable;
+                Validity.Assert(codeBlock.procedureTable.runtimeIndex < RuntimeTableIndex);
+                procTable[codeBlock.procedureTable.runtimeIndex] = codeBlock.procedureTable;
             }
 
             foreach (CodeBlock child in codeBlock.children)

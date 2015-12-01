@@ -1,4 +1,6 @@
 ﻿
+#define __RUN_TESTFILE
+
 using System;
 using ProtoCore;
 using ProtoScript.Runners;
@@ -26,10 +28,10 @@ namespace ProtoTestConsoleRunner
             core.Options.Verbose = verbose;
             ProtoFFI.DLLFFIHandler.Register(ProtoFFI.FFILanguage.CSharp, new ProtoFFI.CSModuleHelper());
 
-            ProtoScriptRunner runner = new ProtoScriptRunner();
+            ProtoScriptTestRunner runner = new ProtoScriptTestRunner();
 
-            RuntimeCore runtimeCore = runner.LoadAndExecute(filename, core);
-            ExecutionMirror mirror = runtimeCore.Mirror;
+            RuntimeCore runtimeCore = null;
+            ExecutionMirror mirror = runner.LoadAndExecute(filename, core, out runtimeCore);
         }
 
         static void DevRun()
@@ -51,11 +53,18 @@ namespace ProtoTestConsoleRunner
             core.Options.Verbose = false;
 #endif
             ProtoFFI.DLLFFIHandler.Register(ProtoFFI.FFILanguage.CSharp, new ProtoFFI.CSModuleHelper());
-            ProtoScriptRunner runner = new ProtoScriptRunner();
+            ProtoScriptTestRunner runner = new ProtoScriptTestRunner();
 
+#if __RUN_TESTFILE
             // Assuming current directory in test/debug mode is "...\Dynamo\bin\AnyCPU\Debug"
-            runner.LoadAndExecute(@"..\..\..\test\core\dsevaluation\DSFiles\test.ds", core);
-
+            RuntimeCore runtimeCore = null;
+            ExecutionMirror mirror = runner.LoadAndExecute(@"..\..\..\test\core\dsevaluation\DSFiles\test.ds", core, out runtimeCore);
+#else
+            //inlineconditional_656_6
+            ProtoTest.DebugTests.BasicTests test = new ProtoTest.DebugTests.BasicTests();
+            test.Setup();
+            test.inlineconditional_656_6();
+#endif
             long ms = sw.ElapsedMilliseconds;
             sw.Stop();
             Console.WriteLine(ms);

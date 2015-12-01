@@ -99,11 +99,10 @@ namespace DSCoreNodesUI
             return resultAst;
         }
 
-        public override bool RequestVisualUpdateAsync(
+        public override void RequestVisualUpdateAsync(
             IScheduler scheduler, EngineController engine, IRenderPackageFactory factory, bool forceUpdate = false)
         {
             // Do nothing
-            return false;
         }
     }
 }

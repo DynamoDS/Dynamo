@@ -43,9 +43,6 @@ namespace Dynamo.Graph.Nodes
         private bool areInputPortsRegistered;
         private bool areOutputPortsRegistered;
 
-        ///A flag indicating whether the node has been explicitly frozen.
-        internal bool isFrozenExplicitly;
-      
         /// <summary>
         /// The cached value of this node. The cachedValue object is protected by the cachedValueMutex
         /// as it may be accessed from multiple threads concurrently. 
@@ -96,7 +93,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         internal event DispatchedToUIThreadHandler DispatchedToUI;
-      
+
         #endregion
 
         #region public properties
@@ -602,7 +599,7 @@ namespace Dynamo.Graph.Nodes
             else
             {
                 string id = AstIdentifierBase + "_out" + outputIndex;
-               return AstFactory.BuildIdentifier(id);
+                return AstFactory.BuildIdentifier(id);
             }
         }
 
@@ -615,112 +612,7 @@ namespace Dynamo.Graph.Nodes
         {
              return ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeVar);
         }
-
-      
-        /// <summary>
-        /// A flag indicating whether the node is frozen.
-        /// When a node is frozen, the node, and all nodes downstream will not participate in execution.
-        /// This will return true if any upstream node is frozen or if the node was explicitly frozen.        
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this node is frozen; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsFrozen
-        {
-            get
-            {
-                return IsAnyUpstreamFrozen() || isFrozenExplicitly;               
-            }
-            set
-            {
-                isFrozenExplicitly = value;                    
-                //If the node is Unfreezed then Mark all the downstream nodes as
-                // modified. This is essential recompiling the AST.
-                if (!value)
-                {                   
-                    MarkDownStreamNodesAsModified(this);                    
-                    OnNodeModified();
-                }
-                //If the node is frozen, then do not execute the graph immediately.
-                // delete the node and its downstream nodes from AST.
-                else
-                {
-                    OnUpdateASTCollection();
-                }                   
-            }
-        }
-       
-        #endregion   
-  
-        #region freeze execution
-        /// <summary>
-        /// Determines whether any of the upstream node is frozen.
-        /// </summary>
-        /// <returns></returns>
-        internal bool IsAnyUpstreamFrozen()
-        {
-            bool ret = false;
-            List<NodeModel> nodes = new List<NodeModel>();
-            return CheckIfAnyUpstreamNodeIsFrozen(this, nodes, ref ret);
-        }
-
-        private bool CheckIfAnyUpstreamNodeIsFrozen(NodeModel node, List<NodeModel> nodes, ref bool ret)
-        {             
-            var sets = node.InputNodes.Values;
-            var inpNodes = sets.Where(x => x != null).Select(z => z.Item2).Distinct();
-            foreach (var inode in inpNodes)
-            {
-                //If there is a cyclic-dependency, stop traversing this branch
-                if (nodes.Contains(inode))
-                {
-                    continue;
-                }
-
-                if (inode.isFrozenExplicitly)
-                {
-                    ret = true;
-                    break;
-                }
-
-                List<NodeModel> newNodes = new List<NodeModel>(nodes);
-                newNodes.Add(inode);
-                CheckIfAnyUpstreamNodeIsFrozen(inode, newNodes, ref ret);
-            }
-
-            return ret;
-        }
-
-        private void MarkDownStreamNodesAsModified(NodeModel node)
-        {                         
-            HashSet<NodeModel> gathered = new HashSet<NodeModel>();
-            GetDownstreamNodes(node,gathered);
-            foreach (var iNode in gathered)
-            {
-                iNode.executionHint = ExecutionHints.Modified;                
-            }
-        }
-
-        /// <summary>
-        /// Gets the downstream nodes for the given node.
-        /// </summary>
-        /// <param name="node">The node.</param>
-        /// <param name="gathered">The gathered.</param>
-        internal void GetDownstreamNodes(NodeModel node, HashSet<NodeModel> gathered)
-        {
-            if (gathered.Contains(node)) // Considered this node before, bail.pu
-                return;
-
-            gathered.Add(node);
-
-            var sets = node.OutputNodes.Values;
-            var outputNodes = sets.SelectMany(set => set.Select(t => t.Item2));
-            foreach (var outputNode in outputNodes)
-            {
-                // Recursively get all downstream nodes.
-                GetDownstreamNodes(outputNode, gathered);
-            }
-        }
-        #endregion  
+        #endregion
 
         protected NodeModel()
         {
@@ -792,22 +684,11 @@ namespace Dynamo.Graph.Nodes
         public event Action<NodeModel> Modified;
         public virtual void OnNodeModified(bool forceExecute = false)
         {
-            if (!RaisesModificationEvents || IsFrozen)
+            if (!RaisesModificationEvents)
                 return;
 
             MarkNodeAsModified(forceExecute);           
             var handler = Modified;
-            if (handler != null) handler(this);
-        }
-
-        /// <summary>
-        /// Event fired when the node's DesignScript AST should be updated.
-        /// This event deletes the frozen nodes from AST collection.
-        /// </summary>
-        public event Action<NodeModel> UpdateASTCollection;
-        public virtual void OnUpdateASTCollection()
-        {            
-            var handler = UpdateASTCollection;
             if (handler != null) handler(this);
         }
 
@@ -914,7 +795,7 @@ namespace Dynamo.Graph.Nodes
                                           ArrayDimensions =
                                               new ArrayNode
                                               {
-                                                  Expr = new StringNode { Value = outNode.NickName }
+                                                  Expr = new StringNode { value = outNode.NickName }
                                               }
                                       },
                                       GetAstIdentifierForOutputIndex(index))));
@@ -1645,14 +1526,6 @@ namespace Dynamo.Graph.Nodes
                     if (bool.TryParse(value, out newUpstreamVisibilityValue))
                         IsUpstreamVisible = newUpstreamVisibilityValue;
                     return true;
-
-                case "IsFrozen":
-                    bool newIsFrozen;
-                    if (bool.TryParse(value, out newIsFrozen))
-                    {
-                        IsFrozen = newIsFrozen;
-                    }                   
-                    return true;               
             }
 
             return base.UpdateValueCore(updateValueParams);
@@ -1683,8 +1556,7 @@ namespace Dynamo.Graph.Nodes
             helper.SetAttribute("isUpstreamVisible", IsUpstreamVisible);
             helper.SetAttribute("lacing", ArgumentLacing.ToString());
             helper.SetAttribute("isSelectedInput", IsSelectedInput.ToString());
-            helper.SetAttribute("IsFrozen", isFrozenExplicitly);
-           
+
             var portsWithDefaultValues =
                 inPorts.Select((port, index) => new { port, index })
                    .Where(x => x.port.UsingDefaultValue);
@@ -1735,8 +1607,7 @@ namespace Dynamo.Graph.Nodes
             isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
             IsSelectedInput = helper.ReadBoolean("isSelectedInput", true);
-            IsFrozen = helper.ReadBoolean("IsFrozen", false);            
-           
+
             var portInfoProcessed = new HashSet<int>();
 
             //read port information
@@ -1776,11 +1647,10 @@ namespace Dynamo.Graph.Nodes
                 RaisePropertyChanged("ArgumentLacing");
                 RaisePropertyChanged("IsVisible");
                 RaisePropertyChanged("IsUpstreamVisible");
-               
+
                 // Notify listeners that the position of the node has changed,
                 // then all connected connectors will also redraw themselves.
                 ReportPosition();
-                
             }
         }
 
@@ -1893,9 +1763,8 @@ namespace Dynamo.Graph.Nodes
         /// <param name="factory">An IRenderPackageFactory which will be used to generate IRenderPackage objects.</param>
         /// <param name="forceUpdate">Normally, render packages are only generated when the node's IsUpdated parameter is true.
         /// By setting forceUpdate to true, the render packages will be updated.</param>
-        /// <returns>Flag which indicates if geometry update has been scheduled</returns>
-        public virtual bool RequestVisualUpdateAsync(IScheduler scheduler, 
-            EngineController engine, IRenderPackageFactory factory, bool forceUpdate = false)
+        public virtual void
+            RequestVisualUpdateAsync(IScheduler scheduler, EngineController engine, IRenderPackageFactory factory, bool forceUpdate = false)
         {
             var initParams = new UpdateRenderPackageParams()
             {
@@ -1908,11 +1777,10 @@ namespace Dynamo.Graph.Nodes
             };
 
             var task = new UpdateRenderPackageAsyncTask(scheduler);
-            if (!task.Initialize(initParams)) return false;
+            if (!task.Initialize(initParams)) return;
 
             task.Completed += OnRenderPackageUpdateCompleted;
             scheduler.ScheduleForExecution(task);
-            return true;
         }
 
         /// <summary>
