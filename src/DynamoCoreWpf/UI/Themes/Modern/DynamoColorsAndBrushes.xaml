@@ -99,4 +99,12 @@
     <SolidColorBrush x:Key="NodeNameForeground" Color="#ffffff" />
     <SolidColorBrush x:Key="UnSelectedLayoutForeground" Color="#999999" />
     <SolidColorBrush x:Key="NodeCategoryForeground" Color="#b3b3b3" />
+    
+    <!-- Bubble preview -->
+    <SolidColorBrush x:Key="BubblePreviewBorderColor" Color="#aaaaaa" />
+    <SolidColorBrush x:Key="UnpinnedIconForegroundColor" Color="#808080" />
+    <SolidColorBrush x:Key="PinnedIconForegroundColor" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="UnpinnedIconBackgroundColor" Color="White" />
+    <SolidColorBrush x:Key="PinnedIconBackgroundColor" Color="#FF5E5C5A" />
+    <SolidColorBrush x:Key="PinnedIconHoverBackgroundColor" Color="#E6E6E6" />
 </ResourceDictionary>
