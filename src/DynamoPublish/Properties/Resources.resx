@@ -279,4 +279,10 @@
   <data name="EmptyWorkspaceMessage" xml:space="preserve">
     <value>You cannot publish an empty workspace.</value>
   </data>
+  <data name="TermsConfirmation" xml:space="preserve">
+    <value>Confirmation</value>
+  </data>
+  <data name="TermsConfirmationContent" xml:space="preserve">
+    <value>You have already accepted the terms of use agreement. Do you want to continue?</value>
+  </data>
 </root>

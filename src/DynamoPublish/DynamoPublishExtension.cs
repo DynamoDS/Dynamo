@@ -127,18 +127,21 @@ namespace Dynamo.Publish
             // TOU is not necessary
             if (!needsTou)
             {
-                item.Click += (sender, args) => { _processPublish(); };
-                return item;
+                item.Click += (sender, args) => { ProcessPublish(); };
+            }
+            else
+            {
+                var baseUrl = appSettings.Settings["BaseUrl"].Value;
+                shareWorkspaceClient = new ShareWorkspaceClient(baseUrl, startupParams.AuthProvider);
+                item.Click += (sender, args) => { TermsOfUseEnabled(); };
             }
 
-            var baseUrl = appSettings.Settings["BaseUrl"].Value;
+            return item;
+        }
 
-            shareWorkspaceClient = new ShareWorkspaceClient(baseUrl, startupParams.AuthProvider);
-
-            item.Click += (sender, args) =>
-            {
-                //_processPublish();
-                Task<bool>.Factory.StartNew(() => shareWorkspaceClient.GetTermsOfUseAcceptanceStatus()).
+        private void TermsOfUseEnabled()
+        {
+            Task<bool>.Factory.StartNew(() => shareWorkspaceClient.GetTermsOfUseAcceptanceStatus()).
                 ContinueWith(t =>
                 {
                     // The above GetTermsOfUseAcceptanceStatus call will get the
@@ -153,7 +156,14 @@ namespace Dynamo.Publish
                     if (termsOfUseAccepted)
                     {
                         // Terms of use accepted, proceed to publish.
-                        _processPublish();
+                        MessageBoxResult decision =
+                        MessageBox.Show(Resources.TermsConfirmationContent,
+                            Resources.TermsConfirmation,
+                            MessageBoxButton.YesNo, MessageBoxImage.Question);
+                        if (decision == MessageBoxResult.Yes)
+                        {
+                            ProcessPublish();
+                        }
                     }
                     else
                     {
@@ -162,12 +172,9 @@ namespace Dynamo.Publish
                     }
 
                 }, TaskScheduler.FromCurrentSynchronizationContext());
-            };
-
-            return item;
         }
 
-        private void _processPublish()
+        private void ProcessPublish()
         {
             var model = new PublishModel(startupParams.AuthProvider, startupParams.CustomNodeManager);
             model.MessageLogged += this.OnMessageLogged;
@@ -214,7 +221,7 @@ namespace Dynamo.Publish
                 ContinueWith(t =>
                 {
                     if (t.Result)
-                        _processPublish();
+                        ProcessPublish();
                 },
                 TaskScheduler.FromCurrentSynchronizationContext());
         }
