@@ -469,8 +469,15 @@ namespace Dynamo.UI.Controls
                 Height = Configurations.MaxExpandedPreviewHeight
             });
 
+            Size largeContentGridSize = largeContentGrid.DesiredSize;
+
+            // Don't make it smaller then min width.
+            largeContentGridSize.Width = largeContentGridSize.Width < largeContentGrid.MinWidth
+                ? largeContentGrid.MinWidth
+                : largeContentGridSize.Width;
+
             // Add padding since we are sizing the centralizedGrid.
-            return ContentToControlSize(this.largeContentGrid.DesiredSize);
+            return ContentToControlSize(largeContentGridSize);
         }
 
         private Size ContentToControlSize(Size size)
