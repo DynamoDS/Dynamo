@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.IO;
 using System.Linq;  
@@ -21,6 +22,7 @@ using Dynamo.Models;
 using Dynamo.Properties;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using DynamoServices;
 using ProtoCore.Namespace;
 using Utils = Dynamo.Graph.Nodes.Utilities;
 
@@ -74,6 +76,12 @@ namespace Dynamo.Graph.Workspaces
         private readonly UndoRedoRecorder undoRecorder;
         private bool hasNodeInSyncWithDefinition;
         private Guid guid;
+
+        /// <summary>
+        /// This is set to true after a workspace is added.
+        /// This is set to false, if the workspace is cleared or disposed.
+        /// </summary>
+        private bool workspaceLoaded;
 
         #endregion
 
@@ -268,6 +276,13 @@ namespace Dynamo.Graph.Workspaces
             RegisterConnector(obj);
             var handler = ConnectorAdded;
             if (handler != null) handler(obj);
+            //Check if the workspace is loaded, i.e all the nodes are 
+            //added to the workspace. In that case, compute the Upstream cache for the 
+            //given node.
+            if (workspaceLoaded)
+            {
+                obj.End.Owner.ComputeUpstreamOnDownstreamNodes();               
+            }
         }
 
         private void RegisterConnector(ConnectorModel connector)
@@ -288,6 +303,13 @@ namespace Dynamo.Graph.Workspaces
 
             var handler = ConnectorDeleted;
             if (handler != null) handler(obj);
+            //Check if the workspace is loaded, i.e all the nodes are 
+            //added to the workspace. In that case, compute the Upstream cache for the 
+            //given node.
+            if (workspaceLoaded)
+            {
+                obj.End.Owner.ComputeUpstreamOnDownstreamNodes();
+            }
         }
 
         /// <summary>
@@ -689,6 +711,23 @@ namespace Dynamo.Graph.Workspaces
                 RegisterConnector(connector);
 
             SetModelEventOnAnnotation();
+            WorkspaceEvents.WorkspaceAdded += computeUpstreamNodesWhenWorkspaceModified;
+        }
+
+        /// <summary>
+        /// Computes the upstream nodes when workspace is added. when a workspace is added (assuming that
+        /// all the nodes and its connectors were added successfully) compute the upstream cache for all 
+        /// the frozen nodes.     
+        /// </summary>
+        /// <param name="args">The <see cref="WorkspacesModificationEventArgs"/> instance containing the event data.</param>
+        private void computeUpstreamNodesWhenWorkspaceModified(WorkspacesModificationEventArgs args)
+        {
+            if (args.Id == this.Guid)
+            {
+                this.workspaceLoaded = true;
+                var frozenNodes = nodes.Where(x => x.isFrozenExplicitly).ToList();
+                frozenNodes.ForEach(z => z.ComputeUpstreamOnDownstreamNodes());
+            }
         }
 
         /// <summary>
@@ -696,7 +735,8 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <filterpriority>2</filterpriority>
         public virtual void Dispose()
-        {
+        {            
+            this.workspaceLoaded = false;
             foreach (var node in Nodes)
                 DisposeNode(node);
 
@@ -719,6 +759,7 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         public virtual void Clear()
         {
+            this.workspaceLoaded = false;
             Log(Resources.ClearingWorkSpace);
 
             DynamoSelection.Instance.ClearSelection();
