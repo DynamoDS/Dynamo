@@ -3059,7 +3059,6 @@ a = {
 
         [Test]
         [Category("Update")]
-        [Category("Failure")]
         [Category("ModifierBlock")] 
         public void T40_Defect_1467088_Modifier_Stack_Cross_Update_Issue_3()
         {
