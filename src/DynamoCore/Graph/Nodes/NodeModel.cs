@@ -73,6 +73,9 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public virtual string CreationName { get { return this.Name; } }
 
+        /// <summary>
+        /// Returns all the upstream nodes for the given node
+        /// </summary>
         public HashSet<NodeModel> Upstream = new HashSet<NodeModel>();
 
         #endregion
@@ -617,45 +620,7 @@ namespace Dynamo.Graph.Nodes
         {
             return ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeVar);
         }
-
-        public void ComputeUpstreamNodes()
-        {
-            //first compute upstream nodes for this node
-            this.Upstream = new HashSet<NodeModel>();
-            var inpNodes = this.InputNodes.Values;
-
-            foreach (var inputnode in inpNodes.Where(x => x != null))
-            {
-                this.Upstream.Add(inputnode.Item2);
-                foreach (var upstreamNode in inputnode.Item2.Upstream) 
-                {
-                    this.Upstream.Add(upstreamNode);
-                }
-            }
-
-            //then for downstream nodes
-            HashSet<NodeModel> downStreamNodes = new HashSet<NodeModel>();
-            this.GetDownstreamNodes(this, downStreamNodes);
-
-            foreach (var downstreamNode in downStreamNodes)
-            {
-                downstreamNode.Upstream = new HashSet<NodeModel>();
-                var currentinpNodes = downstreamNode.InputNodes.Values;
-
-                foreach (var inputnode in currentinpNodes.Where(x => x != null))
-                {
-                    downstreamNode.Upstream.Add(inputnode.Item2);
-                    foreach (var upstreamNode in inputnode.Item2.Upstream)
-                    {
-                        downstreamNode.Upstream.Add(upstreamNode);
-                    }
-                }
-              
-            }
-
-            RaisePropertyChanged("IsFrozen");
-        }
-
+    
         /// <summary>
         /// A flag indicating whether the node is frozen.
         /// When a node is frozen, the node, and all nodes downstream will not participate in execution.
@@ -702,32 +667,47 @@ namespace Dynamo.Graph.Nodes
             return Upstream.Any(x => x.isFrozenExplicitly);
         }
 
-        private bool CheckIfAnyUpstreamNodeIsFrozen(NodeModel node, List<NodeModel> nodes, ref bool ret)
+        /// <summary>
+        /// Computes the upstream nodes for any given node.
+        /// </summary>
+        internal void ComputeUpstreamNodes()
         {
-            var sets = node.InputNodes.Values;
-            var inpNodes = sets.Where(x => x != null).Select(z => z.Item2).Distinct();
-            foreach (var inode in inpNodes)
+            //first compute upstream nodes for this node
+            this.Upstream = new HashSet<NodeModel>();
+            var inpNodes = this.InputNodes.Values;
+
+            foreach (var inputnode in inpNodes.Where(x => x != null))
             {
-                //If there is a cyclic-dependency, stop traversing this branch
-                if (nodes.Contains(inode))
+                this.Upstream.Add(inputnode.Item2);
+                foreach (var upstreamNode in inputnode.Item2.Upstream)
                 {
-                    continue;
+                    this.Upstream.Add(upstreamNode);
                 }
-
-                if (inode.isFrozenExplicitly)
-                {
-                    ret = true;
-                    break;
-                }
-
-                List<NodeModel> newNodes = new List<NodeModel>(nodes);
-                newNodes.Add(inode);
-                CheckIfAnyUpstreamNodeIsFrozen(inode, newNodes, ref ret);
             }
 
-            return ret;
-        }
+            //then for downstream nodes
+            HashSet<NodeModel> downStreamNodes = new HashSet<NodeModel>();
+            this.GetDownstreamNodes(this, downStreamNodes);
 
+            foreach (var downstreamNode in downStreamNodes)
+            {
+                downstreamNode.Upstream = new HashSet<NodeModel>();
+                var currentinpNodes = downstreamNode.InputNodes.Values;
+
+                foreach (var inputnode in currentinpNodes.Where(x => x != null))
+                {
+                    downstreamNode.Upstream.Add(inputnode.Item2);
+                    foreach (var upstreamNode in inputnode.Item2.Upstream)
+                    {
+                        downstreamNode.Upstream.Add(upstreamNode);
+                    }
+                }
+
+            }
+
+            RaisePropertyChanged("IsFrozen");
+        }
+       
         private void MarkDownStreamNodesAsModified(NodeModel node)
         {
             HashSet<NodeModel> gathered = new HashSet<NodeModel>();
@@ -1814,9 +1794,14 @@ namespace Dynamo.Graph.Nodes
                 RaisePropertyChanged("NickName");
                 RaisePropertyChanged("ArgumentLacing");
                 RaisePropertyChanged("IsVisible");
-                RaisePropertyChanged("IsUpstreamVisible");
+                RaisePropertyChanged("IsUpstreamVisible");    
+            
+                //we need to modify the downstream nodes manually in case the 
+                //undo is for toggling freeze. This is ONLY modifying the execution hint.
+                // this does not run the graph.
                 RaisePropertyChanged("IsFrozen");
-
+                MarkDownStreamNodesAsModified(this);
+               
                 // Notify listeners that the position of the node has changed,
                 // then all connected connectors will also redraw themselves.
                 ReportPosition();

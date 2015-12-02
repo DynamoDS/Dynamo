@@ -76,6 +76,10 @@ namespace Dynamo.Graph.Workspaces
         private readonly UndoRedoRecorder undoRecorder;
         private bool hasNodeInSyncWithDefinition;
         private Guid guid;
+
+        /// <summary>
+        /// Property is true after a workspace is loaded.
+        /// </summary>
         private bool workspaceLoaded;
 
         #endregion
@@ -700,10 +704,10 @@ namespace Dynamo.Graph.Workspaces
                 RegisterConnector(connector);
 
             SetModelEventOnAnnotation(); 
-            WorkspaceEvents.WorkspaceAdded +=WorkspaceEvents_WorkspaceAdded;
+            WorkspaceEvents.WorkspaceAdded +=OnWorkspaceAdded;
         }
 
-        private void WorkspaceEvents_WorkspaceAdded(WorkspacesModificationEventArgs args)
+        private void OnWorkspaceAdded(WorkspacesModificationEventArgs args)
         {
             if (args.Id == this.Guid)
             {
@@ -719,6 +723,7 @@ namespace Dynamo.Graph.Workspaces
         /// <filterpriority>2</filterpriority>
         public virtual void Dispose()
         {
+            this.workspaceLoaded = false;
             foreach (var node in Nodes)
                 DisposeNode(node);
 

@@ -22,9 +22,8 @@
     <UserControl.Resources>
         <Style TargetType="{x:Type controls:NodeView}">
             <Style.Triggers>
-                <DataTrigger Binding="{Binding IsFrozen}" Value="True">
-                    <Setter Property="Background" Value="Transparent"/>
-                    <Setter Property="Opacity" Value ="0.5"/>
+                <DataTrigger Binding="{Binding IsFrozen}" Value="True">                    
+                    <Setter Property="Opacity" Value ="0.7"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
