@@ -74,9 +74,10 @@ namespace Dynamo.Graph.Nodes
         public virtual string CreationName { get { return this.Name; } }
 
         /// <summary>
-        /// Returns all the upstream nodes for the given node
+        /// This property gets all the Upstream Nodes  for a given node, ONLY after the graph is loaded. 
+        /// This property is computed in ComputeUpstreamOnDownstreamNodes function
         /// </summary>
-        public HashSet<NodeModel> Upstream = new HashSet<NodeModel>();
+        internal HashSet<NodeModel> UpstreamCache = new HashSet<NodeModel>();
 
         #endregion
 
@@ -649,7 +650,7 @@ namespace Dynamo.Graph.Nodes
                 // delete the node and its downstream nodes from AST.
                 else
                 {
-                    ComputeUpstreamNodes();
+                    ComputeUpstreamOnDownstreamNodes();
                     OnUpdateASTCollection();                  
                 }
             }
@@ -664,24 +665,27 @@ namespace Dynamo.Graph.Nodes
         /// <returns></returns>
         internal bool IsAnyUpstreamFrozen()
         {
-            return Upstream.Any(x => x.isFrozenExplicitly);
+            return UpstreamCache.Any(x => x.isFrozenExplicitly);
         }
 
         /// <summary>
-        /// Computes the upstream nodes for any given node.
+        /// For a given node, this function computes all the Upstream nodes for that node.
+        /// If a node has any downstream nodes, then for all those downstream nodes, Upstream
+        /// nodes will be computed.
+        /// Also this function gets called only after the workspace is added.       
         /// </summary>
-        internal void ComputeUpstreamNodes()
+        internal void ComputeUpstreamOnDownstreamNodes()
         {
             //first compute upstream nodes for this node
-            this.Upstream = new HashSet<NodeModel>();
+            this.UpstreamCache = new HashSet<NodeModel>();
             var inpNodes = this.InputNodes.Values;
 
             foreach (var inputnode in inpNodes.Where(x => x != null))
             {
-                this.Upstream.Add(inputnode.Item2);
-                foreach (var upstreamNode in inputnode.Item2.Upstream)
+                this.UpstreamCache.Add(inputnode.Item2);
+                foreach (var upstreamNode in inputnode.Item2.UpstreamCache)
                 {
-                    this.Upstream.Add(upstreamNode);
+                    this.UpstreamCache.Add(upstreamNode);
                 }
             }
 
@@ -691,15 +695,15 @@ namespace Dynamo.Graph.Nodes
 
             foreach (var downstreamNode in downStreamNodes)
             {
-                downstreamNode.Upstream = new HashSet<NodeModel>();
+                downstreamNode.UpstreamCache = new HashSet<NodeModel>();
                 var currentinpNodes = downstreamNode.InputNodes.Values;
 
                 foreach (var inputnode in currentinpNodes.Where(x => x != null))
                 {
-                    downstreamNode.Upstream.Add(inputnode.Item2);
-                    foreach (var upstreamNode in inputnode.Item2.Upstream)
+                    downstreamNode.UpstreamCache.Add(inputnode.Item2);
+                    foreach (var upstreamNode in inputnode.Item2.UpstreamCache)
                     {
-                        downstreamNode.Upstream.Add(upstreamNode);
+                        downstreamNode.UpstreamCache.Add(upstreamNode);
                     }
                 }
 

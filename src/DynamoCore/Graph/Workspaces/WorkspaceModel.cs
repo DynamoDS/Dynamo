@@ -78,7 +78,8 @@ namespace Dynamo.Graph.Workspaces
         private Guid guid;
 
         /// <summary>
-        /// Property is true after a workspace is loaded.
+        /// This is set to true after a workspace is added.
+        /// This is set to false, if the workspace is cleared or disposed.
         /// </summary>
         private bool workspaceLoaded;
 
@@ -275,9 +276,12 @@ namespace Dynamo.Graph.Workspaces
             RegisterConnector(obj);
             var handler = ConnectorAdded;
             if (handler != null) handler(obj);
+            //Check if the workspace is loaded, i.e all the nodes are 
+            //added to the workspace. In that case, compute the Upstream cache for the 
+            //given node.
             if (workspaceLoaded)
             {
-                obj.End.Owner.ComputeUpstreamNodes();               
+                obj.End.Owner.ComputeUpstreamOnDownstreamNodes();               
             }
         }
 
@@ -299,9 +303,12 @@ namespace Dynamo.Graph.Workspaces
 
             var handler = ConnectorDeleted;
             if (handler != null) handler(obj);
+            //Check if the workspace is loaded, i.e all the nodes are 
+            //added to the workspace. In that case, compute the Upstream cache for the 
+            //given node.
             if (workspaceLoaded)
             {
-                obj.End.Owner.ComputeUpstreamNodes();
+                obj.End.Owner.ComputeUpstreamOnDownstreamNodes();
             }
         }
 
@@ -703,17 +710,23 @@ namespace Dynamo.Graph.Workspaces
             foreach (var connector in Connectors)
                 RegisterConnector(connector);
 
-            SetModelEventOnAnnotation(); 
-            WorkspaceEvents.WorkspaceAdded +=OnWorkspaceAdded;
+            SetModelEventOnAnnotation();
+            WorkspaceEvents.WorkspaceAdded += computeUpstreamNodesWhenWorkspaceModified;
         }
 
-        private void OnWorkspaceAdded(WorkspacesModificationEventArgs args)
+        /// <summary>
+        /// Computes the upstream nodes when workspace is added. when a workspace is added (assuming that
+        /// all the nodes and its connectors were added successfully) compute the upstream cache for all 
+        /// the frozen nodes.     
+        /// </summary>
+        /// <param name="args">The <see cref="WorkspacesModificationEventArgs"/> instance containing the event data.</param>
+        private void computeUpstreamNodesWhenWorkspaceModified(WorkspacesModificationEventArgs args)
         {
             if (args.Id == this.Guid)
             {
                 this.workspaceLoaded = true;
                 var frozenNodes = nodes.Where(x => x.isFrozenExplicitly).ToList();
-                frozenNodes.ForEach(z => z.ComputeUpstreamNodes());
+                frozenNodes.ForEach(z => z.ComputeUpstreamOnDownstreamNodes());
             }
         }
 
@@ -722,7 +735,7 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <filterpriority>2</filterpriority>
         public virtual void Dispose()
-        {
+        {            
             this.workspaceLoaded = false;
             foreach (var node in Nodes)
                 DisposeNode(node);
