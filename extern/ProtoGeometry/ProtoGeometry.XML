@@ -2975,7 +2975,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(System.Double,System.Double)">
              <summary>
-             Create a Rectangle centered at the WCS origin in the WCS XY Plane, with specified width (X Axis length), and height (Y Axis length).
+             Create a Rectangle centered at the WCS origin in the WCS XY Plane, with specified width (X Axis length), and length (Y Axis length).
              </summary>
             <search>
             rectbylengths
@@ -2983,7 +2983,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double)">
              <summary>
-             Create a Rectangle centered at input Plane root, with input width  (Plane X axis length) and (Plane Y axis length).
+             Create a Rectangle centered at input Plane root, with input width  (Plane X axis length), and length (Plane Y axis length).
              </summary>
             <search>
             rectangle,rectbylengths
@@ -2991,7 +2991,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double)">
              <summary>
-             Create a Rectangle centered at the input origin in the CoordinateSystem  XY Plane, with specified width (X Axis length), and height  (Y Axis length).
+             Create a Rectangle centered at the input origin in the CoordinateSystem  XY Plane, with specified width (X Axis length), and length  (Y Axis length).
              </summary>
             <search>
             rectbylengths
@@ -3259,7 +3259,15 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleBetween(Autodesk.DesignScript.Geometry.Vector)">
              <summary>
-             Returns the angle between the two Vectors, in degrees
+             Returns the angle between the two Vectors, in the range [0, 180] degrees.
+             </summary>
+            <search>
+            rotation angle
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleBetween(Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
+             <summary>
+             Returns the angle between the two Vectors, in the range [0, 360] degrees. It uses axis of rotation to determine the direction of the angle.
              </summary>
             <search>
             rotation angle
