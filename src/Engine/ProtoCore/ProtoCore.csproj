@@ -113,6 +113,7 @@
     <Compile Include="CodePoint.cs" />
     <Compile Include="Compiler.cs" />
     <Compile Include="CompilerOptions.cs" />
+    <Compile Include="SyntaxAnalysis\ImperativeAstVisitor.cs" />
     <Compile Include="Utils\CompilerUtils.cs" />
     <Compile Include="Core.cs" />
     <Compile Include="ClassTable.cs" />

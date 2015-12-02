@@ -215,6 +215,7 @@
     <Compile Include="UtilsTests\ClassUtilsTest.cs" />
     <Compile Include="UtilsTests\CoreDump.cs" />
     <Compile Include="UtilsTests\CoreUtilsTest.cs" />
+    <Compile Include="UtilsTests\ImperativeAstVistorTest.cs" />
     <Compile Include="UtilsTests\TextFxTests.cs" />
   </ItemGroup>
   <ItemGroup>

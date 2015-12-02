@@ -3176,20 +3176,6 @@ namespace ProtoCore.AST.AssociativeAST
             return result;
         }
 
-        public static ImperativeAST.ConstructorDefinitionNode ToImperativeNode(this ConstructorDefinitionNode aNode)
-        {
-            if (aNode == null) return null;
-
-            var result = new ImperativeAST.ConstructorDefinitionNode
-            {
-                FunctionBody = aNode.FunctionBody.ToImperativeNode(),
-                Signature = aNode.Signature.ToImperativeNode(),
-                localVars = aNode.LocalVariableCount
-            };
-            CopyProps(aNode, result);
-            return result;
-        }
-
         public static ImperativeAST.ContinueNode ToImperativeNode(this ContinueNode aNode)
         {
             if (aNode == null) return null;
