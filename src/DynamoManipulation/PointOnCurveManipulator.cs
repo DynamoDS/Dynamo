@@ -69,9 +69,9 @@ namespace Dynamo.Manipulation
         {
             if (null == gizmo)
             {
-                gizmo = new TranslationGizmo(this, tangent, 2);
+                gizmo = new TranslationGizmo(this, tangent, gizmoScale);
             }
-            else gizmo.UpdateGeometry(tangent, null, null, 2);
+            else gizmo.UpdateGeometry(tangent, null, null, gizmoScale);
         }
 
         protected override void AssignInputNodes()
@@ -120,7 +120,7 @@ namespace Dynamo.Manipulation
             Active = tangent != null;
         }
 
-        protected override IEnumerable<NodeModel> OnGizmoClick(IGizmo gizmo, object hitObject)
+        protected override IEnumerable<NodeModel> OnGizmoClick(IGizmo gizmoInAction, object hitObject)
         {
             var axis = hitObject as Vector;
             if (null == axis) return null;
@@ -133,7 +133,7 @@ namespace Dynamo.Manipulation
             return new[] { inputNode };
         }
 
-        protected override Point OnGizmoMoved(IGizmo gizmo, Vector offset)
+        protected override Point OnGizmoMoved(IGizmo gizmoInAction, Vector offset)
         {
             var newPosition = pointOnCurve.Add(offset);
             newPosition = curve.ClosestPointTo(newPosition);

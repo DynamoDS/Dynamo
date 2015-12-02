@@ -211,33 +211,39 @@ namespace Dynamo.Manipulation
             using (var ray = GetRayGeometry(source, direction))
             {
                 //First hit test for position
-                if (ray.DistanceTo(Origin) < tolerance)
+                if (ray.DistanceTo(PointOrigin) < tolerance)
                 {
                     if (planes.Any())
-                        return planes.First();//Xy or first available plane is hit
-                    
+                    {
+                        return planes.First(); //Xy or first available plane is hit
+                    }
                     return axes.First(); //xAxis or first axis is hit
                 }
 
                 foreach (var plane in planes)
                 {
+                    // TODO: plane needs to be up-to-date at this point with the current value of Origin
                     var pt = plane.Intersect(ray).FirstOrDefault() as Point;
                     if (pt != null)
                     {
                         var vec = Vector.ByTwoPoints(Origin, pt);
                         var dot1 = plane.XAxis.Dot(vec);
                         var dot2 = plane.YAxis.Dot(vec);
-                        if( dot1 > 0 && dot2 > 0 && dot1 < scale/2 && dot2 < scale/2)
+                        if (dot1 > 0 && dot2 > 0 && dot1 < scale/2 && dot2 < scale/2)
+                        {
                             return plane; //specific plane is hit
+                        }
                     }
                 }
 
-                foreach (var a in axes)
+                foreach (var axis in axes)
                 {
-                    using (var line = Line.ByStartPointDirectionLength(Origin, a, scale))
+                    using (var line = Line.ByStartPointDirectionLength(Origin, axis, scale))
                     {
                         if (line.DistanceTo(ray) < tolerance)
-                            return a; //specific axis is hit.
+                        {
+                            return axis; //specific axis is hit.
+                        }
                     }
                 }
             }
@@ -252,7 +258,7 @@ namespace Dynamo.Manipulation
         /// <returns></returns>
         private Line GetRayGeometry(Point source, Vector direction)
         {
-            double size = Origin.DistanceTo(source) * 100;
+            double size = PointOrigin.DistanceTo(source) * 100;
             return Line.ByStartPointDirectionLength(source, direction, size);
         }
 
@@ -319,7 +325,7 @@ namespace Dynamo.Manipulation
         /// </summary>
         /// <param name="newPosition">New mouse position</param>
         /// <param name="viewDirection">view direction</param>
-        /// <returns>Offset vector wrt Origin</returns>
+        /// <returns>Offset vector wrt manipulator origin</returns>
         public override Vector GetOffset(Point newPosition, Vector viewDirection)
         {
             Point hitPoint = Origin;
@@ -391,10 +397,10 @@ namespace Dynamo.Manipulation
         public override void UnhighlightGizmo()
         {
             // Delete all transient geometry used to highlight gizmo
-            HideTransientGraphics();
+            DeleteTransientGraphics();
         }
 
-        public override void HideTransientGraphics()
+        public override void DeleteTransientGraphics()
         {
             BackgroundPreviewViewModel.DeleteGeometryForIdentifier(RenderDescriptions.AxisLine);
         }

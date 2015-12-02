@@ -57,7 +57,7 @@ namespace Dynamo.Manipulation
         /// <summary>
         /// 
         /// </summary>
-        void HideTransientGraphics();
+        void DeleteTransientGraphics();
 
         /// <summary>
         /// Highlight gizmo drawables or create transient geometry to highlight the gizmo during mouse over
@@ -73,7 +73,7 @@ namespace Dynamo.Manipulation
 
     internal abstract class Gizmo : IGizmo
     {
-        private const double zDepth = 10.0;
+        private const double zDepth = 30.0;
 
         private readonly NodeManipulator manipulator;
 
@@ -161,7 +161,7 @@ namespace Dynamo.Manipulation
 
         public abstract void UnhighlightGizmo();
 
-        public abstract void HideTransientGraphics();
+        public abstract void DeleteTransientGraphics();
 
         public void Dispose()
         {

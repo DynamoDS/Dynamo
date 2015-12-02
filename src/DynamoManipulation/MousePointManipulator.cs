@@ -41,11 +41,6 @@ namespace Dynamo.Manipulation
        
         #region overridden methods
 
-        protected override bool CanMoveGizmo(IGizmo gizmo)
-        {
-            return base.CanMoveGizmo(gizmo);
-        }
-
         protected override void AssignInputNodes()
         {
             //Default axes
@@ -126,9 +121,9 @@ namespace Dynamo.Manipulation
         /// Called when Gizmo is clicked. Creates new input nodes if the
         /// specific input is selected for manipulation by the Gizmo.
         /// </summary>
-        /// <param name="gizmo">Gizmo that is clicked</param>
+        /// <param name="gizmoInAction">Gizmo that is clicked</param>
         /// <param name="hitObject">The axis or plane of the gizmo hit</param>
-        protected override IEnumerable<NodeModel> OnGizmoClick(IGizmo gizmo, object hitObject)
+        protected override IEnumerable<NodeModel> OnGizmoClick(IGizmo gizmoInAction, object hitObject)
         {
             //If an axis is hit, only one node will be updated.
             var axis1 = hitObject as Vector;
@@ -160,7 +155,7 @@ namespace Dynamo.Manipulation
                 }
             }
 
-            //Update the axisNodePairs with affected nodes.
+            // Update the axisNodePairs with affected nodes.
             foreach (var n in nodes)
             {
                 var axisIndex = n.Key;
@@ -176,10 +171,10 @@ namespace Dynamo.Manipulation
         /// <summary>
         /// Callback method when gizmo is moved by user action.
         /// </summary>
-        /// <param name="gizmo">Gizmo that moved.</param>
+        /// <param name="gizmoInAction">Gizmo that moved.</param>
         /// <param name="offset">Offset by which the gizmo has moved.</param>
         /// <returns>New expected position of the Gizmo</returns>
-        protected override Point OnGizmoMoved(IGizmo gizmo, Vector offset)
+        protected override Point OnGizmoMoved(IGizmo gizmoInAction, Vector offset)
         {
             expectedPosition = origin.Add(offset);
 
@@ -187,17 +182,22 @@ namespace Dynamo.Manipulation
             {
                 // When more than one input is connected to the same slider, this
                 // method will decompose the axis corresponding to each input.
-                var v = GetFirstAxisComponent(item.Value.Item1);
-                var amount = Math.Round(offset.Dot(v), 3);
-                if (Math.Abs(amount) > 0.001)
-                    ModifyInputNode(item.Value.Item2, amount);
+                using (var v = GetFirstAxisComponent(item.Value.Item1))
+                {
+                    var amount = Math.Round(offset.Dot(v), 3);
+
+                    if (Math.Abs(amount) > 0.001)
+                    {
+                        ModifyInputNode(item.Value.Item2, amount);
+                    }
+                }
             }
 
             return expectedPosition;
         }
 
         /// <summary>
-        /// Synchronize the origin with the node's value.
+        /// Synchronize the manipulator position with the node's value.
         /// </summary>
         protected override void UpdatePosition()
         {
@@ -240,11 +240,11 @@ namespace Dynamo.Manipulation
 
             if (null == gizmo)
             {
-                gizmo = new TranslationGizmo(this, axes[0], axes[1], axes[2], 2);
+                gizmo = new TranslationGizmo(this, axes[0], axes[1], axes[2], gizmoScale);
             }
             else
             {
-                gizmo.UpdateGeometry(axes[0], axes[1], axes[2], 2);
+                gizmo.UpdateGeometry(axes[0], axes[1], axes[2], gizmoScale);
             }
         }
 

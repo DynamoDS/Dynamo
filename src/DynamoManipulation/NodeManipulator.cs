@@ -44,6 +44,8 @@ namespace Dynamo.Manipulation
         private const double NewNodeOffsetY = 50;
         private Point newPosition;
 
+        protected const double gizmoScale = 1.5;
+
         protected bool Active { get; set; }
 
         protected IWorkspaceModel WorkspaceModel { get; private set; }
@@ -95,20 +97,20 @@ namespace Dynamo.Manipulation
         /// This method is called when a gizmo provided by derived class is hit.
         /// Derived class can create or update the input nodes.
         /// </summary>
-        /// <param name="gizmo">The Gizmo that's hit.</param>
+        /// <param name="gizmoInAction">The Gizmo that's hit.</param>
         /// <param name="hitObject">The object of Gizmo that's hit.</param>
         /// <returns>List of updated nodes</returns>
-        protected abstract IEnumerable<NodeModel> OnGizmoClick(IGizmo gizmo, object hitObject);
+        protected abstract IEnumerable<NodeModel> OnGizmoClick(IGizmo gizmoInAction, object hitObject);
 
         /// <summary>
         /// This method is called when the Gizmo in action is moved during mouse
         /// move event. Derived class can use this notification to update the 
         /// input nodes.
         /// </summary>
-        /// <param name="gizmo">The Gizmo in action.</param>
+        /// <param name="gizmoInAction">The Gizmo in action.</param>
         /// <param name="offset">Offset amount by which Gizmo has moved.</param>
         /// <returns>New expected position of the Gizmo</returns>
-        protected abstract Point OnGizmoMoved(IGizmo gizmo, Vector offset);
+        protected abstract Point OnGizmoMoved(IGizmo gizmoInAction, Vector offset);
 
         #endregion
 
@@ -135,7 +137,7 @@ namespace Dynamo.Manipulation
         {
             //Wait until node has been evaluated and has got new origin
             //as expected position.
-            return gizmo != null && newPosition.DistanceTo(gizmo.Origin) < 0.01;
+            return gizmo != null && newPosition.DistanceTo(Origin) < 0.01;
         }
 
         /// <summary>
@@ -160,12 +162,12 @@ namespace Dynamo.Manipulation
                 if (item.HitTest(ray.GetOriginPoint(), ray.GetDirectionVector(), out hitObject))
                 {
                     GizmoInAction = item;
-                    var nodes = OnGizmoClick(item, hitObject);
-                    if(null != nodes && nodes.Any())
+                    var nodes = OnGizmoClick(item, hitObject).ToList();
+                    if(nodes.Any())
                     {
                         WorkspaceModel.RecordModelsForModification(nodes);
                     }
-                    newPosition = GizmoInAction.Origin;
+                    newPosition = Origin;
                     return;
                 }
             }
@@ -184,7 +186,7 @@ namespace Dynamo.Manipulation
             var gizmos = GetGizmos(false);
             foreach (var gizmo in gizmos)
             {
-                gizmo.HideTransientGraphics();
+                gizmo.DeleteTransientGraphics();
             }
         }
 
@@ -288,8 +290,7 @@ namespace Dynamo.Manipulation
                 if (val != null)
                 {
                     inputNode = val.Item2;
-                    if (val.Item2 is DSCoreNodesUI.Input.DoubleSlider)
-                        manipulate = true;
+                    if (val.Item2 is DoubleSlider) manipulate = true;
                 }
                 else
                 {
