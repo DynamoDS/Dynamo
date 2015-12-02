@@ -846,7 +846,7 @@ namespace Dynamo.Graph.Nodes
 
         private bool ShouldBeRenamed(string ident)
         {
-            return GetDefinedVariableNames().Contains(ident) && !ident.Equals(AstIdentifierForPreview.Value); 
+            return !ident.Equals(AstIdentifierForPreview.Value) && GetDefinedVariableNames().Contains(ident);  
         } 
 
         private string LocalizeIdentifier(string identifierName)
