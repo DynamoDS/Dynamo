@@ -650,7 +650,7 @@ namespace Dynamo.Graph.Nodes
                 // delete the node and its downstream nodes from AST.
                 else
                 {
-                    ComputeUpstreamOnDownstreamNodes();
+                    ComputeUpstreamOnDownstreamNodes(new HashSet<NodeModel>());
                     OnUpdateASTCollection();                  
                 }
             }
@@ -669,12 +669,14 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// For a given node, this function computes all the Upstream nodes for that node.
-        /// If a node has any downstream nodes, then for all those downstream nodes, Upstream
-        /// nodes will be computed.
-        /// Also this function gets called only after the workspace is added.       
+        /// For a given node, this function computes all the upstream nodes
+        /// by gathering the cached upstream nodes on this node's immediate parents.
+        /// If a node has any downstream nodes, then for all those downstream nodes, upstream
+        /// nodes will be computed. Essentially this method propogates the UpstreamCache down.
+        /// Also this function gets called only after the workspace is added.    
         /// </summary>
-        internal void ComputeUpstreamOnDownstreamNodes()
+        /// <returns> a list of the computed nodes </returns>
+        internal IEnumerable<NodeModel> ComputeUpstreamOnDownstreamNodes(HashSet<NodeModel> visitedNodes)
         {
             //first compute upstream nodes for this node
             this.UpstreamCache = new HashSet<NodeModel>();
@@ -690,8 +692,13 @@ namespace Dynamo.Graph.Nodes
             }
 
             //then for downstream nodes
-            HashSet<NodeModel> downStreamNodes = new HashSet<NodeModel>();
+            //gather downstream nodes and bail if we see an already visited node
+            HashSet<NodeModel> downStreamNodes = new HashSet<NodeModel>(visitedNodes);
             this.GetDownstreamNodes(this, downStreamNodes);
+            //then get the difference of the already visisted and new nodes, we are left with the
+
+            downStreamNodes.ExceptWith(visitedNodes);
+           
 
             foreach (var downstreamNode in downStreamNodes)
             {
@@ -706,10 +713,15 @@ namespace Dynamo.Graph.Nodes
                         downstreamNode.UpstreamCache.Add(upstreamNode);
                     }
                 }
-
             }
 
+           
             RaisePropertyChanged("IsFrozen");
+            //return all nodes that were visited during this traversal
+            //which includes this node, and the new downstream nodes we discovered
+            visitedNodes.Add(this);
+            visitedNodes.UnionWith(downStreamNodes);
+            return visitedNodes;
         }
        
         private void MarkDownStreamNodesAsModified(NodeModel node)
