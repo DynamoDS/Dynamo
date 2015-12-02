@@ -60,7 +60,7 @@ namespace DSCoreNodesUI
     public class Sequence : NodeModel
     {
         private readonly IntNode startPortDefaultValue = new IntNode(0);
-        private readonly IntNode amountPortDefaultValue = new IntNode(9);
+        private readonly IntNode amountPortDefaultValue = new IntNode(10);
         private readonly IntNode stepPortDefaultValue = new IntNode(1);
 
         public Sequence()
