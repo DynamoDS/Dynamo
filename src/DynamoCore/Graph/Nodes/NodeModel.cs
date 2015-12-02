@@ -695,7 +695,8 @@ namespace Dynamo.Graph.Nodes
             //gather downstream nodes and bail if we see an already visited node
             HashSet<NodeModel> downStreamNodes = new HashSet<NodeModel>(visitedNodes);
             this.GetDownstreamNodes(this, downStreamNodes);
-            //then get the difference of the already visisted and new nodes, we are left with the
+            //then get the difference of the already visisted and new nodes,
+            //we are left with the new nodes discovered during traversal
 
             downStreamNodes.ExceptWith(visitedNodes);
            
@@ -719,6 +720,7 @@ namespace Dynamo.Graph.Nodes
             RaisePropertyChanged("IsFrozen");
             //return all nodes that were visited during this traversal
             //which includes this node, and the new downstream nodes we discovered
+            //and all previously visited nodes
             visitedNodes.Add(this);
             visitedNodes.UnionWith(downStreamNodes);
             return visitedNodes;
