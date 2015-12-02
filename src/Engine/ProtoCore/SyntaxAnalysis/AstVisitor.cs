@@ -420,6 +420,18 @@ namespace ProtoCore.SyntaxAnalysis
             return node;
         }
 
+        public List<AssociativeNode> VisitNodeList(List<AssociativeNode> nodes)
+        {
+            for (int i = 0; i < nodes.Count; ++i)
+            {
+                var newItem = nodes[i].Accept(this);
+                if (nodes[i] != newItem)
+                    nodes[i] = newItem;
+            }
+
+            return nodes;
+        }
+
         public override AssociativeNode VisitGroupExpressionNode(GroupExpressionNode node)
         {
             var newExpression = node.Expression.Accept(this);
@@ -442,6 +454,11 @@ namespace ProtoCore.SyntaxAnalysis
             return node;
         }
 
+        public override AssociativeNode VisitTypedIdentifierNode(TypedIdentifierNode node)
+        {
+            return VisitIdentifierNode(node);
+        }
+
         public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
         {
             var newLeftNode = node.LeftNode.Accept(this);
@@ -457,13 +474,11 @@ namespace ProtoCore.SyntaxAnalysis
 
         public override AssociativeNode VisitFunctionCallNode(FunctionCallNode node)
         {
-            List<AssociativeNode> arguments = new List<AssociativeNode>();
-            for (int i = 0; i < node.FormalArguments.Count; ++i)
-            {
-                var newArgument = node.FormalArguments[i].Accept(this);
-                if (node.FormalArguments[i] != newArgument)
-                    node.FormalArguments[i] = newArgument;
-            }
+            var func = node.Function.Accept(this);
+            if (node.Function != func)
+                node.Function = func;
+
+            node.FormalArguments = VisitNodeList(node.FormalArguments);
 
             if (node.ArrayDimensions != null)
             {
@@ -556,12 +571,13 @@ namespace ProtoCore.SyntaxAnalysis
 
         public override AssociativeNode VisitExprListNode(ExprListNode node)
         {
-            List<AssociativeNode> items = new List<AssociativeNode>();
-            for (int i = 0; i < node.Exprs.Count; ++i)
+            node.Exprs = VisitNodeList(node.Exprs);
+
+            if (node.ArrayDimensions != null)
             {
-                var newItem = node.Exprs[i].Accept(this);
-                if (node.Exprs[i] != newItem)
-                    node.Exprs[i] = newItem;
+                var newArrayDimensions = node.ArrayDimensions.Accept(this);
+                if (node.ArrayDimensions != newArrayDimensions)
+                    node.ArrayDimensions = newArrayDimensions as ArrayNode;
             }
 
             return node;
