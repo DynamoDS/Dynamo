@@ -725,8 +725,6 @@ namespace Dynamo.Graph.Workspaces
             if (args.Id == this.Guid)
             {
                 this.workspaceLoaded = true;
-                //var frozenNodes = nodes.Where(x => x.isFrozenExplicitly).ToList();
-                //frozenNodes.ForEach(z => z.ComputeUpstreamOnDownstreamNodes());
                 this.ComputeUpstreamCacheForEntireGraph();
             }
         }
