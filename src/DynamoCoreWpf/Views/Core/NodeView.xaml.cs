@@ -384,19 +384,18 @@ namespace Dynamo.Controls
 
         private void OnNodeViewMouseLeave(object sender, MouseEventArgs e)
         {
-            // If mouse in not over node/preview control and preview control is not pined, we can hide preview control.
-            if (!IsMouseOver && !PreviewControl.IsMouseOver && !PreviewControl.StaysOpen)
+            // If mouse in over node/preview control or preview control is pined, we can not hide preview control.
+            if (IsMouseOver || PreviewControl.IsMouseOver || PreviewControl.StaysOpen) return;
+
+            // If it's expanded, then first condense it.
+            if (PreviewControl.IsExpanded)
             {
-                // If it's expanded, then first condense it.
-                if (PreviewControl.IsExpanded)
-                {
-                    PreviewControl.TransitionToState(PreviewControl.State.Condensed);
-                }
-                // If it's condensed, then try to hide it.
-                if (PreviewControl.IsCondensed)
-                {
-                    PreviewControl.TransitionToState(PreviewControl.State.Hidden);
-                }
+                PreviewControl.TransitionToState(PreviewControl.State.Condensed);
+            }
+            // If it's condensed, then try to hide it.
+            if (PreviewControl.IsCondensed)
+            {
+                PreviewControl.TransitionToState(PreviewControl.State.Hidden);
             }
         }
 
@@ -407,6 +406,7 @@ namespace Dynamo.Controls
         /// E.g. When mouse leaves preview control, it should be first condesed, after that hidden.
         /// </summary>
         /// <param name="sender">PreviewControl</param>
+        /// <param name="e">Event arguments</param>
         private void OnPreviewControlStateChanged(object sender, EventArgs e)
         {
             var preview = sender as PreviewControl;
