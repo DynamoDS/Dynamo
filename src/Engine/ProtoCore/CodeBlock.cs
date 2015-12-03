@@ -33,7 +33,7 @@ namespace ProtoCore
         /// <returns></returns>
         public bool Equals(LanguageCodeBlock other)
         {
-            return Language == other.Language && Code.Equals(other.Code);
+            return Language == other.Language && String.Equals(Code, other.Code);
         }
     }
 }
