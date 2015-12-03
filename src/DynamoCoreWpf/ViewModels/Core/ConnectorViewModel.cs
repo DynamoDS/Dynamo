@@ -222,9 +222,10 @@ namespace Dynamo.ViewModels
          
         public bool IsFrozen
         {
-            get { return Nodevm.IsFrozen; }            
+            get { return _model == null ? _activeStartPort.Owner.IsFrozen : Nodevm.IsFrozen; }
         }
-#endregion
+
+        #endregion
 
         /// <summary>
         /// Construct a view and start drawing.

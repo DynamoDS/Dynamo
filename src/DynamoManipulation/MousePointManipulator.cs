@@ -79,7 +79,7 @@ namespace Dynamo.Manipulation
                     {
                         //Combine old axis with this axis
                         axis = item.Value.Item1;
-                        axis = axis.Add(axes[i]).Normalized();
+                        axis = axis.Add(axes[i]);
                         idx = item.Key;
                         break;
                     }
@@ -92,6 +92,15 @@ namespace Dynamo.Manipulation
                 {
                     //update the new axis value in dictionary
                     indexedAxisNodePairs[idx] = Tuple.Create(axis, node);
+                }
+            }
+            // Normalize all axes in indexedAxisNodePairs
+            for (int i = 0; i < 3; i++)
+            {
+                Tuple<Vector, NodeModel> pair;
+                if (indexedAxisNodePairs.TryGetValue(i, out pair))
+                {
+                    indexedAxisNodePairs[i] = Tuple.Create(pair.Item1.Normalized(), pair.Item2);
                 }
             }
         }
