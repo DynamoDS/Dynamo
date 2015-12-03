@@ -605,9 +605,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory, true);
 
                     break;
+
+                case "IsFrozen":
+                    HashSet<NodeModel> gathered = new HashSet<NodeModel>();
+                    node.GetDownstreamNodes(node, gathered);
+                    SetGeometryFrozen(gathered);
+                    break;
             }
         }
-
+      
         public override void GenerateViewGeometryFromRenderPackagesAndRequestUpdate(IEnumerable<IRenderPackage> taskPackages)
         {
             foreach (var p in taskPackages)
@@ -834,6 +840,26 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 foreach(GeometryModel3D g in modelValues)
                 {
                     g.SetValue(AttachedProperties.ShowSelectedProperty, isSelected);
+                }
+            }
+        }
+
+        private void SetGeometryFrozen(HashSet<NodeModel> gathered)
+        {
+            foreach (var node in gathered)
+            {
+                var geometryModels = FindAllGeometryModel3DsForNode(node.AstIdentifierBase);
+
+                if (!geometryModels.Any())
+                {
+                    continue;
+                }
+
+                var modelValues = geometryModels.Select(x => x.Value);
+
+                foreach (GeometryModel3D g in modelValues)
+                {
+                    g.SetValue(AttachedProperties.IsFrozenProperty, node.IsFrozen);
                 }
             }
         }
