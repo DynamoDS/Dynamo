@@ -186,6 +186,7 @@
                    StrokeThickness="0,0,0,1"
                    IsHitTestVisible="True"
                    Canvas.ZIndex="11"
+                   ToolTipService.ShowDuration="60000"
                    MouseDown="NickNameBlock_OnMouseDown">
             <Rectangle.Stroke>
                 <Binding Path="State"
