@@ -114,6 +114,36 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void DefaultSequence()
+        {
+            RunModel(@"core\sequence\DefaultSequence.dyn");
+            AssertPreviewValue("6d7f8652-6cf2-4749-b398-922992fa484b",
+                new object[] { 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0 });
+        }
+
+        [Test]
+        public void DefaultRange()
+        {
+            RunModel(@"core\range\DefaultRange.dyn");
+            AssertPreviewValue("24323e5c-6d36-4b18-b99d-fa953eafeb73",
+                new object[] { 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0 });
+        }
+
+        [Test]
+        public void DefaultNumberSlider()
+        {
+            RunModel(@"core\slider\DefaultNumberSlider.dyn");
+            AssertPreviewValue("120c4ade-a49c-4aac-b3ff-02e41562d3ad", 1.0);
+        }
+
+        [Test]
+        public void DefaultIntegerSlider()
+        {
+            RunModel(@"core\slider\DefaultIntegerSlider.dyn");
+            AssertPreviewValue("35e5118e-c118-4690-bcef-ca5e601eac72", 1.0);
+        }
+
+        [Test]
         public void Sorting()
         {
             string openPath = Path.Combine(TestDirectory, @"core\sorting\sorting.dyn");

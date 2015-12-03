@@ -12,18 +12,20 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Utilities;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore.AST;
 using ProtoCore.BuildData;
 using ProtoCore.Namespace;
 using ProtoCore.Utils;
 using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 using Node = ProtoCore.AST.Node;
 using Operator = ProtoCore.DSASM.Operator;
+using ProtoCore.SyntaxAnalysis;
 
 namespace Dynamo.Graph.Nodes
 {
     [NodeName("Code Block")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("CodeBlockDescription",typeof(Dynamo.Properties.Resources))]
+    [NodeDescription("CodeBlockDescription", typeof(Dynamo.Properties.Resources))]
     [NodeSearchTags("CodeBlockSearchTags", typeof(Dynamo.Properties.Resources))]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("Dynamo.Nodes.CodeBlockNodeModel")]
@@ -40,7 +42,7 @@ namespace Dynamo.Graph.Nodes
         private bool shouldFocus = true;
         public bool ShouldFocus
         {
-            get { return shouldFocus;  }
+            get { return shouldFocus; }
             internal set { shouldFocus = value; }
         }
 
@@ -50,6 +52,11 @@ namespace Dynamo.Graph.Nodes
         {
             public const double INITIAL_MARGIN = 0;
             public const string TOOL_TIP_FOR_TEMP_VARIABLE = "Statement Output";
+        }
+
+        public override bool? IsInputNode
+        {
+            get{ return null;}
         }
 
         #region Public Methods
@@ -186,7 +193,7 @@ namespace Dynamo.Graph.Nodes
             if (code != null && code.Equals(newCode))
                 return;
 
-            if (newCode == null) 
+            if (newCode == null)
                 code = null;
             else
             {
@@ -209,7 +216,7 @@ namespace Dynamo.Graph.Nodes
                 LoadAndCreateConnectors(inportConnections, outportConnections);
 
                 RaisePropertyChanged("Code");
-                
+
                 ReportPosition();
 
                 ClearRuntimeError();
@@ -248,7 +255,7 @@ namespace Dynamo.Graph.Nodes
             string value = updateValueParams.PropertyValue;
             ElementResolver workspaceElementResolver = updateValueParams.ElementResolver;
 
-            if (name != "Code") 
+            if (name != "Code")
                 return base.UpdateValueCore(updateValueParams);
 
             value = CodeBlockUtils.FormatUserText(value);
@@ -296,6 +303,7 @@ namespace Dynamo.Graph.Nodes
                 return Enumerable.Empty<AssociativeNode>();
             }
 
+            var identMapper = new IdentifierInPlaceMapper(libraryServices.LibraryManagementCore, ShouldBeRenamed, LocalizeIdentifier);
             var resultNodes = new List<AssociativeNode>();
 
             // Define unbound variables if necessary
@@ -308,7 +316,7 @@ namespace Dynamo.Graph.Nodes
                     {
                         var identNode = AstFactory.BuildIdentifier(ident);
                         if (context != CompilationContext.NodeToCode)
-                            MapIdentifiers(identNode);
+                            identNode.Accept(identMapper);
                         return AstFactory.BuildAssignment(identNode, rhs);
                     });
                 resultNodes.AddRange(initStatments);
@@ -317,7 +325,9 @@ namespace Dynamo.Graph.Nodes
             foreach (var astNode in codeStatements.Select(stmnt => NodeUtils.Clone(stmnt.AstNode)))
             {
                 if (context != CompilationContext.NodeToCode)
-                    MapIdentifiers(astNode);
+                {
+                    (astNode as AssociativeNode).Accept(identMapper);
+                }
                 resultNodes.Add(astNode as AssociativeNode);
             }
 
@@ -380,7 +390,10 @@ namespace Dynamo.Graph.Nodes
             var mappedIdent = NodeUtils.Clone(identNode);
 
             if (!forRawName)
-                MapIdentifiers(mappedIdent);
+            {
+                var identMapper = new IdentifierInPlaceMapper(libraryServices.LibraryManagementCore, ShouldBeRenamed, LocalizeIdentifier);
+                mappedIdent.Accept(identMapper);
+            }
 
             return mappedIdent as IdentifierNode;
         }
@@ -410,10 +423,10 @@ namespace Dynamo.Graph.Nodes
             BinaryExpressionNode expr = statement.AstNode as BinaryExpressionNode;
             if (expr == null || expr.Optr != Operator.assign)
                 return type;
-            
+
             var core = libraryServices.LibraryManagementCore;
 
-            if (expr.RightNode is IdentifierListNode) 
+            if (expr.RightNode is IdentifierListNode)
             {
                 var identListNode = expr.RightNode as IdentifierListNode;
                 var funcNode = identListNode.RightNode as FunctionCallNode;
@@ -467,7 +480,7 @@ namespace Dynamo.Graph.Nodes
 
             ProcessCode(ref errorMessage, ref warningMessage);
             RaisePropertyChanged("Code");
-            
+
             ClearRuntimeError();
             if (!string.IsNullOrEmpty(errorMessage))
             {
@@ -482,7 +495,7 @@ namespace Dynamo.Graph.Nodes
             OnNodeModified();
         }
 
-        private void ProcessCode(ref string errorMessage, ref string warningMessage, 
+        private void ProcessCode(ref string errorMessage, ref string warningMessage,
             ElementResolver workspaceElementResolver = null)
         {
             code = CodeBlockUtils.FormatUserText(code);
@@ -553,7 +566,7 @@ namespace Dynamo.Graph.Nodes
                 else
                 {
                     inputIdentifiers.Clear();
-                    inputPortNames.Clear();                    
+                    inputPortNames.Clear();
                 }
             }
             catch (Exception e)
@@ -590,7 +603,8 @@ namespace Dynamo.Graph.Nodes
                 return;
 
             var duplicatedNode = new IdentifierNode(identifierNode);
-            MapIdentifiers(duplicatedNode);
+            var identMapper = new IdentifierInPlaceMapper(libraryServices.LibraryManagementCore, ShouldBeRenamed, LocalizeIdentifier);
+            duplicatedNode.Accept(identMapper);
 
             // Of course, if we just needed "duplicatedNode.Value" we would not 
             // have to clone the original "IdentifierNode". In addition to 
@@ -835,90 +849,142 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
-        private void MapIdentifiers(Node astNode)
+        private bool ShouldBeRenamed(string ident)
         {
-            if (astNode == null)
-            {
-                return;
-            }
-
-            var definedVars = GetDefinedVariableNames();
-
-            if (astNode is IdentifierNode)
-            {
-                var identNode = astNode as IdentifierNode;
-                var ident = identNode.Value;
-                if ((inputIdentifiers.Contains(ident) || definedVars.Contains(ident))
-                    && !tempVariables.Contains(ident)
-                    && !identNode.Equals(AstIdentifierForPreview))
-                {
-                    identNode.Name = identNode.Value = LocalizeIdentifier(ident);
-                }
-
-                MapIdentifiers(identNode.ArrayDimensions);
-            }
-            else if (astNode is IdentifierListNode)
-            {
-                var node = astNode as IdentifierListNode;
-                MapIdentifiers(node.LeftNode);
-                MapIdentifiers(node.RightNode);
-            }
-            else if (astNode is FunctionCallNode)
-            {
-                var node = astNode as FunctionCallNode;
-                MapIdentifiers(node.Function);
-                for (int i = 0; i < node.FormalArguments.Count; ++i)
-                {
-                    MapIdentifiers(node.FormalArguments[i]);
-                }
-                MapIdentifiers(node.ArrayDimensions);
-            }
-            else if (astNode is ArrayNode)
-            {
-                var node = astNode as ArrayNode;
-                MapIdentifiers(node.Expr);
-                MapIdentifiers(node.Type);
-            }
-            else if (astNode is ExprListNode)
-            {
-                var node = astNode as ExprListNode;
-                for (int i = 0; i < node.Exprs.Count; ++i)
-                {
-                    MapIdentifiers(node.Exprs[i]);
-                }
-                MapIdentifiers(node.ArrayDimensions);
-            }
-            else if (astNode is FunctionDotCallNode)
-            {
-                var node = astNode as FunctionDotCallNode;
-            }
-            else if (astNode is InlineConditionalNode)
-            {
-                var node = astNode as InlineConditionalNode;
-                MapIdentifiers(node.ConditionExpression);
-                MapIdentifiers(node.TrueExpression);
-                MapIdentifiers(node.FalseExpression);
-            }
-            else if (astNode is RangeExprNode)
-            {
-                var node = astNode as RangeExprNode;
-                MapIdentifiers(node.From);
-                MapIdentifiers(node.To);
-                MapIdentifiers(node.Step);
-                MapIdentifiers(node.ArrayDimensions);
-            }
-            else if (astNode is BinaryExpressionNode)
-            {
-                var node = astNode as BinaryExpressionNode;
-                MapIdentifiers(node.LeftNode);
-                MapIdentifiers(node.RightNode);
-            }
-        }
+            return !ident.Equals(AstIdentifierForPreview.Value) && GetDefinedVariableNames().Contains(ident);  
+        } 
 
         private string LocalizeIdentifier(string identifierName)
         {
             var guid = GUID.ToString().Replace("-", string.Empty);
             return string.Format("{0}_{1}", identifierName, guid);
+        }
+
+        private class ImperativeIdentifierInPlaceMapper : ImperativeAstReplacer
+        {
+            private ProtoCore.Core core;
+            private Func<string, bool> cond;
+            private Func<string, string> mapper;
+
+            public ImperativeIdentifierInPlaceMapper(ProtoCore.Core core, Func<string, bool> cond, Func<string, string> mapper)
+            {
+                this.core = core;
+                this.cond = cond;
+                this.mapper = mapper;
+            }
+
+            public override ProtoCore.AST.ImperativeAST.ImperativeNode VisitIdentifierNode(ProtoCore.AST.ImperativeAST.IdentifierNode node)
+            {
+                var variable = node.Value;
+                if (cond(variable))
+                    node.Value = node.Name = mapper(variable);
+
+                return base.VisitIdentifierNode(node);
+            }
+
+            public override ProtoCore.AST.ImperativeAST.ImperativeNode VisitIdentifierListNode(ProtoCore.AST.ImperativeAST.IdentifierListNode node)
+            {
+                node.LeftNode = node.LeftNode.Accept(this);
+
+                var rightNode = node.RightNode;
+                while (rightNode != null)
+                {
+                    if (rightNode is ProtoCore.AST.ImperativeAST.FunctionCallNode)
+                    {
+                        var funcCall = rightNode as ProtoCore.AST.ImperativeAST.FunctionCallNode;
+                        funcCall.FormalArguments = VisitNodeList(funcCall.FormalArguments);
+                        if (funcCall.ArrayDimensions != null)
+                        {
+                            funcCall.ArrayDimensions = funcCall.ArrayDimensions.Accept(this) as ProtoCore.AST.ImperativeAST.ArrayNode;
+                        }
+                        break;
+                    }
+                    else if (rightNode is ProtoCore.AST.ImperativeAST.IdentifierListNode)
+                    {
+                        rightNode = (rightNode as ProtoCore.AST.ImperativeAST.IdentifierListNode).RightNode;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                return node;
+            }
+        }
+
+        private class IdentifierInPlaceMapper : AstReplacer
+        {
+            private ProtoCore.Core core;
+            private Func<string, string> mapper;
+            private Func<string, bool> cond;
+
+            public IdentifierInPlaceMapper(ProtoCore.Core core, Func<string, bool> cond, Func<string, string> mapper)
+            {
+                this.core = core;
+                this.cond = cond;
+                this.mapper = mapper;
+            }
+
+            public override AssociativeNode VisitIdentifierNode(IdentifierNode node)
+            {
+                var variable = node.Value;
+                if (cond(variable))
+                    node.Value = node.Name = mapper(variable);
+
+                return base.VisitIdentifierNode(node);
+            }
+
+            public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
+            {
+                node.LeftNode = node.LeftNode.Accept(this);
+
+                var rightNode = node.RightNode;
+                while (rightNode != null)
+                {
+                    if (rightNode is FunctionCallNode)
+                    {
+                        var funcCall = rightNode as FunctionCallNode;
+                        funcCall.FormalArguments = VisitNodeList(funcCall.FormalArguments);
+                        if (funcCall.ArrayDimensions != null)
+                        {
+                            funcCall.ArrayDimensions = funcCall.ArrayDimensions.Accept(this) as ArrayNode;
+                        }
+                        break;
+                    }
+                    else if (rightNode is IdentifierListNode)
+                    {
+                        rightNode = (rightNode as IdentifierListNode).RightNode;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                return node;
+            }
+
+            public override AssociativeNode VisitFunctionDefinitionNode(FunctionDefinitionNode node)
+            {
+                // Not applying renaming to function defintion node, otherwise
+                // function defintion would depend on variables that defined in
+                // code block node, and there are implicit dependency between
+                // code block node that uses this funciton and code block node
+                // that defines this function.
+                return node;
+            }
+
+            public override AssociativeNode VisitLanguageBlockNode(LanguageBlockNode node)
+            {
+                var impCbn = node.CodeBlockNode as ProtoCore.AST.ImperativeAST.ImperativeNode;
+                if (impCbn != null)
+                {
+                    var replacer = new ImperativeIdentifierInPlaceMapper(core, cond, mapper);
+                    impCbn.Accept(replacer);
+                }
+                return node;
+            }
         }
 
         #endregion

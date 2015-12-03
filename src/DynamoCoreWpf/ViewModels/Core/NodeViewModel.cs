@@ -99,28 +99,13 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool IsInput
+        public bool? IsInputNode
         {
             get
             {
                 return nodeLogic.IsInputNode;
             }
-        }
-
-        public bool IsSelectedInput
-        {
-            get
-            {
-                return nodeLogic.IsSelectedInput;
-            }
-            set
-            {
-                if (nodeLogic.IsSelectedInput != value)
-                {
-                    nodeLogic.IsSelectedInput = value;
-                    RaisePropertyChanged("IsSelectedInput");
-                }
-            }
+            set { nodeLogic.IsInputNode = value; }
         }
 
         public string NickName
@@ -339,7 +324,9 @@ namespace Dynamo.ViewModels
         public bool IsFrozen
         {
             get
-            {              
+            {
+                RaisePropertyChanged("IsFrozenExplicitly");
+                RaisePropertyChanged("CanToggleFrozen");
                 return NodeModel.IsFrozen;
             }
             set
@@ -636,7 +623,10 @@ namespace Dynamo.ViewModels
                 case "CanUpdatePeriodically":
                     RaisePropertyChanged("EnablePeriodicUpdate");
                     RaisePropertyChanged("PeriodicUpdateVisibility");
-                    break;                 
+                    break;
+                case "IsFrozen":
+                    RaiseFrozenPropertyChanged();
+                    break;
             }
         }
 
@@ -1052,16 +1042,18 @@ namespace Dynamo.ViewModels
                 node.IsFrozen = !node.IsFrozen;
             }
 
-            RaisePropertyChanged("IsFrozenExplicitly");
-            RaisePropertyChanged("CanToggleFrozen");
-            RaisePropertyChanged("IsFrozen");
-
-            RaisePropertyChangedOnDownStreamNodes();
+            RaiseFrozenPropertyChanged();
         }
 
         private bool CanToggleIsFrozen(object parameters)
         {
             return DynamoSelection.Instance.Selection.Count() == 1;
+        }
+
+        private void RaiseFrozenPropertyChanged()
+        {            
+            RaisePropertyChanged("IsFrozen");
+            RaisePropertyChangedOnDownStreamNodes();
         }
 
         /// <summary>

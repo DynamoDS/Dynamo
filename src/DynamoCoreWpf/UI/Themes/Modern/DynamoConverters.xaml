@@ -109,6 +109,7 @@
     <controls:LacingToTooltipConverter x:Key="LacingToTooltipConverter" />
     <controls:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <controls:BoolToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter" />
+    <controls:NullableBoolToVisibilityCollapsedConverter x:Key="NullableBoolToVisibilityCollapsedConverter" />
     <controls:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBoolToVisibilityCollapsedConverter" />
     <controls:NavigationToOpacityConverter x:Key="NavigationToOpacityConverter" />
     <controls:ViewButtonClipRectConverter x:Key="ViewButtonClipRectConverter" />
@@ -179,5 +180,9 @@
     <controls:BooleanToBrushConverter x:Key="DetailedLayoutForegroundConverter"
                                       TrueBrush="{StaticResource NodeNameForeground}"
                                       FalseBrush="{StaticResource UnSelectedLayoutForeground}">
+    </controls:BooleanToBrushConverter>
+    <controls:BooleanToBrushConverter x:Key="PinIconForegroundConverter"
+                                      TrueBrush="{StaticResource PinnedIconForegroundColor}"
+                                      FalseBrush="{StaticResource UnpinnedIconForegroundColor}">
     </controls:BooleanToBrushConverter>
 </ResourceDictionary>

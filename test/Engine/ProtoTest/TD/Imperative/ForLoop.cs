@@ -1403,7 +1403,6 @@ p9 = y[2][2];
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Array")]
-        [Category("Failure")]
         public void T43_Create_CollectioninForLoop_1457172_2()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4081
