@@ -72,8 +72,8 @@ namespace Dynamo.Tests
             OpenModel(path);
 
             Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
-            Assert.IsFalse(CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(0).IsSelectedInput);
-            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(1).IsSelectedInput);
+            Assert.IsFalse(CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(0).IsInputNode??false);
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(1).IsInputNode??false);
         }
     }
 }
