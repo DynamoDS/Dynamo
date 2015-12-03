@@ -633,28 +633,49 @@ namespace ProtoCore.DSASM
         /// </summary>
         /// <param name="value">StackValue</param>
         /// <returns></returns>
-        private int RecursiveMark(StackValue value)
+        private int RecursiveMark(StackValue root)
         {
-            Validity.Assert(value.IsReferenceType);
+            Queue<StackValue> ptrs = new Queue<StackValue>();
+            ptrs.Enqueue(root);
+            int releaseSize = 0;
 
-            int rawPtr = (int)value.RawIntValue;
-            var hp = heapElements[rawPtr];
-            if (hp.Mark == GCMark.Black)
-                return 0;
-
-            hp.Mark = GCMark.Black;
-
-            int size = 0;
-            if (value.IsArray)
+            while (ptrs.Any())
             {
-                size = TraverseArray(ToHeapObject<DSArray>(value));
-            }
-            else if (value.IsPointer)
-            {
-                size = TraverseObject(ToHeapObject<DSObject>(value));
+                StackValue value = ptrs.Dequeue();
+                int rawPtr = (int)value.RawIntValue;
+                var hp = heapElements[rawPtr];
+                if (hp.Mark == GCMark.Black)
+                    continue;
+
+                hp.Mark = GCMark.Black;
+                if (value.IsArray)
+                {
+                    var array = ToHeapObject<DSArray>(value);
+                    releaseSize += array.MemorySize;
+
+                    foreach (var pair in array.ToDictionary())
+                    {
+                        if (pair.Key.IsReferenceType)
+                            ptrs.Enqueue(pair.Key);
+
+                        if (pair.Value.IsReferenceType)
+                            ptrs.Enqueue(pair.Value);
+                    }
+                }
+                else if (value.IsPointer)
+                {
+                    var obj = ToHeapObject<DSObject>(value);
+                    releaseSize += obj.MemorySize;
+
+                    foreach (var item in obj.Values)
+                    {
+                        if (item.IsReferenceType)
+                            ptrs.Enqueue(item);
+                    }
+                }
             }
 
-            return size;
+            return releaseSize;
         }
 
         /// <summary>
