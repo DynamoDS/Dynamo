@@ -181,6 +181,10 @@ namespace Dynamo.Tests
                     Assert.Fail(e.Message);
                 }
             }
+            else if (data.IsPointer)
+            {
+                Assert.AreEqual(data.Class.ClassName, value);
+            }
             else
                 Assert.AreEqual(value, data.Data);
         }

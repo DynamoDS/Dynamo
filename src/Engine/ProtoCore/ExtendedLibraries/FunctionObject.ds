@@ -286,6 +286,14 @@ def __Map(func : _FunctionObject, arg : var[]..[])
     return = __Combine(func, { arg });
 }
 
+def __Range(func : _FunctionObject, arg : var[]..[])
+{
+}
+
+def __Sequence(func : _FunctionObject, arg : var[]..[])
+{
+}
+
 def __LaceShortest(func : _FunctionObject, lists : var[]..[])
 {
     return = [Imperative]

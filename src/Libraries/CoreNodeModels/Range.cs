@@ -1,4 +1,5 @@
-﻿using Dynamo.Properties;
+﻿using System.Linq;
+using Dynamo.Properties;
 using ProtoCore.AST.AssociativeAST;
 
 using System.Collections.Generic;
@@ -36,6 +37,19 @@ namespace DSCoreNodesUI
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
+            if (IsPartiallyApplied)
+            {
+                return new[]
+                {
+                    AstFactory.BuildAssignment(
+                        GetAstIdentifierForOutputIndex(0),
+                             AstFactory.BuildFunctionObject(
+                                 new IdentifierNode("__Range"),
+                                3,
+                                Enumerable.Range(0, InPorts.Count).Where(HasInput),
+                                inputAstNodes))
+                };
+            }
             return new[]
             {
                 AstFactory.BuildAssignment(
@@ -47,7 +61,6 @@ namespace DSCoreNodesUI
                         Step = inputAstNodes[2],
                         StepOperator = ProtoCore.DSASM.RangeStepOperator.StepSize
                     })
-
             };
         }
     }
@@ -82,6 +95,19 @@ namespace DSCoreNodesUI
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
+            if (IsPartiallyApplied)
+            {
+                return new[]
+                {
+                    AstFactory.BuildAssignment(
+                        GetAstIdentifierForOutputIndex(0),
+                             AstFactory.BuildFunctionObject(
+                                 new IdentifierNode("__Sequence"),
+                                3,
+                                Enumerable.Range(0, InPorts.Count).Where(HasInput),
+                                inputAstNodes))
+                };
+            }
             return new[]
             {
                 AstFactory.BuildAssignment(
