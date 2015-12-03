@@ -222,16 +222,19 @@ namespace Dynamo.Manipulation
 
                 foreach (var plane in planes)
                 {
-                    // TODO: plane needs to be up-to-date at this point with the current value of Origin
-                    var pt = plane.Intersect(ray).FirstOrDefault() as Point;
-                    if (pt != null)
+                    // plane needs to be up-to-date at this time with the current value of Origin
+                    using (var pt = plane.Intersect(ray).FirstOrDefault() as Point)
                     {
-                        var vec = Vector.ByTwoPoints(Origin, pt);
-                        var dot1 = plane.XAxis.Dot(vec);
-                        var dot2 = plane.YAxis.Dot(vec);
-                        if (dot1 > 0 && dot2 > 0 && dot1 < scale/2 && dot2 < scale/2)
+                        if (pt == null) continue;
+
+                        using (var vec = Vector.ByTwoPoints(Origin, pt))
                         {
-                            return plane; //specific plane is hit
+                            var dot1 = plane.XAxis.Dot(vec);
+                            var dot2 = plane.YAxis.Dot(vec);
+                            if (dot1 > 0 && dot2 > 0 && dot1 < scale/2 && dot2 < scale/2)
+                            {
+                                return plane; //specific plane is hit
+                            }
                         }
                     }
                 }
@@ -265,25 +268,6 @@ namespace Dynamo.Manipulation
         #endregion
 
         #region interface methods
-
-        ///// <summary>
-        ///// Name of the Gizmo
-        ///// </summary>
-        //public string Name 
-        //{
-        //    get { return name; }
-        //    set { name = value; }
-        //}
-
-        ///// <summary>
-        ///// Origin of the Gizmo
-        ///// </summary>
-        //public Point Origin { get; set; }
-
-        ///// <summary>
-        ///// 
-        ///// </summary>
-        //public Point CameraPosition { get; private set; }
 
         /// <summary>
         /// Reference coordinate system for the Gizmo
@@ -333,24 +317,17 @@ namespace Dynamo.Manipulation
             {
                 if (hitPlane != null)
                 {
-                    hitPoint = hitPlane.Intersect(ray).FirstOrDefault() as Point;
+                    //hitPoint = hitPlane.Intersect(ray).FirstOrDefault() as Point;
+                    using (var testPlane = Plane.ByOriginXAxisYAxis(PointOrigin, hitPlane.XAxis, hitPlane.YAxis))
+                    {
+                        hitPoint = testPlane.Intersect(ray).FirstOrDefault() as Point;
+                    }
                 }
                 else if (hitAxis != null)
                 {
-                    var axis = hitAxis.Cross(viewDirection);
-                    var plane = Plane.ByOriginXAxisYAxis(Origin, hitAxis, axis);
-                    hitPoint = plane.Intersect(ray).FirstOrDefault() as Point;
-                    if (null != hitPoint)
+                    using (var axisLine = RayExtensions.ToOriginCenteredLine(PointOrigin, hitAxis))
                     {
-                        var projection = hitAxis.Dot(Vector.ByTwoPoints(Origin, hitPoint));
-                        hitPoint = Origin.Add(hitAxis.Normalized().Scale(projection));
-                    }
-                    else
-                    {
-                        using (var axisLine = RayExtensions.ToOriginCenteredLine(Origin, hitAxis))
-                        {
-                            hitPoint = axisLine.ClosestPointTo(ray);
-                        }
+                        hitPoint = axisLine.ClosestPointTo(ray);
                     }
                 }
             }
@@ -359,7 +336,7 @@ namespace Dynamo.Manipulation
                 return Vector.ByCoordinates(0, 0, 0);
             }
 
-            return Vector.ByTwoPoints(Origin, hitPoint);
+            return Vector.ByTwoPoints(PointOrigin, hitPoint);
         }
 
         /// <summary>
@@ -394,6 +371,17 @@ namespace Dynamo.Manipulation
             BackgroundPreviewViewModel.AddGeometryForRenderPackages(drawables);
         }
 
+        public override void UpdateGizmoGraphics()
+        {
+            // Update gizmo geometry wrt to current Origin
+            var newPlanes = planes.Select(
+                plane => Plane.ByOriginXAxisYAxis(Origin, plane.XAxis, plane.YAxis)).ToList();
+            planes.Clear();
+            planes.AddRange(newPlanes);
+
+            DeleteTransientGraphics();
+        }
+
         public override void UnhighlightGizmo()
         {
             // Delete all transient geometry used to highlight gizmo
@@ -402,7 +390,8 @@ namespace Dynamo.Manipulation
 
         public override void DeleteTransientGraphics()
         {
-            BackgroundPreviewViewModel.DeleteGeometryForIdentifier(RenderDescriptions.AxisLine);
+            var identifier = string.Format("{0}_{1}", RenderDescriptions.AxisLine, Name);
+            BackgroundPreviewViewModel.DeleteGeometryForIdentifier(identifier);
         }
 
         #endregion

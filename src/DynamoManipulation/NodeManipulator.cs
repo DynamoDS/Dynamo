@@ -122,7 +122,7 @@ namespace Dynamo.Manipulation
         /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
-            HideGizmos();
+            DeleteGizmos();
         }
 
         /// <summary>
@@ -186,7 +186,7 @@ namespace Dynamo.Manipulation
             var gizmos = GetGizmos(false);
             foreach (var gizmo in gizmos)
             {
-                gizmo.DeleteTransientGraphics();
+                gizmo.UpdateGizmoGraphics();
             }
         }
 
@@ -425,7 +425,7 @@ namespace Dynamo.Manipulation
         /// <summary>
         /// Removes Gizmos from background preview.
         /// </summary>
-        private void HideGizmos()
+        private void DeleteGizmos()
         {
             var gizmos = GetGizmos(false);
             foreach (var item in gizmos)
@@ -450,6 +450,7 @@ namespace Dynamo.Manipulation
                 if (item.HitTest(clickRay.GetOriginPoint(), clickRay.GetDirectionVector(), out hitObject))
                 {
                     item.HighlightGizmo();
+                    return;
                 }
             }
         }
