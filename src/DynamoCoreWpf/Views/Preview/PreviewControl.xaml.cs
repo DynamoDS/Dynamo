@@ -197,6 +197,8 @@ namespace Dynamo.UI.Controls
             }
         }
 
+        internal State CurrentState { get { return currentState; } }
+
         #endregion
 
         #region Private Class Methods - Generic Helpers
@@ -688,22 +690,6 @@ namespace Dynamo.UI.Controls
         {
             SetCurrentStateAndNotify(State.Condensed);
             BeginNextTransition(); // See if there's any more requests.
-        }
-
-        private void OnPreviewMouseEnter(object sender, MouseEventArgs e)
-        {
-            if (IsMouseOver && IsCondensed)
-            {
-                TransitionToState(State.Expanded);
-            }
-        }
-
-        private void OnPreviewMouseLeave(object sender, MouseEventArgs e)
-        {
-            if (!StaysOpen)
-            {
-                TransitionToState(State.Condensed);
-            }
         }
 
         private void OnMapPinMouseClick(object sender, MouseButtonEventArgs e)

@@ -11,9 +11,7 @@
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
-             mc:Ignorable="d"
-             MouseEnter="OnPreviewMouseEnter"
-             MouseLeave="OnPreviewMouseLeave">
+             mc:Ignorable="d">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -30,7 +28,7 @@
             <clr:Double x:Key="MaxContentGridWidth">488.0</clr:Double>
             <clr:Double x:Key="MaxContentGridHeight">288</clr:Double>
 
-            <clr:Double x:Key="PhasedOutPosition">-32.0</clr:Double>
+            <clr:Double x:Key="PhasedOutPosition">-52.0</clr:Double>
             <clr:Double x:Key="PhasedInPosition">-20.0</clr:Double>
             <clr:TimeSpan x:Key="ResizeBeginTime">0:0:0.2</clr:TimeSpan>
             <sys:Duration x:Key="AnimationDuration">0:0:0.2</sys:Duration>
@@ -159,7 +157,6 @@
                     BorderBrush="{StaticResource BubblePreviewBorderColor}" />
 
             <Grid Name="smallContentGrid"
-                  Visibility="Collapsed"
                   HorizontalAlignment="Left"
                   VerticalAlignment="Center"
                   MinWidth="{Binding RelativeSource={RelativeSource FindAncestor, 
@@ -180,6 +177,7 @@
                        Height="6"
                        Width="6"
                        Margin="0,5,5,5" />
+
             </Grid>
 
             <Grid Name="largeContentGrid"                 
