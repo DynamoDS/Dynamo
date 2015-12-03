@@ -294,10 +294,17 @@ namespace Dynamo.Engine.CodeGeneration
                 }
                 else
                 {
-                    if (node.InPortData.Count > index)
+                    if (node.InPorts.Count > index)
                     {
-                        var port = node.InPortData[index];
-                        inputAstNodes.Add(port.DefaultValue ?? new NullNode());
+                        var port = node.InPorts[index];
+                        if (port.UsingDefaultValue && port.DefaultValueEnabled)
+                        {
+                            inputAstNodes.Add(port.DefaultValue);
+                        }
+                        else
+                        {
+                            inputAstNodes.Add(new NullNode());
+                        }
                     }
                     else
                     {
