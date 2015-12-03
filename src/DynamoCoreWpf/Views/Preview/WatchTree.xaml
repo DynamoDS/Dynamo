@@ -63,7 +63,8 @@
                         <ControlTemplate TargetType="ToggleButton">
                             <Grid Width="15"
                                   Height="13"
-                                  Background="Transparent">
+                                  Background="Transparent"
+                                  Margin="0,0,4,0">
                                 <VisualStateManager.VisualStateGroups>
                                     <VisualStateGroup x:Name="CheckStates">
                                         <VisualState x:Name="Checked">
@@ -97,7 +98,7 @@
                                       HorizontalAlignment="Left"
                                       VerticalAlignment="Center"
                                       Margin="1,1,1,1"
-                                      Data="M 0 4 L 8 4 L 4 8 Z"
+                                      Data="M 0 8 L 8 8 L 8 0 Z"
                                       Visibility="Hidden">
                                     <Path.Fill>
                                         <SolidColorBrush Color="{DynamicResource GlyphColor}" />
@@ -115,7 +116,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type TreeViewItem}">
-                            <Grid>
+                            <Grid x:Name="TreeViewItem">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
@@ -144,7 +145,8 @@
                                 <ItemsPresenter x:Name="ItemsHost"
                                                 Grid.ColumnSpan="2"
                                                 Grid.Column="1"
-                                                Grid.Row="1" />
+                                                Grid.Row="1"
+                                                Margin="8,0,0,0"/>
                             </Grid>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsExpanded"
@@ -158,7 +160,45 @@
                                     <Setter Property="Visibility"
                                             TargetName="Expander"
                                             Value="Collapsed" />
+                                    <Setter Property="Margin"
+                                            TargetName="TreeViewItem"
+                                            Value="19,0,0,0" />
                                 </Trigger>
+
+                                <!-- __________________MultiDataTriggers______________________ -->
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <!-- If treeview item is root item. -->
+                                        <Condition Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TreeViewItem}}}"
+                                                   Value="{x:Null}" />
+                                        <!-- If root treeview item has child items. -->
+                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=HasItems}"
+                                                   Value="true" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Margin"
+                                                TargetName="TreeViewItem"
+                                                Value="4,0,0,0" />
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <!-- If treeview item is root item. -->
+                                        <Condition Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TreeViewItem}}}"
+                                                   Value="{x:Null}" />
+                                        <!-- If root treeview item doesn't have child items. -->
+                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=HasItems}"
+                                                   Value="false" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Margin"
+                                                TargetName="TreeViewItem"
+                                                Value="0,0,0,0" />
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <!-- __________________________________________ -->
+
                                 <Trigger Property="IsSelected"
                                          Value="true">
                                     <Setter Property="Background"
@@ -207,15 +247,17 @@
                     <VirtualizingStackPanel Orientation="Horizontal"
                                             Width="Auto">
                         <TextBlock Text="{Binding Path=ViewPath}"
-                                   VerticalAlignment="Center"                                   
+                                   VerticalAlignment="Center"
                                    Visibility="{Binding Path=ViewPath, Converter={StaticResource EmptyStringToCollapsedConverter}}"
                                    Width="Auto"
-                                   FontFamily="Consolas" />
+                                   FontFamily="Consolas"
+                                   Margin="0,0,4,0" />
                         <TextBlock Text="{Binding Path=NodeLabel}"
-                                   VerticalAlignment="Center"                                  
+                                   VerticalAlignment="Center"
                                    Visibility="{Binding Path=NodeLabel, Converter={StaticResource EmptyStringToCollapsedConverter}}"
                                    Width="Auto"
-                                   FontFamily="Consolas" />
+                                   FontFamily="Consolas"
+                                   Margin="0,0,4,0" />
                         <Button Content="{Binding Path=Link}"
                                 RenderTransformOrigin="0.5,0.5"
                                 Margin="10,2,2,2"
