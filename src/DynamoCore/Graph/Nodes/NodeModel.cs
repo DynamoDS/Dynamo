@@ -468,9 +468,14 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Use to indicated if a node was involved in the most recent graph evaluation.
+        /// Use to indicate if a node was involved in the most recent graph evaluation.
         /// </summary>
         internal bool WasInvolvedInExecution { get; set; }
+
+        /// <summary>
+        /// Used to indicate wheter the render package of a node has been updated after last execution.
+        /// </summary>
+        internal bool WasRenderPackageUpdatedAfterExecution { get; set; }
 
         /// <summary>
         ///     Search tags for this Node.

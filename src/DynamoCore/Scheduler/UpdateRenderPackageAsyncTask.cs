@@ -87,7 +87,7 @@ namespace Dynamo.Scheduler
                 throw new ArgumentNullException("initParams.DrawableIds");
 
             var nodeModel = initParams.Node;
-            if (!nodeModel.WasInvolvedInExecution && !initParams.ForceUpdate)
+            if (nodeModel.WasRenderPackageUpdatedAfterExecution && !initParams.ForceUpdate)
                 return false; // Not has not been updated at all.
 
             // If a node is in either of the following states, then it will not 
@@ -110,6 +110,7 @@ namespace Dynamo.Scheduler
             previewIdentifierName = initParams.PreviewIdentifierName;
 
             nodeGuid = nodeModel.GUID;
+            nodeModel.WasRenderPackageUpdatedAfterExecution = true;
             return true;
         }
 
