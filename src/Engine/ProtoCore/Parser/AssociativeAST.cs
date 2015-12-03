@@ -147,7 +147,7 @@ namespace ProtoCore.AST.AssociativeAST
         {
             var buf = new StringBuilder();
 
-            string strLang = CoreUtils.GetLanguageString(codeblock.language);
+            string strLang = CoreUtils.GetLanguageString(codeblock.Language);
 
             buf.Append("[");
             buf.Append(strLang);

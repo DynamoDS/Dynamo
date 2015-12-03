@@ -28,16 +28,16 @@ namespace ProtoScript.Runners
             {
                 //defining the global Assoc block that wraps the entire .ds source file
                 ProtoCore.LanguageCodeBlock globalBlock = new ProtoCore.LanguageCodeBlock();
-                globalBlock.language = ProtoCore.Language.Associative;
+                globalBlock.Language = ProtoCore.Language.Associative;
                 //globalBlock.language = ProtoCore.Language.kImperative;
-                globalBlock.body = code;
+                globalBlock.Code = code;
 
                 //passing the global Assoc wrapper block to the compiler
                 ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
                 context.SetExprInterpreterProperties(currentBlockID, runtimeCore.RuntimeMemory, runtimeCore.watchClassScope, runtimeCore.DebugProps);
-                ProtoCore.Language id = globalBlock.language;
+                ProtoCore.Language id = globalBlock.Language;
 
-                runtimeCore.ExprInterpreterExe.iStreamCanvas = new InstructionStream(globalBlock.language, Core);
+                runtimeCore.ExprInterpreterExe.iStreamCanvas = new InstructionStream(globalBlock.Language, Core);
 
                 // Save the global offset and restore after compilation
                 int offsetRestore = Core.GlobOffset;

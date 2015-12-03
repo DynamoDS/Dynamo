@@ -1123,7 +1123,7 @@ namespace ProtoImperative
                 // CompilerException, so we throw that instead.
                 //Validity.Assert(ProtoCore.Language.kInvalid != langblock.codeblock.language);
 
-                if (ProtoCore.Language.NotSpecified == langblock.codeblock.language)
+                if (ProtoCore.Language.NotSpecified == langblock.codeblock.Language)
                 {
                     throw new ProtoCore.Exceptions.CompileErrorsOccured("Invalid language block");
                 }
@@ -1138,7 +1138,7 @@ namespace ProtoImperative
 
                 int entry = 0;
                 int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-                if (ProtoCore.Language.Imperative == langblock.codeblock.language)
+                if (ProtoCore.Language.Imperative == langblock.codeblock.Language)
                 {
                     // TODO Jun: Move the associative and all common string into some table
                     buildStatus.LogSyntaxError(Resources.InvalidNestedImperativeBlock, core.CurrentDSFileName, langblock.line, langblock.col);
@@ -1147,7 +1147,7 @@ namespace ProtoImperative
                 if (globalProcIndex != ProtoCore.DSASM.Constants.kInvalidIndex && core.ProcNode == null)
                     core.ProcNode = codeBlock.procedureTable.Procedures[globalProcIndex];
 
-                core.Compilers[langblock.codeblock.language].Compile(out blockId, codeBlock, langblock.codeblock, context, codeBlock.EventSink, langblock.CodeBlockNode);
+                core.Compilers[langblock.codeblock.Language].Compile(out blockId, codeBlock, langblock.codeblock, context, codeBlock.EventSink, langblock.CodeBlockNode);
 
                 if (propogateUpdateGraphNode != null)
                 {
