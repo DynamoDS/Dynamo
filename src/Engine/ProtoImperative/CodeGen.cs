@@ -276,8 +276,6 @@ namespace ProtoImperative
 
         private void AllocateArray(ProtoCore.DSASM.SymbolNode symbol, ImperativeNode nodeArray)
         {
-            symbol.isArray = true;
-
             //===================================================
             // TODO Jun: 
             //  Determine which is optimal-

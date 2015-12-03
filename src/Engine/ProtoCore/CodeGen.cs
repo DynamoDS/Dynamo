@@ -219,7 +219,6 @@ namespace ProtoCore
 
         protected void AllocateVar(ProtoCore.DSASM.SymbolNode symbol)
         {
-            symbol.isArray = false;
             SetStackIndex(symbol);
         }
 
