@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -179,25 +179,36 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
-        protected bool? isInputNode = null;
         /// <summary>
-        /// A flag indicating whether this is an input node.
-        /// 
-        /// By default an input node is any node which does not have any input ports.
+        /// Input nodes are used in Customizer and Presets. Input nodes can be numbers, number sliders,
+        /// strings, bool, code blocks and custom nodes, which don't specify path.
         /// </summary>
-        public virtual bool? IsInputNode
+        public bool IsInputNode
         {
             get
             {
-                if (isInputNode.HasValue)
-                {
-                    return isInputNode;
-                }
-                return !inPorts.Any();
+                return !inPorts.Any() && !(this is DSFunction);
             }
-            internal set
+        }
+
+        private bool isSelectedInput = true;
+        /// <summary>
+        /// Specifies whether an input node should be included in a preset. 
+        /// By default, this field is set to true.
+        /// </summary>
+        public bool IsSelectedInput
+        {
+            get
             {
-                isInputNode = value;
+                if (!IsInputNode)
+                    return false;
+
+                return isSelectedInput;
+            }
+
+            set
+            {
+                isSelectedInput = value;
             }
         }
 
@@ -1708,7 +1719,7 @@ namespace Dynamo.Graph.Nodes
             helper.SetAttribute("isVisible", IsVisible);
             helper.SetAttribute("isUpstreamVisible", IsUpstreamVisible);
             helper.SetAttribute("lacing", ArgumentLacing.ToString());
-            helper.SetAttribute("isSelectedInput", IsInputNode.ToString());
+            helper.SetAttribute("isSelectedInput", IsSelectedInput.ToString());
             helper.SetAttribute("IsFrozen", isFrozenExplicitly);
 
             var portsWithDefaultValues =
@@ -1760,9 +1771,9 @@ namespace Dynamo.Graph.Nodes
             isVisible = helper.ReadBoolean("isVisible", true);
             isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
-            IsInputNode = helper.ReadNullableBoolean("isSelectedInput");
-            isFrozenExplicitly = helper.ReadBoolean("IsFrozen", false);            
-           
+            IsSelectedInput = helper.ReadBoolean("isSelectedInput", true);
+            isFrozenExplicitly = helper.ReadBoolean("IsFrozen", false);
+
             var portInfoProcessed = new HashSet<int>();
 
             //read port information
