@@ -99,13 +99,28 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool? IsInputNode
+        public bool IsInput
         {
             get
             {
                 return nodeLogic.IsInputNode;
             }
-            set { nodeLogic.IsInputNode = value; }
+        }
+
+        public bool IsSelectedInput
+        {
+            get
+            {
+                return nodeLogic.IsSelectedInput;
+            }
+            set
+            {
+                if (nodeLogic.IsSelectedInput != value)
+                {
+                    nodeLogic.IsSelectedInput = value;
+                    RaisePropertyChanged("IsSelectedInput");
+                }
+            }
         }
 
         public string NickName
