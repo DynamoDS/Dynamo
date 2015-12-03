@@ -5,39 +5,31 @@ namespace ProtoCore
 {
     public enum Language
     {
-        kInvalid = -1,
-        kAssociative,
-        kImperative,
-        kOptions,
-        kCount
+        NotSpecified = -1,
+        Associative,
+        Imperative,
     }
 
     public class LanguageCodeBlock
     {
-        public const int OUTERMOST_BLOCK_ID = Int16.MinValue;
-
-        public int id { get; set; }
         public Language language { get; set; }
         public string fingerprint { get; set; }
         public string version { get; set; }
         public List<ProtoCore.AST.Node> Attributes { get; set; }
         public string body { get; set; }
 
-        public LanguageCodeBlock(Language lang = Language.kInvalid)
+        public LanguageCodeBlock(Language lang = Language.NotSpecified)
         {
             language = lang;
             Attributes = new List<AST.Node>();
             fingerprint = null;
-            version = null;
         }
 
 
         public LanguageCodeBlock(LanguageCodeBlock rhs)
         {
-            id = rhs.id;
             language = rhs.language;
-            fingerprint = rhs.version;
-            version = rhs.version;
+            fingerprint = rhs.fingerprint;
 
             // TODO Jun: copy construct the attributes
             Attributes = new List<AST.Node>();
@@ -55,7 +47,7 @@ namespace ProtoCore
             // Attributes, fingerprint, body and version are not yet used/set for language blocks 
             // They only have default values.
             bool eqAttributes = true; 
-            bool eqProperties = fingerprint == other.version && version == other.version;
+            bool eqProperties = fingerprint == other.fingerprint;
             bool eqBody = string.Equals(body, other.body);
 
             return 

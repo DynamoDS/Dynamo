@@ -1333,13 +1333,13 @@ public Node root { get; set; }
 		NodeUtils.SetNodeLocation(langblock, t); 
 		Expect(1);
 		if( 0 == t.val.CompareTo(ProtoCore.DSASM.kw.imperative)) {
-		   langblock.codeblock.language = ProtoCore.Language.kImperative;
+		   langblock.codeblock.language = ProtoCore.Language.Imperative;
 		}
 		else if( 0 == t.val.CompareTo(ProtoCore.DSASM.kw.associative)) {
-		   langblock.codeblock.language = ProtoCore.Language.kAssociative; 
+		   langblock.codeblock.language = ProtoCore.Language.Associative; 
 		}
 		else {
-		   langblock.codeblock.language = ProtoCore.Language.kInvalid;
+		   langblock.codeblock.language = ProtoCore.Language.NotSpecified;
 		   errors.SemErr(t.line, t.col, String.Format(Resources.InvalidLanguageBlockIdentifier, t.val));
 		}
 		
@@ -1371,13 +1371,13 @@ public Node root { get; set; }
 		Expect(9);
 		Expect(46);
 		Node codeBlockNode = null; 
-		if (langblock.codeblock.language == ProtoCore.Language.kAssociative ||
-langblock.codeblock.language == ProtoCore.Language.kInvalid) {
+		if (langblock.codeblock.language == ProtoCore.Language.Associative ||
+langblock.codeblock.language == ProtoCore.Language.NotSpecified) {
 			Hydrogen(out codeBlockNode);
-		} else if (langblock.codeblock.language == ProtoCore.Language.kImperative ) {
+		} else if (langblock.codeblock.language == ProtoCore.Language.Imperative ) {
 			Imperative(out codeBlockNode);
 		} else SynErr(84);
-		if (langblock.codeblock.language == ProtoCore.Language.kInvalid ) {
+		if (langblock.codeblock.language == ProtoCore.Language.NotSpecified ) {
 			int openCurlyBraceCount = 0, closeCurlyBraceCount = 0; 
 			ProtoCore.AST.AssociativeAST.CodeBlockNode codeBlockInvalid = new ProtoCore.AST.AssociativeAST.CodeBlockNode(); 
 			ProtoCore.AST.AssociativeAST.AssociativeNode validBlockInInvalid = null; 
@@ -3004,13 +3004,13 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		NodeUtils.SetNodeLocation(langblock, t); 
 		Expect(1);
 		if( 0 == t.val.CompareTo(ProtoCore.DSASM.kw.imperative)) {
-		   langblock.codeblock.language = ProtoCore.Language.kImperative;
+		   langblock.codeblock.language = ProtoCore.Language.Imperative;
 		}
 		else if( 0 == t.val.CompareTo(ProtoCore.DSASM.kw.associative)) {
-		   langblock.codeblock.language = ProtoCore.Language.kAssociative; 
+		   langblock.codeblock.language = ProtoCore.Language.Associative; 
 		}
 		else {
-		   langblock.codeblock.language = ProtoCore.Language.kInvalid; 
+		   langblock.codeblock.language = ProtoCore.Language.NotSpecified; 
 		   errors.SemErr(t.line, t.col, String.Format(Resources.InvalidLanguageBlockIdentifier, t.val));
 		}
 		
@@ -3042,13 +3042,13 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Expect(9);
 		Expect(46);
 		Node codeBlockNode = null; 
-		if (langblock.codeblock.language == ProtoCore.Language.kAssociative ||
-langblock.codeblock.language == ProtoCore.Language.kInvalid) {
+		if (langblock.codeblock.language == ProtoCore.Language.Associative ||
+langblock.codeblock.language == ProtoCore.Language.NotSpecified) {
 			Hydrogen(out codeBlockNode);
-		} else if (langblock.codeblock.language == ProtoCore.Language.kImperative ) {
+		} else if (langblock.codeblock.language == ProtoCore.Language.Imperative ) {
 			Imperative(out codeBlockNode);
 		} else SynErr(107);
-		if (langblock.codeblock.language == ProtoCore.Language.kInvalid ) {
+		if (langblock.codeblock.language == ProtoCore.Language.NotSpecified ) {
 			int openCurlyBraceCount = 0, closeCurlyBraceCount = 0; 
 			ProtoCore.AST.ImperativeAST.CodeBlockNode codeBlockInvalid = new ProtoCore.AST.ImperativeAST.CodeBlockNode(); 
 			ProtoCore.AST.ImperativeAST.ImperativeNode validBlockInInvalid = null; 

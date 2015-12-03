@@ -201,11 +201,8 @@ namespace ProtoCore.Utils
             {
                 //defining the global Assoc block that wraps the entire .ds source file
                 ProtoCore.LanguageCodeBlock globalBlock = new ProtoCore.LanguageCodeBlock();
-                globalBlock.language = ProtoCore.Language.kAssociative;
+                globalBlock.language = ProtoCore.Language.Associative;
                 globalBlock.body = code;
-                //the wrapper block can be given a unique id to identify it as the global scope
-                globalBlock.id = ProtoCore.LanguageCodeBlock.OUTERMOST_BLOCK_ID;
-
 
                 //passing the global Assoc wrapper block to the compiler
                 ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
