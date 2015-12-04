@@ -435,8 +435,9 @@ namespace Dynamo.Manipulation
             BackgroundPreviewViewModel.ViewMouseMove -= MouseMove;
             BackgroundPreviewViewModel.ViewMouseDown -= MouseDown;
             BackgroundPreviewViewModel.ViewMouseUp -= MouseUp;
+            BackgroundPreviewViewModel.RequestRenderPackages -= GenerateRenderPackages;
 
-            Node.RequestRenderPackages -= GenerateRenderPackages;
+            //Node.RequestRenderPackages -= GenerateRenderPackages;
         }
 
         /// <summary>
