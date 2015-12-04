@@ -586,48 +586,6 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Mark all items in the array.
-        /// </summary>
-        /// <param name="array">Array</param>
-        /// <returns>Return the size of memory that referenced by the array</returns>
-        private int TraverseArray(DSArray array)
-        {
-            var dict = array.ToDictionary();
-            int size = array.MemorySize;
-
-            foreach (var pair in array.ToDictionary())
-            {
-                var key = pair.Key;
-                if (key.IsReferenceType)
-                    size += RecursiveMark(key);
-
-                var value = pair.Value;
-                if (value.IsReferenceType)
-                    size += RecursiveMark(value);
-            }
-
-            return size;
-        }
-
-        /// <summary>
-        /// Mark all items in the object 
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns>Return the size of memory that referenced by the object</returns>
-        private int TraverseObject(DSObject obj)
-        {
-            int size = obj.MemorySize;
-
-            foreach (var item in obj.Values)
-            {
-                if (item.IsReferenceType)
-                    size += RecursiveMark(item);
-            }
-
-            return size;
-        }
-
-        /// <summary>
         /// Recursively mark all objects referenced by the object and change the
         /// color of this object to black.
         /// </summary>
