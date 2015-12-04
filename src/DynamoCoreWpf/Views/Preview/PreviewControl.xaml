@@ -151,7 +151,8 @@
               Name="centralizedGrid"
               Width="{StaticResource MinPreviewControlWidth}"
               Height="{StaticResource MinPreviewControlHeight}"
-              VerticalAlignment="Top">
+              VerticalAlignment="Top"
+              Visibility="Hidden">
             <Border Background="White"
                     BorderThickness="1"
                     BorderBrush="{StaticResource BubblePreviewBorderColor}" />
@@ -180,7 +181,7 @@
 
             </Grid>
 
-            <Grid Name="largeContentGrid"                 
+            <Grid Name="largeContentGrid"
                   MaxWidth="{StaticResource MaxContentGridWidth}"
                   MaxHeight="{StaticResource MaxContentGridHeight}"
                   MinWidth="{Binding RelativeSource={RelativeSource FindAncestor, 

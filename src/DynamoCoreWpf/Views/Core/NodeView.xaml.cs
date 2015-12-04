@@ -27,6 +27,12 @@ namespace Dynamo.Controls
         private NodeViewModel viewModel = null;
         private PreviewControl previewControl = null;
 
+        /// <summary>
+        /// If false - hides preview control until it will be explicitly shown.
+        /// If true -preview control is shown and hidden on mouse enter/leave events.
+        /// </summary>
+        private bool previewEnabled = true;
+
         public NodeView TopControl
         {
             get { return topControl; }
@@ -370,6 +376,8 @@ namespace Dynamo.Controls
 
         private void OnNodeViewMouseEnter(object sender, MouseEventArgs e)
         {
+            if (!previewEnabled) return; // Preview is hidden. There is no need run further.
+
             if (PreviewControl.IsInTransition) // In transition state, come back later.
                 return;
 
@@ -421,7 +429,7 @@ namespace Dynamo.Controls
             {
                 case PreviewControl.State.Hidden:
                 {
-                    if (IsMouseOver)
+                    if (IsMouseOver && previewEnabled)
                     {
                         preview.TransitionToState(PreviewControl.State.Condensed);
                     }
@@ -464,6 +472,14 @@ namespace Dynamo.Controls
             {
                 PreviewControl.TransitionToState(PreviewControl.State.Condensed);
             }
+        }
+
+        /// <summary>
+        /// Enables/disables preview control. 
+        /// </summary>
+        internal void TogglePreviewControlAllowance()
+        {
+            previewEnabled = !previewEnabled;
         }
 
         #endregion
