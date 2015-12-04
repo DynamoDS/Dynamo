@@ -197,6 +197,8 @@ namespace Dynamo.UI.Controls
             }
         }
 
+        internal State CurrentState { get { return currentState; } }
+
         #endregion
 
         #region Private Class Methods - Generic Helpers
@@ -469,8 +471,15 @@ namespace Dynamo.UI.Controls
                 Height = Configurations.MaxExpandedPreviewHeight
             });
 
+            Size largeContentGridSize = largeContentGrid.DesiredSize;
+
+            // Don't make it smaller then min width.
+            largeContentGridSize.Width = largeContentGridSize.Width < largeContentGrid.MinWidth
+                ? largeContentGrid.MinWidth
+                : largeContentGridSize.Width;
+
             // Add padding since we are sizing the centralizedGrid.
-            return ContentToControlSize(this.largeContentGrid.DesiredSize);
+            return ContentToControlSize(largeContentGridSize);
         }
 
         private Size ContentToControlSize(Size size)
@@ -681,22 +690,6 @@ namespace Dynamo.UI.Controls
         {
             SetCurrentStateAndNotify(State.Condensed);
             BeginNextTransition(); // See if there's any more requests.
-        }
-
-        private void OnPreviewMouseEnter(object sender, MouseEventArgs e)
-        {
-            if (IsMouseOver && IsCondensed)
-            {
-                TransitionToState(State.Expanded);
-            }
-        }
-
-        private void OnPreviewMouseLeave(object sender, MouseEventArgs e)
-        {
-            if (!StaysOpen)
-            {
-                TransitionToState(State.Condensed);
-            }
         }
 
         private void OnMapPinMouseClick(object sender, MouseButtonEventArgs e)
