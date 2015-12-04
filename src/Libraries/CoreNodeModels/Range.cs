@@ -44,7 +44,7 @@ namespace DSCoreNodesUI
                     AstFactory.BuildAssignment(
                         GetAstIdentifierForOutputIndex(0),
                              AstFactory.BuildFunctionObject(
-                                 new IdentifierNode("__Range"),
+                                 new IdentifierNode("%generate_range"),
                                 3,
                                 Enumerable.Range(0, InPorts.Count).Where(HasInput),
                                 inputAstNodes))
@@ -102,7 +102,7 @@ namespace DSCoreNodesUI
                     AstFactory.BuildAssignment(
                         GetAstIdentifierForOutputIndex(0),
                              AstFactory.BuildFunctionObject(
-                                 new IdentifierNode("__Sequence"),
+                                 new IdentifierNode("%generate_range"),
                                 3,
                                 Enumerable.Range(0, InPorts.Count).Where(HasInput),
                                 inputAstNodes))
