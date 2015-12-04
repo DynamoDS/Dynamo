@@ -516,5 +516,40 @@ namespace Dynamo.Tests
             var add = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("44f77917-ce7a-404f-bf70-6972c9276c02");
             Assert.AreEqual(true, add.IsFrozen);
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void File_open_with_all_nodes_Frozen()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\FreezeNodes\TestFrozenStateAllNodes.dyn");
+            RunModel(openPath);
+
+            //check the upstream node is explicitly frozen
+            var inputNode1 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DoubleInput>("13bd151a-f5b6-4af7-ac20-a7121cc0d830");
+            Assert.AreEqual(true, inputNode1.IsFrozen);
+
+            var inputNode2 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DoubleInput>("9c75fe7e-976b-4d9b-a7ff-e5dfb4e50a4b");
+            Assert.AreEqual(true, inputNode2.IsFrozen);
+
+            //because the upstream node is frozen, the downstream node should be in frozen state
+            var add = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("44f77917-ce7a-404f-bf70-6972c9276c02");
+            Assert.AreEqual(true, add.IsFrozen);
+
+            //check the value on Add Node
+            AssertPreviewValue(add.GUID.ToString(), null);
+
+            //now change the property on inputnode1 and inputnode2.
+            inputNode1.IsFrozen = false;
+            inputNode2.IsFrozen = false;
+
+            //now all the nodes are in unfreeze state
+            Assert.AreEqual(false, inputNode1.IsFrozen);
+            Assert.AreEqual(false, inputNode2.IsFrozen);
+            Assert.AreEqual(false, add.IsFrozen);
+
+            //check the value on Add Node
+            AssertPreviewValue(add.GUID.ToString(), 8);
+
+        }
     }
 }
