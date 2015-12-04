@@ -190,7 +190,7 @@
     <value>Uploading...</value>
   </data>
   <data name="WorkspacesSendSucceededServerResponse" xml:space="preserve">
-    <value>/[0-9,a-z]*</value>
+    <value>/share/[0-9,a-z]*</value>
   </data>
   <data name="InviteViewMenuTitle" xml:space="preserve">
     <value>Sign up for Customizer…</value>
