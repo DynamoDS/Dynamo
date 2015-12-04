@@ -181,34 +181,34 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         /// Input nodes are used in Customizer and Presets. Input nodes can be numbers, number sliders,
-        /// strings, bool, code blocks and custom nodes, which don't specify path.
+        /// strings, bool, code blocks and custom nodes, which don't specify path. This property 
+        /// is true for nodes that are potential inputs for customizers and Prests.
         /// </summary>
-        public bool IsInputNode
+        public virtual bool IsInputNode
         {
             get
             {
-                return !inPorts.Any() && !(this is DSFunction);
+                return !inPorts.Any();
             }
         }
 
-        private bool isSelectedInput = true;
+        private bool isSetAsInput = true;
         /// <summary>
-        /// Specifies whether an input node should be included in a preset. 
-        /// By default, this field is set to true.
+        /// This property is user-controllable via a checkbox 
         /// </summary>
-        public bool IsSelectedInput
+        public bool IsSetAsInput
         {
             get
             {
                 if (!IsInputNode)
                     return false;
 
-                return isSelectedInput;
+                return isSetAsInput;
             }
 
             set
             {
-                isSelectedInput = value;
+                isSetAsInput = value;
             }
         }
 
@@ -1719,7 +1719,7 @@ namespace Dynamo.Graph.Nodes
             helper.SetAttribute("isVisible", IsVisible);
             helper.SetAttribute("isUpstreamVisible", IsUpstreamVisible);
             helper.SetAttribute("lacing", ArgumentLacing.ToString());
-            helper.SetAttribute("isSelectedInput", IsSelectedInput.ToString());
+            helper.SetAttribute("isSelectedInput", IsSetAsInput.ToString());
             helper.SetAttribute("IsFrozen", isFrozenExplicitly);
 
             var portsWithDefaultValues =
@@ -1771,7 +1771,7 @@ namespace Dynamo.Graph.Nodes
             isVisible = helper.ReadBoolean("isVisible", true);
             isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
-            IsSelectedInput = helper.ReadBoolean("isSelectedInput", true);
+            IsSetAsInput = helper.ReadBoolean("isSelectedInput", true);
             isFrozenExplicitly = helper.ReadBoolean("IsFrozen", false);
 
             var portInfoProcessed = new HashSet<int>();
