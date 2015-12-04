@@ -182,7 +182,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Input nodes are used in Customizer and Presets. Input nodes can be numbers, number sliders,
         /// strings, bool, code blocks and custom nodes, which don't specify path. This property 
-        /// is true for nodes that are potential inputs for customizers and Prests.
+        /// is true for nodes that are potential inputs for Customizers and Presets.
         /// </summary>
         public virtual bool IsInputNode
         {
@@ -194,7 +194,8 @@ namespace Dynamo.Graph.Nodes
 
         private bool isSetAsInput = true;
         /// <summary>
-        /// This property is user-controllable via a checkbox 
+        /// This property is user-controllable via a checkbox and is set to true when a user wishes to include
+        /// this node in a Customizer as an interactive control.
         /// </summary>
         public bool IsSetAsInput
         {
