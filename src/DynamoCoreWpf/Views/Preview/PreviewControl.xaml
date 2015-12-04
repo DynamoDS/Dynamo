@@ -160,6 +160,7 @@
             <Grid Name="smallContentGrid"
                   HorizontalAlignment="Left"
                   VerticalAlignment="Center"
+                  Margin="3,0,0,0"
                   MinWidth="{Binding RelativeSource={RelativeSource FindAncestor, 
                              AncestorType={x:Type controls:NodeView}}, 
                              Path=ActualWidth}">
@@ -168,7 +169,8 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Margin="{StaticResource PreviewContentMargin}"
-                           Grid.Column="0">null</TextBlock>
+                           Grid.Column="0"
+                           FontFamily="Consolas">null</TextBlock>
 
                 <Image x:Name="ExpandIcon"
                        Grid.Column="1"

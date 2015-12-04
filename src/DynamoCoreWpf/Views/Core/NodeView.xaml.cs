@@ -480,6 +480,11 @@ namespace Dynamo.Controls
         internal void TogglePreviewControlAllowance()
         {
             previewEnabled = !previewEnabled;
+
+            if (previewEnabled == false && !PreviewControl.StaysOpen)
+            {
+                PreviewControl.TransitionToState(PreviewControl.State.Hidden);
+            }
         }
 
         #endregion

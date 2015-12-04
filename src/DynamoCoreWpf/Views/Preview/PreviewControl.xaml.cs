@@ -424,41 +424,11 @@ namespace Dynamo.UI.Controls
             smallContentGrid.Measure(maxSize);
             Size smallContentGridSize = smallContentGrid.DesiredSize;
 
-            // Condensed bubble should be the same width as node or wider.
-            if (smallContentGridSize.Width == 0)
-            {
-                var nodeView = WpfUtilities.FindUpVisualTree<NodeView>(this);
-                if (nodeView != null)
-                {
-                    smallContentGridSize.Width = nodeView.ActualWidth;
-                }
-            }
+            // Don't make it smaller then min width.
+            smallContentGridSize.Width = smallContentGridSize.Width < smallContentGrid.MinWidth
+                ? smallContentGrid.MinWidth
+                : smallContentGridSize.Width;
 
-            // Count children size.
-            var childrenSize = new Size() { Width = 0, Height = 0 };
-            foreach (UIElement child in smallContentGrid.Children)
-            {
-                child.Measure(maxSize);
-
-                childrenSize.Width += child.DesiredSize.Width;
-                if (child.DesiredSize.Height > childrenSize.Height)
-                {
-                    childrenSize.Height = child.DesiredSize.Height;
-                }
-            }
-
-            // If children are smaller, update smallContentGridSize.
-            if (childrenSize.Height < smallContentGridSize.Height)
-            {
-                smallContentGridSize.Height = childrenSize.Height;
-            }
-            if (childrenSize.Width < smallContentGridSize.Width)
-            {
-                // But don't make it smaller, then min width.
-                smallContentGridSize.Width = childrenSize.Width < smallContentGrid.MinWidth
-                    ? smallContentGrid.MinWidth
-                    : childrenSize.Width;
-            }
             // Add padding since we are sizing the centralizedGrid.
             return ContentToControlSize(smallContentGridSize);
         }
