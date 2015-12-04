@@ -29,10 +29,20 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         protected override void InitializeOutputs(NodeModel model)
         {
             model.OutPortData.Clear();
-            if (Definition.ReturnKeys != null && Definition.ReturnKeys.Any())
+            if (Definition.Returns.Any())
             {
-                foreach (string key in Definition.ReturnKeys)
-                    model.OutPortData.Add(new PortData(key, Properties.Resources.ToolTipReturnValue));
+                foreach (var pair in Definition.Returns)
+                {
+                    string key = pair.Item1;
+
+                    string tooltip = pair.Item2;
+                    if (string.IsNullOrEmpty(tooltip))
+                    {
+                        tooltip = Properties.Resources.ToolTipReturnValue;
+                    }
+
+                    model.OutPortData.Add(new PortData(key, tooltip));
+                }
             }
             else
                 model.OutPortData.Add(new PortData("", Properties.Resources.ToolTipReturnValue));

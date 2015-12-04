@@ -447,6 +447,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
     public class Output : NodeModel
     {
         private string symbol = "";
+        private string description = "";
 
         public Output()
         {
@@ -465,6 +466,14 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                 symbol = value;
                 OnNodeModified();
                 RaisePropertyChanged("Symbol");
+            }
+        }
+
+        public Tuple<string, string> Return
+        {
+            get
+            {
+                return new Tuple<string, string>(symbol, description);
             }
         }
 

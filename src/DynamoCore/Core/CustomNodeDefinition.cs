@@ -44,7 +44,7 @@ namespace Dynamo
             {
                 topMost.AddRange(
                     outputs.Where(x => x.HasInput(0)).Select(x => Tuple.Create(0, x as NodeModel)));
-                outNames = outputs.Select(x => x.Symbol).ToList();
+                outNames = outputs.Select(x => x.Return).ToList();
             }
             else
             {
@@ -196,7 +196,19 @@ namespace Dynamo
         ///     Return type.
         /// </summary>
         public ProtoCore.Type ReturnType { get; private set; }
-        
+
+        private IEnumerable<Tuple<string, string>> returns;
+        /// <summary>
+        ///     Output and description pairs.
+        /// </summary>
+        public IEnumerable<Tuple<string, string>> Returns
+        {
+            get
+            {
+                return returns;
+            }
+        }
+
         #region Dependencies
 
         public IEnumerable<CustomNodeDefinition> Dependencies
