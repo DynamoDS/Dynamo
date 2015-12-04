@@ -1444,9 +1444,7 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            string message = String.Format(Resources.kCyclicDependency, CycleStartNodeAndEndNode[0].updateNodeRefList[0].nodeList[0].symbol.name, CycleStartNodeAndEndNode[1].updateNodeRefList[0].nodeList[0].symbol.name);
-            runtimeCore.RuntimeStatus.LogWarning(WarningID.kCyclicDependency, message);
-            //BreakDependency(NodeExecutedSameTimes);
+            runtimeCore.RuntimeStatus.LogWarning(WarningID.kCyclicDependency, Resources.kCyclicDependency);
             foreach (AssociativeGraph.GraphNode node in nodeIterations)
             {
                 node.isCyclic = true;

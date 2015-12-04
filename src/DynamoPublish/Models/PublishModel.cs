@@ -14,6 +14,7 @@ using Dynamo.Logging;
 using Reach.Data;
 using Reach.Exceptions;
 using Reach.Upload;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Reach.Messages.Data;
 
 namespace Dynamo.Publish.Models
@@ -74,7 +75,8 @@ namespace Dynamo.Publish.Models
 
                     if (!workspaceExists)
                     {
-                        throw new InvalidOperationException(String.Format(Resources.CustomNodeDefinitionNotFoundErrorMessage, dependency.FunctionName));
+                        // dependency.FunctionName won't be informative for a user, so DisplayName is passed
+                        throw new UnresolvedFunctionException(dependency.DisplayName);
                     }
 
                     if (!customNodeWorkspaces.Contains(customNodeWs))
@@ -104,6 +106,7 @@ namespace Dynamo.Publish.Models
             AuthProviderNotFound,
             EmptyWorkspace,
             InvalidNodes,
+            CustomNodeNotFound,
             UnknownServerError
         }
 
@@ -180,7 +183,15 @@ namespace Dynamo.Publish.Models
             }
         }
 
+        /// <summary>
+        /// List of node names which are not allowed to be published
+        /// </summary>
         public IEnumerable<string> InvalidNodeNames { get; private set; }
+
+        /// <summary>
+        /// Name of custom node which is not available to be published
+        /// </summary>
+        public string NotFoundCustomNodeName { get; private set; }
 
         private string customizerURL;
         /// <summary>
@@ -314,6 +325,12 @@ namespace Dynamo.Publish.Models
                 Error = UploadErrorType.InvalidNodes;
                 return;
             }
+            catch (UnresolvedFunctionException ex)
+            {
+                NotFoundCustomNodeName = ex.FunctionName;
+                Error = UploadErrorType.CustomNodeNotFound;
+                return;
+            }
 
             if (result.StatusCode == HttpStatusCode.Unauthorized) {
                 Error = UploadErrorType.Unauthorized;
@@ -347,6 +364,7 @@ namespace Dynamo.Publish.Models
                 reachClient = new WorkspaceStorageClient(authenticationProvider, serverUrl);
             }
 
+            NotFoundCustomNodeName = null;
             var dependencies = WorkspaceDependencies.Collect(workspace, customNodeManager);
 
             InvalidNodeNames = null;

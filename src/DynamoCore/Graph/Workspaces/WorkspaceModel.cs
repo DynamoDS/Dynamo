@@ -281,7 +281,7 @@ namespace Dynamo.Graph.Workspaces
             //given node.
             if (workspaceLoaded)
             {
-                obj.End.Owner.ComputeUpstreamOnDownstreamNodes();               
+                obj.End.Owner.ComputeUpstreamOnDownstreamNodes(new HashSet<NodeModel>());               
             }
         }
 
@@ -308,7 +308,7 @@ namespace Dynamo.Graph.Workspaces
             //given node.
             if (workspaceLoaded)
             {
-                obj.End.Owner.ComputeUpstreamOnDownstreamNodes();
+                obj.End.Owner.ComputeUpstreamOnDownstreamNodes(new HashSet<NodeModel>());
             }
         }
 
@@ -725,8 +725,7 @@ namespace Dynamo.Graph.Workspaces
             if (args.Id == this.Guid)
             {
                 this.workspaceLoaded = true;
-                var frozenNodes = nodes.Where(x => x.isFrozenExplicitly).ToList();
-                frozenNodes.ForEach(z => z.ComputeUpstreamOnDownstreamNodes());
+                this.ComputeUpstreamCacheForEntireGraph();
             }
         }
 
@@ -1504,6 +1503,40 @@ namespace Dynamo.Graph.Workspaces
                 Nodes.Where(
                     node =>
                         node.OutPortData.Any() && node.OutPorts.Any(port => !port.Connectors.Any()));
+        }
+
+        /// <summary>
+        /// Return the nodes in the graph that have no inputs or have none of their inputs filled
+        /// </summary>
+        /// <returns></returns>
+        internal IEnumerable<NodeModel> GetSourceNodes()
+        {
+            return
+                Nodes.Where(
+                    node =>
+                       !node.InPorts.Any()||node.InPorts.All(port => !port.Connectors.Any()));
+        }
+
+        /// <summary>
+        /// This method ensures that all upstream node caches are correct by calling
+        /// ComputeUpstreamOnDownstream on all source nodes in the graph,
+        /// this is done in such a way that each node is only computed once.
+        /// </summary>
+        private void ComputeUpstreamCacheForEntireGraph()
+        {
+            //get the source nodes or roots of the DAG
+            var sources = GetSourceNodes();
+            var allVisited = new HashSet<NodeModel>();
+            foreach(var source in sources)
+            {
+                //call computeUpstreamOnDownstream to propogate the upstream Cache down to all nodes
+               foreach(var visitedNode in source.ComputeUpstreamOnDownstreamNodes(allVisited))
+                {
+                    //continue filling the visited list with all nodes we have already computed
+                    //this will avoid redudant calls
+                    allVisited.Add(visitedNode);
+                }
+            }
         }
 
         public void ReportPosition()
