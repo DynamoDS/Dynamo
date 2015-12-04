@@ -305,6 +305,7 @@
       <DependentUpon>CodeCompletionEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Input\ParameterEditor.cs" />
+    <Compile Include="Views\Output\OutputEditor.cs" />
     <Compile Include="Views\PackageManager\PackagePathView.xaml.cs">
       <DependentUpon>PackagePathView.xaml</DependentUpon>
     </Compile>
