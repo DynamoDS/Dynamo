@@ -275,14 +275,6 @@ namespace Dynamo.Manipulation
         public CoordinateSystem ReferenceCoordinateSystem { get; set; }
 
         /// <summary>
-        /// Update gizmo drawables for current location of Gizmo Origin 
-        /// </summary>
-        protected override void RedrawCore()
-        {
-            // None required as they'll be redrawn based on current location of Origin
-        }
-
-        /// <summary>
         /// Performs hit test on Gizmo to find out hit object. The returned 
         /// hitObject could be either axis vector or a plane.
         /// </summary>
@@ -346,18 +338,18 @@ namespace Dynamo.Manipulation
         public override IEnumerable<IRenderPackage> GetDrawables()
         {
             List<IRenderPackage> drawables = new List<IRenderPackage>();
-            for (int i = 0; i < axes.Count; i++)
+            foreach (Vector axis in axes)
             {
                 IRenderPackage package = RenderPackageFactory.CreateRenderPackage();
-                DrawAxis(ref package, axes[i]);
+                DrawAxis(ref package, axis);
                 drawables.Add(package);
             }
 
             var p = Planes.xyPlane;
-            for (int i = 0; i < planes.Count; i++)
+            foreach (Plane plane in planes)
             {
                 IRenderPackage package = RenderPackageFactory.CreateRenderPackage();
-                DrawPlane(ref package, planes[i], p++);
+                DrawPlane(ref package, plane, p++);
                 drawables.Add(package);
             }
             drawables.AddRange(GetDrawablesForTransientGraphics());

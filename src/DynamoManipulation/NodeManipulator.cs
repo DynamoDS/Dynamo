@@ -38,33 +38,52 @@ namespace Dynamo.Manipulation
     /// </summary>
     public abstract class NodeManipulator : INodeManipulator
     {
-        #region properties
-
+        private readonly DynamoManipulationExtension manipulatorContext;
         private const double NewNodeOffsetX = 350;
         private const double NewNodeOffsetY = 50;
         private Point newPosition;
 
         protected const double gizmoScale = 1.5;
 
+        #region properties
+
         protected bool Active { get; set; }
 
-        protected IWorkspaceModel WorkspaceModel { get; private set; }
+        protected IWorkspaceModel WorkspaceModel
+        {
+            get { return manipulatorContext.WorkspaceModel; }
+        }
 
-        protected ICommandExecutive CommandExecutive { get; private set; }
+        protected ICommandExecutive CommandExecutive
+        {
+            get { return manipulatorContext.CommandExecutive; }
+        }
 
-        protected string UniqueId { get; private set; }
+        protected string UniqueId
+        {
+            get { return manipulatorContext.UniqueId; }
+        }
 
-        protected string ExtensionName { get; private set; }
-        
+        protected string ExtensionName
+        {
+            get { return manipulatorContext.Name; }
+        }
+
         protected IGizmo GizmoInAction { get; private set; }
 
         internal NodeModel Node { get; private set; }
 
         internal abstract Point Origin { get; }
 
-        internal IWatch3DViewModel BackgroundPreviewViewModel { get; private set; }
+        internal IWatch3DViewModel BackgroundPreviewViewModel
+        {
+            get { return manipulatorContext.BackgroundPreviewViewModel; }
+        }
 
-        internal IRenderPackageFactory RenderPackageFactory { get; private set; }
+        internal IRenderPackageFactory RenderPackageFactory
+        {
+            get { return manipulatorContext.RenderPackageFactory; }
+        }
 
         internal Point3D? CameraPosition { get; private set; }
 
@@ -162,6 +181,7 @@ namespace Dynamo.Manipulation
                 if (item.HitTest(ray.GetOriginPoint(), ray.GetDirectionVector(), out hitObject))
                 {
                     GizmoInAction = item;
+
                     var nodes = OnGizmoClick(item, hitObject).ToList();
                     if(nodes.Any())
                     {
@@ -181,7 +201,7 @@ namespace Dynamo.Manipulation
         protected virtual void MouseUp(object sender, MouseButtonEventArgs e)
         {
             GizmoInAction = null;
-            
+
             //Delete all transient graphics for gizmos
             var gizmos = GetGizmos(false);
             foreach (var gizmo in gizmos)
@@ -221,13 +241,8 @@ namespace Dynamo.Manipulation
         /// <param name="manipulatorContext">Context for manipulator</param>
         protected NodeManipulator(NodeModel node, DynamoManipulationExtension manipulatorContext)
         {
+            this.manipulatorContext = manipulatorContext;
             Node = node;
-            WorkspaceModel = manipulatorContext.WorkspaceModel;
-            BackgroundPreviewViewModel = manipulatorContext.BackgroundPreviewViewModel;
-            RenderPackageFactory = manipulatorContext.RenderPackageFactory;
-            CommandExecutive = manipulatorContext.CommandExecutive;
-            UniqueId = manipulatorContext.UniqueId;
-            ExtensionName = manipulatorContext.Name;
             
             AttachBaseHandlers();
 
@@ -391,6 +406,7 @@ namespace Dynamo.Manipulation
         /// <returns>List of render packages</returns>
         private IEnumerable<IRenderPackage> GenerateRenderPackages()
         {
+
             var packages = new List<IRenderPackage>();
 
             AssignInputNodes();
@@ -476,12 +492,6 @@ namespace Dynamo.Manipulation
             var gizmos = GetGizmos(true);
             foreach (var item in gizmos)
             {
-                //// Append node AST identifier to gizmo name
-                //// so that it gets added to package description
-                //if (!item.Name.Contains(Node.AstIdentifierBase))
-                //{
-                //    item.Name = string.Format("{0}_{1}", item.Name, Node.AstIdentifierBase);
-                //}
                 packages.AddRange(item.GetDrawables());
             }
 

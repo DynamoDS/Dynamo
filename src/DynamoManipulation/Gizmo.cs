@@ -130,6 +130,8 @@ namespace Dynamo.Manipulation
         {
             this.manipulator = manipulator;
 
+            // Append node AST identifier to gizmo name
+            // so that it gets added to package description
             Name = manipulator.Node.AstIdentifierBase;
             
             BackgroundPreviewViewModel.ViewCameraChanged += OnViewCameraChanged;
@@ -137,14 +139,8 @@ namespace Dynamo.Manipulation
             cameraPosition = manipulator.CameraPosition;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        protected abstract void RedrawCore();
-
         private void Redraw()
         {
-            RedrawCore();
             BackgroundPreviewViewModel.AddGeometryForRenderPackages(GetDrawables());
         }
 
