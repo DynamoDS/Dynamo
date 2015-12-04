@@ -586,75 +586,54 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Mark all items in the array.
-        /// </summary>
-        /// <param name="array">Array</param>
-        /// <returns>Return the size of memory that referenced by the array</returns>
-        private int TraverseArray(DSArray array)
-        {
-            var dict = array.ToDictionary();
-            int size = array.MemorySize;
-
-            foreach (var pair in array.ToDictionary())
-            {
-                var key = pair.Key;
-                if (key.IsReferenceType)
-                    size += RecursiveMark(key);
-
-                var value = pair.Value;
-                if (value.IsReferenceType)
-                    size += RecursiveMark(value);
-            }
-
-            return size;
-        }
-
-        /// <summary>
-        /// Mark all items in the object 
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns>Return the size of memory that referenced by the object</returns>
-        private int TraverseObject(DSObject obj)
-        {
-            int size = obj.MemorySize;
-
-            foreach (var item in obj.Values)
-            {
-                if (item.IsReferenceType)
-                    size += RecursiveMark(item);
-            }
-
-            return size;
-        }
-
-        /// <summary>
         /// Recursively mark all objects referenced by the object and change the
         /// color of this object to black.
         /// </summary>
         /// <param name="value">StackValue</param>
         /// <returns></returns>
-        private int RecursiveMark(StackValue value)
+        private int RecursiveMark(StackValue root)
         {
-            Validity.Assert(value.IsReferenceType);
+            Queue<StackValue> ptrs = new Queue<StackValue>();
+            ptrs.Enqueue(root);
+            int releaseSize = 0;
 
-            int rawPtr = (int)value.RawIntValue;
-            var hp = heapElements[rawPtr];
-            if (hp.Mark == GCMark.Black)
-                return 0;
-
-            hp.Mark = GCMark.Black;
-
-            int size = 0;
-            if (value.IsArray)
+            while (ptrs.Any())
             {
-                size = TraverseArray(ToHeapObject<DSArray>(value));
-            }
-            else if (value.IsPointer)
-            {
-                size = TraverseObject(ToHeapObject<DSObject>(value));
+                StackValue value = ptrs.Dequeue();
+                int rawPtr = (int)value.RawIntValue;
+                var hp = heapElements[rawPtr];
+                if (hp.Mark == GCMark.Black)
+                    continue;
+
+                hp.Mark = GCMark.Black;
+                if (value.IsArray)
+                {
+                    var array = ToHeapObject<DSArray>(value);
+                    releaseSize += array.MemorySize;
+
+                    foreach (var pair in array.ToDictionary())
+                    {
+                        if (pair.Key.IsReferenceType)
+                            ptrs.Enqueue(pair.Key);
+
+                        if (pair.Value.IsReferenceType)
+                            ptrs.Enqueue(pair.Value);
+                    }
+                }
+                else if (value.IsPointer)
+                {
+                    var obj = ToHeapObject<DSObject>(value);
+                    releaseSize += obj.MemorySize;
+
+                    foreach (var item in obj.Values)
+                    {
+                        if (item.IsReferenceType)
+                            ptrs.Enqueue(item);
+                    }
+                }
             }
 
-            return size;
+            return releaseSize;
         }
 
         /// <summary>
