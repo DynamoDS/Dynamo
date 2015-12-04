@@ -129,5 +129,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         event Action<object, RoutedEventArgs> ViewCameraChanged;
 
         #endregion
+
+        /// <summary>
+        /// 
+        /// </summary>
+        event Func<IEnumerable<IRenderPackage>> RequestRenderPackages;
     }
 }

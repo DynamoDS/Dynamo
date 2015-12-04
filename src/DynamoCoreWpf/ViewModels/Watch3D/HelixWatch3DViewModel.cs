@@ -610,7 +610,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public override void GenerateViewGeometryFromRenderPackagesAndRequestUpdate(IEnumerable<IRenderPackage> taskPackages)
         {
-            foreach (var p in taskPackages)
+            var allPackages = new List<IRenderPackage>();
+
+            allPackages.AddRange(taskPackages);
+            allPackages.AddRange(OnRequestRenderPackages());
+
+            foreach (var p in allPackages)
             {
                 Debug.WriteLine(string.Format("Processing render packages for {0}", p.Description));
             }
@@ -620,8 +625,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 #if DEBUG
             renderTimer.Start();
 #endif
-            var packages = taskPackages
-                .Cast<HelixRenderPackage>().Where(rp => rp.MeshVertexCount % 3 == 0);
+            var packages = allPackages
+                .Cast<HelixRenderPackage>().Where(rp => rp.MeshVertexCount % 3 == 0).ToList();
 
             RemoveGeometryForUpdatedPackages(packages);
 

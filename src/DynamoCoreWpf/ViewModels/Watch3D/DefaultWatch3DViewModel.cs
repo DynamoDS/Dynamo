@@ -578,10 +578,27 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         public event Action<object, RoutedEventArgs> ViewCameraChanged;
+
         internal void OnViewCameraChanged(object sender, RoutedEventArgs args)
         {
             var handler = ViewCameraChanged;
             if (handler != null) handler(sender, args);
+        }
+
+        public event Func<IEnumerable<IRenderPackage>> RequestRenderPackages;
+
+        /// <summary>
+        /// This event handler is invoked when the render packages (specific to this node)  
+        /// become available and in addition the node requests for associated render packages 
+        /// if any for example, packages used for associated node manipulators
+        /// </summary>
+        protected IEnumerable<IRenderPackage> OnRequestRenderPackages()
+        {
+            if (RequestRenderPackages != null)
+            {
+                return RequestRenderPackages();
+            }
+            return new List<IRenderPackage>();
         }
 
         protected virtual void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
