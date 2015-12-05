@@ -64,6 +64,7 @@ namespace Dynamo.Controls
 
             ViewModel.RequestAttachToScene -= ViewModelRequestAttachToSceneHandler;
             ViewModel.RequestCreateModels -= RequestCreateModelsHandler;
+            ViewModel.RequestSpecialRenderPackages -= RequestSpecialRenderPackages;
             ViewModel.RequestViewRefresh -= RequestViewRefreshHandler;
             ViewModel.RequestClickRay -= GetClickRay;
             ViewModel.RequestCameraPosition -= GetCameraPosition;
@@ -145,6 +146,7 @@ namespace Dynamo.Controls
 
             ViewModel.RequestAttachToScene += ViewModelRequestAttachToSceneHandler;
             ViewModel.RequestCreateModels += RequestCreateModelsHandler;
+            ViewModel.RequestSpecialRenderPackages += RequestSpecialRenderPackages;
             ViewModel.RequestViewRefresh += RequestViewRefreshHandler;
             ViewModel.RequestClickRay += GetClickRay;
             ViewModel.RequestCameraPosition += GetCameraPosition;
@@ -169,8 +171,16 @@ namespace Dynamo.Controls
             }
             else
             {
-                Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => ViewModel.GenerateViewGeometryFromRenderPackagesAndRequestUpdate(packages)));
+                Dispatcher.BeginInvoke(DispatcherPriority.Render, 
+                    new Action(() => ViewModel.GenerateViewGeometryFromRenderPackagesAndRequestUpdate(packages)));
             }
+        }
+
+        private IEnumerable<IRenderPackage> RequestSpecialRenderPackages()
+        {
+            IEnumerable<IRenderPackage> result = null;
+            Dispatcher.Invoke(DispatcherPriority.Render, new Action(() => result = ViewModel.OnRequestRenderPackages()));
+            return result;
         }
 
         private void ViewModelRequestAttachToSceneHandler(Model3D model3D)

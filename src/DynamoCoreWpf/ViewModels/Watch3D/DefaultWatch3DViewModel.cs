@@ -452,6 +452,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in inherited classes.
         }
 
+        internal event Func<IEnumerable<IRenderPackage>> RequestSpecialRenderPackages; 
+        private IEnumerable<IRenderPackage> OnRequestSpecialRenderPackages()
+        {
+            var handler = RequestSpecialRenderPackages;
+            return handler != null ? handler() : null;
+        }
+
         public virtual void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
         {
             // Override in derived classes.
@@ -518,7 +525,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected virtual void OnRenderPackagesUpdated(NodeModel node, IEnumerable<IRenderPackage> packages)
         {
-            AddGeometryForRenderPackages(packages);
+            var allPackages = new List<IRenderPackage>();
+
+            allPackages.AddRange(packages);
+            allPackages.AddRange(OnRequestSpecialRenderPackages());
+
+            AddGeometryForRenderPackages(allPackages);
         }
 
         /// <summary>
@@ -592,13 +604,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// become available and in addition the node requests for associated render packages 
         /// if any for example, packages used for associated node manipulators
         /// </summary>
-        protected IEnumerable<IRenderPackage> OnRequestRenderPackages()
+        internal IEnumerable<IRenderPackage> OnRequestRenderPackages()
         {
-            if (RequestRenderPackages != null)
-            {
-                return RequestRenderPackages();
-            }
-            return new List<IRenderPackage>();
+            var handler = RequestRenderPackages;
+            return handler != null ? handler() : new List<IRenderPackage>();
         }
 
         protected virtual void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)

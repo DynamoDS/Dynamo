@@ -475,6 +475,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             OnRequestCreateModels(packages);
         }
 
+
         protected override void OnShutdown()
         {
             EffectsManager = null;
@@ -613,7 +614,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var allPackages = new List<IRenderPackage>();
 
             allPackages.AddRange(taskPackages);
-            allPackages.AddRange(OnRequestRenderPackages());
+            //allPackages.AddRange(OnRequestRenderPackages());
 
             foreach (var p in allPackages)
             {

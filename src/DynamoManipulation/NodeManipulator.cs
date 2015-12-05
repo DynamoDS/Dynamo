@@ -166,7 +166,7 @@ namespace Dynamo.Manipulation
         /// <param name="mouseButtonEventArgs"></param>
         protected virtual void MouseDown(object sender, MouseButtonEventArgs mouseButtonEventArgs)
         {
-            UpdatePosition();
+            //UpdatePosition();
             GizmoInAction = null; //Reset Drag.
 
             var gizmos = GetGizmos(false);
