@@ -340,6 +340,9 @@ namespace Dynamo.Publish.ViewModels
                     var nodeList = String.Join(", ", model.InvalidNodeNames);
                     UploadStateMessage = Resources.InvalidNodeMessage + nodeList;
                     break;
+                case PublishModel.UploadErrorType.GetWorkspacesError:
+                    UploadStateMessage = Resources.GetWorkspacesErrorMessage;
+                    break;
                 case PublishModel.UploadErrorType.UnknownServerError:
                     UploadStateMessage = Resources.UnknownServerErrorMessage;
                     break;

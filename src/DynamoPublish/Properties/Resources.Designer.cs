@@ -160,6 +160,16 @@ namespace Dynamo.Publish.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There was an error when trying to request your customizers.
+        ///Please report this message to the Dynamo team..
+        /// </summary>
+        public static string GetWorkspacesErrorMessage {
+            get {
+                return ResourceManager.GetString("GetWorkspacesErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Your workspace contains nodes that are currently not allowed in a customizer: .
         /// </summary>
         public static string InvalidNodeMessage {

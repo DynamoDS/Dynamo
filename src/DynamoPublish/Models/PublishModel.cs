@@ -107,6 +107,7 @@ namespace Dynamo.Publish.Models
             AuthProviderNotFound,
             EmptyWorkspace,
             InvalidNodes,
+            GetWorkspacesError,
             UnknownServerError
         }
 
@@ -310,25 +311,16 @@ namespace Dynamo.Publish.Models
 
             try
             {
-                wss = await this.GetWorkspaces(workspaceProperties.Name);
+                wss = await this.GetWorkspaces(workspaceProperties.Name) ?? new List<Workspace>();
             }
-            catch (LookupWorkspacesException)
+            catch (GetWorkspacesException)
             {
-                Error = UploadErrorType.UnknownServerError;
+                Error = UploadErrorType.GetWorkspacesError;
                 return;
             }
 
-            var customizerExists = false;
-            foreach (var ws in wss)
-            {
-                if (ws.Name == workspaceProperties.Name)
-                {
-                    customizerExists = true;
-                    break;
-                }
-            }
             var publishWorkspace = true;
-            if (customizerExists)
+            if (wss.Any((w) =>  w.Name == workspaceProperties.Name ))
             {
                 MessageBoxResult decision =
                         MessageBox.Show(Resources.CustomizerOverrideContent,
@@ -408,7 +400,7 @@ namespace Dynamo.Publish.Models
                 reachClient = new WorkspaceStorageClient(authenticationProvider, serverUrl);
             }
 
-            return reachClient.LookupWorkspaces(name);
+            return reachClient.GetWorkspaces(name);
         }
 
         internal void ClearState()

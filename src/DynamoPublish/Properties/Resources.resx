@@ -285,4 +285,8 @@
   <data name="CustomizerOverrideHeader" xml:space="preserve">
     <value>Confirmation</value>
   </data>
+  <data name="GetWorkspacesErrorMessage" xml:space="preserve">
+    <value>There was an error when trying to request your customizers.
+Please report this message to the Dynamo team.</value>
+  </data>
 </root>
