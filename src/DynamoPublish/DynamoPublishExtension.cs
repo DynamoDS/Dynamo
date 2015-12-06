@@ -122,16 +122,22 @@ namespace Dynamo.Publish
             var config = ConfigurationManager.OpenExeConfiguration(typeof(PublishModel).Assembly.Location);
             // Get the appSettings section.
             var appSettings = (AppSettingsSection)config.GetSection("appSettings");
+
+            if (appSettings == null)
+            {
+                throw new Exception("Malformed app configuration");
+            }
+
             var needsTou = Convert.ToBoolean(appSettings.Settings["NeedsTou"].Value);
 
             // TOU is not necessary
             if (!needsTou)
             {
-                item.Click += (sender, args) => { ProcessPublish(); };
+                item.Click += (sender, args) => { PublishCurrentWorkspace(); };
             }
             else
             {
-                var baseUrl = appSettings.Settings["BaseUrl"].Value;
+                var baseUrl = appSettings.Settings["ServerUrl"].Value;
                 shareWorkspaceClient = new ShareWorkspaceClient(baseUrl, startupParams.AuthProvider);
                 item.Click += (sender, args) => { TermsOfUseEnabled(); };
             }
@@ -139,42 +145,37 @@ namespace Dynamo.Publish
             return item;
         }
 
-        private void TermsOfUseEnabled()
+        private async void TermsOfUseEnabled()
         {
-            Task<bool>.Factory.StartNew(() => shareWorkspaceClient.GetTermsOfUseAcceptanceStatus()).
-                ContinueWith(t =>
+            var termsOfUseAccepted = await Task.Run(() => shareWorkspaceClient.GetTermsOfUseAcceptanceStatus());
+            // The above GetTermsOfUseAcceptanceStatus call will get the
+            // user to sign-in. If the user cancels that sign-in dialog 
+            // without signing in, we won't show the terms of use dialog,
+            // simply return from here.
+            // 
+            if (startupParams.AuthProvider.LoginState != LoginState.LoggedIn)
+                return;
+
+            if (termsOfUseAccepted)
+            {
+                // Terms of use accepted, proceed to publish.
+                MessageBoxResult decision =
+                MessageBox.Show(Resources.TermsConfirmationContent,
+                    Resources.TermsConfirmation,
+                    MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (decision == MessageBoxResult.Yes)
                 {
-                    // The above GetTermsOfUseAcceptanceStatus call will get the
-                    // user to sign-in. If the user cancels that sign-in dialog 
-                    // without signing in, we won't show the terms of use dialog,
-                    // simply return from here.
-                    // 
-                    if (startupParams.AuthProvider.LoginState != LoginState.LoggedIn)
-                        return;
-
-                    var termsOfUseAccepted = t.Result;
-                    if (termsOfUseAccepted)
-                    {
-                        // Terms of use accepted, proceed to publish.
-                        MessageBoxResult decision =
-                        MessageBox.Show(Resources.TermsConfirmationContent,
-                            Resources.TermsConfirmation,
-                            MessageBoxButton.YesNo, MessageBoxImage.Question);
-                        if (decision == MessageBoxResult.Yes)
-                        {
-                            ProcessPublish();
-                        }
-                    }
-                    else
-                    {
-                        // Prompt user to accept the terms of use.
-                        ShowTermsOfUseForPublishing();
-                    }
-
-                }, TaskScheduler.FromCurrentSynchronizationContext());
+                    PublishCurrentWorkspace();
+                }
+            }
+            else
+            {
+                // Prompt user to accept the terms of use.
+                ShowTermsOfUseForPublishing();
+            }
         }
 
-        private void ProcessPublish()
+        private void PublishCurrentWorkspace()
         {
             var model = new PublishModel(startupParams.AuthProvider, startupParams.CustomNodeManager);
             model.MessageLogged += this.OnMessageLogged;
@@ -207,7 +208,7 @@ namespace Dynamo.Publish
             return termsOfUseView.AcceptedTermsOfUse;
         }
 
-        private void ShowTermsOfUseForPublishing()
+        private async void ShowTermsOfUseForPublishing()
         {
             if (!ShowTermsOfUseDialog())
                 return; // Terms of use not accepted.
@@ -216,14 +217,12 @@ namespace Dynamo.Publish
             // the server, before proceeding to show the publishing dialog. 
             // This method is invoked on the UI thread, so when the server call 
             // returns, invoke the publish dialog on the UI thread's context.
-            // 
-            Task<bool>.Factory.StartNew(() => shareWorkspaceClient.SetTermsOfUseAcceptanceStatus()).
-                ContinueWith(t =>
-                {
-                    if (t.Result)
-                        ProcessPublish();
-                },
-                TaskScheduler.FromCurrentSynchronizationContext());
+            var success = await Task.Run(() => shareWorkspaceClient.SetTermsOfUseAcceptanceStatus());
+
+            if (success)
+            {
+                PublishCurrentWorkspace();
+            }
         }
 
         /// <summary>
