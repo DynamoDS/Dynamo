@@ -74,14 +74,7 @@ namespace Watch3DNodeModelsWpf
 
         protected override void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            var updatedNode = sender as NodeModel;
-
-            // Don't bother with node property changes 
-            // that are not in this branch.
-
-            if (!updatedNode.IsUpstreamOf(watchNode))
-                return;
-
+           
             switch (e.PropertyName)
             {
                 case "IsUpstreamVisible":

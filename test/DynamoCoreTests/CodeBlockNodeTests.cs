@@ -991,6 +991,7 @@ var06 = g;
             AssertPreviewValue("7cbc2d85-d837-4969-8eba-36f672c77d6f", 6);
             AssertPreviewValue("ebb49227-2e2b-4861-b824-1574ba89b455", 6);
         }
+
         #endregion
 
 
@@ -1012,6 +1013,113 @@ var06 = g;
         }
     }
 
+    [TestFixture]
+    public class CodeBlockNodeRenamingTests : DynamoModelTestBase
+    {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSCoreNodes.dll");
+
+            base.GetLibrariesToPreload(libraries);
+        }
+
+        [Test]
+        public void TestImperativePropertyAccessing()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\cbn_renaming\TestImperativePropertyAccessing.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("39c65660-8575-43bc-8af7-f24225a6bd5b", 21);
+        }
+
+        [Test]
+        public void TestImperativeLanguageBlock()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\cbn_renaming\TestImperativeInCBN.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("27fba61c-ba19-4575-90a7-f856f74b4887", 49);
+        }
+
+        [Test]
+        public void TestImperativeBinaryExpression()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\cbn_renaming\TestImperativeBinaryExpression.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("0959d53a-76f9-4bd2-b407-5e409856b55e", 63);
+        }
+
+        [Test]
+        public void TestImperativeArrayIndexing()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\cbn_renaming\TestImperativeArrayIndexing.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("a09b25ca-435b-4dec-b18a-e51ed6aed489", 6);
+        }
+
+        [Test]
+        public void TestImperativeExpressionList()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\cbn_renaming\TestImperativeExpressionList.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("ab1ddd1b-67cd-4c27-a49d-53baca0c6e95", new object[] { 5, 11, 17, 21 } );
+        }
+
+        [Test]
+        public void TestImperativeFunctionParameter()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\cbn_renaming\TestImperativeFunctionParameter.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("a9ba09c4-54a3-4c79-b5c0-ab98afbd1f9c", 630);
+        }
+
+        [Test]
+        public void TestImperativeRangeExpression()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\cbn_renaming\TestImperativeRangeExpression.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("4356b0c6-636e-4729-9e7a-34ab69fd0feb", new object[] { 2, 5, 8 });
+        }
+
+        [Test]
+        public void TestImperativeIf()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\cbn_renaming\TestImperativeIf.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("2822649d-ce8c-41df-b3e3-f3e97d43f5e5", 21);
+        }
+
+        [Test]
+        public void TestImperativeForLoop()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\cbn_renaming\TestImperativeForLoop.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("c031668c-226f-4b99-8e54-011c2199b8c6", 55);
+        }
+
+        [Test]
+        public void TestImperativeWhileLoop()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\cbn_renaming\TestImperativeWhileLoop.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("bfcedc08-4812-452c-a3e4-192c6de99530", 55);
+        }
+
+        [Test]
+        public void TestImperativeUnaryExpression()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\cbn_renaming\TestImperativeUnaryExpression.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("a17ce868-60c4-41cf-ad12-fdbb6e79284e", -100);
+        }
+
+        [Test]
+        public void TestPropertyAccessing()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\cbn_renaming\TestPropertyAccessing.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("30c24391-9361-4b53-834f-912e9faf9586", 2);
+        }
+    }
 
     public class CodeBlockCompletionTests
     {

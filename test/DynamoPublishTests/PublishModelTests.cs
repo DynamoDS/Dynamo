@@ -15,6 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Reach.Upload;
 using System.Net;
+using System.Threading;
 using Dynamo.Graph;
 using Dynamo.Graph.Workspaces;
 using Reach.Messages.Data;
@@ -78,6 +79,32 @@ namespace DynamoPublishTests
             OpenModel(openPath);
 
             AssertNumberOfDeps(1);
+        }
+
+        [Test]
+        public void WorkspaceDependencies_Collect_ShouldNotCrashForWorkspaceWithProxyNode()
+        {
+            var openPath = Path.Combine(TestDirectory, @"Libraries\DynamoPublishTests\CustCrash.dyn");
+            OpenModel(openPath);
+
+            var hws = CurrentDynamoModel.CurrentWorkspace as HomeWorkspaceModel;
+            publishModel.SendAsync(hws);
+            
+            // wait for sending completion
+            PublishModel.UploadState state;
+            var timesOfSleep = 0;
+            do
+            {
+                Thread.Sleep(500);
+                timesOfSleep++;
+                state = publishModel.State;
+            } while ((state == PublishModel.UploadState.Uninitialized 
+                || state == PublishModel.UploadState.Uploading)
+            // do not wait indefinetely
+                && timesOfSleep < 10);
+
+            Assert.AreEqual(PublishModel.UploadState.Failed, publishModel.State);
+            Assert.IsNotNull(publishModel.NotFoundCustomNodeName);
         }
 
         [Test]

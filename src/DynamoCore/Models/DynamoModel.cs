@@ -1888,7 +1888,7 @@ namespace Dynamo.Models
             };
 
             _workspaces.Add(workspace);
-            OnWorkspaceAdded(workspace);
+            OnWorkspaceAdded(workspace);           
         }
         enum ButtonId
         {

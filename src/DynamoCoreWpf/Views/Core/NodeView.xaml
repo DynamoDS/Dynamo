@@ -19,9 +19,8 @@
     <UserControl.Resources>
         <Style TargetType="{x:Type controls:NodeView}">
             <Style.Triggers>
-                <DataTrigger Binding="{Binding IsFrozen}" Value="True">
-                    <Setter Property="Background" Value="Transparent"/>
-                    <Setter Property="Opacity" Value ="0.5"/>
+                <DataTrigger Binding="{Binding IsFrozen}" Value="True">                    
+                    <Setter Property="Opacity" Value ="0.7"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -187,6 +186,7 @@
                    StrokeThickness="0,0,0,1"
                    IsHitTestVisible="True"
                    Canvas.ZIndex="11"
+                   ToolTipService.ShowDuration="60000"
                    MouseDown="NickNameBlock_OnMouseDown">
             <Rectangle.Stroke>
                 <Binding Path="State"

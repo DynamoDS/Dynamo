@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using DSCoreNodesUI;
 using DSCoreNodesUI.Input;
@@ -498,6 +499,22 @@ namespace Dynamo.Tests
             //check the value
             AssertPreviewValue(addNode.GUID.ToString(), 5);
             AssertPreviewValue(watchNode.GUID.ToString(), 5);
-        }        
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void File_open_with_freezeNodes_test()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\FreezeNodes\TestFrozenState.dyn");
+            RunModel(openPath);
+
+            //check the upstream node is explicitly frozen
+            var inputNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DoubleInput>("13bd151a-f5b6-4af7-ac20-a7121cc0d830");
+            Assert.AreEqual(true, inputNode.IsFrozen);
+
+            //because the upstream node is frozen, the downstream node should be in frozen state
+            var add = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("44f77917-ce7a-404f-bf70-6972c9276c02");
+            Assert.AreEqual(true, add.IsFrozen);
+        }
     }
 }
