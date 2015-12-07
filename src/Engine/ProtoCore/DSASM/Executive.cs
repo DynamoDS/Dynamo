@@ -26,7 +26,7 @@ namespace ProtoCore.DSASM
         }
 
         public Executable exe { get; set; }
-        public Language executingLanguage = Language.kAssociative;
+        public Language executingLanguage = Language.Associative;
 
         protected int pc = Constants.kInvalidPC;
         public int PC
@@ -483,7 +483,7 @@ namespace ProtoCore.DSASM
 
             executingLanguage = exe.instrStreamList[exeblock].language;
 
-            if (Language.kAssociative == executingLanguage)
+            if (Language.Associative == executingLanguage)
             {
                 SetupEntryPoint();
             }
@@ -528,7 +528,7 @@ namespace ProtoCore.DSASM
 
             executingLanguage = exe.instrStreamList[exeblock].language;
 
-            if (Language.kAssociative == executingLanguage)
+            if (Language.Associative == executingLanguage)
             {
                 int ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
                 int fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
@@ -1273,7 +1273,7 @@ namespace ProtoCore.DSASM
         public void SetupNextExecutableGraph(int function, int classscope)
         {
             Validity.Assert(istream != null);
-            if (istream.language != Language.kAssociative)
+            if (istream.language != Language.Associative)
             {
                 return;
             }
@@ -1444,9 +1444,7 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            string message = String.Format(Resources.kCyclicDependency, CycleStartNodeAndEndNode[0].updateNodeRefList[0].nodeList[0].symbol.name, CycleStartNodeAndEndNode[1].updateNodeRefList[0].nodeList[0].symbol.name);
-            runtimeCore.RuntimeStatus.LogWarning(WarningID.kCyclicDependency, message);
-            //BreakDependency(NodeExecutedSameTimes);
+            runtimeCore.RuntimeStatus.LogWarning(WarningID.kCyclicDependency, Resources.kCyclicDependency);
             foreach (AssociativeGraph.GraphNode node in nodeIterations)
             {
                 node.isCyclic = true;
@@ -1739,7 +1737,7 @@ namespace ProtoCore.DSASM
             foreach (InstructionStream xInstrStream in exe.instrStreamList)
             {
                 // If the instruction list is valid, is associative and has more than 1 graph node
-                if (null != xInstrStream && Language.kAssociative == xInstrStream.language && xInstrStream.dependencyGraph.GraphList.Count > 0)
+                if (null != xInstrStream && Language.Associative == xInstrStream.language && xInstrStream.dependencyGraph.GraphList.Count > 0)
                 {
                     // For every graphnode in the dependency list
                     foreach (AssociativeGraph.GraphNode graphNode in xInstrStream.dependencyGraph.GraphList)
@@ -2297,7 +2295,7 @@ namespace ProtoCore.DSASM
             }
             executingLanguage = exe.instrStreamList[exeblock].language;
 
-            if (Language.kAssociative == executingLanguage && !runtimeCore.DebugProps.isResume)
+            if (Language.Associative == executingLanguage && !runtimeCore.DebugProps.isResume)
             {
                 SetupEntryPoint();
             }
@@ -2381,7 +2379,7 @@ namespace ProtoCore.DSASM
         /// <param name="entry"></param>
         /// <param name="breakpoints"></param>
         /// <param name="language"></param>
-        public void Execute(int exeblock, int entry, List<Instruction> breakpoints, Language language = Language.kInvalid)
+        public void Execute(int exeblock, int entry, List<Instruction> breakpoints, Language language = Language.NotSpecified)
         {
             terminate = true;
             if (entry != Constants.kInvalidPC)
@@ -2402,7 +2400,7 @@ namespace ProtoCore.DSASM
         // for every implicit function call (like in replication) OR 
         // for every implicit bounce (like in dynamic lang block in inline condition) OR
         // for a Debug Resume from a breakpoint
-        private void ExecuteDebug(int exeblock, int entry, List<Instruction> breakpoints, Language language = Language.kInvalid)
+        private void ExecuteDebug(int exeblock, int entry, List<Instruction> breakpoints, Language language = Language.NotSpecified)
         {
             // TODO Jun: Call RestoreFromBounce here?
             StackValue svType = rmem.GetAtRelative(StackFrame.kFrameIndexStackFrameType);
@@ -2546,7 +2544,7 @@ namespace ProtoCore.DSASM
         }
 
 
-        private void Execute(int exeblock, int entry, Language language = Language.kInvalid)
+        private void Execute(int exeblock, int entry, Language language = Language.NotSpecified)
         {
             SetupExecutive(exeblock, entry);
 
@@ -5533,7 +5531,7 @@ namespace ProtoCore.DSASM
             fepRunStack.Push(false);
 
             // A standard call instruction must reset the graphnodes for associative
-            if (Language.kAssociative == executingLanguage)
+            if (Language.Associative == executingLanguage)
             {
                 UpdateMethodDependencyGraph(pc, fi, ci);
             }
@@ -6743,7 +6741,7 @@ namespace ProtoCore.DSASM
                 {
                     var callerBlockId = f.FunctionCallerBlock;
                     var cbn = exe.CompleteCodeBlocks[callerBlockId];
-                    return cbn.language == Language.kImperative;
+                    return cbn.language == Language.Imperative;
                 });
 
             if (isInNestedImperativeBlock)
