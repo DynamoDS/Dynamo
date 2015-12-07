@@ -4,6 +4,7 @@ using ProtoCore.AST.AssociativeAST;
 
 using System.Collections.Generic;
 using Dynamo.Graph.Nodes;
+using ProtoCore.DSASM;
 
 namespace DSCoreNodesUI
 {
@@ -39,15 +40,29 @@ namespace DSCoreNodesUI
         {
             if (IsPartiallyApplied)
             {
+                var connectedPorts = Enumerable.Range(0, inputAstNodes.Count)
+                    .Where(i => inputAstNodes[i] != null && !(inputAstNodes[i] is NullNode))
+                    .ToList();
+
+                // 3d, 4th, 5th are always connected.
+                connectedPorts.AddRange(new List<int> { 3, 4, 5 });
                 return new[]
                 {
-                    AstFactory.BuildAssignment(
+                     AstFactory.BuildAssignment(
                         GetAstIdentifierForOutputIndex(0),
                              AstFactory.BuildFunctionObject(
-                                 new IdentifierNode("%generate_range"),
-                                3,
-                                Enumerable.Range(0, InPorts.Count).Where(HasInput),
-                                inputAstNodes))
+                                Constants.kFunctionRangeExpression,
+                                6,
+                                connectedPorts,
+                                new List<AssociativeNode>
+                                {
+                                    inputAstNodes[0],
+                                    inputAstNodes[1],
+                                    inputAstNodes[2],
+                                    new IntNode(0),
+                                    new BooleanNode(true),
+                                    new BooleanNode(false)
+                                }))
                 };
             }
             return new[]
@@ -97,15 +112,29 @@ namespace DSCoreNodesUI
         {
             if (IsPartiallyApplied)
             {
+                var connectedPorts = Enumerable.Range(0, inputAstNodes.Count)
+                   .Where(i => inputAstNodes[i] != null && !(inputAstNodes[i] is NullNode))
+                   .ToList();
+
+                // 3d, 4th, 5th are always connected.
+                connectedPorts.AddRange(new List<int> { 3, 4, 5 });
                 return new[]
                 {
-                    AstFactory.BuildAssignment(
+                     AstFactory.BuildAssignment(
                         GetAstIdentifierForOutputIndex(0),
                              AstFactory.BuildFunctionObject(
-                                 new IdentifierNode("%generate_range"),
-                                3,
-                                Enumerable.Range(0, InPorts.Count).Where(HasInput),
-                                inputAstNodes))
+                                Constants.kFunctionRangeExpression,
+                                6,
+                                connectedPorts,
+                                new List<AssociativeNode>
+                                {
+                                    inputAstNodes[0],
+                                    inputAstNodes[1],
+                                    inputAstNodes[2],
+                                    new IntNode(0),
+                                    new BooleanNode(true),
+                                    new BooleanNode(true)
+                                }))
                 };
             }
             return new[]
