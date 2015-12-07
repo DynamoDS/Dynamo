@@ -711,7 +711,7 @@ namespace Dynamo.Graph.Workspaces
                 RegisterConnector(connector);
 
             SetModelEventOnAnnotation();
-            WorkspaceEvents.WorkspaceAdded += computeUpstreamNodesWhenWorkspaceModified;
+            WorkspaceEvents.WorkspaceAdded += computeUpstreamNodesWhenWorkspaceAdded;
         }
 
         /// <summary>
@@ -720,12 +720,26 @@ namespace Dynamo.Graph.Workspaces
         /// the frozen nodes.     
         /// </summary>
         /// <param name="args">The <see cref="WorkspacesModificationEventArgs"/> instance containing the event data.</param>
-        private void computeUpstreamNodesWhenWorkspaceModified(WorkspacesModificationEventArgs args)
+        private void computeUpstreamNodesWhenWorkspaceAdded(WorkspacesModificationEventArgs args)
         {
             if (args.Id == this.Guid)
             {
                 this.workspaceLoaded = true;
                 this.ComputeUpstreamCacheForEntireGraph();
+
+                // If the entire graph is frozen then set silenceModification 
+                // to false on the workspace. This is required
+                // becuase if all the nodes are frozen, then updategraphsyncdata task
+                // has nothing to process and the graph will not run. setting silenceModification here
+                // ensure graph runs immediately when any of the node is set to unfreeze.
+                lock (nodes)
+                {
+                    if (nodes != null && nodes.Any() && nodes.All(z => z.IsFrozen))
+                    {
+                        var firstnode = nodes.First();
+                        firstnode.OnRequestSilenceModifiedEvents(false);
+                    }
+                }
             }
         }
 
