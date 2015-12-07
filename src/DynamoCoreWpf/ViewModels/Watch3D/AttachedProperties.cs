@@ -11,7 +11,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// </summary>
     public static class AttachedProperties
     {
-        private const float transparentGeometry = 0.5f;
+        private const float alphaPropertyFactor = 0.5f;
         /// <summary>
         /// A flag indicating whether the geometry renders as selected.
         /// </summary>
@@ -99,17 +99,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                 for (int i = 0; i < colors.Length; i++)
                 {
-                    colors[i].Alpha = colors[i].Alpha * transparentGeometry;
+                    colors[i].Alpha = colors[i].Alpha * alphaPropertyFactor;
                 }
 
                 geom.Geometry.Colors.Clear();
                 geom.Geometry.Colors.AddRange(colors);
 
-                var vertex = geom as DynamoGeometryModel3D;
-                if (vertex != null)
+                var dynamoGeom3D = geom as DynamoGeometryModel3D;
+                if (dynamoGeom3D != null)
                 {
-                    vertex.RequiresPerVertexColoration = true;
-                    geom = vertex;
+                    dynamoGeom3D.RequiresPerVertexColoration = true;
+                    geom = dynamoGeom3D;
                 }
 
                 if (geom.IsAttached)
