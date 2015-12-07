@@ -516,5 +516,45 @@ namespace Dynamo.Tests
             var add = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("44f77917-ce7a-404f-bf70-6972c9276c02");
             Assert.AreEqual(true, add.IsFrozen);
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void Check_ConnectingFrozenStartNodeUpdatesEndNodeState()
+        {
+            CreateAndConnectNodes();
+            CurrentDynamoModel.ClearCurrentWorkspace();
+
+            // check if after clearing end node is still able to be updated 
+            // by adding a frozen input connector
+            CreateAndConnectNodes();
+        }
+
+        private void CreateAndConnectNodes()
+        {
+            var model = CurrentDynamoModel;
+            //create a number
+            var numberNode = new DoubleInput();
+            model.ExecuteCommand(new DynamoModel.CreateNodeCommand(numberNode, 0, 0, true, false));
+
+            //add  a watch node
+            var watchNode = new Watch();
+            model.ExecuteCommand(new DynamoModel.CreateNodeCommand(watchNode, 0, 0, true, false));
+
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 2);
+
+            numberNode.IsFrozen = true;
+            Assert.IsTrue(numberNode.isFrozenExplicitly);
+            Assert.IsFalse(watchNode.IsFrozen);
+
+            model.ExecuteCommand(new DynamoModel.MakeConnectionCommand(numberNode.GUID, 0, PortType.Output, DynCmd.MakeConnectionCommand.Mode.Begin));
+            model.ExecuteCommand(new DynamoModel.MakeConnectionCommand(watchNode.GUID, 0, PortType.Input, DynCmd.MakeConnectionCommand.Mode.End));
+
+            Assert.AreEqual(model.CurrentWorkspace.Connectors.Count(), 1);
+
+            // check if watch node freeze state is updated
+            var msg = "End node freeze state has not been updated";
+            Assert.IsTrue(watchNode.IsFrozen, msg);
+            Assert.IsFalse(watchNode.isFrozenExplicitly, msg);
+        }
     }
 }
