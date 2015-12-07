@@ -758,7 +758,7 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         public virtual void Clear()
         {
-            this.workspaceLoaded = false;
+            workspaceLoaded = false;
             Log(Resources.ClearingWorkSpace);
 
             DynamoSelection.Instance.ClearSelection();
@@ -797,6 +797,7 @@ namespace Dynamo.Graph.Workspaces
             X = 0.0;
             Y = 0.0;
             Zoom = 1.0;
+            workspaceLoaded = true;
         }
 
         /// <summary>
