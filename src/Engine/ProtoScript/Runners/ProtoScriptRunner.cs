@@ -22,14 +22,11 @@ namespace ProtoScript.Runners
 
                 //defining the global Assoc block that wraps the entire .ds source file
                 ProtoCore.LanguageCodeBlock globalBlock = new ProtoCore.LanguageCodeBlock();
-                globalBlock.language = ProtoCore.Language.kAssociative;
-                globalBlock.body = code;
-                //the wrapper block can be given a unique id to identify it as the global scope
-                globalBlock.id = ProtoCore.LanguageCodeBlock.OUTERMOST_BLOCK_ID;
-
+                globalBlock.Language = ProtoCore.Language.Associative;
+                globalBlock.Code = code;
 
                 //passing the global Assoc wrapper block to the compiler
-                ProtoCore.Language id = globalBlock.language;
+                ProtoCore.Language id = globalBlock.Language;
                 int blockId = Constants.kInvalidIndex;
                 core.Compilers[id].Compile(out blockId, null, globalBlock, context, EventSink);
 
@@ -59,15 +56,12 @@ namespace ProtoScript.Runners
                 {
                     //defining the global Assoc block that wraps the entire .ds source file
                     ProtoCore.LanguageCodeBlock globalBlock = new ProtoCore.LanguageCodeBlock();
-                    globalBlock.language = ProtoCore.Language.kAssociative;
-                    globalBlock.body = string.Empty;
-                    //the wrapper block can be given a unique id to identify it as the global scope
-                    globalBlock.id = ProtoCore.LanguageCodeBlock.OUTERMOST_BLOCK_ID;
-
+                    globalBlock.Language = ProtoCore.Language.Associative;
+                    globalBlock.Code = string.Empty;
 
                     //passing the global Assoc wrapper block to the compiler
                     context.SetData(string.Empty, new Dictionary<string, object>(), null);
-                    ProtoCore.Language id = globalBlock.language;
+                    ProtoCore.Language id = globalBlock.Language;
 
 
                     ProtoCore.AST.AssociativeAST.CodeBlockNode codeblock = new ProtoCore.AST.AssociativeAST.CodeBlockNode();

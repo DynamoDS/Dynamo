@@ -132,17 +132,13 @@ namespace ProtoCore.Utils
         public static string GetLanguageString(Language language)
         {
             string languageString = string.Empty;
-            if (Language.kAssociative == language)
+            if (Language.Associative == language)
             {
                 languageString = DSASM.kw.associative;
             }
-            else if (Language.kImperative == language)
+            else if (Language.Imperative == language)
             {
                 languageString = DSASM.kw.imperative;
-            }
-            else if (Language.kOptions == language)
-            {
-                languageString = DSASM.kw.options;
             }
             return languageString;
         }
