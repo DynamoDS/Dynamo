@@ -57,6 +57,7 @@ namespace Dynamo.Controls
     public partial class DynamoView : Window, IDisposable
     {
         public const string BackgroundPreviewName = "BackgroundPreview";
+        private const int NavigationInterval = 500;
 
         private readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
         private DynamoViewModel dynamoViewModel;
@@ -65,6 +66,7 @@ namespace Dynamo.Controls
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
         private GalleryView galleryView;
         private readonly LoginService loginService;
+        // This is used to determine whether ESC key is being held down
         private readonly Stopwatch sw = new Stopwatch();
         internal ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
 
@@ -1124,12 +1126,17 @@ namespace Dynamo.Controls
 
             var vm = dynamoViewModel.BackgroundPreviewViewModel;
 
+
+            // ESC key to navigate has long lag on some machines.
+            // This issue was caused by using KeyEventArgs.IsRepeated API
+            // In order to fix this we need to use our own timer to determine
+            // whether ESC key is being held down or not
             if (!sw.IsRunning && !vm.NavigationKeyIsDown)
             {
                 sw.Start();
             }           
 
-            if (sw.ElapsedMilliseconds > 500 && !vm.NavigationKeyIsDown)
+            if (sw.ElapsedMilliseconds > NavigationInterval && !vm.NavigationKeyIsDown)
             {
                 vm.NavigationKeyIsDown = true;
                 sw.Reset();
