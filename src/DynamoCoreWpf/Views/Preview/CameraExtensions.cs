@@ -24,7 +24,7 @@ namespace Dynamo.Controls
                 );
         }
 
-        internal static Ray Point2DToRay(this Viewport3DX viewport, Vector2 point2D)
+        private static Ray Point2DToRay(this Viewport3DX viewport, Vector2 point2D)
         {
             var camera = viewport.Camera as ProjectionCamera;
             if (camera != null)
@@ -59,7 +59,7 @@ namespace Dynamo.Controls
                     var pos = Vector3.TransformCoordinate(camera.Position.ToVector3(), worldToModelMatrix);
                     return new Ray(pos, r);
                 }
-                else if (camera is OrthographicCamera)
+                if (camera is OrthographicCamera)
                 {
                     return new Ray(zn, r);
                 }
@@ -71,6 +71,12 @@ namespace Dynamo.Controls
         {
             var r = viewport.Point2DToRay(point2d.ToVector2());
             return new Ray3D(r.Position.ToPoint3D(), r.Direction.ToVector3D());
+        }
+
+        internal static Point3D GetCameraPosition(this Viewport3DX viewport)
+        {
+            var pos = Vector3.TransformCoordinate(viewport.Camera.Position.ToVector3(), WorldToModelMatrix());
+            return new Point3D(pos.X, pos.Y, pos.Z);
         }
     }
 

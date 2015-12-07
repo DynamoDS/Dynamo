@@ -219,7 +219,6 @@ namespace ProtoCore
 
         protected void AllocateVar(ProtoCore.DSASM.SymbolNode symbol)
         {
-            symbol.isArray = false;
             SetStackIndex(symbol);
         }
 
@@ -318,7 +317,7 @@ namespace ProtoCore
             {
                 if (dumpByteCode && !isAssocOperator)
                 {
-                    var str = string.Format("[{0}.{1}.{2}]{3}\n", codeBlock.language == Language.kAssociative ? "a" : "i", codeBlock.codeBlockId, pc, instr);
+                    var str = string.Format("[{0}.{1}.{2}]{3}\n", codeBlock.language == Language.Associative ? "a" : "i", codeBlock.codeBlockId, pc, instr);
                     for (int i = 0; i < core.AsmOutputIdents; ++i)
                         core.AsmOutput.Write("\t");
                     core.AsmOutput.Write(str);
@@ -328,7 +327,7 @@ namespace ProtoCore
             {
                 if (dumpByteCode)
                 {
-                    var str = string.Format("[{0}.{1}.{2}]{3}\n", codeBlock.language == Language.kAssociative ? "a" : "i", codeBlock.codeBlockId, pc, instr);
+                    var str = string.Format("[{0}.{1}.{2}]{3}\n", codeBlock.language == Language.Associative ? "a" : "i", codeBlock.codeBlockId, pc, instr);
                     for (int i = 0; i < core.AsmOutputIdents; ++i)
                         core.AsmOutput.Write("\t");
                     core.AsmOutput.Write(str);
@@ -341,7 +340,7 @@ namespace ProtoCore
             {
                 if (dumpByteCode && !isAssocOperator)
                 {
-                    var str = string.Format("[{0}.{1}.{2}]{3} {4}\n", codeBlock.language == Language.kAssociative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1);
+                    var str = string.Format("[{0}.{1}.{2}]{3} {4}\n", codeBlock.language == Language.Associative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1);
                     for (int i = 0; i < core.AsmOutputIdents; ++i)
                         core.AsmOutput.Write("\t");
                     core.AsmOutput.Write(str);
@@ -351,7 +350,7 @@ namespace ProtoCore
             {
                 if (dumpByteCode)
                 {
-                    var str = string.Format("[{0}.{1}.{2}]{3} {4}\n", codeBlock.language == Language.kAssociative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1);
+                    var str = string.Format("[{0}.{1}.{2}]{3} {4}\n", codeBlock.language == Language.Associative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1);
                     for (int i = 0; i < core.AsmOutputIdents; ++i)
                         core.AsmOutput.Write("\t");
                     core.AsmOutput.Write(str);
@@ -364,7 +363,7 @@ namespace ProtoCore
             {
                 if (dumpByteCode && !isAssocOperator)
                 {
-                    var str = string.Format("[{0}.{1}.{2}]{3} {4} {5}\n", codeBlock.language == Language.kAssociative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1, op2);
+                    var str = string.Format("[{0}.{1}.{2}]{3} {4} {5}\n", codeBlock.language == Language.Associative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1, op2);
                     for (int i = 0; i < core.AsmOutputIdents; ++i)
                         core.AsmOutput.Write("\t");
                     core.AsmOutput.Write(str);
@@ -374,7 +373,7 @@ namespace ProtoCore
             {
                 if (dumpByteCode)
                 {
-                    var str = string.Format("[{0}.{1}.{2}]{3} {4} {5}\n", codeBlock.language == Language.kAssociative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1, op2);
+                    var str = string.Format("[{0}.{1}.{2}]{3} {4} {5}\n", codeBlock.language == Language.Associative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1, op2);
                     for (int i = 0; i < core.AsmOutputIdents; ++i)
                         core.AsmOutput.Write("\t");
                     core.AsmOutput.Write(str);
@@ -387,7 +386,7 @@ namespace ProtoCore
             {
                 if (dumpByteCode && !isAssocOperator)
                 {
-                    var str = string.Format("[{0}.{1}.{2}]{3} {4} {5} {6}\n", codeBlock.language == Language.kAssociative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1, op2, op3);
+                    var str = string.Format("[{0}.{1}.{2}]{3} {4} {5} {6}\n", codeBlock.language == Language.Associative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1, op2, op3);
                     for (int i = 0; i < core.AsmOutputIdents; ++i)
                         core.AsmOutput.Write("\t");
                     core.AsmOutput.Write(str);
@@ -397,7 +396,7 @@ namespace ProtoCore
             {
                 if (dumpByteCode)
                 {
-                    var str = string.Format("[{0}.{1}.{2}]{3} {4} {5} {6}\n", codeBlock.language == Language.kAssociative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1, op2, op3);
+                    var str = string.Format("[{0}.{1}.{2}]{3} {4} {5} {6}\n", codeBlock.language == Language.Associative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1, op2, op3);
                     for (int i = 0; i < core.AsmOutputIdents; ++i)
                         core.AsmOutput.Write("\t");
                     core.AsmOutput.Write(str);

@@ -133,7 +133,6 @@ namespace ProtoCore.DSASM
         // TODO: Replace with ProtoCore.DSDefinitions.Keyword struct
         public const string associative = "Associative";
         public const string imperative = "Imperative";
-        public const string options = "Options";
     }
 
     // TODO: Replace with ProtoCore.DSDefinitions.Keyword struct

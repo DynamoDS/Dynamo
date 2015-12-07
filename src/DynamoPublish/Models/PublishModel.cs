@@ -116,7 +116,7 @@ namespace Dynamo.Publish.Models
 
         private readonly IAuthProvider authenticationProvider;
         private readonly ICustomNodeManager customNodeManager;
-        private IWorkspaceStorageClient reachClient;
+        private readonly IWorkspaceStorageClient reachClient;
 
         private static string serverUrl;
         private static string page;
@@ -262,6 +262,7 @@ namespace Dynamo.Publish.Models
             serverResponceRegex = new Regex(Resources.WorkspacesSendSucceededServerResponse, RegexOptions.IgnoreCase);
 
             State = UploadState.Uninitialized;
+            reachClient = reachClient ?? new WorkspaceStorageClient(authenticationProvider, serverUrl);
         }
 
         internal PublishModel(IAuthProvider provider, ICustomNodeManager manager, IWorkspaceStorageClient client) :
@@ -395,11 +396,6 @@ namespace Dynamo.Publish.Models
         /// <returns>String which is response from server.</returns>
         private Task<IReachHttpResponse> Send(HomeWorkspaceModel workspace, WorkspaceProperties workspaceProperties = null)
         {
-            if (reachClient == null)
-            {
-                reachClient = new WorkspaceStorageClient(authenticationProvider, serverUrl);
-            }
-
             NotFoundCustomNodeName = null;
             var dependencies = WorkspaceDependencies.Collect(workspace, customNodeManager);
 
@@ -413,11 +409,6 @@ namespace Dynamo.Publish.Models
 
         private Task<IEnumerable<Workspace>> GetWorkspaces(string name)
         {
-            if (reachClient == null)
-            {
-                reachClient = new WorkspaceStorageClient(authenticationProvider, serverUrl);
-            }
-
             return reachClient.GetWorkspaces(name);
         }
 
@@ -426,16 +417,5 @@ namespace Dynamo.Publish.Models
             State = UploadState.Uninitialized;
             Error = UploadErrorType.None;
         }
-    }
-
-    sealed class CheckCustomizerResponse
-    {
-        public IEnumerable<WorkspaceInfo> Workspaces;
-    }
-
-    sealed class WorkspaceInfo
-    {
-        public string Name;
-        public bool IsCustomizer;
     }
 }
