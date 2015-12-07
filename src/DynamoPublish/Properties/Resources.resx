@@ -279,4 +279,14 @@
   <data name="EmptyWorkspaceMessage" xml:space="preserve">
     <value>You cannot publish an empty workspace.</value>
   </data>
+  <data name="CustomizerOverrideContent" xml:space="preserve">
+    <value>A customizer by this name already exists, do you want to overwrite it?</value>
+  </data>
+  <data name="CustomizerOverrideHeader" xml:space="preserve">
+    <value>Confirmation</value>
+  </data>
+  <data name="GetWorkspacesErrorMessage" xml:space="preserve">
+    <value>There was an error when trying to request your customizers.
+Please report this message to the Dynamo team.</value>
+  </data>
 </root>

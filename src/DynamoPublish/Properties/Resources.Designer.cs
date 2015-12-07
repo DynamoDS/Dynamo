@@ -106,6 +106,24 @@ namespace Dynamo.Publish.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A customizer by this name already exists, do you want to overwrite it?.
+        /// </summary>
+        public static string CustomizerOverrideContent {
+            get {
+                return ResourceManager.GetString("CustomizerOverrideContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirmation.
+        /// </summary>
+        public static string CustomizerOverrideHeader {
+            get {
+                return ResourceManager.GetString("CustomizerOverrideHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Custom node workspace {0} is not available to be published..
         /// </summary>
         public static string CustomNodeDefinitionNotFoundErrorMessage {
@@ -138,6 +156,16 @@ namespace Dynamo.Publish.Properties {
         public static string FailedMessage {
             get {
                 return ResourceManager.GetString("FailedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There was an error when trying to request your customizers.
+        ///Please report this message to the Dynamo team..
+        /// </summary>
+        public static string GetWorkspacesErrorMessage {
+            get {
+                return ResourceManager.GetString("GetWorkspacesErrorMessage", resourceCulture);
             }
         }
         
