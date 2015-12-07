@@ -711,7 +711,7 @@ namespace Dynamo.Graph.Workspaces
                 RegisterConnector(connector);
 
             SetModelEventOnAnnotation();
-            WorkspaceEvents.WorkspaceAdded += computeUpstreamNodesWhenWorkspaceModified;
+            WorkspaceEvents.WorkspaceAdded += computeUpstreamNodesWhenWorkspaceAdded;
         }
 
         /// <summary>
@@ -720,7 +720,7 @@ namespace Dynamo.Graph.Workspaces
         /// the frozen nodes.     
         /// </summary>
         /// <param name="args">The <see cref="WorkspacesModificationEventArgs"/> instance containing the event data.</param>
-        private void computeUpstreamNodesWhenWorkspaceModified(WorkspacesModificationEventArgs args)
+        private void computeUpstreamNodesWhenWorkspaceAdded(WorkspacesModificationEventArgs args)
         {
             if (args.Id == this.Guid)
             {
