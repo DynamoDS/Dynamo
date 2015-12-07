@@ -1633,7 +1633,7 @@ namespace ProtoTest.ProtoAST
             imperativeCodeBlock.Body = imperativeList;
 
             ProtoCore.AST.AssociativeAST.LanguageBlockNode langblock = new ProtoCore.AST.AssociativeAST.LanguageBlockNode();
-            langblock.codeblock = new ProtoCore.LanguageCodeBlock(ProtoCore.Language.kImperative);
+            langblock.codeblock = new ProtoCore.LanguageCodeBlock(ProtoCore.Language.Imperative);
             langblock.CodeBlockNode = imperativeCodeBlock;
 
 
@@ -1713,7 +1713,7 @@ namespace ProtoTest.ProtoAST
             imperativeCodeBlock.Body = imperativeList;
 
             ProtoCore.AST.AssociativeAST.LanguageBlockNode langblock = new ProtoCore.AST.AssociativeAST.LanguageBlockNode();
-            langblock.codeblock = new ProtoCore.LanguageCodeBlock(ProtoCore.Language.kImperative);
+            langblock.codeblock = new ProtoCore.LanguageCodeBlock(ProtoCore.Language.Imperative);
             langblock.CodeBlockNode = imperativeCodeBlock;
 
 
@@ -1808,7 +1808,7 @@ namespace ProtoTest.ProtoAST
             imperativeCodeBlock.Body = imperativeList;
 
             ProtoCore.AST.AssociativeAST.LanguageBlockNode langblock = new ProtoCore.AST.AssociativeAST.LanguageBlockNode();
-            langblock.codeblock = new ProtoCore.LanguageCodeBlock(ProtoCore.Language.kImperative);
+            langblock.codeblock = new ProtoCore.LanguageCodeBlock(ProtoCore.Language.Imperative);
             langblock.CodeBlockNode = imperativeCodeBlock;
 
 
@@ -1856,7 +1856,7 @@ namespace ProtoTest.ProtoAST
             imperativeCodeBlock.Body = imperativeList;
 
             ProtoCore.AST.AssociativeAST.LanguageBlockNode langblock = new ProtoCore.AST.AssociativeAST.LanguageBlockNode();
-            langblock.codeblock = new ProtoCore.LanguageCodeBlock(ProtoCore.Language.kImperative);
+            langblock.codeblock = new ProtoCore.LanguageCodeBlock(ProtoCore.Language.Imperative);
             langblock.CodeBlockNode = imperativeCodeBlock;
 
 
@@ -1933,7 +1933,7 @@ namespace ProtoTest.ProtoAST
             imperativeCodeBlock.Body = imperativeList;
 
             ProtoCore.AST.AssociativeAST.LanguageBlockNode langblock = new ProtoCore.AST.AssociativeAST.LanguageBlockNode();
-            langblock.codeblock = new ProtoCore.LanguageCodeBlock(ProtoCore.Language.kImperative);
+            langblock.codeblock = new ProtoCore.LanguageCodeBlock(ProtoCore.Language.Imperative);
             langblock.CodeBlockNode = imperativeCodeBlock;
 
 
@@ -2025,7 +2025,7 @@ namespace ProtoTest.ProtoAST
             imperativeCodeBlock.Body = imperativeList;
 
             ProtoCore.AST.AssociativeAST.LanguageBlockNode langblock = new ProtoCore.AST.AssociativeAST.LanguageBlockNode();
-            langblock.codeblock = new ProtoCore.LanguageCodeBlock(ProtoCore.Language.kImperative);
+            langblock.codeblock = new ProtoCore.LanguageCodeBlock(ProtoCore.Language.Imperative);
             langblock.CodeBlockNode = imperativeCodeBlock;
 
 

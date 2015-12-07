@@ -210,7 +210,7 @@ namespace ProtoAssociative
             ProtoCore.DSASM.CodeBlock cb = new ProtoCore.DSASM.CodeBlock(
                 context.guid,
                 ProtoCore.DSASM.CodeBlockType.kLanguage,
-                ProtoCore.Language.kAssociative,
+                ProtoCore.Language.Associative,
                 core.CodeBlockIndex,
                 new ProtoCore.DSASM.SymbolTable("associative lang block", core.RuntimeTableIndex),
                 pTable,
@@ -4560,7 +4560,7 @@ namespace ProtoAssociative
                 LanguageBlockNode langblock = node as LanguageBlockNode;
 
                 //Validity.Assert(ProtoCore.Language.kInvalid != langblock.codeblock.language);
-                if (ProtoCore.Language.kInvalid == langblock.codeblock.language)
+                if (ProtoCore.Language.NotSpecified == langblock.codeblock.Language)
                     throw new BuildHaltException("Invalid language block type (D1B95A65)");
 
                 ProtoCore.CompileTime.Context nextContext = new ProtoCore.CompileTime.Context();
@@ -4576,7 +4576,7 @@ namespace ProtoAssociative
                 bool isTopBlock = null == codeBlock.parent;
 
                 // The warning is enforced only if this is not the top block
-                if (ProtoCore.Language.kAssociative == langblock.codeblock.language && !isTopBlock)
+                if (ProtoCore.Language.Associative == langblock.codeblock.Language && !isTopBlock)
                 {
                     // TODO Jun: Move the associative and all common string into some table
                     buildStatus.LogSyntaxError(Resources.InvalidNestedAssociativeBlock, core.CurrentDSFileName, langblock.line, langblock.col);
@@ -4595,12 +4595,12 @@ namespace ProtoAssociative
                 }
 
                 ProtoCore.AssociativeGraph.GraphNode propagateGraphNode = null;
-                if (core.Options.AssociativeToImperativePropagation && Language.kImperative == langblock.codeblock.language)
+                if (core.Options.AssociativeToImperativePropagation && Language.Imperative == langblock.codeblock.Language)
                 {
                     propagateGraphNode = graphNode;
                 }
 
-                core.Compilers[langblock.codeblock.language].Compile(out blockId, codeBlock, langblock.codeblock, nextContext, codeBlock.EventSink, langblock.CodeBlockNode, propagateGraphNode);
+                core.Compilers[langblock.codeblock.Language].Compile(out blockId, codeBlock, langblock.codeblock, nextContext, codeBlock.EventSink, langblock.CodeBlockNode, propagateGraphNode);
                 graphNode.isLanguageBlock = true;
                 graphNode.languageBlockId = blockId;
                 foreach (GraphNode dNode in nextContext.DependentVariablesInScope)
@@ -4638,7 +4638,7 @@ namespace ProtoAssociative
                 LanguageBlockNode langblock = node as LanguageBlockNode;
 
                 //Validity.Assert(ProtoCore.Language.kInvalid != langblock.codeblock.language);
-                if (ProtoCore.Language.kInvalid == langblock.codeblock.language)
+                if (ProtoCore.Language.NotSpecified == langblock.codeblock.Language)
                     throw new BuildHaltException("Invalid language block type (B1C57E37)");
 
                 ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
@@ -4654,7 +4654,7 @@ namespace ProtoAssociative
                         core.ProcNode = codeBlock.procedureTable.Procedures[globalProcIndex];
                 }
 
-                core.Compilers[langblock.codeblock.language].Compile(
+                core.Compilers[langblock.codeblock.Language].Compile(
                     out blockId, codeBlock, langblock.codeblock, context, codeBlock.EventSink, langblock.CodeBlockNode, null);
                 
             }
@@ -6261,7 +6261,7 @@ namespace ProtoAssociative
             ProtoCore.DSASM.CodeBlock localCodeBlock = new ProtoCore.DSASM.CodeBlock(
                 context.guid,
                 ProtoCore.DSASM.CodeBlockType.kConstruct,
-                Language.kInvalid,
+                Language.NotSpecified,
                 core.CodeBlockIndex++,
                 new ProtoCore.DSASM.SymbolTable(GetConstructBlockName("if"), core.RuntimeTableIndex++),
                 null,
@@ -6340,7 +6340,7 @@ namespace ProtoAssociative
                 localCodeBlock = new ProtoCore.DSASM.CodeBlock(
                     context.guid,
                     ProtoCore.DSASM.CodeBlockType.kConstruct,
-                    Language.kInvalid,
+                    Language.NotSpecified,
                     core.CodeBlockIndex++,
                     new ProtoCore.DSASM.SymbolTable(GetConstructBlockName("else"), core.RuntimeTableIndex++),
                     null,
@@ -6471,9 +6471,7 @@ namespace ProtoAssociative
 
                     LanguageBlockNode langblockT = new LanguageBlockNode();
                     int trueBlockId = Constants.kInvalidIndex;
-                    langblockT.codeblock.language = ProtoCore.Language.kAssociative;
-                    langblockT.codeblock.fingerprint = "";
-                    langblockT.codeblock.version = "";
+                    langblockT.codeblock.Language = ProtoCore.Language.Associative;
                     core.AssocNode = bExprTrue;
                     core.InlineConditionalBodyGraphNodes.Push(new List<GraphNode>());
                     EmitDynamicLanguageBlockNode(langblockT, bExprTrue, ref inferedType, ref trueBlockId, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone);
@@ -6492,9 +6490,7 @@ namespace ProtoAssociative
 
                     LanguageBlockNode langblockF = new LanguageBlockNode();
                     int falseBlockId = Constants.kInvalidIndex;
-                    langblockF.codeblock.language = ProtoCore.Language.kAssociative;
-                    langblockF.codeblock.fingerprint = "";
-                    langblockF.codeblock.version = "";
+                    langblockF.codeblock.Language = ProtoCore.Language.Associative;
                     core.AssocNode = bExprFalse;
                     core.InlineConditionalBodyGraphNodes.Push(new List<GraphNode>());
                     EmitDynamicLanguageBlockNode(langblockF, bExprFalse, ref inferedType, ref falseBlockId, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone);

@@ -1,76 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
-using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
 
 namespace Dynamo.Manipulation
 {
-    /// <summary>
-    /// Interface to define visuals of a manipulator, called Gizmo.
-    /// </summary>
-    public interface IGizmo
-    {
-        /// <summary>
-        /// Unique name of the Gizmo
-        /// </summary>
-        string Name { get; set; }
-
-        /// <summary>
-        /// Base position of the Gizmo
-        /// </summary>
-        Point Origin { get; }
-
-        /// <summary>
-        /// Performs hit test based on view projection ray and returns the
-        /// object which is hit. The hit object could be an axis, plane or
-        /// rotational arc etc.
-        /// </summary>
-        /// <param name="source">Source of the view projection ray.</param>
-        /// <param name="direction">View projection direction.</param>
-        /// <param name="hitObject">The object hit by the input ray.</param>
-        /// <returns>True when an object is hit, else false.</returns>
-        bool HitTest(Point source, Vector direction, out object hitObject);
-
-        /// <summary>
-        /// Computes new offset based on the hit point.
-        /// </summary>
-        /// <param name="newPosition">New position of mouse click.</param>
-        /// <param name="viewDirection">view projection direction</param>
-        /// <returns>Offset vector of hit point wrt it's origin.</returns>
-        Vector GetOffset(Point newPosition, Vector viewDirection);
-
-        /// <summary>
-        /// Gets render package for all the drawables of this Gizmo.
-        /// </summary>
-        /// <param name="factory">Render package factory</param>
-        /// <returns>List of render packages.</returns>
-        IEnumerable<IRenderPackage> GetDrawables(IRenderPackageFactory factory);
-
-        /// <summary>
-        /// Highlight gizmo drawables or create transient geometry to highlight the gizmo during mouse over
-        /// </summary>
-        /// <param name="backgroundPreviewViewModel"></param>
-        /// <param name="factory"></param>
-        /// <returns></returns>
-        void HighlightGizmo(IWatch3DViewModel backgroundPreviewViewModel, IRenderPackageFactory factory);
-
-        /// <summary>
-        /// Unhighlight gizmo drawables or delete all transient geometry used to highlight gizmo during mouse over 
-        /// </summary>
-        /// <param name="backgroundPreviewViewModel"></param>
-        void UnhighlightGizmo(IWatch3DViewModel backgroundPreviewViewModel);
-    }
-
+    
     /// <summary>
     /// Translation Gizmo, that handles translation.
     /// </summary>
-    class TranslationGizmo : IGizmo
+    class TranslationGizmo : Gizmo
     {
         /// <summary>
         /// Defines type of planes.
@@ -116,11 +58,6 @@ namespace Dynamo.Manipulation
         private Vector hitAxis = null;
         private Plane hitPlane = null;
 
-        /// <summary>
-        /// Name of the gizmo.
-        /// </summary>
-        private string name = "gizmo";
-
         #endregion
 
         #region public methods and constructors
@@ -128,54 +65,55 @@ namespace Dynamo.Manipulation
         /// <summary>
         /// Constructs a linear gizmo, can be moved in one direction only.
         /// </summary>
-        /// <param name="origin">Position of the gizmo.</param>
+        /// <param name="manipulator"></param>
         /// <param name="axis1">Axis of freedom</param>
         /// <param name="size">Visual size of the Gizmo</param>
-        public TranslationGizmo(Point origin, Vector axis1, double size)
+        public TranslationGizmo(NodeManipulator manipulator, Vector axis1, double size)
+            : base(manipulator) 
         {
             ReferenceCoordinateSystem = CoordinateSystem.Identity();
-            UpdateGeometry(origin, axis1, null, null, size);
+            UpdateGeometry(axis1, null, null, size);
         }
 
         /// <summary>
         /// Constructs planar gizmo, can be manipulated in two directions.
         /// </summary>
-        /// <param name="origin">Position of the gizmo</param>
+        /// <param name="manipulator"></param>
         /// <param name="axis1">First axis of freedom</param>
         /// <param name="axis2">Second axis of freedom</param>
         /// <param name="size">Visual size of the Gizmo</param>
-        public TranslationGizmo(Point origin, Vector axis1, Vector axis2, double size)
+        public TranslationGizmo(NodeManipulator manipulator, Vector axis1, Vector axis2, double size)
+            : base(manipulator)
         {
             ReferenceCoordinateSystem = CoordinateSystem.Identity();
-            UpdateGeometry(origin, axis1, axis2, null, size);
+            UpdateGeometry(axis1, axis2, null, size);
         }
 
         /// <summary>
         /// Construcs a 3D gizmo, can be manipulated in all three directions.
         /// </summary>
-        /// <param name="origin">Position of the gizmo</param>
+        /// <param name="manipulator"></param>
         /// <param name="axis1">First axis of freedom</param>
         /// <param name="axis2">Second axis of freedom</param>
         /// <param name="axis3">Third axis of freedom</param>
         /// <param name="size">Visual size of the Gizmo</param>
-        public TranslationGizmo(Point origin, Vector axis1, Vector axis2, Vector axis3, double size)
+        public TranslationGizmo(NodeManipulator manipulator, Vector axis1, Vector axis2, Vector axis3, double size)
+            : base(manipulator)
         {
             ReferenceCoordinateSystem = CoordinateSystem.Identity();
-            UpdateGeometry(origin, axis1, axis2, axis3, size);
+            UpdateGeometry(axis1, axis2, axis3, size);
         }
 
         /// <summary>
         /// Construcs a 3D gizmo, can be manipulated in all three directions.
         /// </summary>
-        /// <param name="origin">Position of the gizmo</param>
         /// <param name="axis1">First axis of freedom</param>
         /// <param name="axis2">Second axis of freedom</param>
         /// <param name="axis3">Third axis of freedom</param>
         /// <param name="size">Visual size of the Gizmo</param>
-        public void UpdateGeometry(Point origin, Vector axis1, Vector axis2, Vector axis3, double size)
+        internal void UpdateGeometry(Vector axis1, Vector axis2, Vector axis3, double size)
         {
-            if (axis1 == null)
-                throw new ArgumentNullException("axis1");
+            if (axis1 == null) throw new ArgumentNullException("axis1");
 
             //Reset the dataset, but don't reset the cached hitAxis or hitPlane.
             //hitAxis and hitPlane are used to compute the offset for a move.
@@ -183,8 +121,6 @@ namespace Dynamo.Manipulation
             planes.Clear();
             
             scale = size;
-            Origin = origin;
-            var col = Convert.ToByte(255);
 
             axes.Add(axis1);
             if (axis2 != null)
@@ -266,33 +202,42 @@ namespace Dynamo.Manipulation
             using (var ray = GetRayGeometry(source, direction))
             {
                 //First hit test for position
-                if (ray.DistanceTo(Origin) < tolerance)
+                if (ray.DistanceTo(ManipulatorOrigin) < tolerance)
                 {
                     if (planes.Any())
-                        return planes.First();//Xy or first available plane is hit
-                    
+                    {
+                        return planes.First(); //Xy or first available plane is hit
+                    }
                     return axes.First(); //xAxis or first axis is hit
                 }
 
                 foreach (var plane in planes)
                 {
-                    var pt = plane.Intersect(ray).FirstOrDefault() as Point;
-                    if (pt != null)
+                    // plane needs to be up-to-date at this time with the current value of Origin
+                    using (var pt = plane.Intersect(ray).FirstOrDefault() as Point)
                     {
-                        var vec = Vector.ByTwoPoints(Origin, pt);
-                        var dot1 = plane.XAxis.Dot(vec);
-                        var dot2 = plane.YAxis.Dot(vec);
-                        if( dot1 > 0 && dot2 > 0 && dot1 < scale/2 && dot2 < scale/2)
-                            return plane; //specific plane is hit
+                        if (pt == null) continue;
+
+                        using (var vec = Vector.ByTwoPoints(Origin, pt))
+                        {
+                            var dot1 = plane.XAxis.Dot(vec);
+                            var dot2 = plane.YAxis.Dot(vec);
+                            if (dot1 > 0 && dot2 > 0 && dot1 < scale/2 && dot2 < scale/2)
+                            {
+                                return plane; //specific plane is hit
+                            }
+                        }
                     }
                 }
 
-                foreach (var a in axes)
+                foreach (var axis in axes)
                 {
-                    using (var line = Line.ByStartPointDirectionLength(Origin, a, scale))
+                    using (var line = Line.ByStartPointDirectionLength(Origin, axis, scale))
                     {
                         if (line.DistanceTo(ray) < tolerance)
-                            return a; //specific axis is hit.
+                        {
+                            return axis; //specific axis is hit.
+                        }
                     }
                 }
             }
@@ -307,7 +252,7 @@ namespace Dynamo.Manipulation
         /// <returns></returns>
         private Line GetRayGeometry(Point source, Vector direction)
         {
-            double size = Origin.DistanceTo(source) * 100;
+            double size = ManipulatorOrigin.DistanceTo(source) * 100;
             return Line.ByStartPointDirectionLength(source, direction, size);
         }
 
@@ -316,24 +261,10 @@ namespace Dynamo.Manipulation
         #region interface methods
 
         /// <summary>
-        /// Name of the Gizmo
-        /// </summary>
-        public string Name 
-        {
-            get { return name; }
-            set { name = value; }
-        }
-
-        /// <summary>
-        /// Origin of the Gizmo
-        /// </summary>
-        public Point Origin { get; set; }
-
-        /// <summary>
         /// Reference coordinate system for the Gizmo
         /// </summary>
         public CoordinateSystem ReferenceCoordinateSystem { get; set; }
-        
+
         /// <summary>
         /// Performs hit test on Gizmo to find out hit object. The returned 
         /// hitObject could be either axis vector or a plane.
@@ -342,7 +273,7 @@ namespace Dynamo.Manipulation
         /// <param name="direction">View projection direction</param>
         /// <param name="hitObject">object hit</param>
         /// <returns>True if Gizmo was hit successfully</returns>
-        public bool HitTest(Point source, Vector direction, out object hitObject)
+        public override bool HitTest(Point source, Vector direction, out object hitObject)
         {
             hitAxis = null;
             hitPlane = null; //reset hit objects
@@ -361,32 +292,24 @@ namespace Dynamo.Manipulation
         /// </summary>
         /// <param name="newPosition">New mouse position</param>
         /// <param name="viewDirection">view direction</param>
-        /// <returns>Offset vector wrt Origin</returns>
-        public Vector GetOffset(Point newPosition, Vector viewDirection)
+        /// <returns>Offset vector wrt manipulator origin</returns>
+        public override Vector GetOffset(Point newPosition, Vector viewDirection)
         {
             Point hitPoint = Origin;
             using (var ray = GetRayGeometry(newPosition, viewDirection))
             {
                 if (hitPlane != null)
                 {
-                    hitPoint = hitPlane.Intersect(ray).FirstOrDefault() as Point;
+                    using (var testPlane = Plane.ByOriginXAxisYAxis(ManipulatorOrigin, hitPlane.XAxis, hitPlane.YAxis))
+                    {
+                        hitPoint = testPlane.Intersect(ray).FirstOrDefault() as Point;
+                    }
                 }
                 else if (hitAxis != null)
                 {
-                    var axis = hitAxis.Cross(viewDirection);
-                    var plane = Plane.ByOriginXAxisYAxis(Origin, hitAxis, axis);
-                    hitPoint = plane.Intersect(ray).FirstOrDefault() as Point;
-                    if (null != hitPoint)
+                    using (var axisLine = RayExtensions.ToOriginCenteredLine(ManipulatorOrigin, hitAxis))
                     {
-                        var projection = hitAxis.Dot(Vector.ByTwoPoints(Origin, hitPoint));
-                        hitPoint = Origin.Add(hitAxis.Normalized().Scale(projection));
-                    }
-                    else
-                    {
-                        using (var axisLine = RayExtensions.ToOriginCenteredLine(Origin, hitAxis))
-                        {
-                            hitPoint = axisLine.ClosestPointTo(ray);
-                        }
+                        hitPoint = axisLine.ClosestPointTo(ray);
                     }
                 }
             }
@@ -395,47 +318,62 @@ namespace Dynamo.Manipulation
                 return Vector.ByCoordinates(0, 0, 0);
             }
 
-            return Vector.ByTwoPoints(Origin, hitPoint);
+            return Vector.ByTwoPoints(ManipulatorOrigin, hitPoint);
         }
 
         /// <summary>
         /// Gets drawables to render this Gizmo
         /// </summary>
-        /// <param name="factory">Render package factory</param>
         /// <returns>List of render package</returns>
-        public IEnumerable<IRenderPackage> GetDrawables(IRenderPackageFactory factory)
+        public override IEnumerable<IRenderPackage> GetDrawables()
         {
-            List<IRenderPackage> drawables = new List<IRenderPackage>();
-            foreach (var axis in axes)
+            var drawables = new List<IRenderPackage>();
+            foreach (Vector axis in axes)
             {
-                IRenderPackage package = factory.CreateRenderPackage();
+                IRenderPackage package = RenderPackageFactory.CreateRenderPackage();
                 DrawAxis(ref package, axis);
                 drawables.Add(package);
             }
 
             var p = Planes.xyPlane;
-            foreach (var plane in planes)
+            foreach (Plane plane in planes)
             {
-                IRenderPackage package = factory.CreateRenderPackage();
+                IRenderPackage package = RenderPackageFactory.CreateRenderPackage();
                 DrawPlane(ref package, plane, p++);
                 drawables.Add(package);
             }
-            drawables.AddRange(GetDrawablesForTransientGeometry(factory));
+            drawables.AddRange(GetDrawablesForTransientGraphics());
 
             return drawables;
         }
 
-        public void HighlightGizmo(IWatch3DViewModel backgroundPreviewViewModel, 
-            IRenderPackageFactory factory)
+        public override void HighlightGizmo()
         {
-            var drawables = GetDrawablesForTransientGeometry(factory);
-            backgroundPreviewViewModel.AddGeometryForRenderPackages(drawables);
+            var drawables = GetDrawablesForTransientGraphics();
+            BackgroundPreviewViewModel.AddGeometryForRenderPackages(drawables);
         }
 
-        public void UnhighlightGizmo(IWatch3DViewModel backgroundPreviewViewModel)
+        public override void UpdateGizmoGraphics()
+        {
+            // Update gizmo geometry wrt to current Origin
+            var newPlanes = planes.Select(
+                plane => Plane.ByOriginXAxisYAxis(Origin, plane.XAxis, plane.YAxis)).ToList();
+            planes.Clear();
+            planes.AddRange(newPlanes);
+
+            DeleteTransientGraphics();
+        }
+
+        public override void UnhighlightGizmo()
         {
             // Delete all transient geometry used to highlight gizmo
-            backgroundPreviewViewModel.DeleteGeometryForIdentifier(RenderDescriptions.AxisLine);
+            DeleteTransientGraphics();
+        }
+
+        public override void DeleteTransientGraphics()
+        {
+            var identifier = string.Format("{0}_{1}", RenderDescriptions.AxisLine, Name);
+            BackgroundPreviewViewModel.DeleteGeometryForIdentifier(identifier);
         }
 
         #endregion
@@ -445,24 +383,23 @@ namespace Dynamo.Manipulation
         /// <summary>
         /// Returns drawables for transient geometry associated with Gizmo
         /// </summary>
-        /// <param name="factory"></param>
         /// <returns></returns>
-        private List<IRenderPackage> GetDrawablesForTransientGeometry(IRenderPackageFactory factory)
+        private List<IRenderPackage> GetDrawablesForTransientGraphics()
         {
             var drawables = new List<IRenderPackage>();
             if (null != hitAxis)
             {
-                IRenderPackage package = factory.CreateRenderPackage();
+                IRenderPackage package = RenderPackageFactory.CreateRenderPackage();
                 DrawAxisLine(ref package, hitAxis, "xAxisLine");
                 drawables.Add(package);
             }
             if (null != hitPlane)
             {
-                IRenderPackage package = factory.CreateRenderPackage();
+                IRenderPackage package = RenderPackageFactory.CreateRenderPackage();
                 DrawAxisLine(ref package, hitPlane.XAxis, "xAxisLine");
                 drawables.Add(package);
 
-                package = factory.CreateRenderPackage();
+                package = RenderPackageFactory.CreateRenderPackage();
                 DrawAxisLine(ref package, hitPlane.YAxis, "yAxisLine");
                 drawables.Add(package);
             }

@@ -15489,8 +15489,8 @@ x = add(y);
             options.SuppressBuildOutput = false;
 
             core = new ProtoCore.Core(options);
-            core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
-            core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.Associative, new ProtoAssociative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.Imperative, new ProtoImperative.Compiler(core));
 
             fsr = new DebugRunner(core);
 

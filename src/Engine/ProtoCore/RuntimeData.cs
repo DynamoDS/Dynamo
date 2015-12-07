@@ -74,7 +74,7 @@ namespace ProtoCore
             // secondary callsite cache for internal functions so they dont 
             // clash with the graphNode UID key
             var language = executable.instrStreamList[runningBlock].language;
-            bool isImperative = language == Language.kImperative;
+            bool isImperative = language == Language.Imperative;
             bool isInternalFunction = CoreUtils.IsInternalFunction(methodName);
 
             if (isInternalFunction || isImperative)

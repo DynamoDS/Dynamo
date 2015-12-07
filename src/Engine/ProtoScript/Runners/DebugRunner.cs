@@ -66,8 +66,8 @@ namespace ProtoScript.Runners
             if (null == core)
             {
                 core = new ProtoCore.Core(new ProtoCore.Options { IDEDebugMode = true });
-                core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
-                core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
+                core.Compilers.Add(ProtoCore.Language.Associative, new ProtoAssociative.Compiler(core));
+                core.Compilers.Add(ProtoCore.Language.Imperative, new ProtoImperative.Compiler(core));
 
             }
 
@@ -431,14 +431,12 @@ namespace ProtoScript.Runners
             {
                 //defining the global Assoc block that wraps the entire .ds source file
                 ProtoCore.LanguageCodeBlock globalBlock = new ProtoCore.LanguageCodeBlock();
-                globalBlock.language = ProtoCore.Language.kAssociative;
-                globalBlock.body = code;
-                //the wrapper block can be given a unique id to identify it as the global scope
-                globalBlock.id = ProtoCore.LanguageCodeBlock.OUTERMOST_BLOCK_ID;
+                globalBlock.Language = ProtoCore.Language.Associative;
+                globalBlock.Code = code;
 
                 //passing the global Assoc wrapper block to the compiler
                 ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
-                ProtoCore.Language id = globalBlock.language;
+                ProtoCore.Language id = globalBlock.Language;
                 core.Compilers[id].Compile(out blockId, null, globalBlock, context);
 
                 core.BuildStatus.ReportBuildResult();

@@ -441,7 +441,7 @@ namespace ProtoCore
             {
                 // The inline conditional built-in is created only for associative blocks and needs to be handled separately as below
                 InstructionStream istream = runtimeCore.DSExecutable.instrStreamList[CurrentBlockId];
-                Validity.Assert(istream.language == Language.kAssociative);
+                Validity.Assert(istream.language == Language.Associative);
                 {
                     runtimeCore.DebugProps.InlineConditionOptions.isInlineConditional = true;
                     runtimeCore.DebugProps.InlineConditionOptions.startPc = pc;
@@ -576,12 +576,12 @@ namespace ProtoCore
             {
                 pc = tempPC;
                 istream = runtimeCore.DSExecutable.instrStreamList[runtimeCore.RunningBlock];
-                if (istream.language == Language.kAssociative)
+                if (istream.language == Language.Associative)
                 {
                     limit = FindEndPCForAssocGraphNode(pc, istream, fNode, graphNode, runtimeCore.Options.ExecuteSSA);
                     //Validity.Assert(limit != ProtoCore.DSASM.Constants.kInvalidIndex);
                 }
-                else if (istream.language == Language.kImperative)
+                else if (istream.language == Language.Imperative)
                 {
                     // Check for 'SETEXPUID' instruction to check for end of expression
                     while (++pc < istream.instrList.Count)

@@ -11,7 +11,6 @@ using Autodesk.DesignScript.Interfaces;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using HelixToolkit.Wpf.SharpDX;
 using SharpDX;
-using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
 using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 using Point = System.Windows.Point;
 
@@ -66,6 +65,7 @@ namespace Dynamo.Controls
             ViewModel.RequestCreateModels -= RequestCreateModelsHandler;
             ViewModel.RequestViewRefresh -= RequestViewRefreshHandler;
             ViewModel.RequestClickRay -= GetClickRay;
+            ViewModel.RequestCameraPosition -= GetCameraPosition;
             ViewModel.RequestZoomToFit -= ViewModel_RequestZoomToFit;
         }
 
@@ -93,6 +93,16 @@ namespace Dynamo.Controls
             {
                 ViewModel.OnViewMouseMove(sender, args);
             };
+
+            watch_view.CameraChanged += (sender, args) =>
+            {
+                var view = sender as Viewport3DX;
+                if (view != null)
+                {
+                    args.Source = view.GetCameraPosition();
+                }
+                ViewModel.OnViewCameraChanged(sender, args);
+            };
         }
 
         private void UnRegisterViewEventHandlers()
@@ -100,6 +110,7 @@ namespace Dynamo.Controls
             watch_view.MouseDown -= ViewModel.OnViewMouseDown;
             watch_view.MouseUp -= ViewModel.OnViewMouseUp;
             watch_view.MouseMove -= ViewModel.OnViewMouseMove;
+            watch_view.CameraChanged -= ViewModel.OnViewCameraChanged;
          }		         
 
         private void UnregisterButtonHandlers()
@@ -135,6 +146,7 @@ namespace Dynamo.Controls
             ViewModel.RequestCreateModels += RequestCreateModelsHandler;
             ViewModel.RequestViewRefresh += RequestViewRefreshHandler;
             ViewModel.RequestClickRay += GetClickRay;
+            ViewModel.RequestCameraPosition += GetCameraPosition;
             ViewModel.RequestZoomToFit += ViewModel_RequestZoomToFit;
         }
 
@@ -229,6 +241,11 @@ namespace Dynamo.Controls
             if (pt3D == null) return null;
 
             return new Ray3(ray.Origin, ray.Direction);
+        }
+
+        private Point3D GetCameraPosition()
+        {
+            return View.GetCameraPosition();
         }
     }
 

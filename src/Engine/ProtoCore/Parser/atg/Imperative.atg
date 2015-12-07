@@ -47,59 +47,28 @@ Imperative_languageblock<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
     ident
                                         (.
                                             if( 0 == t.val.CompareTo(ProtoCore.DSASM.kw.imperative)) {
-                                                langblock.codeblock.language = ProtoCore.Language.kImperative;
+                                                langblock.codeblock.Language = ProtoCore.Language.Imperative;
                                             }
                                             else if( 0 == t.val.CompareTo(ProtoCore.DSASM.kw.associative)) {
-                                                langblock.codeblock.language = ProtoCore.Language.kAssociative; 
+                                                langblock.codeblock.Language = ProtoCore.Language.Associative; 
                                             }
                                             else {
-                                                langblock.codeblock.language = ProtoCore.Language.kInvalid; 
+                                                langblock.codeblock.Language = ProtoCore.Language.NotSpecified; 
                                                 errors.SemErr(t.line, t.col, String.Format(Resources.InvalidLanguageBlockIdentifier, t.val));
                                             }
                                         .)
-    {
-        WEAK ','     
-        (                           
-            IF(IsLanguageBlockProperty())
-            (
-                ident                               (. string key = t.val; .)
-                '='         
-                textstring                          (.  
-                                                    if ("fingerprint" == key)
-                                                    {
-                                                        langblock.codeblock.fingerprint = t.val; 
-                                                        langblock.codeblock.fingerprint = langblock.codeblock.fingerprint.Remove(0,1); 
-                                                         langblock.codeblock.fingerprint = langblock.codeblock.fingerprint.Remove(langblock.codeblock.fingerprint.Length-1,1); 
-                                                      }
-                                                    else if ("version" == key)
-                                                    {
-                                                        langblock.codeblock.version = t.val; 
-                                                        langblock.codeblock.version = langblock.codeblock.version.Remove(0,1); 
-                                                        langblock.codeblock.version = langblock.codeblock.version.Remove(langblock.codeblock.version.Length-1,1);
-                                                    }
-                                                    .)
-            
-            
-            )	
-            |
-            (										(. ProtoCore.AST.ImperativeAST.ImperativeNode attr = null; .)
-                Imperative_Attribute<out attr>		(. if (attr != null) langblock.Attributes.Add(attr); .)
-            )
-        )
-    }   
-    
     closebracket                        
     '{'                      (. Node codeBlockNode = null; .)
     (
-    IF( langblock.codeblock.language == ProtoCore.Language.kAssociative ||
-        langblock.codeblock.language == ProtoCore.Language.kInvalid)
+    IF( langblock.codeblock.Language == ProtoCore.Language.Associative ||
+        langblock.codeblock.Language == ProtoCore.Language.NotSpecified)
     Hydrogen<out codeBlockNode>              
     |    
-    IF( langblock.codeblock.language == ProtoCore.Language.kImperative )
+    IF( langblock.codeblock.Language == ProtoCore.Language.Imperative )
     Imperative<out codeBlockNode>              
     )
     (
-    IF( langblock.codeblock.language == ProtoCore.Language.kInvalid )
+    IF( langblock.codeblock.Language == ProtoCore.Language.NotSpecified)
                                             (. int openCurlyBraceCount = 0, closeCurlyBraceCount = 0; .)
                                             (. ProtoCore.AST.ImperativeAST.CodeBlockNode codeBlockInvalid = new ProtoCore.AST.ImperativeAST.CodeBlockNode(); .)
                                             (. ProtoCore.AST.ImperativeAST.ImperativeNode validBlockInInvalid = null; .)

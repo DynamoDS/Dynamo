@@ -118,7 +118,7 @@ namespace ProtoImperative
             ProtoCore.DSASM.CodeBlock cb = new ProtoCore.DSASM.CodeBlock(
                 context.guid,
                 ProtoCore.DSASM.CodeBlockType.kLanguage,
-                ProtoCore.Language.kImperative,
+                ProtoCore.Language.Imperative,
                 core.CodeBlockIndex,
                 new ProtoCore.DSASM.SymbolTable("imperative lang block", core.RuntimeTableIndex),
                 new ProtoCore.DSASM.ProcedureTable(core.RuntimeTableIndex), 
@@ -276,8 +276,6 @@ namespace ProtoImperative
 
         private void AllocateArray(ProtoCore.DSASM.SymbolNode symbol, ImperativeNode nodeArray)
         {
-            symbol.isArray = true;
-
             //===================================================
             // TODO Jun: 
             //  Determine which is optimal-
@@ -1125,7 +1123,7 @@ namespace ProtoImperative
                 // CompilerException, so we throw that instead.
                 //Validity.Assert(ProtoCore.Language.kInvalid != langblock.codeblock.language);
 
-                if (ProtoCore.Language.kInvalid == langblock.codeblock.language)
+                if (ProtoCore.Language.NotSpecified == langblock.codeblock.Language)
                 {
                     throw new ProtoCore.Exceptions.CompileErrorsOccured("Invalid language block");
                 }
@@ -1140,7 +1138,7 @@ namespace ProtoImperative
 
                 int entry = 0;
                 int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-                if (ProtoCore.Language.kImperative == langblock.codeblock.language)
+                if (ProtoCore.Language.Imperative == langblock.codeblock.Language)
                 {
                     // TODO Jun: Move the associative and all common string into some table
                     buildStatus.LogSyntaxError(Resources.InvalidNestedImperativeBlock, core.CurrentDSFileName, langblock.line, langblock.col);
@@ -1149,7 +1147,7 @@ namespace ProtoImperative
                 if (globalProcIndex != ProtoCore.DSASM.Constants.kInvalidIndex && core.ProcNode == null)
                     core.ProcNode = codeBlock.procedureTable.Procedures[globalProcIndex];
 
-                core.Compilers[langblock.codeblock.language].Compile(out blockId, codeBlock, langblock.codeblock, context, codeBlock.EventSink, langblock.CodeBlockNode);
+                core.Compilers[langblock.codeblock.Language].Compile(out blockId, codeBlock, langblock.codeblock, context, codeBlock.EventSink, langblock.CodeBlockNode);
 
                 if (propogateUpdateGraphNode != null)
                 {
@@ -1512,7 +1510,7 @@ namespace ProtoImperative
                 localCodeBlock = new ProtoCore.DSASM.CodeBlock(
                     context.guid,
                     ProtoCore.DSASM.CodeBlockType.kConstruct,
-                    Language.kInvalid,
+                    Language.NotSpecified,
                     core.CodeBlockIndex,
                     new ProtoCore.DSASM.SymbolTable(GetConstructBlockName("if"), core.RuntimeTableIndex++),
                     null,
@@ -1598,7 +1596,7 @@ namespace ProtoImperative
                         localCodeBlock = new ProtoCore.DSASM.CodeBlock(
                             context.guid,
                             ProtoCore.DSASM.CodeBlockType.kConstruct,
-                            Language.kInvalid,
+                            Language.NotSpecified,
                             core.CodeBlockIndex++,
                             new ProtoCore.DSASM.SymbolTable(GetConstructBlockName("elseif"), core.RuntimeTableIndex++),
                             null,
@@ -1666,7 +1664,7 @@ namespace ProtoImperative
                     localCodeBlock = new ProtoCore.DSASM.CodeBlock(
                         context.guid,
                         ProtoCore.DSASM.CodeBlockType.kConstruct,
-                        Language.kInvalid,
+                        Language.NotSpecified,
                         core.CodeBlockIndex++,
                         new ProtoCore.DSASM.SymbolTable(GetConstructBlockName("else"), core.RuntimeTableIndex++),
                         null,
@@ -1767,7 +1765,7 @@ namespace ProtoImperative
                     ProtoCore.DSASM.CodeBlock localCodeBlock = new ProtoCore.DSASM.CodeBlock(
                         context.guid,
                         ProtoCore.DSASM.CodeBlockType.kConstruct,
-                        Language.kInvalid,
+                        Language.NotSpecified,
                         core.CodeBlockIndex++,
                         new ProtoCore.DSASM.SymbolTable(GetConstructBlockName("while"), core.RuntimeTableIndex++),
                         null,
@@ -2372,7 +2370,7 @@ namespace ProtoImperative
                 ProtoCore.DSASM.CodeBlock localCodeBlock = new ProtoCore.DSASM.CodeBlock(
                         context.guid,
                         ProtoCore.DSASM.CodeBlockType.kConstruct,
-                        Language.kInvalid,
+                        Language.NotSpecified,
                         core.CodeBlockIndex++,
                         new ProtoCore.DSASM.SymbolTable(GetConstructBlockName("dummy"), core.RuntimeTableIndex++),
                         null,
