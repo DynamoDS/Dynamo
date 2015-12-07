@@ -166,7 +166,7 @@
                              Path=ActualWidth}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="15" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Margin="{StaticResource PreviewContentMargin}"
                            Grid.Column="0"
@@ -175,7 +175,6 @@
                 <Image x:Name="ExpandIcon"
                        Grid.Column="1"
                        Source="/DynamoCoreWpf;component/UI/Images/bubble-arrow.png"
-                       HorizontalAlignment="Right"
                        VerticalAlignment="Bottom"
                        Height="6"
                        Width="6"
@@ -218,7 +217,7 @@
                                                           Converter={StaticResource PinIconForegroundConverter}}"
                                      Height="16"
                                      Width="12"
-                                     Margin="5,5,5,5" />
+                                     Margin="7,7,7,7" />
                     <Border.Style>
                         <Style TargetType="Border">
                             <Style.Triggers>

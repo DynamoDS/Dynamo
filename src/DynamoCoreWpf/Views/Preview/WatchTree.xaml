@@ -144,7 +144,7 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type TreeViewItem}">
                             <Grid x:Name="TreeViewItem"
-                                  Margin="-3,2,0,2">
+                                  Margin="-3,0,0,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
@@ -162,13 +162,13 @@
                                         BorderBrush="{TemplateBinding BorderBrush}"
                                         BorderThickness="{TemplateBinding BorderThickness}"
                                         Background="{TemplateBinding Background}"
-                                        Grid.Column="1"
-                                        Padding="{TemplateBinding Padding}"
-                                        SnapsToDevicePixels="true">
+                                        Grid.Column="1"                                       
+                                        SnapsToDevicePixels="true"
+                                        Padding="0,2,0,2">
                                     <ContentPresenter x:Name="PART_Header"
                                                       ContentSource="Header"
                                                       HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />                                    
                                 </Border>
                                 <ItemsPresenter x:Name="ItemsHost"
                                                 Grid.ColumnSpan="2"
@@ -190,7 +190,7 @@
                                             Value="Collapsed" />
                                     <Setter Property="Margin"
                                             TargetName="TreeViewItem"
-                                            Value="16,2,0,2" />
+                                            Value="16,0,0,0" />
                                 </Trigger>
 
                                 <!-- __________________MultiDataTriggers______________________ -->
@@ -206,7 +206,7 @@
                                     <MultiDataTrigger.Setters>
                                         <Setter Property="Margin"
                                                 TargetName="TreeViewItem"
-                                                Value="4,2,0,2" />
+                                                Value="4,0,0,0" />
                                     </MultiDataTrigger.Setters>
                                 </MultiDataTrigger>
 
@@ -222,7 +222,7 @@
                                     <MultiDataTrigger.Setters>
                                         <Setter Property="Margin"
                                                 TargetName="TreeViewItem"
-                                                Value="0,2,0,2" />
+                                                Value="0,0,0,0" />
                                     </MultiDataTrigger.Setters>
                                 </MultiDataTrigger>
                                 <!-- __________________________________________ -->

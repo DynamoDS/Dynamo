@@ -1683,8 +1683,8 @@
         </Setter>
         <Style.Triggers>
             <DataTrigger Binding="{Binding Path=IsMouseOver,
-                                                                       RelativeSource={RelativeSource
-                                                                       AncestorType={x:Type Grid}}}"
+                                           RelativeSource={RelativeSource
+                                           AncestorType={x:Type Grid}}}"
                          Value="True">
                 <Setter Property="Stroke"
                         Value="#FF1BBBFA" />
