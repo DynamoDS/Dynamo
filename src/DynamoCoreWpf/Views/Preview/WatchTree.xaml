@@ -163,18 +163,19 @@
                                         BorderThickness="{TemplateBinding BorderThickness}"
                                         Background="{TemplateBinding Background}"
                                         Grid.Column="1"
-                                        SnapsToDevicePixels="true"
-                                        Padding="0,2,0,2">
+                                        SnapsToDevicePixels="true">
                                     <ContentPresenter x:Name="PART_Header"
                                                       ContentSource="Header"
                                                       HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                                       SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                                 </Border>
-                                <ItemsPresenter x:Name="ItemsHost"
-                                                Grid.ColumnSpan="2"
-                                                Grid.Column="1"
-                                                Grid.Row="1"
-                                                Margin="1,0,0,0" />
+                                <Border  x:Name="ItemsHostBorder"
+                                         Grid.ColumnSpan="2"
+                                         Grid.Column="1"
+                                         Grid.Row="1">
+                                    <ItemsPresenter x:Name="ItemsHost"
+                                                    Margin="1,0,0,0" />
+                                </Border>
                             </Grid>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsExpanded"
@@ -191,8 +192,17 @@
                                     <Setter Property="Margin"
                                             TargetName="TreeViewItem"
                                             Value="16,0,0,0" />
+                                    <Setter Property="Padding"
+                                            TargetName="ItemsHostBorder"
+                                            Value="0,1,0,1" />
                                 </Trigger>
 
+                                <Trigger Property="HasItems"
+                                         Value="true">
+                                    <Setter Property="Padding"
+                                            TargetName="ItemsHostBorder"
+                                            Value="0,2,0,0" />
+                                </Trigger>
                                 <!-- __________________MultiDataTriggers______________________ -->
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
@@ -292,7 +302,7 @@
                                 Margin="10,2,2,2"
                                 VerticalAlignment="Center"
                                 Click="Button_Click"
-                                Padding="4,2,4,2"
+                                Padding="4,0,4,0"
                                 Visibility="{Binding Path=Link, Converter={StaticResource EmptyStringToCollapsedConverter}}"
                                 Style="{StaticResource BorderlessButton}" />
                     </VirtualizingStackPanel>

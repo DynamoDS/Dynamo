@@ -217,7 +217,7 @@
                                                           Converter={StaticResource PinIconForegroundConverter}}"
                                      Height="16"
                                      Width="12"
-                                     Margin="7,7,7,7" />
+                                     Margin="6,6,6,6" />
                     <Border.Style>
                         <Style TargetType="Border">
                             <Style.Triggers>
