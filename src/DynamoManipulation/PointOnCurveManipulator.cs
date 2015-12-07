@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
 using Autodesk.DesignScript.Geometry;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
-using Dynamo.Nodes;
 
 namespace Dynamo.Manipulation
 {
@@ -21,9 +16,6 @@ namespace Dynamo.Manipulation
 
     class PointOnCurveManipulator : NodeManipulator
     {
-        private const double NewNodeOffsetX = 350;
-        private const double NewNodeOffsetY = 50;
-
         private Point pointOnCurve;
 
         private Curve curve;

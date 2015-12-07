@@ -8,7 +8,6 @@ using System.Windows.Media.Media3D;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
-using ProtoCore.AST;
 using Point = Autodesk.DesignScript.Geometry.Point;
 using Vector = Autodesk.DesignScript.Geometry.Vector;
 
@@ -23,11 +22,6 @@ namespace Dynamo.Manipulation
         /// Unique name of the Gizmo
         /// </summary>
         string Name { get; set; }
-
-        /// <summary>
-        /// Base position of the Gizmo
-        /// </summary>
-        Point Origin { get; }
 
         /// <summary>
         /// Performs hit test based on view projection ray and returns the
@@ -55,7 +49,8 @@ namespace Dynamo.Manipulation
         IEnumerable<IRenderPackage> GetDrawables();
 
         /// <summary>
-        /// 
+        /// Delete any transient graphics associated with the Gizmo
+        /// such as those used in highlights, etc.
         /// </summary>
         void DeleteTransientGraphics();
 
@@ -71,7 +66,8 @@ namespace Dynamo.Manipulation
         void UnhighlightGizmo();
 
         /// <summary>
-        /// 
+        /// Update graphics widgets associated with the gizmo whenever it needs to be updated
+        /// for example, after a view transformation
         /// </summary>
         void UpdateGizmoGraphics();
     }
@@ -94,7 +90,10 @@ namespace Dynamo.Manipulation
             get { return manipulator.RenderPackageFactory; }
         }
 
-        protected Point PointOrigin
+        /// <summary>
+        /// Physical location of the manipulator lying on the geometry being manipulated
+        /// </summary>
+        protected Point ManipulatorOrigin
         {
             get { return manipulator.Origin; }
         }
@@ -112,7 +111,11 @@ namespace Dynamo.Manipulation
             } 
         }
 
-        public Point Origin
+        /// <summary>
+        /// Base position of the Gizmo which is at a fixed distance from the camera
+        /// so that it is redrawn at the same size to the viewer
+        /// </summary>
+        protected Point Origin
         {
             get
             {
@@ -121,7 +124,7 @@ namespace Dynamo.Manipulation
 
                 if (cameraPos == null) throw new Exception("camera position is null");
 
-                var vec = Vector.ByTwoPoints(cameraPos, PointOrigin).Normalized();
+                var vec = Vector.ByTwoPoints(cameraPos, ManipulatorOrigin).Normalized();
                 return cameraPos.Add(vec.Scale(zDepth));
             }
         }

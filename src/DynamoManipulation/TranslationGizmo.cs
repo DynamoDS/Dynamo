@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
-using System.Windows.Media.Media3D;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
-using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
 
 namespace Dynamo.Manipulation
@@ -61,11 +57,6 @@ namespace Dynamo.Manipulation
         /// </summary>
         private Vector hitAxis = null;
         private Plane hitPlane = null;
-
-        ///// <summary>
-        ///// Name of the gizmo.
-        ///// </summary>
-        //private string name = "gizmo";
 
         #endregion
 
@@ -211,7 +202,7 @@ namespace Dynamo.Manipulation
             using (var ray = GetRayGeometry(source, direction))
             {
                 //First hit test for position
-                if (ray.DistanceTo(PointOrigin) < tolerance)
+                if (ray.DistanceTo(ManipulatorOrigin) < tolerance)
                 {
                     if (planes.Any())
                     {
@@ -261,7 +252,7 @@ namespace Dynamo.Manipulation
         /// <returns></returns>
         private Line GetRayGeometry(Point source, Vector direction)
         {
-            double size = PointOrigin.DistanceTo(source) * 100;
+            double size = ManipulatorOrigin.DistanceTo(source) * 100;
             return Line.ByStartPointDirectionLength(source, direction, size);
         }
 
@@ -309,15 +300,14 @@ namespace Dynamo.Manipulation
             {
                 if (hitPlane != null)
                 {
-                    //hitPoint = hitPlane.Intersect(ray).FirstOrDefault() as Point;
-                    using (var testPlane = Plane.ByOriginXAxisYAxis(PointOrigin, hitPlane.XAxis, hitPlane.YAxis))
+                    using (var testPlane = Plane.ByOriginXAxisYAxis(ManipulatorOrigin, hitPlane.XAxis, hitPlane.YAxis))
                     {
                         hitPoint = testPlane.Intersect(ray).FirstOrDefault() as Point;
                     }
                 }
                 else if (hitAxis != null)
                 {
-                    using (var axisLine = RayExtensions.ToOriginCenteredLine(PointOrigin, hitAxis))
+                    using (var axisLine = RayExtensions.ToOriginCenteredLine(ManipulatorOrigin, hitAxis))
                     {
                         hitPoint = axisLine.ClosestPointTo(ray);
                     }
@@ -328,7 +318,7 @@ namespace Dynamo.Manipulation
                 return Vector.ByCoordinates(0, 0, 0);
             }
 
-            return Vector.ByTwoPoints(PointOrigin, hitPoint);
+            return Vector.ByTwoPoints(ManipulatorOrigin, hitPoint);
         }
 
         /// <summary>
@@ -337,7 +327,7 @@ namespace Dynamo.Manipulation
         /// <returns>List of render package</returns>
         public override IEnumerable<IRenderPackage> GetDrawables()
         {
-            List<IRenderPackage> drawables = new List<IRenderPackage>();
+            var drawables = new List<IRenderPackage>();
             foreach (Vector axis in axes)
             {
                 IRenderPackage package = RenderPackageFactory.CreateRenderPackage();

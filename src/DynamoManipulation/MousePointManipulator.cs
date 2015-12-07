@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Media3D;
 using Autodesk.DesignScript.Geometry;
-using Autodesk.DesignScript.Interfaces;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
-using Dynamo.Models;
 using DoubleSlider = DSCoreNodesUI.Input.DoubleSlider;
 using Point = Autodesk.DesignScript.Geometry.Point;
-using Dynamo.Wpf.ViewModels.Watch3D;
 
 namespace Dynamo.Manipulation
 {

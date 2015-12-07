@@ -73,6 +73,9 @@ namespace Dynamo.Manipulation
 
         internal NodeModel Node { get; private set; }
 
+        /// <summary>
+        /// Base location of geometry being manipulated by manipulator
+        /// </summary>
         internal abstract Point Origin { get; }
 
         internal IWatch3DViewModel BackgroundPreviewViewModel
