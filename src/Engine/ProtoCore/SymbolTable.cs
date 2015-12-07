@@ -21,7 +21,6 @@ namespace ProtoCore.DSASM
         public bool             isTemp;
         public int              size;
         public int              datasize;
-        public bool             isArray;
         public List<int>        arraySizeList;
         public MemoryRegion     memregion;
         public int              symbolTableIndex = Constants.kInvalidIndex;
@@ -35,7 +34,6 @@ namespace ProtoCore.DSASM
         public SymbolNode()
         {
             name = string.Empty;
-            isArray         = false;
             arraySizeList   = null;
             memregion       = MemoryRegion.kInvalidRegion;
             classScope      = Constants.kInvalidIndex;
