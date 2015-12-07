@@ -162,13 +162,13 @@
                                         BorderBrush="{TemplateBinding BorderBrush}"
                                         BorderThickness="{TemplateBinding BorderThickness}"
                                         Background="{TemplateBinding Background}"
-                                        Grid.Column="1"                                       
+                                        Grid.Column="1"
                                         SnapsToDevicePixels="true"
                                         Padding="0,2,0,2">
                                     <ContentPresenter x:Name="PART_Header"
                                                       ContentSource="Header"
                                                       HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />                                    
+                                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                                 </Border>
                                 <ItemsPresenter x:Name="ItemsHost"
                                                 Grid.ColumnSpan="2"
