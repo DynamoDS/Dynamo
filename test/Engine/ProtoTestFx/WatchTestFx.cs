@@ -370,8 +370,8 @@ namespace ProtoTestFx
 //            core.ExecutiveProvider = new InjectionExecutiveProvider();
 
             core.BuildStatus.MessageHandler = fs;
-            core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
-            core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.Associative, new ProtoAssociative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.Imperative, new ProtoImperative.Compiler(core));
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             
@@ -412,8 +412,8 @@ namespace ProtoTestFx
             core = new ProtoCore.Core(options);
 
 
-            core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
-            core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.Associative, new ProtoAssociative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.Imperative, new ProtoImperative.Compiler(core));
 
             fsr = new DebugRunner(core);
 

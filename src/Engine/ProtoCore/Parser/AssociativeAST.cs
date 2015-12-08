@@ -147,7 +147,7 @@ namespace ProtoCore.AST.AssociativeAST
         {
             var buf = new StringBuilder();
 
-            string strLang = CoreUtils.GetLanguageString(codeblock.language);
+            string strLang = CoreUtils.GetLanguageString(codeblock.Language);
 
             buf.Append("[");
             buf.Append(strLang);
@@ -3171,20 +3171,6 @@ namespace ProtoCore.AST.AssociativeAST
             var result = new ImperativeAST.CodeBlockNode
             {
                 Body = aNode.Body.Select(ToImperativeAST).ToList()
-            };
-            CopyProps(aNode, result);
-            return result;
-        }
-
-        public static ImperativeAST.ConstructorDefinitionNode ToImperativeNode(this ConstructorDefinitionNode aNode)
-        {
-            if (aNode == null) return null;
-
-            var result = new ImperativeAST.ConstructorDefinitionNode
-            {
-                FunctionBody = aNode.FunctionBody.ToImperativeNode(),
-                Signature = aNode.Signature.ToImperativeNode(),
-                localVars = aNode.LocalVariableCount
             };
             CopyProps(aNode, result);
             return result;

@@ -1,0 +1,18 @@
+<Workspace Version="0.9.1.3302" X="-566.222401900644" Y="349.085768409923" zoom="0.905016698856708" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="3383edf4-ef2a-4f29-a11a-7925a77f67b2" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="723.484129631453" y="-381.101202951188" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" CodeText="pm = 1..n;&#xA;c = 0..0..#n;&#xA;i = 1;&#xA;pmCount = 0;&#xA;flips = 0;&#xA;checksum = 0;&#xA;&#xA;[Imperative]&#xA;{&#xA;    // Tompkins_Paige algorithm&#xA;    while (i &lt; n)&#xA;    {&#xA;        head = pm[0];&#xA;        pm[0..(i - 1)] = pm[1..i];&#xA;        pm[i] = head;&#xA;&#xA;        if (c[i] &lt; i)&#xA;        {&#xA;            c[i] = c[i] + 1;&#xA;            i = 1;&#xA;            pmCount = pmCount + 1;&#xA;&#xA;            // take the first element K and reverse the first K elements&#xA;            // repeat until the first element is 1&#xA;            //     count the number of flip;&#xA;            //     checksum = checksum + (flip number) % 2 == 0 ? 1 : -1;&#xA;&#xA;            tpm = pm;&#xA;            flipCount = 0;&#xA;            k = tpm[0];&#xA;&#xA;            while (k != 1)&#xA;            {&#xA;                tpm[0..(k - 1)] = Reverse(tpm[0..(k - 1)]);&#xA;                flipCount = flipCount + 1;&#xA;                k = tpm[0];&#xA;            }&#xA;&#xA;            if (flipCount &gt; flips)&#xA;            {&#xA;                flips = flipCount;&#xA;            }&#xA;&#xA;            if (pmCount % 2 == 0)&#xA;            {&#xA;                checksum = checksum + flipCount;&#xA;            }&#xA;            else&#xA;            {&#xA;                checksum = checksum - flipCount;&#xA;            }&#xA;        }&#xA;        else&#xA;        {&#xA;            c[i] = 0;&#xA;            i = i + 1;&#xA;        }&#xA;    }&#xA;}&#xA;result = {checksum, flips};" ShouldFocus="false" />
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="70373bdd-bbd5-4756-9d12-ac803ab476ea" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="368.519081360894" y="-212.407452164868" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" CodeText="n = 6;" ShouldFocus="false" />
+    <DSCoreNodesUI.Watch guid="27fba61c-ba19-4575-90a7-f856f74b4887" type="DSCoreNodesUI.Watch" nickname="Watch" x="1583.00185928562" y="-225.663896513546" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="3383edf4-ef2a-4f29-a11a-7925a77f67b2" start_index="5" end="27fba61c-ba19-4575-90a7-f856f74b4887" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="70373bdd-bbd5-4756-9d12-ac803ab476ea" start_index="0" end="3383edf4-ef2a-4f29-a11a-7925a77f67b2" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>

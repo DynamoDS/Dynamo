@@ -1256,6 +1256,7 @@
     <Content Include="sharpdx_direct3d11_effects_x86.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="UI\Images\bubble-arrow.png" />
     <Content Include="ViewModels\Watch3D\Shaders\BillboardText.fx" />
     <Content Include="ViewModels\Watch3D\Shaders\Common.fx" />
     <Content Include="ViewModels\Watch3D\Shaders\Custom.fx" />

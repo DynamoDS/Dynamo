@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
 using Dynamo.Visualization;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.ViewModels.Watch3D;
@@ -19,10 +21,83 @@ namespace Dynamo.Manipulation
         private IEnumerable<NodeModel> manipulatorNodes;
         private ManipulatorDaemon manipulatorDaemon;
         private ViewLoadedParams viewLoadedParams;
+        private IWorkspaceModel workspaceModel;
 
         internal IWatch3DViewModel BackgroundPreviewViewModel { get; private set; }
         internal IRenderPackageFactory RenderPackageFactory { get; private set; }
-        internal IWorkspaceModel WorkspaceModel { get; private set; }
+        internal IWorkspaceModel WorkspaceModel 
+        {
+            get { return workspaceModel; }
+            private set { SetWorkSpaceModel(value); } 
+        }
+
+        /// <summary>
+        /// Sets the workspace model property and updates event handlers accordingly.
+        /// </summary>
+        /// <param name="wsm">Workspace Model to set</param>
+        private void SetWorkSpaceModel(IWorkspaceModel wsm)
+        {
+            var settings = GetRunSettings(workspaceModel);
+            if (settings != null)
+            {
+                //Remove RunSettings event handler from old run settings.
+                settings.PropertyChanged -= OnRunSettingsPropertyChanged;
+            }
+
+            workspaceModel = wsm;
+
+            settings = GetRunSettings(wsm);
+            if (settings != null)
+            {
+                //Register RunSettings event handler
+                settings.PropertyChanged += OnRunSettingsPropertyChanged;
+            }
+        }
+
+        /// <summary>
+        /// Event handler to monitor RunType property of RunSettings.
+        /// </summary>
+        private void OnRunSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != "RunType")
+                return;
+
+            var settings = sender as RunSettings;
+            if (settings == null) return;
+
+            if (settings.RunType != RunType.Automatic)
+            {
+                manipulatorDaemon.KillAll();//remove all manipulators
+            }
+            else if(settings.RunEnabled)
+            {
+                CreateManipulators(WorkspaceModel.CurrentSelection);
+            }
+        }
+
+        /// <summary>
+        /// Get RunSettings object for a given Workspace Model. 
+        /// </summary>
+        /// <param name="wsm">IWorkspaceModel object</param>
+        /// <returns>RunSettings</returns>
+        private RunSettings GetRunSettings(IWorkspaceModel wsm)
+        {
+            var homeWSM = wsm as HomeWorkspaceModel;
+            return homeWSM == null ? null : homeWSM.RunSettings;
+        }
+
+        /// <summary>
+        /// Checks if manipulators are allowed in current workspace or not.
+        /// </summary>
+        /// <returns></returns>
+        bool EnableManipulators()
+        {
+            //If we are not in Home workspace, or not in Automatic execution mode do nothing.
+            var settings = GetRunSettings(WorkspaceModel);
+            
+            return settings != null && settings.RunType == RunType.Automatic;
+        }
+
         internal ICommandExecutive CommandExecutive { get; private set; }
 
         public Dictionary<Type, IEnumerable<INodeManipulatorFactory>> ManipulatorCreators { get; set; }
@@ -192,10 +267,17 @@ namespace Dynamo.Manipulation
                 manipulatorDaemon.KillAll();
             }
 
-            if (e.NewItems == null) return;
+            if (e.NewItems == null || !EnableManipulators()) return;
 
-            foreach (var nm in e.NewItems.OfType<NodeModel>())
+            CreateManipulators(e.NewItems.OfType<NodeModel>());
+        }
+
+        private void CreateManipulators(IEnumerable<NodeModel> nodes)
+        {
+            foreach (var nm in nodes)
             {
+                if (nm.IsFrozen || !nm.IsSelected) continue;
+
                 manipulatorDaemon.CreateManipulator(nm, this);
             }
         }

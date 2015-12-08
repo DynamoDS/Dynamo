@@ -13,11 +13,15 @@ namespace DSCoreNodesUI
     [IsDesignScriptCompatible]
     public class Range : NodeModel
     {
+        private readonly IntNode startPortDefaultValue = new IntNode(0);
+        private readonly IntNode endPortDefaultValue = new IntNode(9);
+        private readonly IntNode stepPortDefaultValue = new IntNode(1);
+
         public Range()
         {
-            InPortData.Add(new PortData("start", Resources.RangePortDataStartToolTip));
-            InPortData.Add(new PortData("end", Resources.RangePortDataEndToolTip));
-            InPortData.Add(new PortData("step", Resources.RangePortDataStepToolTip));
+            InPortData.Add(new PortData("start", Resources.RangePortDataStartToolTip, startPortDefaultValue));
+            InPortData.Add(new PortData("end", Resources.RangePortDataEndToolTip, endPortDefaultValue));
+            InPortData.Add(new PortData("step", Resources.RangePortDataStepToolTip, stepPortDefaultValue));
             OutPortData.Add(new PortData("seq", Resources.RangePortDataSeqToolTip));
 
             RegisterAllPorts();
@@ -55,11 +59,15 @@ namespace DSCoreNodesUI
     [IsDesignScriptCompatible]
     public class Sequence : NodeModel
     {
+        private readonly IntNode startPortDefaultValue = new IntNode(0);
+        private readonly IntNode amountPortDefaultValue = new IntNode(10);
+        private readonly IntNode stepPortDefaultValue = new IntNode(1);
+
         public Sequence()
         {
-            InPortData.Add(new PortData("start", Resources.RangePortDataStartToolTip));
-            InPortData.Add(new PortData("amount", Resources.RangePortDataAmountToolTip));
-            InPortData.Add(new PortData("step", Resources.RangePortDataStepToolTip));
+            InPortData.Add(new PortData("start", Resources.RangePortDataStartToolTip, startPortDefaultValue));
+            InPortData.Add(new PortData("amount", Resources.RangePortDataAmountToolTip, amountPortDefaultValue));
+            InPortData.Add(new PortData("step", Resources.RangePortDataStepToolTip, stepPortDefaultValue));
             OutPortData.Add(new PortData("seq", Resources.RangePortDataSeqToolTip));
 
             RegisterAllPorts();

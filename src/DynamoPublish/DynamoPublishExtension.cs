@@ -35,7 +35,7 @@ namespace Dynamo.Publish
         private MenuItem inviteMenuItem; 
         private MenuItem manageCustomizersMenuItem;
         private Separator separator = new Separator();
-        private ShareWorkspaceClient shareWorkspaceClient;
+        private IWorkspaceStorageClient reachClient;
  
         #region IViewExtension implementation
 
@@ -65,10 +65,11 @@ namespace Dynamo.Publish
             manageCustomizersMenuItem = GenerateManageCustomizersMenuItem();
             p.AddMenuItem(MenuBarType.File, manageCustomizersMenuItem, 12);
 
-            inviteMenuItem = GenerateInviteMenuItem();
-            p.AddMenuItem(MenuBarType.File, inviteMenuItem, 11);
+            // MAGN-9044: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-9044
+            //inviteMenuItem = GenerateInviteMenuItem();
+            //p.AddMenuItem(MenuBarType.File, inviteMenuItem, 11);
 
-            p.AddSeparator(MenuBarType.File, separator, 14);
+            p.AddSeparator(MenuBarType.File, separator, 13);
 
             p.CurrentWorkspaceChanged += CurrentWorkspaceChanged;
 
@@ -129,6 +130,8 @@ namespace Dynamo.Publish
             }
 
             var needsTou = Convert.ToBoolean(appSettings.Settings["NeedsTou"].Value);
+            var baseUrl = appSettings.Settings["ServerUrl"].Value;
+            reachClient = new WorkspaceStorageClient(startupParams.AuthProvider, baseUrl);
 
             // TOU is not necessary
             if (!needsTou)
@@ -136,9 +139,7 @@ namespace Dynamo.Publish
                 item.Click += (sender, args) => { PublishCurrentWorkspace(); };
             }
             else
-            {
-                var baseUrl = appSettings.Settings["ServerUrl"].Value;
-                shareWorkspaceClient = new ShareWorkspaceClient(baseUrl, startupParams.AuthProvider);
+            {                
                 item.Click += (sender, args) => { TermsOfUseEnabled(); };
             }
 
@@ -147,7 +148,7 @@ namespace Dynamo.Publish
 
         private async void TermsOfUseEnabled()
         {
-            var termsOfUseAccepted = await Task.Run(() => shareWorkspaceClient.GetTermsOfUseAcceptanceStatus());
+            var termsOfUseAccepted = await Task.Run(() => reachClient.GetTermsOfUseAcceptanceStatus());
             // The above GetTermsOfUseAcceptanceStatus call will get the
             // user to sign-in. If the user cancels that sign-in dialog 
             // without signing in, we won't show the terms of use dialog,
@@ -177,7 +178,7 @@ namespace Dynamo.Publish
 
         private void PublishCurrentWorkspace()
         {
-            var model = new PublishModel(startupParams.AuthProvider, startupParams.CustomNodeManager);
+            var model = new PublishModel(startupParams.AuthProvider, startupParams.CustomNodeManager, reachClient);
             model.MessageLogged += this.OnMessageLogged;
 
             var viewModel = new PublishViewModel(model)
@@ -217,7 +218,7 @@ namespace Dynamo.Publish
             // the server, before proceeding to show the publishing dialog. 
             // This method is invoked on the UI thread, so when the server call 
             // returns, invoke the publish dialog on the UI thread's context.
-            var success = await Task.Run(() => shareWorkspaceClient.SetTermsOfUseAcceptanceStatus());
+            var success = await Task.Run(() => reachClient.SetTermsOfUseAcceptanceStatus());
 
             if (success)
             {

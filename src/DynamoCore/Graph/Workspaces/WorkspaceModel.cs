@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.IO;
 using System.Linq;  
@@ -21,6 +22,7 @@ using Dynamo.Models;
 using Dynamo.Properties;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using DynamoServices;
 using ProtoCore.Namespace;
 using Utils = Dynamo.Graph.Nodes.Utilities;
 
@@ -74,6 +76,12 @@ namespace Dynamo.Graph.Workspaces
         private readonly UndoRedoRecorder undoRecorder;
         private bool hasNodeInSyncWithDefinition;
         private Guid guid;
+
+        /// <summary>
+        /// This is set to true after a workspace is added.
+        /// This is set to false, if the workspace is cleared or disposed.
+        /// </summary>
+        private bool workspaceLoaded;
 
         #endregion
 
@@ -268,6 +276,13 @@ namespace Dynamo.Graph.Workspaces
             RegisterConnector(obj);
             var handler = ConnectorAdded;
             if (handler != null) handler(obj);
+            //Check if the workspace is loaded, i.e all the nodes are 
+            //added to the workspace. In that case, compute the Upstream cache for the 
+            //given node.
+            if (workspaceLoaded)
+            {
+                obj.End.Owner.ComputeUpstreamOnDownstreamNodes(new HashSet<NodeModel>());               
+            }
         }
 
         private void RegisterConnector(ConnectorModel connector)
@@ -288,6 +303,13 @@ namespace Dynamo.Graph.Workspaces
 
             var handler = ConnectorDeleted;
             if (handler != null) handler(obj);
+            //Check if the workspace is loaded, i.e all the nodes are 
+            //added to the workspace. In that case, compute the Upstream cache for the 
+            //given node.
+            if (workspaceLoaded)
+            {
+                obj.End.Owner.ComputeUpstreamOnDownstreamNodes(new HashSet<NodeModel>());
+            }
         }
 
         /// <summary>
@@ -408,6 +430,14 @@ namespace Dynamo.Graph.Workspaces
 
                 return nodesClone;
             } 
+        }
+
+        public IEnumerable<NodeModel> CurrentSelection
+        {
+            get
+            {
+                return DynamoSelection.Instance.Selection.OfType<NodeModel>();
+            }
         }
 
         /// <summary>
@@ -681,6 +711,36 @@ namespace Dynamo.Graph.Workspaces
                 RegisterConnector(connector);
 
             SetModelEventOnAnnotation();
+            WorkspaceEvents.WorkspaceAdded += computeUpstreamNodesWhenWorkspaceAdded;
+        }
+
+        /// <summary>
+        /// Computes the upstream nodes when workspace is added. when a workspace is added (assuming that
+        /// all the nodes and its connectors were added successfully) compute the upstream cache for all 
+        /// the frozen nodes.     
+        /// </summary>
+        /// <param name="args">The <see cref="WorkspacesModificationEventArgs"/> instance containing the event data.</param>
+        private void computeUpstreamNodesWhenWorkspaceAdded(WorkspacesModificationEventArgs args)
+        {
+            if (args.Id == this.Guid)
+            {
+                this.workspaceLoaded = true;
+                this.ComputeUpstreamCacheForEntireGraph();
+
+                // If the entire graph is frozen then set silenceModification 
+                // to false on the workspace. This is required
+                // becuase if all the nodes are frozen, then updategraphsyncdata task
+                // has nothing to process and the graph will not run. setting silenceModification here
+                // ensure graph runs immediately when any of the node is set to unfreeze.
+                lock (nodes)
+                {
+                    if (nodes != null && nodes.Any() && nodes.All(z => z.IsFrozen))
+                    {
+                        var firstnode = nodes.First();
+                        firstnode.OnRequestSilenceModifiedEvents(false);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -688,7 +748,8 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <filterpriority>2</filterpriority>
         public virtual void Dispose()
-        {
+        {            
+            this.workspaceLoaded = false;
             foreach (var node in Nodes)
                 DisposeNode(node);
 
@@ -711,6 +772,7 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         public virtual void Clear()
         {
+            workspaceLoaded = false;
             Log(Resources.ClearingWorkSpace);
 
             DynamoSelection.Instance.ClearSelection();
@@ -749,6 +811,7 @@ namespace Dynamo.Graph.Workspaces
             X = 0.0;
             Y = 0.0;
             Zoom = 1.0;
+            workspaceLoaded = true;
         }
 
         /// <summary>
@@ -1455,6 +1518,40 @@ namespace Dynamo.Graph.Workspaces
                 Nodes.Where(
                     node =>
                         node.OutPortData.Any() && node.OutPorts.Any(port => !port.Connectors.Any()));
+        }
+
+        /// <summary>
+        /// Return the nodes in the graph that have no inputs or have none of their inputs filled
+        /// </summary>
+        /// <returns></returns>
+        internal IEnumerable<NodeModel> GetSourceNodes()
+        {
+            return
+                Nodes.Where(
+                    node =>
+                       !node.InPorts.Any()||node.InPorts.All(port => !port.Connectors.Any()));
+        }
+
+        /// <summary>
+        /// This method ensures that all upstream node caches are correct by calling
+        /// ComputeUpstreamOnDownstream on all source nodes in the graph,
+        /// this is done in such a way that each node is only computed once.
+        /// </summary>
+        private void ComputeUpstreamCacheForEntireGraph()
+        {
+            //get the source nodes or roots of the DAG
+            var sources = GetSourceNodes();
+            var allVisited = new HashSet<NodeModel>();
+            foreach(var source in sources)
+            {
+                //call computeUpstreamOnDownstream to propogate the upstream Cache down to all nodes
+               foreach(var visitedNode in source.ComputeUpstreamOnDownstreamNodes(allVisited))
+                {
+                    //continue filling the visited list with all nodes we have already computed
+                    //this will avoid redudant calls
+                    allVisited.Add(visitedNode);
+                }
+            }
         }
 
         public void ReportPosition()

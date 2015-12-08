@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
 using Autodesk.DesignScript.Geometry;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
-using Dynamo.Nodes;
 
 namespace Dynamo.Manipulation
 {
@@ -21,9 +16,6 @@ namespace Dynamo.Manipulation
 
     class PointOnCurveManipulator : NodeManipulator
     {
-        private const double NewNodeOffsetX = 350;
-        private const double NewNodeOffsetY = 50;
-
         private Point pointOnCurve;
 
         private Curve curve;
@@ -41,12 +33,26 @@ namespace Dynamo.Manipulation
 
         #region abstract method implementation
 
-        protected override IEnumerable<IGizmo> GetGizmos(bool createIfNone)
+        internal override Point Origin
         {
-            if (gizmo == null && !createIfNone)
-                yield break;
+            get { return pointOnCurve; }
+        }
 
-            UpdateGizmo();
+        /// <summary>
+        /// Returns all the gizmos supported by this manipulator
+        /// </summary>
+        /// <param name="createOrUpdate">
+        /// If true: Create a new gizmo or update a gizmo if already present.
+        /// If false: Query for existing gizmos</param>
+        /// <returns></returns>
+        protected override IEnumerable<IGizmo> GetGizmos(bool createOrUpdate)
+        {
+            if (gizmo == null && !createOrUpdate) yield break;
+
+            if (createOrUpdate)
+            {
+                UpdateGizmo();
+            }
 
             yield return gizmo;
         }
@@ -54,9 +60,10 @@ namespace Dynamo.Manipulation
         private void UpdateGizmo()
         {
             if (null == gizmo)
-                gizmo = new TranslationGizmo(pointOnCurve, tangent, 6);
-            else
-                gizmo.UpdateGeometry(pointOnCurve, tangent, null, null, 6);
+            {
+                gizmo = new TranslationGizmo(this, tangent, gizmoScale);
+            }
+            else gizmo.UpdateGeometry(tangent, null, null, gizmoScale);
         }
 
         protected override void AssignInputNodes()
@@ -91,27 +98,21 @@ namespace Dynamo.Manipulation
             if (pointOnCurve == null)
                 pointOnCurve = curve.StartPoint;
 
-            var oldPoint = Point.ByCoordinates(pointOnCurve.X, pointOnCurve.Y, pointOnCurve.Z);
-            try
-            {
-                //Node output could be a collection, consider the first item as origin.
-                Point pt = GetFirstValueFromNode(Node) as Point;
-                if (pt != null)
-                {
-                    var param = curve.ParameterAtPoint(pt);
-                    tangent = curve.TangentAtParameter(param);
-                    pointOnCurve = Point.ByCoordinates(pt.X, pt.Y, pt.Z);
-                }
-            }
-            catch (Exception)
-            {
-                pointOnCurve = oldPoint;
-            }
+            //Node output could be a collection, consider the first item as origin.
+            Point pt = GetFirstValueFromNode(Node) as Point;
+            if (pt == null) return; //The node output is not Point, could be a function object.
 
+            var param = curve.ParameterAtPoint(pt);
+            tangent = curve.TangentAtParameter(param);
+            
+            //Don't cache pt directly here, need to create a copy, because 
+            //pt may be GC'ed by VM.
+            pointOnCurve = Point.ByCoordinates(pt.X, pt.Y, pt.Z); 
+        
             Active = tangent != null;
         }
 
-        protected override IEnumerable<NodeModel> OnGizmoClick(IGizmo gizmo, object hitObject)
+        protected override IEnumerable<NodeModel> OnGizmoClick(IGizmo gizmoInAction, object hitObject)
         {
             var axis = hitObject as Vector;
             if (null == axis) return null;
@@ -124,7 +125,7 @@ namespace Dynamo.Manipulation
             return new[] { inputNode };
         }
 
-        protected override Point OnGizmoMoved(IGizmo gizmo, Vector offset)
+        protected override Point OnGizmoMoved(IGizmo gizmoInAction, Vector offset)
         {
             var newPosition = pointOnCurve.Add(offset);
             newPosition = curve.ClosestPointTo(newPosition);

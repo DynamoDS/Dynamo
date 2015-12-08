@@ -800,5 +800,22 @@ namespace Dynamo.Tests
 
             Assert.IsFalse(CurrentDynamoModel.CurrentWorkspace.Connectors.Any());
         }
+
+        [Test]
+        public void UpstreamNodesComputedCorrectly()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\transpose.dyn");
+            //this should compute all upstream nodes on each node from the roots down
+            OpenModel(openPath);
+            
+            //this asserts that each node's UpstreamCache contains the same list as the recursively computed AllUpstreamNodes
+            foreach(var node in CurrentDynamoModel.CurrentWorkspace.Nodes)
+            {
+                Assert.IsTrue(node.UpstreamCache.SetEquals(node.AllUpstreamNodes(new List<NodeModel>())));
+            }
+
+
+
+        }
     }
 }
