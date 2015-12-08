@@ -1383,7 +1383,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         manipulator = CreateDynamoGeometryModel3D(rp);
                     
                     var mb = new MeshBuilder();
-                    mb.AddArrow(rp.Lines.Positions[0], rp.Lines.Positions[1], 0.3, 2, 64);
+                    mb.AddArrow(rp.Lines.Positions[0], rp.Lines.Positions[1], 0.2, 2, 64);
                     manipulator.Geometry = mb.ToMeshGeometry3D();
                     
                     if (rp.Lines.Colors[0].Red == 1)

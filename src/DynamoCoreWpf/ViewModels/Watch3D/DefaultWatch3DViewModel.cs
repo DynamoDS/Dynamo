@@ -461,13 +461,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        //internal event Func<IEnumerable<IRenderPackage>> RequestSpecialRenderPackages; 
-        //private IEnumerable<IRenderPackage> OnRequestSpecialRenderPackages()
-        //{
-        //    var handler = RequestSpecialRenderPackages;
-        //    return handler != null ? handler() : null;
-        //}
-
         public virtual void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
         {
             // Override in derived classes.
@@ -600,19 +593,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var handler = ViewCameraChanged;
             if (handler != null) handler(sender, args);
         }
-
-        //public event Func<IEnumerable<IRenderPackage>> RequestRenderPackages;
-
-        ///// <summary>
-        ///// This event handler is invoked when the render packages (specific to this node)  
-        ///// become available and in addition the node requests for associated render packages 
-        ///// if any for example, packages used for associated node manipulators
-        ///// </summary>
-        //internal IEnumerable<IRenderPackage> OnRequestRenderPackages()
-        //{
-        //    var handler = RequestRenderPackages;
-        //    return handler != null ? handler() : new List<IRenderPackage>();
-        //}
 
         protected virtual void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
