@@ -40,8 +40,8 @@ namespace DSCoreNodesUI
         {
             if (IsPartiallyApplied)
             {
-                var connectedPorts = Enumerable.Range(0, inputAstNodes.Count)
-                    .Where(i => inputAstNodes[i] != null && !(inputAstNodes[i] is NullNode))
+                var connectedPorts = Enumerable.Range(0, this.InPorts.Count)
+                    .Where(this.HasInput)
                     .ToList();
 
                 // 3d, 4th, 5th are always connected.
@@ -112,9 +112,9 @@ namespace DSCoreNodesUI
         {
             if (IsPartiallyApplied)
             {
-                var connectedPorts = Enumerable.Range(0, inputAstNodes.Count)
-                   .Where(i => inputAstNodes[i] != null && !(inputAstNodes[i] is NullNode))
-                   .ToList();
+                var connectedPorts = Enumerable.Range(0, this.InPorts.Count)
+                    .Where(this.HasInput)
+                    .ToList();
 
                 // 3d, 4th, 5th are always connected.
                 connectedPorts.AddRange(new List<int> { 3, 4, 5 });
