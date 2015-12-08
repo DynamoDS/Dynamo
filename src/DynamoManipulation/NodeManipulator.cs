@@ -170,7 +170,6 @@ namespace Dynamo.Manipulation
         /// <param name="mouseButtonEventArgs"></param>
         protected virtual void MouseDown(object sender, MouseButtonEventArgs mouseButtonEventArgs)
         {
-            //UpdatePosition();
             GizmoInAction = null; //Reset Drag.
 
             var gizmos = GetGizmos(false);
@@ -399,7 +398,6 @@ namespace Dynamo.Manipulation
             BackgroundPreviewViewModel.ViewMouseUp += MouseUp;
 
             Node.RequestRenderPackages += GenerateRenderPackages;
-            //BackgroundPreviewViewModel.RequestRenderPackages += GenerateRenderPackages;
         }
 
         /// <summary>
@@ -428,7 +426,6 @@ namespace Dynamo.Manipulation
                 return packages;
             }
 
-            //return BuildRenderPackage();
             IEnumerable<IRenderPackage> result = null;
             BackgroundPreviewViewModel.Invoke(() => result = BuildRenderPackage());
             return result;
@@ -442,9 +439,8 @@ namespace Dynamo.Manipulation
             BackgroundPreviewViewModel.ViewMouseMove -= MouseMove;
             BackgroundPreviewViewModel.ViewMouseDown -= MouseDown;
             BackgroundPreviewViewModel.ViewMouseUp -= MouseUp;
-            BackgroundPreviewViewModel.RequestRenderPackages -= GenerateRenderPackages;
 
-            //Node.RequestRenderPackages -= GenerateRenderPackages;
+            Node.RequestRenderPackages -= GenerateRenderPackages;
         }
 
         /// <summary>
@@ -515,8 +511,6 @@ namespace Dynamo.Manipulation
         public bool IsEnabled()
         {
             if (Node.IsFrozen) return false;
-
-            //if (Node.CachedValue.IsNull) return false;
 
             return true;
         }

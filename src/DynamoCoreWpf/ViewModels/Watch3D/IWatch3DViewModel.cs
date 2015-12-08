@@ -138,6 +138,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <summary>
         /// 
         /// </summary>
-        event Func<IEnumerable<IRenderPackage>> RequestRenderPackages;
+        //event Func<IEnumerable<IRenderPackage>> RequestRenderPackages;
     }
 }

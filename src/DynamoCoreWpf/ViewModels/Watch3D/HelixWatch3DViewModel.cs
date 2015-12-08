@@ -475,7 +475,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             OnRequestCreateModels(packages);
         }
 
-
         protected override void OnShutdown()
         {
             EffectsManager = null;
@@ -611,12 +610,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public override void GenerateViewGeometryFromRenderPackagesAndRequestUpdate(IEnumerable<IRenderPackage> taskPackages)
         {
-            var allPackages = new List<IRenderPackage>();
-
-            allPackages.AddRange(taskPackages);
-            //allPackages.AddRange(OnRequestRenderPackages());
-
-            foreach (var p in allPackages)
+            foreach (var p in taskPackages)
             {
                 Debug.WriteLine(string.Format("Processing render packages for {0}", p.Description));
             }
@@ -626,8 +620,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 #if DEBUG
             renderTimer.Start();
 #endif
-            var packages = allPackages
-                .Cast<HelixRenderPackage>().Where(rp => rp.MeshVertexCount % 3 == 0).ToList();
+            var packages = taskPackages
+                .Cast<HelixRenderPackage>().Where(rp => rp.MeshVertexCount % 3 == 0);
 
             RemoveGeometryForUpdatedPackages(packages);
 
@@ -1364,7 +1358,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         manipulator = CreateDynamoGeometryModel3D(rp);
                     
                     var mb = new MeshBuilder();
-                    mb.AddArrow(rp.Lines.Positions[0], rp.Lines.Positions[1], 0.2, 2, 64);
+                    mb.AddArrow(rp.Lines.Positions[0], rp.Lines.Positions[1], 0.3, 2, 64);
                     manipulator.Geometry = mb.ToMeshGeometry3D();
                     
                     if (rp.Lines.Colors[0].Red == 1)

@@ -1,11 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Media3D;
 using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Interfaces;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Models;
 using DoubleSlider = DSCoreNodesUI.Input.DoubleSlider;
 using Point = Autodesk.DesignScript.Geometry.Point;
+using Dynamo.Wpf.ViewModels.Watch3D;
 
 namespace Dynamo.Manipulation
 {
@@ -20,7 +26,6 @@ namespace Dynamo.Manipulation
     public class MousePointManipulator : NodeManipulator
     {
         private Point origin;
-        internal override Point Origin { get { return origin; } }
 
         private Point expectedPosition;
 
@@ -34,6 +39,11 @@ namespace Dynamo.Manipulation
         }
        
         #region overridden methods
+
+        protected override bool CanMoveGizmo(IGizmo gizmo)
+        {
+            return base.CanMoveGizmo(gizmo);
+        }
 
         protected override void AssignInputNodes()
         {
@@ -69,7 +79,7 @@ namespace Dynamo.Manipulation
                     {
                         //Combine old axis with this axis
                         axis = item.Value.Item1;
-                        axis = axis.Add(axes[i]);
+                        axis = axis.Add(axes[i]).Normalized();
                         idx = item.Key;
                         break;
                     }
@@ -82,15 +92,6 @@ namespace Dynamo.Manipulation
                 {
                     //update the new axis value in dictionary
                     indexedAxisNodePairs[idx] = Tuple.Create(axis, node);
-                }
-            }
-            // Normalize all axes in indexedAxisNodePairs
-            for (int i = 0; i < 3; i++)
-            {
-                Tuple<Vector, NodeModel> pair;
-                if (indexedAxisNodePairs.TryGetValue(i, out pair))
-                {
-                    indexedAxisNodePairs[i] = Tuple.Create(pair.Item1.Normalized(), pair.Item2);
                 }
             }
         }
@@ -124,9 +125,9 @@ namespace Dynamo.Manipulation
         /// Called when Gizmo is clicked. Creates new input nodes if the
         /// specific input is selected for manipulation by the Gizmo.
         /// </summary>
-        /// <param name="gizmoInAction">Gizmo that is clicked</param>
+        /// <param name="gizmo">Gizmo that is clicked</param>
         /// <param name="hitObject">The axis or plane of the gizmo hit</param>
-        protected override IEnumerable<NodeModel> OnGizmoClick(IGizmo gizmoInAction, object hitObject)
+        protected override IEnumerable<NodeModel> OnGizmoClick(IGizmo gizmo, object hitObject)
         {
             //If an axis is hit, only one node will be updated.
             var axis1 = hitObject as Vector;
@@ -158,7 +159,7 @@ namespace Dynamo.Manipulation
                 }
             }
 
-            // Update the axisNodePairs with affected nodes.
+            //Update the axisNodePairs with affected nodes.
             foreach (var n in nodes)
             {
                 var axisIndex = n.Key;
@@ -174,10 +175,10 @@ namespace Dynamo.Manipulation
         /// <summary>
         /// Callback method when gizmo is moved by user action.
         /// </summary>
-        /// <param name="gizmoInAction">Gizmo that moved.</param>
+        /// <param name="gizmo">Gizmo that moved.</param>
         /// <param name="offset">Offset by which the gizmo has moved.</param>
         /// <returns>New expected position of the Gizmo</returns>
-        protected override Point OnGizmoMoved(IGizmo gizmoInAction, Vector offset)
+        protected override Point OnGizmoMoved(IGizmo gizmo, Vector offset)
         {
             expectedPosition = origin.Add(offset);
 
@@ -185,22 +186,17 @@ namespace Dynamo.Manipulation
             {
                 // When more than one input is connected to the same slider, this
                 // method will decompose the axis corresponding to each input.
-                using (var v = GetFirstAxisComponent(item.Value.Item1))
-                {
-                    var amount = Math.Round(offset.Dot(v), 3);
-
-                    if (Math.Abs(amount) > 0.001)
-                    {
-                        ModifyInputNode(item.Value.Item2, amount);
-                    }
-                }
+                var v = GetFirstAxisComponent(item.Value.Item1);
+                var amount = Math.Round(offset.Dot(v), 3);
+                if (Math.Abs(amount) > 0.001)
+                    ModifyInputNode(item.Value.Item2, amount);
             }
 
             return expectedPosition;
         }
 
         /// <summary>
-        /// Synchronize the manipulator position with the node's value.
+        /// Synchronize the origin with the node's value.
         /// </summary>
         protected override void UpdatePosition()
         {
@@ -212,23 +208,14 @@ namespace Dynamo.Manipulation
                 origin = Point.Origin(); //First time initialization
             }
 
+            //Node output could be a collection, consider the first item as origin.
+            Point pt = GetFirstValueFromNode(Node) as Point;
+            if (null == pt) return; //The node output is not Point, could be a function object.
+
+            //Don't cache pt directly here, we need to create a copy, because 
+            //pt may be GC'ed by VM.
+            origin = Point.ByCoordinates(pt.X, pt.Y, pt.Z);
             
-            // hack: to prevent node mirror value lookup from throwing an exception
-            //var previousOrigin = Point.ByCoordinates(origin.X, origin.Y, origin.Z);
-            //try
-            {
-                //Node output could be a collection, consider the first item as origin.
-                Point pt = GetFirstValueFromNode(Node) as Point;
-
-                if (pt == null) return;
-
-                origin = Point.ByCoordinates(pt.X, pt.Y, pt.Z);
-            }
-            //catch (Exception)
-            //{
-            //    origin = previousOrigin;
-            //}
-
             Active = true;
         }
 
@@ -252,11 +239,11 @@ namespace Dynamo.Manipulation
 
             if (null == gizmo)
             {
-                gizmo = new TranslationGizmo(this, axes[0], axes[1], axes[2], gizmoScale);
+                gizmo = new TranslationGizmo(origin, axes[0], axes[1], axes[2], 6);
             }
             else
             {
-                gizmo.UpdateGeometry(axes[0], axes[1], axes[2], gizmoScale);
+                gizmo.UpdateGeometry(origin, axes[0], axes[1], axes[2], 6);
             }
         }
 

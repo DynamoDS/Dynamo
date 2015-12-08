@@ -69,8 +69,6 @@ namespace Dynamo.Wpf.Extensions
             AddItemToMenu(type, separatorObj, index);
         }
 
-        
-
         private ICommandExecutive commandExecutive;
         /// <summary>
         /// View Extension specific implementation to execute Recordable commands on DynamoViewModel

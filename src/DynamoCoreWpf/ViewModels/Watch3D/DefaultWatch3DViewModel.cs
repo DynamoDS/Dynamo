@@ -461,12 +461,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        internal event Func<IEnumerable<IRenderPackage>> RequestSpecialRenderPackages; 
-        private IEnumerable<IRenderPackage> OnRequestSpecialRenderPackages()
-        {
-            var handler = RequestSpecialRenderPackages;
-            return handler != null ? handler() : null;
-        }
+        //internal event Func<IEnumerable<IRenderPackage>> RequestSpecialRenderPackages; 
+        //private IEnumerable<IRenderPackage> OnRequestSpecialRenderPackages()
+        //{
+        //    var handler = RequestSpecialRenderPackages;
+        //    return handler != null ? handler() : null;
+        //}
 
         public virtual void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
         {
@@ -534,12 +534,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected virtual void OnRenderPackagesUpdated(NodeModel node, IEnumerable<IRenderPackage> packages)
         {
-            var allPackages = new List<IRenderPackage>();
-
-            allPackages.AddRange(packages);
-            //allPackages.AddRange(OnRequestSpecialRenderPackages());
-
-            AddGeometryForRenderPackages(allPackages);
+            AddGeometryForRenderPackages(packages);
         }
 
         /// <summary>
@@ -606,18 +601,18 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             if (handler != null) handler(sender, args);
         }
 
-        public event Func<IEnumerable<IRenderPackage>> RequestRenderPackages;
+        //public event Func<IEnumerable<IRenderPackage>> RequestRenderPackages;
 
-        /// <summary>
-        /// This event handler is invoked when the render packages (specific to this node)  
-        /// become available and in addition the node requests for associated render packages 
-        /// if any for example, packages used for associated node manipulators
-        /// </summary>
-        internal IEnumerable<IRenderPackage> OnRequestRenderPackages()
-        {
-            var handler = RequestRenderPackages;
-            return handler != null ? handler() : new List<IRenderPackage>();
-        }
+        ///// <summary>
+        ///// This event handler is invoked when the render packages (specific to this node)  
+        ///// become available and in addition the node requests for associated render packages 
+        ///// if any for example, packages used for associated node manipulators
+        ///// </summary>
+        //internal IEnumerable<IRenderPackage> OnRequestRenderPackages()
+        //{
+        //    var handler = RequestRenderPackages;
+        //    return handler != null ? handler() : new List<IRenderPackage>();
+        //}
 
         protected virtual void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
