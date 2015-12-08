@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -397,8 +398,8 @@ namespace Dynamo.Manipulation
             BackgroundPreviewViewModel.ViewMouseDown += MouseDown;
             BackgroundPreviewViewModel.ViewMouseUp += MouseUp;
 
-            //Node.RequestRenderPackages += GenerateRenderPackages;
-            BackgroundPreviewViewModel.RequestRenderPackages += GenerateRenderPackages;
+            Node.RequestRenderPackages += GenerateRenderPackages;
+            //BackgroundPreviewViewModel.RequestRenderPackages += GenerateRenderPackages;
         }
 
         /// <summary>
@@ -427,7 +428,10 @@ namespace Dynamo.Manipulation
                 return packages;
             }
 
-            return BuildRenderPackage();
+            //return BuildRenderPackage();
+            IEnumerable<IRenderPackage> result = null;
+            BackgroundPreviewViewModel.Invoke(() => result = BuildRenderPackage());
+            return result;
         }
 
         /// <summary>
@@ -506,14 +510,13 @@ namespace Dynamo.Manipulation
         /// <summary>
         /// Checks if manipulator is enabled or not. Manipulator is enabled 
         /// only if node is not frozen or not setup as partially applied function 
-        /// or Run setting is set to Automatic.
         /// </summary>
         /// <returns>True if enabled and can be manipulated.</returns>
         public bool IsEnabled()
         {
             if (Node.IsFrozen) return false;
 
-            if (Node.CachedValue.IsNull) return false;
+            //if (Node.CachedValue.IsNull) return false;
 
             return true;
         }

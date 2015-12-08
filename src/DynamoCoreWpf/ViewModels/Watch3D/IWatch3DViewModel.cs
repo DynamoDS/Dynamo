@@ -103,6 +103,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <param name="nodes"></param>
         void UnHighlightNodeGraphics(IEnumerable<NodeModel> nodes);
 
+        void Invoke(Action action);
+
         #region Watch view Events to be handled by extensions
 
         /// <summary>

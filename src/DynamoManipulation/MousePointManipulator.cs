@@ -214,24 +214,21 @@ namespace Dynamo.Manipulation
 
             
             // hack: to prevent node mirror value lookup from throwing an exception
-            var previousOrigin = Point.ByCoordinates(origin.X, origin.Y, origin.Z);
-            try
+            //var previousOrigin = Point.ByCoordinates(origin.X, origin.Y, origin.Z);
+            //try
             {
                 //Node output could be a collection, consider the first item as origin.
                 Point pt = GetFirstValueFromNode(Node) as Point;
-                origin = pt != null ? Point.ByCoordinates(pt.X, pt.Y, pt.Z) : origin;
-            }
-            catch (Exception)
-            {
-                origin = previousOrigin;
-            }
 
-            if (origin == null)
-            {
-                origin = Point.Origin();
-                return;
+                if (pt == null) return;
+
+                origin = Point.ByCoordinates(pt.X, pt.Y, pt.Z);
             }
-            
+            //catch (Exception)
+            //{
+            //    origin = previousOrigin;
+            //}
+
             Active = true;
         }
 

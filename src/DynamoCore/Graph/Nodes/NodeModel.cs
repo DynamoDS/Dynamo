@@ -1974,30 +1974,30 @@ namespace Dynamo.Graph.Nodes
                 var packages = new List<IRenderPackage>();
 
                 packages.AddRange(task.RenderPackages);
-                //packages.AddRange(OnRequestRenderPackages());
+                packages.AddRange(OnRequestRenderPackages());
 
                 OnRenderPackagesUpdated(packages);
             }
         }
 
-        ///// <summary>
-        ///// 
-        ///// </summary>
-        //public event Func<IEnumerable<IRenderPackage>> RequestRenderPackages;
+        /// <summary>
+        /// 
+        /// </summary>
+        public event Func<IEnumerable<IRenderPackage>> RequestRenderPackages;
 
-        ///// <summary>
-        ///// This event handler is invoked when the render packages (specific to this node)  
-        ///// become available and in addition the node requests for associated render packages 
-        ///// if any for example, packages used for associated node manipulators
-        ///// </summary>
-        //private IEnumerable<IRenderPackage> OnRequestRenderPackages()
-        //{
-        //    if (RequestRenderPackages != null)
-        //    {
-        //        return RequestRenderPackages();
-        //    }
-        //    return new List<IRenderPackage>();
-        //}
+        /// <summary>
+        /// This event handler is invoked when the render packages (specific to this node)  
+        /// become available and in addition the node requests for associated render packages 
+        /// if any for example, packages used for associated node manipulators
+        /// </summary>
+        private IEnumerable<IRenderPackage> OnRequestRenderPackages()
+        {
+            if (RequestRenderPackages != null)
+            {
+                return RequestRenderPackages();
+            }
+            return new List<IRenderPackage>();
+        }
 
         /// <summary>
         /// Gets list of drawable Ids as registered with visualization manager 

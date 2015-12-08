@@ -452,6 +452,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in inherited classes.
         }
 
+        public void Invoke(Action action)
+        {
+            var dynamoViewModel = viewModel as DynamoViewModel;
+            if (dynamoViewModel != null)
+            {
+                dynamoViewModel.UIDispatcher.Invoke(action);
+            }
+        }
+
         internal event Func<IEnumerable<IRenderPackage>> RequestSpecialRenderPackages; 
         private IEnumerable<IRenderPackage> OnRequestSpecialRenderPackages()
         {
@@ -528,7 +537,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var allPackages = new List<IRenderPackage>();
 
             allPackages.AddRange(packages);
-            allPackages.AddRange(OnRequestSpecialRenderPackages());
+            //allPackages.AddRange(OnRequestSpecialRenderPackages());
 
             AddGeometryForRenderPackages(allPackages);
         }
