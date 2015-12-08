@@ -90,7 +90,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ShareWorkspaceClient.cs" />
     <Compile Include="ViewModels\InviteViewModel.cs" />
     <Compile Include="ViewModels\PublishViewModel.cs" />
     <Compile Include="Views\InviteView.xaml.cs">

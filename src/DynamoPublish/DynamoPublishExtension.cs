@@ -20,8 +20,8 @@ using System.Threading.Tasks;
 using Greg.AuthProviders;
 using System.Reflection;
 using System.IO;
-using Dynamo.PackageManager.UI;
 using System.Configuration;
+using Dynamo.PackageManager.UI;
 
 namespace Dynamo.Publish
 {
