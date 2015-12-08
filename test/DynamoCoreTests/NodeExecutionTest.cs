@@ -23,6 +23,7 @@ namespace Dynamo.Tests
         {
             libraries.Add("VMDataBridge.dll");
             libraries.Add("DSCoreNodes.dll");
+            libraries.Add("ProtoGeometry.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -589,6 +590,56 @@ namespace Dynamo.Tests
             var msg = "End node freeze state has not been updated";
             Assert.IsTrue(watchNode.IsFrozen, msg);
             Assert.IsFalse(watchNode.isFrozenExplicitly, msg); 
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void Freeze_Geometry_Test()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\FreezeNodes\TestFrozenOnGeometry.dyn");
+            RunModel(openPath);
+
+            //check freeze on Number node
+            var numberNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DoubleInput>("40296ab0-b354-46ab-a20d-3439854e6558");
+            numberNode.IsFrozen = true;
+            Assert.IsTrue(numberNode.isFrozenExplicitly);
+            numberNode.IsFrozen = false;
+
+            //check freeze on Cube
+            var geometryNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("c9c7b211-2aee-4712-838e-b9aaacf72153");
+            geometryNode.IsFrozen = true;
+            Assert.IsTrue(geometryNode.isFrozenExplicitly);
+            geometryNode.IsFrozen = false;
+
+            //check freeze on Line
+            var lineNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("bdb4475c-8c84-435a-a905-af6c7ee656c3");
+            lineNode.IsFrozen = true;
+            Assert.IsTrue(lineNode.isFrozenExplicitly);
+            lineNode.IsFrozen = false;
+
+            //check freeze on Point
+            var pointNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("64134763-9c2a-4fa1-907f-60b70afe8883");
+            pointNode.IsFrozen = true;
+            Assert.IsTrue(pointNode.isFrozenExplicitly);
+            pointNode.IsFrozen = false;
+
+            //check freeze on codeblock node
+            var codeblockNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("3ea56fe2-9be1-4d7d-ac7a-61b5275c096d");
+            codeblockNode.IsFrozen = true;
+            Assert.IsTrue(codeblockNode.isFrozenExplicitly);
+            codeblockNode.IsFrozen = false;
+
+            //check freeze on watch node
+            var watchNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("8c0edf26-d7ab-4114-9fb8-43817e022c38");
+            watchNode.IsFrozen = true;
+            Assert.IsTrue(watchNode.isFrozenExplicitly);
+            watchNode.IsFrozen = false;
+
+            //check freeze on watch3D node
+            var watch3DNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("79bec369-2077-495a-97a5-013ee15f1425");
+            watch3DNode.IsFrozen = true;
+            Assert.IsTrue(watch3DNode.isFrozenExplicitly);
+            watch3DNode.IsFrozen = false;
         }
     }
 }
