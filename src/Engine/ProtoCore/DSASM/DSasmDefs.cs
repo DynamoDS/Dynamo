@@ -63,9 +63,9 @@ namespace ProtoCore.DSASM
 
     public enum RangeStepOperator
     {
-        stepsize,
-        num,
-        approxsize
+        StepSize,
+        Number,
+        ApproximateSize
     }
 
     //@TODO(Jun): This should be an enumeration, not a bunch of consts?
@@ -133,7 +133,6 @@ namespace ProtoCore.DSASM
         // TODO: Replace with ProtoCore.DSDefinitions.Keyword struct
         public const string associative = "Associative";
         public const string imperative = "Imperative";
-        public const string options = "Options";
     }
 
     // TODO: Replace with ProtoCore.DSDefinitions.Keyword struct

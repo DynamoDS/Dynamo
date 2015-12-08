@@ -101,7 +101,7 @@ namespace DSCoreNodesUI.Logic
             // }
             var ifBlock = new LanguageBlockNode
             {
-                codeblock = new LanguageCodeBlock(Language.kAssociative),
+                codeblock = new LanguageCodeBlock(Language.Associative),
                 CodeBlockNode = new CodeBlockNode { Body = astsInTrueBranch }
             };
             var ifBranch = AstFactory.BuildReturnStatement(ifBlock).ToImperativeAST();
@@ -111,7 +111,7 @@ namespace DSCoreNodesUI.Logic
             // }
             var elseBlock = new LanguageBlockNode
             {
-                codeblock = new LanguageCodeBlock(Language.kAssociative),
+                codeblock = new LanguageCodeBlock(Language.Associative),
                 CodeBlockNode = new CodeBlockNode { Body = astsInFalseBranch }
             };
             var elseBranch = AstFactory.BuildReturnStatement(elseBlock).ToImperativeAST();
@@ -129,7 +129,7 @@ namespace DSCoreNodesUI.Logic
             // }
             var outerBlock = new LanguageBlockNode
             {
-                codeblock = new LanguageCodeBlock(Language.kImperative),
+                codeblock = new LanguageCodeBlock(Language.Imperative),
                 CodeBlockNode = new ProtoCore.AST.ImperativeAST.CodeBlockNode
                 {
                     Body = new List<ProtoCore.AST.ImperativeAST.ImperativeNode> { ifelseStatement }

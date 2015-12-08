@@ -241,8 +241,8 @@ namespace ProtoTestFx.TD
 
             testCore.Configurations.Add(ConfigurationKeys.GeometryFactory, "DSGeometry.dll");
             testCore.Configurations.Add(ConfigurationKeys.PersistentManager, "DSGeometry.dll");
-            testCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(testCore));
-            testCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(testCore));
+            testCore.Compilers.Add(ProtoCore.Language.Associative, new ProtoAssociative.Compiler(testCore));
+            testCore.Compilers.Add(ProtoCore.Language.Imperative, new ProtoImperative.Compiler(testCore));
 
             // this setting is to fix the random failure of replication test case
             testCore.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
@@ -284,8 +284,8 @@ namespace ProtoTestFx.TD
         public ProtoCore.Core CreateTestCore()
         {
             ProtoCore.Core core = new ProtoCore.Core(new ProtoCore.Options());
-            core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
-            core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.Associative, new ProtoAssociative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.Imperative, new ProtoImperative.Compiler(core));
             core.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
             core.ParsingMode = ProtoCore.ParseMode.AllowNonAssignment;
             core.IsParsingCodeBlockNode = true;
@@ -711,7 +711,7 @@ namespace ProtoTestFx.TD
             }
 
             ProtoCore.DSASM.ClassNode thisClass = testCore.ClassTable.ClassNodes[classIndex];
-            if (!thisClass.ProcTable.procList.Exists(memberFunc => String.Compare(memberFunc.Name, methodName) == 0))
+            if (!thisClass.ProcTable.Procedures.Exists(memberFunc => String.Compare(memberFunc.Name, methodName) == 0))
             {
                 if(doAssert)
                     Assert.Fail(string.Format("\tMethod \"{0}.{1}\" doesn't exist \n{2}", className, methodName, mErrorMessage)); 

@@ -592,30 +592,25 @@ namespace ProtoCore.Lang
 
             int thisObjectType = thisObject.metaData.type;
             ClassNode classNode = runtime.exe.classTable.ClassNodes[thisObjectType];
-            int procIndex = classNode.ProcTable.IndexOfFirst(functionName);
-            ProcedureNode procNode = null;
+            ProcedureNode procNode = classNode.ProcTable.GetFunctionsByName(functionName).FirstOrDefault();
 
             // Trace hierarchy chain to find out the procedure node.
-            if (Constants.kInvalidIndex == procIndex)
+            if (procNode == null)
             {
                 var currentClassNode = classNode;
-                while (currentClassNode.Bases.Count > 0)
+                while (currentClassNode.Bases.Any())
                 {
                     int baseCI = currentClassNode.Bases[0];
                     currentClassNode = runtime.exe.classTable.ClassNodes[baseCI];
-                    procIndex = currentClassNode.ProcTable.IndexOfFirst(functionName);
-                    if (Constants.kInvalidIndex != procIndex)
+                    procNode = currentClassNode.ProcTable.GetFunctionsByName(functionName).FirstOrDefault();
+                    if (procNode != null)
                     {
-                        procNode = currentClassNode.ProcTable.procList[procIndex];
                         break;
                     }
                 }
             }
-            else
-            {
-                procNode = classNode.ProcTable.procList[procIndex];
-            }
 
+            int procIndex = Constants.kInvalidIndex;
             // If the function still isn't found, then it may be a function 
             // pointer. 
             if (procNode == null)
@@ -635,7 +630,7 @@ namespace ProtoCore.Lang
                             // Functions pointed to are all in the global scope
                             thisObjectType = ProtoCore.DSASM.Constants.kGlobalScope;
                             procIndex = (int)svFunctionPtr.opdata;
-                            procNode = runtime.exe.procedureTable[0].procList[procIndex];
+                            procNode = runtime.exe.procedureTable[0].Procedures[procIndex];
                             functionName = procNode.Name;
                         }
                     }
@@ -645,7 +640,7 @@ namespace ProtoCore.Lang
             // Build the stackframe
             var newStackFrame = new StackFrame(thisObject, 
                                                stackFrame.ClassScope, 
-                                               procIndex, 
+                                               procNode == null ? procIndex : procNode.ID, 
                                                stackFrame.ReturnPC, 
                                                stackFrame.FunctionBlock, 
                                                stackFrame.FunctionCallerBlock, 
@@ -1176,7 +1171,7 @@ namespace ProtoCore.Lang
             {
                 switch (svOp.opdata)
                 {
-                    case (int)ProtoCore.DSASM.RangeStepOperator.stepsize:
+                    case (int)ProtoCore.DSASM.RangeStepOperator.StepSize:
                         {
                             decimal stepsize = (start > end) ? -1 : 1;
                             if (hasStep)
@@ -1188,7 +1183,7 @@ namespace ProtoCore.Lang
                             return GenerateRangeByStepSize(start, end, stepsize, isIntRange);
                             break;
                         }
-                    case (int)ProtoCore.DSASM.RangeStepOperator.num:
+                    case (int)ProtoCore.DSASM.RangeStepOperator.Number:
                         {
                             decimal stepnum = new decimal(Math.Round(svStep.IsDouble ? svStep.RawDoubleValue : svStep.RawIntValue));
                             if (stepnum > 0)
@@ -1197,7 +1192,7 @@ namespace ProtoCore.Lang
                             }
                             break;
                         }
-                    case (int)ProtoCore.DSASM.RangeStepOperator.approxsize:
+                    case (int)ProtoCore.DSASM.RangeStepOperator.ApproximateSize:
                         {
                             decimal astepsize = new decimal(svStep.IsDouble ? svStep.RawDoubleValue : svStep.RawIntValue);
                             if (astepsize != 0)

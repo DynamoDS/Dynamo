@@ -26,7 +26,7 @@ namespace ProtoCore.DSASM
         }
 
         public Executable exe { get; set; }
-        public Language executingLanguage = Language.kAssociative;
+        public Language executingLanguage = Language.Associative;
 
         protected int pc = Constants.kInvalidPC;
         public int PC
@@ -483,7 +483,7 @@ namespace ProtoCore.DSASM
 
             executingLanguage = exe.instrStreamList[exeblock].language;
 
-            if (Language.kAssociative == executingLanguage)
+            if (Language.Associative == executingLanguage)
             {
                 SetupEntryPoint();
             }
@@ -528,7 +528,7 @@ namespace ProtoCore.DSASM
 
             executingLanguage = exe.instrStreamList[exeblock].language;
 
-            if (Language.kAssociative == executingLanguage)
+            if (Language.Associative == executingLanguage)
             {
                 int ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
                 int fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
@@ -653,7 +653,7 @@ namespace ProtoCore.DSASM
             bool isCallingMemberFunction = Constants.kInvalidIndex != classIndex;
             if (isCallingMemberFunction)
             {
-                fNode = exe.classTable.ClassNodes[classIndex].ProcTable.procList[functionIndex];
+                fNode = exe.classTable.ClassNodes[classIndex].ProcTable.Procedures[functionIndex];
 
                 if (depth > 0 && fNode.IsConstructor)
                 {
@@ -665,7 +665,7 @@ namespace ProtoCore.DSASM
             else
             {
                 // Global function
-                fNode = exe.procedureTable[blockDeclId].procList[functionIndex];
+                fNode = exe.procedureTable[blockDeclId].Procedures[functionIndex];
             }
 
             // Build the arg values list
@@ -967,7 +967,7 @@ namespace ProtoCore.DSASM
             Validity.Assert(arrayDim.IsArrayDimension);
 
             ClassNode classNode = exe.classTable.ClassNodes[classIndex];
-            ProcedureNode procNode = classNode.ProcTable.procList[procIndex];
+            ProcedureNode procNode = classNode.ProcTable.Procedures[procIndex];
 
             // Get all arguments and replications 
             var arguments = new List<StackValue>();
@@ -1273,7 +1273,7 @@ namespace ProtoCore.DSASM
         public void SetupNextExecutableGraph(int function, int classscope)
         {
             Validity.Assert(istream != null);
-            if (istream.language != Language.kAssociative)
+            if (istream.language != Language.Associative)
             {
                 return;
             }
@@ -1444,9 +1444,7 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            string message = String.Format(Resources.kCyclicDependency, CycleStartNodeAndEndNode[0].updateNodeRefList[0].nodeList[0].symbol.name, CycleStartNodeAndEndNode[1].updateNodeRefList[0].nodeList[0].symbol.name);
-            runtimeCore.RuntimeStatus.LogWarning(WarningID.kCyclicDependency, message);
-            //BreakDependency(NodeExecutedSameTimes);
+            runtimeCore.RuntimeStatus.LogWarning(WarningID.kCyclicDependency, Resources.kCyclicDependency);
             foreach (AssociativeGraph.GraphNode node in nodeIterations)
             {
                 node.isCyclic = true;
@@ -1739,7 +1737,7 @@ namespace ProtoCore.DSASM
             foreach (InstructionStream xInstrStream in exe.instrStreamList)
             {
                 // If the instruction list is valid, is associative and has more than 1 graph node
-                if (null != xInstrStream && Language.kAssociative == xInstrStream.language && xInstrStream.dependencyGraph.GraphList.Count > 0)
+                if (null != xInstrStream && Language.Associative == xInstrStream.language && xInstrStream.dependencyGraph.GraphList.Count > 0)
                 {
                     // For every graphnode in the dependency list
                     foreach (AssociativeGraph.GraphNode graphNode in xInstrStream.dependencyGraph.GraphList)
@@ -2297,7 +2295,7 @@ namespace ProtoCore.DSASM
             }
             executingLanguage = exe.instrStreamList[exeblock].language;
 
-            if (Language.kAssociative == executingLanguage && !runtimeCore.DebugProps.isResume)
+            if (Language.Associative == executingLanguage && !runtimeCore.DebugProps.isResume)
             {
                 SetupEntryPoint();
             }
@@ -2381,7 +2379,7 @@ namespace ProtoCore.DSASM
         /// <param name="entry"></param>
         /// <param name="breakpoints"></param>
         /// <param name="language"></param>
-        public void Execute(int exeblock, int entry, List<Instruction> breakpoints, Language language = Language.kInvalid)
+        public void Execute(int exeblock, int entry, List<Instruction> breakpoints, Language language = Language.NotSpecified)
         {
             terminate = true;
             if (entry != Constants.kInvalidPC)
@@ -2402,7 +2400,7 @@ namespace ProtoCore.DSASM
         // for every implicit function call (like in replication) OR 
         // for every implicit bounce (like in dynamic lang block in inline condition) OR
         // for a Debug Resume from a breakpoint
-        private void ExecuteDebug(int exeblock, int entry, List<Instruction> breakpoints, Language language = Language.kInvalid)
+        private void ExecuteDebug(int exeblock, int entry, List<Instruction> breakpoints, Language language = Language.NotSpecified)
         {
             // TODO Jun: Call RestoreFromBounce here?
             StackValue svType = rmem.GetAtRelative(StackFrame.kFrameIndexStackFrameType);
@@ -2546,7 +2544,7 @@ namespace ProtoCore.DSASM
         }
 
 
-        private void Execute(int exeblock, int entry, Language language = Language.kInvalid)
+        private void Execute(int exeblock, int entry, Language language = Language.NotSpecified)
         {
             SetupExecutive(exeblock, entry);
 
@@ -3625,13 +3623,13 @@ namespace ProtoCore.DSASM
 
                     if (Constants.kGlobalScope == classId)
                     {
-                        procName = exe.procedureTable[blockId].procList[procId].Name;
+                        procName = exe.procedureTable[blockId].Procedures[procId].Name;
                         CodeBlock codeblock = ProtoCore.Utils.CoreUtils.GetCodeBlock(exe.CodeBlocks, blockId);
-                        procNode = CoreUtils.GetFirstVisibleProcedure(procName, arglist, codeblock);
+                        procNode = CoreUtils.GetFunctionBySignature(procName, arglist, codeblock);
                     }
                     else
                     {
-                        procNode = exe.classTable.ClassNodes[classId].ProcTable.procList[procId];
+                        procNode = exe.classTable.ClassNodes[classId].ProcTable.Procedures[procId];
                         isMemberFunctionPointer = !procNode.IsConstructor && !procNode.IsStatic;                        
                     }
                     type = classId;
@@ -3847,9 +3845,9 @@ namespace ProtoCore.DSASM
         {
             if (Constants.kGlobalScope != classIndex)
             {
-                return exe.classTable.ClassNodes[classIndex].ProcTable.procList[functionIndex];
+                return exe.classTable.ClassNodes[classIndex].ProcTable.Procedures[functionIndex];
             }
-            return exe.procedureTable[blockId].procList[functionIndex];
+            return exe.procedureTable[blockId].Procedures[functionIndex];
         }
 
         private void GetLocalAndParamCount(int blockId, int classIndex, int functionIndex, out int localCount, out int paramCount)
@@ -3858,13 +3856,13 @@ namespace ProtoCore.DSASM
 
             if (Constants.kGlobalScope != classIndex)
             {
-                localCount = exe.classTable.ClassNodes[classIndex].ProcTable.procList[functionIndex].LocalCount;
-                paramCount = exe.classTable.ClassNodes[classIndex].ProcTable.procList[functionIndex].ArgumentTypes.Count;
+                localCount = exe.classTable.ClassNodes[classIndex].ProcTable.Procedures[functionIndex].LocalCount;
+                paramCount = exe.classTable.ClassNodes[classIndex].ProcTable.Procedures[functionIndex].ArgumentTypes.Count;
             }
             else
             {
-                localCount = exe.procedureTable[blockId].procList[functionIndex].LocalCount;
-                paramCount = exe.procedureTable[blockId].procList[functionIndex].ArgumentTypes.Count;
+                localCount = exe.procedureTable[blockId].Procedures[functionIndex].LocalCount;
+                paramCount = exe.procedureTable[blockId].Procedures[functionIndex].ArgumentTypes.Count;
             }
         }
 
@@ -5422,11 +5420,11 @@ namespace ProtoCore.DSASM
             ProcedureNode fNode;
             if (ci != Constants.kInvalidIndex)
             {
-                fNode = exe.classTable.ClassNodes[ci].ProcTable.procList[fi];
+                fNode = exe.classTable.ClassNodes[ci].ProcTable.Procedures[fi];
             }
             else
             {
-                fNode = exe.procedureTable[blockId].procList[fi];
+                fNode = exe.procedureTable[blockId].Procedures[fi];
             }
 
             // Disabling support for stepping into replicating function calls temporarily 
@@ -5533,7 +5531,7 @@ namespace ProtoCore.DSASM
             fepRunStack.Push(false);
 
             // A standard call instruction must reset the graphnodes for associative
-            if (Language.kAssociative == executingLanguage)
+            if (Language.Associative == executingLanguage)
             {
                 UpdateMethodDependencyGraph(pc, fi, ci);
             }
@@ -6743,7 +6741,7 @@ namespace ProtoCore.DSASM
                 {
                     var callerBlockId = f.FunctionCallerBlock;
                     var cbn = exe.CompleteCodeBlocks[callerBlockId];
-                    return cbn.language == Language.kImperative;
+                    return cbn.language == Language.Imperative;
                 });
 
             if (isInNestedImperativeBlock)

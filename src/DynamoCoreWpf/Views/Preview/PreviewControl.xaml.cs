@@ -1,6 +1,8 @@
-﻿using System.Windows.Threading;
+﻿using System.Windows.Input;
+using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.Interfaces;
+using Dynamo.Utilities;
 using Dynamo.Scheduler;
 using Dynamo.ViewModels;
 using ProtoCore.Mirror;
@@ -71,6 +73,24 @@ namespace Dynamo.UI.Controls
         private bool queuedRefresh;
         private MirrorData queuedMirrorData;
 
+        private static readonly DependencyProperty StaysOpenProperty =
+            DependencyProperty.Register("StaysOpen", typeof(bool), typeof(PreviewControl));
+
+        /// <summary>
+        ///     Indicates whether preview should stay open, when mouse leaves control.
+        /// </summary>
+        internal bool StaysOpen
+        {
+            get
+            {
+                return (bool)GetValue(StaysOpenProperty);
+            }
+            private set
+            {
+                SetValue(StaysOpenProperty, value);
+            }
+        }
+
         #endregion
 
         #region Public Class Operational Methods
@@ -81,6 +101,7 @@ namespace Dynamo.UI.Controls
             this.nodeViewModel = nodeViewModel;
             InitializeComponent();
             Loaded += OnPreviewControlLoaded;
+            StaysOpen = false;
         }
 
         /// <summary>
@@ -176,33 +197,9 @@ namespace Dynamo.UI.Controls
             }
         }
 
-        private Canvas HostingCanvas
-        {
-            get
-            {
-                if (this.hostingCanvas == null)
-                {
-                    this.hostingCanvas = this.Parent as Canvas;
-                    if (this.hostingCanvas == null)
-                    {
-                        var message = "PreviewControl must be a child of Canvas";
-                        throw new InvalidOperationException(message);
-                    }
-                }
-
-                return this.hostingCanvas;
-            }
-        }
-
         #endregion
 
         #region Private Class Methods - Generic Helpers
-
-        private void CenterHorizontallyOnHostCanvas()
-        {
-            var widthDifference = HostingCanvas.ActualWidth - this.ActualWidth;
-            SetValue(Canvas.LeftProperty, widthDifference * 0.5);
-        }
 
         private void BeginNextTransition()
         {
@@ -326,7 +323,14 @@ namespace Dynamo.UI.Controls
                         }
                         else
                         {
-                            newContent = mirrorData.StringData;
+                            if (String.IsNullOrEmpty(mirrorData.StringData))
+                            {
+                                newContent = String.Empty;
+                                return;
+                            }
+
+                            int index = mirrorData.StringData.IndexOf('(');
+                            newContent = index != -1 ? mirrorData.StringData.Substring(0, index) : mirrorData.StringData;
                         }
                     }
                 },
@@ -377,8 +381,11 @@ namespace Dynamo.UI.Controls
                 {
                     if (largeContentGrid.Children.Count == 0)
                     {
-                        var tree = new WatchTree();
-                        tree.DataContext = new WatchViewModel();
+                        var tree = new WatchTree
+                        {
+                            Margin = (System.Windows.Thickness)this.Resources["PreviewContentMargin"],
+                            DataContext = new WatchViewModel()
+                        };
                         largeContentGrid.Children.Add(tree);
                     }
 
@@ -406,27 +413,50 @@ namespace Dynamo.UI.Controls
 
         private Size ComputeSmallContentSize()
         {
-            Size maxSize = new Size(){
+            var maxSize = new Size()
+            {
                 Width = Configurations.MaxCondensedPreviewWidth,
                 Height = Configurations.MaxCondensedPreviewHeight
             };
 
-            this.smallContentGrid.Measure(maxSize);
-            Size smallContentGridSize = this.smallContentGrid.DesiredSize;
+            smallContentGrid.Measure(maxSize);
+            Size smallContentGridSize = smallContentGrid.DesiredSize;
 
-            foreach (UIElement child in smallContentGrid.Children)
+            // Condensed bubble should be the same width as node or wider.
+            if (smallContentGridSize.Width == 0)
             {
-                child.Measure(maxSize);
-                if (child.DesiredSize.Width > smallContentGridSize.Width)
+                var nodeView = WpfUtilities.FindUpVisualTree<NodeView>(this);
+                if (nodeView != null)
                 {
-                    smallContentGridSize.Width = child.DesiredSize.Width + 10;
-                }
-                if (child.DesiredSize.Height > smallContentGridSize.Height)
-                {
-                    smallContentGridSize.Height = child.DesiredSize.Height + 10;
+                    smallContentGridSize.Width = nodeView.ActualWidth;
                 }
             }
 
+            // Count children size.
+            var childrenSize = new Size() { Width = 0, Height = 0 };
+            foreach (UIElement child in smallContentGrid.Children)
+            {
+                child.Measure(maxSize);
+
+                childrenSize.Width += child.DesiredSize.Width;
+                if (child.DesiredSize.Height > childrenSize.Height)
+                {
+                    childrenSize.Height = child.DesiredSize.Height;
+                }
+            }
+
+            // If children are smaller, update smallContentGridSize.
+            if (childrenSize.Height < smallContentGridSize.Height)
+            {
+                smallContentGridSize.Height = childrenSize.Height;
+            }
+            if (childrenSize.Width < smallContentGridSize.Width)
+            {
+                // But don't make it smaller, then min width.
+                smallContentGridSize.Width = childrenSize.Width < smallContentGrid.MinWidth
+                    ? smallContentGrid.MinWidth
+                    : childrenSize.Width;
+            }
             // Add padding since we are sizing the centralizedGrid.
             return ContentToControlSize(smallContentGridSize);
         }
@@ -494,8 +524,6 @@ namespace Dynamo.UI.Controls
             if (this.IsHidden == false)
                 throw new InvalidOperationException();
 
-            CenterHorizontallyOnHostCanvas();
-
             // To prevent another transition from being started and
             // indicate a new transition is about to be started
             SetCurrentStateAndNotify(State.PreTransition);
@@ -506,9 +534,9 @@ namespace Dynamo.UI.Controls
                     var smallContentSize = ComputeSmallContentSize();
                     UpdateAnimatorTargetSize(SizeAnimator.PhaseIn, smallContentSize);
 
-                    this.centralizedGrid.Opacity = 0.0;
-                    this.centralizedGrid.Visibility = System.Windows.Visibility.Visible;
-                    this.smallContentGrid.Visibility = System.Windows.Visibility.Visible;
+                    centralizedGrid.Opacity = 0.0;
+                    centralizedGrid.Visibility = Visibility.Visible;
+                    smallContentGrid.Visibility = Visibility.Visible;
 
                     // The real transition starts
                     SetCurrentStateAndNotify(State.InTransition);
@@ -521,6 +549,8 @@ namespace Dynamo.UI.Controls
         {
             if (this.IsCondensed == false)
                 throw new InvalidOperationException();
+
+            bubbleTools.Visibility = Visibility.Collapsed;
 
             SetCurrentStateAndNotify(State.InTransition);
             phaseOutStoryboard.Begin(this, true);
@@ -537,7 +567,8 @@ namespace Dynamo.UI.Controls
 
             RefreshCondensedDisplay(() =>
                 {
-                    this.smallContentGrid.Visibility = System.Windows.Visibility.Visible;
+                    smallContentGrid.Visibility = Visibility.Visible;
+                    bubbleTools.Visibility = Visibility.Collapsed;
 
                     // The real transition starts
                     SetCurrentStateAndNotify(State.InTransition);
@@ -559,10 +590,11 @@ namespace Dynamo.UI.Controls
 
             RefreshExpandedDisplay(() =>
                 {
-                    this.largeContentGrid.Visibility = System.Windows.Visibility.Visible;
+                    largeContentGrid.Visibility = Visibility.Visible;
+                    bubbleTools.Visibility = Visibility.Visible;
+
                     // The real transition starts
                     SetCurrentStateAndNotify(State.InTransition);
-
                     var largeContentSize = ComputeLargeContentSize();
                     UpdateAnimatorTargetSize(SizeAnimator.Expansion, largeContentSize);
                     this.expandStoryboard.Begin(this, true);
@@ -642,17 +674,37 @@ namespace Dynamo.UI.Controls
         private void OnPreviewControlExpanded(object sender, EventArgs e)
         {
             SetCurrentStateAndNotify(State.Expanded);
-            smallContentGrid.Visibility = System.Windows.Visibility.Hidden;
-            BeginNextTransition(); // See if there's any more requests.
-        }
-        
-        private void OnPreviewControlCondensed(object sender, EventArgs e)
-        {
-            SetCurrentStateAndNotify(State.Condensed);
-            largeContentGrid.Visibility = System.Windows.Visibility.Hidden;
             BeginNextTransition(); // See if there's any more requests.
         }
 
+        private void OnPreviewControlCondensed(object sender, EventArgs e)
+        {
+            SetCurrentStateAndNotify(State.Condensed);
+            BeginNextTransition(); // See if there's any more requests.
+        }
+
+        private void OnPreviewMouseEnter(object sender, MouseEventArgs e)
+        {
+            if (IsMouseOver && IsCondensed)
+            {
+                TransitionToState(State.Expanded);
+            }
+        }
+
+        private void OnPreviewMouseLeave(object sender, MouseEventArgs e)
+        {
+            if (!StaysOpen)
+            {
+                TransitionToState(State.Condensed);
+            }
+        }
+
+        private void OnMapPinMouseClick(object sender, MouseButtonEventArgs e)
+        {
+            StaysOpen = !StaysOpen;
+        }
+
         #endregion
+
     }
 }

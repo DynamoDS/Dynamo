@@ -5,9 +5,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using Dynamo.Graph;
+
 using Dynamo.Graph.Nodes;
-using Dynamo.Models;
 using Dynamo.Prompts;
 using Dynamo.Selection;
 using Dynamo.UI;
@@ -367,11 +366,8 @@ namespace Dynamo.Controls
 
         #region Preview Control Related Event Handlers
 
-        private void OnPreviewIconMouseEnter(object sender, MouseEventArgs e)
+        private void OnNodeViewMouseEnter(object sender, MouseEventArgs e)
         {
-            previewInnerRect.Visibility = Visibility.Visible;
-            previewOuterRect.Fill = FrozenResources.PreviewIconHoverBrush;
-
             if (PreviewControl.IsInTransition) // In transition state, come back later.
                 return;
 
@@ -384,35 +380,20 @@ namespace Dynamo.Controls
             }
         }
 
-        private void OnPreviewIconMouseLeave(object sender, MouseEventArgs e)
+        private void OnNodeViewMouseLeave(object sender, MouseEventArgs e)
         {
-            RefreshPreviewIconDisplay();
-            previewInnerRect.Visibility = Visibility.Hidden;
-
             if (PreviewControl.IsInTransition) // In transition state, come back later.
                 return;
 
-            if (PreviewControl.IsCondensed)
+            // If mouse in not over node/preview control and preview control is not pined, we can hide preview control.
+            if (!IsMouseOver && !PreviewControl.IsMouseOver && !PreviewControl.StaysOpen)
+            {
                 PreviewControl.TransitionToState(PreviewControl.State.Hidden);
-        }
-
-        private void OnPreviewIconMouseClicked(object sender, MouseEventArgs e)
-        {
-            if (PreviewControl.IsInTransition) // In transition state, come back later.
-                return;
-
-            if (PreviewControl.IsCondensed)
-                PreviewControl.TransitionToState(PreviewControl.State.Expanded);
-            else if (PreviewControl.IsExpanded)
-                PreviewControl.TransitionToState(PreviewControl.State.Condensed);
-
-            previewOuterRect.Fill = FrozenResources.PreviewIconClickedBrush;
+            }
         }
 
         private void OnPreviewControlStateChanged(object sender, EventArgs e)
         {
-            RefreshPreviewIconDisplay();
-
             var preview = sender as PreviewControl;
             // If the preview is in a transition, return directly to avoid another
             // transition
@@ -421,36 +402,24 @@ namespace Dynamo.Controls
                 return;
             }
 
-            if (previewIcon.IsMouseOver)
+            if (IsMouseOver)
             {
-                // The mouse is currently over the preview icon, so if the 
+                // The mouse is currently over the node, so if the 
                 // preview control is hidden, bring it into condensed state.
-                if (preview.IsHidden != false)
+                if (preview.IsHidden)
+                {
                     preview.TransitionToState(PreviewControl.State.Condensed);
+                }
             }
             else
             {
-                // The mouse is no longer over the preview icon, if the preview 
+                // The mouse is no longer over the node, if the preview 
                 // control is currently in condensed state, hide it from view.
-                if (preview.IsCondensed != false)
+                if (preview.IsCondensed)
+                {
                     preview.TransitionToState(PreviewControl.State.Hidden);
-            }
-        }
+                }
 
-        private void RefreshPreviewIconDisplay()
-        {
-            if (previewControl == null)
-                return;
-
-            if (previewControl.IsHidden)
-                previewOuterRect.Fill = FrozenResources.PreviewIconNormalBrush;
-            else if (previewControl.IsCondensed)
-                previewOuterRect.Fill = FrozenResources.PreviewIconHoverBrush;
-            else if (previewControl.IsExpanded)
-                previewOuterRect.Fill = FrozenResources.PreviewIconPinnedBrush;
-            else if (previewControl.IsInTransition)
-            {
-                // No changes, those will come after transition is done.
             }
         }
 

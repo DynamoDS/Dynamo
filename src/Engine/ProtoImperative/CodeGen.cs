@@ -118,7 +118,7 @@ namespace ProtoImperative
             ProtoCore.DSASM.CodeBlock cb = new ProtoCore.DSASM.CodeBlock(
                 context.guid,
                 ProtoCore.DSASM.CodeBlockType.kLanguage,
-                ProtoCore.Language.kImperative,
+                ProtoCore.Language.Imperative,
                 core.CodeBlockIndex,
                 new ProtoCore.DSASM.SymbolTable("imperative lang block", core.RuntimeTableIndex),
                 new ProtoCore.DSASM.ProcedureTable(core.RuntimeTableIndex), 
@@ -276,8 +276,6 @@ namespace ProtoImperative
 
         private void AllocateArray(ProtoCore.DSASM.SymbolNode symbol, ImperativeNode nodeArray)
         {
-            symbol.isArray = true;
-
             //===================================================
             // TODO Jun: 
             //  Determine which is optimal-
@@ -638,7 +636,7 @@ namespace ProtoImperative
             // global function. 
             if ((procNode == null) && (procName != ProtoCore.DSASM.Constants.kFunctionPointerCall))
             {
-                procNode = CoreUtils.GetFirstVisibleProcedure(procName, arglist, codeBlock);
+                procNode = CoreUtils.GetFunctionBySignature(procName, arglist, codeBlock);
                 if (null != procNode)
                 {
                     type = ProtoCore.DSASM.Constants.kGlobalScope;
@@ -1005,7 +1003,7 @@ namespace ProtoImperative
             {
                 //check if it is a function instance
                 ProtoCore.DSASM.ProcedureNode procNode = null;
-                procNode = CoreUtils.GetFirstVisibleProcedure(t.Name, null, codeBlock);
+                procNode = CoreUtils.GetFunctionBySignature(t.Name, null, codeBlock);
                 if (null != procNode)
                 {
                     if (ProtoCore.DSASM.Constants.kInvalidIndex != procNode.ID)
@@ -1125,7 +1123,7 @@ namespace ProtoImperative
                 // CompilerException, so we throw that instead.
                 //Validity.Assert(ProtoCore.Language.kInvalid != langblock.codeblock.language);
 
-                if (ProtoCore.Language.kInvalid == langblock.codeblock.language)
+                if (ProtoCore.Language.NotSpecified == langblock.codeblock.Language)
                 {
                     throw new ProtoCore.Exceptions.CompileErrorsOccured("Invalid language block");
                 }
@@ -1140,16 +1138,16 @@ namespace ProtoImperative
 
                 int entry = 0;
                 int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-                if (ProtoCore.Language.kImperative == langblock.codeblock.language)
+                if (ProtoCore.Language.Imperative == langblock.codeblock.Language)
                 {
                     // TODO Jun: Move the associative and all common string into some table
                     buildStatus.LogSyntaxError(Resources.InvalidNestedImperativeBlock, core.CurrentDSFileName, langblock.line, langblock.col);
                 }
 
                 if (globalProcIndex != ProtoCore.DSASM.Constants.kInvalidIndex && core.ProcNode == null)
-                    core.ProcNode = codeBlock.procedureTable.procList[globalProcIndex];
+                    core.ProcNode = codeBlock.procedureTable.Procedures[globalProcIndex];
 
-                core.Compilers[langblock.codeblock.language].Compile(out blockId, codeBlock, langblock.codeblock, context, codeBlock.EventSink, langblock.CodeBlockNode);
+                core.Compilers[langblock.codeblock.Language].Compile(out blockId, codeBlock, langblock.codeblock, context, codeBlock.EventSink, langblock.CodeBlockNode);
 
                 if (propogateUpdateGraphNode != null)
                 {
@@ -1218,7 +1216,7 @@ namespace ProtoImperative
                 localProcedure = new ProtoCore.DSASM.ProcedureNode();
                 localProcedure.Name = funcDef.Name;
                 localProcedure.PC = pc;
-                localProcedure.LocalCount = funcDef.localVars;
+                localProcedure.LocalCount = funcDef.LocalVariableCount;
                 var returnType = new ProtoCore.Type();
                 returnType.UID = core.TypeSystem.GetType(funcDef.ReturnType.Name);
                 returnType.rank = funcDef.ReturnType.rank;
@@ -1285,8 +1283,9 @@ namespace ProtoImperative
                 }
 
                 // Get the exisitng procedure that was added on the previous pass
-                globalProcIndex = codeBlock.procedureTable.IndexOfExact(funcDef.Name, argList, false);
-                localProcedure = codeBlock.procedureTable.procList[globalProcIndex];
+                var procNode = codeBlock.procedureTable.GetFunctionBySignature(funcDef.Name, argList);
+                globalProcIndex = procNode == null ? Constants.kInvalidIndex : procNode.ID;
+                localProcedure = codeBlock.procedureTable.Procedures[globalProcIndex];
 
 
                 Validity.Assert(null != localProcedure);
@@ -1511,7 +1510,7 @@ namespace ProtoImperative
                 localCodeBlock = new ProtoCore.DSASM.CodeBlock(
                     context.guid,
                     ProtoCore.DSASM.CodeBlockType.kConstruct,
-                    Language.kInvalid,
+                    Language.NotSpecified,
                     core.CodeBlockIndex,
                     new ProtoCore.DSASM.SymbolTable(GetConstructBlockName("if"), core.RuntimeTableIndex++),
                     null,
@@ -1597,7 +1596,7 @@ namespace ProtoImperative
                         localCodeBlock = new ProtoCore.DSASM.CodeBlock(
                             context.guid,
                             ProtoCore.DSASM.CodeBlockType.kConstruct,
-                            Language.kInvalid,
+                            Language.NotSpecified,
                             core.CodeBlockIndex++,
                             new ProtoCore.DSASM.SymbolTable(GetConstructBlockName("elseif"), core.RuntimeTableIndex++),
                             null,
@@ -1665,7 +1664,7 @@ namespace ProtoImperative
                     localCodeBlock = new ProtoCore.DSASM.CodeBlock(
                         context.guid,
                         ProtoCore.DSASM.CodeBlockType.kConstruct,
-                        Language.kInvalid,
+                        Language.NotSpecified,
                         core.CodeBlockIndex++,
                         new ProtoCore.DSASM.SymbolTable(GetConstructBlockName("else"), core.RuntimeTableIndex++),
                         null,
@@ -1766,7 +1765,7 @@ namespace ProtoImperative
                     ProtoCore.DSASM.CodeBlock localCodeBlock = new ProtoCore.DSASM.CodeBlock(
                         context.guid,
                         ProtoCore.DSASM.CodeBlockType.kConstruct,
-                        Language.kInvalid,
+                        Language.NotSpecified,
                         core.CodeBlockIndex++,
                         new ProtoCore.DSASM.SymbolTable(GetConstructBlockName("while"), core.RuntimeTableIndex++),
                         null,
@@ -1839,14 +1838,14 @@ namespace ProtoImperative
                     if (bNode.RightNode is ExprListNode)
                     {
                         ExprListNode exprlist = bNode.RightNode as ExprListNode;
-                        int size = datasize * exprlist.list.Count;
+                        int size = datasize * exprlist.Exprs.Count;
 
                         symnode = Allocate(tVar.Value, globalProcIndex, type, size, datasize, tVar.ArrayDimensions, varNode.memregion);
                         symindex = symnode.symbolTableIndex;
 
-                        for (int n = 0; n < exprlist.list.Count; ++n)
+                        for (int n = 0; n < exprlist.Exprs.Count; ++n)
                         {
-                            DfsTraverse(exprlist.list[n], ref inferedType);
+                            DfsTraverse(exprlist.Exprs[n], ref inferedType);
 
                             ArrayNode array = new ArrayNode();
                             array.Expr = nodeBuilder.BuildIdentfier(n.ToString(), PrimitiveType.kTypeInt);
@@ -2124,23 +2123,23 @@ namespace ProtoImperative
                     var tident = b.LeftNode as TypedIdentifierNode;
                     if (tident != null)
                     {
-                        int castUID = tident.datatype.UID;
+                        int castUID = tident.DataType.UID;
                         if ((int)PrimitiveType.kInvalidType == castUID)
                         {
-                            castUID = core.ClassTable.IndexOf(tident.datatype.Name);
+                            castUID = core.ClassTable.IndexOf(tident.DataType.Name);
                         }
 
                         if ((int)PrimitiveType.kInvalidType == castUID)
                         {
-                            string message = String.Format(ProtoCore.Properties.Resources.kTypeUndefined, tident.datatype.Name);
+                            string message = String.Format(ProtoCore.Properties.Resources.kTypeUndefined, tident.DataType.Name);
                             buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, core.CurrentDSFileName, b.line, b.col, graphNode);
                             castType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kInvalidType, 0);
-                            castType.Name = tident.datatype.Name;
-                            castType.rank = tident.datatype.rank;
+                            castType.Name = tident.DataType.Name;
+                            castType.rank = tident.DataType.rank;
                         }
                         else
                         {
-                            castType = core.TypeSystem.BuildTypeObject(castUID, tident.datatype.rank);
+                            castType = core.TypeSystem.BuildTypeObject(castUID, tident.DataType.rank);
                         }
                     }
 
@@ -2371,7 +2370,7 @@ namespace ProtoImperative
                 ProtoCore.DSASM.CodeBlock localCodeBlock = new ProtoCore.DSASM.CodeBlock(
                         context.guid,
                         ProtoCore.DSASM.CodeBlockType.kConstruct,
-                        Language.kInvalid,
+                        Language.NotSpecified,
                         core.CodeBlockIndex++,
                         new ProtoCore.DSASM.SymbolTable(GetConstructBlockName("dummy"), core.RuntimeTableIndex++),
                         null,
@@ -2390,10 +2389,10 @@ namespace ProtoImperative
                 ProtoCore.Type type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVoid, 0);
 
                 // val = null; 
-                IdentifierNode loopvar = nodeBuilder.BuildIdentfier(forNode.loopVar.Name) as IdentifierNode;
+                IdentifierNode loopvar = nodeBuilder.BuildIdentfier(forNode.LoopVariable.Name) as IdentifierNode;
                 {
-                    loopvar.ArrayName = forNode.expression.Name;
-                    ProtoCore.Utils.NodeUtils.CopyNodeLocation(loopvar, forNode.loopVar);
+                    loopvar.ArrayName = forNode.Expression.Name;
+                    ProtoCore.Utils.NodeUtils.CopyNodeLocation(loopvar, forNode.LoopVariable);
                     BinaryExpressionNode loopvarInit = new BinaryExpressionNode();
                     loopvarInit.Optr = ProtoCore.DSASM.Operator.assign;
                     loopvarInit.LeftNode = loopvar;
@@ -2414,14 +2413,14 @@ namespace ProtoImperative
                 // index into it. 
                 string identName = GetForExprIdent();
                 var arrayExpr = nodeBuilder.BuildIdentfier(identName);
-                NodeUtils.CopyNodeLocation(arrayExpr, forNode.expression);
+                NodeUtils.CopyNodeLocation(arrayExpr, forNode.Expression);
                 BinaryExpressionNode arrayexprAssignment = new BinaryExpressionNode();
                 arrayexprAssignment.Optr = ProtoCore.DSASM.Operator.assign;
                 arrayexprAssignment.LeftNode = arrayExpr;
-                arrayexprAssignment.RightNode = forNode.expression;
+                arrayexprAssignment.RightNode = forNode.Expression;
                 NodeUtils.UpdateBinaryExpressionLocation(arrayexprAssignment);
 
-                switch (forNode.expression.GetType().ToString())
+                switch (forNode.Expression.GetType().ToString())
                 {
                     case "ProtoCore.AST.ImperativeAST.IdentifierNode":
                     case "ProtoCore.AST.ImperativeAST.ExprListNode":
@@ -2524,13 +2523,13 @@ namespace ProtoImperative
 
                 // Append the array indexing and key increment expressions into 
                 // the for-loop body
-                forNode.body.Insert(0, arrayIndexing);
-                forNode.body.Insert(1, nextKey);
+                forNode.Body.Insert(0, arrayIndexing);
+                forNode.Body.Insert(1, nextKey);
 
                 // Construct and populate the equivalent while node
                 WhileStmtNode whileStatement = new WhileStmtNode();
                 whileStatement.Expr = condition;
-                whileStatement.Body = forNode.body;
+                whileStatement.Body = forNode.Body;
                 whileStatement.endLine = node.endLine;
                 whileStatement.endCol = node.endCol;
 
@@ -2586,28 +2585,28 @@ namespace ProtoImperative
 
             // Do some static checking...probably it is not necessary. 
             // Need to move these checkings to built-in function.
-            if ((range.FromNode is IntNode || range.FromNode is DoubleNode) &&
-                (range.ToNode is IntNode || range.ToNode is DoubleNode) &&
-                (range.StepNode == null || (range.StepNode != null && (range.StepNode is IntNode || range.StepNode is DoubleNode))))
+            if ((range.From is IntNode || range.From is DoubleNode) &&
+                (range.To is IntNode || range.To is DoubleNode) &&
+                (range.Step == null || (range.Step != null && (range.Step is IntNode || range.Step is DoubleNode))))
             {
-                double current = (range.FromNode is IntNode) ? (range.FromNode as IntNode).Value : (range.FromNode as DoubleNode).Value;
-                double end = (range.ToNode is IntNode) ? (range.ToNode as IntNode).Value : (range.ToNode as DoubleNode).Value;
-                ProtoCore.DSASM.RangeStepOperator stepoperator = range.stepoperator;
+                double current = (range.From is IntNode) ? (range.From as IntNode).Value : (range.From as DoubleNode).Value;
+                double end = (range.To is IntNode) ? (range.To as IntNode).Value : (range.To as DoubleNode).Value;
+                ProtoCore.DSASM.RangeStepOperator stepoperator = range.StepOperator;
 
                 double step = 1;
-                if (range.StepNode != null)
+                if (range.Step != null)
                 {
-                    step = (range.StepNode is IntNode) ? (range.StepNode as IntNode).Value : (range.StepNode as DoubleNode).Value;
+                    step = (range.Step is IntNode) ? (range.Step as IntNode).Value : (range.Step as DoubleNode).Value;
                 }
 
                 bool hasAmountOp = range.HasRangeAmountOperator;
                 string warningMsg = String.Empty;
 
-                if (stepoperator == ProtoCore.DSASM.RangeStepOperator.stepsize)
+                if (stepoperator == ProtoCore.DSASM.RangeStepOperator.StepSize)
                 {
                     if (!hasAmountOp)
                     {
-                        if (range.StepNode == null && end < current)
+                        if (range.Step == null && end < current)
                         {
                             step = -1;
                         }
@@ -2622,13 +2621,13 @@ namespace ProtoImperative
                         }
                     }
                 }
-                else if (stepoperator == ProtoCore.DSASM.RangeStepOperator.num)
+                else if (stepoperator == ProtoCore.DSASM.RangeStepOperator.Number)
                 {
                     if (hasAmountOp)
                     {
                         warningMsg = ProtoCore.Properties.Resources.kRangeExpressionConflictOperator;
                     }
-                    else if (range.StepNode != null && !(range.StepNode is IntNode))
+                    else if (range.Step != null && !(range.Step is IntNode))
                     {
                         warningMsg = ProtoCore.Properties.Resources.kRangeExpressionWithNonIntegerStepNumber;
                     }
@@ -2637,7 +2636,7 @@ namespace ProtoImperative
                         warningMsg = ProtoCore.Properties.Resources.kRangeExpressionWithNegativeStepNumber;
                     }
                 }
-                else if (stepoperator == ProtoCore.DSASM.RangeStepOperator.approxsize)
+                else if (stepoperator == ProtoCore.DSASM.RangeStepOperator.ApproximateSize)
                 {
                     if (hasAmountOp)
                     {
@@ -2654,8 +2653,8 @@ namespace ProtoImperative
                     buildStatus.LogWarning(WarningID.kInvalidRangeExpression,
                                            warningMsg,
                                            core.CurrentDSFileName,
-                                           range.StepNode.line,
-                                           range.StepNode.col,
+                                           range.Step.line,
+                                           range.Step.col,
                                            graphNode);
                     EmitNullNode(new NullNode(), ref inferedType);
                     return;
@@ -2663,15 +2662,15 @@ namespace ProtoImperative
             }
 
             IntNode op = null;
-            switch (range.stepoperator)
+            switch (range.StepOperator)
             {
-                case ProtoCore.DSASM.RangeStepOperator.stepsize:
+                case ProtoCore.DSASM.RangeStepOperator.StepSize:
                     op = new IntNode(0);
                     break;
-                case ProtoCore.DSASM.RangeStepOperator.num:
+                case ProtoCore.DSASM.RangeStepOperator.Number:
                     op = new IntNode(1);
                     break;
-                case ProtoCore.DSASM.RangeStepOperator.approxsize:
+                case ProtoCore.DSASM.RangeStepOperator.ApproximateSize:
                     op = new IntNode(2);
                     break;
                 default:
@@ -2683,11 +2682,11 @@ namespace ProtoImperative
                 Constants.kFunctionRangeExpression,
                 new List<ImperativeNode> 
                 { 
-                    range.FromNode, 
-                    range.ToNode, 
-                    range.StepNode ?? new NullNode(),
+                    range.From, 
+                    range.To, 
+                    range.Step ?? new NullNode(),
                     op, 
-                    new BooleanNode(range.StepNode != null),
+                    new BooleanNode(range.Step != null),
                     new BooleanNode(range.HasRangeAmountOperator) 
                 });
 
@@ -3152,10 +3151,6 @@ namespace ProtoImperative
             {
                 EmitLanguageBlockNode(node, ref inferedType, graphNode);
             }
-            else if (node is ConstructorDefinitionNode)
-            {
-                EmitConstructorDefinitionNode(node);
-            }
             else if (node is FunctionDefinitionNode)
             {
                 EmitFunctionDefinitionNode(node, ref inferedType);
@@ -3240,7 +3235,7 @@ namespace ProtoImperative
         {
             var ident = new IdentifierNode();
             ident.Name = ident.Value = name;
-            ident.datatype = TypeSystem.BuildPrimitiveTypeObject(type, 0);
+            ident.DataType = TypeSystem.BuildPrimitiveTypeObject(type, 0);
 
             return ident;
         }

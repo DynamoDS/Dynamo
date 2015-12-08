@@ -400,7 +400,14 @@
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IVectorEntity.AngleBetween(Autodesk.DesignScript.Interfaces.IVectorEntity)">
             <summary>
-            Returns the angle between the two Vectors, in degrees
+            Returns the angle between the two Vectors, in the range [0, 180] degrees.
+            </summary>
+            <search>rotation angle,</search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IVectorEntity.AngleBetween(Autodesk.DesignScript.Interfaces.IVectorEntity,Autodesk.DesignScript.Interfaces.IVectorEntity)">
+            <summary>
+            Returns the angle between the two Vectors, in the range [0, 360] degrees.
+            It uses axis of rotation to determine the direction of the angle.
             </summary>
             <search>rotation angle,</search>
         </member>

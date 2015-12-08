@@ -163,19 +163,23 @@
     <value>Composed function: g(f(x))</value>
   </data>
   <data name="RangePortDataAmountToolTip" xml:space="preserve">
-    <value>Amount of numbers in the sequence</value>
+    <value>Amount of numbers in the sequence
+Default value: 10</value>
   </data>
   <data name="RangePortDataEndToolTip" xml:space="preserve">
-    <value>Number or letter to end the sequence at</value>
+    <value>Number or letter to end the sequence at
+Default value: 9</value>
   </data>
   <data name="RangePortDataSeqToolTip" xml:space="preserve">
     <value>New sequence</value>
   </data>
   <data name="RangePortDataStartToolTip" xml:space="preserve">
-    <value>Number or letter to start the sequence at</value>
+    <value>Number or letter to start the sequence at
+Default value: 0</value>
   </data>
   <data name="RangePortDataStepToolTip" xml:space="preserve">
-    <value>Space between numbers or letters</value>
+    <value>Space between numbers or letters
+Default value: 1</value>
   </data>
   <data name="PortDataParameterToolTip" xml:space="preserve">
     <value>parameter</value>

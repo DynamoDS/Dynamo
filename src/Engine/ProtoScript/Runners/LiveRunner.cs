@@ -793,7 +793,7 @@ namespace ProtoScript.Runners
                         {
                             if (assocNode is BinaryExpressionNode)
                             {
-                                if (gnode.exprUID == (assocNode as BinaryExpressionNode).exprUID)
+                                if (gnode.exprUID == (assocNode as BinaryExpressionNode).ExpressionUID)
                                 {
                                     // Check if the procedure associatied with this graphnode matches thename and arg count of the modified proc
                                     if (null != gnode.firstProc)
@@ -859,7 +859,7 @@ namespace ProtoScript.Runners
                                 if (prevIdent.Equals(rnode))
                                 {
                                     newNode.InheritID(prevBinaryNode.ID);
-                                    newNode.exprUID = prevBinaryNode.exprUID;
+                                    newNode.ExpressionUID = prevBinaryNode.ExpressionUID;
                                 }
                             }
                         }
@@ -941,7 +941,7 @@ namespace ProtoScript.Runners
                                                 if (prevIdent.Equals(bnode.LeftNode as IdentifierNode))
                                                 {
                                                     bnode.InheritID(prevBinaryNode.ID);
-                                                    bnode.exprUID = prevBinaryNode.exprUID;
+                                                    bnode.ExpressionUID = prevBinaryNode.ExpressionUID;
                                                 }
                                             }
                                         }
@@ -1335,8 +1335,8 @@ namespace ProtoScript.Runners
             };
 
             runnerCore = new ProtoCore.Core(coreOptions);
-            runnerCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(runnerCore));
-            runnerCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(runnerCore));
+            runnerCore.Compilers.Add(ProtoCore.Language.Associative, new ProtoAssociative.Compiler(runnerCore));
+            runnerCore.Compilers.Add(ProtoCore.Language.Imperative, new ProtoImperative.Compiler(runnerCore));
 
             runnerCore.Options.RootModulePathName = configuration.RootModulePathName;
             runnerCore.Options.IncludeDirectories = configuration.SearchDirectories.ToList();

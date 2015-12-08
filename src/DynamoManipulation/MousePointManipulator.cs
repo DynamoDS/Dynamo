@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Media3D;
 using Autodesk.DesignScript.Geometry;
-using Autodesk.DesignScript.Interfaces;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
-using Dynamo.Models;
 using DoubleSlider = DSCoreNodesUI.Input.DoubleSlider;
 using Point = Autodesk.DesignScript.Geometry.Point;
-using Dynamo.Wpf.ViewModels.Watch3D;
 
 namespace Dynamo.Manipulation
 {
@@ -26,6 +20,7 @@ namespace Dynamo.Manipulation
     public class MousePointManipulator : NodeManipulator
     {
         private Point origin;
+        internal override Point Origin { get { return origin; } }
 
         private Point expectedPosition;
 
@@ -39,11 +34,6 @@ namespace Dynamo.Manipulation
         }
        
         #region overridden methods
-
-        protected override bool CanMoveGizmo(IGizmo gizmo)
-        {
-            return base.CanMoveGizmo(gizmo);
-        }
 
         protected override void AssignInputNodes()
         {
@@ -79,7 +69,7 @@ namespace Dynamo.Manipulation
                     {
                         //Combine old axis with this axis
                         axis = item.Value.Item1;
-                        axis = axis.Add(axes[i]).Normalized();
+                        axis = axis.Add(axes[i]);
                         idx = item.Key;
                         break;
                     }
@@ -94,48 +84,38 @@ namespace Dynamo.Manipulation
                     indexedAxisNodePairs[idx] = Tuple.Create(axis, node);
                 }
             }
-        }
-
-        /// <summary>
-        /// Creates a new Gizmo or Updates existing Gizmo with new axes and origin.
-        /// This method is called every time Gizmo's are requested.
-        /// </summary>
-        private void UpdateGizmo()
-        {
-            var axes = new Vector[] { null, null, null };
-            //Extract axis information from the axis node pairs.
-            int index = 0;
-            foreach (var item in indexedAxisNodePairs)
+            // Normalize all axes in indexedAxisNodePairs
+            for (int i = 0; i < 3; i++)
             {
-                axes[index++] = item.Value.Item1;
-            }
-
-            if (null == gizmo)
-            {
-                gizmo = new TranslationGizmo(origin, axes[0], axes[1], axes[2], 6);
-            }
-            else
-            {
-                gizmo.UpdateGeometry(origin, axes[0], axes[1], axes[2], 6);
+                Tuple<Vector, NodeModel> pair;
+                if (indexedAxisNodePairs.TryGetValue(i, out pair))
+                {
+                    indexedAxisNodePairs[i] = Tuple.Create(pair.Item1.Normalized(), pair.Item2);
+                }
             }
         }
 
         /// <summary>
         /// Returns all the gizmos supported by this manipulator
         /// </summary>
-        /// <param name="createIfNone">Whether to create new gizmo if not already present.</param>
+        /// <param name="createOrUpdate">
+        /// If true: Create a new gizmo or update a gizmo if already present.
+        /// If false: Query for existing gizmos</param>
         /// <returns>List of Gizmo</returns>
-        protected override IEnumerable<IGizmo> GetGizmos(bool createIfNone)
+        protected override IEnumerable<IGizmo> GetGizmos(bool createOrUpdate)
         {
             //Don't create a new gizmo if not requested
-            if (gizmo == null && !createIfNone)
+            if (gizmo == null && !createOrUpdate)
                 yield break;
 
             //No axis data, so no gizmo.
             if (!indexedAxisNodePairs.Any())
                 yield break;
 
-            UpdateGizmo();
+            if (createOrUpdate)
+            {
+                UpdateGizmo();
+            }
 
             yield return gizmo;
         }
@@ -144,9 +124,9 @@ namespace Dynamo.Manipulation
         /// Called when Gizmo is clicked. Creates new input nodes if the
         /// specific input is selected for manipulation by the Gizmo.
         /// </summary>
-        /// <param name="gizmo">Gizmo that is clicked</param>
+        /// <param name="gizmoInAction">Gizmo that is clicked</param>
         /// <param name="hitObject">The axis or plane of the gizmo hit</param>
-        protected override IEnumerable<NodeModel> OnGizmoClick(IGizmo gizmo, object hitObject)
+        protected override IEnumerable<NodeModel> OnGizmoClick(IGizmo gizmoInAction, object hitObject)
         {
             //If an axis is hit, only one node will be updated.
             var axis1 = hitObject as Vector;
@@ -162,7 +142,6 @@ namespace Dynamo.Manipulation
                 }
             }
 
-            int count = indexedAxisNodePairs.Count;
             var nodes = new Dictionary<int, NodeModel>(2); //placeholder for new nodes.
             foreach (var item in indexedAxisNodePairs)
             {
@@ -179,7 +158,7 @@ namespace Dynamo.Manipulation
                 }
             }
 
-            //Update the axisNodePairs with affected nodes.
+            // Update the axisNodePairs with affected nodes.
             foreach (var n in nodes)
             {
                 var axisIndex = n.Key;
@@ -195,10 +174,10 @@ namespace Dynamo.Manipulation
         /// <summary>
         /// Callback method when gizmo is moved by user action.
         /// </summary>
-        /// <param name="gizmo">Gizmo that moved.</param>
+        /// <param name="gizmoInAction">Gizmo that moved.</param>
         /// <param name="offset">Offset by which the gizmo has moved.</param>
         /// <returns>New expected position of the Gizmo</returns>
-        protected override Point OnGizmoMoved(IGizmo gizmo, Vector offset)
+        protected override Point OnGizmoMoved(IGizmo gizmoInAction, Vector offset)
         {
             expectedPosition = origin.Add(offset);
 
@@ -206,17 +185,22 @@ namespace Dynamo.Manipulation
             {
                 // When more than one input is connected to the same slider, this
                 // method will decompose the axis corresponding to each input.
-                var v = GetFirstAxisComponent(item.Value.Item1);
-                var amount = Math.Round(offset.Dot(v), 3);
-                if (Math.Abs(amount) > 0.001)
-                    ModifyInputNode(item.Value.Item2, amount);
+                using (var v = GetFirstAxisComponent(item.Value.Item1))
+                {
+                    var amount = Math.Round(offset.Dot(v), 3);
+
+                    if (Math.Abs(amount) > 0.001)
+                    {
+                        ModifyInputNode(item.Value.Item2, amount);
+                    }
+                }
             }
 
             return expectedPosition;
         }
 
         /// <summary>
-        /// Synchronize the origin with the node's value.
+        /// Synchronize the manipulator position with the node's value.
         /// </summary>
         protected override void UpdatePosition()
         {
@@ -242,6 +226,31 @@ namespace Dynamo.Manipulation
         #endregion
 
         #region helpers
+
+        /// <summary>
+        /// Creates a new Gizmo or Updates existing Gizmo with new axes and origin.
+        /// This method is called every time Gizmo's are requested.
+        /// </summary>
+        private void UpdateGizmo()
+        {
+            var axes = new Vector[] { null, null, null };
+            //Extract axis information from the axis node pairs.
+            int index = 0;
+            foreach (var item in indexedAxisNodePairs)
+            {
+                axes[index++] = item.Value.Item1;
+            }
+
+            if (null == gizmo)
+            {
+                gizmo = new TranslationGizmo(this, axes[0], axes[1], axes[2], gizmoScale);
+            }
+            else
+            {
+                gizmo.UpdateGeometry(axes[0], axes[1], axes[2], gizmoScale);
+            }
+        }
+
 
         /// <summary>
         /// Decomposes given vector in natural axes and returns first axis.
@@ -283,54 +292,5 @@ namespace Dynamo.Manipulation
         }
 
         #endregion
-    }
-
-    internal static class PointExtensions
-    {
-        public static Point ToPoint(this Point3D point)
-        {
-            return Point.ByCoordinates(point.X, point.Y, point.Z);
-        }
-
-        public static Vector ToVector(this Vector3D vec)
-        {
-            return Vector.ByCoordinates(vec.X, vec.Y, vec.Z);
-        }
-    }
-
-    internal static class RayExtensions
-    {
-        private const double axisScaleFactor = 100;
-        private const double rayScaleFactor = 10000;
-
-        public static Line ToLine(this IRay ray)
-        {
-            var origin = ray.Origin.ToPoint();
-            var direction = ray.Direction.ToVector();
-            return Line.ByStartPointEndPoint(origin, origin.Add(direction.Scale(rayScaleFactor)));
-        }
-
-        public static Line ToOriginCenteredLine(this IRay ray)
-        {
-            var origin = ray.Origin.ToPoint();
-            var direction = ray.Direction.ToVector();
-            return ToOriginCenteredLine(origin, direction);
-        }
-
-        public static Line ToOriginCenteredLine(Point origin, Vector axis)
-        {
-            return Line.ByStartPointEndPoint(origin.Add(axis.Scale(-axisScaleFactor)),
-                origin.Add(axis.Scale(axisScaleFactor)));
-        }
-
-        public static Point GetOriginPoint(this IRay ray)
-        {
-            return ray.Origin.ToPoint();
-        }
-
-        public static Vector GetDirectionVector(this IRay ray)
-        {
-            return ray.Direction.ToVector();
-        }
     }
 }

@@ -58,10 +58,11 @@ namespace Dynamo.Publish
             manageCustomizersMenuItem = GenerateManageCustomizersMenuItem();
             p.AddMenuItem(MenuBarType.File, manageCustomizersMenuItem, 12);
 
-            inviteMenuItem = GenerateInviteMenuItem();
-            p.AddMenuItem(MenuBarType.File, inviteMenuItem, 11);
+            // MAGN-9044: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-9044
+            //inviteMenuItem = GenerateInviteMenuItem();
+            //p.AddMenuItem(MenuBarType.File, inviteMenuItem, 11);
 
-            p.AddSeparator(MenuBarType.File, separator, 14);
+            p.AddSeparator(MenuBarType.File, separator, 13);
 
             p.CurrentWorkspaceChanged += CurrentWorkspaceChanged;
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using DSCoreNodesUI;
 using DSCoreNodesUI.Input;
@@ -498,6 +499,96 @@ namespace Dynamo.Tests
             //check the value
             AssertPreviewValue(addNode.GUID.ToString(), 5);
             AssertPreviewValue(watchNode.GUID.ToString(), 5);
-        }        
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void File_open_with_freezeNodes_test()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\FreezeNodes\TestFrozenState.dyn");
+            RunModel(openPath);
+
+            //check the upstream node is explicitly frozen
+            var inputNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DoubleInput>("13bd151a-f5b6-4af7-ac20-a7121cc0d830");
+            Assert.AreEqual(true, inputNode.IsFrozen);
+
+            //because the upstream node is frozen, the downstream node should be in frozen state
+            var add = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("44f77917-ce7a-404f-bf70-6972c9276c02");
+            Assert.AreEqual(true, add.IsFrozen);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void File_open_with_all_nodes_Frozen()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\FreezeNodes\TestFrozenStateAllNodes.dyn");
+            RunModel(openPath);
+
+            //check the upstream node is explicitly frozen
+            var inputNode1 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DoubleInput>("13bd151a-f5b6-4af7-ac20-a7121cc0d830");
+            Assert.AreEqual(true, inputNode1.IsFrozen);
+
+            var inputNode2 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DoubleInput>("9c75fe7e-976b-4d9b-a7ff-e5dfb4e50a4b");
+            Assert.AreEqual(true, inputNode2.IsFrozen);
+
+            //because the upstream node is frozen, the downstream node should be in frozen state
+            var add = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("44f77917-ce7a-404f-bf70-6972c9276c02");
+            Assert.AreEqual(true, add.IsFrozen);
+
+            //check the value on Add Node
+            AssertPreviewValue(add.GUID.ToString(), null);
+
+            //now change the property on inputnode1 and inputnode2.
+            inputNode1.IsFrozen = false;
+            inputNode2.IsFrozen = false;
+
+            //now all the nodes are in unfreeze state
+            Assert.AreEqual(false, inputNode1.IsFrozen);
+            Assert.AreEqual(false, inputNode2.IsFrozen);
+            Assert.AreEqual(false, add.IsFrozen);
+
+            //check the value on Add Node
+            AssertPreviewValue(add.GUID.ToString(), 8);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void Check_ConnectingFrozenStartNodeUpdatesEndNodeState()
+        {
+            CreateAndConnectNodes();
+            CurrentDynamoModel.ClearCurrentWorkspace();
+
+            // check if after clearing end node is still able to be updated 
+            // by adding a frozen input connector
+            CreateAndConnectNodes();
+        }
+
+        private void CreateAndConnectNodes()
+        {
+            var model = CurrentDynamoModel;
+            //create a number
+            var numberNode = new DoubleInput();
+            model.ExecuteCommand(new DynamoModel.CreateNodeCommand(numberNode, 0, 0, true, false));
+
+            //add  a watch node
+            var watchNode = new Watch();
+            model.ExecuteCommand(new DynamoModel.CreateNodeCommand(watchNode, 0, 0, true, false));
+
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 2);
+
+            numberNode.IsFrozen = true;
+            Assert.IsTrue(numberNode.isFrozenExplicitly);
+            Assert.IsFalse(watchNode.IsFrozen);
+
+            model.ExecuteCommand(new DynamoModel.MakeConnectionCommand(numberNode.GUID, 0, PortType.Output, DynCmd.MakeConnectionCommand.Mode.Begin));
+            model.ExecuteCommand(new DynamoModel.MakeConnectionCommand(watchNode.GUID, 0, PortType.Input, DynCmd.MakeConnectionCommand.Mode.End));
+
+            Assert.AreEqual(model.CurrentWorkspace.Connectors.Count(), 1);
+
+            // check if watch node freeze state is updated
+            var msg = "End node freeze state has not been updated";
+            Assert.IsTrue(watchNode.IsFrozen, msg);
+            Assert.IsFalse(watchNode.isFrozenExplicitly, msg); 
+        }
     }
 }

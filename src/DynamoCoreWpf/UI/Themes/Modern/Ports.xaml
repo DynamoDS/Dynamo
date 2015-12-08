@@ -37,6 +37,7 @@
               IsHitTestVisible="True"
               Margin="{Binding Path=MarginThickness}"
               Height="{Binding Path=Height}"
+              ToolTipService.ShowDuration="60000"
              >
 
             <interactivity:Interaction.Triggers>

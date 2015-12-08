@@ -180,4 +180,8 @@
                                       TrueBrush="{StaticResource NodeNameForeground}"
                                       FalseBrush="{StaticResource UnSelectedLayoutForeground}">
     </controls:BooleanToBrushConverter>
+    <controls:BooleanToBrushConverter x:Key="PinIconForegroundConverter"
+                                      TrueBrush="{StaticResource PinnedIconForegroundColor}"
+                                      FalseBrush="{StaticResource UnpinnedIconForegroundColor}">
+    </controls:BooleanToBrushConverter>
 </ResourceDictionary>
