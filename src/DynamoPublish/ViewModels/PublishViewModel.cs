@@ -344,6 +344,9 @@ namespace Dynamo.Publish.ViewModels
                     UploadStateMessage = string.Format(Resources.CustomNodeDefinitionNotFoundErrorMessage, 
                         model.NotFoundCustomNodeName);
                     break;
+                case PublishModel.UploadErrorType.GetWorkspacesError:
+                    UploadStateMessage = Resources.GetWorkspacesErrorMessage;
+                    break;
                 case PublishModel.UploadErrorType.UnknownServerError:
                     UploadStateMessage = Resources.UnknownServerErrorMessage;
                     break;

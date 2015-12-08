@@ -16,6 +16,9 @@ using Reach.Exceptions;
 using Reach.Upload;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Reach.Messages.Data;
+using RestSharp;
+using System.Windows;
+using Newtonsoft.Json;
 
 namespace Dynamo.Publish.Models
 {
@@ -107,12 +110,13 @@ namespace Dynamo.Publish.Models
             EmptyWorkspace,
             InvalidNodes,
             CustomNodeNotFound,
+            GetWorkspacesError,
             UnknownServerError
         }
 
         private readonly IAuthProvider authenticationProvider;
         private readonly ICustomNodeManager customNodeManager;
-        private IWorkspaceStorageClient reachClient;
+        private readonly IWorkspaceStorageClient reachClient;
 
         private static string serverUrl;
         private static string page;
@@ -258,6 +262,7 @@ namespace Dynamo.Publish.Models
             serverResponceRegex = new Regex(Resources.WorkspacesSendSucceededServerResponse, RegexOptions.IgnoreCase);
 
             State = UploadState.Uninitialized;
+            reachClient = reachClient ?? new WorkspaceStorageClient(authenticationProvider, serverUrl);
         }
 
         internal PublishModel(IAuthProvider provider, ICustomNodeManager manager, IWorkspaceStorageClient client) :
@@ -313,11 +318,43 @@ namespace Dynamo.Publish.Models
 
             State = UploadState.Uploading;
 
-            IReachHttpResponse result;
+            IReachHttpResponse result = null;
+            IEnumerable<Workspace> wss = null;
 
             try
             {
-                result = await Task.Run(() => this.Send(workspace, workspaceProperties));
+                wss = await this.GetWorkspaces(workspaceProperties.Name) ?? new List<Workspace>();
+            }
+            catch (GetWorkspacesException)
+            {
+                Error = UploadErrorType.GetWorkspacesError;
+                return;
+            }
+
+            var publishWorkspace = true;
+            if (wss.Any((w) =>  w.Name == workspaceProperties.Name ))
+            {
+                MessageBoxResult decision =
+                        MessageBox.Show(Resources.CustomizerOverrideContent,
+                            Resources.CustomizerOverrideHeader,
+                            MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (decision == MessageBoxResult.No)
+                {
+                    publishWorkspace = false;
+                }
+            }
+
+            if (!publishWorkspace)
+            {
+                // user doesn't want to override existing customizer
+                State = UploadState.Uninitialized;
+                Error = UploadErrorType.None;
+                return;
+            }
+
+            try
+            {
+                result = await this.Send(workspace, workspaceProperties);
             }
             catch (InvalidNodesException ex)
             {
@@ -357,13 +394,8 @@ namespace Dynamo.Publish.Models
         /// Sends workspace and its' dependencies to Flood.
         /// </summary>
         /// <returns>String which is response from server.</returns>
-        private IReachHttpResponse Send(HomeWorkspaceModel workspace, WorkspaceProperties workspaceProperties = null)
+        private Task<IReachHttpResponse> Send(HomeWorkspaceModel workspace, WorkspaceProperties workspaceProperties = null)
         {
-            if (reachClient == null)
-            {
-                reachClient = new WorkspaceStorageClient(authenticationProvider, serverUrl);
-            }
-
             NotFoundCustomNodeName = null;
             var dependencies = WorkspaceDependencies.Collect(workspace, customNodeManager);
 
@@ -373,6 +405,11 @@ namespace Dynamo.Publish.Models
                     workspace,
                     dependencies.CustomNodeWorkspaces,
                     workspaceProperties);
+        }
+
+        private Task<IEnumerable<Workspace>> GetWorkspaces(string name)
+        {
+            return reachClient.GetWorkspaces(name);
         }
 
         internal void ClearState()
