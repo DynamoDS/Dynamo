@@ -170,6 +170,8 @@ namespace Dynamo.Manipulation
         /// <param name="mouseButtonEventArgs"></param>
         protected virtual void MouseDown(object sender, MouseButtonEventArgs mouseButtonEventArgs)
         {
+            UpdatePosition();
+
             GizmoInAction = null; //Reset Drag.
 
             var gizmos = GetGizmos(false);
@@ -220,6 +222,8 @@ namespace Dynamo.Manipulation
         /// <param name="mouseEventArgs"></param>
         protected virtual void MouseMove(object sender, MouseEventArgs mouseEventArgs)
         {
+            if (!IsEnabled()) return;
+
             var clickRay = BackgroundPreviewViewModel.GetClickRay(mouseEventArgs);
             if (clickRay == null) return;
 
@@ -511,6 +515,11 @@ namespace Dynamo.Manipulation
         public bool IsEnabled()
         {
             if (Node.IsFrozen) return false;
+
+            if (Node.CachedValue == null || Node.CachedValue.IsNull || Node.CachedValue.Data == null)
+            {
+                return false;
+            }
 
             return true;
         }
