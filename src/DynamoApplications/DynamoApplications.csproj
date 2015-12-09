@@ -36,6 +36,14 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Greg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Reach\extern\greg\Greg.dll</HintPath>
+    </Reference>
+    <Reference Include="GregStandaloneAuth, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Reach\extern\greg\GregStandaloneAuth.dll</HintPath>
+    </Reference>
     <Reference Include="NDesk.Options">
       <HintPath>..\..\extern\ndesk-options\NDesk.Options.dll</HintPath>
       <Private>True</Private>
