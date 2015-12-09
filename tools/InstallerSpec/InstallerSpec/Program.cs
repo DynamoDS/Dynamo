@@ -23,9 +23,18 @@ namespace InstallerSpec
         [XmlArray]
         public List<ModuleSpec> Modules { get; set; }
 
+        private DynamoCoreVersion DynamoVersion;
+
         public static DynamoInstallSpec CreateFromPath(string binPath)
         {
-            return new DynamoInstallSpec() { Modules = GetModules(new DirectoryInfo(binPath)).ToList() };
+            var spec = new DynamoInstallSpec()
+            {
+                DynamoVersion = DynamoCoreVersion.FromPath(binPath)
+            };
+
+            var dir = new DirectoryInfo(spec.DynamoVersion.BaseDirectory);
+            spec.Modules = spec.GetModules(dir).ToList();
+            return spec;
         }
 
         public static DynamoInstallSpec CreateFromSpecFile(string filePath)
@@ -59,7 +68,7 @@ namespace InstallerSpec
             }
         }
 
-        public static IEnumerable<ModuleSpec> GetModules(DirectoryInfo dir)
+        private IEnumerable<ModuleSpec> GetModules(DirectoryInfo dir)
         {
             foreach (var d in dir.EnumerateDirectories())
             {
@@ -73,15 +82,22 @@ namespace InstallerSpec
             foreach (FileInfo item in dir.EnumerateFiles())
             {
                 var info = FileVersionInfo.GetVersionInfo(item.FullName);
-                yield return new ModuleSpec() { Name = item.Name, FilePath = item.FullName.Replace(DynamoCoreVersion.BaseDirectory, @".\"), CopyForInstaller = true, DigitalSignature = Sign(info), Author = info != null ? info.CompanyName : "" };
+                yield return new ModuleSpec() 
+                { 
+                    Name = item.Name, 
+                    FilePath = item.FullName.Replace(DynamoVersion.BaseDirectory, @".\"), 
+                    CopyForInstaller = true, 
+                    DigitalSignature = NeedSignature(info), 
+                    Author = info != null ? info.CompanyName : "" 
+                };
             }
         }
 
-        private static bool Sign(FileVersionInfo info)
+        private bool NeedSignature(FileVersionInfo info)
         {
             if(info != null && info.FileVersion != null)
             {
-                return info.FileVersion.StartsWith(DynamoCoreVersion.BaseVersion);
+                return info.FileVersion.StartsWith(DynamoVersion.BaseVersion);
             }
 
             return false;
@@ -90,20 +106,27 @@ namespace InstallerSpec
 
     class DynamoCoreVersion
     {
-        public static string BaseVersion { get; private set; }
-        public static string BaseDirectory { get; private set; }
+        public string BaseVersion { get; private set; }
+        public string BaseDirectory { get; private set; }
         
-        public static void InitVersion(string binpath)
+        public static DynamoCoreVersion FromPath(string binpath)
         {
-            BaseDirectory = binpath;
-            if (!BaseDirectory.EndsWith(@"\"))
-                BaseDirectory += @"\";
+            if (!binpath.EndsWith(@"\"))
+            {
+                binpath += @"\";
+            }
+            
             string path = Path.Combine(binpath, "DynamoCore.dll");
-            if (!File.Exists(path))
-                return; //File is not available
+            if (!File.Exists(path)) return null; //File is not available
 
             var info = FileVersionInfo.GetVersionInfo(path);
-            BaseVersion = info.FileVersion.Substring(0, info.FileVersion.Length - 2); //drop last two characters
+            return new DynamoCoreVersion()
+            {
+                BaseDirectory = binpath,
+                //Drop last two characters from the version string to consider version diff
+                //in localized resources and any other binaries coming from different repo.
+                BaseVersion = info.FileVersion.Substring(0, info.FileVersion.Length - 2), 
+            };
         }
     }
 
@@ -115,8 +138,18 @@ namespace InstallerSpec
             if(nArgs == 0)
             {
                 Console.WriteLine("============== How to use this tool? ===========");
-                Console.WriteLine("Generates installer spec xml file to be used to create installer and digital signature based on a bin folder.");
-                Console.WriteLine("InstallerSpec.exe [bin folder] [xml file]");
+                Console.Write(@"
+Generates installer spec XML file to be used to create installer and digital 
+signature based on a given folder.
+
+InstallerSpec.exe [binfolder] [xmlfilepath]
+
+  binfolder     The folder in which all binaries reside. The search will 
+                enumerate this folder as well as all sub-folders.
+
+  xmlfilepath   The path to the output XML file path
+");
+                
                 return;
             }
             var binpath = args[0];
@@ -132,7 +165,6 @@ namespace InstallerSpec
                 filePath = args[1];
             }
 
-            DynamoCoreVersion.InitVersion(binpath);
             var installspec = DynamoInstallSpec.CreateFromPath(binpath);
             installspec.Save(filePath);
         }
