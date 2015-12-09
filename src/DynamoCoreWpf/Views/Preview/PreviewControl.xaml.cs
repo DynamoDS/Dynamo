@@ -197,6 +197,8 @@ namespace Dynamo.UI.Controls
             }
         }
 
+        internal State CurrentState { get { return currentState; } }
+
         #endregion
 
         #region Private Class Methods - Generic Helpers
@@ -422,41 +424,11 @@ namespace Dynamo.UI.Controls
             smallContentGrid.Measure(maxSize);
             Size smallContentGridSize = smallContentGrid.DesiredSize;
 
-            // Condensed bubble should be the same width as node or wider.
-            if (smallContentGridSize.Width == 0)
-            {
-                var nodeView = WpfUtilities.FindUpVisualTree<NodeView>(this);
-                if (nodeView != null)
-                {
-                    smallContentGridSize.Width = nodeView.ActualWidth;
-                }
-            }
+            // Don't make it smaller then min width.
+            smallContentGridSize.Width = smallContentGridSize.Width < smallContentGrid.MinWidth
+                ? smallContentGrid.MinWidth
+                : smallContentGridSize.Width;
 
-            // Count children size.
-            var childrenSize = new Size() { Width = 0, Height = 0 };
-            foreach (UIElement child in smallContentGrid.Children)
-            {
-                child.Measure(maxSize);
-
-                childrenSize.Width += child.DesiredSize.Width;
-                if (child.DesiredSize.Height > childrenSize.Height)
-                {
-                    childrenSize.Height = child.DesiredSize.Height;
-                }
-            }
-
-            // If children are smaller, update smallContentGridSize.
-            if (childrenSize.Height < smallContentGridSize.Height)
-            {
-                smallContentGridSize.Height = childrenSize.Height;
-            }
-            if (childrenSize.Width < smallContentGridSize.Width)
-            {
-                // But don't make it smaller, then min width.
-                smallContentGridSize.Width = childrenSize.Width < smallContentGrid.MinWidth
-                    ? smallContentGrid.MinWidth
-                    : childrenSize.Width;
-            }
             // Add padding since we are sizing the centralizedGrid.
             return ContentToControlSize(smallContentGridSize);
         }
@@ -469,8 +441,15 @@ namespace Dynamo.UI.Controls
                 Height = Configurations.MaxExpandedPreviewHeight
             });
 
+            Size largeContentGridSize = largeContentGrid.DesiredSize;
+
+            // Don't make it smaller then min width.
+            largeContentGridSize.Width = largeContentGridSize.Width < largeContentGrid.MinWidth
+                ? largeContentGrid.MinWidth
+                : largeContentGridSize.Width;
+
             // Add padding since we are sizing the centralizedGrid.
-            return ContentToControlSize(this.largeContentGrid.DesiredSize);
+            return ContentToControlSize(largeContentGridSize);
         }
 
         private Size ContentToControlSize(Size size)
@@ -681,22 +660,6 @@ namespace Dynamo.UI.Controls
         {
             SetCurrentStateAndNotify(State.Condensed);
             BeginNextTransition(); // See if there's any more requests.
-        }
-
-        private void OnPreviewMouseEnter(object sender, MouseEventArgs e)
-        {
-            if (IsMouseOver && IsCondensed)
-            {
-                TransitionToState(State.Expanded);
-            }
-        }
-
-        private void OnPreviewMouseLeave(object sender, MouseEventArgs e)
-        {
-            if (!StaysOpen)
-            {
-                TransitionToState(State.Condensed);
-            }
         }
 
         private void OnMapPinMouseClick(object sender, MouseButtonEventArgs e)
