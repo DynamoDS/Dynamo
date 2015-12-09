@@ -1393,7 +1393,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void ShowNewPresetStateDialogAndMakePreset(object parameter)
         {
-            var selectedNodes = GetSelectedInputNodes().ToList();
+            var selectedNodes = GetInputNodesFromSelectionForPresets().ToList();
 
             //If there are NO input nodes then show the error message
             if (!selectedNodes.Any())
@@ -1439,13 +1439,15 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Gets the selected "input" nodes
+        /// Gets the selected nodes that are "input" nodes, and makes an 
+        /// exception for CodeBlockNodes as these are marked false so they 
+        /// do not expose a IsInput checkbox
         /// </summary>
         /// <returns></returns>
-        internal IEnumerable<NodeModel> GetSelectedInputNodes()
+        internal IEnumerable<NodeModel> GetInputNodesFromSelectionForPresets()
         {
             return DynamoSelection.Instance.Selection.OfType<NodeModel>()
-                                .Where(x => x.IsInputNode);
+                                .Where(x => x.IsInputNode || x is CodeBlockNodeModel);
         }
 
         public void ShowSaveDialogIfNeededAndSaveResult(object parameter)

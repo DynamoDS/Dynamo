@@ -66,14 +66,14 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void CanReadIsSelectedInputProperty()
+        public void CanReadIsSetAsInputProperty()
         {
             string path = Path.Combine(TestDirectory, "core", "input_nodes", "NumberNodeAndNumberSlider.dyn");
             OpenModel(path);
 
             Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
-            Assert.IsFalse(CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(0).IsSelectedInput);
-            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(1).IsSelectedInput);
+            Assert.IsFalse(CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(0).IsSetAsInput);
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(1).IsSetAsInput);
         }
     }
 }
