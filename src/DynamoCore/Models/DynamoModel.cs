@@ -552,8 +552,8 @@ namespace Dynamo.Models
             var libraryCore =
                 new ProtoCore.Core(new Options { RootCustomPropertyFilterPathName = string.Empty });
 
-            libraryCore.Compilers.Add(Language.kAssociative, new Compiler(libraryCore));
-            libraryCore.Compilers.Add(Language.kImperative, new ProtoImperative.Compiler(libraryCore));
+            libraryCore.Compilers.Add(Language.Associative, new Compiler(libraryCore));
+            libraryCore.Compilers.Add(Language.Imperative, new ProtoImperative.Compiler(libraryCore));
             libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
 
             LibraryServices = new LibraryServices(libraryCore, pathManager);

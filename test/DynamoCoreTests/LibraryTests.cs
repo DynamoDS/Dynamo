@@ -25,8 +25,8 @@ namespace Dynamo.Tests
             base.Setup();
 
             libraryCore = new ProtoCore.Core(new Options { RootCustomPropertyFilterPathName = string.Empty });
-            libraryCore.Compilers.Add(Language.kAssociative, new ProtoAssociative.Compiler(libraryCore));
-            libraryCore.Compilers.Add(Language.kImperative, new ProtoImperative.Compiler(libraryCore));
+            libraryCore.Compilers.Add(Language.Associative, new ProtoAssociative.Compiler(libraryCore));
+            libraryCore.Compilers.Add(Language.Imperative, new ProtoImperative.Compiler(libraryCore));
             libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
 
             var pathResolver = new TestPathResolver();
@@ -207,7 +207,7 @@ namespace Dynamo.Tests
             string xmlstring =@"<Dynamo.Nodes.DSFunction guid=""f05953f3-6ead-44f7-b872-1e0203c784cc""
             type=""Dynamo.Nodes.DSFunction"" nickname=""DateTime.Now"" x=""259.5"" y=""260.5"" 
             isVisible=""true"" isUpstreamVisible=""true"" lacing=""Shortest""
-            isInput=""False"" assembly=""DSCoreNodes.dll"" function=""DSCore.DateTime.Now"" />";
+            isSelectedInput=""False"" assembly=""DSCoreNodes.dll"" function=""DSCore.DateTime.Now"" />";
 
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(xmlstring);

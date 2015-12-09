@@ -1264,24 +1264,6 @@ namespace Dynamo.Controls
         }
     }
 
-    /// <summary>
-    /// This converter can be used to hide items which are bound to nullable values.
-    /// Returns Visibility.Collapsed if the nullable value is null, otherwise Visibility.Visible
-    /// </summary>
-    public class NullableBoolToVisibilityCollapsedConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            var nullable = (bool?) value;
-            return nullable.HasValue ? Visibility.Visible : Visibility.Collapsed;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new NotSupportedException();
-        }
-    }
-
     public class InverseBoolToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

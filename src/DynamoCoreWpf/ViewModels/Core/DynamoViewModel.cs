@@ -1393,7 +1393,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void ShowNewPresetStateDialogAndMakePreset(object parameter)
         {
-            var selectedNodes = GetSelectedInputNodesForPresets().ToList();
+            var selectedNodes = GetInputNodesFromSelectionForPresets().ToList();
 
             //If there are NO input nodes then show the error message
             if (!selectedNodes.Any())
@@ -1439,20 +1439,15 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Return all nodes from the current selection which are
-        /// CodeBlockNodeModels or whose IsInputNode property is true.
+        /// Gets the selected nodes that are "input" nodes, and makes an 
+        /// exception for CodeBlockNodes as these are marked false so they 
+        /// do not expose a IsInput checkbox
         /// </summary>
-        /// <returns>A collection of input nodes.</returns>
-        internal IEnumerable<NodeModel> GetSelectedInputNodesForPresets()
+        /// <returns></returns>
+        internal IEnumerable<NodeModel> GetInputNodesFromSelectionForPresets()
         {
-            // HACK: See MAGN-8526
-            // We need to return all nodes that have IsInputNode=true.
-            // Because IsInputNode is a nullable boolean we need to check,
-            // if it has been set to null, whether it is a CBN. This is the only
-            // type of node which does not show the checkable menu item (null),
-            // but should still be considered for presets.
             return DynamoSelection.Instance.Selection.OfType<NodeModel>()
-                                .Where(x => x.IsInputNode ?? x is CodeBlockNodeModel);
+                                .Where(x => x.IsInputNode || x is CodeBlockNodeModel);
         }
 
         public void ShowSaveDialogIfNeededAndSaveResult(object parameter)

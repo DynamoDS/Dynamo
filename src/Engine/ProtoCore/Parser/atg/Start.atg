@@ -500,16 +500,6 @@ COMPILER DesignScriptParser
         return false;
     }
 
-	 private bool IsLanguageBlockProperty()
-	 {
-		Token t = scanner.Peek();
-		scanner.ResetPeek();
-		if (t.val == "=")
-			return true;
-		else
-			return false;
-	 }
-
 	 // use by associative
 	 private bool IsNotAttributeFunctionClass()
 	 {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using Autodesk.DesignScript.Geometry;
@@ -14,6 +15,8 @@ using Dynamo.Models;
 using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using ProtoCore.Mirror;
+using Point = Autodesk.DesignScript.Geometry.Point;
+using Vector = Autodesk.DesignScript.Geometry.Vector;
 
 namespace Dynamo.Manipulation
 {
@@ -35,29 +38,57 @@ namespace Dynamo.Manipulation
     /// </summary>
     public abstract class NodeManipulator : INodeManipulator
     {
-        #region properties
-
+        private readonly DynamoManipulationExtension manipulatorContext;
         private const double NewNodeOffsetX = 350;
         private const double NewNodeOffsetY = 50;
         private Point newPosition;
 
-        protected NodeModel Node { get; set; }
+        protected const double gizmoScale = 1.5;
 
-        protected IWorkspaceModel WorkspaceModel { get; private set; }
+        #region properties
 
-        protected IWatch3DViewModel BackgroundPreviewViewModel { get; private set; }
-
-        protected IRenderPackageFactory RenderPackageFactory { get; private set; }
-
-        protected ICommandExecutive CommandExecutive { get; private set; }
-
-        protected string UniqueId { get; private set; }
-
-        protected string ExtensionName { get; private set; }
-        
         protected bool Active { get; set; }
 
+        protected IWorkspaceModel WorkspaceModel
+        {
+            get { return manipulatorContext.WorkspaceModel; }
+        }
+
+        protected ICommandExecutive CommandExecutive
+        {
+            get { return manipulatorContext.CommandExecutive; }
+        }
+
+        protected string UniqueId
+        {
+            get { return manipulatorContext.UniqueId; }
+        }
+
+        protected string ExtensionName
+        {
+            get { return manipulatorContext.Name; }
+        }
+
         protected IGizmo GizmoInAction { get; private set; }
+
+        internal NodeModel Node { get; private set; }
+
+        /// <summary>
+        /// Base location of geometry being manipulated by manipulator
+        /// </summary>
+        internal abstract Point Origin { get; }
+
+        internal IWatch3DViewModel BackgroundPreviewViewModel
+        {
+            get { return manipulatorContext.BackgroundPreviewViewModel; }
+        }
+
+        internal IRenderPackageFactory RenderPackageFactory
+        {
+            get { return manipulatorContext.RenderPackageFactory; }
+        }
+
+        internal Point3D? CameraPosition { get; private set; }
 
         #endregion
 
@@ -88,20 +119,20 @@ namespace Dynamo.Manipulation
         /// This method is called when a gizmo provided by derived class is hit.
         /// Derived class can create or update the input nodes.
         /// </summary>
-        /// <param name="gizmo">The Gizmo that's hit.</param>
+        /// <param name="gizmoInAction">The Gizmo that's hit.</param>
         /// <param name="hitObject">The object of Gizmo that's hit.</param>
         /// <returns>List of updated nodes</returns>
-        protected abstract IEnumerable<NodeModel> OnGizmoClick(IGizmo gizmo, object hitObject);
+        protected abstract IEnumerable<NodeModel> OnGizmoClick(IGizmo gizmoInAction, object hitObject);
 
         /// <summary>
         /// This method is called when the Gizmo in action is moved during mouse
         /// move event. Derived class can use this notification to update the 
         /// input nodes.
         /// </summary>
-        /// <param name="gizmo">The Gizmo in action.</param>
+        /// <param name="gizmoInAction">The Gizmo in action.</param>
         /// <param name="offset">Offset amount by which Gizmo has moved.</param>
         /// <returns>New expected position of the Gizmo</returns>
-        protected abstract Point OnGizmoMoved(IGizmo gizmo, Vector offset);
+        protected abstract Point OnGizmoMoved(IGizmo gizmoInAction, Vector offset);
 
         #endregion
 
@@ -113,7 +144,7 @@ namespace Dynamo.Manipulation
         /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
-            HideGizmos();
+            DeleteGizmos();
         }
 
         /// <summary>
@@ -128,7 +159,7 @@ namespace Dynamo.Manipulation
         {
             //Wait until node has been evaluated and has got new origin
             //as expected position.
-            return gizmo != null && newPosition.DistanceTo(gizmo.Origin) < 0.01;
+            return gizmo != null && newPosition.DistanceTo(Origin) < 0.01;
         }
 
         /// <summary>
@@ -153,12 +184,13 @@ namespace Dynamo.Manipulation
                 if (item.HitTest(ray.GetOriginPoint(), ray.GetDirectionVector(), out hitObject))
                 {
                     GizmoInAction = item;
-                    var nodes = OnGizmoClick(item, hitObject);
-                    if(null != nodes && nodes.Any())
+
+                    var nodes = OnGizmoClick(item, hitObject).ToList();
+                    if(nodes.Any())
                     {
                         WorkspaceModel.RecordModelsForModification(nodes);
                     }
-                    newPosition = GizmoInAction.Origin;
+                    newPosition = Origin;
                     return;
                 }
             }
@@ -172,8 +204,13 @@ namespace Dynamo.Manipulation
         protected virtual void MouseUp(object sender, MouseButtonEventArgs e)
         {
             GizmoInAction = null;
-            //Delete all transient axis line geometry
-            BackgroundPreviewViewModel.DeleteGeometryForIdentifier(RenderDescriptions.AxisLine);
+
+            //Delete all transient graphics for gizmos
+            var gizmos = GetGizmos(false);
+            foreach (var gizmo in gizmos)
+            {
+                gizmo.UpdateGizmoGraphics();
+            }
         }
 
         /// <summary>
@@ -207,15 +244,12 @@ namespace Dynamo.Manipulation
         /// <param name="manipulatorContext">Context for manipulator</param>
         protected NodeManipulator(NodeModel node, DynamoManipulationExtension manipulatorContext)
         {
+            this.manipulatorContext = manipulatorContext;
             Node = node;
-            WorkspaceModel = manipulatorContext.WorkspaceModel;
-            BackgroundPreviewViewModel = manipulatorContext.BackgroundPreviewViewModel;
-            RenderPackageFactory = manipulatorContext.RenderPackageFactory;
-            CommandExecutive = manipulatorContext.CommandExecutive;
-            UniqueId = manipulatorContext.UniqueId;
-            ExtensionName = manipulatorContext.Name;
             
             AttachBaseHandlers();
+
+            CameraPosition = BackgroundPreviewViewModel.GetCameraPosition();
 
             DrawManipulator();
         }
@@ -274,8 +308,7 @@ namespace Dynamo.Manipulation
                 if (val != null)
                 {
                     inputNode = val.Item2;
-                    if (val.Item2 is DSCoreNodesUI.Input.DoubleSlider)
-                        manipulate = true;
+                    if (val.Item2 is DoubleSlider) manipulate = true;
                 }
                 else
                 {
@@ -376,6 +409,7 @@ namespace Dynamo.Manipulation
         /// <returns>List of render packages</returns>
         private IEnumerable<IRenderPackage> GenerateRenderPackages()
         {
+
             var packages = new List<IRenderPackage>();
 
             AssignInputNodes();
@@ -410,12 +444,13 @@ namespace Dynamo.Manipulation
         /// <summary>
         /// Removes Gizmos from background preview.
         /// </summary>
-        private void HideGizmos()
+        private void DeleteGizmos()
         {
             var gizmos = GetGizmos(false);
             foreach (var item in gizmos)
             {
                 BackgroundPreviewViewModel.DeleteGeometryForIdentifier(item.Name);
+                item.Dispose();
             }
         }
 
@@ -428,12 +463,13 @@ namespace Dynamo.Manipulation
             var gizmos = GetGizmos(false);
             foreach (var item in gizmos)
             {
-                item.UnhighlightGizmo(BackgroundPreviewViewModel);
+                item.UnhighlightGizmo();
 
                 object hitObject;
                 if (item.HitTest(clickRay.GetOriginPoint(), clickRay.GetDirectionVector(), out hitObject))
                 {
-                    item.HighlightGizmo(BackgroundPreviewViewModel, RenderPackageFactory);
+                    item.HighlightGizmo();
+                    return;
                 }
             }
         }
@@ -459,13 +495,7 @@ namespace Dynamo.Manipulation
             var gizmos = GetGizmos(true);
             foreach (var item in gizmos)
             {
-                // Append node AST identifier to gizmo name
-                // so that it gets added to package description
-                if (!item.Name.Contains(Node.AstIdentifierBase))
-                {
-                    item.Name = string.Format("{0}_{1}", item.Name, Node.AstIdentifierBase);
-                }
-                packages.AddRange(item.GetDrawables(RenderPackageFactory));
+                packages.AddRange(item.GetDrawables());
             }
 
             return packages;

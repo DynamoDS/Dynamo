@@ -617,8 +617,8 @@ public class Scanner {
 		start[47] = 53; 
 		start[123] = 37; 
 		start[125] = 38; 
-		start[44] = 39; 
-		start[58] = 40; 
+		start[58] = 39; 
+		start[44] = 40; 
 		start[63] = 42; 
 		start[43] = 43; 
 		start[42] = 44; 
@@ -716,9 +716,9 @@ public class Scanner {
 			case "false": t.kind = 43; break;
 			case "null": t.kind = 44; break;
 			case "L": t.kind = 45; break;
-			case "public": t.kind = 51; break;
-			case "private": t.kind = 52; break;
-			case "protected": t.kind = 53; break;
+			case "public": t.kind = 49; break;
+			case "private": t.kind = 50; break;
+			case "protected": t.kind = 51; break;
 			case "in": t.kind = 66; break;
 			default: break;
 		}
@@ -873,7 +873,7 @@ public class Scanner {
 			case 39:
 				{t.kind = 48; break;}
 			case 40:
-				{t.kind = 50; break;}
+				{t.kind = 53; break;}
 			case 41:
 				{t.kind = 54; break;}
 			case 42:
@@ -899,10 +899,10 @@ public class Scanner {
 				if (ch == '|') {AddCh(); goto case 48;}
 				else {t.kind = 14; break;}
 			case 52:
-				recEnd = pos; recKind = 49;
+				recEnd = pos; recKind = 52;
 				if (ch == '=') {AddCh(); goto case 20;}
 				else if (ch == '>') {AddCh(); goto case 41;}
-				else {t.kind = 49; break;}
+				else {t.kind = 52; break;}
 			case 53:
 				recEnd = pos; recKind = 58;
 				if (ch == '/') {AddCh(); goto case 24;}

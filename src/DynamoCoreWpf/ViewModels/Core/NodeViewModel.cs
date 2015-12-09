@@ -99,13 +99,28 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool? IsInputNode
+        public bool IsInput
         {
             get
             {
                 return nodeLogic.IsInputNode;
             }
-            set { nodeLogic.IsInputNode = value; }
+        }
+
+        public bool IsSetAsInput
+        {
+            get
+            {
+                return nodeLogic.IsSetAsInput;
+            }
+            set
+            {
+                if (nodeLogic.IsSetAsInput != value)
+                {
+                    nodeLogic.IsSetAsInput = value;
+                    RaisePropertyChanged("IsSetAsInput");
+                }
+            }
         }
 
         public string NickName
@@ -367,30 +382,8 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                //this is the default case.
-                if (!this.NodeLogic.isFrozenExplicitly &&
-                      !this.NodeLogic.IsFrozen)
-                {
-                    return true;
-                }
-
-                //If any of the node is set to freeze by the user and 
-                // if that node is frozen by itself, then disable the Freeze property                              
-                if (this.nodeLogic.isFrozenExplicitly && NodeModel.IsAnyUpstreamFrozen())
-                {
-                    return false;
-                }
-                               
-                //if the node is set to freeze by the user     
-                // then enable the Freeze property
-                if (this.NodeLogic.isFrozenExplicitly)                   
-                {
-                    return true;
-                }
-                                
-                return false;
+                return !NodeModel.IsAnyUpstreamFrozen();
             }
-            
         }
 
         #endregion

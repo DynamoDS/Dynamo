@@ -16,16 +16,7 @@
              MouseRightButtonDown="topControl_MouseRightButtonDown"
              MouseEnter="OnNodeViewMouseEnter"
              MouseLeave="OnNodeViewMouseLeave">
-    <UserControl.Resources>
-        <Style TargetType="{x:Type controls:NodeView}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding IsFrozen}" Value="True">                    
-                    <Setter Property="Opacity" Value ="0.7"/>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-    </UserControl.Resources>
-
+    
     <Grid Name="grid"
           x:FieldModifier="public"
           HorizontalAlignment="Left">
@@ -117,8 +108,8 @@
                           Command="{Binding Path=RenameCommand}" />
                 <MenuItem Name="isInput_cm"
                           Header="{x:Static p:Resources.NodeContextMenuIsInput}"
-                          IsChecked="{Binding Path=IsInputNode,Mode=TwoWay}"
-                          Visibility="{Binding Path=IsInputNode, Converter={StaticResource NullableBoolToVisibilityCollapsedConverter}}"
+                          IsChecked="{Binding Path=IsSetAsInput,Mode=TwoWay}"
+                          Visibility="{Binding Path=IsInput, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                           IsCheckable="True" />
                 <MenuItem Name="help_cm"
                           Header="{x:Static p:Resources.NodeContextMenuHelp}"
@@ -168,7 +159,16 @@
                    Grid.Row="1"
                    Grid.ColumnSpan="3"
                    Grid.RowSpan="3"
-                   Canvas.ZIndex="10">             
+                   Canvas.ZIndex="10">
+            <Rectangle.Style>
+                <Style TargetType="{x:Type Rectangle}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsFrozen}" Value="True">
+                            <Setter Property="Opacity" Value ="0.5"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Rectangle.Style>
             <Rectangle.Fill>                
                 <Binding Path="State"
                          UpdateSourceTrigger="PropertyChanged"
@@ -196,6 +196,15 @@
                          Converter="{StaticResource StateToColorConverter}">
                 </Binding>
             </Rectangle.Stroke>
+            <Rectangle.Style>
+                <Style TargetType="{x:Type Rectangle}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsFrozen}" Value="True">
+                            <Setter Property="Opacity" Value ="0.5"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Rectangle.Style>
             <Rectangle.Fill>
                 <Binding Path="State"
                          UpdateSourceTrigger="PropertyChanged"

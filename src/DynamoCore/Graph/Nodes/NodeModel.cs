@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -179,25 +179,37 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
-        protected bool? isInputNode = null;
         /// <summary>
-        /// A flag indicating whether this is an input node.
-        /// 
-        /// By default an input node is any node which does not have any input ports.
+        /// Input nodes are used in Customizer and Presets. Input nodes can be numbers, number sliders,
+        /// strings, bool, code blocks and custom nodes, which don't specify path. This property 
+        /// is true for nodes that are potential inputs for Customizers and Presets.
         /// </summary>
-        public virtual bool? IsInputNode
+        public virtual bool IsInputNode
         {
             get
             {
-                if (isInputNode.HasValue)
-                {
-                    return isInputNode;
-                }
                 return !inPorts.Any();
             }
-            internal set
+        }
+
+        private bool isSetAsInput = true;
+        /// <summary>
+        /// This property is user-controllable via a checkbox and is set to true when a user wishes to include
+        /// this node in a Customizer as an interactive control.
+        /// </summary>
+        public bool IsSetAsInput
+        {
+            get
             {
-                isInputNode = value;
+                if (!IsInputNode)
+                    return false;
+
+                return isSetAsInput;
+            }
+
+            set
+            {
+                isSetAsInput = value;
             }
         }
 
@@ -639,7 +651,7 @@ namespace Dynamo.Graph.Nodes
                 // delete the node and its downstream nodes from AST.
                 else
                 {
-                    ComputeUpstreamOnDownstreamNodes();
+                    ComputeUpstreamOnDownstreamNodes(new HashSet<NodeModel>());
                     OnUpdateASTCollection();                  
                 }
             }
@@ -658,12 +670,14 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// For a given node, this function computes all the Upstream nodes for that node.
-        /// If a node has any downstream nodes, then for all those downstream nodes, Upstream
-        /// nodes will be computed.
-        /// Also this function gets called only after the workspace is added.       
+        /// For a given node, this function computes all the upstream nodes
+        /// by gathering the cached upstream nodes on this node's immediate parents.
+        /// If a node has any downstream nodes, then for all those downstream nodes, upstream
+        /// nodes will be computed. Essentially this method propogates the UpstreamCache down.
+        /// Also this function gets called only after the workspace is added.    
         /// </summary>
-        internal void ComputeUpstreamOnDownstreamNodes()
+        /// <returns> a list of the computed nodes </returns>
+        internal IEnumerable<NodeModel> ComputeUpstreamOnDownstreamNodes(HashSet<NodeModel> visitedNodes)
         {
             //first compute upstream nodes for this node
             this.UpstreamCache = new HashSet<NodeModel>();
@@ -679,8 +693,14 @@ namespace Dynamo.Graph.Nodes
             }
 
             //then for downstream nodes
-            HashSet<NodeModel> downStreamNodes = new HashSet<NodeModel>();
+            //gather downstream nodes and bail if we see an already visited node
+            HashSet<NodeModel> downStreamNodes = new HashSet<NodeModel>(visitedNodes);
             this.GetDownstreamNodes(this, downStreamNodes);
+            //then get the difference of the already visisted and new nodes,
+            //we are left with the new nodes discovered during traversal
+
+            downStreamNodes.ExceptWith(visitedNodes);
+           
 
             foreach (var downstreamNode in downStreamNodes)
             {
@@ -695,10 +715,16 @@ namespace Dynamo.Graph.Nodes
                         downstreamNode.UpstreamCache.Add(upstreamNode);
                     }
                 }
-
             }
 
+           
             RaisePropertyChanged("IsFrozen");
+            //return all nodes that were visited during this traversal
+            //which includes this node, and the new downstream nodes we discovered
+            //and all previously visited nodes
+            visitedNodes.Add(this);
+            visitedNodes.UnionWith(downStreamNodes);
+            return visitedNodes;
         }
        
         private void MarkDownStreamNodesAsModified(NodeModel node)
@@ -1694,7 +1720,7 @@ namespace Dynamo.Graph.Nodes
             helper.SetAttribute("isVisible", IsVisible);
             helper.SetAttribute("isUpstreamVisible", IsUpstreamVisible);
             helper.SetAttribute("lacing", ArgumentLacing.ToString());
-            helper.SetAttribute("isSelectedInput", IsInputNode.ToString());
+            helper.SetAttribute("isSelectedInput", IsSetAsInput.ToString());
             helper.SetAttribute("IsFrozen", isFrozenExplicitly);
 
             var portsWithDefaultValues =
@@ -1746,9 +1772,9 @@ namespace Dynamo.Graph.Nodes
             isVisible = helper.ReadBoolean("isVisible", true);
             isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
-            IsInputNode = helper.ReadNullableBoolean("isSelectedInput");
-            isFrozenExplicitly = helper.ReadBoolean("IsFrozen", false);            
-           
+            IsSetAsInput = helper.ReadBoolean("isSelectedInput", true);
+            isFrozenExplicitly = helper.ReadBoolean("IsFrozen", false);
+
             var portInfoProcessed = new HashSet<int>();
 
             //read port information

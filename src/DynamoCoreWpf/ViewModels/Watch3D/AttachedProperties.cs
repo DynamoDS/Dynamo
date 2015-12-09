@@ -11,6 +11,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// </summary>
     public static class AttachedProperties
     {
+        private const float alphaPropertyFactor = 0.5f;
         /// <summary>
         /// A flag indicating whether the geometry renders as selected.
         /// </summary>
@@ -63,5 +64,67 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             return (bool) element.GetValue(HasTransparencyProperty);
         }
+
+        /// <summary>
+        /// A flag indicating whether the geometry is frozen
+        /// </summary>
+        public static readonly DependencyProperty IsFrozenProperty = DependencyProperty.RegisterAttached(
+            "IsFrozen",
+            typeof(bool),
+            typeof(GeometryModel3D),
+            new PropertyMetadata(false, IsFrozenPropertyChanged));
+
+        public static void SetIsFrozen(UIElement element, bool value)
+        {
+            element.SetValue(IsFrozenProperty, value);
+        }
+
+        public static bool GetIsFrozen(UIElement element)
+        {
+            return (bool)element.GetValue(IsFrozenProperty);
+        }
+
+
+        /// <summary>
+        /// This updates the transparency on the Geometry object.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        private static void IsFrozenPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            if (obj is GeometryModel3D && obj.GetType() != typeof(BillboardTextModel3D))
+            {
+                var geom = (GeometryModel3D)obj;
+                if (geom.Geometry == null || geom.Geometry.Colors == null)
+                {
+                    return;
+                }
+
+                var colors = geom.Geometry.Colors.ToArray();
+
+                for (int i = 0; i < colors.Length; i++)
+                {
+                    colors[i].Alpha = colors[i].Alpha * alphaPropertyFactor;
+                }
+
+                geom.Geometry.Colors.Clear();
+                geom.Geometry.Colors.AddRange(colors);
+
+                var dynamoGeom3D = geom as DynamoGeometryModel3D;
+                if (dynamoGeom3D != null)
+                {
+                    dynamoGeom3D.RequiresPerVertexColoration = true;
+                    geom = dynamoGeom3D;
+                }
+
+                if (geom.IsAttached)
+                {
+                    var host = geom.RenderHost;
+                    geom.Detach();
+                    geom.Attach(host);
+                }
+            }
+        }
+
     }
 }

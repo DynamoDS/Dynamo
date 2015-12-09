@@ -57,6 +57,7 @@ namespace Dynamo.Controls
     public partial class DynamoView : Window, IDisposable
     {
         public const string BackgroundPreviewName = "BackgroundPreview";
+        private const int NavigationInterval = 500;
 
         private readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
         private DynamoViewModel dynamoViewModel;
@@ -65,6 +66,8 @@ namespace Dynamo.Controls
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
         private GalleryView galleryView;
         private readonly LoginService loginService;
+        // This is used to determine whether ESC key is being held down
+        private readonly Stopwatch sw = new Stopwatch();
         internal ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
 
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
@@ -1123,25 +1126,43 @@ namespace Dynamo.Controls
 
             var vm = dynamoViewModel.BackgroundPreviewViewModel;
 
-            if (e.IsRepeat)
+
+            // ESC key to navigate has long lag on some machines.
+            // This issue was caused by using KeyEventArgs.IsRepeated API
+            // In order to fix this we need to use our own timer to determine
+            // whether ESC key is being held down or not
+            if (!sw.IsRunning && !vm.NavigationKeyIsDown)
+            {
+                sw.Start();
+            }           
+
+            if (sw.ElapsedMilliseconds > NavigationInterval && !vm.NavigationKeyIsDown)
             {
                 vm.NavigationKeyIsDown = true;
+                sw.Reset();
             }
             else
             {
                 vm.CancelNavigationState();
             }
-            
+
             e.Handled = true;
         }
 
         void DynamoView_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key != Key.Escape || !dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground) return;
+            if (e.Key != Key.Escape) return;
 
-            dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown = false;
-            dynamoViewModel.EscapeCommand.Execute(null);
-            e.Handled = true;
+            if (sw.IsRunning)
+            {
+                sw.Reset();
+            }
+            if (dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground)
+            {
+                dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown = false;
+                dynamoViewModel.EscapeCommand.Execute(null);
+                e.Handled = true;
+            }            
         }
 
         private void WorkspaceTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
