@@ -516,7 +516,7 @@ namespace Dynamo.Manipulation
         {
             if (Node.IsFrozen) return false;
 
-            if (Node.CachedValue == null || Node.CachedValue.IsNull || Node.CachedValue.Data == null)
+            if (Node.CachedValue == null || Node.CachedValue.IsNull)
             {
                 return false;
             }
