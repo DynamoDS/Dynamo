@@ -656,11 +656,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 foreach (var kvp in geometryModels)
                 {
                     var model3D = Model3DDictionary[kvp.Key] as GeometryModel3D;
-                    if (model3D != null)
+                    //check if the geometry is frozen. if the gemoetry is frozen 
+                    // then do not detach from UI.
+                    var frozenModel = AttachedProperties.GetIsFrozen(model3D);
+                    if (!frozenModel)
                     {
-                        model3D.Detach();
+                        if (model3D != null)
+                        {
+                            model3D.Detach();
+                        }
+                        Model3DDictionary.Remove(kvp.Key);
                     }
-                    Model3DDictionary.Remove(kvp.Key);
                 }
             }
 
