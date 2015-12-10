@@ -323,7 +323,8 @@ namespace Dynamo.Publish.Models
 
             try
             {
-                wss = await this.GetWorkspaces(workspaceProperties.Name) ?? new List<Workspace>();
+                wss = (await this.GetWorkspaces()).Where(x => x.Name == workspaceProperties.Name) ?? new List<Workspace>();
+                
             }
             catch (GetWorkspacesException)
             {
@@ -407,9 +408,9 @@ namespace Dynamo.Publish.Models
                     workspaceProperties);
         }
 
-        private Task<IEnumerable<Workspace>> GetWorkspaces(string name)
+        private Task<IEnumerable<Workspace>> GetWorkspaces()
         {
-            return reachClient.GetWorkspaces(name);
+            return reachClient.GetWorkspaces();
         }
 
         internal void ClearState()
