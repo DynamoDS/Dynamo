@@ -4311,8 +4311,7 @@ namespace DynamoCoreWpfTests
                 {
                     NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                          ("8a7591cf-0271-4c47-989f-583ab7c028ca");
-                    AssertPreviewValue("8a7591cf-0271-4c47-989f-583ab7c028ca",
-                        new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+                    AssertPreviewValue("8a7591cf-0271-4c47-989f-583ab7c028ca", "_SingleFunctionObject");
                 }
                 //In Forth Run, reconnect nodes with 2 as step value for both number sequence and number range
                 else if (commandTag == "ForthRun")

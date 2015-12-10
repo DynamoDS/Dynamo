@@ -95,6 +95,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             if (obj is GeometryModel3D && obj.GetType() != typeof(BillboardTextModel3D))
             {
                 var geom = (GeometryModel3D)obj;
+                if (geom.Geometry == null || geom.Geometry.Colors == null)
+                {
+                    return;
+                }
+
                 var colors = geom.Geometry.Colors.ToArray();
 
                 for (int i = 0; i < colors.Length; i++)

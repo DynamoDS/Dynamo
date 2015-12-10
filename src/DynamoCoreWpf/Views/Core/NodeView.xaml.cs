@@ -27,6 +27,12 @@ namespace Dynamo.Controls
         private NodeViewModel viewModel = null;
         private PreviewControl previewControl = null;
 
+        /// <summary>
+        /// If false - hides preview control until it will be explicitly shown.
+        /// If true -preview control is shown and hidden on mouse enter/leave events.
+        /// </summary>
+        private bool previewEnabled = true;
+
         public NodeView TopControl
         {
             get { return topControl; }
@@ -51,6 +57,8 @@ namespace Dynamo.Controls
                 {
                     previewControl = new PreviewControl(ViewModel);
                     previewControl.StateChanged += OnPreviewControlStateChanged;
+                    previewControl.MouseEnter += OnPreviewControlMouseEnter;
+                    previewControl.MouseLeave += OnPreviewControlMouseLeave;
                     expansionBay.Children.Add(previewControl);
                 }
 
@@ -368,6 +376,8 @@ namespace Dynamo.Controls
 
         private void OnNodeViewMouseEnter(object sender, MouseEventArgs e)
         {
+            if (!previewEnabled) return; // Preview is hidden. There is no need run further.
+
             if (PreviewControl.IsInTransition) // In transition state, come back later.
                 return;
 
@@ -382,16 +392,29 @@ namespace Dynamo.Controls
 
         private void OnNodeViewMouseLeave(object sender, MouseEventArgs e)
         {
-            if (PreviewControl.IsInTransition) // In transition state, come back later.
-                return;
+            // If mouse in over node/preview control or preview control is pined, we can not hide preview control.
+            if (IsMouseOver || PreviewControl.IsMouseOver || PreviewControl.StaysOpen) return;
 
-            // If mouse in not over node/preview control and preview control is not pined, we can hide preview control.
-            if (!IsMouseOver && !PreviewControl.IsMouseOver && !PreviewControl.StaysOpen)
+            // If it's expanded, then first condense it.
+            if (PreviewControl.IsExpanded)
+            {
+                PreviewControl.TransitionToState(PreviewControl.State.Condensed);
+            }
+            // If it's condensed, then try to hide it.
+            if (PreviewControl.IsCondensed)
             {
                 PreviewControl.TransitionToState(PreviewControl.State.Hidden);
             }
         }
 
+        /// <summary>
+        /// This event fires right after preview's state has been changed.
+        /// This event is necessary, it handles some preview's manipulations, 
+        /// that we can't handle in mouse enter/leave events.
+        /// E.g. When mouse leaves preview control, it should be first condesed, after that hidden.
+        /// </summary>
+        /// <param name="sender">PreviewControl</param>
+        /// <param name="e">Event arguments</param>
         private void OnPreviewControlStateChanged(object sender, EventArgs e)
         {
             var preview = sender as PreviewControl;
@@ -402,24 +425,65 @@ namespace Dynamo.Controls
                 return;
             }
 
-            if (IsMouseOver)
+            switch (preview.CurrentState)
             {
-                // The mouse is currently over the node, so if the 
-                // preview control is hidden, bring it into condensed state.
-                if (preview.IsHidden)
+                case PreviewControl.State.Hidden:
                 {
-                    preview.TransitionToState(PreviewControl.State.Condensed);
+                    if (IsMouseOver && previewEnabled)
+                    {
+                        preview.TransitionToState(PreviewControl.State.Condensed);
+                    }
+                    break;
                 }
-            }
-            else
-            {
-                // The mouse is no longer over the node, if the preview 
-                // control is currently in condensed state, hide it from view.
-                if (preview.IsCondensed)
+                case PreviewControl.State.Condensed:
                 {
-                    preview.TransitionToState(PreviewControl.State.Hidden);
+                    if (preview.IsMouseOver)
+                    {
+                        preview.TransitionToState(PreviewControl.State.Expanded);
+                    }
+                    if (!IsMouseOver)
+                    {
+                        preview.TransitionToState(PreviewControl.State.Hidden);
+                    }
+                    break;
                 }
+                case PreviewControl.State.Expanded:
+                {
+                    if (!IsMouseOver || !preview.IsMouseOver)
+                    {
+                        preview.TransitionToState(PreviewControl.State.Condensed);
+                    }
+                    break;
+                }
+            };
+        }
 
+        private void OnPreviewControlMouseEnter(object sender, MouseEventArgs e)
+        {
+            if (PreviewControl.IsCondensed)
+            {
+                PreviewControl.TransitionToState(PreviewControl.State.Expanded);
+            }
+        }
+
+        private void OnPreviewControlMouseLeave(object sender, MouseEventArgs e)
+        {
+            if (!PreviewControl.StaysOpen && !PreviewControl.IsInTransition)
+            {
+                PreviewControl.TransitionToState(PreviewControl.State.Condensed);
+            }
+        }
+
+        /// <summary>
+        /// Enables/disables preview control. 
+        /// </summary>
+        internal void TogglePreviewControlAllowance()
+        {
+            previewEnabled = !previewEnabled;
+
+            if (previewEnabled == false && !PreviewControl.StaysOpen)
+            {
+                PreviewControl.TransitionToState(PreviewControl.State.Hidden);
             }
         }
 
