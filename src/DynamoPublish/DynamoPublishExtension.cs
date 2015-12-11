@@ -122,7 +122,7 @@ namespace Dynamo.Publish
             // Open the configuration file using the dll location.
             var config = ConfigurationManager.OpenExeConfiguration(typeof(PublishModel).Assembly.Location);
             // Get the appSettings section.
-            var appSettings = (AppSettingsSection)config.GetSection("appSettings");
+            var appSettings = config.GetSection("appSettings") as AppSettingsSection;
 
             if (appSettings == null)
             {
