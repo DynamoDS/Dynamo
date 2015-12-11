@@ -178,6 +178,7 @@
     <ProjectReference Include="..\Libraries\Watch3DNodeModels\Watch3DNodeModels.csproj">
       <Project>{31183026-DE70-49CB-BC7C-0DFD0A088F62}</Project>
       <Name>Watch3DNodeModels</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
       <Project>{263FA9C1-F81E-4A8E-95E0-8CDAE20F177B}</Project>

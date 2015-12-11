@@ -16,6 +16,45 @@ using Watch3DNodeModels.Properties;
 
 namespace Watch3DNodeModels
 {
+    public class Watch3DCamera
+    {
+        private const string DefaultCameraName = "Background Preview";
+
+        public string Name { get; set; }
+
+        public double EyeX { get; set; }
+
+        public double EyeY { get; set; }
+
+        public double EyeZ { get; set; }
+
+        public double LookX { get; set; }
+
+        public double LookY { get; set; }
+
+        public double LookZ { get; set; }
+        
+        public double UpX { get; set; }
+        
+        public double UpY { get; set; }
+
+        public double UpZ { get; set; }
+
+        public Watch3DCamera()
+        {
+            Name = DefaultCameraName;
+            EyeX = -17;
+            EyeY = 24;
+            EyeZ = 50;
+            LookX = 12;
+            LookY = -13;
+            LookZ = -58;
+            UpX = 0;
+            UpY = 1;
+            UpZ = 0;
+        }
+    }
+
     [NodeName("Watch 3D")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeDescription("Watch3DDescription", typeof(Resources))]
@@ -68,7 +107,7 @@ namespace Watch3DNodeModels
             WatchHeight = 200;
 
             ShouldDisplayPreviewCore = false;
-
+            Camera = new Watch3DCamera();
         }
 
         #endregion
@@ -117,6 +156,16 @@ namespace Watch3DNodeModels
             };
 
             return resultAst;
+        }
+
+        #endregion
+
+        #region public properties
+
+        public Watch3DCamera Camera
+        {
+            get;
+            private set;
         }
 
         #endregion
