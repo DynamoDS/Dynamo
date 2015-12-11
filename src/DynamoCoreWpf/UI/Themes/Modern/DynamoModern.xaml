@@ -1674,6 +1674,24 @@
         </Setter>
     </Style>
 
+    <Style TargetType="Path"
+           x:Key="TreeViewItemPath">
+        <Setter Property="Stroke">
+            <Setter.Value>
+                <SolidColorBrush Color="{DynamicResource GlyphColor}" />
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=IsMouseOver,
+                                           RelativeSource={RelativeSource
+                                           AncestorType={x:Type Grid}}}"
+                         Value="True">
+                <Setter Property="Stroke"
+                        Value="#FF1BBBFA" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="{x:Type dynui:ImageButton}"
            TargetType="{x:Type dynui:ImageButton}">
         <Setter Property="SnapsToDevicePixels"

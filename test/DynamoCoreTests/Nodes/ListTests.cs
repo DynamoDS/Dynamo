@@ -2247,5 +2247,18 @@ namespace Dynamo.Tests
             RunModel(openPath);
             AssertPreviewValue("404af9cd-3668-4aa8-aea1-314a228bd6e1", new object[] { 0, 2 });
         }
+
+        [Test]
+        [Category("Regression")]
+        public void TestListChop()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\list\testListChop.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("f805b9b9-1a1f-4a63-ad9e-e4c9722ef1c7", 
+                new object[] {
+                    new object[] {1, 2 },
+                    new object[] {3, 4 },
+                    new object[] {5 } });
+        }
     }
 }

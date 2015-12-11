@@ -181,34 +181,35 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         /// Input nodes are used in Customizer and Presets. Input nodes can be numbers, number sliders,
-        /// strings, bool, code blocks and custom nodes, which don't specify path.
+        /// strings, bool, code blocks and custom nodes, which don't specify path. This property 
+        /// is true for nodes that are potential inputs for Customizers and Presets.
         /// </summary>
-        public bool IsInputNode
+        public virtual bool IsInputNode
         {
             get
             {
-                return !inPorts.Any() && !(this is DSFunction);
+                return !inPorts.Any();
             }
         }
 
-        private bool isSelectedInput = true;
+        private bool isSetAsInput = true;
         /// <summary>
-        /// Specifies whether an input node should be included in a preset. 
-        /// By default, this field is set to true.
+        /// This property is user-controllable via a checkbox and is set to true when a user wishes to include
+        /// this node in a Customizer as an interactive control.
         /// </summary>
-        public bool IsSelectedInput
+        public bool IsSetAsInput
         {
             get
             {
                 if (!IsInputNode)
                     return false;
 
-                return isSelectedInput;
+                return isSetAsInput;
             }
 
             set
             {
-                isSelectedInput = value;
+                isSetAsInput = value;
             }
         }
 
@@ -474,9 +475,20 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Use to indicated if a node was involved in the most recent graph evaluation.
+        /// This flag is used to determine if a node was involved in a recent execution.
+        /// The primary purpose of this flag is to determine if the node's render packages 
+        /// should be returned to client browser when it requests for them. This is mainly 
+        /// to avoid returning redundant data that has not changed during an execution.
         /// </summary>
         internal bool WasInvolvedInExecution { get; set; }
+
+        /// <summary>
+        /// This flag indicates if render packages of a NodeModel has been updated 
+        /// since the last execution. UpdateRenderPackageAsyncTask will always be 
+        /// generated for a NodeModel that took part in the evaluation, if this flag 
+        /// is false.
+        /// </summary>
+        internal bool WasRenderPackageUpdatedAfterExecution { get; set; }
 
         /// <summary>
         ///     Search tags for this Node.
@@ -1719,7 +1731,7 @@ namespace Dynamo.Graph.Nodes
             helper.SetAttribute("isVisible", IsVisible);
             helper.SetAttribute("isUpstreamVisible", IsUpstreamVisible);
             helper.SetAttribute("lacing", ArgumentLacing.ToString());
-            helper.SetAttribute("isSelectedInput", IsSelectedInput.ToString());
+            helper.SetAttribute("isSelectedInput", IsSetAsInput.ToString());
             helper.SetAttribute("IsFrozen", isFrozenExplicitly);
 
             var portsWithDefaultValues =
@@ -1771,7 +1783,7 @@ namespace Dynamo.Graph.Nodes
             isVisible = helper.ReadBoolean("isVisible", true);
             isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
-            IsSelectedInput = helper.ReadBoolean("isSelectedInput", true);
+            IsSetAsInput = helper.ReadBoolean("isSelectedInput", true);
             isFrozenExplicitly = helper.ReadBoolean("IsFrozen", false);
 
             var portInfoProcessed = new HashSet<int>();

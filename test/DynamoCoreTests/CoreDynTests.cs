@@ -118,7 +118,7 @@ namespace Dynamo.Tests
         {
             RunModel(@"core\sequence\DefaultSequence.dyn");
             AssertPreviewValue("6d7f8652-6cf2-4749-b398-922992fa484b",
-                new object[] { 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0 });
+                "_SingleFunctionObject");
         }
 
         [Test]
@@ -126,7 +126,7 @@ namespace Dynamo.Tests
         {
             RunModel(@"core\range\DefaultRange.dyn");
             AssertPreviewValue("24323e5c-6d36-4b18-b99d-fa953eafeb73",
-                new object[] { 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0 });
+                "_SingleFunctionObject");
         }
 
         [Test]
@@ -141,6 +141,30 @@ namespace Dynamo.Tests
         {
             RunModel(@"core\slider\DefaultIntegerSlider.dyn");
             AssertPreviewValue("35e5118e-c118-4690-bcef-ca5e601eac72", 1.0);
+        }
+
+        [Test]
+        public void TestRangeMap()
+        {
+            RunModel(@"core\range\RangeMap.dyn");
+            AssertPreviewValue("251ec88d-200d-4b75-95c8-1f9dfa540eba",
+                new[] { new[] { 5, 6, 7, 8, 9, 10 }, new[] { 5, 7, 9 } });
+            AssertPreviewValue("54a3f2af-e286-4a5b-8b04-977d47b6cfe3",
+                new[] { new[] { 1, 2, 3, 4, 5 }, new[] { 2, 3, 4, 5 } });
+            AssertPreviewValue("462fc8d4-1261-4251-8149-3ae9f4807591",
+                new[] { new[] { 5 }, new[] { 5, 6, 7, 8, 9, 10 } });
+        }
+
+        [Test]
+        public void TestSequenceMap()
+        {
+            RunModel(@"core\sequence\SequenceMap.dyn");
+            AssertPreviewValue("251ec88d-200d-4b75-95c8-1f9dfa540eba",
+                new[] { new[] { 5, 6, 7 }, new[] { 5, 7, 9 } });
+            AssertPreviewValue("54a3f2af-e286-4a5b-8b04-977d47b6cfe3",
+                new[] { new[] { 1, 3, 5, 7, 9 }, new[] { 2, 4, 6, 8, 10 } });
+            AssertPreviewValue("462fc8d4-1261-4251-8149-3ae9f4807591",
+                new[] { new[] { 5, 6, 7, 8, 9 }, new[] { 5, 6, 7 } });
         }
 
         [Test]

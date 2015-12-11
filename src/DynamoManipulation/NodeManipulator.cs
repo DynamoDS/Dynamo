@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -43,7 +44,7 @@ namespace Dynamo.Manipulation
         private const double NewNodeOffsetY = 50;
         private Point newPosition;
 
-        protected const double gizmoScale = 1.5;
+        protected const double gizmoScale = 1.2;
 
         #region properties
 
@@ -170,6 +171,7 @@ namespace Dynamo.Manipulation
         protected virtual void MouseDown(object sender, MouseButtonEventArgs mouseButtonEventArgs)
         {
             UpdatePosition();
+
             GizmoInAction = null; //Reset Drag.
 
             var gizmos = GetGizmos(false);
@@ -220,6 +222,8 @@ namespace Dynamo.Manipulation
         /// <param name="mouseEventArgs"></param>
         protected virtual void MouseMove(object sender, MouseEventArgs mouseEventArgs)
         {
+            if (!IsEnabled()) return;
+
             var clickRay = BackgroundPreviewViewModel.GetClickRay(mouseEventArgs);
             if (clickRay == null) return;
 
@@ -426,7 +430,9 @@ namespace Dynamo.Manipulation
                 return packages;
             }
 
-            return BuildRenderPackage();
+            IEnumerable<IRenderPackage> result = null;
+            BackgroundPreviewViewModel.Invoke(() => result = BuildRenderPackage());
+            return result;
         }
 
         /// <summary>
@@ -504,14 +510,16 @@ namespace Dynamo.Manipulation
         /// <summary>
         /// Checks if manipulator is enabled or not. Manipulator is enabled 
         /// only if node is not frozen or not setup as partially applied function 
-        /// or Run setting is set to Automatic.
         /// </summary>
         /// <returns>True if enabled and can be manipulated.</returns>
         public bool IsEnabled()
         {
             if (Node.IsFrozen) return false;
 
-            if (Node.CachedValue.IsNull) return false;
+            if (Node.CachedValue == null || Node.CachedValue.IsNull)
+            {
+                return false;
+            }
 
             return true;
         }

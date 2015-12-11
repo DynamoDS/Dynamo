@@ -435,18 +435,21 @@ namespace Dynamo.Manipulation
         private void DrawPlane(ref IRenderPackage package, Plane plane, Planes name)
         {
             package.Description = string.Format("{0}_{1}_{2}", RenderDescriptions.ManipulatorPlane, Name, name); 
-            var p1 = Origin.Add(plane.XAxis.Scale(scale/2));
-            var p2 = p1.Add(plane.YAxis.Scale(scale/2));
-            var p3 = Origin.Add(plane.YAxis.Scale(scale/2));
+            var p1 = Origin.Add(plane.XAxis.Scale(scale/3));
+            var p2 = p1.Add(plane.YAxis.Scale(scale/3));
+            var p3 = Origin.Add(plane.YAxis.Scale(scale/3));
+
+            var axis = plane.Normal;
+            var color = GetAxisColor(GetAlignedAxis(axis));
             
             package.AddLineStripVertexCount(3);
-            package.AddLineStripVertexColor(0, 0, 255, 255);
+            package.AddLineStripVertexColor(color.R, color.G, color.B, color.A);
             package.AddLineStripVertex(p1.X, p1.Y, p1.Z);
 
-            package.AddLineStripVertexColor(0, 0, 255, 255);
+            package.AddLineStripVertexColor(color.R, color.G, color.B, color.A);
             package.AddLineStripVertex(p2.X, p2.Y, p2.Z);
 
-            package.AddLineStripVertexColor(0, 0, 255, 255);
+            package.AddLineStripVertexColor(color.R, color.G, color.B, color.A);
             package.AddLineStripVertex(p3.X, p3.Y, p3.Z);
         }
 
