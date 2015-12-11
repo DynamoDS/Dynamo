@@ -127,6 +127,7 @@ namespace Dynamo.Scheduler
                 foreach (var modifiedNode in ModifiedNodes)
                 {
                     modifiedNode.WasInvolvedInExecution = true;
+                    modifiedNode.WasRenderPackageUpdatedAfterExecution = false;
                     if (modifiedNode.State == ElementState.Warning)
                         modifiedNode.ClearRuntimeError();
                 }

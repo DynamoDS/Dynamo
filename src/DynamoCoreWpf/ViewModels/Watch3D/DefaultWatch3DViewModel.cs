@@ -452,6 +452,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in inherited classes.
         }
 
+        public void Invoke(Action action)
+        {
+            var dynamoViewModel = viewModel as DynamoViewModel;
+            if (dynamoViewModel != null)
+            {
+                dynamoViewModel.UIDispatcher.Invoke(action);
+            }
+        }
+
         public virtual void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
         {
             // Override in derived classes.
@@ -578,6 +587,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         public event Action<object, RoutedEventArgs> ViewCameraChanged;
+
         internal void OnViewCameraChanged(object sender, RoutedEventArgs args)
         {
             var handler = ViewCameraChanged;

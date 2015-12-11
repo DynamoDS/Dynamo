@@ -11,9 +11,7 @@
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
-             mc:Ignorable="d"
-             MouseEnter="OnPreviewMouseEnter"
-             MouseLeave="OnPreviewMouseLeave">
+             mc:Ignorable="d">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -30,7 +28,7 @@
             <clr:Double x:Key="MaxContentGridWidth">488.0</clr:Double>
             <clr:Double x:Key="MaxContentGridHeight">288</clr:Double>
 
-            <clr:Double x:Key="PhasedOutPosition">-32.0</clr:Double>
+            <clr:Double x:Key="PhasedOutPosition">-52.0</clr:Double>
             <clr:Double x:Key="PhasedInPosition">-20.0</clr:Double>
             <clr:TimeSpan x:Key="ResizeBeginTime">0:0:0.2</clr:TimeSpan>
             <sys:Duration x:Key="AnimationDuration">0:0:0.2</sys:Duration>
@@ -153,36 +151,38 @@
               Name="centralizedGrid"
               Width="{StaticResource MinPreviewControlWidth}"
               Height="{StaticResource MinPreviewControlHeight}"
-              VerticalAlignment="Top">
+              VerticalAlignment="Top"
+              Visibility="Hidden">
             <Border Background="White"
                     BorderThickness="1"
                     BorderBrush="{StaticResource BubblePreviewBorderColor}" />
 
             <Grid Name="smallContentGrid"
-                  Visibility="Collapsed"
                   HorizontalAlignment="Left"
                   VerticalAlignment="Center"
+                  Margin="3,0,0,0"
                   MinWidth="{Binding RelativeSource={RelativeSource FindAncestor, 
                              AncestorType={x:Type controls:NodeView}}, 
                              Path=ActualWidth}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="15" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Margin="{StaticResource PreviewContentMargin}"
-                           Grid.Column="0">null</TextBlock>
+                           Grid.Column="0"
+                           FontFamily="Consolas">null</TextBlock>
 
                 <Image x:Name="ExpandIcon"
                        Grid.Column="1"
                        Source="/DynamoCoreWpf;component/UI/Images/bubble-arrow.png"
-                       HorizontalAlignment="Right"
                        VerticalAlignment="Bottom"
                        Height="6"
                        Width="6"
                        Margin="0,5,5,5" />
+
             </Grid>
 
-            <Grid Name="largeContentGrid"                 
+            <Grid Name="largeContentGrid"
                   MaxWidth="{StaticResource MaxContentGridWidth}"
                   MaxHeight="{StaticResource MaxContentGridHeight}"
                   MinWidth="{Binding RelativeSource={RelativeSource FindAncestor, 
@@ -217,7 +217,7 @@
                                                           Converter={StaticResource PinIconForegroundConverter}}"
                                      Height="16"
                                      Width="12"
-                                     Margin="5,5,5,5" />
+                                     Margin="6,6,6,6" />
                     <Border.Style>
                         <Style TargetType="Border">
                             <Style.Triggers>
