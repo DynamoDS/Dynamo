@@ -75,6 +75,7 @@ namespace Dynamo.ViewModels
             if (Model.DebugSettings.VerboseLogging)
                 model.Logger.Log("Command: " + command);
 
+            ReturnFocusToSearch(); 
             this.model.ExecuteCommand(command);
         }
 
