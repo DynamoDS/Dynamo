@@ -604,7 +604,7 @@ namespace DSCore
         /// <param name="lengths">Lengths of consecutive sublists to be created from the input list</param>
         /// <returns name="lists">Sublists created from the list</returns>
         /// <search>sublists,build sublists,slices,partitions,cut,listcontains,chop</search>
-        public static IList Chop(IList list, IList lengths)
+        public static IList Chop(IList list, List<int> lengths)
         {
             var finalList = new ArrayList();
             var currList = new ArrayList();
