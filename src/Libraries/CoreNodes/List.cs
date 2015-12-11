@@ -613,7 +613,7 @@ namespace DSCore
 
             // If there are not any lengths more than 0,
             // we return incoming list.
-            if (lengths.Cast<int>().All(x => x <= 0))
+            if (lengths.All(x => x <= 0))
             {
                 return list;
             }
@@ -623,7 +623,7 @@ namespace DSCore
                 // If number of items in current list equals length in list of lengths,
                 // we should add current list in final list.
                 // Or if length in list of lengths <= 0, we should process this length and move further.
-                if (count == ((int)lengths[lengthIndex]) || ((int)lengths[lengthIndex] <= 0))
+                if (count == lengths[lengthIndex] || lengths[lengthIndex] <= 0)
                 {
                     finalList.Add(currList);
                     currList = new ArrayList();
