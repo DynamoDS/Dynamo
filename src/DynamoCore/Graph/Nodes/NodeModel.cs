@@ -475,9 +475,20 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Use to indicated if a node was involved in the most recent graph evaluation.
+        /// This flag is used to determine if a node was involved in a recent execution.
+        /// The primary purpose of this flag is to determine if the node's render packages 
+        /// should be returned to client browser when it requests for them. This is mainly 
+        /// to avoid returning redundant data that has not changed during an execution.
         /// </summary>
         internal bool WasInvolvedInExecution { get; set; }
+
+        /// <summary>
+        /// This flag indicates if render packages of a NodeModel has been updated 
+        /// since the last execution. UpdateRenderPackageAsyncTask will always be 
+        /// generated for a NodeModel that took part in the evaluation, if this flag 
+        /// is false.
+        /// </summary>
+        internal bool WasRenderPackageUpdatedAfterExecution { get; set; }
 
         /// <summary>
         ///     Search tags for this Node.
