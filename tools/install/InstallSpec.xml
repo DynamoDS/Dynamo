@@ -21,6 +21,13 @@
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>Display.resources.dll</Name>
+      <FilePath>.\cs-CZ\Display.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>DSCoreNodes.resources.dll</Name>
       <FilePath>.\cs-CZ\DSCoreNodes.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -161,6 +168,13 @@
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>Watch3DNodeModels.resources.dll</Name>
+      <FilePath>.\cs-CZ\Watch3DNodeModels.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>Analysis.resources.dll</Name>
       <FilePath>.\de-DE\Analysis.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -178,6 +192,13 @@
       <FilePath>.\de-DE\BuiltIn.xml</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Display.resources.dll</Name>
+      <FilePath>.\de-DE\Display.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>DSCoreNodes.resources.dll</Name>
@@ -320,6 +341,13 @@
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>Watch3DNodeModels.resources.dll</Name>
+      <FilePath>.\de-DE\Watch3DNodeModels.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>Analysis.resources.dll</Name>
       <FilePath>.\en-US\Analysis.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -337,6 +365,13 @@
       <FilePath>.\en-US\BuiltIn.xml</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Display.resources.dll</Name>
+      <FilePath>.\en-US\Display.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>DSCoreNodes.resources.dll</Name>
@@ -467,6 +502,13 @@
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>Watch3DNodeModels.resources.dll</Name>
+      <FilePath>.\en-US\Watch3DNodeModels.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>Analysis.resources.dll</Name>
       <FilePath>.\es-ES\Analysis.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -484,6 +526,13 @@
       <FilePath>.\es-ES\BuiltIn.xml</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Display.resources.dll</Name>
+      <FilePath>.\es-ES\Display.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>DSCoreNodes.resources.dll</Name>
@@ -626,6 +675,13 @@
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>Watch3DNodeModels.resources.dll</Name>
+      <FilePath>.\es-ES\Watch3DNodeModels.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>PackageManagerExtension_ExtensionDefinition.xml</Name>
       <FilePath>.\extensions\PackageManagerExtension_ExtensionDefinition.xml</FilePath>
       <DigitalSignature>false</DigitalSignature>
@@ -649,6 +705,13 @@
       <FilePath>.\fr-FR\BuiltIn.xml</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Display.resources.dll</Name>
+      <FilePath>.\fr-FR\Display.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>DSCoreNodes.resources.dll</Name>
@@ -791,6 +854,13 @@
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>Watch3DNodeModels.resources.dll</Name>
+      <FilePath>.\fr-FR\Watch3DNodeModels.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>Analysis.resources.dll</Name>
       <FilePath>.\it-IT\Analysis.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -808,6 +878,13 @@
       <FilePath>.\it-IT\BuiltIn.xml</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Display.resources.dll</Name>
+      <FilePath>.\it-IT\Display.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>DSCoreNodes.resources.dll</Name>
@@ -950,6 +1027,13 @@
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>Watch3DNodeModels.resources.dll</Name>
+      <FilePath>.\it-IT\Watch3DNodeModels.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>Analysis.resources.dll</Name>
       <FilePath>.\ja-JP\Analysis.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -967,6 +1051,13 @@
       <FilePath>.\ja-JP\BuiltIn.xml</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Display.resources.dll</Name>
+      <FilePath>.\ja-JP\Display.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>DSCoreNodes.resources.dll</Name>
@@ -1109,6 +1200,13 @@
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>Watch3DNodeModels.resources.dll</Name>
+      <FilePath>.\ja-JP\Watch3DNodeModels.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>Analysis.resources.dll</Name>
       <FilePath>.\ko-KR\Analysis.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -1126,6 +1224,13 @@
       <FilePath>.\ko-KR\BuiltIn.xml</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Display.resources.dll</Name>
+      <FilePath>.\ko-KR\Display.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>DSCoreNodes.resources.dll</Name>
@@ -1266,6 +1371,13 @@
       <FilePath>.\ko-KR\Tessellation.XML</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModels.resources.dll</Name>
+      <FilePath>.\ko-KR\Watch3DNodeModels.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>boost_chrono-vc110-mt-1_51.dll</Name>
@@ -1716,8 +1828,29 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>PythonNodeModelsWpf.resources.dll</Name>
+      <FilePath>.\nodes\cs-CZ\PythonNodeModelsWpf.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>UnitsUI.resources.dll</Name>
       <FilePath>.\nodes\cs-CZ\UnitsUI.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\cs-CZ\Watch3DNodeModels.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModelsWpf.resources.dll</Name>
+      <FilePath>.\nodes\cs-CZ\Watch3DNodeModelsWpf.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -1765,8 +1898,29 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>PythonNodeModelsWpf.resources.dll</Name>
+      <FilePath>.\nodes\de-DE\PythonNodeModelsWpf.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>UnitsUI.resources.dll</Name>
       <FilePath>.\nodes\de-DE\UnitsUI.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\de-DE\Watch3DNodeModels.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModelsWpf.resources.dll</Name>
+      <FilePath>.\nodes\de-DE\Watch3DNodeModelsWpf.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -1828,6 +1982,20 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>Watch3DNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\en-US\Watch3DNodeModels.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModelsWpf.resources.dll</Name>
+      <FilePath>.\nodes\en-US\Watch3DNodeModelsWpf.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>CoreNodeModelsWpf.resources.dll</Name>
       <FilePath>.\nodes\es-ES\CoreNodeModelsWpf.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -1870,8 +2038,29 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>PythonNodeModelsWpf.resources.dll</Name>
+      <FilePath>.\nodes\es-ES\PythonNodeModelsWpf.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>UnitsUI.resources.dll</Name>
       <FilePath>.\nodes\es-ES\UnitsUI.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\es-ES\Watch3DNodeModels.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModelsWpf.resources.dll</Name>
+      <FilePath>.\nodes\es-ES\Watch3DNodeModelsWpf.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -1919,8 +2108,29 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>PythonNodeModelsWpf.resources.dll</Name>
+      <FilePath>.\nodes\fr-FR\PythonNodeModelsWpf.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>UnitsUI.resources.dll</Name>
       <FilePath>.\nodes\fr-FR\UnitsUI.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\fr-FR\Watch3DNodeModels.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModelsWpf.resources.dll</Name>
+      <FilePath>.\nodes\fr-FR\Watch3DNodeModelsWpf.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -1968,8 +2178,29 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>PythonNodeModelsWpf.resources.dll</Name>
+      <FilePath>.\nodes\it-IT\PythonNodeModelsWpf.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>UnitsUI.resources.dll</Name>
       <FilePath>.\nodes\it-IT\UnitsUI.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\it-IT\Watch3DNodeModels.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModelsWpf.resources.dll</Name>
+      <FilePath>.\nodes\it-IT\Watch3DNodeModelsWpf.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2017,8 +2248,29 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>PythonNodeModelsWpf.resources.dll</Name>
+      <FilePath>.\nodes\ja-JP\PythonNodeModelsWpf.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>UnitsUI.resources.dll</Name>
       <FilePath>.\nodes\ja-JP\UnitsUI.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\ja-JP\Watch3DNodeModels.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModelsWpf.resources.dll</Name>
+      <FilePath>.\nodes\ja-JP\Watch3DNodeModelsWpf.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2066,8 +2318,29 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>PythonNodeModelsWpf.resources.dll</Name>
+      <FilePath>.\nodes\ko-KR\PythonNodeModelsWpf.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>UnitsUI.resources.dll</Name>
       <FilePath>.\nodes\ko-KR\UnitsUI.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\ko-KR\Watch3DNodeModels.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModelsWpf.resources.dll</Name>
+      <FilePath>.\nodes\ko-KR\Watch3DNodeModelsWpf.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2115,8 +2388,29 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>PythonNodeModelsWpf.resources.dll</Name>
+      <FilePath>.\nodes\pl-PL\PythonNodeModelsWpf.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>UnitsUI.resources.dll</Name>
       <FilePath>.\nodes\pl-PL\UnitsUI.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\pl-PL\Watch3DNodeModels.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModelsWpf.resources.dll</Name>
+      <FilePath>.\nodes\pl-PL\Watch3DNodeModelsWpf.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2164,8 +2458,29 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>PythonNodeModelsWpf.resources.dll</Name>
+      <FilePath>.\nodes\pt-BR\PythonNodeModelsWpf.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>UnitsUI.resources.dll</Name>
       <FilePath>.\nodes\pt-BR\UnitsUI.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\pt-BR\Watch3DNodeModels.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModelsWpf.resources.dll</Name>
+      <FilePath>.\nodes\pt-BR\Watch3DNodeModelsWpf.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2213,8 +2528,29 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>PythonNodeModelsWpf.resources.dll</Name>
+      <FilePath>.\nodes\ru-RU\PythonNodeModelsWpf.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>UnitsUI.resources.dll</Name>
       <FilePath>.\nodes\ru-RU\UnitsUI.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\ru-RU\Watch3DNodeModels.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModelsWpf.resources.dll</Name>
+      <FilePath>.\nodes\ru-RU\Watch3DNodeModelsWpf.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2262,8 +2598,29 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>PythonNodeModelsWpf.resources.dll</Name>
+      <FilePath>.\nodes\zh-CN\PythonNodeModelsWpf.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>UnitsUI.resources.dll</Name>
       <FilePath>.\nodes\zh-CN\UnitsUI.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\zh-CN\Watch3DNodeModels.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModelsWpf.resources.dll</Name>
+      <FilePath>.\nodes\zh-CN\Watch3DNodeModelsWpf.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2311,8 +2668,29 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>PythonNodeModelsWpf.resources.dll</Name>
+      <FilePath>.\nodes\zh-TW\PythonNodeModelsWpf.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>UnitsUI.resources.dll</Name>
       <FilePath>.\nodes\zh-TW\UnitsUI.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\zh-TW\Watch3DNodeModels.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModelsWpf.resources.dll</Name>
+      <FilePath>.\nodes\zh-TW\Watch3DNodeModelsWpf.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2451,6 +2829,27 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>Watch3DNodeModels.customization.dll</Name>
+      <FilePath>.\nodes\Watch3DNodeModels.customization.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModels.dll</Name>
+      <FilePath>.\nodes\Watch3DNodeModels.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModelsWpf.dll</Name>
+      <FilePath>.\nodes\Watch3DNodeModelsWpf.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>Analysis.resources.dll</Name>
       <FilePath>.\pl-PL\Analysis.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -2468,6 +2867,13 @@
       <FilePath>.\pl-PL\BuiltIn.xml</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Display.resources.dll</Name>
+      <FilePath>.\pl-PL\Display.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>DSCoreNodes.resources.dll</Name>
@@ -2610,6 +3016,13 @@
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>Watch3DNodeModels.resources.dll</Name>
+      <FilePath>.\pl-PL\Watch3DNodeModels.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>Analysis.resources.dll</Name>
       <FilePath>.\pt-BR\Analysis.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -2627,6 +3040,13 @@
       <FilePath>.\pt-BR\BuiltIn.xml</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Display.resources.dll</Name>
+      <FilePath>.\pt-BR\Display.resources.dll</FilePath>
+      <DigitalSignature>v</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>DSCoreNodes.resources.dll</Name>
@@ -2767,6 +3187,13 @@
       <FilePath>.\pt-BR\Tessellation.XML</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModels.resources.dll</Name>
+      <FilePath>.\pt-BR\Watch3DNodeModels.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>DynamoRevitDS.resources.dll</Name>
@@ -4596,6 +5023,13 @@
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>Display.resources.dll</Name>
+      <FilePath>.\ru-RU\Display.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>DSCoreNodes.resources.dll</Name>
       <FilePath>.\ru-RU\DSCoreNodes.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -4736,6 +5170,13 @@
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>Watch3DNodeModels.resources.dll</Name>
+      <FilePath>.\ru-RU\Watch3DNodeModels.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>OpenSans-Bold.ttf</Name>
       <FilePath>.\UI\Fonts\OpenSans-Bold.ttf</FilePath>
       <DigitalSignature>false</DigitalSignature>
@@ -4856,6 +5297,18 @@
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>DynamoManipulationExtension_ViewExtensionDefinition.xml</Name>
+      <FilePath>.\viewExtensions\DynamoManipulationExtension_ViewExtensionDefinition.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoPublishExtension_ViewExtensionDefinition.xml</Name>
+      <FilePath>.\viewExtensions\DynamoPublishExtension_ViewExtensionDefinition.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>Analysis.resources.dll</Name>
       <FilePath>.\zh-CN\Analysis.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -4873,6 +5326,13 @@
       <FilePath>.\zh-CN\BuiltIn.xml</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Display.resources.dll</Name>
+      <FilePath>.\zh-CN\Display.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>DSCoreNodes.resources.dll</Name>
@@ -5015,6 +5475,13 @@
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>Watch3DNodeModels.resources.dll</Name>
+      <FilePath>.\zh-CN\Watch3DNodeModels.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>Analysis.resources.dll</Name>
       <FilePath>.\zh-TW\Analysis.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -5032,6 +5499,13 @@
       <FilePath>.\zh-TW\BuiltIn.xml</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Display.resources.dll</Name>
+      <FilePath>.\zh-TW\Display.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>DSCoreNodes.resources.dll</Name>
@@ -5172,6 +5646,13 @@
       <FilePath>.\zh-TW\Tessellation.XML</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModels.resources.dll</Name>
+      <FilePath>.\zh-TW\Watch3DNodeModels.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>Analysis.customization.dll</Name>
@@ -5440,6 +5921,13 @@
       <FilePath>.\DynamoInstaller.ico</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoManipulation.dll</Name>
+      <FilePath>.\DynamoManipulation.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
       <Name>DynamoPackages.dll</Name>
@@ -5881,6 +6369,13 @@
       <Author>Autodesk, Inc.</Author>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>ShapewaysClient.dll</Name>
+      <FilePath>.\ShapewaysClient.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>SharpDX.D3DCompiler.dll</Name>
       <FilePath>.\SharpDX.D3DCompiler.dll</FilePath>
       <DigitalSignature>false</DigitalSignature>
@@ -6041,6 +6536,13 @@
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Watch3DNodeModels.dll</Name>
+      <FilePath>.\Watch3DNodeModels.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
     </ModuleSpec>
   </Modules>
 </DynamoInstallSpec>
