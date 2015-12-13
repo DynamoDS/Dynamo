@@ -16,28 +16,61 @@ using Watch3DNodeModels.Properties;
 
 namespace Watch3DNodeModels
 {
+    /// <summary>
+    /// Class used for representation of Helix camera.
+    /// </summary>
     public class Watch3DCamera
     {
         private const string DefaultCameraName = "Background Preview";
 
+        /// <summary>
+        /// Name of watch3d camera, e.g. "761132b8-b5fa-46b2-98a9-82436e0d8812 Preview"
+        /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// EyeX of Watch 3d camera
+        /// </summary>
         public double EyeX { get; set; }
 
+        /// <summary>
+        /// EyeY of Watch 3d camera
+        /// </summary>
         public double EyeY { get; set; }
 
+        /// <summary>
+        /// EyeZ of Watch 3d camera
+        /// </summary>
         public double EyeZ { get; set; }
 
+        /// <summary>
+        /// LookX of Watch 3d camera
+        /// </summary>
         public double LookX { get; set; }
 
+        /// <summary>
+        /// LookY of Watch 3d camera
+        /// </summary>
         public double LookY { get; set; }
 
+        /// <summary>
+        /// LookZ of Watch 3d camera
+        /// </summary>
         public double LookZ { get; set; }
-        
+
+        /// <summary>
+        /// UpX of Watch 3d camera
+        /// </summary>
         public double UpX { get; set; }
-        
+
+        /// <summary>
+        /// UpY of Watch 3d camera
+        /// </summary>
         public double UpY { get; set; }
 
+        /// <summary>
+        /// UpZ of Watch 3d camera
+        /// </summary>
         public double UpZ { get; set; }
 
         public Watch3DCamera()
