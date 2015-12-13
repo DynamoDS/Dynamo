@@ -204,6 +204,13 @@ namespace Watch3DNodeModels
 
                     // Trigger the event, in case the view model already exists
                     OnDeserialized(node);
+
+                    // Deserialized can be null, when we are running on Unix. There is no WPF 
+                    // and that's why no Helix. But we still have to process camera position to use it in Flood.
+                    if (Deserialized == null)
+                    {
+                        DeserializeCamera();
+                    }
                 }
             }
             catch (Exception ex)
@@ -211,6 +218,47 @@ namespace Watch3DNodeModels
                 Log(LogMessage.Error(ex));
                 Log("View attributes could not be read from the file.");
             }
+        }
+
+        /// <summary>
+        /// Deserializes camera from XML, if there is no any Deserialized action. 
+        /// It's used for creation of camera, that will be sent to Flood.
+        /// </summary>
+        private void DeserializeCamera()
+        {
+            var cameraNode = initialCameraData.ChildNodes
+                            .Cast<XmlNode>()
+                            .FirstOrDefault
+                            (innerNode => innerNode.Name.Equals("camera", StringComparison.OrdinalIgnoreCase));
+
+            if (cameraNode == null || cameraNode.Attributes == null || cameraNode.Attributes.Count == 0)
+            {
+                return;
+            }
+            var name = cameraNode.Attributes["Name"].Value;
+            var ex = float.Parse(cameraNode.Attributes["eyeX"].Value, CultureInfo.InvariantCulture);
+            var ey = float.Parse(cameraNode.Attributes["eyeY"].Value, CultureInfo.InvariantCulture);
+            var ez = float.Parse(cameraNode.Attributes["eyeZ"].Value, CultureInfo.InvariantCulture);
+            var lx = float.Parse(cameraNode.Attributes["lookX"].Value, CultureInfo.InvariantCulture);
+            var ly = float.Parse(cameraNode.Attributes["lookY"].Value, CultureInfo.InvariantCulture);
+            var lz = float.Parse(cameraNode.Attributes["lookZ"].Value, CultureInfo.InvariantCulture);
+            var ux = float.Parse(cameraNode.Attributes["upX"].Value, CultureInfo.InvariantCulture);
+            var uy = float.Parse(cameraNode.Attributes["upY"].Value, CultureInfo.InvariantCulture);
+            var uz = float.Parse(cameraNode.Attributes["upZ"].Value, CultureInfo.InvariantCulture);
+
+            Camera = new Watch3DCamera
+            {
+                Name = name,
+                EyeX = ex,
+                EyeY = ey,
+                EyeZ = ez,
+                LookX = lx,
+                LookY = ly,
+                LookZ = lz,
+                UpX = ux,
+                UpY = uy,
+                UpZ = uz
+            };
         }
 
         public override bool RequestVisualUpdateAsync(
