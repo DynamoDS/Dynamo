@@ -187,7 +187,7 @@ namespace Dynamo.Applications
 
             config.UpdateManager = CLImode ? null : InitializeUpdateManager();
             config.StartInTestMode = CLImode ? true : false;
-            config.PathResolver = CLImode ? new CLIPathResolver(preloaderLocation) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver ; 
+            config.PathResolver = CLImode ? new CLIPathResolver(preloaderLocation) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver ;
 
             var model = DynamoModel.Start(config);
             return model;

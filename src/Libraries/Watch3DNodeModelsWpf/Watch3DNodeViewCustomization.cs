@@ -29,15 +29,15 @@ namespace Watch3DNodeModelsWpf
         {
             var dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
             watch3dModel = model;
-            
+
             var renderingTier = (RenderCapability.Tier >> 16);
             if (renderingTier < 2) return;
 
             var dynamoModel = dynamoViewModel.Model;
 
             var vmParams = new Watch3DViewModelStartupParams(dynamoModel);
-             watch3DViewModel = new HelixWatch3DNodeViewModel(watch3dModel, vmParams);
-            watch3DViewModel.Setup(dynamoViewModel, 
+            watch3DViewModel = new HelixWatch3DNodeViewModel(watch3dModel, vmParams);
+            watch3DViewModel.Setup(dynamoViewModel,
                 dynamoViewModel.RenderPackageFactoryViewModel.Factory);
 
             if (model.initialCameraData != null)
@@ -46,7 +46,7 @@ namespace Watch3DNodeModelsWpf
                 {
                     // The deserialization logic is unified between the view model and this node model.
                     // For the node model, we need to supply the deserialization method with the camera node.
-                    var cameraNode = model.initialCameraData.ChildNodes.Cast<XmlNode>().FirstOrDefault(innerNode => innerNode.Name.Equals("camera",StringComparison.OrdinalIgnoreCase));
+                    var cameraNode = model.initialCameraData.ChildNodes.Cast<XmlNode>().FirstOrDefault(innerNode => innerNode.Name.Equals("camera", StringComparison.OrdinalIgnoreCase));
                     var cameraData = watch3DViewModel.DeserializeCamera(cameraNode);
                     watch3DViewModel.SetCameraData(cameraData);
                 }
@@ -57,6 +57,20 @@ namespace Watch3DNodeModelsWpf
             }
 
             model.Serialized += model_Serialized;
+            watch3DViewModel.ViewCameraChanged += (s, args) =>
+            {
+                var camera = watch3DViewModel.GetCameraInformation();
+                watch3dModel.Camera.Name = camera.Name;
+                watch3dModel.Camera.EyeX = camera.EyePosition.X;
+                watch3dModel.Camera.EyeY = camera.EyePosition.Y;
+                watch3dModel.Camera.EyeZ = camera.EyePosition.Z;
+                watch3dModel.Camera.LookX = camera.LookDirection.X;
+                watch3dModel.Camera.LookY = camera.LookDirection.Y;
+                watch3dModel.Camera.LookZ = camera.LookDirection.Z;
+                watch3dModel.Camera.UpX = camera.UpDirection.X;
+                watch3dModel.Camera.UpY = camera.UpDirection.Y;
+                watch3dModel.Camera.UpZ = camera.UpDirection.Z;
+            };
 
             watch3DView = new Watch3DView()
             {
