@@ -433,6 +433,18 @@ namespace Dynamo.Graph.Workspaces
             var updateTask = (UpdateGraphAsyncTask)task;
             var messages = new Dictionary<Guid, string>();
 
+            // Mark all modified nodes as being updated.
+            // 
+            // In addition to marking modified nodes as being updated, their 
+            // warning states are cleared (which include the tool-tip).
+            foreach (var modifiedNode in updateTask.ModifiedNodes)
+            {
+                modifiedNode.WasInvolvedInExecution = true;
+                modifiedNode.WasRenderPackageUpdatedAfterExecution = false;
+                if (modifiedNode.State == ElementState.Warning)
+                    modifiedNode.ClearRuntimeError();
+            }
+
             // Runtime warnings take precedence over build warnings.
             foreach (var warning in updateTask.RuntimeWarnings)
             {
