@@ -88,13 +88,6 @@
       <Author />
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\cs-CZ\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>DynamoPython.resources.dll</Name>
       <FilePath>.\cs-CZ\DynamoPython.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -261,13 +254,6 @@
       <Author />
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\de-DE\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>DynamoPython.resources.dll</Name>
       <FilePath>.\de-DE\DynamoPython.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -428,13 +414,6 @@
       <Author />
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\en-US\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>DynamoPython.resources.dll</Name>
       <FilePath>.\en-US\DynamoPython.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -590,13 +569,6 @@
     <ModuleSpec>
       <Name>DynamoPackages.resources.dll</Name>
       <FilePath>.\es-ES\DynamoPackages.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\es-ES\DynamoPublish.resources.dll</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author />
@@ -774,13 +746,6 @@
       <Author />
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\fr-FR\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>DynamoPython.resources.dll</Name>
       <FilePath>.\fr-FR\DynamoPython.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -942,13 +907,6 @@
     <ModuleSpec>
       <Name>DynamoPackages.resources.dll</Name>
       <FilePath>.\it-IT\DynamoPackages.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\it-IT\DynamoPublish.resources.dll</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author />
@@ -1120,13 +1078,6 @@
       <Author />
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\ja-JP\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>DynamoPython.resources.dll</Name>
       <FilePath>.\ja-JP\DynamoPython.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -1288,13 +1239,6 @@
     <ModuleSpec>
       <Name>DynamoPackages.resources.dll</Name>
       <FilePath>.\ko-KR\DynamoPackages.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\ko-KR\DynamoPublish.resources.dll</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author />
@@ -2936,13 +2880,6 @@
       <Author />
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\pl-PL\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>DynamoPython.resources.dll</Name>
       <FilePath>.\pl-PL\DynamoPython.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -3104,13 +3041,6 @@
     <ModuleSpec>
       <Name>DynamoPackages.resources.dll</Name>
       <FilePath>.\pt-BR\DynamoPackages.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\pt-BR\DynamoPublish.resources.dll</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author />
@@ -5090,13 +5020,6 @@
       <Author />
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\ru-RU\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>DynamoPython.resources.dll</Name>
       <FilePath>.\ru-RU\DynamoPython.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -5395,13 +5318,6 @@
       <Author />
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\zh-CN\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>DynamoPython.resources.dll</Name>
       <FilePath>.\zh-CN\DynamoPython.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -5563,13 +5479,6 @@
     <ModuleSpec>
       <Name>DynamoPackages.resources.dll</Name>
       <FilePath>.\zh-TW\DynamoPackages.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\zh-TW\DynamoPublish.resources.dll</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author />
@@ -5939,19 +5848,6 @@
     <ModuleSpec>
       <Name>DynamoPackages.dll.config</Name>
       <FilePath>.\DynamoPackages.dll.config</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>DynamoPublish.dll</Name>
-      <FilePath>.\DynamoPublish.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>DynamoPublish.dll.config</Name>
-      <FilePath>.\DynamoPublish.dll.config</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
