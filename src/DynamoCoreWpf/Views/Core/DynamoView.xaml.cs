@@ -60,7 +60,7 @@ namespace Dynamo.Controls
         public const string BackgroundPreviewName = "BackgroundPreview";
         private const int navigationInterval = 100;
         // This is used to determine whether ESC key is being held down
-        private bool escIsHold = false;
+        private bool IsEscKeyPressed = false;
 
         private readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
         private DynamoViewModel dynamoViewModel;
@@ -1132,12 +1132,12 @@ namespace Dynamo.Controls
             // This issue was caused by using KeyEventArgs.IsRepeated API
             // In order to fix this we need to use our own extension method DelayInvoke to determine
             // whether ESC key is being held down or not
-            if (!escIsHold && !vm.NavigationKeyIsDown)
+            if (!IsEscKeyPressed && !vm.NavigationKeyIsDown)
             {
-                escIsHold = true;
+                IsEscKeyPressed = true;
                 dynamoViewModel.UIDispatcher.DelayInvoke(navigationInterval, () =>
                 {
-                    if (escIsHold)
+                    if (IsEscKeyPressed)
                     {
                         vm.NavigationKeyIsDown = true;
                     }
@@ -1156,7 +1156,7 @@ namespace Dynamo.Controls
         {
             if (e.Key != Key.Escape) return;
 
-            escIsHold = false;
+            IsEscKeyPressed = false;
             if (dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground)
             {
                 dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown = false;
