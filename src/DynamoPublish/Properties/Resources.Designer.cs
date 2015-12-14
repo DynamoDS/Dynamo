@@ -530,6 +530,24 @@ namespace Dynamo.Publish.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Confirmation.
+        /// </summary>
+        public static string TermsConfirmation {
+            get {
+                return ResourceManager.GetString("TermsConfirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have already accepted the terms of use agreement. Do you want to continue?.
+        /// </summary>
+        public static string TermsConfirmationContent {
+            get {
+                return ResourceManager.GetString("TermsConfirmationContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to There was an error when trying to publish your customizer. Please report this message to the Dynamo team..
         /// </summary>
         public static string UnknownServerErrorMessage {
