@@ -58,7 +58,7 @@ namespace Dynamo.Controls
     public partial class DynamoView : Window, IDisposable
     {
         public const string BackgroundPreviewName = "BackgroundPreview";
-        private const int NavigationInterval = 100;
+        private const int navigationInterval = 100;
         // This is used to determine whether ESC key is being held down
         private bool escIsHold = false;
 
@@ -1118,8 +1118,6 @@ namespace Dynamo.Controls
             viewExtensionManager.MessageLogged -= Log;
         }
 
-        
-
         // the key press event is being intercepted before it can get to
         // the active workspace. This code simply grabs the key presses and
         // passes it to thecurrent workspace
@@ -1132,12 +1130,12 @@ namespace Dynamo.Controls
 
             // ESC key to navigate has long lag on some machines.
             // This issue was caused by using KeyEventArgs.IsRepeated API
-            // In order to fix this we need to use our own timer to determine
+            // In order to fix this we need to use our own extension method DelayInvoke to determine
             // whether ESC key is being held down or not
             if (!escIsHold && !vm.NavigationKeyIsDown)
             {
                 escIsHold = true;
-                dynamoViewModel.UIDispatcher.DelayInvoke(NavigationInterval, () =>
+                dynamoViewModel.UIDispatcher.DelayInvoke(navigationInterval, () =>
                 {
                     if (escIsHold)
                     {
