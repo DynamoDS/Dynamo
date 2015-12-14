@@ -48,6 +48,7 @@ using Dynamo.Wpf.Extensions;
 using Dynamo.Interfaces;
 using Dynamo.Wpf.Views.PackageManager;
 using Dynamo.Views;
+using System.Threading.Tasks;
 
 namespace Dynamo.Controls
 {
@@ -57,7 +58,9 @@ namespace Dynamo.Controls
     public partial class DynamoView : Window, IDisposable
     {
         public const string BackgroundPreviewName = "BackgroundPreview";
-        private const int NavigationInterval = 500;
+        private const int NavigationInterval = 100;
+        // This is used to determine whether ESC key is being held down
+        private bool escIsHold = false;
 
         private readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
         private DynamoViewModel dynamoViewModel;
@@ -66,8 +69,6 @@ namespace Dynamo.Controls
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
         private GalleryView galleryView;
         private readonly LoginService loginService;
-        // This is used to determine whether ESC key is being held down
-        private readonly Stopwatch sw = new Stopwatch();
         internal ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
 
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
@@ -1117,6 +1118,8 @@ namespace Dynamo.Controls
             viewExtensionManager.MessageLogged -= Log;
         }
 
+        
+
         // the key press event is being intercepted before it can get to
         // the active workspace. This code simply grabs the key presses and
         // passes it to thecurrent workspace
@@ -1131,16 +1134,18 @@ namespace Dynamo.Controls
             // This issue was caused by using KeyEventArgs.IsRepeated API
             // In order to fix this we need to use our own timer to determine
             // whether ESC key is being held down or not
-            if (!sw.IsRunning && !vm.NavigationKeyIsDown)
+            if (!escIsHold && !vm.NavigationKeyIsDown)
             {
-                sw.Start();
+                escIsHold = true;
+                dynamoViewModel.UIDispatcher.DelayInvoke(NavigationInterval, () =>
+                {
+                    if (escIsHold)
+                    {
+                        vm.NavigationKeyIsDown = true;
+                    }
+                });
             }           
 
-            if (sw.ElapsedMilliseconds > NavigationInterval && !vm.NavigationKeyIsDown)
-            {
-                vm.NavigationKeyIsDown = true;
-                sw.Reset();
-            }
             else
             {
                 vm.CancelNavigationState();
@@ -1153,10 +1158,7 @@ namespace Dynamo.Controls
         {
             if (e.Key != Key.Escape) return;
 
-            if (sw.IsRunning)
-            {
-                sw.Reset();
-            }
+            escIsHold = false;
             if (dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground)
             {
                 dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown = false;
@@ -1702,6 +1704,15 @@ namespace Dynamo.Controls
             {
                 dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin -= loginService.ShowLogin;
             }
+        }        
+    }
+
+    public static class DispatcherExtension
+    {
+        public static async void DelayInvoke(this Dispatcher ds, int delay, Action callback)
+        {
+            await Task.Delay(delay);
+            await ds.BeginInvoke(callback);
         }
     }
 }
