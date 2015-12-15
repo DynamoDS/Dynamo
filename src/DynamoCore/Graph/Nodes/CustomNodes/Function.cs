@@ -448,6 +448,12 @@ namespace Dynamo.Graph.Nodes.CustomNodes
     {
         private string symbol = "";
         private string description = "";
+        private ElementResolver workspaceElementResolver;
+
+        /// <summary>
+        /// Element resolver 
+        /// </summary>
+        public ElementResolver  ElementResolver { get; set;}
 
         public Output()
         {
@@ -465,6 +471,17 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             {
                 symbol = value;
                 OnNodeModified();
+
+                string comment = string.Empty;
+                IdentifierNode outputIdentifier;
+                if (!TryParseOutputExpression(symbol, out outputIdentifier, out comment))
+                {
+
+                }
+                else
+                {
+                    description = comment;
+                }
                 RaisePropertyChanged("Symbol");
             }
         }
@@ -514,6 +531,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         {
             string name = updateValueParams.PropertyName;
             string value = updateValueParams.PropertyValue;
+            workspaceElementResolver = updateValueParams.ElementResolver;
 
             if (name == "Symbol")
             {
@@ -522,6 +540,58 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             }
 
             return base.UpdateValueCore(updateValueParams);
+        }
+
+        private bool TryParseOutputExpression(string expression, out IdentifierNode outputIdentifier, out string comment)
+        {
+            outputIdentifier = null;
+            comment = null;
+
+            var resolver = workspaceElementResolver ?? ElementResolver;
+            var parseParam = new ParseParam(this.GUID, expression + ";", resolver);
+
+            if (EngineController.CompilationServices.PreCompileCodeBlock(ref parseParam) && 
+                parseParam.ParsedNodes.Any())
+            {
+                var parsedComments = parseParam.ParsedComments;
+                if (parsedComments.Any())
+                {
+                    comment = String.Join("\n", parsedComments.Select(c => (c as CommentNode).Value));
+                }
+
+                var node = parseParam.ParsedNodes.First() as BinaryExpressionNode;
+                Validity.Assert(node != null);
+
+                if (node != null)
+                {
+                    var leftIdent = node.LeftNode as IdentifierNode;
+                    var rightIdent = node.RightNode as IdentifierNode;
+
+                    // x will be converted to temp_guid = x;
+                    if (leftIdent != null && leftIdent.Value.StartsWith(Constants.kTempVarForNonAssignment))
+                    {
+                        outputIdentifier = rightIdent;
+                    }
+                    // x:int will be converted to x:int = tTypedIdent0;
+                    else if (rightIdent != null && rightIdent.Value.StartsWith(Constants.kTempVarForTypedIdentifier))
+                    {
+                        outputIdentifier = leftIdent;
+                    }
+                    else
+                    {
+                        outputIdentifier = leftIdent;
+                    }
+
+                    if (parseParam.Errors.Any())
+                    {
+                        this.Error(parseParam.Errors.First().Message);
+                    }
+
+                    return outputIdentifier != null;
+                }
+            }
+
+            return false;
         }
     }
 }

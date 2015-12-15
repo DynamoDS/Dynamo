@@ -4,7 +4,7 @@ using Dynamo.Controls;
 namespace Dynamo.UI.Controls
 {
     /// <summary>
-    /// Auto-completion control for input parameter.
+    /// Auto-completion editor for Output node.
     /// </summary>
     public class OutputEditor : CodeCompletionEditor
     {
