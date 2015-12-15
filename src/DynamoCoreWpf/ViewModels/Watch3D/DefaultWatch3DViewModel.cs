@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Media3D;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Core;
@@ -450,6 +452,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in inherited classes.
         }
 
+        public void Invoke(Action action)
+        {
+            var dynamoViewModel = viewModel as DynamoViewModel;
+            if (dynamoViewModel != null)
+            {
+                dynamoViewModel.UIDispatcher.Invoke(action);
+            }
+        }
+
         public virtual void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
         {
             // Override in derived classes.
@@ -545,6 +556,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             return RequestClickRay != null ? RequestClickRay(args) : null;
         }
 
+        internal event Func<Point3D> RequestCameraPosition;
+
+        public Point3D? GetCameraPosition()
+        {
+            var handler = RequestCameraPosition;
+            if (handler != null) return handler();
+            return null;
+        }
+
         public event Action<object, MouseButtonEventArgs> ViewMouseDown;
         internal void OnViewMouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -566,6 +586,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             if (handler != null) handler(sender, e);
         }
 
+        public event Action<object, RoutedEventArgs> ViewCameraChanged;
+
+        internal void OnViewCameraChanged(object sender, RoutedEventArgs args)
+        {
+            var handler = ViewCameraChanged;
+            if (handler != null) handler(sender, args);
+        }
 
         protected virtual void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
         {

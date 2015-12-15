@@ -78,7 +78,7 @@ namespace ProtoCore.AST.ImperativeAST
         {
             StringBuilder buf = new StringBuilder();
 
-            string strLang = CoreUtils.GetLanguageString(codeblock.language);
+            string strLang = CoreUtils.GetLanguageString(codeblock.Language);
 
             buf.Append("[");
             buf.Append(strLang);

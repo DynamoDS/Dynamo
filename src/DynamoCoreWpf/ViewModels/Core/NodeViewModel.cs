@@ -107,18 +107,18 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool IsSelectedInput
+        public bool IsSetAsInput
         {
             get
             {
-                return nodeLogic.IsSelectedInput;
+                return nodeLogic.IsSetAsInput;
             }
             set
             {
-                if (nodeLogic.IsSelectedInput != value)
+                if (nodeLogic.IsSetAsInput != value)
                 {
-                    nodeLogic.IsSelectedInput = value;
-                    RaisePropertyChanged("IsSelectedInput");
+                    nodeLogic.IsSetAsInput = value;
+                    RaisePropertyChanged("IsSetAsInput");
                 }
             }
         }
@@ -382,30 +382,8 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                //this is the default case.
-                if (!this.NodeLogic.isFrozenExplicitly &&
-                      !this.NodeLogic.IsFrozen)
-                {
-                    return true;
-                }
-
-                //If any of the node is set to freeze by the user and 
-                // if that node is frozen by itself, then disable the Freeze property                              
-                if (this.nodeLogic.isFrozenExplicitly && NodeModel.IsAnyUpstreamFrozen())
-                {
-                    return false;
-                }
-                               
-                //if the node is set to freeze by the user     
-                // then enable the Freeze property
-                if (this.NodeLogic.isFrozenExplicitly)                   
-                {
-                    return true;
-                }
-                                
-                return false;
+                return !NodeModel.IsAnyUpstreamFrozen();
             }
-            
         }
 
         #endregion

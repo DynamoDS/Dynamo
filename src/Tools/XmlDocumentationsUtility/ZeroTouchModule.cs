@@ -99,7 +99,7 @@ namespace NodeDocumentationUtility
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();
             var core = new Core(new Options { RootCustomPropertyFilterPathName = string.Empty });
-            core.Compilers.Add(Language.kAssociative, new ProtoAssociative.Compiler(core));
+            core.Compilers.Add(Language.Associative, new ProtoAssociative.Compiler(core));
             core.ParsingMode = ParseMode.AllowNonAssignment;
             return core;
         }

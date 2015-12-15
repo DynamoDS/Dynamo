@@ -603,7 +603,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     }
 
                     node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory, true);
+                    break;
 
+                case "IsFrozen":
+                    HashSet<NodeModel> gathered = new HashSet<NodeModel>();
+                    node.GetDownstreamNodes(node, gathered);
+                    SetGeometryFrozen(gathered);
                     break;
             }
         }
@@ -810,6 +815,26 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
 
             return geometryModels;
+        }
+
+        private void SetGeometryFrozen(HashSet<NodeModel> gathered)
+        {
+            foreach (var node in gathered)
+            {
+                var geometryModels = FindAllGeometryModel3DsForNode(node.AstIdentifierBase);
+
+                if (!geometryModels.Any())
+                {
+                    continue;
+                }
+
+                var modelValues = geometryModels.Select(x => x.Value);
+
+                foreach (GeometryModel3D g in modelValues)
+                {
+                    g.SetValue(AttachedProperties.IsFrozenProperty, node.IsFrozen);
+                }
+            }
         }
 
         private void SetSelection(IEnumerable items, bool isSelected)
@@ -1358,7 +1383,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         manipulator = CreateDynamoGeometryModel3D(rp);
                     
                     var mb = new MeshBuilder();
-                    mb.AddArrow(rp.Lines.Positions[0], rp.Lines.Positions[1], 0.3, 2, 64);
+                    mb.AddArrow(rp.Lines.Positions[0], rp.Lines.Positions[1], 0.1);
                     manipulator.Geometry = mb.ToMeshGeometry3D();
                     
                     if (rp.Lines.Colors[0].Red == 1)

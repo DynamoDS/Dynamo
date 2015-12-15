@@ -29,8 +29,8 @@ namespace ProtoScript.Runners
 
 
             RunnerCore = new ProtoCore.Core(options);
-            RunnerCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(RunnerCore));
-            RunnerCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(RunnerCore));
+            RunnerCore.Compilers.Add(ProtoCore.Language.Associative, new ProtoAssociative.Compiler(RunnerCore));
+            RunnerCore.Compilers.Add(ProtoCore.Language.Imperative, new ProtoImperative.Compiler(RunnerCore));
 
             ProtoFFI.DLLFFIHandler.Register(ProtoFFI.FFILanguage.CSharp, new ProtoFFI.CSModuleHelper());
 

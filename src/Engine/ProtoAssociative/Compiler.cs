@@ -60,7 +60,7 @@ namespace ProtoAssociative
                     //if not null, Compile has been called from DfsTraverse. No parsing is needed. 
                     if (codeBlockNode == null)
                     {
-                        var parseResult = ParserUtils.ParseWithCore(langBlock.body, core);
+                        var parseResult = ParserUtils.ParseWithCore(langBlock.Code, core);
                         // TODO Jun: Set this flag inside a persistent object
                         core.builtInsLoaded = true;
                         codeBlockNode = parseResult.CodeBlockNode;

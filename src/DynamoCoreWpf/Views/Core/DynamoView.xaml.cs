@@ -48,6 +48,7 @@ using Dynamo.Wpf.Extensions;
 using Dynamo.Interfaces;
 using Dynamo.Wpf.Views.PackageManager;
 using Dynamo.Views;
+using System.Threading.Tasks;
 
 namespace Dynamo.Controls
 {
@@ -57,6 +58,9 @@ namespace Dynamo.Controls
     public partial class DynamoView : Window, IDisposable
     {
         public const string BackgroundPreviewName = "BackgroundPreview";
+        private const int navigationInterval = 100;
+        // This is used to determine whether ESC key is being held down
+        private bool IsEscKeyPressed = false;
 
         private readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
         private DynamoViewModel dynamoViewModel;
@@ -1123,25 +1127,42 @@ namespace Dynamo.Controls
 
             var vm = dynamoViewModel.BackgroundPreviewViewModel;
 
-            if (e.IsRepeat)
+
+            // ESC key to navigate has long lag on some machines.
+            // This issue was caused by using KeyEventArgs.IsRepeated API
+            // In order to fix this we need to use our own extension method DelayInvoke to determine
+            // whether ESC key is being held down or not
+            if (!IsEscKeyPressed && !vm.NavigationKeyIsDown)
             {
-                vm.NavigationKeyIsDown = true;
-            }
+                IsEscKeyPressed = true;
+                dynamoViewModel.UIDispatcher.DelayInvoke(navigationInterval, () =>
+                {
+                    if (IsEscKeyPressed)
+                    {
+                        vm.NavigationKeyIsDown = true;
+                    }
+                });
+            }           
+
             else
             {
                 vm.CancelNavigationState();
             }
-            
+
             e.Handled = true;
         }
 
         void DynamoView_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key != Key.Escape || !dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground) return;
+            if (e.Key != Key.Escape) return;
 
-            dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown = false;
-            dynamoViewModel.EscapeCommand.Execute(null);
-            e.Handled = true;
+            IsEscKeyPressed = false;
+            if (dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground)
+            {
+                dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown = false;
+                dynamoViewModel.EscapeCommand.Execute(null);
+                e.Handled = true;
+            }            
         }
 
         private void WorkspaceTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1681,6 +1702,15 @@ namespace Dynamo.Controls
             {
                 dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin -= loginService.ShowLogin;
             }
+        }        
+    }
+
+    public static class DispatcherExtension
+    {
+        public static async void DelayInvoke(this Dispatcher ds, int delay, Action callback)
+        {
+            await Task.Delay(delay);
+            await ds.BeginInvoke(callback);
         }
     }
 }

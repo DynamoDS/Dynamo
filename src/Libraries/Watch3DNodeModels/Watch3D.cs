@@ -16,6 +16,78 @@ using Watch3DNodeModels.Properties;
 
 namespace Watch3DNodeModels
 {
+    /// <summary>
+    /// Class used for representation of Helix camera.
+    /// </summary>
+    public class Watch3DCamera
+    {
+        private const string DefaultCameraName = "Background Preview";
+
+        /// <summary>
+        /// Name of watch3d camera, e.g. "761132b8-b5fa-46b2-98a9-82436e0d8812 Preview"
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// EyeX of Watch 3d camera
+        /// </summary>
+        public double EyeX { get; set; }
+
+        /// <summary>
+        /// EyeY of Watch 3d camera
+        /// </summary>
+        public double EyeY { get; set; }
+
+        /// <summary>
+        /// EyeZ of Watch 3d camera
+        /// </summary>
+        public double EyeZ { get; set; }
+
+        /// <summary>
+        /// LookX of Watch 3d camera
+        /// </summary>
+        public double LookX { get; set; }
+
+        /// <summary>
+        /// LookY of Watch 3d camera
+        /// </summary>
+        public double LookY { get; set; }
+
+        /// <summary>
+        /// LookZ of Watch 3d camera
+        /// </summary>
+        public double LookZ { get; set; }
+
+        /// <summary>
+        /// UpX of Watch 3d camera
+        /// </summary>
+        public double UpX { get; set; }
+
+        /// <summary>
+        /// UpY of Watch 3d camera
+        /// </summary>
+        public double UpY { get; set; }
+
+        /// <summary>
+        /// UpZ of Watch 3d camera
+        /// </summary>
+        public double UpZ { get; set; }
+
+        public Watch3DCamera()
+        {
+            Name = DefaultCameraName;
+            EyeX = -17;
+            EyeY = 24;
+            EyeZ = 50;
+            LookX = 12;
+            LookY = -13;
+            LookZ = -58;
+            UpX = 0;
+            UpY = 1;
+            UpZ = 0;
+        }
+    }
+
     [NodeName("Watch 3D")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeDescription("Watch3DDescription", typeof(Resources))]
@@ -68,7 +140,7 @@ namespace Watch3DNodeModels
             WatchHeight = 200;
 
             ShouldDisplayPreviewCore = false;
-
+            Camera = new Watch3DCamera();
         }
 
         #endregion
@@ -121,6 +193,16 @@ namespace Watch3DNodeModels
 
         #endregion
 
+        #region public properties
+
+        public Watch3DCamera Camera
+        {
+            get;
+            private set;
+        }
+
+        #endregion
+
         protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
             base.SerializeCore(nodeElement, context);
@@ -155,6 +237,13 @@ namespace Watch3DNodeModels
 
                     // Trigger the event, in case the view model already exists
                     OnDeserialized(node);
+
+                    // Deserialized can be null, when we are running on Unix. There is no WPF 
+                    // and that's why no Helix. But we still have to process camera position to use it in Flood.
+                    if (Deserialized == null)
+                    {
+                        DeserializeCamera();
+                    }
                 }
             }
             catch (Exception ex)
@@ -162,6 +251,47 @@ namespace Watch3DNodeModels
                 Log(LogMessage.Error(ex));
                 Log("View attributes could not be read from the file.");
             }
+        }
+
+        /// <summary>
+        /// Deserializes camera from XML, if there is no any Deserialized action. 
+        /// It's used for creation of camera, that will be sent to Flood.
+        /// </summary>
+        private void DeserializeCamera()
+        {
+            var cameraNode = initialCameraData.ChildNodes
+                            .Cast<XmlNode>()
+                            .FirstOrDefault
+                            (innerNode => innerNode.Name.Equals("camera", StringComparison.OrdinalIgnoreCase));
+
+            if (cameraNode == null || cameraNode.Attributes == null || cameraNode.Attributes.Count == 0)
+            {
+                return;
+            }
+            var name = cameraNode.Attributes["Name"].Value;
+            var ex = float.Parse(cameraNode.Attributes["eyeX"].Value, CultureInfo.InvariantCulture);
+            var ey = float.Parse(cameraNode.Attributes["eyeY"].Value, CultureInfo.InvariantCulture);
+            var ez = float.Parse(cameraNode.Attributes["eyeZ"].Value, CultureInfo.InvariantCulture);
+            var lx = float.Parse(cameraNode.Attributes["lookX"].Value, CultureInfo.InvariantCulture);
+            var ly = float.Parse(cameraNode.Attributes["lookY"].Value, CultureInfo.InvariantCulture);
+            var lz = float.Parse(cameraNode.Attributes["lookZ"].Value, CultureInfo.InvariantCulture);
+            var ux = float.Parse(cameraNode.Attributes["upX"].Value, CultureInfo.InvariantCulture);
+            var uy = float.Parse(cameraNode.Attributes["upY"].Value, CultureInfo.InvariantCulture);
+            var uz = float.Parse(cameraNode.Attributes["upZ"].Value, CultureInfo.InvariantCulture);
+
+            Camera = new Watch3DCamera
+            {
+                Name = name,
+                EyeX = ex,
+                EyeY = ey,
+                EyeZ = ez,
+                LookX = lx,
+                LookY = ly,
+                LookZ = lz,
+                UpX = ux,
+                UpY = uy,
+                UpZ = uz
+            };
         }
 
         public override bool RequestVisualUpdateAsync(

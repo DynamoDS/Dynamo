@@ -29,8 +29,8 @@ namespace DynamoCoreWpfTests
             base.Setup();
 
             libraryCore = new ProtoCore.Core(new Options { RootCustomPropertyFilterPathName = string.Empty });
-            libraryCore.Compilers.Add(Language.kAssociative, new ProtoAssociative.Compiler(libraryCore));
-            libraryCore.Compilers.Add(Language.kImperative, new ProtoImperative.Compiler(libraryCore));
+            libraryCore.Compilers.Add(Language.Associative, new ProtoAssociative.Compiler(libraryCore));
+            libraryCore.Compilers.Add(Language.Imperative, new ProtoImperative.Compiler(libraryCore));
             libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
 
             var pathResolver = new TestPathResolver();

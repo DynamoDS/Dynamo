@@ -22,7 +22,7 @@ namespace Dynamo.Tests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("VMDataBridge.dll");
-            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("DSCoreNodes.dll");            
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -515,6 +515,130 @@ namespace Dynamo.Tests
             //because the upstream node is frozen, the downstream node should be in frozen state
             var add = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("44f77917-ce7a-404f-bf70-6972c9276c02");
             Assert.AreEqual(true, add.IsFrozen);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void File_open_with_all_nodes_Frozen()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\FreezeNodes\TestFrozenStateAllNodes.dyn");
+            RunModel(openPath);
+
+            //check the upstream node is explicitly frozen
+            var inputNode1 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DoubleInput>("13bd151a-f5b6-4af7-ac20-a7121cc0d830");
+            Assert.AreEqual(true, inputNode1.IsFrozen);
+
+            var inputNode2 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DoubleInput>("9c75fe7e-976b-4d9b-a7ff-e5dfb4e50a4b");
+            Assert.AreEqual(true, inputNode2.IsFrozen);
+
+            //because the upstream node is frozen, the downstream node should be in frozen state
+            var add = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("44f77917-ce7a-404f-bf70-6972c9276c02");
+            Assert.AreEqual(true, add.IsFrozen);
+
+            //check the value on Add Node
+            AssertPreviewValue(add.GUID.ToString(), null);
+
+            //now change the property on inputnode1 and inputnode2.
+            inputNode1.IsFrozen = false;
+            inputNode2.IsFrozen = false;
+
+            //now all the nodes are in unfreeze state
+            Assert.AreEqual(false, inputNode1.IsFrozen);
+            Assert.AreEqual(false, inputNode2.IsFrozen);
+            Assert.AreEqual(false, add.IsFrozen);
+
+            //check the value on Add Node
+            AssertPreviewValue(add.GUID.ToString(), 8);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void Check_ConnectingFrozenStartNodeUpdatesEndNodeState()
+        {
+            CreateAndConnectNodes();
+            CurrentDynamoModel.ClearCurrentWorkspace();
+
+            // check if after clearing end node is still able to be updated 
+            // by adding a frozen input connector
+            CreateAndConnectNodes();
+        }
+
+        private void CreateAndConnectNodes()
+        {
+            var model = CurrentDynamoModel;
+            //create a number
+            var numberNode = new DoubleInput();
+            model.ExecuteCommand(new DynamoModel.CreateNodeCommand(numberNode, 0, 0, true, false));
+
+            //add  a watch node
+            var watchNode = new Watch();
+            model.ExecuteCommand(new DynamoModel.CreateNodeCommand(watchNode, 0, 0, true, false));
+
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 2);
+
+            numberNode.IsFrozen = true;
+            Assert.IsTrue(numberNode.isFrozenExplicitly);
+            Assert.IsFalse(watchNode.IsFrozen);
+
+            model.ExecuteCommand(new DynamoModel.MakeConnectionCommand(numberNode.GUID, 0, PortType.Output, DynCmd.MakeConnectionCommand.Mode.Begin));
+            model.ExecuteCommand(new DynamoModel.MakeConnectionCommand(watchNode.GUID, 0, PortType.Input, DynCmd.MakeConnectionCommand.Mode.End));
+
+            Assert.AreEqual(model.CurrentWorkspace.Connectors.Count(), 1);
+
+            // check if watch node freeze state is updated
+            var msg = "End node freeze state has not been updated";
+            Assert.IsTrue(watchNode.IsFrozen, msg);
+            Assert.IsFalse(watchNode.isFrozenExplicitly, msg); 
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void Freeze_Geometry_Test()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\FreezeNodes\TestFrozenOnGeometry.dyn");
+            RunModel(openPath);
+
+            //check freeze on Number node
+            var numberNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DoubleInput>("40296ab0-b354-46ab-a20d-3439854e6558");
+            numberNode.IsFrozen = true;
+            Assert.IsTrue(numberNode.isFrozenExplicitly);
+            numberNode.IsFrozen = false;
+
+            //check freeze on Cube
+            var geometryNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("c9c7b211-2aee-4712-838e-b9aaacf72153");
+            geometryNode.IsFrozen = true;
+            Assert.IsTrue(geometryNode.isFrozenExplicitly);
+            geometryNode.IsFrozen = false;
+
+            //check freeze on Line
+            var lineNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("bdb4475c-8c84-435a-a905-af6c7ee656c3");
+            lineNode.IsFrozen = true;
+            Assert.IsTrue(lineNode.isFrozenExplicitly);
+            lineNode.IsFrozen = false;
+
+            //check freeze on Point
+            var pointNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("64134763-9c2a-4fa1-907f-60b70afe8883");
+            pointNode.IsFrozen = true;
+            Assert.IsTrue(pointNode.isFrozenExplicitly);
+            pointNode.IsFrozen = false;
+
+            //check freeze on codeblock node
+            var codeblockNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("3ea56fe2-9be1-4d7d-ac7a-61b5275c096d");
+            codeblockNode.IsFrozen = true;
+            Assert.IsTrue(codeblockNode.isFrozenExplicitly);
+            codeblockNode.IsFrozen = false;
+
+            //check freeze on watch node
+            var watchNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("8c0edf26-d7ab-4114-9fb8-43817e022c38");
+            watchNode.IsFrozen = true;
+            Assert.IsTrue(watchNode.isFrozenExplicitly);
+            watchNode.IsFrozen = false;
+
+            //check freeze on watch3D node
+            var watch3DNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("79bec369-2077-495a-97a5-013ee15f1425");
+            watch3DNode.IsFrozen = true;
+            Assert.IsTrue(watch3DNode.isFrozenExplicitly);
+            watch3DNode.IsFrozen = false;
         }
     }
 }
