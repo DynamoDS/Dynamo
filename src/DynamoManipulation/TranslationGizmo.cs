@@ -38,6 +38,12 @@ namespace Dynamo.Manipulation
         #region Private members
 
         /// <summary>
+        /// An offset distance from the gizmo Origin
+        /// at which to place the axes in their respective directions
+        /// </summary>
+        private const double axisOriginOffset = 0.2;
+
+        /// <summary>
         /// List of axis available for manipulation
         /// </summary>
         private readonly List<Vector> axes = new List<Vector>();
@@ -463,12 +469,13 @@ namespace Dynamo.Manipulation
             var axisType = GetAlignedAxis(axis);
             package.Description = string.Format("{0}_{1}_{2}", RenderDescriptions.ManipulatorAxis, Name, axisType);
 
+            using (var axisStart = Origin.Add(axis.Scale(axisOriginOffset)))
             using (var axisEnd = Origin.Add(axis.Scale(scale)))
             {
                 var color = GetAxisColor(axisType);
                 package.AddLineStripVertexCount(2);
                 package.AddLineStripVertexColor(color.R, color.G, color.B, color.A);
-                package.AddLineStripVertex(Origin.X, Origin.Y, Origin.Z);
+                package.AddLineStripVertex(axisStart.X, axisStart.Y, axisStart.Z);
                 package.AddLineStripVertexColor(color.R, color.G, color.B, color.A);
                 package.AddLineStripVertex(axisEnd.X, axisEnd.Y, axisEnd.Z);
             }
