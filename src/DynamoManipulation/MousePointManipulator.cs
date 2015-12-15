@@ -39,6 +39,7 @@ namespace Dynamo.Manipulation
         {
             //Default axes
             var axes = new Vector[] { Vector.XAxis(), Vector.YAxis(), Vector.ZAxis() };
+
             //Holds manipulator axis and input node pair for each input port.
             indexedAxisNodePairs = new Dictionary<int, Tuple<Vector, NodeModel>>(3);
 
@@ -222,6 +223,7 @@ namespace Dynamo.Manipulation
             
             Active = true;
         }
+
 
         #endregion
 

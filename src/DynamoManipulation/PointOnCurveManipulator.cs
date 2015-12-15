@@ -103,13 +103,14 @@ namespace Dynamo.Manipulation
             if (pt == null) return; //The node output is not Point, could be a function object.
 
             var param = curve.ParameterAtPoint(pt);
-            tangent = curve.TangentAtParameter(param);
-            
-            //Don't cache pt directly here, need to create a copy, because 
-            //pt may be GC'ed by VM.
-            pointOnCurve = Point.ByCoordinates(pt.X, pt.Y, pt.Z); 
-        
-            Active = tangent != null;
+            using (tangent = curve.TangentAtParameter(param))
+            {
+                //Don't cache pt directly here, need to create a copy, because 
+                //pt may be GC'ed by VM.
+                pointOnCurve = Point.ByCoordinates(pt.X, pt.Y, pt.Z);
+
+                Active = tangent != null;
+            }
         }
 
         protected override IEnumerable<NodeModel> OnGizmoClick(IGizmo gizmoInAction, object hitObject)
@@ -127,11 +128,16 @@ namespace Dynamo.Manipulation
 
         protected override Point OnGizmoMoved(IGizmo gizmoInAction, Vector offset)
         {
-            var newPosition = pointOnCurve.Add(offset);
-            newPosition = curve.ClosestPointTo(newPosition);
-            var param = curve.ParameterAtPoint(newPosition);
+            double param;
+            using (var offsetPosition = pointOnCurve.Add(offset))
+            {
+                using (var closestPosition = curve.ClosestPointTo(offsetPosition))
+                {
+                    param = curve.ParameterAtPoint(closestPosition);
+                }
+            }
             param = Math.Round(param, 3);
-            newPosition = curve.PointAtParameter(param);
+            var newPosition = curve.PointAtParameter(param);
             if (inputNode != null)
             {
                 dynamic uinode = inputNode;

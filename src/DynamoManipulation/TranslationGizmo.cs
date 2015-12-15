@@ -364,7 +364,9 @@ namespace Dynamo.Manipulation
             // Update gizmo geometry wrt to current Origin
             var newPlanes = planes.Select(
                 plane => Plane.ByOriginXAxisYAxis(Origin, plane.XAxis, plane.YAxis)).ToList();
+
             planes.Clear();
+
             planes.AddRange(newPlanes);
 
             DeleteTransientGraphics();
@@ -440,23 +442,30 @@ namespace Dynamo.Manipulation
         /// <param name="name"></param>
         private void DrawPlane(ref IRenderPackage package, Plane plane, Planes name)
         {
-            package.Description = string.Format("{0}_{1}_{2}", RenderDescriptions.ManipulatorPlane, Name, name); 
-            var p1 = Origin.Add(plane.XAxis.Scale(scale/3));
-            var p2 = p1.Add(plane.YAxis.Scale(scale/3));
-            var p3 = Origin.Add(plane.YAxis.Scale(scale/3));
+            package.Description = string.Format("{0}_{1}_{2}", RenderDescriptions.ManipulatorPlane, Name, name);
+            using (var vec1 = plane.XAxis.Scale(scale/3))
+            using (var vec2 = plane.YAxis.Scale(scale/3))
+            using (var vec3 = plane.YAxis.Scale(scale/3))
+            {
+                using (var p1 = Origin.Add(vec1))
+                using (var p2 = p1.Add(vec2))
+                using (var p3 = Origin.Add(vec3))
+                {
+                    var axis = plane.Normal;
+                    var color = GetAxisColor(GetAlignedAxis(axis));
 
-            var axis = plane.Normal;
-            var color = GetAxisColor(GetAlignedAxis(axis));
-            
-            package.AddLineStripVertexCount(3);
-            package.AddLineStripVertexColor(color.R, color.G, color.B, color.A);
-            package.AddLineStripVertex(p1.X, p1.Y, p1.Z);
+                    package.AddLineStripVertexCount(3);
+                    package.AddLineStripVertexColor(color.R, color.G, color.B, color.A);
+                    package.AddLineStripVertex(p1.X, p1.Y, p1.Z);
 
-            package.AddLineStripVertexColor(color.R, color.G, color.B, color.A);
-            package.AddLineStripVertex(p2.X, p2.Y, p2.Z);
+                    package.AddLineStripVertexColor(color.R, color.G, color.B, color.A);
+                    package.AddLineStripVertex(p2.X, p2.Y, p2.Z);
 
-            package.AddLineStripVertexColor(color.R, color.G, color.B, color.A);
-            package.AddLineStripVertex(p3.X, p3.Y, p3.Z);
+                    package.AddLineStripVertexColor(color.R, color.G, color.B, color.A);
+                    package.AddLineStripVertex(p3.X, p3.Y, p3.Z);
+                    
+                }
+            }
         }
 
         /// <summary>

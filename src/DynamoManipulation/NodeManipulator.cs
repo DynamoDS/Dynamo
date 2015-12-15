@@ -145,7 +145,9 @@ namespace Dynamo.Manipulation
         /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
-            DeleteGizmos();
+            if (Origin != null) Origin.Dispose();
+
+            if (newPosition != null) newPosition.Dispose();
         }
 
         /// <summary>
@@ -182,18 +184,22 @@ namespace Dynamo.Manipulation
 
             foreach (var item in gizmos)
             {
-                object hitObject;
-                if (item.HitTest(ray.GetOriginPoint(), ray.GetDirectionVector(), out hitObject))
+                using(var originPt = ray.GetOriginPoint())
+                using (var dirVec = ray.GetDirectionVector())
                 {
-                    GizmoInAction = item;
-
-                    var nodes = OnGizmoClick(item, hitObject).ToList();
-                    if(nodes.Any())
+                    object hitObject;
+                    if (item.HitTest(originPt, dirVec, out hitObject))
                     {
-                        WorkspaceModel.RecordModelsForModification(nodes);
+                        GizmoInAction = item;
+
+                        var nodes = OnGizmoClick(item, hitObject).ToList();
+                        if (nodes.Any())
+                        {
+                            WorkspaceModel.RecordModelsForModification(nodes);
+                        }
+                        newPosition = Origin;
+                        return;
                     }
-                    newPosition = Origin;
-                    return;
                 }
             }
         }
@@ -471,11 +477,15 @@ namespace Dynamo.Manipulation
             {
                 item.UnhighlightGizmo();
 
-                object hitObject;
-                if (item.HitTest(clickRay.GetOriginPoint(), clickRay.GetDirectionVector(), out hitObject))
+                using (var originPt = clickRay.GetOriginPoint())
+                using (var dirVec = clickRay.GetDirectionVector())
                 {
-                    item.HighlightGizmo();
-                    return;
+                    object hitObject;
+                    if (item.HitTest(originPt, dirVec, out hitObject))
+                    {
+                        item.HighlightGizmo();
+                        return;
+                    }
                 }
             }
         }
@@ -486,9 +496,10 @@ namespace Dynamo.Manipulation
 
         public void Dispose()
         {
-            Dispose(true);
-
+            DeleteGizmos();
             DetachHandlers();
+
+            Dispose(true);
         }
 
         /// <summary>
