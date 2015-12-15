@@ -634,7 +634,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
 #if DEBUG
             renderTimer.Stop();
-            Debug.WriteLine(string.Format("RENDER: {0} ellapsed for compiling assets for rendering.", renderTimer.Elapsed));
+            Debug.WriteLine(string.Format("RENDER: {0} ellapsed fkor compiling assets for rendering.", renderTimer.Elapsed));
             renderTimer.Reset();
             renderTimer.Start();
 #endif
@@ -656,7 +656,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 foreach (var kvp in geometryModels)
                 {
                     var model3D = Model3DDictionary[kvp.Key] as GeometryModel3D;
-                    //check if the geometry is frozen. if the gemoetry is frozen 
+                    // check if the geometry is frozen. if the gemoetry is frozen 
                     // then do not detach from UI.
                     var frozenModel = AttachedProperties.GetIsFrozen(model3D);
                     if (!frozenModel)
