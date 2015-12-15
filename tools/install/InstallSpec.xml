@@ -6423,7 +6423,7 @@
     <ModuleSpec>
       <Name>DynamoAddinGenerator.exe</Name>
       <FilePath>.\DynamoAddinGenerator.exe</FilePath>
-      <DigitalSignature>true</DigitalSignature>
+      <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author />
     </ModuleSpec>
