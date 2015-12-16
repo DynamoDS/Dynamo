@@ -446,8 +446,9 @@ namespace Dynamo.Graph.Nodes.CustomNodes
     [AlsoKnownAs("Dynamo.Nodes.Output")]
     public class Output : NodeModel
     {
-        private string symbol = "";
-        private string description = "";
+        private string symbol = string.Empty;
+        private string outputIdentifier = string.Empty;
+        private string description = string.Empty;
         private ElementResolver workspaceElementResolver;
 
         /// <summary>
@@ -473,15 +474,18 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                 OnNodeModified();
 
                 string comment = string.Empty;
-                IdentifierNode outputIdentifier;
-                if (!TryParseOutputExpression(symbol, out outputIdentifier, out comment))
+                IdentifierNode identNode;
+                if (!TryParseOutputExpression(symbol, out identNode, out comment))
                 {
-
+                    outputIdentifier = symbol;
                 }
                 else
                 {
+                    outputIdentifier = identNode.ToString();
                     description = comment;
                 }
+
+                OnNodeModified();
                 RaisePropertyChanged("Symbol");
             }
         }
@@ -490,7 +494,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         {
             get
             {
-                return new Tuple<string, string>(symbol, description);
+                return new Tuple<string, string>(outputIdentifier, description);
             }
         }
 
