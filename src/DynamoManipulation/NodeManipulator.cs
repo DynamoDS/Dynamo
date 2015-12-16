@@ -15,6 +15,7 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
+using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using Point = Autodesk.DesignScript.Geometry.Point;
 using Vector = Autodesk.DesignScript.Geometry.Vector;
@@ -352,6 +353,13 @@ namespace Dynamo.Manipulation
             CommandExecutive.ExecuteCommand(command, UniqueId, ExtensionName);
 
             var inputNode = WorkspaceModel.Nodes.FirstOrDefault(node => node.GUID == command.ModelGuid) as DoubleSlider;
+
+            if (inputNode != null)
+            {
+                // Assign the input slider to the default value of the node's input port
+                var doubleNode = Node.InPorts[inputPortIndex].DefaultValue as DoubleNode;
+                if (doubleNode != null) inputNode.Value = doubleNode.Value;
+            }
             return inputNode;
         }
 
