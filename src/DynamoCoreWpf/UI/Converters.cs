@@ -2750,19 +2750,18 @@ namespace Dynamo.Controls
         {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
             {
-                // string example: "R=255, G=60, B=0, A=255"
-                var rgba = (value as string).Split(new char[] { 'R', 'G', 'B', 'A', ',', '=', ' ' },
-                    StringSplitOptions.RemoveEmptyEntries);
-
-                if (rgba.Count() == 4)
+                // example conversion: "R=255, G=60, B=0, A=255" beccomes "#FF3C00"
+                try
                 {
-                    try
+                    var rgba = (value as string).Split(new char[] { 'R', 'G', 'B', 'A', ',', '=', ' ' },
+                        StringSplitOptions.RemoveEmptyEntries);
+
+                    if (rgba.Count() == 4)
                     {
                         return new SolidColorBrush(Color.FromRgb(
                            Byte.Parse(rgba[0]), Byte.Parse(rgba[1]), Byte.Parse(rgba[2])));
                     }
-                    catch { }
-                }
+                } catch { }
 
                 return "Black"; // if not able to parse color
             }
