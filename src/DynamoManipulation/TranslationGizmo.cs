@@ -492,5 +492,12 @@ namespace Dynamo.Manipulation
 
         #endregion
 
+        protected override void Dispose(bool disposing)
+        {
+            axes.ForEach(x => x.Dispose());
+            planes.ForEach(x => x.Dispose());
+
+            base.Dispose(disposing);
+        }
     }
 }

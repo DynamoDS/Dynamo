@@ -496,10 +496,10 @@ namespace Dynamo.Manipulation
 
         public void Dispose()
         {
+            Dispose(true);
+
             DeleteGizmos();
             DetachHandlers();
-
-            Dispose(true);
         }
 
         /// <summary>

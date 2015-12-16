@@ -103,14 +103,13 @@ namespace Dynamo.Manipulation
             if (pt == null) return; //The node output is not Point, could be a function object.
 
             var param = curve.ParameterAtPoint(pt);
-            using (tangent = curve.TangentAtParameter(param))
-            {
-                //Don't cache pt directly here, need to create a copy, because 
-                //pt may be GC'ed by VM.
-                pointOnCurve = Point.ByCoordinates(pt.X, pt.Y, pt.Z);
+            tangent = curve.TangentAtParameter(param);
+            
+            //Don't cache pt directly here, need to create a copy, because 
+            //pt may be GC'ed by VM.
+            pointOnCurve = Point.ByCoordinates(pt.X, pt.Y, pt.Z);
 
-                Active = tangent != null;
-            }
+            Active = tangent != null;
         }
 
         protected override IEnumerable<NodeModel> OnGizmoClick(IGizmo gizmoInAction, object hitObject)
@@ -145,6 +144,13 @@ namespace Dynamo.Manipulation
             }
 
             return newPosition;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if(tangent != null) tangent.Dispose();
+
+            base.Dispose(disposing);
         }
 
         #endregion

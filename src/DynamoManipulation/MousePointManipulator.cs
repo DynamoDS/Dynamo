@@ -224,6 +224,10 @@ namespace Dynamo.Manipulation
             Active = true;
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);    
+        }
 
         #endregion
 
