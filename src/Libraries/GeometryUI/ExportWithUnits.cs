@@ -54,10 +54,8 @@ namespace GeometryUI
             SelectedExportedUnitsSource =
                 Conversions.ConversionMetricLookup[ConversionMetricUnit.Length];
 
-            AssociativeNode geometryNode = new ArrayNode();
-            AssociativeNode stringNode = new StringNode();
-            InPortData.Add(new PortData("geometry", Resources.ExportToSatGeometryInputDescription, geometryNode));
-            InPortData.Add(new PortData("filePath", Resources.ExportToSatFilePathDescription, stringNode));
+            InPortData.Add(new PortData("geometry", Resources.ExportToSatGeometryInputDescription));
+            InPortData.Add(new PortData("filePath", Resources.ExportToSatFilePathDescription, new StringNode()));
             OutPortData.Add(new PortData("string", Resources.ExportToSatFilePathOutputDescription));
 
             ShouldDisplayPreviewCore = true;
