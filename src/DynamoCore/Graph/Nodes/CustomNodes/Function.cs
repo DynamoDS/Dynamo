@@ -481,7 +481,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                 }
                 else
                 {
-                    outputIdentifier = identNode.ToString();
+                    outputIdentifier = identNode.Value;
                     description = comment;
                 }
 
@@ -490,6 +490,9 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             }
         }
 
+        /// <summary>
+        /// The name of output and its description.
+        /// </summary>
         public Tuple<string, string> Return
         {
             get
@@ -552,10 +555,10 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             comment = null;
 
             var resolver = workspaceElementResolver ?? ElementResolver;
-            var parseParam = new ParseParam(this.GUID, expression + ";", resolver);
+            var parseParam = new ParseParam(GUID, expression + ";", resolver);
 
-            if (EngineController.CompilationServices.PreCompileCodeBlock(ref parseParam) && 
-                parseParam.ParsedNodes.Any())
+            if (EngineController.CompilationServices.PreCompileCodeBlock(ref parseParam) 
+                && parseParam.ParsedNodes.Any())
             {
                 var parsedComments = parseParam.ParsedComments;
                 if (parsedComments.Any())
@@ -563,9 +566,12 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     comment = String.Join("\n", parsedComments.Select(c => (c as CommentNode).Value));
                 }
 
-                var node = parseParam.ParsedNodes.First() as BinaryExpressionNode;
-                Validity.Assert(node != null);
+                if (parseParam.ParsedNodes.Count() > 1)
+                {
+                    this.Warning(Properties.Resources.WarningInvalidOutput);
+                }
 
+                var node = parseParam.ParsedNodes.First() as BinaryExpressionNode;
                 if (node != null)
                 {
                     var leftIdent = node.LeftNode as IdentifierNode;
@@ -589,6 +595,10 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     if (parseParam.Errors.Any())
                     {
                         this.Error(parseParam.Errors.First().Message);
+                    }
+                    else if (outputIdentifier == null)
+                    {
+                        this.Warning(Properties.Resources.WarningInvalidOutput);
                     }
 
                     return outputIdentifier != null;

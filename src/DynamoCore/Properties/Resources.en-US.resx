@@ -640,4 +640,7 @@ value : bool = false</value>
   <data name="ResourceTypeDoesNotHavePropertyMessage" xml:space="preserve">
     <value>Resource Type does not have Property</value>
   </data>
+  <data name="WarningInvalidOutput" xml:space="preserve">
+    <value>Only comments and single variable are allowed in output node.</value>
+  </data>
 </root>
