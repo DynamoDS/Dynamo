@@ -39,7 +39,6 @@ namespace Dynamo.Manipulation
         {
             //Default axes
             var axes = new Vector[] { Vector.XAxis(), Vector.YAxis(), Vector.ZAxis() };
-
             //Holds manipulator axis and input node pair for each input port.
             indexedAxisNodePairs = new Dictionary<int, Tuple<Vector, NodeModel>>(3);
 
@@ -222,11 +221,6 @@ namespace Dynamo.Manipulation
             origin = Point.ByCoordinates(pt.X, pt.Y, pt.Z);
             
             Active = true;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);    
         }
 
         #endregion
