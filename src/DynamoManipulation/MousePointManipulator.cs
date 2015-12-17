@@ -187,7 +187,7 @@ namespace Dynamo.Manipulation
                 // method will decompose the axis corresponding to each input.
                 using (var v = GetFirstAxisComponent(item.Value.Item1))
                 {
-                    var amount = Math.Round(offset.Dot(v), 3);
+                    var amount = offset.Dot(v);
 
                     if (Math.Abs(amount) > 0.001)
                     {
@@ -288,7 +288,7 @@ namespace Dynamo.Manipulation
 
             dynamic uiNode = inputNode;
 
-            uiNode.Value += amount;
+            uiNode.Value = Math.Round(uiNode.Value + amount, 3);
         }
 
         #endregion
