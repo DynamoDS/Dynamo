@@ -589,19 +589,16 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     }
                     else
                     {
-                        this.Warning(Properties.Resources.WarningInvalidOutput);
+                        if (parseParam.Errors.Any())
+                        {
+                            this.Error(parseParam.Errors.First().Message);
+                        }
+                        else
+                        {
+                            this.Warning(Properties.Resources.WarningInvalidOutput);
+                        }
                         outputIdentifier = leftIdent;
                     }
-
-                    if (parseParam.Errors.Any())
-                    {
-                        this.Error(parseParam.Errors.First().Message);
-                    }
-                    else if (outputIdentifier == null)
-                    {
-                        this.Warning(Properties.Resources.WarningInvalidOutput);
-                    }
-
                     return outputIdentifier != null;
                 }
             }
