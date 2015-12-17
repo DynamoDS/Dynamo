@@ -1161,6 +1161,9 @@ namespace Dynamo.Graph.Workspaces
                     NodeModel ndm = group.SelectedModels.OfType<NodeModel>().OrderBy(node =>
                         Math.Pow(node.X + node.Width / 2 - note.X - note.Width / 2, 2) +
                         Math.Pow(node.Y + node.Height / 2 - note.Y - note.Height / 2, 2)).FirstOrDefault();
+                    
+                    // Skip processing the group if there is no node in the group
+                    if (ndm == null) continue;
 
                     // If the nearest point is a node model
                     nd = combinedGraph.FindNode(ndm.GUID);

@@ -416,6 +416,17 @@ namespace Dynamo.Tests
             AssertNoOverlap();
         }
 
+        [Test]
+        public void GraphLayoutGroupedNotes()
+        {
+            // for http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-9216
+            OpenModel(GetDynPath("GraphLayoutGroupedNotes.dyn"));
+            IEnumerable<NodeModel> nodes = ViewModel.CurrentSpace.Nodes;
+
+            SelectModel(ViewModel.CurrentSpace.Annotations.First());
+            ViewModel.DoGraphAutoLayout(null);
+        }
+
         #endregion
 
         private void AssertMaxCrossings(int maxCrossings)
