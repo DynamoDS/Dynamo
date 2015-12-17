@@ -471,7 +471,6 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             set
             {
                 symbol = value;
-                OnNodeModified();
 
                 string comment = string.Empty;
                 IdentifierNode identNode;
