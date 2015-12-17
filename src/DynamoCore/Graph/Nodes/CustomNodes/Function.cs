@@ -471,6 +471,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             set
             {
                 symbol = value;
+                ClearRuntimeError();
 
                 string comment = string.Empty;
                 IdentifierNode identNode;
@@ -588,6 +589,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     }
                     else
                     {
+                        this.Warning(Properties.Resources.WarningInvalidOutput);
                         outputIdentifier = leftIdent;
                     }
 
@@ -601,6 +603,13 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     }
 
                     return outputIdentifier != null;
+                }
+            }
+            else
+            {
+                if (parseParam.Errors.Any())
+                {
+                    this.Error(Properties.Resources.WarningInvalidOutput);
                 }
             }
 
