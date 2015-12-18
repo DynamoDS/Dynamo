@@ -175,8 +175,11 @@ namespace Dynamo.Manipulation
                 default:
                     break;
             }
-            col = Convert.ToByte(100);
-            return Color.FromRgb(col, col, col);
+            
+            const byte colR = 0;
+            var colG = Convert.ToByte(158);
+            var colB = Convert.ToByte(255);
+            return Color.FromRgb(colR, colG, colB);
         }
 
         /// <summary>
