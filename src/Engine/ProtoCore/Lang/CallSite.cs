@@ -274,7 +274,7 @@ namespace ProtoCore
                             info, context, i, "Base-");
                         TraceData.Add(srtd);
                     }
-                    catch (ReflectionTypeLoadException e)
+                    catch (ReflectionTypeLoadException)
                     {
                         // If deserialization fails, continue to the next 
                         // element. Deserialization will throw an exception in
@@ -318,7 +318,7 @@ namespace ProtoCore
                     var helper = (TraceSerialiserHelper) formatter.Deserialize(s);
                     return helper;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
 #if DEBUG
                     Debug.WriteLine("Constructing a TraceSerialiserHelper from CallSiteData failed.");
@@ -537,10 +537,7 @@ namespace ProtoCore
                                                                                                   Instructions, runtimeCore);
                     int resolutionFailures;
 
-                    Dictionary<FunctionEndPoint, int> lookups = funcGroup.GetExactMatchStatistics(
-                        context, reducedParams, stackFrame, runtimeCore,
-                        out resolutionFailures);
-
+                    funcGroup.GetExactMatchStatistics(context, reducedParams, stackFrame, runtimeCore, out resolutionFailures);
 
                     if (resolutionFailures > 0)
                         continue;
