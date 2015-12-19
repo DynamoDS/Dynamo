@@ -339,7 +339,6 @@ namespace ProtoCore
         private int classScope;
         private string methodName;
         private readonly FunctionTable globalFunctionTable;
-        private readonly ExecutionMode executionMode;
         private int invokeCount; //Number of times the callsite has been executed within this run
         private List<ISerializable> beforeFirstRunSerializables = new List<ISerializable>();
 
@@ -404,7 +403,6 @@ namespace ProtoCore
             Validity.Assert(methodName != null);
             Validity.Assert(globalFunctionTable != null);
 
-            executionMode = execMode;
             this.classScope = classScope;
             this.methodName = methodName;
             this.globalFunctionTable = globalFunctionTable;
