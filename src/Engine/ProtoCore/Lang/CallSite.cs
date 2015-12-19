@@ -318,7 +318,7 @@ namespace ProtoCore
                     var helper = (TraceSerialiserHelper) formatter.Deserialize(s);
                     return helper;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
 #if DEBUG
                     Debug.WriteLine("Constructing a TraceSerialiserHelper from CallSiteData failed.");
@@ -336,7 +336,6 @@ namespace ProtoCore
 
         #region private members
 
-        private int runID;
         private int classScope;
         private string methodName;
         private readonly FunctionTable globalFunctionTable;
@@ -405,7 +404,6 @@ namespace ProtoCore
             Validity.Assert(methodName != null);
             Validity.Assert(globalFunctionTable != null);
 
-            runID = Constants.kInvalidIndex;
             executionMode = execMode;
             this.classScope = classScope;
             this.methodName = methodName;

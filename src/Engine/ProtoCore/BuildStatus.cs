@@ -292,7 +292,6 @@ namespace ProtoCore
         private readonly bool logErrors = true;
         private readonly bool displayBuildResult = true;
         private readonly bool warningAsError;
-        private readonly bool errorAsWarning = false;
 
         public IOutputStream MessageHandler { get; set; }
         public WebOutputStream WebMsgHandler { get; set; }
@@ -343,7 +342,6 @@ namespace ProtoCore
             warnings = new List<BuildData.WarningEntry>();
             errors = new List<BuildData.ErrorEntry>();
             this.warningAsError = warningAsError;
-            this.errorAsWarning = errorAsWarning;
 
             if (writer != null)
             {

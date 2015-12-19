@@ -20,21 +20,6 @@ namespace ProtoScript.Runners
             public abstract void Execute();
         }
 
-        private class NodeValueRequestTask : Task
-        {
-            private Guid nodeGuid;
-            public NodeValueRequestTask(Guid nodeGuid, LiveRunner runner)
-                : base(runner)
-            {
-                this.nodeGuid = nodeGuid;
-            }
-
-            public override void Execute()
-            {
-                throw new NotImplementedException();
-            }
-        }
-
         private class UpdateGraphTask : Task
         {
             private GraphSyncData syncData;

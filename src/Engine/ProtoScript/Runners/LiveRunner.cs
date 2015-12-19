@@ -1134,22 +1134,12 @@ namespace ProtoScript.Runners
         void UpdateGraph(AssociativeNode astNode);
         #endregion
 
-        #region Asynchronous call
-        void BeginUpdateGraph(GraphSyncData syncData);
-        void BeginQueryNodeValue(Guid nodeGuid);
-        void BeginQueryNodeValues(List<Guid> nodeGuid);
-        #endregion
-
         string GetCoreDump();
         void ResetVMAndResyncGraph(IEnumerable<string> libraries);
         List<LibraryMirror> ResetVMAndImportLibrary(List<string> libraries);
         void ReInitializeLiveRunner();
         IDictionary<Guid, List<ProtoCore.Runtime.WarningEntry>> GetRuntimeWarnings();
         IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings();
-        
-        // Event handlers for the notification from asynchronous call
-        event NodeValueReadyEventHandler NodeValueReady;
-        event GraphUpdateReadyEventHandler GraphUpdateReady;
     }
 
     public partial class LiveRunner : ILiveRunner, IDisposable
@@ -1386,42 +1376,6 @@ namespace ProtoScript.Runners
             lock (taskQueue)
             {
                 taskQueue.Enqueue(new PropertyChangedTask(this, arg.hostGraphNode));
-            }
-        }
-
-        #region Public Live Runner Events
-
-        public event NodeValueReadyEventHandler NodeValueReady = null;
-        public event GraphUpdateReadyEventHandler GraphUpdateReady = null;
-
-        #endregion
-
-        public void BeginUpdateGraph(GraphSyncData syncData)
-        {
-            lock (taskQueue)
-            {
-                taskQueue.Enqueue(new UpdateGraphTask(syncData, this));
-            }
-        }
-
-        public void BeginQueryNodeValue(Guid nodeGuid)
-        {
-            lock (taskQueue)
-            {
-                taskQueue.Enqueue(
-                    new NodeValueRequestTask(nodeGuid, this));
-            }
-        }
-
-        public void BeginQueryNodeValues(List<Guid> nodeGuids)
-        {
-            lock (taskQueue)
-            {
-                foreach (Guid nodeGuid in nodeGuids)
-                {
-                    taskQueue.Enqueue(
-                        new NodeValueRequestTask(nodeGuid, this));
-                }
             }
         }
 

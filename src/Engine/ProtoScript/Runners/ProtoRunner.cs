@@ -67,7 +67,7 @@ namespace ProtoScript.Runners
 
             // TODO Jun: Implement as DebugRunner, where breakpoints are inserted here.
             ProtoCore.RuntimeCore runtimeCore = null;
-            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = Runner.Execute(ExecutionContext, RunnerCore, out runtimeCore);
+            Runner.Execute(ExecutionContext, RunnerCore, out runtimeCore);
 
             return new ProtoVMState(RunnerCore, runtimeCore);
         }
