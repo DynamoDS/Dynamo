@@ -134,7 +134,6 @@
     <Compile Include="FFI\ContextDataManager.cs" />
     <Compile Include="FFI\ExtensionAppLoader.cs" />
     <Compile Include="FFI\FFIExecutionManager.cs" />
-    <Compile Include="FFI\FFIPropertyChangedMonitor.cs" />
     <Compile Include="FunctionPointerTable.cs" />
     <Compile Include="Lang\BuiltInFunctionEndPoint.cs" />
     <Compile Include="Lang\BuiltInMethods.cs" />
