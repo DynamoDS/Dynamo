@@ -1289,8 +1289,6 @@ namespace ProtoScript.Runners
 
                 if (runtimeCore != null)
                 {
-                    runtimeCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler -=
-                        FFIPropertyChanged;
                     runtimeCore.Cleanup();
                 }
 
@@ -1346,7 +1344,6 @@ namespace ProtoScript.Runners
         private void CreateRuntimeCore()
         {
             runtimeCore = new ProtoCore.RuntimeCore(runnerCore.Heap, runnerCore.Options);
-            runtimeCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler += FFIPropertyChanged;
         }
 
         /// <summary>
@@ -1369,14 +1366,6 @@ namespace ProtoScript.Runners
           
             // Store the current number of global symbols
             deltaSymbols = runnerCore.GlobOffset;
-        }
-
-        private void FFIPropertyChanged(FFIPropertyChangedEventArgs arg)
-        {
-            lock (taskQueue)
-            {
-                taskQueue.Enqueue(new PropertyChangedTask(this, arg.hostGraphNode));
-            }
         }
 
         /// <summary>
