@@ -348,6 +348,7 @@ limitations under the License.
       <ExternProtoGeometryLibGLocale Include="$(SolutionDir)..\extern\ProtoGeometry\libg_locale\**\*.*" />
       <ExternLibG220 Include="$(SolutionDir)..\extern\LibG_220\*" />
       <ExternLibG221 Include="$(SolutionDir)..\extern\LibG_221\*" />
+	  <ExternLibG222 Include="$(SolutionDir)..\extern\LibG_222\*" />
       <ExternSimplexNoise Include="$(SolutionDir)..\extern\SimplexNoise\*" />
       <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
       <GalleryFiles Include="$(SolutionDir)..\extern\gallery\**\*.*" />
@@ -364,6 +365,7 @@ limitations under the License.
     <Copy SourceFiles="@(ExternProtoGeometryLibGLocale)" DestinationFolder="$(OutputPath)\libg_locale\%(RecursiveDir)" />
     <Copy SourceFiles="@(ExternLibG220)" DestinationFolder="$(OutputPath)libg_220\" />
     <Copy SourceFiles="@(ExternLibG221)" DestinationFolder="$(OutputPath)libg_221\" />
+	<Copy SourceFiles="@(ExternLibG222)" DestinationFolder="$(OutputPath)libg_222\" />
     <Copy SourceFiles="@(ExternSimplexNoise)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(SampleFiles)" DestinationFolder="$(OutputPath)samples\%(RecursiveDir)" />
     <Copy SourceFiles="@(GalleryFiles)" DestinationFolder="$(OutputPath)gallery\%(RecursiveDir)" />

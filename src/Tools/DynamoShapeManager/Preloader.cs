@@ -11,6 +11,7 @@ namespace DynamoShapeManager
         None,
         Version220 = 220,
         Version221 = 221,
+        Version222 = 222
     };
 
     /// <summary>
@@ -57,7 +58,8 @@ namespace DynamoShapeManager
             : this(rootFolder, new[]
             {
                 LibraryVersion.Version220,
-                LibraryVersion.Version221
+                LibraryVersion.Version221,
+                LibraryVersion.Version222
             })
         {
         }
