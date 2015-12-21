@@ -2778,20 +2778,28 @@ namespace ProtoAssociative
             }
             else if (node is ArrayNode)
             {
-                ArrayNode arrayNode = node as ArrayNode;
+                var arrayNode = node as ArrayNode;
                 DFSEmitSSA_AST(arrayNode.Expr, ssaStack, ref astlist);
 
-                BinaryExpressionNode bnode = new BinaryExpressionNode();
-                bnode.Optr = ProtoCore.DSASM.Operator.assign;
+                var bnode = new BinaryExpressionNode { Optr = Operator.assign };
 
                 // Left node
-                AssociativeNode tmpIdent =AstFactory.BuildIdentifier(ProtoCore.Utils.CoreUtils.BuildSSATemp(core));
+                var tmpIdent = AstFactory.BuildIdentifier(CoreUtils.BuildSSATemp(core));
                 Validity.Assert(null != tmpIdent);
                 bnode.LeftNode = tmpIdent;
 
+                if (arrayNode.Expr == null && arrayNode.Type == null)
+                {
+                    // Right node
+                    bnode.RightNode = new NullNode();
+                    astlist.Add(bnode);
+                    ssaStack.Push(bnode);
+                    return;
+                }
+
                 // pop off the dimension
-                AssociativeNode dimensionNode = ssaStack.Pop();
-                ArrayNode currentDimensionNode = null;
+                var dimensionNode = ssaStack.Pop();
+                ArrayNode currentDimensionNode;
                 if (dimensionNode is BinaryExpressionNode)
                 {
                     currentDimensionNode = new ArrayNode((dimensionNode as BinaryExpressionNode).LeftNode, null);
