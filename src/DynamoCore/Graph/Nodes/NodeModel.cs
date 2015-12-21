@@ -662,7 +662,7 @@ namespace Dynamo.Graph.Nodes
                 // delete the node and its downstream nodes from AST.
                 else
                 {
-                    ComputeUpstreamOnDownstreamNodes(new HashSet<NodeModel>());
+                    ComputeUpstreamOnDownstreamNodes();
                     OnUpdateASTCollection();                  
                 }
             }
@@ -677,20 +677,12 @@ namespace Dynamo.Graph.Nodes
         /// <returns></returns>
         internal bool IsAnyUpstreamFrozen()
         {
+            var test = this.Name;
             return UpstreamCache.Any(x => x.isFrozenExplicitly);
         }
 
-        /// <summary>
-        /// For a given node, this function computes all the upstream nodes
-        /// by gathering the cached upstream nodes on this node's immediate parents.
-        /// If a node has any downstream nodes, then for all those downstream nodes, upstream
-        /// nodes will be computed. Essentially this method propogates the UpstreamCache down.
-        /// Also this function gets called only after the workspace is added.    
-        /// </summary>
-        /// <returns> a list of the computed nodes </returns>
-        internal IEnumerable<NodeModel> ComputeUpstreamOnDownstreamNodes(HashSet<NodeModel> visitedNodes)
+        internal void ComputeUpstreamCache()
         {
-            //first compute upstream nodes for this node
             this.UpstreamCache = new HashSet<NodeModel>();
             var inpNodes = this.InputNodes.Values;
 
@@ -702,22 +694,29 @@ namespace Dynamo.Graph.Nodes
                     this.UpstreamCache.Add(upstreamNode);
                 }
             }
+        }
+
+        /// <summary>
+        /// For a given node, this function computes all the upstream nodes
+        /// by gathering the cached upstream nodes on this node's immediate parents.
+        /// If a node has any downstream nodes, then for all those downstream nodes, upstream
+        /// nodes will be computed. Essentially this method propogates the UpstreamCache down.
+        /// Also this function gets called only after the workspace is added.    
+        /// </summary>      
+        internal void ComputeUpstreamOnDownstreamNodes()
+        {
+            //first compute upstream nodes for this node
+            ComputeUpstreamCache();
 
             //then for downstream nodes
             //gather downstream nodes and bail if we see an already visited node
-            HashSet<NodeModel> downStreamNodes = new HashSet<NodeModel>(visitedNodes);
+            HashSet<NodeModel> downStreamNodes = new HashSet<NodeModel>();
             this.GetDownstreamNodes(this, downStreamNodes);
-            //then get the difference of the already visisted and new nodes,
-            //we are left with the new nodes discovered during traversal
 
-            downStreamNodes.ExceptWith(visitedNodes);
-           
-
-            foreach (var downstreamNode in downStreamNodes)
+            foreach (var downstreamNode in AstBuilder.TopologicalSort(downStreamNodes))
             {
                 downstreamNode.UpstreamCache = new HashSet<NodeModel>();
-                var currentinpNodes = downstreamNode.InputNodes.Values;
-
+                var currentinpNodes = downstreamNode.InputNodes.Values;                
                 foreach (var inputnode in currentinpNodes.Where(x => x != null))
                 {
                     downstreamNode.UpstreamCache.Add(inputnode.Item2);
@@ -727,15 +726,8 @@ namespace Dynamo.Graph.Nodes
                     }
                 }
             }
-
-           
-            RaisePropertyChanged("IsFrozen");
-            //return all nodes that were visited during this traversal
-            //which includes this node, and the new downstream nodes we discovered
-            //and all previously visited nodes
-            visitedNodes.Add(this);
-            visitedNodes.UnionWith(downStreamNodes);
-            return visitedNodes;
+                    
+            RaisePropertyChanged("IsFrozen");           
         }
        
         private void MarkDownStreamNodesAsModified(NodeModel node)
@@ -748,7 +740,6 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
-        
         /// <summary>
         /// Gets the downstream nodes for the given node.
         /// </summary>
@@ -865,7 +856,7 @@ namespace Dynamo.Graph.Nodes
         /// silenced. This is particularly critical for code block nodes, whose modification can 
         /// mutate the workspace.
         /// 
-        /// As opposed to RaisesModificationEvents, this modifies the entire parent workspace
+        /// As opposed to RaisesModificationEvents, this modifies the entire parent worksfpace
         /// </summary>
         internal event Action<NodeModel, bool> RequestSilenceNodeModifiedEvents;
 
