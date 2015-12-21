@@ -677,11 +677,14 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         /// <returns></returns>
         internal bool IsAnyUpstreamFrozen()
-        {
-            var test = this.Name;
+        {            
             return UpstreamCache.Any(x => x.isFrozenExplicitly);
         }
 
+        /// <summary>
+        /// For a given node, this function computes all the upstream nodes
+        /// by gathering the cached upstream nodes on this node's immediate parents.
+        /// </summary>
         internal void ComputeUpstreamCache()
         {
             this.UpstreamCache = new HashSet<NodeModel>();
@@ -857,7 +860,7 @@ namespace Dynamo.Graph.Nodes
         /// silenced. This is particularly critical for code block nodes, whose modification can 
         /// mutate the workspace.
         /// 
-        /// As opposed to RaisesModificationEvents, this modifies the entire parent worksfpace
+        /// As opposed to RaisesModificationEvents, this modifies the entire parent workspace
         /// </summary>
         internal event Action<NodeModel, bool> RequestSilenceNodeModifiedEvents;
 

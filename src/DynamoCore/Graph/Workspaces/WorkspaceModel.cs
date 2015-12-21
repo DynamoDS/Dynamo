@@ -1542,14 +1542,12 @@ namespace Dynamo.Graph.Workspaces
         /// this is done in such a way that each node is only computed once.
         /// </summary>
         private void ComputeUpstreamCacheForEntireGraph()
-        {
-            //get the source nodes or roots of the DAG
-            //var sources = GetSourceNodes();
+        {           
             var sortedNodes = AstBuilder.TopologicalSort(this.nodes);             
             
             foreach (var sortedNode in sortedNodes)
             {
-                //call computeUpstreamOnDownstream to propogate the upstream Cache down to all nodes
+                //call ComputeUpstreamCache to propogate the upstream Cache down to all nodes
                 sortedNode.ComputeUpstreamCache();
             }
         }
