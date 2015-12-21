@@ -54,7 +54,6 @@ namespace ProtoCore
     {
         private ProtoCore.RuntimeCore runtimeCore;
         private bool warningAsError;
-        private System.IO.TextWriter output = System.Console.Out;
         private List<Runtime.WarningEntry> warnings;
 
         public IOutputStream MessageHandler
@@ -110,7 +109,6 @@ namespace ProtoCore
 
             if (writer != null)
             {
-                output = System.Console.Out;
                 System.Console.SetOut(writer);
             }
         }
