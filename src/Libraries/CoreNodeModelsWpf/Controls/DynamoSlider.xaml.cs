@@ -12,7 +12,7 @@ using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.ViewModels;
 
-namespace Dynamo.Wpf.Controls
+namespace CoreNodeModelsWpf.Controls
 {
     /// <summary>
     /// Interaction logic for DynamoSlider.xaml

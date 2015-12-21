@@ -5,7 +5,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Nodes;
 using Dynamo.Wpf;
 
-namespace Dynamo.Wpf.Nodes
+namespace CoreNodeModelsWpf.Nodes
 {
     public class DummyNodeNodeViewCustomization : INodeViewCustomization<DummyNode>
     {

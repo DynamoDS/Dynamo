@@ -12,6 +12,7 @@ using Dynamo.Utilities;
 using Dynamo.Wpf.Controls;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
+using CoreNodeModelsWpf.Controls;
 
 namespace DynamoCoreWpfTests
 {

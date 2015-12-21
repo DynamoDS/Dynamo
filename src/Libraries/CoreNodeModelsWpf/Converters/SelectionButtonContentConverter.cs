@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
 
-namespace Dynamo.Wpf.Converters
+namespace CoreNodeModelsWpf.Converters
 {
     public class SelectionButtonContentConverter : IValueConverter
     {
@@ -13,10 +13,10 @@ namespace Dynamo.Wpf.Converters
             if (value is IEnumerable<object>)
             {
                 if (!(value as IEnumerable<object>).Any())
-                    return Properties.Resources.SelectNodeButtonSelect;
+                    return Dynamo.Wpf.Properties.Resources.SelectNodeButtonSelect;
             }
 
-            return Properties.Resources.SelectNodeButtonChange;
+            return Dynamo.Wpf.Properties.Resources.SelectNodeButtonChange;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

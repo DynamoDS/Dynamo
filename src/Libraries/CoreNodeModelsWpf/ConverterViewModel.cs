@@ -13,7 +13,7 @@ using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
 using DynamoConversions;
 
-namespace Dynamo.Wpf
+namespace CoreNodeModelsWpf
 {
     public class ConverterViewModel : NotificationObject
     {

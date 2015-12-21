@@ -10,8 +10,10 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using DynamoConversions;
 using ProtoCore.AST;
+using Dynamo.Wpf;
+using CoreNodeModelsWpf.Controls;
 
-namespace Dynamo.Wpf.NodeViewCustomizations
+namespace CoreNodeModelsWpf.NodeViewCustomizations
 {
     class ConverterNodeViewCustomization : INodeViewCustomization<DynamoConvert>
     {

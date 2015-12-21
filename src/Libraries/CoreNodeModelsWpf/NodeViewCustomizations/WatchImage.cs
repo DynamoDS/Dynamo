@@ -7,8 +7,9 @@ using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Utilities;
 using Image = System.Windows.Controls.Image;
+using Dynamo.Wpf;
 
-namespace Dynamo.Wpf.Nodes
+namespace CoreNodeModelsWpf.Nodes
 {
     internal class WatchImageNodeViewCustomization : INodeViewCustomization<WatchImageCore>
     {
