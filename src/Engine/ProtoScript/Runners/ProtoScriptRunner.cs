@@ -280,7 +280,7 @@ namespace ProtoScript.Runners
                 {
                     runtimeCore = ExecuteVM(core);
                 }
-                catch (ProtoCore.Exceptions.ExecutionCancelledException e)
+                catch (ProtoCore.Exceptions.ExecutionCancelledException)
                 {
                     Console.WriteLine("The execution has been cancelled!");
                 }

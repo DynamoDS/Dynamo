@@ -656,7 +656,8 @@ namespace Dynamo.Graph.Nodes
                 if (!value)
                 { 
                     MarkDownStreamNodesAsModified(this);
-                    OnNodeModified();                   
+                    OnNodeModified();  
+                    RaisePropertyChanged("IsFrozen");
                 }
                 //If the node is frozen, then do not execute the graph immediately.
                 // delete the node and its downstream nodes from AST.

@@ -4,7 +4,6 @@ using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
-using DoubleSlider = DSCoreNodesUI.Input.DoubleSlider;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace Dynamo.Manipulation
@@ -269,10 +268,6 @@ namespace Dynamo.Manipulation
                 return v2.Normalized();
 
             return vector.Normalized();
-        }
-        
-        private static void SetSliderInputParams(DoubleSlider inputNode, double min, double max)
-        {
         }
 
         /// <summary>
