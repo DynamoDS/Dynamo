@@ -65,6 +65,7 @@ namespace Dynamo.PackageManager
             CopyFilesIntoPackageDirectory(files, dyfDir, binDir, extraDir);
             RemoveDyfFiles(files, dyfDir);
             RemapCustomNodeFilePaths(files, dyfDir.FullName);
+            RemoveUnselectedFiles(files, rootDir);
 
             return rootDir;
         }
@@ -89,6 +90,25 @@ namespace Dynamo.PackageManager
             foreach (var dyf in dyfsToRemove)
             {
                 fileSystem.DeleteFile(dyf);
+            }
+        }
+
+        private void RemoveUnselectedFiles(IEnumerable<string> filePaths, IDirectoryInfo dir)
+        {
+            // Remove all files which are not listed in the files list
+            filePaths = filePaths.Select(x => x.ToLower());
+            foreach (var path in fileSystem.GetFiles(dir.FullName).Select(x => x.ToLower())
+                .Where(x => !x.EndsWith("pkg.json") && !filePaths.Contains(x)))
+            {
+                fileSystem.DeleteFile(path);
+            }
+
+            // Remove all backup folders
+            var backupFolderName = Configuration.Configurations.BackupFolderName.ToLower();
+            foreach (var path in fileSystem.GetDirectories(dir.FullName)
+                .Where(x => x.Split(new[] { '/', '\\' }).Select(y => y.ToLower()).Contains(backupFolderName)))
+            {
+                fileSystem.DeleteDirectory(path);
             }
         }
 
