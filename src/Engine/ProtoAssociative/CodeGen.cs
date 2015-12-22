@@ -383,9 +383,6 @@ namespace ProtoAssociative
                 GraphNode firstNode = dependencyList[0];
                 GraphNode lastNode = node;
 
-                string symbol1 = firstNode.updateNodeRefList[0].nodeList[0].symbol.name;
-                string symbol2 = lastNode.updateNodeRefList[0].nodeList[0].symbol.name;
-
                 foreach (var n in dependencyList.GroupBy(x => x.guid).Select(y => y.First()))
                 {
                     core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency,
@@ -777,10 +774,6 @@ namespace ProtoAssociative
                     inferedType = type;
                 }
             }
-            else if (node is FunctionCallNode)
-            {
-                FunctionCallNode f = node as FunctionCallNode;
-            }
             else if (node is BinaryExpressionNode)
             {
                 BinaryExpressionNode b = node as BinaryExpressionNode;
@@ -850,8 +843,6 @@ namespace ProtoAssociative
             // Break at function call inside dynamic lang block created for a 'true' or 'false' expression inside an inline conditional
             else if (core.DebuggerProperties.breakOptions.HasFlag(DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint))
             {
-                Validity.Assert(core.DebuggerProperties.highlightRange != null);
-
                 ProtoCore.CodeModel.CodePoint startInclusive = core.DebuggerProperties.highlightRange.StartInclusive;
                 ProtoCore.CodeModel.CodePoint endExclusive = core.DebuggerProperties.highlightRange.EndExclusive;
 
@@ -1898,7 +1889,6 @@ namespace ProtoAssociative
                     else if (core.DebuggerProperties.breakOptions.HasFlag(DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint))
                     {
                         var codeRange = core.DebuggerProperties.highlightRange;
-                        Validity.Assert(codeRange != null);
 
                         var startInclusive = codeRange.StartInclusive;
                         var endExclusive = codeRange.EndExclusive;
@@ -2521,7 +2511,6 @@ namespace ProtoAssociative
         private void EmitSSAforArrayDimension(ref ArrayNode dimensionNode, ref List<AssociativeNode> astlist)
         {
             AssociativeNode indexNode = dimensionNode.Expr;
-            List<AssociativeNode> ssaIndexList = new List<AssociativeNode>();
 
             // Traverse first dimension
             Stack<AssociativeNode> localStack = new Stack<AssociativeNode>();
@@ -2789,20 +2778,28 @@ namespace ProtoAssociative
             }
             else if (node is ArrayNode)
             {
-                ArrayNode arrayNode = node as ArrayNode;
+                var arrayNode = node as ArrayNode;
                 DFSEmitSSA_AST(arrayNode.Expr, ssaStack, ref astlist);
 
-                BinaryExpressionNode bnode = new BinaryExpressionNode();
-                bnode.Optr = ProtoCore.DSASM.Operator.assign;
+                var bnode = new BinaryExpressionNode { Optr = Operator.assign };
 
                 // Left node
-                AssociativeNode tmpIdent =AstFactory.BuildIdentifier(ProtoCore.Utils.CoreUtils.BuildSSATemp(core));
+                var tmpIdent = AstFactory.BuildIdentifier(CoreUtils.BuildSSATemp(core));
                 Validity.Assert(null != tmpIdent);
                 bnode.LeftNode = tmpIdent;
 
+                if (arrayNode.Expr == null && arrayNode.Type == null)
+                {
+                    // Right node
+                    bnode.RightNode = new NullNode();
+                    astlist.Add(bnode);
+                    ssaStack.Push(bnode);
+                    return;
+                }
+
                 // pop off the dimension
-                AssociativeNode dimensionNode = ssaStack.Pop();
-                ArrayNode currentDimensionNode = null;
+                var dimensionNode = ssaStack.Pop();
+                ArrayNode currentDimensionNode;
                 if (dimensionNode is BinaryExpressionNode)
                 {
                     currentDimensionNode = new ArrayNode((dimensionNode as BinaryExpressionNode).LeftNode, null);
@@ -3022,8 +3019,6 @@ namespace ProtoAssociative
 
                     lhsIdent = null;
                 }
-
-                IdentifierNode firstPointer = lhsIdent;
 
                 //=========================================================
                 //
@@ -3717,7 +3712,6 @@ namespace ProtoAssociative
                 {
                     if ((node as BinaryExpressionNode).isMultipleAssign)
                     {
-                        Stack<AssociativeNode> ssaStack = new Stack<AssociativeNode>();
                         DFSEmitSplitAssign_AST(node, ref newASTList);
                         foreach (AssociativeNode anode in newASTList)
                         {
@@ -3872,8 +3866,6 @@ namespace ProtoAssociative
                 inferedType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
 
                 DfsTraverse(node, ref inferedType, false, null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier);
-
-                BinaryExpressionNode binaryNode = node as BinaryExpressionNode;
             }
 
             core.InferedType = inferedType;
@@ -4139,8 +4131,6 @@ namespace ProtoAssociative
                         // Jun Comment: Specification 
                         //      If resolution fails at this point a com.Design-Script.Imperative.Core.UnboundIdentifier 
                         //      warning is emitted during pre-execute phase, and at the ID is bound to null. (R1 - Feb)
-
-                        int startpc = pc;
 
                         // Set the first symbol that triggers the cycle to null
                         ProtoCore.AssociativeGraph.GraphNode nullAssignGraphNode = new ProtoCore.AssociativeGraph.GraphNode();
@@ -4613,8 +4603,6 @@ namespace ProtoAssociative
                 //Validity.Assert(codeBlock.children[codeBlock.children.Count - 1].blockType == ProtoCore.DSASM.CodeBlockType.kLanguage);
                 codeBlock.children[codeBlock.children.Count - 1].Attributes = PopulateAttributes(langblock.Attributes);
 
-                int startpc = pc;
-
                 EmitInstrConsole(ProtoCore.DSASM.kw.bounce + " " + blockId + ", " + entry.ToString());
                 EmitBounceIntrinsic(blockId, entry);
 
@@ -4877,7 +4865,6 @@ namespace ProtoAssociative
                         vardecl.IsStatic
                         ? core.CodeBlockList[0].symbolTable.symbolList[symbolIndex]
                         : core.ClassTable.ClassNodes[thisClassIndex].Symbols.symbolList[symbolIndex];
-                    ProtoCore.Type propType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
                     string typeName = vardecl.ArgumentType.Name;
                     if (String.IsNullOrEmpty(typeName))
                     {
@@ -7341,7 +7328,7 @@ namespace ProtoAssociative
                 // If it is, then it means this symbol is not a member and is local to this function
                 ProtoCore.DSASM.SymbolNode symbolnode = null;
                 bool isAccessible = false;
-                bool isLocalVariable = isLocalVariable = VerifyAllocationInScope(firstSymbol.name, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
+                bool isLocalVariable = VerifyAllocationInScope(firstSymbol.name, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
                 if (!isLocalVariable)
                 {
                     if (null != firstSymbol && leftNodeRef.nodeList[0].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.kMethod)

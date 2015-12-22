@@ -553,8 +553,6 @@ namespace ProtoCore
                     else
                         throw new NotImplementedException("Requested coercion not implemented");
             }
-
-            throw new NotImplementedException("Requested coercion not implemented");
         }
     }
 }

@@ -994,7 +994,6 @@ namespace ProtoFFI
                 {
                     DSObjectMap.Remove(dsObject);
                     CLRObjectMap.Remove(clrobject);
-                    dsi.runtime.RuntimeCore.FFIPropertyChangedMonitor.RemoveFFIObject(clrobject);
                 }
             }
         }
@@ -1068,7 +1067,6 @@ namespace ProtoFFI
             metadata.type = type;
             StackValue retval = runtimeCore.RuntimeMemory.Heap.AllocatePointer(classTable.ClassNodes[type].Size, metadata);
             BindObjects(obj, retval);
-            dsi.runtime.RuntimeCore.FFIPropertyChangedMonitor.AddFFIObject(obj);
             return retval;
         }
 
@@ -1289,7 +1287,6 @@ namespace ProtoFFI
             foreach (var item in DSObjectMap)
             {
                 IDisposable disposable = item.Value as IDisposable;
-                sender.FFIPropertyChangedMonitor.RemoveFFIObject(item.Value);
 
                 if (null != disposable)
                     disposable.Dispose();

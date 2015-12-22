@@ -459,7 +459,7 @@ namespace ProtoCore
             ProtoCore.DSASM.SymbolNode firstSymbol = null;
 
             // This is only valid within a function as we are dealing with function args
-            if(localProcedure == null);
+            if(localProcedure == null)
             {
                 return;
             }

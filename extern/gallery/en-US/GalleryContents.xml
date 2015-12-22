@@ -2,29 +2,29 @@
 <GalleryContents xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<GalleryUiContents>
 	<GalleryContent>
-		<Header>Create DirectShape Elements in Dynamo</Header>
-		<Body>You can now wrap meshes, solids, and surfaces in a DirectShape and place it into your Revit Model.</Body>
-		<ImagePath>DirectShape.png</ImagePath>
+		<Header>Direct Manipulation</Header>
+		<Body>Sometimes numerical manipulation isn’t the right approach. Now you can manually push-and-pull Point geometry when in navigating in the background 3D preview.</Body>
+		<ImagePath>Core_DirectManip.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
-		<Header>Library Enhancements</Header>
-		<Body>The library is now organized in a tree view to make it easier to find the nodes you want. Node types have also been color-coded to make it easier for you to locate create, action, and query nodes in the library.</Body>
-		<ImagePath>Library.png</ImagePath>
+		<Header>Freeze Functionality</Header>
+		<Body>When you have long running portions of your graph, or don’t want to export data to other applications, or want to debug some logic, don’t unplug your nodes. Now you can suspend execution of specified nodes in the graph by using Freeze in the right-click contextual menu.</Body>
+		<ImagePath>Core_Freeze.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
-		<Header>Node Layout Cleanup Improvements</Header>
-		<Body>Clean up layouts considering groups as a whole or clean up layouts within groups.</Body>
-		<ImagePath>NodeLayoutCleanup.png</ImagePath>
+		<Header>Search Enhancements</Header>
+		<Body>Only look at the node libraries you want to with new filtering tools.  See more options at once by using a compact view, or get more information with the detail view.</Body>
+		<ImagePath>Core_Search.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
-		<Header>Background Preview works on Remote Desktop and Parallels</Header>
-		<Body>For remote systems with GPUs and virtual machines with hardware-acceleration, background preview is now visible.</Body>
-		<ImagePath>Rendering.png</ImagePath>
+		<Header>Batch placement of Adaptive Components</Header>
+		<Body>Huge improvements to the speed and reliability of placing large numbers of adaptive components.</Body>
+		<ImagePath>Revit_AdaptiveComponent.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
 		<Header>Additional Updates and Improvements</Header>
-		<Body>- Easier to read Search Results&#10;- Node to Code Stabilization&#10;- Improved 'Canvas Snapshot' functionality&#10;- New Chapters and expansion of the Dynamo Primer&#10;- Move to .NET 4.5</Body>
-		<ImagePath>Misc.png</ImagePath>
+		<Body>- Zoom Re-Center: Select a node, then zoom and center your orbit in the 3D preview&#10;- CTRL + Drag: Copy/Paste nodes in a familiar way&#10;- Add comments to custom node inputs and full default states for complex data types&#10;- More forgiving DesignScript Syntax: Users can now write instance methods as static methods</Body>
+		<ImagePath>Core_Misc.png</ImagePath>
 	</GalleryContent>
 	</GalleryUiContents>
 </GalleryContents>

@@ -1181,7 +1181,6 @@ namespace ProtoCore.Lang
                             }
 
                             return GenerateRangeByStepSize(start, end, stepsize, isIntRange);
-                            break;
                         }
                     case (int)ProtoCore.DSASM.RangeStepOperator.Number:
                         {

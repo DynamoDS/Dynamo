@@ -502,13 +502,12 @@ namespace ProtoFFI
                 return false;
 
             string name = m.Name;
-            string propertyName;
             int nParams = 0;
             if (name.StartsWith("get_"))
-                propertyName = name.Remove(0, 4);
+                name.Remove(0, 4);
             else if (name.StartsWith("set_"))
             {
-                propertyName = name.Remove(0, 4);
+                name.Remove(0, 4);
                 nParams = 1;
             }
             else

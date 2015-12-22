@@ -22,7 +22,9 @@ namespace Dynamo.Tests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("VMDataBridge.dll");
-            libraries.Add("DSCoreNodes.dll");            
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSCoreNodes.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -639,6 +641,53 @@ namespace Dynamo.Tests
             watch3DNode.IsFrozen = true;
             Assert.IsTrue(watch3DNode.isFrozenExplicitly);
             watch3DNode.IsFrozen = false;
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void LoadGraphWithFreezeNodes_Defect9274()
+        {
+            //Load the graph.
+            string openPath = Path.Combine(TestDirectory, @"core\FreezeNodes\TestFrozenNodesOnLoading.dyn");
+            RunModel(openPath);
+
+            //Check whether the geometry node is frozen
+            var node = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("8163332d-21ec-4257-9a5a-0b69462db44f");
+            Assert.IsTrue(node.IsFrozen);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void DisConnectANodeRecomputesFrozenNodes_Defect9218()
+        {
+            //Load the graph.
+            string openPath = Path.Combine(TestDirectory, @"core\FreezeNodes\TestFrozenNodesOnDisconnecting.dyn");
+            RunModel(openPath);
+
+            //Check whether the geometry node is frozen
+            var node = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("ef3eaed0-7a8e-47a9-b06e-416bb30ec72f");
+            Assert.IsTrue(node.IsFrozen);
+
+            //disconnect the Slider node
+            var sliderNode =
+                CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("7f7418c2-598d-4957-981b-aea1761ccc03");
+            Assert.IsTrue(sliderNode.IsFrozen);
+
+            Guid start;
+            Guid.TryParse("7f7418c2-598d-4957-981b-aea1761ccc03", out start);
+
+            Guid end;
+            Guid.TryParse("3f00be88-170f-4ebe-b81a-011c32ed2acb", out end);
+
+            var connector = CurrentDynamoModel.CurrentWorkspace.Connectors.First(
+                x => x.Start.Owner.GUID == start &&
+                                          x.End.Owner.GUID == end);
+            Assert.IsNotNull(connector);
+            
+            connector.Delete();  
+          
+            //now the geometry node should not be in freeze state
+            Assert.IsFalse(node.IsFrozen);
         }
     }
 }
