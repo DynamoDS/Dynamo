@@ -2508,6 +2508,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			else
 			{
 			   node.line = line; node.col = col;
+			node.endLine = t.line; node.endCol = t.col;
 			}
 			
 		} else if (la.kind == 3) {

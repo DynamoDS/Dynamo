@@ -67,6 +67,20 @@ namespace ProtoTest.GraphCompiler
             Assert.IsTrue(nestedFuncCall != null && (nestedFuncCall.Function as IdentifierNode).Value == "%mul");
         }
 
-        
+        [Test]
+        public void TestUnboundIdentifierInUnnamedSignedExpression()
+        {
+            string code = @"a*-1;";
+
+            ElementResolver elementResolver = new ElementResolver();
+            ParseParam parseParam = new ParseParam(Guid.NewGuid(), code, elementResolver);
+
+            Assert.IsTrue(CompilerUtils.PreCompileCodeBlock(thisTest.CreateTestCore(), ref parseParam));
+            Assert.IsTrue(parseParam.ParsedNodes != null && parseParam.ParsedNodes.Any());
+
+            var inputIdentifier = parseParam.UnboundIdentifiers;
+            Assert.AreEqual(1, inputIdentifier.Count);
+            Assert.AreEqual("a", inputIdentifier.ElementAt(0).Value);
+        }
     }
 }
