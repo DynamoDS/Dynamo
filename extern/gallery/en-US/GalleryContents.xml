@@ -22,7 +22,7 @@
 		<ImagePath>Revit_AdaptiveComponent.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
-		<Header>Additional Updates and Improvements</Header>
+		<Header>Miscellaneous Updates and Improvements</Header>
 		<Body>- Zoom Re-Center: Select a node, then zoom and center your orbit in the 3D preview&#10;- CTRL + Drag: Copy/Paste nodes in a familiar way&#10;- Add comments to custom node inputs and full default states for complex data types&#10;- More forgiving DesignScript Syntax: Users can now write instance methods as static methods</Body>
 		<ImagePath>Core_Misc.png</ImagePath>
 	</GalleryContent>
