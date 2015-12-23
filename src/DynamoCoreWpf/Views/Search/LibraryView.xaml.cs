@@ -295,33 +295,47 @@ namespace Dynamo.UI.Views
 
         private void OnExpanderButtonMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            var senderButton = e.OriginalSource as FrameworkElement;
-            if (senderButton != null)
-            {
-                var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
+            var searchElementVm = GetDataContext(e.OriginalSource);
 
-                //sender can be RootSearchElementVM or ClassInformationViewModel. 
-                //And we should just fire HandleMouseLeftButtonDown, when ViewModel is NodeSearchElementViewModel
-                if (searchElementVM != null)
-                    dragDropHelper.HandleMouseDown(e.GetPosition(null), searchElementVM);
+            //sender can be RootSearchElementVM or ClassInformationViewModel. 
+            //And we should just fire HandleMouseLeftButtonDown, when ViewModel is NodeSearchElementViewModel
+            if (searchElementVm != null)
+            {
+                dragDropHelper.HandleMouseDown(e.GetPosition(null), searchElementVm);
             }
         }
 
         private void OnExpanderButtonPreviewMouseMove(object sender, MouseEventArgs e)
         {
-            if (e.LeftButton != MouseButtonState.Pressed)
+            if (e.LeftButton != MouseButtonState.Pressed || !(e.OriginalSource is DependencyObject))
                 return;
 
-            var senderButton = e.OriginalSource as FrameworkElement;
-            if (senderButton != null)
-            {
-                var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
-
-                //sender can be RootSearchElementVM or ClassInformationViewModel. 
+            var searchElementVm = GetDataContext(e.OriginalSource);
+            
+            //sender can be RootSearchElementVM or ClassInformationViewModel. 
                 //And we should just fire HandleMouseMove, when ViewModel is NodeSearchElementViewModel
-                if (searchElementVM != null)
-                    dragDropHelper.HandleMouseMove(senderButton, e.GetPosition(null));
+            if (searchElementVm != null)
+            {
+                dragDropHelper.HandleMouseMove((DependencyObject)e.OriginalSource, e.GetPosition(null));
             }
+        }
+
+        private NodeSearchElementViewModel GetDataContext(object source)
+        {
+            var frameworkElement = source as FrameworkElement;
+            
+            if (frameworkElement != null)
+            {
+                return frameworkElement.DataContext as NodeSearchElementViewModel;
+            }
+
+            var frameworkContentElement = source as FrameworkContentElement;
+            if (frameworkContentElement != null)
+            {
+                return frameworkContentElement.DataContext as NodeSearchElementViewModel;
+            }
+
+            return null;
         }
 
         #endregion

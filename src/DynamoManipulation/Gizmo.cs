@@ -111,6 +111,7 @@ namespace Dynamo.Manipulation
             } 
         }
 
+        private Point origin;
         /// <summary>
         /// Base position of the Gizmo which is at a fixed distance from the camera
         /// so that it is redrawn at the same size to the viewer
@@ -119,23 +120,33 @@ namespace Dynamo.Manipulation
         {
             get
             {
-                var cameraPos = cameraPosition != null ?
-                    Point.ByCoordinates(cameraPosition.Value.X, cameraPosition.Value.Y, cameraPosition.Value.Z) : null;
+                if(origin != null) origin.Dispose();
 
-                if (cameraPos == null)
+                using (var cameraPos = cameraPosition != null
+                    ? Point.ByCoordinates(cameraPosition.Value.X, cameraPosition.Value.Y, cameraPosition.Value.Z)
+                    : null)
                 {
-                    // cameraPos will be null if HelixWatch3DViewModel is not initialized
-                    // this happens on an out of memory exception in SharpDX probably due to 
-                    // DynamoEffectsManager not being disposed off promptly.
-                    // TODO: revisit to fix this properly later
-                    // For the time being return a default position instead of throwing an exception
-                    // to the effect that camerPos should not be null
-                    return Point.ByCoordinates(ManipulatorOrigin.X, ManipulatorOrigin.Y, ManipulatorOrigin.Z);
-                }
 
-                var vec = Vector.ByTwoPoints(cameraPos, ManipulatorOrigin).Normalized();
-                return cameraPos.Add(vec.Scale(zDepth));
+                    if (cameraPos == null)
+                    {
+                        // cameraPos will be null if HelixWatch3DViewModel is not initialized
+                        // this happens on an out of memory exception in SharpDX probably due to 
+                        // DynamoEffectsManager not being disposed off promptly.
+                        // TODO: revisit to fix this properly later
+                        // For the time being return a default position instead of throwing an exception
+                        // to the effect that camerPos should not be null
+                        return Point.ByCoordinates(ManipulatorOrigin.X, ManipulatorOrigin.Y, ManipulatorOrigin.Z);
+                    }
+
+                    var vec = Vector.ByTwoPoints(cameraPos, ManipulatorOrigin).Normalized();
+                    origin = cameraPos.Add(vec.Scale(zDepth));
+                }
+                return origin;
             }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
         }
 
         internal Gizmo(NodeManipulator manipulator)
@@ -180,6 +191,10 @@ namespace Dynamo.Manipulation
 
         public void Dispose()
         {
+            Dispose(true);
+
+            if(origin != null) origin.Dispose();
+
             BackgroundPreviewViewModel.ViewCameraChanged -= OnViewCameraChanged;
         }
     }

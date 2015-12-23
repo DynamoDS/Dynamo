@@ -274,7 +274,7 @@ namespace ProtoCore
                             info, context, i, "Base-");
                         TraceData.Add(srtd);
                     }
-                    catch (ReflectionTypeLoadException e)
+                    catch (ReflectionTypeLoadException)
                     {
                         // If deserialization fails, continue to the next 
                         // element. Deserialization will throw an exception in
@@ -336,11 +336,9 @@ namespace ProtoCore
 
         #region private members
 
-        private int runID;
         private int classScope;
         private string methodName;
         private readonly FunctionTable globalFunctionTable;
-        private readonly ExecutionMode executionMode;
         private int invokeCount; //Number of times the callsite has been executed within this run
         private List<ISerializable> beforeFirstRunSerializables = new List<ISerializable>();
 
@@ -405,8 +403,6 @@ namespace ProtoCore
             Validity.Assert(methodName != null);
             Validity.Assert(globalFunctionTable != null);
 
-            runID = Constants.kInvalidIndex;
-            executionMode = execMode;
             this.classScope = classScope;
             this.methodName = methodName;
             this.globalFunctionTable = globalFunctionTable;
@@ -537,10 +533,7 @@ namespace ProtoCore
                                                                                                   Instructions, runtimeCore);
                     int resolutionFailures;
 
-                    Dictionary<FunctionEndPoint, int> lookups = funcGroup.GetExactMatchStatistics(
-                        context, reducedParams, stackFrame, runtimeCore,
-                        out resolutionFailures);
-
+                    funcGroup.GetExactMatchStatistics(context, reducedParams, stackFrame, runtimeCore, out resolutionFailures);
 
                     if (resolutionFailures > 0)
                         continue;

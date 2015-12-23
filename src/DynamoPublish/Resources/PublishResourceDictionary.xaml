@@ -1,0 +1,12 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <SolidColorBrush x:Key="PublishViewBackground"
+                     Color="#3c3c3c" />
+    <SolidColorBrush x:Key="PublishViewTextColor"
+                     Color="DarkGray" />
+    <SolidColorBrush x:Key="PublishStatePanelNormalBackground"
+                     Color="LightSkyBlue" />
+    <SolidColorBrush x:Key="PublishStatePanelErrorBackground"
+                     Color="LightCoral" />
+</ResourceDictionary>

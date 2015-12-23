@@ -88,6 +88,13 @@
       <Author />
     </ModuleSpec>
     <ModuleSpec>
+	  <Name>DynamoPublish.resources.dll</Name>
+      <FilePath>.\cs-CZ\DynamoPublish.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>DynamoPython.resources.dll</Name>
       <FilePath>.\cs-CZ\DynamoPython.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -159,13 +166,6 @@
       <FilePath>.\cs-CZ\Tessellation.XML</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>Watch3DNodeModels.resources.dll</Name>
-      <FilePath>.\cs-CZ\Watch3DNodeModels.resources.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>Analysis.resources.dll</Name>
@@ -261,6 +261,13 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
+	  <Name>DynamoPublish.resources.dll</Name>
+      <FilePath>.\de-DE\DynamoPublish.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>DynamoPython.XML</Name>
       <FilePath>.\de-DE\DynamoPython.XML</FilePath>
       <DigitalSignature>false</DigitalSignature>
@@ -325,13 +332,6 @@
       <FilePath>.\de-DE\Tessellation.XML</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>Watch3DNodeModels.resources.dll</Name>
-      <FilePath>.\de-DE\Watch3DNodeModels.resources.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>Analysis.resources.dll</Name>
@@ -428,6 +428,13 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
+	  <Name>DynamoPublish.resources.dll</Name>
+      <FilePath>.\en-US\DynamoPublish.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>InstallUpdate.resources.dll</Name>
       <FilePath>.\en-US\InstallUpdate.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -479,13 +486,6 @@
       <FilePath>.\en-US\Tessellation.XML</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>Watch3DNodeModels.resources.dll</Name>
-      <FilePath>.\en-US\Watch3DNodeModels.resources.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>Analysis.resources.dll</Name>
@@ -594,6 +594,13 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>DynamoPublish.resources.dll</Name>
+      <FilePath>.\es-ES\DynamoPublish.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>InstallUpdate.resources.dll</Name>
       <FilePath>.\es-ES\InstallUpdate.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -645,13 +652,6 @@
       <FilePath>.\es-ES\Tessellation.XML</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>Watch3DNodeModels.resources.dll</Name>
-      <FilePath>.\es-ES\Watch3DNodeModels.resources.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>PackageManagerExtension_ExtensionDefinition.xml</Name>
@@ -773,6 +773,13 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
+	<Name>DynamoPublish.resources.dll</Name>
+      <FilePath>.\fr-FR\DynamoPublish.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+-    <ModuleSpec>
       <Name>Operators.xml</Name>
       <FilePath>.\fr-FR\Operators.xml</FilePath>
       <DigitalSignature>false</DigitalSignature>
@@ -817,13 +824,6 @@
       <FilePath>.\fr-FR\Tessellation.XML</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>Watch3DNodeModels.resources.dll</Name>
-      <FilePath>.\fr-FR\Watch3DNodeModels.resources.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>Analysis.resources.dll</Name>
@@ -945,6 +945,13 @@
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
     <ModuleSpec>
+	  <Name>DynamoPublish.resources.dll</Name>
+      <FilePath>.\it-IT\DynamoPublish.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>ProtoAssociative.resources.dll</Name>
       <FilePath>.\it-IT\ProtoAssociative.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -983,13 +990,6 @@
       <FilePath>.\it-IT\Tessellation.XML</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>Watch3DNodeModels.resources.dll</Name>
-      <FilePath>.\it-IT\Watch3DNodeModels.resources.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>Analysis.resources.dll</Name>
@@ -1118,6 +1118,13 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
+	<Name>DynamoPublish.resources.dll</Name>
+      <FilePath>.\ja-JP\DynamoPublish.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>ProtoCore.resources.dll</Name>
       <FilePath>.\ja-JP\ProtoCore.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -1149,13 +1156,6 @@
       <FilePath>.\ja-JP\Tessellation.XML</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>Watch3DNodeModels.resources.dll</Name>
-      <FilePath>.\ja-JP\Watch3DNodeModels.resources.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>Analysis.resources.dll</Name>
@@ -1291,6 +1291,13 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
+	<Name>DynamoPublish.resources.dll</Name>
+      <FilePath>.\ko-KR\DynamoPublish.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>ProtoGeometry.resources.dll</Name>
       <FilePath>.\ko-KR\ProtoGeometry.resources.dll</FilePath>
       <DigitalSignature>false</DigitalSignature>
@@ -1315,13 +1322,6 @@
       <FilePath>.\ko-KR\Tessellation.XML</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>Watch3DNodeModels.resources.dll</Name>
-      <FilePath>.\ko-KR\Watch3DNodeModels.resources.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>boost_chrono-vc110-mt-1_51.dll</Name>
@@ -1744,13 +1744,6 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DynamoWatch3D.resources.dll</Name>
-      <FilePath>.\nodes\cs-CZ\DynamoWatch3D.resources.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author>Autodesk, Inc</Author>
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>GeometryUI.resources.dll</Name>
       <FilePath>.\nodes\cs-CZ\GeometryUI.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -1809,13 +1802,6 @@
     <ModuleSpec>
       <Name>DSCoreNodesUI.resources.dll</Name>
       <FilePath>.\nodes\de-DE\DSCoreNodesUI.resources.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author>Autodesk, Inc</Author>
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>DynamoWatch3D.resources.dll</Name>
-      <FilePath>.\nodes\de-DE\DynamoWatch3D.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -1884,13 +1870,6 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DynamoWatch3D.resources.dll</Name>
-      <FilePath>.\nodes\en-US\DynamoWatch3D.resources.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author>Autodesk, Inc</Author>
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>GeometryUI.resources.dll</Name>
       <FilePath>.\nodes\en-US\GeometryUI.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -1949,13 +1928,6 @@
     <ModuleSpec>
       <Name>DSCoreNodesUI.resources.dll</Name>
       <FilePath>.\nodes\es-ES\DSCoreNodesUI.resources.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author>Autodesk, Inc</Author>
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>DynamoWatch3D.resources.dll</Name>
-      <FilePath>.\nodes\es-ES\DynamoWatch3D.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2024,13 +1996,6 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DynamoWatch3D.resources.dll</Name>
-      <FilePath>.\nodes\fr-FR\DynamoWatch3D.resources.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author>Autodesk, Inc</Author>
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>GeometryUI.resources.dll</Name>
       <FilePath>.\nodes\fr-FR\GeometryUI.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -2089,13 +2054,6 @@
     <ModuleSpec>
       <Name>DSCoreNodesUI.resources.dll</Name>
       <FilePath>.\nodes\it-IT\DSCoreNodesUI.resources.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author>Autodesk, Inc</Author>
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>DynamoWatch3D.resources.dll</Name>
-      <FilePath>.\nodes\it-IT\DynamoWatch3D.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2164,13 +2122,6 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DynamoWatch3D.resources.dll</Name>
-      <FilePath>.\nodes\ja-JP\DynamoWatch3D.resources.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author>Autodesk, Inc</Author>
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>GeometryUI.resources.dll</Name>
       <FilePath>.\nodes\ja-JP\GeometryUI.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -2229,13 +2180,6 @@
     <ModuleSpec>
       <Name>DSCoreNodesUI.resources.dll</Name>
       <FilePath>.\nodes\ko-KR\DSCoreNodesUI.resources.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author>Autodesk, Inc</Author>
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>DynamoWatch3D.resources.dll</Name>
-      <FilePath>.\nodes\ko-KR\DynamoWatch3D.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2304,13 +2248,6 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DynamoWatch3D.resources.dll</Name>
-      <FilePath>.\nodes\pl-PL\DynamoWatch3D.resources.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author>Autodesk, Inc</Author>
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>GeometryUI.resources.dll</Name>
       <FilePath>.\nodes\pl-PL\GeometryUI.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -2369,13 +2306,6 @@
     <ModuleSpec>
       <Name>DSCoreNodesUI.resources.dll</Name>
       <FilePath>.\nodes\pt-BR\DSCoreNodesUI.resources.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author>Autodesk, Inc</Author>
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>DynamoWatch3D.resources.dll</Name>
-      <FilePath>.\nodes\pt-BR\DynamoWatch3D.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2444,13 +2374,6 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DynamoWatch3D.resources.dll</Name>
-      <FilePath>.\nodes\ru-RU\DynamoWatch3D.resources.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author>Autodesk, Inc</Author>
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>GeometryUI.resources.dll</Name>
       <FilePath>.\nodes\ru-RU\GeometryUI.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -2509,13 +2432,6 @@
     <ModuleSpec>
       <Name>DSCoreNodesUI.resources.dll</Name>
       <FilePath>.\nodes\zh-CN\DSCoreNodesUI.resources.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author>Autodesk, Inc</Author>
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>DynamoWatch3D.resources.dll</Name>
-      <FilePath>.\nodes\zh-CN\DynamoWatch3D.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2584,13 +2500,6 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DynamoWatch3D.resources.dll</Name>
-      <FilePath>.\nodes\zh-TW\DynamoWatch3D.resources.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author>Autodesk, Inc</Author>
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>GeometryUI.resources.dll</Name>
       <FilePath>.\nodes\zh-TW\GeometryUI.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -2647,13 +2556,6 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>Cyotek.Drawing.BitmapFont.dll</Name>
-      <FilePath>.\nodes\Cyotek.Drawing.BitmapFont.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author>Cyotek Ltd</Author>
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>DSCoreNodesUI.customization.dll</Name>
       <FilePath>.\nodes\DSCoreNodesUI.customization.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -2677,20 +2579,6 @@
     <ModuleSpec>
       <Name>DynamoUtilities.dll</Name>
       <FilePath>.\nodes\DynamoUtilities.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author>Autodesk, Inc</Author>
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>DynamoWatch3D.customization.dll</Name>
-      <FilePath>.\nodes\DynamoWatch3D.customization.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>DynamoWatch3D.dll</Name>
-      <FilePath>.\nodes\DynamoWatch3D.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2953,13 +2841,6 @@
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>Watch3DNodeModels.resources.dll</Name>
-      <FilePath>.\pl-PL\Watch3DNodeModels.resources.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>Analysis.resources.dll</Name>
       <FilePath>.\pt-BR\Analysis.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -2981,7 +2862,7 @@
     <ModuleSpec>
       <Name>Display.resources.dll</Name>
       <FilePath>.\pt-BR\Display.resources.dll</FilePath>
-      <DigitalSignature>v</DigitalSignature>
+      <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author />
     </ModuleSpec>
@@ -3053,6 +2934,13 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
+      <Name>DynamoPublish.resources.dll</Name>
+      <FilePath>.\pl-PL\DynamoPublish.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>DynamoPython.XML</Name>
       <FilePath>.\pt-BR\DynamoPython.XML</FilePath>
       <DigitalSignature>false</DigitalSignature>
@@ -3119,11 +3007,915 @@
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>Watch3DNodeModels.resources.dll</Name>
-      <FilePath>.\pt-BR\Watch3DNodeModels.resources.dll</FilePath>
+      <Name>DynamoRevitDS.resources.dll</Name>
+      <FilePath>.\Revit_2015\cs-CZ\DynamoRevitDS.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRevitVersionSelector.resources.dll</Name>
+      <FilePath>.\Revit_2015\cs-CZ\DynamoRevitVersionSelector.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.resources.dll</Name>
+      <FilePath>.\Revit_2015\cs-CZ\RevitNodes.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.xml</Name>
+      <FilePath>.\Revit_2015\cs-CZ\RevitNodes.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitRaaS.resources.dll</Name>
+      <FilePath>.\Revit_2015\cs-CZ\RevitRaaS.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>SimpleRaaS.xml</Name>
+      <FilePath>.\Revit_2015\cs-CZ\SimpleRaaS.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRevitDS.resources.dll</Name>
+      <FilePath>.\Revit_2015\de-DE\DynamoRevitDS.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRevitVersionSelector.resources.dll</Name>
+      <FilePath>.\Revit_2015\de-DE\DynamoRevitVersionSelector.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.resources.dll</Name>
+      <FilePath>.\Revit_2015\de-DE\RevitNodes.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.xml</Name>
+      <FilePath>.\Revit_2015\de-DE\RevitNodes.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitRaaS.resources.dll</Name>
+      <FilePath>.\Revit_2015\de-DE\RevitRaaS.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>SimpleRaaS.xml</Name>
+      <FilePath>.\Revit_2015\de-DE\SimpleRaaS.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRaaS.resources.dll</Name>
+      <FilePath>.\Revit_2015\en-US\DynamoRaaS.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRevitDS.resources.dll</Name>
+      <FilePath>.\Revit_2015\en-US\DynamoRevitDS.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRevitVersionSelector.resources.dll</Name>
+      <FilePath>.\Revit_2015\en-US\DynamoRevitVersionSelector.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.resources.dll</Name>
+      <FilePath>.\Revit_2015\en-US\RevitNodes.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.xml</Name>
+      <FilePath>.\Revit_2015\en-US\RevitNodes.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+	  <Name>DynamoPublish.resources.dll</Name>
+      <FilePath>.\pt-BR\DynamoPublish.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
       <Author />
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitRaaS.resources.dll</Name>
+      <FilePath>.\Revit_2015\en-US\RevitRaaS.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>SimpleRaaS.xml</Name>
+      <FilePath>.\Revit_2015\en-US\SimpleRaaS.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRevitDS.resources.dll</Name>
+      <FilePath>.\Revit_2015\es-ES\DynamoRevitDS.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRevitVersionSelector.resources.dll</Name>
+      <FilePath>.\Revit_2015\es-ES\DynamoRevitVersionSelector.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.resources.dll</Name>
+      <FilePath>.\Revit_2015\es-ES\RevitNodes.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.xml</Name>
+      <FilePath>.\Revit_2015\es-ES\RevitNodes.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitRaaS.resources.dll</Name>
+      <FilePath>.\Revit_2015\es-ES\RevitRaaS.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>SimpleRaaS.xml</Name>
+      <FilePath>.\Revit_2015\es-ES\SimpleRaaS.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRevitDS.resources.dll</Name>
+      <FilePath>.\Revit_2015\fr-FR\DynamoRevitDS.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRevitVersionSelector.resources.dll</Name>
+      <FilePath>.\Revit_2015\fr-FR\DynamoRevitVersionSelector.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.resources.dll</Name>
+      <FilePath>.\Revit_2015\fr-FR\RevitNodes.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.xml</Name>
+      <FilePath>.\Revit_2015\fr-FR\RevitNodes.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitRaaS.resources.dll</Name>
+      <FilePath>.\Revit_2015\fr-FR\RevitRaaS.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>SimpleRaaS.xml</Name>
+      <FilePath>.\Revit_2015\fr-FR\SimpleRaaS.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRevitDS.resources.dll</Name>
+      <FilePath>.\Revit_2015\it-IT\DynamoRevitDS.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRevitVersionSelector.resources.dll</Name>
+      <FilePath>.\Revit_2015\it-IT\DynamoRevitVersionSelector.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.resources.dll</Name>
+      <FilePath>.\Revit_2015\it-IT\RevitNodes.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.xml</Name>
+      <FilePath>.\Revit_2015\it-IT\RevitNodes.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitRaaS.resources.dll</Name>
+      <FilePath>.\Revit_2015\it-IT\RevitRaaS.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>SimpleRaaS.xml</Name>
+      <FilePath>.\Revit_2015\it-IT\SimpleRaaS.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRevitDS.resources.dll</Name>
+      <FilePath>.\Revit_2015\ja-JP\DynamoRevitDS.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRevitVersionSelector.resources.dll</Name>
+      <FilePath>.\Revit_2015\ja-JP\DynamoRevitVersionSelector.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.resources.dll</Name>
+      <FilePath>.\Revit_2015\ja-JP\RevitNodes.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.xml</Name>
+      <FilePath>.\Revit_2015\ja-JP\RevitNodes.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitRaaS.resources.dll</Name>
+      <FilePath>.\Revit_2015\ja-JP\RevitRaaS.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>SimpleRaaS.xml</Name>
+      <FilePath>.\Revit_2015\ja-JP\SimpleRaaS.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRevitDS.resources.dll</Name>
+      <FilePath>.\Revit_2015\ko-KR\DynamoRevitDS.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRevitVersionSelector.resources.dll</Name>
+      <FilePath>.\Revit_2015\ko-KR\DynamoRevitVersionSelector.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.resources.dll</Name>
+      <FilePath>.\Revit_2015\ko-KR\RevitNodes.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.xml</Name>
+      <FilePath>.\Revit_2015\ko-KR\RevitNodes.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitRaaS.resources.dll</Name>
+      <FilePath>.\Revit_2015\ko-KR\RevitRaaS.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>SimpleRaaS.xml</Name>
+      <FilePath>.\Revit_2015\ko-KR\SimpleRaaS.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DSRevitNodesUI.resources.dll</Name>
+      <FilePath>.\Revit_2015\nodes\cs-CZ\DSRevitNodesUI.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRaaS.resources.dll</Name>
+      <FilePath>.\Revit_2015\nodes\cs-CZ\DynamoRaaS.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DSRevitNodesUI.resources.dll</Name>
+      <FilePath>.\Revit_2015\nodes\de-DE\DSRevitNodesUI.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRaaS.resources.dll</Name>
+      <FilePath>.\Revit_2015\nodes\de-DE\DynamoRaaS.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DSRevitNodesUI.resources.dll</Name>
+      <FilePath>.\Revit_2015\nodes\en-US\DSRevitNodesUI.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DSRevitNodesUI.resources.dll</Name>
+      <FilePath>.\Revit_2015\nodes\es-ES\DSRevitNodesUI.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRaaS.resources.dll</Name>
+      <FilePath>.\Revit_2015\nodes\es-ES\DynamoRaaS.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DSRevitNodesUI.resources.dll</Name>
+      <FilePath>.\Revit_2015\nodes\fr-FR\DSRevitNodesUI.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRaaS.resources.dll</Name>
+      <FilePath>.\Revit_2015\nodes\fr-FR\DynamoRaaS.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DSRevitNodesUI.resources.dll</Name>
+      <FilePath>.\Revit_2015\nodes\it-IT\DSRevitNodesUI.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRaaS.resources.dll</Name>
+      <FilePath>.\Revit_2015\nodes\it-IT\DynamoRaaS.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DSRevitNodesUI.resources.dll</Name>
+      <FilePath>.\Revit_2015\nodes\ja-JP\DSRevitNodesUI.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRaaS.resources.dll</Name>
+      <FilePath>.\Revit_2015\nodes\ja-JP\DynamoRaaS.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DSRevitNodesUI.resources.dll</Name>
+      <FilePath>.\Revit_2015\nodes\ko-KR\DSRevitNodesUI.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRaaS.resources.dll</Name>
+      <FilePath>.\Revit_2015\nodes\ko-KR\DynamoRaaS.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DSRevitNodesUI.resources.dll</Name>
+      <FilePath>.\Revit_2015\nodes\pl-PL\DSRevitNodesUI.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRaaS.resources.dll</Name>
+      <FilePath>.\Revit_2015\nodes\pl-PL\DynamoRaaS.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DSRevitNodesUI.resources.dll</Name>
+      <FilePath>.\Revit_2015\nodes\pt-BR\DSRevitNodesUI.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRaaS.resources.dll</Name>
+      <FilePath>.\Revit_2015\nodes\pt-BR\DynamoRaaS.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DSRevitNodesUI.resources.dll</Name>
+      <FilePath>.\Revit_2015\nodes\ru-RU\DSRevitNodesUI.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRaaS.resources.dll</Name>
+      <FilePath>.\Revit_2015\nodes\ru-RU\DynamoRaaS.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DSRevitNodesUI.resources.dll</Name>
+      <FilePath>.\Revit_2015\nodes\zh-CN\DSRevitNodesUI.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRaaS.resources.dll</Name>
+      <FilePath>.\Revit_2015\nodes\zh-CN\DynamoRaaS.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DSRevitNodesUI.resources.dll</Name>
+      <FilePath>.\Revit_2015\nodes\zh-TW\DSRevitNodesUI.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRaaS.resources.dll</Name>
+      <FilePath>.\Revit_2015\nodes\zh-TW\DynamoRaaS.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DSRevitNodesUI.dll</Name>
+      <FilePath>.\Revit_2015\nodes\DSRevitNodesUI.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRaaS.dll</Name>
+      <FilePath>.\Revit_2015\nodes\DynamoRaaS.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>Migrations.dll</Name>
+      <FilePath>.\Revit_2015\nodes\Migrations.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRevitDS.resources.dll</Name>
+      <FilePath>.\Revit_2015\pl-PL\DynamoRevitDS.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRevitVersionSelector.resources.dll</Name>
+      <FilePath>.\Revit_2015\pl-PL\DynamoRevitVersionSelector.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.resources.dll</Name>
+      <FilePath>.\Revit_2015\pl-PL\RevitNodes.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.xml</Name>
+      <FilePath>.\Revit_2015\pl-PL\RevitNodes.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitRaaS.resources.dll</Name>
+      <FilePath>.\Revit_2015\pl-PL\RevitRaaS.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>SimpleRaaS.xml</Name>
+      <FilePath>.\Revit_2015\pl-PL\SimpleRaaS.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRevitDS.resources.dll</Name>
+      <FilePath>.\Revit_2015\pt-BR\DynamoRevitDS.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRevitVersionSelector.resources.dll</Name>
+      <FilePath>.\Revit_2015\pt-BR\DynamoRevitVersionSelector.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.resources.dll</Name>
+      <FilePath>.\Revit_2015\pt-BR\RevitNodes.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.xml</Name>
+      <FilePath>.\Revit_2015\pt-BR\RevitNodes.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitRaaS.resources.dll</Name>
+      <FilePath>.\Revit_2015\pt-BR\RevitRaaS.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>SimpleRaaS.xml</Name>
+      <FilePath>.\Revit_2015\pt-BR\SimpleRaaS.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRevitDS.resources.dll</Name>
+      <FilePath>.\Revit_2015\ru-RU\DynamoRevitDS.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRevitVersionSelector.resources.dll</Name>
+      <FilePath>.\Revit_2015\ru-RU\DynamoRevitVersionSelector.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.resources.dll</Name>
+      <FilePath>.\Revit_2015\ru-RU\RevitNodes.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.xml</Name>
+      <FilePath>.\Revit_2015\ru-RU\RevitNodes.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitRaaS.resources.dll</Name>
+      <FilePath>.\Revit_2015\ru-RU\RevitRaaS.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>SimpleRaaS.xml</Name>
+      <FilePath>.\Revit_2015\ru-RU\SimpleRaaS.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRevitDS.resources.dll</Name>
+      <FilePath>.\Revit_2015\zh-CN\DynamoRevitDS.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRevitVersionSelector.resources.dll</Name>
+      <FilePath>.\Revit_2015\zh-CN\DynamoRevitVersionSelector.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.resources.dll</Name>
+      <FilePath>.\Revit_2015\zh-CN\RevitNodes.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.xml</Name>
+      <FilePath>.\Revit_2015\zh-CN\RevitNodes.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitRaaS.resources.dll</Name>
+      <FilePath>.\Revit_2015\zh-CN\RevitRaaS.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>SimpleRaaS.xml</Name>
+      <FilePath>.\Revit_2015\zh-CN\SimpleRaaS.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRevitDS.resources.dll</Name>
+      <FilePath>.\Revit_2015\zh-TW\DynamoRevitDS.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRevitVersionSelector.resources.dll</Name>
+      <FilePath>.\Revit_2015\zh-TW\DynamoRevitVersionSelector.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.resources.dll</Name>
+      <FilePath>.\Revit_2015\zh-TW\RevitNodes.resources.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.xml</Name>
+      <FilePath>.\Revit_2015\zh-TW\RevitNodes.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitRaaS.resources.dll</Name>
+      <FilePath>.\Revit_2015\zh-TW\RevitRaaS.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>SimpleRaaS.xml</Name>
+      <FilePath>.\Revit_2015\zh-TW\SimpleRaaS.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DSRevitNodesUI.customization.dll</Name>
+      <FilePath>.\Revit_2015\DSRevitNodesUI.customization.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRaaS.customization.dll</Name>
+      <FilePath>.\Revit_2015\DynamoRaaS.customization.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRaaSHelper.dll</Name>
+      <FilePath>.\Revit_2015\DynamoRaaSHelper.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRevitDS.dll</Name>
+      <FilePath>.\Revit_2015\DynamoRevitDS.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoRevitVersionSelector.dll</Name>
+      <FilePath>.\Revit_2015\DynamoRevitVersionSelector.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoUtilities.dll</Name>
+      <FilePath>.\Revit_2015\DynamoUtilities.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>GregRevitAuth.dll</Name>
+      <FilePath>.\Revit_2015\GregRevitAuth.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>ICSharpCode.AvalonEdit.dll</Name>
+      <FilePath>.\Revit_2015\ICSharpCode.AvalonEdit.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>ic#code</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>ICSharpCode.AvalonEdit.xml</Name>
+      <FilePath>.\Revit_2015\ICSharpCode.AvalonEdit.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>JobMonitor.dll</Name>
+      <FilePath>.\Revit_2015\JobMonitor.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.customization.dll</Name>
+      <FilePath>.\Revit_2015\RevitNodes.customization.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.dll</Name>
+      <FilePath>.\Revit_2015\RevitNodes.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.Migrations.xml</Name>
+      <FilePath>.\Revit_2015\RevitNodes.Migrations.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes.xml</Name>
+      <FilePath>.\Revit_2015\RevitNodes.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitNodes_DynamoCustomization.xml</Name>
+      <FilePath>.\Revit_2015\RevitNodes_DynamoCustomization.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitRaaS.dll</Name>
+      <FilePath>.\Revit_2015\RevitRaaS.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitRaaS.dll.config</Name>
+      <FilePath>.\Revit_2015\RevitRaaS.dll.config</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitServices.dll</Name>
+      <FilePath>.\Revit_2015\RevitServices.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitTestConfiguration.xml</Name>
+      <FilePath>.\Revit_2015\RevitTestConfiguration.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitTestFrameworkTypes.dll</Name>
+      <FilePath>.\Revit_2015\RevitTestFrameworkTypes.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RevitTestServices.dll</Name>
+      <FilePath>.\Revit_2015\RevitTestServices.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>RTFRevit.dll</Name>
+      <FilePath>.\Revit_2015\RTFRevit.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>SDF.dll</Name>
+      <FilePath>.\Revit_2015\SDF.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>SimpleRaaS.customization.dll</Name>
+      <FilePath>.\Revit_2015\SimpleRaaS.customization.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>SimpleRaaS.dll</Name>
+      <FilePath>.\Revit_2015\SimpleRaaS.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>SimpleRaaS_DynamoCustomization.xml</Name>
+      <FilePath>.\Revit_2015\SimpleRaaS_DynamoCustomization.xml</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>TestServices.dll.config</Name>
+      <FilePath>.\Revit_2015\TestServices.dll.config</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
     <ModuleSpec>
       <Name>DynamoRevitDS.resources.dll</Name>
@@ -4298,6 +5090,13 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
+	  <Name>DynamoPublish.resources.dll</Name>
+      <FilePath>.\ru-RU\DynamoPublish.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>RevitNodes.xml</Name>
       <FilePath>.\Revit_2017\ja-JP\RevitNodes.xml</FilePath>
       <DigitalSignature>false</DigitalSignature>
@@ -4593,6 +5392,13 @@
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
     <ModuleSpec>
+     <Name>DynamoPublish.resources.dll</Name>
+      <FilePath>.\zh-CN\DynamoPublish.resources.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
       <Name>DynamoRevitDS.resources.dll</Name>
       <FilePath>.\Revit_2017\pt-BR\DynamoRevitDS.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -4755,6 +5561,13 @@
     <ModuleSpec>
       <Name>DSRevitNodesUI.customization.dll</Name>
       <FilePath>.\Revit_2017\DSRevitNodesUI.customization.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
+	<Name>DynamoPublish.resources.dll</Name>
+      <FilePath>.\zh-TW\DynamoPublish.resources.dll</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author />
@@ -5093,13 +5906,6 @@
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>Watch3DNodeModels.resources.dll</Name>
-      <FilePath>.\ru-RU\Watch3DNodeModels.resources.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>OpenSans-Bold.ttf</Name>
       <FilePath>.\UI\Fonts\OpenSans-Bold.ttf</FilePath>
       <DigitalSignature>false</DigitalSignature>
@@ -5132,6 +5938,19 @@
     <ModuleSpec>
       <Name>OpenSans-Light.ttf</Name>
       <FilePath>.\UI\Fonts\OpenSans-Light.ttf</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+	  <Name>DynamoPublish.dll</Name>
+      <FilePath>.\DynamoPublish.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>DynamoPublish.dll.config</Name>
+      <FilePath>.\DynamoPublish.dll.config</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
@@ -5222,12 +6041,6 @@
     <ModuleSpec>
       <Name>DynamoManipulationExtension_ViewExtensionDefinition.xml</Name>
       <FilePath>.\viewExtensions\DynamoManipulationExtension_ViewExtensionDefinition.xml</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>DynamoPublishExtension_ViewExtensionDefinition.xml</Name>
-      <FilePath>.\viewExtensions\DynamoPublishExtension_ViewExtensionDefinition.xml</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
@@ -5391,13 +6204,6 @@
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>Watch3DNodeModels.resources.dll</Name>
-      <FilePath>.\zh-CN\Watch3DNodeModels.resources.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>Analysis.resources.dll</Name>
       <FilePath>.\zh-TW\Analysis.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -5555,13 +6361,6 @@
       <FilePath>.\zh-TW\Tessellation.XML</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>Watch3DNodeModels.resources.dll</Name>
-      <FilePath>.\zh-TW\Watch3DNodeModels.resources.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>Analysis.customization.dll</Name>
@@ -5728,7 +6527,7 @@
     <ModuleSpec>
       <Name>DynamoAddinGenerator.exe</Name>
       <FilePath>.\DynamoAddinGenerator.exe</FilePath>
-      <DigitalSignature>true</DigitalSignature>
+      <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author />
     </ModuleSpec>
@@ -6228,15 +7027,8 @@
       <Name>ProtoTestFx.dll</Name>
       <FilePath>.\ProtoTestFx.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>false</CopyForInstaller>
-      <Author>Autodesk, Inc</Author>
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>Reach.dll</Name>
-      <FilePath>.\Reach.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
-      <Author />
+      <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
       <Name>README.txt</Name>
@@ -6432,13 +7224,6 @@
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>Watch3DNodeModels.dll</Name>
-      <FilePath>.\Watch3DNodeModels.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
     </ModuleSpec>
   </Modules>
 </DynamoInstallSpec>

@@ -1772,6 +1772,7 @@ Associative_Number<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
             else
             {
                 node.line = line; node.col = col;
+				node.endLine = t.line; node.endCol = t.col;
             }
         .)
         | 

@@ -76,7 +76,6 @@ namespace ProtoCore.Lang
                     className = runtimeCore.DSExecutable.classTable.ClassNodes[activation.JILRecord.classIndex].Name;
                 }
 
-                bool gcThisPtr = false;
                 List<ProtoCore.Type> argTypes = new List<Type>(r.ParameterTypes);
 
                 ProcedureNode fNode = null;
@@ -109,7 +108,6 @@ namespace ProtoCore.Lang
                                     formalParameters[thisPtrIndex].IsDefaultArgument);
                     
                     svThisPtr = formalParameters[thisPtrIndex];
-                    gcThisPtr = true;
                     
                     formalParameters.RemoveAt(thisPtrIndex);
                 }

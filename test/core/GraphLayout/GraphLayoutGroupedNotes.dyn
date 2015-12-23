@@ -1,0 +1,42 @@
+<Workspace Version="0.9.1.3501" X="25061.2499481721" Y="19549.6429046512" zoom="1" Name="Home" Description="" RunType="Manual" RunPeriod="100" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="0aa5294e-af81-4a93-8b6a-14a8944d8478" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Point.ByCoordinates" x="-24475.5123494032" y="-19298.4741738685" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <DSCoreNodesUI.Range guid="a6083d4a-6070-4906-9204-1541f146010c" type="DSCoreNodesUI.Range" nickname="Range" x="-24769.1187272669" y="-19298.4741738685" isVisible="true" isUpstreamVisible="true" lacing="Longest" isSelectedInput="False" IsFrozen="false" />
+    <DSCoreNodesUI.Input.DoubleInput guid="07aadec5-30d9-4538-8fa9-49115d20a81f" type="DSCoreNodesUI.Input.DoubleInput" nickname="Number" x="-24970.789680203" y="-19298.4741738685" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false">
+      <System.Double value="0" />
+    </DSCoreNodesUI.Input.DoubleInput>
+    <DSCoreNodesUI.Input.DoubleInput guid="33d68931-60a6-4f90-bfed-1213d0256ac1" type="DSCoreNodesUI.Input.DoubleInput" nickname="Number" x="-24972.5011674131" y="-19236.9837983206" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false">
+      <System.Double value="10" />
+    </DSCoreNodesUI.Input.DoubleInput>
+    <DSCoreNodesUI.Input.DoubleInput guid="04271250-66d9-4802-aaba-0410c552b831" type="DSCoreNodesUI.Input.DoubleInput" nickname="Number" x="-24974.9875469409" y="-19172.8116354338" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false">
+      <System.Double value="1" />
+    </DSCoreNodesUI.Input.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="a6083d4a-6070-4906-9204-1541f146010c" start_index="0" end="0aa5294e-af81-4a93-8b6a-14a8944d8478" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="07aadec5-30d9-4538-8fa9-49115d20a81f" start_index="0" end="a6083d4a-6070-4906-9204-1541f146010c" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="33d68931-60a6-4f90-bfed-1213d0256ac1" start_index="0" end="a6083d4a-6070-4906-9204-1541f146010c" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="04271250-66d9-4802-aaba-0410c552b831" start_index="0" end="a6083d4a-6070-4906-9204-1541f146010c" end_index="2" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Graph.Notes.NoteModel guid="7743dd4c-95b7-47e7-b13f-5753a8f504c7" text="Basic Geometric Elements have default values for numerical inputs.  " x="-24693.3407638439" y="-19455.6002473477" />
+    <Dynamo.Graph.Notes.NoteModel guid="73c80c22-7430-4624-8d1c-9a55e394f119" text="Arrays of Geometry can be created using Sequences, Ranges, and Lists " x="-24868.7393184764" y="-19358.0035515424" />
+    <Dynamo.Graph.Notes.NoteModel guid="3abc90a5-af90-443e-8fac-e5849b02c99f" text="Make 1, 2, and 3 dimensional arrays by passing Ranges into the points x, y, and z ports, then changing the Lacing properties in the right click menue for the node " x="-24525.2047171741" y="-19377.8954802656" />
+  </Notes>
+  <Annotations>
+    <Dynamo.Graph.Annotations.AnnotationModel guid="73c62203-862b-4751-ad33-5e96bc387bb1" annotationText="&lt;Click here to edit the group title&gt;" left="-24878.7393184764" top="-19485.6002473477" width="635.534601302301" height="186.596695805281" fontSize="14" InitialTop="-19455.6002473477" InitialHeight="186.596695805281" TextblockHeight="20" backgrouund="#FFC1D676">
+      <Models ModelGuid="7743dd4c-95b7-47e7-b13f-5753a8f504c7" />
+      <Models ModelGuid="73c80c22-7430-4624-8d1c-9a55e394f119" />
+      <Models ModelGuid="3abc90a5-af90-443e-8fac-e5849b02c99f" />
+    </Dynamo.Graph.Annotations.AnnotationModel>
+  </Annotations>
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>

@@ -10,15 +10,12 @@ namespace ProtoFFI
 {
     public class ContextDataManager
     {
-        private ProtoCore.Core mCoreObject;
-
         private Dictionary<string, IContextData> mData = new Dictionary<string, IContextData>();
         private static Dictionary<string, IContextDataProvider> mDataProviders;
         private CoreDataProvider mCoreDataProvider;
 
         private ContextDataManager(ProtoCore.Core core)
         {
-            mCoreObject = core;
             mCoreDataProvider = new CoreDataProvider(core);
         }
 

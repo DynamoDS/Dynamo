@@ -160,6 +160,7 @@
     <controls:NestedContentMarginConverter x:Key="NestedContentMarginConverter"/>
     <controls:ClassViewMarginConverter x:Key="ClassViewMarginConverter" />
     <controls:ElementGroupToColorConverter x:Key="ElementGroupToColorConverter" />
+    <controls:RgbaStringToBrushConverter x:Key="RgbaStringToBrushConverter" />
     <controls:BooleanToBrushConverter x:Key="FilterIsSelertedCategoryToBrushConverter"
                                       TrueBrush="{StaticResource CommonSidebarTextColor}"
                                       FalseBrush="{StaticResource FilterCategoryIsNotSelectedColor}">

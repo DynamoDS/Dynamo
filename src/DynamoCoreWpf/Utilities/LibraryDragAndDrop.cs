@@ -33,7 +33,7 @@ namespace Dynamo.Wpf.Utilities
             nodeViewModel = null;
         } 
 
-        internal void HandleMouseMove(FrameworkElement sender, Point currentPosition)
+        internal void HandleMouseMove(DependencyObject sender, Point currentPosition)
         {
             if (isDragging || nodeViewModel == null)
                 return;
@@ -56,10 +56,12 @@ namespace Dynamo.Wpf.Utilities
 
         }
 
-        private void StartDrag(FrameworkElement sender, NodeSearchElementViewModel node)
+        private void StartDrag(DependencyObject sender, NodeSearchElementViewModel node)
         {
             isDragging = true;
             DragDrop.DoDragDrop(sender, new DragDropNodeSearchElementInfo(node.Model), DragDropEffects.Copy);
+            // reset when dragging ends
+            Clear();
             isDragging = false;
         }
     }

@@ -579,7 +579,6 @@ namespace ProtoCore
             Configurations = new Dictionary<string, object>();
             DllTypesToLoad = new List<System.Type>();
 
-            Validity.AssertExpiry();
             Options = options;
             
             Compilers = new Dictionary<Language, Compiler>();

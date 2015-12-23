@@ -8,6 +8,7 @@ using System.Linq;
 using System.Xml;
 using Dynamo.Core;
 using Dynamo.Engine;
+using Dynamo.Engine.CodeGeneration;
 using Dynamo.Engine.NodeToCode;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
@@ -281,7 +282,7 @@ namespace Dynamo.Graph.Workspaces
             //given node.
             if (workspaceLoaded)
             {
-                obj.End.Owner.ComputeUpstreamOnDownstreamNodes(new HashSet<NodeModel>());               
+                obj.End.Owner.ComputeUpstreamOnDownstreamNodes();               
             }
         }
 
@@ -308,7 +309,7 @@ namespace Dynamo.Graph.Workspaces
             //given node.
             if (workspaceLoaded)
             {
-                obj.End.Owner.ComputeUpstreamOnDownstreamNodes(new HashSet<NodeModel>());
+                obj.End.Owner.ComputeUpstreamOnDownstreamNodes();
             }
         }
 
@@ -1161,6 +1162,9 @@ namespace Dynamo.Graph.Workspaces
                     NodeModel ndm = group.SelectedModels.OfType<NodeModel>().OrderBy(node =>
                         Math.Pow(node.X + node.Width / 2 - note.X - note.Width / 2, 2) +
                         Math.Pow(node.Y + node.Height / 2 - note.Y - note.Height / 2, 2)).FirstOrDefault();
+                    
+                    // Skip processing the group if there is no node in the group
+                    if (ndm == null) continue;
 
                     // If the nearest point is a node model
                     nd = combinedGraph.FindNode(ndm.GUID);
@@ -1538,19 +1542,13 @@ namespace Dynamo.Graph.Workspaces
         /// this is done in such a way that each node is only computed once.
         /// </summary>
         private void ComputeUpstreamCacheForEntireGraph()
-        {
-            //get the source nodes or roots of the DAG
-            var sources = GetSourceNodes();
-            var allVisited = new HashSet<NodeModel>();
-            foreach(var source in sources)
+        {           
+            var sortedNodes = AstBuilder.TopologicalSort(this.nodes);             
+            
+            foreach (var sortedNode in sortedNodes)
             {
-                //call computeUpstreamOnDownstream to propogate the upstream Cache down to all nodes
-               foreach(var visitedNode in source.ComputeUpstreamOnDownstreamNodes(allVisited))
-                {
-                    //continue filling the visited list with all nodes we have already computed
-                    //this will avoid redudant calls
-                    allVisited.Add(visitedNode);
-                }
+                //call ComputeUpstreamCache to propogate the upstream Cache down to all nodes
+                sortedNode.ComputeUpstreamCache();
             }
         }
 
