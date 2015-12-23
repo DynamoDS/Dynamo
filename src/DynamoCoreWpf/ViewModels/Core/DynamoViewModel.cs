@@ -2154,6 +2154,8 @@ namespace Dynamo.ViewModels
             if (shutdownParams.CloseDynamoView)
                 OnRequestClose(this, EventArgs.Empty);
 
+            BackgroundPreviewViewModel.Dispose();
+
             model.ShutDown(shutdownParams.ShutdownHost);
             if (shutdownParams.ShutdownHost)
             {
