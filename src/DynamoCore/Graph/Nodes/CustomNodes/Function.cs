@@ -295,8 +295,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                 {
                     this.Warning(Properties.Resources.WarningInvalidInput);
                 }
-                else if (!string.IsNullOrEmpty(nickName) &&
-                         (substrings.Count() == 2 || InputSymbol.Contains("=")))
+                else if (!string.IsNullOrEmpty(nickName))
                 {
                     // three cases:
                     //    x = default_value
@@ -393,11 +392,26 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                 }
 
                 var node = parseParam.ParsedNodes.First() as BinaryExpressionNode;
-                Validity.Assert(node != null);
-
                 if (node != null)
                 {
-                    identifier = node.LeftNode as IdentifierNode;
+                    var leftIdent = node.LeftNode as IdentifierNode;
+                    var rightIdent = node.RightNode as IdentifierNode;
+
+                    // "x" will be compiled to "temp_guid = x";
+                    if (leftIdent != null && leftIdent.Value.StartsWith(Constants.kTempVarForNonAssignment))
+                    {
+                        identifier = rightIdent;
+                    }
+                    // "x:int" will be compiled to "x:int = tTypedIdent0";
+                    else if (rightIdent != null && rightIdent.Value.StartsWith(Constants.kTempVarForTypedIdentifier))
+                    {
+                        identifier = leftIdent;
+                    }
+                    else
+                    {
+                        identifier = leftIdent;
+                    }
+
                     if (inputSymbol.Contains('='))
                         defaultValue = node.RightNode;
 
