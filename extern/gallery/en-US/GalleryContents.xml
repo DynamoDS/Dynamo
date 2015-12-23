@@ -3,7 +3,7 @@
 	<GalleryUiContents>
 	<GalleryContent>
 		<Header>Direct Manipulation</Header>
-		<Body>Sometimes numerical manipulation isn’t the right approach. Now you can manually push-and-pull Point geometry when in navigating in the background 3D preview.</Body>
+		<Body>Sometimes numerical manipulation isn’t the right approach. Now you can manually push-and-pull Point geometry when navigating in the background 3D preview.</Body>
 		<ImagePath>Core_DirectManip.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
