@@ -566,16 +566,20 @@ namespace Dynamo.Manipulation
 
         public static Line ToLine(this IRay ray)
         {
-            var origin = ray.Origin.ToPoint();
-            var direction = ray.Direction.ToVector();
-            return Line.ByStartPointEndPoint(origin, origin.Add(direction.Scale(rayScaleFactor)));
+            using(var origin = ray.Origin.ToPoint())
+            using (var direction = ray.Direction.ToVector())
+            {
+                return Line.ByStartPointEndPoint(origin, origin.Add(direction.Scale(rayScaleFactor)));
+            }
         }
 
         public static Line ToOriginCenteredLine(this IRay ray)
         {
-            var origin = ray.Origin.ToPoint();
-            var direction = ray.Direction.ToVector();
-            return ToOriginCenteredLine(origin, direction);
+            using(var origin = ray.Origin.ToPoint())
+            using (var direction = ray.Direction.ToVector())
+            {
+                return ToOriginCenteredLine(origin, direction);
+            }
         }
 
         public static Line ToOriginCenteredLine(Point origin, Vector axis)
