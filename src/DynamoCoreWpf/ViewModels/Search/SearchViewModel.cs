@@ -31,17 +31,10 @@ namespace Dynamo.ViewModels
         #region events
 
         public event EventHandler RequestFocusSearch;
-        public virtual void OnRequestFocusSearch(object sender, EventArgs e)
+        public virtual void OnRequestFocusSearch()
         {
             if (RequestFocusSearch != null)
-                RequestFocusSearch(this, e);
-        }
-
-        public event EventHandler RequestReturnFocusToSearch;
-        public void OnRequestReturnFocusToSearch(object sender, EventArgs e)
-        {
-            if (RequestReturnFocusToSearch != null)
-                RequestReturnFocusToSearch(this, e);
+                RequestFocusSearch(this, EventArgs.Empty);
         }
 
         public event EventHandler SearchTextChanged;
@@ -1022,8 +1015,9 @@ namespace Dynamo.ViewModels
             dynamoViewModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(
                 nodeModel, position.X, position.Y, useDeafultPosition, true));
 
-            dynamoViewModel.ReturnFocusToSearch();
+            dynamoViewModel.OnRequestReturnFocusToView();
         }
+
         #endregion
 
         #region Commands
@@ -1060,7 +1054,7 @@ namespace Dynamo.ViewModels
 
         public void FocusSearch(object parameter)
         {
-            OnRequestFocusSearch(dynamoViewModel, EventArgs.Empty);
+            OnRequestFocusSearch();
         }
 
         internal bool CanFocusSearch(object parameter)

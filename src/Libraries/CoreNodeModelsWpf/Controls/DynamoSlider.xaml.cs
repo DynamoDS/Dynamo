@@ -31,7 +31,7 @@ namespace Dynamo.Wpf.Controls
 
             slider.PreviewMouseUp += delegate
             {
-                nodeUI.ViewModel.DynamoViewModel.ReturnFocusToSearch();
+                nodeUI.ViewModel.DynamoViewModel.OnRequestReturnFocusToView();
             };
 
         }

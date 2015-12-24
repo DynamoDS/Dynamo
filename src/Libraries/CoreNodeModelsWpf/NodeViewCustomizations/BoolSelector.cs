@@ -16,7 +16,7 @@ namespace Dynamo.Wpf.Nodes
 
         private void OnRadioButtonClicked(object sender, RoutedEventArgs e)
         {
-            dynamoViewModel.ReturnFocusToSearch();
+            dynamoViewModel.OnRequestReturnFocusToView();
         }
 
         public void CustomizeView(BoolSelector model, NodeView nodeView)

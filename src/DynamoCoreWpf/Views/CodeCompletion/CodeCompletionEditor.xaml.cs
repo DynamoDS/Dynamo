@@ -139,7 +139,7 @@ namespace Dynamo.UI.Controls
         /// </summary>
         protected void ReturnFocus()
         {
-            dynamoViewModel.ReturnFocusToSearch();
+            dynamoViewModel.OnRequestReturnFocusToView();
         }
 
         private IEnumerable<ICompletionData> GetCompletionData(string code, string stringToComplete)
