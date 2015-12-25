@@ -2,7 +2,7 @@
 using System.Linq;
 using NUnit.Framework;
 using System.IO;
-using DSCoreNodesUI;
+using CoreNodeModels;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 

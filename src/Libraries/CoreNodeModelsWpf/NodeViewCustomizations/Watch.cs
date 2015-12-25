@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Threading;
-using DSCoreNodesUI;
+using CoreNodeModels;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Connectors;

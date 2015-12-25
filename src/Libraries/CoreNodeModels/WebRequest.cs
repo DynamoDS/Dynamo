@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using DSCore;
 using ProtoCore.AST.AssociativeAST;
-using DSCoreNodesUI.Properties;
+using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
 
-namespace DSCoreNodesUI
+namespace CoreNodeModels
 {
     [NodeName("Web Request")]
     [NodeDescription("WebRequestDescription", typeof(Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_STRINGS)]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("DSCoreNodesUI.WebRequest")]
     public class WebRequest : NodeModel
     {
         public WebRequest()

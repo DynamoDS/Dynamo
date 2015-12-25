@@ -16,8 +16,8 @@ mkdir .\%ui%\tools
 copy %base%\DynamoCoreWpf.dll .\%ui%\lib\%framework%\DynamoCoreWpf.dll
 copy %base%\DynamoCoreWpf.xml .\%ui%\build\%framework%\DynamoCoreWpf.xml
 
-copy %base%\nodes\DSCoreNodesUI.dll .\%ui%\lib\%framework%\DSCoreNodesUI.dll
-copy %base%\nodes\DSCoreNodesUI.xml .\%ui%\build\%framework%\DSCoreNodesUI.xml
+copy %base%\nodes\CoreNodeModels.dll .\%ui%\lib\%framework%\CoreNodeModels.dll
+copy %base%\nodes\CoreNodeModels.xml .\%ui%\build\%framework%\CoreNodeModels.xml
 
 copy %base%\nodes\CoreNodeModelsWpf.dll .\%ui%\lib\%framework%\CoreNodeModelsWpf.dll
 copy %base%\nodes\CoreNodeModelsWpf.xml .\%ui%\build\%framework%\CoreNodeModelsWpf.xml

@@ -1,5 +1,5 @@
 using System;
-using DSCoreNodesUI;
+using CoreNodeModels;
 using Dynamo.Controls;
 
 using Microsoft.Practices.Prism.Commands;

@@ -2,7 +2,7 @@
 
 using SystemTestServices;
 
-using DSCoreNodesUI;
+using CoreNodeModels;
 
 using Dynamo.Nodes;
 using NUnit.Framework;

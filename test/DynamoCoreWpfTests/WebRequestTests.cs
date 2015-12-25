@@ -11,7 +11,7 @@ using Dynamo.Tests;
 
 using NUnit.Framework;
 
-using WebRequest = DSCoreNodesUI.WebRequest;
+using WebRequest = CoreNodeModels.WebRequest;
 
 namespace DynamoCoreWpfTests
 {

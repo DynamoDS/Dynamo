@@ -10,8 +10,8 @@
     <ProjectGuid>{D8262D40-4880-41E4-91E4-AF8F480C8637}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DSCoreNodesUI</RootNamespace>
-    <AssemblyName>DSCoreNodesUI</AssemblyName>
+    <RootNamespace>CoreNodeModels</RootNamespace>
+    <AssemblyName>CoreNodeModels</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -25,7 +25,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>..\..\..\bin\AnyCPU\Debug\nodes\DSCoreNodesUI.XML</DocumentationFile>
+    <DocumentationFile>..\..\..\bin\AnyCPU\Debug\nodes\CoreNodeModels.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -128,7 +128,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DSCoreNodesUIImages.resx" />
+    <EmbeddedResource Include="CoreNodeModelsImages.resx" />
     <EmbeddedResource Include="Properties\Resources.en-US.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
@@ -159,7 +159,7 @@
       <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
     </GetAssemblyIdentity>
     <!-- Generate customization dll -->
-    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)DSCoreNodesUIImages.resx" OutputResources="$(ProjectDir)DSCoreNodesUIImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    <AL TargetType="library" EmbedResources="$(ProjectDir)DSCoreNodesUIImages.resources" OutputAssembly="$(OutDir)DSCoreNodesUI.customization.dll" Version="%(AssemblyInfo.Version)" />
+    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)CoreNodeModelsImages.resx" OutputResources="$(ProjectDir)CoreNodeModelsImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL TargetType="library" EmbedResources="$(ProjectDir)CoreNodeModelsImages.resources" OutputAssembly="$(OutDir)CoreNodeModels.customization.dll" Version="%(AssemblyInfo.Version)" />
   </Target>
 </Project>

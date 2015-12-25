@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-using DSCoreNodesUI.Input;
+using CoreNodeModels.Input;
 
 using Dynamo.Core;
 

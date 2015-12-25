@@ -1,4 +1,4 @@
-using DSCoreNodesUI;
+using CoreNodeModels;
 using Dynamo.Wpf;
 
 namespace CoreNodeModelsWpf.Nodes
