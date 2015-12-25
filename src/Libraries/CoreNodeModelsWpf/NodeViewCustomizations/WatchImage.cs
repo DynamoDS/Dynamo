@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows;
-using DSCoreNodesUI;
+using CoreNodeModels;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Utilities;

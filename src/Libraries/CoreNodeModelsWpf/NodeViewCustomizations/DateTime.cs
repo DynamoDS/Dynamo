@@ -1,5 +1,5 @@
 ﻿using CoreNodeModelsWpf.Controls;
-using DSCoreNodesUI.Input;
+using CoreNodeModels.Input;
 using Dynamo.Controls;
 using Dynamo.Wpf;
 using Dynamo.Wpf.Controls;

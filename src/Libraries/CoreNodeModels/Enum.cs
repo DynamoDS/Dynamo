@@ -6,7 +6,7 @@ using System.Linq;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 
-namespace DSCoreNodesUI
+namespace CoreNodeModels
 {
     public abstract class EnumAsInt<T> : EnumBase<T>
     {
