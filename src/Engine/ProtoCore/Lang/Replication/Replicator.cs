@@ -483,7 +483,6 @@ namespace ProtoCore.Lang.Replication
                     {
                         //This should generally be a collection, so we need to do a one phase unboxing
                         StackValue target = basicList[index];
-                        StackValue reducedSV = StackValue.Null;
 
                         if (target.IsArray)
                         {
@@ -492,9 +491,7 @@ namespace ProtoCore.Lang.Replication
                             var array = runtimeCore.Heap.ToHeapObject<DSArray>(basicList[index]);
 
                             //The elements of the array are still type structures
-                            if (array.Count == 0)
-                                reducedSV = StackValue.Null;
-                            else
+                            if (array.Count != 0)
                             {
                                 var arrayStats = ArrayUtils.GetTypeExamplesForLayer(basicList[index], runtimeCore).Values;
 
@@ -524,11 +521,7 @@ namespace ProtoCore.Lang.Replication
                         else
                         {
                             System.Console.WriteLine("WARNING: Replication unbox requested on Singleton. Trap: 437AD20D-9422-40A3-BFFD-DA4BAD7F3E5F");
-                            reducedSV = target;
                         }
-
-                        //reducedType.IsIndexable = false;
-                        //reducedParamTypes[index] = reducedSV;
                     }
                 }
                 else
@@ -537,7 +530,6 @@ namespace ProtoCore.Lang.Replication
                     int index = ri.CartesianIndex;
                     //This should generally be a collection, so we need to do a one phase unboxing
                     StackValue target = basicList[index];
-                    StackValue reducedSV = StackValue.Null;
 
                     if (target.IsArray)
                     {
@@ -551,9 +543,7 @@ namespace ProtoCore.Lang.Replication
                         //@TODO(luke): Deal with sparse arrays, if the first element is null this will explode
 
                         //The elements of the array are still type structures
-                        if (array.Count == 0)
-                            reducedSV = StackValue.Null;
-                        else
+                        if (array.Count != 0)
                         {
                             var arrayStats = ArrayUtils.GetTypeExamplesForLayer(basicList[index], runtimeCore).Values;
 
@@ -584,7 +574,6 @@ namespace ProtoCore.Lang.Replication
                     else
                     {
                         System.Console.WriteLine("WARNING: Replication unbox requested on Singleton. Trap: 437AD20D-9422-40A3-BFFD-DA4BAD7F3E5F");
-                        reducedSV = target;
                     }
                 }
 

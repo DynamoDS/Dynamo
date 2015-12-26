@@ -288,7 +288,7 @@ namespace ProtoCore
             public int Col;
         }
 
-        public Dictionary<ulong, ulong> codeToLocation = new Dictionary<ulong, ulong>();
+        public Dictionary<ulong, ulong> CodeToLocation = new Dictionary<ulong, ulong>();
         public Dictionary<ulong, ErrorEntry> LocationErrorMap = new Dictionary<ulong, ErrorEntry>();
 
 
@@ -924,7 +924,7 @@ namespace ProtoCore
             ExprInterpreterExe.DynamicFuncTable = DynamicFunctionTable;
             ExprInterpreterExe.ContextDataMngr = ContextDataManager;
             ExprInterpreterExe.Configurations = Configurations;
-            ExprInterpreterExe.CodeToLocation = codeToLocation;
+            ExprInterpreterExe.CodeToLocation = CodeToLocation;
             ExprInterpreterExe.CurrentDSFileName = CurrentDSFileName;
            
             // Copy all tables
@@ -1011,7 +1011,7 @@ namespace ProtoCore
             DSExecutable.FuncPointerTable = FunctionPointerTable;
             DSExecutable.ContextDataMngr = ContextDataManager;
             DSExecutable.Configurations = Configurations;
-            DSExecutable.CodeToLocation = codeToLocation;
+            DSExecutable.CodeToLocation = CodeToLocation;
             DSExecutable.CurrentDSFileName = CurrentDSFileName;           
         }
 
