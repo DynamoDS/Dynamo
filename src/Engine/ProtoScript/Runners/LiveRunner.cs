@@ -1234,15 +1234,9 @@ namespace ProtoScript.Runners
         private Configuration configuration = null;
         private int deltaSymbols = 0;
         private ProtoCore.CompileTime.Context staticContext = null;
-
-        private readonly Object operationsMutex = new object();
-
         private Queue<Task> taskQueue;
-
         private Thread workerThread;
-
         private bool terminating;
-
         private ChangeSetComputer changeSetComputer;
         private ChangeSetApplier changeSetApplier;
 

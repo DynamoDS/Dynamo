@@ -6570,7 +6570,7 @@ namespace ProtoAssociative
                 firstSymbol = null;
                 ProtoCore.AST.AssociativeAST.IdentifierNode iNode = pNode as ProtoCore.AST.AssociativeAST.IdentifierNode;
                 bool isAccessible = false;
-                bool isAllocated = VerifyAllocation(iNode.Name, globalClassIndex, globalProcIndex, out firstSymbol, out isAccessible);
+                VerifyAllocation(iNode.Name, globalClassIndex, globalProcIndex, out firstSymbol, out isAccessible);
             }
             else
             {
@@ -7500,7 +7500,7 @@ namespace ProtoAssociative
                     {
                         SymbolNode symbolnode;
                         bool isAccessible = false;
-                        bool isAllocated = VerifyAllocation(identName, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
+                        VerifyAllocation(identName, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
 
                         if (symbolnode != null &&
                             symbolnode.classScope != Constants.kGlobalScope &&
@@ -7725,7 +7725,7 @@ namespace ProtoAssociative
             int startpc = ProtoCore.DSASM.Constants.kInvalidIndex;
             if ((ProtoCore.DSASM.Operator.assign == bnode.Optr) && (bnode.RightNode is LanguageBlockNode))
             {
-                var inferredType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
+                inferedType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
             }
 
             if (null != localProcedure && localProcedure.IsConstructor && setConstructorStartPC)
