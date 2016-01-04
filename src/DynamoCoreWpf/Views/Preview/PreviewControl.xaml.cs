@@ -313,7 +313,7 @@ namespace Dynamo.UI.Controls
                             // TODO(Ben): Can we display details of the array and 
                             // probably display the first element of the array (even 
                             // when it is multi-dimensional array)?
-                            newContent = "Array";
+                            newContent = Wpf.Properties.Resources.PreviewListLabel;
                         }
                         else if (mirrorData.Data == null && !mirrorData.IsNull && mirrorData.Class != null)
                         {
