@@ -85,6 +85,8 @@
                                                                     Value="White" />
                                                             <Setter Property="Cursor"
                                                                     Value="Hand" />
+                                                            <Setter Property="TextBlock.TextDecorations"
+                                                                    Value="Underline" />
                                                         </Trigger>
                                                     </Style.Triggers>
                                                 </Style>
