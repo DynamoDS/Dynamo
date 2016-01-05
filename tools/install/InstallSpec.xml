@@ -1357,34 +1357,34 @@
     <ModuleSpec>
       <Name>LibG.AsmPreloader.Managed.dll</Name>
       <FilePath>.\libg_220\LibG.AsmPreloader.Managed.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
+      <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>LibG.AsmPreloader.Unmanaged.dll</Name>
       <FilePath>.\libg_220\LibG.AsmPreloader.Unmanaged.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
+      <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
     <ModuleSpec>
       <Name>LibG.dll</Name>
       <FilePath>.\libg_220\LibG.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
+      <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc.</Author>
     </ModuleSpec>
     <ModuleSpec>
       <Name>LibG.Managed.dll</Name>
       <FilePath>.\libg_220\LibG.Managed.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
+      <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc.</Author>
     </ModuleSpec>
     <ModuleSpec>
       <Name>LibG.ProtoInterface.dll</Name>
       <FilePath>.\libg_220\LibG.ProtoInterface.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
+      <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc.</Author>
     </ModuleSpec>
@@ -1397,7 +1397,7 @@
     <ModuleSpec>
       <Name>LibGCore.dll</Name>
       <FilePath>.\libg_220\LibGCore.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
+      <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc.</Author>
     </ModuleSpec>
@@ -1482,34 +1482,34 @@
     <ModuleSpec>
       <Name>LibG.AsmPreloader.Managed.dll</Name>
       <FilePath>.\libg_221\LibG.AsmPreloader.Managed.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
+      <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>LibG.AsmPreloader.Unmanaged.dll</Name>
       <FilePath>.\libg_221\LibG.AsmPreloader.Unmanaged.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
+      <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
     <ModuleSpec>
       <Name>LibG.dll</Name>
       <FilePath>.\libg_221\LibG.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
+      <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc.</Author>
     </ModuleSpec>
     <ModuleSpec>
       <Name>LibG.Managed.dll</Name>
       <FilePath>.\libg_221\LibG.Managed.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
+      <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc.</Author>
     </ModuleSpec>
     <ModuleSpec>
       <Name>LibG.ProtoInterface.dll</Name>
       <FilePath>.\libg_221\LibG.ProtoInterface.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
+      <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc.</Author>
     </ModuleSpec>
@@ -1522,7 +1522,7 @@
     <ModuleSpec>
       <Name>LibGCore.dll</Name>
       <FilePath>.\libg_221\LibGCore.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
+      <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc.</Author>
     </ModuleSpec>
@@ -1569,6 +1569,131 @@
     <ModuleSpec>
       <Name>msvcr110.dll</Name>
       <FilePath>.\libg_221\msvcr110.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Microsoft Corporation</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>boost_chrono-vc110-mt-1_51.dll</Name>
+      <FilePath>.\libg_222\boost_chrono-vc110-mt-1_51.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>boost_regex-vc110-mt-1_51.dll</Name>
+      <FilePath>.\libg_222\boost_regex-vc110-mt-1_51.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>boost_system-vc110-mt-1_51.dll</Name>
+      <FilePath>.\libg_222\boost_system-vc110-mt-1_51.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>boost_thread-vc110-mt-1_51.dll</Name>
+      <FilePath>.\libg_222\boost_thread-vc110-mt-1_51.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>GNU.Gettext.dll</Name>
+      <FilePath>.\libg_222\GNU.Gettext.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>LibG.AsmPreloader.Managed.dll</Name>
+      <FilePath>.\libg_222\LibG.AsmPreloader.Managed.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>LibG.AsmPreloader.Unmanaged.dll</Name>
+      <FilePath>.\libg_222\LibG.AsmPreloader.Unmanaged.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>LibG.dll</Name>
+      <FilePath>.\libg_222\LibG.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>LibG.Managed.dll</Name>
+      <FilePath>.\libg_222\LibG.Managed.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>LibG.ProtoInterface.dll</Name>
+      <FilePath>.\libg_222\LibG.ProtoInterface.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>libgcc_s_sjlj-1.dll</Name>
+      <FilePath>.\libg_222\libgcc_s_sjlj-1.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>LibGCore.dll</Name>
+      <FilePath>.\libg_222\LibGCore.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>libgomp-1.dll</Name>
+      <FilePath>.\libg_222\libgomp-1.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>libiconv-2.dll</Name>
+      <FilePath>.\libg_222\libiconv-2.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Free Software Foundation</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>libintl-8.dll</Name>
+      <FilePath>.\libg_222\libintl-8.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Free Software Foundation</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>libstdc++-6.dll</Name>
+      <FilePath>.\libg_222\libstdc++-6.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>libwinpthread-1.dll</Name>
+      <FilePath>.\libg_222\libwinpthread-1.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>MingW-W64 Project. All rights reserved.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>msvcp110.dll</Name>
+      <FilePath>.\libg_222\msvcp110.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Microsoft Corporation</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>msvcr110.dll</Name>
+      <FilePath>.\libg_222\msvcr110.dll</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Microsoft Corporation</Author>
