@@ -634,7 +634,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
 #if DEBUG
             renderTimer.Stop();
-            Debug.WriteLine(string.Format("RENDER: {0} ellapsed fkor compiling assets for rendering.", renderTimer.Elapsed));
+            Debug.WriteLine(string.Format("RENDER: {0} ellapsed for compiling assets for rendering.", renderTimer.Elapsed));
             renderTimer.Reset();
             renderTimer.Start();
 #endif

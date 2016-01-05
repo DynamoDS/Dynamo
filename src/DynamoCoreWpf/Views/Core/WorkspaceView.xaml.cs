@@ -495,10 +495,12 @@ namespace Dynamo.Views
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
+            var wvm = (DataContext as WorkspaceViewModel);
 
-            if (this.snappedPort != null)
-                wvm.HandlePortClicked(this.snappedPort);
+            if (snappedPort != null)
+            {
+                wvm.HandlePortClicked(snappedPort);
+            }
             else
             {
                 wvm.HandleLeftButtonDown(workBench, e);
