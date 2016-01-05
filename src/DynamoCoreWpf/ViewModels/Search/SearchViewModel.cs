@@ -1089,6 +1089,37 @@ namespace Dynamo.ViewModels
             }
         }
 
+        internal void OpenSelectedClass(string className)
+        {
+            // Clear search text.
+            SearchText = String.Empty;
+            var categoryNames = className.Split(Configurations.CategoryDelimiterString.ToCharArray());
+
+            IEnumerable<NodeCategoryViewModel> categories = BrowserRootCategories;
+            foreach (var name in categoryNames)
+            {
+                var category = categories.FirstOrDefault(cat => cat.Name == name);
+                if (category != null)
+                {
+                    category.IsExpanded = true;
+                    categories = category.SubCategories;
+                }
+                // Category is null means that we are at the last level of hierarchy.
+                // The next level is class level.
+                else
+                {
+                    category = categories.FirstOrDefault(cat => cat is ClassesNodeCategoryViewModel);
+                    if (category == null) break;
+                    category.IsExpanded = true;
+
+                    var classItem = category.Items.FirstOrDefault(item => item.Name == name) as NodeCategoryViewModel;
+                    if (classItem == null) break;
+                    classItem.IsExpanded = true;
+                    break;
+                }
+            }
+        }
+
         #endregion
     }
 }

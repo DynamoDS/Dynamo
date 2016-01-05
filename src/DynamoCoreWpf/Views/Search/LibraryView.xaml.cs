@@ -340,5 +340,11 @@ namespace Dynamo.UI.Views
 
         #endregion
 
+        private void OnTreeViewItemExpanded(object sender, RoutedEventArgs e)
+        {
+            var treeViewItem = e.OriginalSource as FrameworkElement;
+            if (treeViewItem == null) return;
+            treeViewItem.BringIntoView();
+        }
     }
 }
