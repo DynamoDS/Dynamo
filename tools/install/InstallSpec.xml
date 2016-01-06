@@ -88,13 +88,6 @@
       <Author />
     </ModuleSpec>
     <ModuleSpec>
-	  <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\cs-CZ\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>DynamoPython.resources.dll</Name>
       <FilePath>.\cs-CZ\DynamoPython.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -261,13 +254,6 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-	  <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\de-DE\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>DynamoPython.XML</Name>
       <FilePath>.\de-DE\DynamoPython.XML</FilePath>
       <DigitalSignature>false</DigitalSignature>
@@ -428,13 +414,6 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-	  <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\en-US\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>InstallUpdate.resources.dll</Name>
       <FilePath>.\en-US\InstallUpdate.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -592,13 +571,6 @@
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\es-ES\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>InstallUpdate.resources.dll</Name>
@@ -773,13 +745,6 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-	<Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\fr-FR\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
--    <ModuleSpec>
       <Name>Operators.xml</Name>
       <FilePath>.\fr-FR\Operators.xml</FilePath>
       <DigitalSignature>false</DigitalSignature>
@@ -943,13 +908,6 @@
       <FilePath>.\it-IT\Operators.xml</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
-    </ModuleSpec>
-    <ModuleSpec>
-	  <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\it-IT\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>ProtoAssociative.resources.dll</Name>
@@ -1118,13 +1076,6 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-	<Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\ja-JP\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>ProtoCore.resources.dll</Name>
       <FilePath>.\ja-JP\ProtoCore.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -1289,13 +1240,6 @@
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
-    </ModuleSpec>
-    <ModuleSpec>
-	<Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\ko-KR\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>ProtoGeometry.resources.dll</Name>
@@ -3059,13 +3003,6 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\pl-PL\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>DynamoPython.XML</Name>
       <FilePath>.\pt-BR\DynamoPython.XML</FilePath>
       <DigitalSignature>false</DigitalSignature>
@@ -3244,13 +3181,6 @@
       <FilePath>.\Revit_2015\en-US\RevitNodes.xml</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
-    </ModuleSpec>
-    <ModuleSpec>
-	  <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\pt-BR\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>RevitRaaS.resources.dll</Name>
@@ -5215,13 +5145,6 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-	  <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\ru-RU\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>RevitNodes.xml</Name>
       <FilePath>.\Revit_2017\ja-JP\RevitNodes.xml</FilePath>
       <DigitalSignature>false</DigitalSignature>
@@ -5517,13 +5440,6 @@
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
     <ModuleSpec>
-     <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\zh-CN\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>DynamoRevitDS.resources.dll</Name>
       <FilePath>.\Revit_2017\pt-BR\DynamoRevitDS.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -5686,13 +5602,6 @@
     <ModuleSpec>
       <Name>DSRevitNodesUI.customization.dll</Name>
       <FilePath>.\Revit_2017\DSRevitNodesUI.customization.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
-	<Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\zh-TW\DynamoPublish.resources.dll</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author />
@@ -6063,19 +5972,6 @@
     <ModuleSpec>
       <Name>OpenSans-Light.ttf</Name>
       <FilePath>.\UI\Fonts\OpenSans-Light.ttf</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-    </ModuleSpec>
-    <ModuleSpec>
-	  <Name>DynamoPublish.dll</Name>
-      <FilePath>.\DynamoPublish.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>DynamoPublish.dll.config</Name>
-      <FilePath>.\DynamoPublish.dll.config</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
