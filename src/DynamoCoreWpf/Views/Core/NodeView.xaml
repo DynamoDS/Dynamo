@@ -15,7 +15,8 @@
              MouseLeftButtonDown="topControl_MouseLeftButtonDown"
              MouseRightButtonDown="topControl_MouseRightButtonDown"
              MouseEnter="OnNodeViewMouseEnter"
-             MouseLeave="OnNodeViewMouseLeave">
+             MouseLeave="OnNodeViewMouseLeave"
+             PreviewMouseMove="OnNodeViewMouseMove">
     
     <Grid Name="grid"
           x:FieldModifier="public"

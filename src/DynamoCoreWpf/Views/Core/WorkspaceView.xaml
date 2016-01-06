@@ -11,7 +11,7 @@
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300"
-             MouseLeftButtonDown="OnMouseLeftButtonDown"
+             PreviewMouseLeftButtonDown="OnPreviewMouseLeftButtonDown"
              MouseUp="OnMouseRelease"
              MouseMove="OnMouseMove"
              KeyDown="WorkspaceView_KeyDown"
