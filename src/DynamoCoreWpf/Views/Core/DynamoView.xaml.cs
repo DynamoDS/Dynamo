@@ -161,6 +161,16 @@ namespace Dynamo.Controls
             }
 
             this.dynamoViewModel.RequestPaste += OnRequestPaste;
+            this.dynamoViewModel.RequestReturnFocusToView += OnRequestReturnFocusToView;
+            FocusableGrid.InputBindings.Clear();
+        }
+
+        private void OnRequestReturnFocusToView()
+        {
+            // focusing grid allows to remove focus from current textbox
+            FocusableGrid.Focus();
+            // keep handling input bindings of DynamoView
+            Keyboard.Focus(this);
         }
 
         private void OnRequestPaste()
@@ -1702,7 +1712,7 @@ namespace Dynamo.Controls
             {
                 dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin -= loginService.ShowLogin;
             }
-        }        
+        }
     }
 
     public static class DispatcherExtension

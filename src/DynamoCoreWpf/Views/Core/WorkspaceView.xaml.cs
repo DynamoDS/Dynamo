@@ -496,9 +496,10 @@ namespace Dynamo.Views
 
         private void OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (this.snappedPort != null)
+
+            if (snappedPort != null)
             {
-                ViewModel.HandlePortClicked(this.snappedPort);
+                ViewModel.HandlePortClicked(snappedPort);
             }
             else
             {

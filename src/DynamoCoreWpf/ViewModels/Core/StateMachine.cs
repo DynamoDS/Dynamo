@@ -487,15 +487,15 @@ namespace Dynamo.ViewModels
 
             internal bool HandleLeftButtonDown(object sender, MouseButtonEventArgs e)
             {
-                if (false != ignoreMouseClick)
+                if (ignoreMouseClick)
                 {
                     ignoreMouseClick = false;
                     return false;
                 }
 
-                bool eventHandled = false;
-                bool returnFocusToSearch = true;
-                if (this.currentState == State.Connection)
+                var eventHandled = false;
+                var returnFocus = true;
+                if (currentState == State.Connection)
                 {
                     // Clicking on the canvas while connecting simply cancels 
                     // the operation and drop the temporary connector.
@@ -503,10 +503,10 @@ namespace Dynamo.ViewModels
 
                     eventHandled = true; // Mouse event handled.
                 }
-                else if (this.currentState == State.None)
+                else if (currentState == State.None)
                 {
                     // Record the mouse down position.
-                    IInputElement element = sender as IInputElement;
+                    var element = sender as IInputElement;
                     mouseDownPos = e.GetPosition(element);
 
                     // We'll see if there is any node being clicked on. If so, 
@@ -514,7 +514,7 @@ namespace Dynamo.ViewModels
                     if (null != GetSelectableFromPoint(mouseDownPos))
                     {
                         InitiateDragSequence();
-                        returnFocusToSearch = ShouldDraggingReturnFocusToSearch();
+                        returnFocus = ShouldDraggingReturnFocus();
                     }
                     else
                     {
@@ -533,27 +533,26 @@ namespace Dynamo.ViewModels
                             // Shift Modifier indicates, that user tries to call InCanvasSearch
                             // by using Shift + DoubleClick.
                             if (Keyboard.Modifiers != ModifierKeys.Shift)
+                            {
                                 CreateCodeBlockNode(mouseDownPos);
+                            }
 
-                            returnFocusToSearch = false;
+                            returnFocus = false;
                         }
                     }
 
                     eventHandled = true; // Mouse event handled.
                 }
-                else if (this.currentState == State.PanMode)
-                {
-                    var c = CursorLibrary.GetCursor(CursorSet.HandPanActive);
-                    owningWorkspace.CurrentCursor = c;
-                }
-                else if (this.currentState == State.OrbitMode)
+                else if (currentState == State.PanMode || currentState == State.OrbitMode)
                 {
                     var c = CursorLibrary.GetCursor(CursorSet.HandPanActive);
                     owningWorkspace.CurrentCursor = c;
                 }
 
-                if (returnFocusToSearch != false)
-                    owningWorkspace.DynamoViewModel.ReturnFocusToSearch();
+                if (returnFocus)
+                {
+                    owningWorkspace.DynamoViewModel.OnRequestReturnFocusToView();
+                }
 
                 return eventHandled;
             }
@@ -793,7 +792,7 @@ namespace Dynamo.ViewModels
                 SetCurrentState(State.DragSetup);
             }
 
-            private bool ShouldDraggingReturnFocusToSearch()
+            private bool ShouldDraggingReturnFocus()
             {
                 if (currentState != State.DragSetup)
                     throw new InvalidOperationException();
