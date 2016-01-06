@@ -581,58 +581,68 @@ namespace Dynamo.Views
 
                 if (canDrag)
                 {
-                    // disable clearing selection while dragged data is being generated
-                    // new AnnotationViewModel unnecessarily clears selection 
-                    DynamoSelection.Instance.ClearSelectionDisabled = true;
-                    var selection = DynamoSelection.Instance.Selection;
-                    var nodes = selection.OfType<NodeModel>();
-                    var notes = selection.OfType<NoteModel>();
-                    var annotations = selection.OfType<AnnotationModel>();
-
-                    var connectors = nodes.SelectMany(n =>
-                        n.OutPorts.SelectMany(port => port.Connectors)
-                            .Where(c => c.End != null && c.End.Owner.IsSelected)).Distinct();
-
-                    // set list of selected viewmodels
-                    draggedData = connectors.Select(c => (ViewModelBase)new ConnectorViewModel(ViewModel, c))
-                        .Concat(notes.Select(n => new NoteViewModel(ViewModel, n)))
-                        .Concat(annotations.Select(a => new AnnotationViewModel(ViewModel, a)))
-                        .Concat(nodes.Select(n =>
-                        {
-                            var node = this.ChildrenOfType<NodeView>()
-                                .FirstOrDefault(view => view.ViewModel.NodeModel == n);
-                            if (node == null) return new NodeViewModel(ViewModel, n);
-
-                            var nodeRect = node.nodeBorder;
-                            var size = new Size(nodeRect.ActualWidth, nodeRect.ActualHeight);
-                            // set fixed size for dragged nodes, 
-                            // so that they will correspond to origin nodes
-                            return new NodeViewModel(ViewModel, n, size);
-                        })).ToList();
-
-                    var mouse = e.GetPosition(WorkspaceElements);
-                    var locatableModels = nodes.Concat<ModelBase>(notes);
-                    var minX = locatableModels.Any() ? locatableModels.Min(mb => mb.X) : 0;
-                    var minY = locatableModels.Any() ? locatableModels.Min(mb => mb.Y) : 0;
-                    // compute offset to correctly place selected items right under mouse cursor 
-                    var mouseOffset = new Point2D(mouse.X - minX, mouse.Y - minY);
-
-                    DynamoSelection.Instance.ClearSelectionDisabled = false;
-                    DragDrop.DoDragDrop(this, mouseOffset, DragDropEffects.Copy);
-
-                    // remove dragged selection view 
-                    if (draggedAdorner != null)
-                    {
-                        draggedData = null;
-                        draggedAdorner.Detach();
-                        draggedAdorner = null;
-                    }
+                    DragAndDrop(e.GetPosition(WorkspaceElements));
                     mouseMessageHandled = true;
                 }
             }
 
-            if (false == mouseMessageHandled)
+            if (!mouseMessageHandled)
+            {
                 ViewModel.HandleMouseMove(workBench, e);
+            }
+        }
+
+        /// <summary>
+        /// Drag and drop nodes, notes, annotations and connectors.
+        /// </summary>
+        /// <param name="mouse">Relative position to WorkspaceElements</param>
+        private void DragAndDrop(Point mouse)
+        {
+            // disable clearing selection while dragged data is being generated
+            // new AnnotationViewModel unnecessarily clears selection 
+            DynamoSelection.Instance.ClearSelectionDisabled = true;
+            var selection = DynamoSelection.Instance.Selection;
+            var nodes = selection.OfType<NodeModel>();
+            var notes = selection.OfType<NoteModel>();
+            var annotations = selection.OfType<AnnotationModel>();
+
+            var connectors = nodes.SelectMany(n =>
+                n.OutPorts.SelectMany(port => port.Connectors)
+                    .Where(c => c.End != null && c.End.Owner.IsSelected)).Distinct();
+
+            // set list of selected viewmodels
+            draggedData = connectors.Select(c => (ViewModelBase)new ConnectorViewModel(ViewModel, c))
+                .Concat(notes.Select(n => new NoteViewModel(ViewModel, n)))
+                .Concat(annotations.Select(a => new AnnotationViewModel(ViewModel, a)))
+                .Concat(nodes.Select(n =>
+                {
+                    var node = this.ChildrenOfType<NodeView>()
+                        .FirstOrDefault(view => view.ViewModel.NodeModel == n);
+                    if (node == null) return new NodeViewModel(ViewModel, n);
+
+                    var nodeRect = node.nodeBorder;
+                    var size = new Size(nodeRect.ActualWidth, nodeRect.ActualHeight);
+                    // set fixed size for dragged nodes, 
+                    // so that they will correspond to origin nodes
+                    return new NodeViewModel(ViewModel, n, size);
+                })).ToList();
+            
+            var locatableModels = nodes.Concat<ModelBase>(notes);
+            var minX = locatableModels.Any() ? locatableModels.Min(mb => mb.X) : 0;
+            var minY = locatableModels.Any() ? locatableModels.Min(mb => mb.Y) : 0;
+            // compute offset to correctly place selected items right under mouse cursor 
+            var mouseOffset = new Point2D(mouse.X - minX, mouse.Y - minY);
+
+            DynamoSelection.Instance.ClearSelectionDisabled = false;
+            DragDrop.DoDragDrop(this, mouseOffset, DragDropEffects.Copy);
+
+            // remove dragged selection view 
+            if (draggedAdorner != null)
+            {
+                draggedData = null;
+                draggedAdorner.Detach();
+                draggedAdorner = null;
+            }
         }
 
         protected override void OnDragOver(DragEventArgs e)
