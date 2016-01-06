@@ -1089,10 +1089,16 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// This method is fired, when user clicks on class name in the search library view.
+        /// </summary>
+        /// <param name="className">Name of the class, that should be opened.</param>
         internal void OpenSelectedClass(string className)
         {
             // Clear search text.
             SearchText = String.Empty;
+            if (String.IsNullOrEmpty(className)) return;
+
             var categoryNames = className.Split(Configurations.CategoryDelimiterString.ToCharArray());
 
             IEnumerable<NodeCategoryViewModel> categories = BrowserRootCategories;

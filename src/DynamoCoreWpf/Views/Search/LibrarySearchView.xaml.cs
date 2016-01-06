@@ -158,16 +158,11 @@ namespace Dynamo.UI.Views
             int lastIndex =
                 searchElementVM.FullName.LastIndexOf(Configuration.Configurations.CategoryDelimiterString,
                     StringComparison.Ordinal);
-            string selectedClassWithCategory;
-            if (lastIndex != -1)
-            {
-                selectedClassWithCategory = searchElementVM.FullName.Substring(0,
+
+            var selectedClassWithCategory = lastIndex == -1
+                ? searchElementVM.FullName
+                : searchElementVM.FullName.Substring(0,
                     lastIndex);
-            }
-            else
-            {
-                selectedClassWithCategory = searchElementVM.FullName;
-            }
             viewModel.OpenSelectedClass(selectedClassWithCategory);
         }
     }
