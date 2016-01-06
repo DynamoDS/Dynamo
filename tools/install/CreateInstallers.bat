@@ -30,6 +30,7 @@ copy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\ProtoGeometry_DynamoCust
 
 robocopy %cwd%\..\..\extern\LibG_220 %cwd%\temp\bin\LibG_220
 robocopy %cwd%\..\..\extern\LibG_221 %cwd%\temp\bin\LibG_221
+robocopy %cwd%\..\..\extern\LibG_222 %cwd%\temp\bin\LibG_222
 robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\LibG_locale %cwd%\temp\bin\LibG_locale /e *.po *.mo
 
 SET PATH=%PATH%;%cwd%\..\..\src\Tools\XmlDocumentationsUtility\bin\%OPT_CONFIGURATION%
