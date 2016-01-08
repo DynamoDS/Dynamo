@@ -14,8 +14,9 @@ using Dynamo.Interfaces;
 using Dynamo.Scheduler;
 using Dynamo.ViewModels;
 using ProtoCore.AST.AssociativeAST;
+using Dynamo.Wpf;
 
-namespace Dynamo.Wpf.Nodes
+namespace CoreNodeModelsWpf.Nodes
 {
     public class WatchNodeViewCustomization : INodeViewCustomization<Watch>
     {
@@ -76,7 +77,7 @@ namespace Dynamo.Wpf.Nodes
 
             var rawDataMenuItem = new MenuItem
             {
-                Header = Properties.Resources.WatchNodeRawDataMenu,
+                Header = Dynamo.Wpf.Properties.Resources.WatchNodeRawDataMenu,
                 IsCheckable = true,
             };
             rawDataMenuItem.SetBinding(MenuItem.IsCheckedProperty, checkedBinding);

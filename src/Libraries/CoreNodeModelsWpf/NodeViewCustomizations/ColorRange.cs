@@ -19,8 +19,9 @@ using Dynamo.Models;
 using Dynamo.ViewModels;
 using ProtoCore.Mirror;
 using Color = DSCore.Color;
+using Dynamo.Wpf;
 
-namespace Dynamo.Wpf.Nodes
+namespace CoreNodeModelsWpf.Nodes
 {
     public class ColorRangeNodeViewCustomization : INodeViewCustomization<ColorRange>
     {

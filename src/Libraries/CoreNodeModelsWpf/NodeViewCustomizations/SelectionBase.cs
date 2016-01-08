@@ -3,8 +3,9 @@ using DSCoreNodesUI;
 using Dynamo.Controls;
 
 using Microsoft.Practices.Prism.Commands;
+using Dynamo.Wpf;
 
-namespace Dynamo.Wpf.Nodes
+namespace CoreNodeModelsWpf.Nodes
 {
     // Note: Because this is a generic class, it can't be a NodeViewCustomization!
     //       We have to supply a non-generic implementation for NodeViewCustomization
