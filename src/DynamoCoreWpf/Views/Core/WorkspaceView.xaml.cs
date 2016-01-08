@@ -496,6 +496,14 @@ namespace Dynamo.Views
 
         private void OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                startMousePosition = e.GetPosition(null);
+            }
+        }
+
+        private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
 
             if (snappedPort != null)
             {
@@ -508,8 +516,6 @@ namespace Dynamo.Views
                     ViewModel.HandleLeftButtonDown(workBench, e);
                 }
             }
-
-            startMousePosition = e.GetPosition(null);
 
             InCanvasSearchBar.IsOpen = false;
         }
