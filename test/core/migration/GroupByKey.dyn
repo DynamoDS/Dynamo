@@ -1,0 +1,23 @@
+<Workspace Version="0.9.0.3067" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <DSCore.GroupByKey guid="4788a9b4-9925-4e86-8c5c-4b7615307430" type="DSCore.GroupByKey" nickname="GroupByKey" x="349.5" y="10" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" />
+    <DSCore.SortByKey guid="449a4f71-cdb3-40c5-b6a1-5970cbc61bd6" type="DSCore.SortByKey" nickname="SortByKey" x="357.5" y="169" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="6d86b7f1-8a8a-467f-8691-373355db2d13" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="38" y="66" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" CodeText="1..15..3;&#xA;1..15..2;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSVarArgFunction guid="c8280df3-e5ba-4c23-beeb-87c46b234e51" type="Dynamo.Nodes.DSVarArgFunction" nickname="List.Join" x="171" y="50" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="DSCoreNodes.dll" function="DSCore.List.Join@var[]..[]" inputcount="2" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="6d86b7f1-8a8a-467f-8691-373355db2d13" start_index="0" end="c8280df3-e5ba-4c23-beeb-87c46b234e51" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6d86b7f1-8a8a-467f-8691-373355db2d13" start_index="1" end="c8280df3-e5ba-4c23-beeb-87c46b234e51" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c8280df3-e5ba-4c23-beeb-87c46b234e51" start_index="0" end="4788a9b4-9925-4e86-8c5c-4b7615307430" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c8280df3-e5ba-4c23-beeb-87c46b234e51" start_index="0" end="4788a9b4-9925-4e86-8c5c-4b7615307430" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c8280df3-e5ba-4c23-beeb-87c46b234e51" start_index="0" end="449a4f71-cdb3-40c5-b6a1-5970cbc61bd6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c8280df3-e5ba-4c23-beeb-87c46b234e51" start_index="0" end="449a4f71-cdb3-40c5-b6a1-5970cbc61bd6" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>
