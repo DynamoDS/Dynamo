@@ -169,6 +169,12 @@ namespace Dynamo.Nodes
 
             return migrationData;
         }
+
+        [NodeMigration(from: "0.9.0.0", to: "0.9.1.0")]
+        public static NodeMigrationData Migrate_0900_to_0910(NodeMigrationData data)
+        {
+            return Migrate_0830_to_0900(data);
+        }
     }
 
     [AlsoKnownAs("DSCore.GroupByKey")]
@@ -187,6 +193,12 @@ namespace Dynamo.Nodes
                     "List.GroupByKey", "List.GroupByKey@IList,IList");
 
             return migrationData;
+        }
+
+        [NodeMigration(from: "0.9.0.0", to: "0.9.1.0")]
+        public static NodeMigrationData Migrate_0900_to_0910(NodeMigrationData data)
+        {
+            return Migrate_0830_to_0900(data);
         }
     }
 
