@@ -1090,6 +1090,30 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Sets IsExpanded = false to all categories and subcategories.
+        /// </summary>
+        internal bool CollapseRecursively(IEnumerable<NodeCategoryViewModel> categories)
+        {
+            bool collapsedAll = true;
+            foreach (var category in categories)
+            {
+                category.IsExpanded = false;
+                collapsedAll = collapsedAll && (category.SubCategories.Count == 0);
+            }
+
+            if (!collapsedAll)
+            {
+                collapsedAll = true;
+                foreach (var category in categories)
+                {
+                    collapsedAll = collapsedAll && CollapseRecursively(category.SubCategories);
+                }
+            }
+
+            return collapsedAll;
+        }
+
+        /// <summary>
         /// This method is fired, when user clicks on class name in the search library view.
         /// </summary>
         /// <param name="className">Name of the class, that should be opened.</param>
@@ -1097,6 +1121,7 @@ namespace Dynamo.ViewModels
         {
             // Clear search text.
             SearchText = String.Empty;
+            CollapseRecursively(BrowserRootCategories);
             if (String.IsNullOrEmpty(className)) return;
 
             var categoryNames = className.Split(Configurations.CategoryDelimiterString.ToCharArray());
