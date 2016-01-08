@@ -1,12 +1,24 @@
-﻿using NUnit.Framework;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Dynamo.Configuration;
+using NUnit.Framework;
 using Path = System.IO.Path;
 
 namespace Dynamo.Tests
 {
     public class PackageValidationTest : DynamoModelTestBase
     {
+        public PackageValidationTest()
+        {
+            dynamoSettings = new PreferenceSettings()
+            {
+                CustomPackageFolders = new List<string>()
+                {
+                    Path.Combine(TestDirectory, @"core\userdata\0.8")
+                }
+            };
+        }
+
         protected override string GetUserUserDataRootFolder()
         {
             string userDataDirectory = Path.Combine(TestDirectory, @"core\userdata");
