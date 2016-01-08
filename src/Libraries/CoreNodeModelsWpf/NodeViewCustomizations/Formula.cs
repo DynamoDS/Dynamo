@@ -2,7 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
-using DSCoreNodesUI;
+using CoreNodeModels;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.Wpf;

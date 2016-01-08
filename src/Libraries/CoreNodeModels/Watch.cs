@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using DSCoreNodesUI.Properties;
+using CoreNodeModels.Properties;
 using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
 using Dynamo.Scheduler;
@@ -8,14 +8,14 @@ using Dynamo.Visualization;
 using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
 
-namespace DSCoreNodesUI
+namespace CoreNodeModels
 {
     [NodeName("Watch")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
-    [NodeDescription("WatchNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
-    [NodeSearchTags("WatchNodeSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("WatchNodeDescription", typeof(Resources))]
+    [NodeSearchTags("WatchNodeSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
-    [AlsoKnownAs("Dynamo.Nodes.Watch")]
+    [AlsoKnownAs("Dynamo.Nodes.Watch", "DSCoreNodesUI.Watch")]
     public class Watch : NodeModel
     {
         public event Action<Object> EvaluationComplete;

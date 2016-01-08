@@ -7,7 +7,7 @@ using System.Windows.Media;
 using System.Linq;
 
 using SystemTestServices;
-using DSCoreNodesUI.Input;
+using CoreNodeModels.Input;
 using Dynamo.Models;
 using Dynamo.Wpf.ViewModels;
 

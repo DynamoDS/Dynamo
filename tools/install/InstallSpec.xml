@@ -1806,8 +1806,8 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.resources.dll</Name>
-      <FilePath>.\nodes\cs-CZ\DSCoreNodesUI.resources.dll</FilePath>
+      <Name>CoreNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\cs-CZ\CoreNodeModels.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -1869,8 +1869,8 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.resources.dll</Name>
-      <FilePath>.\nodes\de-DE\DSCoreNodesUI.resources.dll</FilePath>
+      <Name>CoreNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\de-DE\CoreNodeModels.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -1932,8 +1932,8 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.resources.dll</Name>
-      <FilePath>.\nodes\en-US\DSCoreNodesUI.resources.dll</FilePath>
+      <Name>CoreNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\en-US\CoreNodeModels.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -1995,8 +1995,8 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.resources.dll</Name>
-      <FilePath>.\nodes\es-ES\DSCoreNodesUI.resources.dll</FilePath>
+      <Name>CoreNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\es-ES\CoreNodeModels.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2058,8 +2058,8 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.resources.dll</Name>
-      <FilePath>.\nodes\fr-FR\DSCoreNodesUI.resources.dll</FilePath>
+      <Name>CoreNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\fr-FR\CoreNodeModels.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2121,8 +2121,8 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.resources.dll</Name>
-      <FilePath>.\nodes\it-IT\DSCoreNodesUI.resources.dll</FilePath>
+      <Name>CoreNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\it-IT\CoreNodeModels.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2184,8 +2184,8 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.resources.dll</Name>
-      <FilePath>.\nodes\ja-JP\DSCoreNodesUI.resources.dll</FilePath>
+      <Name>CoreNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\ja-JP\CoreNodeModels.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2247,8 +2247,8 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.resources.dll</Name>
-      <FilePath>.\nodes\ko-KR\DSCoreNodesUI.resources.dll</FilePath>
+      <Name>CoreNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\ko-KR\CoreNodeModels.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2310,8 +2310,8 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.resources.dll</Name>
-      <FilePath>.\nodes\pl-PL\DSCoreNodesUI.resources.dll</FilePath>
+      <Name>CoreNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\pl-PL\CoreNodeModels.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2373,8 +2373,8 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.resources.dll</Name>
-      <FilePath>.\nodes\pt-BR\DSCoreNodesUI.resources.dll</FilePath>
+      <Name>CoreNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\pt-BR\CoreNodeModels.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2436,8 +2436,8 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.resources.dll</Name>
-      <FilePath>.\nodes\ru-RU\DSCoreNodesUI.resources.dll</FilePath>
+      <Name>CoreNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\ru-RU\CoreNodeModels.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2499,8 +2499,8 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.resources.dll</Name>
-      <FilePath>.\nodes\zh-CN\DSCoreNodesUI.resources.dll</FilePath>
+      <Name>CoreNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\zh-CN\CoreNodeModels.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2562,8 +2562,8 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.resources.dll</Name>
-      <FilePath>.\nodes\zh-TW\DSCoreNodesUI.resources.dll</FilePath>
+      <Name>CoreNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\zh-TW\CoreNodeModels.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2625,15 +2625,15 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.customization.dll</Name>
-      <FilePath>.\nodes\DSCoreNodesUI.customization.dll</FilePath>
+      <Name>CoreNodeModels.customization.dll</Name>
+      <FilePath>.\nodes\CoreNodeModels.customization.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author />
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.dll</Name>
-      <FilePath>.\nodes\DSCoreNodesUI.dll</FilePath>
+      <Name>CoreNodeModels.dll</Name>
+      <FilePath>.\nodes\CoreNodeModels.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>

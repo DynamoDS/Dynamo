@@ -17,7 +17,7 @@ using Dynamo.ViewModels;
 using DynamoShapeManager;
 using NUnit.Framework;
 using System.Reflection;
-using DSCoreNodesUI.Input;
+using CoreNodeModels.Input;
 using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
@@ -29,7 +29,7 @@ using TestServices;
 
 using PythonNodeModels;
 
-using IntegerSlider = DSCoreNodesUI.Input.IntegerSlider;
+using IntegerSlider = CoreNodeModels.Input.IntegerSlider;
 
 namespace DynamoCoreWpfTests
 {
