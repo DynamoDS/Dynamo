@@ -39,7 +39,7 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             XmlElement composeNode = MigrationManager.CloneAndChangeName(oldNode,
-                "DSCoreNodesUI.HigherOrder.ComposeFunctions", "Compose Function");
+                "CoreNodeModels.HigherOrder.ComposeFunctions", "Compose Function");
             composeNode.SetAttribute("inputcount", "2");
             migratedData.AppendNode(composeNode);
 
@@ -66,7 +66,7 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             XmlElement element = MigrationManager.CloneAndChangeName(oldNode,
-                "DSCoreNodesUI.CreateList", "Create List");
+                "CoreNodeModels.CreateList", "Create List");
             migrationData.AppendNode(element);
 
             int childNumber = oldNode.ChildNodes.Count;
@@ -426,7 +426,7 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             XmlElement newNode = MigrationManager.CloneAndChangeName(
-                oldNode, "DSCoreNodesUI.Range", "Range");
+                oldNode, "CoreNodeModels.Range", "Range");
 
             migrationData.AppendNode(newNode);
             return migrationData;
@@ -443,7 +443,7 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             XmlElement newNode = MigrationManager.CloneAndChangeName(
-                oldNode, "DSCoreNodesUI.Sequence", "Sequence");
+                oldNode, "CoreNodeModels.Sequence", "Sequence");
 
             migrationData.AppendNode(newNode);
             return migrationData;
@@ -1737,8 +1737,8 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
-            XmlElement applyNode = MigrationManager.CloneAndChangeName(oldNode, 
-                "DSCoreNodesUI.HigherOrder.ApplyFunction","Apply Function");           
+            XmlElement applyNode = MigrationManager.CloneAndChangeName(oldNode,
+                "CoreNodeModels.HigherOrder.ApplyFunction", "Apply Function");           
 
             int numberOfArgs = oldNode.ChildNodes.Count + 1;
             string numberOfArgsString = numberOfArgs.ToString();
@@ -1756,7 +1756,7 @@ namespace Dynamo.Nodes
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             migrationData.AppendNode(MigrationManager.CloneAndChangeName(
-                data.MigratedNodes.ElementAt(0), "DSCoreNodesUI.Logic.If", "If"));
+                data.MigratedNodes.ElementAt(0), "CoreNodeModels.Logic.If", "If"));
 
             return migrationData;
         }
@@ -1845,7 +1845,7 @@ namespace Dynamo.Nodes
         {
             var migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCoreNodesUI.Input.DoubleSlider", "Number Slider", true);
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "CoreNodeModels.Input.DoubleSlider", "Number Slider", true);
 
             migrationData.AppendNode(newNode);
             return migrationData;
@@ -1888,7 +1888,7 @@ namespace Dynamo.Nodes
         {
             var migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCoreNodesUI.Input.IntegerSlider", "Integer Slider", true);
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "CoreNodeModels.Input.IntegerSlider", "Integer Slider", true);
 
             migrationData.AppendNode(newNode);
             return migrationData;
@@ -1902,7 +1902,7 @@ namespace Dynamo.Nodes
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCoreNodesUI.BoolSelector", "Boolean");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "CoreNodeModels.BoolSelector", "Boolean");
 
             // Get attribute from old child node
             XmlElement newChild = data.Document.CreateElement("System.Boolean");
@@ -2140,7 +2140,7 @@ namespace Dynamo.Nodes
     }
 }
 
-namespace DSCoreNodesUI
+namespace CoreNodeModels
 {
     public class DummyNode : MigrationNode
     {

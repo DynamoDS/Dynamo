@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using ProtoCore.AST.AssociativeAST;
 
-namespace DSCoreNodesUI.Input
+namespace CoreNodeModels.Input
 {
     public abstract class Double : BasicInteractive<double>
     {

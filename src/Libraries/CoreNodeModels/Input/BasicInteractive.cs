@@ -4,7 +4,7 @@ using System.Xml;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 
-namespace DSCoreNodesUI.Input
+namespace CoreNodeModels.Input
 {
     public abstract class BasicInteractive<T> : NodeModel
     {

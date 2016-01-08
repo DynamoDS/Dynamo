@@ -2,11 +2,11 @@
 using System.IO;
 using System.Reflection;
 
-using DSCoreNodesUI.Input;
+using CoreNodeModels.Input;
 using Dynamo.Graph;
 using Dynamo.Models;
 using NUnit.Framework;
-using DoubleSlider = DSCoreNodesUI.Input.DoubleSlider;
+using DoubleSlider = CoreNodeModels.Input.DoubleSlider;
 
 namespace DynamoCoreWpfTests
 {

@@ -13,7 +13,7 @@ using Dynamo.Controls;
 using Dynamo.Scheduler;
 using Dynamo.UI;
 
-using DSCoreNodesUI;
+using CoreNodeModels;
 using Dynamo.Configuration;
 using Dynamo.Models;
 using Dynamo.ViewModels;
