@@ -1,19 +1,19 @@
 ﻿using System.Collections.Generic;
-using DSCoreNodesUI.Properties;
+using CoreNodeModels.Properties;
 using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
 using Dynamo.Scheduler;
 using Dynamo.Visualization;
 using ProtoCore.AST.AssociativeAST;
 
-namespace DSCoreNodesUI
+namespace CoreNodeModels
 {
     [NodeName("Watch Image")]
-    [NodeDescription("WatchImageDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("WatchImageDescription", typeof(Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
-    [NodeSearchTags("WatchImageSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("WatchImageSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
-    [AlsoKnownAs("Dynamo.Nodes.WatchImageCore")]
+    [AlsoKnownAs("Dynamo.Nodes.WatchImageCore", "DSCoreNodesUI.WatchImageCore")]
     public class WatchImageCore : NodeModel
     {
         public WatchImageCore()

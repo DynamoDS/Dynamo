@@ -3,8 +3,8 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 
-using DSCoreNodesUI;
-using DSCoreNodesUI.Input;
+using CoreNodeModels;
+using CoreNodeModels.Input;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
@@ -14,7 +14,7 @@ using Dynamo.Tests;
 
 using NUnit.Framework;
 
-using DoubleSlider = DSCoreNodesUI.Input.DoubleSlider;
+using DoubleSlider = CoreNodeModels.Input.DoubleSlider;
 
 namespace DynamoCoreWpfTests
 {

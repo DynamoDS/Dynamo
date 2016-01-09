@@ -1,16 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using DSCoreNodesUI.Properties;
+using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
 
-namespace DSCoreNodesUI
+namespace CoreNodeModels
 {
     [NodeName("List.Create")]
-    [NodeDescription("ListCreateDescription", typeof(DSCoreNodesUI.Properties.Resources))]
-    [NodeSearchTags("ListCreateSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("ListCreateDescription", typeof(Resources))]
+    [NodeSearchTags("ListCreateSearchTags", typeof(Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("DSCoreNodesUI.CreateList")]
     public class CreateList : VariableInputNode
     {
         public CreateList()

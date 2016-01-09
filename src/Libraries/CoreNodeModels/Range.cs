@@ -6,13 +6,14 @@ using System.Collections.Generic;
 using Dynamo.Graph.Nodes;
 using ProtoCore.DSASM;
 
-namespace DSCoreNodesUI
+namespace CoreNodeModels
 {
     [NodeName("Range")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
-    [NodeDescription("RangeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
-    [NodeSearchTags("RangeSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("RangeDescription", typeof(Resources))]
+    [NodeSearchTags("RangeSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("DSCoreNodesUI.Range")]
     public class Range : NodeModel
     {
         private readonly IntNode startPortDefaultValue = new IntNode(0);
@@ -82,9 +83,10 @@ namespace DSCoreNodesUI
 
     [NodeName("Sequence")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
-    [NodeDescription("SequenceDescription", typeof(DSCoreNodesUI.Properties.Resources))]
-    [NodeSearchTags("SequenceSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("SequenceDescription", typeof(Resources))]
+    [NodeSearchTags("SequenceSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("DSCoreNodesUI.Sequence")]
     public class Sequence : NodeModel
     {
         private readonly IntNode startPortDefaultValue = new IntNode(0);

@@ -1,10 +1,10 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Controls;
-using DSCoreNodesUI;
+using CoreNodeModels;
 using Dynamo.UI.Commands;
 
-namespace Dynamo.Wpf.Controls
+namespace CoreNodeModelsWpf.Controls
 {
     /// <summary>
     /// Interaction logic for ConverterControl.xaml

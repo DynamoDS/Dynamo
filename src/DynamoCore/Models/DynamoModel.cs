@@ -1727,8 +1727,12 @@ namespace Dynamo.Models
             {
                 var annotationNodeModel = new List<NodeModel>();
                 var annotationNoteModel = new List<NoteModel>();
-                //checked condition here that supports pasting of multiple groups
-                foreach (var models in annotation.SelectedModels)
+                // some models can be deleted after copying them, 
+                // so they need to be in pasted annotation as well
+                var modelsToRestore = annotation.DeletedModelBases.Intersect(ClipBoard);
+                var modelsToAdd = annotation.SelectedModels.Concat(modelsToRestore);
+                // checked condition here that supports pasting of multiple groups
+                foreach (var models in modelsToAdd)
                 {
                     ModelBase mbase;
                     modelLookup.TryGetValue(models.GUID, out mbase);

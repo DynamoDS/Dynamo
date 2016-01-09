@@ -10,7 +10,7 @@ using System.Xml;
 
 using DSCore;
 
-using DSCoreNodesUI;
+using CoreNodeModels;
 using Dynamo.Controls;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;

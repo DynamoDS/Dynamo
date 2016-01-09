@@ -24,6 +24,7 @@ namespace Dynamo
 
         protected Preloader preloader;
         protected TestPathResolver pathResolver;
+        protected IPreferences dynamoSettings;
 
         protected override DynamoModel GetModel()
         {
@@ -34,7 +35,7 @@ namespace Dynamo
         public override void Setup()
         {
             base.Setup();
-            StartDynamo();
+            StartDynamo(dynamoSettings);
         }
 
         public override void Cleanup()

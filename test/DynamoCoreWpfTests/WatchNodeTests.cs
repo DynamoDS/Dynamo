@@ -5,7 +5,7 @@ using Dynamo.ViewModels;
 using ProtoCore.Mirror;
 using System.Collections.Generic;
 using System.Linq;
-using DSCoreNodesUI;
+using CoreNodeModels;
 using Dynamo.Graph.Nodes;
 using Dynamo.Tests;
 
