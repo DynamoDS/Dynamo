@@ -1090,27 +1090,19 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Sets IsExpanded = false to all categories and subcategories.
+        /// Sets IsExpanded = false to open category and all subcategories.
         /// </summary>
-        internal bool CollapseRecursively(IEnumerable<NodeCategoryViewModel> categories)
+        internal void CollapseAll(IEnumerable<NodeCategoryViewModel> categories)
         {
-            bool collapsedAll = true;
-            foreach (var category in categories)
+            while (categories != null)
             {
+                var category = categories.FirstOrDefault(cat => cat.IsExpanded);
+
+                if (category == null) break;
                 category.IsExpanded = false;
-                collapsedAll = collapsedAll && (category.SubCategories.Count == 0);
-            }
 
-            if (!collapsedAll)
-            {
-                collapsedAll = true;
-                foreach (var category in categories)
-                {
-                    collapsedAll = collapsedAll && CollapseRecursively(category.SubCategories);
-                }
+                categories = category.SubCategories;
             }
-
-            return collapsedAll;
         }
 
         /// <summary>
@@ -1121,7 +1113,8 @@ namespace Dynamo.ViewModels
         {
             // Clear search text.
             SearchText = String.Empty;
-            CollapseRecursively(BrowserRootCategories);
+            CollapseAll(BrowserRootCategories);
+
             if (String.IsNullOrEmpty(className)) return;
 
             var categoryNames = className.Split(Configurations.CategoryDelimiterString.ToCharArray());

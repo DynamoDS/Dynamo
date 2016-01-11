@@ -774,7 +774,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void CollapseRecursivelyTest()
+        public void CollapseAllTest()
         {
             var element = CreateCustomNode("AMember", "CategoryA.SubCategoryA.ClassA");
             model.Add(element);
@@ -782,14 +782,11 @@ namespace Dynamo.Tests
             element = CreateCustomNode("BMember", "CategoryB.SubCategoryB.ClassB");
             model.Add(element);
 
-            viewModel.BrowserRootCategories[0].IsExpanded = true;
             viewModel.BrowserRootCategories[1].IsExpanded = true;
-
             viewModel.BrowserRootCategories[1].SubCategories[0].IsExpanded = true;
 
-            viewModel.CollapseRecursively(viewModel.BrowserRootCategories);
+            viewModel.CollapseAll(viewModel.BrowserRootCategories);
 
-            Assert.IsFalse(viewModel.BrowserRootCategories[0].IsExpanded);
             Assert.IsFalse(viewModel.BrowserRootCategories[1].IsExpanded);
             Assert.IsFalse(viewModel.BrowserRootCategories[1].SubCategories[0].IsExpanded);
         }
