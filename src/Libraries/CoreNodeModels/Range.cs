@@ -10,8 +10,8 @@ namespace CoreNodeModels
 {
     [NodeName("Range")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
-    [NodeDescription("RangeDescription", typeof(Resources))]
-    [NodeSearchTags("RangeSearchTags", typeof(Resources))]
+    [NodeDescription("RangeDescription", typeof(Properties.Resources))]
+    [NodeSearchTags("RangeSearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.Range")]
     public class Range : NodeModel
@@ -83,8 +83,8 @@ namespace CoreNodeModels
 
     [NodeName("Sequence")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
-    [NodeDescription("SequenceDescription", typeof(Resources))]
-    [NodeSearchTags("SequenceSearchTags", typeof(Resources))]
+    [NodeDescription("SequenceDescription", typeof(Properties.Resources))]
+    [NodeSearchTags("SequenceSearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.Sequence")]
     public class Sequence : NodeModel
