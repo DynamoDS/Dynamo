@@ -50,7 +50,7 @@ namespace CoreNodeModels.Input
     [NodeDescription("BooleanDescription", typeof(Resources))]
     [NodeSearchTags("BooleanSelectorSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
-    [AlsoKnownAs("DSCoreNodesUI.BoolSelector", "DSCoreNodesUI.Input.BoolSelector")]
+    [AlsoKnownAs("DSCoreNodesUI.BoolSelector", "DSCoreNodesUI.Input.BoolSelector", "Dynamo.Nodes.BoolSelector")]
     public class BoolSelector : Bool
     {
         public BoolSelector()

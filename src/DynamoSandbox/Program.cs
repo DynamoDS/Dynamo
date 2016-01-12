@@ -22,8 +22,9 @@ namespace DynamoSandbox
         
         private static void MakeStandaloneAndRun(string commandFilePath, out DynamoViewModel viewModel)
         {
-            var model = Dynamo.Applications.StartupUtils.MakeModel(false);
             DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
+
+            var model = Dynamo.Applications.StartupUtils.MakeModel(false);
 
             viewModel = DynamoViewModel.Start(
                 new DynamoViewModel.StartConfiguration()

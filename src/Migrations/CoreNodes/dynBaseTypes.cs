@@ -2142,6 +2142,7 @@ namespace Dynamo.Nodes
 
 namespace CoreNodeModels
 {
+    [AlsoKnownAs("DSCoreNodesUI.DummyNode")]
     public class DummyNode : MigrationNode
     {
         [NodeMigration(@from: "0.7.0.0")]

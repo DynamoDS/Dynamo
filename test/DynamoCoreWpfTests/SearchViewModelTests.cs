@@ -754,6 +754,43 @@ namespace Dynamo.Tests
             Assert.IsTrue(viewModel.SearchCategories.All(c => c.IsSelected));
         }
 
+
+        [Test]
+        [Category("UnitTests")]
+        public void OpenSelectedClassTest()
+        {
+            var element = CreateCustomNode("AMember", "CategoryA.ClassA");
+            model.Add(element);
+
+            element = CreateCustomNode("BMember", "CategoryB.ClassB");
+            model.Add(element);
+
+            viewModel.OpenSelectedClass("CategoryB.ClassB");
+
+            Assert.IsTrue(viewModel.BrowserRootCategories[1].IsExpanded);
+            var classVM = viewModel.BrowserRootCategories[1].Items[0] as NodeCategoryViewModel;
+            Assert.IsTrue((classVM.Items[0] as NodeCategoryViewModel).IsExpanded);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CollapseAllTest()
+        {
+            var element = CreateCustomNode("AMember", "CategoryA.SubCategoryA.ClassA");
+            model.Add(element);
+
+            element = CreateCustomNode("BMember", "CategoryB.SubCategoryB.ClassB");
+            model.Add(element);
+
+            viewModel.BrowserRootCategories[1].IsExpanded = true;
+            viewModel.BrowserRootCategories[1].SubCategories[0].IsExpanded = true;
+
+            viewModel.CollapseAll(viewModel.BrowserRootCategories);
+
+            Assert.IsFalse(viewModel.BrowserRootCategories[1].IsExpanded);
+            Assert.IsFalse(viewModel.BrowserRootCategories[1].SubCategories[0].IsExpanded);
+        }
+
         #endregion
 
         #region Helpers
