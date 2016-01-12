@@ -23,9 +23,15 @@ namespace Dynamo.Controls
     public partial class NodeView : IViewModelView<NodeViewModel>
     {
         public delegate void SetToolTipDelegate(string message);
-        public delegate void UpdateLayoutDelegate(FrameworkElement el);       
+        public delegate void UpdateLayoutDelegate(FrameworkElement el);
         private NodeViewModel viewModel = null;
         private PreviewControl previewControl = null;
+
+        /// <summary>
+        /// ZIndex is used to order nodes, when some node is clicked.
+        /// This selected node should be moved above others.
+        /// </summary>
+        private static int ZIndex = 0;
 
         /// <summary>
         /// If false - hides preview control until it will be explicitly shown.
@@ -110,7 +116,7 @@ namespace Dynamo.Controls
         {
             if (ViewModel == null || ViewModel.PreferredSize.HasValue) return;
 
-            var size = new [] { ActualWidth, nodeBorder.ActualHeight };
+            var size = new[] { ActualWidth, nodeBorder.ActualHeight };
             if (ViewModel.SetModelSizeCommand.CanExecute(size))
             {
                 ViewModel.SetModelSizeCommand.Execute(size);
@@ -136,7 +142,7 @@ namespace Dynamo.Controls
             // but ViewModel should not be updated in that case (hence the null-check).
             // 
             if (null != ViewModel) return;
- 
+
             ViewModel = e.NewValue as NodeViewModel;
             if (!ViewModel.PreferredSize.HasValue) return;
 
@@ -239,7 +245,7 @@ namespace Dynamo.Controls
             var editWindow = new EditWindow(viewModel.DynamoViewModel)
             {
                 DataContext = ViewModel,
-                Title = Dynamo.Wpf.Properties.Resources.EditNodeWindowTitle 
+                Title = Dynamo.Wpf.Properties.Resources.EditNodeWindowTitle
             };
 
             editWindow.Owner = Window.GetWindow(this);
@@ -312,23 +318,6 @@ namespace Dynamo.Controls
             ViewModel.ValidateConnectionsCommand.Execute(null);
         }
 
-        private void topControl_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void OnPreviewKeyUp(object sender, KeyEventArgs e)
-        {
-            //e.Handled = true;
-        }
-
-        private void OnKeyUp(object sender, KeyEventArgs e)
-        {
-            //set handled to avoid triggering key press
-            //events on the workbench
-            //e.Handled = true;
-        }
-
         private void topControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (ViewModel == null) return;
@@ -336,6 +325,13 @@ namespace Dynamo.Controls
             var view = WpfUtilities.FindUpVisualTree<DynamoView>(this);
             ViewModel.DynamoViewModel.OnRequestReturnFocusToView();
             view.mainGrid.Focus();
+
+            if (ZIndex >= Int16.MaxValue)
+            {
+                PrepareZIndex();
+            }
+
+            ViewModel.ZIndex = ZIndex++;
 
             Guid nodeGuid = ViewModel.NodeModel.GUID;
             ViewModel.DynamoViewModel.ExecuteCommand(
@@ -347,6 +343,22 @@ namespace Dynamo.Controls
                     e.Handled = true;
                     ViewModel.GotoWorkspaceCommand.Execute(null);
                 }
+            }
+        }
+
+        /// <summary>
+        /// If Zindex is more then max value of int, it should be set back to 0 to all elements.
+        /// </summary>
+        private void PrepareZIndex()
+        {
+            ZIndex = 0;
+
+            var parent = TemplatedParent as ContentPresenter;
+            if (parent == null) return;
+
+            foreach (var child in parent.ChildrenOfType<NodeView>())
+            {
+                child.ViewModel.ZIndex = 0;
             }
         }
 
@@ -428,33 +440,33 @@ namespace Dynamo.Controls
             switch (preview.CurrentState)
             {
                 case PreviewControl.State.Hidden:
-                {
-                    if (IsMouseOver && previewEnabled)
                     {
-                        preview.TransitionToState(PreviewControl.State.Condensed);
+                        if (IsMouseOver && previewEnabled)
+                        {
+                            preview.TransitionToState(PreviewControl.State.Condensed);
+                        }
+                        break;
                     }
-                    break;
-                }
                 case PreviewControl.State.Condensed:
-                {
-                    if (preview.IsMouseOver)
                     {
-                        preview.TransitionToState(PreviewControl.State.Expanded);
+                        if (preview.IsMouseOver)
+                        {
+                            preview.TransitionToState(PreviewControl.State.Expanded);
+                        }
+                        if (!IsMouseOver)
+                        {
+                            preview.TransitionToState(PreviewControl.State.Hidden);
+                        }
+                        break;
                     }
-                    if (!IsMouseOver)
-                    {
-                        preview.TransitionToState(PreviewControl.State.Hidden);
-                    }
-                    break;
-                }
                 case PreviewControl.State.Expanded:
-                {
-                    if (!IsMouseOver || !preview.IsMouseOver)
                     {
-                        preview.TransitionToState(PreviewControl.State.Condensed);
+                        if (!IsMouseOver || !preview.IsMouseOver)
+                        {
+                            preview.TransitionToState(PreviewControl.State.Condensed);
+                        }
+                        break;
                     }
-                    break;
-                }
             };
         }
 

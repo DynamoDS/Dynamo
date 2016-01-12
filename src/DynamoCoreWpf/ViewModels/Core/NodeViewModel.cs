@@ -170,11 +170,18 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// ZIndex represents the order on the z-plane in which nodes appear.
+        /// </summary>
         public double ZIndex
-         {
+        {
             get { return zIndex; }
-            set { zIndex = value; RaisePropertyChanged("ZIndex"); }
-         }
+            set
+            {
+                zIndex = value;
+                RaisePropertyChanged("ZIndex");
+            }
+        }
 
         /// <summary>
         /// Input grid's enabled state is now bound to this property
