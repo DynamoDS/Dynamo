@@ -296,11 +296,16 @@ namespace Dynamo.Models
 
         void EndConnection(Guid nodeId, int portIndex, PortType portType)
         {
-            bool isInPort = portType == PortType.Input;
+            // Check if the node from which the connector starts is valid and has not been deleted
+            if (activeStartPort.Owner == null) return;
+
+            var startNode = CurrentWorkspace.GetModelInternal(activeStartPort.Owner.GUID);
+            if (startNode == null) return;
 
             var node = CurrentWorkspace.GetModelInternal(nodeId) as NodeModel;
-            if (node == null)
-                return;
+            if (node == null) return;
+
+            bool isInPort = portType == PortType.Input;
             
             PortModel portModel = isInPort ? node.InPorts[portIndex] : node.OutPorts[portIndex];
 
