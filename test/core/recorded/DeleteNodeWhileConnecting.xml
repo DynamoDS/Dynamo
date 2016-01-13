@@ -1,0 +1,35 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateNodeCommand X="566" Y="213" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>53e78e6b-a7cf-4080-ae85-7d5ae08942ee</ModelGuid>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="53e78e6b-a7cf-4080-ae85-7d5ae08942ee" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Point.ByCoordinates" x="566" y="213" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+  </CreateNodeCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <CreateNodeCommand X="341" Y="201" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>424dc40d-2514-45ae-8b70-77ccea4ff464</ModelGuid>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="424dc40d-2514-45ae-8b70-77ccea4ff464" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="249" y="170" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" CodeText="1;" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <UpdateModelValueCommand Name="Code" Value="1" WorkspaceGuid="46434cdc-9918-462a-8cd7-7f170fa669b0">
+    <ModelGuid>424dc40d-2514-45ae-8b70-77ccea4ff464</ModelGuid>
+  </UpdateModelValueCommand>
+  <MakeConnectionCommand PortIndex="0" Type="1" ConnectionMode="0">
+    <ModelGuid>424dc40d-2514-45ae-8b70-77ccea4ff464</ModelGuid>
+  </MakeConnectionCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>424dc40d-2514-45ae-8b70-77ccea4ff464</ModelGuid>
+  </SelectModelCommand>
+  <DeleteModelCommand>
+    <ModelGuid>424dc40d-2514-45ae-8b70-77ccea4ff464</ModelGuid>
+  </DeleteModelCommand>
+  <MakeConnectionCommand PortIndex="0" Type="0" ConnectionMode="1">
+    <ModelGuid>53e78e6b-a7cf-4080-ae85-7d5ae08942ee</ModelGuid>
+  </MakeConnectionCommand>
+</Commands>
