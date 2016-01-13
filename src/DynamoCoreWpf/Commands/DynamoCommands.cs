@@ -113,6 +113,7 @@ namespace Dynamo.ViewModels
 
                 case "DeleteModelCommand":
                     CurrentSpaceViewModel.CancelActiveState();
+                    RaiseCanExecuteUndoRedo();
                     break;
                 case "CreateNodeCommand":
                 case "CreateProxyNodeCommand":
