@@ -1,33 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using DSIronPythonNode;
-using Dynamo;
+using Dynamo.Graph;
 using Dynamo.Models;
-using Dynamo.Nodes;
-using Dynamo.Tests;
-using Dynamo.Utilities;
 using NUnit.Framework;
 using DynCmd = Dynamo.Models.DynamoModel;
 
+using PythonNodeModels;
+
 namespace Dynamo.Tests
 {
+    [RequiresSTA]
     public class PythonEditTests : DynamoViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("DSIronPython.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         [Test]
         public void PythonScriptEdit_WorkspaceChangesReflected()
         {
             // open file
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\python", "python.dyn");
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "python.dyn");
             ViewModel.OpenCommand.Execute(examplePath);
 
             // get the python node
             var workspace = model.CurrentWorkspace;
             var nodeModel = workspace.NodeFromWorkspace("3bcad14e-d086-4278-9e08-ed2759ef92f3");
-            DSIronPythonNode.PythonNode pynode = nodeModel as DSIronPythonNode.PythonNode;
+            var pynode = nodeModel as PythonNode;
             Assert.NotNull(pynode);
 
             // make changes to python script
@@ -42,7 +45,7 @@ namespace Dynamo.Tests
         {
             // open file
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\python", "python.dyn");
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "python.dyn");
             ViewModel.OpenCommand.Execute(examplePath);
 
             // get the python node
@@ -77,7 +80,7 @@ namespace Dynamo.Tests
         {
             // open file
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\python", "varinpython.dyn");
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "varinpython.dyn");
             ViewModel.OpenCommand.Execute(examplePath);
 
             // get the python node
@@ -96,7 +99,7 @@ namespace Dynamo.Tests
         {
             // open file
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\python", "varinpython.dyn");
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "varinpython.dyn");
             ViewModel.OpenCommand.Execute(examplePath);
 
             // get the python node
@@ -129,7 +132,7 @@ namespace Dynamo.Tests
         private void UpdatePythonNodeContent(ModelBase pythonNode, string value)
         {
             var command = new DynCmd.UpdateModelValueCommand(
-                pythonNode.GUID, "ScriptContent", value);
+                System.Guid.Empty, pythonNode.GUID, "ScriptContent", value);
 
             ViewModel.ExecuteCommand(command);
         }

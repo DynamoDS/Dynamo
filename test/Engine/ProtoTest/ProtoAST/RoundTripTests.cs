@@ -10,16 +10,8 @@ using ProtoTestFx.TD;
 
 namespace ProtoTest.ProtoAST
 {
-    public class RoundTripTests
+    class RoundTripTests : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-
-        [SetUp]
-        public void Setup()
-        {
-        }
-
-
         [Test]
         public void TestRoundTrip_Assign01()
         {
@@ -293,6 +285,7 @@ namespace ProtoTest.ProtoAST
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void TestRoundTrip_ClassDecl_PropertyAccess_01()
         {
             int result1 = 10;
@@ -318,7 +311,7 @@ namespace ProtoTest.ProtoAST
 
             // Create the class node AST
             ProtoCore.AST.AssociativeAST.ClassDeclNode classDefNode = new ProtoCore.AST.AssociativeAST.ClassDeclNode();
-            classDefNode.className = "bar";
+            classDefNode.ClassName = "bar";
 
             // Create the property AST
             ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode();
@@ -330,7 +323,7 @@ namespace ProtoTest.ProtoAST
                 rank = 0,
                 UID = (int)ProtoCore.PrimitiveType.kTypeInt
             };
-            classDefNode.varlist.Add(varDeclNode);
+            classDefNode.Variables.Add(varDeclNode);
 
             astList.Add(classDefNode);
             astListcopy.Add(new ProtoCore.AST.AssociativeAST.ClassDeclNode(classDefNode));
@@ -396,6 +389,7 @@ namespace ProtoTest.ProtoAST
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void TestRoundTrip_ClassDecl_MemFunctionCall_01()
         {
             int result1 = 20;
@@ -459,10 +453,10 @@ namespace ProtoTest.ProtoAST
 
             // Create the class node AST
             ProtoCore.AST.AssociativeAST.ClassDeclNode classDefNode = new ProtoCore.AST.AssociativeAST.ClassDeclNode();
-            classDefNode.className = "bar";
+            classDefNode.ClassName = "bar";
 
             // Add the member function 'foo'
-            classDefNode.funclist.Add(funcDefNode);
+            classDefNode.Procedures.Add(funcDefNode);
 
 
             // Create the property AST
@@ -475,7 +469,7 @@ namespace ProtoTest.ProtoAST
                 rank = 0,
                 UID = (int)ProtoCore.PrimitiveType.kTypeInt
             };
-            classDefNode.varlist.Add(varDeclNode);
+            classDefNode.Variables.Add(varDeclNode);
 
 
             // Add the constructed class AST
@@ -532,7 +526,7 @@ namespace ProtoTest.ProtoAST
         }
 
         [Test]
-        [Category("Failure")]
+        [Category("DSDefinedClass_Ported")]
         public void TestAstToCode()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4393
@@ -554,7 +548,6 @@ namespace ProtoTest.ProtoAST
                 "return = {1, 2, 3};",
                 "return = Math.PI;",
                 "return = Math.Cos(1.2);", 
-                "class Foo { f0; f1 = 1; f2 = 2 + 3; f3: int = 3 + 4; f4: int[] = 5; f5: int[]..[] = {1,2,3} ; x:var; y:int[][][]; z:double[]..[]; constructor Foo(p:int[]) { x = p; } def foo:var[](p:int[]..[]) { return = 0; }  static def bar() { return = null; }}",
                 "x[0][1] = {};",
                 
             };
@@ -565,7 +558,7 @@ namespace ProtoTest.ProtoAST
 
             foreach (var stmt in statements)
             {
-                var cbn = ProtoCore.Utils.ParserUtils.Parse(stmt) as ProtoCore.AST.AssociativeAST.CodeBlockNode;
+                var cbn = ProtoCore.Utils.ParserUtils.Parse(stmt);
                 if (cbn != null)
                 {
                     foreach (var item in cbn.Body)
@@ -581,7 +574,7 @@ namespace ProtoTest.ProtoAST
 
             foreach (var stmt in new_statements)
             {
-                var cbn = ProtoCore.Utils.ParserUtils.Parse(stmt) as ProtoCore.AST.AssociativeAST.CodeBlockNode;
+                var cbn = ProtoCore.Utils.ParserUtils.Parse(stmt);
                 if (cbn != null)
                 {
                     foreach (var item in cbn.Body)

@@ -4,17 +4,9 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.Imperative
 {
-    public class IfElseTest
+    class IfElseTest : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string testPath = "..\\..\\..\\Scripts\\TD\\Imperative\\IfStatement\\";
-
-        [SetUp]
-        public void Setup()
-        {
-        }
-
-
+    
         [Test]
         [Category("SmokeTest")]
         public void T01_TestAllPassCondition()
@@ -441,28 +433,23 @@ b;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T12_TestIfElseUsingClassProperty()
         {
-            string src = @"x;
+            string src = @"
+			import(""FFITarget.dll"");
+			x;
 y;
-	class A 
-    {                                      
-		P1:var;
-        constructor A(p1:int)
-        {
-            P1 = p1;
-        }
-          
-    }
+	
     
 	[Imperative]
 	{
-	    a1 = A.A(2);
-        b1 = a1.P1; 
+	    a1 = ClassFunctionality.ClassFunctionality(2);
+        b1 = a1.intVal; 
 		x = 2;
 		y = 2;
-		if(a1.P1 == 2 )
+		if(a1.IntVal == 2 )
 		{
 		    x = 1;
 		}
@@ -471,7 +458,7 @@ y;
 			x = 0;
 		}
 		
-		if(3 < a1.P1  )
+		if(3 < a1.IntVal  )
 		{
 		    y = 1;
 		}
@@ -1710,21 +1697,13 @@ c;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T56_Defect_1460162()
         {
             string code = @"
-class A
-{
-    X : int;
-    
-    
-    constructor A(x : int)
-    {
-        X = x;        
-    }
-}
-def length:int  (pts : A[])
+import (""FFITarget.dll"");
+def length:int  (pts : ClassFunctionality[])
 {
     numPts = [Imperative]
     {
@@ -1741,8 +1720,8 @@ def length:int  (pts : A[])
     }
    return = numPts;
 }
-pt1 = A.A( 0 );
-pt2 = A.A( 10 );
+pt1 = ClassFunctionality.ClassFunctionality( 0 );
+pt2 = ClassFunctionality.ClassFunctionality( 10 );
 pts1 = {pt1, pt2};
 pts2 = {pt1};
 numpts1 = length(pts1);
@@ -1829,7 +1808,7 @@ d2;
     //f2 = a2 > b2;	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { new Object[] { false, false }, new Object[] { false, false } };
+            Object[] v1 = new Object[] { false,false};
             //Verification 
             thisTest.Verify("d2", v1);
 
@@ -1974,33 +1953,19 @@ test = foo();
 
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T60_Comparing_Class_Properties()
         {
             string code = @"
-class B
-{
-    b : var;
-    constructor B ( y )
-    {
-        b = y;
-    }
-}
-class A
-{ 
-    a : var;
-    constructor A ( x : var )
-    {
-        a = x;
-    }
-}
-a1 = A.A(10);
-b1 = B.B(10);
-x1 = a1.a == B.B(10).b ? true : false ;
+import (""FFITarget.dll"");
+a1 = ClassFunctionality.ClassFunctionality(10);
+b1 = ClassFunctionality.ClassFunctionality(10);
+x1 = a1.IntVal == ClassFunctionality.ClassFunctionality(10).IntVal ? true : false ;
 x2 = [Imperative]
 {
     b = 0;
-    if ( a1.a == B.B(10).b ) 
+    if ( a1.IntVal == ClassFunctionality.ClassFunctionality(10).IntVal ) 
         b = true;
     else
         b = false;
@@ -2015,26 +1980,16 @@ x2 = [Imperative]
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T60_Comparing_Class_Properties_With_Null()
         {
             string code = @"
-class B
-{
-    b : var;
-    constructor B ( y )
-    {
-        b = y;
-    }
-}
-class A
-{ 
-    a : var;
-    
-}
-a1 = A.A(10);
-b1 = B.B(10);
-x1 = a1.a == B.B(10).a ? true : false ;
+			import (""FFITarget.dll"");
+
+a1 = ClassFunctionality.ClassFunctionality(10);
+b1 = ClassFunctionality.ClassFunctionality(10);
+x1 = a1.IntVal == ClassFunctionality.ClassFunctionality(10).IntVal ? true : false ;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Verification 
@@ -2042,35 +1997,29 @@ x1 = a1.a == B.B(10).a ? true : false ;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T61_Accessing_non_existent_properties_of_array_elements()
         {
             // Assert.Fail("");
             string code = @"
-class A  
-{
-    x : var;
-    constructor A ( y : var )
-    {
-        x = y;
-    }
-}
-c = { A.A(0), A.A(1) };
+import (""FFITarget.dll"");
+c = { ClassFunctionality.ClassFunctionality(0), ClassFunctionality.ClassFunctionality(1) };
 p = {};
 d = [Imperative]
 {
-    if(c[0].x == 0 )
+    if(c[0].IntVal == 0 )
     {
         c[0] = 0;
 	p[0] = 0;
     }
-    if(c[0].x == 0 )
+    if(c[0].IntVal == 0 )
     {
         p[1] = 1;
     }
     return = 0;
 }
 t1 = c[0];
-t2 = c[1].x;
+t2 = c[1].IntVal;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Verification 
@@ -2189,37 +2138,32 @@ r:bool = foo(null);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("TDDIfInline")]
         public void TDD_UserDefinedTypeConvertedToBool_NotNull_defect()
         {
             String code =
 @"
-        class A
-{
-        a:int;
-        constructor A (b:int)
-        {
-                a=b;
-    }
-}
-d:bool=A.A(5);
+        import (""FFITarget.dll"");
+d:bool=ClassFunctionality.ClassFunctionality(5);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("d", true);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("TDDIfInline")]
         //not null user defined var is not evaluated as true
         public void TDD_UserDefinedTypeConvertedToBool()
         {
             String code =
 @"
-        class A{}
+        import (""FFITarget.dll"");
 r = 
 [Imperative]
 {
-a = A.A();
+a = ClassFunctionality.ClassFunctionality();
 if(a)
 {
     return = true;
@@ -2289,17 +2233,19 @@ r = [Imperative]
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("TDDIfInline")]
         public void TDD_UserDefinedTypeConvertedToBool_Inline()
         {
             String code =
 @"
-        class A{}
+import (""FFITarget.dll"");
+      
 r = 
 [Imperative]
 {
-a = A.A();
-return = a==true?true:""A.A()!=true"";
+a = ClassFunctionality.ClassFunctionality();
+return = a==true?true:""ClassFunctionality.ClassFunctionality()!=true"";
 }
 ";
             thisTest.RunScriptSource(code);

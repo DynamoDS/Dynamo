@@ -64,6 +64,41 @@ namespace DSCoreNodesTests
                 new ArrayList { 1, 2, 3, 4, 5 },
                 List.UniqueItems(new ArrayList { 1, 1.0, 2, 3, 4, 4.0, 5, 4, 2, 1, 3 }));
         }
+
+        [Test]
+        public static void UniqueInStringList()
+        {
+            Assert.AreEqual(new ArrayList { "foo", "bar" },
+                List.UniqueItems(new ArrayList { "foo", "bar", "foo", "bar" }));
+        }
+
+        [Test]
+        public static void UniqueInCharList()
+        {
+            Assert.AreEqual(new ArrayList { 'a', 'b', 'c' },
+                List.UniqueItems(new ArrayList { 'a', 'b', 'c', 'a', 'b', 'c' }));
+        }
+
+        [Test]
+        public static void UniqueInBooleanList()
+        {
+            Assert.AreEqual(new ArrayList { true },
+                List.UniqueItems(new ArrayList { true, true, true, true, true}));
+        }
+
+        [Test]
+        public static void UniqueInNullList()
+        {
+            Assert.AreEqual(new ArrayList { null },
+                List.UniqueItems(new ArrayList { null, null, null, null }));
+        }
+
+        [Test]
+        public static void UniqueInCombineList()
+        {
+            Assert.AreEqual(new ArrayList { true, null, 'a', "foo"},
+                List.UniqueItems(new ArrayList { true, true, null, null, 'a', 'a', "foo", "foo" }));
+        }
         #endregion
 
         [Test]
@@ -77,10 +112,21 @@ namespace DSCoreNodesTests
 
         [Test]
         [Category("UnitTests")]
+        public static void ReplaceItemAtIndex()
+        {
+            Assert.AreEqual(List.ReplaceItemAtIndex(new ArrayList { 5, 4, 3, 2, 1 }, 0, 20), new ArrayList { 20, 4, 3, 2, 1 });
+            Assert.AreEqual(List.ReplaceItemAtIndex(new ArrayList { 5, 4, 3, 2, 1 }, -1, 20), new ArrayList { 5, 4, 3, 2, 20 });
+
+            Assert.Throws<IndexOutOfRangeException>(() => List.ReplaceItemAtIndex(new ArrayList { 5, 4, 3, 2, 1 }, 12, 20));
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public static void ReverseList()
         {
             Assert.AreEqual(new ArrayList { 5, 4, 3, 2, 1 }, List.Reverse(new List<int> { 1, 2, 3, 4, 5 }));
         }
+
 
         /*
         [Test]
@@ -416,7 +462,7 @@ namespace DSCoreNodesTests
         {
             Assert.AreEqual(
                 new ArrayList { new ArrayList { 0, 1 }, new ArrayList { 2, 3 } },
-                List.Chop(new ArrayList { 0, 1, 2, 3 }, 2));
+                List.Chop(new ArrayList { 0, 1, 2, 3 }, new List<int> { 2 }));
         }
 
         [Test]
@@ -455,19 +501,33 @@ namespace DSCoreNodesTests
                 List.DiagonalLeft(Enumerable.Range(0, 20).ToList(), 5));
         }
 
-        //[Test]
-        //public static void TransposeListOfLists()
-        //{
-        //    Assert.AreEqual(
-        //        new List<IList> { new ArrayList { 0, 3, 6 }, new ArrayList { 1, 4, 7 }, new ArrayList { 2, 5, 8 } },
-        //        List.Transpose(
-        //            new List<IList<object>>
-        //            {
-        //                new List<object> { 0, 1, 2 },
-        //                new List<object> { 3, 4, 5 },
-        //                new List<object> { 6, 7, 8 }
-        //            }));
-        //}
+        [Test]
+        public static void TransposeListOfLists()
+        {
+            Assert.AreEqual(
+                new List<IList> { new ArrayList { 0, 3, 6 }, new ArrayList { 1, 4, 7 }, new ArrayList { 2, 5, 8 } },
+                List.Transpose(
+                    new List<IList<object>>
+                    {
+                        new List<object> { 0, 1, 2 },
+                        new List<object> { 3, 4, 5 },
+                        new List<object> { 6, 7, 8 }
+                    }));
+        }
+
+        [Test]
+        public static void TransposeJaggedListOfLists()
+        {
+            Assert.AreEqual(
+                new List<IList> { new ArrayList { 0, 3, 6 }, new ArrayList { 1, 4, 7 }, new ArrayList { 2, 5, 8 }, new ArrayList { null, 6, null} },
+                List.Transpose(
+                    new List<IList<object>>
+                    {
+                        new List<object> { 0, 1, 2 },
+                        new List<object> { 3, 4, 5, 6 },
+                        new List<object> { 6, 7, 8 }
+                    }));
+        }
 
         [Test]
         [Category("UnitTests")]
@@ -676,6 +736,392 @@ namespace DSCoreNodesTests
                 List.Sublists(input, new ArrayList { 0, 5, new ArrayList { 2, 3, 4 } }, 5));
 
 
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void FirstIndexOf()
+        {
+            List<int> input = Enumerable.Range(0, 10).ToList();
+
+            int index = List.FirstIndexOf(input, 3);
+            Assert.AreEqual(index, 3);
+
+            index = List.FirstIndexOf(input, 21);
+            Assert.AreEqual(index, -1);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void AllIndicesOf()
+        {
+            List<int> input = new List<int> { 1, 2, 3, 1, 2, 3 };
+
+            var indices = List.AllIndicesOf(input, 3).Cast<int>();
+            Assert.IsTrue(indices.SequenceEqual(new [] {2, 5}));
+
+            indices = List.AllIndicesOf(input, 21).Cast<int>();
+            Assert.IsEmpty(indices);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void CleanNullsPreserveIndices()
+        {
+            var input = new ArrayList
+            {
+                new ArrayList {1, null, 2, null, null},
+                new ArrayList {null, null, 3, 4, null},
+                new ArrayList {null, null},
+                new ArrayList {1, 2}
+            };
+
+            var output = List.Clean(input);
+
+            var expected = new ArrayList
+            {
+                new ArrayList {1, null, 2},
+                new ArrayList {null, null, 3, 4},
+                null,
+                new ArrayList {1, 2}
+            };
+
+            Assert.AreEqual(expected, output);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void CleanNullsChangeIndices()
+        {
+            var input = new ArrayList
+            {
+                new ArrayList {1, null, 2, null, null},
+                new ArrayList {null, null, 3, 4, null},
+                new ArrayList {null, null},
+                new ArrayList {1, 2}
+            };
+
+            var output = List.Clean(input, false);
+
+            var expected = new ArrayList
+            {
+                new ArrayList {1, 2},
+                new ArrayList {3, 4},
+                new ArrayList {1, 2}
+            };
+
+            Assert.AreEqual(expected, output);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void CleanNullsChangeIndicesEdgeCases()
+        {
+            // 1D array of nulls
+            var input = new ArrayList { null };
+            var output = List.Clean(input, false);
+            var expected = new ArrayList();
+            Assert.AreEqual(expected, output);
+
+            // list is null itself
+            input = null;
+            output = List.Clean(input, false);
+            expected = null;
+            Assert.AreEqual(expected, output);
+
+            // nested array of nulls
+            input = new ArrayList { new ArrayList { null } };
+            output = List.Clean(input, false);
+            expected = new ArrayList();
+            Assert.AreEqual(expected, output);
+
+            // empty list
+            input = new ArrayList();
+            output = List.Clean(input, false);
+            expected = new ArrayList();
+            Assert.AreEqual(expected, output);
+
+            // nested empty list
+            input = new ArrayList { new ArrayList() };
+            output = List.Clean(input, false);
+            expected = new ArrayList();
+            Assert.AreEqual(expected, output);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void CleanNullsPreserveIndicesEdgeCases()
+        {
+            // 1D array of nulls
+            var input = new ArrayList { null };
+            var output = List.Clean(input);
+            Assert.AreEqual(null, output);
+
+            // list is null itself
+            input = null;
+            output = List.Clean(input);
+            Assert.AreEqual(null, output);
+
+            // nested array of nulls
+            input = new ArrayList { new ArrayList { null } };
+            output = List.Clean(input);
+            var expected = new ArrayList { null };
+            Assert.AreEqual(expected, output);
+
+            // empty list
+            input = new ArrayList();
+            output = List.Clean(input);
+            expected = new ArrayList();
+            Assert.AreEqual(expected, output);
+
+            // nested empty list
+            input = new ArrayList { new ArrayList() };
+            output = List.Clean(input);
+            expected = new ArrayList { new ArrayList() };
+            Assert.AreEqual(expected, output);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void Chop1()
+        {
+            var list = new ArrayList { 1, 2, 3, 4, 5 };
+            var lengths = new List<int> { 3, 2 };
+
+            var output = List.Chop(list, lengths);
+            var expected = new ArrayList { new ArrayList { 1, 2, 3 }, new ArrayList { 4, 5 } };
+            Assert.AreEqual(expected, output);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void Chop2()
+        {
+            var list = new ArrayList { 1, 2, 3, 4, 5 };
+            var lengths = new List<int> { 0, 2 };
+
+            var output = List.Chop(list, lengths);
+            var expected = new ArrayList { new ArrayList { }, new ArrayList { 1, 2 }, new ArrayList { 3, 4 }, new ArrayList { 5 } };
+            Assert.AreEqual(expected, output);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void Chop3()
+        {
+            var list = new ArrayList { 1, 2, 3, 4, 5 };
+            var lengths = new List<int> { -1, -1 };
+
+            var output = List.Chop(list, lengths);
+            var expected = new ArrayList { 1, 2, 3, 4, 5 };
+            Assert.AreEqual(expected, output);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void Chop4()
+        {
+            var list = new ArrayList { 1, 2, 3 };
+            var lengths = new List<int> { 2, 5 };
+
+            var output = List.Chop(list, lengths);
+            var expected = new ArrayList { new ArrayList { 1, 2 }, new ArrayList { 3 } };
+            Assert.AreEqual(expected, output);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void Chop5()
+        {
+            var list = new ArrayList { 1, "a", 3 };
+            var lengths = new List<int> { 2, 1 };
+
+            var output = List.Chop(list, lengths);
+            var expected = new ArrayList { new ArrayList { 1, "a" }, new ArrayList { 3 } };
+            Assert.AreEqual(expected, output);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void SortByKey1()
+        {
+            var list = new ArrayList { "item1", "item2" };
+            var keys = new ArrayList { "key2", "key1" };
+
+            var result = List.SortByKey(list, keys);
+            var expected = new Dictionary<string, object>
+            {
+                { "sorted list", new object[] { "item2", "item1" } },
+                { "sorted keys", new object[] { "key1", "key2" } }
+            };
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void SortByKey2()
+        {
+            var list = new ArrayList { "item1", "item2" };
+            var keys = new ArrayList { "key1" };
+
+            Assert.Throws<ArgumentException>(() => List.SortByKey(list, keys));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void SortByKey3()
+        {
+            var list = new ArrayList { "item1" };
+            var keys = new ArrayList { "key1", "key2" };
+
+            Assert.Throws<ArgumentException>(() => List.SortByKey(list, keys));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void SortByKey4()
+        {
+            var list = new ArrayList { "Zack",
+        "Ian",
+        "Neal",
+        "Colin",
+        "Matt" };
+            var keys = new ArrayList {"Kron",
+        "Keough",
+        "Burnham",
+        "McCrone",
+        "Jezyk" };
+
+            var result = List.SortByKey(list, keys);
+            var expected = new Dictionary<string, object>
+            {
+                { "sorted list", new object[] { "Neal", "Matt", "Ian", "Zack", "Colin" } },
+                { "sorted keys", new object[] { "Burnham", "Jezyk", "Keough", "Kron", "McCrone" } }
+            };
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void SortByKey5()
+        {
+            var list = new ArrayList { "Zack",
+        "Ian",
+        "Neal",
+        "Anna"};
+            var keys = new ArrayList {-3,
+        1.6,
+        "abc",
+        5};
+
+            var result = List.SortByKey(list, keys);
+            var expected = new Dictionary<string, object>
+            {
+                { "sorted list", new object[] { "Zack", "Ian", "Anna", "Neal" } },
+                { "sorted keys", new object[] { -3, 1.6, 5, "abc" } }
+            };
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void SortByKey6()
+        {
+            var list = new ArrayList { 1, 2, 3 };
+            var keys = new ArrayList { 1.21, 1.20, 1.2001 };
+
+            var result = List.SortByKey(list, keys);
+            var expected = new Dictionary<string, object>
+            {
+                { "sorted list", new object[] { 2, 3, 1 }},
+                { "sorted keys", new object[] { 1.20, 1.2001, 1.21 } }
+            };
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void SortByKey7()
+        {
+            var list = new ArrayList { 1, 2, 3 };
+            var keys = new ArrayList { new object[] { true, true }, false };
+
+            Assert.Throws<ArgumentException>(() => List.SortByKey(list, keys));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void GroupByKey1()
+        {
+            var list = new ArrayList { "a", "b", "c" };
+            var keys = new ArrayList { "key1", "key2", "key1" };
+
+            var result = List.GroupByKey(list, keys);
+            var expected = new Dictionary<string, object>
+            {
+                { "groups", new object[] { new object[] { "a", "c" }, new object[] { "b" } }},
+                { "unique keys", new object[] { "key1", "key2" } }
+            };
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void GroupByKey2()
+        {
+            var list = new ArrayList {"San Francisco",
+        "Springfield",
+        "Fresno",
+        "Berkeley",
+        "Fall River",
+        "Waltham",
+        "Sacramento" };
+            var keys = new ArrayList { "California",
+        "Massachusetts",
+        "California",
+        "California",
+        "Massachusetts",
+        "Massachusetts",
+        "California" };
+
+            var result = List.GroupByKey(list, keys);
+            var expected = new Dictionary<string, object>
+            {
+                { "groups", 
+                    new object[]
+                    {
+                        new object[] { "San Francisco", "Fresno",  "Berkeley", "Sacramento"}, 
+                        new object[] { "Springfield", "Fall River", "Waltham" }
+                    }},
+                { "unique keys", new object[] { "California", "Massachusetts" } }
+            };
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void GroupByKey3()
+        {
+            var list = new ArrayList { "item1", "item2", "item1", "item3" };
+            var keys = new ArrayList { "key1", "key2", "key1" };
+
+            Assert.Throws<ArgumentException>(() => List.GroupByKey(list, keys));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void GroupByKey4()
+        {
+            var list = new ArrayList { "item1" };
+            var keys = new ArrayList { "key1", "key2" };
+
+            Assert.Throws<ArgumentException>(() => List.GroupByKey(list, keys));
         }
     }
 }

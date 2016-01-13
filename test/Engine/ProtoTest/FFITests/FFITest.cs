@@ -1,24 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
+using ProtoCore.Mirror;
 namespace ProtoTest.TD.FFI
 {
-    class FFITest
+    class FFITest : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string FFIPath = "..\\..\\..\\Scripts\\TD\\FFI\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
-
-
-
-
-
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassProperties")]
         [Category("SmokeTest")]
         public void T003_ClassTest()
         {
@@ -111,6 +103,7 @@ resultH = tuple1.H;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassProperties")]
         [Category("SmokeTest")]
         public void T004_Tuple4_XYZ_Simple_WithGetMethods()
         {
@@ -203,6 +196,7 @@ resultH = tuple1.get_H();
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassProperties")]
         [Category("SmokeTest")]
         public void T005_Tuple4_ByCoordinate3_Simple()
         {
@@ -294,6 +288,7 @@ result4 = tuple1.Coordinates4();
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassProperties")]
         [Category("SmokeTest")]
         public void T006_Tuple4_ByCoordinate4_Simple()
         {
@@ -385,6 +380,7 @@ result4 = tuple1.Coordinates4();
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassProperties")]
         [Category("SmokeTest")]
         public void T007_Tuple4_Multiply_Simple()
         {
@@ -476,6 +472,7 @@ multiply = tuple1.Multiply(tuple2);
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassProperties")]
         [Category("SmokeTest")]
         public void T008_Transform_ByDate_Simple()
         {
@@ -656,6 +653,7 @@ c3_H = c3.H;";
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassProperties")]
         [Category("SmokeTest")]
         public void T009_Transform_ByTuples_Simple()
         {
@@ -839,6 +837,7 @@ c3_H = c3.H;";
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassProperties")]
         [Category("SmokeTest")]
         public void T010_Transform_ApplyTransform()
         {
@@ -1020,6 +1019,7 @@ h = result.H;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassProperties")]
         [Category("SmokeTest")]
         public void T011_Transform_NativeMultiply()
         {
@@ -1223,6 +1223,7 @@ r3H = r3.H;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassProperties")]
         [Category("SmokeTest")]
         public void T012_Transform_NativePreMultiply()
         {
@@ -1426,6 +1427,7 @@ r3H = r3.H;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassProperties")]
         [Category("SmokeTest")]
         public void T013_Transform_TransformVector()
         {
@@ -1612,6 +1614,7 @@ resultz = resultVector.Z;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassProperties")]
         [Category("SmokeTest")]
         public void T014_Transform_TransformPoint()
         {
@@ -1818,6 +1821,7 @@ resultz = resultPoint.Z;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         [Category("SmokeTest")]
         public void T015_Transform_Identity()
         {
@@ -2016,6 +2020,7 @@ r3H = r3.H;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         [Category("SmokeTest")]
         public void T016_Transform_GetTuples()
         {
@@ -2223,6 +2228,7 @@ r3H = r3.H;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         [Category("SmokeTest")]
         public void T017_Transform_GetData()
         {
@@ -2540,5 +2546,51 @@ o2 = OverloadTarget.IEnumerableOfDifferentObjectType(a);
 
         }
 
+        [Test]
+        public void MethodWithRefOutParams_NoLoad()
+        {
+            string code = @"
+import(""FFITarget.dll"");
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+
+            string ffiTargetClass = "ClassWithRefParams";
+
+            // Assert that the class name is indeed a class
+            ClassMirror type = null;
+            Assert.DoesNotThrow(() => type = new ClassMirror(ffiTargetClass, thisTest.GetTestCore()));
+
+            var members = type.GetMembers();
+
+            var expected = new string[] { "ClassWithRefParams" };
+
+            var actual = members.OrderBy(n => n.Name).Select(x => x.Name).ToArray();
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        public void TestDefaultArgumentAttribute()
+        {
+            string code = @"
+import (TestData from ""FFITarget.dll"");
+";
+            thisTest.RunScriptSource(code);
+            var core = thisTest.GetTestCore();
+            var testDataClassIndex = core.ClassTable.IndexOf("TestData");
+            var testDataClass = core.ClassTable.ClassNodes[testDataClassIndex];
+            var funcNode = testDataClass.ProcTable.GetFunctionsByName("GetCircleArea")
+                                                  .Where(p => p.IsStatic)
+                                                  .FirstOrDefault();
+            var argument = funcNode.ArgumentInfos.First();
+
+            Assert.IsNotNull(argument);
+            Assert.IsNotNull(argument.Attributes);
+
+            object o;
+            Assert.IsTrue(argument.Attributes.TryGetAttribute("DefaultArgumentAttribute", out o));
+
+            string expression = o as string;
+            Assert.IsTrue(expression.Equals("TestData.GetFloat()"));
+        }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Utils;
+using ProtoCore.Properties;
 
 namespace ProtoFFI
 {
@@ -58,12 +59,9 @@ namespace ProtoFFI
 
             if (modulePathFileName == null || !File.Exists(modulePathFileName))
             {
-                if (!FFIExecutionManager.Instance.IsInternalGacAssembly(moduleName))
-                {
-                    System.Diagnostics.Debug.Write(@"Cannot import file: '" + modulePathFileName);
-                    _coreObj.LogWarning(ProtoCore.BuildData.WarningID.kFileNotFound, string.Format(ProtoCore.BuildData.WarningMessage.kFileNotFound, modulePathFileName));
-                    return null;
-                }
+                System.Diagnostics.Debug.Write(@"Cannot import file: '" + modulePathFileName);
+                _coreObj.LogWarning(ProtoCore.BuildData.WarningID.kFileNotFound, string.Format(Resources.kFileNotFound, modulePathFileName));
+                return null;
             }
 
             node.ModulePathFileName = modulePathFileName;
@@ -155,12 +153,12 @@ namespace ProtoFFI
                 if (classNode != null)
                 {
                     ProtoCore.AST.AssociativeAST.ClassDeclNode importedClass = null;
-                    if (TryGetClassNode(importedCodeBlock, classNode.className, out importedClass))
+                    if (TryGetClassNode(importedCodeBlock, classNode.ClassName, out importedClass))
                     {
                         bool dummyClassNode = IsEmptyClassNode(classNode);
                         bool dummyImportClass = IsEmptyClassNode(importedClass);
 
-                        Validity.Assert(dummyImportClass || dummyClassNode, string.Format("{0} is imported more than once!!", classNode.className));
+                        Validity.Assert(dummyImportClass || dummyClassNode, string.Format("{0} is imported more than once!!", classNode.ClassName));
                         if (dummyImportClass && !dummyClassNode)
                         {
                             importedNode.CodeNode.Body.Remove(importedClass);
@@ -184,10 +182,10 @@ namespace ProtoFFI
             if (classNode.IsExternLib && null == classNode.ExternLibName)
                 return true;
 
-            if (classNode.funclist.Count > 0)
+            if (classNode.Procedures.Count > 0)
                 return false;
 
-            if (classNode.varlist.Count > 0)
+            if (classNode.Variables.Count > 0)
                 return false;
 
             return true;
@@ -217,7 +215,7 @@ namespace ProtoFFI
             foreach (var item in node.Body)
             {
                 ProtoCore.AST.AssociativeAST.ClassDeclNode clsnode = item as ProtoCore.AST.AssociativeAST.ClassDeclNode;
-                if (clsnode != null && clsnode.className == typeName)
+                if (clsnode != null && clsnode.ClassName == typeName)
                 {
                     classNode = clsnode;
                     return true;
@@ -238,7 +236,7 @@ namespace ProtoFFI
                 }
                 catch
                 {
-                    _coreObj.LogSemanticError(string.Format("Failed to import {0}", importModuleName), _coreObj.CurrentDSFileName, curLine, curCol);
+                    _coreObj.LogSemanticError(string.Format(Resources.FailedToImport, importModuleName), _coreObj.CurrentDSFileName, curLine, curCol);
                 }
             }
             
@@ -249,7 +247,9 @@ namespace ProtoFFI
                 codeBlockNode = dllModule.ImportCodeBlock(typeName, alias, refNode);
                 Type type = dllModule.GetExtensionAppType();
                 if (type != null)
-                    FFIExecutionManager.Instance.RegisterExtensionApplicationType(_coreObj, type);
+                {
+                    _coreObj.AddDLLExtensionAppType(type);
+                }
             }
             else if (extension == ".ds")
             {

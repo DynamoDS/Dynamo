@@ -1,0 +1,16 @@
+<Workspace Version="0.7.6.3916" X="0" Y="0" zoom="1" Name="Home">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.Function guid="07444d56-cae5-4e3e-b273-ddad2f7e5a4e" type="Dynamo.Nodes.Function" nickname="ro" x="235" y="200.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest">
+      <ID value="601d82d5-f254-4d1e-85a1-4e14c67fe196" />
+      <Name value="ro" />
+      <Description value="ro" />
+      <Inputs />
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors />
+  <Notes />
+</Workspace>

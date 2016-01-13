@@ -1,0 +1,31 @@
+<Workspace Version="0.7.5.3327" X="148.333103560307" Y="280.520717237927" zoom="1.24669712825198" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="1db3330e-bd1b-4116-b5ca-df4a18e78960" nickname="Code Block" x="0" y="58.2183333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{&quot;Tywin&quot;,&quot;Cersei&quot;,&quot;Hodor&quot;,&quot;Tyrian&quot;};" ShouldFocus="false" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="31cf53d7-8896-4139-8aff-269178b4d3db" nickname="Number" x="0" y="270" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0..42" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="9e48b2a9-82fe-445f-bfb1-cee9d6e591cd" nickname="List.MaximumItem" x="434" y="324" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.MaximumItem@var[]" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="93a0599d-2456-41e9-a36b-3022cf9c733b" nickname="List.MinimumItem" x="434" y="216" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.MinimumItem@var[]" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="f5ce8f87-db4f-4cab-bcb2-4b64089338b5" nickname="Watch" x="888" y="222" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <DSCoreNodesUI.CreateList type="DSCoreNodesUI.CreateList" guid="259de8c8-25b8-4441-b3fd-c2d1caa5a2ab" nickname="List.Create" x="662" y="222" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="2" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="d8b888e9-d956-482a-a462-ddd7b7ad4efc" nickname="Watch" x="888" y="76" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <DSCoreNodesUI.CreateList type="DSCoreNodesUI.CreateList" guid="d6813751-ae9b-4866-b1ab-8062d3062843" nickname="List.Create" x="662" y="76" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="2" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="c4f3d21a-aed2-4ebd-aaf6-a49358174544" nickname="List.MaximumItem" x="434" y="108" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.MaximumItem@var[]" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="b9a7de54-e4b6-4fcc-acfb-30331b0e519a" nickname="List.MinimumItem" x="434" y="0" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.MinimumItem@var[]" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="1db3330e-bd1b-4116-b5ca-df4a18e78960" start_index="0" end="b9a7de54-e4b6-4fcc-acfb-30331b0e519a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1db3330e-bd1b-4116-b5ca-df4a18e78960" start_index="0" end="c4f3d21a-aed2-4ebd-aaf6-a49358174544" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="31cf53d7-8896-4139-8aff-269178b4d3db" start_index="0" end="9e48b2a9-82fe-445f-bfb1-cee9d6e591cd" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="31cf53d7-8896-4139-8aff-269178b4d3db" start_index="0" end="93a0599d-2456-41e9-a36b-3022cf9c733b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9e48b2a9-82fe-445f-bfb1-cee9d6e591cd" start_index="0" end="259de8c8-25b8-4441-b3fd-c2d1caa5a2ab" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="93a0599d-2456-41e9-a36b-3022cf9c733b" start_index="0" end="259de8c8-25b8-4441-b3fd-c2d1caa5a2ab" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="259de8c8-25b8-4441-b3fd-c2d1caa5a2ab" start_index="0" end="f5ce8f87-db4f-4cab-bcb2-4b64089338b5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d6813751-ae9b-4866-b1ab-8062d3062843" start_index="0" end="d8b888e9-d956-482a-a462-ddd7b7ad4efc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c4f3d21a-aed2-4ebd-aaf6-a49358174544" start_index="0" end="d6813751-ae9b-4866-b1ab-8062d3062843" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b9a7de54-e4b6-4fcc-acfb-30331b0e519a" start_index="0" end="d6813751-ae9b-4866-b1ab-8062d3062843" end_index="0" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="MinimumItem and MaximumItem are useful when you want to find the maximum or minimum values in a list based on their natural sort order. For numbers, the sort order is their numeric value. For strings, the sort order is alphabetical." x="-10.0826067381988" y="-122.73734863959" />
+  </Notes>
+</Workspace>

@@ -7,19 +7,19 @@
     </Fragment>
     <Fragment>
         <ComponentGroup Id="DEFINITIONS">
-            <Component Id="cmp6A2C256CC62791E91F6182191CBB885C" Directory="dir2F0021EF16DBDDD0C278C0BCAE6BB725" Guid="{1C6E4DEA-1EDD-4FF1-B2B5-A75CEC7E3A6B}">
+            <Component Id="cmp6A2C256CC62791E91F6182191CBB885C" Directory="dir2F0021EF16DBDDD0C278C0BCAE6BB725" Guid="{4E228ED6-9EA1-4BF3-BB4C-727F70BFD1BE}">
                 <File Id="fil35DE848678CC7A0329C54F9546403585" KeyPath="yes" Source="$(var.definitions)\BoundingBoxXYZ.dyf" />
             </Component>
-            <Component Id="cmp33C03A4E175C05C2875826D0C6A03E1D" Directory="dir2F0021EF16DBDDD0C278C0BCAE6BB725" Guid="{DD3B92B4-3454-4A68-96AB-DE5C8128ED90}">
+            <Component Id="cmp33C03A4E175C05C2875826D0C6A03E1D" Directory="dir2F0021EF16DBDDD0C278C0BCAE6BB725" Guid="{4AA36FA9-5DBA-4FCA-9C03-235E9E6D722F}">
                 <File Id="fil66D277C6DA9ABC54D02B275C87BEB1E9" KeyPath="yes" Source="$(var.definitions)\ModelCurveFromCurveLoop.dyf" />
             </Component>
-            <Component Id="cmp752E6AD65704CD0394BDC3B0910095EA" Directory="dir2F0021EF16DBDDD0C278C0BCAE6BB725" Guid="{09922E63-DB48-422D-834F-50692670C9D2}">
+            <Component Id="cmp752E6AD65704CD0394BDC3B0910095EA" Directory="dir2F0021EF16DBDDD0C278C0BCAE6BB725" Guid="{71BD4E6A-26D5-4427-A2A9-917A09CC398E}">
                 <File Id="fil8468DC40364B0244BC7A9370EAC6C9C8" KeyPath="yes" Source="$(var.definitions)\TransformOriginVectors.dyf" />
             </Component>
-            <Component Id="cmpFA91F87561FECE46C461E2352C5BEF66" Directory="dir2F0021EF16DBDDD0C278C0BCAE6BB725" Guid="{671D5DB4-CAB4-4488-9AF1-1351DA3A5AF7}">
+            <Component Id="cmpFA91F87561FECE46C461E2352C5BEF66" Directory="dir2F0021EF16DBDDD0C278C0BCAE6BB725" Guid="{58A0B958-679D-4A1C-ABA1-5538AC9648E0}">
                 <File Id="filB01E018EE3E46C3C1570753BF307E71A" KeyPath="yes" Source="$(var.definitions)\XyzFromListOfNumbers.dyf" />
             </Component>
-            <Component Id="cmpEDD2A4604308CC866C87A4EED552A3C1" Directory="dir2F0021EF16DBDDD0C278C0BCAE6BB725" Guid="{791D8128-FB6A-4A15-A68C-741D2A823B1A}">
+            <Component Id="cmpEDD2A4604308CC866C87A4EED552A3C1" Directory="dir2F0021EF16DBDDD0C278C0BCAE6BB725" Guid="{09FD978B-CF77-4EB7-A6B5-34B0405B2091}">
                 <File Id="filB64B1418E38304EDD4E89E63BEC37CA8" KeyPath="yes" Source="$(var.definitions)\XyzGrid.dyf" />
             </Component>
         </ComponentGroup>

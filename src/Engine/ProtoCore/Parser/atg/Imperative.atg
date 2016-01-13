@@ -47,59 +47,28 @@ Imperative_languageblock<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
     ident
                                         (.
                                             if( 0 == t.val.CompareTo(ProtoCore.DSASM.kw.imperative)) {
-                                                langblock.codeblock.language = ProtoCore.Language.kImperative;
+                                                langblock.codeblock.Language = ProtoCore.Language.Imperative;
                                             }
                                             else if( 0 == t.val.CompareTo(ProtoCore.DSASM.kw.associative)) {
-                                                langblock.codeblock.language = ProtoCore.Language.kAssociative; 
+                                                langblock.codeblock.Language = ProtoCore.Language.Associative; 
                                             }
                                             else {
-                                                langblock.codeblock.language = ProtoCore.Language.kInvalid; 
-                                                errors.SemErr(t.line, t.col, String.Format("\"{0}\" is not a valid language block identifier, do you mean \"Associative\" or \"Imperative\"?", t.val));
+                                                langblock.codeblock.Language = ProtoCore.Language.NotSpecified; 
+                                                errors.SemErr(t.line, t.col, String.Format(Resources.InvalidLanguageBlockIdentifier, t.val));
                                             }
                                         .)
-    {
-        WEAK ','     
-        (                           
-            IF(IsLanguageBlockProperty())
-            (
-                ident                               (. string key = t.val; .)
-                '='         
-                textstring                          (.  
-                                                    if ("fingerprint" == key)
-                                                    {
-                                                        langblock.codeblock.fingerprint = t.val; 
-                                                        langblock.codeblock.fingerprint = langblock.codeblock.fingerprint.Remove(0,1); 
-                                                         langblock.codeblock.fingerprint = langblock.codeblock.fingerprint.Remove(langblock.codeblock.fingerprint.Length-1,1); 
-                                                      }
-                                                    else if ("version" == key)
-                                                    {
-                                                        langblock.codeblock.version = t.val; 
-                                                        langblock.codeblock.version = langblock.codeblock.version.Remove(0,1); 
-                                                        langblock.codeblock.version = langblock.codeblock.version.Remove(langblock.codeblock.version.Length-1,1);
-                                                    }
-                                                    .)
-            
-            
-            )	
-            |
-            (										(. ProtoCore.AST.ImperativeAST.ImperativeNode attr = null; .)
-                Imperative_Attribute<out attr>		(. if (attr != null) langblock.Attributes.Add(attr); .)
-            )
-        )
-    }   
-    
     closebracket                        
     '{'                      (. Node codeBlockNode = null; .)
     (
-    IF( langblock.codeblock.language == ProtoCore.Language.kAssociative ||
-        langblock.codeblock.language == ProtoCore.Language.kInvalid)
+    IF( langblock.codeblock.Language == ProtoCore.Language.Associative ||
+        langblock.codeblock.Language == ProtoCore.Language.NotSpecified)
     Hydrogen<out codeBlockNode>              
     |    
-    IF( langblock.codeblock.language == ProtoCore.Language.kImperative )
+    IF( langblock.codeblock.Language == ProtoCore.Language.Imperative )
     Imperative<out codeBlockNode>              
     )
     (
-    IF( langblock.codeblock.language == ProtoCore.Language.kInvalid )
+    IF( langblock.codeblock.Language == ProtoCore.Language.NotSpecified)
                                             (. int openCurlyBraceCount = 0, closeCurlyBraceCount = 0; .)
                                             (. ProtoCore.AST.ImperativeAST.CodeBlockNode codeBlockInvalid = new ProtoCore.AST.ImperativeAST.CodeBlockNode(); .)
                                             (. ProtoCore.AST.ImperativeAST.ImperativeNode validBlockInInvalid = null; .)
@@ -137,17 +106,11 @@ Imperative_stmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
         |
         Imperative_languageblock<out node>      
         |
-        Imperative_ThrowStatement<out node>
-        (. #if ENABLE_EXCEPTION_HANDLING .)
-        |
-        Imperative_ExceptionBlock<out node>
-        (. #endif .)
-        |
         (
             kw_break 
             (.
                 if (la.kind != _endline)
-                SynErr("';' is expected.");
+                    SynErr(Resources.SemiColonExpected);
             .)
             endline
         )     (. node = new ProtoCore.AST.ImperativeAST.BreakNode(); NodeUtils.SetNodeLocation(node, t); .)
@@ -156,7 +119,7 @@ Imperative_stmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
             kw_continue 
             (.
                 if (la.kind != _endline)
-                    SynErr("';' is expected.");
+                   SynErr(Resources.SemiColonExpected);
             .)
             endline
         )  (. node = new ProtoCore.AST.ImperativeAST.ContinueNode(); NodeUtils.SetNodeLocation(node, t); .)
@@ -169,7 +132,7 @@ Imperative_stmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
             Imperative_expr<out node> 
             (.
                 if (la.kind != _endline)
-                    SynErr("';' is expected.");
+                   SynErr(Resources.SemiColonExpected);
             .)
             endline
         )
@@ -177,26 +140,11 @@ Imperative_stmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
         (
             (.
                 if (la.kind != _endline)
-                    SynErr("';' is expected.");
+                   SynErr(Resources.SemiColonExpected);
             .)
             endline 
         )
     )   
-.
-
-Imperative_ThrowStatement<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
-=
-                                (. ProtoCore.AST.ImperativeAST.ThrowNode throwNode = new ProtoCore.AST.ImperativeAST.ThrowNode(); .)
-    "throw"
-                                (. ProtoCore.AST.ImperativeAST.ImperativeNode expression; .)
-    Imperative_expr<out expression>
-                                (. throwNode.expression = expression; .)
-                                (.
-                                    if (la.kind != _endline)
-                                        SynErr("';' is expected.");
-                                .)
-    endline
-                                (. node = throwNode; .)
 .
 
 Imperative_stmtlist<.out List<ProtoCore.AST.ImperativeAST.ImperativeNode> nodelist.> 
@@ -216,7 +164,7 @@ Imperative_decoratedIdentifier<out ProtoCore.AST.ImperativeAST.ImperativeNode no
                 ident               (. 
                                         if (IsKeyWord(t.val, true))
                                         {
-                                            errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+                                            errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                                         }
                                         var typedVar = new ProtoCore.AST.ImperativeAST.TypedIdentifierNode();
                                         typedVar.Name = typedVar.Value = t.val;
@@ -238,15 +186,15 @@ Imperative_decoratedIdentifier<out ProtoCore.AST.ImperativeAST.ImperativeNode no
                                            var unknownType = new ProtoCore.Type();
                                            unknownType.UID = ProtoCore.DSASM.Constants.kInvalidIndex;
                                            unknownType.Name = t.val; 
-                                           typedVar.datatype = unknownType;
+                                           typedVar.DataType = unknownType;
                                        }
                                        else
                                        {
-                                           typedVar.datatype = core.TypeSystem.BuildTypeObject(type, 0);
+                                           typedVar.DataType = core.TypeSystem.BuildTypeObject(type, 0);
                                        }
                                     .)
 
-                [                   (. var datatype = typedVar.datatype; .)
+                [                   (. var datatype = typedVar.DataType; .)
                     openbracket closebracket    
                                     (. datatype.rank = 1; .)
                     [
@@ -260,7 +208,7 @@ Imperative_decoratedIdentifier<out ProtoCore.AST.ImperativeAST.ImperativeNode no
                             } 
                         )
                     ]
-                                    (. typedVar.datatype = datatype; .)
+                                    (. typedVar.DataType = datatype; .)
                 ]
                                     (. node = typedVar; .)
 
@@ -271,7 +219,7 @@ Imperative_decoratedIdentifier<out ProtoCore.AST.ImperativeAST.ImperativeNode no
                 ident       (.  
                                     if (IsKeyWord(t.val, true))
                                     {
-                                        errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+                                        errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                                     }
                                     var identNode = new ProtoCore.AST.ImperativeAST.IdentifierNode();
                                     identNode.Name = identNode.Value = t.val;
@@ -289,7 +237,7 @@ Imperative_decoratedIdentifier<out ProtoCore.AST.ImperativeAST.ImperativeNode no
                 ident               (. 
                                         if (IsKeyWord(t.val, true))
                                         {
-                                            errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+                                            errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                                         }
                                         var typedVar = new ProtoCore.AST.ImperativeAST.TypedIdentifierNode();
                                         typedVar.Name = typedVar.Value = t.val;
@@ -306,15 +254,15 @@ Imperative_decoratedIdentifier<out ProtoCore.AST.ImperativeAST.ImperativeNode no
                                            var unknownType = new ProtoCore.Type();
                                            unknownType.UID = ProtoCore.DSASM.Constants.kInvalidIndex;
                                            unknownType.Name = t.val; 
-                                           typedVar.datatype = unknownType;
+                                           typedVar.DataType = unknownType;
                                        }
                                        else
                                        {
-                                           typedVar.datatype = core.TypeSystem.BuildTypeObject(type, 0);
+                                           typedVar.DataType = core.TypeSystem.BuildTypeObject(type, 0);
                                        }
                                     .)
 
-                [                   (. var datatype = typedVar.datatype; .)
+                [                   (. var datatype = typedVar.DataType; .)
                     openbracket closebracket    
                                     (. datatype.rank = 1; .)
                     [
@@ -328,7 +276,7 @@ Imperative_decoratedIdentifier<out ProtoCore.AST.ImperativeAST.ImperativeNode no
                             } 
                         )
                     ]
-                                    (. typedVar.datatype = datatype; .)
+                                    (. typedVar.DataType = datatype; .)
                 ]
                                     (. node = typedVar; .)
 
@@ -364,40 +312,34 @@ Imperative_assignstmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                         .)
         |
         (
-            (
-                IF (!(lhsNode is ProtoCore.AST.ImperativeAST.PostFixNode))
-                (
-    
-                    '='     
-                                    (. ProtoCore.AST.ImperativeAST.ImperativeNode rhsNode = null; .)
-                    (   
-                        ( 
-                            IF(HasMoreAssignmentStatements())
-                                Imperative_assignstmt<out rhsNode>
-                        )
-                        |        
-                        (
-                            Imperative_expr<out rhsNode>        
-                            (.
-                                if (la.kind != _endline)
-                                    SynErr("';' is expected.");
-                            .)
-                            endline
-                        )
-                        |
-                        (
-                            Imperative_languageblock<out rhsNode>       
-                        )
-                    )
-                    (.
-                        bNode.LeftNode = lhsNode;
-                        bNode.RightNode = rhsNode;
-                        bNode.Optr = Operator.assign;
-                        NodeUtils.SetNodeEndLocation(bNode, t);
-                        node = bNode;       
-                    .)                                      
+            '='     
+            (. ProtoCore.AST.ImperativeAST.ImperativeNode rhsNode = null; .)
+            (   
+                ( 
+                    IF(HasMoreAssignmentStatements())
+                        Imperative_assignstmt<out rhsNode>
                 )
-            )   
+                |        
+                (
+                    Imperative_expr<out rhsNode>        
+                    (.
+                        if (la.kind != _endline)
+                           SynErr(Resources.SemiColonExpected);
+                    .)
+                    endline
+                )
+                |
+                (
+                    Imperative_languageblock<out rhsNode>       
+                )
+            )
+            (.
+                bNode.LeftNode = lhsNode;
+                bNode.RightNode = rhsNode;
+                bNode.Optr = Operator.assign;
+                NodeUtils.SetNodeEndLocation(bNode, t);
+                node = bNode;       
+            .)                                      
         )
         |
         (
@@ -405,23 +347,6 @@ Imperative_assignstmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
         )
     )
 .   
-
-
-//returnstmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
-//=
-                            //(. node = null; .)
-    //kw_return 
-    //[
-        //Imperative_expr<out node>
-    //]
-                            //(. 
-                                //ProtoCore.AST.ImperativeAST.ReturnNode retNode = new ProtoCore.AST.ImperativeAST.ReturnNode(); 
-                                //retNode.ReturnExpr = node;
-                                //node = retNode; 
-                            //.)    
-    //endline
-//.
-
 
 Imperative_ifstmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>  
 = 
@@ -505,44 +430,42 @@ Imperative_whilestmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                                     .)
         '{'
             Imperative_stmtlist<out body>       (. whileStmtNode.Body = body; .)                  
-        '}'                         (. NodeUtils.SetNodeEndLocation(whileStmtNode, t);  .)
-                                    (. node = whileStmtNode;                            .)
+        '}'                         
+                                    (. 
+                                       NodeUtils.SetNodeEndLocation(whileStmtNode, t);
+                                       node = whileStmtNode;
+                                    .)
+
 .
 Imperative_forloop<out ProtoCore.AST.ImperativeAST.ImperativeNode forloop>
 =
                                         (. 
-                                            ProtoCore.AST.ImperativeAST.IfStmtNode dummyIfNode = new ProtoCore.AST.ImperativeAST.IfStmtNode();
                                             ProtoCore.AST.ImperativeAST.ImperativeNode node;
                                             ProtoCore.AST.ImperativeAST.ForLoopNode loopNode = new ProtoCore.AST.ImperativeAST.ForLoopNode();
                                             List<ProtoCore.AST.ImperativeAST.ImperativeNode> body = null;   
                                         .)
         kw_for                          (. NodeUtils.SetNodeLocation(loopNode, t); loopNode.KwForLine = t.line; loopNode.KwForCol = t.col; .)
         '('												(. int idLine = la.line; int idCol = la.col; .)
-            Imperative_Ident<out node>             (. loopNode.loopVar = node; loopNode.loopVar.line = idLine; loopNode.loopVar.col = idCol; .)   
+            Imperative_Ident<out node>             (. loopNode.LoopVariable = node; loopNode.LoopVariable.line = idLine; loopNode.LoopVariable.col = idCol; .)   
         "in"							(. loopNode.KwInLine = t.line; loopNode.KwInCol = t.col; int exprLine = la.line; int exprCol = la.col; .)
-            Imperative_expr<out node>               (. loopNode.expression = node; if (loopNode.expression != null) {  loopNode.expression.line = exprLine; loopNode.expression.col = exprCol; } .)
+            Imperative_expr<out node>               (. loopNode.Expression = node; if (loopNode.Expression != null) {  loopNode.Expression.line = exprLine; loopNode.Expression.col = exprCol; } .)
         ')'
         (
             (
-                '{'                                     
-                    Imperative_stmtlist<out body>           (. loopNode.body = body; .)
+                '{'                                         
+                Imperative_stmtlist<out body>   
+                    (.  loopNode.Body = body; .)
                 '}'
-                                                            (. NodeUtils.SetNodeEndLocation(loopNode, t); .)
+
+                    (.  NodeUtils.SetNodeEndLocation(loopNode, t); .)
             )
             |
             (                               (. ProtoCore.AST.ImperativeAST.ImperativeNode singleStmt = null; .)
-                Imperative_stmt<out singleStmt>     (. loopNode.body.Add(singleStmt); .)
+                Imperative_stmt<out singleStmt>     (. loopNode.Body.Add(singleStmt); .)
             )
         )                                                   
         (.
-            dummyIfNode.IfExprNode
-            = new ProtoCore.AST.ImperativeAST.BooleanNode(true);
-            dummyIfNode.IfBody.Add(loopNode);
-            dummyIfNode.line = loopNode.line;
-            dummyIfNode.col = loopNode.col;
-            dummyIfNode.endLine = loopNode.endLine;
-            dummyIfNode.endCol = loopNode.endCol;
-            forloop = dummyIfNode;
+            forloop = loopNode;
         .)
 .
 
@@ -683,23 +606,23 @@ Imperative_RangeExpr<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
 Imperative_rel<out node>
 [
                                     (.  ProtoCore.AST.ImperativeAST.RangeExprNode rnode = new ProtoCore.AST.ImperativeAST.RangeExprNode(); 
-                                        rnode.FromNode = node;
-                                        NodeUtils.SetNodeStartLocation(rnode, rnode.FromNode);
+                                        rnode.From = node;
+                                        NodeUtils.SetNodeStartLocation(rnode, rnode.From);
                                         bool hasAmountOperator = false;
                                     .)
     rangeop
     [Imperative_rangeAmountOperator<out hasAmountOperator>]
                                     (. rnode.HasRangeAmountOperator = hasAmountOperator; .)
     Imperative_rel<out node>                    (.
-                                                    rnode.ToNode = node;
-                                                    NodeUtils.SetNodeEndLocation(rnode, rnode.ToNode);
+                                                    rnode.To = node;
+                                                    NodeUtils.SetNodeEndLocation(rnode, rnode.To);
                                                 .)
     [                                           (. RangeStepOperator op; .)
         rangeop
-        Imperative_rangeStepOperator<out op>    (. rnode.stepoperator = op; .)  
+        Imperative_rangeStepOperator<out op>    (. rnode.StepOperator = op; .)  
         Imperative_rel<out node>                (.
-                                                    rnode.StepNode = node;
-                                                    NodeUtils.SetNodeEndLocation(rnode, rnode.StepNode);
+                                                    rnode.Step = node;
+                                                    NodeUtils.SetNodeEndLocation(rnode, rnode.Step);
                                                 .)
     ]                                           (. node = rnode; .)
 ]
@@ -782,12 +705,12 @@ Imperative_Char<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
 =
     char            (. 
                         if (t.val.Length <= 2) {
-                            errors.SemErr(t.line, t.col, "Empty character literal.");
+                            errors.SemErr(t.line, t.col, Resources.EmptyCharacterLiteral);
                         }
 
                         node = new ProtoCore.AST.ImperativeAST.CharNode() 
                         { 
-                            value = t.val.Substring(1, t.val.Length - 2),
+                            Value = t.val.Substring(1, t.val.Length - 2),
                             line = t.line,
                             col = t.col
                         }; 
@@ -800,7 +723,7 @@ Imperative_String<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
     textstring      (. 
                         node = new ProtoCore.AST.ImperativeAST.StringNode() 
                         { 
-                            value = GetEscapedString(t.val.Length <= 2 ? "" : t.val.Substring(1, t.val.Length - 2)), 
+                            Value = GetEscapedString(t.val.Length <= 2 ? "" : t.val.Substring(1, t.val.Length - 2)), 
                             line = t.line,
                             col = t.col
                         }; 
@@ -883,31 +806,20 @@ Imperative_functioncall<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
 .
 
 Imperative_Ident<out ProtoCore.AST.ImperativeAST.ImperativeNode node> 
-=               (.  ProtoCore.AST.ImperativeAST.ImperativeNode var = null; .) 
+=               
     ident       (. 
                     if (!disableKwCheck && IsKeyWord(t.val, false, false))
                     {
-                        errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+                        errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                     }
                     int ltype = (0 == String.Compare(t.val, "return")) ? (int)ProtoCore.PrimitiveType.kTypeReturn : (int)ProtoCore.PrimitiveType.kTypeVar;
                     if (ltype == (int)ProtoCore.PrimitiveType.kTypeReturn && la.val != "=")
                     {
-                        SynErr("Return statement is invalid. Do you mean: return = " + la.val + " ?"); 
+                        SynErr(String.Format(Resources.InvalidReturnStatement, la.val)); 
                     }        
-                    var = BuildImperativeIdentifier(t.val, (ProtoCore.PrimitiveType)ltype);
-                    NodeUtils.SetNodeLocation(var, t);
+                    node = BuildImperativeIdentifier(t.val, (ProtoCore.PrimitiveType)ltype);
+                    NodeUtils.SetNodeLocation(node, t);
                 .)
-    (. #if ENABLE_INC_DEC_FIX .)
-    [
-        Imperative_PostFixOp<out op>    (.  ProtoCore.AST.ImperativeAST.PostFixNode pfNode = new ProtoCore.AST.ImperativeAST.PostFixNode();
-                                            pfNode.Operator = op;
-                                            pfNode.Identifier = var;
-                                            var = pfNode;                           
-                                        .)
-    ]
-    (. #endif .)
-        
-                (. node = var; .)
 .
 
 Imperative_NameReference<out ProtoCore.AST.ImperativeAST.ImperativeNode node> 
@@ -1042,10 +954,10 @@ Imperative_ExprList<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                                     .)
             [
                                     
-                Imperative_expr<out node>          (. exprlist.list.Add(node); .)
+                Imperative_expr<out node>          (. exprlist.Exprs.Add(node); .)
                 {
                     ','
-                    Imperative_expr<out node>      (. exprlist.list.Add(node); .)
+                    Imperative_expr<out node>      (. exprlist.Exprs.Add(node); .)
                 }
          
             ]
@@ -1063,16 +975,11 @@ Imperative_ArgDecl<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                                         NodeUtils.SetNodeLocation(varDeclNode, la);
                                         varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemStack;
                                     .)
-
-    [
-        kw_heap               (. varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemHeap; .)
-    ]
-
     (
         ident                       (. 
                                         if (IsKeyWord(t.val, true))
                                         {
-                                            errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+                                            errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                                         }
                                         tNode = BuildImperativeIdentifier(t.val);
                                         NodeUtils.SetNodeLocation(tNode, t);
@@ -1098,21 +1005,8 @@ Imperative_ArgDecl<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
             ]
         ]
     ]
-                                    (. varDeclNode.ArgumentType = argtype; .)                                    
-//    [
-//        '=' 
-//                                    (. ProtoCore.AST.ImperativeAST.ImperativeNode rhsNode; .)        
-//        Imperative_expr<out rhsNode>         
-//                                    (.
-//                                        ProtoCore.AST.ImperativeAST.BinaryExpressionNode bNode = new ProtoCore.AST.ImperativeAST.BinaryExpressionNode();
-//                                        bNode.LeftNode = tNode;
-//                                        bNode.RightNode = rhsNode;
-//                                        bNode.Optr = Operator.assign;
-//                                        bNode.line = tNode.line; bNode.col = tNode.col;
-//                                        varDeclNode.NameNode = bNode;        
-//                                    .)    
-//    ]                                        
                                     (. 
+                                        varDeclNode.ArgumentType = argtype; 
                                         node = varDeclNode; 
                                         if(!isGlobalScope) {
                                             localVarCount++;
@@ -1152,7 +1046,7 @@ Imperative_functiondecl<.out ProtoCore.AST.ImperativeAST.ImperativeNode node, Li
     ident                                   (. funcDecl.Name = t.val; NodeUtils.SetNodeEndLocation(funcDecl, t); .)
                                             (. if (IsKeyWord(t.val, true))
                                                 {
-                                                    errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+                                                    errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                                                 }
                                             .)
     [                                       
@@ -1184,7 +1078,7 @@ Imperative_functiondecl<.out ProtoCore.AST.ImperativeAST.ImperativeNode node, Li
         )
     )
                                             (. 
-                                                funcDecl.localVars = localVarCount;
+                                                funcDecl.LocalVariableCount = localVarCount;
                                                 NodeUtils.SetNodeEndLocation(funcDecl.FunctionBody, t);
                                                 funcDecl.FunctionBody.Body = body;
                                                 node = funcDecl; 
@@ -1244,7 +1138,7 @@ Imperative_functionalMethodBodySingleStatement<.out List<ProtoCore.AST.Imperativ
 
                                         (.
                                             if (la.kind != _endline)
-                                                SynErr("';' is expected.");
+                                               SynErr(Resources.SemiColonExpected);
                                         .)
     endline
 .
@@ -1308,7 +1202,7 @@ Imperative_num<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
         float   
         (.  
             double value;
-            if (Double.TryParse(t.val, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
+            if (Double.TryParse(t.val, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out value))
             {
                 node = new ProtoCore.AST.ImperativeAST.DoubleNode(value * sign);
             }
@@ -1323,73 +1217,6 @@ Imperative_num<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                 NodeUtils.SetNodeLocation(node, t); }
         .)
     )
-.
-
-Imperative_TryBlock<out ProtoCore.AST.ImperativeAST.TryBlockNode tryBlockNode>
-=    
-                                    (. tryBlockNode = new ProtoCore.AST.ImperativeAST.TryBlockNode(); .)
-    "try"
-    '{'
-                                    (. List<ProtoCore.AST.ImperativeAST.ImperativeNode> tryBlockBody = null; .)
-        Imperative_stmtlist<out tryBlockBody>
-                                    (. tryBlockNode.body = tryBlockBody; .)
-    '}'
-.
-
-Imperative_CatchFilter<out ProtoCore.AST.ImperativeAST.CatchFilterNode catchFilterNode>
-=
-                                    (. catchFilterNode = new ProtoCore.AST.ImperativeAST.CatchFilterNode(); .)
-
-    ident                       
-                                    (. 
-                                        if (IsKeyWord(t.val, true))
-                                        {
-                                            errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
-                                        }
-
-                                        catchFilterNode.var =  BuildImperativeIdentifier(t.val);
-                                    .)  
-    ':'
-    ident                           (. 
-                                        ProtoCore.Type exceptionType = new ProtoCore.Type()
-                                        {
-                                            Name = t.val, 
-                                            rank = 0, 
-                                        };
-                                        catchFilterNode.type = exceptionType;
-                                    .)
-.
-
-Imperative_CatchBlock<out ProtoCore.AST.ImperativeAST.CatchBlockNode catchBlockNode>
-=    
-    "catch"                         (. catchBlockNode = new ProtoCore.AST.ImperativeAST.CatchBlockNode(); .)
-    "("
-                                    (. ProtoCore.AST.ImperativeAST.CatchFilterNode catchFilterNode = null; .)
-        Imperative_CatchFilter<out catchFilterNode>
-                                    (. catchBlockNode.catchFilter = catchFilterNode; .)  
-    ")"
-    '{'
-                                    (. List<ProtoCore.AST.ImperativeAST.ImperativeNode> catchBlockBody = null; .)
-        Imperative_stmtlist<out catchBlockBody>
-                                    (. catchBlockNode.body = catchBlockBody; .)
-    '}'
-.
-
-Imperative_ExceptionBlock<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
-=
-                                    (. ProtoCore.AST.ImperativeAST.ExceptionHandlingNode exceptionNode = new ProtoCore.AST.ImperativeAST.ExceptionHandlingNode(); .)
-                                    (. ProtoCore.AST.ImperativeAST.TryBlockNode tryBlockNode; .)
-    Imperative_TryBlock<out tryBlockNode>
-                                    (. exceptionNode.tryBlock = tryBlockNode; .)
-                                    (. ProtoCore.AST.ImperativeAST.CatchBlockNode catchBlockNode; .)
-    Imperative_CatchBlock<out catchBlockNode>
-                                    (. exceptionNode.catchBlocks.Add(catchBlockNode); .)
-    {
-        Imperative_CatchBlock<out catchBlockNode>
-                                    (. exceptionNode.catchBlocks.Add(catchBlockNode); .)
-    }
-    
-                                    (. node = exceptionNode; .)
 .
 
 Imperative_mulop<out Operator op>       
@@ -1460,25 +1287,6 @@ Imperative_unaryop<out UnaryOperator op>
         |   
         '~'     (. op = UnaryOperator.Negate; .)
                 (. #endif                     .)
-
-                (.  #if ENABLE_INC_DEC_FIX .)
-        |
-        Imperative_PostFixOp<out op> (. #endif .)
-    )
-    (.
-        #if ENABLE_INC_DEC_FIX 
-        #else
-            if (la.val == "++" || la.val == "--") Get(); 
-        #endif
-    .)   
-.
-
-Imperative_PostFixOp<out UnaryOperator op>          
-=           (. op = UnaryOperator.None; .)
-    (
-        "++"    (. op = UnaryOperator.Increment; .)
-        |
-        "--"    (. op = UnaryOperator.Decrement; .)
     )
 .
 
@@ -1492,11 +1300,11 @@ Imperative_rangeAmountOperator<out bool hasAmountOperator>
 .
 
 Imperative_rangeStepOperator<out RangeStepOperator op>
-                        (. op = RangeStepOperator.stepsize; .)
+                        (. op = RangeStepOperator.StepSize; .)
 = 
     [
-        '#'             (. op = RangeStepOperator.num; .)
-        | '~'           (. op = RangeStepOperator.approxsize; .)
+        '#'             (. op = RangeStepOperator.Number; .)
+        | '~'           (. op = RangeStepOperator.ApproximateSize; .)
     ]
 .
 

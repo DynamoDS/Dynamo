@@ -1,0 +1,36 @@
+<Workspace Version="0.8.2.1957" X="-2326.83755850225" Y="-1375.97616638675" zoom="1.703916824555" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap>
+    <ClassMap partialName="Color" resolvedName="DSCore.Color" assemblyName="DSCoreNodes.dll" />
+  </NamespaceResolutionMap>
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="306ae204-edf0-4412-8141-c46648498034" type="Dynamo.Nodes.DSFunction" nickname="Cuboid.ByLengths" x="1463.96947396582" y="845.271229544414" isVisible="false" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Cuboid.ByLengths@double,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction guid="5198b471-e7c1-4bea-9728-f2a7ebb4c262" type="Dynamo.Nodes.DSFunction" nickname="Display.ByGeometryColor" x="1871.96947396582" y="930.271229544414" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="Display.dll" function="Display.Display.ByGeometryColor@Autodesk.DesignScript.Geometry.Geometry,DSCore.Color" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="6eda9cfc-eab3-4c0c-a2b1-248677b4df50" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="1527" y="1100" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" CodeText="Color.ByARGB(255,255,0,255);" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="306ae204-edf0-4412-8141-c46648498034" start_index="0" end="5198b471-e7c1-4bea-9728-f2a7ebb4c262" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6eda9cfc-eab3-4c0c-a2b1-248677b4df50" start_index="0" end="5198b471-e7c1-4bea-9728-f2a7ebb4c262" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+  <Cameras>
+    <Camera Name="eb39be19-caad-41f7-ac76-aa6c908a4e96_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+  <Cameras>
+    <Camera Name="eb39be19-caad-41f7-ac76-aa6c908a4e96_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+</Workspace>

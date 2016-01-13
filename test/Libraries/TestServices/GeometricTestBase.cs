@@ -1,28 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-
+using System.Reflection;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 
-using DynamoUtilities;
+using DynamoShapeManager;
 
 using NUnit.Framework;
-
-using RevitNodesTests;
 
 namespace TestServices
 {
     public class GeometricTestBase
     {
-        IExtensionApplication application = Application.Instance as IExtensionApplication;
-        TestExecutionSession session = new TestExecutionSession();
+        private AssemblyResolver assemblyResolver;
 
         [SetUp]
-        public void Setup()
+        public virtual void Setup()
         {
-            AssemblyResolver.Setup();
-            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
+            var config = GetTestSessionConfiguration();
+            var session = new TestExecutionSession(config);
+            var application = Application.Instance as IExtensionApplication;
+
+            if (assemblyResolver == null)
+            {
+                assemblyResolver = new AssemblyResolver();
+                assemblyResolver.Setup(config.DynamoCorePath);
+            }
+
             application.OnBeginExecution(session);
             HostFactory.Instance.StartUp();
         }
@@ -32,6 +37,22 @@ namespace TestServices
         {
             //application.OnEndExecution(session);
             //HostFactory.Instance.ShutDown();
+
+            if (assemblyResolver != null)
+            {
+                assemblyResolver.TearDown();
+                assemblyResolver = null;
+            }
+        }
+
+        /// <summary>
+        /// Override this method in derived class to establish a 
+        /// custom configuration.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual TestSessionConfiguration GetTestSessionConfiguration()
+        {
+            return new TestSessionConfiguration();
         }
     }
 
@@ -43,9 +64,13 @@ namespace TestServices
     class TestExecutionSession : IExecutionSession, IConfiguration, IDisposable
     {
         private Dictionary<string, object> configValues;
-        public TestExecutionSession()
+        private Preloader preloader;
+        private TestSessionConfiguration testConfig;
+
+        public TestExecutionSession(TestSessionConfiguration testConfig)
         {
             configValues = new Dictionary<string, object>();
+            this.testConfig = testConfig;
         }
 
         public IConfiguration Configuration
@@ -63,7 +88,12 @@ namespace TestServices
 
         public string RootModulePath
         {
-            get { return AssemblyResolver.GetDynamoRootDirectory(); }
+            get
+            {
+                var assemPath = Assembly.GetExecutingAssembly().Location;
+                var assemDir = new DirectoryInfo(Path.GetDirectoryName(assemPath));
+                return assemDir.Parent.FullName;
+            }
         }
 
         public string[] IncludeDirectories
@@ -79,7 +109,14 @@ namespace TestServices
         public object GetConfigValue(string config)
         {
             if (string.Compare(ConfigurationKeys.GeometryFactory, config) == 0)
-                return Path.Combine(DynamoPathManager.Instance.LibG, "LibG.ProtoInterface.dll");
+            {
+                if (preloader != null) return preloader.GeometryFactoryPath;
+
+                preloader = new Preloader(testConfig.DynamoCorePath, testConfig.RequestedLibraryVersion);
+                preloader.Preload();
+
+                return preloader.GeometryFactoryPath;
+            }
 
             if (configValues.ContainsKey(config))
                 return configValues[config];

@@ -25,7 +25,11 @@ namespace Analysis.DataTypes
         /// A dictionary of results.
         /// </summary>
         public Dictionary<string, IList<double>> Results { get; set; }
-
+        /// <summary>
+        /// Gets results for the specified key from the specified surface analysis data
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public IList<double> GetResultByKey(string key)
         {
             if (!Results.ContainsKey(key))
@@ -220,7 +224,11 @@ namespace Analysis.DataTypes
 
             return new VectorAnalysisData(points, results);
         }
-
+        /// <summary>
+        /// Gets results for the specified key from the specified vector analysis data
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public IList<Vector> GetResultByKey(string key)
         {
             if (!Results.ContainsKey(key))
@@ -304,7 +312,11 @@ namespace Analysis.DataTypes
 
             return new PointAnalysisData(points, results);
         }
-
+        /// <summary>
+        /// Gets results for the specified key from the specified point analysis data
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public IList<double> GetResultByKey(string key)
         {
             if (!Results.ContainsKey(key))

@@ -14,13 +14,11 @@ namespace ProtoCore.Lang
         private readonly Dictionary<string, MethodInfo> MethodGroup;
         private readonly ModuleBuilder ModuleBuilder;
         private readonly AssemblyName AssemblyName;
-        private readonly AssemblyBuilder AssemblyBuilder;
 
         public FFICppFunction2(ModuleBuilder moduleBuilder, AssemblyName assemblyName, 
             AssemblyBuilder assemblyBuilder, string name) 
         {
             ModuleBuilder = moduleBuilder;
-            AssemblyBuilder = assemblyBuilder;
             AssemblyName = assemblyName;
             Name = name;
             MethodGroup = new Dictionary<string, MethodInfo>();

@@ -3,15 +3,8 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
-    public class CollectionAssgnmt
+    class CollectionAssgnmt : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string filePath = "..\\..\\..\\Scripts\\TD\\MultiLanguage\\Collection\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         [Category("SmokeTest")]
         public void Collection_Assignment_1()

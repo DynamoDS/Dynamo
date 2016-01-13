@@ -1,7 +1,9 @@
 ﻿using System.Linq;
 using System.Xml;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.Models;
-using Migrations;
+using Dynamo.Migration;
 
 namespace Dynamo.Nodes
 {
@@ -28,9 +30,9 @@ namespace Dynamo.Nodes
             string pointAsVector0Id = MigrationManager.GetGuidFromXmlElement(pointAsVector0);
 
             // Update connectors
-            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
-            PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
-            PortId pToV = new PortId(pointAsVector0Id, 0, PortType.INPUT);
+            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.Input);
+            PortId oldInPort1 = new PortId(newNodeId, 1, PortType.Input);
+            PortId pToV = new PortId(pointAsVector0Id, 0, PortType.Input);
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
             data.ReconnectToPort(connector0, pToV);
@@ -141,8 +143,8 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
-            if ((data.FindFirstConnector(new PortId(oldNodeId, 1, PortType.OUTPUT)) != null) ||
-                (data.FindFirstConnector(new PortId(oldNodeId, 2, PortType.OUTPUT)) != null))
+            if ((data.FindFirstConnector(new PortId(oldNodeId, 1, PortType.Output)) != null) ||
+                (data.FindFirstConnector(new PortId(oldNodeId, 2, PortType.Output)) != null))
             {
                 // If the second or third output port is utilized, migrate to CBN
                 XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);

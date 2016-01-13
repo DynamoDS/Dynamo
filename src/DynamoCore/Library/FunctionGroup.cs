@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Dynamo.DSEngine
+namespace Dynamo.Engine
 {
     /// <summary>
     ///     A group of overloaded functions
@@ -35,6 +35,13 @@ namespace Dynamo.DSEngine
                 return false;
 
             functions.Add(function);
+
+            if (functions.Count > 1)
+            {
+                functions[0].IsOverloaded = true;
+                functions[functions.Count - 1].IsOverloaded = true;
+            }
+
             return true;
         }
 
@@ -52,7 +59,18 @@ namespace Dynamo.DSEngine
                 return null;
 
             FunctionDescriptor func = functions.FirstOrDefault(f => f.MangledName.EndsWith(managledName));
-            return func ?? functions.First();
+            if (func == null)
+            {
+                string[] split = managledName.Split('@');
+                string[] inputTypes = split.Length > 1 ? split[1].Split(',') : new string[]{};
+                return functions.OrderByDescending(f =>
+                {
+                    return f.Parameters.Select(p => p.Type.ToString())
+                                       .Intersect(inputTypes)
+                                       .Count();
+                }).First();
+            }
+            return func;
         }
 
         public override bool Equals(object obj)

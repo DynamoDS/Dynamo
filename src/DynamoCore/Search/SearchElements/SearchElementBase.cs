@@ -1,11 +1,17 @@
-﻿using Dynamo.Nodes.Search;
+using System;
 
 namespace Dynamo.Search.SearchElements
+
 {
     /// <summary>
     /// A base class for elements found in search </summary>
     public abstract class SearchElementBase : BrowserInternalElement
     {
+        /// <summary>
+        /// The name that is used during node creation
+        /// </summary>
+        public virtual string CreationName { get { return this.Name; } }
+
         /// <summary>
         /// Searchable property </summary>
         /// <value>

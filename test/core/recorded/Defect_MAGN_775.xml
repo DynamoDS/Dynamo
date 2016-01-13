@@ -1,11 +1,18 @@
 <Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
-  <CreateNodeCommand NodeId="4743ca53-516b-42de-b88f-9ed84941f6a6" NodeName="Code Block" X="160" Y="130" DefaultPosition="false" TransformCoordinates="true" />
-  <UpdateModelValueCommand ModelGuid="4743ca53-516b-42de-b88f-9ed84941f6a6" Name="Code" Value="a=2" />
-  <CreateNodeCommand NodeId="3c2f3595-92eb-4cc8-bbd4-ff7055c2a8d7" NodeName="Code Block" X="480" Y="260" DefaultPosition="false" TransformCoordinates="true" />
-  <UpdateModelValueCommand ModelGuid="3c2f3595-92eb-4cc8-bbd4-ff7055c2a8d7" Name="Code" Value="b" />
-  <MakeConnectionCommand NodeId="4743ca53-516b-42de-b88f-9ed84941f6a6" PortIndex="0" Type="1" ConnectionMode="0" />
-  <MakeConnectionCommand NodeId="3c2f3595-92eb-4cc8-bbd4-ff7055c2a8d7" PortIndex="0" Type="0" ConnectionMode="1" />
-  <UpdateModelValueCommand ModelGuid="3c2f3595-92eb-4cc8-bbd4-ff7055c2a8d7" Name="Code" Value="b=2;" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="191" Y="157" Width="0" Height="0" IsCrossSelection="false" />
+  <CreateNodeCommand X="191" Y="157" DefaultPosition="false" TransformCoordinates="true">
+    <Dynamo.Nodes.CodeBlockNodeModel guid="1ed440bb-e7cb-4b83-99e1-618fe719f032" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="99" y="126" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="a=1;" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand X="274" Y="354" DefaultPosition="false" TransformCoordinates="true">
+    <Dynamo.Nodes.CodeBlockNodeModel guid="b3ea476c-0fc4-482a-b120-03747ae6a059" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="182" y="323" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="b;" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <MakeConnectionCommand NodeId="1ed440bb-e7cb-4b83-99e1-618fe719f032" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="b3ea476c-0fc4-482a-b120-03747ae6a059" PortIndex="0" Type="0" ConnectionMode="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="b3ea476c-0fc4-482a-b120-03747ae6a059" Name="Code" Value="b=2;" />
   <UndoRedoCommand CmdOperation="0" />
   <UndoRedoCommand CmdOperation="0" />
   <UndoRedoCommand CmdOperation="0" />

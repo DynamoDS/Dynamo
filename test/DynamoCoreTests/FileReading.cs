@@ -1,33 +1,30 @@
 ﻿using System.IO;
-using Dynamo.Models;
-using Dynamo.Tests;
-using Dynamo.Utilities;
+using System.Linq;
+
 using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class FileReadingTests : DynamoViewModelUnitTest
+    class FileReadingTests : DynamoModelTestBase
     {
-        string localDynamoStringTestFloder { get { return Path.Combine(GetTestDirectory(), "core", "files"); } }
-        string localDynamoFileTestFloder { get { return Path.Combine(GetTestDirectory(), "core", "files", "future files"); } }
+        string localDynamoStringTestFolder { get { return Path.Combine(TestDirectory, "core", "files"); } }
+        string localDynamoFileTestFolder { get { return Path.Combine(TestDirectory, "core", "files", "future files"); } }
 
         [Test]
         public void CanOpenADynFileFromBefore6_0()
         {
-            string testFilePath = Path.Combine(localDynamoStringTestFloder, "fileTests_pre6_0.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFolder, "fileTests_pre6_0.dyn");
 
-            ViewModel.OpenCommand.Execute(testFilePath);
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression()); 
+            RunModel(testFilePath); 
         }
 
         [Test]
         public void CanOpenADynFileFromAfter6_0()
         {
-            string testFilePath = Path.Combine(localDynamoStringTestFloder, "fileTests_post6_0.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFolder, "fileTests_post6_0.dyn");
 
-            ViewModel.OpenCommand.Execute(testFilePath);
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            RunModel(testFilePath); 
         }
 
         [Test]
@@ -36,10 +33,9 @@ namespace Dynamo.Tests
         {
             // Details steps are here: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-781
 
-            string testFilePath = Path.Combine(localDynamoStringTestFloder, "Defect_MAGN_781.dyf");
+            string testFilePath = Path.Combine(localDynamoStringTestFolder, "Defect_MAGN_781.dyf");
 
-            ViewModel.OpenCommand.Execute(testFilePath);
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            RunModel(testFilePath); 
         }
 
         [Test]
@@ -48,13 +44,12 @@ namespace Dynamo.Tests
         {
             // Details steps are here: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1380
 
-            string testFilePath = Path.Combine(localDynamoFileTestFloder, "future_file.dyn");
+            string testFilePath = Path.Combine(localDynamoFileTestFolder, "future_file.dyn");
             
 
-            ViewModel.OpenCommand.Execute(testFilePath);
-            WorkspaceModel wsm = ViewModel.CurrentSpace;
-            Assert.AreEqual(wsm.Nodes.Count, 0);
-            Assert.AreEqual(wsm.Connectors.Count, 0);
+            OpenModel(testFilePath);
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Nodes.Count(), 0);
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Connectors.Count(), 0);
         }
 
         [Test]
@@ -63,12 +58,22 @@ namespace Dynamo.Tests
         {
             // Details steps are here: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1380
 
-            string testFilePath = Path.Combine(localDynamoFileTestFloder, "future_file.dyf");
+            string testFilePath = Path.Combine(localDynamoFileTestFolder, "future_file.dyf");
 
-            ViewModel.OpenCommand.Execute(testFilePath);
-            WorkspaceModel wsm = ViewModel.CurrentSpace;
-            Assert.AreEqual(wsm.Nodes.Count, 0);
-            Assert.AreEqual(wsm.Connectors.Count, 0);
+            OpenModel(testFilePath);
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Nodes.Count(), 0);
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Connectors.Count(), 0);
+        }
+
+        [Test]
+        public void CanReadIsSetAsInputProperty()
+        {
+            string path = Path.Combine(TestDirectory, "core", "input_nodes", "NumberNodeAndNumberSlider.dyn");
+            OpenModel(path);
+
+            Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.IsFalse(CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(0).IsSetAsInput);
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(1).IsSetAsInput);
         }
     }
 }

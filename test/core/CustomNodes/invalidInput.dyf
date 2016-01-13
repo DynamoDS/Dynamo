@@ -1,0 +1,16 @@
+<Workspace Version="0.7.6.3485" X="0" Y="0" zoom="1" Description="" Category="Test" Name="invalidInput" ID="12936f85-63ae-4ed9-957b-d5fffc9e188a">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="3b3eec9f-51bc-4488-9ba2-7ddea2cf13e6" nickname="Input" x="101.2" y="184.4" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="y = f(x)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="e89d7dc9-13c2-44ca-a5ce-5e38cdd74775" nickname="Output" x="454" y="206" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="ee759bc2-ebef-4ccd-8003-949bcf4225dc" nickname="Code Block" x="252" y="225" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="y = x * 2;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="3b3eec9f-51bc-4488-9ba2-7ddea2cf13e6" start_index="0" end="ee759bc2-ebef-4ccd-8003-949bcf4225dc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ee759bc2-ebef-4ccd-8003-949bcf4225dc" start_index="0" end="e89d7dc9-13c2-44ca-a5ce-5e38cdd74775" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,0 +1,239 @@
+﻿<UserControl x:Class="Dynamo.UI.Controls.ToolTipWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:resx="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
+             mc:Ignorable="d"
+             d:DesignHeight="300"
+             d:DesignWidth="335"
+             Background="Transparent">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.SidebarGridDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Border CornerRadius="5"
+            Opacity=".95"
+            Background="{StaticResource LibraryCommonBackground}"
+            Padding="10">
+        <Grid Width="325">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="96"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <!-- Use this to hold the description and the icon -->
+            <Grid Grid.Row="0"
+                  Grid.ColumnSpan="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="96"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <ScrollViewer Template="{DynamicResource LibraryScrollViewerControlTemplate}"
+                              Style="{DynamicResource LibraryScrollViewerStyle}"
+                              CanContentScroll="True">
+                    <TextBlock Text="{Binding Path=Description}"
+                               FontSize="13"
+                               Margin="0,0,10,0"
+                               TextWrapping="WrapWithOverflow">
+                        <TextBlock.Foreground>
+                            <Binding Path="HasDescription"
+                                     Converter="{StaticResource DescriptionToColorConverter}" />
+                        </TextBlock.Foreground>
+                    </TextBlock>
+                </ScrollViewer>
+
+                <Image Grid.Column="1"
+                       Height="96"
+                       Width="96"
+                       HorizontalAlignment="Right"
+                       Source="{Binding Path=LargeIcon}"
+                       Visibility="{Binding Path=LargeIcon, Converter={StaticResource NullValueToCollapsedConverter}}" />
+            </Grid>
+            <TextBlock Text="{x:Static resx:Resources.InputLabel}"
+                       Grid.Row="1"
+                       FontSize="10"
+                       Foreground="#50b5a3"
+                       Margin="0,3,0,0" />
+            <ListBox ItemsSource="{Binding InputParameters}"
+                     Grid.Row="2"
+                     Grid.ColumnSpan="3"
+                     Background="Transparent"
+                     BorderBrush="Transparent">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <ContentPresenter />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <WrapPanel Orientation="Horizontal">
+                            <TextBlock FontSize="13"
+                                       Foreground="{StaticResource CommonSidebarTextColor}"
+                                       Text="{Binding Item1, Mode=OneWay}" />
+                            <TextBlock FontSize="13"
+                                       Foreground="{StaticResource VariableTypeTextColor}">
+                                <TextBlock.Text>
+                                    <Binding Path="Item2"
+                                             Mode="OneWay"
+                                             Converter="{StaticResource InOutParamTypeConverter}"
+                                             ConverterParameter="inputParam" />
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </WrapPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <TextBlock Text="{x:Static resx:Resources.OutputLabel}"
+                       Grid.Row="3"
+                       FontSize="10"
+                       Foreground="#50b5a3"
+                       Margin="0,10,0,0" />
+            <ListBox ItemsSource="{Binding OutputParameters}"
+                     Grid.Row="4"
+                     Grid.ColumnSpan="3"
+                     Background="Transparent"
+                     BorderBrush="Transparent">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <ContentPresenter />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock FontSize="13"
+                                   Text="{Binding}">
+                            <TextBlock.Foreground>
+                                <Binding RelativeSource="{RelativeSource AncestorType=Grid}"
+                                         Path="DataContext"
+                                         Converter="{StaticResource NodeTypeToColorConverter}" />
+                            </TextBlock.Foreground>
+                        </TextBlock>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <!--Here is code text and copy icon. Do not remove it. We may use it in future. -->
+            <!--<Grid Grid.Row="5"
+                  Grid.ColumnSpan="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid.Resources>
+                    <Style TargetType="{x:Type Hyperlink}">
+                        <Setter Property="Foreground"
+                                Value="#4192d9" />
+                        <Setter Property="TextBlock.TextDecorations"
+                                Value="{x:Null}" />
+                    </Style>
+                </Grid.Resources>
+                <StackPanel Grid.Row="1"
+                            Grid.ColumnSpan="4"
+                            Orientation="Horizontal"
+                            Margin="0,10,0,0">
+                    <StackPanel.Visibility>
+                        <Binding Path="FullName"
+                                 Converter="{StaticResource EmptyStringToCollapsedConverter}" />
+                    </StackPanel.Visibility>
+                    <Image Source="/DynamoCoreWpf;component/UI/Images/Tooltip/code.png" />
+                    <TextBlock Name="code"
+                               FontSize="13"
+                               FontFamily="Consolas Regular"
+                               Foreground="#777777"
+                               Margin="3,0,10,0">
+                        <TextBlock.Text>
+                            <Binding Path="FullName"
+                                     Converter="{StaticResource FullyQualifiedNameToDisplayConverter}"
+                                     ConverterParameter="ToolTip" />
+                        </TextBlock.Text>
+                    </TextBlock>
+                    <Image Height="13"
+                           Width="13"
+                           MouseDown="CopyIconMouseClick"
+                           HorizontalAlignment="Right">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver"
+                                             Value="False">
+                                        <Setter Property="Source"
+                                                Value="/DynamoCoreWpf;component/UI/Images/Tooltip/copy.png" />
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver"
+                                             Value="True">
+                                        <Setter Property="Source"
+                                                Value="/DynamoCoreWpf;component/UI/Images/Tooltip/copy_hover.png" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+                </StackPanel>-->
+
+            <!--<TextBlock Grid.Row="3"
+                               Grid.Column="0"
+                               FontSize="10"
+                               Margin="0,0,0,10">
+                        <Hyperlink Name="Packages"
+                                   NavigateUri="http://www.google.com"
+                                   RequestNavigate="RequestNavigate">
+                            Packegs using this
+                        </Hyperlink>
+                    </TextBlock>
+                    <TextBlock Text=" | "
+                               Grid.Row="3"
+                               Grid.Column="1"
+                               FontSize="10"
+                               Foreground="#4192d9"
+                               Margin="0,0,0,10" />
+                    <TextBlock Grid.Row="3"
+                               Grid.Column="2"
+                               FontSize="10"
+                               Margin="0,0,0,10">
+                        <Hyperlink Name="WebReference"
+                                   NavigateUri="http://dynamobim.org"
+                                   RequestNavigate="RequestNavigate">
+                            Web Reference
+                        </Hyperlink>
+                    </TextBlock>-->
+            <!--</Grid>-->
+        </Grid>
+    </Border>
+</UserControl>

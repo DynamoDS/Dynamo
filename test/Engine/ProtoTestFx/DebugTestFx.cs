@@ -18,43 +18,45 @@ namespace ProtoTestFx
         public static void CompareDebugAndRunResults(string code, string defectID = "")
         {
             Core runCore = null;
-
+            RuntimeCore runtimeCore = null;
             try
             {
-                runCore = TestRunnerRunOnly(code);
+                runCore = TestRunnerRunOnly(code, out runtimeCore);
             }
             catch (Exception e)
             {
                 Assert.Ignore("Ignored due to Exception from run: " + e.ToString());
             }
 
-
-
             {
-                Core debugRunCore = DebugRunnerRunOnly(code);
-                CompareCores(runCore, debugRunCore, defectID);
-            }
-            {
-                Core stepOverCore = DebugRunnerStepOver(code);
-                CompareCores(runCore, stepOverCore, defectID);
+                RuntimeCore debugRuntimeCore = null;
+                Core debugRunCore = DebugRunnerRunOnly(code, out debugRuntimeCore);
+                CompareCores(runtimeCore, debugRuntimeCore, defectID);
+                debugRuntimeCore.Cleanup();
             }
 
             {
-                Core stepInCore = DebugRunerStepIn(code);
-                CompareCores(runCore, stepInCore, defectID);
+                RuntimeCore stepOverRuntimeCore = null;
+                Core stepOverCore = DebugRunnerStepOver(code, out stepOverRuntimeCore);
+                CompareCores(runtimeCore, stepOverRuntimeCore, defectID);
+                stepOverRuntimeCore.Cleanup();
             }
 
-            
+            {
+                RuntimeCore stepInRuntimeCore = null;
+                Core stepInCore = DebugRunerStepIn(code, out stepInRuntimeCore);
+                CompareCores(runtimeCore, stepInRuntimeCore, defectID);
+                stepInRuntimeCore.Cleanup();
+            }
+
+            runtimeCore.Cleanup();
 
         }
 
-        internal static ProtoCore.Core TestRunnerRunOnly(string code)
+        internal static ProtoCore.Core TestRunnerRunOnly(string code, out RuntimeCore runtimeCore)
         {
             ProtoCore.Core core;
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScriptTestRunner();
-
-
-            ProtoScript.Config.RunConfiguration runnerConfig;
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScriptRunner();
 
             // Specify some of the requirements of IDE.
             var options = new ProtoCore.Options();
@@ -65,28 +67,25 @@ namespace ProtoTestFx
             options.IncludeDirectories.Add(testPath);
 
             core = new ProtoCore.Core(options);
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            core.Compilers.Add(ProtoCore.Language.Associative, new ProtoAssociative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.Imperative, new ProtoImperative.Compiler(core));
 
-            runnerConfig = new ProtoScript.Config.RunConfiguration();
-            runnerConfig.IsParrallel = false;
-            fsr = new ProtoScriptTestRunner();
+            fsr = new ProtoScriptRunner();
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();
 
             //Run
 
-            fsr.Execute(code, core);
+            runtimeCore = fsr.Execute(code, core);
 
             return core;
         }
 
-        internal  static ProtoCore.Core DebugRunnerRunOnly(string code)
+        internal  static ProtoCore.Core DebugRunnerRunOnly(string code, out RuntimeCore runtimeCore)
         {
             ProtoCore.Core core;
             DebugRunner fsr;
-            ProtoScript.Config.RunConfiguration runnerConfig;
 
             // Specify some of the requirements of IDE.
             var options = new ProtoCore.Options();
@@ -98,11 +97,9 @@ namespace ProtoTestFx
             options.IncludeDirectories.Add(testPath);
 
             core = new ProtoCore.Core(options);
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            core.Compilers.Add(ProtoCore.Language.Associative, new ProtoAssociative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.Imperative, new ProtoImperative.Compiler(core));
 
-            runnerConfig = new ProtoScript.Config.RunConfiguration();
-            runnerConfig.IsParrallel = false;
             fsr = new DebugRunner(core);
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
@@ -110,21 +107,20 @@ namespace ProtoTestFx
 
             //Run
 
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             DebugRunner.VMState vms = null;
 
             vms = fsr.Run();
-
+            runtimeCore = fsr.runtimeCore;
             return core;
         }
 
-        internal static ProtoCore.Core DebugRunnerStepOver(string code)
+        internal static ProtoCore.Core DebugRunnerStepOver(string code, out RuntimeCore runtimeCore)
         {
             //Internal setup
 
             ProtoCore.Core core;
             DebugRunner fsr;
-            ProtoScript.Config.RunConfiguration runnerConfig;
 
              // Specify some of the requirements of IDE.
             var options = new ProtoCore.Options();
@@ -136,12 +132,10 @@ namespace ProtoTestFx
             options.IncludeDirectories.Add(testPath);
 
             core = new ProtoCore.Core(options);
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            core.Compilers.Add(ProtoCore.Language.Associative, new ProtoAssociative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.Imperative, new ProtoImperative.Compiler(core));
 
 
-            runnerConfig = new ProtoScript.Config.RunConfiguration();
-            runnerConfig.IsParrallel = false;
             fsr = new DebugRunner(core);
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
@@ -149,23 +143,23 @@ namespace ProtoTestFx
 
             //Run
 
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             DebugRunner.VMState vms = null;
  
             while (!fsr.isEnded)
                 vms = fsr.StepOver();
 
+            runtimeCore = fsr.runtimeCore;
             return core;
 
         }
 
-        internal static ProtoCore.Core DebugRunerStepIn(string code)
+        internal static ProtoCore.Core DebugRunerStepIn(string code, out RuntimeCore runtimeCore)
         {
             //Internal setup
 
             ProtoCore.Core core;
             DebugRunner fsr;
-            ProtoScript.Config.RunConfiguration runnerConfig;
 
             // Specify some of the requirements of IDE.
             var options = new ProtoCore.Options();
@@ -177,11 +171,9 @@ namespace ProtoTestFx
             options.IncludeDirectories.Add(testPath);
 
             core = new ProtoCore.Core(options);
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            core.Compilers.Add(ProtoCore.Language.Associative, new ProtoAssociative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.Imperative, new ProtoImperative.Compiler(core));
 
-            runnerConfig = new ProtoScript.Config.RunConfiguration();
-            runnerConfig.IsParrallel = false;
             fsr = new DebugRunner(core);
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
@@ -189,30 +181,29 @@ namespace ProtoTestFx
 
             //Run
 
-            fsr.PreStart(code, runnerConfig);
+            fsr.PreStart(code);
             DebugRunner.VMState vms = null;
 
             while (!fsr.isEnded)
                 vms = fsr.Step();
 
+            runtimeCore = fsr.runtimeCore;
             return core;
 
         }
 
-        internal static void CompareCores(Core c1, Core c2, string defectID = "")
+        internal static void CompareCores(RuntimeCore rtcore1, RuntimeCore rtcore2, string defectID = "")
         {
-            Assert.AreEqual(c1.DSExecutable.runtimeSymbols.Length, c2.DSExecutable.runtimeSymbols.Length, defectID);
+            Assert.AreEqual(rtcore1.DSExecutable.runtimeSymbols.Length, rtcore1.DSExecutable.runtimeSymbols.Length, defectID);
 
 
-            for (int symTableIndex = 0; symTableIndex < c1.DSExecutable.runtimeSymbols.Length; symTableIndex++)
+            for (int symTableIndex = 0; symTableIndex < rtcore1.DSExecutable.runtimeSymbols.Length; symTableIndex++)
             {
-                foreach (SymbolNode symNode in c1.DSExecutable.runtimeSymbols[symTableIndex].symbolList.Values)
+                foreach (SymbolNode symNode in rtcore1.DSExecutable.runtimeSymbols[symTableIndex].symbolList.Values)
                 {
 
-                    ExecutionMirror runExecMirror = new ExecutionMirror(c1.CurrentExecutive.CurrentDSASMExec,
-                                                                        c1);
-                    ExecutionMirror debugExecMirror =
-                        new ExecutionMirror(c2.CurrentExecutive.CurrentDSASMExec, c2);
+                    ExecutionMirror runExecMirror = new ExecutionMirror(rtcore1.CurrentExecutive.CurrentDSASMExec,rtcore1);
+                    ExecutionMirror debugExecMirror = new ExecutionMirror(rtcore2.CurrentExecutive.CurrentDSASMExec, rtcore2);
 
                     bool lookupOk = false;
                     StackValue runValue = StackValue.Null;
@@ -233,7 +224,7 @@ namespace ProtoTestFx
                     catch (Exception ex)
                     {
                         if ((ex is ArgumentOutOfRangeException || ex is IndexOutOfRangeException) &&
-                            (c1.RunningBlock != symNode.runtimeTableIndex))
+                            (rtcore1.RunningBlock != symNode.runtimeTableIndex))
                         {
                             // Quite possible that variables defined in the inner
                             // language block have been garbage collected and 
@@ -249,7 +240,7 @@ namespace ProtoTestFx
                     if (lookupOk)
                     {
                         StackValue debugValue = debugExecMirror.GetGlobalValue(symNode.name);
-                        if (!StackUtils.CompareStackValues(debugValue, runValue, c2, c1))
+                        if (!StackUtils.CompareStackValues(debugValue, runValue, rtcore2, rtcore1))
                         {
                             Assert.Fail(string.Format("\tThe value of variable \"{0}\" doesn't match in run mode and in debug mode.\nTracked by {1}", symNode.name, defectID));
                         }

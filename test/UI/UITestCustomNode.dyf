@@ -1,0 +1,14 @@
+<Workspace Version="0.7.5.3376" X="0" Y="0" zoom="1" Description="A node" Category="Custom nodes" Name="UITestCustomNode" ID="b04dd34d-9bc8-406b-8dde-dc337b776295">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="bcd21af8-8083-46cc-ba6c-f33525681196" nickname="Input" x="283" y="248.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="ae87a5c4-f8ca-4ee0-9653-e4a1a4f5b645" nickname="Output" x="397" y="247.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="bcd21af8-8083-46cc-ba6c-f33525681196" start_index="0" end="ae87a5c4-f8ca-4ee0-9653-e4a1a4f5b645" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

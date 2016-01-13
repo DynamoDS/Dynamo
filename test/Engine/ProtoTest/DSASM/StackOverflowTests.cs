@@ -8,15 +8,10 @@ using ProtoTestFx.TD;
 namespace ProtoTest.DSASM
 {
     [TestFixture]
-    class StackOverflowTests
+    class StackOverflowTests : ProtoTestBase
     {
-        readonly TestFrameWork thisTest = new TestFrameWork();
-        [SetUp]
-        public void SetUp()
-        {
-        }
-
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_CoveredInRecusionTests")]
         [Category("StackOverflow")]
         public void StackOverflow_DNL_1467365()
         {
@@ -42,7 +37,7 @@ Rows = Row.ByPoints(a, b);";
         }
 
         [Test]
-        [Ignore]
+        [Ignore][Category("DSDefinedClass_Ignored_CoveredInRecusionTests")]
         [Category("StackOverflow")]
         [Category("Failure")]
         public void StackOverflow_DNL_1467354()

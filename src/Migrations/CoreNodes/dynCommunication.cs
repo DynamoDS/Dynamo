@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Xml;
 using Dynamo.Models;
-using Migrations;
+using Dynamo.Migration;
 
 namespace Dynamo.Nodes
 {
@@ -14,7 +14,7 @@ namespace Dynamo.Nodes
 
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             XmlElement newNode = MigrationManager.CloneAndChangeName(
-                oldNode, "DSCoreNodesUI.WebRequest", "Web Request");
+                oldNode, "CoreNodeModels.WebRequest", "Web Request");
             migrationData.AppendNode(newNode);
 
             foreach (XmlElement subNode in oldNode.ChildNodes)

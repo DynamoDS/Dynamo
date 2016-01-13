@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using ProtoCore.DSASM;
 using ProtoCore.Exceptions;
+using ProtoCore.Properties;
 using ProtoCore.Utils;
 
 namespace ProtoCore.Lang.Replication
@@ -113,7 +114,7 @@ namespace ProtoCore.Lang.Replication
                             //If we've previous seen a shortest node with this guide
                             if (i > 0 && indexLace[guideCounter] == ZipAlgorithm.Shortest)
                             {
-                                throw new ReplicationCaseNotCurrentlySupported("Cannot support Longest and shortest zipped collections");
+                                throw new ReplicationCaseNotCurrentlySupported(Resources.ZipAlgorithmError);
                             }
 
                             //Overwrite the default behaviour
@@ -125,7 +126,7 @@ namespace ProtoCore.Lang.Replication
                             //then we've created a violation foo(a<1>, b1<1L>) is not allowed
                             if (indexLace[guideCounter] == ZipAlgorithm.Longest)
                             {
-                                throw new ReplicationCaseNotCurrentlySupported("Cannot support Longest and shortest zipped collections");
+                                throw new ReplicationCaseNotCurrentlySupported(Resources.ZipAlgorithmError);
                             }
                             else
                             {
@@ -190,8 +191,8 @@ namespace ProtoCore.Lang.Replication
                 {
                     if (guidesOnParam[i] != sorted[i])
                     {
-                        throw new ReplicationCaseNotCurrentlySupported(
-                            "Sorry, multiple guides on a single argument that are not in increasing order are not yet supported, please use a for loop instead, err code: {3C5360D1}");
+                        throw new ReplicationCaseNotCurrentlySupported(Resources.MultipleGuidesNotSupported + 
+                            string.Format(Resources.ErrorCode, "{3C5360D1}"));
                     }
                 }
             }
@@ -446,13 +447,13 @@ namespace ProtoCore.Lang.Replication
         /// <param name="replicationInstructions"></param>
         /// <param name="core"></param>
         /// <returns></returns>
-        public static List<List<StackValue>> ComputeAllReducedParams(List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, Core core)
+        public static List<List<StackValue>> ComputeAllReducedParams(List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, RuntimeCore runtimeCore)
         {
             List<List<StackValue>> ret; //= new List<List<StackValue>>();
 
             //First approximation generates possibilities that may never actually exist, due to 
 
-            ret = ComputeReducedParamsSuperset(formalParams, replicationInstructions, core);
+            ret = ComputeReducedParamsSuperset(formalParams, replicationInstructions, runtimeCore);
 
             return ret;
 
@@ -461,9 +462,8 @@ namespace ProtoCore.Lang.Replication
 
         }
 
-        public static List<List<StackValue>> ComputeReducedParamsSuperset(List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, Core core)
+        public static List<List<StackValue>> ComputeReducedParamsSuperset(List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, RuntimeCore runtimeCore)
         {
-
             //Compute the reduced Type args
             List<List<StackValue>> reducedParams = new List<List<StackValue>>();
 
@@ -483,22 +483,17 @@ namespace ProtoCore.Lang.Replication
                     {
                         //This should generally be a collection, so we need to do a one phase unboxing
                         StackValue target = basicList[index];
-                        StackValue reducedSV = StackValue.Null;
 
                         if (target.IsArray)
                         {
 
                             //Array arr = formalParams[index].Payload as Array;
-                            HeapElement he = ArrayUtils.GetHeapElement(basicList[index], core);
-
-                            Validity.Assert(he.Stack != null);
+                            var array = runtimeCore.Heap.ToHeapObject<DSArray>(basicList[index]);
 
                             //The elements of the array are still type structures
-                            if (he.VisibleSize == 0)
-                                reducedSV = StackValue.Null;
-                            else
+                            if (array.Count != 0)
                             {
-                                var arrayStats = ArrayUtils.GetTypeExamplesForLayer(basicList[index], core).Values;
+                                var arrayStats = ArrayUtils.GetTypeExamplesForLayer(basicList[index], runtimeCore).Values;
 
                                 List<List<StackValue>> clonedList = new List<List<StackValue>>();
 
@@ -526,11 +521,7 @@ namespace ProtoCore.Lang.Replication
                         else
                         {
                             System.Console.WriteLine("WARNING: Replication unbox requested on Singleton. Trap: 437AD20D-9422-40A3-BFFD-DA4BAD7F3E5F");
-                            reducedSV = target;
                         }
-
-                        //reducedType.IsIndexable = false;
-                        //reducedParamTypes[index] = reducedSV;
                     }
                 }
                 else
@@ -539,27 +530,22 @@ namespace ProtoCore.Lang.Replication
                     int index = ri.CartesianIndex;
                     //This should generally be a collection, so we need to do a one phase unboxing
                     StackValue target = basicList[index];
-                    StackValue reducedSV = StackValue.Null;
 
                     if (target.IsArray)
                     {
 
                         //Array arr = formalParams[index].Payload as Array;
-                        HeapElement he = ArrayUtils.GetHeapElement(basicList[index], core);
+                        var array = runtimeCore.Heap.ToHeapObject<DSArray>(basicList[index]);
 
 
 
                         //It is a collection, so cast it to an array and pull the type of the first element
                         //@TODO(luke): Deal with sparse arrays, if the first element is null this will explode
 
-                        Validity.Assert(he.Stack != null);
-
                         //The elements of the array are still type structures
-                        if (he.VisibleSize == 0)
-                            reducedSV = StackValue.Null;
-                        else
+                        if (array.Count != 0)
                         {
-                            var arrayStats = ArrayUtils.GetTypeExamplesForLayer(basicList[index], core).Values;
+                            var arrayStats = ArrayUtils.GetTypeExamplesForLayer(basicList[index], runtimeCore).Values;
 
                             List<List<StackValue>> clonedList = new List<List<StackValue>>();
 
@@ -588,7 +574,6 @@ namespace ProtoCore.Lang.Replication
                     else
                     {
                         System.Console.WriteLine("WARNING: Replication unbox requested on Singleton. Trap: 437AD20D-9422-40A3-BFFD-DA4BAD7F3E5F");
-                        reducedSV = target;
                     }
                 }
 
@@ -605,9 +590,8 @@ namespace ProtoCore.Lang.Replication
         /// <param name="formalParams"></param>
         /// <param name="replicationInstructions"></param>
         /// <returns></returns>
-        public static List<StackValue> EstimateReducedParams(List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, Core core)
+        public static List<StackValue> EstimateReducedParams(List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, RuntimeCore runtimeCore)
         {
-
             //Compute the reduced Type args
             List<StackValue> reducedParamTypes = new List<StackValue>();
 
@@ -629,20 +613,15 @@ namespace ProtoCore.Lang.Replication
                         {
 
                             //Array arr = formalParams[index].Payload as Array;
-                            HeapElement he = ArrayUtils.GetHeapElement(reducedParamTypes[index], core);
-
+                            var array = runtimeCore.Heap.ToHeapObject<DSArray>(reducedParamTypes[index]);
 
 
                             //It is a collection, so cast it to an array and pull the type of the first element
-                            //@TODO(luke): Deal with sparse arrays, if the first element is null this will explode
-
-                            Validity.Assert(he.Stack != null);
-
                             //The elements of the array are still type structures
-                            if (he.VisibleSize == 0)
+                            if (array.Count == 0)
                                 reducedSV = StackValue.Null;
                             else
-                                reducedSV = he.Stack[0];
+                                reducedSV = array.GetValueFromIndex(0, runtimeCore);
                         }
                         else
                         {
@@ -664,22 +643,14 @@ namespace ProtoCore.Lang.Replication
                     if (target.IsArray)
                     {
                         //ProtoCore.DSASM.Mirror.DsasmArray arr = formalParams[index].Payload as ProtoCore.DSASM.Mirror.DsasmArray;
-                        HeapElement he = ArrayUtils.GetHeapElement(reducedParamTypes[index], core);
-
-                        //It is a collection, so cast it to an array and pull the type of the first element
-                        //@TODO(luke): Deal with sparse arrays, if the first element is null this will explode
-                        //Validity.Assert(arr != null);
-                        //Validity.Assert(arr.members[0] != null);
-                        Validity.Assert(he.Stack != null);
-
-
+                        var array = runtimeCore.Heap.ToHeapObject<DSArray>(reducedParamTypes[index]);
 
                         //The elements of the array are still type structures
                         //reducedType = arr.members[0].Type;
-                        if (he.VisibleSize == 0)
+                        if (array.Count == 0)
                             reducedSV = StackValue.Null;
                         else
-                            reducedSV = he.Stack[0];
+                            reducedSV = array.GetValueFromIndex(0, runtimeCore);
 
                     }
                     else
@@ -745,7 +716,7 @@ namespace ProtoCore.Lang.Replication
        
 
 
-        public static List<List<ReplicationInstruction>> BuildReplicationCombinations(List<ReplicationInstruction> providedControl, List<StackValue> formalParams, Core core)
+        public static List<List<ReplicationInstruction>> BuildReplicationCombinations(List<ReplicationInstruction> providedControl, List<StackValue> formalParams, RuntimeCore runtimeCore)
         {
 
             
@@ -761,7 +732,7 @@ namespace ProtoCore.Lang.Replication
 
             for (int i = 0; i < formalParams.Count; i++)
             {
-                int itemMaxDepth = GetMaxReductionDepth(formalParams[i], core);
+                int itemMaxDepth = GetMaxReductionDepth(formalParams[i], runtimeCore);
 
                 if (itemMaxDepth > 0)
                     reducibles.Add(i);
@@ -771,7 +742,8 @@ namespace ProtoCore.Lang.Replication
 
             if (providedControl.Count > maxDepth)
             {
-                throw new ReplicationCaseNotCurrentlySupported("Replication requested exceeds the available dimensions of the array. This case is not yet supported {1EC8AF3C-48D6-4582-999E-ADBCBF9155D1}");
+                throw new ReplicationCaseNotCurrentlySupported(
+                    string.Format(Resources.MaxDimensionExceeded, "{1EC8AF3C-48D6-4582-999E-ADBCBF9155D1}"));
             }
             else
             {
@@ -831,7 +803,7 @@ namespace ProtoCore.Lang.Replication
                 {
                     bool append = true;
                     for (int i = 0; i < list.Count; i++)
-                        if (list[i] > GetMaxReductionDepth(formalParams[i], core))
+                        if (list[i] > GetMaxReductionDepth(formalParams[i], runtimeCore))
                         {
                             append = false;
                             break;
@@ -909,9 +881,9 @@ namespace ProtoCore.Lang.Replication
         /// <param name="sv"></param>
         /// <param name="core"></param>
         /// <returns></returns>
-        public static int GetMaxReductionDepth(StackValue sv, Core core)
+        public static int GetMaxReductionDepth(StackValue sv, RuntimeCore runtimeCore)
         {
-            return RecursiveProtectGetMaxReductionDepth(sv, core, 0);
+            return RecursiveProtectGetMaxReductionDepth(sv, runtimeCore, 0);
             
         }
 
@@ -923,7 +895,7 @@ namespace ProtoCore.Lang.Replication
         /// <param name="core"></param>
         /// <param name="depthCount"></param>
         /// <returns></returns>
-        private static int RecursiveProtectGetMaxReductionDepth(StackValue sv, Core core, int depthCount)
+        private static int RecursiveProtectGetMaxReductionDepth(StackValue sv, RuntimeCore runtimeCore, int depthCount)
         {
             Validity.Assert(depthCount < 1000, 
                 "StackOverflow protection trap. This is almost certainly a VM cycle-in-array bug. {0B530165-2E38-431D-88D9-56B0636364CD}");
@@ -935,10 +907,10 @@ namespace ProtoCore.Lang.Replication
             int maxReduction = 0;
 
             //De-ref the sv
-            HeapElement he = ProtoCore.Utils.ArrayUtils.GetHeapElement(sv, core);
-            foreach (var subSv in he.VisibleItems)
+            var array = runtimeCore.Heap.ToHeapObject<DSArray>(sv);
+            foreach (var subSv in array.Values)
             {
-                maxReduction = Math.Max(maxReduction, RecursiveProtectGetMaxReductionDepth(subSv, core, depthCount+1));
+                maxReduction = Math.Max(maxReduction, RecursiveProtectGetMaxReductionDepth(subSv, runtimeCore, depthCount + 1));
             }
 
             return 1 + maxReduction;   

@@ -1,0 +1,19 @@
+<Workspace Version="0.8.0.682" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="100">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="3ff2941f-ce2d-4788-8b9f-71413de53cc4" type="Dynamo.Nodes.DSFunction" nickname="TestData.GetCircleArea" x="172.5" y="159.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="FFITarget.dll" function="FFITarget.TestData.GetCircleArea@double">
+      <PortInfo index="0" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction guid="43fff8c4-3d5e-4996-a6af-ae991e756acd" type="Dynamo.Nodes.DSFunction" nickname="TestData.GetCircleArea" x="191.5" y="333.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="FFITarget.dll" function="FFITarget.TestData.GetCircleArea@double">
+      <PortInfo index="0" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="ce2cc137-1b5f-4f02-a2a0-ae77065d7ee7" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="58" y="339" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="2.5;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction guid="4f0c05a7-4e52-4d60-807a-08824baa23bb" type="Dynamo.Nodes.DSFunction" nickname="Equals" x="418.5" y="214.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="Equals@var,var" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="3ff2941f-ce2d-4788-8b9f-71413de53cc4" start_index="0" end="4f0c05a7-4e52-4d60-807a-08824baa23bb" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="43fff8c4-3d5e-4996-a6af-ae991e756acd" start_index="0" end="4f0c05a7-4e52-4d60-807a-08824baa23bb" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ce2cc137-1b5f-4f02-a2a0-ae77065d7ee7" start_index="0" end="43fff8c4-3d5e-4996-a6af-ae991e756acd" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,0 +1,31 @@
+<Workspace Version="0.7.4.3161" X="-39.4429337652255" Y="295.599190223477" zoom="0.719944189046159" Description="Takes a PolyCurve and returns a smaller PolyCurve in the pattern" Category="Recursive Patterns" Name="RecursivePattern2" ID="e1e5a450-d0f2-4c24-b210-852b28f04353">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="fb42ccde-ee4a-43eb-89e4-ec5079008b26" nickname="PolyCurve.Curves" x="385.341916739414" y="-1.62439856870159" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.PolyCurve.Curves" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="f6b546a8-ac83-459d-b476-cd1e73fd2dd7" nickname="Code Block" x="521.88355140028" y="169.703547045711" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0.2;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="11d9247d-a281-432b-8b99-66b320e42c81" nickname="Code Block" x="743.868445863135" y="220.834922679726" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="true;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="6ed2af02-a4ed-4331-b925-1397a81d4376" nickname="Curve.PointAtParameter" x="645.103971832378" y="88.4211448691159" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Curve.PointAtParameter@double">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="28c7af89-42f8-4404-8c4b-191ea167a66a" nickname="PolyCurve.ByPoints" x="894.577102617682" y="93.2634346073476" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.PolyCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[],bool">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="a75f6b00-4d19-4fe8-b604-9865446634b6" nickname="Output" x="1230.75510204082" y="104.84693877551" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="curve" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="e48999bb-3f64-4ed2-8d97-9b64e226abcc" nickname="Input" x="186.155401416884" y="-117.353722097161" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="dummy" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="ca42dce8-aef3-450a-b012-4d98836933f1" nickname="Input" x="182.485865526091" y="11.9974180533027" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="polycurve" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="fb42ccde-ee4a-43eb-89e4-ec5079008b26" start_index="0" end="6ed2af02-a4ed-4331-b925-1397a81d4376" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f6b546a8-ac83-459d-b476-cd1e73fd2dd7" start_index="0" end="6ed2af02-a4ed-4331-b925-1397a81d4376" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="11d9247d-a281-432b-8b99-66b320e42c81" start_index="0" end="28c7af89-42f8-4404-8c4b-191ea167a66a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6ed2af02-a4ed-4331-b925-1397a81d4376" start_index="0" end="28c7af89-42f8-4404-8c4b-191ea167a66a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="28c7af89-42f8-4404-8c4b-191ea167a66a" start_index="0" end="a75f6b00-4d19-4fe8-b604-9865446634b6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ca42dce8-aef3-450a-b012-4d98836933f1" start_index="0" end="fb42ccde-ee4a-43eb-89e4-ec5079008b26" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

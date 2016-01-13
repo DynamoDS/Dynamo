@@ -5,7 +5,7 @@ using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.Associative
 {
-    public class BuiltinMethodsTest
+    class BuiltinMethodsTest
     {
         public TestFrameWork thisTest = new TestFrameWork();
         [SetUp]
@@ -302,6 +302,14 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        public void TransposeEmpty2DArray()
+        {
+            string code = @"x = {{}}; y = Transpose(x);";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("y", new object[] { });
+        }
+
+        [Test]
         //Test "LoadCSV"
         public void BIM23_LoadCSV()
         {
@@ -311,6 +319,17 @@ namespace ProtoTest.Associative
             thisTest.Verify("x", 3.0);
             thisTest.Verify("y", 3.0);
             thisTest.Verify("z", 3.0);
+        }
+
+        [Test]
+        //Test "LoadCSV"
+        public void BIM24_LoadCSV()
+        {
+            // ensure that white space is trimmed from the path
+            String code =
+@"a = ""\n \r\t../../../test/Engine/ProtoTest/ImportFiles/CSV/Set1/test1.csv\r\r\n "";b = ImportFromCSV(a);x = b[0][2];";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 3.0);
         }
 
         [Test]
@@ -382,27 +401,21 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        //Test "RemoveDuplicate()"
+        [Category("DSDefinedClass_Ported")]
         public void BIM30_RemoveDuplicate()
         {
             String code =
-@"import(""FFITarget.dll"");pt1 = ClassFunctionality.ClassFunctionality(0, 0, 0);pt2 = ClassFunctionality.ClassFunctionality(0, 0, 1);class C{    x : int;    y : ClassFunctionality;    constructor(p : int, q : ClassFunctionality)    {        x = p;        y = q;    }}a = {null,20,30,null,20,15,true,true,5,false};b = {1,2,3,4,9,4,2,5,6,7,8,7,1,0,2};c1 = C.C(1, pt1);c2 = C.C(2, pt2);c3 = C.C(1, pt1);c4 = C.C(2, pt2);rda = RemoveDuplicates(a);rdb = RemoveDuplicates(b);rdc = RemoveDuplicates({c1,c2,c3,c4});rdd = RemoveDuplicates({{1,2,{5,{6}}}, {1,2,{5,6}}, {1,2,{5,{6}}}});rde = RemoveDuplicates({""hello2"", ""hello"", 'r', ""hello2"", 's', 's', ""hello"", ' '});rdf = RemoveDuplicates({});rdg = RemoveDuplicates(1);rdh = RemoveDuplicates({{c1,c2,c3},{c3,c2,c1},{c1,c2},{c2,c3,c1},{c3,c2,c1}});p = rda[3];q = rdb[4];l = rdc[0];z = l.x;m1 = rdc[1].y.IntVal;m2 = rdd[0][2][0];m3 = rde[4];m4 = rdh[2][1].x;res1 = Count(rda);res2 = Count(rdb);res3 = Count(rdc);res4 = Count(rdd);res5 = Count(rde);res6 = Count(rdf);res7 = Count(rdh);";
+@"import(""FFITarget.dll"");a = {null,20,30,null,20,15,true,true,5,false};b = {1,2,3,4,9,4,2,5,6,7,8,7,1,0,2};rda = RemoveDuplicates(a);rdb = RemoveDuplicates(b);rdd = RemoveDuplicates({{1,2,{5,{6}}}, {1,2,{5,6}}, {1,2,{5,{6}}}});rde = RemoveDuplicates({""hello2"", ""hello"", 'r', ""hello2"", 's', 's', ""hello"", ' '});rdf = RemoveDuplicates({});p = rda[3];q = rdb[4];m2 = rdd[0][2][0];m3 = rde[4];res1 = Count(rda);res2 = Count(rdb);res4 = Count(rdd);res5 = Count(rde);res6 = Count(rdf);";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Assert.IsTrue((Int64)mirror.GetValue("p").Payload == 15);
             Assert.IsTrue((Int64)mirror.GetValue("q").Payload == 9);
-            Assert.IsTrue((Int64)mirror.GetValue("z").Payload == 1);
-            thisTest.Verify("m1", 1);
             thisTest.Verify("m2", 5);
             thisTest.Verify("m3", ' ');
-            thisTest.Verify("m4", 1);
             thisTest.Verify("res1", 7);
             thisTest.Verify("res2", 10);
-            thisTest.Verify("res3", 2);
             thisTest.Verify("res4", 2);
             thisTest.Verify("res5", 5);
             thisTest.Verify("res6", 0);
-            thisTest.Verify("res7", 3);
-            thisTest.Verify("rdg", 1);
         }
 
         [Test]
@@ -447,9 +460,9 @@ def foo(x, y, z)
 
 param = { 2, 3, 4 };
 x = Evaluate(foo, param, true);
-";           
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("x", 9); 
+            thisTest.Verify("x", 9);
         }
 
         [Test]
@@ -470,9 +483,9 @@ def foo(x, y)
 param = { 2, 3, 4 };
 x = Evaluate(foo, param, true);
 param = { 5, 6 };
-";           
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("x", 30); 
+            thisTest.Verify("x", 30);
         }
 
         [Test]
@@ -494,9 +507,9 @@ t = foo;
 param = { 2, 3, 4 };
 x = Evaluate(t, param, true);
 t = bar;
-";           
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("x", 24); 
+            thisTest.Verify("x", 24);
         }
 
         [Test]
@@ -519,7 +532,7 @@ param = {2, 3, 4 };
 x = Evaluate({ foo, bar }, param, true);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("x", new object[] { 9, 24});
+            thisTest.Verify("x", new object[] { 9, 24 });
         }
 
         [Test]
@@ -615,14 +628,15 @@ def foo(evalFunction : function, fptr : function, param : var[])
 x = foo({ Evaluate, Evaluate }, { f1, f2 }, { { 41 }, { 42 } });
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("x", new object[] {82, 126});
+            thisTest.Verify("x", new object[] { 82, 126 });
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void Test_EvaluateFunctionPointer09()
         {
             // Nested call
-            string code =
+            string code = 
 @"
 class Foo
 {
@@ -682,8 +696,8 @@ def foo(x)
 
 x = foo(5);
 ";
-             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-             thisTest.Verify("x", 120);
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 120);
 
             // This case crashes nunit 
             //Assert.Fail("This test case crashes Nunit");
@@ -729,8 +743,8 @@ r1 = __TryGetValueFromNestedDictionaries(c, ""in"");
 r2 = __TryGetValueFromNestedDictionaries(c, ""out"");
 ";
             var mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("r1", new object[] { 42, 24});
-            thisTest.Verify("r2", new object[] { 24, 42});
+            thisTest.Verify("r1", new object[] { 42, 24 });
+            thisTest.Verify("r2", new object[] { 24, 42 });
         }
 
         [Test]
@@ -748,8 +762,8 @@ r1 = __TryGetValueFromNestedDictionaries(c, ""in"");
 r2 = __TryGetValueFromNestedDictionaries(c, ""out"");
 ";
             var mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("r1", new object[] { new object[] {42}, new object[] {24}});
-            thisTest.Verify("r2", new object[] { new object[] {24}, new object[] {42}});
+            thisTest.Verify("r1", new object[] { new object[] { 42 }, new object[] { 24 } });
+            thisTest.Verify("r2", new object[] { new object[] { 24 }, new object[] { 42 } });
         }
 
         [Test]
@@ -811,6 +825,16 @@ r = __TryGetValueFromNestedDictionaries(a, ""nonexist"");
             var mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", null);
         }
+
+        [Test]
+        public void TestGetKeysFromNonArray()
+        {
+            string code = @"
+x = 1;
+k = GetKeys(x);";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("k", null);
+        }
     }
 
     class MathematicalFunctionMethodsTest
@@ -842,10 +866,8 @@ r = __TryGetValueFromNestedDictionaries(a, ""nonexist"");
         }
 
     }
-    class TrigonometricFunctionMethodsTest
+    class TrigonometricFunctionMethodsTest : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-
         [Test]
         public void TestTrigonometricFunction()
         {
@@ -868,16 +890,15 @@ r = __TryGetValueFromNestedDictionaries(a, ""nonexist"");
             thisTest.Verify("z4", -1.0);
             thisTest.Verify("r4", -1.0);
         }
+    }
 
-        class StringFunctionMethodsTest
+    class StringFunctionMethodsTest : ProtoTestBase
+    {
+        [Test]
+        public void TestStringFunction()
         {
-            public TestFrameWork thisTest = new TestFrameWork();
-
-            [Test]
-            public void TestStringFunction()
-            {
-                String code =
-                @"import(""DSCoreNodes.dll"");
+            String code =
+            @"import(""DSCoreNodes.dll"");
                 a = String.Length(""designScripT"");
                 b = String.ToUpper(""DynaMo"");
                 c = String.ToLower(""DYNamO"");
@@ -886,16 +907,15 @@ r = __TryGetValueFromNestedDictionaries(a, ""nonexist"");
                 f = String.Join(""_"", e);
                 g = String.Concat(e);
                 h = String.Substring(""DesignScript"",2,5);";
-                ExecutionMirror mirror = thisTest.RunScriptSource(code);
-                thisTest.Verify("a", 12);
-                thisTest.Verify("b", "DYNAMO");
-                thisTest.Verify("c", "dynamo");
-                thisTest.Verify("d", 157.589);
-                thisTest.Verify("e", new object[] { "Star", "Wars", "1", "The", "Phantom", "Menace" });
-                thisTest.Verify("f", "Star_Wars_1_The_Phantom_Menace");
-                thisTest.Verify("g", "StarWars1ThePhantomMenace");
-                thisTest.Verify("h", "signS");
-            }
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 12);
+            thisTest.Verify("b", "DYNAMO");
+            thisTest.Verify("c", "dynamo");
+            thisTest.Verify("d", 157.589);
+            thisTest.Verify("e", new object[] { "Star", "Wars", "1", "The", "Phantom", "Menace" });
+            thisTest.Verify("f", "Star_Wars_1_The_Phantom_Menace");
+            thisTest.Verify("g", "StarWars1ThePhantomMenace");
+            thisTest.Verify("h", "signS");
         }
     }
 }

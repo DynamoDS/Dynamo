@@ -161,7 +161,7 @@ namespace ProtoCore.AST.AssociativeAST
         public ProtoCore.DSASM.MemoryRegion memregion { get; set; }
         public ProtoCore.Type ArgumentType { get; set; }
         public AssociativeNode NameNode { get; set; }
-        public ProtoCore.DSASM.AccessSpecifier access { get; set; }
+        public ProtoCore.DSASM.AccessModifier access { get; set; }
     }
 
     public class ArgumentSignatureNode : AssociativeNode
@@ -217,7 +217,7 @@ namespace ProtoCore.AST.AssociativeAST
         public ProtoCore.Type ReturnType { get; set; }
         public CodeBlockNode FunctionBody { get; set; }
         public FunctionCallNode baseConstr { get; set; }
-        public ProtoCore.DSASM.AccessSpecifier access { get; set; }
+        public ProtoCore.DSASM.AccessModifier access { get; set; }
         public bool IsExternLib { get; set; }
         public string ExternLibName { get; set; }
     }
@@ -232,7 +232,7 @@ namespace ProtoCore.AST.AssociativeAST
         public bool IsExternLib { get; set; }
         public bool IsDNI { get; set; }
         public string ExternLibName { get; set; }
-        public ProtoCore.DSASM.AccessSpecifier access { get; set; }
+        public ProtoCore.DSASM.AccessModifier access { get; set; }
     }
 
     public class IfStatementNode : AssociativeNode

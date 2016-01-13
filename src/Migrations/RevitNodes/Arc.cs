@@ -1,7 +1,9 @@
 ﻿using System.Linq;
 using System.Xml;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.Models;
-using Migrations;
+using Dynamo.Migration;
 
 namespace Dynamo.Nodes
 {
@@ -53,14 +55,14 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(toDegreeNodeEnd);
             string toDegreeNodeEndId = MigrationManager.GetGuidFromXmlElement(toDegreeNodeEnd);
 
-            PortId oldInPort2 = new PortId(oldNodeId, 2, PortType.INPUT);
+            PortId oldInPort2 = new PortId(oldNodeId, 2, PortType.Input);
             XmlElement connector2 = data.FindFirstConnector(oldInPort2);
 
-            PortId oldInPort3 = new PortId(oldNodeId, 3, PortType.INPUT);
+            PortId oldInPort3 = new PortId(oldNodeId, 3, PortType.Input);
             XmlElement connector3 = data.FindFirstConnector(oldInPort3);
 
-            PortId toDegreeNodeStartPort = new PortId(toDegreeNodeStartId, 0, PortType.INPUT);
-            PortId toDegreeNodeEndPort = new PortId(toDegreeNodeEndId, 0, PortType.INPUT);
+            PortId toDegreeNodeStartPort = new PortId(toDegreeNodeStartId, 0, PortType.Input);
+            PortId toDegreeNodeEndPort = new PortId(toDegreeNodeEndId, 0, PortType.Input);
 
             // Update connectors
             data.ReconnectToPort(connector2, toDegreeNodeStartPort);

@@ -12,7 +12,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Analysis</RootNamespace>
     <AssemblyName>Analysis</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -24,7 +24,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\..\bin\AnyCPU\Debug\Analysis.xml</DocumentationFile>
+    <DocumentationFile>..\..\..\bin\AnyCPU\Debug\$(UICulture)\Analysis.xml</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,41 +34,91 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\..\bin\AnyCPU\Release\$(UICulture)\Analysis.xml</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ProtoGeometry, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="ProtoInterface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataTypes\Interfaces.cs" />
+    <Compile Include="AnalysisResources.Designer.cs">
+      <DependentUpon>AnalysisResources.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Interfaces.cs" />
+    <Compile Include="Label.cs" />
+    <Compile Include="PointData.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>Properties\AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DataTypes\AnalysisDataTypes.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="SurfaceData.cs" />
+    <Compile Include="Utils.cs" />
+    <Compile Include="VectorData.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Analysis_DynamoCustomization.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
+      <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
+      <Name>DynamoCore</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\CoreNodes\CoreNodes.csproj">
+      <Project>{87550b2b-6cb8-461e-8965-dfafe3aafb5c}</Project>
+      <Name>CoreNodes</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="AnalysisImages.resx" />
+    <EmbeddedResource Include="AnalysisResources.en-US.resx" />
+    <EmbeddedResource Include="AnalysisResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AnalysisResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.en-US.resx" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>copy $(ProjectDir)Analysis_DynamoCustomization.xml $(OutDir)Analysis_DynamoCustomization.xml</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
+    <Copy SourceFiles="$(ProjectDir)Analysis_DynamoCustomization.xml" DestinationFiles="$(OutDir)Analysis_DynamoCustomization.xml" />
   </Target>
-  <Target Name="AfterBuild">
+  <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
+    <!-- Get System.Drawing.dll -->
+    <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v2.0">
+      <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
+    </GetReferenceAssemblyPaths>
+    <!-- Get assembly -->
+    <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
+      <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
+    </GetAssemblyIdentity>
+    <!-- Generate customization dll -->
+    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)AnalysisImages.resx" OutputResources="$(ProjectDir)AnalysisImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL TargetType="library" EmbedResources="$(ProjectDir)AnalysisImages.resources" OutputAssembly="$(OutDir)Analysis.customization.dll" Version="%(AssemblyInfo.Version)" />
   </Target>
-  -->
 </Project>

@@ -2,10 +2,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-
+using System.Threading;
 using Autodesk.DesignScript.Runtime;
+using DSCore.Properties;
 
 #endregion
 
@@ -20,7 +22,7 @@ namespace DSCore
         ///     An Empty List.
         /// </summary>
         /// <returns name="list">Empty list.</returns>
-        /// <search>empty list, emptylist</search>
+        /// <search>empty list, emptylist,[]</search>
         public static IList Empty
         {
             get { return new ArrayList(); }
@@ -31,7 +33,7 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to filter duplicates out of.</param>
         /// <returns name="list">Filtered list.</returns>
-        /// <search>removes,duplicates,remove duplicates</search>
+        /// <search>removes,duplicates,remove duplicates,cull duplicates,distinct,listcontains</search>
         public static IList UniqueItems(IList list)
         {
             return list.Cast<object>().Distinct(DistinctComparer.Instance).ToList();
@@ -43,7 +45,7 @@ namespace DSCore
         /// <param name="list">List to search in.</param>
         /// <param name="item">Item to look for.</param>
         /// <returns name="bool">Whether list contains the given item.</returns>
-        /// <search>item,search</search>
+        /// <search>item,search,in,listcontains</search>
         public static bool ContainsItem(IList list, object item)
         {
             return list.Contains(item);
@@ -54,7 +56,7 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to be reversed.</param>
         /// <returns name="list">New list.</returns>
-        /// <search>flip</search>
+        /// <search>flip,listcontains</search>
         public static IList Reverse(IList list)
         {
             return list.Cast<object>().Reverse().ToList();
@@ -87,7 +89,7 @@ namespace DSCore
         ///     If true (default): All ranges are kept, out of bounds indices are ommitted.
         ///     If false: Any ranges with out of bounds indices are ommitted.</param>
         /// <returns name="lists">Sublists of the given list.</returns>
-        /// <search>sublists,build sublists</search>
+        /// <search>sublists,build sublists,subset,</search>
         public static IList Sublists(IList list, IList ranges, int offset)
         {
             var result = new ArrayList();
@@ -125,7 +127,7 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to be sorted.</param>
         /// <returns name="list">Sorted list.</returns>
-        /// <search>sort,order</search>
+        /// <search>sort,order,sorted</search>
         public static IList Sort(IEnumerable<object> list)
         {
             return list.OrderBy(x => x, new ObjectComparer()).ToList();
@@ -171,7 +173,7 @@ namespace DSCore
         /// <param name="mask">List of booleans representing a mask.</param>
         /// <returns name="in">Items whose mask index is true.</returns>
         /// <returns name="out">Items whose mask index is false.</returns>
-        /// <search>filter,in,out,mask,dispatch</search>
+        /// <search>filter,in,out,mask,dispatch,bool filter,boolfilter,bool filter</search>
         [MultiReturn(new[] { "in", "out" })]
         public static Dictionary<string, object> FilterByBoolMask(IList list, IList mask)
         {
@@ -222,7 +224,7 @@ namespace DSCore
         /// <param name="list">List to be split.</param>
         /// <returns name="first">First item in the list.</returns>
         /// <returns name="rest">Rest of the list.</returns>
-        /// <search>first,rest</search>
+        /// <search>first,rest,list split,listcontains</search>
         [MultiReturn(new[] { "first", "rest" })]
         public static IDictionary Deconstruct(IList list)
         {
@@ -234,12 +236,100 @@ namespace DSCore
         }
 
         /// <summary>
+        ///     Sort list based on its keys
+        /// </summary>
+        /// <param name="list">list to be sorted</param>
+        /// <param name="keys">list of keys</param>
+        /// <returns name="sorted list">sorted list</returns>
+        /// <returns name="sorted keys">sorted keys</returns>
+        /// <search>sort;key</search>
+        [MultiReturn(new[] { "sorted list", "sorted keys" })]
+        public static IDictionary SortByKey(IList list, IList keys)
+        {
+            if (list == null || keys == null)
+                return null;
+
+            var containsSublists = keys.Cast<object>().Any(key => key is IList || key is ICollection);
+            if (containsSublists)
+            {
+                throw new ArgumentException(Resources.InvalidKeysErrorMessage);
+            }
+
+            if (list.Count != keys.Count)
+            {
+                throw new ArgumentException(Resources.InvalidKeysLenghtErrorMessage);
+            }
+
+            var pairs = list.Cast<object>()
+                    .Zip(keys.Cast<object>(), (item, key) => new { item, key });
+
+            var numberKeyPairs = pairs.Where(pair => pair.key is double || pair.key is int || pair.key is float);
+            // We don't use Except, because Except doesn't return duplicates.
+            var keyPairs = pairs.Where(
+                pair =>
+                    !numberKeyPairs.Any(
+                        numberPair => numberPair.item == pair.item && numberPair.key == pair.key));
+
+            // Sort.
+            numberKeyPairs = numberKeyPairs.OrderBy(pair => Convert.ToDouble(pair.key));
+            keyPairs = keyPairs.OrderBy(pair => pair.key);
+
+            // First items with number keys, then items with letter keys.
+            var sortedPairs = numberKeyPairs.Concat(keyPairs);
+
+            var sortedList = sortedPairs.Select(x => x.item).ToList();
+            var sortedKeys = sortedPairs.Select(x => x.key).ToList();
+
+            return new Dictionary<object, object>
+            {
+                { "sorted list", sortedList },
+                { "sorted keys", sortedKeys }
+            };
+        }
+
+        /// <summary>
+        ///     Group items into sub-lists based on their like key values
+        /// </summary>
+        /// <param name="list">List of items to group as sublists</param>
+        /// <param name="keys">Key values, one per item in the input list, used for grouping the items</param>
+        /// <returns name="groups">list of sublists, with items grouped by like key values</returns>
+        /// <returns name="unique keys">key value corresponding to each group</returns>
+        /// <search>list;group;groupbykey;</search>
+        [MultiReturn(new[] { "groups", "unique keys" })]
+        public static IDictionary GroupByKey(IList list, IList keys)
+        {
+            if (list.Count != keys.Count)
+            {
+                throw new ArgumentException(Resources.InvalidKeysLenghtErrorMessage);
+            }
+
+            var containsSublists = keys.Cast<object>().Any(key => key is IList || key is ICollection);
+            if (containsSublists)
+            {
+                throw new ArgumentException(Resources.InvalidKeysErrorMessage);
+            }
+
+            var groups =
+                list.Cast<object>().Zip(keys.Cast<object>(), (item, key) => new { item, key })
+                    .GroupBy(x => x.key)
+                    .Select(x => x.Select(y => y.item).ToList());
+
+            var uniqueItems = keys.Cast<object>().Distinct().ToList();
+
+            return new Dictionary<object, object>
+            {
+                { "groups", groups },
+                { "unique keys", uniqueItems }
+            };
+        }
+
+        /// <summary>
         ///     Adds an item to the beginning of a list.
         /// </summary>
         /// <param name="item">Item to be added.</param>
         /// <param name="list">List to add on to.</param>
         /// <returns name="list">New list.</returns>
-        /// <search>insert,add,item,front</search>
+        /// <search>insert,add,item,front,start,begin</search>
         public static IList AddItemToFront([ArbitraryDimensionArrayImport] object item, IList list)
         {
             var newList = new ArrayList { item };
@@ -269,7 +359,7 @@ namespace DSCore
         ///     Amount of items to take. If negative, items are taken from the end of the list.
         /// </param>
         /// <returns name="list">List of extracted items.</returns>
-        /// <search>get,sub,sublist</search>
+        /// <search>get,sub,sublist,extract</search>
         public static IList TakeItems(IList list, int amount)
         {
             IEnumerable<object> genList = list.Cast<object>();
@@ -277,14 +367,15 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Removes an amount of items from the start of the list.
+        ///     Removes an amount of items from the start of the list. If the amount is a negative value,
+        ///     items are removed from the end of the list.
         /// </summary>
         /// <param name="list">List to remove items from.</param>
         /// <param name="amount">
         ///     Amount of items to remove. If negative, items are removed from the end of the list.
         /// </param>
         /// <returns name="list">List of remaining items.</returns>
-        /// <search>drop,remove</search>
+        /// <search>drop,remove,shorten</search>
         public static IList DropItems(IList list, int amount)
         {
             IEnumerable<object> genList = list.Cast<object>();
@@ -299,7 +390,7 @@ namespace DSCore
         ///     Amount to shift indices by. If negative, indices will be shifted to the left.
         /// </param>
         /// <returns name="list">Shifted list.</returns>
-        /// <search>shift</search>
+        /// <search>shift,offset</search>
         public static IList ShiftIndices(IList list, int amount)
         {
             if (amount == 0)
@@ -319,10 +410,36 @@ namespace DSCore
         /// <param name="list">List to fetch an item from.</param>
         /// <param name="index">Index of the item to be fetched.</param>
         /// <returns name="item">Item in the list at the given index.</returns>
-        /// <search>get,item,index,fetch</search>
+        /// <search>get,item,index,fetch,at,getfrom,get from,extract</search>
         public static object GetItemAtIndex(IList list, int index)
         {
             return list[index];
+        }
+
+        /// <summary>
+        ///     Replace an item from the given list that's located at the specified index.
+        /// </summary>
+        /// <param name="list">List to replace an item in.</param>
+        /// <param name="index">Index of the item to be replaced.</param>
+        /// <param name="item">The item to insert.</param>
+        /// <returns name="list">A new list with the item replaced.</returns>
+        /// <search>replace,switch</search>
+        public static IList ReplaceItemAtIndex(IList list, int index, [ArbitraryDimensionArrayImport] object item)
+        {
+            if (index < 0)
+            {
+                index = list.Count + index;
+            }
+
+            if (index >= list.Count || index < 0)
+            {
+                throw new IndexOutOfRangeException();
+            }
+
+            // copy the list, insert and return
+            var newList = new ArrayList(list);
+            newList[index] = item;
+            return newList;
         }
 
         /// <summary>
@@ -336,7 +453,7 @@ namespace DSCore
         ///     Amount the indices of the items are separate by in the original list.
         /// </param>
         /// <returns name="items">Items in the slice of the given list.</returns>
-        /// <search>list,sub,sublist</search>
+        /// <search>list,sub,sublist,subrange,get sublist</search>
         public static IList Slice(IList list, int? start = null, int? end = null, int step = 1)
         {
             if (step == 0)
@@ -381,7 +498,7 @@ namespace DSCore
         /// <param name="list">List to remove an item or items from.</param>
         /// <param name="indices">Index or indices of the item(s) to be removed.</param>
         /// <returns name="list">List with items removed.</returns>
-        /// <search>index,indices,cull</search>
+        /// <search>index,indices,cull,remove,item</search>
         public static IList RemoveItemAtIndex(IList list, int[] indices)
         {
             return list.Cast<object>().Where((_, i) => !indices.Contains(i)).ToList();
@@ -427,7 +544,7 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to check for items.</param>
         /// <returns name="bool">Whether the list is empty.</returns>
-        /// <search>test,is,empty</search>
+        /// <search>test,is,empty,null,count</search>
         public static bool IsEmpty(IList list)
         {
             return list.Count == 0;
@@ -438,7 +555,7 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to get the item count of.</param>
         /// <returns name="count">List length.</returns>
-        /// <search>listlength,list length,count</search>
+        /// <search>listlength,list length,count,size,sizeof</search>
         public static int Count(IList list)
         {
             return list.Count;
@@ -449,7 +566,7 @@ namespace DSCore
         /// </summary>
         /// <param name="lists">Lists to join into one.</param>
         /// <returns name="list">Joined list.</returns>
-        /// <search>join lists</search>
+        /// <search>join lists,merge,concatenate</search>
         public static IList Join(params IList[] lists)
         {
             var result = new ArrayList();
@@ -463,7 +580,7 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to get the first item from.</param>
         /// <returns name="item">First item in the list.</returns>
-        /// <search>get,fetch,first,item</search>
+        /// <search>get,fetch,first,item,start</search>
         public static object FirstItem(IList list)
         {
             return list[0];
@@ -474,39 +591,51 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to get the rest of.</param>
         /// <returns name="rest">Rest of the list.</returns>
-        /// <search>get,fetch,rest</search>
+        /// <search>get,fetch,rest,end,rest of list</search>
         public static IList RestOfItems(IList list)
         {
             return list.Cast<object>().Skip(1).ToList();
         }
 
         /// <summary>
-        ///     Chop a list into a set of lists each containing the given amount of items.
+        ///     Chop a list into a set of consecutive sublists with the specified lengths. List division begins at the top of the list.
         /// </summary>
-        /// <param name="list">List to chop up.</param>
-        /// <param name="subLength">Length of each new sub-list.</param>
-        /// <returns name="lists">List of lists.</returns>
-        /// <search>sublists,build sublists</search>
-        public static IList Chop(IList list, int subLength)
+        /// <param name="list">List to chop into sublists</param>
+        /// <param name="lengths">Lengths of consecutive sublists to be created from the input list</param>
+        /// <returns name="lists">Sublists created from the list</returns>
+        /// <search>sublists,build sublists,slices,partitions,cut,listcontains,chop</search>
+        public static IList Chop(IList list, List<int> lengths)
         {
-            if (list.Count < subLength)
-                return list;
-
             var finalList = new ArrayList();
             var currList = new ArrayList();
             int count = 0;
+            int lengthIndex = 0;
 
-            foreach (object v in list)
+            // If there are not any lengths more than 0,
+            // we return incoming list.
+            if (lengths.All(x => x <= 0))
             {
-                count++;
-                currList.Add(v);
+                return list;
+            }
 
-                if (count == subLength)
+            foreach (object obj in list)
+            {
+                // If number of items in current list equals length in list of lengths,
+                // we should add current list in final list.
+                // Or if length in list of lengths <= 0, we should process this length and move further.
+                if (count == lengths[lengthIndex] || lengths[lengthIndex] <= 0)
                 {
                     finalList.Add(currList);
                     currList = new ArrayList();
+                    if (lengthIndex < lengths.Count - 1)
+                    {
+                        lengthIndex++;
+                    }
                     count = 0;
                 }
+
+                currList.Add(obj);
+                count++;
             }
 
             if (currList.Count > 0)
@@ -521,7 +650,7 @@ namespace DSCore
         /// <param name="list">A flat list</param>
         /// <param name="subLength">Length of each new sub-list.</param>
         /// <returns name="diagonals">Lists of elements along matrix diagonals.</returns>
-        /// <search>diagonal,right,matrix</search>
+        /// <search>diagonal,right,matrix,get diagonals,diagonal sublists</search>
         public static IList DiagonalRight([ArbitraryDimensionArrayImport] IList list, int subLength)
         {
             object[] flatList;
@@ -580,7 +709,7 @@ namespace DSCore
         /// <param name="list">A flat list.</param>
         /// <param name="rowLength">Length of each new sib-list.</param>
         /// <returns name="diagonals">Lists of elements along matrix diagonals.</returns>
-        /// <search>diagonal,left,matrix</search>
+        /// <search>diagonal,left,matrix,get diagonals,diagonal sublists</search>
         public static IList DiagonalLeft(IList list, int rowLength)
         {
             object[] flatList;
@@ -633,7 +762,10 @@ namespace DSCore
 
 
         /// <summary>
-        ///     Swaps rows and columns in a list of lists.
+        ///     Swaps rows and columns in a list of lists. 
+        ///     If there are some rows that are shorter than others,
+        ///     null values are inserted as place holders in the resultant 
+        ///     array such that it is always rectangular.
         /// </summary>
         /// <param name="lists">A list of lists to be transposed.</param>
         /// <returns name="lists">A list of transposed lists.</returns>
@@ -650,11 +782,77 @@ namespace DSCore
 
             foreach (IList sublist in ilists)
             {
-                for (int i = 0; i < sublist.Count; i++)
-                    transposedList[i].Add(sublist[i]);
+                for (int i = 0; i < transposedList.Count; i++)
+                {
+                    transposedList[i].Add(i < sublist.Count ? sublist[i] : null);
+                }
             }
 
             return transposedList;
+        }
+
+        /// <summary>
+        /// Cleans data of nulls and empty lists from a given list of arbitrary dimension
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="preserveIndices">Provide an option to preserve the indices of the data
+        /// such that non-trailing nulls may not be filtered out</param>
+        /// <returns>A list cleaned of nulls and empty lists</returns>
+        public static IList Clean(IList list, bool preserveIndices = true)
+        {
+            if (list == null)
+                return null;
+
+            if (list.Count == 0)
+                return list;
+
+            var culledList = new List<object>();
+            if (preserveIndices)
+            {
+                // if list contains only nulls or is empty, e.g. {null, ...} OR {} 
+                if (list.Cast<object>().All(el => el == null))
+                    return null;
+
+                int j = list.Count - 1;
+                while (j >= 0 && list[j] == null)
+                    j--;
+
+                for (int i = 0; i <= j; i++)
+                {
+                    var subList = list[i] as IList;
+                    if (subList != null)
+                    {
+                        var val = Clean(subList);
+                        culledList.Add(val);
+                    }
+                    else
+                    {
+                        culledList.Add(list[i]);    
+                    }
+                }
+            }
+            else
+            {
+                // if list contains only nulls or is empty, e.g. {null, ...} OR {} 
+                if (list.Cast<object>().All(el => el == null))
+                    return new List<object>();
+
+                foreach (var el in list)
+                {
+                    var subList = el as IList;
+                    if (subList != null)
+                    {
+                        var val = Clean(subList, false);
+                        if (!List.IsEmpty(val))
+                            culledList.Add(val);
+                    }
+                    else if (el != null)
+                    {
+                        culledList.Add(el);
+                    }
+                }
+            }
+            return culledList;
         }
 
 
@@ -664,7 +862,7 @@ namespace DSCore
         /// <param name="item">The item to repeat.</param>
         /// <param name="amount">The number of times to repeat.</param>
         /// <returns name="list">List of repeated items.</returns>
-        /// <search>repeat,repeated,duplicate</search>
+        /// <search>repeat,repeated,duplicate,list of item,fill list,copies,listcontains</search>
         public static IList OfRepeatedItem([ArbitraryDimensionArrayImport] object item, int amount)
         {
             return Enumerable.Repeat(item, amount).ToList();
@@ -676,7 +874,7 @@ namespace DSCore
         /// <param name="list">List to repeat.</param>
         /// <param name="amount">Number of times to repeat.</param>
         /// <returns name="list">List of repeated lists.</returns>
-        /// <search>repeat,repeated,duplicate</search>
+        /// <search>repeat,repeated,duplicate,repeated list,concat list</search>
         public static IList Cycle(IList list, int amount)
         {
             var result = new ArrayList();
@@ -701,7 +899,7 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to get the last item of.</param>
         /// <returns name="last">Last item in the list.</returns>
-        /// <search>get,fetch,last,item</search>
+        /// <search>get,fetch,last,item,end of list</search>
         public static object LastItem(IList list)
         {
             if (list.Count == 0)
@@ -715,7 +913,7 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to shuffle.</param>
         /// <returns name="list">Randomized list.</returns>
-        /// <search>random,randomize,shuffle,jitter</search>
+        /// <search>random,randomize,shuffle,jitter,randomness</search>
         public static IList Shuffle(IList list)
         {
             var rng = new Random();
@@ -754,6 +952,44 @@ namespace DSCore
                 GetCombinations(list.Cast<object>(), length, replace)
                     .Select(x => x.ToList())
                     .ToList();
+        }
+
+        /// <summary>
+        ///     Given an item, returns the zero-based index of its first occurrence 
+        ///     in the list. If the item cannot be found in the list, -1 is returned.
+        /// </summary>
+        /// <param name="list">
+        ///     List to search in. If this argument is null, -1 is returned.
+        /// </param>
+        /// <param name="item">Item to look for.</param>
+        /// <returns>Zero-based index of the item in the list, or -1 if it is not found.
+        /// </returns>
+        public static int FirstIndexOf(IList list, object item)
+        {
+            if (list == null)
+                return -1;
+
+            int index = list.IndexOf(item);
+            return index;
+        }
+
+        /// <summary>
+        ///     Given an item, returns the zero-based indices of all its occurrences
+        ///     in the list. If the item cannot be found, an empty list is returned.
+        /// </summary>
+        /// <param name="list">
+        ///     List to search in. If this argument is null, an empty list is returned.
+        /// </param>
+        /// <param name="item">Item to look for.</param>
+        /// <returns>A list of zero-based indices of all occurrences of the item if 
+        /// found, or an empty list if the item does not exist in the list.</returns>
+        public static IList AllIndicesOf(IList list, object item)
+        {
+            if (list == null)
+                return new List<int> { }; 
+
+            var indices = Enumerable.Range(0, list.Count).Where(i => list[i].Equals(item)).ToList();
+            return indices;
         }
 
         #region Combinatorics Helpers
@@ -844,6 +1080,11 @@ namespace DSCore
 
             bool IEqualityComparer<object>.Equals(object x, object y)
             {
+                // If both x and y are null, we can't compare null == null. 
+                // See: http://stackoverflow.com/questions/4730648/c-sharp-nullable-equality-operations-why-does-null-null-resolve-as-false
+                if (ReferenceEquals(x, null) && ReferenceEquals(y, null))
+                    return true;
+
                 return Eq(x as dynamic, y as dynamic);
             }
 
@@ -862,7 +1103,28 @@ namespace DSCore
             {
                 try
                 {
-                    return Convert.ToDouble(x).Equals(Convert.ToDouble(y));
+                    switch (x.GetTypeCode())
+                    {
+                        case TypeCode.Boolean:
+                            if (y.GetTypeCode() == TypeCode.Boolean)
+                                return Convert.ToBoolean(x).Equals(Convert.ToBoolean(y));
+                            else
+                                return false;
+
+                        case TypeCode.Char:
+                            if (y.GetTypeCode() == TypeCode.Char)
+                                return Convert.ToChar(x).Equals(Convert.ToChar(y));
+                            else
+                                return false;
+
+                        case TypeCode.String:
+                            if (y.GetTypeCode() == TypeCode.String)
+                                return Convert.ToString(x).Equals(Convert.ToString(y));
+                            else
+                                return false;
+                        default:
+                            return Convert.ToDouble(x).Equals(Convert.ToDouble(y));
+                    }
                 }
                 catch
                 {

@@ -523,7 +523,7 @@ namespace ProtoAssociative.DependencyPass
         public ProtoCore.DSASM.MemoryRegion memregion { get; set; }
         public ProtoCore.Type ArgumentType { get; set; }
         public Node NameNode { get; set; }
-        public ProtoCore.DSASM.AccessSpecifier access { get; set; }
+        public ProtoCore.DSASM.AccessModifier access { get; set; }
 
         public override void ConsolidateNames(ref Dictionary<string, List<Node>> names)
         {
@@ -616,7 +616,7 @@ namespace ProtoAssociative.DependencyPass
         public ProtoCore.Type ReturnType { get; set; }
         public CodeBlockNode FunctionBody { get; set; }
         public FunctionCallNode baseConstr { get; set; }
-        public ProtoCore.DSASM.AccessSpecifier access { get; set; }
+        public ProtoCore.DSASM.AccessModifier access { get; set; }
     }
 
     public class FunctionDefinitionNode : Node
@@ -629,7 +629,7 @@ namespace ProtoAssociative.DependencyPass
         public bool IsExternLib { get; set; }
         public bool IsDNI { get; set; }
         public string ExternLibName { get; set; }
-        public ProtoCore.DSASM.AccessSpecifier access { get; set; }
+        public ProtoCore.DSASM.AccessModifier access { get; set; }
 
         public override IEnumerable<Node> getContingents()
         {

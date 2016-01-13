@@ -1,0 +1,13 @@
+<Workspace Version="0.8.0.710" X="0" Y="0" zoom="1" Name="Home" RunType="Manual" RunPeriod="100">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="693a0aec-795e-4a53-ab86-6a68906578d6" type="Dynamo.Nodes.DSFunction" nickname="TestData.MultiplyBy3NonParsableDefaultArgument" x="295.5" y="353" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="FFITarget.dll" function="FFITarget.TestData.MultiplyBy3NonParsableDefaultArgument@int" />
+    <DSCoreNodesUI.HigherOrder.ApplyFunction guid="1b2fa812-960d-424c-b679-8b850abe2e26" type="DSCoreNodesUI.HigherOrder.ApplyFunction" nickname="Function.Apply" x="704.5" y="404" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="2" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="54ade611-400c-476a-a2a6-c1e27ba07fca" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="466" y="477" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="4;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="693a0aec-795e-4a53-ab86-6a68906578d6" start_index="0" end="1b2fa812-960d-424c-b679-8b850abe2e26" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="54ade611-400c-476a-a2a6-c1e27ba07fca" start_index="0" end="1b2fa812-960d-424c-b679-8b850abe2e26" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

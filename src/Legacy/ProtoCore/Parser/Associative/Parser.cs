@@ -252,7 +252,7 @@ public override ProtoCore.NodeBase codeblock { get; set; }
 		} else SynErr(61);
 	}
 
-	void functiondecl(out Node node, ProtoCore.DSASM.AccessSpecifier access = ProtoCore.DSASM.AccessSpecifier.kPublic) {
+	void functiondecl(out Node node, ProtoCore.DSASM.AccessModifier access = ProtoCore.DSASM.AccessModifier.kPublic) {
 		FunctionDefinitionNode f = new FunctionDefinitionNode(); 
 		string methodName;  
 		Node argumentSignature; 
@@ -313,9 +313,9 @@ public override ProtoCore.NodeBase codeblock { get; set; }
 		}
 		Expect(32);
 		while (StartOf(3)) {
-			ProtoCore.DSASM.AccessSpecifier access = ProtoCore.DSASM.AccessSpecifier.kPublic; 
+			ProtoCore.DSASM.AccessModifier access = ProtoCore.DSASM.AccessModifier.kPublic; 
 			if (la.kind == 38 || la.kind == 39 || la.kind == 40) {
-				AccessSpecifier(out access);
+				AccessModifier(out access);
 			}
 			if (la.kind == 24) {
 				Node constr = null; 
@@ -491,20 +491,20 @@ public override ProtoCore.NodeBase codeblock { get; set; }
 		}
 	}
 
-	void AccessSpecifier(out ProtoCore.DSASM.AccessSpecifier access) {
-		access = ProtoCore.DSASM.AccessSpecifier.kPublic; 
+	void AccessModifier(out ProtoCore.DSASM.AccessModifier access) {
+		access = ProtoCore.DSASM.AccessModifier.kPublic; 
 		if (la.kind == 38) {
 			Get();
 		} else if (la.kind == 39) {
 			Get();
-			access = ProtoCore.DSASM.AccessSpecifier.kPrivate; 
+			access = ProtoCore.DSASM.AccessModifier.kPrivate; 
 		} else if (la.kind == 40) {
 			Get();
-			access = ProtoCore.DSASM.AccessSpecifier.kProtected; 
+			access = ProtoCore.DSASM.AccessModifier.kProtected; 
 		} else SynErr(69);
 	}
 
-	void constructordecl(out Node constrNode, ProtoCore.DSASM.AccessSpecifier access) {
+	void constructordecl(out Node constrNode, ProtoCore.DSASM.AccessModifier access) {
 		ConstructorDefinitionNode constr = null;									
 		string methodName;  
 		Node argumentSignature; 
@@ -532,7 +532,7 @@ public override ProtoCore.NodeBase codeblock { get; set; }
 		constrNode = constr; 
 	}
 
-	void vardecl(out Node node, ProtoCore.DSASM.AccessSpecifier access = ProtoCore.DSASM.AccessSpecifier.kPublic) {
+	void vardecl(out Node node, ProtoCore.DSASM.AccessModifier access = ProtoCore.DSASM.AccessModifier.kPublic) {
 		IdentifierNode tNode = null; 
 		VarDeclNode varDeclNode = new VarDeclNode(); 
 		varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemStack;
@@ -733,7 +733,7 @@ public override ProtoCore.NodeBase codeblock { get; set; }
 		pattern = p; 
 	}
 
-	void ArgDecl(out Node node, ProtoCore.DSASM.AccessSpecifier access = ProtoCore.DSASM.AccessSpecifier.kPublic) {
+	void ArgDecl(out Node node, ProtoCore.DSASM.AccessModifier access = ProtoCore.DSASM.AccessModifier.kPublic) {
 		IdentifierNode tNode = null; 
 		VarDeclNode varDeclNode = new VarDeclNode(); 
 		varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemStack;
@@ -1334,7 +1334,7 @@ public class Errors {
 			case 66: s = "this symbol not expected in FunctionalStatement"; break;
 			case 67: s = "this symbol not expected in FunctionalStatement"; break;
 			case 68: s = "invalid FunctionalStatement"; break;
-			case 69: s = "invalid AccessSpecifier"; break;
+			case 69: s = "invalid AccessModifier"; break;
 			case 70: s = "invalid vardecl"; break;
 			case 71: s = "invalid ArgDecl"; break;
 			case 72: s = "invalid Expression"; break;

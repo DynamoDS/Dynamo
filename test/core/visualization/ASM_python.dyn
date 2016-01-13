@@ -1,6 +1,7 @@
-<Workspace Version="0.7.0.16336" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+<Workspace Version="0.8.2.1957" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
   <Elements>
-    <DSIronPythonNode.PythonNode type="DSIronPythonNode.PythonNode" guid="61b69c85-3777-479d-bf51-fb66680023de" nickname="Python Script" x="201" y="167" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="0">
+    <DSIronPythonNode.PythonNode guid="61b69c85-3777-479d-bf51-fb66680023de" type="DSIronPythonNode.PythonNode" nickname="Python Script" x="201" y="167" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" inputcount="0">
       <Script>import clr
 clr.AddReference('ProtoGeometry')
 from Autodesk.DesignScript.Geometry import *
@@ -20,10 +21,27 @@ for x in range (0,10):
 		cubes.append(row_cubes)
 OUT = [pts,cubes]</Script>
     </DSIronPythonNode.PythonNode>
-    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="3c3ed4e5-434e-41ab-97ec-9032a96c60e7" nickname="Watch" x="431" y="122" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch guid="3c3ed4e5-434e-41ab-97ec-9032a96c60e7" type="Dynamo.Nodes.Watch" nickname="Watch" x="431" y="122" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" />
   </Elements>
   <Connectors>
     <Dynamo.Models.ConnectorModel start="61b69c85-3777-479d-bf51-fb66680023de" start_index="0" end="3c3ed4e5-434e-41ab-97ec-9032a96c60e7" end_index="0" portType="0" />
   </Connectors>
   <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+  <Cameras>
+    <Camera Name="eb39be19-caad-41f7-ac76-aa6c908a4e96_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+  <Cameras>
+    <Camera Name="eb39be19-caad-41f7-ac76-aa6c908a4e96_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
 </Workspace>

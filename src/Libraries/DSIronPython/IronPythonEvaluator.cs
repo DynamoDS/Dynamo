@@ -74,6 +74,7 @@ namespace DSIronPython
         /// <summary>
         ///     Data Marshaler for all data coming into a Python node.
         /// </summary>
+        [SupressImportIntoVM]
         public static DataMarshaler InputMarshaler
         {
             get
@@ -99,6 +100,7 @@ namespace DSIronPython
         /// <summary>
         ///     Data Marshaler for all data coming out of a Python node.
         /// </summary>
+        [SupressImportIntoVM]
         public static DataMarshaler OutputMarshaler
         {
             get { return outputMarshaler ?? (outputMarshaler = new DataMarshaler()); }

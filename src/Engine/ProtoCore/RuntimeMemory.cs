@@ -29,6 +29,12 @@ namespace ProtoCore
                 get; private set;
             }
 
+            public int GlobOffset
+            {
+                get;
+                private set;
+            }
+
             /// <summary>
             /// Where the first stack frame starts. Usually the stack below this
             /// pointer is reserved for global variables. 
@@ -71,6 +77,7 @@ namespace ProtoCore
             /// <param name="size"></param>
             public void PushFrameForGlobals(int size)
             {
+                GlobOffset = size;
                 PushFrame(size);
                 startFramePointer = Stack.Count;
             }
@@ -219,18 +226,6 @@ namespace ProtoCore
                 Stack[index] = data;
             }
 
-            /// <summary>
-            /// Set the value for symbol on specified frame. 
-            /// </summary>
-            /// <param name="symbol"></param>
-            /// <param name="data"></param>
-            /// <param name="framePointer"></param>
-            public void SetSymbolValueOnFrame(SymbolNode symbol, StackValue data, int framePointer)
-            {
-                int index = GetStackIndex(symbol, framePointer);
-                Stack[index] = data;
-            }
-
             // TO BE DELETED
             public int GetStackIndex(int offset)
             {
@@ -261,26 +256,19 @@ namespace ProtoCore
 
                 return offset >= 0 ? offset : framePointer + offset;
             }
-
-            public void SetGlobalStackData(int globalOffset, StackValue svData)
-            {
-                Validity.Assert(globalOffset >= 0);
-                Validity.Assert(Stack.Count > 0);
-                Stack[globalOffset] = svData;
-            }
             
             public StackValue GetMemberData(int symbolindex, int scope, Executable exe)
             {
                 StackValue thisptr = CurrentStackFrame.ThisPtr;
 
                 // Get the heapstck offset
-                int offset = exe.classTable.ClassNodes[scope].symbols.symbolList[symbolindex].index;
+                int offset = exe.classTable.ClassNodes[scope].Symbols.symbolList[symbolindex].index;
 
-                var heapElement = Heap.GetHeapElement(thisptr); 
-                if (null == heapElement.Stack || heapElement.Stack.Length == 0)
+                var obj = Heap.ToHeapObject<DSObject>(thisptr);
+                if (!obj.Values.Any())
                     return StackValue.Null;
 
-                StackValue sv = heapElement.Stack[offset];
+                StackValue sv = obj.GetValueFromIndex(offset, null);
                 Validity.Assert(sv.IsPointer || sv.IsArray|| sv.IsInvalid);
 
                 // Not initialized yet
@@ -295,11 +283,11 @@ namespace ProtoCore
 
                 StackValue nextPtr = sv;
                 Validity.Assert(nextPtr.opdata >= 0);
-                heapElement = Heap.GetHeapElement(nextPtr);
+                obj = Heap.ToHeapObject<DSObject>(nextPtr);
 
-                if (null != heapElement.Stack && heapElement.Stack.Length > 0)
+                if (obj.Values.Any()) 
                 {
-                    StackValue data = heapElement.Stack[0];
+                    StackValue data = obj.GetValueFromIndex(0, null);
                     bool isActualData = !data.IsPointer && !data.IsArray && !data.IsInvalid; 
                     if (isActualData)
                     {
@@ -321,6 +309,10 @@ namespace ProtoCore
                 StackRestorer.Restore();
             }
 
+            /// <summary>
+            /// Push the block ID of the block that will be executed
+            /// </summary>
+            /// <param name="id"></param>
             public void PushConstructBlockId(int id)
             {
                 ConstructBlockIds.Add(id);
@@ -385,16 +377,6 @@ namespace ProtoCore
                     fp = stackFrame.FramePointer;
                     yield return stackFrame;
                 }
-            }
-
-            /// <summary>
-            /// Mark and sweep garbage collection.
-            /// </summary>
-            /// <param name="gcRootPointers"></param>
-            /// <param name="exe"></param>
-            public void GC(List<StackValue> gcRootPointers, DSASM.Executive exe)
-            {
-                Heap.GCMarkAndSweep(gcRootPointers.ToList(), exe);
             }
         }
     }

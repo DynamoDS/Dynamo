@@ -16,24 +16,20 @@ using ProtoCore;
 
 namespace ProtoTest.LiveRunner
 {
-    public class PreviewChangeSetTests
+    class PreviewChangeSetTests : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        ProtoCore.Core core = null;
-
-        [SetUp]
-        public void Setup()
+        private ProtoScript.Runners.LiveRunner liveRunner = null;
+        public override void Setup()
         {
-            var opts = new Options();
-            opts.ExecutionMode = ExecutionMode.Serial;
-            core = thisTest.CreateTestCore();
+            base.Setup();
+            liveRunner = new ProtoScript.Runners.LiveRunner();
+            runtimeCore = liveRunner.RuntimeCore;
         }
 
-        private Subtree CreateSubTreeFromCode(Guid guid, string code)
+        public override void TearDown()
         {
-            var cbn = ProtoCore.Utils.ParserUtils.Parse(code) as CodeBlockNode;
-            var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);
-            return subtree;
+            base.TearDown();
+            liveRunner.Dispose();
         }
 
         [Test]
@@ -59,29 +55,28 @@ namespace ProtoTest.LiveRunner
             Guid guid2 = System.Guid.NewGuid();
 
             // Create and run the graph  [a = 1;] and [x = a; y = x;]
-            ProtoScript.Runners.LiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
             var syncData = new GraphSyncData(null, added, null);
             liveRunner.UpdateGraph(syncData);
 
 
             // Modify [a = 1;] to [a = 10;] 
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid1, codes[2]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[2]));
             syncData = new GraphSyncData(null, null, modified);
 
             // Get astlist from ChangeSetComputer
-            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core);
+            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core, liveRunner.RuntimeCore);
             List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Get the the preview guids (affected graphs)
             List<Guid> reachableGuidList = changeSetState.EstimateNodesAffectedByASTList(astList);
 
             // Check if the the affected guids are in the list
-            List<Guid> expectedGuid = new List<Guid>{guid2};
-            AssertPreview(reachableGuidList, expectedGuid, 1);
+            List<Guid> expectedGuid = new List<Guid> { guid1, guid2 };
+            AssertPreview(reachableGuidList, expectedGuid);
         }
 
         [Test]
@@ -113,30 +108,29 @@ namespace ProtoTest.LiveRunner
             Guid guid3 = System.Guid.NewGuid();
 
             // Create and run the graph 
-            ProtoScript.Runners.LiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
-            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[2]));
             var syncData = new GraphSyncData(null, added, null);
             liveRunner.UpdateGraph(syncData);
 
 
             // Modify [a = 1;] to [a = 10;] 
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid1, codes[3]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[3]));
             syncData = new GraphSyncData(null, null, modified);
 
             // Get astlist from ChangeSetComputer
-            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core);
+            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core, liveRunner.RuntimeCore);
             List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Get the preview guids (affected graphs)
             List<Guid> reachableGuidList = changeSetState.EstimateNodesAffectedByASTList(astList);
 
             // Check if the the affected guids are in the list
-            List<Guid> expectedGuid = new List<Guid> { guid2, guid3 };
-            AssertPreview(reachableGuidList, expectedGuid, 2);
+            List<Guid> expectedGuid = new List<Guid> { guid1, guid2, guid3 };
+            AssertPreview(reachableGuidList, expectedGuid);
         }
 
         [Test]
@@ -174,12 +168,11 @@ namespace ProtoTest.LiveRunner
             Guid guid4 = System.Guid.NewGuid();
 
             // Create and run the graph 
-            ProtoScript.Runners.LiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
-            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
-            added.Add(CreateSubTreeFromCode(guid4, codes[3]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[2]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, codes[3]));
             var syncData = new GraphSyncData(null, added, null);
             liveRunner.UpdateGraph(syncData);
 
@@ -187,20 +180,20 @@ namespace ProtoTest.LiveRunner
             // Modify [a = 1;] to [a = 10;] 
             // Modify [b = 2;] to [b = 20;] 
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid1, codes[4]));
-            modified.Add(CreateSubTreeFromCode(guid2, codes[5]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[4]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[5]));
             syncData = new GraphSyncData(null, null, modified);
 
             // Get astlist from ChangeSetComputer
-            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core);
+            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core, liveRunner.RuntimeCore);
             List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Get the the preview guids (affected graphs)
             List<Guid> reachableGuidList = changeSetState.EstimateNodesAffectedByASTList(astList);
 
             // Check if the the affected guids are in the list
-            List<Guid> expectedGuid = new List<Guid> { guid3, guid4 };
-            AssertPreview(reachableGuidList, expectedGuid, 2);
+            List<Guid> expectedGuid = new List<Guid> { guid1, guid2, guid3, guid4 };
+            AssertPreview(reachableGuidList, expectedGuid);
         }
 
         [Test]
@@ -243,13 +236,12 @@ namespace ProtoTest.LiveRunner
             Guid guid5 = System.Guid.NewGuid();
 
             // Create and run the graph 
-            ProtoScript.Runners.LiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
-            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
-            added.Add(CreateSubTreeFromCode(guid4, codes[3]));
-            added.Add(CreateSubTreeFromCode(guid5, codes[4]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[2]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, codes[3]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid5, codes[4]));
             var syncData = new GraphSyncData(null, added, null);
             liveRunner.UpdateGraph(syncData);
 
@@ -257,20 +249,20 @@ namespace ProtoTest.LiveRunner
             // Modify [a = 1;] to [a = 10;] 
             // Modify [b = 2;] to [b = 20;] 
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid1, codes[5]));
-            modified.Add(CreateSubTreeFromCode(guid2, codes[6]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[5]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[6]));
             syncData = new GraphSyncData(null, null, modified);
 
             // Get astlist from ChangeSetComputer
-            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core);
+            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core, liveRunner.RuntimeCore);
             List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Get the the preview guids (affected graphs)
             List<Guid> reachableGuidList = changeSetState.EstimateNodesAffectedByASTList(astList);
 
             // Check if the the affected guids are in the list
-            List<Guid> expectedGuid = new List<Guid> { guid3, guid4, guid5 };
-            AssertPreview(reachableGuidList, expectedGuid, 3);
+            List<Guid> expectedGuid = new List<Guid> { guid1, guid2, guid3, guid4, guid5 };
+            AssertPreview(reachableGuidList, expectedGuid);
         }
 
         [Test]
@@ -300,30 +292,29 @@ namespace ProtoTest.LiveRunner
             Guid guid3 = System.Guid.NewGuid();
 
             // Create and run the graph  
-            ProtoScript.Runners.LiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
-            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[2]));
             var syncData = new GraphSyncData(null, added, null);
             liveRunner.UpdateGraph(syncData);
 
 
             // Modify [a = 1;] to [a = 10;] 
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid1, codes[3]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[3]));
             syncData = new GraphSyncData(null, null, modified);
 
             // Get astlist from ChangeSetComputer
-            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core);
+            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core, liveRunner.RuntimeCore);
             List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Get the the preview guids (affected graphs)
             List<Guid> reachableGuidList = changeSetState.EstimateNodesAffectedByASTList(astList);
 
             // Check if the the affected guids are in the list
-            List<Guid> expectedGuid = new List<Guid> { guid2, guid3 };
-            AssertPreview(reachableGuidList, expectedGuid, 2);
+            List<Guid> expectedGuid = new List<Guid> { guid1, guid2, guid3 };
+            AssertPreview(reachableGuidList, expectedGuid);
         }
 
 
@@ -359,50 +350,45 @@ namespace ProtoTest.LiveRunner
             Guid guid4 = System.Guid.NewGuid();
 
             // Create and run the graph  
-            ProtoScript.Runners.LiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
-            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
-            added.Add(CreateSubTreeFromCode(guid4, codes[3]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[2]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, codes[3]));
             var syncData = new GraphSyncData(null, added, null);
             liveRunner.UpdateGraph(syncData);
 
 
             // Modify [a = 1;] to [a = 10;] 
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid1, codes[4]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[4]));
             syncData = new GraphSyncData(null, null, modified);
 
             // Get astlist from ChangeSetComputer
-            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core);
+            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core, liveRunner.RuntimeCore);
             List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Get the the preview guids (affected graphs)
             List<Guid> reachableGuidList = changeSetState.EstimateNodesAffectedByASTList(astList);
 
             // Check if the the affected guids are in the list
-            List<Guid> expectedGuid = new List<Guid> { guid2, guid3, guid4 };
-            AssertPreview(reachableGuidList, expectedGuid, 3); 
+            List<Guid> expectedGuid = new List<Guid> { guid1, guid2, guid3, guid4 };
+            AssertPreview(reachableGuidList, expectedGuid); 
         }
 
 
 
         /// <summary>
         /// Verifies that expectedGuidList is contained within previewGuidList
-        /// Verifies the expected count of  expectedGuidList
         /// </summary>
         /// <param name="previewGuidList"></param>
         /// <param name="expectedGuidList"></param>
-        /// <param name="expectedPreviewCount"></param>
-        public static void AssertPreview(List<Guid> previewGuidList, List<Guid> expectedGuidList, int expectedPreviewCount)
+        public static void AssertPreview(List<Guid> previewGuidList, List<Guid> expectedGuidList)
         {
-            Assert.IsTrue(previewGuidList.Count == expectedPreviewCount);
             foreach (Guid expectedGuid in expectedGuidList)
             {
                 Assert.IsTrue(previewGuidList.Contains(expectedGuid));
             }
         }
     }
-
 }

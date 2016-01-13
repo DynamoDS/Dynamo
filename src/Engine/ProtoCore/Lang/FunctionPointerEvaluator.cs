@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ProtoCore.DSASM;
-using ProtoCore.RuntimeData;
+using ProtoCore.Runtime;
 using ProtoCore.Utils;
+using ProtoCore.Properties;
 
 namespace ProtoCore.Lang
 {
@@ -14,19 +15,19 @@ namespace ProtoCore.Lang
         private Interpreter interpreter;
         private ProcedureNode procNode;
         private CallSite callsite;
-        public string Name { get { return procNode.name; } }
+        public string Name { get { return procNode.Name; } }
 
         public FunctionPointerEvaluator(StackValue pointer, Interpreter dsi)
         {
             Validity.Assert(pointer.IsFunctionPointer);
             interpreter = dsi;
-            Core core = dsi.runtime.Core;
+            RuntimeCore runtimeCore = dsi.runtime.RuntimeCore;
 
             int fptr = (int)pointer.opdata;
             FunctionPointerNode fptrNode;
             int classScope = Constants.kGlobalScope;
 
-            if (core.FunctionPointerTable.functionPointerDictionary.TryGetByFirst(fptr, out fptrNode))
+            if (runtimeCore.DSExecutable.FuncPointerTable.functionPointerDictionary.TryGetByFirst(fptr, out fptrNode))
             {
                 int blockId = fptrNode.blockId;
                 int procId = fptrNode.procId;
@@ -34,19 +35,19 @@ namespace ProtoCore.Lang
                 procNode = dsi.runtime.GetProcedureNode(blockId, classScope, procId);
             }
 
-            callsite = new ProtoCore.CallSite(classScope, Name, core.FunctionTable, core.Options.ExecutionMode);
+            callsite = new ProtoCore.CallSite(classScope, Name, interpreter.runtime.exe.FunctionTable, runtimeCore.Options.ExecutionMode);
         }
 
         public StackValue Evaluate(List<StackValue> args, StackFrame stackFrame)
         {
             // Build the stackframe
-            var runtimeCore = interpreter.runtime.Core;
+            var runtimeCore = interpreter.runtime.RuntimeCore;
 
             int classScopeCaller = stackFrame.ClassScope;
             int returnAddr = stackFrame.ReturnPC;
-            int blockDecl = procNode.runtimeIndex;
+            int blockDecl = procNode.RuntimeIndex;
             int blockCaller = stackFrame.FunctionCallerBlock;
-            int framePointer = runtimeCore.Rmem.FramePointer;
+            int framePointer = runtimeCore.RuntimeMemory.FramePointer;
             StackValue thisPtr = StackValue.BuildPointer(Constants.kInvalidIndex);
 
             // Functoion has variable input parameter. This case only happen
@@ -58,22 +59,22 @@ namespace ProtoCore.Lang
             // to
             // 
             //    {a1, a2, ..., am, {v1, v2, ..., vn}}
-            if (procNode.isVarArg)
+            if (procNode.IsVarArg)
             {
-                int paramCount = procNode.argInfoList.Count;
+                int paramCount = procNode.ArgumentInfos.Count;
                 Validity.Assert(paramCount >= 1);
 
                 int varParamCount = args.Count - (paramCount - 1);
                 var varParams = args.GetRange(paramCount - 1, varParamCount).ToArray();
                 args.RemoveRange(paramCount - 1, varParamCount);
 
-                var packedParams = interpreter.runtime.Core.Heap.AllocateArray(varParams, null);
+                var packedParams = interpreter.runtime.rmem.Heap.AllocateArray(varParams);
                 args.Add(packedParams);
             }
 
-            bool isCallingMemberFunciton = procNode.classScope != Constants.kInvalidIndex 
-                                           && !procNode.isConstructor 
-                                           && !procNode.isStatic;
+            bool isCallingMemberFunciton = procNode.ClassID != Constants.kInvalidIndex 
+                                           && !procNode.IsConstructor 
+                                           && !procNode.IsStatic;
 
             bool isValidThisPointer = true;
             if (isCallingMemberFunciton)
@@ -93,7 +94,7 @@ namespace ProtoCore.Lang
             if (!isValidThisPointer || (!thisPtr.IsPointer && !thisPtr.IsArray))
             {
                 runtimeCore.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer,
-                                                     WarningMessage.kDeferencingNonPointer);
+                                              Resources.kDeferencingNonPointer);
                 return StackValue.Null;
             }
 
@@ -121,10 +122,11 @@ namespace ProtoCore.Lang
                                                null);
 
             bool isInDebugMode = runtimeCore.Options.IDEDebugMode &&
-                                 runtimeCore.ExecMode != InterpreterMode.kExpressionInterpreter;
+                                 runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter;
             if (isInDebugMode)
             {
-                runtimeCore.DebugProps.SetUpCallrForDebug(runtimeCore, 
+                runtimeCore.DebugProps.SetUpCallrForDebug(
+                                                          runtimeCore,
                                                           interpreter.runtime, 
                                                           procNode, 
                                                           returnAddr - 1, 
@@ -139,7 +141,7 @@ namespace ProtoCore.Lang
                                         new Runtime.Context(), 
                                         args, 
                                         repGuides, 
-                                        newStackFrame, 
+                                        newStackFrame,
                                         runtimeCore);
 
             if (isInDebugMode)
@@ -147,15 +149,13 @@ namespace ProtoCore.Lang
                 runtimeCore.DebugProps.RestoreCallrForNoBreak(runtimeCore, procNode);
             }
 
-            interpreter.runtime.DecRefCounter(rx);
-
             return rx;
         }
 
         public static string GetMethodName(StackValue pointer, Interpreter dsi)
         {
             Validity.Assert(pointer.IsFunctionPointer);
-            return dsi.runtime.exe.procedureTable[0].procList[(int)pointer.opdata].name;
+            return dsi.runtime.exe.procedureTable[0].Procedures[(int)pointer.opdata].Name;
         }
     }
 }

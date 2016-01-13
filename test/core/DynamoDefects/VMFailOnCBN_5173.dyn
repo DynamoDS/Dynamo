@@ -1,0 +1,10 @@
+<Workspace Version="0.7.3.2950" X="-1263.81157818047" Y="-419.524781850046" zoom="1.53729290807702" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="32aa0aa0-437d-4836-8171-ed2d21af1ceb" nickname="Code Block" x="956.36505954435" y="465.451013108128" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="Vector.ZAxis;" ShouldFocus="false" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="6e49e4ef-7dd8-4c9a-b0ed-1fd7bddd3417" nickname="Watch" x="1413.52761224806" y="544.110002764966" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="32aa0aa0-437d-4836-8171-ed2d21af1ceb" start_index="0" end="6e49e4ef-7dd8-4c9a-b0ed-1fd7bddd3417" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

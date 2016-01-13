@@ -1,0 +1,41 @@
+<Workspace Version="0.8.2.1957" X="-1410.80353968752" Y="-721.685989821976" zoom="1.1113575327695" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap>
+    <ClassMap partialName="Color" resolvedName="DSCore.Color" assemblyName="DSCoreNodes.dll" />
+  </NamespaceResolutionMap>
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="d14d71c0-98dd-4449-aa7a-74ae5bce18b8" type="Dynamo.Nodes.DSFunction" nickname="Rectangle.ByWidthLength" x="1421.96947396582" y="852.271229544414" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength@double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction guid="d0c24423-3ae2-422a-bf4d-201dcec6c15c" type="Dynamo.Nodes.DSFunction" nickname="Display.BySurfaceColors" x="2005.78820460875" y="927.972295289965" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="Display.dll" function="Display.Display.BySurfaceColors@Autodesk.DesignScript.Geometry.Surface,DSCore.Color[][]" />
+    <Dynamo.Nodes.DSFunction guid="4e319825-3167-4eb3-bda5-2e7ddc4b829b" type="Dynamo.Nodes.DSFunction" nickname="Surface.ByPatch" x="1693.96947396582" y="895.271229544414" isVisible="false" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Surface.ByPatch@Autodesk.DesignScript.Geometry.Curve" />
+    <Dynamo.Nodes.DoubleInput guid="22ec4bff-a5cd-40de-805f-8f3ecc796f4c" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="1366.05805881335" y="993.954202394641" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True">
+      <System.Double value="0..255..5" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="00049459-0a90-4448-a6c7-7e0a031d4b6b" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="1493.29085924851" y="993.512676905556" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" CodeText="Color.ByARGB(255,input&lt;1&gt;,input&lt;2&gt;,0);" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="d14d71c0-98dd-4449-aa7a-74ae5bce18b8" start_index="0" end="4e319825-3167-4eb3-bda5-2e7ddc4b829b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4e319825-3167-4eb3-bda5-2e7ddc4b829b" start_index="0" end="d0c24423-3ae2-422a-bf4d-201dcec6c15c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="22ec4bff-a5cd-40de-805f-8f3ecc796f4c" start_index="0" end="00049459-0a90-4448-a6c7-7e0a031d4b6b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="00049459-0a90-4448-a6c7-7e0a031d4b6b" start_index="0" end="d0c24423-3ae2-422a-bf4d-201dcec6c15c" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+  <Cameras>
+    <Camera Name="eb39be19-caad-41f7-ac76-aa6c908a4e96_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+  <Cameras>
+    <Camera Name="eb39be19-caad-41f7-ac76-aa6c908a4e96_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+</Workspace>

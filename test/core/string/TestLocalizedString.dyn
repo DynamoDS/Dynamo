@@ -1,0 +1,22 @@
+<Workspace Version="0.7.6.3990" X="80.5215758733976" Y="174.073306221449" zoom="1" Name="Home">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="782cfcd3-cc08-4212-956a-e132cd49b6a0" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="88" y="110" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="x=&quot;中文&quot;;" ShouldFocus="false" />
+    <Dynamo.Nodes.Watch guid="29eff272-d6db-4bdf-a47f-0641b78709b8" type="Dynamo.Nodes.Watch" nickname="Watch" x="235" y="40.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.StringInput guid="e093af19-d935-4f1c-9d7c-ade0a5cb12a3" type="Dynamo.Nodes.StringInput" nickname="String" x="93.2145657743816" y="230.426334629673" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>中文</System.String>
+      <System.String value="中文" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="bee32706-8aff-48c7-b40a-9861b93ea2bb" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="205" y="188" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="x == y;" ShouldFocus="false" />
+    <Dynamo.Nodes.Watch guid="70f3cb75-aac9-4bd9-8609-00958cddcd97" type="Dynamo.Nodes.Watch" nickname="Watch" x="404.120492205179" y="161.455156732281" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch guid="9c1ee001-352d-480f-a8f5-757804d0f107" type="Dynamo.Nodes.Watch" nickname="Watch" x="205.478424126602" y="319.426693778551" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="782cfcd3-cc08-4212-956a-e132cd49b6a0" start_index="0" end="29eff272-d6db-4bdf-a47f-0641b78709b8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="782cfcd3-cc08-4212-956a-e132cd49b6a0" start_index="0" end="bee32706-8aff-48c7-b40a-9861b93ea2bb" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e093af19-d935-4f1c-9d7c-ade0a5cb12a3" start_index="0" end="bee32706-8aff-48c7-b40a-9861b93ea2bb" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e093af19-d935-4f1c-9d7c-ade0a5cb12a3" start_index="0" end="9c1ee001-352d-480f-a8f5-757804d0f107" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bee32706-8aff-48c7-b40a-9861b93ea2bb" start_index="0" end="70f3cb75-aac9-4bd9-8609-00958cddcd97" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

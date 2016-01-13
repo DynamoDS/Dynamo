@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,26 +11,20 @@ using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
-    class StringTest
+    class StringTest : ProtoTestBase
     {
-        public ProtoCore.Core core;
-        public TestFrameWork thisTest = new TestFrameWork();
-        string testPath = "..\\..\\..\\Scripts\\TD\\MultiLanguage\\StringTest\\";
-        ProtoScript.Config.RunConfiguration runnerConfig;
         ProtoScript.Runners.DebugRunner fsr;
-        [SetUp]
-        public void Setup()
+
+        public override void Setup()
         {
-            // Specify some of the requirements of IDE.
-            ProtoCore.Options options = new ProtoCore.Options();
-            options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-            options.SuppressBuildOutput = false;
-            core = new ProtoCore.Core(options);
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
-            runnerConfig = new ProtoScript.Config.RunConfiguration();
-            runnerConfig.IsParrallel = false;
+            base.Setup();
             fsr = new ProtoScript.Runners.DebugRunner(core);
+        }
+
+        public override void TearDown()
+        {
+            base.TearDown();
+            fsr = null;
         }
 
         [Test]
@@ -178,6 +172,7 @@ result =
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T03_Defect_UndefinedType()
         {
@@ -187,29 +182,10 @@ def foo(x:S)
 	return = x;
 }
 b = foo(1);
-class C 
-{
-	fx:M;
-	constructor C(x :N)
-	{
-		fx = x;
-	}
-	
-	def foo(fy : M)
-	{
-		fx = fy;
-		return = fx;
-	}
-	
-}
-c = C.C(1);
-r1 = c.fx;
-r2 = c.foo(2);";
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             object v1 = null;
-            TestFrameWork.Verify(mirror, "r1", v1, 0);
-            TestFrameWork.Verify(mirror, "r2", v1, 0);
-            TestFrameWork.Verify(mirror, "c", v1, 0);
+            TestFrameWork.Verify(mirror, "b", v1, 0);
         }
 
         [Test]
@@ -277,6 +253,7 @@ r =
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T06_String_Class()
         {
@@ -413,6 +390,7 @@ def foo(x:var)
         }
 
         [Test]
+        [Category("ModifierBlock")]
         [Category("SmokeTest")]
         public void T10_String_ModifierStack()
         {
@@ -434,10 +412,21 @@ r = a;";
         }
 
         [Test]
+        [Category("ModifierBlock")]
         public void TV1467201_Replicate_ModifierStack_1()
         {
             String code =
-                @"                a =                {                    1;                    + 1 => a1;                    + { ""2"", ""3"" } => a2;                    4 => b;                }                r = a;                    ";
+                @"
+                a =
+                {
+                    1;
+                    + 1 => a1;
+                    + { ""2"", ""3"" } => a2;
+                    4 => b;
+                }
+                r = a;
+    
+                ";
             thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { "22", "23" };
             thisTest.Verify("a1", 2);
@@ -446,10 +435,21 @@ r = a;";
         }
 
         [Test]
+        [Category("ModifierBlock")]
         public void TV1467201_Replicate_ModifierStack_2()
         {
             String code =
-                @"                a =                {                    1;                    + 1 => a1;                    + { 10, -20 } => a2;                100;                }                r = a;                    ";
+                @"
+                a =
+                {
+                    1;
+                    + 1 => a1;
+                    + { 10, -20 } => a2;
+                100;
+                }
+                r = a;
+    
+                ";
             thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 12, -18 };
             thisTest.Verify("a1", 2);
@@ -458,10 +458,21 @@ r = a;";
         }
 
         [Test]
+        [Category("ModifierBlock")]
         public void TV1467201_Replicate_ModifierStack_3()
         {
             String code =
-                @"                a =                {                    1;                    + 1 => a1;                    + { 10, -20 } => a2;                    +{""m"",""n"",""o""} => a3;                }                r = a;                    ";
+                @"
+                a =
+                {
+                    1;
+                    + 1 => a1;
+                    + { 10, -20 } => a2;
+                    +{""m"",""n"",""o""} => a3;
+                }
+                r = a;
+    
+                ";
             thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 12, -18 };
             Object[] v2 = new Object[] { "12m", "-18n" };
@@ -472,10 +483,22 @@ r = a;";
         }
 
         [Test]
+        [Category("ModifierBlock")]
         public void TV1467201_Replicate_ModifierStack_4()
         {
             String code =
-                @"                a =                {                    1;                    + 1 => a1;                    + { 10, -20 } => a2;                    +{""m"",""n"",""o""} => a3;                    + {} =>a4;                }                r = a;                    ";
+                @"
+                a =
+                {
+                    1;
+                    + 1 => a1;
+                    + { 10, -20 } => a2;
+                    +{""m"",""n"",""o""} => a3;
+                    + {} =>a4;
+                }
+                r = a;
+    
+                ";
             thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 12, -18 };
             Object[] v2 = new Object[] { "12m", "-18n" };
@@ -488,10 +511,23 @@ r = a;";
         }
 
         [Test]
+        [Category("ModifierBlock")]
         public void TV1467201_Replicate_ModifierStack_5()
         {
             String code =
-                @"                a =                {                    1;                    + 1 => a1;                    + { 10, -20 } => a2;                    +{""m"",""n"",""o""} => a3;                     {{1,2},{3,4}} =>a4;                      + {{10},{20}} => a5;                }                r = a;                    ";
+                @"
+                a =
+                {
+                    1;
+                    + 1 => a1;
+                    + { 10, -20 } => a2;
+                    +{""m"",""n"",""o""} => a3;
+                     {{1,2},{3,4}} =>a4;
+                      + {{10},{20}} => a5;
+                }
+                r = a;
+    
+                ";
             thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 12, -18 };
             Object[] v2 = new Object[] { "12m", "-18n" };
@@ -544,7 +580,10 @@ m = m+n;
         public void TV_ADD_StringInt()
         {
             String code =
-                @"                a = ""["" + ToString(1)+""]"";                    ";
+                @"
+                a = ""["" + __ToStringFromObject(1)+""]"";
+    
+                ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", "[1]");
         }
@@ -554,7 +593,10 @@ m = m+n;
         public void TV_ADD_StringDouble()
         {
             String code =
-                @"                a = ""["" + 1.1+""]"";                    ";
+                @"
+                a = ""["" + 1.1+""]"";
+    
+                ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", "[1.100000]");
         }
@@ -564,7 +606,10 @@ m = m+n;
         public void TV_ADD_StringString()
         {
             String code =
-                @"                a = ""["" + ""1.0""+""]"";                    ";
+                @"
+                a = ""["" + ""1.0""+""]"";
+    
+                ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", "[1.0]");
         }
@@ -574,7 +619,10 @@ m = m+n;
         public void TV_ADD_StringChar()
         {
             String code =
-                @"                a = ""["" + '1'+""]"";                    ";
+                @"
+                a = ""["" + '1'+""]"";
+    
+                ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", "[1]");
         }
@@ -584,7 +632,10 @@ m = m+n;
         public void TV_ADD_StringBool()
         {
             String code =
-                @"                a = ""["" + true+""]"";                    ";
+                @"
+                a = ""["" + true+""]"";
+    
+                ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", "[true]");
         }
@@ -594,42 +645,67 @@ m = m+n;
         public void TV_ADD_StringNull()
         {
             String code =
-                @"                a = ""["" + null +""]"";                    ";
+                @"
+                a = ""["" + null +""]"";
+    
+                ";
             thisTest.RunScriptSource(code);
             thisTest.SetErrorMessage("1467263 - Concatenating a string with an integer throws method resolution error");
-            thisTest.Verify("a", "[null]");
+            thisTest.Verify("a", null);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("ConcatenationString")]
         public void TV_ADD_StringPointer_1()
         {
             String code =
-                @"                class A {}                a  = A.A();                b = ""a"" + a;                    ";
+                @"
+import(""FFITarget.dll"");
+                a  = ClassFunctionality.ClassFunctionality();
+                b = ""a"" + a;
+    
+                ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("b", "aA{}");
+            thisTest.Verify("b", "aFFITarget.ClassFunctionality");
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("ConcatenationString")]
         public void TV_ADD_StringPointer_2()
         {
             String code =
-                @"                class A {                    fx:int = 1;                }                a  = A.A();                b = ""a"" + a;                    ";
+                @"
+                class A {
+                    fx:int = 1;
+                }
+                a  = A.A();
+                b = ""a"" + a;
+    
+                ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("b", "aA{fx = 1}");
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("ConcatenationString")]
         public void TV_ADD_StringArr()
         {
             String code =
-                @"                class A {                    fx:int = 1;                }                a  = A.A();                arr1 = {1,2};                arr2 = {1,a};                b1 = ""a"" + ToString(arr1);                b2 = ""a"" + ToString(arr2);                ";
+                @"
+import(""FFITarget.dll"");
+                a  = ClassFunctionality.ClassFunctionality(1);
+                arr1 = {1,2};
+                arr2 = {1,a};
+                b1 = ""a"" + __ToStringFromArray(arr1);
+                b2 = ""a"" + __ToStringFromArray(arr2);
+                ";
             thisTest.RunScriptSource(code);
             thisTest.SetErrorMessage("1467263 - Concatenating a string with an integer throws method resolution error");
             thisTest.Verify("b1", "a{1,2}");
-            thisTest.Verify("b2", "a{1,A{fx = 1}}");
+            thisTest.Verify("b2", "a{1,FFITarget.ClassFunctionality}");
         }
 
         [Test]
@@ -652,16 +728,22 @@ r = a;
         public void TestStringIndexing01()
         {
             String code =
-                @"                s = ""abc"";                r = s[0];                ";
+                @"
+                s = ""abc"";
+                r = s[0];
+                ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("r", 'a');
+            thisTest.Verify("r", "a");
         }
 
         [Test]
         public void TestStringIndexing02()
         {
             String code =
-                @"                s = ""abcdef"";                r = s[1..3];                ";
+                @"
+                s = ""abcdef"";
+                r = s[1..3];
+                ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", "bcd");
         }
@@ -670,16 +752,22 @@ r = a;
         public void TestStringIndexing03()
         {
             String code =
-                @"                s = ""abcdef"";                r = s[-1];                ";
+                @"
+                s = ""abcdef"";
+                r = s[-1];
+                ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("r", 'f');
+            thisTest.Verify("r", "f");
         }
 
         [Test]
         public void TestStringIndexing04()
         {
             String code =
-                @"                s = ""abcdef"";                r = s[(-1)..(-3)];                ";
+                @"
+                s = ""abcdef"";
+                r = s[(-1)..(-3)];
+                ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", "fed");
         }
@@ -688,10 +776,21 @@ r = a;
         public void TestStringIndexing05()
         {
             String code =
-                @"                s = """";                r = s[0];                ";
+                @"
+                s = """";
+                r = s[0];
+                ";
             thisTest.RunScriptSource(code);
             // Will get an index out of range runtime warning
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kOverIndexing);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kOverIndexing);
+        }
+
+        [Test]
+        public void TestLocalizedStringInCode()
+        {
+            string code = @"x = ""中文字符"";";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", "中文字符");
         }
     }
 }

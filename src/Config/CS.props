@@ -8,6 +8,7 @@
     <REVITAPI Condition=" !Exists('$(REVITAPI)') ">C:\Program Files\Autodesk\Revit 2014</REVITAPI>
     <REVITAPI Condition=" !Exists('$(REVITAPI)') ">C:\Program Files\Autodesk\Vasari Beta 3</REVITAPI>
     <REVIT_VERSION>Revit_2014</REVIT_VERSION>
+    <SharpDXDirectXVersion>DirectX11</SharpDXDirectXVersion>
     <BaseIntermediateOutputPath>$(OutputPath)\int\</BaseIntermediateOutputPath>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -15,6 +16,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UICulture>en-US</UICulture>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -24,11 +26,13 @@
     <REVITAPI Condition=" !Exists('$(REVITAPI)') ">C:\Program Files\Autodesk\Revit 2014</REVITAPI>
     <REVITAPI Condition=" !Exists('$(REVITAPI)') ">C:\Program Files\Autodesk\Vasari Beta 3</REVITAPI>
     <REVIT_VERSION>Revit_2014</REVIT_VERSION>
+    <SharpDXDirectXVersion>DirectX11</SharpDXDirectXVersion>
     <BaseIntermediateOutputPath>$(OutputPath)\int\</BaseIntermediateOutputPath>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UICulture>en-US</UICulture>
   </PropertyGroup>
 </Project>

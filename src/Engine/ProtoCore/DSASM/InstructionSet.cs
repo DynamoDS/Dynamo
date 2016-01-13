@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ProtoCore.Utils;
+using System.Linq;
 using Operand = ProtoCore.DSASM.StackValue;
 
 namespace ProtoCore.DSASM
@@ -72,18 +73,8 @@ namespace ProtoCore.DSASM
         CALL,
         CALLR,
         RETURN,
-        END,
         JMP,
         CJMP,
-        JMP_EQ,
-        JMP_NEQ,
-        JMP_GT,
-        JMP_LT,
-        JMP_GTEQ,
-        JMP_LTEQ,
-        JLZ,
-        JGZ,
-        JZ,
         JDEP,
         AND,
         OR,
@@ -95,11 +86,10 @@ namespace ProtoCore.DSASM
         GE,
         LE,
         BOUNCE,
-        ALLOC,
         ALLOCA,
         ALLOCC,
         POPM,
-        CALLC,
+      
         POPLIST,
         PUSHLIST,
         RETC,
@@ -112,11 +102,9 @@ namespace ProtoCore.DSASM
         NEG,
         CAST,
         DEP,
-        DEPX,
+        
         PUSHB,
-        POPB,
 
-        THROW,
         // TODO Jun: This is temporary until the lib system is implemented. 
         PUSH_ARRAYKEY,
         SETEXPUID
@@ -414,7 +402,7 @@ namespace ProtoCore.DSASM
         {
             StackValue value = new StackValue();
             value.optype = AddressType.Char;
-            value.opdata = ProtoCore.Utils.EncodingUtils.ConvertCharacterToInt64(ch);
+            value.opdata = Convert.ToInt64(ch);
 
             MetaData mdata = new MetaData();
             mdata.type = (int)PrimitiveType.kTypeChar;
@@ -477,8 +465,9 @@ namespace ProtoCore.DSASM
             StackValue value = new StackValue();
             value.optype = AddressType.ArrayKey;
             value.opdata = index;
+            value.metaData = array.metaData;
 
-            Validity.Assert(array.IsArray);
+            Validity.Assert(array.IsArray || array.IsString);
             value.opdata_d = (int)array.opdata;
 
             return value;
@@ -627,7 +616,7 @@ namespace ProtoCore.DSASM
         {
             StackValue value = new StackValue();
             value.optype = AddressType.BlockIndex;
-            value.opdata = value.opdata = block;
+            value.opdata = block;
 
             MetaData mdata;
             mdata.type = (int)PrimitiveType.kTypeVar;
@@ -719,11 +708,51 @@ namespace ProtoCore.DSASM
                 return false;
             }
 
-            array = StackValue.BuildArrayPointer((int)RawDoubleValue);
+            if (this.metaData.type == (int)PrimitiveType.kTypeString)
+                array = StackValue.BuildString((long)RawDoubleValue);
+            else
+                array = StackValue.BuildArrayPointer((long)RawDoubleValue);
+
             index = (int)this.opdata;
 
             return true;
         }
+
+        /// <summary>
+        /// Get an array's next key
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="core"></param>
+        /// <returns></returns>
+        public StackValue GetNextKey(RuntimeCore runtimeCore)
+        {
+            StackValue svArray;
+            int index;
+
+            if (!TryGetArrayKey(out svArray, out index))
+            {
+                return StackValue.Null;
+            }
+
+            int nextIndex = Constants.kInvalidIndex;
+
+            if (svArray.IsArray)
+            {
+                DSArray array = runtimeCore.Heap.ToHeapObject<DSArray>(svArray);
+                if (array.Values.Count() > index + 1)
+                    nextIndex = index + 1;
+            }
+            else if (svArray.IsString)
+            {
+                DSString str = runtimeCore.Heap.ToHeapObject<DSString>(svArray);
+                if (str.Value.Length > index + 1)
+                    nextIndex = index + 1;
+
+            }
+
+            return nextIndex == Constants.kInvalidIndex ? StackValue.Null : StackValue.BuildArrayKey(svArray, nextIndex);
+        }
+
 
         #region Converters
         /// <summary>
@@ -732,7 +761,7 @@ namespace ProtoCore.DSASM
         /// </summary>
         /// <param name="core"></param>
         /// <returns></returns>
-        public StackValue ToBoolean(Core core)
+        public StackValue ToBoolean(RuntimeCore runtimeCore)
         {
             switch (optype)
             {
@@ -753,11 +782,11 @@ namespace ProtoCore.DSASM
                     return StackValue.BuildBoolean(true);
 
                 case AddressType.String:
-                    int size = ArrayUtils.GetElementSize(this, core);
-                    return (size == 0) ? StackValue.False : StackValue.True;
+                    string str = runtimeCore.RuntimeMemory.Heap.ToHeapObject<DSString>(this).Value;
+                    return string.IsNullOrEmpty(str) ? StackValue.False : StackValue.True;
 
                 case AddressType.Char:
-                    char c = EncodingUtils.ConvertInt64ToCharacter(opdata);
+                    char c = Convert.ToChar(opdata);
                     return (c == 0) ? StackValue.False : StackValue.True;
 
                 default:

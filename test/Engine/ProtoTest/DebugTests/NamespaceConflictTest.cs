@@ -7,11 +7,8 @@ using ProtoTestFx.TD;
 
 namespace ProtoTest.DebugTests
 {
-    class NamespaceConflictTest
+    class NamespaceConflictTest : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-
-
         [Test]
         [Category("Trace")]
         [Category("Failure")]
@@ -43,6 +40,19 @@ aO = a.Foo();
 "
 );
             thisTest.VerifyBuildWarningCount(ProtoCore.BuildData.WarningID.kMultipleSymbolFoundFromName, 1);
+        }
+
+        [Test]
+        public void DupImportTestNamespaceConflict02()
+        {
+            var mirror = thisTest.RunScriptSource(
+@"import(""FFITarget.dll"");
+a = DupTargetTest.DupTargetTest(); 
+p = a;
+"
+);
+            thisTest.VerifyBuildWarningCount(ProtoCore.BuildData.WarningID.kMultipleSymbolFoundFromName, 1);
+            Assert.IsTrue(mirror.GetValue("p").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
         }
 
 

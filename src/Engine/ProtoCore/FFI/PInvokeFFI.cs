@@ -103,13 +103,13 @@ namespace ProtoFFI
                                 out int size)
         {
             size = 0;
-            HeapElement hs = dsi.runtime.rmem.Heap.GetHeapElement(o);
+            var array = dsi.runtime.rmem.Heap.ToHeapObject<DSArray>(o);
 
-            if (!hs.VisibleItems.Any())
+            if (!array.Values.Any())
                 return null;
 
             IList elements = null;
-            var opType = hs.Stack[0].optype;
+            var opType = array.GetValueFromIndex(0, dsi.runtime.RuntimeCore).optype;
             if (opType == AddressType.Boolean)
             {
                 elements = new List<bool>();
@@ -131,7 +131,7 @@ namespace ProtoFFI
                 throw new ArgumentException(string.Format("Argument of type {0} is not supported for FFI Marshalling", opType.ToString()));
             }
 
-            foreach (var op in hs.VisibleItems)
+            foreach (var op in array.Values)
             {
                 if (opType == AddressType.Double)
                 {
@@ -182,11 +182,11 @@ namespace ProtoFFI
         private object ConvertCSArrayToDSArray(double[] csArray, ProtoCore.DSASM.Interpreter dsi)
         {
            
-            var core = dsi.runtime.Core;
+            var runtimeCore = dsi.runtime.RuntimeCore;
             object retVal = null;
 
             var values = csArray.Select(x => StackValue.BuildDouble(x)).ToArray();
-            retVal = core.Heap.AllocateArray(values);
+            retVal = runtimeCore.RuntimeMemory.Heap.AllocateArray(values);
             return retVal;
         }
 
@@ -345,7 +345,7 @@ namespace ProtoFFI
 
     public class PInvokeModuleHelper : ModuleHelper
     {
-        public override FFIObjectMarshler GetMarshaller(ProtoCore.Core core)
+        public override FFIObjectMarshler GetMarshaller(ProtoCore.RuntimeCore runtimeCore)
         {
             return null;
         }

@@ -1,0 +1,15 @@
+<Workspace Version="0.7.6.4222" X="0" Y="0" zoom="1" Name="bar" ID="9b727507-3844-4b18-94fc-f49f743f9b24" Description="" Category="CustomNode">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.Symbol guid="e6ec3405-f21b-49b4-811d-3ef52dbb9925" type="Dynamo.Nodes.Symbol" nickname="Input" x="119.5" y="165.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="x: int" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output guid="d36dd5a7-9445-4515-868d-db3fd0cfffda" type="Dynamo.Nodes.Output" nickname="Output" x="298.5" y="166.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="e6ec3405-f21b-49b4-811d-3ef52dbb9925" start_index="0" end="d36dd5a7-9445-4515-868d-db3fd0cfffda" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

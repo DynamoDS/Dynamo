@@ -11,6 +11,7 @@ using System.Text;
 using System.IO;
 using System.Xml;
 using System.Linq;
+using ProtoCore.Properties;
 
 namespace ProtoFFI
 {
@@ -124,8 +125,8 @@ namespace ProtoFFI
         {
             if (dsObject.opdata > MaxValue || dsObject.opdata < MinValue)
             {
-                string message = String.Format(ProtoCore.RuntimeData.WarningMessage.kFFIInvalidCast, dsObject.opdata, type.Name, MinValue, MaxValue);
-                dsi.LogWarning(ProtoCore.RuntimeData.WarningID.kTypeMismatch, message);
+                string message = String.Format(Resources.kFFIInvalidCast, dsObject.opdata, type.Name, MinValue, MaxValue);
+                dsi.LogWarning(ProtoCore.Runtime.WarningID.kTypeMismatch, message);
             }
 
             return CastToObject(dsObject.opdata);
@@ -159,8 +160,8 @@ namespace ProtoFFI
         {
             if (dsObject.RawDoubleValue > MaxValue || dsObject.RawDoubleValue < MinValue)
             {
-                string message = String.Format(ProtoCore.RuntimeData.WarningMessage.kFFIInvalidCast, dsObject.RawDoubleValue, type.Name, MinValue, MaxValue);
-                dsi.LogWarning(ProtoCore.RuntimeData.WarningID.kTypeMismatch, message);
+                string message = String.Format(Resources.kFFIInvalidCast, dsObject.RawDoubleValue, type.Name, MinValue, MaxValue);
+                dsi.LogWarning(ProtoCore.Runtime.WarningID.kTypeMismatch, message);
             }
 
             return CastToDouble(dsObject.RawDoubleValue);
@@ -201,7 +202,7 @@ namespace ProtoFFI
 
         public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, Type type)
         {
-            return ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(dsObject.opdata);
+            return Convert.ToChar(dsObject.opdata);
         }
     }
 
@@ -258,10 +259,22 @@ namespace ProtoFFI
         {
             Type arrayType = expectedCLRType;
             Type elementType = GetElementType(expectedCLRType);
+
             if (expectedCLRType.IsGenericType)
             {
-                elementType = expectedCLRType.GetGenericArguments()[0];
+                bool isDictionary = expectedCLRType.GetInterfaces()
+                                                   .Where(i => i.IsGenericType)
+                                                   .Select(i => i.GetGenericTypeDefinition())
+                                                   .Contains(typeof(IDictionary<,>));
+                if (isDictionary)
+                    return ToIDictionary(dsObject, context, dsi, expectedCLRType);
+
+                elementType = expectedCLRType.GetGenericArguments().First();
                 arrayType = elementType.MakeArrayType();
+            }
+            else if (typeof(IDictionary).IsAssignableFrom(expectedCLRType))
+            {
+                return ToIDictionary(dsObject, context, dsi, expectedCLRType);
             }
 
             ICollection collection = null;
@@ -273,7 +286,9 @@ namespace ProtoFFI
                 collection = new ArrayList(new object[] { obj });
             }
             else //Convert DS Array to CS Collection
+            {
                 collection = ToICollection(dsObject, context, dsi, arrayType);
+            }
 
             if (expectedCLRType.IsGenericType && !expectedCLRType.IsInterface)
             {
@@ -302,6 +317,59 @@ namespace ProtoFFI
                 elementType = typeof(object);
             return elementType;
         }
+
+        #region DS_ARRAY_TO_CS_DICTIONARY
+
+        private object AddToDictionary(ProtoCore.Runtime.Context context,
+            Interpreter dsi,
+            IDictionary csDictionary,
+            IDictionary<StackValue, StackValue> dsDictionary,
+            System.Type keyType, System.Type valueType)
+        {
+            if (csDictionary == null)
+                throw new ArgumentNullException("csDictionary");
+
+            if (dsDictionary == null)
+                throw new ArgumentNullException("dsDictionary");
+
+            foreach (var pair in dsDictionary)
+            {
+                var key = primitiveMarshaler.UnMarshal(pair.Key, context, dsi, keyType);
+                if (key == null || !keyType.IsAssignableFrom(key.GetType()))
+                    continue;
+
+                var value = primitiveMarshaler.UnMarshal(pair.Value, context, dsi, valueType);
+                if (value != null && valueType.IsAssignableFrom(value.GetType()))
+                    csDictionary.Add(key, value);
+                else
+                    csDictionary.Add(key, null);
+            }
+
+            return csDictionary;
+        }
+
+        private object ToIDictionary(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, System.Type expectedType)
+        {
+            if (!dsObject.IsArray)
+                return null;
+
+            Type keyType = typeof(object);
+            Type valueType = typeof(object);
+            Type instanceType = expectedType;
+
+            if (expectedType.IsGenericType)
+            {
+                keyType = expectedType.GetGenericArguments().First();
+                valueType = expectedType.GetGenericArguments().Last();
+                instanceType = expectedType.GetGenericTypeDefinition().MakeGenericType(keyType, valueType);
+            }
+
+            var csDict = (IDictionary)Activator.CreateInstance(instanceType);
+            var dsDict = dsi.runtime.RuntimeCore.Heap.ToHeapObject<DSArray>(dsObject).ToDictionary();
+            return AddToDictionary(context, dsi, csDict, dsDict, keyType, valueType);
+        }
+
+        #endregion
 
         #region CS_ARRAY_TO_DS_ARRAY
 
@@ -363,7 +431,6 @@ namespace ProtoFFI
             foreach (var item in collection)
             {
                 sv[index] = MarshalToStackValue(item, context, dsi);
-                dsi.runtime.rmem.Heap.IncRefCount(sv[index]);
                 ++index;
             }
 
@@ -381,33 +448,25 @@ namespace ProtoFFI
             }
 
             var heap = dsi.runtime.rmem.Heap;
-            svs.ForEach(sv => heap.IncRefCount(sv));
-            var retVal = heap.AllocateArray(svs);
+            var retVal = heap.AllocateArray(svs.ToArray());
             return retVal;
         }
 
         protected StackValue ToDSArray(IDictionary dictionary, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type expectedDSType)
         {
-            var core = dsi.runtime.Core;
+            var runtimeCore = dsi.runtime.RuntimeCore;
 
-            var array = dsi.runtime.rmem.Heap.AllocateArray(Enumerable.Empty<StackValue>());
-            HeapElement ho = ArrayUtils.GetHeapElement(array, core);
-            ho.Dict = new Dictionary<StackValue, StackValue>(new StackValueComparer(core));
-
+            var svArray = dsi.runtime.rmem.Heap.AllocateArray(new StackValue[] {});
+            DSArray array = dsi.runtime.rmem.Heap.ToHeapObject<DSArray>(svArray);
             foreach (var key in dictionary.Keys)
             {
                 var value = dictionary[key];
-
                 StackValue dsKey = MarshalToStackValue(key, context, dsi);
-                GCUtils.GCRetain(dsKey, core);
-
                 StackValue dsValue = MarshalToStackValue(value, context, dsi);
-                GCUtils.GCRetain(dsValue, core);
-
-                ho.Dict[dsKey] = dsValue;
+                array.SetValueForIndex(dsKey, dsValue, dsi.runtime.RuntimeCore);
             }
 
-            return array;
+            return svArray;
         }
 
         #endregion
@@ -423,8 +482,12 @@ namespace ProtoFFI
         /// <returns></returns>
         protected T[] UnMarshal<T>(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi)
         {
-            var dsElements = ArrayUtils.GetValues(dsObject, dsi.runtime.Core);
             var result = new List<T>();
+            var heap = dsi.runtime.RuntimeCore.Heap;
+            if (!dsObject.IsArray)
+                return result.ToArray();
+
+            var dsElements = heap.ToHeapObject<DSArray>(dsObject).Values;
             Type objType = typeof(T);
 
             foreach (var elem in dsElements)
@@ -434,7 +497,7 @@ namespace ProtoFFI
                 {
                     if (objType.IsValueType)
                         throw new System.InvalidCastException(
-                            string.Format("Null value cannot be cast to {0}", objType.Name));
+                            string.Format(Resources.FailedToCastFromNull, objType.Name));
 
                     result.Add(default(T));
                 }
@@ -476,7 +539,7 @@ namespace ProtoFFI
                 }
             }
 
-            HeapElement hs = dsi.runtime.rmem.Heap.GetHeapElement(dsObject);
+            var dsArray = dsi.runtime.rmem.Heap.ToHeapObject<DSArray>(dsObject);
 
             //  use arraylist instead of object[], this allows us to correctly capture 
             //  the type of objects being passed
@@ -485,7 +548,7 @@ namespace ProtoFFI
             var elementType = arrayType.GetElementType();
             if (elementType == null)
                 elementType = typeof(object);
-            foreach (var sv in hs.VisibleItems)
+            foreach (var sv in dsArray.Values)
             {
                 object obj = primitiveMarshaler.UnMarshal(sv, context, dsi, elementType);
                 arrList.Add(obj);
@@ -500,24 +563,24 @@ namespace ProtoFFI
     /// <summary>
     /// Marshales string as array of chars
     /// </summary>
-    class StringMarshaler : CollectionMarshaler
+    class StringMarshaler : PrimitiveMarshler 
     {
         public static readonly ProtoCore.Type kType = CreateType(ProtoCore.PrimitiveType.kTypeString);
-        private static readonly CharMarshaler kCharMarshaler = new CharMarshaler();
 
-        public StringMarshaler() : base(kCharMarshaler, kType) { }
+        public StringMarshaler() : base(kType) { }
 
         public override StackValue Marshal(object obj, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type type)
         {
             string str = (string)obj;
-            StackValue dsarray = base.Marshal(str.ToCharArray(), context, dsi, type);
-            return StackValue.BuildString(dsarray.opdata);
+            return dsi.runtime.rmem.Heap.AllocateString(str);
         }
 
         public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, Type type)
         {
-            char[] array = UnMarshal<char>(dsObject, context, dsi);
-            return new string(array);
+            var dsString = dsi.runtime.rmem.Heap.ToHeapObject<DSString>(dsObject);
+            if (dsString == null)
+                return null;
+            return dsString.Value;
         }
     }
 
@@ -551,7 +614,7 @@ namespace ProtoFFI
         /// </summary>
         /// <param name="core">Core object.</param>
         /// <returns>CLRObjectMarshler</returns>
-        public static CLRObjectMarshler GetInstance(ProtoCore.Core core)
+        public static CLRObjectMarshler GetInstance(ProtoCore.RuntimeCore core)
         {
             CLRObjectMarshler marshaller = null;
             if (!mObjectMarshlers.TryGetValue(core, out marshaller))
@@ -565,7 +628,7 @@ namespace ProtoFFI
                     marshaller = new CLRObjectMarshler(core);
 
                     object value;
-                    if (core.Configurations.TryGetValue(ConfigurationKeys.GeometryXmlProperties, out value))
+                    if (core.DSExecutable.Configurations.TryGetValue(ConfigurationKeys.GeometryXmlProperties, out value))
                         marshaller.DumpXmlProperties = value == null ? false : (bool)value;
                     else
                         marshaller.DumpXmlProperties = false;
@@ -616,7 +679,13 @@ namespace ProtoFFI
             if (CLRObjectMap.TryGetValue(obj, out retVal))
                 return retVal;
 
-            //5. Seems like a new object create a new DS object and bind it.
+            //5. If it is a StackValue, simply return it.
+            if (obj is StackValue)
+            {
+                return (StackValue)obj;
+            }
+
+            //6. Seems like a new object create a new DS object and bind it.
             return CreateDSObject(obj, context, dsi);
         }
 
@@ -639,19 +708,28 @@ namespace ProtoFFI
                 return marshaler.UnMarshal(dsObject, context, dsi, expectedCLRType);
 
             //The dsObject must be of pointer type
-            Validity.Assert(dsObject.IsPointer, string.Format("Operand type {0} not supported for marshalling", dsObject.optype));
+            Validity.Assert(dsObject.IsPointer || dsObject.IsFunctionPointer, 
+                string.Format("Operand type {0} not supported for marshalling", 
+                dsObject.optype));
 
             //Search in the DSObjectMap, for corresponding clrObject.
             object clrObject = null;
             if (DSObjectMap.TryGetValue(dsObject, out clrObject))
                 return clrObject;
 
+            if (dsObject.IsFunctionPointer)
+            {
+                return dsObject;
+            }
+
             return CreateCLRObject(dsObject, context, dsi, expectedCLRType);
         }
 
         /// <summary>
-        /// Gets marshaler for the given clrType and if it fails
+        /// If clrType is IEnumerable, returns a CollectionMarshaler, otherwise
+        /// gets marshaler for the given clrType and if it fails
         /// to get one, it tries to get primitive marshaler based on dsType.
+        /// 
         /// We want to get correct marshaler specific to the input type because
         /// more than one type gets map to same type in DS.
         /// </summary>
@@ -662,10 +740,6 @@ namespace ProtoFFI
         /// <returns>FFIObjectMarshler or null</returns>
         private FFIObjectMarshler GetMarshalerForCLRType(Type clrType, AddressType dsType)
         {
-            //If the input ds object is pointer type then it can't be marshaled as primitive.
-            if (dsType == AddressType.Pointer)
-                return null;
-
             FFIObjectMarshler marshaler = null;
             //Expected CLR type is object, get marshaled clrType from dsType
             Type expectedType = clrType;
@@ -681,11 +755,17 @@ namespace ProtoFFI
             if (typeof(string) != expectedType && typeof(IEnumerable).IsAssignableFrom(expectedType))
                 collection = true;
 
+            // If the expected type is collection, always marshal to collection
             if (collection)
             {
                 ProtoCore.Type type = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.kTypeVar);
                 type.rank = ProtoCore.DSASM.Constants.kArbitraryRank;
                 return new CollectionMarshaler(this, type);
+            }
+            // If the input ds object is pointer type then it can't be marshaled as primitive.
+            else if (dsType == AddressType.Pointer)
+            {
+                return null;
             }
 
             if (!mPrimitiveMarshalers.TryGetValue(expectedType, out marshaler))
@@ -914,7 +994,6 @@ namespace ProtoFFI
                 {
                     DSObjectMap.Remove(dsObject);
                     CLRObjectMap.Remove(clrobject);
-                    dsi.runtime.Core.FFIPropertyChangedMonitor.RemoveFFIObject(clrobject);
                 }
             }
         }
@@ -972,8 +1051,8 @@ namespace ProtoFFI
         private StackValue CreateDSObject(object obj, ProtoCore.Runtime.Context context, Interpreter dsi)
         {
             //We are here, because we want to create DS object of user defined type.
-            var core = dsi.runtime.Core;
-            var classTable = core.DSExecutable.classTable;
+            var runtimeCore = dsi.runtime.RuntimeCore;
+            var classTable = runtimeCore.DSExecutable.classTable;
             Type objType = GetPublicType(obj.GetType());
             int type = classTable.IndexOf(GetTypeName(objType));
             //Recursively get the base class type if available.
@@ -986,9 +1065,8 @@ namespace ProtoFFI
 
             MetaData metadata;
             metadata.type = type;
-            StackValue retval = core.Heap.AllocatePointer(classTable.ClassNodes[type].size, metadata);
+            StackValue retval = runtimeCore.RuntimeMemory.Heap.AllocatePointer(classTable.ClassNodes[type].Size, metadata);
             BindObjects(obj, retval);
-            dsi.runtime.Core.FFIPropertyChangedMonitor.AddFFIObject(obj);
             return retval;
         }
 
@@ -1007,11 +1085,11 @@ namespace ProtoFFI
             if (null == properties || properties.Count == 0)
                 return;
 
-            var core = dsi.runtime.Core;
-            StackValue[] svs = core.Heap.GetHeapElement(dsObject).Stack;
+            var runtimeCore = dsi.runtime.RuntimeCore;
+            StackValue[] svs = dsi.runtime.rmem.Heap.ToHeapObject<DSObject>(dsObject).Values.ToArray();
             for (int ix = 0; ix < svs.Length; ++ix)
             {
-                SymbolNode symbol = core.ClassTable.ClassNodes[classIndex].symbols.symbolList[ix];
+                SymbolNode symbol = runtimeCore.DSExecutable.classTable.ClassNodes[classIndex].Symbols.symbolList[ix];
                 object prop = null;
                 if (properties.TryGetValue(symbol.name, out prop) && null != prop)
                     svs[ix] = Marshal(prop, context, dsi, GetMarshaledType(prop.GetType()));
@@ -1174,8 +1252,6 @@ namespace ProtoFFI
             //Must be a user defined type, and expecting a var object
             if (type == typeof(object) && dsObject.IsPointer)
             {
-                //TOD: Fix GC issue, don't know how/when this will get GCed??
-                dsi.runtime.rmem.Heap.IncRefCount(dsObject);
                 BindObjects(dsObject, dsObject);
                 return dsObject;
             }
@@ -1187,16 +1263,16 @@ namespace ProtoFFI
         /// Constructor.
         /// </summary>
         /// <param name="core">Core object for marshler.</param>
-        private CLRObjectMarshler(ProtoCore.Core core)
+        private CLRObjectMarshler(ProtoCore.RuntimeCore runtimeCore)
         {
-            core.Dispose += core_Dispose;
+            runtimeCore.Dispose += core_Dispose;
         }
 
         /// <summary>
         /// Dispose event handler.
         /// </summary>
         /// <param name="sender">Core object being disposed.</param>
-        void core_Dispose(ProtoCore.Core sender)
+        void core_Dispose(ProtoCore.RuntimeCore sender)
         {
             CLRObjectMarshler marshaller = null;
             if (!mObjectMarshlers.TryGetValue(sender, out marshaller))
@@ -1211,7 +1287,6 @@ namespace ProtoFFI
             foreach (var item in DSObjectMap)
             {
                 IDisposable disposable = item.Value as IDisposable;
-                sender.FFIPropertyChangedMonitor.RemoveFFIObject(item.Value);
 
                 if (null != disposable)
                     disposable.Dispose();
@@ -1224,7 +1299,7 @@ namespace ProtoFFI
 
         private readonly Dictionary<StackValue, Object> DSObjectMap = new Dictionary<StackValue, object>(new PointerValueComparer());
         private readonly Dictionary<Object, StackValue> CLRObjectMap = new Dictionary<object, StackValue>(new ReferenceEqualityComparer());
-        private static readonly Dictionary<ProtoCore.Core, CLRObjectMarshler> mObjectMarshlers = new Dictionary<ProtoCore.Core, CLRObjectMarshler>();
+        private static readonly Dictionary<ProtoCore.RuntimeCore, CLRObjectMarshler> mObjectMarshlers = new Dictionary<ProtoCore.RuntimeCore, CLRObjectMarshler>();
         private static List<IDisposable> mPendingDisposables = new List<IDisposable>();
         private static readonly Object syncroot = new Object();
         #endregion

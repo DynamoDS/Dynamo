@@ -4,15 +4,8 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.Imperative
 {
-    class WhileTest
+    class WhileTest : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string testPath = "..\\..\\..\\Scripts\\TD\\Imperative\\WhileStatement\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         [Category("SmokeTest")]
         public void T01_NegativeSyntax_Negative()
@@ -606,6 +599,7 @@ x = test();";
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T22_Defect_1463683_2()
         {
@@ -614,10 +608,7 @@ def foo ()
 {
 	return = 1;
 }
-class A 
-{
-    t1 : int;
-	t2 : int;
+
 	
 	def test ()
 	{
@@ -637,28 +628,25 @@ class A
 		}
 		return = temp;
 	}
-}
-a = A.A();
-x = a.test();
-x1 = a.t1;
-x2 = a.t2;
+
+
+x = test();
+
 y;y1;y2;
 [Imperative]
 {
-	y = a.test();
-	y1 = a.t1;
-	y2 = a.t2;
+	y = test();
+	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 1);
-            thisTest.Verify("x1", 1);
-            thisTest.Verify("x2", 3);
+
             thisTest.Verify("y", 1);
-            thisTest.Verify("y1", 1);
-            thisTest.Verify("y2", 3);
+            
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T22_Defect_1463683_3()
         {
@@ -667,8 +655,8 @@ y;y1;y2;
 {
 	return = { 0, 1, 2 };
 }
-class A 
-{
+
+
     t1;
 	t2;	
 	def test ()
@@ -694,17 +682,17 @@ class A
 		}
 		return = temp;
 	}
-}
-a = A.A();
-x = a.test();
-x1 = a.t1;
-x2 = a.t2;
+
+
+x = test();
+x1 = t1;
+x2 = t2;
 y;y1;y2;
 [Imperative]
 {
-	y = a.test();
-	y1 = a.t1;
-	y2 = a.t2;
+	y = test();
+	y1 = t1;
+	y2 = t2;
 }";
             thisTest.VerifyRunScriptSource(src, errmsg);
             Object[] v1 = new Object[] { 1, 3, 4 };

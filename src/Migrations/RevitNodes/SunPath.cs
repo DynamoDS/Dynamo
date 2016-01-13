@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Xml;
-
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.Models;
-using Migrations;
+using Dynamo.Migration;
 
 namespace Dynamo.Nodes
 {
@@ -60,7 +61,7 @@ namespace Dynamo.Nodes
             migrationData.CreateConnector(sunSettingNode, 0, sunPathNode, 0);
 
             var oldConnector = data.FindFirstConnector(
-                new PortId(MigrationManager.GetGuidFromXmlElement(oldNode), 0, PortType.OUTPUT));
+                new PortId(MigrationManager.GetGuidFromXmlElement(oldNode), 0, PortType.Output));
 
             if (oldConnector != null)
             {
@@ -69,7 +70,7 @@ namespace Dynamo.Nodes
                     new PortId(
                         MigrationManager.GetGuidFromXmlElement(sunPathNode),
                         0,
-                        PortType.OUTPUT));
+                        PortType.Output));
             }
 
             return migrationData;

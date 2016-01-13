@@ -1,0 +1,14 @@
+<Workspace X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="100">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.DoubleInput guid="87c82c81-c93b-4ebc-b4f1-1ce2239b3c6f" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="283.5" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DSFunction guid="6c46c7f8-9625-4deb-8d99-f90780428e74" type="Dynamo.Nodes.DSFunction" nickname="+" x="516.5" y="196.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="+@var[]..[],var[]..[]" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="87c82c81-c93b-4ebc-b4f1-1ce2239b3c6f" start_index="0" end="6c46c7f8-9625-4deb-8d99-f90780428e74" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="87c82c81-c93b-4ebc-b4f1-1ce2239b3c6f" start_index="0" end="6c46c7f8-9625-4deb-8d99-f90780428e74" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

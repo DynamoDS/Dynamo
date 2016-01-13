@@ -4,14 +4,9 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
-    public class UseCaseTesting
+    class UseCaseTesting : ProtoTestBase
     {
-        readonly TestFrameWork thisTest = new TestFrameWork();
         string testPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
-        [SetUp]
-        public void SetUp()
-        {
-        }
 
         [Test]
         [Category("SmokeTest")]
@@ -151,6 +146,7 @@ a  = a2 + b;    // 6";
         }
 
         [Test]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T005_modifiers_with_right_assignments_Robert()
         {
             string code = @"
@@ -198,6 +194,8 @@ b  = b2 + 2;    // 5";
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_ModifierBlock")]
+        [Category("ModifierBlock")] 
         public void T007_surface_trimmed_with_modifier_and_named_states_Robert()
         {
 
@@ -249,6 +247,7 @@ test = mySurface.x; //expected : 4
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_ComplexUseCase")]
         [Category("SmokeTest")]
         public void T008_long_hand_surface_trim_Robert()
         {
@@ -297,6 +296,7 @@ test = trimmedSurface.x;
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         public void T009_modifier_test_1_Robert()
         {
             string code = @"
@@ -334,6 +334,7 @@ x;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_ComplexUseCase")]
         public void T011_Cyclic_Dependency_From_Geometry()
         {
             string code = @"
@@ -356,6 +357,7 @@ projectVector = Vector.ByCoordinates(5.0,0,-1);";
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_ComplexUseCase")]
         public void T012_property_test_on_collections_2_Robert()
         {
             string code = @"
@@ -374,6 +376,7 @@ t2= line2.Color;";
 
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_ComplexUseCase")]
         public void T013_nested_programming_blocks_1_Robert()
         {
             string errmsg = "";

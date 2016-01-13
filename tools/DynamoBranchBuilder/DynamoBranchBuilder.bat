@@ -15,7 +15,7 @@ chdir %repo%
 REM Delete the bin folder
 REM del %repo%\bin
 
-REM Checkout and build Dynamo from Revit2015
+REM Checkout and build Dynamo from the branch
 %git% checkout %branchName%
 
 REM Build Dynamo

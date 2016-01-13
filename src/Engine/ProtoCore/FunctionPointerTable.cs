@@ -10,6 +10,42 @@ namespace ProtoCore.DSASM
         {
             functionPointerDictionary = new BiDictionaryOneToOne<int, FunctionPointerNode>();
         }
+
+        /// <summary>
+        /// Try to get the original procedure node that the function pointer
+        /// points to. 
+        /// </summary>
+        /// <param name="functionPointer">Function pointer</param>
+        /// <param name="core">Core</param>
+        /// <param name="procNode">Procedure node</param>
+        /// <returns></returns>
+        public bool TryGetFunction(StackValue functionPointer, RuntimeCore runtimeCore, out ProcedureNode procNode)
+        {
+            procNode = null;
+
+            int index = (int)functionPointer.RawIntValue;
+            FunctionPointerNode fptrNode;
+
+            if (functionPointerDictionary.TryGetByFirst(index, out fptrNode))
+            {
+                var blockId = fptrNode.blockId;
+                var classScope = fptrNode.classScope;
+                var functionIndex = fptrNode.procId;
+
+                if (classScope != Constants.kGlobalScope)
+                {
+                    procNode = runtimeCore.DSExecutable.classTable.ClassNodes[classScope].ProcTable.Procedures[functionIndex];
+                }
+                else
+                {
+                    procNode = runtimeCore.DSExecutable.CompleteCodeBlocks[blockId].procedureTable.Procedures[functionIndex];
+                }
+
+                return true;
+            }
+
+            return false;
+        }
     }
 
     public struct FunctionPointerNode
@@ -20,9 +56,9 @@ namespace ProtoCore.DSASM
 
         public FunctionPointerNode(ProcedureNode procNode)
         {
-            this.procId = procNode.procId;
-            this.classScope = procNode.classScope;
-            this.blockId = procNode.runtimeIndex;
+            this.procId = procNode.ID;
+            this.classScope = procNode.ClassID;
+            this.blockId = procNode.RuntimeIndex;
         }
     }
 
@@ -36,16 +72,6 @@ namespace ProtoCore.DSASM
     {
         readonly IDictionary<TFirst, TSecond> firstToSecond = new Dictionary<TFirst, TSecond>();
         readonly IDictionary<TSecond, TFirst> secondToFirst = new Dictionary<TSecond, TFirst>();
-
-        public bool ContainsSecond(TSecond second)
-        {
-            return secondToFirst.ContainsKey(second);
-        }
-
-        public bool ContainsFirst(TFirst first)
-        {
-            return firstToSecond.ContainsKey(first);
-        }
 
         /// <summary>
         /// Tries to add the pair to the dictionary.
@@ -90,53 +116,11 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Remove the record containing first, if there is one.
-        /// </summary>
-        /// <param name="first"></param>
-        /// <returns> If first is not in the dictionary, returns false, otherwise true</returns>
-        public Boolean TryRemoveByFirst(TFirst first)
-        {
-            TSecond second;
-            if (!firstToSecond.TryGetValue(first, out second))
-                return false;
-
-            firstToSecond.Remove(first);
-            secondToFirst.Remove(second);
-            return true;
-        }
-
-        /// <summary>
-        /// Remove the record containing second, if there is one.
-        /// </summary>
-        /// <param name="second"></param>
-        /// <returns> If second is not in the dictionary, returns false, otherwise true</returns>
-        public Boolean TryRemoveBySecond(TSecond second)
-        {
-            TFirst first;
-            if (!secondToFirst.TryGetValue(second, out first))
-                return false;
-
-            secondToFirst.Remove(second);
-            firstToSecond.Remove(first);
-            return true;
-        }
-
-        /// <summary>
         /// The number of pairs stored in the dictionary
         /// </summary>
         public Int32 Count
         {
             get { return firstToSecond.Count; }
         }
-
-        /// <summary>
-        /// Removes all items from the dictionary.
-        /// </summary>
-        public void Clear()
-        {
-            firstToSecond.Clear();
-            secondToFirst.Clear();
-        }
-
     }
 }

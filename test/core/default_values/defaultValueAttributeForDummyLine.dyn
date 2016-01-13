@@ -1,0 +1,16 @@
+<Workspace Version="0.8.0.683" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="100">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="1015a286-f81f-48cf-99c1-1efe7214c827" type="Dynamo.Nodes.DSFunction" nickname="DummyLine.ByStartPointEndPointWithDefault" x="88.5" y="119.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="FFITarget.dll" function="FFITarget.DummyLine.ByStartPointEndPointWithDefault@FFITarget.DummyPoint,FFITarget.DummyPoint">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction guid="9f4357f6-beb1-44d6-869e-c9b151ca877f" type="Dynamo.Nodes.DSFunction" nickname="DummyLine.End" x="284.5" y="257.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="FFITarget.dll" function="FFITarget.DummyLine.End" />
+    <Dynamo.Nodes.DSFunction guid="e95a634b-aab9-4b6e-bb33-2f9669381ad6" type="Dynamo.Nodes.DSFunction" nickname="DummyPoint.X" x="376.5" y="367.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="FFITarget.dll" function="FFITarget.DummyPoint.X" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="1015a286-f81f-48cf-99c1-1efe7214c827" start_index="0" end="9f4357f6-beb1-44d6-869e-c9b151ca877f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9f4357f6-beb1-44d6-869e-c9b151ca877f" start_index="0" end="e95a634b-aab9-4b6e-bb33-2f9669381ad6" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

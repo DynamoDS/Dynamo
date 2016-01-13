@@ -5,14 +5,8 @@ using ProtoCore.Lang;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.OtherMiscTests
 {
-    public class MiscTest
+    class MiscTest : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string testCasePath = "..\\..\\..\\Scripts\\TD\\OtherMiscTest\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
         [Test]
         [Category("SmokeTest")]
         public void Fibunacci()
@@ -419,6 +413,7 @@ inputBool = true;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("SmokeTest")]
         [Category("Failure")]
         public void DynamicReferenceResolving_Complex_Case()
@@ -498,6 +493,7 @@ testInFunction2 = foo2(b2); //testInFunction2 = 7;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("SmokeTest")]
         public void DynamicReference_Variable()
         {
@@ -526,6 +522,7 @@ kk = t.k;";
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("SmokeTest")]
         public void DynamicReference_FunctionCall()
         {
@@ -553,6 +550,7 @@ testFoo1 = t.foo1(6); // foo1 does not exist in A, function not found warning; t
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("SmokeTest")]
         [Category("Failure")]
         public void DynamicReference_FunctionCall_With_Default_Arg()
@@ -748,6 +746,7 @@ a=1;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void GarbageCollection_1467148()
         {
             string code = @"

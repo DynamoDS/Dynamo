@@ -15,9 +15,9 @@ namespace ProtoTestFx
 {
     public class InjectionExecutiveProvider : IExecutiveProvider
     {
-        public ProtoCore.DSASM.Executive CreateExecutive(Core core, bool isFep)
+        public ProtoCore.DSASM.Executive CreateExecutive(RuntimeCore runtimeCore, bool isFep)
         {
-            return new InjectionExecutive(core, isFep);
+            return new InjectionExecutive(runtimeCore, isFep);
         }
     }
 
@@ -39,7 +39,7 @@ namespace ProtoTestFx
     public class InjectionExecutive : ProtoCore.DSASM.Executive
     {
 
-        public InjectionExecutive(Core core, bool isFep = false) : base(core, isFep) { }
+        public InjectionExecutive(RuntimeCore runtimeCore, bool isFep = false) : base(runtimeCore, isFep) { }
 
         public static int callrLineNo { get; private set; }
         public static bool IsPopToPropertyArray { get; set; }
@@ -56,10 +56,10 @@ namespace ProtoTestFx
         internal void Print(StackValue sv, int lineNo, string symbolName, int ci = Constants.kInvalidIndex)
         {
             //TODO: Change Execution mirror class to have static methods, so that an instance does not have to be created
-            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(this, Core);
-            string result = mirror.GetStringValue(sv, Core.Heap, 0, true);
+            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(this, RuntimeCore);
+            string result = mirror.GetStringValue(sv, RuntimeCore.RuntimeMemory.Heap, 0, true);
 
-            TextOutputStream tStream = Core.BuildStatus.MessageHandler as TextOutputStream;
+            TextOutputStream tStream = RuntimeCore.RuntimeStatus.MessageHandler as TextOutputStream;
             if (tStream != null)
             {
                 Dictionary<int, List<string>> map = tStream.Map;
@@ -140,14 +140,14 @@ namespace ProtoTestFx
             {
                 int lineNo = instruction.debug.Location.StartInclusive.LineNo;
 
-                if (Core.Options.IDEDebugMode && Core.ExecMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+                if (RuntimeCore.Options.IDEDebugMode && RuntimeCore.Options.RunMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                 {
-                    Core.DebugProps.IsPopmCall = false;
-                    Core.DebugProps.CurrentSymbolName = symbolName;
+                    RuntimeCore.DebugProps.IsPopmCall = false;
+                    RuntimeCore.DebugProps.CurrentSymbolName = symbolName;
                 }
 
                 // Add stackvalue against lineNo and variable name
-                if (!Core.Options.IDEDebugMode)
+                if (!RuntimeCore.Options.IDEDebugMode)
                 {
                     Print(svData, lineNo, symbolName);
                 }
@@ -170,21 +170,21 @@ namespace ProtoTestFx
                 }
                 else
                 {
-                    symbolNode = exe.classTable.ClassNodes[ci].symbols.symbolList[(int)instruction.op1.opdata];
+                    symbolNode = exe.classTable.ClassNodes[ci].Symbols.symbolList[(int)instruction.op1.opdata];
                 }
                 string symbolName = symbolNode.name;
 
-                if (Core.Options.IDEDebugMode && Core.ExecMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+                if (RuntimeCore.Options.IDEDebugMode && RuntimeCore.Options.RunMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                 {
-                    if (!Core.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.IsReplicating))
+                    if (!RuntimeCore.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.IsReplicating))
                     {
-                        Core.DebugProps.CurrentSymbolName = symbolName;
-                        Core.DebugProps.IsPopmCall = true;
+                        RuntimeCore.DebugProps.CurrentSymbolName = symbolName;
+                        RuntimeCore.DebugProps.IsPopmCall = true;
                     }
                 }
 
                 // Add stackvalue against lineNo and variable name
-                if (!Core.Options.IDEDebugMode)
+                if (!RuntimeCore.Options.IDEDebugMode)
                 {
                     int lineNo = -1;
                     if (instruction.debug == null)
@@ -213,9 +213,9 @@ namespace ProtoTestFx
 
             if (instruction.debug != null)
             {
-                if (Core.Options.IDEDebugMode && Core.ExecMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+                if (RuntimeCore.Options.IDEDebugMode && RuntimeCore.Options.RunMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                 {
-                    Core.DebugProps.IsPopmCall = false;
+                    RuntimeCore.DebugProps.IsPopmCall = false;
                 }
 
                 callrLineNo = instruction.debug.Location.StartInclusive.LineNo;
@@ -339,11 +339,8 @@ namespace ProtoTestFx
 
         internal void TestRunnerRunOnly(string includePath, string code, Dictionary<int, List<string>> map /*, string executionLogFilePath*/)
         {
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScriptRunner();
 
-
-            ProtoScript.Config.RunConfiguration runnerConfig;
-            
             // Specify some of the requirements of IDE.
 
             core.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
@@ -369,25 +366,21 @@ namespace ProtoTestFx
             // By specifying this option we inject a mock Executive ('InjectionExecutive')
             // that prints stackvalues at every assignment statement
             // by overriding the POP_handler instruction - pratapa
-            core.ExecutiveProvider = new InjectionExecutiveProvider();
+
+//            core.ExecutiveProvider = new InjectionExecutiveProvider();
 
             core.BuildStatus.MessageHandler = fs;
-            core.RuntimeStatus.MessageHandler = fs;
+            core.Compilers.Add(ProtoCore.Language.Associative, new ProtoAssociative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.Imperative, new ProtoImperative.Compiler(core));
 
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
-
-            runnerConfig = new ProtoScript.Config.RunConfiguration();
-            runnerConfig.IsParrallel = false;
-            
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             
             //Run
-
-            Mirror = fsr.Execute(code, core);
+            RuntimeCore runtimeCore = fsr.Execute(code, core);
+            Mirror = runtimeCore.Mirror;
 
             //sw.Close();
-            core.Cleanup();
+            runtimeCore.Cleanup();
         }
 
         internal static void DebugRunnerStepIn(string includePath, string code, /*string logFile*/Dictionary<int, List<string>> map, 
@@ -396,7 +389,6 @@ namespace ProtoTestFx
             //Internal setup
             ProtoCore.Core core;
             DebugRunner fsr;
-            ProtoScript.Config.RunConfiguration runnerConfig;
             
             // Specify some of the requirements of IDE.
             var options = new ProtoCore.Options();
@@ -419,22 +411,20 @@ namespace ProtoTestFx
             
             core = new ProtoCore.Core(options);
 
-            // Use the InjectionExecutive to overload POP and POPM
-            // as we still need the symbol names and line nos. in debug mode for comparisons
-            core.ExecutiveProvider = new InjectionExecutiveProvider();
 
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            core.Compilers.Add(ProtoCore.Language.Associative, new ProtoAssociative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.Imperative, new ProtoImperative.Compiler(core));
 
-            runnerConfig = new ProtoScript.Config.RunConfiguration();
-            runnerConfig.IsParrallel = false;
             fsr = new DebugRunner(core);
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             
             //Run
-            fsr.PreStart(code, runnerConfig);
-            
+            fsr.PreStart(code);
+
+
+            RuntimeCore runtimeCore = fsr.runtimeCore;
+
             //StreamReader log = new StreamReader(logFile);
 
             //bool isPrevBreakAtPop = false;
@@ -473,22 +463,22 @@ namespace ProtoTestFx
                     {
                         if (opCode == ProtoCore.DSASM.OpCode.POP)
                         {
-                            VerifyWatch_Run(lineAtPrevBreak, core.DebugProps.CurrentSymbolName, core, map, watchNestedMode, defectID: defectID);
+                            VerifyWatch_Run(lineAtPrevBreak, runtimeCore.DebugProps.CurrentSymbolName, core, runtimeCore, map, watchNestedMode, defectID: defectID);
                         }
                         // if previous breakpoint was at a CALLR
                         else if (opCode == ProtoCore.DSASM.OpCode.CALLR)
                         {
-                            if (core.DebugProps.IsPopmCall)
+                            if (runtimeCore.DebugProps.IsPopmCall)
                             {
                                 int ci = (int)currentVms.mirror.MirrorTarget.rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexClass).opdata;
-                                VerifyWatch_Run(InjectionExecutive.callrLineNo, core.DebugProps.CurrentSymbolName, core, map, watchNestedMode, ci, defectID);
+                                VerifyWatch_Run(InjectionExecutive.callrLineNo, runtimeCore.DebugProps.CurrentSymbolName, core, runtimeCore, map, watchNestedMode, ci, defectID);
                             }
                         }
                     }
                 }
                 //isPrevBreakAtPop = false;
             }
-            core.Cleanup();
+            runtimeCore.Cleanup();
         }
 
         /*internal static void VerifyWatch_Run(int lineAtPrevBreak, string symbolName, Core core, StreamReader log,
@@ -563,7 +553,7 @@ namespace ProtoTestFx
             }
         }*/
 
-        internal static void VerifyWatch_Run(int lineAtPrevBreak, string symbolName, Core core,
+        internal static void VerifyWatch_Run(int lineAtPrevBreak, string symbolName, Core core, RuntimeCore runtimeCore,
             Dictionary<int, List<string>> map, bool watchNestedMode = false, int ci = Constants.kInvalidIndex, string defectID = "")
         {
             //bool check = true;
@@ -572,7 +562,6 @@ namespace ProtoTestFx
             // verify that the LHS identifier name equals 'symbolName'
             // pass the LHS string to GetWatchValue() and inspect it
             // verify the watch values with the log output
-            
             if (!map.ContainsKey(lineAtPrevBreak))
                 return;
 
@@ -598,7 +587,7 @@ namespace ProtoTestFx
                 }                            
                 if (lhsName.Equals(symbolName))
                 {
-                    ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                    ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                     ProtoCore.DSASM.Mirror.ExecutionMirror mirror = watchRunner.Execute(exp);
                     Obj obj = mirror.GetWatchValue();
                     
@@ -606,7 +595,7 @@ namespace ProtoTestFx
                     {
                         // Cheat by peeking into heap etc. to dump output string
                         // match string with map output to verify
-                        string result = mirror.GetStringValue(obj.DsasmValue, core.Heap, 0, true);
+                        string result = mirror.GetStringValue(obj.DsasmValue, runtimeCore.RuntimeMemory.Heap, 0, true);
 
                         Expression expr = new Expression(lineAtPrevBreak, exp, ci);
                         if (!InjectionExecutive.ExpressionMap.ContainsKey(expr))

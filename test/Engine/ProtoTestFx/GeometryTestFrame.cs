@@ -15,6 +15,7 @@ using System.Xml;
 using System.Xml.Linq;
 using ProtoCore.DSASM.Mirror;
 using Autodesk.DesignScript.Interfaces;
+using System.Globalization;
 
 namespace ProtoTestFx
 {
@@ -54,7 +55,7 @@ namespace ProtoTestFx
             if (null != obj)
             {
                 double rst;
-                if (Double.TryParse(obj.ToString(), out rst))
+                if (Double.TryParse(obj.ToString(), NumberStyles.Number, CultureInfo.InvariantCulture, out rst))
                     return rst;
             }
             return Tol1;
@@ -62,15 +63,11 @@ namespace ProtoTestFx
 
         internal static ProtoCore.Core TestRunnerRunOnly(string includePath, string code,
             Dictionary<int, List<string>> map, string geometryFactory,
-            string persistentManager, out ExecutionMirror mirror)
+            string persistentManager, out ExecutionMirror mirror, out RuntimeCore runtimeCoreOut)
         {
             ProtoCore.Core core;
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScriptRunner();
 
-
-            ProtoScript.Config.RunConfiguration runnerConfig;
-
-            // Specify some of the requirements of IDE.
             var options = new ProtoCore.Options();
             options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
             options.SuppressBuildOutput = false;
@@ -89,6 +86,7 @@ namespace ProtoTestFx
             TextOutputStream fs = new TextOutputStream(map);
 
             core = new ProtoCore.Core(options);
+
             core.Configurations.Add(ConfigurationKeys.GeometryXmlProperties, true);
             //core.Configurations.Add(ConfigurationKeys.GeometryFactory, geometryFactory);
             //core.Configurations.Add(ConfigurationKeys.PersistentManager, persistentManager);
@@ -96,22 +94,19 @@ namespace ProtoTestFx
             // By specifying this option we inject a mock Executive ('InjectionExecutive')
             // that prints stackvalues at every assignment statement
             // by overriding the POP_handler instruction - pratapa
-            core.ExecutiveProvider = new InjectionExecutiveProvider();
+            //core.ExecutiveProvider = new InjectionExecutiveProvider();
 
             core.BuildStatus.MessageHandler = fs;
-            core.RuntimeStatus.MessageHandler = fs;
 
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
-
-            runnerConfig = new ProtoScript.Config.RunConfiguration();
-            runnerConfig.IsParrallel = false;
+            core.Compilers.Add(ProtoCore.Language.Associative, new ProtoAssociative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.Imperative, new ProtoImperative.Compiler(core));
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
 
             //Run
 
-            mirror = fsr.Execute(code, core);
+            runtimeCoreOut = fsr.Execute(code, core);
+            mirror = runtimeCoreOut.Mirror;
 
             //sw.Close();
 
@@ -129,8 +124,15 @@ namespace ProtoTestFx
             file.Close();
             InjectionExecutive.ExpressionMap.Clear();
             ExecutionMirror mirror;
-            Core core = TestRunnerRunOnly(includePath, code, map, "ManagedAsmGeometry.dll", "ManagedAsmPersistentManager.dll", out mirror);
-
+            RuntimeCore runtimeCore = null;
+            Core core = TestRunnerRunOnly(
+                includePath, 
+                code, 
+                map, 
+                "ManagedAsmGeometry.dll", 
+                "ManagedAsmPersistentManager.dll", 
+                out mirror, 
+                out runtimeCore);
             try
             {
                 //XML Result
@@ -166,13 +168,13 @@ namespace ProtoTestFx
             }
             catch (NUnit.Framework.AssertionException e)
             {
-                core.Cleanup();
+                runtimeCore.Cleanup();
                 Assert.Fail(e.Message);
                 return;
             }
             catch (Exception e)
             {
-                core.Cleanup();
+                runtimeCore.Cleanup();
                 Assert.Fail("Error: an exception is thrown!\n\n\t" + e.Message );
                 return;
             }
@@ -180,7 +182,7 @@ namespace ProtoTestFx
             //Ensure no memory leak
             //sw.Close();
 
-            core.Cleanup();
+            runtimeCore.Cleanup();
         }
 
         public static bool RunAndCompareNoAssert(string scriptFile)
@@ -194,7 +196,15 @@ namespace ProtoTestFx
             file.Close();
             InjectionExecutive.ExpressionMap.Clear();
             ExecutionMirror mirror;
-            Core core = TestRunnerRunOnly(includePath, code, map, "ManagedAsmGeometry.dll", "ManagedAsmPersistentManager.dll", out mirror);
+            RuntimeCore runtimeCore = null;
+            Core core = TestRunnerRunOnly(
+                includePath, 
+                code, 
+                map, 
+                "ManagedAsmGeometry.dll", 
+                "ManagedAsmPersistentManager.dll", 
+                out mirror, 
+                out runtimeCore);
 
             //XML Result
             Dictionary<Expression, List<string>> expressionValues = InjectionExecutive.ExpressionMap;
@@ -243,7 +253,8 @@ namespace ProtoTestFx
             file.Close();
             InjectionExecutive.ExpressionMap.Clear();
             ExecutionMirror mirror;
-            Core core = TestRunnerRunOnly(includePath, code, map, geometryFactory, persistentManager, out mirror);
+            RuntimeCore runtimeCore = null;
+            Core core = TestRunnerRunOnly(includePath, code, map, geometryFactory, persistentManager, out mirror, out runtimeCore);
 
             //XML Result
             Dictionary<Expression, List<string>> expressionValues = InjectionExecutive.ExpressionMap;

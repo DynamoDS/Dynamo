@@ -4,15 +4,8 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.Associative
 {
-    class Function
+    class Function : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string filePath = "..\\..\\..\\Scripts\\TD\\Associative\\Function\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         [Category("SmokeTest")]
         public void T001_Associative_Function_Simple()
@@ -322,9 +315,7 @@ result2;
         [Category("SmokeTest")]
         public void T014_Associative_Function_DuplicateVariableAndFunctionName_Negative()
         {
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                string code = @"
+            string code = @"
 [Associative]
 {
 	def Foo : int ()
@@ -335,8 +326,7 @@ result2;
 	
 	
 }";
-                ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            });
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
         }
 
         [Test]
@@ -430,29 +420,21 @@ result;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void Z002_Defect_1461399()
         {
-            string src = @"class Arc
-{
-	constructor Arc()
-	{
-		
-	}
-	def get_StartPoint()
-	{
-         return = 1;
-	}
-}
-def CurveProperties(curve : Arc)
+            string src = @"
+import(""FFITarget.dll"");
+def VectorProperties(v : DummyVector)
 {
  return = {
-	curve.get_StartPoint(),
-	curve.get_StartPoint(),
-	curve.get_StartPoint()	
+	v.X(),
+	v.X(),
+	v.X()	
  };
 }
-test=CurveProperties(null);
+test=VectorProperties(null);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             Object[] v1 = new Object[] { null, null, null };
@@ -460,6 +442,7 @@ test=CurveProperties(null);
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void Z002_Defect_1461399_2()
         {
@@ -504,6 +487,147 @@ a = function1({null,null});
             thisTest.Verify("a", v1);
         }
 
+        [Test]
+        [Category("DSDefinedClass_Ported")]
+        public void TestCallFunctionReturningObjectMultipleTimes()
+        {
+            string code = @"
+import(""FFITarget.dll"");
+def f()
+{
+    p = ClassFunctionality.ClassFunctionality(1);
+    p = p.IntVal;
+    return = p;
+}
 
+x = f();
+y = f();
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1);
+            thisTest.Verify("y", 1);
+        }
+
+        [Test]
+        public void TestDefaultArgumentPrimitive01()
+        {
+            string code = @"    
+def f(a : int = 1)
+{
+    return = a;
+}
+x = f();
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1);
+        }
+
+        [Test]
+        public void TestDefaultArgumentPrimitive02()
+        {
+            string code = @"    
+def f(a : int = null)
+{
+    return = a;
+}
+x = f();
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x", null);
+        }
+
+        [Test]
+        public void TestDefaultArgumentPrimitive03()
+        {
+            string code = @"    
+def f(a : bool = true)
+{
+    return = a;
+}
+x = f();
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x", true);
+        }
+
+
+        [Test]
+        [Category("DSDefinedClass_Ported")]
+        public void TestDefaultArgumentPointer01()
+        {
+            string code = @"    
+import(""FFITarget.dll"");def f(p : ClassFunctionality = ClassFunctionality.ClassFunctionality(1)){    return = p.IntVal;}x = f();
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1);
+        }
+
+
+        [Test]
+        public void TestDefaultArgumentPointer02()
+        {
+            string code = @"    import(""FFITarget.dll"");def f (a : DummyPoint = DummyPoint.ByCoordinates(1,2,3)){    return = a.X;}x = f();
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1);
+        }
+
+        [Test]
+        public void TestDefaultArgumenFFI01()
+        {
+            string code = @"    import(""DSCoreNodes.dll"");a = Math.Random();
+x = (a != null) ? 1 : 0;
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1);
+        }
+
+        [Test]
+        public void TestDefaultArgumentUntyped01()
+        {
+            string code = @"    
+def f(a = 1)
+{
+    return = a;
+}
+x = f();
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1);
+        }
+
+        [Test]
+        public void TestDefaultArgumentUntyped02()
+        {
+            string code = @"    
+def f(a = true)
+{
+    return = a;
+}
+x = f();
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x", true);
+        }
+
+        [Test]
+        [Category("DSDefinedClass_Ported")]
+        public void TestDefaultArgumentUntyped03()
+        {
+            string code = @"    
+import(""FFITarget.dll"");def f(p = ClassFunctionality.ClassFunctionality(1)){    return = p.IntVal;}x = f();
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1);
+        }
+
+        [Test]
+        public void TestDefaultArgumentUntyped04()
+        {
+            string code = @"    import(""FFITarget.dll"");def f (a = DummyPoint.ByCoordinates(1,2,3)){    return = a.X;}x = f();
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1);
+        }
     }
 }

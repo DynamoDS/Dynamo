@@ -1,13 +1,18 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Runtime;
 using MIConvexHull;
+
+using StarMathLib;
 
 namespace Tessellation.Adapters
 {
     /// <summary>
     /// A cell for a 2d tesselation
     /// </summary>
-    internal class Cell2 : TriangulationCell<Vertex2, Cell2>
+    [SupressImportIntoVM]
+    public class Cell2 : TriangulationCell<Vertex2, Cell2>
     {
         Point GetCircumcenter()
         {
@@ -29,7 +34,7 @@ namespace Tessellation.Adapters
             // size, y, 1
             for (int i = 0; i < 3; i++)
             {
-                m[i, 0] = StarMath.norm2(points[i].Position, 2, true);
+                m[i, 0] = StarMath.norm2(points[i].Position, true);
             }
             var dx = -StarMath.determinant(m);
 

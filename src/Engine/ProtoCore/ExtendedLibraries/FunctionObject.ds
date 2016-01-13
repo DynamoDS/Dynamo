@@ -1,3 +1,5 @@
+
+[InternalClass]
 class _FunctionObject
 {
     def DoEvaluation(param:var[]..[])
@@ -6,6 +8,7 @@ class _FunctionObject
     }
 }
 
+[InternalClass]
 class _SingleFunctionObject extends _FunctionObject
 {
     __functionPointers : function;
@@ -96,6 +99,7 @@ class _SingleFunctionObject extends _FunctionObject
     }
 }
 
+[InternalClass]
 class _ComposedFunctionObject extends _FunctionObject
 {
     __funcs : _FunctionObject[];
@@ -235,7 +239,7 @@ def __Filter(list: var[]..[], predicate: _FunctionObject)
         _count = Count(list);
         if (_count == 0)
         {
-            return = {};
+            return = {{}, {}};
         }
 
         _filteredList = {};
@@ -458,7 +462,7 @@ def __Reduce(accumulator : _FunctionObject, seed: var[]..[], lists : var[]..[])
     };
 }
 
-def SortByKey(list : var[]..[], keyProjector:_FunctionObject)
+def SortByFunction(list : var[]..[], func:_FunctionObject)
 {
     return = [Imperative]
     {
@@ -477,13 +481,13 @@ def SortByKey(list : var[]..[], keyProjector:_FunctionObject)
 
         for (_index in 0..(_count - 1))
         {
-            _keys[_index] = __Apply(keyProjector, list[_index]);
+            _keys[_index] = __Apply(func, list[_index]);
         }
         return = Sorting.sortByKey(list, _keys);
     };
 }
 
-def GroupByKey(list : var[]..[], keyProjector: _FunctionObject)
+def GroupByFunction(list : var[]..[], func: _FunctionObject)
 {
     return = [Imperative]
     {
@@ -502,7 +506,7 @@ def GroupByKey(list : var[]..[], keyProjector: _FunctionObject)
 
         for (_index in 0..(_count - 1))
         {
-            _keys[_index] = Apply(keyProjector, list[_index]);
+            _keys[_index] = __Apply(func, list[_index]);
         }
         return = Sorting.groupByKey(list, _keys);
     };
@@ -593,4 +597,16 @@ def __ForEach(functionObject: _FunctionObject, lists: var[]..[])
             __ApplyList(functionObject, _value);
         }
     };
+}
+
+def LoopWhile(init: var[]..[], continueWhile: _FunctionObject, loopBody: _FunctionObject)
+{
+	return = [Imperative]
+	{
+		while (__Apply(continueWhile, init))
+		{
+			init = __Apply(loopBody, init);
+		}
+		return = init;
+	};
 }

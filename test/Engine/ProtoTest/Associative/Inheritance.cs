@@ -5,16 +5,10 @@ using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.Associative
 {
-    class InheritaceTest
+    class InheritaceTest : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        [SetUp]
-        public void Setup()
-        {
-        }
-
-
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DoNotTestInheritance")]
         public void InheritanceTest01()
         {
             String code =
@@ -26,6 +20,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DoNotTestInheritance")]
         public void InheritanceTest02()
         {
             String code =
@@ -35,6 +30,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DoNotTestInheritance")]
         public void InheritanceTest03()
         {
             String code =
@@ -44,6 +40,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DoNotTestInheritance")]
         public void InheritanceTest04()
         {
             String code =
@@ -54,6 +51,7 @@ namespace ProtoTest.Associative
 
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DoNotTestInheritance")]
         public void InheritanceTest05()
         {
             String code =

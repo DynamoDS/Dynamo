@@ -1,16 +1,27 @@
-﻿using System;
+
+using System;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
 using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.Associative
 {
-    public class FunctionObjectTest
+    class FunctionObjectTest : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        [SetUp]
-        public void Setup()
+        [Test]
+        public void LoopWhile01()
         {
+            string code =
+    @"
+import (""FunctionObject.ds"");
+def add1(x) { return = x + 1; }
+def lt10(x) { return = x < 10; }
+add1fo = _SingleFunctionObject(add1, 1, {}, {null}, true);
+lt10fo = _SingleFunctionObject(lt10, 1, {}, {null}, true);
+r = LoopWhile(0, lt10fo, add1fo);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r", 10);
         }
 
         [Test]
@@ -240,20 +251,18 @@ r5 = __Apply(comp3, 9);
         }
 
         [Test]
-        public void TestApplyOnStaticFunction()
+        [Category("DSDefinedClass_Ported")]
+        public void TestApplyOnFunction01()
         {
             string code =
     @"
 import (""FunctionObject.ds"");
-class Foo
+def foo(x, y)
 {
-    static def foo(x, y)
-    {
-        return = x + y;
-    }
+    return = x + y;
 }
 
-fo = _SingleFunctionObject(Foo.foo, 2, { 1 }, { null, 100 }, true);
+fo = _SingleFunctionObject(foo, 2, { 1 }, { null, 100 }, true);
 r = __Apply(fo, 3);
 ";
             thisTest.RunScriptSource(code);
@@ -261,72 +270,61 @@ r = __Apply(fo, 3);
         }
 
         [Test]
-        public void TestApplyOnConstructor()
+        [Category("DSDefinedClass_Ported")]
+        public void TestApplyOnFunction02()
         {
             string code =
     @"
 import (""FunctionObject.ds"");
-class Foo
+
+def Foo(x, y)
 {
-    i;
-    constructor Foo(x, y)
-    {
-        i = x + y;
-    }
+    return = x + y;
 }
 
-c = _SingleFunctionObject(Foo.Foo, 2, { 1 }, { null, 100 }, true);
+
+c = _SingleFunctionObject(Foo, 2, { 1 }, { null, 100 }, true);
 f = __Apply(c, 3);
-r = f.i;
+r = f;
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", 103);
         }
 
         [Test]
-        public void TestSortByKey()
+        [Category("DSDefinedClass_Ported")]
+        public void TestSortByFunction()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4037
             string err = "MAGN-4037 Defects with FunctionObject tests";
             string code =
-    @"
+    @"import(""FFITarget.dll"");
 import (""DSCoreNodes.dll"");
 import (""FunctionObject.ds"");
-class Point
-{
-    constructor Point(_x, _y, _z)
-    {
-        x = _x;
-        y = _y;
-        z = _z;
-    }
-    
-    x; y; z;
-}
 
-p1 = Point(1, 2, 3);
-p2 = Point(2, 3, 4);
-p3 = Point(2, 1, 3);
+p1 = DummyPoint.ByCoordinates(1, 2, 3);
+p2 = DummyPoint.ByCoordinates(2, 3, 4);
+p3 = DummyPoint.ByCoordinates(2, 1, 3);
 
-def getCoordinateValue(p : Point)
+def getCoordinateValue(p : DummyPoint)
 {
-    return = p.x + p.y + p.z;
+    return = p.X + p.Y + p.Z;
 }
 
 getPointKey = _SingleFunctionObject(getCoordinateValue, 1, { }, { }, true);
-r1 = SortByKey(null, getPointKey);
-r2 = SortByKey({ }, getPointKey);
+r1 = SortByFunction(null, getPointKey);
+r2 = SortByFunction({ }, getPointKey);
 
-r3 = SortByKey({ p1 }, getPointKey);
+r3 = SortByFunction({ p1 }, getPointKey);
 t1 = __Map(getPointKey, r3);
 
-r4 = SortByKey({ p1, p1, p1 }, getPointKey);
+r4 = SortByFunction({ p1, p1, p1 }, getPointKey);
 t2 = __Map(getPointKey, r4);
 
-r5 = SortByKey({ p1, p2, p3 }, getPointKey);
+r5 = SortByFunction({ p1, p2, p3 }, getPointKey);
 t3 = __Map(getPointKey, r5);
 
-r6 = SortByKey({ p2, p1 }, getPointKey);
+r6 = SortByFunction({ p2, p1 }, getPointKey);
 t4 = __Map(getPointKey, r6);
 ";
             thisTest.RunScriptSource(code);
@@ -336,41 +334,53 @@ t4 = __Map(getPointKey, r6);
             thisTest.Verify("t4", new object[] { 6, 9});
         }
 
-        [Test, Category("Failure")]
-        public void TestGroupByKey()
+        [Test]
+        public void TestGroupByFunction()
         {
             string code =
-    @"
+    @"import(""FFITarget.dll"");
+import (""DSCoreNodes.dll"");
 import (""FunctionObject.ds"");
-class Point
-{
-    constructor Point(_x, _y, _z)
-    {
-        x = _x;
-        y = _y;
-        z = _z;
-    }
-    
-    x; y; z;
-}
 
-p1 = Point(1, 2, 3);
-p2 = Point(2, 3, 4);
-p3 = Point(2, 1, 3);
+p1 = DummyPoint.ByCoordinates(0, 0, 0);
+p2 = DummyPoint.ByCoordinates(1, 0, 0);
+p3 = DummyPoint.ByCoordinates(1, -1, 0);
 
-def getCoordinateValue(p : Point)
+def getCoordinateValue(p : DummyPoint)
 {
-    return = p.x + p.y + p.z;
+    return = p.X + p.Y + p.Z;
 }
 
 getPointKey = _SingleFunctionObject(getCoordinateValue, 1, { }, { }, true);
-r = GroupByKey({ p1, p2, p3 }, getPointKey);
-t1 = __Map(getPointKey, r[0]);
-t2 = __Map(getPointKey, r[1]);
+r1 = GroupByFunction(null, getPointKey);
+r2 = GroupByFunction({ }, getPointKey);
+
+r3 = GroupByFunction({ p1 }, getPointKey);
+
+r4 = GroupByFunction({ p1, p2, p3 }, getPointKey);
+
 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("t1", new object[] { 6, 6});
-            thisTest.Verify("t2", new object[] { 9 });
+            thisTest.Verify("r1", null);
+            thisTest.Verify("r2", new object[] { });
+            thisTest.Verify("r3", new object[]
+            {
+                new object[]
+                {
+                    FFITarget.DummyPoint.ByCoordinates(0, 0, 0)
+                }
+            });
+            thisTest.Verify("r4", new object[]
+            {
+                new object[]
+                {
+                    FFITarget.DummyPoint.ByCoordinates(0, 0, 0), FFITarget.DummyPoint.ByCoordinates(1, -1, 0)
+                },
+                new object[]
+                {
+                    FFITarget.DummyPoint.ByCoordinates(1, 0, 0)
+                }
+            });
         }
 
         [Test]
@@ -389,6 +399,28 @@ r1 = __Filter(1..10, pred);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r1", new object[] { new object[] { 1, 3, 5, 7, 9 }, new object[] { 2, 4, 6, 8, 10 } });
+        }
+
+        [Test]
+        public void TestFilter2()
+        {
+            string code =
+    @"
+import (""FunctionObject.ds"");
+def odd(x)
+{
+    return = x % 2 == 1;
+}
+
+pred = _SingleFunctionObject(odd, 1, { }, { }, true);
+r1 = __Filter({}, pred);
+
+r2 = r1[0];
+r3 = r1[1];
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r2", new object[] { });
+            thisTest.Verify("r3", new object[] { });
         }
 
         [Test]

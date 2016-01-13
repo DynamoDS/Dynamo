@@ -10,15 +10,12 @@ namespace ProtoFFI
 {
     public class ContextDataManager
     {
-        private ProtoCore.Core mCoreObject;
-
         private Dictionary<string, IContextData> mData = new Dictionary<string, IContextData>();
         private static Dictionary<string, IContextDataProvider> mDataProviders;
         private CoreDataProvider mCoreDataProvider;
 
         private ContextDataManager(ProtoCore.Core core)
         {
-            mCoreObject = core;
             mCoreDataProvider = new CoreDataProvider(core);
         }
 
@@ -178,10 +175,10 @@ namespace ProtoFFI
             func.Value = func.Name = ProtoCore.DSASM.Constants.kImportData;
 
             var paramAppName = new ProtoCore.AST.AssociativeAST.StringNode();
-            paramAppName.value = appname;
+            paramAppName.Value = appname;
 
             var paramConnectionString = new ProtoCore.AST.AssociativeAST.StringNode();
-            paramConnectionString.value = connectionstring;
+            paramConnectionString.Value = connectionstring;
 
             var funcCall = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
             funcCall.Function = func;

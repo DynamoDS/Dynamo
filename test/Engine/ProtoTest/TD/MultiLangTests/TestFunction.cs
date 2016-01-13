@@ -5,27 +5,21 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
-    public class TestFunction
+    class TestFunction : ProtoTestBase
     {
-        public ProtoCore.Core core;
-        public TestFrameWork thisTest = new TestFrameWork();
         string testPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
-        ProtoScript.Config.RunConfiguration runnerConfig;
         ProtoScript.Runners.DebugRunner fsr;
 
-        [SetUp]
-        public void Setup()
+        public override void Setup()
         {
-            // Specify some of the requirements of IDE.
-            ProtoCore.Options options = new ProtoCore.Options();
-            options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-            options.SuppressBuildOutput = false;
-            core = new ProtoCore.Core(options);
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
-            runnerConfig = new ProtoScript.Config.RunConfiguration();
-            runnerConfig.IsParrallel = false;
+            base.Setup();
             fsr = new ProtoScript.Runners.DebugRunner(core);
+        }
+
+        public override void TearDown()
+        {
+            base.TearDown();
+            fsr = null;
         }
 
         [Test]
@@ -221,6 +215,7 @@ a;b;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T08_Function_From_Inside_Class_Constructor()
         {
@@ -265,6 +260,7 @@ a;b;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T09_Function_From_Inside_Class_Constructor()
         {
@@ -308,6 +304,7 @@ a;b;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T10_Function_From_Inside_Class_Method()
         {
@@ -355,6 +352,7 @@ a;b;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T11_Function_From_Inside_Class_Method()
         {
@@ -769,25 +767,13 @@ x;y;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T22_Function_Call_As_Instance_Arguments()
         {
             string code = @"
-A1;A2;
-class A
-{
-	a : var;
-	constructor CreateA ( a1 : int )
-	{
-		a = a1;
-	}
-	
-	constructor CreateB ( a1 : double )
-	{
-		a = a1;
-	}
-}
-[Associative]
+import(""FFITarget.dll"");
+A1 = [Associative]
 {
 	def foo : int( n : int )
 	{
@@ -799,12 +785,10 @@ class A
 		return = n ;	
 	}
 	
-	A1 = A.CreateA(foo(foo(1))).a;	
-	A2 = A.CreateB(foo2(foo(1))).a;
+	return = ClassFunctionality.ClassFunctionality(foo(foo(1))).IntVal;	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("A1", 1);
-            thisTest.Verify("A2", 1.0);
         }
 
         [Test]
@@ -1113,33 +1097,23 @@ b2;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T33_Function_With_Mismatching_Return_Type()
         {
-            //Assert.Throws(typeof(ProtoCore.Exceptions.RuntimeException), () =>
-            //{
-            //Assert.Fail("1467156 - Sprint 25 - Rev 3026 type checking of return types at run time ");
             string code = @"
-class A
-{
-    a : int;
-	constructor A1(a1 : int)
-	{
-	    a = a1;
-	}
-}
-b2;
-[Imperative]
+import(""FFITarget.dll"");
+b2 = [Imperative]
 { 
 	 def foo3 : int ( a : double )
 	 {
-	    temp = A.A1(1);
+	    temp = ClassFunctionality.ClassFunctionality(1);
 		return = temp;
 	 }
 	 
 	dummyArg = 1.5;
 	
-	b2 = foo3 ( dummyArg );	
+	return = foo3 ( dummyArg );	
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1223,6 +1197,7 @@ b2;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T37_Function_With_Mismatching_Return_Type()
         {
@@ -1231,26 +1206,18 @@ b2;
             //{
             //Assert.Fail("1467156 - Sprint 25 - Rev 3026 type checking of return types at run time ");
             string code = @"
-class A
-{
-    a : int;
-	constructor A1(a1 : int)
-	{
-	    a = a1;
-	}
-}
-b2;
-[Associative]
+import(""FFITarget.dll"");
+b2 = [Associative]
 { 
 	 def foo3 : int ( a : double )
 	 {
-	    temp = A.A1(1);
+	    temp = ClassFunctionality.ClassFunctionality(1);
 		return = temp;
 	 }
 	 
 	dummyArg = 1.5;
 	
-	b2 = foo3 ( dummyArg );	
+	return = foo3 ( dummyArg );	
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1476,6 +1443,7 @@ c;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T48_Function_With_Mismatching_Argument_Type()
         {
@@ -1505,28 +1473,21 @@ class A
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T49_Function_With_Matching_Return_Type()
         {
             string code = @"
-c;
-class A
-{
-    a : int;
-	constructor A1(a1 : int)
-	{
-	    a = a1;
-	}
-}
-[Associative]
+import(""FFITarget.dll"");
+c = [Associative]
 { 
-	 def foo : A ( x : A )
+	 def foo : ClassFunctionality ( x : ClassFunctionality )
 	 {
 	    return = x;
      }
-	 aa = A.A1(1);
-	 b2 = foo ( aa).a;
-	 c = 3;	
+	 aa = ClassFunctionality.ClassFunctionality(1);
+	 b2 = foo ( aa).IntVal;
+	 return = 3;	
 	 
 }
 ";
@@ -2034,11 +1995,7 @@ a;b;
         [Category("SmokeTest")]
         public void T69_Function_Name_Checking()
         {
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                string code = @"
-[Imperative]
-{
+            string code = @"
 	def foo : int ( a : int )
 	{
 		foo = 3;
@@ -2048,24 +2005,18 @@ a;b;
 	a = 1;
 	foo = 2;
 	b = foo(a);           
-}
-	 
-	 
 ";
-                ExecutionMirror mirror = thisTest.RunScriptSource(code);
-                //thisTest.Verify("a", 1, 0);
-                //thisTest.Verify("a", 4, 0);
-                //thisTest.Verify("foo", 2, 0);
-            });
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 1, 0);
+            thisTest.Verify("foo", 2, 0);
+            thisTest.Verify("b", null, 0);
         }
 
         [Test] //Fuqiang: this is changed due to the implementation of function pointer
         [Category("SmokeTest")]
         public void T70_Function_Name_Checking()
         {
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                string code = @"
+            string code = @"
 [Associative]
 {
 	def foo : int ( a : int )
@@ -2094,15 +2045,12 @@ a;b;
                 //thisTest.Verify("a", 1, 0);
                 //thisTest.Verify("b", 4, 0);
                 //thisTest.Verify("foo", 2, 0);
-            });
         }
 
         [Test] //Fuqiang: this is changed due to the implementation of function pointer
         [Category("SmokeTest")]
         public void T71_Function_Name_Checking()
         {
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
                 string code = @"
 [Associative]
 {
@@ -2129,10 +2077,10 @@ a;b;
                 //thisTest.Verify("foo", 2, 0);
                 //thisTest.Verify("c", 3, 0);
                 //thisTest.Verify("b", 4, 0);
-            });
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T72_Function_Name_Checking()
         {
@@ -2158,9 +2106,7 @@ class foo
 	x = foo(foo);
 	y = foo.foo(foo);
 	z = y.a;
-}
-	 
-	 
+} 
 ";
                 ExecutionMirror mirror = thisTest.RunScriptSource(code);
             });
@@ -2525,27 +2471,21 @@ def foo:int ( a : int )
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T84_Function_With_User_Defined_Class()
         {
             string code = @"
-class A
+import(""FFITarget.dll"");
+def foo : ClassFunctionality ( a : ClassFunctionality )
 {
-    i : int;
-	constructor A ( x : int )
-	{
-	    i = x;
-	}
-}
-def foo : A ( a : A )
-{
-    a1 = a.i;
-	b1 = A.A(a1+1);
+    a1 = a.IntVal;
+	b1 = ClassFunctionality.ClassFunctionality(a1+1);
 	return = b1;
 }
-x = A.A(1);
+x = ClassFunctionality.ClassFunctionality(1);
 y = foo (x);
-z = y.i;";
+z = y.IntVal;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("z", 2, 0);
         }
@@ -2696,35 +2636,21 @@ t2 = two[1];
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T90_Function_PassingNullToUserDefinedType()
         {
             string code = @"
-class Point
+import(""FFITarget.dll"");
+def GetVal : int(p:ClassFunctionality)
 {
-	length : int;
-	constructor Create(l:int)
-	{
-		length = l;
-	}
-	def GetLength : int()
-	{
-		return = length;
-	}
+	return = p.IntVal;
 }
-def GetPointLength : int(p:Point)
-{
-	return = p.GetLength();
-}
-p = Point.Create(2);
-testP = GetPointLength(p);
 p2 = null;
 testNull = GetPointLength(p2);";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Verification
-            object testP = 2;
             object testNull = null;
-            thisTest.Verify("testP", testP, 0);
             thisTest.Verify("testNull", testNull, 0);
         }
 
@@ -2797,6 +2723,7 @@ e = foo(1, 2.0, 3); // not found, null
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T93_Function_With_Default_Arg_In_Class()
         {
             string str = "";
@@ -3137,30 +3064,20 @@ i;j;k;a;b;c;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV10_Function_With_Class_Instances()
         {
-            string src = @"b;
-class A
+            string src = @"
+import(""FFITarget.dll"");
+def foo:int( a : int )
 {
-	a : var;
-	constructor CreateA ( a1 : int )
-	{
-		a = a1;
-	}
-	def add1 : int(  )
-    {
-	    return = a + 1;
-    }
+	A1 = ClassFunctionality.ClassFunctionality( a );
+	return = A1.IntVal + a;
 }
-	def foo:int( a : int )
-	{
-		A1 = A.CreateA( a );
-		return = A1.add1();
-	}
-[Imperative]
+b = [Imperative]
 {
-	b = foo(1);
+	return = foo(1);
 }
 	
 ";
@@ -3402,29 +3319,19 @@ e;f;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV22_Function_With_Class_Object_As_Argument()
         {
-            string src = @"b;
-class A
-{
-	a : var;
-	constructor CreateA ( a1 : int )
-	{
-		a = a1;
-	}
-	def add1 : int(  )
-    {
-	    return = a + 1;
-    }
-}
-def foo:int ( A_Inst : A )
+            string src = @"
+import(""FFITarget.dll"");
+def foo:int ( A_Inst : ClassFunctionality )
 {	
-	return = A_Inst.add1();
+	return = A_Inst.IntVal + 1;
 }
-[Associative]
+b = [Associative]
 {
-	b = foo( A.CreateA( 1 ) );
+	return = foo( ClassFunctionality.ClassFunctionality( 1 ) );
 }
 	";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -3483,6 +3390,7 @@ b;c;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_InvalidTest_NoVerification")]
         [Category("SmokeTest")]
         public void TV25_Defect_1454923()
         {
@@ -4178,34 +4086,28 @@ b1;b2;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void TV46_Defect_1455278()
         {
             string code = @"
-class A
+import(""FFITarget.dll"");
+def foo : int ( a1 : int, a: int)
 {
-    a : var;
-    constructor A ( i )
+	c = [Imperative]
 	{
-	    a = i;
-	}
-	def foo : int ( a1 : int )
-	{
-		c = [Imperative]
+		d = 0;
+		if( a1 > 1 )
 		{
-		    d = 0;
-			if( a1 > 1 )
-			{
-				d = 1;
-			}
-			return = d;	
+			d = 1;
 		}
-		return  = a + c;
+		return = d;	
 	}
+	return  = a + c;
 }
 	
-a1 = A.A(1);
-b1 = a1.foo(2);
-b2 = a1.foo(0);
+a = 1;
+b1 = foo(2, a);
+b2 = foo(0, a);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b1", 2, 0);
@@ -4357,95 +4259,62 @@ c;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV51_Defect_1456108_3()
         {
-            // object[] expectedResult1 = { 2.0, 3, 4 };
-            object expectedResult2 = null;
 
             string code = @"
-class A
+import(""FFITarget.dll"");
+def add_1:double[](a: double[] )
 {
-    b : double[];
-	
-	constructor A (x : double[])
+	j = 0;
+	return = [Imperative]
 	{
-		b = x;
-	}
-	def add_1:double[](a: double[] )
-	{
-		j = 0;
-		a = [Imperative]
+		for ( i in a )
 		{
-			for ( i in a )
-			{
-				a[j] = a[j] + 1;
-				j = j + 1;
-			}
-			return = a;
+			a[j] = a[j] + 1;
+			j = j + 1;
 		}
-		
 		return = a;
 	}
+}
 	
-	def add_2:double[]( )
+def add_2:double[](b : double[] )
+{
+	j = 0;
+	return = [Imperative]
 	{
-		j = 0;
-		x = [Imperative]
+		for ( i in b )
 		{
-			for ( i in b )
-			{
-				b[j] = b[j] + 1;
-				j = j + 1;
-			}
-			return = b;
+			b[j] = b[j] + 1;
+			j = j + 1;
 		}
-		
-		return = x;
+		return = b;
 	}
 }
-c = { 1.0, 2.0, 3.0 };
-a1 = A.A( c );
-c = a1.add_1( c );
-b2 = a1.add_2( );";
+
+b = { 1.0, 2.0, 3.0 };
+c = add_1(b);
+b2 = add_2( b );
+";
+            object[] expectedResult2 = { 2.0, 3.0, 4.0 };
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             // b1 is updated as well. 
-            thisTest.Verify("a1", expectedResult2, 0);
+            thisTest.Verify("c", expectedResult2, 0);
             thisTest.Verify("b2", expectedResult2, 0);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV51_Defect_1456108_4()
         {
             object[] expectedResult1 = { 1.0, 2.0, 3.0 };
             object[] expectedResult2 = { 2.0, 3.0, 4.0 };
             string code = @"
-class A
-{
-    b : double[];
-	
-	constructor A (x : double[])
-	{
-		b = x;
-	}
-	def add_1:double[](a: double[] )
-	{
-		j = 0;
-		a = [Imperative]
-		{
-			for ( i in a )
-			{
-				a[j] = a[j] + 1;
-				j = j + 1;
-			}
-			return = a;
-		}
-		
-		return = a;
-	}
-	
-	def add_2:double[]( )
+import(""FFITarget.dll"");
+	def add_2:double[]( b : double[] )
 	{
 		j = 0;
 		x = [Imperative]
@@ -4460,34 +4329,22 @@ class A
 		
 		return = x;
 	}
-}
-c = { 1.0, 2.0, 3.0 };
-a1 = A.A( c );
-t1 = a1.b;
-t2 = a1.add_2();
-t=c;
+
+b= { 1.0, 2.0, 3.0 };
+t2 = add_2(b);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-
-            thisTest.Verify("t", expectedResult1, 0);
             thisTest.Verify("t2", expectedResult2, 0);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV51_Defect_1456108_5()
         {
-            object[] expectedResult1 = { 0.0, 0.0, 0.0 };
             string code = @"
-class A
-{
-    b : double[];
-	
-	constructor A (x : double[])
-	{
-		b = x;
-	}
-	def add_1:double[](a: double[] )
+import(""FFITarget.dll"");
+	def add_1:double[](a: double[],  b : double[])
 	{
 		j = 0;
 		a = [Imperative]
@@ -4503,7 +4360,7 @@ class A
 		return = a;
 	}
 	
-	def add_2:double[]( )
+	def add_2:double[]( b : double[])
 	{
 		j = 0;
 		x = [Imperative]
@@ -4518,35 +4375,25 @@ class A
 		
 		return = x;
 	}
-}
 c = { 1.0, 2.0, 3.0 };
-a1 = A.A( c );
-b1 = a1.add_1( c );
-b2 = a1.add_2( );
-t = a1.b;
+b1 = add_1( c, c );
+b2 = add_2(c);
 c = { -1, -1, -1 };";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467238 - Sprint25: rev 3420 : REGRESSION : Update issue when class collection property is updated");
-            thisTest.Verify("t", expectedResult1, 0);
+            object[] expectedResult1 = { 0.0, 0.0, 0.0 };
             thisTest.Verify("b2", expectedResult1, 0);
             thisTest.Verify("b1", expectedResult1, 0);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV52_Defect_1456397()
         {
             string code = @"
-class A
-{
-	a : var;
-	
-	constructor CreateA ( a1 : int )
-	{	
-		a = a1 ;
-	}		
-	
-	def CreateNewVal ( )
+import(""FFITarget.dll"");
+	def CreateNewVal ( a )
 	{
 		y = [Imperative]
 		{
@@ -4558,46 +4405,36 @@ class A
  		}
 		return = y + a;
 	}
-}
-b1;
-[Associative]
+
+b1 = [Associative]
 {
-    a1 = A.CreateA(1);
-	b1 = a1.CreateNewVal();
-}";
+	return = CreateNewVal(1);
+}
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b1", 12);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV53_Defect_1456397_2()
         {
             string code = @"
-class A
+import(""FFITarget.dll"");
+def CreateNewVal (a )
 {
-	a : var;
-	
-	constructor CreateA ( a1 : int )
-	{	
-		a = a1 ;
-	}		
-	
-	def CreateNewVal ( )
+	y = [Associative]
 	{
-		y = [Associative]
-		{
-			return = a;
- 		}
-		return = y + a;
-	}
+		return = a;
+ 	}
+	return = y + a;
 }
-b1;
-[Imperative]
+b1 = [Imperative]
 {
-    a1 = A.CreateA(1);
-	b1 = a1.CreateNewVal();
-}";
+	return = CreateNewVal(1);
+}
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b1", 2);
         }
@@ -4671,6 +4508,7 @@ x;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void TV56_Defect_1456571_3()
         {
@@ -4726,13 +4564,11 @@ f1;f2;f3;f4;
 
         }
 
-        [Test] //Fuqiang: this is changed due to the implementation of function pointer
+        [Test] 
         [Category("SmokeTest")]
         public void TV57_Defect_1454932()
         {
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                string code = @"
+            string code = @"
 [Associative]
 {
 	def Foo : int ()
@@ -4743,42 +4579,34 @@ f1;f2;f3;f4;
 	b = Foo();
 	c = Foo;
 }";
-                ExecutionMirror mirror = thisTest.RunScriptSource(code);
-                //thisTest.Verify("b", 4, 0);
-                //thisTest.Verify("c", 5, 0);
-            });
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV58_Defect_1455278()
         {
             string code = @"
-class A
-{
-    a : var;
-    constructor A ( i )
-	{
-		a = i;
-	}
-	
-	def foo : int ( a1 : int )
+import(""FFITarget.dll"");
+	def foo : int ( a1 : int, a )
 	{
 		c = [Imperative]
 		{
 			d = 0;
 			if( a1 > 1 )
-		{
-			d = 1;
+		    {
+			    d = 1;
+		    }
+		    return = d;	
 		}
-		return = d;	
-		}
-	return  = a + c;
+	    return = a + c;
 	}
-}
-	a1 = A.A(1);
-	b1 = a1.foo(2); 
-	b2 = a1.foo(0); ";
+
+	a = 1;
+	b1 = foo(2, a); 
+	b2 = foo(0, a); 
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b1", 2, 0);
             thisTest.Verify("b2", 1, 0);
@@ -4959,71 +4787,45 @@ c;d;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV65_Defect_1455090_4()
         {
             string code = @"
-class A
+import(""FFITarget.dll"");
+def foo: int(a : int[]..[])
 {
-	a : var[]..[];
-	
-	constructor Create( a1 : int[]..[])
-	{
-		a = a1;
-	}
-	
-	def foo: int( )
-	{
-		return = a[0][0];
-	}	
-		
-}
-	
-	b = {{1,2},{3,4}};
-	A1 = A.Create( b );
-	a = A1.foo();
-	
-		
+	return = a[0][0];
+}	
+b = {{1,2},{3,4}};
+a = foo( b );
 	";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a", 1, 0);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV66_Defect_1455090_5()
         {
             string code = @"
-class A
-{
-	a : var;
-	
-	constructor Create( a1 :int)
-	{
-		a = a1;
-	}
-	
-	def foo: int( )
-	{
-		return = a;
-	}	
-		
-}
-	def objarray:A ( arr : A[]..[] )
+import(""FFITarget.dll"");
+	def objarray:ClassFunctionality ( arr : ClassFunctionality[]..[] )
 	{
 		return = arr[1][0];
 	}
 	
-	A1 = A.Create( 1 );
-	A2 = A.Create( 3 );
-	A3 = A.Create( 5 );
-	A4 = A.Create( 7 );
+	A1 = ClassFunctionality.ClassFunctionality( 1 );
+	A2 = ClassFunctionality.ClassFunctionality( 3 );
+	A3 = ClassFunctionality.ClassFunctionality( 5 );
+	A4 = ClassFunctionality.ClassFunctionality( 7 );
 	
 	B = { { A1,A2 },{ A3,A4} };
 	
 	b = objarray( B );
 	
-	c = b.foo();
+	c = b.IntVal;
 	
 	
 	
@@ -5033,90 +4835,76 @@ class A
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV67_Defect_1455090_6()
         {
             string code = @"
-class A
+import(""FFITarget.dll"");
+c = [Imperative]
 {
-	a : var;
-	
-	constructor Create( a1 :int)
+	def objarray:ClassFunctionality ( arr : ClassFunctionality[]..[] )
 	{
-		a = a1;
+		return = arr[1][0];
 	}
 	
-	def foo: int( )
-	{
-		return = a;
-	}	
+	A1 = ClassFunctionality.ClassFunctionality( 1 );
+	A2 = ClassFunctionality.ClassFunctionality( 3 );
+	A3 = ClassFunctionality.ClassFunctionality( 5 );
+	A4 = ClassFunctionality.ClassFunctionality( 7 );
+	
+	B = { { A1,A2 },{ A3,A4} };
 		
+	b = objarray( B );
+	
+	return = b.IntVal;
 }
-c;
-	[Imperative]
-	{
-		def objarray:A ( arr : A[]..[] )
-		{
-			return = arr[1][0];
-		}
-	
-		A1 = A.Create( 1 );
-		A2 = A.Create( 3 );
-		A3 = A.Create( 5 );
-		A4 = A.Create( 7 );
-	
-		B = { { A1,A2 },{ A3,A4} };
-		
-		b = objarray( B );
-	
-		c = b.foo();
-	}";
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("c", 5);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV68_Defect_1455090_7()
         {
             //Assert.Fail("1463372 - Sprint 20 : Rev 2088 : Imperative code is not allowed in class constructor ");
 
             string code = @"
-class A
+import(""FFITarget.dll"");
+def create(i:int)
 {
-	a : var;
-	
-	constructor create(i:int)
+	return = [Imperative]
 	{
-		[Imperative]
+	    a = null;
+		if( i == 1 )
 		{
-			if( i == 1 )
-			{
-				a = { { 1,2,3 } , { 4,5,6 } };
-			}
-			else
-			{
-			    a = { { 1,2,3 } , { 1,2,3 } };
-			}
+			a = { { 1,2,3 } , { 4,5,6 } };
 		}
-	
-	}
-	
-	def compare:int ( b : int[]..[], i : int, j : int )
-	{
-		temp = [Imperative]
+		else
 		{
-		    if( b[i][j] == a[i][j] )
-		        return = 1;
-			return = 0;
+			a = { { 1,2,3 } , { 1,2,3 } };
 		}
-		return = temp ;
+	    return = a;
 	}
 }
+	
+def compare:int ( b : int[]..[], a : int[]..[], i : int, j : int )
+{
+	temp = [Imperative]
+	{
+		if( b[i][j] == a[i][j] )
+		    return = 1;
+		return = 0;
+	}
+	return = temp ;
+}
+
 b1 = { {1, 2, 3},{ 1, 2, 3} };
-A1 = A.create(1);
-a1 = A1.compare( b1, 0, 0 );
-a2 = A1.compare( b1, 1, 1 );
+a = create(1);
+a1 = compare( b1, a, 0, 0 );
+a2 = compare( b1, a, 1, 1 );
 	";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a1", 1);
@@ -5124,6 +4912,7 @@ a2 = A1.compare( b1, 1, 1 );
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void TV69_Defect_1456799()
         {
@@ -5159,6 +4948,7 @@ bcurvePtX = bcurvePt.X;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void TV69_Defect_1456799_2()
         {
@@ -5193,6 +4983,7 @@ bcurvePtX = bcurve.P[1].X;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void TV69_Defect_1456799_3()
         {
@@ -5231,39 +5022,19 @@ bcurvePtX;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV70_Defect_1456798()
         {
             string code = @"
-class Point
-{
-    X : var;
-    Y : var;
-    Z : var;
-    constructor ByCoordinates(x : double, y : double, z : double)
-    {
-        X = x;
-        Y = y;
-        Z = z;
-    }
-}
-class BSplineCurve
-{
-    Pts : var[];
-	
-	constructor ByPoints(ptsOnCurve : Point[])
-    {
-	    Pts = ptsOnCurve;
-    }
-}
-pt1 = Point.ByCoordinates(0,0,0);
-pt2 = Point.ByCoordinates(5,0,0);
-pt3 = Point.ByCoordinates(10,0,0);
-pt4 = Point.ByCoordinates(15,0,0);
-pt5 = Point.ByCoordinates(20,0,0);
+import(""FFITarget.dll"");
+pt1 = DummyPoint.ByCoordinates(0,0,0);
+pt2 = DummyPoint.ByCoordinates(5,0,0);
+pt3 = DummyPoint.ByCoordinates(10,0,0);
+pt4 = DummyPoint.ByCoordinates(15,0,0);
+pt5 = DummyPoint.ByCoordinates(20,0,0);
 pts = {pt1, pt2, pt3, pt4, pt5};
-bcurve = BSplineCurve.ByPoints(pts);
-p = bcurve.Pts[2];
+p = pts[2];
 X = p.X;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -5584,6 +5355,7 @@ sum1;sum2;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Method Resolution")]
         public void TV77_Defect_1455259()
         {
@@ -5596,22 +5368,8 @@ def foo2 : int ( a : int )
 {
 	return  = a + 1;
 }
-class A
-{
-    a1: var;
-	constructor A ( a)
-	{
-	    a1 = a;
-	}
-	def foo2  ( a : int )
-	{
-	    return  = a + a1;
-	}
-    
-}
 x1;y11;y21;
 x2;y12;y22;
-b;
 [Associative]
 {
     def foo : int ( a : int )
@@ -5644,9 +5402,6 @@ b;
 	x2 = 1;	
 	y12 = foo(x2);
 	y22 = foo1(x2);
-	a = A.A(1);
-	b = a.a1;
-	c = a.foo2(1);	
 	
 }
 ";
@@ -5657,10 +5412,10 @@ b;
             thisTest.Verify("x2", 1);
             thisTest.Verify("y12", 2);
             thisTest.Verify("y22", 2);
-            thisTest.Verify("b", 1);
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void TV77_Defect_1455259_2()
         {
@@ -5751,6 +5506,7 @@ z2 = [Imperative]
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void TV78_Defect_1460866_2()
         {
@@ -5792,23 +5548,17 @@ z2 = x2.foo();
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV79_Defect_1462300()
         {
             string code = @"
-def testcall(a:test) 
+import(""FFITarget.dll"");
+def testcall(a:ClassFunctionality) 
 { 
 return ={a.ImNotDefined(),a.ImNotDefined()}; 
 } 
-class test 
-{ 
-p1 : var; 
-constructor test() 
-{ 
-p1=1; 
-} 
-}; 
-a= test.test(); 
+a= ClassFunctionality.ClassFunctionality(); 
 b=testcall(a); 
 aa = b[0]; 
 bb = b[1]; 
@@ -5822,22 +5572,16 @@ bb = b[1];
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV79_Defect_1462300_2()
         {
             string code = @"
-def testcall(a:test) 
+import(""FFITarget.dll"");
+def testcall(a:ClassFunctionality) 
 { 
 return ={a.ImNotDefined(),a.ImNotDefined()}; 
 } 
-class test 
-{ 
-p1 : var; 
-constructor test() 
-{ 
-p1=1; 
-} 
-}; 
 a= null; 
 b=testcall(a); 
 ";
@@ -5847,34 +5591,29 @@ b=testcall(a);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV79_Defect_1462300_3()
         {
             //Assert.Fail("1462300 - sprint 19 - rev 1948-316037 - if return an array of functions as properties then it does not return all of them");
 
             string code = @"
-def testcall2 :test[] () 
+import(""FFITarget.dll"");
+def testcall2 :ClassFunctionality[] () 
 { 	
-	return ={test.test(), test.test()}; 
+	return ={ClassFunctionality.ClassFunctionality(), ClassFunctionality.ClassFunctionality()}; 
 } 
 def testcall3 :int[] () 
 { 	
-	return ={test.test().x, test.test().y}; 
+	return ={ClassFunctionality.ClassFunctionality(), ClassFunctionality.ClassFunctionality()}; 
 } 
-def testcall4 :test[] () 
+def testcall4 :ClassFunctionality[] () 
 { 	
 	return ={null, null}; 
 } 
-class test 
-{ 
-	x : var;
-	y : var;
-}; 
 b = testcall2(); 
-//c = b.x; // expected : { null, null }
-d = testcall3(); // expected : { null, null }
-e1 = testcall4(); // expected : { null, null }
-//f = e1.y; // expected : { null, null }
+d = testcall3(); 
+e1 = testcall4(); 
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v2 = new Object[] { null, null };
@@ -6233,24 +5972,22 @@ a;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV85_Function_Return_Type_Var_User_Defined_Type_Conversion()
         {
             string code = @"
-class A
-{
-    x : int;
-}
+import(""FFITarget.dll"");
 def goo : var()
 {
-    return = A.A();
+    return = ClassFunctionality.ClassFunctionality();
 }
-def foo : A ()
+def foo : ClassFunctionality ()
 {
     return = goo();
 }
 a = foo();
-b = a.x;";
+b = a.IntVal;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
 
             thisTest.Verify("b", 0);
@@ -6280,6 +6017,7 @@ b = f2( { null, null } );
 
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void TV87_Defect_1464027()
         {
@@ -6337,6 +6075,7 @@ t11;t12;t13;t14;t15;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void TV87_Defect_1464027_2()
         {
@@ -6393,6 +6132,7 @@ t11;t12;t13;t14;t15;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void TV87_Defect_1464027_3()
         {
@@ -6450,6 +6190,7 @@ t11;t12;t13;t14;t15;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void TV87_Defect_1464027_4()
         {
@@ -6507,6 +6248,7 @@ t11;t12;t13;t14;t15;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void TV87_Defect_1464027_5()
         {
@@ -6616,7 +6358,7 @@ d1 = [Imperative]
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1510
             string src = string.Format("{0}{1}", testPath, "TV88_Defect_1463489_3.ds");
-            fsr.LoadAndPreStart(src, runnerConfig);
+            fsr.LoadAndPreStart(src);
             ProtoCore.CodeModel.CodePoint cp = new ProtoCore.CodeModel.CodePoint
             {
                 CharNo = 8,
@@ -6641,43 +6383,45 @@ d1 = [Imperative]
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV89_Implicit_Type_Conversion_1()
         {
             string code = @"
-class A
+def bar ( x : bool )
 {
-    y : bool;
-	constructor A ( x : bool )
-	{
-	    y = x && true;
-	}
-	def foo: bool ( x : bool )
-	{
-		[Imperative]
-		{
-		    if( x == false )
-			    y = true;
-			else
-			    y = false;
-		}		
-		return = y;
-	}
+	return = x && true;
 }
-c = A.A ( 6 );
-y1 = c.foo( 6 );
-c1 = A.A ( 0 );
-y2 = c1.foo( 0 ); 
+def foo: bool ( x : bool, y : bool )
+{
+	[Imperative]
+	{
+		if( x == false )
+        {
+			y = true;
+        }
+		else
+        {
+			y = false;
+        }
+	}		
+	return = y;
+}
+
+c = bar ( 6 );
+y1 = foo( 6, c);
+c1 = bar( 0 );
+y2 = foo( 0, c1 ); 
 d = [Imperative]
 {
-    return = A.A ( -3 );
+    return = bar ( -3 );
 }
-y3 = d.foo ( -3 );
+y3 = foo ( -3, d );
 d1 = [Imperative]
 {
-    return = A.A ( 0 );
+    return = bar ( 0 );
 }
-y4 = d1.foo ( 0 );
+y4 = foo ( 0, d1 );
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("y1", false);
@@ -6753,68 +6497,52 @@ b1 = a;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV90_Defect_1463474_4()
         {
             string code = @"
-class A
+def foo : void  ( )
 {
-    a :int = 3;
-	def foo : void  ( )
-	{
-		a = 2;		
-	}
+	a = 2;		
 }
-c1 = A.A();
-b1 = c1.foo();
-d1 = c1.a;	
+b1 = foo();
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object v1 = null;
             thisTest.Verify("b1", v1);
-            thisTest.Verify("d1", 2);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV91_Defect_1463703()
         {
             string code = @"
-def foo2 : int ( a : int )
+def Create : var ( a)
 {
-	return  = a + 1;
+	return = a;
 }
-class A
+def foo2  ( a : int, a1: var)
 {
-    a1: var;
-	constructor A ( a)
-	{
-	    a1 = a;
-	}
-	def foo2  ( a : int )
-	{
-	    return  = a + a1;
-	}
+	return  = a + a1;
+}
     
-}
 b;c;d;
 [Imperative]
 {
-	a = A.A(1);
-	b = a.a1;
-	c = a.foo2(1);
-	d = foo2(1);	
+	b = Create(1);
+	c = foo2(1, b);
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
 
-            thisTest.Verify("c", 2);
-            thisTest.Verify("d", 2);
             thisTest.Verify("b", 1);
+            thisTest.Verify("c", 2);
         }
 
         [Test]
-
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         public void TV91_Defect_1463703_2()
         {
             //This failure is no longer related to this defect. Back to TD.
@@ -6884,6 +6612,7 @@ y1;y2;y3;y4;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_Failing")]
         [Category("Method Resolution")]
         [Category("Failure")]
         public void TV91_Defect_1463703_3()
@@ -6962,28 +6691,22 @@ x2 =
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV92_Accessing_Variables_Declared_Inside_Function_Body()
         {
             string code = @"
-class A
-{
-    a : var;
-    constructor A ( y )
-    {
-        a = y;
-    }
-}
+import(""FFITarget.dll"");
 def foo ( )
 {
     a = { 1, 2, 3};
-    b = A.A(10);
+    b = ClassFunctionality.ClassFunctionality(10);
     return = {a,b};
 }
 x = foo ();
 a = x[0][0]; // expected 1, received 1
 b = x[1];
-c = b.a; // expected 10, received 10";
+c = b.IntVal; // expected 10, received 10";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
 
             thisTest.Verify("a", 1);
@@ -6991,32 +6714,23 @@ c = b.a; // expected 10, received 10";
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void TV93_Modifying_Global_Var_In_Func_Call()
         {
             string code = @"
-class Point
+import(""FFITarget.dll"");
+def foo ( p: DummyPoint)
 {
-    X : var;
-	Y: var;
-	Z: var;
-	constructor Point ( x, y, z )
-	{
-	    X = x;
-		Y = y;
-		Z = z;
-	}
-	def foo ( p: Point)
-	{
-	    return = Point.Point( (p.X), (p.Y), (p.Z) );
-	}
+	return = DummyPoint.ByCoordinates( (p.X), (p.Y), (p.Z) );
 }
-def func1(pts : Point[]) 
+
+def func1(pts : DummyPoint[]) 
 {
   pts[1] = pts[0];
   return = null;
 }
-p1 = Point.Point ( 0,0,0);
-p2 = Point.Point ( 1, 1, 1 );
+p1 = DummyPoint.ByCoordinates( 0,0,0);
+p2 = DummyPoint.ByCoordinates( 1, 1, 1 );
 p = { p1, p2 }; 
 xx = p[1].X;
 yy = p[1].Y;
@@ -7031,26 +6745,16 @@ dummy = func1(p);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void TV93_Modifying_Global_Var_In_Func_Call_2()
         {
             string code = @"
-class Point
+import(""FFITarget.dll"");
+def foo ( p: DummyPoint)
 {
-    X : var;
-	Y: var;
-	Z: var;
-	constructor Point ( x, y, z )
-	{
-	    X = x;
-		Y = y;
-		Z = z;
-	}
-	def foo ( p: Point)
-	{
-	    return = Point.Point( (p.X), (p.Y), (p.Z) );
-	}
+	return = DummyPoint.ByCoordinates( (p.X), (p.Y), (p.Z) );
 }
-def func1(pts : Point[]) 
+def func1(pts : DummyPoint[]) 
 {
   pts[1] = pts[0];
   return = null;
@@ -7073,32 +6777,23 @@ dummy = func1(p);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void TV93_Modifying_Global_Var_In_Func_Call_3()
         {
             string code = @"
-class Point
+import(""FFITarget.dll"");
+def foo ( p: DummyPoint)
 {
-    X : var;
-	Y: var;
-	Z: var;
-	constructor Point ( x, y, z )
-	{
-	    X = x;
-		Y = y;
-		Z = z;
-	}
-	def foo ( p: Point)
-	{
-	    return = Point.Point( (p.X), (p.Y), (p.Z) );
-	}
+	return = DummyPoint.ByCoordinates( (p.X), (p.Y), (p.Z) );
 }
-def func1(p1 : Point, p2 : Point) 
+
+def func1(p1 : DummyPoint, p2 : DummyPoint) 
 {
   p1 = p1.foo(p2);
   return = null;
 }
-p1 = Point.Point ( 0,0,0);
-p2 = Point.Point ( 1, 1, 1 );
+p1 = DummyPoint.ByCoordinates( 0,0,0);
+p2 = DummyPoint.ByCoordinates( 1, 1, 1 );
 dummy = func1(p1, p2);
 xx = p1.X; 
 yy = p1.Y; 
@@ -7112,25 +6807,16 @@ zz = p1.Z;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void TV93_Modifying_Global_Var_In_Func_Call_4()
         {
             string code = @"
-class Point
+import(""FFITarget.dll"");
+def foo ( p: DummyPoint)
 {
-    X : var;
-	Y: var;
-	Z: var;
-	constructor Point ( x, y, z )
-	{
-	    X = x;
-		Y = y;
-		Z = z;
-	}
-	def foo ( p: Point)
-	{
-	    return = Point.Point( (p.X+X), (p.Y+Y), (p.Z+Z) );
-	}
+	return = DummyPoint.ByCoordinates( (p.X+X), (p.Y+Y), (p.Z+Z) );
 }
+
 def UnionBox(combined : Point, arr : Point[], index : int) {
   
   // Nothing changed for combined outside Unionbox()
@@ -7144,7 +6830,7 @@ def UnionBox(combined : Point, arr : Point[], index : int) {
   }
   return = null;
 }
-points = { Point.Point ( 0,0,0), Point.Point ( 1, 1, 1 ), Point.Point ( 2, 2, 2 ), Point.Point ( 3, 3, 3 ) };
+points = { DummyPoint.ByCoordinates( 0,0,0), DummyPoint.ByCoordinates( 1, 1, 1 ), DummyPoint.ByCoordinates( 2, 2, 2 ), DummyPoint.ByCoordinates( 3, 3, 3 ) };
 top_index = Count( points ) - 2;
 base_index = Count ( points ) -1;
 s = points[base_index];
@@ -7161,6 +6847,7 @@ s1 = UnionBox(s, points, top_index);
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("SmokeTest")]
         public void TV95_Method_Resolution_Derived_Class_Arguments()
         {
@@ -7275,14 +6962,13 @@ x = [Imperative]
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV97_Heterogenous_Objects_As_Function_Arguments_No_Replication()
         {
             string code = @"
-class A
-{
-}
-a1 = A.A();
+import(""FFITarget.dll"");
+a1 = ClassFunctionality.ClassFunctionality();
 def foo ( x : double[])
 {
     return = x;
@@ -7305,19 +6991,13 @@ b3 = foo ( a3 );
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV97_Heterogenous_Objects_As_Function_Arguments_No_Replication_2()
         {
             string code = @"
-class A
-{
-    t1 : var;
-    constructor A ( t2 :  var )
-    {
-        t1 = t2;
-    }
-}
-a = A.A(1);
+import(""FFITarget.dll"");
+a = ClassFunctionality.ClassFunctionality(1);
 def foo ( x : var[])
 {
     return = 1;
@@ -7357,14 +7037,13 @@ b3 = foo ( a3 );
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV97_Heterogenous_Objects_As_Function_Arguments_With_Replication_2()
         {
             string code = @"
-class A
-{
-}
-a1 = A.A();
+import(""FFITarget.dll"");
+a1 = ClassFunctionality.ClassFunctionality();
 def foo ( x : var)
 {
     return = 1;
@@ -7569,17 +7248,16 @@ b1 = foo ( a1 );";
 
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void TV99_Defect_1463456_Array_By_Reference_Issue()
         {
             string errmsg = " 1467318 -  Cannot return an array from a function whose return type is var with undefined rank (-2)  ";
-            string code = @"class A
-{
-a = {1,2,3};
-}
-a = A.A();
-val = a.a;
+            string code = @"
+import(""FFITarget.dll"");
+a = ArrayMember.Ctor({1,2,3});
+val = a.X;
 val[0] = 100;
-t = a.a[0]; //expected 100; received 1";
+t = a.X[0]; //expected 100; received 1";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("val", new object[] { 100, 2, 3 });
             thisTest.Verify("t", 1);
@@ -7602,6 +7280,7 @@ t = val[0]; //expected 100, received 1";
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void T100_Class_inheritance_replication()
         {
             string code = @"
@@ -7627,6 +7306,7 @@ b = c.Test(c);
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void T100_Class_inheritance_replication_2()
         {
             // Assert.Fail("1467131- Sprint 24 - Rev 2910 method overload with replication , throws error WARNING: Multiple type+pattern match parameters found, non-deterministic dispatch" );
@@ -7653,6 +7333,7 @@ result = c.Test(c);
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Method Resolution")]
         public void T100_Defect_Class_inheritance_dispatch()
         {
@@ -7683,6 +7364,7 @@ r2 = b.Test(b);//1
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Method Resolution")]
         public void T100_Defect_Class_inheritance_dispatch_a()
         {
@@ -7709,6 +7391,7 @@ r2 = b.Test(b);//1
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void T100_Defect_Class_inheritance_replication_1()
         {
             String code =
@@ -7854,78 +7537,58 @@ t = foo()[0];";
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void TV101_Indexing_Into_classCall_1463234_6()
         {
             // Assert.Fail("1467131- Sprint 24 - Rev 2910 method overload with replication , throws error WARNING: Multiple type+pattern match parameters found, non-deterministic dispatch" );
             string code = @"
-class test{
-	constructor test()
-	{
-	}
-	def foo()
-	{
-		return = {1,2};
-	}
+def foo()
+{
+	return = {1,2};
 }
-a=test.test();
-t = a.foo()[0];";
+t = foo()[0];";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
 
             thisTest.Verify("t", 1);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void TV101_Indexing_Into_classCall_1463234_7()
         {
             // Assert.Fail("1467131- Sprint 24 - Rev 2910 method overload with replication , throws error WARNING: Multiple type+pattern match parameters found, non-deterministic dispatch" );
             string code = @"
-class test{
-	constructor test()
-	{
-	}
-	def foo()
-	{
-		return = {1,2};
-	}
-}
-t;
-[Imperative]
+def foo()
 {
-a=test.test();
-t = a.foo()[0];
-}";
+	return = {1,2};
+}
+t = [Imperative]
+{
+    return = foo()[0];
+}
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("t", 1);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void TV102_GlobalVariable_Function_1466768()
         {
             // Assert.Fail("1467131- Sprint 24 - Rev 2910 method overload with replication , throws error WARNING: Multiple type+pattern match parameters found, non-deterministic dispatch" );
             string code = @"
-class Point
+import(""FFITarget.dll"");
+def foo ( p: DummyPoint)
 {
-X : var;
-Y: var;
-Z: var;
-	constructor Point ( x, y, z )
-	{
-		X = x;
-		Y = y;
-		Z = z;
-	}
-	def foo ( p: Point)
-	{
-		return = Point.Point( (p.X), (p.Y), (p.Z) );
-	}
+	return = DummyPoint.ByCoordinates( (p.X), (p.Y), (p.Z) );
 }
-def func1(p1 : Point, p2 : Point)
+def func1(p1 : DummyPoint, p2 : DummyPoint)
 {
-	p1 = p1.foo(p2);
+	p1 = foo(p2);
 	return = null;
 }
-p1 = Point.Point ( 0,0,0);
-p2 = Point.Point ( 1, 1, 1 );
+p1 = DummyPoint.ByCoordinates( 0,0,0);
+p2 = DummyPoint.ByCoordinates( 1, 1, 1 );
 dummy = func1(p1, p2);
 xx = p1.X; // expected 0, received 0
 yy = p1.Y; // expected 0, received 0
@@ -7939,37 +7602,27 @@ zz = p1.Z; // expected 0, received 0
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void TV102_GlobalVariable_Function_1466768_1()
         {
             // Assert.Fail("1467131- Sprint 24 - Rev 2910 method overload with replication , throws error WARNING: Multiple type+pattern match parameters found, non-deterministic dispatch" );
             string code = @"
-class Point
+import(""FFITarget.dll"");
+def foo ( p: DummyPoint)
 {
-X : var;
-Y: var;
-Z: var;
-	constructor Point ( x, y, z )
-	{
-		X = x;
-		Y = y;
-		Z = z;
-	}
-	def foo ( p: Point)
-	{
-		return = Point.Point( (p.X), (p.Y), (p.Z) );
-	}
+	return = DummyPoint.ByCoordinates( (p.X), (p.Y), (p.Z) );
 }
 def func1()
 {
-	p1 = p1.foo(p2);
+	p1 = foo(p2);
 	return = null;
 }
-p1 = Point.Point ( 0,0,0);
-p2 = Point.Point ( 1, 1, 1 );
+p1 =  DummyPoint.ByCoordinates( 0,0,0);
+p2 =  DummyPoint.ByCoordinates( 1, 1, 1 );
 dummy = func1();
-xx = p1.X; // expected 0, received 0
-yy = p1.Y; // expected 0, received 0
-zz = p1.Z; // expected 0, received 0
+xx = p1.X; 
+yy = p1.Y; 
+zz = p1.Z; 
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("xx", 1);
@@ -7979,33 +7632,28 @@ zz = p1.Z; // expected 0, received 0
 
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void TV102_GlobalVariable_Function_1466768_2()
         {
             // Assert.Fail("1467131- Sprint 24 - Rev 2910 method overload with replication , throws error WARNING: Multiple type+pattern match parameters found, non-deterministic dispatch" );
             string code = @"
-class Point
+import(""FFITarget.dll"");
+def foo ( p: DummyPoint)
 {
-X : var;
-Y: var;
-Z: var;
-constructor Point ( x, y, z )
+	return = DummyPoint.ByCoordinates( (p.X), (p.Y), (p.Z) );
+}
+def func1(p1 : DummyPoint, p2 : DummyPoint)
 {
-X = x;
-Y = y;
-Z = z;
+	p1 = foo(p2);
+	return = null;
 }
-def foo ( p: Point)
-{
-return = Point.Point( (p.X), (p.Y), (p.Z) );
-}
-}
-def func1(pts : Point[])
+def func1(pts : DummyPoint[])
 {
 pts[1] = pts[0];
 return = null;
 }
-p1 = Point.Point ( 0,0,0);
-p2 = Point.Point ( 1, 1, 1 );
+p1 = DummyPoint.ByCoordinates( 0,0,0);
+p2 = DummyPoint.ByCoordinates( 1, 1, 1 );
 p = { p1, p2 };
 xx = p[1].X;
 yy = p[1].Y;
@@ -8018,28 +7666,22 @@ zz = p[1].Z;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV103_Defect_1467149()
         {
             string code = @"
-class surf
+import(""FFITarget.dll"");
+convert={ClassFunctionality.ClassFunctionality(1..2), ClassFunctionality.ClassFunctionality(3)};
+def prop(test:ClassFunctionality)
 {
-	a:double;
-	constructor surf(c:double)
-	{
-		a=1;
-	}
-}
-convert={surf.surf(1..2), surf.surf(3)};
-def prop(test:surf)
-{
-	return= test.a;
+	return= test.IntVal;
 }
 b=prop(convert);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467183 - Sprint24: rev 3163 : replication on nested array is outputting extra brackets in some cases");
-            thisTest.Verify("b", new Object[] { new Object[] { 1.0, 1.0 }, 1.0 });
+            thisTest.Verify("b", new Object[] { new Object[] { 1.0, 2.0 }, 3.0 });
 
         }
 
@@ -8060,37 +7702,31 @@ a = { { 0, 1}, {2, 3} };
 b = foo ( a );
 }
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", 0);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV103_Defect_1455090_Rank_Of_Arg_2()
         {
             String code =
-@"class A
+@"
+def foo : var[][][] (X : var[][][])
 {
-    X : var[][][];
-    constructor A ( b : double[]..[] )
-    {
-        X = b;
-    }
-    def foo : var[][][] (  )
-    {
-        return = X ; 
-    }
+    return = X ; 
 }
 a = { { { 0, 1} }, { {2, 3} } };
-b = A.A ( a );
-c = b.foo();";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+c = foo(a);";
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("c", new Object[] { new Object[] { new Object[] { 0.0, 1.0 } }, new Object[] { new Object[] { 2.0, 3.0 } } });
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void TV103_Defect_1455090_Rank_Of_Arg_3()
         {
@@ -8110,7 +7746,7 @@ c = b.foo();";
 a = { { { 0, 1} },  {2, 3}  };
 b = A.A ( a );
 c = b.foo();";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
 
             //Assert.Fail("1467183 - Sprint24: rev 3163 : replication on nested array is outputting extra brackets in some cases");
@@ -8118,26 +7754,26 @@ c = b.foo();";
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV103_Defect_1455090_Rank_Of_Arg_4()
         {
             String code =
-@"  class A
+@" 
+def Create : var[][]( b : double[][] )
 {
-    X : var[][];
-    constructor A ( b : double[][] )
-    {
-        X = b;
-    }
-    def foo : var[][][] (  )
-    {
-        return = X ; 
-    }
+    return = b;
 }
+def foo : var[][][] (  X : var[][])
+{
+    return = X ; 
+}
+
 a = { { 0, 1} ,  2  };
-b = A.A ( a );
-c = b.foo();";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+b = Create( a );
+c = foo(b);
+";
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467183 - Sprint24: rev 3163 : replication on nested array is outputting extra brackets in some cases");
 
@@ -8155,7 +7791,7 @@ def foo : var[] (  )
     return = 1 ; 
 }
 c = foo();";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467183 - Sprint24: rev 3163 : replication on nested array is outputting extra brackets in some cases");
             thisTest.Verify("c", new Object[] { 1 });
@@ -8172,7 +7808,7 @@ def foo : int[] (  )
     return = 1 ; 
 }
 c = foo();";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467183 - Sprint24: rev 3163 : replication on nested array is outputting extra brackets in some cases");
             thisTest.Verify("c", new Object[] { 1 });
@@ -8180,26 +7816,25 @@ c = foo();";
 
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV103_Defect_1455090_Rank_Of_Arg_5()
         {
             String code =
-                @"class A
-                {
-                    X : var[][];
-                    constructor A ( b : double[][] )
-                    {
-                        X = b;
-                    }
-                    def foo : var[][][] (  )
-                    {
-                        return = X ; 
-                    }
-                }
+                @"
+def Create : var[][]( b : double[][] )
+{
+    return = b;
+}
+def foo : var[][][] (  X : var[][])
+{
+    return = X; 
+}
                 a = { 3, { 0, 1} ,  2  };
-                b = A.A ( a );
-                c = b.foo();";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+                b = Create ( a);
+                c = foo(b);
+";
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467183 - Sprint24: rev 3163 : replication on nested array is outputting extra brackets in some cases");
 
@@ -8218,7 +7853,7 @@ def foo  ( x : int[][] )
 }
 a = { 3, { 0, 1} ,  2  };
 b = foo ( a );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467183 - Sprint24: rev 3163 : replication on nested array is outputting extra brackets in some cases");
 
@@ -8226,6 +7861,7 @@ b = foo ( a );";
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("SmokeTest")]
         public void TV104_Defect_1467112()
         {
@@ -8255,7 +7891,7 @@ class C extends B
 b = C.C();
 b1 = b.foo1(1);
 test = b1;";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("test", 3);
         }
@@ -8270,7 +7906,7 @@ test = b1;";
 return = x;
 }
 d = foo();";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("d", 2);
         }
@@ -8285,7 +7921,7 @@ d = foo();";
 return = x;
 }
 d = foo();";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("d", 2.0);
         }
@@ -8300,7 +7936,7 @@ d = foo();";
 return = x;
 }
 d = foo(1.5);";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("d", 2);
         }
@@ -8323,7 +7959,7 @@ c1= foo(a);
 c2 = foo(b);
 c3 = Average({});
 result = {foo(a),foo(b)};";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4171
             string errmsg = "MAGN-4171: Replication method resolution";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -8344,7 +7980,7 @@ def foo(x:var[])
 return = 1;
 }
 d = foo({1,2});";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", 1);
@@ -8364,7 +8000,7 @@ def foo(x:int[])
 return = 1;
 }
 d = foo({1,2});";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", 1);
@@ -8384,57 +8020,53 @@ def foo(x:int[])
 return = 1;
 }
 d = foo({1.5,2.5});";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", 2);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV107_Defect_1467273_Function_Resolution_Over_Argument_Rank_4()
         {
             String code =
 @"
-class A
+def foo(x:int[]..[])
 {
-    def foo(x:int[]..[])
-    {
-        return = 2;
-    }
-    def foo(x:int[])
-    {
-        return = 1;
-    }
+    return = 2;
 }
-a = A.A();
-d = a.foo({1,2});";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+def foo(x:int[])
+{
+    return = 1;
+}
+
+d = foo({1,2});";
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", 1);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV107_Defect_1467273_Function_Resolution_Over_Argument_Rank_4a()
         {
             String code =
 @"
-class A
+def foo(x:int[]..[])
 {
-    def foo(x:int[]..[])
-    {
-        return = 2;
-    }
-    def foo(x:int[])
-    {
-        return = 1;
-    }
+    return = 2;
 }
-a = A.A();
-d = a.foo({1.0,2.2});";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+def foo(x:int[])
+{
+    return = 1;
+}
+
+d = foo({1.0,2.2});";
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", 1);
@@ -8453,44 +8085,45 @@ return = true;
 a = foo(test);
 b = 1;
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             string err = "1467379 Sprint 27 - Rev 4193 - after throwing warning / error in the attached code it should execute rest of the code ";
             thisTest.RunScriptSource(code, err);
             thisTest.Verify("b", 1);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV105_Defect_1467409()
         {
             String code =
 @"
+import(""FFITarget.dll"");
 def foo ( x1: int, y1 : int )
 {
     return = x1;
 }
-class A {}
-a=A.A();
+a=ClassFunctionality.ClassFunctionality();
 r=a.foo(); // calling a non-exist function shouldn't get a warning at complie time
 b = foo1();
-d = foo(2, A.A() );
+d = foo(2, ClassFunctionality.ClassFunctionality() );
 f = foo3();
 r1;b1;d1;
 [Imperative]
 {
     r1=a.foo(); 
     b1 = foo1();
-    d1 = foo(2, A.A() );
+    d1 = foo(2, ClassFunctionality.ClassFunctionality() );
 }
 def foo3()
 {
     r2=a.foo(); 
     b2 = foo1();
-    d2 = foo(2, A.A() );
+    d2 = foo(2, ClassFunctionality.ClassFunctionality() );
     return = { r2, b2, d2 };
 }
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             string err = "DNL-1467409 Please disable static analysis warnings for function resolution"; ;
             thisTest.RunScriptSource(code, err);
             Object n1 = null;
@@ -8516,7 +8149,7 @@ def foo3()
                 }
                 a= foo()
                 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             string err = ""; ;
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
@@ -8592,7 +8225,7 @@ result3 =
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", null);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
         }
 
         [Test]
@@ -8707,29 +8340,24 @@ p = foo(x);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void TestMultiOverLoadWithDefaultArg()
         {
             string code = @"
-class Bar
+import(""FFITarget.dll"");
+def foo(x = 0, y = 0, z = 0)
 {
+    return = 41;
 }
-
-class Foo
-{
-    def foo(x = 0, y = 0, z = 0)
-    {
-        return = 41;
-    }
     
-    def foo(x : Bar)
-    {
-        return = 42;
-    }
+def foo(x : ClassFunctionality)
+{
+    return = 42;
 }
 
-b = Bar();
-f = Foo();
-r = f.foo(b); // shoudn't be resolved to foo(x = 0, y = 0, z = 0)
+
+b = ClassFunctionality.ClassFunctionality();
+r = foo(b); // shoudn't be resolved to foo(x = 0, y = 0, z = 0)
 ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, "");
             thisTest.Verify("r", 42);

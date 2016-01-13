@@ -1,0 +1,23 @@
+<Project
+    xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
+    ToolsVersion="4.0"
+    DefaultTargets="Build">
+<PropertyGroup>
+    <Solution>Dynamo.All.sln</Solution>
+ </PropertyGroup>
+	
+<ItemGroup>
+    <ProjectToBuild Include="$(Solution)" >
+        <Properties>Configuration=Release;Platform=Any CPU</Properties>
+    </ProjectToBuild>
+</ItemGroup>
+
+<Target Name="Build" DependsOnTargets="RestorePackages">
+    <MSBuild Projects="@(ProjectToBuild)" Targets="Rebuild"/>
+</Target>
+
+<Target Name="RestorePackages">
+    <Exec Command="$(MSBuildProjectDirectory)\..\tools\Nuget\NuGet.exe restore $(Solution)"/>
+  </Target>
+
+</Project>

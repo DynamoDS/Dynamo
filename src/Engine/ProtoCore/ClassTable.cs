@@ -2,22 +2,23 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore.Properties;
 using ProtoCore.Utils;
 using System.Linq;
 
 namespace ProtoCore.DSASM
 {
-    [System.Diagnostics.DebuggerDisplay("{name}, classId = {classId}")]
+    [System.Diagnostics.DebuggerDisplay("{Name}, classId = {ID}")]
     public class ClassNode
     {
-        public string name { get; set; }
-        public SymbolTable symbols { get; set; }
-        public List<AST.AssociativeAST.BinaryExpressionNode> defaultArgExprList { get; set; } 
-        public ProcedureTable vtable { get; set; }
-        public int size { get; set; }
-        public int rank { get; set; }
-        public int classId { get; set; }
-        public List<int> baseList { get; set; }
+        public string Name { get; set; }
+        public SymbolTable Symbols { get; set; }
+        public List<AssociativeNode> DefaultArgExprList { get; set; } 
+        public ProcedureTable ProcTable { get; set; }
+        public int Size { get; set; }
+        public int Rank { get; set; }
+        public int ID { get; set; }
+        public List<int> Bases { get; set; }
         public bool IsImportedClass { get; set; }
         public ClassAttributes ClassAttributes { get; set; }
 
@@ -27,10 +28,10 @@ namespace ProtoCore.DSASM
         /// </summary>
         public string ExternLib { get; set; }
 
-        public TypeSystem typeSystem { get; set; }
+        public TypeSystem TypeSystem { get; set; }
         public List<AttributeEntry> Attributes { get; set; }
         // A map of allowed coercions and their respective scores
-        public Dictionary<int, int> coerceTypes { get; set; }
+        public Dictionary<int, int> CoerceTypes { get; set; }
 
         private ProcedureNode disposeMethod;
         private bool hasCachedDisposeMethod;
@@ -38,59 +39,87 @@ namespace ProtoCore.DSASM
         public ClassNode()
         {
             IsImportedClass = false;
-            name = null;
-            size = 0;
+            Name = null;
+            Size = 0;
             hasCachedDisposeMethod = false;
             disposeMethod = null;
-            rank = ProtoCore.DSASM.Constants.kDefaultClassRank;
-            symbols = new SymbolTable("classscope", 0);
-            defaultArgExprList = new List<AST.AssociativeAST.BinaryExpressionNode>();
-            classId = (int)PrimitiveType.kInvalidType;
+            Rank = ProtoCore.DSASM.Constants.kDefaultClassRank;
+            Symbols = new SymbolTable("classscope", 0);
+            DefaultArgExprList = new List<AST.AssociativeAST.AssociativeNode>();
+            ID = (int)PrimitiveType.kInvalidType;
 
             // Jun TODO: how significant is runtime index for class procedures?
             int classRuntimProc = ProtoCore.DSASM.Constants.kInvalidIndex;
-            vtable = new ProcedureTable(classRuntimProc);
-            baseList = new List<int>();
+            ProcTable = new ProcedureTable(classRuntimProc);
+            Bases = new List<int>();
             ExternLib = string.Empty;
 
             // Set default allowed coerce types
-            coerceTypes = new Dictionary<int, int>();
-            coerceTypes.Add((int)ProtoCore.PrimitiveType.kTypeVar, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
-            coerceTypes.Add((int)ProtoCore.PrimitiveType.kTypeArray, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
-            coerceTypes.Add((int)ProtoCore.PrimitiveType.kTypeNull, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
+            CoerceTypes = new Dictionary<int, int>();
+            CoerceTypes.Add((int)ProtoCore.PrimitiveType.kTypeVar, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
+            CoerceTypes.Add((int)ProtoCore.PrimitiveType.kTypeArray, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
+            CoerceTypes.Add((int)ProtoCore.PrimitiveType.kTypeNull, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
+        }
+
+        public ClassNode(ClassNode rhs)
+        {
+            IsImportedClass = rhs.IsImportedClass;
+            Name = rhs.Name;
+            Size = rhs.Size;
+            hasCachedDisposeMethod = rhs.hasCachedDisposeMethod;
+            disposeMethod = rhs.disposeMethod;
+            Rank = rhs.Rank;
+            Symbols = new SymbolTable("classscope", 0);
+            if (rhs.Symbols != null)
+            {
+                Symbols = new SymbolTable(rhs.Symbols.ScopeName, rhs.Symbols.RuntimeIndex);
+            }
+            DefaultArgExprList = new List<AST.AssociativeAST.AssociativeNode>();
+            ID = rhs.ID;
+
+            int classRuntimProc = ProtoCore.DSASM.Constants.kInvalidIndex;
+            ProcTable = new ProcedureTable(classRuntimProc);
+            if (rhs.ProcTable != null)
+            {
+                ProcTable = new ProcedureTable(rhs.ProcTable);
+            }
+            Bases = new List<int>(rhs.Bases);
+            ExternLib = rhs.ExternLib;
+            TypeSystem = rhs.TypeSystem;
+            CoerceTypes = new Dictionary<int, int>(rhs.CoerceTypes);
         }
 
         public bool ConvertibleTo(int type)
         {
-            Validity.Assert(null != coerceTypes);
-            Validity.Assert((int)PrimitiveType.kInvalidType != classId);
+            Validity.Assert(null != CoerceTypes);
+            Validity.Assert((int)PrimitiveType.kInvalidType != ID);
 
-            if ((int)PrimitiveType.kTypeNull == classId || coerceTypes.ContainsKey(type))
+            if ((int)PrimitiveType.kTypeNull == ID || CoerceTypes.ContainsKey(type))
             { 
                 return true;
             }
 
             //chars are convertible to string
 
-            else if (classId == (int)PrimitiveType.kTypeChar && type==(int)PrimitiveType.kTypeString)
+            else if (ID == (int)PrimitiveType.kTypeChar && type==(int)PrimitiveType.kTypeString)
             {
                 return true;
             }
 
             //user defined type to bool
-            else if (classId >=(int)PrimitiveType.kMaxPrimitives && type == (int)PrimitiveType.kTypeBool)
+            else if (ID >=(int)PrimitiveType.kMaxPrimitives && type == (int)PrimitiveType.kTypeBool)
             {
                 return true;
             }
                 
                 //string to boolean
 
-            else if (classId == (int)PrimitiveType.kTypeString && type == (int)PrimitiveType.kTypeBool)
+            else if (ID == (int)PrimitiveType.kTypeString && type == (int)PrimitiveType.kTypeBool)
             {
                 return true;
             }
             //char to boolean
-            else if (classId == (int)PrimitiveType.kTypeChar && type == (int)PrimitiveType.kTypeBool)
+            else if (ID == (int)PrimitiveType.kTypeChar && type == (int)PrimitiveType.kTypeBool)
             {
                 return true;
             }
@@ -100,21 +129,21 @@ namespace ProtoCore.DSASM
 
         public int GetCoercionScore(int type)
         {
-            Validity.Assert(null != coerceTypes);
+            Validity.Assert(null != CoerceTypes);
             int score = (int)ProtoCore.DSASM.ProcedureDistance.kNotMatchScore;
 
-            if (type == classId)
+            if (type == ID)
                 return (int)ProtoCore.DSASM.ProcedureDistance.kExactMatchScore;
 
-            if ((int)PrimitiveType.kTypeNull == classId)
+            if ((int)PrimitiveType.kTypeNull == ID)
             {
                 score = (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore;
             }
             else
             {
-                if (coerceTypes.ContainsKey(type))
+                if (CoerceTypes.ContainsKey(type))
                 {
-                    score = coerceTypes[type];
+                    score = CoerceTypes[type];
                 }
             }
 
@@ -127,13 +156,13 @@ namespace ProtoCore.DSASM
             if ((int)PrimitiveType.kInvalidType == type)
                 return false;
 
-            foreach (int baseIndex in baseList)
+            foreach (int baseIndex in Bases)
             {
                 Validity.Assert(baseIndex != (int)PrimitiveType.kInvalidType);
                 if (type == baseIndex)
                     return true;
 
-                ClassNode baseClassNode = typeSystem.classTable.ClassNodes[baseIndex];
+                ClassNode baseClassNode = TypeSystem.classTable.ClassNodes[baseIndex];
                 if (baseClassNode.IsMyBase(type))
                     return true;
             }
@@ -141,108 +170,10 @@ namespace ProtoCore.DSASM
             return false;
         }
 
-        // classScope is a global context, it tells we are in which class's scope
-        // functionScope is telling us which function we are in. 
-        // 
-        // 1. Try to find if the target is a member function's local variable
-        //        classScope != kInvalidIndex && functionScope != kInvalidIndex;
-        // 
-        // 2. Try to find if the target is a member variable
-        //     2.1 In a member functions classScope != kInvalidIndex && functionScope != kInvalidIndex.
-        //         Returns member in derived class, or non-private member in base classes
-        // 
-        //     2.2 In a global functions classScope == kInvalidIndex && functionScope != kInvalidIndex.
-        //         Returns public member in derived class, or public member in base classes
-        // 
-        //     2.3 Otherwise, classScope == kInvalidIndex && functionScope == kInvalidIndex
-        //         Return public member in derived class, or public member in base classes 
-        public int GetSymbolIndex(string name, int classScope, int functionScope, int blockId, Core core, out bool hasThisSymbol, out ProtoCore.DSASM.AddressType addressType)
-        {
-            hasThisSymbol = false;
-            addressType = ProtoCore.DSASM.AddressType.Invalid;
-
-            if (symbols == null)
-            {
-                return ProtoCore.DSASM.Constants.kInvalidIndex;
-            }
-
-            IEnumerable<SymbolNode> allSymbols = symbols.GetNodeForName(name);
-            if (allSymbols == null)
-            {                
-                return ProtoCore.DSASM.Constants.kInvalidIndex;
-            }
-
-            int myself = typeSystem.classTable.IndexOf(this.name);
-            bool isInMemberFunctionContext = (classScope == myself) && (functionScope != ProtoCore.DSASM.Constants.kInvalidIndex);
-            bool isInStaticFunction = isInMemberFunctionContext &&  (vtable.procList[functionScope].isStatic);
-
-            // Try for member function variables
-            var blocks = core.GetAncestorBlockIdsOfBlock(blockId);
-            blocks.Insert(0, blockId);
-
-            Dictionary<int, SymbolNode> symbolOfBlockScope = new Dictionary<int, SymbolNode>();
-            foreach (var memvar in allSymbols)
-            {
-                if ((isInMemberFunctionContext) && (memvar.functionIndex == functionScope))
-                {
-                    symbolOfBlockScope[memvar.codeBlockId] = memvar;
-                }
-            }
-            if (symbolOfBlockScope.Count > 0)
-            {
-                foreach (var blockid in blocks)
-                {
-                    if (symbolOfBlockScope.ContainsKey(blockid))
-                    {
-                        hasThisSymbol = true;
-                        addressType = AddressType.VarIndex;
-                        return symbolOfBlockScope[blockid].symbolTableIndex;
-                    }
-                }
-            }
-
-            // Try for member variables. 
-            var candidates = new List<SymbolNode>();
-            foreach (var memvar in allSymbols)
-            {
-                if (memvar.functionIndex == ProtoCore.DSASM.Constants.kGlobalScope)
-                {
-                    candidates.Add(memvar);
-                }
-            }
-            // Sort candidates descending based on their class scopes so that
-            // we can search member variable in reverse order of hierarchy tree.
-            candidates.Sort((lhs, rhs) => rhs.classScope.CompareTo(lhs.classScope));
-            hasThisSymbol = candidates.Count > 0;
-
-            foreach (var symbol in candidates)
-            {
-                bool isAccessible = false;
-                if (isInMemberFunctionContext)
-                {
-                    isAccessible = (symbol.classScope == myself) || (symbol.access != ProtoCore.Compiler.AccessSpecifier.kPrivate);
-                    if (isInStaticFunction)
-                        isAccessible = isAccessible && symbol.isStatic;
-                }
-                else
-                {
-                    isAccessible = symbol.access == ProtoCore.Compiler.AccessSpecifier.kPublic;
-                }
-
-                if (isAccessible)
-                {
-                    addressType = symbol.isStatic ? AddressType.StaticMemVarIndex : AddressType.MemVarIndex;
-                    return symbol.symbolTableIndex;
-                }
-            }
-
-            return Constants.kInvalidIndex;
-        }
-
 
         public int GetFirstVisibleSymbolNoAccessCheck(string name)
         {
-            IEnumerable<SymbolNode> allSymbols = symbols.GetNodeForName(name);
+            IEnumerable<SymbolNode> allSymbols = Symbols.GetNodeForName(name);
             if (allSymbols == null)
             {
                 return Constants.kInvalidIndex;
@@ -270,41 +201,41 @@ namespace ProtoCore.DSASM
             isAccessible = false;
             functionHostClassIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
 
-            if (vtable == null)
+            if (ProcTable == null)
                 return null;
 
             ProtoCore.DSASM.ProcedureNode procNode = null;
 
-            int functionIndex = vtable.IndexOf(procName, argTypeList, isStaticOrConstructor);
+            int functionIndex = ProcTable.IndexOf(procName, argTypeList, isStaticOrConstructor);
             if (functionIndex != ProtoCore.DSASM.Constants.kInvalidIndex)
             {
-                int myClassIndex = typeSystem.classTable.IndexOf(name);
+                int myClassIndex = TypeSystem.classTable.IndexOf(Name);
                 functionHostClassIndex = myClassIndex;
-                procNode = vtable.procList[functionIndex];
+                procNode = ProcTable.Procedures[functionIndex];
 
                 if (classScope == ProtoCore.DSASM.Constants.kInvalidIndex)
                 {
-                    isAccessible = (procNode.access == Compiler.AccessSpecifier.kPublic);
+                    isAccessible = (procNode.AccessModifier == CompilerDefinitions.AccessModifier.kPublic);
                 }
                 else if (classScope == myClassIndex) 
                 {
                     isAccessible = true;
                 }
-                else if (typeSystem.classTable.ClassNodes[classScope].IsMyBase(myClassIndex))
+                else if (TypeSystem.classTable.ClassNodes[classScope].IsMyBase(myClassIndex))
                 {
-                    isAccessible = (procNode.access != Compiler.AccessSpecifier.kPrivate);
+                    isAccessible = (procNode.AccessModifier != CompilerDefinitions.AccessModifier.kPrivate);
                 }
                 else
                 {
-                    isAccessible = (procNode.access == Compiler.AccessSpecifier.kPublic);
+                    isAccessible = (procNode.AccessModifier == CompilerDefinitions.AccessModifier.kPublic);
                 }
 
                 return procNode;
             }
 
-            foreach (int baseClassIndex in baseList)
+            foreach (int baseClassIndex in Bases)
             {
-                procNode = typeSystem.classTable.ClassNodes[baseClassIndex].GetMemberFunction(procName, argTypeList, classScope, out isAccessible, out functionHostClassIndex, isStaticOrConstructor);
+                procNode = TypeSystem.classTable.ClassNodes[baseClassIndex].GetMemberFunction(procName, argTypeList, classScope, out isAccessible, out functionHostClassIndex, isStaticOrConstructor);
                 if (procNode != null && isAccessible)
                     break;
             }
@@ -314,20 +245,20 @@ namespace ProtoCore.DSASM
 
         public ProcedureNode GetFirstMemberFunctionBy(string procName)
         {
-            if (vtable == null)
+            if (ProcTable == null)
             {
                 return null;
             }
 
-            ProcedureNode procNode = vtable.GetFunctionsBy(procName).FirstOrDefault();
+            ProcedureNode procNode = ProcTable.GetFunctionsByName(procName).FirstOrDefault();
             if (procNode != null)
             {
                 return procNode;
             }
 
-            foreach (int baseClassIndex in baseList)
+            foreach (int baseClassIndex in Bases)
             {
-                var baseClass = typeSystem.classTable.ClassNodes[baseClassIndex];
+                var baseClass = TypeSystem.classTable.ClassNodes[baseClassIndex];
                 procNode = baseClass.GetFirstMemberFunctionBy(procName);
                 if (null != procNode)
                 {
@@ -339,16 +270,16 @@ namespace ProtoCore.DSASM
 
         public ProcedureNode GetFirstMemberFunctionBy(string procName, int argCount)
         {
-            if (vtable == null)            {                return null;            }
-            ProcedureNode procNode = vtable.GetFunctionsBy(procName, argCount).FirstOrDefault();
+            if (ProcTable == null)            {                return null;            }
+            ProcedureNode procNode = ProcTable.GetFunctionsByNameAndArgumentNumber(procName, argCount).FirstOrDefault();
             if (procNode != null)
             {
                 return procNode;
             }
 
-            foreach (int baseClassIndex in baseList)
+            foreach (int baseClassIndex in Bases)
             {
-                var baseClass = typeSystem.classTable.ClassNodes[baseClassIndex];
+                var baseClass = TypeSystem.classTable.ClassNodes[baseClassIndex];
                 procNode = baseClass.GetFirstMemberFunctionBy(procName, argCount);
                 if (null != procNode)
                 {
@@ -360,34 +291,34 @@ namespace ProtoCore.DSASM
 
         public ProcedureNode GetFirstConstructorBy(string procName, int argCount)
         {
-            if (vtable == null)
+            if (ProcTable == null)
             {
                 return null;
             }
 
-            return  vtable.GetFunctionsBy(procName, argCount)
-                          .Where(p => p.isConstructor)
+            return  ProcTable.GetFunctionsByNameAndArgumentNumber(procName, argCount)
+                          .Where(p => p.IsConstructor)
                           .FirstOrDefault();
         }
 
         public ProcedureNode GetFirstStaticFunctionBy(string procName)
         {
-            if (vtable == null)
+            if (ProcTable == null)
             {
                 return null;
             }
 
-            ProcedureNode procNode = vtable.GetFunctionsBy(procName)
-                                           .Where(p => p.isStatic)
+            ProcedureNode procNode = ProcTable.GetFunctionsByName(procName)
+                                           .Where(p => p.IsStatic)
                                            .FirstOrDefault();
             if (procNode != null)
             {
                 return procNode;
             }
 
-            foreach (int baseClassIndex in baseList)
+            foreach (int baseClassIndex in Bases)
             {
-                var baseClass = typeSystem.classTable.ClassNodes[baseClassIndex];
+                var baseClass = TypeSystem.classTable.ClassNodes[baseClassIndex];
                 procNode = baseClass.GetFirstStaticFunctionBy(procName);
                 if (null != procNode)
                 {
@@ -399,22 +330,22 @@ namespace ProtoCore.DSASM
 
         public ProcedureNode GetFirstStaticFunctionBy(string procName, int argCount)
         {
-            if (vtable == null)
+            if (ProcTable == null)
             {
                 return null;
             }
 
-            ProcedureNode procNode = vtable.GetFunctionsBy(procName, argCount)
-                                           .Where(p => p.isStatic)
+            ProcedureNode procNode = ProcTable.GetFunctionsByNameAndArgumentNumber(procName, argCount)
+                                           .Where(p => p.IsStatic)
                                            .FirstOrDefault();
             if (procNode != null)
             {
                 return procNode;
             }
 
-            foreach (int baseClassIndex in baseList)
+            foreach (int baseClassIndex in Bases)
             {
-                var baseClass = typeSystem.classTable.ClassNodes[baseClassIndex];
+                var baseClass = TypeSystem.classTable.ClassNodes[baseClassIndex];
                 procNode = baseClass.GetFirstStaticFunctionBy(procName, argCount);
                 if (null != procNode)
                 {
@@ -426,41 +357,16 @@ namespace ProtoCore.DSASM
 
         private ProcedureNode GetProcNode(string variableName)
         {
-            if (vtable == null)
+            if (ProcTable == null)
             {
                 return null;
             }
 
             Validity.Assert(null != variableName && variableName.Length > 0);
             string getterName = ProtoCore.DSASM.Constants.kGetterPrefix + variableName;
-            int index = vtable.IndexOfFirst(getterName);
-            if (ProtoCore.DSASM.Constants.kInvalidIndex == index)
-            {
-                return null;
-            }
-            return vtable.procList[index];
-        }
 
-        public bool IsStaticMemberVariable(string variableName)
-        {
-            Validity.Assert(null != variableName && variableName.Length > 0);
-            ProcedureNode proc = GetProcNode(variableName);
-            Validity.Assert(null != proc);
-            return proc.isStatic;
-        }
-
-        public bool IsMemberVariable(string variableName)
-        {
-            // Jun:
-            // To find a member variable, get its getter name and check the vtable
-            if (vtable == null)
-            {
-                return false;
-            }
-
-            Validity.Assert(null != variableName && variableName.Length > 0);
-            string getterName = ProtoCore.DSASM.Constants.kGetterPrefix + variableName;
-            return ProtoCore.DSASM.Constants.kInvalidIndex != vtable.IndexOfFirst(getterName) ? true : false;
+            var procNode = ProcTable.GetFunctionsByName(getterName).FirstOrDefault();
+            return procNode;
         }
 
         public bool IsMemberVariable(SymbolNode symbol)
@@ -468,7 +374,7 @@ namespace ProtoCore.DSASM
             // Jun:
             // A fast version of the find member variable where we search the symboltable directly
             Validity.Assert(null != symbol);
-            return ProtoCore.DSASM.Constants.kInvalidIndex != symbols.IndexOf(symbol.name)
+            return ProtoCore.DSASM.Constants.kInvalidIndex != Symbols.IndexOf(symbol.name)
 
                 // A symbol is a member if it doesnt belong to any function
                 && ProtoCore.DSASM.Constants.kInvalidIndex == symbol.functionIndex;
@@ -479,15 +385,15 @@ namespace ProtoCore.DSASM
             if (!hasCachedDisposeMethod)
             {
                 hasCachedDisposeMethod = true;
-                if (vtable == null)
+                if (ProcTable == null)
                 {
                     disposeMethod = null;
                 }
                 else
                 {
-                    foreach (ProcedureNode procNode in vtable.procList)
+                    foreach (ProcedureNode procNode in ProcTable.Procedures)
                     {
-                        if (CoreUtils.IsDisposeMethod(procNode.name) && procNode.argInfoList.Count == 0)
+                        if (CoreUtils.IsDisposeMethod(procNode.Name) && procNode.ArgumentInfos.Count == 0)
                         {
                             disposeMethod = procNode;
                             break;
@@ -521,35 +427,46 @@ namespace ProtoCore.DSASM
         {
         }
 
+        public ClassTable(ClassTable rhs)
+        {
+            classNodes = new List<ClassNode>();
+            for (int n = 0; n < rhs.classNodes.Count; ++n)
+            {
+                classNodes.Add(new ClassNode(rhs.classNodes[n]));
+            }
+
+            symbolTable = new Namespace.SymbolTable(rhs.symbolTable);
+        }
+
         public void Reserve(int size)
         {
             for (int n = 0; n < size; ++n)
             {
-                ProtoCore.DSASM.ClassNode cnode = new ProtoCore.DSASM.ClassNode { name = ProtoCore.DSDefinitions.Keyword.Invalid, size = 0, rank = 0, symbols = null, vtable = null };
+                ProtoCore.DSASM.ClassNode cnode = new ProtoCore.DSASM.ClassNode { Name = ProtoCore.DSDefinitions.Keyword.Invalid, Size = 0, Rank = 0, Symbols = null, ProcTable = null };
                 classNodes.Add(cnode);
             }
         }
 
         public int Append(ClassNode node)
         {
-            Namespace.Symbol symbol = symbolTable.AddSymbol(node.name);
+            Namespace.Symbol symbol = symbolTable.AddSymbol(node.Name);
             if (null == symbol)
             {
                 return ProtoCore.DSASM.Constants.kInvalidIndex;
             }
 
             classNodes.Add(node);
-            node.classId = classNodes.Count - 1;
-            symbol.Id = node.classId;
-            return node.classId;
+            node.ID = classNodes.Count - 1;
+            symbol.Id = node.ID;
+            return node.ID;
         }
 
         public void SetClassNodeAt(ClassNode node, int index)
         {
             classNodes[index] = node;
             Namespace.Symbol symbol = null;
-            if (!symbolTable.TryGetExactSymbol(node.name, out symbol))
-                symbol = symbolTable.AddSymbol(node.name);
+            if (!symbolTable.TryGetExactSymbol(node.Name, out symbol))
+                symbol = symbolTable.AddSymbol(node.Name);
 
             symbol.Id = index;
         }
@@ -630,7 +547,7 @@ namespace ProtoCore.DSASM
             }
             else
             {
-                return ClassNodes[UID].name; 
+                return ClassNodes[UID].Name; 
             }
         }
 
@@ -651,7 +568,7 @@ namespace ProtoCore.DSASM
                 var symbols = symbolTable.GetAllSymbols(name);
                 if (symbols.Count > 1)
                 {
-                    string message = string.Format(BuildData.WarningMessage.kMultipleSymbolFound, name, "");
+                    string message = string.Format(Resources.kMultipleSymbolFound, name, "");
                     foreach (var symbol in symbols)
                     {
                         message += ", " + symbol.FullName;

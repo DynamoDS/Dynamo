@@ -1,0 +1,16 @@
+<Workspace Version="0.7.6.4024" X="46.0073298429318" Y="170.278795811518" zoom="1" Name="Home">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="a7ca38e1-0d9e-4895-abd5-8e37e4cd2eed" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="146.84057591623" y="-17.6602094240838" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="π１=3;&#xA;半径１=4;&#xA;めんせき１=π１*Math.Pow(半径１,2);" ShouldFocus="false" />
+    <Dynamo.Nodes.Watch guid="b0e39eef-abd2-4da2-9c5e-bc45129210f4" type="Dynamo.Nodes.Watch" nickname="Watch" x="498.962303664921" y="-5.98874345549741" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="d4c4766a-3eab-4457-95be-0f5ac384245b" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="160.511518324607" y="134.308638743455" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="def めんせき(半径,π)&#xA;{&#xA;    return =π*Math.Pow(半径,2);&#xA;};&#xA;area1 = めんせき(2, 3);&#xA;area2 = めんせき(3, 3);" ShouldFocus="false" />
+    <Dynamo.Nodes.Watch guid="dfcf8646-fa78-443f-b708-e06d713ca21e" type="Dynamo.Nodes.Watch" nickname="Watch" x="507.192670157068" y="134.121204188482" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch guid="87c8b0a6-5e3b-4436-a8b4-d459d0937337" type="Dynamo.Nodes.Watch" nickname="Watch" x="506.660471204188" y="248.543979057592" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="a7ca38e1-0d9e-4895-abd5-8e37e4cd2eed" start_index="2" end="b0e39eef-abd2-4da2-9c5e-bc45129210f4" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d4c4766a-3eab-4457-95be-0f5ac384245b" start_index="0" end="dfcf8646-fa78-443f-b708-e06d713ca21e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d4c4766a-3eab-4457-95be-0f5ac384245b" start_index="1" end="87c8b0a6-5e3b-4436-a8b4-d459d0937337" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

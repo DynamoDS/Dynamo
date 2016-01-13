@@ -25,8 +25,8 @@
   <SelectModelCommand ModelGuid="60817749-e83f-43de-88e4-6ecc5fc6bfe0" Modifiers="0" />
   <SelectModelCommand ModelGuid="60817749-e83f-43de-88e4-6ecc5fc6bfe0" Modifiers="0" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SwitchTabCommand TabIndex="1" />
   <UpdateModelValueCommand ModelGuid="574b053b-fa11-4bf7-82c2-e52a0335522d" Name="InputSymbol" Value="c" />
-  <SwitchTabCommand TabIndex="0" />
   <RunCancelCommand ShowErrors="false" CancelRun="false" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
 </Commands>

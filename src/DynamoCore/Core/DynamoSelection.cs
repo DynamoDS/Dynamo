@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-
-using Microsoft.Practices.Prism.ViewModel;
+using Dynamo.Core;
 
 namespace Dynamo.Selection
 {
-    public class DynamoSelection : NotificationObject
+    internal class DynamoSelection : NotificationObject
     {
         private static DynamoSelection _instance;
         private SmartCollection<ISelectable> selection = new SmartCollection<ISelectable>();
@@ -44,7 +43,7 @@ namespace Dynamo.Selection
         /// <summary>
         /// Returns a collection of ISelectable elements.
         /// </summary>
-        public SmartCollection<ISelectable> Selection
+        internal SmartCollection<ISelectable> Selection
         {
             get { return selection; }
             set
@@ -53,6 +52,8 @@ namespace Dynamo.Selection
                 RaisePropertyChanged("Selection");
             }
         }
+
+        public bool ClearSelectionDisabled { get; set; }
 
         private DynamoSelection()
         {
@@ -92,6 +93,8 @@ namespace Dynamo.Selection
         /// </summary>
         public void ClearSelection()
         {
+            if (ClearSelectionDisabled) return;
+            
             Instance.Selection.ToList().ForEach(x=>x.Deselect());
             Instance.Selection.Reset(new List<ISelectable>());
         }
@@ -109,7 +112,7 @@ namespace Dynamo.Selection
     /// See: http://stackoverflow.com/questions/13302933/how-to-avoid-firing-observablecollection-collectionchanged-multiple-times-when-r
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class SmartCollection<T> : ObservableCollection<T>
+    internal class SmartCollection<T> : ObservableCollection<T>
     {
         public SmartCollection()
             : base()
@@ -124,6 +127,18 @@ namespace Dynamo.Selection
         public SmartCollection(List<T> list)
             : base(list)
         {
+        }
+
+        /// <summary>
+        /// Adds an item only if the sequence does not have it yet
+        /// </summary>
+        /// <param name="item">Item to add</param>
+        public void AddUnique(T item)
+        {
+            if (!Contains(item))
+            {
+                Add(item);
+            }
         }
 
         public void AddRange(IEnumerable<T> range)

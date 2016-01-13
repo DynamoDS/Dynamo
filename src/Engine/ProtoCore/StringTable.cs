@@ -2,15 +2,6 @@
 
 namespace ProtoCore.DSASM
 {
-    public class StringTable
-    {
-        public List<string> stringTable { get; set; }
-        public StringTable()
-        {
-            stringTable = new List<string>();
-        }
-    }
-
     public class DynamicVariableTable
     {
         public List<DyanmicVariableNode> variableTable { get; set; }

@@ -4,103 +4,78 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
-    class TestClass
+    class TestClass : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string testPath = "..\\..\\..\\Scripts\\TD\\MultiLanguage\\Class\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T01_Class_In_Various_Scopes()
         {
             string code = @"
-class Dummy
-{ 
-	x : var;  
-	constructor Dummy () 
-	{	
-		x = 2;	 
-	}
-}
+import(""FFITarget.dll"");
 obj1 = [Imperative]
 {
-	a = Dummy.Dummy();
-	a1 = a.x;
+	a = ClassFunctionality.ClassFunctionality(2);
+	a1 = a.IntVal;
 	return = a;
 }
-getX1 = obj1.x;	
+getX1 = obj1.IntVal;	
 obj2 = [Associative]
 {
-	b = Dummy.Dummy();
-	b1 = b.x;
+	b = ClassFunctionality.ClassFunctionality(2);
+	b1 = b.IntVal;
 	return = b1;
 }
-getX2 = obj2.x;	";
+getX2 = obj2.IntVal;	";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
 
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T02_Class_In_Various_Nested_Scopes()
         {
             string code = @"
-class Dummy
-{ 
-	x : var;  
-	constructor Dummy () 
-	{	
-		x = 2;	 
-	}
-}
+import(""FFITarget.dll"");
 c1 = [Imperative]
 {
-	a = Dummy.Dummy();
+	a = ClassFunctionality.ClassFunctionality(2);
 	b = [Associative]
 	{
-	    return = Dummy.Dummy();
+	    return = ClassFunctionality.ClassFunctionality(2);
 	}
-	c = a.x + b.x;
+	c = a.IntVal + b.IntVal;
 	return = c;
 }
 c2 = [Associative]
 {
-	a = Dummy.Dummy();
+	a = ClassFunctionality.ClassFunctionality(2);
 	b = [Imperative]
 	{
-	    return = Dummy.Dummy();
+	    return = ClassFunctionality.ClassFunctionality(2);
 	}
-	c = a.x + b.x;
+	c = a.IntVal + b.IntVal;
 	return = c;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T03_Class_In_Various_Scopes()
         {
             string code = @"
-class Dummy
-{ 
-	x : var;  
-	constructor Dummy () 
-	{	
-		x = 2;	 
-	}
-}
-a = Dummy.Dummy();
+import(""FFITarget.dll"");
+a = ClassFunctionality.ClassFunctionality(2);
 c1 = [Imperative]
 {
 	b = [Associative]
 	{
 	    return = a;
 	}
-	c = a.x + b.x;
+	c = a.IntVal + b.IntVal;
 	return = c;
 }
 c2 = [Associative]
@@ -109,13 +84,14 @@ c2 = [Associative]
 	{
 	    return = a;
 	}
-	c = a.x + b.x;
+	c = a.IntVal + b.IntVal;
 	return = c;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T04_Class_Properties()
         {
@@ -163,6 +139,7 @@ t6 = t5[0].y;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T05_Class_Properties()
         {
@@ -212,6 +189,7 @@ t6 = t5[0].y;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T06_Class_Properties()
         {
@@ -231,7 +209,7 @@ t1 = a.x1;
             thisTest.Verify("t1", 5, 0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T07_Class_Properties()
         {
@@ -251,6 +229,7 @@ t1 = a.x1;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T08_Class_Properties()
         {
@@ -283,6 +262,7 @@ t2 = a.x2[1].x1;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T09_Class_Inheritance()
         {
@@ -319,6 +299,7 @@ b3 = a1.x3;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T10_Class_Inheritance()
         {
@@ -355,6 +336,7 @@ b3 = a1.x3;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T11_Class_Inheritance()
         {
@@ -405,24 +387,17 @@ b2 = a1.foo2(1);
             thisTest.Verify("b2", 1);
         }
 
-        [Test]
+        [Test][Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T12_Class_CheckPropertyWhenCreatedInImperativeCode()
         {
             String code =
-            @"class Dummy
-{
- x : var;
- 
- constructor Dummy ()
- {
-	x = 2;	
- }
-}
+            @"
+import(""FFITarget.dll"");
 obj = [Imperative]{
-return = Dummy.Dummy();
+return = ClassFunctionality.ClassFunctionality(2);
 }
-getX = obj.x;;
+getX = obj.IntVal;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Verification
@@ -431,6 +406,7 @@ getX = obj.x;;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T13_Class_Default_Constructors()
         {
@@ -467,6 +443,7 @@ p1 = a1.p;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T14_Class_Named_Constructors()
         {
@@ -509,7 +486,7 @@ x3 = xx[2].x;
             thisTest.Verify("x3", 3, 0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T15_Class_Constructor_Negative()
         {
@@ -540,7 +517,7 @@ x2 = 3;
             thisTest.Verify("x2", 3);
         }
 
-        [Test] 
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")] 
         [Category("SmokeTest")]
         public void T15_Class_Constructor_Negative_1467598()
         {
@@ -571,7 +548,7 @@ x2 = 3;
             thisTest.Verify("x2", 3);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T16_Class_Constructor_Negative()
         {
@@ -596,7 +573,7 @@ a1 = A.A(1);
             });
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T17_Class_Constructor_Negative()
         {
@@ -629,7 +606,7 @@ a1 = A.A(b1);
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T18_Class_Constructor_Empty()
         {
@@ -655,7 +632,7 @@ x3 = a1.y;
             Assert.IsTrue(mirror.GetValue("x3").DsasmValue.IsNull);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T19_Class_Constructor_Test_Default_Property_Values()
         {
@@ -701,7 +678,7 @@ x9 = a1.w4;
             thisTest.Verify("x9", null);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T20_Class_Constructor_Fails()
         {
@@ -722,7 +699,7 @@ b1 = a1.x;
             Assert.IsTrue(mirror.GetValue("b1").DsasmValue.IsNull);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T21_Class_Constructor_Calling_Base_Constructor()
         {
@@ -765,7 +742,7 @@ c3 = c.z;
             thisTest.Verify("c3", 3, 0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T22_Class_Constructor_Not_Calling_Base_Constructor()
         {
@@ -798,7 +775,7 @@ c2 = c.y;
             thisTest.Verify("c2", 2, 0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T23_Class_Constructor_Base_Constructor_Same_Name()
         {
@@ -864,7 +841,7 @@ d2 = d.y;
             thisTest.Verify("d2", 2, 0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T24_Class_Constructor_Calling_Base_Methods()
         {
@@ -903,7 +880,7 @@ c2 = c.y;
 
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T25_Class_Properties_Modifiers()
         {
@@ -944,7 +921,7 @@ a4 = a.y;
             thisTest.Verify("a3", 4, 0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T26_Class_Properties_Access()
         {
@@ -1006,7 +983,7 @@ a11;a12;a2;a3;a4;a5;
             thisTest.Verify("a5", 1);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T27_Class_Properties_Access()
         {
@@ -1070,7 +1047,7 @@ aa;a2;
             thisTest.Verify("a2", 15);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("Method Resolution")]
         public void T28_Class_Properties_Access()
         {
@@ -1161,7 +1138,7 @@ f2 = foo(a2,b2);
             thisTest.Verify("f2", 4);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T29_Class_Method_Chaining()
         {
             //Assert.Fail("1454966 - Sprint15: Rev 720 : [Geometry Porting] Assignment operation where the right had side is Class.Constructor.Property is not working ");
@@ -1213,7 +1190,7 @@ t1 = b1[0].x.x[1];
 
 
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T30_Class_Property_Update_Negative()
         {
@@ -1242,7 +1219,7 @@ x3 = 3;
             TestFrameWork.Verify(mirror, "x2", null);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T31_Class_By_Composition()
         {
@@ -1302,7 +1279,7 @@ x1 = testP.X;
             thisTest.Verify("x1", 7.5, 0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T32_Class_ReDeclaration()
         {
@@ -1376,7 +1353,7 @@ x1 = testP.X;
 
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T33_Class_Methods()
         {
@@ -1424,7 +1401,7 @@ x6 = p1.X;
             thisTest.Verify("x6", 1.0, 0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T34_Class_Static_Methods()
         {
@@ -1470,7 +1447,7 @@ x5 = 1;
 
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T35_Class_Method_Overloading()
         {
@@ -1523,7 +1500,7 @@ a2 = p2.add1();
             thisTest.Verify("a2", 35.0, 0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T36_Class_Method_Calling_Constructor()
         {
@@ -1589,7 +1566,7 @@ b5 = b1.b;
             thisTest.Verify("b5", 40.0, 0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T37_Class_Method_Using_This()
         {
@@ -1627,7 +1604,7 @@ a3 = p1.Y;
             });
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T38_Class_Method_Using_This()
         {
@@ -1662,7 +1639,7 @@ a3 = p1.Y;
             thisTest.Verify("a3", 14.0, 0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T39_Class_Method_Returning_Collection()
         {
@@ -1695,7 +1672,7 @@ a3 = a1[1];
             thisTest.Verify("a3", 14.0, 0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T40_Class_Property_Initialization_With_Another_Class()
         {
@@ -1721,7 +1698,7 @@ t1 = p1.inner.X;
             thisTest.Verify("t1", 3.0, 0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T41_Test_Static_Properties()
         {
@@ -1741,7 +1718,7 @@ t2 = A.x;
             thisTest.Verify("t2", 3, 0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T41_Test_Static_Properties_2()
         {
@@ -1767,7 +1744,7 @@ b = [Imperative]
         }
 
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T42_Defect_1461717()
         {
@@ -1797,7 +1774,7 @@ A = B.B();
         }
 
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T43_Defect_1461479()
         {
@@ -1812,7 +1789,7 @@ x2 = A.x;
             thisTest.Verify("x2", 1, 0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T43_Defect_1461479_2()
         {
@@ -1832,7 +1809,7 @@ t1 = a.x1;
             thisTest.Verify("t1", 5, 0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("Update")]
         [Category("Failure")]
         public void T43_Defect_1461479_3()
@@ -1886,7 +1863,7 @@ t6 = x3.foo2();
             thisTest.Verify("t6", v1, 0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T43_Defect_1461479_4()
         {
@@ -1919,7 +1896,7 @@ d = a.foo();
             thisTest.Verify("d", 4, 0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T44_Defect_1461860()
         {
@@ -1944,7 +1921,7 @@ b;
             thisTest.Verify("b", 4);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T44_Defect_1461860_2()
         {
@@ -1977,7 +1954,7 @@ c = y.x;
         }
 
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T46_Defect_1461716()
         {
@@ -2000,7 +1977,7 @@ c1 = b1.a;";
             thisTest.Verify("c1", v1);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T46_Defect_1461716_2()
         {
@@ -2036,7 +2013,7 @@ b1;c1;
             thisTest.Verify("x", v2);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T47_Calling_Imperative_Code_From_Conctructor()
         {
@@ -2062,7 +2039,7 @@ a1 = A1.a;";
 
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T48_Defect_1460027()
         {
@@ -2087,7 +2064,7 @@ b1=a1[1][0];";
             thisTest.Verify("b1", 4);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T48_Defect_1460027_2()
         {
@@ -2112,7 +2089,7 @@ b1=a1[1][0];
             thisTest.Verify("b1", 4);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T48_Defect_1460027_3()
         {
@@ -2142,7 +2119,7 @@ class A
             thisTest.Verify("c", 4, 0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T48_Defect_1460027_4()
         {
@@ -2170,10 +2147,10 @@ class A
 	
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kCyclicDependency);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kCyclicDependency);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T49_Defect_1460505()
         {
@@ -2212,7 +2189,7 @@ derivedPoint2 = modify( derivedpoint );";
             thisTest.Verify("derivedPoint2", true, 0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T49_Defect_1460505_2()
         {
@@ -2252,7 +2229,7 @@ derivedPoint2 = modify( derivedpoint );";
             thisTest.Verify("derivedPoint2", true, 0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T50_Defect_1460510()
         {
@@ -2292,7 +2269,7 @@ class derived extends TestPoint
                 });
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T50_Defect_1460510_2()
         {
@@ -2328,7 +2305,7 @@ class Derived extends Base
             });
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T51_Defect_1461399()
         {
@@ -2358,7 +2335,7 @@ test = CurveProperties(null);";
             thisTest.Verify("test", ExpectedResult);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T51_Defect_1461399_2()
         {
@@ -2395,7 +2372,7 @@ class Arc
             thisTest.Verify("test", ExpectedResult);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T51_Defect_1461399_3()
         {
@@ -2436,7 +2413,7 @@ test;
         }
 
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T52_Defect_1461479()
         {
@@ -2456,7 +2433,7 @@ a = A.foo();
             Assert.IsTrue(mirror.GetValue("a", 0).DsasmValue.IsNull);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T52_Defect_1461479_2()
         {
@@ -2476,7 +2453,7 @@ test1 = Sample.ret_a();
             Assert.IsTrue(mirror.GetValue("test1", 0).DsasmValue.IsNull);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T52_Defect_1461479_3()
         {
@@ -2504,7 +2481,7 @@ class Sample
             thisTest.Verify("test2", 2, 0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T52_Defect_1461479_4()
         {
@@ -2541,7 +2518,7 @@ test6 = S2.ret_a();";
             Object v1 = null;
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T52_Defect_1461479_5()
         {
@@ -2588,7 +2565,7 @@ test1;test2;test7;test8;
             thisTest.Verify("test8", v2, 0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T53_Undefined_Class_As_Parameter()
         {
@@ -2635,7 +2612,7 @@ x2 = derivedpoint.B;
             Assert.IsTrue(mirror.GetValue("derivedPoint2", 0).DsasmValue.IsNull);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T53_Undefined_Class_As_Parameter_1463738()
         {
@@ -2681,7 +2658,7 @@ x2=derivedpoint.B; ";
             Assert.IsTrue(mirror.GetValue("derivedPoint2", 0).DsasmValue.IsNull);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T53_Undefined_Class_As_Parameter_1463738_2()
         {
@@ -2728,7 +2705,7 @@ x2 = derivedpoint.B;
             Assert.IsTrue(mirror.GetValue("derivedPoint2", 0).DsasmValue.IsNull);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T53_Undefined_Class_As_Parameter_1463738_3()
         {
@@ -2774,7 +2751,7 @@ x2 = derivedpoint.B;";
 
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T53_Undefined_Class_As_Parameter_1463738_4()
         {
@@ -2821,19 +2798,8 @@ x2 = derivedpoint.B;
             thisTest.Verify("x2", 9);
 
         }
-        /*
-         going in infinite loop due to defect 1467097
-        
-[Test]
-        [Category("SmokeTest")]
-        public void T53_Undefined_Class_As_Parameter_1463738_5()
-        {
-            ExecutionMirror mirror = thisTest.RunScript(testPath, "T53_Undefined_Class_As_Parameter_1463738_5.ds");
-            thisTest.Verify("x1", 2);
-            thisTest.Verify("x2", 9);
-        }*/
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T53_Undefined_Class_As_Parameter_1463738_6()
         {
@@ -2888,7 +2854,7 @@ x2 = derivedpoint.B;
             thisTest.Verify("x2", 9);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T53_Undefined_Class_As_Parameter_1463738_7()
         {
             string code = @"
@@ -2944,7 +2910,7 @@ x2 = derivedpoint.B; // expected 8; received : 9
             thisTest.Verify("x2", 9);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T53_Undefined_Class_As_Parameter_1463738_8()
         {
@@ -2999,7 +2965,7 @@ x2 = derivedpoint.B;
             thisTest.Verify("x2", 9);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T53_Undefined_Class_As_Parameter_imperative_1463738_9()
         {
@@ -3048,7 +3014,7 @@ x2 = derivedpoint.B;
             thisTest.Verify("x2", 8);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T53_Undefined_Class_negative_1467107_10()
         {
@@ -3066,7 +3032,7 @@ y2 = m.foo(2);
             thisTest.Verify("y2", a);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T53_Undefined_Class_negative_imperative_1467107_11()
         {
@@ -3088,7 +3054,7 @@ y2;
             thisTest.Verify("y2", a);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T53_Undefined_Class_negative_imperative_1467091_12()
         {
@@ -3108,7 +3074,7 @@ y;
             thisTest.Verify("y", a);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T53_Undefined_Class_negative_associative_1467091_13()
         {
@@ -3126,7 +3092,7 @@ y = test.foo (1);
 
         // Jun: To address on dot op defect
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T55_Defect_1460616()
         {
             string code = @"
@@ -3174,7 +3140,7 @@ x3 = a3.x;
 
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("Failure")]
         public void TV55_Defect_1460616_1()
         {
@@ -3224,7 +3190,7 @@ x3 = a3.x;
             thisTest.Verify("x3", v1);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T55_Defect_1460616_2()
         {
@@ -3247,7 +3213,7 @@ x3 = a3.x;
         }
 
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T56_Local_Class_method_Same_Name_As_Global_Function()
         {
@@ -3282,7 +3248,7 @@ x = b.ding();  // expect 100 but got 1000
             thisTest.Verify("x", 100);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("Method Resolution")]
         public void T58_Defect_1462445()
         {
@@ -3318,7 +3284,7 @@ class A
             thisTest.Verify("w", 2);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T59_Defect_1466572()
         {
@@ -3348,7 +3314,7 @@ zz = p1.Z;// expected -1, received -1
 
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T60_Defect_1467004()
         {
@@ -3373,7 +3339,7 @@ s = test.foo(arr); //Expected output should be -123
 
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T59_Defect_1466572_2()
         {
@@ -3403,7 +3369,7 @@ zz = p1.Z;
             thisTest.Verify("zz", 1);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T59_Defect_1466572_3()
         {
@@ -3436,7 +3402,7 @@ p2 = foo ( -x1, -(x1+x2), -x1*x2+0.5 );
             thisTest.Verify("p2", 0.5);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T61_Defect_1459171()
         {
@@ -3468,7 +3434,7 @@ a3 = a1.Y;
             thisTest.Verify("a3", 10.000000);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T62_class_assignment_inside_imperative()
         {
             string code = @"class point{
@@ -3522,7 +3488,7 @@ return=controlPoly;
             // thisTest.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kFunctionNotFound);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T63_Array_inClass_Imperative_1465637()
         {
@@ -3565,7 +3531,7 @@ b2 = {0,0,0,0,0};
         }
 
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T68_Inherit_Base_Constructor_1467153()
         {
             string code = @"
@@ -3603,7 +3569,7 @@ d=n.Fixity;
             thisTest.Verify("d", false);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T68_Inherit_Base_Constructor_1467153_negative()
         {
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
@@ -3642,7 +3608,7 @@ d=n.Fixity;
         }
 
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T63_Class_methodresolution_1457172()
         {
             string code = @"
@@ -3691,7 +3657,7 @@ p8 = y[2][1];
 p8 = y[2][2];
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
             Object a = null;
             thisTest.Verify("p1", a);
             thisTest.Verify("p2", a);
@@ -3703,7 +3669,7 @@ p8 = y[2][2];
             thisTest.Verify("p8", a);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T63_Class_methodresolution_1457172_2()
         {
             string code = @"
@@ -3755,7 +3721,7 @@ p3 = y[0][1][0];
 p4 = y[0][1][1];
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
             Object a = null;
             thisTest.Verify("p1", a);
             thisTest.Verify("p2", a);
@@ -3764,7 +3730,7 @@ p4 = y[0][1][1];
 
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T63_Class_methodresolution_1457172_3()
         {
             string code = @"
@@ -3779,13 +3745,13 @@ x = A.A( );
 y = x.foo ();
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
             Object a = null;
             thisTest.Verify("y", a);
 
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T69_Redefine_property_inherited_1467141()
         {
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
@@ -3817,7 +3783,7 @@ r2 = a.fy;
             });
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T70_Defect_1467112_Method_Overloading_Issue()
         {
             string code = @"
@@ -3847,7 +3813,7 @@ b1 = b.foo1(1);";
             thisTest.Verify("b1", 2);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T71_class_inherit_arg_var_1467157()
         {
             // Assert.Fail("1467157 - Sprint 25 - rev 3047 class inheritance if the argument is var and the same declared both in base calss and inherited class it throws error ");
@@ -3881,7 +3847,7 @@ b=a.CreateNew(1);
 
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T72_class_inherit_1467097_1()
         {
             //Assert.Fail("1467097 Sprint 24 - Rev 2761 - if var is used as a argument to function and call function with defined class it goes into a loop and hangs DS ");
@@ -3928,7 +3894,7 @@ c=oldPoint.C;
 
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T72_class_inherit_1467097_2()
         {
             //Assert.Fail("1467097 Sprint 24 - Rev 2761 - if var is used as a argument to function and call function with defined class it goes into a loop and hangs DS ");
@@ -3976,7 +3942,7 @@ c=derivedpoint.C;
 
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void TV_1467097_class_inherit()
         {
             String code =
@@ -4009,7 +3975,7 @@ rb = oldPoint.B;
         }
 
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T73_Defect_1467210_Expected_Warning()
         {
@@ -4026,14 +3992,14 @@ t = Test.Test();
 a = Test.DoSomething(t); //no warning is thrown and returned value is null
 a = Test.DoSomething(); //wrong warning is thrown: 
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object n1 = null;
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kFunctionNotFound);
             thisTest.Verify("a", n1);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T74_Defect_1469099_Access_Property()
         {
@@ -4066,7 +4032,7 @@ t2 = b1.ang;";
             thisTest.Verify("t2", 0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T74_Defect_1469099_Access_Property_2()
         {
@@ -4109,7 +4075,7 @@ t1;t2;
             thisTest.Verify("t2", 0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T75_Defect_1467188_Class_Instantiation()
         {
@@ -4137,7 +4103,7 @@ RY = ty.foo(t);";
             thisTest.Verify("RY", 1.0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T75_Defect_1467188_Class_Instantiation_2()
         {
@@ -4175,7 +4141,7 @@ RY = ty.foo( t );";
             thisTest.Verify("RY", 9.0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T76_Defect_1467186_Class_Update()
         {
@@ -4198,7 +4164,7 @@ x = 5;";
 
     
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T77_Defect_1460274_Class_Update_2()
         {
             string code = @"
@@ -4241,7 +4207,7 @@ test3 = pointGroup3.X;
             thisTest.Verify("test3", new Object[] { 4, 2 });
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T77_Defect_1460274_Class_Update_3()
         {
@@ -4269,7 +4235,7 @@ test = pointGroup.X;";
             thisTest.Verify("test", new Object[] { 4, 2 });
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T77_Defect_1460274_Class_Update_5()
         {
             string code = @"
@@ -4294,7 +4260,7 @@ test = geometry;";
             thisTest.Verify("test", new Object[] { 5, 10, 15, null, 11 });
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T78_Defect_1467146_Class_Update_With_Replication()
         {
@@ -4314,7 +4280,7 @@ val = v[0];";
             thisTest.Verify("val", 100);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T78_Defect_1467146_Class_Update_With_Replication_2()
         {
@@ -4334,7 +4300,7 @@ val = v[0];";
             thisTest.Verify("val", n1);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("Failure")]
         public void T78_Defect_1467146_Class_Update_With_Replication_3()
         {
@@ -4356,7 +4322,7 @@ v = A.execute(arr);
             thisTest.Verify("v", new Object[] { 100, 100, n1 });
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         [Category("Failure")]
         public void T78_Defect_1467146_Class_Update_With_Replication_4()
@@ -4378,7 +4344,7 @@ v = A.execute(arr);
             thisTest.Verify("v", new Object[] { 100, n1, n1 });
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T78_Defect_1467146_Class_Update_With_Replication_5()
         {
             string code = @"
@@ -4417,7 +4383,7 @@ p2 = B.execute2(arr2);";
             thisTest.Verify("p2", 200);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T79_Defect_1458581_Unnamed_Constructor()
         {
             string code = @"
@@ -4440,7 +4406,7 @@ b2 = a1.x2;";
             thisTest.Verify("b2", 1.5);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("Replication")]
         public void T80_Defect_1444246_Replication()
         {
@@ -4464,7 +4430,7 @@ xs;
             thisTest.Verify("xs", new Object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("Replication")]
         public void T80_Defect_1444246_Replication_2()
         {
@@ -4484,7 +4450,7 @@ p2 = MyPoint.CreateXY(-20.0,-30.0).X;";
             thisTest.Verify("p2", -20.0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T81_Defect_1467246_derived_class_setter()
         {
             string code = @"
@@ -4515,7 +4481,7 @@ z1 = a1.z;
             thisTest.Verify("z1", 6);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T82_Defect_1467174()
         {
             string code = @"
@@ -4551,7 +4517,7 @@ t1 = l1.StartPoint.X;
 
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("Replication")]
         public void T83_Defect_1463232()
         {
@@ -4562,14 +4528,14 @@ t1 = l1.StartPoint.X;
 a = A.A();
 t = a.x;
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
             thisTest.Verify("t", n1);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("Replication")]
         public void T83_Defect_1463232_2()
         {
@@ -4584,14 +4550,14 @@ a = A.A();
 t = a.x;
 }
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
             thisTest.Verify("t", n1);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("Replication")]
         [Category("Failure")]
         public void T83_Defect_1463232_3()
@@ -4607,14 +4573,14 @@ t = a.x;
 }
 ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1694
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             string errmsg = "MAGN-1694 Regression : Dot Operation on instances using replication returns single null where multiple nulls are expected";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
             thisTest.Verify("t", new Object[] { n1, n1 });
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T84_ClassNameAsPropertyName_01()
         {
             string code = @"
@@ -4655,7 +4621,7 @@ x2 = b.getx();
             thisTest.VerifyBuildWarningCount(0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T85_Defect_1467247()
         {
             string code = @"
@@ -4697,7 +4663,7 @@ t2 = a.y;
         }
 
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T85_Defect_1467247_2()
         {
             string code = @"
@@ -4738,7 +4704,7 @@ a.y = 5;
 
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("Failure")]
         public void T85_Defect_1467247_3()
         {
@@ -4766,7 +4732,7 @@ a.x = 4;
 
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T86_Defect_1467216()
         {
             string code = @"
@@ -4793,7 +4759,7 @@ test = p.x;
             thisTest.Verify("test", 10);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T86_Defect_1467216_2()
         {
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
@@ -4811,7 +4777,7 @@ test = Plane.x;
             });
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T86_Defect_1467216_3()
         {
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
@@ -4828,7 +4794,7 @@ test = Plane;
             });
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T86_Defect_1467216_4()
         {
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
@@ -4849,7 +4815,7 @@ test = foo();
             });
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T87_Defect_1467243()
         {
             string code = @"
@@ -4871,7 +4837,7 @@ r2 = fa.fx[0];
 
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T87_Defect_1467243_2()
         {
             string code = @"
@@ -4892,7 +4858,7 @@ r2 = fa.fx[0][0];
             thisTest.Verify("r1", new Object[] { true });
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T88_Runtime_MemberFunction01()
         {
             string code = @"
@@ -4922,7 +4888,7 @@ r = x.foo();
             thisTest.Verify("r", null);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T89_Runtime_MemberFunction02()
         {
             string code = @"
@@ -4952,7 +4918,7 @@ r = b.foo();
             thisTest.Verify("r", 200);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T89_1467344_02()
         {
             string code = @"
@@ -4987,7 +4953,7 @@ r;
             thisTest.Verify("r", 200);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T90_Runtime_MemberFunction03()
         {
             string code = @"
@@ -5024,7 +4990,7 @@ r = x.foo();
             thisTest.Verify("r", 300);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T91_stackoverflow()
         {
             string code = @"
@@ -5059,7 +5025,7 @@ r = x.foo();
             thisTest.VerifyBuildWarningCount(0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         [Category("Failure")]
         public void T92_default_argument_1467384()
@@ -5081,7 +5047,7 @@ r = x.foo();
             thisTest.Verify("a", 4, 0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T92_default_argument_1467402()
         {
@@ -5101,7 +5067,7 @@ r = x.foo();
             thisTest.Verify("d", 1, 0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T93_Defect_1467349_update_static_properties()
         {
@@ -5118,7 +5084,7 @@ Base.x = { 5.2, 3.9 };
             thisTest.Verify("t", new Object[] { 5, 4 });
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T93_Defect_1467349_update_static_properties_2()
         {
@@ -5138,7 +5104,7 @@ b2 = b1;
             thisTest.Verify("b2", 3);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T93_Defect_1467349_update_static_properties_3()
         {
@@ -5162,7 +5128,7 @@ b2 = b1;
             thisTest.Verify("b2", 3);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T93_Defect_1467349_update_static_properties_4()
         {
@@ -5186,7 +5152,7 @@ b2 = b1;
             thisTest.Verify("b2", new Object[] { 3, 4 });
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T93_Defect_1467349_update_static_properties_5()
         {
@@ -5211,7 +5177,7 @@ b2 = b1;
             thisTest.Verify("b2", new Object[] { 3, 4 });
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T94_1467343()
         {
@@ -5240,11 +5206,11 @@ r = x.foo();
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r", null);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
 
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T94_1467343_2()
         {
@@ -5277,10 +5243,10 @@ r;
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r", null);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T94_1467344_3()
         {
@@ -5313,7 +5279,7 @@ r = b.foo();
 
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T94_1467344_4()
         {
@@ -5349,7 +5315,7 @@ r = b.foo();
             thisTest.Verify("r", 200);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T94_1467443()
         {
@@ -5365,10 +5331,10 @@ a.foo = 1;
 ";
             string error = "Property 'foo' is inaccessible";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T94__imperative_1467443_7()
         {
@@ -5387,10 +5353,10 @@ a = test.test();
 ";
             string error = "Property 'foo' is inaccessible";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T94_1467443_2()
         {
@@ -5402,10 +5368,10 @@ a.b = 1;
 ";
             string error = "Class 'test' does not have a property 'b'";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T94_imperative_1467443_8()
         {
@@ -5421,10 +5387,10 @@ a.b = 1;
 ";
             string error = "1467443 Error on incorrect set property is not helpful ";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T94_1467443_3()
         {
@@ -5444,10 +5410,10 @@ a.foo = 1;
 ";
             string error = "Property 'foo' is inaccessible";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T94_iperative_1467443_9()
         {
@@ -5471,10 +5437,10 @@ a.foo = 1;
 ";
             string error = "Property 'foo' is inaccessible";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T94_1467443_4()
         {
@@ -5494,10 +5460,10 @@ a.foo = 1;
 ";
             string error = "Property 'foo' is inaccessible";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T94_imperative_1467443_10()
         {
@@ -5521,10 +5487,10 @@ a.foo = 1;
 ";
             string error = "Property 'foo' is inaccessible";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T94_1467443_6()
         {
@@ -5548,10 +5514,10 @@ a.foo = 1;
 ";
             string error = "Class 'test' does not have a property 'foo'";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T94_imperative_1467443_11()
         {
@@ -5579,10 +5545,10 @@ a.foo = 1;
 ";
             string error = "1467443 Error on incorrect set property is not helpful ";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T95_1467437_1()
         {
@@ -5604,7 +5570,7 @@ a.foo = 1;
             thisTest.Verify("y", 1);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T95_1467437_2()
         {
@@ -5626,7 +5592,7 @@ a.foo = 1;
             thisTest.Verify("y", new object[] { 1, 2, 3 });
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T95_1467437_3()
         {
@@ -5652,7 +5618,7 @@ y = x.a;
             thisTest.Verify("y", 1);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T95_1467437_4()
         {
@@ -5678,7 +5644,7 @@ y = x.a;
             thisTest.Verify("y", new object[] { 1, 2, 3 });
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T95_1467437_5()
         {
@@ -5704,7 +5670,7 @@ y = x.a;
             thisTest.Verify("y", 1);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T95_1467437_6()
         {
@@ -5730,7 +5696,7 @@ y = x.a;
             thisTest.Verify("y", new object[] { 1, 2, 3 });
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T95_1467437_7()
         {
@@ -5756,7 +5722,7 @@ y = x.a;
             thisTest.Verify("y", new object[] { 2, 3 });
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T96_1467464_1()
         {
@@ -5787,7 +5753,7 @@ y = x.a;
             thisTest.Verify("b", null);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T97_1467440_Class_Not_Defined_1()
         {
@@ -5805,7 +5771,7 @@ z = foo({ 1, 2 });
             thisTest.Verify("z", n1);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T97_1467440_Class_Not_Defined_2()
         {
@@ -5827,7 +5793,7 @@ z;
             thisTest.Verify("z", n1);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T97_1467440_Class_Not_Defined_3
             ()
@@ -5850,7 +5816,7 @@ z;
             thisTest.Verify("z", n1);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T98_1467450_Class_Not_Defined_1
             ()
@@ -5871,7 +5837,7 @@ a4 = A.A({1,2}, c..d, 0..1, 5..f);
             thisTest.Verify("a4", n1);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T98_1467450_Class_Not_Defined_2
             ()
@@ -5896,7 +5862,7 @@ a1;a2;a3;a4;
             thisTest.Verify("a4", n1);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T98_1467450_Class_Not_Defined_3
             ()
@@ -5924,7 +5890,7 @@ a4 : int;
             thisTest.Verify("a4", n1);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T98_1467450_Class_Not_Defined_4
             ()
@@ -5956,7 +5922,7 @@ test = A.foo();
             thisTest.Verify("a4", n1);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T99_UnnamedConstructor01()
         {
@@ -5975,9 +5941,8 @@ r = a.x;
             thisTest.Verify("r", 41);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
-        [Category("Failure")]
         public void T99_1467469
             ()
         {
@@ -5997,7 +5962,7 @@ d = a == b;
             thisTest.Verify("c", false);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T95_1467421()
         {
@@ -6021,7 +5986,7 @@ r = a1.count;
 
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T95_1467421_2()
         {
@@ -6045,7 +6010,7 @@ r = a1.count;
 
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T95_1467421_3()
         {
@@ -6073,7 +6038,7 @@ r2 = b1.count;
 
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T95_1467421_4()
         {
@@ -6101,7 +6066,7 @@ r2 = b1.count;
             thisTest.Verify("r2", new object[] { 4, 5, 6 });
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T95_1467421_5()
         {
@@ -6128,7 +6093,7 @@ r = a1.count;
             thisTest.Verify("r", 1);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T95_1467472()
         {
@@ -6154,7 +6119,7 @@ r2=a1.pt;
             thisTest.Verify("r2", 1);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T95_1467472_2()
         {
@@ -6187,7 +6152,7 @@ r2=b1.pt;
             thisTest.Verify("r2", 2);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T95_1467472_3()
         {
@@ -6218,7 +6183,7 @@ r2=a1.pt;
             thisTest.Verify("r2", 1);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T95_1467472_4()
         {
@@ -6255,7 +6220,7 @@ r2=b1.pt;
             thisTest.Verify("r2", 2);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T96_1467078_unnamed_constructor_1()
         {
@@ -6281,7 +6246,7 @@ test = t.i;
             thisTest.Verify("test", 41);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T96_1467078_unnamed_constructor_2()
         {
@@ -6313,7 +6278,7 @@ test2 = t.j;
             thisTest.Verify("test2", 4);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T96_1467078_unnamed_constructor_3()
         {
@@ -6344,7 +6309,7 @@ test1 = t.j.i;
 
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T96_1467078_unnamed_constructor_4()
         {
@@ -6379,7 +6344,7 @@ test1;
             thisTest.Verify("test1", 4);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T96_1467078_unnamed_constructor_5()
         {
@@ -6414,7 +6379,7 @@ test1 = foo();
             thisTest.Verify("test1", 4);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T97_1467522_Indexing_Class_Properties_1()
         {
@@ -6453,7 +6418,7 @@ test2 = walls[0].Start.x; // received 1
             thisTest.Verify("test", 1.0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T97_1467522_Indexing_Class_Properties_2()
         {
@@ -6488,7 +6453,7 @@ test2 = wall[0].func(wall[1]);  // 3; expected test1=test2
             thisTest.Verify("test1", 3);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("Failure")]
         public void T98_Class_Static_Property_Using_Global_Variable()
         {
@@ -6507,7 +6472,7 @@ test1 = A.a;
             thisTest.Verify("test1", 3);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T98_Class_Static_Property_Using_Other_Properties()
         {
             String code =
@@ -6525,7 +6490,7 @@ test1 = A.a;
             thisTest.VerifyBuildWarningCount(1);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T98_1467571_static_nonstatic_issue()
         {
             String code =
@@ -6548,7 +6513,7 @@ test2 = aa.a2();
             thisTest.VerifyBuildWarningCount(1);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T99_1467578_this_imperative()
         {
             String code =
@@ -6582,7 +6547,7 @@ val=seed.someOperation().IntValue;
             thisTest.VerifyBuildWarningCount(0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T100_1467578_this_imperative()
         {
             String code =
@@ -6622,7 +6587,7 @@ startArray = MyInt.Default(1..5);
             thisTest.VerifyBuildWarningCount(0);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T110_IDE_884_Testing_Bang_Inside_Imperative()
         {
             String code =
@@ -6701,7 +6666,7 @@ test4 = t.foo4();
             thisTest.Verify("test4", false);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T110_IDE_884_Testing_Bang_Inside_Imperative_2()
         {
             String code =
@@ -6744,7 +6709,7 @@ test3 = foo(a);
 
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T111_Class_Constructor_Negative_1467598()
         {
@@ -6767,7 +6732,7 @@ a = test.sum();
 
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T112_1467578_this_imperative()
         {
@@ -6813,7 +6778,7 @@ test = seed.someOperation(startArray).IntValue;
             thisTest.Verify("test", new Object[] { 2, 0, 0, 0, 0 });
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T113_1467599_Type_Conversion()
         {
@@ -6863,7 +6828,7 @@ b = MyInt.MyInt().foo();
             thisTest.Verify("b", null);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T114_1467599_Type_Conversion()
         {
@@ -6914,7 +6879,7 @@ b = MyInt.MyInt().foo();
             thisTest.Verify("b", new Object[] { null, null });
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T115_1467599_Type_Conversion()
         {
@@ -6949,7 +6914,7 @@ b = MyInt.MyInt().foo().IntValue;
             thisTest.Verify("b", null);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T116_1467599_Type_Conversion()
         {
             String code =
@@ -6969,7 +6934,7 @@ x = 1;
             thisTest.Verify("x", 1.5);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T117_1467599_Type_Conversion()
         {
@@ -6999,7 +6964,7 @@ c = a.x;
             thisTest.Verify("c", 1.5);
         }
 
-        [Test]
+        [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T118_1467695_setter_inlinecondition()
         {

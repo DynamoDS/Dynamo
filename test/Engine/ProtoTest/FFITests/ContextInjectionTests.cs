@@ -16,8 +16,6 @@ namespace ProtoFFITests
     }
     public class ContextInjectionTests : FFITestSetup
     {
-        TestFrameWork thisTest = new TestFrameWork();
-
         public bool ValidateInternalContext(Object obj, int value)
         {
             InternalContext cntx = obj as InternalContext;

@@ -4,16 +4,15 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore.Namespace;
 using ProtoCore.Utils;
 using ProtoTestFx.TD;
 
 namespace ProtoTest.GraphCompiler
 {
     [TestFixture]
-    public class NewFrontEndTests
+    class NewFrontEndTests : ProtoTestBase
     {
-        private TestFrameWork thisTest = new TestFrameWork();
-
         [Test]
         public void ReproMAGN3603()
         {
@@ -22,7 +21,9 @@ namespace ProtoTest.GraphCompiler
                             b = (1 + 2) * 3;
                             c = 1 + 2 * 3;";
 
-            ParseParam parseParam = new ParseParam(Guid.NewGuid(), code);
+            ElementResolver elementResolver = new ElementResolver();
+            ParseParam parseParam = new ParseParam(Guid.NewGuid(), code, elementResolver);
+            
             Assert.IsTrue(CompilerUtils.PreCompileCodeBlock(thisTest.CreateTestCore(), ref parseParam));
             Assert.IsTrue(parseParam.ParsedNodes != null && parseParam.ParsedNodes.Count() > 0);
 
@@ -66,6 +67,20 @@ namespace ProtoTest.GraphCompiler
             Assert.IsTrue(nestedFuncCall != null && (nestedFuncCall.Function as IdentifierNode).Value == "%mul");
         }
 
-        
+        [Test]
+        public void TestUnboundIdentifierInUnnamedSignedExpression()
+        {
+            string code = @"a*-1;";
+
+            ElementResolver elementResolver = new ElementResolver();
+            ParseParam parseParam = new ParseParam(Guid.NewGuid(), code, elementResolver);
+
+            Assert.IsTrue(CompilerUtils.PreCompileCodeBlock(thisTest.CreateTestCore(), ref parseParam));
+            Assert.IsTrue(parseParam.ParsedNodes != null && parseParam.ParsedNodes.Any());
+
+            var inputIdentifier = parseParam.UnboundIdentifiers;
+            Assert.AreEqual(1, inputIdentifier.Count);
+            Assert.AreEqual("a", inputIdentifier.ElementAt(0).Value);
+        }
     }
 }

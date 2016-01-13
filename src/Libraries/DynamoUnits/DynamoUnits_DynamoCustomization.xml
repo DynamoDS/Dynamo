@@ -5,7 +5,7 @@
     </assembly>
     <namespaces>
         <namespace name="DynamoUnits">
-            <category>Units</category>
+            <category>Core</category>
         </namespace>
     </namespaces>
 </doc>

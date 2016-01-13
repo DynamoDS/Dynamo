@@ -5,26 +5,21 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
-    public class TestUpdate
+    class TestUpdate : ProtoTestBase
     {
-        readonly TestFrameWork thisTest = new TestFrameWork();
-        ProtoCore.Core core;
-        ProtoScript.Config.RunConfiguration runnerConfig;
         string testPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
         ProtoScript.Runners.DebugRunner fsr;
-        [SetUp]
-        public void SetUp()
+
+        public override void Setup()
         {
-            // Specify some of the requirements of IDE.
-            ProtoCore.Options options = new ProtoCore.Options();
-            options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-            options.SuppressBuildOutput = false;
-            core = new ProtoCore.Core(options);
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
-            runnerConfig = new ProtoScript.Config.RunConfiguration();
-            runnerConfig.IsParrallel = false;
+            base.Setup();
             fsr = new ProtoScript.Runners.DebugRunner(core);
+        }
+
+        public override void TearDown()
+        {
+            base.TearDown();
+            fsr = null;
         }
 
         [Test]
@@ -101,26 +96,15 @@ c = a + 1;
 
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T04_Update_Class_Instance_Argument()
         {
             string code = @"
-class A
-{
-    a : int;
-	constructor A ( x : int )
-	{
-	    a = x;
-	}
-	def add ( x : int )
-	{
-	    a = a + x;
-		return = a;
-	}
-}
+import(""FFITarget.dll"");
 t1 = 1;
-a1 = A.A(t1);
-b1 = a1.add(t1);
+a1 = ClassFunctionality.ClassFunctionality(t1);
+b1 = a1.OverloadedAdd(t1);
 [Imperative]
 {
 	t1 = 2;
@@ -131,6 +115,7 @@ b1 = a1.add(t1);
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T05_Update_Class_Instance_Argument()
         {
@@ -225,7 +210,7 @@ d = [ Imperative ]
 e = b;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kCyclicDependency);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kCyclicDependency);
             /*
             Object[] v2 = new Object[] { 3, 4, 5 };
             Object[] v1 = new Object[] { 2, 3, 4 };
@@ -257,7 +242,7 @@ e = c;
 f = d;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kCyclicDependency);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kCyclicDependency);
 
             /*
             thisTest.Verify("d", 3, 0);
@@ -364,19 +349,13 @@ f = c + 1;";
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T14_Defect_1461209()
         {
             string code = @"
-class A
-{
-    a : var;
-	constructor A ( a1 : double)
-	{
-	    a = a1;
-	}
-}
-y = A.A( x);
-a1 = y.a;
+import(""FFITarget.dll"");
+y = ClassFunctionality.ClassFunctionality( x);
+a1 = y.IntVal;
 x = 3;
 x = 5;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -385,20 +364,14 @@ x = 5;";
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T14_Defect_1461209_2()
         {
             string code = @"
-class A
-{
-    a : var;
-	constructor A ( a1 : double)
-	{
-	    a = a1;
-	}
-}
-y = A.A( x);
-a1 = y.a;
+import(""FFITarget.dll"");
+y = ClassFunctionality.ClassFunctionality( x);
+a1 = y.IntVal;
 x = [Imperative]
 {
     return = 5;
@@ -410,6 +383,7 @@ x = [Imperative]
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void T14_Defect_1461209_3()
         {
@@ -434,7 +408,7 @@ a2 = y.foo(1);
         }
 
         [Test]
-
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         public void T14_Defect_1461209_4()
         {
             string code = @"
@@ -463,28 +437,20 @@ x = 2;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T15_Defect_1460935()
         {
             string code = @"
-class B
-{ 
-	x3 : int ;
-		
-	constructor B(a) 
-	{	
-		x3 = a;
-	}
-	
-}
-def foo ( b1 : B )
+import(""FFITarget.dll"");
+def foo ( b1 : ClassFunctionality )
 {
-    return = b1.x3;
+    return = b1.IntVal;
 }
-b1 = B.B( 1 );
-x = b1.x3;
+b1 = ClassFunctionality.ClassFunctionality( 1 );
+x = b1.IntVal;
 b1 = 1;
-y = x; // expected : null; recieved : 1
+y = x; 
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object v1 = null;
@@ -493,26 +459,18 @@ y = x; // expected : null; recieved : 1
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T15_Defect_1460935_2()
         {
             string code = @"
-class B
-{ 
-	x3 : int ;
-		
-	constructor B(a) 
-	{	
-		x3 = a;
-	}
-	
-}
-def foo ( b1 : B )
+import(""FFITarget.dll"");
+def foo ( b1 : ClassFunctionality )
 {
-    return = b1.x3;
+    return = b1.IntVal;
 }
-b1 = B.B( 1 );
-x = b1.x3;
+b1 = ClassFunctionality.ClassFunctionality( 1 );
+x = b1.IntVal;
 b1 = 2;
 y = x; // expected : null; recieved : exception
 ";
@@ -540,43 +498,25 @@ x = false;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T15_Defect_1460935_4()
         {
             string code = @"
-class B
-{ 
-	x3 : int ;
-		
-	constructor B(a) 
-	{	
-		x3 = a;
-	}
-	
-}
-class A
-{ 
-	x3 : int ;
-		
-	constructor A(a) 
-	{	
-		x3 = a;
-	}
-	
-}
-def foo ( b1 : B )
+import(""FFITarget.dll"");
+def foo ( b1 : ClassFunctionality )
 {
-    return = b1.x3;
+    return = b1.IntVal;
 }
-b1 = B.B( 1 );
-x = b1.x3;
+b1 = ClassFunctionality.ClassFunctionality( 1 );
+x = b1.IntVal;
 y = foo ( b1 );
 [Imperative]
 {
-	b1 = A.A( 2 );	
+	b1 = ClassFunctionality.ClassFunctionality( 2 );	
 }
-b2 = B.B( 2 );
-x2 = b2.x3;
+b2 = ClassFunctionality.ClassFunctionality( 2 );
+x2 = b2.IntVal;
 y2 = foo ( b2 );
 [Imperative]
 {
@@ -586,32 +526,24 @@ y2 = foo ( b2 );
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object v1 = null;
             thisTest.Verify("x", 2, 0);
+            thisTest.Verify("y", 2, 0);
             thisTest.Verify("x2", v1, 0);
-            thisTest.Verify("y", v1, 0);
             thisTest.Verify("y2", v1, 0);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
 
         public void T15_Defect_1460935_5()
         {
             string code = @"
-class B
-{ 
-	x3 : int ;
-		
-	constructor B(a) 
-	{	
-		x3 = a;
-	}
-	
-}
-b3 = B.B( 2 );
-x3 = b3.x3;
+import(""FFITarget.dll"");
+b3 = ClassFunctionality.ClassFunctionality( 2 );
+x3 = b3.IntVal;
 [Imperative]
 {
-	b3 = { B.B( 1 ), B.B( 2 ) } ;
+	b3 = { ClassFunctionality.ClassFunctionality( 1 ), ClassFunctionality.ClassFunctionality( 2 ) } ;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -620,26 +552,18 @@ x3 = b3.x3;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T15_Defect_1460935_6()
         {
             string code = @"
-class B
-{ 
-	x3 : int ;
-		
-	constructor B(a) 
-	{	
-		x3 = a;
-	}
-	
-}
-def foo ( b : B )
+import(""FFITarget.dll"");
+def foo ( b : ClassFunctionality )
 {
-    return = { b.x3, b.x3 + 1 };
+    return = { b.IntVal, b.IntVal + 1 };
 }
-b1 = B.B( 2 );
-x1 = b1.x3;
+b1 = ClassFunctionality.ClassFunctionality( 2 );
+x1 = b1.IntVal;
 f1 = foo ( b1);
 b1 = null;
 ";
@@ -721,6 +645,7 @@ y = foo (x );
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_UpdateWithinDSClass")]
         [Category("SmokeTest")]
         public void T16_Defect_1460623_4()
         {
@@ -757,24 +682,18 @@ z1 = a1.foo();
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T17_Defect_1459759()
         {
             string code = @"
-class B
-{
-    b1 : var;
-	constructor B ( )
-	{
-	    b1 = 3;
-	}
-}
+import(""FFITarget.dll"");
 p1 = 1;
 p2 = p1 * 2;
 p1 = true;
 x1 = 3;
 y1 = x1 + 1;
-x1 = B.B();
+x1 = ClassFunctionality.ClassFunctionality();
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object v1 = null;
@@ -803,7 +722,7 @@ a1 = 5;
  public void T18_Update_Variables_In_Inner_Assoc()
         {
             string src = string.Format("{0}{1}", testPath, "T18_Update_Variables_In_Inner_Assoc.ds");
-            fsr.LoadAndPreStart(src, runnerConfig);
+            fsr.LoadAndPreStart(src);
             ProtoCore.CodeModel.CodePoint cp = new ProtoCore.CodeModel.CodePoint
             {
                 CharNo = 8,
@@ -891,6 +810,7 @@ b = c + 3;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_UpdateWithinDSClass")]
         [Category("Update")]
         public void T19_Update_Class_Properties_Thru_Methods()
         {
@@ -984,34 +904,23 @@ b = foo ( a ) ;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Update")]
         [Category("Failure")]
         public void T20_Defect_1461391_4()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4085
             string err = "MAGN-4085: Updating a class property using a class method from an imperative scope is not working now";
-            string code = @"class A
-{
-    a : int;
-	constructor A ( a1 : int )
-	{
-	    a = a1;		
-	}
-	
-	def update ( a2 : int )
-	{
-	    a = a2;
-		return = true;
-	}
-}
+            string code = @"
+import(""FFITarget.dll"");
 x = { 1, 2 };
-y1 = A.A(x);
-y2 = { y1[0].a, y1[1].a };
+y1 = ClassFunctionality.ClassFunctionality(x);
+y2 = { y1[0].IntVal, y1[1].IntVal };
 [Imperative]
 { 
 	for ( count in 0..1)
 	{
-	    temp = y1[count].update(0);	
+	    temp = y1[count].Set(0);	
 	}
 }
 t1 = y2[0];
@@ -1025,39 +934,29 @@ t2 = y2[1];
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Update")]
         [Category("Failure")]
         public void T20_Defect_1461391_5()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4086
             string errmsg = "MAGN-4086: Update of class instance by updating its property is not propagating the proper update";
-            string code = @"class A
+            string code = @"
+import(""FFITarget.dll"");
+
+def foo ( a : ClassFunctionality) 
 {
-    a : int;
-	constructor A ( a1 : int )
-	{
-	    a = a1;		
-	}
-	
-	def update ( a2 : int )
-	{
-	    a = a2;
-		return = true;
-	}
-}
-def foo ( a : A) 
-{
-    return = a.a;
+    return = a.IntVal;
 }
 x = { 1, 2 };
-y1 = A.A(x);
+y1 = ClassFunctionality.ClassFunctionality(x);
 y2 = foo ( y1);
 [Imperative]
 { 
 	count = 0;
 	for ( i in y1)
 	{
-	    temp = y1[count].update(0);	
+	    temp = y1[count].Set(0);	
         count = count + 1;		
 	}
 }
@@ -1122,6 +1021,7 @@ c;
 
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T22_Update_Class_Instance()
         {
@@ -1175,152 +1075,137 @@ dummy=1;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T23_Update_Class_Instance_Using_Set_Method()
         {
             string error = "1467385 Sprint 27 - rev 4219 - valid update testcase throws cyclic dependancy error ";
-            string code = @"class A
-{
-    a : int;	
-}
-a1 = A.A();
-a1.a = 1;
-b = a1.a;
-a1.a = 2;
+            string code = @"
+import(""FFITarget.dll"");
+a1 = ClassFunctionality.ClassFunctionality();
+a1.IntVal = 1;
+b = a1.IntVal;
+a1.IntVal = 2;
 ";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("b", 2);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T23_Update_Class_Instance_Using_Set_Method_2()
         {
-            string error = "1467385 Sprint 27 - rev 4219 - valid update testcase throws cyclic dependancy error ";
-            string code = @"class A
-{
-    a : int[];	
-}
-a1 = A.A();
-a1.a = {1,2};
-b = a1.a;
-a1.a = {2,3};
+            string code = @"
+import(""FFITarget.dll"");
+a1 = ClassFunctionality.ClassFunctionality();
+a1.IntVal = 1;
+b = a1.IntVal;
+a1.IntVal = 2;
 ";
-            thisTest.VerifyRunScriptSource(code, error);
-            thisTest.Verify("b", new Object[] { 2, 3 });
+            thisTest.VerifyRunScriptSource(code);
+            thisTest.Verify("b", 2);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T23_Update_Class_Instance_Using_Set_Method_3()
         {
-            //string errmsg = "1467318 - Cannot return an array from a function whose return type is var with undefined rank (-2)";
-            string error = "1467385 Sprint 27 - rev 4219 - valid update testcase throws cyclic dependancy error ";
-            string code = @"class A
-{
-    a : int[];	
-}
-a1 = A.A();
-a1.a = {1,2};
-b = a1.a;
-a1.a = null;
+            string code = @"
+import(""FFITarget.dll"");
+a1 = ClassFunctionality.ClassFunctionality();
+a1.IntVal = 1;
+b = a1.IntVal;
+a1.IntVal = null;
 ";
-            thisTest.VerifyRunScriptSource(code, error);
+            thisTest.VerifyRunScriptSource(code);
             Object n1 = null;
-            thisTest.Verify("b", n1);
+            thisTest.Verify("b", 1); // int cannot be set to null
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T23_Update_Class_Instance_Using_Set_Method_4()
         {
             string error = "1467385 Sprint 27 - rev 4219 - valid update testcase throws cyclic dependancy error ";
-            string code = @"class A
-{
-    a : int[];	
-}
-a1 = A.A();
-a1.a = {1,2};
-b = a1.a;
-a1.a = 3.5;
+            string code = @"
+import(""FFITarget.dll"");
+a1 = ClassFunctionality.ClassFunctionality();
+a1.IntVal = 1;
+b = a1.IntVal;
+a1.IntVal = 3.5;
 ";
             thisTest.VerifyRunScriptSource(code, error);
 
-            thisTest.Verify("b", new Object[] { 4 });
+            thisTest.Verify("b", 4);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T23_Update_Class_Instance_Using_Set_Method_5()
         {
-            string error = "1467385 Sprint 27 - rev 4219 - valid update testcase throws cyclic dependancy error ";
-            string code = @"class A
-{
-    a : int[];	
-}
-a1 = A.A();
-a1.a = {1,2};
-b = a1.a;
-a1.a = true;
+            string code = @"
+import(""FFITarget.dll"");
+a1 = ClassFunctionality.ClassFunctionality();
+a1.IntVal = 1;
+b = a1.IntVal;
+a1.IntVal = true; // This is not accepted as IntVal is an 'int' type
 ";
-            thisTest.VerifyRunScriptSource(code, error);
-            Object n1 = null;
-            thisTest.Verify("b", n1);
+            thisTest.VerifyRunScriptSource(code);
+            thisTest.Verify("b", 1);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
-        [Category("Failure")]
         public void T23_Update_Class_Instance_Using_Set_Method_6()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1553
             string errmsg = "MAGN-1553: [Design Issue] update of instance , between property update and by method what ist he expected answer ";//1467187 - Sprint24: REGRESSION : rev 3177: When a class collection property is updated, the value if not reflected";
-            string code = @"class A
+            string code = @"
+import(""FFITarget.dll"");
+def foo ( x1 : ClassFunctionality)
 {
-    a : int[];	
-}
-def foo ( x1 : A)
-{
-    x1.a = { 0, 0};
-    x1.a[3] = -1;
+    x1.IntVal = -1;
     return = x1;
 }
-a1 = A.A();
-a1.a = {1,2}; // Having this line means not testing the property modification in foo. This is because this line will get re-executed as a1.a is modified in foo
-b = a1.a;
+a1 = ClassFunctionality.ClassFunctionality();
+a1.IntVal = 10; // Having this line means not testing the property modification in foo. This is because this line will get re-executed as a1.a is modified in foo
+b = a1.IntVal;
 a1 = foo ( a1);
 ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
-            thisTest.Verify("b", new Object[] { 0, 0, n1, -1 });
+            thisTest.Verify("b", 10);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T23_Update_Class_Instance_Using_Set_Method_7()
         {
             string errmsg = "";
-            string code = @"class A
+            string code = @"
+import(""FFITarget.dll"");
+def foo ( x1 : ClassFunctionality)
 {
-    a : int[];	
+    x1.IntVal = -1;
+    return = x1;
 }
-def foo ( x1 : A)
-{
-    x1.a = { 0, 0};
-    x1.a[3] = -1;
-    return = true;
-}
-a1 = A.A();
-// a1.a = {1,2}; // Having this line means not testing the property modification in foo. This is because this line will get re-executed as a1.a is modified in foo
-b = a1.a;
+a1 = ClassFunctionality.ClassFunctionality();
+b = a1.IntVal;
 dummy = foo ( a1);
 ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
-            thisTest.Verify("b", new Object[] { 0, 0, n1, -1 });
+            thisTest.Verify("b", -1);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T24_Update_Variable_Type()
         {
@@ -1329,16 +1214,10 @@ dummy = foo ( a1);
             //Assert.Fail("1463327 - Sprint 20 : Rev 2086 : Update issue : When a variable is updated to a different type using itself DS is throwing System.NullReference exception");
 
             string code = @"
-class A
-{	Pt : double;
-	constructor A (pt : double)	
-	{		
-	    Pt = pt;	
-	}
-}
+import(""FFITarget.dll"");
 c = 1.0;
-c = A.A( c );
-x = c.Pt;";
+c = ClassFunctionality.ClassFunctionality( c );
+x = c.IntVal;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 1.0);
 
@@ -1452,7 +1331,7 @@ e;
         }
 
         [Test]
-        [Category("Modifier Block")]
+        [Category("ModifierBlock")] 
         public void T26_Defect_1463663()
         {
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
@@ -1481,6 +1360,7 @@ c = [Imperative]
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")]
         public void T27_Modifier_Stack_With_Right_Assignment()
         {
             string code = @"
@@ -1504,6 +1384,7 @@ f = a3 + 1;";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")]
         public void T27_Modifier_Stack_With_Function_Call()
         {
             string code = @"
@@ -1533,6 +1414,7 @@ f = a3 + 1;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] 
         public void T27_Modifier_Stack_With_Function_Call_2()
         {
             string code = @"
@@ -1562,7 +1444,9 @@ x = [Associative]
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_ModifierBlock")]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")]
         public void T27_Modifier_Stack_With_Different_Types()
         {
             string code = @"
@@ -1601,7 +1485,9 @@ x = [Associative]
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_ModifierBlock")]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] 
         public void T27_Modifier_Stack_With_Different_Types_2()
         {
             string code = @"
@@ -1641,8 +1527,10 @@ x = [Associative]
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_ModifierBlock")]
         [Category("SmokeTest")]
         [Category("Failure")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_Inside_Function()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4385
@@ -1685,7 +1573,8 @@ x = foo ();
         }
 
         [Test]
-        [Category("Modifier Block")]
+        [Ignore][Category("DSDefinedClass_Ignored_ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_Inside_Class()
         {
             string errmsg = "";//1465231 - Sprint 21 : rev 2298 : Modifier stacks are now being allowed in class constructors ";
@@ -1738,8 +1627,9 @@ y = a1.a;
         }
 
         [Test]
-        [Category("Modifier Block")]
+        [Ignore][Category("DSDefinedClass_Ignored_ModifierBlock")]
         [Category("Failure")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_Inside_Class_2()
         {
 
@@ -1798,7 +1688,8 @@ y = { a1.a1, a1.a2, a1.a3, a1.a4, a1.a5, a1.a6, a1.a8 };
         }
 
         [Test]
-        [Category("Modifier Block")]
+        [Ignore][Category("DSDefinedClass_Ignored_ModifierBlock")]
+        [Category("ModifierBlock")]
         public void T27_Modifier_Stack_Inside_Class_3()
         {
             string errmsg = "";//1465231 - Sprint 21 : rev 2298 : Modifier stacks are now being allowed in class constructors"; 
@@ -1892,7 +1783,8 @@ xa9 = ax.a9;
         }
 
         [Test]
-        [Category("Modifier Block")]
+        [Ignore][Category("DSDefinedClass_Ignored_ModifierBlock")]
+        [Category("ModifierBlock")]
         public void T27_Modifier_Stack_Inside_Class_4()
         {
             string errmsg = "";//1465231 - Sprint 21 : rev 2298 : Modifier stacks are now being allowed in class constructors"; 
@@ -1957,6 +1849,7 @@ res = ax.foo(1);
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_Cross_Reference()
         {
             //Assert.Fail("1465319 - sprint 21 : rev 2301 : update issue with modifier stack ");
@@ -1980,10 +1873,11 @@ b = {
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] 
         public void T27_Modifier_Stack_Update()
         {
             string src = string.Format("{0}{1}", testPath, "T27_Modifier_Stack_Update.ds");
-            fsr.LoadAndPreStart(src, runnerConfig);
+            fsr.LoadAndPreStart(src);
             ProtoCore.CodeModel.CodePoint cp1 = new ProtoCore.CodeModel.CodePoint
             {
                 CharNo = 8,
@@ -2028,6 +1922,7 @@ b = {
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] 
         public void T27_Modifier_Stack_Update_2()
         {
             //Assert.Fail("1465319 - sprint 21 : rev 2301 : update issue with modifier stack "); 
@@ -2047,7 +1942,9 @@ b1 = 2;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_ModifierBlock")]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")]
         public void T27_Modifier_Stack_Update_3()
         {
             string code = @"
@@ -2101,6 +1998,7 @@ z = a.x;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] 
         public void T27_Modifier_Stack_Update_4()
         {
             //Assert.Fail("1465319 - sprint 21 : rev 2301 : update issue with modifier stack "); 
@@ -2142,6 +2040,7 @@ b2 = a;";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")]
         public void T27_Modifier_Stack_With_Array_2()
         {
             //Assert.Fail("1465319 - sprint 21 : rev 2301 : update issue with modifier stack "); 
@@ -2162,6 +2061,7 @@ a = 4;";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] 
         public void T27_Modifier_Stack_With_Array_3()
         {
             string code = @"
@@ -2190,6 +2090,7 @@ x = [Imperative]
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] 
         public void T27_Modifier_Stack_Update_5()
         {
             string code = @"
@@ -2213,6 +2114,7 @@ y = 2;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")]
         public void T27_Modifier_Stack_With_Array_4()
         {
             //Assert.Fail("1465127 - Sprint 21 : [Design Issue] rev 2294 : Modifier stack syntax not supported in Imperative block ");
@@ -2247,7 +2149,9 @@ b = a;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_ModifierBlock")]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] 
         public void T27_Modifier_Stack_Update_6()
         {
             string code = @"
@@ -2279,7 +2183,9 @@ y = 2;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_ModifierBlock")]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] 
         public void T27_Modifier_Stack_With_Inline_Condition()
         {
             string code = @"
@@ -2324,7 +2230,9 @@ x = a == 2 ? true : false;
 
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_ModifierBlock")]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")]
         public void T27_Modifier_Stack_With_Range_Expr()
         {
             string code = @"
@@ -2392,6 +2300,7 @@ a2 = 4;";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] 
         public void T27_Modifier_Stack_With_Self_Updates()
         {
             string code = @"
@@ -2409,64 +2318,36 @@ a = {
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T30_Update_Global_Variables_Class()
         {
-            // Assert.Fail("1465812 - Sprint 22 : rev 2362 : Global variables cannot be accessed from class scope ");
-
             string code = @"
-x  = 1;
-class A
-{
-    static y : int;
-    constructor A ( x )
-    {
-        y = x;
-    }
-    constructor A2 ( x1 )
-    {
-        y = x + x1;
-    }
-}
-y = A.A(2);
-z = y.y;
-y1 = A.A2(2);
-z1 = y1.y;
-x = 3;";
+import(""FFITarget.dll"");
+y = ClassFunctionality.ClassFunctionality();
+z = y.StaticProp;
+y.StaticProp = 2;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("z", 2);
-            thisTest.Verify("z1", 3);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T30_Update_Global_Variables_Function()
         {
             string code = @"
-x  = 1;
-class A
-{
-   x : double;
-   constructor A ( x1 )
-   {
-       x = x1;
-   }
-   def getx ( )
-   {
-       x = x + 1;
-       return = x ;
-   }
-}
-y = A.A(2);
-z1 = y.x;
-z2 = y.getx();
-z3 = x;
-z4 = y.x;
+import(""FFITarget.dll"");
+IntVal = 1;
+y = ClassFunctionality.ClassFunctionality(2);
+z1 = y.IntVal;
+z3 = IntVal;
+z4 = y.IntVal;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("z1", 3.0);
-            thisTest.Verify("z2", 3.0);
+            thisTest.Verify("z1", 2);
             thisTest.Verify("z3", 1);
-            thisTest.Verify("z4", 3.0);
+            thisTest.Verify("z4", 2);
         }
 
         [Test]
@@ -2502,10 +2383,12 @@ y = x;";
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T31_Defect_1459777()
         {
             string code = @"
+import(""FFITarget.dll"");
 class A 
 {
     a : var;
@@ -2515,8 +2398,8 @@ class A
 	}
 }
 x = 3;
-a1 = A.A(x);
-b1 = a1.a;
+a1 = ClassFunctionality.ClassFunctionality(x);
+b1 = a1.IntVal;
 x = 4;
 c1 = b1;
 // expected : c1 = 4;
@@ -2528,40 +2411,36 @@ c1 = b1;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T31_Defect_1459777_2()
         {
             string err = "1467385 Sprint 27 - rev 4219 - valid update testcase throws cyclic dependancy error";
-            string code = @"class A
-{
-    a : int;	
-}
-a1 = A.A();
-a1.a = 1;
-b = a1.a;
-a1.a = 2; // expected b = 2; received : b = 1;
+            string code = @"
+import(""FFITarget.dll"");
+a1 = ClassFunctionality.ClassFunctionality();
+a1.IntVal = 1;
+b = a1.IntVal;
+a1.IntVal = 2; // expected b = 2; received : b = 1;
 ";
             thisTest.VerifyRunScriptSource(code, err);
             thisTest.Verify("b", 2);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Update")]
         public void T31_Defect_1459777_3()
         {
-
             string code = @"
-class A
-{
-    a : int;	
-}
-a1 = A.A();
-x = a1.a;
+import(""FFITarget.dll"");
+a1 = ClassFunctionality.ClassFunctionality();
+x = a1.IntVal;
 c = [Imperative]
 {
-    a1.a = 1;
-    b = a1.a;
-    a1.a = 3; 
+    a1.IntVal = 1;
+    b = a1.IntVal;
+    a1.IntVal = 3; 
 	return = b;
 }
 ";
@@ -2574,6 +2453,7 @@ c = [Imperative]
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Update")]
         public void T31_Defect_1459777_4()
         {
@@ -2605,6 +2485,8 @@ z2 = z;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_UpdateWithinDSClass")]
+        [Category("Failure")]
         [Category("Update")]
         public void T31_Defect_1459777_5()
         {
@@ -2633,6 +2515,8 @@ x = B.B(y);
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_UpdateWithinDSClass")]
+        [Category("Failure")]
         [Category("Update")]
         public void T31_Defect_1459777_6()
         {
@@ -2666,22 +2550,20 @@ x1 = B.B( y );
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Update")]
         public void T31_Defect_1459777_7()
         {
             //Assert.Fail("1466085 - Sprint 22 : rev 2396 : Update issue : update not working with range expressions ");
 
             string code = @"
-class A
-{
-    a : int;	
-}
-x = A.A();
-y = x.a;
+import(""FFITarget.dll"");
+x = ClassFunctionality.ClassFunctionality();
+y = x.IntVal;
 y1 = 0..y;
 y2 = y > 1 ? true : false;
-y3 = 1 < x.a ? true : false;
-x.a = 2;
+y3 = 1 < x.IntVal ? true : false;
+x.IntVal = 2;
 z1 = y1;
 z2 = y2;
 z3 = y3;";
@@ -2694,21 +2576,19 @@ z3 = y3;";
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T31_Defect_1459777_8()
         {
             string code = @"
-class A
-{
-    a : int;	
-}
+import(""FFITarget.dll"");
 def foo ( x ) 
 {
     return  = x + 1;
 }
-x1 = A.A();
-y1 = foo( x1.a );
-x1.a = 2;
+x1 = ClassFunctionality.ClassFunctionality();
+y1 = foo( x1.IntVal );
+x1.IntVal = 2;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("y1", 3);
@@ -2716,25 +2596,23 @@ x1.a = 2;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T31_Defect_1459777_9()
         {
             string code = @"
-class A
-{
-    a : int;	
-}
+import(""FFITarget.dll"");
 def foo ( x ) 
 {
     return  = x + 1;
 }
-x1 =  { A.A(), A.A() };
-a1 = A.A();
-x2 =  { a1.a, a1.a };
+x1 =  { ClassFunctionality.ClassFunctionality(), ClassFunctionality.ClassFunctionality() };
+a1 = ClassFunctionality.ClassFunctionality();
+x2 =  { a1.IntVal, a1.IntVal };
 y2 = foo ( x2[0] );
-y1 = foo ( x1[1].a );
-x1[1].a = 2;
-a1.a = 2; 
+y1 = foo ( x1[1].IntVal );
+x1[1].IntVal = 2;
+a1.IntVal = 2; 
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1466107 - Sprint 22 : rev 2396 : Update issue with multiple updates involving instances and collections");
@@ -2760,6 +2638,7 @@ z1 = y1;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("SmokeTest")]
         public void T33_Defect_1466107()
         {
@@ -2792,6 +2671,7 @@ a1.a = 2;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Update")]
         public void T33_Defect_1466107_2()
         {
@@ -2833,33 +2713,26 @@ dummy2 = foo2 ( a1 );
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T34_Defect_DNL_1463327()
         {
             string code = @"
-class A
-{        
-    Pt : double;        
-    constructor A (pt : double)            
-    {                        
-        Pt = pt;            
-    }
-}
+import(""FFITarget.dll"");
 c = 1.0;
 x = [Imperative]
 {
-	c = A.A( c );
-	x = c.Pt;
+	c = ClassFunctionality.ClassFunctionality( c );
+	x = c.IntVal;
 	return = x;
 }
-// expected : c = A ( Pt = 1.0 ); x = 1.0
-// received : System.NullReferenceException: Object reference not set to an instance of an object.
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 1.0);
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         [Category("SmokeTest")]
         public void T34_Defect_DNL_1463327_2()
         {
@@ -2890,28 +2763,23 @@ x = [Imperative]
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T34_Defect_DNL_1463327_3()
         {
             string error = "1467416 Count returns null if the input argument is single value ";
-            string code = @"class A
-{        
-    Pt : double;        
-    constructor A (pt : double)            
-    {                        
-        Pt = pt;            
-    }
-}
-t = 0.0..3.0;
-c = A.A ( t );
+            string code = @"
+import(""FFITarget.dll"");
+t = 0..3;
+c = ClassFunctionality.ClassFunctionality ( t );
 c1 = Count ( c );
 x = [Imperative]
 {
-	c = A.A( c[0].Pt );
-	x = c.Pt;
+	c = ClassFunctionality.ClassFunctionality( c[0].IntVal );
+	x = c.IntVal;
 	return = x;
 }
-t = 0.0..2.0;
+t = 0..2;
 ";
             thisTest.VerifyRunScriptSource(code, error);
 
@@ -2920,56 +2788,44 @@ t = 0.0..2.0;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Update")]
         public void T34_Defect_DNL_1463327_4()
         {
-            //Assert.Fail("1467245 - Sprint25 : rev 3420 : cyclic dependency with update cases");
-
             string code = @"
-class A
-{        
-    Pt : double;        
-    constructor A (pt : double)            
-    {                        
-        Pt = pt;            
-    }
-}
-t = 0.0..3.0;
-c = A.A ( t );
-c = A.A ( c[0].Pt );
-c = A.A ( c.Pt );
-x = c.Pt;
-t = 0.0..1.0;
+import(""FFITarget.dll"");
+t = 0..3;
+c = ClassFunctionality.ClassFunctionality ( t );
+c = ClassFunctionality.ClassFunctionality ( c[0].IntVal );
+c = ClassFunctionality.ClassFunctionality ( c.IntVal );
+x = c.IntVal;
+t = 0..1;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("x", 0.0);
+            thisTest.Verify("x", 0);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T35_Defect_DNL_1463700()
         {
             string errmsg = " 1467318 - Cannot return an array from a function whose return type is var with undefined rank (-2) ";
-            string code = @"class A
-{        
-    x = {1,2,3};        
-    def foo()        
-    {                
-        x[0] = 100;        
-    }
+            string code = @"     
+def foo()        
+{   x = {1,2,3};          
+    x[0] = 100;        
+    return = x;
 }
-a = A.A();
-t = a.x;
-x = a.foo();
+a = foo();
 ";
             thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] v1 = new Object[] { 100, 2, 3 };
-            Object v2 = null;
-            thisTest.Verify("t", v1);
-            thisTest.Verify("x", v2);
+            thisTest.Verify("a", v1);
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T35_Defect_DNL_1463700_2()
         {
             //Assert.Fail("1467194 - Sprint 25 - rev 3207[Regression] Regressions created by array copy constructions ");
@@ -3009,6 +2865,7 @@ t3 = t1;";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] 
         public void T36_Modifier_Block_Multiple_Updates()
         {
             string code = @"
@@ -3025,6 +2882,7 @@ a = { 2 => a1;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")]
         public void T36_Modifier_Block_Multiple_Updates_2()
         {
             string code = @"
@@ -3060,6 +2918,7 @@ testArrayMember2 = c2;";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")]
         public void T38_Defect_1467059_Modifier_Stack_With_Undefined_Variable()
         {
             string code = @"
@@ -3076,6 +2935,7 @@ b1 = 2;";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")]
         public void T38_Defect_1467059_Modifier_Stack_With_Undefined_Variable_2()
         {
             string code = @"
@@ -3096,6 +2956,7 @@ b1 = 2;";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T39_Defect_1465319_Modifier_Stack_Update_Issue()
         {
             string code = @"
@@ -3116,6 +2977,7 @@ y1 = 5;";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T40_Defect_1467057_Modifier_Stack_Cross_Update_Issue()
         {
             string code = @"
@@ -3132,6 +2994,7 @@ b = {
 
         [Test]
         [Category("Update")]
+        [Category("ModifierBlock")] 
         public void T40_Defect_1467057_Modifier_Stack_Cross_Update_Issue_3()
         {
             //Assert.Fail("1467088 - Sprint23 : rev 2681 : Cross updates across 2 modifier stacks going into infinite loop");
@@ -3152,6 +3015,7 @@ b = {
 
         [Test]
         [Category("Update")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T40_Defect_1467088_Modifier_Stack_Cross_Update_Issue()
         {
             //Assert.Fail("1467088 - Sprint23 : rev 2681 : Cross updates across 2 modifier stacks going into infinite loop");
@@ -3170,6 +3034,7 @@ b = {
 
         [Test]
         [Category("Update")]
+        [Category("ModifierBlock")] 
         public void T40_Defect_1467088_Modifier_Stack_Cross_Update_Issue_2()
         {
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
@@ -3194,7 +3059,7 @@ a = {
 
         [Test]
         [Category("Update")]
-        [Category("Failure")]
+        [Category("ModifierBlock")] 
         public void T40_Defect_1467088_Modifier_Stack_Cross_Update_Issue_3()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4087
@@ -3218,6 +3083,7 @@ b;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("Update")]
         public void T41_Defect_1467072_Class_Update()
         {
@@ -3251,6 +3117,7 @@ gf = 2;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_UpdateWithinDSClass")]
         [Category("Update")]
         public void T41_Defect_1467072_Class_Update_2()
         {
@@ -3319,48 +3186,30 @@ d = a + b;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Update")]
         public void T44_Defect_1457029()
         {
             string code = @"
-class A
-{
-    Pt : double;
-    constructor A (pt : double)
-    {
-        Pt = pt;
-    }
-    
-    
-}
-    
-c1 = { { 1.0, 2.0}, 3.0 };
-c1 = A.A( c1[0] );
-x = c1.Pt;
+import(""FFITarget.dll"");
+c1 = { { 1,2}, 3};
+c1 = ClassFunctionality.ClassFunctionality( c1[0] );
+x = c1.IntVal;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("x", new Object[] { 1.0, 2.0 });
+            thisTest.Verify("x", new Object[] { 1, 2 });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Update")]
         public void T44_Defect_1457029_2()
         {
             string code = @"
-class A
-{
-    Pt : double;
-    constructor A (pt : double)
-    {
-        Pt = pt;
-    }
-    
-    
-}
-    
+import(""FFITarget.dll""); 
 c1 = { { 1.0, 2.0}, 3.0 };
-c1 = A.A( c1[0][0] );
-x = c1.Pt;
+c1 = ClassFunctionality.ClassFunctionality( c1[0][0] );
+x = c1.IntVal;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 1.0);
@@ -3447,24 +3296,18 @@ A = 1..10..2;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Update")]
         public void T46_Defect_1467245_2()
         {
             String code =
  @"
-class A
-{        
-    Pt : double;        
-    constructor A (pt : double)            
-    {                        
-        Pt = pt;            
-    }
-}
-t = 0.0..3.0;
-c = A.A ( t );
-x = c.Pt;
-c = A.A ( c[0].Pt );
-c = A.A ( c.Pt ); 
+import(""FFITarget.dll"");
+t = 0..3;
+c = ClassFunctionality.ClassFunctionality ( t );
+x = c.IntVal;
+c = ClassFunctionality.ClassFunctionality ( c[0].IntVal );
+c = ClassFunctionality.ClassFunctionality ( c.IntVal ); 
 ";
             string errmsg = "";// "DNL-1462143 Sprint 19 : Rev 1912 : Update Design Issue : Redefinition of a variable should ensure there are no more updates on changes in RHS of older definitions";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3488,25 +3331,16 @@ t[1] = a[1];
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Update")]
         public void T46_Defect_1467275_2()
         {
             String code =
  @"
-class A
-{
-    a : int[];
-    t : int[];
-    constructor A()
-    {
-        a = {0,1,2};
-        t = {10,11,12};
-        a[0] = t[0];
-        t[1] = a[1]; 
-    }
-}
-a1 = A.A();
-a = a1.a;
+a = {0,1,2};
+t = {10,11,12};
+a[0] = t[0];
+t[1] = a[1]; 
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3514,6 +3348,7 @@ a = a1.a;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("Update")]
         public void T46_Defect_1467275_3()
         {
@@ -3583,22 +3418,19 @@ t = 2; // expected i = 12
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T49_Defect_1461985()
         {
             String code =
  @"
-class A
-{
-x:int = 3; 
-}
-a = A.A();
-a.x = 2;
-b1 = a.x;
+import(""FFITarget.dll"");
+a = ClassFunctionality.ClassFunctionality();
+b1 = a.IntVal;
 c = [Imperative]
 {
-a.x = 4;
-return = a.x;
+a.IntVal = 4;
+return = a.IntVal;
 } 
 ";
             string errmsg = "";//1467385: Sprint 27 - rev 4219 - valid update testcase throws cyclic dependancy error ";
@@ -3632,25 +3464,23 @@ totalLength = 0;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T49_Defect_1461985_3()
         {
             String code =
  @"
-class A
-{
-    x:int = 3; 
-}
-a = A.A();
-totalLength = a.x;
+import(""FFITarget.dll"");
+a = ClassFunctionality.ClassFunctionality(0);
+totalLength = a.IntVal;
 i = 0;
 [Imperative]
 {
-    while (a.x < 5) 
+    while (a.IntVal < 5) 
     {
         [Associative] 
         {
-            a.x = a.x + 1;
+            a.IntVal = a.IntVal + 1;
             i = i + 1;
         }                              
     }
@@ -3660,19 +3490,17 @@ i = 0;
             string errmsg = "";//1461985 - Sprint 19 : Rev 1880 : Cross Language Update issue : When class properties are updated in different blocks the update is not happening as expected";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("totalLength", 5);
-            thisTest.Verify("i", 2);
 
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T49_Defect_1461985_4()
         {
             String code =
  @"
-class A
-{
-}
+import(""FFITarget.dll"");
 totalLength = 0;
 i = 4;
 b = 0;
@@ -3710,6 +3538,7 @@ b = 0;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("SmokeTest")]
         public void T50_Defect_1466076()
         {
@@ -3770,85 +3599,67 @@ c = 10;
 ";
             string errmsg = "MAGN-4094 Runtime Cyclic Dependency not detected";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kCyclicDependency);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kCyclicDependency);
             
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T52_Defect_1459478()
         {
             String code =
 @"
-class A
+import(""FFITarget.dll"");
+def foo (x1:var[])
 {
-    x :var[];
-    constructor A (x1:var[])
-    {
-        x1 = x1 + 1;
-        x = x1;
-    }   
-}
+    return = x1 + 1;
+}   
 a = 0..4..1;
-x = A.A(a);
-test = x.x;
+x = foo(a);
 ";
-            string errmsg = "1467309 - rev 3786 : Warning:Couldn't decide which function to execute... coming from valid code";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test", new Object[] { 1, 2, 3, 4, 5 });
+            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code);
+            thisTest.Verify("x", new Object[] { 1, 2, 3, 4, 5 });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T52_Defect_1459478_2()
         {
             String code =
 @"
-class A
+import(""FFITarget.dll"");
+def foo (x1:var[])
 {
-    x :var[];
-    constructor A (x1:var[])
-    {
-        x1 = x1 + 1;
-        x = x1;
-    }
-    def foo ( a : var[] ) 
-    {
-        a[0] = a[0] + 1;
-        return = a;
-    }
+    return = x1 + 1;
+}  
+def bar ( a : var[] ) 
+{
+    a[0] = a[0] + 1;
+    return = a;
 }
+
 a = 0..4..1;
-x = A.A(a);
-test = x.x;
-y = x.foo (a );
+x = foo(a);
+y = bar (a );
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", new Object[] { 0, 1, 2, 3, 4 });
-            thisTest.Verify("test", new Object[] { 1, 2, 3, 4, 5 });
             thisTest.Verify("y", new Object[] { 1, 1, 2, 3, 4 });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T53_Defect_1467086()
         {
             String code =
 @"
-class A
-{
-    x :var[];
-    constructor A (x1:var[])
-    {
-        
-        x = x1;
-    }
-}
 a = 0..4..1;
-x = A.A(a);
-test1 = x.x;
-test2 = x.x;
+test1 = a;
+test2 = a;
 test1 = test1 + 1;
 ";
             string errmsg = "";
@@ -3859,23 +3670,14 @@ test1 = test1 + 1;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T53_Defect_1467086_2()
         {
             String code =
 @"
-class A
-{
-    x :var[];
-    constructor A (x1:var[])
-    {
-        
-        x = x1;
-    }
-}
 a = 0..4..1;
-x = A.A(a);
-test1 = x.x;
+test1 = a;
 a = a + 1;
 ";
             string errmsg = "";
@@ -3884,7 +3686,9 @@ a = a + 1;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_ModifierBlock")]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")]
         public void T54_Defect_1467185_Modifier_Stack()
         {
             string errmsg = "";
@@ -3941,7 +3745,9 @@ a =
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_ModifierBlock")]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] 
         public void T54_Defect_1467185_Modifier_Stack_2()
         {
             string errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
@@ -3986,7 +3792,9 @@ a8 = B.B(a1).bfoo(foo ( a1[a3] ) ); // works fine";
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_ModifierBlock")]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] 
         public void T54_Defect_1467185_Modifier_Stack_3()
         {
             string errmsg = "";//DNL-1467185 Modifier Blocks: Support to be added for exclusion of explicit variable prefixing of instance method/property/operator calls";
@@ -4028,6 +3836,7 @@ a =
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T54_Defect_1467185_CrossLinked_Modifier_Blocks()
         {
             String code = @"
@@ -4075,7 +3884,6 @@ z = 2;";
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failure")]
         public void T56_Defect_1467342_Inline_Condition_replication()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4088
@@ -4089,6 +3897,7 @@ x = a > 1 ? a : null; ";
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_InvalidTest_NoInline")]
         [Category("SmokeTest")]
         [Category("Failure")]
         public void T57_Defect_1467399()
@@ -4117,6 +3926,7 @@ a1 = foo ( a1);
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_InvalidTest_NoInline")]
         [Category("SmokeTest")]
         public void T57_Defect_1467399_2()
         {
@@ -4143,37 +3953,7 @@ a1.a = -1;
         }
 
         [Test]
-        [Category("SmokeTest")]
-        public void T57_Defect_1467399_3()
-        {
-            String code = @"
-class A
-{
-    a : int[];            
-}
-def foo ( x1 : A)
-{
-    x1.a = -1;
-    return = x1;
-}
-def foo1 ( x1 : A)
-{
-    x1.a = 1;
-    return = x1;
-}
-a1 = A.A();
-a1 = foo ( a1);
-b = a1.a;
-a1 = foo1 ( a1);
-//received b =1 - 15,16,17,18,17 - correct 
- ";
-            Object n1 = null;
-            string errmsg = "DNL-1467342 Design issue with inline condition : only the condition being replicated";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("b", new object[] { 1 });
-        }
-
-        [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_InvalidTest_NoInline")]
         [Category("SmokeTest")]
         public void T57_Defect_1467399_4()
         {
@@ -4245,17 +4025,13 @@ c = foo();
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T59_Defect_1467418_Update_Across_Language_Blocks()
         {
             string errmsg = "";
-            string code = @"class A
-{
-    def _Dispose()
-    {
-        return = ""A.Dispose()"";
-    }
-}
+            string code = @"
+import(""FFITarget.dll"");
 i = 0;
 [Imperative]
 {
@@ -4263,7 +4039,7 @@ i = 0;
     {
         [Associative]
         {
-            as = {A.A(), A.A()};
+            as = {ClassFunctionality.ClassFunctionality(), ClassFunctionality.ClassFunctionality()};
             [Imperative]
             {
                 c = 0;
@@ -4272,7 +4048,7 @@ i = 0;
                 while (c < 2)
                 {
                    k = as[c];
-                   as[c] = A.A();
+                   as[c] = ClassFunctionality.ClassFunctionality();
                    c = c + 1;
                 }
             }
@@ -4287,27 +4063,20 @@ i = 0;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T60_Defect_14672007_Update_In_Class_From_Imperative_Scope()
         {
             String code = @"
-class A
-{
-    a : int;
-    constructor A ( a1 : int )
-    {
-    a = a1; 
-}
-}
+import(""FFITarget.dll"");
 x = { 1, 2 };
-y1 = A.A(x);
-y2 = { y1[0].a, y1[1].a };
+y1 =ClassFunctionality.ClassFunctionality(x);
+y2 = { y1[0].IntVal, y1[1].IntVal };
 [Imperative]
 {
     count = 0;
     for ( i in 0..1)
     {
-        //i.a = 0;
         x[count] = x[count] + 1;
         count = count + 1;
     }
@@ -4320,61 +4089,44 @@ y2 = { y1[0].a, y1[1].a };
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T60_Defect_14672007_Update_In_Class_From_Imperative_Scope_2()
         {
             String code = @"
-class A
-{
-    a : int;
-    constructor A ( a1 : int )
-    {
-    a = a1; 
-}
-}
+import(""FFITarget.dll"");
 x = { 1, 2 };
-y1 = A.A(x);
-y2 = { y1[0].a, y1[1].a };
+y1 = ClassFunctionality.ClassFunctionality(x);
+y2 = { y1[0].IntVal, y1[1].IntVal };
 [Imperative]
 {
     for ( i in y1)
     {
-        i.a = 0;        
+        i.IntVal = 0;        // Modifying  the array y1 will re-execute y2
     }
 }
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("y2", new Object[] { 1, 2 });
+            thisTest.Verify("y2", new Object[] { 0, 0 });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T60_Defect_14672007_Update_In_Class_From_Imperative_Scope_3()
         {
             String code = @"
-class A
-{
-    a : int;
-    constructor A ( a1 : int )
-    {
-    a = a1; 
-    }
-    def update ( a2 : int )
-    {
-        a = a2;
-        return = true;
-    }
-}
+import(""FFITarget.dll"");
 x = { 1, 2 };
-y1 = A.A(x);
-y2 = { y1[0].a, y1[1].a };
+y1 = ClassFunctionality.ClassFunctionality(x);
+y2 = { y1[0].IntVal, y1[1].IntVal };
 [Imperative]
 { 
     count = 0;
     for ( i in y1)
     {
-        temp = y1[count].update(0); 
+        temp = y1[count].Set(0); 
         count = count + 1; 
     }
 }
@@ -4385,6 +4137,7 @@ y2 = { y1[0].a, y1[1].a };
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_UpdateWithinDSClass")]
         [Category("SmokeTest")]
         public void T61_Defect_1467410_Update_In_Class_Properties()
         {
@@ -4425,6 +4178,7 @@ z2 = a.Z;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_UpdateWithinDSClass")]
         [Category("SmokeTest")]
         public void T61_Defect_1467410_Update_In_Class_Properties_2()
         {
@@ -4640,26 +4394,16 @@ a = 33;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T62_update_wrongsequnce_1467484_9()
         {
             String code = @"
-class Point
-{
-    X : double;
-    Y : double;
-    Z : double;
-    constructor ByCoordinates(x : double, y : double, z : double)
-    {
-        X = x;
-        Y = y;
-        Z = z;
-    }
-}
+import(""FFITarget.dll"");
 c = 0;
 x = c > 5 ? 1 : 2;
 [Imperative]{ c = 10; }
-a = Point.ByCoordinates(10, 20, 30);
+a = DummyPoint.ByCoordinates(10, 20, 30);
 b = a;
 c = Print(b);
 [Imperative]{ a = { 1, 2, 3, 4, { 5, { 6, { 7, { 8.9 } } } } }; }
@@ -4755,36 +4499,17 @@ a = 3;
 
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T62_update_wrongsequnce_1467484_13()
         {
             String code = @"
-class test
-{
-    a;
-    b;
-    c;
-    m;
-    n;
-    def foo()
-    {
-        a = 1;
-        b = a;
-        c = b;
-        m = a + b + c;
-        n = m;
-        a = 2;
-        return =true;
-    }
-}
-    z = test.test();
-    y = z.foo();
-    a = z.a;
-    b = z.b;
-    c = z.c;
-    m = z.m;
-    n = z.n;
-   
+    a = 1;
+    b = a;
+    c = b;
+    m = a + b + c;
+    n = m;
+    a = 2;
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4793,7 +4518,6 @@ class test
             thisTest.Verify("c", 2);
             thisTest.Verify("m", 6);
             thisTest.Verify("n", 6);
-            thisTest.Verify("y", true);
         }
 
         [Test]
@@ -4986,6 +4710,7 @@ b;
 
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("SmokeTest")]
         public void T64_1467161_Update_ssie_with_class_member_call_1()
         {
@@ -5020,6 +4745,7 @@ r3 = b.foo(1);//after boo is called, r2 is updated, which is not expected
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("SmokeTest")]
         public void T64_1467161_Update_issue_with_class_member_call_2()
         {
@@ -5054,78 +4780,56 @@ r3 = b.foo(1);//after boo is called, r2 is updated, which is not expected
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T65_1467495_FalseCyclicDependancy()
         {
             String code = @"
-class Point
+import(""FFITarget.dll"");
+def XPlusY(NextPoint : DummyPoint)
 {
-    X : double;
-    Y : double;
-    NextPoint: Point;
-        
-    constructor Point( p : Point)
-    {
-        NextPoint = p;
-    }
-    
-    def XPlusY()
-    {
-        x = NextPoint.X;
-        y = NextPoint.Y;
-        temp = x + y;
-        return = temp;
-    }
+    x = NextPoint.X;
+    y = NextPoint.Y;
+    temp = x + y;
+    return = temp;
 }
-pt1 = Point.Point();
-pt2 = Point.Point(pt1);
-pt3 = pt2.XPlusY();
+pt1 = DummyPoint.ByCoordinates(0,0,0);
+pt2 = XPlusY(pt1);
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("pt3", 0.0);
+            thisTest.Verify("pt2", 0.0);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T65_1467495_FalseCyclicDependancy_2()
         {
             String code = @"
-class Point
+import(""FFITarget.dll"");
+def XPlusY(NextPoint : DummyPoint)
 {
-    X : double;
-    Y : double;
-    NextPoint: Point;
-        
-    constructor Point( p : Point)
-    {
-        NextPoint = p;
-    }
-    
-    def XPlusY()
-    {
-        x = NextPoint.X;
-        y = NextPoint.Y;
-        temp = x + y;
-        return = temp;
-    }
+    x = NextPoint.X;
+    y = NextPoint.Y;
+    temp = x + y;
+    return = temp;
 }
 pt1;
 pt2;
-pt3;
 [Imperative]
 {
-pt1 = Point.Point();
-pt2 = Point.Point(pt1);
-pt3 = pt2.XPlusY();
+    pt1 = DummyPoint.ByCoordinates(0,0,0);
+    pt2 = XPlusY(pt1);
 }
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("pt3", 0.0);
+            thisTest.Verify("pt2", 0.0);
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void T65_1467495_FalseCyclicDependancy_3()
         {
@@ -5161,6 +4865,7 @@ pt3 = pt1.XPlusY(pt1);
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void T65_1467495_FalseCyclicDependancy_4()
         {
@@ -5193,32 +4898,23 @@ pt3 = pt1.XPlusY(pt1);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T65_1467495_FalseCyclicDependancy_5()
         {
             String code = @"
-class Point
+import(""FFITarget.dll"");
+def XPlusY(NextPoint : DummyPoint)
 {
-    X : double;
-    Y : double;
-    NextPoint: Point;
-        
-    
-    def XPlusY(p:Point)
-    {
-        NextPoint = p;
-        x = NextPoint.X;
-        y = NextPoint.Y;
-        temp = x + y;
-        return = temp;
-    }
+    x = NextPoint.X;
+    y = NextPoint.Y;
+    temp = x + y;
+    return = temp;
 }
-pt1;
-pt3;
-pt1 = Point.Point();
-pt2 = Point.Point();
-pt3 = pt1.XPlusY(pt1);
-pt3 = pt1.XPlusY(pt2);
+pt1 = DummyPoint.ByCoordinates(0,0,0);
+pt2 = DummyPoint.ByCoordinates(0,0,0);
+pt3 = XPlusY(pt1);
+pt3 = XPlusY(pt2);
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -5565,12 +5261,11 @@ r = bar();
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T71_Cyclic_globalvariable_1467439()
         {
             String code = @"
-class test
-{
 def foo()
 {
     a = b;
@@ -5581,12 +5276,10 @@ def bar()
     b = a;
     return = null;
 }
-}
 a = 1;
 b = 0;
 q = a;
-s = test.test();
-r = s.bar();
+r = bar();
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -5961,22 +5654,18 @@ a = 2;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         [Category("Failure")]
         public void T74_TestUpdate_1467533()
         {
             String code = @"
-class A
-{
-    x;
-    constructor A(i) { x = i;}
-    def modify(i)  { x = i; }
-}
-a = A.A(17);
-t = a.x;
+import(""FFITarget.dll"");
+a = ClassFunctionality.ClassFunctionality(17);
+t = a.IntVal;
 [Imperative]
 {
-    r = a.modify(41);
+    r = a.Set(41);
 }
 ";
             //Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4085
@@ -6084,30 +5773,26 @@ b = 2;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T75_TestUpdate_1467536()
         {
             String code = @"
-class C {
-    x=0;
-    def f(p : C)
-    {
-        return = p.x+1;
-    }
-    def g()
-    {
-        return = C.C();
-    }
-};
-p1 = C.C();
-p2 = C.C();
-j=0;
+import(""FFITarget.dll"");
+def f(p : DummyPoint)
+{
+    return = p.X + 1;
+}
+
+p1 = DummyPoint.ByCoordinates(1,1,1);
+p2 = DummyPoint.ByCoordinates(2,2,2);
+j = 0;
 i = [Imperative]
 {
     j = j + 1;
     return = p1.f(p2);
 }
-p2 = p2.g();
+p2 = DummyPoint.ByCoordinates(3,3,3);
 ";
             string errmsg = "1467536 -when class instance is used inside an imperative block and modifid outside , it does not reexecute imperative block ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -6359,8 +6044,7 @@ a = 2;
         }
 
         [Test]
-        [Category("SmokeTest")]
-        [Category("Failure")]
+        [Category("SmokeTest")]      
         public void T84_TestUpdate_Crosslangauge_1467513_3()
         {
             String code = @"
@@ -6385,7 +6069,6 @@ a = 2;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failure")]
         public void T84_TestUpdate_Crosslangauge_1467513_4()
         {
             String code = @"
@@ -6412,24 +6095,15 @@ a = 2;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T85_1467452_update_using_class_methods()
         {
             String code = @"
-class A
-{
-    x : var;
-    def foo : int ( a : int )
-    {
-        x = a ;
-        return = x;
-    }
-    
-}
-a1 = A.A();
-test = a1.x;
+import(""FFITarget.dll"");
+a1 = ClassFunctionality.ClassFunctionality();
 x1 = 3;
-y = a1.foo( x1 ); 
+y = a1.SetAndReturn( x1 ); 
 [Imperative]
 {
     x1 = 4;
@@ -6438,31 +6112,23 @@ y = a1.foo( x1 );
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("y", 4);
-            thisTest.Verify("test", 4);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T85_1467452_update_using_class_methods_2()
         {
             String code = @"
-class A
-{
-    x : var;
-    def foo : int ( a : int )
-    {
-        x = a ;
-        return = x;
-    }
-}
+import(""FFITarget.dll"");
 x1 = 3;
 y = 0;
 test = 0;
 [Imperative]
 {
-    a1 = A.A();    
-    y = a1.foo( x1 ); 
-    test = a1.x;
+    a1 = ClassFunctionality.ClassFunctionality();    
+    y = a1.SetAndReturn( x1 ); 
+    test = a1.IntVal;
 }
 x1 = 4;
 ";
@@ -6473,26 +6139,19 @@ x1 = 4;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T85_1467452_update_using_class_methods_3()
         {
             String code = @"
-class A
-{
-    x : var;
-    def foo : int ( a : int )
-    {
-        x = a ;
-        return = x;
-    }
-}
+import(""FFITarget.dll"");
 x1 = 3;
 y = 0;
 [Associative]
 {
-    a1 = A.A();
-    test = a1.x;
-    y = a1.foo( x1 ); 
+    a1 = ClassFunctionality.ClassFunctionality();
+    test = a1.IntVal;
+    y = a1.SetAndReturn( x1 ); 
 }
 x1 = 4;
 ";
@@ -6503,30 +6162,22 @@ x1 = 4;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         [Category("Failure")]
         public void T85_1467452_update_using_class_methods_4()
         {
             String code = @"
-class A
-{
-    x : var;
-    def foo : int ( a : int )
-    {
-        x = a ;
-        return = x;
-    }
-}
-y;
-[Associative]
+import(""FFITarget.dll"");
+y = [Associative]
 {
     x1 = 3;
     y = x1;
-    [Imperative]
+    return = [Imperative]
     {
-        a1 = A.A();
-        test = a1.x;
-        y = a1.foo( x1 ); 
+        a1 = ClassFunctionality.ClassFunctionality();
+        test = a1.IntVal;
+        return = a1.SetAndReturn( x1 ); 
     }
 }
 x1 = 4;
@@ -6538,31 +6189,24 @@ x1 = 4;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T85_1467452_update_using_class_methods_5()
         {
             String code = @"
-class A
-{
-    x : var;
-    def foo : int ( a : int )
-    {
-        x = a ;
-        return = x;
-    }
-}
-y;
+import(""FFITarget.dll"");
 x1 = 3;
+y = 0;
 [Imperative]
 {
-    a1 = A.A();
+    a1 = ClassFunctionality.ClassFunctionality();
     if( x1 == 3)
     {
-        y = a1.foo(x1);
+        y = a1.SetAndReturn(x1);
     }
     else
     {
-        y = a1.foo(x1+1);
+        y = a1.SetAndReturn(x1+1);
     }
 }
 x1 = 4;
@@ -6573,27 +6217,20 @@ x1 = 4;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T85_1467452_update_using_class_methods_6()
         {
             String code = @"
-class A
-{
-    x : var;
-    def foo : int ( a : int )
-    {
-        x = a ;
-        return = x;
-    }
-}
-y= 0;
+import(""FFITarget.dll"");
 x1 = 3;
+y = 0;
 [Imperative]
 {
-    a1 = A.A();
+    a1 = ClassFunctionality.ClassFunctionality();
     for(i in 0..1)
     {
-        y = y + a1.foo(x1);
+        y = y + a1.SetAndReturn(x1);
     }
 }
 x1 = 4;
@@ -6604,28 +6241,22 @@ x1 = 4;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T85_1467452_update_using_class_methods_7()
         {
             String code = @"
-class A
-{
-    x : var;
-    def foo : int ( a : int )
-    {
-        x = a ;
-        return = x;
-    }
-}
-y= 0;
+import(""FFITarget.dll"");
+y = 0;
 x1 = 3;
+y = 0;
 [Imperative]
 {
-    a1 = A.A();
+    a1 = ClassFunctionality.ClassFunctionality();
     i = 1;
     while(i <= 2)
     {
-        y = y + a1.foo(x1);
+        y = y + a1.SetAndReturn(x1);
         i = i+1;
     }
 }
@@ -6702,6 +6333,7 @@ x1 = 4;
 
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T88_1461985_Update_In_Nested_Blocks_2()
         {
@@ -6773,48 +6405,27 @@ test = b1.y;
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kCyclicDependency);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kCyclicDependency);
         }
 
         [Test]
+        [Category("DSDefinedClass_InvalidTest")]
         [Category("SmokeTest")]
         public void T90_1467510_cyclic()
         {
             String code = @"
- 
-         class A
-            {
-                x1;
-                y1;
-                z1;
-                constructor A(x, y, z)
-                {
-                    x1 = x;
-                    y1 = y;
-                    z1 = z;        
-                }
-            }
-            class B
-            {
-                x1;
-   
-                constructor B(x:A)
-                {
-                    x1 = x;
-        
-              
-                }
-            }
-            a = 1;
-            b = a + 1;
-            c = a + b;
-            n = A.A( a, b, c );
-            m = B.B(n);
-            a = 3;
+import(""FFITarget.dll"");
+a = 1;
+b = a + 1;
+c = a + b;
+n = DummyVector.ByCoordinates( a, b, c );
+m = ClassFunctionality.ClassFunctionality(n);
+a = 3;
+x = n.X;
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.VerifyRuntimeWarningCount(0);
+            thisTest.Verify("x", 3);
         }
 
         [Test]
@@ -6940,28 +6551,19 @@ test = b1.y;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T91_1467547_4()
         {
             String code = @"
- 
-        class B
-            { 
-	            x3 : int ;
-		
-	            constructor B(a) 
-	            {	
-		            x3 = a;
-	            }
-	
-            }
-            def foo ( b1 : B )
-            {
-                return = b1.x3;
-            }
-            b1 = B.B( 1 );
-            d1 = foo;
-            e1 = d1(b1);
+import(""FFITarget.dll"");
+def foo ( b1 : ClassFunctionality )
+{
+    return = b1.IntVal;
+}
+b1 = ClassFunctionality.ClassFunctionality( 1 );
+d1 = foo;
+e1 = d1(b1);
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -6969,28 +6571,19 @@ test = b1.y;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T91_1467547_5()
         {
             String code = @"
- 
-        class B
-            { 
-	            x3 : int ;
-		
-	            constructor B(a) 
-	            {	
-		            x3 = a;
-	            }
-	
-            }
-            def foo ( b1 : B )
-            {
-                return = b1.x3;
-            }
-            b1 = B.B( 1 );
-            d1 = foo;
-            e1 = d1(b1);
+import(""FFITarget.dll"");
+def foo ( b1 : ClassFunctionality )
+{
+    return = b1.IntVal;
+}
+b1 = ClassFunctionality.ClassFunctionality( 1 );
+d1 = foo;
+e1 = d1(b1);
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -7064,19 +6657,17 @@ a;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T92_Test_Update_Propagation_In_Self_Update_Thru_Inline_Condition()
         {
             String code = @"
-class A
-{
-    static X : int;
-}
+import(""FFITarget.dll"");
 c = 0;
-A.X = 1;
-b = A.X + 1;
+ClassFunctionality.StaticProp = 1;
+b = ClassFunctionality.StaticProp + 1;
 c = c + b;
-A.X = false ? 43 : A.X;
+ClassFunctionality.StaticProp = false ? 43 : ClassFunctionality.StaticProp;
 ";
             string errmsg = "DNL-1467636 Self update should not trigger update propagation";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);

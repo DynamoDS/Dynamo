@@ -1,0 +1,16 @@
+<Workspace Version="0.7.6.4202" X="-355.566790556489" Y="52.7003547388819" zoom="1.2921901720508" Name="Home">
+  <NamespaceResolutionMap />
+  <Elements>
+    <DSCoreNodesUI.Logic.ScopedIf guid="04dfe4af-56f9-4c12-8b42-9953f0923326" type="DSCoreNodesUI.Logic.ScopedIf" nickname="ScopeIf" x="569.482672502799" y="164.294155334151" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <DSCoreNodesUI.Logic.If guid="9935fc97-e289-492b-b94b-6722918d2eea" type="DSCoreNodesUI.Logic.If" nickname="If" x="645.728955055289" y="-17.5673482354805" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="74851f00-5608-42de-863a-ead660d04641" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="320.976270109516" y="105.556278404829" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="false;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="b1226239-b967-446c-ad99-e22791f5beac" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="324.897129292163" y="217.384159481808" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="true;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="4bcbad9f-3c66-423f-b618-28705eff9150" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="348.618194975158" y="325.823316889787" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="false;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="74851f00-5608-42de-863a-ead660d04641" start_index="0" end="04dfe4af-56f9-4c12-8b42-9953f0923326" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b1226239-b967-446c-ad99-e22791f5beac" start_index="0" end="04dfe4af-56f9-4c12-8b42-9953f0923326" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4bcbad9f-3c66-423f-b618-28705eff9150" start_index="0" end="04dfe4af-56f9-4c12-8b42-9953f0923326" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

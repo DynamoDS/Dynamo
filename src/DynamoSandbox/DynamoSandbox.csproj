@@ -13,7 +13,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo.DynamoSandbox</RootNamespace>
     <AssemblyName>DynamoSandbox</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -29,6 +29,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <Prefer32Bit>false</Prefer32Bit>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Practices.Prism">
@@ -36,12 +37,18 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="ProtoInterface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.XML" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -62,10 +69,14 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="SettingsMigrationWindow.xaml.cs">
+      <DependentUpon>SettingsMigrationWindow.xaml</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.en-US.resx" />
     <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -74,6 +85,15 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DynamoApplications\DynamoApplications.csproj">
+      <Project>{aa782772-fe61-4226-baa4-eb529fa1646b}</Project>
+      <Name>DynamoApplications</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">
+      <Project>{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}</Project>
+      <Name>DynamoCoreWpf</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
@@ -82,12 +102,22 @@
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
+      <Project>{263fa9c1-f81e-4a8e-95e0-8cdae20f177b}</Project>
+      <Name>DynamoShapeManager</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\logo_square_32x32.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="logo_square_32x32.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="SettingsMigrationWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

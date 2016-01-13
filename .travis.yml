@@ -1,0 +1,10 @@
+# See http://docs.travis-ci.com/user/languages/csharp/
+
+language: csharp
+solution: src/Dynamo.Mono.sln
+install:
+  - nuget restore src/Dynamo.Mono.sln
+script:
+  - xbuild /p:Configuration=Release src/Dynamo.Mono.sln
+notifications:
+  slack: dynamo-team:XCFz6s0hJl3QOYyRRlXdGhRg

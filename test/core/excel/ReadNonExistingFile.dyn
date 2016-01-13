@@ -1,0 +1,25 @@
+<Workspace Version="0.8.1.1463" X="202.997574985903" Y="-255.86917027573" zoom="0.426669354511768" Name="Home" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.Watch guid="33e0b5c6-ea32-4791-8358-f00c2b27ec31" type="Dynamo.Nodes.Watch" nickname="Watch" x="838.544055524946" y="1136.5397550221" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DSFunction guid="de5c9439-bc4c-408d-9484-798d8d8b8aed" type="Dynamo.Nodes.DSFunction" nickname="Excel.ReadFromFile" x="435.391592826092" y="1120.17831995657" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSOffice.dll" function="DSOffice.Excel.ReadFromFile@var,string,bool">
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.StringInput guid="b3be8364-66cb-435f-a4f7-29720de64f05" type="Dynamo.Nodes.StringInput" nickname="String" x="247.94300106189" y="1194.35666656474" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>Sheet1</System.String>
+      <System.String value="Sheet1" />
+    </Dynamo.Nodes.StringInput>
+    <DSCore.File.Filename guid="053847e5-899b-44df-b7a6-602801990760" type="DSCore.File.Filename" nickname="File Path" x="82.3482848987953" y="834.374981610577" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>..\..\..\\test\core\excel\NonExistingFile.xlsx</System.String>
+    </DSCore.File.Filename>
+    <DSCore.File.FileObject guid="fc69414a-660c-48fe-87ce-8ce21121c6de" type="DSCore.File.FileObject" nickname="File.FromPath" x="254.847198218266" y="892.499615446486" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="de5c9439-bc4c-408d-9484-798d8d8b8aed" start_index="0" end="33e0b5c6-ea32-4791-8358-f00c2b27ec31" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b3be8364-66cb-435f-a4f7-29720de64f05" start_index="0" end="de5c9439-bc4c-408d-9484-798d8d8b8aed" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="053847e5-899b-44df-b7a6-602801990760" start_index="0" end="fc69414a-660c-48fe-87ce-8ce21121c6de" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fc69414a-660c-48fe-87ce-8ce21121c6de" start_index="0" end="de5c9439-bc4c-408d-9484-798d8d8b8aed" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+</Workspace>

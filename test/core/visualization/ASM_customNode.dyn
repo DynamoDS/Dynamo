@@ -1,6 +1,7 @@
-<Workspace Version="0.6.0" X="-64.3763166149828" Y="-68.2968076536918" zoom="0.954042924882813" Description="" Category="" Name="Home">
+<Workspace Version="0.8.2.1957" X="-64.3763166149828" Y="-68.2968076536918" zoom="0.954042924882813" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
   <Elements>
-    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="db6660f8-b8a7-4447-b91b-09cd774ec3db" nickname="Points" x="473" y="267.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Nodes.Function guid="db6660f8-b8a7-4447-b91b-09cd774ec3db" type="Dynamo.Nodes.Function" nickname="Points" x="473" y="267.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False">
       <ID value="29a3cd04-d452-4c02-a0a6-1796527e008f" />
       <Name value="Points" />
       <Description value="" />
@@ -8,15 +9,15 @@
         <Input value="number of points" />
       </Inputs>
       <Outputs>
-        <Output value="xyz" />
+        <Output value="pts" />
       </Outputs>
     </Dynamo.Nodes.Function>
-    <Dynamo.Nodes.DoubleSlider type="Dynamo.Nodes.DoubleSlider" guid="d615b2c1-c88c-4b3e-975c-6da26dee231e" nickname="Number Slider" x="71" y="296.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <DSCoreNodesUI.Input.DoubleSlider guid="d615b2c1-c88c-4b3e-975c-6da26dee231e" type="DSCoreNodesUI.Input.DoubleSlider" nickname="Number Slider" x="71" y="296.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True">
       <System.Double>9.784</System.Double>
-      <Range min="0" max="20" />
-    </Dynamo.Nodes.DoubleSlider>
-    <Dynamo.Nodes.Watch3D type="Dynamo.Nodes.Watch3D" guid="fb3ea512-63f6-4e50-9cb2-344d1fc33b30" nickname="Watch 3D" x="769" y="189.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <view width="210" height="257">
+      <Range min="0" max="20" step="0.1" />
+    </DSCoreNodesUI.Input.DoubleSlider>
+    <Dynamo.Nodes.Watch3D guid="fb3ea512-63f6-4e50-9cb2-344d1fc33b30" type="Dynamo.Nodes.Watch3D" nickname="Watch 3D" x="769" y="189.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False">
+      <view width="220" height="320">
         <camera pos_x="20.6975697527233" pos_y="20.6975697527233" pos_z="20.6965697527233" look_x="-20.6975697527233" look_y="-20.6975697527233" look_z="-20.6975697527233" />
       </view>
     </Dynamo.Nodes.Watch3D>
@@ -26,4 +27,12 @@
     <Dynamo.Models.ConnectorModel start="d615b2c1-c88c-4b3e-975c-6da26dee231e" start_index="0" end="db6660f8-b8a7-4447-b91b-09cd774ec3db" end_index="0" portType="0" />
   </Connectors>
   <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+  <Cameras>
+    <Camera Name="fb3ea512-63f6-4e50-9cb2-344d1fc33b30_preview" eyeX="20.6975697527233" eyeY="20.6965697527233" eyeZ="-20.6975697527233" lookX="-20.6975697527233" lookY="-20.6975697527233" lookZ="20.6975697527233" />
+  </Cameras>
 </Workspace>

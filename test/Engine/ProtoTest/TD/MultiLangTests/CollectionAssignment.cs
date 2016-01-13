@@ -4,15 +4,8 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
-    internal class CollectionAssignment
+    class CollectionAssignment : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string filePath = "..\\..\\..\\Scripts\\TD\\MultiLanguage\\CollectionAssignment\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         [Category("SmokeTest")]
         public void T01_Simple_1D_Collection_Assignment()
@@ -140,30 +133,16 @@ e;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T05_Collection_Assignment_Using_Class()
         {
             string code = @"
-class collection
+import(""FFITarget.dll"");
+d = [Imperative]
 {
-	
-	public a : var[];
-	
-	constructor create( )
-	{
-		a = { 1,2,3 };
-	}
-	
-	def ret_col ( )
-	{
-		return=  a;
-	}
-}
-d;
-[Imperative]
-{
-	c1 = collection.create(  );
-	d = c1.ret_col();
+	c1 = ArrayMember.Ctor({ 1,2,3 });
+	return = c1.X;
 }
 		
 ";
@@ -173,6 +152,7 @@ d;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void T06_Collection_Assignment_Using_Class_2()
         {
@@ -252,6 +232,7 @@ def foo ( a )
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void T09_2D_Collection_Assignment_In_Class_Scope()
         {
@@ -459,18 +440,17 @@ p1;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T16_Assigning_Class_Collection_Property()
         {
             string error = "1467321 rev 3878: class property specified as an empty array with no rank is becoming null when assigned a collection to it ";
-            string code = @"class A
-{
-    a = {1,2,3};
-}
-a = A.A();
-val = a.a;
+            string code = @"
+import(""FFITarget.dll"");
+a = ArrayMember.Ctor({1,2,3});
+val = a.X;
 val[0] = 100;
-t = a.a[0];         
+t = a.X[0];         
 ";
             thisTest.VerifyRunScriptSource(code, error);
             // Assert.Fail("1463456 - Sprint 20 : Rev 2105 : Collection assignment is not always by reference ( when the collection is in class or function ) ");
@@ -549,49 +529,18 @@ b = a[1];";
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T20_Defect_1458567_2()
         {
             string code = @"
-class Point
-{
-    X : double;
-	Y : double;
-	Z : double;
-	
-	constructor ByCoordinates( x : double, y : double, z : double )
-	{
-	    X = x;
-		Y = y;
-		Z = z;		
-	}
-}
-class Line
-{
-    P1 : Point;
-	P2 : Point;
-	
-	constructor ByStartPointEndPoint( p1 : Point, p2 : Point )
-	{
-	    P1 = p1;
-		P2 = p2;
-	}
-	
-	def PointAtParameter (p : double )
-	{
-	
-	    t1 = P1.X + ( p * (P2.X - P1.X) );
-		return = Point.ByCoordinates( t1, P1.Y, P1.Z);
-	    
-	}
-	
-}
-startPt = Point.ByCoordinates(1, 1, 0);
-endPt   = Point.ByCoordinates(1, 5, 0);
-line_0  = Line.ByStartPointEndPoint(startPt, endPt); 	
-x1 = line_0[10].P1.X;
-x2 = line_0[0].P1.X;
-x3 = line_0.P1.X;
+import(""FFITarget.dll"");
+startPt = DummyPoint.ByCoordinates(1, 1, 0);
+endPt   = DummyPoint.ByCoordinates(1, 5, 0);
+line_0  = DummyLine.ByStartPointEndPoint(startPt, endPt); 	
+x1 = line_0[10].Start.X;
+x2 = line_0[0].Start.X;
+x3 = line_0.Start.X;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object v = null;
@@ -763,6 +712,7 @@ x = createArray ( { 1, 2, 3, 4 } );
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_InvalidTest_NoVerification")]
         [Category("SmokeTest")]
         public void T24_Dynamic_Array_Accessing_Out_Of_Bound_Index()
         {
@@ -826,19 +776,17 @@ collection = { };
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
-        public void T24_Dynamic_Array_Class_Scope()
+        public void T24_Dynamic_Array_1()
         {
             string code = @"
-class A
+def foo ( i : int )
 {
-    X : var[];
+    X : var[] = 0..i;
     Y : var[];
     Count1;
-    
-    constructor A ( i : int )
-    {
-        X = 0..i;
+
 	[Imperative]
 	{
 	    Count1 = 0;	    
@@ -846,35 +794,32 @@ class A
 	    for ( i in X ) 
 	    {
 	        y[Count1] = i * -1;
-		Count1 = Count1+1;
+		    Count1 = Count1+1;
 	    }          
-            Y = y;	    
+        Y = y;	    
 	}
-	
-    }
+	return = Y;
 }
+
 p = 3;
-a = A.A(p);
-b1 = a.X;
-b2 = a.Y;
-b3 = a.Count1;
+b2 = foo(p);
 p = 4;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 0, 1, 2, 3, 4 };
             Object[] v2 = new Object[] { 0, -1, -2, -3, -4 };
 
-            thisTest.Verify("b1", v1);
             thisTest.Verify("b2", v2);
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void T24_Dynamic_Array_Class_Scope_2()
         {
             // Assert.Fail("1465637 - Sprint 22 : rev 2336 : Issue with populating multiple array properties of class using imperative block ");
             string error = "1467321 rev 3878: class property specified as an empty array with no rank is becoming null when assigned a collection to it ";
-            string code = @"class A
+            string code = @"
+class A
 {
     X = { };
     Y = { };
@@ -912,6 +857,7 @@ b3 = a.Count1;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T24_Dynamic_Array_Class_Scope_3()
         {
@@ -1037,32 +983,29 @@ a = b;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T24_Dynamic_Array_Passed_As_Int_Array_To_Class_Method()
         {
             // Assert.Fail("1465802 - Sprint 22: rev 2359 : Dynamic array issue : when a dynamic array is passed as a collection method/function it throws unknown datatype invalid exception");
             string code = @"
-class A
+
+def  foo : int(i : int[])
 {
-                constructor A()
-                {}
-                def  foo : int(i : int[])
-                {
-                                return  = i[0] + i[1];
-                }
+    return  = i[0] + i[1];
 }
+
 b1;b2;b3;
 [Associative]
 {
-                cy={};
-                cy[0]=10;
-                cy[1]=12;
-                a=cy;
-                d={cy[0],cy[1]};
-                aa = A.A();              
-                b1=aa.foo(d);//works
-                b2=aa.foo(a); //does not work � error: Unknown Datatype Invalid
-                b3=aa.foo(cy); //does not work � error: Unknown Datatype Invalid
+    cy={};
+    cy[0]=10;
+    cy[1]=12;
+    a=cy;
+    d={cy[0],cy[1]};     
+    b1=foo(d);//works
+    b2=foo(a); //does not work � error: Unknown Datatype Invalid
+    b3=foo(cy); //does not work � error: Unknown Datatype Invalid
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1072,32 +1015,28 @@ b1;b2;b3;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T24_Dynamic_Array_Passed_As_Primitive_Array_To_Function()
         {
             // Assert.Fail("1465802 - Sprint 22: rev 2359 : Dynamic array issue : when a dynamic array is passed as a collection method/function it throws unknown datatype invalid exception");
             string code = @"
-class A
+
+def  foo : double(i : var[])
 {
-                constructor A()
-                {}
-                def  foo : double(i : var[])
-                {
-                                return  = i[0] + i[1];
-                }
+    return  = i[0] + i[1];
 }
 b1;b2;b3;
 [Associative]
 {
-                cy={};
-                cy[0]=1;
-                cy[1]=1.5;
-                a=cy;
-                d={cy[0],cy[1]};
-                aa = A.A();              
-                b1=aa.foo(d);//works
-                b2=aa.foo(a); //does not work � error: Unknown Datatype Invalid
-                b3=aa.foo(cy); //does not work � error: Unknown Datatype Invalid
+    cy={};
+    cy[0]=1;
+    cy[1]=1.5;
+    a=cy;
+    d={cy[0],cy[1]};     
+    b1= foo(d);//works
+    b2= foo(a); //does not work � error: Unknown Datatype Invalid
+    b3= foo(cy); //does not work � error: Unknown Datatype Invalid
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1208,28 +1147,23 @@ x = add(x);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T25_Adding_Elements_To_Array_Class()
         {
             // Assert.Fail("1465704 - Sprint 22: rev 2346 : Adding elements to array from inside class methods is throwing System.IndexOutOfRangeException exception ");
 
             string code = @"
-class A
+
+
+def add ( ) 
 {
-    x : var[][];
-    constructor A (  )
-    {
-        x = { { 0, 0 } , { 1, 1 } };
-    }
-    def add ( ) 
-    {
-	x[1][2] = 1;
-	x[2] = { 2, 2, 2, 2 };
-	return = x;
-    }
+    x = { { 0, 0 } , { 1, 1 } };
+    x[1][2] = 1;
+    x[2] = { 2, 2, 2, 2 };
+    return = x;
 }
-y = A.A();
-x = y.add(); // expected { { 0,0 }, { 1, 1, 1 }, {2, 2, 2, 2} }
+x = add(); // expected { { 0,0 }, { 1, 1, 1 }, {2, 2, 2, 2} }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v2 = new Object[] { 0, 0 };
@@ -1240,27 +1174,20 @@ x = y.add(); // expected { { 0,0 }, { 1, 1, 1 }, {2, 2, 2, 2} }
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T25_Adding_elements_tomemberofclass_1465704()
         {
 
             string code = @"
-class A
-{
-x : var[][];
-constructor A ( )
-{
-x = { { 0, 0 } , { 1, 1 } };
-}
 def add ( )
 {
-x[1][2] = 1;
-x[2] = { 2, 2, 2, 2 };
-return = x;
+    x = { { 0, 0 } , { 1, 1 } };
+    x[1][2] = 1;
+    x[2] = { 2, 2, 2, 2 };
+    return = x;
 }
-}
-y = A.A();
-x = y.add(); //x = {{0,0},{1,1,1},{2,2,2,2}}
+x = add(); //x = {{0,0},{1,1,1},{2,2,2,2}}
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] a2 = new Object[] { 0, 0 };
@@ -1271,6 +1198,7 @@ x = y.add(); //x = {{0,0},{1,1,1},{2,2,2,2}}
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T25_Adding_elements_tomemberofclass_1465704_2()
         {
@@ -1301,29 +1229,20 @@ x = add(y); // expected { { 0,0 }, { 1, 1, 1 }, {2, 2, 2, 2} }
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T25_Adding_elements_tomemberofclass_1465704_3()
         {
             string code = @"
-class A
+def add ( )
 {
-    x : var[]..[];
-    constructor A ( )
-    {
-       x = { { 0, 0 } , { 1, 1 } };
-    }
-    
-    def add ( )
-    {
-        x[1][2] = 1;
-        x[2] = { 2, false, { 2, 2 } };
+    x = { { 0, 0 } , { 1, 1 } };
+    x[1][2] = 1;
+    x[2] = { 2, false, { 2, 2 } };
         
-        return = x;
-    }
-}
-    
-y = A.A();
-x = y.add(); // expected { { 0,0 }, { 1, 1, 1 }, {2, false, {2, 2}} }
+    return = x;
+} 
+x = add(); // expected { { 0,0 }, { 1, 1, 1 }, {2, false, {2, 2}} }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v2 = new Object[] { 0, 0 };
@@ -1334,34 +1253,27 @@ x = y.add(); // expected { { 0,0 }, { 1, 1, 1 }, {2, false, {2, 2}} }
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T25_Adding_elements_tomemberofclass_1465704_4()
         {
             string code = @"
-class A
-{
-x : var[]..[];
-a: var[]..[];
-constructor A ( )
-{
-x = { { 0, 0 } , { 1, 1 } };
-}
+
 def add ( )
 {
-x[1][2] = 1;
-x[2] = { 2, false,{ 2, 2} };
-return = x;
+    x = { { 0, 0 } , { 1, 1 } };
+    x[1][2] = 1;
+    x[2] = { 2, false,{ 2, 2} };
+    return = x;
 }
-def test( )
+def test(x:var[]..[])
 {
-a = x;
-a[3]=1;
-return = a;
+    a = x;
+    a[3]=1;
+    return = a;
 }
-}
-y = A.A();
-x = y.add(); 
-z=y.test();//z = {{0,0},{1,1,1},{2,false,{2,2}},1}
+x = add(); 
+z = test(x);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v2 = new Object[] { 0, 0 };
@@ -1373,32 +1285,24 @@ z=y.test();//z = {{0,0},{1,1,1},{2,false,{2,2}},1}
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T25_Adding_elements_tomemberofclass_1465704_5()
         {
             string code = @"
-class A
+
+def remove (x:var[]..[])
 {
-x : var[][];
-a: var;
-constructor A ( )
+    t = Remove(x,1);
+    return = t;
+}
+def add(x:var[]..[])
 {
-x = { { 0, 0 } , { 1, 1 } };
+    x[1] = {4,4};
+    return = x;
 }
-def remove ( )
-{
-x=Remove(x,1);
-return = x;
-}
-def add( )
-{
-x[1] = {4,4};
-return = x;
-}
-}
-y = A.A();
-x = y.remove(); //x = {{0,0},{4,4}}
-z=y.add();//z = {{0,0},{4,4}}
+x = remove({ { 0, 0 } , { 1, 1 } }); 
+z = add(x);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 0, 0 };
@@ -1411,6 +1315,7 @@ z=y.add();//z = {{0,0},{4,4}}
 
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("SmokeTest")]
         public void T25_Adding_elements_tomemberofclass_1465704_6()
         {
@@ -1443,30 +1348,23 @@ x = y.add(); // expected { { 0,0 }, { 1, 1, 1 }, {2, false, {2, 2}} }";
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
-        public void T25_Adding_elements_tomemberofclass_1465704_7()
+        public void T25_Adding_elements_1465704_7()
         {
             string code = @"
-class A
+
+x = [Imperative]
 {
-x : var[]..[];
-constructor A ( )
-{
-x = { { 0, 0 } , { 1, 1 } };
-}
-}
-y = A.A();
- // expected { { 0,0 }, { 1, 1, 1 }, {2, false, {2, 2}} }
-x=[Imperative]
-{
-def add ( )
-{
-y.x[1][2] = 1;
-y.x[2] = { 2, false,{ 2, 2} };
-return = y.x;
-}
-z = add();
-return=z;
+    def add ( )
+    {
+        x = { { 0, 0 } , { 1, 1 } };
+        x[1][2] = 1;
+        x[2] = { 2, false,{ 2, 2} };
+        return = x;
+    }
+    z = add();
+    return = z;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1478,150 +1376,119 @@ return=z;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
-        public void T25_Adding_elements_MemberClass_imperative_1465704_8()
+        public void T25_Adding_elements_imperative_1465704_8()
         {
             string code = @"
-class A
+a = [Imperative]
 {
-x : var[];
-constructor A ( )
-{
-x = { { 0, 0 } , { 1, 1 } };
+    def add ( )
+    {
+        x = { { 0, 0 } , { 1, 1 } };
+        z = 0..5;
+        for(i in z)
+        {
+	        x[i] = 1;
+        }
+        return = x; 
+    }
+    return = add();
 }
-}
-y = A.A();
- // expected { { 0,0 }, { 1, 1, 1 }, {2, false, {2, 2}} }
-a=[Imperative]
-{
-def add ( )
-{
-z=0..5;
-for(i in z)
-{
-	y.x[i] = 1;
-}
-return = y.x; 
-}
-y = add();
-return=y;
-}";
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] a = new Object[] { 1, 1, 1, 1, 1, 1 };
             thisTest.Verify("a", a);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
-        public void T25_Adding_elements_MemberClass_imperative_1465704_9()
+        public void T25_Adding_elements_imperative_1465704_9()
         {
             string error = "1467309 rev 3786 : Warning:Couldn't decide which function to execute... coming from valid code ";
-            string code = @"class A
+            string code = @"
+a = [Imperative]
 {
-x : var[];
-constructor A ( )
-{
-x = { { 0, 0 } , { 1, 1 } };
+    def add ( )
+    {
+        x = { { 0, 0 } , { 1, 1 } };
+        z = 5;
+        j = 0;
+        while ( j<=z)
+        {
+	        x[j] = 1;
+            j = j + 1;
+        }
+        return = x; 
+    }
+    y = add();
+    return = y;
 }
-}
-y = A.A();
- // expected { { 0,0 }, { 1, 1, 1 }, {2, false, {2, 2}} }
-a=[Imperative]
-{
-def add ( )
-{
-z=5;
-j=0;
-while ( j<=z)
-{
-	y.x[j] = 1;;
-j=j+1;
-}
-return = y.x; 
-}
-y = add();
-return=y;
-}";
+";
             thisTest.VerifyRunScriptSource(code, error);
             Object[] a = new Object[] { 1, 1, 1, 1, 1, 1 };
             thisTest.Verify("a", a);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
-        public void T25_Adding_elements_MemberClass_imperative_1465704_10()
+        public void T25_Adding_elements_imperative_1465704_10()
         {
             string code = @"
-class A
+
+x = [Imperative]
 {
-x : var[][];
-constructor A ( )
-{
-x = { { 0, 0 } , { 1, 1 } };
-}
-}
-y = A.A();
- // expected { { 0,0 }, { 1, 1, 1 }, {2, false, {2, 2}} }
-x=[Imperative]
-{
-def add ( )
-{
-y.x[1][2] = 1;
-y.x[2] = { null, false,{ 2, 2} };
-return = y.x;
-}
-z = add();
-return=z;
+    def add ( )
+    {
+        x = { { 0, 0 } , { 1, 1 } };
+        x[1][2] = 1;
+        x[2] = { null, false,{ 2, 2} };
+        return = x;
+    }
+    z = add();
+    return = z;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v2 = new Object[] { 0, 0 };
             Object[] v3 = new Object[] { 1, 1, 1 };
-            Object[] v4 = new Object[] { null, false, null };
+            Object[] v4 = new Object[] { null, false, new Object[] { 2, 2 } };
             Object[] v5 = new Object[] { v2, v3, v4 };
             thisTest.Verify("x", v5);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
-        public void T25_Class_Assignment_dynamic_imperative_1465637_1()
+        public void T25_dynamic_imperative_1465637_1()
         {
             string code = @"
-class A
+def foo ( i : int )
 {
-X:var;
-Y:var;
-Count1 :int;
-constructor A ( i : int )
-	{
-	X = 0..i;
-	[Imperative]
-	{
-		Y = {0,0,0,0,0};
-		Count1 = 0; 
-		for ( i in X ) {
-			Y[Count1] = i * -1;
-			Count1 = Count1 + 1;
-		}
-	}
-}
+    Y = null;
+    Count1 : int;
+    X = 0..i;
+    [Imperative]
+    {
+	    Y = {0,0,0,0,0};
+	    Count1 = 0; 
+	    for ( i in X ) 
+        {
+		    Y[Count1] = i * -1;
+		    Count1 = Count1 + 1;
+	    }
+    }
+    return = Y;
 }
 p = 4;
-a = A.A(p);
-b1 = a.X;
- // expected { 0, 1, 2, 3, 4 }
-b2 = a.Y;
- // expected {0,-1,-2,-3,-4}
-b3 = a.Count1;
-//received : //watch:
- b1 = {0,-1,-2,-3,-4};//watch: 
-b2 = {0,0,0,0,0};
+a = foo(p);
+b1 = a;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] b1 = new Object[] { 0, -1, -2, -3, -4 };
-            Object[] b2 = new Object[] { 0, 0, 0, 0, 0 };
             thisTest.Verify("b1", b1);
-            thisTest.Verify("b2", b2);
         }
 
 
@@ -1677,31 +1544,25 @@ c = b;";
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T26_Defct_DNL_1459616_4()
         {
             string code = @"
-class A
+def foo1()
 {
-    x : var[]..[];
-    constructor A ()
-    {
-        a = { a, a };
-        x = a;	
-    }
-    def foo ()
-    {
-        b = { b[0], b[0], b };
-	return = b;
-    }
+    a = { a, a };
+    return = a;	
 }
-//a={1,2};
-x1 = A.A();
+def foo2()
+{
+    b = { b[0], b[0], b };
+	return = b;
+}
+t1 = foo1();
 c = [Imperative]
 {
-    //b = { 0, 1 };
-    t1 = x1.x;
-    t2  = x1.foo();
+    t2  = foo2();
     return = { t1, t2 };
 }
 ";
@@ -1713,6 +1574,7 @@ c = [Imperative]
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("Variable resolution")]
         [Category("Failure")]
         public void T26_Defct_DNL_1459616_5()
@@ -1773,23 +1635,21 @@ t1=b;";
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T27_defect_1464429_DynamicArray_inline()
         {
             string code = @"
-class test
-{
 	def CreateArray ( x : var[] , i )
 	{
 		smallest1  =  i>1?i*i:i;
 		x[i] = smallest1;
 		return = x;
 	}
-}
+
 b = { }; // Note : b = { 0, 0} works fine
 count = 0..2;
-a= test.test();
-t2 = a.CreateArray( b, count );
+t2 = CreateArray( b, count );
 t1=b;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] t1 = new Object[] { };
@@ -1800,23 +1660,21 @@ t1=b;";
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T27_defect_1464429_DynamicArray_class()
         {
             string code = @"
-class test
-{
+
 	def CreateArray ( x : var[] , i )
 	{
 		smallest1  =  i>1?i*i:i;
 		x[i] = smallest1;
 		return = x;
 	}
-}
 b = { }; // Note : b = { 0, 0} works fine
 count = 0..2;
-a= test.test();
-t2 = a.CreateArray( b, count );
+t2 = CreateArray( b, count );
 t1=b;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] t1 = new Object[] { };
@@ -1852,22 +1710,23 @@ count = -2..-1;";
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
-        public void T27_defect_1464429_DynamicArray_memberof_class()
+        public void T27_defect_1464429_DynamicArray_2()
         {
             string code = @"
-class test
-{
+
+
 y ={};
-	def CreateArray (  i :int)
-	{
-		y[i] = i;
-		return = y;
-	}
+def CreateArray (  i :int)
+{
+	y[i] = i;
+	return = y;
 }
 count = 0..2;
-a= test.test();
-t2 = a.CreateArray(  count );";
+t2 = CreateArray(  count );
+
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] count = new Object[] { 0, 1, 2 };
             Object[] t2 = new Object[] { new Object[] { 0 }, new Object[] { 0, 1 }, new Object[] { 0, 1, 2 } };
@@ -1877,7 +1736,7 @@ t2 = a.CreateArray(  count );";
 
 
         [Test]
-
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("SmokeTest")]
         public void T27_defect_1464429_DynamicArray_class_inherit()
         {
@@ -1912,20 +1771,17 @@ t2 = a.CreateArray(  count );
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
-        public void T27_DynamicArray_Class_1465802_Argument()//not
+        public void T27_DynamicArray_1465802_Argument()//not
         {
             string code = @"
-class A
+
+def foo : int(i:int[])
 {
-	constructor A()
-	{
+	return = i[0] + i[1];
 }
-	def foo : int(i:int[])
-	{
-		return = i[0] + i[1];
-	}
-}
+
 b1;b2;b31;
 [Associative]
 {
@@ -1934,10 +1790,9 @@ cy[0]=10;
 cy[1]=12;
 a=cy;
 d={cy[0],cy[1]};
-aa = A.A();
-b1=aa.foo(cy);
-b2=aa.foo(d);
-b31=aa.foo(a);
+b1 = foo(cy);
+b2 = foo(d);
+b31 = foo(a);
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             int b = 22;
@@ -1946,26 +1801,22 @@ b31=aa.foo(a);
             thisTest.Verify("b2", b);
             thisTest.Verify("b31", b);
         }
+
+        [Category("DSDefinedClass_Ported")]
         public void T27_DynamicArray_Class_1465802_Argument_2()
         {
             string code = @"
-class A
-{
-	constructor A()
-	{
-}
+
 	def foo : int(i:int[])
 	{
 		return = 1;
 	}
-}
 [Associative]
 {
 cy={};
 cy[0]=10;
 cy[1]=null;
-aa = A.A();
-b1=aa.foo(cy);
+b1=foo(cy);
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             int b = 1;
@@ -1974,22 +1825,17 @@ b1=aa.foo(cy);
 
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T27_DynamicArray_Class_1465802_member()//not
         {
             string code = @"
-class A
-{
-i:int[];
-	constructor A(d:int[])
-	{
-i=d;
-}
-	def foo : int()
+
+	def foo : int(i:int[])
 	{
 		return = i[0] + i[1];
 	}
-}
+
 a1;b1;c1;
 [Associative]
 {
@@ -1998,12 +1844,9 @@ cy[0]=10;
 cy[1]=12;
 a=cy;
 d={cy[0],cy[1]};
-aa = A.A(cy);
-bb = A.A(d);
-cc = A.A(a);
-a1=aa.foo();
-b1=bb.foo();
-c1=cc.foo();
+a1 = foo(cy);
+b1 = foo(d);
+c1 = foo(a);
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             int b = 22;
@@ -2026,30 +1869,11 @@ b=a[2];
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T27_DynamicArray_Invalid_Index_1465614_2()
         {
             string code = @"
-class Point
-{
-X : double;
-Y : double;
-Z : double;
-constructor ByCoordinates ( x1 : double, y1 : double, z1 : double ) 
-{
-X = x1;
-Y = y1;
-Z = z1;
-}
-}
-class Line{
-P1: Point;
-P2: Point;
-constructor ByStartPointEndPoint ( p1: Point, p2: Point )
-{
-P1 = p1;
-P2 = p2;
-}
-}
+import(""FFITarget.dll"");
 baseLineCollection = { };
 basePoint = { }; // replace this with ""basePoint = { 0, 0};"", and it works fine
 nsides = 2;
@@ -2058,11 +1882,11 @@ a = 0..nsides - 1..1;
 {
 for(i in a)
 {
-basePoint[i] = Point.ByCoordinates(i, i, 0);
+basePoint[i] = DummyPoint.ByCoordinates(i, i, 0);
 }
 for(i in a)
 {
-baseLineCollection[i] = Line.ByStartPointEndPoint(basePoint[i], basePoint[i+1]);
+baseLineCollection[i] = DummyLine.ByStartPointEndPoint(basePoint[i], basePoint[i+1]);
 }
 }
 x=basePoint[0].X;
@@ -2075,19 +1899,13 @@ z=basePoint[0].Z;";
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T27_DynamicArray_Invalid_Index_1467104()
         {
             string code = @"
-class Point
-{
-	x : var;
-	constructor Create(xx : double)
-	{
-		x = xx;
-	}
-}
-pts = Point.Create( { 1, 2} );
-aa = pts[null].x;
+import(""FFITarget.dll"");
+pts = ClassFunctionality.ClassFunctionality( { 1, 2} );
+aa = pts[null].IntVal;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             object aa = null;
@@ -2096,6 +1914,7 @@ aa = pts[null].x;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T27_DynamicArray_Invalid_Index_1467104_2()
         {
             string code = @"
@@ -2121,6 +1940,7 @@ aa = pts[null].x[null];
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T27_DynamicArray_Invalid_Index_1467104_3()
         {
             string code = @"
@@ -2284,20 +2104,19 @@ y = x;";
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
-        public void T40_Index_usingFunction_class_1467064_2()
+        public void T40_Index_usingFunction_1467064_2()
         {
             string code = @"
-class test
-{
+
 def foo()
 {    
 	return = 0;
 }
-}
+
 x = { 1, 2 };
-y=test.test();
-x[y.foo()] = 3;
+x[foo()] = 3;
 a = x;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] x = new Object[] { 3, 2 };
@@ -2307,57 +2126,49 @@ a = x;";
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
-        public void T40_Index_byFunction_class_imperative_1467064_3()
+        public void T40_Index_byFunction_imperative_1467064_3()
         {
             string code = @"
-class test
-{
+
 def foo()
 {    
 	return = 2;
 }
-}
-x;y;
-[Imperative]
+x1 = [Imperative]
 {
 x = { 1, 2 };
-y=test.test();
-x[y.foo()] = 3;
-y = x;
+x[foo()] = 3;
+return = x;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] x = new Object[] { 1, 2, 3 };
-            Object[] y = new Object[] { 1, 2, 3 };
-            thisTest.Verify("x", x);
-            thisTest.Verify("y", y);
+            thisTest.Verify("x1", x);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T40_Index_byFunction_argument_1467064_4()
         {
             string code = @"
-class test
-{
+
 def foo(y:int)
 {    
 	return = y;
 }
-}
-x;y;
-[Imperative]
+
+x1 = [Imperative]
 {
 x = { 1, 2 };
-y=test.test();
-x[y.foo(1)] = 3;
-y = x;
-}";
+x[foo(1)] = 3;
+return = x;
+}
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] x = new Object[] { 1, 3 };
-            Object[] y = new Object[] { 1, 3 };
-            thisTest.Verify("x", x);
-            thisTest.Verify("y", y);
+            thisTest.Verify("x1", x);
         }
         /* 
 [Test]
@@ -2379,28 +2190,14 @@ y = x;
          }*/
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T41_Accessing_Non_Existent_Properties_From_Array_Elements()
         {
             string code = @"
-class A 
-{
-    x : var;
-    constructor A ( y : var )
-    {
-        x = y;
-    }
-}
-class B 
-{
-    x2 : var;
-    constructor B ( y : var )
-    {
-        x2 = y;
-    }
-}
-c = { A.A(0), B.B(1) };
-d = c[1].x; 
+import(""FFITarget.dll"");
+c = { TestObjectA.TestObjectA(0), TestObjectB.TestObjectB(1) };
+d = c[1].a; 
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             // Assert.Fail("1467083 - Sprint23 : rev 2681 : error expected when accessing nonexistent properties of array elements!");
@@ -2410,29 +2207,15 @@ d = c[1].x;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T41_Accessing_Non_Existent_Property_FromArray_1467083()
         {
             string code = @"
-class A
-{
-x : var;
-constructor A ( y : var )
-{
-x = y;
-}
-}
-class B
-{
-x2 : var;
-constructor B ( y : var )
-{
-x2 = y;
-}
-}
-c = { A.A(0), B.B(1) };
-c0 = c[0].x;//0
-d = c[1].x;//null
+import(""FFITarget.dll"");
+c = { TestObjectA.TestObjectA(0), TestObjectB.TestObjectB(1) };
+c0 = c[0].a;//0
+d = c[1].a;//null
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object a = null;
@@ -2441,29 +2224,15 @@ d = c[1].x;//null
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T41_Accessing_Non_Existent_Property_FromArray_1467083_2()
         {
             string code = @"
-class A
-{
-x : var;
-constructor A ( y : var )
-{
-x = y;
-}
-}
-class B
-{
-x2 : var;
-constructor B ( y : var )
-{
-x2 = y;
-}
-}
-c = { A.A(0), B.B(1),1 };
-e = c[2].x;
-e1 = c[2].x2;
+import(""FFITarget.dll"");
+c = { TestObjectA.TestObjectA(0), TestObjectB.TestObjectB(1), 1 };
+e = c[2].IntVal;
+e1 = c[2].IntVal;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object a = null;
@@ -2472,6 +2241,7 @@ e1 = c[2].x2;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void T41_Accessing_Non_Existent_Property_FromArray_1467083_3()
         {
@@ -2508,39 +2278,33 @@ f1 = d[1].x2;//null
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Variable resolution")]
         public void T61_Accessing_Non_Existent_Array_Properties_1467082()
         {
             //Assert.Fail("1467094 - Sprint 24 : Rev 2748 : in some cases if try to access nonexisting item in an array it does not return null ) ");
             string code = @"
-class A  
-{
-    x : var;
-    constructor A ( y : var )
-    {
-        x = y;
-    }
-}
-c = { A.A(0), A.A(1) };
+import(""FFITarget.dll"");
+c = { ClassFunctionality.ClassFunctionality(0), ClassFunctionality.ClassFunctionality(1) };
 p = {};
-d=p[1];
+d = p[1];
 d = [Imperative]
 {
-    if(c[0].x == 0 )
+    if(c[0].IntVal == 0 )
     {
         c[0] = 0;
-	p[0] = 0;
+	    p[0] = 0;
     }
-    if(c[0].x == 0 )
+    if(c[0].IntVal == 0 )
     {
         p[1] = 1;
     }
     return = 0;
 }
 t1 = c[0];
-t2 = c[1].x;
-t3=p[0];
-t4=p[1];
+t2 = c[1].IntVal;
+t3 = p[0];
+t4 = p[1];
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Verification 
@@ -2553,22 +2317,16 @@ t4=p[1];
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T61_Accessing_Non_Existent_Array_Properties_1467082_2()
         {
             // Assert.Fail("");
             string code = @"
-class A  
-{
-  x : var;
-    constructor A ( y : var )
-    {
-        x = y;
-    }
-}
-c = { A.A(0), A.A(1) };
+import(""FFITarget.dll"");
+c = { ClassFunctionality.ClassFunctionality(0), ClassFunctionality.ClassFunctionality(1) };
 p = {};
-q=p[0].X;
+q=p[0].IntVal;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Verification 
@@ -2577,26 +2335,20 @@ q=p[0].X;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T61_Accessing_Non_Existent_Array_Properties_1467082_3()
         {
             // Assert.Fail("");
             string code = @"
-class A  
-{
-    x : var;
-    constructor A ( y : var )
-    {
-        x = y;
-    }
-}
-c = { A.A(0), A.A(1) };
+import(""FFITarget.dll"");
+c = { ClassFunctionality.ClassFunctionality(0), ClassFunctionality.ClassFunctionality(1) };
 p = {};
-q=p[0].X;
+q=p[0].IntVal;
 c[0]=0;
-p=c[0].X; // access as if its propoerty of the class, but thevalue is not class 
-r=c[0][0].X;// non existing index 
-s=c[0].X[0];// access non array variable as if its array ";
+p=c[0].IntVal; // access as if its propoerty of the class, but thevalue is not class 
+r=c[0][0].IntVal;// non existing index 
+s=c[0].IntVal[0];// access non array variable as if its array ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Verification 
             object a = null;
@@ -2607,6 +2359,7 @@ s=c[0].X[0];// access non array variable as if its array ";
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T61_Assign_Non_Existent_Array_Properties_1467082_4()
         {
@@ -2646,36 +2399,30 @@ s = f[1][0].x;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T61_Assign_Non_Existent_Array_Properties_1467094()
         {
             // Assert.Fail("");
             string code = @"
-class A
-{
-x : var;
-constructor A ( y : var )
-{
-x = y;
-}
-}
-c = { A.A(0), A.A(1) };
+import(""FFITarget.dll"");
+c = { ClassFunctionality.ClassFunctionality(0), ClassFunctionality.ClassFunctionality(1) };
 p = {};
 d = [Imperative]
 {
-if(c[0].x == 0 )
+if(c[0].IntVal == 0 )
 {
 c[0] = 0;
 p[0] = 0;
 }
-if(c[0].x == 0 )
+if(c[0].IntVal == 0 )
 {
 p[1] = 1;
 }
 return = 0;
 }
 t1 = c[0];
-t2 = c[1].x;
+t2 = c[1].IntVal;
 t3=p[0];
 t4=p[1];
 ";
@@ -2689,7 +2436,7 @@ t4=p[1];
 
         [Test]
         [Category("SmokeTest")]
-        public void T62_Create_Dynamic_Array_OnTheFly()
+        public void T62_Create_Dynamic_Array_OnTheFly01()
         {
             string code = @"
 i;
@@ -2802,22 +2549,19 @@ b[2]=-5;";
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
-        public void T62_Create_Dynamic_Array_OnTheFly_inaClass()
+        public void T62_Create_Dynamic_Array_OnTheFly02()
         {
             string code = @"
-class test
+def test(a:int)
 {
-b:int=10;
-	constructor test(a:int)
-	{
-		a=b;
-	
-	}
+    b:int=10;
+	a=b;
+    return = b;
 }
 d=5;
-a=test.test(d[0]);
-c= a.b;
+c=test(d[0]);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("d", 5);
@@ -2826,24 +2570,19 @@ c= a.b;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T62_Create_Dynamic_Array_OnTheFly_passargument()
         {
             // Assert.Fail("1467139-Sprint 24 - Rev 2958 - an array created dynamically on the fly and passed as an arguemnt to method it gets garbage collected ");
             string code = @"
-class test
+def test(a:int[])
 {
-b:int=10;
-	
-  constructor test(a:int[])
-	{
-	b=1;
-	
-	}
+    b:int=1;
+    return = b;
 }
 d[0]=5;
-a=test.test(d);
-c= a.b;
+c=test(d);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("d", new Object[] { 5 });
@@ -2852,6 +2591,7 @@ c= a.b;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T62_Create_Dynamic_Array_OnTheFly_inaClass_methodoverload()
         {
@@ -2903,6 +2643,7 @@ a=test(d);
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void T63_Dynamic_array_onthefly_argument_class__1467139()
         {
@@ -2999,23 +2740,17 @@ b[0]=10;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T65_Array_Alias_ByVal_1467165_2()
         {
             string code = @"
-class A
-{
-        id:int;
-}
-class B
-{
-        id:int;
-}
-a = {A.A(),B.B()};
+import(""FFITarget.dll"");
+a = {TestObjectA.TestObjectA(),TestObjectB.TestObjectB()};
 b=a;
-a[0].id = 100;
-b[0].id = 200;
-c=a[0].id;
-d=b[0].id;";
+a[0].a = 100;
+b[0].a= 200;
+c=a[0].a;
+d=b[0].a;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("c", 200);
             thisTest.Verify("d", 200);
@@ -3037,48 +2772,36 @@ b[0]=false;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Design Issue")]
         public void T65_Array_Alias_ByVal_1467165_4()
         {
             //Assert.Fail("1467182 - Sprint 25 - [Design Decision] Rev 3163 - method resolution or type conversion is expected in following cases ");
             string code = @"
-class A
-{
-        id:int;
-}
-class B
-{
-        id:int;
-}
-a = {A.A(),B.B()};
+import(""FFITarget.dll"");
+a = {TestObjectA.TestObjectA(),TestObjectB.TestObjectB()};
 b=a;
-a[0].id = 100;
-b[0].id = ""false"";
-c=a[0].id;
-d=b[0].id;";
+a[0].a = 100;
+b[0].a = ""false"";
+c=a[0].a;
+d=b[0].a;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
 
 
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T65_Array_Alias_ByVal_1467165_5()
         {
             string code = @"
-class A
-{
-        id:int;
-}
-class B
-{
-        id:int;
-}
-a = {A.A(),B.B()};
+import(""FFITarget.dll"");
+a = {TestObjectA.TestObjectA(),TestObjectB.TestObjectB()};
 b=a;
-a[0].id = 100;
-b[0].id = null;
-c=a[0].id;
-d=b[0].id;";
+a[0].IntVal = 100;
+b[0].IntVal = null;
+c=a[0].IntVal;
+d=b[0].IntVal;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("c", null);
             thisTest.Verify("d", null);
@@ -3186,19 +2909,14 @@ b = a;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Update")]
         public void T44_Defect_1467264()
         {
             String code =
-@"class A
-{
-    X : var[];
-    constructor  A ( t1 : var[] )
-    {
-        X = t1;
-    }
-}
-a1 = { A.A(1..2), A.A(2..3) };
+@"
+import(""FFITarget.dll"");
+a1 = { ArrayMember.Ctor(1..2), ArrayMember.Ctor(2..3) };
 a = a1[0].X[0][1];
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -3227,7 +2945,7 @@ a = a1[0].X[0][1];
 test = arr;
 a= 1;
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] v1 = new Object[] { new Object[] { 0, 0, 0 }, new Object[] { 0.0, 0.5, 1.0 }, new Object[] { 0, 1, 2 } }
@@ -3258,7 +2976,7 @@ a= 1;
 test = arr;
 a= 1;
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] v1 = new Object[] { new Object[] { 0 }, new Object[] { 0, 1 }, new Object[] { 0, 1, 2 } }
@@ -3291,7 +3009,7 @@ def foo ()
 }
 test = foo();
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] v1 = new Object[] { new Object[] { 0 }, new Object[] { 0, 1 }, new Object[] { 0, 1, 2 } }
@@ -3322,7 +3040,7 @@ def foo ()
 }
 test = foo();
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] v1 = new Object[] { new Object[] { 0 }, new Object[] { 0, 1 } }
@@ -3349,7 +3067,7 @@ test = [Imperative]
     return = arr;
 }
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] v1 = new Object[] { 0, 1 }
@@ -3373,7 +3091,7 @@ test = [Imperative]
 }
 test = arr;
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] v1 = new Object[] { 0, 1 }
@@ -3397,7 +3115,7 @@ test = [Imperative]
 }
 test = arr;
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] v1 = new Object[] { 0, 1 }
@@ -3421,7 +3139,7 @@ test = [Imperative]
     return= arr; 
 }
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] v1 = new Object[] { 0, 1 }
@@ -3444,7 +3162,7 @@ test = [Imperative]
     return = arr;   
 }
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
@@ -3468,7 +3186,7 @@ test = [Imperative]
     return = arr;   
 }
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
@@ -3494,7 +3212,7 @@ arr;
 }
 test = arr;
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
@@ -3519,7 +3237,7 @@ test = [Imperative]
     return = arr;   
 }
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
@@ -3545,7 +3263,7 @@ arr = { {}, {}};
 }
 test = arr;
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
@@ -3575,7 +3293,7 @@ def foo ()
 }
 test = foo();
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
@@ -3585,13 +3303,13 @@ test = foo();
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T46_Defect_1467502_9_2()
         {
             String code =
 @"
-class A
-{
-    static def foo ()
+
+    def foo ()
     {
         t = [Imperative]
         {
@@ -3604,10 +3322,9 @@ class A
         }
         return = t;
     }
-}
-test = A.foo();
+test = foo();
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
@@ -3637,7 +3354,7 @@ def foo ()
 }
 test = foo();
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
@@ -3647,30 +3364,28 @@ test = foo();
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T46_Defect_1467502_9_4()
         {
             String code =
 @"
 arr;
-class A
+def foo ()
 {
-    static def foo ()
+    t = [Imperative]
     {
-        t = [Imperative]
+        //arr  ;    
+        for(i in (0..1))
         {
-            //arr  ;    
-            for(i in (0..1))
-            {
-                arr[i][i] = i;
-            }
-            return = arr;   
+            arr[i][i] = i;
         }
-        return = t;
+        return = arr;   
     }
+    return = t;
 }
-test = A.foo();
+test = foo();
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
@@ -3680,14 +3395,12 @@ test = A.foo();
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T46_Defect_1467502_9_5()
         {
             String code =
 @"
-class B
-{
-    x : int = 0;
-}
+import(""FFITarget.dll"");
 arr = { {}, {}};
 def foo ()
 {
@@ -3696,15 +3409,15 @@ def foo ()
         //arr = null ;    
         for(i in (0..1))
         {
-            arr[i][i] = B.B();
+            arr[i][i] = ClassFunctionality.ClassFunctionality(0);
         }
         return = arr;   
     }
     return = t;
 }
-test = foo().x;
+test = foo().IntVal;
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
@@ -3714,34 +3427,28 @@ test = foo().x;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T46_Defect_1467502_9_6()
         {
             String code =
 @"
-//arr;
-class B
+import(""FFITarget.dll"");
+def foo ()
 {
-    x : int = 0;
-}
-class A
-{
-    static def foo ()
+    t = [Imperative]
     {
-        t = [Imperative]
+        arr  ;    
+        for(i in (0..1))
         {
-            arr  ;    
-            for(i in (0..1))
-            {
-                arr[i][i] = B.B();
-            }
-            return = arr;   
+            arr[i][i] = ClassFunctionality.ClassFunctionality(0);
         }
-        return = t;
+        return = arr;   
     }
+    return = t;
 }
-test = A.foo().x;
+test = foo().IntVal;
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
@@ -3751,37 +3458,31 @@ test = A.foo().x;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T47_Defect_1467561_1()
         {
             String code =
 @"
-//arr;
-class B
+import(""FFITarget.dll"");
+def foo ()
 {
-    x : int = 0;
-}
-class A
-{
-    static def foo ()
+    t = [Imperative]
     {
-        t = [Imperative]
+        arr  ;    
+        for(i in (0..1))
         {
-            arr  ;    
-            for(i in (0..1))
+            if ( i < 3 )
             {
-                if ( i < 3 )
-                {
-                    arr[i][i] = B.B();
-                }
+                arr[i][i] = ClassFunctionality.ClassFunctionality(0);
             }
-            return = arr;   
         }
-        return = t;
+        return = arr;   
     }
+    return = t;
 }
-test = A.foo().x;
+test = foo().IntVal;
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
@@ -3790,37 +3491,31 @@ test = A.foo().x;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T47_Defect_1467561_2()
         {
             String code =
 @"
-class B
+import(""FFITarget.dll"");
+def foo ()
 {
-    x : int = 0;
-}
-class A
-{
-    def foo ()
+    t = [Imperative]
     {
-        t = [Imperative]
+        arr = {} ;    
+        for(i in (0..1))
         {
-            arr = {} ;    
-            for(i in (0..1))
+            if ( i < 3 )
             {
-                if ( i < 3 )
-                {
-                    arr[i][i] = B.B();
-                }
+                arr[i][i] = ClassFunctionality.ClassFunctionality(0);
             }
-            return = arr;   
         }
-        return = t;
+        return = arr;   
     }
+    return = t;
 }
-aa = A.A();
-test = aa.foo().x;
+test = foo().IntVal;
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
@@ -3829,36 +3524,31 @@ test = aa.foo().x;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T47_Defect_1467561_3()
         {
             String code =
 @"
+import(""FFITarget.dll"");
 arr;
-class B
+def foo ()
 {
-    x : int = 0;
-}
-class A
-{
-    static def foo ()
+    t = [Imperative]
     {
-        t = [Imperative]
+        for(i in (0..1))
         {
-            for(i in (0..1))
+            if ( i < 3 )
             {
-                if ( i < 3 )
-                {
-                    arr[i][i] = B.B();
-                }
+                arr[i][i] = ClassFunctionality.ClassFunctionality(0);
             }
-            return = arr;   
         }
-        return = t;
+        return = arr;   
     }
+    return = t;
 }
-test = A.foo().x;
+test = foo().IntVal;
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
@@ -3973,7 +3663,9 @@ test = A.foo().x;
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", 10);
         }
+
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T55_DictionaryKeyinClass()
         {
 
@@ -4001,6 +3693,7 @@ test = A.foo().x;
 
         }
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T56_DictionaryKeyinClass_2()
         {
 
@@ -4029,6 +3722,7 @@ test = A.foo().x;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void T57_DictionaryKeyinClass_inheritance()
         {
 
@@ -4066,6 +3760,7 @@ test = A.foo().x;
 
         }
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void T58_DictionaryKeyinClass_inheritance2()
         {
 
@@ -4108,49 +3803,44 @@ test = A.foo().x;
 
         }
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T59_DotOperator()
         {
 
             String code =
             @"
-           class test
-                {
-                    a = { 1, 2, 3 };
-                    b = ""x"";
-                    constructor test(c:int)
-                    {
-                        a[b] = c;
-                    }
-                }
-            z = test.test(5);
-
-            r=z.a[""x""];
+            def test(c:int)
+            {
+                a = { 1, 2, 3 };
+                b = ""x"";
+                a[b] = c;
+                return = a;
+            }
+                
+            z = test(5);
+            r = z[""x""];
             ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", 5);
         }
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T60_DictionaryDotOperator()
         {
 
             String code =
             @"
-               
-          class test
-            {
-                a = { 1, 2, 3 };
-                b = {""x"",""y""};
-                def foo(c:int)
-                {
-                    a[b[0]] = c;
-                    a[b[1]] = c+1;
-                    return =a;
-                }
-            }
-
-            z = test.test();
-            y = z.foo(5);
-            x = y[z.b];
+def foo(c:int)
+{
+    a = { 1, 2, 3 };
+    b = {""x"",""y""};
+    a[b[0]] = c;
+    a[b[1]] = c+1;
+    return = a;
+}
+y = foo(5);
+b = {""x"",""y""};
+x = y[b];
             ";
 
             ExecutionMirror mirror = thisTest.RunScriptSource(code);

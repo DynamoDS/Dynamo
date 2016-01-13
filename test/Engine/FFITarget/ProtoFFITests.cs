@@ -110,6 +110,14 @@ namespace FFITarget
             return x + y;
         }
 
+        public static IList JoinList(params IList[] lists)
+        {
+            var result = new ArrayList();
+            foreach (IList list in lists)
+                result.AddRange(list);
+            return result;
+        }
+
         public object[] GetMixedObjects()
         {
             object[] objs = { new DerivedDummy(), new Derived1(), new TestDispose(), new DummyDispose() };
@@ -423,6 +431,61 @@ namespace FFITarget
             };
         }
 
+        public static Hashtable GetHashTable()
+        {
+            var hashTable = new Hashtable();
+            hashTable.Add("color", "green");
+            hashTable.Add("weight", 42);
+            hashTable.Add(37, "thirty-seven");
+
+            return hashTable;
+        }
+
+        public static object GetValueFromHashTable(Hashtable table, object key)
+        {
+            if (table.Contains(key))
+                return table[key];
+            else
+                return 1024;
+        }
+
+        public static object GetValueFromDictionary(Dictionary<object, object> dict, object key)
+        {
+            if (dict.ContainsKey(key))
+                return dict[key];
+            else
+                return 1024;
+        }
+
+        public static object GetObjectValue( Dictionary<String, object> result, String key)
+        {
+            if (result.ContainsKey(key))
+            {
+                return result[key];
+            }
+            else
+            {
+                return 37;
+            }
+        }
+
+        public static String GetStringValue(Dictionary<String, String> result, String key)
+        {
+            if (result.ContainsKey(key))
+            {
+                return result[key];
+            }
+            else
+            {
+                return "novalue";
+            }
+        }
+
+        public static object ReturnObject(object x)
+        {
+            return x;
+        }
+
         public static int GetDepth(IList arr)
         {
             int maxSubListDepth = 0;
@@ -464,6 +527,23 @@ namespace FFITarget
             var newList = new ArrayList { item };
             newList.AddRange(list);
             return newList;
+        }
+
+        public static double GetCircleArea([DefaultArgumentAttribute("TestData.GetFloat()")]double radius)
+        {
+            return radius * radius * Math.PI;
+        }
+
+        public static int MultiplyBy2WithWrongDefaultArgument(
+            [DefaultArgumentAttribute("TestData.NonExistFunction()")] int x)
+        {
+            return x * 2;
+        }
+
+        public static int MultiplyBy3NonParsableDefaultArgument(
+           [DefaultArgumentAttribute("%!48asfasd4")] int x)
+        {
+            return x * 3;
         }
     }
 
@@ -859,6 +939,11 @@ namespace FFITarget
             {
                 var p = new Point { dX = x, dY = y, dZ = z };
                 return p;
+            }
+
+            public static Point ByCoordinates(double x, double y, double z)
+            {
+                return XYZ(x, y, z);
             }
 
             public double dX { get; set; }

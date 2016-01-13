@@ -7,19 +7,13 @@ using System.Text;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
-    class Old_Language_test_Cases
+    class Old_Language_test_Cases : ProtoTestBase
     {
-        readonly TestFrameWork thisTest = new TestFrameWork();
-        string testPath = "..\\..\\..\\Scripts\\TD\\MultiLanguage\\Old_Language_test_Cases\\";
-        [SetUp]
-        public void SetUp()
-        {
-        }
         public void T0000_sample()
         {
             String code =
 @"x = 1;";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("x", 1);

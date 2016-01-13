@@ -8,20 +8,8 @@ using ProtoFFI;
 namespace ProtoTest.UtilsTests
 {
     [TestFixture]
-    public class ArrayUtilsTest
+    class ArrayUtilsTest : ProtoTestBase
     {
-        public ProtoCore.Core core;
-        [SetUp]
-        public void Setup()
-        {
-            Console.WriteLine("Setup");
-            core = new ProtoCore.Core(new ProtoCore.Options());
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
-            //DLLFFIHandler.Env = ProtoFFI.CPPModuleHelper.GetEnv(); 
-            //DLLFFIHandler.Register(FFILanguage.CPlusPlus, new ProtoFFI.PInvokeModuleHelper());
-        }
-
         [Test]
         public void StackValueDiffTestDefect()
         {
@@ -32,87 +20,73 @@ namespace ProtoTest.UtilsTests
     b = 1.0;
 }
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core);
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            ProtoCore.RuntimeCore runtimeCore = null;
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             StackValue svA = mirror.GetRawFirstValue("a");
             StackValue svB = mirror.GetRawFirstValue("b");
             Assert.IsTrue(svA.metaData.type != svB.metaData.type);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void StackValueDiffTestUserDefined()
         {
             String code =
 @"
-class A
-{
-    x : var;
-    constructor A()
-    {
-        x = 20;
-    }
-}
+import(""FFITarget.dll"");
 [Imperative]
 {
-	a = A.A();
+	a = ClassFunctionality.ClassFunctionality(20);
     b = 1.0;
 }
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core);
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            ProtoCore.RuntimeCore runtimeCore = null;
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             StackValue svA = mirror.GetRawFirstValue("a");
             StackValue svB = mirror.GetRawFirstValue("b");
             Assert.IsTrue(svA.metaData.type != svB.metaData.type);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void StackValueDiffTestProperty01()
         {
             String code =
 @"
-class A
-{
-    x : var;
-    constructor A()
-    {
-        x = 20;
-    }
-}
+import(""FFITarget.dll"");
 [Imperative]
 {
-	a = A.A();
+	a = ClassFunctionality.ClassFunctionality(20);
     b = 1.0;
 }
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core);
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            ProtoCore.RuntimeCore runtimeCore = null;
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             StackValue svA = mirror.GetRawFirstValue("a");
             StackValue svB = mirror.GetRawFirstValue("b");
             Assert.IsTrue(svA.metaData.type != svB.metaData.type);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void StackValueDiffTestProperty02()
         {
             String code =
 @"
-class A
-{
-    x : var;
-    constructor A()
-    {
-        x = 20;
-    }
-}
+import(""FFITarget.dll"");
 [Imperative]
 {
-	a = A.A();
-    b = a.x;
+	a = ClassFunctionality.ClassFunctionality(20);
+    b = a.IntVal;
     c = 1.0;
 }
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core);
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            ProtoCore.RuntimeCore runtimeCore = null;
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             StackValue svA = mirror.GetRawFirstValue("b");
             StackValue svB = mirror.GetRawFirstValue("c");
             Assert.IsTrue(svA.metaData.type != svB.metaData.type);
@@ -131,16 +105,17 @@ a;b;c;
     c = {1.0, 2.0, 9};
 }
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core);
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            ProtoCore.RuntimeCore runtimeCore = null;
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             StackValue svA = mirror.GetRawFirstValue("a");
-            var dict = ProtoCore.Utils.ArrayUtils.GetTypeStatisticsForLayer(svA, core);
+            var dict = ProtoCore.Utils.ArrayUtils.GetTypeStatisticsForLayer(svA, runtimeCore);
             Assert.IsTrue(dict[dict.Keys.First()] == 3);
             StackValue svB = mirror.GetRawFirstValue("b");
-            var dict2 = ProtoCore.Utils.ArrayUtils.GetTypeStatisticsForLayer(svB, core);
+            var dict2 = ProtoCore.Utils.ArrayUtils.GetTypeStatisticsForLayer(svB, runtimeCore);
             Assert.IsTrue(dict2[dict2.Keys.First()] == 4);
             StackValue svC = mirror.GetRawFirstValue("c");
-            var dict3 = ProtoCore.Utils.ArrayUtils.GetTypeStatisticsForLayer(svC, core);
+            var dict3 = ProtoCore.Utils.ArrayUtils.GetTypeStatisticsForLayer(svC, runtimeCore);
             Assert.IsTrue(dict3[dict3.Keys.First()] == 2);
             Assert.IsTrue(dict3[dict3.Keys.Last()] == 1);
 
@@ -161,22 +136,23 @@ a;b;c;
     e = {{1, 2, 3}, {1, 2, 3}, {1, 2, 3}};
 }
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core);
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            ProtoCore.RuntimeCore runtimeCore = null;
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             StackValue svA = mirror.GetRawFirstValue("a");
             StackValue svB = mirror.GetRawFirstValue("b");
             StackValue svC = mirror.GetRawFirstValue("c");
             StackValue svD = mirror.GetRawFirstValue("d");
             StackValue svE = mirror.GetRawFirstValue("e");
-            var a = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svA, core);
+            var a = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svA, runtimeCore);
             Assert.IsTrue(a == 1);
-            var b = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svB, core);
+            var b = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svB, runtimeCore);
             Assert.IsTrue(b == 1);
-            var c = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svC, core);
+            var c = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svC, runtimeCore);
             Assert.IsTrue(c == 1);
-            var d = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svD, core);
+            var d = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svD, runtimeCore);
             Assert.IsTrue(d == 2);
-            var e = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svE, core);
+            var e = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svE, runtimeCore);
             Assert.IsTrue(e == 2);
             // Assert.IsTrue((Int64)o.Payload == 5);
         }
@@ -196,27 +172,29 @@ a;b;c;d;e;
     e = {{1, 2, 3}, {1, {2}, 3}, {{{1}}, 2, 3}};
 }
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core);
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            ProtoCore.RuntimeCore runtimeCore = null;
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             StackValue svA = mirror.GetRawFirstValue("a");
             StackValue svB = mirror.GetRawFirstValue("b");
             StackValue svC = mirror.GetRawFirstValue("c");
             StackValue svD = mirror.GetRawFirstValue("d");
             StackValue svE = mirror.GetRawFirstValue("e");
-            var a = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svA, core);
+            var a = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svA, runtimeCore);
             Assert.IsTrue(a == 2);
-            var b = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svB, core);
+            var b = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svB, runtimeCore);
             Assert.IsTrue(b == 2);
-            var c = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svC, core);
+            var c = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svC, runtimeCore);
             Assert.IsTrue(c == 3);
-            var d = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svD, core);
+            var d = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svD, runtimeCore);
             Assert.IsTrue(d == 2);
-            var e = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svE, core);
+            var e = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svE, runtimeCore);
             Assert.IsTrue(e == 4);
             // Assert.IsTrue((Int64)o.Payload == 5);
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void TestArrayGetCommonSuperType()
         {
             String code =
@@ -254,94 +232,96 @@ tCCA = {C.C(), C.C(), A.A()};
 tCCB = {C.C(), C.C(), B.B()};
 tCCC = {C.C(), C.C(), C.C()};
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core);
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            ProtoCore.RuntimeCore runtimeCore = null;
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             StackValue svAAA = mirror.GetRawFirstValue("tAAA");
-            ClassNode superAAA = ArrayUtils.GetGreatestCommonSubclassForArray(svAAA, core);
-            Assert.IsTrue(superAAA.name == "A");
+            ClassNode superAAA = ArrayUtils.GetGreatestCommonSubclassForArray(svAAA, runtimeCore);
+            Assert.IsTrue(superAAA.Name == "A");
             StackValue svAAB = mirror.GetRawFirstValue("tAAB");
-            ClassNode superAAB = ArrayUtils.GetGreatestCommonSubclassForArray(svAAB, core);
-            Assert.IsTrue(superAAB.name == "A");
+            ClassNode superAAB = ArrayUtils.GetGreatestCommonSubclassForArray(svAAB, runtimeCore);
+            Assert.IsTrue(superAAB.Name == "A");
             StackValue svAAC = mirror.GetRawFirstValue("tAAC");
-            ClassNode superAAC = ArrayUtils.GetGreatestCommonSubclassForArray(svAAC, core);
-            Assert.IsTrue(superAAC.name == "A");
+            ClassNode superAAC = ArrayUtils.GetGreatestCommonSubclassForArray(svAAC, runtimeCore);
+            Assert.IsTrue(superAAC.Name == "A");
             StackValue svABA = mirror.GetRawFirstValue("tABA");
-            ClassNode superABA = ArrayUtils.GetGreatestCommonSubclassForArray(svABA, core);
-            Assert.IsTrue(superABA.name == "A");
+            ClassNode superABA = ArrayUtils.GetGreatestCommonSubclassForArray(svABA, runtimeCore);
+            Assert.IsTrue(superABA.Name == "A");
             StackValue svABB = mirror.GetRawFirstValue("tABB");
-            ClassNode superABB = ArrayUtils.GetGreatestCommonSubclassForArray(svABB, core);
-            Assert.IsTrue(superABB.name == "A");
+            ClassNode superABB = ArrayUtils.GetGreatestCommonSubclassForArray(svABB, runtimeCore);
+            Assert.IsTrue(superABB.Name == "A");
             StackValue svABC = mirror.GetRawFirstValue("tABC");
-            ClassNode superABC = ArrayUtils.GetGreatestCommonSubclassForArray(svABC, core);
-            Assert.IsTrue(superABC.name == "A");
+            ClassNode superABC = ArrayUtils.GetGreatestCommonSubclassForArray(svABC, runtimeCore);
+            Assert.IsTrue(superABC.Name == "A");
             StackValue svACA = mirror.GetRawFirstValue("tACA");
-            ClassNode superACA = ArrayUtils.GetGreatestCommonSubclassForArray(svACA, core);
-            Assert.IsTrue(superACA.name == "A");
+            ClassNode superACA = ArrayUtils.GetGreatestCommonSubclassForArray(svACA, runtimeCore);
+            Assert.IsTrue(superACA.Name == "A");
             StackValue svACB = mirror.GetRawFirstValue("tACB");
-            ClassNode superACB = ArrayUtils.GetGreatestCommonSubclassForArray(svACB, core);
-            Assert.IsTrue(superACB.name == "A");
+            ClassNode superACB = ArrayUtils.GetGreatestCommonSubclassForArray(svACB, runtimeCore);
+            Assert.IsTrue(superACB.Name == "A");
             StackValue svACC = mirror.GetRawFirstValue("tACC");
-            ClassNode superACC = ArrayUtils.GetGreatestCommonSubclassForArray(svACC, core);
-            Assert.IsTrue(superACC.name == "A");
+            ClassNode superACC = ArrayUtils.GetGreatestCommonSubclassForArray(svACC, runtimeCore);
+            Assert.IsTrue(superACC.Name == "A");
             //----
             StackValue svBAA = mirror.GetRawFirstValue("tBAA");
-            ClassNode superBAA = ArrayUtils.GetGreatestCommonSubclassForArray(svBAA, core);
-            Assert.IsTrue(superBAA.name == "A");
+            ClassNode superBAA = ArrayUtils.GetGreatestCommonSubclassForArray(svBAA, runtimeCore);
+            Assert.IsTrue(superBAA.Name == "A");
             StackValue svBAB = mirror.GetRawFirstValue("tBAB");
-            ClassNode superBAB = ArrayUtils.GetGreatestCommonSubclassForArray(svBAB, core);
-            Assert.IsTrue(superBAB.name == "A");
+            ClassNode superBAB = ArrayUtils.GetGreatestCommonSubclassForArray(svBAB, runtimeCore);
+            Assert.IsTrue(superBAB.Name == "A");
             StackValue svBAC = mirror.GetRawFirstValue("tBAC");
-            ClassNode superBAC = ArrayUtils.GetGreatestCommonSubclassForArray(svBAC, core);
-            Assert.IsTrue(superBAC.name == "A");
+            ClassNode superBAC = ArrayUtils.GetGreatestCommonSubclassForArray(svBAC, runtimeCore);
+            Assert.IsTrue(superBAC.Name == "A");
             StackValue svBBA = mirror.GetRawFirstValue("tBBA");
-            ClassNode superBBA = ArrayUtils.GetGreatestCommonSubclassForArray(svBBA, core);
-            Assert.IsTrue(superBBA.name == "A");
+            ClassNode superBBA = ArrayUtils.GetGreatestCommonSubclassForArray(svBBA, runtimeCore);
+            Assert.IsTrue(superBBA.Name == "A");
             StackValue svBBB = mirror.GetRawFirstValue("tBBB");
-            ClassNode superBBB = ArrayUtils.GetGreatestCommonSubclassForArray(svBBB, core);
-            Assert.IsTrue(superBBB.name == "B");
+            ClassNode superBBB = ArrayUtils.GetGreatestCommonSubclassForArray(svBBB, runtimeCore);
+            Assert.IsTrue(superBBB.Name == "B");
             StackValue svBBC = mirror.GetRawFirstValue("tBBC");
-            ClassNode superBBC = ArrayUtils.GetGreatestCommonSubclassForArray(svBBC, core);
-            Assert.IsTrue(superBBC.name == "B");
+            ClassNode superBBC = ArrayUtils.GetGreatestCommonSubclassForArray(svBBC, runtimeCore);
+            Assert.IsTrue(superBBC.Name == "B");
             StackValue svBCA = mirror.GetRawFirstValue("tBCA");
-            ClassNode superBCA = ArrayUtils.GetGreatestCommonSubclassForArray(svBCA, core);
-            Assert.IsTrue(superBCA.name == "A");
+            ClassNode superBCA = ArrayUtils.GetGreatestCommonSubclassForArray(svBCA, runtimeCore);
+            Assert.IsTrue(superBCA.Name == "A");
             StackValue svBCB = mirror.GetRawFirstValue("tBCB");
-            ClassNode superBCB = ArrayUtils.GetGreatestCommonSubclassForArray(svBCB, core);
-            Assert.IsTrue(superBCB.name == "B");
+            ClassNode superBCB = ArrayUtils.GetGreatestCommonSubclassForArray(svBCB, runtimeCore);
+            Assert.IsTrue(superBCB.Name == "B");
             StackValue svBCC = mirror.GetRawFirstValue("tBCC");
-            ClassNode superBCC = ArrayUtils.GetGreatestCommonSubclassForArray(svBCC, core);
-            Assert.IsTrue(superBCC.name == "B");
+            ClassNode superBCC = ArrayUtils.GetGreatestCommonSubclassForArray(svBCC, runtimeCore);
+            Assert.IsTrue(superBCC.Name == "B");
             //----
             StackValue svCAA = mirror.GetRawFirstValue("tCAA");
-            ClassNode superCAA = ArrayUtils.GetGreatestCommonSubclassForArray(svCAA, core);
-            Assert.IsTrue(superCAA.name == "A");
+            ClassNode superCAA = ArrayUtils.GetGreatestCommonSubclassForArray(svCAA, runtimeCore);
+            Assert.IsTrue(superCAA.Name == "A");
             StackValue svCAB = mirror.GetRawFirstValue("tCAB");
-            ClassNode superCAB = ArrayUtils.GetGreatestCommonSubclassForArray(svCAB, core);
-            Assert.IsTrue(superCAB.name == "A");
+            ClassNode superCAB = ArrayUtils.GetGreatestCommonSubclassForArray(svCAB, runtimeCore);
+            Assert.IsTrue(superCAB.Name == "A");
             StackValue svCAC = mirror.GetRawFirstValue("tCAC");
-            ClassNode superCAC = ArrayUtils.GetGreatestCommonSubclassForArray(svCAC, core);
-            Assert.IsTrue(superCAC.name == "A");
+            ClassNode superCAC = ArrayUtils.GetGreatestCommonSubclassForArray(svCAC, runtimeCore);
+            Assert.IsTrue(superCAC.Name == "A");
             StackValue svCBA = mirror.GetRawFirstValue("tCBA");
-            ClassNode superCBA = ArrayUtils.GetGreatestCommonSubclassForArray(svCBA, core);
-            Assert.IsTrue(superCBA.name == "A");
+            ClassNode superCBA = ArrayUtils.GetGreatestCommonSubclassForArray(svCBA, runtimeCore);
+            Assert.IsTrue(superCBA.Name == "A");
             StackValue svCBB = mirror.GetRawFirstValue("tCBB");
-            ClassNode superCBB = ArrayUtils.GetGreatestCommonSubclassForArray(svCBB, core);
-            Assert.IsTrue(superCBB.name == "B");
+            ClassNode superCBB = ArrayUtils.GetGreatestCommonSubclassForArray(svCBB, runtimeCore);
+            Assert.IsTrue(superCBB.Name == "B");
             StackValue svCBC = mirror.GetRawFirstValue("tCBC");
-            ClassNode superCBC = ArrayUtils.GetGreatestCommonSubclassForArray(svCBC, core);
-            Assert.IsTrue(superCBC.name == "B");
+            ClassNode superCBC = ArrayUtils.GetGreatestCommonSubclassForArray(svCBC, runtimeCore);
+            Assert.IsTrue(superCBC.Name == "B");
             StackValue svCCA = mirror.GetRawFirstValue("tCCA");
-            ClassNode superCCA = ArrayUtils.GetGreatestCommonSubclassForArray(svCCA, core);
-            Assert.IsTrue(superCCA.name == "A");
+            ClassNode superCCA = ArrayUtils.GetGreatestCommonSubclassForArray(svCCA, runtimeCore);
+            Assert.IsTrue(superCCA.Name == "A");
             StackValue svCCB = mirror.GetRawFirstValue("tCCB");
-            ClassNode superCCB = ArrayUtils.GetGreatestCommonSubclassForArray(svCCB, core);
-            Assert.IsTrue(superCCB.name == "B");
+            ClassNode superCCB = ArrayUtils.GetGreatestCommonSubclassForArray(svCCB, runtimeCore);
+            Assert.IsTrue(superCCB.Name == "B");
             StackValue svCCC = mirror.GetRawFirstValue("tCCC");
-            ClassNode superCCC = ArrayUtils.GetGreatestCommonSubclassForArray(svCCC, core);
-            Assert.IsTrue(superCCC.name == "C");
+            ClassNode superCCC = ArrayUtils.GetGreatestCommonSubclassForArray(svCCC, runtimeCore);
+            Assert.IsTrue(superCCC.Name == "C");
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void Defect_TestArrayGetCommonSuperType()
         {
             String code =
@@ -350,7 +330,7 @@ class A{};
 class B extends A{};
 class C extends A{};
 class D extends C{};
-a = A.A();
+a =A.A();
 b = B.B();
 c = C.C();
 d = D.D();
@@ -367,38 +347,41 @@ tBC = { b, c };
 tBD = { b, d };
 tCD = { c, d };
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core);
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            ProtoCore.RuntimeCore runtimeCore = null;
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             StackValue svABC = mirror.GetRawFirstValue("tABC");
-            ClassNode superABC = ArrayUtils.GetGreatestCommonSubclassForArray(svABC, core);
-            Assert.IsTrue(superABC.name == "A");
+
+            ClassNode superABC = ArrayUtils.GetGreatestCommonSubclassForArray(svABC, runtimeCore);
+            Assert.IsTrue(superABC.Name == "A");
             StackValue svABD = mirror.GetRawFirstValue("tABD");
-            ClassNode superABD = ArrayUtils.GetGreatestCommonSubclassForArray(svABD, core);
-            Assert.IsTrue(superABD.name == "A");
+            ClassNode superABD = ArrayUtils.GetGreatestCommonSubclassForArray(svABD, runtimeCore);
+            Assert.IsTrue(superABD.Name == "A");
             StackValue svACD = mirror.GetRawFirstValue("tACD");
-            ClassNode superACD = ArrayUtils.GetGreatestCommonSubclassForArray(svACD, core);
-            Assert.IsTrue(superABD.name == "A");
+            ClassNode superACD = ArrayUtils.GetGreatestCommonSubclassForArray(svACD, runtimeCore);
+            Assert.IsTrue(superABD.Name == "A");
             StackValue svBCD = mirror.GetRawFirstValue("tBCD");
-            ClassNode superBCD = ArrayUtils.GetGreatestCommonSubclassForArray(svBCD, core);
-            Assert.IsTrue(superBCD.name == "A");
+            ClassNode superBCD = ArrayUtils.GetGreatestCommonSubclassForArray(svBCD, runtimeCore);
+            Assert.IsTrue(superBCD.Name == "A");
             StackValue svAB = mirror.GetRawFirstValue("tAB");
-            ClassNode superAB = ArrayUtils.GetGreatestCommonSubclassForArray(svAB, core);
-            Assert.IsTrue(superAB.name == "A");
+            ClassNode superAB = ArrayUtils.GetGreatestCommonSubclassForArray(svAB, runtimeCore);
+            Assert.IsTrue(superAB.Name == "A");
             StackValue svAD = mirror.GetRawFirstValue("tAD");
-            ClassNode superAD = ArrayUtils.GetGreatestCommonSubclassForArray(svAD, core);
-            Assert.IsTrue(superAD.name == "A");
+            ClassNode superAD = ArrayUtils.GetGreatestCommonSubclassForArray(svAD, runtimeCore);
+            Assert.IsTrue(superAD.Name == "A");
             StackValue svBC = mirror.GetRawFirstValue("tBC");
-            ClassNode superBC = ArrayUtils.GetGreatestCommonSubclassForArray(svBC, core);
-            Assert.IsTrue(superBC.name == "A");
+            ClassNode superBC = ArrayUtils.GetGreatestCommonSubclassForArray(svBC, runtimeCore);
+            Assert.IsTrue(superBC.Name == "A");
             StackValue svBD = mirror.GetRawFirstValue("tBD");
-            ClassNode superBD = ArrayUtils.GetGreatestCommonSubclassForArray(svBD, core);
-            Assert.IsTrue(superBD.name == "A");
+            ClassNode superBD = ArrayUtils.GetGreatestCommonSubclassForArray(svBD, runtimeCore);
+            Assert.IsTrue(superBD.Name == "A");
             StackValue svCD = mirror.GetRawFirstValue("tCD");
-            ClassNode superCD = ArrayUtils.GetGreatestCommonSubclassForArray(svCD, core);
-            Assert.IsTrue(superCD.name == "C");
+            ClassNode superCD = ArrayUtils.GetGreatestCommonSubclassForArray(svCD, runtimeCore);
+            Assert.IsTrue(superCD.Name == "C");
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Method Resolution")]
         public void Defect_TestArrayGetCommonSuperType_2_EmptyArray()
         {
@@ -419,30 +402,32 @@ tBCD = { ba, ca, dc };
 tDD = {dc, D.D()};
 tE = {};//empty array
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core);
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            ProtoCore.RuntimeCore runtimeCore = null;
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             StackValue svABC = mirror.GetRawFirstValue("tABC");
-            ClassNode superABC = ArrayUtils.GetGreatestCommonSubclassForArray(svABC, core);
-            Assert.IsTrue(superABC.name == "A");
+            ClassNode superABC = ArrayUtils.GetGreatestCommonSubclassForArray(svABC, runtimeCore);
+            Assert.IsTrue(superABC.Name == "A");
             StackValue svABD = mirror.GetRawFirstValue("tABD");
-            ClassNode superABD = ArrayUtils.GetGreatestCommonSubclassForArray(svABD, core);
-            Assert.IsTrue(superABD.name == "A");
+            ClassNode superABD = ArrayUtils.GetGreatestCommonSubclassForArray(svABD, runtimeCore);
+            Assert.IsTrue(superABD.Name == "A");
             StackValue svACD = mirror.GetRawFirstValue("tACD");
-            ClassNode superACD = ArrayUtils.GetGreatestCommonSubclassForArray(svACD, core);
-            Assert.IsTrue(superABD.name == "A");
+            ClassNode superACD = ArrayUtils.GetGreatestCommonSubclassForArray(svACD, runtimeCore);
+            Assert.IsTrue(superABD.Name == "A");
             StackValue svBCD = mirror.GetRawFirstValue("tBCD");
-            ClassNode superBCD = ArrayUtils.GetGreatestCommonSubclassForArray(svBCD, core);
-            Assert.IsTrue(superBCD.name == "A");
+            ClassNode superBCD = ArrayUtils.GetGreatestCommonSubclassForArray(svBCD, runtimeCore);
+            Assert.IsTrue(superBCD.Name == "A");
             StackValue svDD = mirror.GetRawFirstValue("tDD");
-            ClassNode superDD = ArrayUtils.GetGreatestCommonSubclassForArray(svDD, core);
-            Assert.IsTrue(superDD.name == "D");
+            ClassNode superDD = ArrayUtils.GetGreatestCommonSubclassForArray(svDD, runtimeCore);
+            Assert.IsTrue(superDD.Name == "D");
             StackValue svE = mirror.GetRawFirstValue("tE");
-            ClassNode superE = ArrayUtils.GetGreatestCommonSubclassForArray(svE, core);
+            ClassNode superE = ArrayUtils.GetGreatestCommonSubclassForArray(svE, runtimeCore);
             Assert.IsTrue(superE == null);
             //Assert.IsTrue(superE.name.Equals(""));
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Method Resolution")]
         public void Defect_TestArrayGetCommonSuperType_3()
         {
@@ -468,17 +453,18 @@ rABCDEF = {a,b,c,d,e,f};
 rBCDEF = {b,c,d,e,f};
 rBH = {b,h};
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core);
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            ProtoCore.RuntimeCore runtimeCore = null;
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             StackValue svABCDEF = mirror.GetRawFirstValue("rABCDEF");
-            ClassNode superABCDEF = ArrayUtils.GetGreatestCommonSubclassForArray(svABCDEF, core);
-            Assert.IsTrue(superABCDEF.name == "A");
+            ClassNode superABCDEF = ArrayUtils.GetGreatestCommonSubclassForArray(svABCDEF, runtimeCore);
+            Assert.IsTrue(superABCDEF.Name == "A");
             StackValue svBCDEF = mirror.GetRawFirstValue("rBCDEF");
-            ClassNode superBCDEF = ArrayUtils.GetGreatestCommonSubclassForArray(svBCDEF, core);
-            Assert.IsTrue(superBCDEF.name == "A");
+            ClassNode superBCDEF = ArrayUtils.GetGreatestCommonSubclassForArray(svBCDEF, runtimeCore);
+            Assert.IsTrue(superBCDEF.Name == "A");
             StackValue svBH = mirror.GetRawFirstValue("rBH");
-            ClassNode superBH = ArrayUtils.GetGreatestCommonSubclassForArray(svBH, core);
-            Assert.IsTrue(superBH.name == "var");
+            ClassNode superBH = ArrayUtils.GetGreatestCommonSubclassForArray(svBH, runtimeCore);
+            Assert.IsTrue(superBH.Name == "var");
         }
 
         [Test]
@@ -493,8 +479,9 @@ rBH = {b,h};
     c = a;
 }
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core);
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            ProtoCore.RuntimeCore runtimeCore = null;
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             StackValue svA = mirror.GetRawFirstValue("a");
             StackValue svB = mirror.GetRawFirstValue("b");
             StackValue svC = mirror.GetRawFirstValue("c");
@@ -512,16 +499,17 @@ a = {1,{{1},{3.1415}},null,1.0,12.3};
 b = {1,2,{3}};
 x = {{1},{3.1415}};
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core);
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            ProtoCore.RuntimeCore runtimeCore = null;
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             StackValue a = mirror.GetRawFirstValue("a");
             StackValue b = mirror.GetRawFirstValue("b");
             StackValue x = mirror.GetRawFirstValue("x");
-            int rankA = ArrayUtils.GetMaxRankForArray(a, core);
+            int rankA = ArrayUtils.GetMaxRankForArray(a, runtimeCore);
             Assert.IsTrue(rankA == 3);
-            int rankB = ArrayUtils.GetMaxRankForArray(b, core);
+            int rankB = ArrayUtils.GetMaxRankForArray(b, runtimeCore);
             Assert.IsTrue(rankB == 2);
-            int rankX = ArrayUtils.GetMaxRankForArray(x, core);
+            int rankX = ArrayUtils.GetMaxRankForArray(x, runtimeCore);
             Assert.IsTrue(rankX == 2);            /*
                          * 
                          */
@@ -537,10 +525,11 @@ r1 = Contains(a, 3.0);
 r2 = Contains(a, 3.0);
 //t = Contains(a, null);
 ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core);
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            ProtoCore.RuntimeCore runtimeCore = null;
+            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             StackValue a = mirror.GetRawFirstValue("a");
-            int rankA = ArrayUtils.GetMaxRankForArray(a, core);
+            int rankA = ArrayUtils.GetMaxRankForArray(a, runtimeCore);
             Assert.IsTrue(rankA == 2);
         }
     }

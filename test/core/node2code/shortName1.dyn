@@ -1,0 +1,17 @@
+<Workspace Version="0.8.1.1172" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="100" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="8b8c069f-0d35-4abb-91ce-d8b1c1f04725" type="Dynamo.Nodes.DSFunction" nickname="Point.ByCoordinates" x="560.5" y="272" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DoubleInput guid="b2605d70-4e10-45d9-8a4d-f56cc4f2441b" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="381.5" y="286" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="3" />
+    </Dynamo.Nodes.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="b2605d70-4e10-45d9-8a4d-f56cc4f2441b" start_index="0" end="8b8c069f-0d35-4abb-91ce-d8b1c1f04725" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+</Workspace>

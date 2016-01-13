@@ -1,0 +1,22 @@
+<Workspace Version="0.8.2.2095" X="0" Y="0" zoom="1" Name="Home" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap>
+    <ClassMap partialName="Autodesk.DesignScript.Geometry.Point.Origin" resolvedName="Autodesk.DesignScript.Geometry.Point" assemblyName="ProtoGeometry.dll" />
+    <ClassMap partialName="Autodesk.DesignScript.Geometry.Point" resolvedName="Autodesk.DesignScript.Geometry.Point" assemblyName="ProtoGeometry.dll" />
+  </NamespaceResolutionMap>
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="ec9b3f3b-be6d-4fee-9d35-5f1063a957b0" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="146" y="120" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" CodeText="Autodesk.DesignScript.Geometry.Point.Origin;" ShouldFocus="false" />
+    <Dynamo.Nodes.Watch guid="c73bbd6c-3da9-4815-89a0-44be796aa36f" type="Dynamo.Nodes.Watch" nickname="Watch" x="656.666666666667" y="183.166666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="84dba54b-22f0-44fb-bd05-e57ea465229f" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="155.333333333333" y="253.333333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" CodeText="def foo()&#xA;{&#xA;}&#xA;&#xA;x = foo;" ShouldFocus="false" />
+    <Dynamo.Nodes.Watch guid="4f6575fa-4c16-4914-ad35-baab6776a19c" type="Dynamo.Nodes.Watch" nickname="Watch" x="653.333333333333" y="300.166666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="ec9b3f3b-be6d-4fee-9d35-5f1063a957b0" start_index="0" end="c73bbd6c-3da9-4815-89a0-44be796aa36f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="84dba54b-22f0-44fb-bd05-e57ea465229f" start_index="0" end="4f6575fa-4c16-4914-ad35-baab6776a19c" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background 3D Preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+</Workspace>

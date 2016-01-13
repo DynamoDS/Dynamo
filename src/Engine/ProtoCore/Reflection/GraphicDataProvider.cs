@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Autodesk.DesignScript.Interfaces;
 using System.Reflection;
 using ProtoCore.DSASM;
@@ -117,7 +115,7 @@ namespace ProtoCore.Mirror
             return provider;
         }
 
-        public void Tessellate(List<object> objects, IRenderPackage package, double tol)
+        public void Tessellate(List<object> objects, IRenderPackage package, TessellationParameters parameters)
         {
             foreach (var item in objects)
             {
@@ -127,40 +125,40 @@ namespace ProtoCore.Mirror
 
                 foreach (var g in graphicItems)
                 {
-                    g.Tessellate(package, tol);
+                    g.Tessellate(package, parameters);
                 }
             }
         }
 
-        internal List<IGraphicItem> GetGraphicItems(DSASM.StackValue svData, Core core)
+        internal List<IGraphicItem> GetGraphicItems(DSASM.StackValue svData, RuntimeCore runtimeCore)
         {
             Validity.Assert(svData.IsPointer);
 
-            object obj = GetCLRObject(svData, core);
+            object obj = GetCLRObject(svData, runtimeCore);
             if (obj != null)
                 return GetGraphicItems(obj);
 
             return null;
         }
 
-        internal object GetCLRObject(StackValue svData, Core core)
+        internal object GetCLRObject(StackValue svData, RuntimeCore runtimeCore)
         {
-            if (null == core.DSExecutable.classTable)
+            if (null == runtimeCore.DSExecutable.classTable)
                 return null;
 
-            IList<ClassNode> classNodes = core.DSExecutable.classTable.ClassNodes;
+            IList<ClassNode> classNodes = runtimeCore.DSExecutable.classTable.ClassNodes;
             if (null == classNodes || (classNodes.Count <= 0))
                 return null;
 
-            ClassNode classnode = core.DSExecutable.classTable.ClassNodes[svData.metaData.type];
+            ClassNode classnode = runtimeCore.DSExecutable.classTable.ClassNodes[svData.metaData.type];
             if (!classnode.IsImportedClass) //TODO: look at properties to see if it contains any FFI objects.
                 return null;
 
             try
             {
-                ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core, false);
+                ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore, false);
                 var helper = ProtoFFI.DLLFFIHandler.GetModuleHelper(ProtoFFI.FFILanguage.CSharp);
-                var marshaler = helper.GetMarshaller(core);
+                var marshaler = helper.GetMarshaller(runtimeCore);
                 return marshaler.UnMarshal(svData, null, interpreter, typeof(object));
             }
             catch (System.Exception)
@@ -221,7 +219,7 @@ namespace ProtoCore.Mirror
             return null;
         }
 
-        public void Tessellate(List<object> objects, IRenderPackage package, double tol)
+        public void Tessellate(List<object> objects, IRenderPackage package, TessellationParameters parameters)
         {
             throw new NotImplementedException();
         }

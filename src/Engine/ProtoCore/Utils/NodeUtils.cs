@@ -1,4 +1,6 @@
 ﻿
+using ProtoCore.AST.AssociativeAST;
+
 namespace ProtoCore.Utils
 {
     public static class NodeUtils
@@ -24,6 +26,9 @@ namespace ProtoCore.Utils
         {
             if (rhsNode is ProtoCore.AST.AssociativeAST.IdentifierNode)
             {
+                if(rhsNode is TypedIdentifierNode)
+                    return new ProtoCore.AST.AssociativeAST.TypedIdentifierNode(rhsNode as ProtoCore.AST.AssociativeAST.IdentifierNode);
+
                 return new ProtoCore.AST.AssociativeAST.IdentifierNode(rhsNode as ProtoCore.AST.AssociativeAST.IdentifierNode);
             }
             else if (rhsNode is ProtoCore.AST.AssociativeAST.IdentifierListNode)

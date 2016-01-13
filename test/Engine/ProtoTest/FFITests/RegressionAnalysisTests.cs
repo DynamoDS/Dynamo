@@ -8,13 +8,9 @@ using ProtoTestFx.TD;
 
 namespace ProtoTest.FFITests
 {
-
     [TestFixture]
-    class RegressionAnalysisTests
+    class RegressionAnalysisTests : ProtoTestBase
     {
-
-        public TestFrameWork thisTest = new TestFrameWork();
-        
         [Test]
         public void TestArrayPromoteAndCastIList()
         {

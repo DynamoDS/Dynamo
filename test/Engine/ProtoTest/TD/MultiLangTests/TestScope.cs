@@ -5,15 +5,8 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
-    class TestScope
+    class TestScope : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string filePath = "..\\..\\..\\Scripts\\TD\\MultiLanguage\\Scope\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         [Category("SmokeTest")]
         public void T001_LanguageBlockScope_AssociativeNestedAssociative()
@@ -1019,8 +1012,8 @@ y = 1;
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
 
             Assert.IsTrue(mirror.GetValue("f").DsasmValue.IsNull);
-
-            Assert.IsTrue(mirror.GetValue("p").DsasmValue.IsNull);
+            
+            Assert.IsTrue((Int64)mirror.GetValue("p").Payload == 2);
             Assert.IsTrue(mirror.GetValue("q").DsasmValue.IsNull);
             Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 2);
             Assert.IsTrue((Int64)mirror.GetValue("y1").Payload == 3);
@@ -1037,19 +1030,19 @@ y = 1;
             string src = @"
 a = 5;
 b = 2 * a;
-sum;
+count;
 [Imperative] {
-	sum = 0;
+	count = 0;
 	arr = 0..b;
 	for (i  in arr) {
-		sum = sum + 1;
+		count = count + 1;
 	}
 }
 a = 10;
-// expected: sum = 21
-// result: sum = 11";
+// expected: count = 21
+// result: count = 11";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("sum").Payload == 11);
+            Assert.IsTrue((Int64)mirror.GetValue("count").Payload == 21);
 
         }
 
@@ -1814,27 +1807,22 @@ a = 10;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T051_Test_Identifier_Scope_01()
         {
             String code =
-  @"class A
-{
-  @a : var;
-  constructor A(@b:var)
-    {
-        @a = @b;
-    }
+  @"
+
   def foo(@c:var)
   {
     @a = @c;
     return = @a;
   }
-}
+
   @a = 1;
-  p = A.A(2);
   @t = 3;
-  @a = p.foo(@t);
+  @a = foo(@t);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Assert.IsTrue((Int64)mirror.GetValue("@a").Payload == 3);
@@ -1965,30 +1953,29 @@ def foo(@a:var)
 
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T052_DNL_1467464()
         {
             string code = @"
-class test
+def test()
 {
     f;
-    constructor test()
-    {
     [Associative]
+    {
+        i;
+        [Imperative]
         {
-            [Imperative]
-            {
-                i = 3;
-            }
-            f = i;
+            i = 3;
         }
+        f = i;
     }
+    return = f;
 }
-a = test.test();
-b = a.f;
+b = test();
 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("b", null);
+            thisTest.Verify("b", 3);
         }
     }
 }

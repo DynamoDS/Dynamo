@@ -6,8 +6,17 @@ using NUnit.Framework;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class MigrationTestFramework : Dynamo.Tests.DSEvaluationViewModelUnitTest
+    class MigrationTestFramework : DynamoModelTestBase
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("DSOffice.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         /// <summary>
         /// Automated creation of regression test cases.
         /// </summary>
@@ -20,14 +29,12 @@ namespace Dynamo.Tests
             Assert.IsNotNullOrEmpty(dynamoFilePath, "Dynamo file path is invalid or missing.");
             
             //open the dyn file
-            Assert.True(ViewModel.OpenCommand.CanExecute(dynamoFilePath));
-            ViewModel.OpenCommand.Execute(dynamoFilePath);
-
+            OpenModel(dynamoFilePath);
 
             AssertNoDummyNodes();
             //run the expression and assert that it does not
             //throw an error
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            Assert.DoesNotThrow(BeginRun);
 
         }
 
@@ -49,6 +56,9 @@ namespace Dynamo.Tests
             var dyns = di.GetFiles("*.dyn");
             foreach (var fileInfo in dyns)
             {
+                if (fileInfo.FullName.Contains("FAILURE"))
+                    continue;
+
                 testParameters.Add(fileInfo.FullName);        
             }
 

@@ -2,39 +2,43 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Selection;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
 
 using NUnit.Framework;
-using System.Text;
-using Dynamo.DSEngine;
-using ProtoCore.DSASM;
-using ProtoCore.Mirror;
 using System.Collections;
+using CoreNodeModels;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Tests
 {
-    internal class CustomNodes : DSEvaluationViewModelUnitTest
+    internal class CustomNodes : DynamoModelTestBase
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("VMDataBridge.dll");
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         [Test]
         public void CanCollapseNodesAndGetSameResult()
         {
-            var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
+            string openPath = Path.Combine(TestDirectory, @"core\collapse\collapse.dyn");
+            OpenModel(openPath);
 
-            string openPath = Path.Combine(examplePath, "collapse.dyn");
-            ViewModel.OpenCommand.Execute(openPath);
+            var watchNode = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
-            var watchNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            var numNodesPreCollapse = CurrentDynamoModel.CurrentWorkspace.Nodes.Count();
 
-            var numNodesPreCollapse = model.CurrentWorkspace.Nodes.Count;
-
-            ViewModel.Model.RunExpression();
+            BeginRun();
 
             var valuePreCollapse = watchNode.CachedValue;
 
@@ -45,15 +49,16 @@ namespace Dynamo.Tests
                 "a54c7cfa-450a-4edc-b7a5-b3e15145a9e1"
             };
 
-            foreach (var guid in nodesToCollapse)
+            foreach (
+                var node in nodesToCollapse.Select(CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace))
             {
-                var node = model.Nodes.First(x => x.GUID == Guid.Parse(guid));
-                model.AddToSelection(node);
+                CurrentDynamoModel.AddToSelection(node);
             }
 
-            NodeCollapser.Collapse(ViewModel.Model,
+            CurrentDynamoModel.CustomNodeManager.Collapse(
                 DynamoSelection.Instance.Selection.OfType<NodeModel>(),
-                model.CurrentWorkspace,
+                CurrentDynamoModel.CurrentWorkspace,
+                true,
                 new FunctionNamePromptEventArgs
                 {
                     Category = "Testing",
@@ -62,47 +67,41 @@ namespace Dynamo.Tests
                     Success = true
                 });
 
-            var numNodesPostCollapse = model.CurrentWorkspace.Nodes.Count;
+            var numNodesPostCollapse = CurrentDynamoModel.CurrentWorkspace.Nodes.Count();
 
             Assert.AreNotEqual(numNodesPreCollapse, numNodesPostCollapse);
             Assert.AreEqual(nodesToCollapse.Length, numNodesPreCollapse - numNodesPostCollapse + 1);
 
-            ViewModel.Model.RunExpression();
+            BeginRun();
 
             var valuePostCollapse = watchNode.CachedValue;
 
             // Ensure the values are equal and both 65.
             Assert.AreEqual(65, valuePreCollapse);
-            Assert.AreEqual(valuePreCollapse, valuePostCollapse);
-
+            Assert.AreEqual(65, valuePostCollapse);
         }
 
         [Test]
         public void CanCollapseNodesWithDefaultValues()
         {
-            var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
-
-            string openPath = Path.Combine(examplePath, "collapse-defaults.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\collapse\collapse-defaults.dyn");
             RunModel(openPath);
 
-            //Confirm that everything is working OK.
-            ViewModel.Model.RunExpression();
+            var minNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("13f58ca4-4e48-4757-b16a-45b971a6d7fc");
+            var numNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("4b6487e1-1bcf-47a6-a6fb-ea3122a303af");
 
-            var minNode = model.CurrentWorkspace.NodeFromWorkspace("13f58ca4-4e48-4757-b16a-45b971a6d7fc");
-            var numNode = model.CurrentWorkspace.NodeFromWorkspace("4b6487e1-1bcf-47a6-a6fb-ea3122a303af");
-
-            Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(1, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             AssertPreviewValue("13f58ca4-4e48-4757-b16a-45b971a6d7fc", 10);
 
-            model.AddToSelection(minNode);
-            model.AddToSelection(numNode);
+            CurrentDynamoModel.AddToSelection(minNode);
+            CurrentDynamoModel.AddToSelection(numNode);
 
-            NodeCollapser.Collapse(ViewModel.Model,
+            CurrentDynamoModel.CustomNodeManager.Collapse(
                 DynamoSelection.Instance.Selection.OfType<NodeModel>(),
-                model.CurrentWorkspace,
+                CurrentDynamoModel.CurrentWorkspace,
+                true,
                 new FunctionNamePromptEventArgs
                 {
                     Category = "Testing",
@@ -111,41 +110,38 @@ namespace Dynamo.Tests
                     Success = true
                 });
 
-            Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
-            ViewModel.Model.RunExpression();
+            BeginRun();
 
-            var collapsedNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>();
+            var collapsedNode = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Function>();
 
             AssertPreviewValue(collapsedNode.GUID.ToString(), 10);
         }
 
         [Test]
+        [Category("Failure")]
         public void CanCollapseWith1NodeHoleInSelection()
         {
-            var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
-
-            string openPath = Path.Combine(examplePath, "collapse-function.dyn");
+            //   http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5603
+            string openPath = Path.Combine(TestDirectory, @"core\collapse\collapse-function.dyn");
             RunModel(openPath);
 
-            //Confirm that everything is working OK.
-            ViewModel.Model.RunExpression();
-
-            var mulNode = model.CurrentWorkspace.NodeFromWorkspace("7bae9908-6e44-41a4-8b9a-e6cd58791194");
+            var mulNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("7bae9908-6e44-41a4-8b9a-e6cd58791194");
 
             AssertPreviewValue(mulNode.GUID.ToString(), 0);
 
             foreach (var node in
-                model.CurrentWorkspace.Nodes.Where(
+                CurrentDynamoModel.CurrentWorkspace.Nodes.Where(
                     x => x.GUID.ToString() != "34d7a656-338d-43bd-bb3d-224515a855eb"))
             {
-                model.AddToSelection(node);
+                CurrentDynamoModel.AddToSelection(node);
             }
 
-            NodeCollapser.Collapse(ViewModel.Model,
+            CurrentDynamoModel.CustomNodeManager.Collapse(
                 DynamoSelection.Instance.Selection.OfType<NodeModel>(),
-                model.CurrentWorkspace,
+                CurrentDynamoModel.CurrentWorkspace,
+                true,
                 new FunctionNamePromptEventArgs
                 {
                     Category = "Testing",
@@ -154,11 +150,11 @@ namespace Dynamo.Tests
                     Success = true
                 });
 
-            Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
-            ViewModel.Model.RunExpression();
+            BeginRun();
 
-            var collapsedNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>();
+            var collapsedNode = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Function>();
 
             AssertPreviewValue(collapsedNode.GUID.ToString(), 0);
         }
@@ -166,13 +162,11 @@ namespace Dynamo.Tests
         [Test]
         public void CanCollapseAndUndoRedo()
         {
-            var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
-            ViewModel.OpenCommand.Execute(Path.Combine(examplePath, "collapse-number-chain.dyn"));
+            OpenModel(Path.Combine(TestDirectory, @"core\collapse\collapse-number-chain.dyn"));
 
             // Ensure all the nodes we are looking for are actually there.
-            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(11, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
             var existenceMap = new Dictionary<string, bool>
             {
                 { "5a503c02-13a7-4def-9fb6-52101117219e", true },
@@ -187,33 +181,30 @@ namespace Dynamo.Tests
                 { "8f4a460d-dada-4ecd-a0ca-9adb32d36f12", true },
                 { "9cbbfa9c-fb5d-4a18-8d4b-5a02d842724e", true }
             };
-            this.VerifyModelExistence(existenceMap);
+            VerifyModelExistence(existenceMap);
 
             string[] guids =
             {
                 "5e0d6637-5156-4b60-b49d-3c9aedd71884", // Addition
                 "98350887-4839-4ece-a4ad-37137cb11f52", // Addition
                 "28cff154-ef78-43fa-bcc9-f86e00ce2ced", // Double input
-                "7ad3d045-c620-4817-8723-afd3c266555b", // Double input
+                "7ad3d045-c620-4817-8723-afd3c266555b"  // Double input
             };
 
-            List<NodeModel> selectionSet = new List<NodeModel>();
-            var workspace = model.CurrentWorkspace;
-
-            foreach (string guid in guids)
-            {
-                var m = workspace.GetModelInternal(Guid.Parse(guid));
-                selectionSet.Add(m as NodeModel);
-            }
+            var selectionSet =
+                guids.Select(guid => CurrentDynamoModel.CurrentWorkspace.GetModelInternal(Guid.Parse(guid)))
+                    .Cast<NodeModel>()
+                    .ToList();
 
             // Making sure we do not have any Function node at this point.
-            Assert.IsNull(model.CurrentWorkspace.FirstNodeFromWorkspace<Function>());
-            Assert.AreEqual(false, model.CurrentWorkspace.CanUndo);
-            Assert.AreEqual(false, model.CurrentWorkspace.CanRedo);
+            Assert.IsNull(CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Function>());
+            Assert.AreEqual(false, CurrentDynamoModel.CurrentWorkspace.CanUndo);
+            Assert.AreEqual(false, CurrentDynamoModel.CurrentWorkspace.CanRedo);
 
-            NodeCollapser.Collapse(ViewModel.Model,
+            CurrentDynamoModel.CustomNodeManager.Collapse(
                 selectionSet.AsEnumerable(),
-                model.CurrentWorkspace,
+                CurrentDynamoModel.CurrentWorkspace,
+                true,
                 new FunctionNamePromptEventArgs
                 {
                     Category = "Testing",
@@ -223,11 +214,11 @@ namespace Dynamo.Tests
                 });
 
             // Making sure we have a Function node after the conversion.
-            Assert.IsNotNull(model.CurrentWorkspace.FirstNodeFromWorkspace<Function>());
+            Assert.IsNotNull(CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Function>());
 
             // Make sure we have 8 nodes left (11 - 4 + 1).
-            Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
             existenceMap.Clear();
             existenceMap.Add("5a503c02-13a7-4def-9fb6-52101117219e", true);
             existenceMap.Add("6e7bdd5a-6c3c-4588-bb7d-bb49c969812b", true);
@@ -240,18 +231,18 @@ namespace Dynamo.Tests
             existenceMap.Add("98350887-4839-4ece-a4ad-37137cb11f52", false);
             existenceMap.Add("8f4a460d-dada-4ecd-a0ca-9adb32d36f12", true);
             existenceMap.Add("9cbbfa9c-fb5d-4a18-8d4b-5a02d842724e", true);
-            this.VerifyModelExistence(existenceMap);
+            VerifyModelExistence(existenceMap);
 
             // Try undoing the conversion operation.
-            Assert.AreEqual(true, model.CurrentWorkspace.CanUndo);
-            Assert.AreEqual(false, model.CurrentWorkspace.CanRedo);
-            model.CurrentWorkspace.Undo();
-            Assert.AreEqual(false, model.CurrentWorkspace.CanUndo);
-            Assert.AreEqual(true, model.CurrentWorkspace.CanRedo);
+            Assert.AreEqual(true, CurrentDynamoModel.CurrentWorkspace.CanUndo);
+            Assert.AreEqual(false, CurrentDynamoModel.CurrentWorkspace.CanRedo);
+            CurrentDynamoModel.CurrentWorkspace.Undo();
+            Assert.AreEqual(false, CurrentDynamoModel.CurrentWorkspace.CanUndo);
+            Assert.AreEqual(true, CurrentDynamoModel.CurrentWorkspace.CanRedo);
 
             // Now it should have gone back to 11 nodes.
-            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(11, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
             existenceMap.Clear();
             existenceMap.Add("5a503c02-13a7-4def-9fb6-52101117219e", true);
             existenceMap.Add("6e7bdd5a-6c3c-4588-bb7d-bb49c969812b", true);
@@ -264,16 +255,16 @@ namespace Dynamo.Tests
             existenceMap.Add("98350887-4839-4ece-a4ad-37137cb11f52", true);
             existenceMap.Add("8f4a460d-dada-4ecd-a0ca-9adb32d36f12", true);
             existenceMap.Add("9cbbfa9c-fb5d-4a18-8d4b-5a02d842724e", true);
-            this.VerifyModelExistence(existenceMap);
+            VerifyModelExistence(existenceMap);
 
             // Try redoing the conversion.
-            model.CurrentWorkspace.Redo();
-            Assert.AreEqual(true, model.CurrentWorkspace.CanUndo);
-            Assert.AreEqual(false, model.CurrentWorkspace.CanRedo);
+            CurrentDynamoModel.CurrentWorkspace.Redo();
+            Assert.AreEqual(true, CurrentDynamoModel.CurrentWorkspace.CanUndo);
+            Assert.AreEqual(false, CurrentDynamoModel.CurrentWorkspace.CanRedo);
 
             // It should have gone back to 8 nodes.
-            Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
             existenceMap.Clear();
             existenceMap.Add("5a503c02-13a7-4def-9fb6-52101117219e", true);
             existenceMap.Add("6e7bdd5a-6c3c-4588-bb7d-bb49c969812b", true);
@@ -286,17 +277,14 @@ namespace Dynamo.Tests
             existenceMap.Add("98350887-4839-4ece-a4ad-37137cb11f52", false);
             existenceMap.Add("8f4a460d-dada-4ecd-a0ca-9adb32d36f12", true);
             existenceMap.Add("9cbbfa9c-fb5d-4a18-8d4b-5a02d842724e", true);
-            this.VerifyModelExistence(existenceMap);
+            VerifyModelExistence(existenceMap);
         }
 
         [Test]
         public void GitHub_461_DeleteNodesFromCustomNodeWorkspaceAfterCollapse()
         {
-            var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
-
-            string openPath = Path.Combine(examplePath, "collapse.dyn");
-            ViewModel.OpenCommand.Execute(openPath);
+            string openPath = Path.Combine(TestDirectory, @"core\collapse\collapse.dyn");
+            OpenModel(openPath);
 
             var nodesToCollapse = new[]
             {
@@ -307,55 +295,51 @@ namespace Dynamo.Tests
 
             foreach (
                 var node in
-                    nodesToCollapse.Select(guid => model.CurrentWorkspace.NodeFromWorkspace(guid)))
+                    nodesToCollapse.Select(CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace))
             {
-                model.AddToSelection(node);
+                CurrentDynamoModel.AddToSelection(node);
             }
 
-            NodeCollapser.Collapse(ViewModel.Model,
-                 DynamoSelection.Instance.Selection.Where(x => x is NodeModel)
-                    .Select(x => (x as NodeModel)),
-                    model.CurrentWorkspace,
-                    new FunctionNamePromptEventArgs
-                    {
-                        Category = "Testing",
-                        Description = "",
-                        Name = "__CollapseTest2__",
-                        Success = true
-                    });
+            var ws = CurrentDynamoModel.CustomNodeManager.Collapse(
+                DynamoSelection.Instance.Selection.OfType<NodeModel>(),
+                CurrentDynamoModel.CurrentWorkspace,
+                true,
+                new FunctionNamePromptEventArgs
+                {
+                    Category = "Testing",
+                    Description = "",
+                    Name = "__CollapseTest2__",
+                    Success = true
+                });
 
-            ViewModel.GoToWorkspace(
-                ViewModel.Model.CustomNodeManager.GetGuidFromName("__CollapseTest2__"));
+            CurrentDynamoModel.AddCustomNodeWorkspace(ws);
 
-            var workspace = model.CurrentWorkspace;
-            Assert.AreEqual(6, workspace.Nodes.Count);
+            SelectTabByGuid(ws.CustomNodeId);
+
+            Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             var modelsToDelete = new List<ModelBase>();
-            var addition = workspace.FirstNodeFromWorkspace<DSFunction>();
+            var addition = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSFunction>();
             Assert.IsNotNull(addition);
             Assert.AreEqual("+", addition.NickName);
 
             modelsToDelete.Add(addition);
-            model.DeleteModelInternal(modelsToDelete);
-            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
+            CurrentDynamoModel.DeleteModelInternal(modelsToDelete);
+            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
         }
 
         [Test]
         public void ReduceAndRecursion()
         {
-            var model = ViewModel.Model;
-
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\reduce_and_recursion\");
-
-            string openPath = Path.Combine(examplePath, "reduce-example.dyn");
-            ViewModel.OpenCommand.Execute(openPath);
+            string openPath = Path.Combine(TestDirectory, @"core\reduce_and_recursion\reduce-example.dyn");
+            OpenModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
-            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(13, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(11, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             // run the expression
-            ViewModel.Model.RunExpression();
+            BeginRun();
 
             // wait for the expression to complete
             Thread.Sleep(500);
@@ -369,33 +353,31 @@ namespace Dynamo.Tests
         [Test]
         public void FilterWithCustomNode()
         {
-            var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\filter\");
+            var examplePath = Path.Combine(TestDirectory, @"core\filter\");
 
-            Assert.IsTrue(
-                ViewModel.Model.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "IsOdd.dyf"))
-                != null);
+            CustomNodeInfo info;
+            Assert.IsTrue(CurrentDynamoModel.CustomNodeManager.AddUninitializedCustomNode(Path.Combine(examplePath, "IsOdd.dyf"), true, out info));
 
             string openPath = Path.Combine(examplePath, "filter-example.dyn");
-            ViewModel.OpenCommand.Execute(openPath);
+            OpenModel(openPath);
 
             // run the expression
-            ViewModel.Model.RunExpression();
+            BeginRun();
 
             // check the output values are correctly computed
-            var watchNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            var watchNode = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             Assert.IsNotNull(watchNode);
 
             // odd numbers between 0 and 5
             Assert.IsNotNull(watchNode.CachedValue);
             Assert.IsTrue(watchNode.CachedValue is ICollection);
-            var list = (watchNode.CachedValue as ICollection).Cast<object>();
+            var list = ((ICollection)watchNode.CachedValue).Cast<int>();
 
             Assert.AreEqual(new[] { 1, 3, 5 }, list.ToList());
         }
 
         /// <summary>
-        /// Run an infinite recursive loop for 10 seconds to confirm that it doesn't stack overflow
+        /// Run an infinite tail-recursive loop for 10 seconds to confirm that it doesn't stack overflow
         /// </summary>
         [Test]
         public void TailCallOptimization()
@@ -406,14 +388,14 @@ namespace Dynamo.Tests
         [Test]
         public void CanEvaluateCustomNodeWithDuplicateInputs()
         {
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\duplicate-input.dyn");
-            ViewModel.OpenCommand.Execute(examplePath);
-            ViewModel.Model.RunExpression();
+            var openPath = Path.Combine(TestDirectory, @"core\CustomNodes\duplicate-input.dyn");
+            OpenModel(openPath);
+            BeginRun();
 
-            var addNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Function>();
+            var addNode = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Function>();
             AssertPreviewValue(addNode.GUID.ToString(), 3);
         }
-        
+
         [Test]
         public void CanCreateAndPlaceNewCustomNode()
         {
@@ -421,7 +403,7 @@ namespace Dynamo.Tests
             const string description = "Description";
             const string category = "Custom Node Category";
 
-            ViewModel.ExecuteCommand(
+            CurrentDynamoModel.ExecuteCommand(
                 new DynamoModel.CreateCustomNodeCommand(
                     Guid.NewGuid(),
                     name,
@@ -429,27 +411,30 @@ namespace Dynamo.Tests
                     description,
                     true));
 
-            Assert.IsInstanceOf<CustomNodeWorkspaceModel>(ViewModel.Model.CurrentWorkspace);
-            var customNodeWs = ViewModel.Model.CurrentWorkspace as CustomNodeWorkspaceModel;
+            Assert.IsInstanceOf<CustomNodeWorkspaceModel>(CurrentDynamoModel.CurrentWorkspace);
+            var customNodeWs = CurrentDynamoModel.CurrentWorkspace as CustomNodeWorkspaceModel;
             var customNodeDef = customNodeWs.CustomNodeDefinition;
             Assert.AreEqual(name, customNodeDef.DisplayName);
             Assert.AreEqual(description, customNodeWs.Description);
             Assert.AreEqual(category, customNodeWs.Category);
 
-            ViewModel.HomeCommand.Execute(null);
+            var home = CurrentDynamoModel.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
+            Assert.NotNull(home);
+            SelectTabByGuid(home.Guid);
 
-            ViewModel.ExecuteCommand(
+            CurrentDynamoModel.ExecuteCommand(
                 new DynamoModel.CreateNodeCommand(
-                    Guid.NewGuid(),
-                    customNodeDef.FunctionId.ToString(),
+                    CurrentDynamoModel.CustomNodeManager.CreateCustomNodeInstance(customNodeDef.FunctionId),
                     0,
                     0,
                     true,
                     true));
 
-            Assert.AreEqual(1, ViewModel.Model.HomeSpace.Nodes.Count);
-            Assert.IsInstanceOf<Function>(ViewModel.Model.HomeSpace.Nodes.First());
-            Assert.AreSame(customNodeDef, (ViewModel.Model.HomeSpace.Nodes.First() as Function).Definition);
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.IsInstanceOf<Function>(CurrentDynamoModel.CurrentWorkspace.Nodes.First());
+            Assert.AreEqual(
+                customNodeDef.FunctionId,
+                ((Function)CurrentDynamoModel.CurrentWorkspace.Nodes.First()).Definition.FunctionId);
         }
 
 
@@ -462,45 +447,17 @@ namespace Dynamo.Tests
             // Re-use code for creating a custom node
             CanCreateAndPlaceNewCustomNode();
 
-            var instance = ViewModel.Model.HomeSpace.Nodes.First() as Function;
-
-            ViewModel.GoToWorkspaceCommand.Execute(instance.Definition.FunctionId);
+            var instance = CurrentDynamoModel.CurrentWorkspace.Nodes.First() as Function;
+            SelectTabByGuid(instance.Definition.FunctionId);
 
             var currentInPortAmt = 0;
             var currentOutPortAmt = 0;
 
-            #region Reflection code for instantiating Input and Output nodes
-            var inputType = typeof(Symbol);
-            var outputType = typeof(Output);
-
-            var inputName =
-                inputType.GetCustomAttributes(typeof(NodeNameAttribute), false)
-                    .OfType<NodeNameAttribute>()
-                    .First()
-                    .Name;
-
-            var outputName =
-                outputType.GetCustomAttributes(typeof(NodeNameAttribute), false)
-                    .OfType<NodeNameAttribute>()
-                    .First()
-                    .Name;
-            #endregion
-
             #region Adding
             Func<string, Symbol> addInput = label =>
             {
-                var guid = Guid.NewGuid();
-
-                ViewModel.ExecuteCommand(
-                    new DynamoModel.CreateNodeCommand(
-                        guid,
-                        inputName,
-                        0,
-                        0,
-                        true,
-                        true));
-
-                var node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace<Symbol>(guid);
+                var node = new Symbol();
+                CurrentDynamoModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(node, 0, 0, true, true));
                 node.InputSymbol = label;
 
                 Assert.AreEqual(++currentInPortAmt, instance.InPorts.Count);
@@ -511,18 +468,9 @@ namespace Dynamo.Tests
 
             Func<string, Output> addOutput = label =>
             {
-                var guid = Guid.NewGuid();
+                var node = new Output();
 
-                ViewModel.ExecuteCommand(
-                    new DynamoModel.CreateNodeCommand(
-                        guid,
-                        outputName,
-                        0,
-                        0,
-                        true,
-                        true));
-
-                var node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace<Output>(guid);
+                CurrentDynamoModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(node, 0, 0, true, true));
                 node.Symbol = label;
 
                 Assert.AreEqual(++currentOutPortAmt, instance.OutPorts.Count);
@@ -550,8 +498,9 @@ namespace Dynamo.Tests
             Action<NodeModel> deleteNode = nodeModel =>
             {
                 DynamoSelection.Instance.ClearSelection();
-                ViewModel.Model.AddToSelection(nodeModel);
-                ViewModel.DeleteCommand.Execute(null);
+                CurrentDynamoModel.AddToSelection(nodeModel);
+                var command = new DynamoModel.DeleteModelCommand(Guid.Empty);
+                CurrentDynamoModel.ExecuteCommand(command);
             };
 
             Action<Symbol> deleteInput = input =>
@@ -592,7 +541,7 @@ namespace Dynamo.Tests
         {
             // var homeNode = custom node instance in the home workspace
             // var recNode = recursive custom node instance in the custom node workspace
-              
+
             // change input/output names in the custom node definition, make sure instances were updated
             // change name of the custom node, make sure instances were updated
             // increase amount of inputs/outputs, make sure instances were updated
@@ -608,15 +557,12 @@ namespace Dynamo.Tests
         [Test]
         public void MultipleOutputs()
         {
-            var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\multiout");
+            string openPath = Path.Combine(TestDirectory, @"core\multiout\multi-custom.dyn");
+            OpenModel(openPath);
 
-            string openPath = Path.Combine(examplePath, "multi-custom.dyn");
-            ViewModel.OpenCommand.Execute(openPath);
+            BeginRun();
 
-            ViewModel.Model.RunExpression();
-
-            var splitListVal = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>().CachedValue;
+            var splitListVal = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Function>().CachedValue;
 
             Assert.IsTrue(splitListVal.IsCollection);
 
@@ -635,41 +581,348 @@ namespace Dynamo.Tests
         [Test]
         public void PartialApplicationWithMultipleOutputs()
         {
-            var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\multiout");
+            string openPath = Path.Combine(TestDirectory, @"core\multiout\partial-multi-custom.dyn");
+            OpenModel(openPath);
 
-            string openPath = Path.Combine(examplePath, "partial-multi-custom.dyn");
-            ViewModel.OpenCommand.Execute(openPath);
+            BeginRun();
 
-            ViewModel.Model.RunExpression();
-
-            var firstWatch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("d824e8dd-1009-449f-b5d6-1cd83bd180d6");
+            var firstWatch = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<Watch>("d824e8dd-1009-449f-b5d6-1cd83bd180d6");
 
             Assert.AreEqual(new ArrayList { 0 }, firstWatch.CachedValue);
 
-            var restWatch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("af7ada9a-4316-475b-8582-742acc40fc1b");
+            var restWatch = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<Watch>("af7ada9a-4316-475b-8582-742acc40fc1b");
 
             Assert.IsTrue(restWatch.CachedValue is ICollection);
             Assert.IsTrue((restWatch.CachedValue as ICollection).Cast<object>().First() is ICollection);
-            Assert.IsFalse(
-                ((restWatch.CachedValue as ICollection).Cast<object>().First() as ICollection)
+            Assert.IsFalse(((restWatch.CachedValue as ICollection).Cast<object>().First() as ICollection)
                     .Cast<object>().Any());
         }
 
-        //[Test]
-        //public void CanGetDependenciesFromFunctionDefinition()
-        //{
+        [Test]
+        public void CollapsedNodeWOrkspaceIsAddedToDynamoWithUnsavedChanges()
+        {
+            NodeModel node;
+            if (!CurrentDynamoModel.NodeFactory.CreateNodeFromTypeName("CoreNodeModels.Input.DoubleInput", out node))
+            {
+                throw new Exception("Failed to create node!");
+            }
+
+            var selectionSet = new[] { node };
+
+            DynamoModel.FunctionNamePromptRequestHandler del = (sender, args) =>
+            {
+                args.Category = "Testing";
+                args.Description = "";
+                args.Name = "__CollapseTest__";
+                args.Success = true;
+            };
+
+            CurrentDynamoModel.RequestsFunctionNamePrompt += del;
+
+            var arg = new FunctionNamePromptEventArgs();
+            CurrentDynamoModel.OnRequestsFunctionNamePrompt(null, arg);
+            Assert.IsTrue(arg.Success);
+
+            CurrentDynamoModel.AddCustomNodeWorkspace(
+                CurrentDynamoModel.CustomNodeManager.Collapse(
+                    selectionSet, CurrentDynamoModel.CurrentWorkspace, DynamoModel.IsTestMode, arg));
+
+            Assert.IsNotNull(CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Function>());
+
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(2, CurrentDynamoModel.Workspaces.Count());
+
+            var customWorkspace = CurrentDynamoModel.Workspaces.ElementAt(1);
+            Assert.AreEqual("__CollapseTest__", customWorkspace.Name);
+            Assert.IsTrue(customWorkspace.HasUnsavedChanges);
+        }
+
+        [Test]
+        public void CollapsedNodeShouldHaveNewIdentfifer()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\collapse\collapse-newname.dyn");
+            OpenModel(openPath);
+
+            // Convert a DSFunction node Point.ByCoordinates to custom node.
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DSFunction>().First();
+
+            var originalGuid = node.GUID;
+            var originalIdentifierName = node.AstIdentifierBase;
+            var originalIdentifier = node.AstIdentifierForPreview;
+
+            var selectionSet = new[] { node };
+            var customWorkspace = CurrentDynamoModel.CustomNodeManager.Collapse(
+                selectionSet,
+                CurrentDynamoModel.CurrentWorkspace,
+                true,
+                new FunctionNamePromptEventArgs
+                {
+                    Category = "Testing",
+                    Description = "",
+                    Name = "__CollapseTest__",
+                    Success = true
+                });
+
+            // Making sure we have a Function node after the conversion.
+            Assert.IsNotNull(CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Function>());
+
+            // As there is only one node is converted to custom node, get
+            // the first one
+            var collapsedNode = customWorkspace.Nodes.OfType<DSFunction>().First();
+
+            // Node -> custom node just copy node from home workspace to 
+            // custom workspace, so they are the same node
+            Assert.AreSame(node, collapsedNode);
+
+            // But they should have different guid and different identifier name
+            Assert.AreNotEqual(originalGuid, collapsedNode.GUID);
+            Assert.AreNotEqual(originalIdentifierName, collapsedNode.AstIdentifierBase);
+            Assert.AreNotEqual(originalIdentifier, collapsedNode.AstIdentifierForPreview);
+        }
+
+        [Test]
+        public void EvaluateProxyCustomNodeInstances()
+        {
+            // Defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5555
+            // Dyn file contains a proxy custom node. Evaluating the whole graph
+            // should evaluate all nodes except those proxy custom node instance. 
+            var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\missing_custom_node.dyn");
+
+            OpenModel(dynFilePath);
+            BeginRun();
+
+            AssertPreviewValue("1b8b309b-ee2e-44fe-ac98-2123b2711bea", 1);
+            AssertPreviewValue("08db7d60-845c-439c-b7ca-c2a06664a948", 2);
+        }
+
+        [Test]
+        public void TestCustomNodeInputType()
+        {
+            // Custom node's signature is add(x:int, y:int)
+            // Test type conversion happens.
+            var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\TestTypeConversion.dyn");
+
+            OpenModel(dynFilePath);
+            BeginRun();
+            
+            // add(1.49, 3.49) => 4
+            AssertPreviewValue("fe515852-8e88-496b-8f17-005d97c7fa19", 4);
+        }
+
+        [Test]
+        public void TestCustomNodeLacing()
+        {
+            // Test lacing works ofr custom node. 
+            var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\TestLacing.dyn");
+            OpenModel(dynFilePath);
+            
+            var instance = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<Function>().First();
+            instance.UpdateValue(new UpdateValueParams("ArgumentLacing", "CrossProduct"));
+            BeginRun();
+
+            // {1,2} + {3,4}
+            AssertPreviewValue("fe515852-8e88-496b-8f17-005d97c7fa19", new object[] { new object[] { 4, 5 }, new object[] { 5, 6 } });
+
+            instance.UpdateValue(new UpdateValueParams("ArgumentLacing", "Longest"));
+            BeginRun();
+            AssertPreviewValue("fe515852-8e88-496b-8f17-005d97c7fa19", new object[] { 4, 6 });
+        }
+
+        [Test]
+        public void TestCustomNodeDefaultValue()
+        {
+            // Test custom node default value works
+            var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\TestDefaultValue.dyn");
+
+            OpenModel(dynFilePath);
+            BeginRun();
+
+            AssertPreviewValue("405d0c03-6b22-466e-a2b9-b9bf602e1762", 142);
+        }
+
+        [Test]
+        public void TestCustomNodeInvalidType()
+        {
+            // Custom node has invalid type, which should be captured by Input node
+            var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\invalidType.dyf");
+
+            OpenModel(dynFilePath);
+
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<Symbol>().First();
+            Assert.IsTrue(node.State == ElementState.Warning);
+        }
+
+        [Test]
+        public void TestCustomNodeInvalidInput()
+        {
+            // Custom node has invalid input like "x = f(x)", but the evalution should continue
+            // so that old custom node won't be broken
+            var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\TestInvalidInput.dyn");
+            OpenModel(dynFilePath);
+            BeginRun();
+
+            AssertPreviewValue("7134638a-26f4-4a13-affb-857ed519db5f", 84);
+        }
 
 
+        [Test]
+        public void TestCustomNodeFromCollapsedNodeHasTypes()
+        {
+            var examplePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
+            OpenModel(Path.Combine(examplePath, "simpleGeometry.dyn"));
 
-        //    if (CustomNodeDefinition.WorkspaceModel.Nodes.Any(x => x is RevitTransactionNode)
-        //        || CustomNodeDefinition.Dependencies.Any(d => d.WorkspaceModel.Nodes.Any(x => x is RevitTransactionNode)))
-        //    {
-        //        return new FunctionWithRevit(inputs, outputs, CustomNodeDefinition);
-        //    }
-        //    return base.CreateFunction(inputs, outputs, CustomNodeDefinition);
-        //}
+            // Convert a DSFunction node Line.ByStartPointEndPoint to custom node.
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DSFunction>().First();
 
+            var selectionSet = new List<NodeModel> { node };
+            CurrentDynamoModel.CustomNodeManager.Collapse(
+                selectionSet,
+                CurrentDynamoModel.CurrentWorkspace,
+                true,
+                new FunctionNamePromptEventArgs
+                {
+                    Category = "Testing",
+                    Description = "",
+                    Name = "__CollapseTest__",
+                    Success = true
+                });
 
+            // Get custom node instance
+            var instance = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Function>();
+            // All its input types are Point
+            Assert.IsTrue(instance.Controller.Definition.Parameters.All(t => t.Name.Contains("Point")));
+        }
+
+        [Test]
+        public void TestCustomNodeInSyncWithDefinition()
+        {
+            var basePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
+
+            OpenModel(Path.Combine(basePath, "testCustomNodeSync.dyn"));
+            BeginRun();
+
+            var customInstance = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(x => x is Function) as Function;
+            Assert.AreEqual("int", customInstance.InPorts.First().ToolTipContent);
+
+            OpenModel(Path.Combine(basePath, "inputWithType.dyf"));
+            var customWorkspace = CurrentDynamoModel.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel) as CustomNodeWorkspaceModel;
+            var inputNode = customWorkspace.Nodes.FirstOrDefault(x => x is Symbol) as Symbol;
+
+            CurrentDynamoModel.ExecuteCommand(
+                new DynamoModel.UpdateModelValueCommand(
+                    customWorkspace.Guid,
+                    inputNode.GUID, 
+                    "InputSymbol",
+                    "x : bool"));
+
+            customInstance.ResyncWithDefinition(customWorkspace.CustomNodeDefinition);
+
+            Assert.AreEqual("x", customInstance.InPorts.First().PortName);
+            Assert.AreEqual("bool", customInstance.InPorts.First().ToolTipContent);
+        }
+
+        [Test]
+        public void TestGroupsOnCustomNodes()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\collapse\collapse.dyn");
+            OpenModel(openPath);
+
+            var nodesToCollapse = new[]
+            {
+                "1da395b9-2539-4705-a479-1f6e575df01d", 
+                "b8130bf5-dd14-4784-946d-9f4705df604e",
+                "a54c7cfa-450a-4edc-b7a5-b3e15145a9e1"
+            };
+
+            foreach (
+                var node in
+                    nodesToCollapse.Select(CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace))
+            {
+                CurrentDynamoModel.AddToSelection(node);
+            }
+
+            //create the group around selected nodes
+            Guid groupid = Guid.NewGuid();
+            var annotation = CurrentDynamoModel.CurrentWorkspace.AddAnnotation("This is a test group", groupid);
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Annotations.Count(), 1);
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Annotations.First().SelectedModels.Count(), 3);
+
+            CurrentDynamoModel.AddToSelection(annotation);
+
+            var ws = CurrentDynamoModel.CustomNodeManager.Collapse(
+                DynamoSelection.Instance.Selection.OfType<NodeModel>(),
+                CurrentDynamoModel.CurrentWorkspace,
+                true,
+                new FunctionNamePromptEventArgs
+                {
+                    Category = "Testing",
+                    Description = "",
+                    Name = "__CollapseTest2__",
+                    Success = true
+                });
+
+            CurrentDynamoModel.AddCustomNodeWorkspace(ws);
+
+            SelectTabByGuid(ws.CustomNodeId);
+
+            Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            //Check whether the group is copied to custom workspace
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Annotations.Count()); 
+        }
+
+        [Test]
+        public void TestCustomNodeInputType2()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\collapse\collapse-input-type.dyn");
+            OpenModel(openPath);
+
+            var nodesToCollapse = new[]
+            {
+                "fb066324-1ca0-400f-8dee-cbb0e1d27719", 
+            };
+
+            foreach (
+                var node in
+                    nodesToCollapse.Select(CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace))
+            {
+                CurrentDynamoModel.AddToSelection(node);
+            }
+
+            var ws = CurrentDynamoModel.CustomNodeManager.Collapse(
+                DynamoSelection.Instance.Selection.OfType<NodeModel>(),
+                CurrentDynamoModel.CurrentWorkspace,
+                true,
+                new FunctionNamePromptEventArgs
+                {
+                    Category = "Testing",
+                    Description = "",
+                    Name = "__CollapseTestForInputType1__",
+                    Success = true
+                });
+
+            CurrentDynamoModel.AddCustomNodeWorkspace(ws);
+            CurrentDynamoModel.OpenCustomNodeWorkspace(ws.CustomNodeId);
+            var inputs = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<Symbol>();
+            Assert.IsNotNull(inputs);
+
+            var curveParam = inputs.FirstOrDefault();
+            Assert.IsNotNull(curveParam);
+
+            Assert.AreEqual("Curve", curveParam.Parameter.DisplayTypeName);
+        }
+
+        [Test]
+        public void CanAddNodesWithTheSameNameAndEmptyPath2Times()
+        {
+            const string nodeName = "NodeName";
+            const string catName1 = "CatName1";
+            const string catName2 = "CatName2";
+
+            CurrentDynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName1, "");
+            CurrentDynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName2, "");
+
+            Assert.AreEqual(2, CurrentDynamoModel.SearchModel.SearchEntries.Where(entry => entry.Name == nodeName).Count());
+        }
     }
 }

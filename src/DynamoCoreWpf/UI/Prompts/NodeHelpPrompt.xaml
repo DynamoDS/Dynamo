@@ -1,0 +1,76 @@
+﻿<Window x:Class="Dynamo.Prompts.NodeHelpPrompt"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="clr-namespace:Dynamo.UI"
+        xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
+        Title="{Binding NickName}" Height="480" Width="300">
+    
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    
+    <ScrollViewer>
+        <StackPanel>
+            
+            <StackPanel.Background>
+                <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Color="#FFF" Offset="0.0" />
+                    <GradientStop Color="#EEE" Offset="1.0" />
+                </LinearGradientBrush>
+            </StackPanel.Background>
+            
+            <StackPanel Margin="10" Background="Transparent">
+
+                <TextBlock Name="TitleLabel" FontSize="10" Foreground="#AAA" Margin="0,10,0,10" Text="{x:Static p:Resources.NodeHelpWindowNodeType}"></TextBlock>
+                <TextBlock Name="titleText" FontSize="16" Text="{Binding NickName}" Foreground="#555" TextWrapping="Wrap"></TextBlock>
+
+                <TextBlock Name="DescriptionLabel" FontSize="10" Foreground="#AAA" Margin="0,20,0,10" Text="{x:Static p:Resources.NodeHelpWindowNodeDescription}"></TextBlock>
+                <TextBlock Name="Description" Text="{Binding Description}" Foreground="#555" TextWrapping="Wrap"></TextBlock>
+
+                <TextBlock Name="CategoryLabel" FontSize="10" Foreground="#AAA" Margin="0,20,0,10" Text="{x:Static p:Resources.NodeHelpWindowNodeCategory}"></TextBlock>
+                <TextBlock Name="Category" Text="{Binding Category}" Foreground="#555" TextWrapping="Wrap"></TextBlock>
+
+                <TextBlock Name="InputsLabel" FontSize="10" Foreground="#AAA" Margin="0,20,0,0" Text="{x:Static p:Resources.NodeHelpWindowNodeInput}"></TextBlock>
+                <ListBox Name="Inputs" ItemsSource="{Binding InPortData}" BorderThickness="0" Padding="0" Margin="3" Background="Transparent">
+               
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+
+                            <StackPanel Width="230" >
+                                <TextBlock FontSize="12" Text="{Binding Path=NickName, Converter={StaticResource PortNameConverter}}" FontWeight="Bold" Foreground="#555" Padding="0,10,0,5"/>
+                                <TextBlock FontSize="11" Text="{Binding Path=ToolTipString}" Foreground="#555" TextWrapping="Wrap"/>
+
+                            </StackPanel>
+
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+
+                </ListBox>
+
+                <TextBlock Name="OutputsLabel" FontSize="10" Foreground="#AAA" Margin="0,10,0,0" Text="{x:Static p:Resources.NodeHelpWindowNodeOutput}"></TextBlock>
+                <ListBox Name="Outputs" ItemsSource="{Binding OutPortData}" BorderThickness="0" Padding="0" Margin="3" Background="Transparent" >
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+
+                            <StackPanel Width="230" >
+                                <TextBlock FontSize="12" Text="{Binding Path=NickName, Converter={StaticResource PortNameConverter}}" FontWeight="Bold" Foreground="#555" Padding="0,10,0,5"/>
+                                <TextBlock FontSize="11" Text="{Binding Path=ToolTipString}" Foreground="#555" TextWrapping="Wrap" />
+                            </StackPanel>
+
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+
+                </ListBox>
+            
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+
+    
+
+</Window>

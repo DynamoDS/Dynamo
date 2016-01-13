@@ -22,38 +22,232 @@ namespace ProtoTestFx.TD
 {
     public class TestFrameWork
     {
+        public enum VerificationFormat
+        {
+            Custom,
+            JSON
+        }
+
         private static ProtoCore.Core testCore;
+        private static ProtoCore.RuntimeCore testRuntimeCore;
+
         private ExecutionMirror testMirror;
-        private readonly ProtoScriptTestRunner runner;
+        private readonly ProtoScriptRunner runner;
         private static string mErrorMessage = "";
         bool testImport;
         bool testDebug;
         bool dumpDS=false;
         bool cfgImport = Convert.ToBoolean(Environment.GetEnvironmentVariable("Import"));
         bool cfgDebug = Convert.ToBoolean(Environment.GetEnvironmentVariable("Debug"));
+        bool executeInDebugMode = true;
  
         public TestFrameWork()
         {
-            runner = new ProtoScriptTestRunner();
+            runner = new ProtoScriptRunner();
+        }
+
+        /// <summary>
+        /// Execute the DS code and verifies the results given a list of verification pairs
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="verifyList"></param>
+        public void RunAndVerify(string code, params KeyValuePair<string, object>[] verifyList)
+        {
+            Dictionary<string, object> verifyDictionary = verifyList.ToDictionary(x => x.Key, x => x.Value);
+            RunAndVerify(code, verifyDictionary);
+        }
+
+        /// <summary>
+        /// Execute the DS code and verify using the custom verificationFormat
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="verificationFormat"></param>
+        public void RunAndVerify(string code, string verificationFormat, VerificationFormat format = VerificationFormat.JSON)
+        {
+            Dictionary<string, object> verifyDictionary = null;
+            if (format == VerificationFormat.Custom)
+            {
+                verifyDictionary = BuildVerifyDictionaryFromCustomFormat(verificationFormat);
+            }
+            else if (format == VerificationFormat.JSON)
+            {
+                verifyDictionary = ProtoTestFx.JsonDecoder.BuildVerifyDictionary(verificationFormat);
+            }
+            RunAndVerify(code, verifyDictionary);
+        }
+
+        /// <summary>
+        /// Run DS code and verify the verification list
+        /// This method is only called internally from the test framework
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="verifyList"></param>
+        private void RunAndVerify(string code, Dictionary<string, object> verification)
+        {
+            RunScriptSource(code);
+            foreach (KeyValuePair<string, object> pair in verification)
+            {
+                Verify(pair.Key, pair.Value);
+            }
+            
+            if (executeInDebugMode)
+            {
+                RunDebugWatch(code);
+                RunDebugEqualityTest(code);
+            }
+        }
+
+
+        /// <summary>
+        /// Generates a list of variables to watch. Runs the code and verifies the results against the generated watch list
+        /// Verifies the results against a list
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="verification"></param>
+        private void RunDebugWatch(string code)
+        {
+            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
+            WatchTestFx.GeneratePrintStatements(code, ref map);
+            WatchTestFx fx = new WatchTestFx();
+            fx.CompareRunAndWatchResults(null, code, map);
+        }
+
+
+        /// <summary>
+        /// Runs the code in Normal Execution, Debug StepOver, Debug StepIn 
+        /// Verifies that all 3 runs produce the same output 
+        /// </summary>
+        /// <param name="code"></param>
+        private void RunDebugEqualityTest(string code)
+        {
+            DebugTestFx.CompareDebugAndRunResults(code);
+        }
+
+        /// <summary>
+        /// Executes the code and verifies that there is at least 1 syntax error
+        /// </summary>
+        /// <param name="code"></param>
+        public void RunAndVerifySyntaxError(string code)
+        {
+            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
+            {
+                RunScriptSource(code);
+            });
+            Validity.Assert(testCore.BuildStatus.Errors.Count() > 0);
+            var syntaxErrors = testCore.BuildStatus.Errors.Where(e => e.ID == ProtoCore.BuildData.ErrorType.SyntaxError);
+            Validity.Assert(syntaxErrors.Count() > 0);
+        }
+
+        /// <summary>
+        /// Executes the code and verifies that the specified build warning appears at least once
+        /// </summary>
+        /// <param name="code"></param>
+        public void RunAndVerifyBuildWarning(string code, ProtoCore.BuildData.WarningID warningID)
+        {
+            RunScriptSource(code);
+            Assert.IsTrue(testCore.BuildStatus.Warnings.Any(w => w.ID == warningID));
+        }
+
+        /// <summary>
+        /// Executes the code and verifies that the specified runtime warning appears at least once
+        /// </summary>
+        /// <param name="code"></param>
+        public void RunAndVerifyRuntimeWarning(string code, ProtoCore.Runtime.WarningID warningID)
+        {
+            RunScriptSource(code);
+            Assert.IsTrue(testRuntimeCore.RuntimeStatus.Warnings.Any(w => w.ID == warningID));
+        }
+    
+        /// <summary>
+        /// Builds a KeyValuePair to be used by the Verify method when verifying the value of a variable
+        /// </summary>
+        /// <param name="variable"></param>
+        /// <param name="verifyValue"></param>
+        /// <returns></returns>
+        public static KeyValuePair<string, object> BuildVerifyPair(string variable, object verifyValue)
+        {
+            Validity.Assert(variable is string);
+            return new KeyValuePair<string, object>(variable, verifyValue);
+        }
+
+        /// <summary>
+        /// Parses the verificationFormat string and builds a dictionary of verification pairs 
+        /// </summary>
+        /// <param name="verificationFormat"></param>
+        /// <returns></returns>
+        public static Dictionary<string, object> BuildVerifyDictionaryFromCustomFormat(string verificationFormat)
+        {
+            Dictionary<string, object> verification = new Dictionary<string, object>();
+            string[] stringVerifyList = verificationFormat.Split('|');
+            foreach (string verifyItem in stringVerifyList)
+            {
+                string[] pair = verifyItem.Split(':');
+                string varname = pair[0];
+                object value = ConvertStringToVerificationObject(pair[1]);
+                verification.Add(varname, value);
+            }
+            return verification;
+        }
+
+        /// <summary>
+        /// Converts the value into an object that the Verify function can check
+        /// The implementation can replaced with a proper parser
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private static object ConvertStringToVerificationObject(string value)
+        {
+            int iVal = 0;
+            double dVal = 0.0;
+            bool bVal = false;
+            string sVal = string.Empty;
+            object[] arrayVal = null;
+
+            bool hasParsed = false;
+            hasParsed = Int32.TryParse(value, out iVal);
+            if (hasParsed)
+            {
+                return iVal;
+            }
+            hasParsed = Double.TryParse(value, out dVal);
+            if (hasParsed)
+            {
+                return dVal;
+            }
+            hasParsed = Boolean.TryParse(value, out bVal);
+            if (hasParsed)
+            {
+                return bVal;
+            }
+
+            // Extend this to support other data types
+
+            return null;
         }
 
         public ProtoCore.Core GetTestCore()
         {
             return testCore;
         }
+
+        public ProtoCore.RuntimeCore GetTestRuntimeCore()
+        {
+            return testRuntimeCore;
+        }
+
         public ProtoCore.Core SetupTestCore()
         {
             testCore = new ProtoCore.Core(new ProtoCore.Options());
+
             testCore.Configurations.Add(ConfigurationKeys.GeometryFactory, "DSGeometry.dll");
             testCore.Configurations.Add(ConfigurationKeys.PersistentManager, "DSGeometry.dll");
-            testCore.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(testCore));
-            testCore.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(testCore));
+            testCore.Compilers.Add(ProtoCore.Language.Associative, new ProtoAssociative.Compiler(testCore));
+            testCore.Compilers.Add(ProtoCore.Language.Imperative, new ProtoImperative.Compiler(testCore));
 
             // this setting is to fix the random failure of replication test case
             testCore.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
             testCore.Options.Verbose = false;
-//            testCore.Options.kDynamicCycleThreshold = 5;
-            
+
             //FFI registration and cleanup
             DLLFFIHandler.Register(FFILanguage.CPlusPlus, new ProtoFFI.PInvokeModuleHelper());
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
@@ -90,8 +284,8 @@ namespace ProtoTestFx.TD
         public ProtoCore.Core CreateTestCore()
         {
             ProtoCore.Core core = new ProtoCore.Core(new ProtoCore.Options());
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            core.Compilers.Add(ProtoCore.Language.Associative, new ProtoAssociative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.Imperative, new ProtoImperative.Compiler(core));
             core.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
             core.ParsingMode = ProtoCore.ParseMode.AllowNonAssignment;
             core.IsParsingCodeBlockNode = true;
@@ -148,7 +342,7 @@ namespace ProtoTestFx.TD
 
         public ExecutionMirror RunScript(string pathname, string errorstring = "", string includePath = "")
         {
-            var testCore = SetupTestCore();
+            SetupTestCore();
             Console.WriteLine( errorstring);
             if (!String.IsNullOrEmpty(includePath))
             {
@@ -161,7 +355,8 @@ namespace ProtoTestFx.TD
                     Console.WriteLine(String.Format("Path: {0} does not exist.", includePath));
                 }
             }
-            testMirror = runner.LoadAndExecute(pathname, testCore);
+            testRuntimeCore = runner.LoadAndExecute(pathname, testCore);
+            testMirror = testRuntimeCore.Mirror;
             SetErrorMessage(errorstring);
             return testMirror;
         }
@@ -239,7 +434,7 @@ namespace ProtoTestFx.TD
             }
             else
             {
-                var testCore = SetupTestCore();
+                SetupTestCore();
                 if (!String.IsNullOrEmpty(includePath))
                 {
                     if (System.IO.Directory.Exists(includePath))
@@ -251,7 +446,8 @@ namespace ProtoTestFx.TD
                         Console.WriteLine(String.Format("Path: {0} does not exist.", includePath));
                     }
                 }
-                testMirror = runner.Execute(sourceCode, testCore);
+                testRuntimeCore = runner.Execute(sourceCode, testCore);
+                testMirror = testRuntimeCore.Mirror;
                 
                 if (dumpDS )
                 {
@@ -280,7 +476,7 @@ namespace ProtoTestFx.TD
         /// <returns></returns>
         public ExecutionMirror RunASTSource(List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList, string errorstring = "", string includePath = "")
         {
-            var testCore = SetupTestCore();
+            SetupTestCore();
             if (!String.IsNullOrEmpty(includePath))
             {
                 if (System.IO.Directory.Exists(includePath))
@@ -437,7 +633,7 @@ namespace ProtoTestFx.TD
                     try
                     {
                         Int64 utf8Encoding = Convert.ToInt64(dsObject.Payload);
-                        Char dsValue = EncodingUtils.ConvertInt64ToCharacter(utf8Encoding);
+                        Char dsValue = Convert.ToChar(utf8Encoding); 
 
                         if (!expectedObject.Equals(dsValue))
                         {
@@ -454,32 +650,17 @@ namespace ProtoTestFx.TD
             }
             else if (expectedObject is String)
             {
-                char[] chars = (expectedObject as String).ToCharArray();
-                object[] objs = new object[chars.Length];
-                Array.Copy(chars, objs, chars.Length);
-
-                ProtoCore.DSASM.Mirror.DsasmArray dsArray = dsObject.Payload as ProtoCore.DSASM.Mirror.DsasmArray;
-                if (dsArray == null)
+                string stringValue = dsObject.Payload as string;
+                if (stringValue == null)
                 {
                     Assert.Fail(String.Format("\t{0}{1} is expected to be a string, but its actual value is not a string\n{2}", dsVariable, 
                         BuildIndicesString(indices), mErrorMessage));
                 }
-                else if (chars.Count() != dsArray.members.Count())
+                else if (!expectedObject.Equals(stringValue))
                 {
-                    Assert.Fail(String.Format("\t{0}{1} is expected to be a string of length {2}, but its actual length is {3}.\n{4}", dsVariable, 
-                        BuildIndicesString(indices), objs.Count(), dsArray.members.Count(), mErrorMessage));
+                    Assert.Fail(String.Format("\t{0}{1} is expected to be a string \"{2}\", but its actual value is \"{3}\".\n{4}", dsVariable, 
+                        BuildIndicesString(indices), expectedObject, stringValue, mErrorMessage));
                 }
-                else
-                {
-                    for (int i = 0; i < objs.Count(); ++i)
-                    {
-                        indices.Add(i);
-                        TestFrameWork.VerifyInternal(objs[i], dsArray.members[i], dsVariable, indices);
-                        indices.RemoveAt(indices.Count - 1);
-                    }
-                }
-
-                // VerifyInternal(objs, dsObject, dsVariable, indices);
             }
             else if (typeof(IEnumerable).IsAssignableFrom(expectedType))
             {
@@ -502,42 +683,6 @@ namespace ProtoTestFx.TD
             else
             {
                 Assert.Fail(string.Format("\tUnexpected object type.\n{0}", mErrorMessage));
-            }
-        }
-
-        public void VerifyReferenceCount(string dsVariable, int referencCount)
-        {
-            try
-            {
-                StackValue sv = testMirror.GetRawFirstValue(dsVariable);
-
-                if (!sv.IsArray && !sv.IsPointer)
-                {
-                    if (referencCount != 0)
-                    {
-                        Assert.Fail(String.Format("\t{0} is not a heap element, it doesn't sense to verify its reference count. Should always be 0", dsVariable));
-                    }
-                }
-                else
-                {
-                    ProtoCore.DSASM.HeapElement he = testMirror.MirrorTarget.rmem.Heap.GetHeapElement(sv);
-
-                    if (he.Refcount != referencCount)
-                    {
-                        Assert.Fail(String.Format("\t{0}'s reference count is {1}, which is not equal to expected {2}", dsVariable, he.Refcount, referencCount));
-                    }
-                    else if (referencCount > 0)
-                    {
-                        if (!he.Active)
-                        {
-                            Assert.Fail(String.Format("\t{0}'s reference count == {1}, but somehow it is makred as inactive.", dsVariable, referencCount));
-                        }
-                    }
-                }
-            }
-            catch (NotImplementedException)
-            {
-                Assert.Fail("\tFailed to get the value of variable " + dsVariable);
             }
         }
 
@@ -566,7 +711,7 @@ namespace ProtoTestFx.TD
             }
 
             ProtoCore.DSASM.ClassNode thisClass = testCore.ClassTable.ClassNodes[classIndex];
-            if (!thisClass.vtable.procList.Exists(memberFunc => String.Compare(memberFunc.name, methodName) == 0))
+            if (!thisClass.ProcTable.Procedures.Exists(memberFunc => String.Compare(memberFunc.Name, methodName) == 0))
             {
                 if(doAssert)
                     Assert.Fail(string.Format("\tMethod \"{0}.{1}\" doesn't exist \n{2}", className, methodName, mErrorMessage)); 
@@ -587,7 +732,7 @@ namespace ProtoTestFx.TD
 
         public void Verify(string dsVariable, object expectedValue, int startBlock = 0)
         {
-            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore);
+            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, GetTestRuntimeCore());
             AssertValue(mirror.GetData(), expectedValue);
             //Verify(testMirror, dsVariable, expectedValue, startBlock);
         }
@@ -617,19 +762,19 @@ namespace ProtoTestFx.TD
             Assert.IsTrue(warningCount == count, mErrorMessage);
         }
 
-        public static void VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID id)
+        public static void VerifyRuntimeWarning(ProtoCore.Runtime.WarningID id)
         {
-            VerifyRuntimeWarning(testCore, id);
+            VerifyRuntimeWarning(testRuntimeCore, id);
         }
 
-        public static void VerifyRuntimeWarning(ProtoCore.Core core, ProtoCore.RuntimeData.WarningID id)
+        public static void VerifyRuntimeWarning(ProtoCore.RuntimeCore runtimeCore, ProtoCore.Runtime.WarningID id)
         {
-            Assert.IsTrue(core.RuntimeStatus.Warnings.Any(w => w.ID == id), mErrorMessage);
+            Assert.IsTrue(runtimeCore.RuntimeStatus.Warnings.Any(w => w.ID == id), mErrorMessage);
         }
 
         public void VerifyRuntimeWarningCount(int count)
         {
-            Assert.IsTrue(testCore.RuntimeStatus.WarningCount == count, mErrorMessage);
+            Assert.IsTrue(testRuntimeCore.RuntimeStatus.WarningCount == count, mErrorMessage);
         }
 
         public void VerifyProperty(string dsVariable, string propertyName, object expectedValue, int startBlock = 0)
@@ -653,7 +798,7 @@ namespace ProtoTestFx.TD
         string GetFFIObjectStringValue(string dsVariable, int startBlock = 1, int arrayIndex = -1)
         {
             var helper = DLLFFIHandler.GetModuleHelper(FFILanguage.CSharp);
-            var marshaller = helper.GetMarshaller(TestFrameWork.testCore);
+            var marshaller = helper.GetMarshaller(TestFrameWork.testRuntimeCore);
             Obj val = testMirror.GetFirstValue(dsVariable, startBlock);
             StackValue sv;
 
@@ -696,14 +841,14 @@ namespace ProtoTestFx.TD
 
         public static void AssertInfinity(string dsVariable, int startBlock = 0)
         {
-            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore);
+            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testRuntimeCore);
             MirrorData data = mirror.GetData();
             Assert.IsTrue( Double.IsInfinity(Convert.ToDouble(data.Data)));
         }
 
         public static void AssertNan(string dsVariable, int startBlock = 0)
         {
-            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore);
+            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testRuntimeCore);
             MirrorData data = mirror.GetData();
             Assert.IsTrue(Double.IsNaN(Convert.ToDouble(data.Data)));
         }
@@ -747,6 +892,13 @@ namespace ProtoTestFx.TD
             }
         }
 
+        public static Subtree CreateSubTreeFromCode(Guid guid, string code)
+        {
+            var cbn = ProtoCore.Utils.ParserUtils.Parse(code);
+            var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);
+            return subtree;
+        }
+
         public IList<MethodMirror> GetMethods(string className, string methodName)
         {
             ClassMirror classMirror = new ClassMirror(className, testCore);
@@ -766,13 +918,21 @@ namespace ProtoTestFx.TD
 
         public void AssertPointer(string dsVariable, int startBlock = 0)
         {
-            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore);
+            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testRuntimeCore);
             Assert.IsTrue(mirror.GetData().IsPointer);
         }
 
         public void CleanUp()
         {
-            testCore.Cleanup();
+            if (testRuntimeCore != null)
+            {
+                testRuntimeCore.Cleanup();
+            }
+
+            if (testCore != null)
+            {
+                testCore = null;
+            }
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Xml;
+
+using Dynamo.Migration;
 using Dynamo.Models;
 using NUnit.Framework;
 
@@ -77,7 +77,7 @@ namespace Dynamo.Tests
             Assert.IsNotNull(dstElement);
             Assert.AreEqual(2, dstElement.Attributes.Count);
             Assert.AreEqual("", dstElement.Attributes["dummy"].Value);
-            Assert.AreEqual("Dynamo.Nodes.DSFunction", dstElement.Attributes["type"].Value);
+            Assert.AreEqual("Dynamo.Graph.Nodes.ZeroTouch.DSFunction", dstElement.Attributes["type"].Value);
         }
 
         [Test]
@@ -100,7 +100,7 @@ namespace Dynamo.Tests
 
             Assert.AreEqual("", dstElement.Attributes["dummy"].Value);
             Assert.AreEqual("yeah", dstElement.Attributes["isUpstreamVisible"].Value);
-            Assert.AreEqual("Dynamo.Nodes.DSFunction", dstElement.Attributes["type"].Value);
+            Assert.AreEqual("Dynamo.Graph.Nodes.ZeroTouch.DSFunction", dstElement.Attributes["type"].Value);
         }
 
         [Test]
@@ -123,7 +123,7 @@ namespace Dynamo.Tests
             Assert.IsNotNull(dstElement);
             Assert.IsNotNull(dstElement.Attributes);
             Assert.AreEqual(1, dstElement.Attributes.Count);
-            Assert.AreEqual("Dynamo.Nodes.DSFunction", dstElement.Attributes["type"].Value);
+            Assert.AreEqual("Dynamo.Graph.Nodes.ZeroTouch.DSFunction", dstElement.Attributes["type"].Value);
         }
 
         [Test]
@@ -143,7 +143,7 @@ namespace Dynamo.Tests
             Assert.AreEqual("1", dstElement.Attributes["one"].Value);
             Assert.AreEqual("2", dstElement.Attributes["two"].Value);
             Assert.AreEqual("3", dstElement.Attributes["three"].Value);
-            Assert.AreEqual("Dynamo.Nodes.DSFunction", dstElement.Attributes["type"].Value);
+            Assert.AreEqual("Dynamo.Graph.Nodes.ZeroTouch.DSFunction", dstElement.Attributes["type"].Value);
         }
 
         [Test]
@@ -166,7 +166,7 @@ namespace Dynamo.Tests
             Assert.IsNotNull(dstElement);
             Assert.IsNotNull(dstElement.Attributes);
             Assert.AreEqual(2, dstElement.Attributes.Count);
-            Assert.AreEqual("Dynamo.Nodes.DSVarArgFunction", dstElement.Attributes["type"].Value);
+            Assert.AreEqual("Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction", dstElement.Attributes["type"].Value);
             Assert.AreEqual("0", dstElement.Attributes["inputcount"].Value);
         }
 
@@ -187,7 +187,7 @@ namespace Dynamo.Tests
             Assert.AreEqual("1", dstElement.Attributes["one"].Value);
             Assert.AreEqual("2", dstElement.Attributes["two"].Value);
             Assert.AreEqual("3", dstElement.Attributes["three"].Value);
-            Assert.AreEqual("Dynamo.Nodes.DSVarArgFunction", dstElement.Attributes["type"].Value);
+            Assert.AreEqual("Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction", dstElement.Attributes["type"].Value);
             Assert.AreEqual("0", dstElement.Attributes["inputcount"].Value);
         }
 
@@ -205,7 +205,7 @@ namespace Dynamo.Tests
             Assert.IsNotNull(dstElement);
             Assert.IsNotNull(dstElement.Attributes);
             Assert.AreEqual(2, dstElement.Attributes.Count);
-            Assert.AreEqual("Dynamo.Nodes.DSVarArgFunction", dstElement.Attributes["type"].Value);
+            Assert.AreEqual("Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction", dstElement.Attributes["type"].Value);
             Assert.AreEqual("2", dstElement.Attributes["inputcount"].Value);
         }
 
@@ -231,14 +231,14 @@ namespace Dynamo.Tests
             Version newestVer = new Version(0, 7, 2);
 
             DynamoModel.IsTestMode = false;
-            var decision1 = MigrationManager.ShouldMigrateFile(oldVer, newVer);
-            var decision2 = MigrationManager.ShouldMigrateFile(newestVer, newVer);
+            var decision1 = MigrationManager.ShouldMigrateFile(oldVer, newVer, true);
+            var decision2 = MigrationManager.ShouldMigrateFile(newestVer, newVer, true);
             Assert.AreEqual(MigrationManager.Decision.Migrate, decision1);
             Assert.AreEqual(MigrationManager.Decision.Retain, decision2);
 
             DynamoModel.IsTestMode = true;
-            decision1 = MigrationManager.ShouldMigrateFile(oldVer, newVer);
-            decision2 = MigrationManager.ShouldMigrateFile(newestVer, newVer);
+            decision1 = MigrationManager.ShouldMigrateFile(oldVer, newVer, true);
+            decision2 = MigrationManager.ShouldMigrateFile(newestVer, newVer, true);
             Assert.AreEqual(MigrationManager.Decision.Migrate, decision1);
             Assert.AreEqual(MigrationManager.Decision.Retain, decision2);
         }
@@ -271,7 +271,7 @@ namespace Dynamo.Tests
             Assert.AreEqual("true", attribs["isVisible"].Value);
             Assert.AreEqual("false", attribs["isUpstreamVisible"].Value);
             Assert.AreEqual("Disabled", attribs["lacing"].Value);
-            Assert.AreEqual("Dynamo.Nodes.CodeBlockNodeModel", attribs["type"].Value);
+            Assert.AreEqual("Dynamo.Graph.Nodes.CodeBlockNodeModel", attribs["type"].Value);
             Assert.AreEqual(string.Empty, attribs["CodeText"].Value);
             Assert.AreEqual("false", attribs["ShouldFocus"].Value);
             Assert.AreEqual("Code Block", attribs["nickname"].Value);
@@ -327,8 +327,8 @@ namespace Dynamo.Tests
             Assert.AreEqual("2", attribs["b"].Value);
             Assert.AreEqual("3", attribs["c"].Value);
 
-            Assert.AreEqual("DSCoreNodesUI.DummyNode", dummy.Name);
-            Assert.AreEqual("DSCoreNodesUI.DummyNode", attribs["type"].Value);
+            Assert.AreEqual("Dynamo.Graph.Nodes.DummyNode", dummy.Name);
+            Assert.AreEqual("Dynamo.Graph.Nodes.DummyNode", attribs["type"].Value);
             Assert.AreEqual("OldNamespace.OldClass", attribs["legacyNodeName"].Value);
             Assert.AreEqual("Deprecated", attribs["nodeNature"].Value);
             Assert.AreEqual("6", attribs["inputCount"].Value);
@@ -353,243 +353,12 @@ namespace Dynamo.Tests
             Assert.AreEqual("2", attribs["b"].Value);
             Assert.AreEqual("3", attribs["c"].Value);
 
-            Assert.AreEqual("DSCoreNodesUI.DummyNode", dummy.Name);
-            Assert.AreEqual("DSCoreNodesUI.DummyNode", attribs["type"].Value);
+            Assert.AreEqual("Dynamo.Graph.Nodes.DummyNode", dummy.Name);
+            Assert.AreEqual("Dynamo.Graph.Nodes.DummyNode", attribs["type"].Value);
             Assert.AreEqual("OldNamespace.OldClass", attribs["legacyNodeName"].Value);
             Assert.AreEqual("Unresolved", attribs["nodeNature"].Value);
             Assert.AreEqual("6", attribs["inputCount"].Value);
             Assert.AreEqual("8", attribs["outputCount"].Value);
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestCreateUnresolvedFunctionNode00()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                XmlElement dummy = MigrationManager.CreateUnresolvedFunctionNode(null);
-            });
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestCreateUnresolvedFunctionNode01()
-        {
-            XmlElement element = xmlDocument.CreateElement("InvalidName");
-
-            Assert.Throws<ArgumentException>(() =>
-            {
-                XmlElement dummy = MigrationManager.CreateUnresolvedFunctionNode(element);
-            });
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestCreateUnresolvedFunctionNode02()
-        {
-            XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
-            element.SetAttribute("type", "InvalidName");
-
-            Assert.Throws<ArgumentException>(() =>
-            {
-                XmlElement dummy = MigrationManager.CreateUnresolvedFunctionNode(element);
-            });
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestCreateUnresolvedFunctionNode03()
-        {
-            XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
-            element.SetAttribute("type", "Dynamo.Nodes.DSFunction");
-
-            Assert.Throws<ArgumentException>(() =>
-            {
-                // Test an XmlElement without a "function" attribute.
-                XmlElement dummy = MigrationManager.CreateUnresolvedFunctionNode(element);
-            });
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestCreateUnresolvedFunctionNode04()
-        {
-            XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
-            element.SetAttribute("type", "Dynamo.Nodes.DSFunction");
-            element.SetAttribute("function", "");
-
-            Assert.Throws<ArgumentException>(() =>
-            {
-                // Test an XmlElement with an empty "function" attribute.
-                XmlElement dummy = MigrationManager.CreateUnresolvedFunctionNode(element);
-            });
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestCreateUnresolvedFunctionNode05()
-        {
-            XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
-            element.SetAttribute("type", "Dynamo.Nodes.DSFunction");
-            element.SetAttribute("function", "Foo");
-
-            Assert.Throws<ArgumentException>(() =>
-            {
-                // Test an XmlElement without a "nickname" attribute.
-                XmlElement dummy = MigrationManager.CreateUnresolvedFunctionNode(element);
-            });
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestCreateUnresolvedFunctionNode06()
-        {
-            XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
-            element.SetAttribute("type", "Dynamo.Nodes.DSFunction");
-            element.SetAttribute("function", "Foo");
-            element.SetAttribute("nickname", "");
-
-            Assert.Throws<ArgumentException>(() =>
-            {
-                // Test an XmlElement with an empty "nickname" attribute.
-                XmlElement dummy = MigrationManager.CreateUnresolvedFunctionNode(element);
-            });
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestCreateUnresolvedFunctionNode07()
-        {
-            XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
-            element.SetAttribute("type", "Dynamo.Nodes.DSFunction");
-            element.SetAttribute("function", "Foo.Bar");
-            element.SetAttribute("nickname", "Foo.Bar");
-
-            // Test an XmlElement with no argument.
-            XmlElement dummy = MigrationManager.CreateUnresolvedFunctionNode(element);
-            Assert.AreEqual("1", dummy.Attributes["inputCount"].Value);
-            Assert.AreEqual("1", dummy.Attributes["outputCount"].Value);
-            Assert.AreEqual("Foo.Bar", dummy.Attributes["legacyNodeName"].Value);
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestCreateUnresolvedFunctionNode08()
-        {
-            XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
-            element.SetAttribute("type", "Dynamo.Nodes.DSFunction");
-            element.SetAttribute("function", "Foo.Bar@");
-            element.SetAttribute("nickname", "Foo.Bar");
-
-            // Test an XmlElement with no argument.
-            XmlElement dummy = MigrationManager.CreateUnresolvedFunctionNode(element);
-            Assert.AreEqual("1", dummy.Attributes["inputCount"].Value);
-            Assert.AreEqual("1", dummy.Attributes["outputCount"].Value);
-            Assert.AreEqual("Foo.Bar", dummy.Attributes["legacyNodeName"].Value);
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestCreateUnresolvedFunctionNode09()
-        {
-            XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
-            element.SetAttribute("type", "Dynamo.Nodes.DSFunction");
-            element.SetAttribute("function", "Foo.Bar@,");
-            element.SetAttribute("nickname", "Foo.Bar");
-
-            // Test an XmlElement with no argument.
-            XmlElement dummy = MigrationManager.CreateUnresolvedFunctionNode(element);
-            Assert.AreEqual("2", dummy.Attributes["inputCount"].Value);
-            Assert.AreEqual("1", dummy.Attributes["outputCount"].Value);
-            Assert.AreEqual("Foo.Bar", dummy.Attributes["legacyNodeName"].Value);
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestCreateUnresolvedFunctionNode10()
-        {
-            XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
-            element.SetAttribute("type", "Dynamo.Nodes.DSFunction");
-            element.SetAttribute("function", "Foo.Bar@,,");
-            element.SetAttribute("nickname", "Foo.Bar");
-
-            // Test an XmlElement with no argument.
-            XmlElement dummy = MigrationManager.CreateUnresolvedFunctionNode(element);
-            Assert.AreEqual("3", dummy.Attributes["inputCount"].Value);
-            Assert.AreEqual("1", dummy.Attributes["outputCount"].Value);
-            Assert.AreEqual("Foo.Bar", dummy.Attributes["legacyNodeName"].Value);
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestCreateUnresolvedFunctionNode11()
-        {
-            XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
-            element.SetAttribute("type", "Dynamo.Nodes.DSFunction");
-            element.SetAttribute("nickname", "Foo.Bar");
-
-            var childElement = xmlDocument.CreateElement("Dynamo.DSEngine.FunctionItem");
-            childElement.SetAttribute("DisplayName", "Foo.Bar");
-            childElement.SetAttribute("Parameters", "o;p;q;x;y;z");
-            childElement.SetAttribute("Type", "InstanceMethod");
-            element.AppendChild(childElement);
-
-            // Test an XmlElement with no argument.
-            XmlElement dummy = MigrationManager.CreateUnresolvedFunctionNode(element);
-            Assert.AreEqual("7", dummy.Attributes["inputCount"].Value);
-            Assert.AreEqual("1", dummy.Attributes["outputCount"].Value);
-            Assert.AreEqual("Foo.Bar", dummy.Attributes["legacyNodeName"].Value);
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestCreateUnresolvedFunctionNode12()
-        {
-            XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
-            element.SetAttribute("type", "Dynamo.Nodes.DSFunction");
-            element.SetAttribute("nickname", "Foo.Bar");
-
-            var childElement = xmlDocument.CreateElement("Dynamo.DSEngine.FunctionItem");
-            childElement.SetAttribute("DisplayName", "Foo.Bar");
-            childElement.SetAttribute("Parameters", "o;p;q;x;y;z");
-            childElement.SetAttribute("Type", "StaticProperty");
-            element.AppendChild(childElement);
-
-            // Test an XmlElement with no argument.
-            XmlElement dummy = MigrationManager.CreateUnresolvedFunctionNode(element);
-            Assert.AreEqual("6", dummy.Attributes["inputCount"].Value);
-            Assert.AreEqual("1", dummy.Attributes["outputCount"].Value);
-            Assert.AreEqual("Foo.Bar", dummy.Attributes["legacyNodeName"].Value);
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestCreateUnresolvedFunctionNode13()
-        {
-            XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSVarArgFunction");
-            element.SetAttribute("type", "Dynamo.Nodes.DSVarArgFunction");
-            element.SetAttribute("nickname", "Foo.Bar");
-
-            Assert.Throws<ArgumentException>(() =>
-            {
-                // Test an DSVarArgFunction without "inputcount" attribute.
-                MigrationManager.CreateUnresolvedFunctionNode(element);
-            });
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestCreateUnresolvedFunctionNode14()
-        {
-            XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSVarArgFunction");
-            element.SetAttribute("type", "Dynamo.Nodes.DSVarArgFunction");
-            element.SetAttribute("nickname", "Foo.Bar");
-            element.SetAttribute("inputcount", "5");
-
-            XmlElement dummy = MigrationManager.CreateUnresolvedFunctionNode(element);
-            Assert.AreEqual("5", dummy.Attributes["inputCount"].Value);
-            Assert.AreEqual("1", dummy.Attributes["outputCount"].Value);
-            Assert.AreEqual("Foo.Bar", dummy.Attributes["legacyNodeName"].Value);
         }
 
         [Test]

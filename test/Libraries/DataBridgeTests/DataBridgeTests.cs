@@ -1,36 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Dynamo.Nodes;
+﻿using System.IO;
+using CoreNodeModels;
+using Dynamo;
+using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Tests;
 
 using NUnit.Framework;
 
 namespace DataBridgeTests
 {
-    public class DataBridgeTests : DSEvaluationViewModelUnitTest
+    public class DataBridgeTests : DynamoModelTestBase
     {
         [Test]
         [Category("Failure")]
         public void CanUseWatchInCustomNode()
         {
-            var examplesPath = Path.Combine(GetTestDirectory(), @"core\watch");
-            var model = ViewModel.Model;
+            var examplesPath = Path.Combine(TestDirectory, @"core\watch");
 
             RunModel(Path.Combine(examplesPath, "watchdatabridge.dyn"));
 
-            var customNodeWorkspace =
-                model.CurrentWorkspace.FirstNodeFromWorkspace<Function>().Definition.WorkspaceModel;
+            var customNodeId =
+                CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Function>().Definition.FunctionId;
+
+            CustomNodeWorkspaceModel customNodeWorkspace;
+            Assert.IsTrue(CurrentDynamoModel.CustomNodeManager.TryGetFunctionWorkspace(customNodeId, true, out customNodeWorkspace));
 
             var innerWatch = customNodeWorkspace.FirstNodeFromWorkspace<Watch>();
-            var outerWatch = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            var outerWatch = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
-            Assert.AreEqual(10, (int)innerWatch.CachedValue);
-            Assert.AreEqual(10, (int)outerWatch.CachedValue);
+            Assert.AreEqual(10, innerWatch.CachedValue);
+            Assert.AreEqual(10, outerWatch.CachedValue);
         }
     }
 }

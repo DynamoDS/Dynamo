@@ -6,6 +6,7 @@
 !Extra/DynamoAddinGenerator.exe
 !Extra/RevitInstallDetective.exe
 !Extra/RevitAddinUtility.dll
+!Extra/DirectX/*
 /bin
 /definitions
 /sample

@@ -5,15 +5,8 @@ using ProtoCore.Lang;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.Associative
 {
-    public class Assignment
+    class Assignment : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string testPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         [Category("SmokeTest")]
         public void T01_SampleTestUsingCodeWithinTestFunction()
@@ -201,6 +194,7 @@ e;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         [Category("SmokeTest")]
         public void T11_TestInClassScope()
         {
@@ -1046,31 +1040,27 @@ d;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T48_MultipleAssignments()
         {
             string code = @"
-class A
+i : int;
+def A (a : int)
 {
-    i : int;
-	constructor A ( a : int)
-	{
-	     t1 = t2 = 2;
-		 i = t1 + t2 + a ;
-	}
-	
-	def foo : int ( )
-	{
-	    t1 = t2 = 2;
-		t3 = t1 + t2 + i;
-        return  = t3;		
-	}
-	
+	t1 = t2 = 2;
+	i = t1 + t2 + a;
 }
-def foo : int ( a : int )
+def B : int ()
+{
+	t1 = t2 = 2;
+	t3 = t1 + t2 + i;
+	return = t3;		
+}
+def C : int (a : int)
 {
     t1 = t2 = 2;
-	return = t1 + t2 + a ;
+	return = t1 + t2 + a;
 }
 a;
 b;
@@ -1080,12 +1070,10 @@ a1;
 b1;
 [Associative]
 {
-    
 	a = b = 4;
-    x = y = foo(1);
-	a1 = A.A(1);
-	b1 = a1.foo();
-	
+	x = y = C(1);
+	a1 = A(1);
+	b1 = B();
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1335,6 +1323,8 @@ y1 = a..b..2;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored")]
+        [Category("ModifierBlock")] 
         public void T58_Modifier_Block_On_User_Defined_Classes()
         {
             String code =
@@ -1514,6 +1504,7 @@ if(c < 1)
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void T60_Defect_1467525_5()
         {
             String code =
@@ -1539,6 +1530,7 @@ class A
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void T60_Defect_1467525_6()
         {
             String code =
@@ -1619,6 +1611,7 @@ test = foo();
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void T61_Defect_1467546_4()
         {
             String code =
@@ -1642,6 +1635,7 @@ test = A.foo();
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void T61_Defect_1467546_5()
         {
             String code =
@@ -1705,6 +1699,7 @@ b = a + 1;
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored")]
         public void T61_Defect_1467546_8()
         {
             String code =
@@ -1730,17 +1725,11 @@ b = a + 1;
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T64_Defect_1467588()
         {
             String code =
             @"
-class A
-{
-    static def foo()
-    {
-        return = ""Hello \""DesignScript\""!"";
-    }
-}
 def foo()
 {
     return = ""Hello \""DesignScript\""!"";
@@ -1749,112 +1738,94 @@ def foo2(s : string)
 {
     return = ""New Hello \""DesignScript\""!"";
 }
-a = A.foo();
-b = foo();
-c = [Associative]
+a = foo();
+b = [Associative]
 {
     return = [Imperative]
     {
         return = ""Hello \""DesignScript\""!"";
     }
 }
-d = foo2(""Hello \""DesignScript\""!"");
+c = foo2(""Hello \""DesignScript\""!"");
  
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", "Hello \"DesignScript\"!");
             thisTest.Verify("b", "Hello \"DesignScript\"!");
-            thisTest.Verify("c", "Hello \"DesignScript\"!");
-            thisTest.Verify("d", "New Hello \"DesignScript\"!");
+            thisTest.Verify("c", "New Hello \"DesignScript\"!");
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T65_Defect_1467597()
         {
             String code =
             @"
-class A 
+def foo()
 {
-    a;;
-    constructor A ( x )
+    returnValue = 0;
+    [Imperative]
     {
-        a = x;;
-    }
-    static def foo()
-    {
-        returnValue = 0;
-        [Imperative]
+        for(i in { 1, 2 })
         {
-            for(i in { 1, 2 })
-            {
-                returnValue = returnValue + i;; 
-            }
+            returnValue = returnValue + i;; 
         }
-        return = returnValue;
-    }  
+    }
+    return = returnValue;
 }
-x = A.foo(); 
-y = A.A(1).a;
+x = foo();
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", 3);
-            thisTest.Verify("y", 1);
 
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T66_Defect_1467597()
         {
             String code =
             @"
-class A 
+a = { }; ;
+b : int[]; ;
+c = 4..6; ;
+d = { 0, 2 }; ;
+f : var[]; ;
+def con(x)
 {
-    a = { }; ;
-    b : int[]; ;
-    c = 4..6; ;
-    d = { 0, 2 }; ;
-    f : var[]; ;
-    constructor A ( x )
-    {
-        a = { x }; ;
-        i = 2..3; ;
-        b[i] = i; ;
-        c[i] = i; ;
-        d[i] = i; ;
-        f[i] = d[i]; ;
-    }
-    def foo()
-    {
-        returnValue = 0;
-        [Imperative]
-        {
-            for(i in { 0,1 })
-            {
-                returnValue = returnValue + i; ;
-                b[i] = i;;
-                c[i] = i;;
-                d[i] = i;;
-                f[i] = d[i]; ;
-                
-            }
-        }
-        return = returnValue;
-    }  
+    a = { x }; ;
+    i = 2..3; ;
+    b[i] = i; ;
+    c[i] = i; ;
+    d[i] = i; ;
+    f[i] = d[i]; ;
 }
-x = A.A(1); ;
-y1 = x.a; ;
-y2 = x.b; ;
-y3 = x.c; ;
-y4 = x.d; ;
-y5 = x.f; ;
-y6 = x.foo(); ;
+def foo()
+{
+    returnValue = 0;
+    [Imperative]
+    {
+        for(i in { 0,1 })
+        {
+            returnValue = returnValue + i; ;
+            b[i] = i;;
+            c[i] = i;;
+            d[i] = i;;
+            f[i] = d[i]; ;
+                
+        }
+    }
+    return = returnValue;
+}
+con(1); ;
+y6 = foo(); ;
 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("y1", new Object[] { 1 });
-            thisTest.Verify("y2", new Object[] { 0, 1, 2, 3 });
-            thisTest.Verify("y3", new Object[] { 0, 1, 2, 3 });
-            thisTest.Verify("y4", new Object[] { 0, 1, 2, 3 });
-            thisTest.Verify("y5", new Object[] { 0, 1, 2, 3 });
+            thisTest.Verify("a", new Object[] { 1 });
+            thisTest.Verify("b", new Object[] { 0, 1, 2, 3 });
+            thisTest.Verify("c", new Object[] { 0, 1, 2, 3 });
+            thisTest.Verify("d", new Object[] { 0, 1, 2, 3 });
+            thisTest.Verify("f", new Object[] { 0, 1, 2, 3 });
             thisTest.Verify("y6", 1);
         }
 

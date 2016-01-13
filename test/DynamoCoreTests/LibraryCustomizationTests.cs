@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using Dynamo.DSEngine;
+﻿using System.IO;
+
+using Dynamo.Engine;
+
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -14,9 +12,9 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void CanLoadValidLibraryCustomization()
         {
-            var fn = Path.Combine(GetTestDirectory(), @"core/library/ProtoGeometry.dll");
+            var fn = Path.Combine(TestDirectory, @"core/library/ProtoGeometry.dll");
 
-            var c = LibraryCustomizationServices.GetForAssembly(fn);
+            var c = LibraryCustomizationServices.GetForAssembly(fn, pathManager: null);
             Assert.NotNull(c);
 
             var cat = c.GetNamespaceCategory("Autodesk.DesignScript.Geometry");

@@ -1,0 +1,18 @@
+<Workspace Version="0.8.1.995" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="100" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap>
+    <ClassMap partialName="Color" resolvedName="DSCore.Color" assemblyName="DSCoreNodes.dll" />
+  </NamespaceResolutionMap>
+  <Elements>
+    <DSCoreNodesUI.ColorRange guid="19b8c58f-e518-41e3-979b-811a029c1ddf" type="DSCoreNodesUI.ColorRange" nickname="Color Range" x="102.4" y="223.6" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="43a5a3e7-e973-40df-bea0-12c34d436b5a" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="23.2" y="19.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="a=Color.ByARGB(255,255,0,0);&#xA;3;&#xA;2;" ShouldFocus="false" />
+    <Dynamo.Nodes.Watch guid="da982af5-2a79-4e46-aace-5cd91497b17b" type="Dynamo.Nodes.Watch" nickname="Watch" x="416" y="366.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="19b8c58f-e518-41e3-979b-811a029c1ddf" start_index="0" end="da982af5-2a79-4e46-aace-5cd91497b17b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="43a5a3e7-e973-40df-bea0-12c34d436b5a" start_index="0" end="19b8c58f-e518-41e3-979b-811a029c1ddf" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="43a5a3e7-e973-40df-bea0-12c34d436b5a" start_index="1" end="19b8c58f-e518-41e3-979b-811a029c1ddf" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="43a5a3e7-e973-40df-bea0-12c34d436b5a" start_index="2" end="19b8c58f-e518-41e3-979b-811a029c1ddf" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+</Workspace>

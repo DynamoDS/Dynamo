@@ -1,24 +1,33 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using NUnit.Framework;
-using Dynamo.Utilities;
 using Dynamo.Nodes;
 using Dynamo.Models;
 using System.Collections.Generic;
+using System.Linq;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 
 
 namespace Dynamo.Tests
 {
-	class ListTests : DSEvaluationViewModelUnitTest
-	{
-		string listTestFolder { get { return Path.Combine(GetTestDirectory(), "core", "list"); } }
+	class ListTests : DynamoModelTestBase
+    {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("VMDataBridge.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
+        }
+
+        string listTestFolder { get { return Path.Combine(TestDirectory, "core", "list"); } }
 
 		#region Test Build Sublist  
 
 		[Test]
 		public void TestBuildSublistsEmptyInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testBuildSubLists_emptyInput.dyn");
 			RunModel(testFilePath);
 
@@ -28,35 +37,27 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestBuildSublistsInvalidInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testBuildSubLists_invalidInput.dyn");
 			RunModel(testFilePath);
 
-            var subList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>
-                ("516c4904-38d8-40d8-b247-7133f33836ce");
             AssertPreviewValue("516c4904-38d8-40d8-b247-7133f33836ce", new int[] { });
-
 		}
 
 		[Test]
 		public void TestBuildSublistsNumberInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testBuildSubLists_numberInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("9240cdc9-5bbf-4579-930c-ef742a91d798", new int[][] { new int[] { 1 }, new int[] { 3 } });
-
 		}
 
 		[Test]
 		public void TestBuildSublistsStringInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testBuildSubLists_stringInput.dyn");
 			RunModel(testFilePath);
 
 			AssertPreviewValue("9240cdc9-5bbf-4579-930c-ef742a91d798", new string[][] { new string[] { "b" }, new string[] { "d" } });
-
 		}
 
 		#endregion
@@ -66,7 +67,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestConcatenateListsEmptyInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testConcatenateLists_emptyInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("760c9f00-e12c-4db9-bbdf-a19562efdd09", new int[]{});
@@ -76,7 +76,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestConcatenateListsSingleInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testConcatenateLists_singleInput.dyn");
 			RunModel(testFilePath);
 
@@ -86,7 +85,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestConcatenateListsNormalInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testConcatenateLists_normalInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("364b303f-8f0b-4964-b333-e937299c8352", new object[] { 10, 20, 10, 20, 10, "a", "b", "a", "b" });
@@ -100,7 +98,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestDiagonalLeftListEmptyInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testDiagonaLeftList_emptyInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("a54ad1f8-9b02-4ebf-9d4e-a53608906145", new int[]{});
@@ -109,12 +106,8 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestDiagonalLeftListInvalidInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testDiagonaLeftList_invalidInput.dyn");
 			RunModel(testFilePath);
-
-            var subList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>
-                ("a3f8b65f-2e02-480a-9d41-1139f0b40f07");
 
             AssertPreviewValue("a3f8b65f-2e02-480a-9d41-1139f0b40f07", new int[] {20});
 		}
@@ -122,7 +115,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestDiagonalLeftListNumberInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testDiagonaLeftList_numberInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("87345663-8421-46f0-acd2-051e4ec5ff88", new int[][]{new int[]{1}, new int[]{2,3}, new int[]{4,5}});
@@ -131,11 +123,9 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestDiagonalLeftListStringInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testDiagonaLeftList_stringInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("87345663-8421-46f0-acd2-051e4ec5ff88", new string[][] { new string[] { "a" }, new string[] { "b", "a" }, new string[] { "b" } });
-
 		}
 
 		#endregion
@@ -145,7 +135,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestDiagonalRightListEmptyInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testDiagonaRightList_emptyInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("49f4ebe5-fd49-462b-9896-fe1244f66486", new int[]{});
@@ -155,7 +144,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestDiagonalRightListInvalidInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testDiagonaRightList_invalidInput.dyn");
 			RunModel(testFilePath);
 
@@ -164,7 +152,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestDiagonalRightListNumberInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testDiagonaRightList_numberInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("e84bf89e-e7a0-427c-adae-adcd61646e4e", new int[][] { new int[] { 5 }, new int[] { 3 }, new int[] { 1, 4 }, new int[] { 2 } });
@@ -178,7 +165,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestFirstOfListEmptyInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testFirstOfList_emptyInput.dyn");
 			RunModel(testFilePath);
 		}
@@ -186,7 +172,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestFirstOfListSingleInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testFirstOfList_singleInput.dyn");
 			RunModel(testFilePath);
 
@@ -196,7 +181,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestFirstOfListNumberInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testFirstOfList_numberInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("879fda8f-b9f4-453b-bf4d-faeb76ce5ffc", 10);
@@ -205,7 +189,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestFirstOfListStringInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testFirstOfList_stringInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("879fda8f-b9f4-453b-bf4d-faeb76ce5ffc", "a");
@@ -218,7 +201,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestIsEmptyListEmptyInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testIsEmptyList_emptyInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("d98b4671-fa55-4303-a9a2-e1b383d737da", 1);
@@ -228,7 +210,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestIsEmptyListSingleInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testIsEmptyList_singleInput.dyn");
 			RunModel(testFilePath);
 
@@ -238,7 +219,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestIsEmptyListNumberInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testIsEmptyList_numberInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("d98b4671-fa55-4303-a9a2-e1b383d737da", 0);
@@ -248,7 +228,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestIsEmptyListStringInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testIsEmptyList_stringInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("d98b4671-fa55-4303-a9a2-e1b383d737da", 0);
@@ -262,7 +241,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestStringLengthEmptyInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testListLength_emptyInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("8ab87f7a-2577-46b9-bee6-512b1678b028", 0);
@@ -272,7 +250,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestStringLengthSingleInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testListLength_singleInput.dyn");
 			RunModel(testFilePath);
 
@@ -282,7 +259,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestStringLengthNumberInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testListLength_numberInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("18473048-4a5f-4b23-8578-d9b8c0f32c0f", 5);
@@ -292,7 +268,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestStringLengthStringInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testListLength_stringInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("18473048-4a5f-4b23-8578-d9b8c0f32c0f", 4);
@@ -306,41 +281,35 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestPartitionStringEmptyInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testPartitionList_emptyInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("6cad28c0-605a-4b58-84a2-87939f81f61e", new int[] { });
 
 		}
 
-		[Test]
-		public void TestPartitionStringSingleInput()
-		{
-			DynamoModel model = ViewModel.Model;
-			string testFilePath = Path.Combine(listTestFolder, "testPartitionList_singleInput.dyn");
-			RunModel(testFilePath);
+        [Test]
+        public void TestPartitionStringSingleInput()
+        {
+            string testFilePath = Path.Combine(listTestFolder, "testPartitionList_singleInput.dyn");
+            RunModel(testFilePath);
 
-			AssertPreviewValue("4070b941-f4ef-4fc0-bced-2eb469fcd5f8", new object[] { 20 });
-		}
+            AssertPreviewValue("4070b941-f4ef-4fc0-bced-2eb469fcd5f8", new object[] { new object[] { 20 } });
+        }
 
-		[Test]
-		public void TestPartitionStringNumberInput()
+        [Test]
+        public void TestPartitionStringNumberInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testPartitionList_numberInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("a3cdc54a-5965-47ea-b294-f893b1b64ae2", new int[][] { new int[] { 1, 2, 3 }, new int[] { 4, 5 } });
-
 		}
 
 		[Test]
 		public void TestPartitionStringStringInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testPartitionList_stringInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("a3cdc54a-5965-47ea-b294-f893b1b64ae2", new string[][] { new string[] { "a", "b", "a" }, new string[] { "b" } });
-
 		}
 
 		#endregion
@@ -350,7 +319,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestFlattenEmptyInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testPlatten_emptyInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("4cc4e5f0-4338-43bb-911e-d7c10ea2b53c", new int[] { });
@@ -360,7 +328,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestFlattenSingleInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testPlatten_singleInput.dyn");
 			RunModel(testFilePath);
 
@@ -370,7 +337,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestFlattenNormalInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testPlatten_normalInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("6e46f30d-2214-4ff7-a666-0516d2af7c64", new object[] 
@@ -386,7 +352,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestFlattenCompletlyEmptyInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testPlattenCompletely_emptyInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("641db696-5626-4af0-b07e-6335c6dc4bc9", new int[] { });
@@ -395,7 +360,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestFlattenCompletlySingleInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testPlattenCompletely_singleInput.dyn");
 			RunModel(testFilePath);
 
@@ -405,7 +369,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestFlattenCompletlyNormalInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testPlattenCompletely_normalInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("76609452-9c1d-4d71-9223-bb13c323f3a6", new object[] { 0, 1, 2, 3, 4, "a", "b", "c", "d", "a", "b", "c", "d" });
@@ -419,7 +382,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestRepeatEmptyInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testRepeat_emptyInput.dyn");
 			RunModel(testFilePath);
 		}
@@ -427,24 +389,20 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestRepeatNumberInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testRepeat_numberInput.dyn");
 			RunModel(testFilePath);
 			var a1 = new[] { 0, 1, 2, 3, 4 };
 			AssertPreviewValue("72dddbc8-0a6b-431d-a185-8ec62a8b79dd", new[] { a1, a1 });
-
 		}
 
 		[Test]
 		public void TestRepeatStringInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testRepeat_stringInput.dyn");
 			RunModel(testFilePath);
 
 			var a1 = new[] { "a", "b", "c", "d" };
 			AssertPreviewValue("72dddbc8-0a6b-431d-a185-8ec62a8b79dd", new[] { a1, a1 });
-
 		}
 
 		#endregion
@@ -454,7 +412,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestRestOfListSingleInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testRestOfList_singleInput.dyn");
 			RunModel(testFilePath);
 
@@ -464,7 +421,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestRestOfListNumberInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testRestOfList_numberInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("3d3e481b-16ef-4837-b94e-7922f9e42029", new int[] { 20, 10, 20, 10 });
@@ -474,11 +430,9 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestRestOfListStringInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testRestOfList_stringInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("3d3e481b-16ef-4837-b94e-7922f9e42029", new string[] { "b", "a", "b" });
-
 		}
 
 		#endregion
@@ -487,20 +441,18 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestTransposeEmptyInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testTransposeList_emptyInput.dyn");
 			RunModel(testFilePath);
-			ViewModel.Model.RunExpression();
-			var watch = model.CurrentWorkspace.NodeFromWorkspace<DSFunction>("df181bd7-3f1f-4195-93af-c0b846f6c8ce");
 
-			var actual = watch.GetValue(0).GetElements();
+			var watch = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("df181bd7-3f1f-4195-93af-c0b846f6c8ce");
+
+			var actual = watch.GetValue(0, CurrentDynamoModel.EngineController).GetElements();
 			Assert.AreEqual(0, actual.Count);
 		}
 
 		[Test]
 		public void TestTransposeSingleInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testTransposeList_singleInput.dyn");
 			RunModel(testFilePath);
 
@@ -514,38 +466,36 @@ namespace Dynamo.Tests
 			// {                            {
 			//     { "AB", "CD" }               { "AB", 21, 31 }
 			//     { 21, 22, 23, 24 }           { "CD", 22, 32 }
-			//     { 31, 32, 33 }               { 23, 33 }
-			// }                                { 24 }
+			//     { 31, 32, 33 }               { null, 23, 33 }
+			// }                                { null, 24, null }
 			//                              }
 
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testTransposeList_normalInput.dyn");
 			RunModel(testFilePath);
 
 			string guid = "e639bc66-6dec-4a0a-bae2-9bac7dab59dc";
-			var nodeTranspose = model.CurrentWorkspace.NodeFromWorkspace<DSFunction>(guid);
-			var elements = nodeTranspose.GetValue(0).GetElements();
+			var nodeTranspose = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>(guid);
+			var elements = nodeTranspose.GetValue(0, CurrentDynamoModel.EngineController).GetElements();
 
 			Assert.AreEqual(4, elements.Count);
 			Assert.AreEqual(3, elements[0].GetElements().Count);
 			Assert.AreEqual(3, elements[1].GetElements().Count);
-			Assert.AreEqual(2, elements[2].GetElements().Count);
-			Assert.AreEqual(1, elements[3].GetElements().Count);
+			Assert.AreEqual(3, elements[2].GetElements().Count);
+			Assert.AreEqual(3, elements[3].GetElements().Count);
 
 			AssertPreviewValue(guid,
 				new object[][]
 				{
 					new object[] { "AB", 21, 31 },
 					new object[] { "CD", 22, 32 },
-					new object[] { 23, 33 },
-					new object[] { 24 }
+					new object[] { null, 23, 33 },
+					new object[] { null, 24, null }
 				});
 		}
 
 		[Test]
 		public void TestTranspose()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "transpose.dyn");
 			RunModel(testFilePath);
 
@@ -553,7 +503,7 @@ namespace Dynamo.Tests
 				new object[] { new object[] {1,3 }, new object[] {2, 4}, });
 
 			AssertPreviewValue("919d4d0d-f4e3-4a3c-87c8-dd4466a8ca87",
-				new object[] { new object[] {1,4,6}, new object[] {2, 5,7}, new object[] {3, 8}, new object[] {9}});
+				new object[] { new object[] {1,4,6}, new object[] {2, 5,7}, new object[] {3, null, 8}, new object[] {null, null, 9}});
 
 			AssertPreviewValue("bcf696d1-43e7-4633-8eb9-d5cb64dde939",
 				new object[] { new object[] { new object[] { 1 }, 3 }, new object[] { 2, 4 } });
@@ -574,14 +524,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void Sort_NumbersfFromDiffInput()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\Sort_NumbersfFromDiffInput.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\Sort_NumbersfFromDiffInput.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.LessOrEqual(18, model.CurrentWorkspace.Connectors.Count);
-			Assert.LessOrEqual(15, model.CurrentWorkspace.Nodes.Count);
+			Assert.LessOrEqual(18, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+			Assert.LessOrEqual(15, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
 			// fourth and last element in the list before sorting
 			Dictionary<int, object> validationData = new Dictionary<int,object>()
@@ -604,14 +552,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void Sort_SimpleNumbers()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\Sort_SimpleNumbers.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\Sort_SimpleNumbers.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
-			Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
+			Assert.AreEqual(11, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+			Assert.AreEqual(12, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
 			// First and last element in the list before sorting
 			Dictionary<int, object> validationData = new Dictionary<int, object>()
@@ -635,14 +581,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void Sort_StringsAndNumbers()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\Sort_Strings&Numbers.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\Sort_Strings&Numbers.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
-			Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
+			Assert.AreEqual(7, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+			Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
 			AssertPreviewValue("14fae78b-b009-4503-afe9-b714e08db1ec",
 				new object[] { 0, "a", "aa", "bbbbbbbbbbbbb", "dddd" });
@@ -651,14 +595,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void Sort_Strings()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\Sort_Strings.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\Sort_Strings.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
-			Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
+			Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+			Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
 			// First and last element in the list before sorting
 			Dictionary<int, object> validationData = new Dictionary<int, object>()
@@ -683,14 +625,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void SortBy_SimpleTest()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\SortBy_SimpleTest.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\SortBy_SimpleTest.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
-			Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
+			Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+			Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
 
 			// First and last element in the list before sorting
@@ -717,14 +657,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void Reverse_ListWithOneNumber()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\Reverse_ListWithOneNumber.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\Reverse_ListWithOneNumber.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
-			Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+			Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+			Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
 
 			// First element in the list before Reversing
@@ -734,14 +672,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void Reverse_MixedList()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\Reverse_MixedList.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\Reverse_MixedList.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
-			Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
+			Assert.AreEqual(11, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+			Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
 
 			// First element in the list before Reversing
@@ -763,14 +699,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void Reverse_NumberRange()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\Reverse_NumberRange.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\Reverse_NumberRange.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(6, model.CurrentWorkspace.Connectors.Count);
-			Assert.AreEqual(7, model.CurrentWorkspace.Nodes.Count);
+			Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+			Assert.AreEqual(7, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
 
 			// First and Last element in the list before Reversing
@@ -795,14 +729,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void Reverse_UsingStringList()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\Reverse_UsingStringList.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\Reverse_UsingStringList.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
-			Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
+			Assert.AreEqual(7, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+			Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
 
 			// First and Last element in the list before Reversing
@@ -827,24 +759,22 @@ namespace Dynamo.Tests
 		[Test]
 		public void Reverse_WithArrayInput()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\Reverse_WithArrayInput.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\Reverse_WithArrayInput.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(15, model.CurrentWorkspace.Connectors.Count);
-			Assert.AreEqual(16, model.CurrentWorkspace.Nodes.Count);
+			Assert.AreEqual(15, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+			Assert.AreEqual(16, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
 			//// First and last element in the list before Reversing
-			//var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("1c9d53b6-b5e0-4282-9768-a6c53115aba4");
+			//var watch = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<Watch>("1c9d53b6-b5e0-4282-9768-a6c53115aba4");
 			//FSharpList<FScheme.Value> listWatchVal = watch.GetValue(0).GetListFromFSchemeValue();
 			//Assert.AreEqual(3, listWatchVal.Length);
 			////Assert.AreEqual(2, GetDoubleFromFSchemeValue(listWatchVal[0]));
 			////Assert.AreEqual("Dynamo", GetDoubleFromFSchemeValue(listWatchVal[3]));
 
 			//// First and last element in the list after Reversing
-			//var reverse = model.CurrentWorkspace.NodeFromWorkspace<Reverse>("18352d04-273b-4821-8819-bd7676dc4374");
+			//var reverse = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<Reverse>("18352d04-273b-4821-8819-bd7676dc4374");
 			//FSharpList<FScheme.Value> listWatchVal1 = reverse.GetValue(0).GetListFromFSchemeValue();
 			//Assert.AreEqual(3, listWatchVal1.Length);
 			////Assert.AreEqual("Dynamo", getStringFromFSchemeValue(listWatchVal1[0]));
@@ -855,17 +785,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void Reverse_WithSingleInput()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\Reverse_WithSingleInput.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\Reverse_WithSingleInput.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(7, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(6, model.CurrentWorkspace.Connectors.Count);
-
-			// run the expression
-			ViewModel.Model.RunExpression();
+			Assert.AreEqual(7, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			//  before Reversing
 			Dictionary<int, object> validationData = new Dictionary<int, object>()
@@ -895,14 +820,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void Filter_SimpleTest()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\Filter_SimpleTest.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\Filter_SimpleTest.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			//  before Filter
 			Dictionary<int, object> validationData = new Dictionary<int, object>()
@@ -926,14 +849,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void Filter_NegativeTest()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\Filter_NegativeTest.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\Filter_NegativeTest.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			//  before Filter
 			Dictionary<int, object> validationData = new Dictionary<int, object>()
@@ -950,14 +871,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void Filter_Complex()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\Filter_Complex.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\Filter_Complex.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(11, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(12, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			//  before Filter
 			Dictionary<int, object> validationData = new Dictionary<int, object>()
@@ -983,7 +902,6 @@ namespace Dynamo.Tests
 
 			};
 			SelectivelyAssertPreviewValues("dc27f671-4cef-480f-9ddc-218d61db7e52", validationData2);
-
 		}
 
 		#endregion
@@ -993,14 +911,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void LaceShortest_Simple()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\LaceShortest_Simple.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\LaceShortest_Simple.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(13, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(13, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(12, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			// Element from the Reverse list
 			Dictionary<int, object> validationData = new Dictionary<int, object>()
@@ -1042,20 +958,18 @@ namespace Dynamo.Tests
 		[Test]
 		public void LaceShortest_NegativeInput()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\LaceShortest_NegativeInput.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\LaceShortest_NegativeInput.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(12, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 		}
 
 		[Test]
 		public void LaceShortest_StringInput()
 		{
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\LaceShortest_StringInput.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\LaceShortest_StringInput.dyn");
 			RunModel(openPath);
 
 			// Elements from first LaceShortest list
@@ -1073,14 +987,12 @@ namespace Dynamo.Tests
 		public void LaceShortest_WithSingleValueInput()
 		{
 			// details are given in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2464
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\LaceShortest_WithSingleValueInput.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\LaceShortest_WithSingleValueInput.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			// input to + nodes are 1..2 and {1}.
 			AssertPreviewValue("ad4325ac-075f-4e2a-93ee-c41c4cfa6a2b", new int[] { 2 });
@@ -1098,14 +1010,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void LaceLongest_Simple()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\LaceLongest_Simple.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\LaceLongest_Simple.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			AssertPreviewValue("5da40769-ffc8-408b-94bb-8c5dff31132e", new int[][]
 			{
@@ -1117,36 +1027,28 @@ namespace Dynamo.Tests
 		[Test]
 		public void LaceLongest_Negative()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\LaceLongest_Negative.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\LaceLongest_Negative.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 		}
 
-		[Test]
-        public void LaceLongest_ListWith10000Element()
-		{
-			var model = ViewModel.Model;
+        [Test]
+        public void DSCore_LaceLongest()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\list\DSCore_LaceLongest.dyn");
+            RunModel(openPath);
 
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\LaceLongest_ListWith10000Element.dyn");
-			RunModel(openPath);
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
-			// check all the nodes and connectors are loaded
-			Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
-
-			Dictionary<int, object> validationData2 = new Dictionary<int, object>()
-			{
-				{1000,2001},
-			};
-			SelectivelyAssertPreviewValues("25daa241-d8a4-4e74-aec1-6068358babf7", validationData2);
-
-		}
+            var validationData2 = new Dictionary<int, object>() { { 10, 21 } };
+            SelectivelyAssertPreviewValues("25daa241-d8a4-4e74-aec1-6068358babf7", validationData2);
+        }
 
 		#endregion
 
@@ -1155,9 +1057,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void FilterOut_SimpleTest()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\FilterOut_SimpleTest.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\FilterOut_SimpleTest.dyn");
 			RunModel(openPath);
 
 			// Elements from first FilterOut list
@@ -1181,9 +1081,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void FilterOut_Complex()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\FilterOut_Complex.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\FilterOut_Complex.dyn");
 			RunModel(openPath);
 
 			// Elements from Take from List
@@ -1204,14 +1102,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void FilterOut_NegativeTest()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\FilterOut_NegativeTest.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\FilterOut_NegativeTest.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 		}
 
@@ -1223,14 +1119,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void NumberRange_SimpleTest()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\NumberRange_SimpleTest.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\NumberRange_SimpleTest.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			Dictionary<int, object> validationData = new Dictionary<int, object>()
 			{
@@ -1240,20 +1134,17 @@ namespace Dynamo.Tests
 			};
 			
 			SelectivelyAssertPreviewValues("4e781f03-5b48-4d58-a511-8c732665e961", validationData);
-
 		} 
 
 		[Test]
 		public void NumberRange_LargeNumber()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\NumberRange_LargeNumber.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\NumberRange_LargeNumber.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			Dictionary<int, object> validationData = new Dictionary<int, object>()
 			{
@@ -1268,7 +1159,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void NumberRange_LacingShortest()
 		{
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\NumberRange_LacingShortest.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\NumberRange_LacingShortest.dyn");
 			RunModel(openPath);
 
             AssertPreviewValue("4e781f03-5b48-4d58-a511-8c732665e961",
@@ -1282,14 +1173,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void NumberRange_LacingLongest()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\NumberRange_LacingLongest.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\NumberRange_LacingLongest.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			//Dictionary<int, object> validationData = new Dictionary<int, object>()
 			//{
@@ -1308,22 +1197,17 @@ namespace Dynamo.Tests
         [Test, Category("Failure")]
 		public void NumberRange_LacingCrossProduct()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\NumberRange_LacingCrossProduct.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\NumberRange_LacingCrossProduct.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			var workspace = model.CurrentWorkspace;
-			Assert.AreEqual(6, workspace.Nodes.Count);
-			Assert.AreEqual(5, workspace.Connectors.Count);
+			var workspace = CurrentDynamoModel.CurrentWorkspace;
+			Assert.AreEqual(6, workspace.Nodes.Count());
+			Assert.AreEqual(5, workspace.Connectors.Count());
 
-			// run the expression
-			ViewModel.Model.RunExpression();
+            var numberRange = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CoreNodeModels.Range>("4e781f03-5b48-4d58-a511-8c732665e961");
 
-			var numberRange = model.CurrentWorkspace.NodeFromWorkspace<DSCoreNodesUI.NumberRange>("4e781f03-5b48-4d58-a511-8c732665e961");
-
-			var actual = numberRange.GetValue(0).GetElements();
+			var actual = numberRange.GetValue(0, CurrentDynamoModel.EngineController).GetElements();
 			var innerList1 = actual[0].GetElements();
 			var innerList2 = actual[1].GetElements();
 			var actualChild1 = innerList1[0].GetElements();
@@ -1357,20 +1241,18 @@ namespace Dynamo.Tests
 		[Test]
 		public void ListMaximumMinimum_KeyTest()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\ListMaximumMinimum_WithAndWithoutKey.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\ListMaximumMinimum_WithAndWithoutKey.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(15, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(15, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(15, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			// check that max & min nodes are loaded as DSFunction
-			var maxNoKey = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>("3db0d46d-fea6-4fc9-8c51-a8110f919c5f");
-			var minNoKey = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>("ef9a3ab0-b4c2-440d-9291-5807bc92e26f");
-			var maxWithKey = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>("a8ad0bfb-25f2-4ddc-aea6-927bdc739753");
-			var minWithKey = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>("2b2b1e9c-2ae1-4ba2-8b82-e01311df5429");
+			var maxNoKey = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("3db0d46d-fea6-4fc9-8c51-a8110f919c5f");
+			var minNoKey = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("ef9a3ab0-b4c2-440d-9291-5807bc92e26f");
+			var maxWithKey = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("a8ad0bfb-25f2-4ddc-aea6-927bdc739753");
+			var minWithKey = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("2b2b1e9c-2ae1-4ba2-8b82-e01311df5429");
 
 			// check that the nodes are migrated based on whether the key is connected or not
 			Assert.AreEqual(1, maxNoKey.InPortData.Count);
@@ -1379,23 +1261,21 @@ namespace Dynamo.Tests
 			Assert.AreEqual(2, minWithKey.InPortData.Count);
 			
 			// check output values
-			Assert.AreEqual("eeee", maxNoKey.GetValue(0).Data);
-			Assert.AreEqual("aaa", minNoKey.GetValue(0).Data);
-			Assert.AreEqual("ccccc", maxWithKey.GetValue(0).Data);
-			Assert.AreEqual("b", minWithKey.GetValue(0).Data);
+            Assert.AreEqual("eeee", maxNoKey.GetValue(0, CurrentDynamoModel.EngineController).Data);
+            Assert.AreEqual("aaa", minNoKey.GetValue(0, CurrentDynamoModel.EngineController).Data);
+            Assert.AreEqual("ccccc", maxWithKey.GetValue(0, CurrentDynamoModel.EngineController).Data);
+            Assert.AreEqual("b", minWithKey.GetValue(0, CurrentDynamoModel.EngineController).Data);
 		}
 
 		[Test]
 		public void ListMinimum_NumberRange()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\ListMinimum_NumberRange.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\ListMinimum_NumberRange.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(7, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			AssertPreviewValue("aa8b8f1e-e8c4-4ced-bbb2-8ee43d7bb4f6", -1);
 
@@ -1404,14 +1284,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void ListMinimum_Complex()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\ListMinimum_Complex.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\ListMinimum_Complex.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(11, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(11, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			AssertPreviewValue("aa8b8f1e-e8c4-4ced-bbb2-8ee43d7bb4f6", 5);
 
@@ -1424,21 +1302,16 @@ namespace Dynamo.Tests
 		[Test]
 		public void AddToList_SimpleTest()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_SimpleTest.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\AddToList_SimpleTest.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			var workspace = model.CurrentWorkspace;
-			Assert.AreEqual(8, workspace.Nodes.Count);
-			Assert.AreEqual(8, workspace.Connectors.Count);
+			var workspace = CurrentDynamoModel.CurrentWorkspace;
+			Assert.AreEqual(8, workspace.Nodes.Count());
+			Assert.AreEqual(8, workspace.Connectors.Count());
 
-			// run the expression
-			ViewModel.Model.RunExpression();
-
-			var addToList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>("31d0eb4e-8657-4eb1-a852-5e9b766eddd7");
-			var actual = addToList.GetValue(0).GetElements();
+			var addToList = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("31d0eb4e-8657-4eb1-a852-5e9b766eddd7");
+            var actual = addToList.GetValue(0, CurrentDynamoModel.EngineController).GetElements();
 			var childList = actual[2].GetElements();
 
 			Assert.AreEqual(6, actual.Count);
@@ -1453,7 +1326,7 @@ namespace Dynamo.Tests
         [Test]
         public void AddToList_EmptyList()
         {
-            string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_EmptyList.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\list\AddToList_EmptyList.dyn");
             RunModel(openPath);
 
             AssertPreviewValue("1976caa7-d45e-4a44-9faf-345d98337bbb", new[] { new object[] { string.Empty, 0 } });
@@ -1462,7 +1335,7 @@ namespace Dynamo.Tests
         [Test]
         public void AddToList_Complex()
         {
-            string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_Complex.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\list\AddToList_Complex.dyn");
             RunModel(openPath);
 
             AssertPreviewValue(
@@ -1473,48 +1346,37 @@ namespace Dynamo.Tests
 		[Test]
 		public void AddToList_GeometryToList()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_GeometryToList.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\AddToList_GeometryToList.dyn");
 			RunModel(openPath);
-
-			// run the expression
-			ViewModel.Model.RunExpression();
 
 			Dictionary<int, object> validationData = new Dictionary<int, object>()
 			{
-			{3, "Design"},
+			    {3, "Design"},
 			};
 
 			SelectivelyAssertPreviewValues("31d0eb4e-8657-4eb1-a852-5e9b766eddd7", validationData);
-
 		}
 
 		[Test]
 		public void AddToList_Negative()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_Negative.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\AddToList_Negative.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
-
+			Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 		}
 
 		[Test]
 		public void AddToList_ContainingNull()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_ContainingNull.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\AddToList_ContainingNull.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			AssertPreviewValue("9a187115-ba09-411e-a836-473aeec4493c", new object[] { 2, 3, 4, null, 6 });
 		}
@@ -1526,14 +1388,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void SplitList_SimpleTest()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\SplitList_SimpleTest.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\SplitList_SimpleTest.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			AssertPreviewValue("abb3429a-1650-4e1e-a1fc-2ae237ad4f62", "Dynamo");
 
@@ -1543,61 +1403,48 @@ namespace Dynamo.Tests
 		[Test]
 		public void SplitList_FirstElementAsList()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\SplitList_FirstElementAsList.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\SplitList_FirstElementAsList.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			AssertPreviewValue("223d2c7f-e56d-433a-aa14-7c53db009ce3", new object[] { "Dynamo" });
 
 			AssertPreviewValue("abb3429a-1650-4e1e-a1fc-2ae237ad4f62", new int[] {0, 1});
-
-
 		}
 
 		[Test]
 		public void SplitList_Complex()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\SplitList_Complex.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\SplitList_Complex.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(9 + 1, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(8 + 1, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(9 + 1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(8 + 1, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			AssertPreviewValue("abb3429a-1650-4e1e-a1fc-2ae237ad4f62", new int[] { 3 });
 
 			AssertPreviewValue("223d2c7f-e56d-433a-aa14-7c53db009ce3", new int[][] { new int[] { 6 }, new int[] { 9 } });
-
-
 		}
 
 		[Test]
         [Category("Failure")]
 		public void SplitList_ComplexAnotherExample()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\SplitList_ComplexAnotherExample.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\SplitList_ComplexAnotherExample.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(18, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(19, model.CurrentWorkspace.Connectors.Count);
-
-			// run the expression
-			ViewModel.Model.RunExpression();
+			Assert.AreEqual(18, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(19, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			var guid = "66e94123-deaf-4bc8-8c5f-b3bc0996a57e";
-			var splitList = model.CurrentWorkspace.NodeFromWorkspace<DSFunction>(guid);
+			var splitList = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>(guid);
 
-			var output = splitList.GetValue(0).GetElements();
+            var output = splitList.GetValue(0, CurrentDynamoModel.EngineController).GetElements();
 			var firstOutput = output[0].GetElements();
 			var secondOutput = output[1].GetElements();
 			
@@ -1623,20 +1470,15 @@ namespace Dynamo.Tests
 		[Test, Category("Not Migrated")]
 		public void TakeFromList_SimpleTest()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\TakeFromList_SimpleTest.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\TakeFromList_SimpleTest.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(9, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
-			// run the expression
-			ViewModel.Model.RunExpression();
-
-			var takeFromList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>("14cb6593-24d8-4ffc-8ee5-9f4247449fc2");
-			var firstOutput = takeFromList.GetValue(0).GetElements();
+			var takeFromList = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("14cb6593-24d8-4ffc-8ee5-9f4247449fc2");
+            var firstOutput = takeFromList.GetValue(0, CurrentDynamoModel.EngineController).GetElements();
 			var child = firstOutput[0].GetElements();
 			var child1 = firstOutput[4].GetElements();
 
@@ -1652,14 +1494,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void TakeFromList_WithStringList()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\TakeFromList_WithStringList.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\TakeFromList_WithStringList.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(7, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			AssertPreviewValue("14cb6593-24d8-4ffc-8ee5-9f4247449fc2", new string[] 
 			{ 
@@ -1670,45 +1510,37 @@ namespace Dynamo.Tests
 		[Test]
 		public void TakeFromList_NegativeIntValue()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\TakeFromList_NegativeIntValue.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\TakeFromList_NegativeIntValue.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(7, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			AssertPreviewValue("14cb6593-24d8-4ffc-8ee5-9f4247449fc2", new string[] { "List" });
-
 		}
 
 		[Test]
 		public void TakeFromList_InputEmptyList()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\TakeFromList_InputEmptyList.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\TakeFromList_InputEmptyList.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 		}
 
 		[Test]
 		public void TakeFromList_AmtAsRangeExpn()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\TakeFromList_AmtAsRangeExpn.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\TakeFromList_AmtAsRangeExpn.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(9, model.CurrentWorkspace.Connectors.Count);
-
+			Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 		}
 
 		#endregion
@@ -1717,14 +1549,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void DropFromList_SimpleTest()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\DropFromList_SimpleTest.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\DropFromList_SimpleTest.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(7, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(6, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(7, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			Dictionary<int, object> validationData = new Dictionary<int, object>()
 			{
@@ -1743,15 +1573,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void DropFromList_InputEmptyList()
 		{
-
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\DropFromList_InputEmptyList.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\DropFromList_InputEmptyList.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 		}
 
 		#endregion
@@ -1761,14 +1588,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void ShiftListIndices_SimpleTest()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\ShiftListIndeces_SimpleTest.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\ShiftListIndeces_SimpleTest.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 			Dictionary<int, object> validationData = new Dictionary<int, object>()
 			{
 				{0,7},
@@ -1780,22 +1605,17 @@ namespace Dynamo.Tests
 		[Test]
 		public void ShiftListIndices_Complex()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\ShiftListIndeces_Complex.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\ShiftListIndeces_Complex.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			var workspace = model.CurrentWorkspace;
-			Assert.AreEqual(21, workspace.Nodes.Count);
-			Assert.AreEqual(22, workspace.Connectors.Count);
-
-			// run expression
-			ViewModel.Model.RunExpression();
+			var workspace = CurrentDynamoModel.CurrentWorkspace;
+			Assert.AreEqual(21, workspace.Nodes.Count());
+			Assert.AreEqual(22, workspace.Connectors.Count());
 
 			var guid = "492db019-4807-4810-8919-10b94e8ca083";
 			var shiftListIndeces = workspace.NodeFromWorkspace<DSFunction>(guid);
-			var output = shiftListIndeces.GetValue(0).GetElements();
+            var output = shiftListIndeces.GetValue(0, CurrentDynamoModel.EngineController).GetElements();
 			var child = output[0].GetElements();
 			var child1 = output[1].GetElements();
 
@@ -1813,14 +1633,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void ShiftListIndices_InputEmptyList()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\ShiftListIndeces_InputEmptyList.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\ShiftListIndeces_InputEmptyList.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			AssertPreviewValue("7f6cbd60-b9fb-4b16-81d3-4fab26790446", new int[] { });
 		}
@@ -1828,28 +1646,24 @@ namespace Dynamo.Tests
 		[Test]
 		public void ShiftListIndices_InputStringAsAmt()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\ShiftListIndeces_InputStringAsAmt.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\ShiftListIndeces_InputStringAsAmt.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 		}
 
 		[Test]
 		public void ShiftListIndices_MultipleInput()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\ShiftListIndeces_MultipleInput.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\ShiftListIndeces_MultipleInput.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			AssertPreviewValue("7f6cbd60-b9fb-4b16-81d3-4fab26790446",
 				new object[][]
@@ -1867,14 +1681,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void GetFromList_SimpleTest()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\GetFromList_SimpleTest.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\GetFromList_SimpleTest.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(9, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			AssertPreviewValue("332093dc-4551-4c82-9f6b-061c7945211b", new int[] { 9 });
 		}
@@ -1882,14 +1694,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void GetFromList_WithStringList()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\GetFromList_WithStringList.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\GetFromList_WithStringList.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(7, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			AssertPreviewValue("58d35bfa-4435-44f0-a322-c6f7350f0220", new string[] { "Get", "From " });
 		}
@@ -1897,20 +1707,15 @@ namespace Dynamo.Tests
 		[Test]
 		public void GetFromList_AmtAsRangeExpn()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\GetFromList_AmtAsRangeExpn.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\GetFromList_AmtAsRangeExpn.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
-			// run expression
-			ViewModel.Model.RunExpression();
-
-			var getFromList = model.CurrentWorkspace.NodeFromWorkspace("d2f1c900-99ce-40a5-ae4d-bbac1fe96cfd");
-			var output = getFromList.GetValue(0).GetElements();
+			var getFromList = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("d2f1c900-99ce-40a5-ae4d-bbac1fe96cfd");
+            var output = getFromList.GetValue(0, CurrentDynamoModel.EngineController).GetElements();
 
 			Assert.AreEqual(3, output.Count);
 			Assert.AreEqual(14, output[0].Data);
@@ -1922,42 +1727,34 @@ namespace Dynamo.Tests
 		[Test]
 		public void GetFromList_InputEmptyList()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\GetFromList_InputEmptyList.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\GetFromList_InputEmptyList.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
-
+			Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 		}
 
 		[Test]
 		public void GetFromList_Negative()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\GetFromList_Negative.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\GetFromList_Negative.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(9, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 		}
 
 		[Test]
 		public void GetFromList_NegativeIntValue()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\GetFromList_NegativeIntValue.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\GetFromList_NegativeIntValue.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
-
+			Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(7, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 		}
 
 		#endregion
@@ -1967,14 +1764,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void TakeEveryNth_SimpleTest()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\TakeEveryNth_SimpleTest.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\TakeEveryNth_SimpleTest.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			AssertPreviewValue("b18e5ac3-5732-4c78-9a3b-56b375c9beee", new[] { 7, 10, 13, 16, 19 });
 		}
@@ -1982,14 +1777,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void TakeEveryNth_Complex()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\TakeEveryNth_Complex.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\TakeEveryNth_Complex.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(18, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(17, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(18, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(17, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			AssertPreviewValue("b18e5ac3-5732-4c78-9a3b-56b375c9beee", new[] { 1.0, 2.3 });
 		}
@@ -1997,14 +1790,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void TakeEveryNth_InputEmptyList()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\TakeEveryNth_InputEmptyList.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\TakeEveryNth_InputEmptyList.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			AssertPreviewValue("b18e5ac3-5732-4c78-9a3b-56b375c9beee", new int[] { });
 		}
@@ -2012,16 +1803,14 @@ namespace Dynamo.Tests
 		[Test]
 		public void TakeEveryNth_NegativeTest()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\TakeEveryNth_NegativeTest.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\TakeEveryNth_NegativeTest.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
-			NodeModel nodeModel = model.CurrentWorkspace.NodeFromWorkspace("b18e5ac3-5732-4c78-9a3b-56b375c9beee");
+			NodeModel nodeModel = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("b18e5ac3-5732-4c78-9a3b-56b375c9beee");
 			Assert.AreEqual(ElementState.Warning, nodeModel.State);
 		}
 		#endregion
@@ -2031,14 +1820,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void DropEveryNth_SimpleTest()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\DropEveryNth_SimpleTest.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\DropEveryNth_SimpleTest.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			AssertPreviewValue("96a1ca07-83eb-4459-981e-7daed6d1d4b3", new int[] { 1, 2, 3, 4, 6, 7, 8, 9 });
 		}
@@ -2046,22 +1833,17 @@ namespace Dynamo.Tests
 		[Test]
 		public void DropEveryNth_ComplexTest()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\DropEveryNth_ComplexTest.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\DropEveryNth_ComplexTest.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			var workspace = model.CurrentWorkspace;
-			Assert.AreEqual(19, workspace.Nodes.Count);
-			Assert.AreEqual(20, workspace.Connectors.Count);
-
-			// run expression
-			ViewModel.Model.RunExpression();
+			var workspace = CurrentDynamoModel.CurrentWorkspace;
+			Assert.AreEqual(19, workspace.Nodes.Count());
+			Assert.AreEqual(20, workspace.Connectors.Count());
 
 			var guid = "4bd0ced4-29ee-4f4e-95af-d0573e04731a";
-			var takeEveryNth = workspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>(guid);
-			var output = takeEveryNth.GetValue(0).GetElements();
+			var takeEveryNth = workspace.NodeFromWorkspace<DSFunction>(guid);
+            var output = takeEveryNth.GetValue(0, CurrentDynamoModel.EngineController).GetElements();
 			var child = output[0].GetElements();
 			var child1 = output[1].GetElements();
 
@@ -2077,14 +1859,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void DropEveryNth_InputEmptyList()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\DropEveryNth_InputEmptyList.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\DropEveryNth_InputEmptyList.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			AssertPreviewValue("a0304232-ad3a-4518-92ff-4b8893297ce4", new int[] { });
 		}
@@ -2092,14 +1872,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void DropEveryNth_InputStringForNth()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\DropEveryNth_InputStringForNth.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\DropEveryNth_InputStringForNth.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 		}
 		#endregion
 
@@ -2108,14 +1886,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void RemoveFromList_SimpleTest()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\RemoveFromList_SimpleTest.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\RemoveFromList_SimpleTest.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(9, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			Dictionary<int, object> validationData = new Dictionary<int, object>()
 			{
@@ -2127,42 +1903,35 @@ namespace Dynamo.Tests
 			};
 
 			SelectivelyAssertPreviewValues("396d2bbe-7b84-4a7a-a1f0-b7a438b56ca6", validationData);
-			
 		}
 
 		[Test]
 		public void RemoveFromList_StringAsList()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\RemoveFromList_StringAsList.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\RemoveFromList_StringAsList.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 		}
 
 		[Test]
 		public void RemoveFromList_StringAsIndex()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\RemoveFromList_StringAsIndex.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\RemoveFromList_StringAsIndex.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 		}
 
 		[Test]
 		public void RemoveFromList_Complex()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\RemoveFromList_Complex.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\RemoveFromList_Complex.dyn");
 			RunModel(openPath);
 
 			Dictionary<int, object> validationData = new Dictionary<int, object>()
@@ -2171,20 +1940,17 @@ namespace Dynamo.Tests
 				{1,8},
 			};
 			SelectivelyAssertPreviewValues("396d2bbe-7b84-4a7a-a1f0-b7a438b56ca6", validationData);
-
 		}
 
 		[Test]
 		public void RemoveFromList_RangeExpnAsIndex()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\RemoveFromList_RangeExpnAsIndex.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\RemoveFromList_RangeExpnAsIndex.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(9, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			Dictionary<int, object> validationData = new Dictionary<int, object>()
 			{
@@ -2204,9 +1970,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void SliceList_SimpleTest()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\SliceList_SimpleTest.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\SliceList_SimpleTest.dyn");
 			RunModel(openPath);
 
 			Dictionary<int, object> validationData = new Dictionary<int, object>()
@@ -2220,9 +1984,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void SliceList_Complex()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\SliceList_Complex.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\SliceList_Complex.dyn");
 			RunModel(openPath);
 			
 			Dictionary<int, object> validationData = new Dictionary<int, object>()
@@ -2232,15 +1994,12 @@ namespace Dynamo.Tests
 				{2,"Dynamo"},
 			};
 			SelectivelyAssertPreviewValues("cc3ae092-8644-4a36-ad38-12ffa15cebda", validationData);
-
 		}
 
 		[Test]
 		public void SliceList_MultipleInput()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\SliceList_MultipleInput.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\SliceList_MultipleInput.dyn");
 			RunModel(openPath);
 
 			AssertPreviewValue("cc3ae092-8644-4a36-ad38-12ffa15cebda",
@@ -2258,14 +2017,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void Average_SimpleTest()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\Average_SimpleTest.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\Average_SimpleTest.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			AssertPreviewValue("cafe8fae-55f0-4e58-977e-80edcbc90d2b", 6);
 		}
@@ -2273,15 +2030,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void Average_NegativeInputTest()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\Average_NegativeInputTest.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\Average_NegativeInputTest.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
-
+			Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 		}
 
 		#endregion
@@ -2291,14 +2045,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void TrueForAny_SimpleTest()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\TrueForAny_SimpleTest.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\TrueForAny_SimpleTest.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			AssertPreviewValue("3960776a-4c6c-40d8-8b7e-dbe5db38d75b", true);
 		}
@@ -2310,14 +2062,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void TrueForAll_SimpleTest()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\TrueForAll_SimpleTest.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\TrueForAll_SimpleTest.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 			AssertPreviewValue("6434eb4f-89d9-4b11-8b9b-79ed937e4b24", 1);
 		}
 
@@ -2328,14 +2078,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void JoinList_SimpleTest()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\JoinList_SimpleTest.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\JoinList_SimpleTest.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			Dictionary<int, object> validationData = new Dictionary<int, object>()
 			{
@@ -2346,26 +2094,20 @@ namespace Dynamo.Tests
 
 			};
 			SelectivelyAssertPreviewValues("1304807f-6d18-4aef-b4cb-9cb8f469993e", validationData);
-
 		}
 
 		[Test]
 		public void JoinList_MoreLists()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\JoinList_MoreLists.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\JoinList_MoreLists.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(11, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
-			// run expression
-			ViewModel.Model.RunExpression();
-
-			var joinList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSVarArgFunction>("1304807f-6d18-4aef-b4cb-9cb8f469993e");
-			var actual = joinList.GetValue(0).GetElements();
+			var joinList = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSVarArgFunction>("1304807f-6d18-4aef-b4cb-9cb8f469993e");
+            var actual = joinList.GetValue(0, CurrentDynamoModel.EngineController).GetElements();
 			var actualChild1 = actual[5].GetElements();
 			var actualChild2 = actual[6].GetElements();
 
@@ -2390,14 +2132,12 @@ namespace Dynamo.Tests
 		[Test]
 		public void Combine_SimpleTest()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\Combine_SimpleTest.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\Combine_SimpleTest.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			Dictionary<int, object> validationData1 = new Dictionary<int, object>()
 			{
@@ -2406,21 +2146,18 @@ namespace Dynamo.Tests
 				{14,8.0332409972299157},
 			};
 			SelectivelyAssertPreviewValues("e0cbb116-6c81-4e74-90c6-a5235cfb9eea", validationData1);
-
 		}
 
 
 		[Test]
 		public void Combine_ComplexTest()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\Combine_ComplexTest.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\Combine_ComplexTest.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(26, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(29, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(26, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(29, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			Dictionary<int, object> validationData = new Dictionary<int,object>()
 			{
@@ -2429,20 +2166,17 @@ namespace Dynamo.Tests
 				{8,182.355},
 			};
 			SelectivelyAssertPreviewValues("f5b7116b-e926-499d-b784-f47c55e01e34", validationData);
-
 		}
 
 		[Test]
 		public void Combine_NegativeTest()
 		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\Combine_NegativeTest.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\Combine_NegativeTest.dyn");
 			RunModel(openPath);
 
 			// check all the nodes and connectors are loaded
-			Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+			Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+			Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 		}
 
 		#endregion
@@ -2453,7 +2187,7 @@ namespace Dynamo.Tests
 		public void TestCreateList()
 		{
 			// Test partially applied Create List node.
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\createList.dyn");
+			string openPath = Path.Combine(TestDirectory, @"core\list\createList.dyn");
 			RunModel(openPath);
 
 			AssertPreviewValue("0f306478-5a96-4276-baac-0d08e12fe872", new object[] { 1.0, 2.0, 3.0, 4.0 }); 
@@ -2464,7 +2198,7 @@ namespace Dynamo.Tests
 	    [Test]
 	    public void TestListReplace()
 	    {
-	        var openPath = Path.Combine(GetTestDirectory(), @"core\list\listreplace.dyn");
+	        var openPath = Path.Combine(TestDirectory, @"core\list\listreplace.dyn");
             RunModel(openPath);
 
             AssertPreviewValue("13f697db-85b8-4b93-859c-63f2b66c6b72", new object[] { 0.0, "no value", 2.0, "no value", "no value", 5.0 });
@@ -2475,7 +2209,7 @@ namespace Dynamo.Tests
         [Test]
         public void RegressMagn4838_01()
         {
-	        var openPath = Path.Combine(GetTestDirectory(), @"core\list\RegressMagn4838_1.dyn");
+	        var openPath = Path.Combine(TestDirectory, @"core\list\RegressMagn4838_1.dyn");
             RunModel(openPath);
 
             AssertPreviewValue("8dd745bf-220c-49f7-80e0-3f1783bb33a4", new object[] { null });
@@ -2484,9 +2218,47 @@ namespace Dynamo.Tests
         [Test]
         public void RegressMagn4838_02()
         {
-	        var openPath = Path.Combine(GetTestDirectory(), @"core\list\RegressMagn4838_2.dyn");
+	        var openPath = Path.Combine(TestDirectory, @"core\list\RegressMagn4838_2.dyn");
             RunModel(openPath);
         }
+
+        [Test]
+        public void TestFilterOnEmptyList()
+        {
+	        var openPath = Path.Combine(TestDirectory, @"core\list\testFilterOnEmptyInput.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("068bec9b-6da0-4379-af7c-5062f4fb0f92", new object[] { });
+            AssertPreviewValue("fe77da6f-71db-4712-bffb-27d5acc86e0b", new object[] { });
+        }
         #endregion
+
+        [Test]
+        public void FirstIndexOf()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\list\FirstIndexOf.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("04a0347f-b931-40ff-81c9-7c0e5c61d051", 0); 
+        }
+
+        [Test]
+        public void AllIndicesOf()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\list\AllIndicesOf.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("404af9cd-3668-4aa8-aea1-314a228bd6e1", new object[] { 0, 2 });
+        }
+
+        [Test]
+        [Category("Regression")]
+        public void TestListChop()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\list\testListChop.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("f805b9b9-1a1f-4a63-ad9e-e4c9722ef1c7", 
+                new object[] {
+                    new object[] {1, 2 },
+                    new object[] {3, 4 },
+                    new object[] {5 } });
+        }
     }
 }

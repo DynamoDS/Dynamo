@@ -1,10 +1,12 @@
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
+using Autodesk.DesignScript.Runtime;
 using MIConvexHull;
 
 namespace Tessellation.Adapters
 {
-    internal class Vertex2 : IVertex, IGraphicItem
+    [SupressImportIntoVM]
+    public class Vertex2 : IVertex, IGraphicItem
     {
         public static Vertex2 FromUV(UV uv)
         {
@@ -28,9 +30,9 @@ namespace Tessellation.Adapters
 
         public double[] Position { get; set; }
 
-        public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
+        public void Tessellate(IRenderPackage package, TessellationParameters parameters)
         {
-            AsVector().Tessellate(package, tol, maxGridLines);
+            AsVector().Tessellate(package, parameters);
         }
     }
 }

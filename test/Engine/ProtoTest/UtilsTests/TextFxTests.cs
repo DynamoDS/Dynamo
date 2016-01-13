@@ -8,19 +8,15 @@ using ProtoTestFx.TD;
 namespace ProtoTest.UtilsTests
 {
     [TestFixture]
-    class TextFxTests
+    class TextFxTests : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        [SetUp]
-        public void Setup()
-        {
-        }
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("TextFx Tests")]
         public void BasicRunAndVerify()
         {
             String code =
-@"	class f	{		fx : var;		fy : var;		constructor f()		{			fx = 123;			fy = 345;		}	}// Construct class 'f'	cf = f.f();	x = cf.fx;	y = cf.fy;";
+@"	fx = 123;	fy = 345;	x = fx;	y = fy;";
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", 123);
             thisTest.Verify("y", 345);

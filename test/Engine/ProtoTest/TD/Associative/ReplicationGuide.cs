@@ -6,22 +6,15 @@ using ProtoCore.Lang;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.Associative
 {
-    class ReplicationGuide
+    class ReplicationGuide : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        public string ReplicationRoot = "..\\..\\..\\Scripts\\TD\\Associative\\ReplicationGuide\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         [Category("Replication")]
         public void T0001_Replication_Guide_Function_With_2_Arg()
         {
             String code =
 @"def foo(a,b){    return = a + b;}test = foo( {0,1}<1>,{2,3}<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
@@ -33,7 +26,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a,b){    return = a + b;}f = {0,1};g = {2,3};test = foo( f<1>, g<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
@@ -45,7 +38,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a,b){    return = a + b;}x = 0..1;y = 2..3;test = foo( x<1>,y<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
@@ -57,7 +50,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a,b){    return = a + b;}x = {0,1};y = {2,3};test = foo( x<1>,y<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
@@ -69,7 +62,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a,b){    return = a + b;}test = foo( (0..1)<1>,(2..3)<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
@@ -81,7 +74,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a,b){    return = a + b;}test = foo( {0..1}<1>,{2..3}<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { new Object[] { 2, 4 } } }); // extra bracket is known issue for now
@@ -93,7 +86,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a:var,b:var){    return = a + b;}x = {0,1};y = {2,3};test = foo( x<1>,y<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
@@ -105,7 +98,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a:var,b:var){    return = a + b;}x = {0,1};y = {2,3};test = foo( x<1>,y<1> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { 2, 4 });
@@ -117,19 +110,20 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a:int,b:double){    return = a + b;}x = {0,1};y = {2,3};test = foo( x<1>,y<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 2.0, 3.0 }, new Object[] { 3.0, 4.0 } });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T0001_Replication_Guide_Function_With_2_Arg_9()
         {
             String code =
-@"class A{    x:int;    constructor A (x1)    {        x = x1;    }}def foo(a:A,b:A){    return = a.x + b.x;}x = A.A({0,1});y = A.A({2,3});test = foo( x<1>,y<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+@"import(""FFITarget.dll"");def foo(a:TestObjectA, b:TestObjectA){    return = a.a + b.a;}x = TestObjectA.TestObjectA({0,1});y = TestObjectA.TestObjectA({2,3});test = foo( x<1>,y<2> );";
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
@@ -141,7 +135,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a:int,b:double){    return = a + b;}x = {{0,1},{2,3}};y = {{0,1},{2,3}};test = foo( x<1>,y<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] x1 = new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } };
@@ -154,7 +148,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a:int,b:double){    return = a + b;}x = {{0,1}};y = {{2,3}};test = foo( x<1>,y<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] x1 = new Object[] { new Object[] { 2.0, 4.0 } };
@@ -167,7 +161,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a:var[],b:var[]){    return = a + b;}x = {{0,1}};y = {{2,3}};test = foo( x<1>,y<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             // verification : unknown
@@ -179,7 +173,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a,b:int){    return = a + b;}x = {0,1};y = {2,3};test = foo( x<1>,y<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
@@ -192,7 +186,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a:int,b:int){    return = a + b;}x = {0,1};y = {2,3};test = foo( x<1>,y );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "DNL-1467580 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             // verification : clarify with new spec
@@ -206,7 +200,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a:int,b:int){    return = a + b;}x = {0,1};y = {2,3};test = foo( x,y<1> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "DNL-1467580 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             // verification : clarify with new spec
@@ -219,7 +213,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a:int,b:int){    return = a + b;}x = {0,1};y = {2,3,4};test = foo( x<1>,y<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 2, 3, 4 }, new Object[] { 3, 4, 5 } });
@@ -231,7 +225,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a:int,b:int){    return = a + b;}x = {0,1,3};y = {4,5};test = foo( x<1>,y<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 4, 5 }, new Object[] { 5, 6 }, new Object[] { 7, 8 } });
@@ -243,7 +237,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a:int,b:int){    return = a + b;}x = {0,1};y = 4;test = foo( x<1>,y<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[][] { new object[]{4},new object[]{ 5} });
@@ -255,7 +249,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a:int,b:int,c){    return = a + b +c;}x = {0,1};y = {2,3};z = {4,5};test = foo( x<1>,y<2>,z<3> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] x1 = new Object[] { new Object[] { new Object[] { 6, 7 }, new Object[] { 7, 8 } }, new Object[] { new Object[] { 7, 8 }, new Object[] { 8, 9 } } };
@@ -268,7 +262,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a:int,b:int,c:int){    return = a + b +c;}x = {0,1};y = {2,3};z = {4,5};test = foo( x<1>,y<2>,z<1> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] x1 = new Object[] { new Object[] { 6, 7 }, new Object[] { 8, 9 } };
@@ -283,7 +277,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a:int,b:int,c:int){    return = a + b +c;}x = {0,1};y = {2,3};z = {4,5};test = foo( x<1>,y,z<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "DNL-1467580 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] x1 = new Object[] { new Object[] { 6, 7 }, new Object[] { 8, 9 } };
@@ -297,7 +291,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a,b,c){    return = a + b +c;}x = {0,1};y = {2,3};z = {4,5};test = foo( x<1>,y<2>,z<3> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] x1 = new Object[] { new Object[] { new Object[] { 6, 7 }, new Object[] { 7, 8 } }, new Object[] { new Object[] { 7, 8 }, new Object[] { 8, 9 } } };
@@ -311,7 +305,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def foo(a,b,c){    return = a + b +c;}x = {0,1};y = {2,3,4};z = {5,6,7,8};test = foo( x<1>,y<2>,z<3> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] x1 = new Object[] { new Object[] { new Object[] { 7, 8, 9, 10 }, new Object[] { 8, 9, 10, 11 }, new Object[] { 9, 10, 11, 12 } }, new Object[] { new Object[] { 8, 9, 10, 11 }, new Object[] { 9, 10, 11, 12 }, new Object[] { 10, 11, 12, 13 } } };
@@ -319,12 +313,13 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T0003_Replication_Guide_Class_Constructor_With_2_Arg_1()
         {
             String code =
-@"class A{    z:int;    constructor A (x1,y1)    {        z = x1 + y1;    }}test = A.A({0,1}<1>,{2,3}<2>).z;";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+@"import(""FFITarget.dll"");test = TestObjectC.TestObjectC({0,1}<1>,{2,3}<2>).z;";
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
 
@@ -332,49 +327,53 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T0003_Replication_Guide_Class_Constructor_With_2_Arg_2()
         {
             String code =
-@"class A{    z:int;    constructor A (x1,y1)    {        z = x1 + y1;    }}test = A.A((0..1)<1>,(2..3)<2>).z;";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+@"import(""FFITarget.dll"");test = TestObjectC.TestObjectC((0..1)<1>,(2..3)<2>).z;";
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T0003_Replication_Guide_Class_Constructor_With_2_Arg_3()
         {
             String code =
-@"class A{    z:int;    constructor A (x1,y1)    {        z = x1 + y1;    }}x = {0,1};y = {2,3};test = A.A(x<1>,y<2>).z;";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+@"import(""FFITarget.dll"");x = {0,1};y = {2,3};test = TestObjectC.TestObjectC(x<1>,y<2>).z;";
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
         }
 
         [Test] //post R1
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         [Category("Failure")]
         public void T0003_Replication_Guide_Class_Constructor_With_2_Arg_4()
         {
             String code =
-@"class A{    z:int;    constructor A (x1,y1)    {        z = x1 + y1;    }}x = {0,1};y = 2;test = A.A(x<1>,y<2>).z;";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+@"import(""FFITarget.dll"");x = {0,1};y = 2;test = TestObjectC.TestObjectC(x<1>,y<2>).z;";
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "DNL-1467459 NotImplemented Exception occurs when replication guides are used on a combination of collection and singleton";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { 2, 3 });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T0004_Replication_Guide_Class_Constructor_With_3_Arg()
         {
             String code =
-@"class A{    t:int;    constructor A (x1:var,y1:int,z1:double)    {        t = x1 + y1 + z1;    }}x = {0,1};y = {2,3};z = {4,5};test = A.A(x<1>,y<2>,z<3>).t;";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+@"import(""FFITarget.dll"");x = {0,1};y = {2,3};z = {4,5};test = TestObjectD.TestObjectD(x<1>,y<2>,z<3>).t;";
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] x1 = new Object[] { new Object[] { new Object[] { 6, 7 }, new Object[] { 7, 8 } }, new Object[] { new Object[] { 7, 8 }, new Object[] { 8, 9 } } };
@@ -382,12 +381,13 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T0004_Replication_Guide_Class_Constructor_With_3_Arg_2()
         {
             String code =
-@"class A{    t:int;    constructor A (x1:var,y1:int,z1:double)    {        t = x1 + y1 + z1;    }}x = {0,1};y = {2,3};z = {4,5};test = A.A(x<1>,y<2>,z<1>).t;";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+@"import(""FFITarget.dll"");x = {0,1};y = {2,3};z = {4,5};test = TestObjectD.TestObjectD(x<1>,y<2>,z<1>).t;";
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] x1 = new Object[] { new Object[] { 6, 7 }, new Object[] { 8, 9 } };
@@ -396,13 +396,14 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         [Category("Failure")]
         public void T0004_Replication_Guide_Class_Constructor_With_3_Arg_3()
         {
             String code =
-@"class A{    t:int;    constructor A (x1:var,y1:int,z1:double)    {        t = x1 + y1 + z1;    }}x = {0,1};y = {2,3};z = {4,5};test = A.A(x<1>,y<2>,z).t;";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+@"import(""FFITarget.dll"");x = {0,1};y = {2,3};z = {4,5};test = TestObjectD.TestObjectD(x<1>,y<2>,z).t;";
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "DNL-1467580 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] x1 = new Object[] { new Object[] { 6, 7 }, new Object[] { 8, 9 } };
@@ -416,7 +417,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"a = 0..10;b = a;b[2] = 100;c = a;d = b[0..(Count(b) - 1)..2];a_singleton = 10;b_1DArray = 10..100..10;//c_2D_Array = (10..100..10) < 1 > + (10..100..10) < 2 >;";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] a = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
@@ -432,28 +433,28 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T033_Replication_Guide_1467383()
         {
             String code =
-                @"                class BSplineSurface                    {                            static def ByPoints(pts : Point)                        {                                return = pts;                        }                    }                    class Point                    {                        X;                        Y;                        constructor ByCoordinates(x:double,y:double)                        {                            X = x;                            Y = y;                            }                    }                    p = Point.ByCoordinates((1..2..1)<1>, (3..4..1)<2> );                    test = BSplineSurface.ByPoints(p).X;                                    ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+@"import(""FFITarget.dll"");def ByPoints(pts : DummyPoint2D){    return = pts;}p = DummyPoint2D.ByCoordinates((1..2..1)<1>, (3..4..1)<2> );test = ByPoints(p).X;";
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";//1467383 - Validation Required -  [USER MANUAL] Select Trim Method Failure - Requested Coercion not implemented ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.VerifyBuildWarningCount(0);
             thisTest.Verify("test", new Object[] { new Object[] { 1.0, 1.0 }, new Object[] { 2.0, 2.0 } });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T033_Replication_Guide_1467382()
         {
             String code =
-                @"                                    class Point                    {                        X;                        Y;                        Z;                       constructor ByCoordinates(x1:double,y1:double,z1:double)                        {                            X = x1;                            Y = y1;                            Z = z1;                        }                    }                    class Line                    {                        static def ByStartPointEndPoint(p1:Point, p2:Point)                        {                            return = p1;                        }                       }                    height = 5;                    p1 = Point.ByCoordinates((0..1)<1>, (0..1)<2>,1);                    p2 = Point.ByCoordinates((0..1)<1>, (0..1)<2>,height);                    l = Line.ByStartPointEndPoint(p1, p2);                    test = l.X;                ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+                @"import(""FFITarget.dll"");def ByStartPointEndPoint(p1:DummyPoint, p2:DummyPoint){    return = p1;}height = 5;p1 = DummyPoint.ByCoordinates((0..1)<1>, (0..1)<2>,1);p2 = DummyPoint.ByCoordinates((0..1)<1>, (0..1)<2>,height);l = ByStartPointEndPoint(p1, p2);test = l.X;                ";
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.VerifyBuildWarningCount(0);
             thisTest.Verify("test", new Object[] { new Object[] { 0.0, 0.0 }, new Object[] { 1.0, 1.0 } });
         }
 
@@ -463,7 +464,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
                 @"def sum ( a, b, c){    return = a + b + c ;}x = 1..2;y = 3..4;z = 1;test = sum ( z, x<1>, y<2> ); ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";//DNL-1467386 Rev 4247 : WARNING: Replication unbox requested on Singleton warning coming from using replication guides on only some, not all arguments of a function gives incorrect output";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyBuildWarningCount(0);
@@ -476,7 +477,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
                 @"def sum ( a, b, c){    return = a + b + c ;}x = 1..2;y = 3..4;z = {1, 1};test = sum ( z<1>, x<1>, y<2> ); ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";//DNL-1467386 Rev 4247 : WARNING: Replication unbox requested on Singleton warning coming from using replication guides on only some, not all arguments of a function gives incorrect output";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyBuildWarningCount(0);
@@ -489,7 +490,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
                 @"def sum ( a, b, c){    return = a + b + c ;}x = 1..2;y = 3..4;z = 1;test = sum ( x<1>, y<2>, z ); ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";//DNL-1467386 Rev 4247 : WARNING: Replication unbox requested on Singleton warning coming from using replication guides on only some, not all arguments of a function gives incorrect output";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyBuildWarningCount(0);
@@ -502,7 +503,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
                 @"def sum ( a, b, c){    return = a + b + c ;}x = {1,2};y = {3,4};z = 1;test = sum ( z, x<1>, y<2> ); ";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";//DNL-1467386 Rev 4247 : WARNING: Replication unbox requested on Singleton warning coming from using replication guides on only some, not all arguments of a function gives incorrect output";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyBuildWarningCount(0);
@@ -515,7 +516,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def sum ( a, b, c){    return = a + b + c ;}x = 1..2;y = 3..4;z = 1;test = sum ( z, x<1>, y<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";//DNL-1467386 Rev 4247 : WARNING: Replication unbox requested on Singleton warning coming from using replication guides on only some, not all arguments of a function gives incorrect output";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyBuildWarningCount(0);
@@ -528,7 +529,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def sum ( a, b, c){    return = a + b + c ;}x = 1..2;y = 3..4;z = 1;test = sum ( x<1>, z, y<2> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";//DNL-1467386 Rev 4247 : WARNING: Replication unbox requested on Singleton warning coming from using replication guides on only some, not all arguments of a function gives incorrect output";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyBuildWarningCount(0);
@@ -541,7 +542,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def sum ( a, b){    return = a + b  ;}x = 1..2;z = 1;test = sum ( x<1>, z );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyBuildWarningCount(0);
@@ -554,7 +555,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"def sum ( a, b){    return = a + b  ;}x = 1..2;z = 1;test = sum ( z, x<1> );";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyBuildWarningCount(0);
@@ -562,25 +563,26 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T034_Replication_Guides_Not_On_All_Arguments_6()
         {
             String code =
-@"class A{    x : int;    y : int;    constructor A (a, b)    {        x = a;        y = b;    }}x1 = 1..2;y1 = 1;a = A.A(y1, x1<1>);test = a.y;";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+@"import(""FFITarget.dll"");x1 = 1..2;y1 = 1;a = DummyPoint2D.ByCoordinates(y1, x1<1>);test = a.Y;";
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";//DNL-1467386 Rev 4247 : WARNING: Replication unbox requested on Singleton warning coming from using replication guides on only some, not all arguments of a function gives incorrect output";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.VerifyBuildWarningCount(0);
             thisTest.Verify("test", new Object[] { 1, 2 });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T034_Replication_Guides_Not_On_All_Arguments_7()
         {
             String code =
-@"class A{    x : int;    y : int;        def foo ( a, b)    {        x = a;        y = b;        return = x + y;    }}x1 = 1..2;y1 = 1;a = A.A();dummy = a.foo(y1, x1);";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+@"def foo ( a, b){    x = a;    y = b;    return = x + y;}x1 = 1..2;y1 = 1;dummy = foo(y1, x1);";
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";//DNL-1467386 Rev 4247 : WARNING: Replication unbox requested on Singleton warning coming from using replication guides on only some, not all arguments of a function gives incorrect output";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyBuildWarningCount(0);
@@ -588,15 +590,15 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T034_Replication_Guides_Not_On_All_Arguments_8()
         {
             String code =
-@"class A{   z : double;   x : double;   y : double;      constructor A( z1, x1, y1)   {       z = z1;       x = x1;       y = y1;	      }}a = (0..1..#2);//a = { 0, 1}; // fails with this as well//a = 0..1..#2; // fails with this as wellcs = A.A(1, a<1>, a<2>); //cs = A.A(1, { 0, 1 }<1>, { 0, 1 }<2>); //no warnign with this, but expected output : { { 0,0 }, { 1,1} }test = cs.x;";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "";//DNL-1467386 Rev 4247 : WARNING: Replication unbox requested on Singleton warning coming from using replication guides on only some, not all arguments of a function gives incorrect output";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.VerifyBuildWarningCount(0);
+@"import(""FFITarget.dll"");a = (0..1..#2);cs = DummyPoint.ByCoordinates(1, a<1>, a<2>); test = cs.Y;
+";
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, "");
             thisTest.Verify("test", new Object[] { new Object[] { 0.0, 0.0 }, new Object[] { 1.0, 1.0 } });
         }
 
@@ -607,7 +609,7 @@ namespace ProtoTest.TD.Associative
         {
             String code =
 @"import(""DSCoreNodes.dll"");def sum ( a, b, c ){    return = a + b + c;}temp1 = (Math.Sin(0..180..#2) * 2);temp2 = (Math.Sin(0..180..#3) * 1);zArray = temp1<1> + temp2<2>;zArray1 = zArray + 1;ceilingPoints = sum((0..10..#2)<1>, (0..15..#3)<2>, zArray1 );// expected :  ceilingPoints = { { 1.000, 9.500, 16.000 }, { 11.000, 19.500, 26.000 } }// received :  ceilingPoints = null";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "MAGN-1707 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyBuildWarningCount(0);
@@ -615,6 +617,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T034_Replication_Guides_Not_On_All_Arguments_8_a()
         {
@@ -622,64 +625,64 @@ namespace ProtoTest.TD.Associative
             //Analysis: The Rep Guides are being resolved to C0C1, rather than C1C2. This needs to
             //have the fix applied for function calls applied to ctors as well.
             String code =
-@"class A{   z : double;   x : double;   y : double;      constructor A( z1, x1, y1)   {       z = z1;       x = x1;       y = y1;	      }}a = (0..1..#2);b = { 0, 1}; // fails with this as well//a = 0..1..#2; // fails with this as wellcs = A.A(1, a<1>, b<2>); //cs = A.A(1, { 0, 1 }<1>, { 0, 1 }<2>); //no warnign with this, but expected output : { { 0,0 }, { 1,1} }test = cs.x;";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "";//DNL-1467386 Rev 4247 : WARNING: Replication unbox requested on Singleton warning coming from using replication guides on only some, not all arguments of a function gives incorrect output";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.VerifyBuildWarningCount(0);
+@"import(""FFITarget.dll"");a = (0..1..#2);b = { 0, 1}; // fails with this as wellcs = DummyPoint.ByCoordinates(1, a<1>, b<2>); test = cs.Y;";
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code);
             thisTest.Verify("test", new Object[] { new Object[] { 0.0, 0.0 }, new Object[] { 1.0, 1.0 } });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T035_Defect_1467317_Replication_Guide_On_Instances()
         {
             String code =
-@"class A{    x : var[];    constructor A()    {        x = {1,2};    }}a = A.A();b = A.A();test = a.x<1> + b.x<2>;";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+@"import(""FFITarget.dll"");a = ArrayMember.Ctor({1,2});b = ArrayMember.Ctor({1,2});test = a.X<1> + b.X<2>;
+";
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.VerifyBuildWarningCount(0);
             thisTest.Verify("test", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T035_Defect_1467317_Replication_Guide_On_Instances_2()
         {
             String code =
-@"class A{    x : var[];    constructor A()    {        x = {1,2};    }}def foo (){    a = A.A();    b = A.A();    test1 = a.x<1> + b.x<2>;    return = test1;}test = foo();";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+@"import(""FFITarget.dll"");def foo (){    a = ArrayMember.Ctor({1,2});    b = ArrayMember.Ctor({1,2});    test = a.X<1> + b.X<2>;    return = test;}test = foo();
+";
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.VerifyBuildWarningCount(0);
             thisTest.Verify("test", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T035_Defect_1467317_Replication_Guide_On_Instances_3()
         {
             String code =
-@"class A{    x : var[];    constructor A()    {        x = {1,2};    }}test = { { } };test2 = [Associative]{    test2 = { } ;    [Imperative]    {        a = A.A();        b = A.A();        [Associative]        {            test = a.x<1> + b.x<2>;            test2 = a.x + b.x;        }    }    return = test2;}";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+@"import(""FFITarget.dll"");test = { { } };test2 = [Associative]{    test2 = { } ;    [Imperative]    {        a = ArrayMember.Ctor({1,2});        b = ArrayMember.Ctor({1,2});        [Associative]        {            test = a.X<1> + b.X<2>;            test2 = a.X + b.X;        }    }    return = test2;}";
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.VerifyBuildWarningCount(0);
             thisTest.Verify("test", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
             thisTest.Verify("test2", new Object[] { 2, 4 });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T036_Defect_1467383_Replication_Guide_On_Collection()
         {
             String code =
-@"class Point{    X;    Y;    constructor ByCoordinates(x:double,y:double)    {        X = x;        Y = y;        }}p = Point.ByCoordinates((1..2..1)<1>, (3..4..1)<2> ).X;";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+@"import(""FFITarget.dll"");p = DummyPoint2D.ByCoordinates((1..2..1)<1>, (3..4..1)<2> ).X;";
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.VerifyBuildWarningCount(0);
             thisTest.Verify("p", new Object[] { new Object[] { 1.0, 1.0 }, new Object[] { 2.0, 2.0 } });
 
         }
@@ -716,20 +719,23 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T037_ReplicationGuidebrackets_1467328_3()
         {
-            string code = @"           class A           {                a;                constructor A(i)                {                    a = i;                }           }            x = (A.A(1..3))[0];            x = (A.A(1..3))[0..2].a<1> +(A.A(1..3))[0..2].a<2> ;";
+            string code = @"import(""FFITarget.dll"");x = (TestObjectA.TestObjectA(1..3))[0];x = (TestObjectA.TestObjectA(1..3))[0..2].a<1> +(TestObjectA.TestObjectA(1..3))[0..2].a<2> ;
+";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("x", new object[] { new object[] { 2, 3, 4 }, new object[] { 3, 4, 5 }, new object[] { 4, 5, 6 } });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T037_ReplicationGuidebrackets_1467328_4()
         {
-            string code = @"            class A            {                a;                constructor A(i)                {                    a = i;                }            }            x = (A.A(1..3))[0];            x = (A.A(1..3))[0..2].a<1> +(A.A(1..3))[0..2].a<2> ;";
+            string code = @"import(""FFITarget.dll"");            x = (TestObjectA.TestObjectA(1..3))[0];            x = (TestObjectA.TestObjectA(1..3))[0..2].a<1> +(TestObjectA.TestObjectA(1..3))[0..2].a<2> ;";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("x", new object[] { new object[] { 2, 3, 4 }, new object[] { 3, 4, 5 }, new object[] { 4, 5, 6 } });
@@ -818,11 +824,13 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T038_ReplicationGuide_Not_In_Sequence()
         {
             string code =
-@"class A{    z:int;    constructor A (x1,y1)    {        z = x1 + y1;    }}x = {0,1};y = {2, 3};test = A.A(x<1>,y<3>).z;";
+@"def foo(x1,y1){    return = x1 + y1;}x = {0,1};y = {2, 3};test = foo(x<1>,y<3>);
+";
             string errmsg = "DNL-1467460 NotImplemented Exception occurs when replication guides are not in sequence";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new object[] { new object[] { 2, 3 }, new object[] { 3, 4 } });
@@ -840,44 +848,48 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T039_1467423_replication_guide_on_array_2()
         {
             string code =
-@"class A{    static def sum ( a, b, c)    {        return = a + b + c ;    }}y = 3..4;test = A.sum(1, { 1, 2}<1>, y<2>);";
+@"def sum ( a, b, c){    return = a + b + c ;}y = 3..4;test = sum(1, { 1, 2}<1>, y<2>);";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new object[] { new object[] { 5, 6 }, new object[] { 6, 7 } });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T039_1467423_replication_guide_on_array_3()
         {
             string code =
-@"class A{    static def sum ( a, b, c)    {        return = a + b + c ;    }}test;[Associative]{    y = 3..4;    test = A.sum(1, { 1, 2}<1>, y<2>);}";
+@"def sum ( a, b, c){    return = a + b + c ;}test = [Associative]{    y = 3..4;    return = sum(1, { 1, 2}<1>, y<2>);}";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new object[] { new object[] { 5, 6 }, new object[] { 6, 7 } });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T039_1467423_replication_guide_on_array_4()
         {
             string code =
-@"class A{    x: int;    constructor A ( a, b, c)    {        x = a + b + c ;    }}test;[Associative]{    y = 3..4;    test = A.A(1, { 1, 2}<1>, y<2>).x;}";
+@"def sum ( a, b, c){    return = a + b + c ;}test = [Associative]{    y = 3..4;    return = sum(1, { 1, 2}<1>, y<2>);}";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new object[] { new object[] { 5, 6 }, new object[] { 6, 7 } });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T039_1467423_replication_guide_on_array_5()
         {
             string code =
-@"class A{    x: int;    constructor A ( a, b, c)    {        x = a + b + c ;    }}test;[Associative]{    y = 3..4;    test = Count ( A.A(1, { 1, 2}<1>, y<2>).x ) > 1 ? A.A(1, { 1, 2}<1>, y<2>).x : 0;}";
+@"def sum ( a, b, c){    return = a + b + c ;}test = [Associative]{    y = 3..4;    return = Count ( sum(1, { 1, 2}<1>, y<2>) ) > 1 ? sum(1, { 1, 2}<1>, y<2>) : 0;}";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new object[] { new object[] { 5, 6 }, new object[] { 6, 7 } });
@@ -917,25 +929,27 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T039_1467423_replication_guide_on_array_9()
         {
             string code =
-@"class A{    x: int;    constructor A ( a, b, c)    {        x = a + b + c ;    }}test;[Associative]{    y = 3..4;    test = Count ( A.A(1, (1..2..1)<1>, y<2>).x ) > 1 ? A.A(1, (1..2)<1>, y<2>).x : 0;}";
+@"def foo ( a, b, c){    return = a + b + c;}test = [Associative]{    y = 3..4;    return = Count ( foo(1, (1..2..1)<1>, y<2>) ) > 1 ? foo(1, (1..2)<1>, y<2>) : 0;}";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test", new object[] { new object[] { 5, 6 }, new object[] { 6, 7 } });
+            thisTest.Verify("test", new object[] { new object[]{5, 6}, new object[] {6, 7}});
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T039_1467423_replication_guide_on_array_10()
         {
             string code =
-@"class A{    x: int;    constructor A ( a, b, c)    {        x = a + b + c ;    }}test;[Associative]{    y = 3..4;    test = Count ( A.A(1, (1..2..1)<1>, y<2>).x ) > 1 ? A.A(1, (1..2..#2)<1>, y<2>).x : 0;}";
+@"def foo ( a, b, c){    return = a + b + c;}test = [Associative]{    y = 3..4;    return = Count (foo(1, (1..2..1)<1>, y<2>) ) > 1 ? foo(1, (1..2..#2)<1>, y<2>) : 0;}";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test", new object[] { new object[] { 5, 6 }, new object[] { 6, 7 } });
+            thisTest.Verify("test", new object[] { new object[] {5, 6}, new object[]{6, 7} } );
         }
 
         [Test]
@@ -984,22 +998,24 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T040_1467488_replication_guide_on_array_slices_4()
         {
             string code =
-@"class A{    static def foo ( a )    {        return = a ;    }}b = 0..3;test = A.foo ( b[0..1]<1>+b[{2,3}]<2> );";
+@"def foo ( a ){    return = a ;}b = 0..3;test = foo( b[0..1]<1>+b[{2,3}]<2> );";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new object[] { new object[] { 2, 3 }, new object[] { 3, 4 } });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T040_1467488_replication_guide_on_array_slices_5()
         {
             string code =
-@"class A{    static def foo ( a )    {        return = a ;    }}b = { { 0, 1}, { 2, 3} };test1;test2;[Imperative]{    test1 = A.foo ( b[0][0..1] );    test2 = A.foo ( b[1][{0, 1}] );}";
+@"def foo ( a ){    return = a ;}b = { { 0, 1}, { 2, 3} };test1;test2;[Imperative]{    test1 = foo ( b[0][0..1] );    test2 = foo ( b[1][{0, 1}] );}";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test1", 0);
@@ -1007,12 +1023,13 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         [Category("Failure")]
         public void T040_1467488_replication_guide_on_array_slices_6()
         {
             string code =
-@"class A{    static def foo ( a )    {        return = a ;    }}b = { { 0, 1}, { 2, 3} };test1;test2;[Associative]{    test1 = A.foo ( b[ {0, 0} ][ 0..1 ] );    test2 = A.foo ( b[ { 1, 1} ][ {0, 1} ] );}";
+@"def foo ( a ){    return = a ;}b = { { 0, 1}, { 2, 3} };test1;test2;[Associative]{    test1 = foo ( b[ {0, 0} ][ 0..1 ] );    test2 = foo ( b[ { 1, 1} ][ {0, 1} ] );}";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test1", new object[] { 0, 1 });
@@ -1020,11 +1037,12 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T040_1467488_replication_guide_on_array_slices_7()
         {
             string code =
-@"class A{    static def foo ( a )    {        return = a ;    }}b = { { 0, 1}, { 2, 3} };test;[Associative]{    test = A.foo ( b[ {0, 1}<1> ][( 0..1 )<2>] );}";
+@"def foo ( a ){    return = a ;}b = { { 0, 1}, { 2, 3} };test = [Associative]{    return = foo ( b[ {0, 1}<1> ][( 0..1 )<2>] );}";
             string errmsg = "DNL-1467298 rev 4245 :  replication guides with partial array indexing is not giving the expected output";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new object[] { new object[] { 0, 1 }, new object[] { 2, 3 } });
@@ -1032,44 +1050,48 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         [Category("Failure")]
         public void T040_1467488_replication_guide_on_array_slices_8()
         {
             string code =
-@"class A{    static def foo ( a )    {        return = a ;    }}b = { { 0, 1}, { 2, 3} };def foo2 ( ){    t = A.foo ( b[ {0, 1} ][( 0..1 ) ] );    return = t;}test = foo2();";
+@"def foo ( a ){    return = a ;}b = { { 0, 1}, { 2, 3} };def foo2 ( ){    t = foo ( b[ {0, 1} ][( 0..1 ) ] );    return = t;}test = foo2();";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new object[] { 0, 3 });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T041_1467460_replication_guide_not_in_sequence_01()
         {
             string code =
-@"class A{    z:int;    constructor A (x1,y1)    {        z = x1 + y1;    }}x = {0,1};y = {2, 3};test = A.A(x<1>,y<3>).z;";
+@"def foo (x1,y1){    return = x1 + y1;}x = {0,1};y = {2, 3};test = foo(x<1>,y<3>);";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Failure")]
         public void T041_1467460_replication_guide_not_in_sequence_02()
         {
             string code =
-@"class A{    a:int;    constructor A (x1,y1,z1)    {        a = y1;    }}x = {0,1};y = {2,3};z = {4,5 };test = A.A(x<1>,y<3>,z).a; // expect this to be treated as :  A.A(x<1>,y<2>,z<1>).a;";
+@"def foo (x1,y1,z1){    return = y1;}x = {0,1};y = {2,3};z = {4,5 };test = foo(x<1>,y<3>,z); // expect this to be treated as :  foo(x<1>,y<2>,z<1>);";
             string errmsg = "MAGN-1707 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new object[] { new Object[] { 2, 3 }, new Object[] { 2, 3 } });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Failure")]
         public void T041_1467460_replication_guide_not_in_sequence_03()
         {
             string code =
-@"class A{    a:int;    constructor A (x1,y1,z1)    {        a = y1;    }}x = {0,1};y = {2,3};z = {4,5 };test = A.A(x, y<2>, z<3>).a; // expect this to be treated as :  A.A(x<1>,y<2>,z<3>).a;";
+@"def foo (x1,y1,z1){    return = y1;}x = {0,1};y = {2,3};z = {4,5 };test = foo(x, y<2>, z<3>); // expect this to be treated as :  foo(x<1>,y<2>,z<3>);";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
             thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] t1 = new Object[] { new Object[] { 2, 2 }, new Object[] { 3, 3 } };
@@ -1077,41 +1099,45 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Failure")]
         public void T041_1467460_replication_guide_not_in_sequence_04()
         {
             string code =
-@"class A{    a:int;    constructor A (x1,y1,z1)    {        a = y1;    }}x = {0,1};y = {2,3};z = {4,5 };test = A.A(x<1>, y, z<3>).a; // expect this to be treated as :  A.A(x<1>,y<1>,z<2>).a;";
+@"def foo (x1,y1,z1){    return = y1;}x = {0,1};y = {2,3};z = {4,5 };test = foo(x<1>, y, z<3>); // expect this to be treated as :  foo(x<1>,y<1>,z<2>);";
             string errmsg = "MAGN-1707 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new object[] { new Object[] { 2, 2 }, new Object[] { 3, 3 } });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T041_1467460_replication_guide_not_in_sequence_05()
         {
             string code =
-@"class A{    a:int;    constructor A (x1,y1,z1)    {        a = y1;    }}x = {0,1};y = {2,3};z = {4,5 };test = A.A(x<1>, y<1>, z<3>).a; // expect this to be treated as :  A.A(x<1>,y<1>,z<2>).a;";
+@"def foo (x1,y1,z1){    return = y1;}x = {0,1};y = {2,3};z = {4,5 };test = foo(x<1>, y<1>, z<3>); // expect this to be treated as :  foo(x<1>,y<1>,z<2>);";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new object[] { new Object[] { 2, 2 }, new Object[] { 3, 3 } });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T041_1467460_replication_guide_not_in_sequence_06()
         {
             string code =
-@"class A{    a:int;    constructor A (x1,y1,z1)    {        a = y1;    }}x = {0,1};y = {2,3};z = {4,5 };test = A.A(x<3>, y<1>, z<5>).a; // expect this to be treated as :  A.A(x<2>,y<1>,z<3>).a; ";
+@"def foo (x1,y1,z1){    return = y1;}x = {0,1};y = {2,3};z = {4,5 };test = foo(x<3>, y<1>, z<5>); // expect this to be treated as :  foo(x<2>,y<1>,z<3>); ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new object[] { new object[] { new object[] { 2, 2 }, new object[] { 2, 2 } }, new object[] { new object[] { 3, 3 }, new object[] { 3, 3 } } });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T041_1467460_replication_guide_not_in_sequence_07()
         {
             string code =
-@"class A{    a:int;    constructor A (x1,y1,z1)    {        a = z1;    }}x = {0,1};y = {2,3};z = {4,5 };test = A.A(x<4>, y<3>, z<1>).a; // expect this to be treated as :  A.A(x<3>,y<2>,z<1>).a; ";
+@"def foo (x1,y1,z1){    return = z1;}x = {0,1};y = {2,3};z = {4,5 };test = foo(x<4>, y<3>, z<1>); // expect this to be treated as :  foo(x<3>,y<2>,z<1>); ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] t1 = new Object[] { new Object[] { 4, 4 }, new Object[] { 4, 4 } };
@@ -1120,10 +1146,11 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T041_1467460_replication_guide_not_in_sequence_08()
         {
             string code =
-@"class A{    a:int;    constructor A (x1,y1,z1)    {        a = y1;    }}x = {0,1};y = {2,3};z = {4,5 };test = A.A(x<7>, y<3>, z<6>).a; // expect this to be treated as :  A.A(x<3>,y<1>,z<2>).a; ";
+@"def foo (x1,y1,z1){    return = y1;}x = {0,1};y = {2,3};z = {4,5 };test = foo(x<7>, y<3>, z<6>); // expect this to be treated as :  foo(x<3>,y<1>,z<2>); ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] t1 = new Object[] { new Object[] { 2, 2 }, new Object[] { 2, 2 } };
@@ -1132,10 +1159,11 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T041_1467460_replication_guide_not_in_sequence_09()
         {
             string code =
-@"class A{    a:int;    static def A (x1,y1,z1)    {        return = y1;    }}x = {0,1};y = {2,3};z = {4,5 };test = A.A(x<7>, y<3>, z<6>); // expect this to be treated as :  A.A(x<3>,y<1>,z<2>); ";
+@"def foo (x1,y1,z1){    return = y1;}x = {0,1};y = {2,3};z = {4,5 };test = foo(x<7>, y<3>, z<6>); // expect this to be treated as :  foo(x<3>,y<1>,z<2>); ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] t1 = new Object[] { new Object[] { 2, 2 }, new Object[] { 2, 2 } };
@@ -1193,6 +1221,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("Failure")]
         public void T042_1467555_cartesion_product_in_dot_operation_1()
         {
@@ -1205,32 +1234,26 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T0100_FuncCall_Int_AllGuides()
         {
             string code =
-@"def foo (x1,y1,z1){    return = x1+y1+z1;}x = {0,1};y = {2,3};z = {4,5 };test1 = foo(x<1>, y<2>, z<3>) ; class A{    x : int;    y : int;    z : int;    a : int;    constructor A ( x2, y2, z2)    {        this.y = y2;        this.x = x2;        this.z = z2;        a = this.x + this.y + this.z;    }    def foo (x1,y1,z1)    {        return = x1+y1+z1;    }    static def foo2 (x1,y1,z1)    {        return = x1+y1+z1;    } }t1 = A.A(x<1>, y<2>, z<3>);  test2 = t1.a;test = A.A(0,0,0);test3 = test.foo(x<1>, y<2>, z<3>);  test4 = A.foo2(x<1>, y<2>, z<3>); ";
+@"def foo (x1,y1,z1){    return = x1+y1+z1;}x = {0,1};y = {2,3};z = {4,5 };test1 = foo(x<1>, y<2>, z<3>) ; ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test1", new object[] { new object[] { new object[] { 6, 7 }, new object[] { 7, 8 } }, new object[] { new object[] { 7, 8 }, new object[] { 8, 9 } } });
-            thisTest.Verify("test2", new object[] { new object[] { new object[] { 6, 7 }, new object[] { 7, 8 } }, new object[] { new object[] { 7, 8 }, new object[] { 8, 9 } } });
-            thisTest.Verify("test3", new object[] { new object[] { new object[] { 6, 7 }, new object[] { 7, 8 } }, new object[] { new object[] { 7, 8 }, new object[] { 8, 9 } } });
-            thisTest.Verify("test4", new object[] { new object[] { new object[] { 6, 7 }, new object[] { 7, 8 } }, new object[] { new object[] { 7, 8 }, new object[] { 8, 9 } } });
-
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Failure")]
         public void T0101_FuncCall_Double_SomeGuides()
         {
             string code =
-@"def foo (x1,y1,z1){    return = x1+y1+z1;}x = {0.0,1.0};y = {2.0,3.0};z = {4.0,5.0 };test1 = foo(x, y<2>, z<3>) ; class A{    x : int;    y : int;    z : int;    a : int;    constructor A ( x2, y2, z2)    {        y = y2;        x = x2;        z = z2;        a = x + y + z;    }    def foo (x1,y1,z1)    {        return = x1+y1+z1;    }     static def foo2 (x1,y1,z1)    {        return = x1+y1+z1;    }}t1 = A.A(x, y<2>, z<3>);  test2 = t1.a;test = A.A(0,0,0);test3 = test.foo(x, y<2>, z<3>);  test4 = A.foo2(x, y<2>, z<3>);         ";
+@"def foo (x1,y1,z1){    return = x1+y1+z1;}x = {0.0,1.0};y = {2.0,3.0};z = {4.0,5.0 };test1 = foo(x, y<2>, z<3>) ;       ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test1", new object[] { new object[] { new object[] { 6.0, 7.0 }, new object[] { 7.0, 8.0 } }, new object[] { new object[] { 7.0, 8.0 }, new object[] { 8.0, 9.0 } } });
-            thisTest.Verify("test2", new object[] { new object[] { new object[] { 6.0, 7.0 }, new object[] { 7.0, 8.0 } }, new object[] { new object[] { 7.0, 8.0 }, new object[] { 8.0, 9.0 } } });
-            thisTest.Verify("test3", new object[] { new object[] { new object[] { 6.0, 7.0 }, new object[] { 7.0, 8.0 } }, new object[] { new object[] { 7.0, 8.0 }, new object[] { 8.0, 9.0 } } });
-            thisTest.Verify("test4", new object[] { new object[] { new object[] { 6.0, 7.0 }, new object[] { 7.0, 8.0 } }, new object[] { new object[] { 7.0, 8.0 }, new object[] { 8.0, 9.0 } } });
-
         }
 
         [Test]
@@ -1248,86 +1271,70 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T0103_FuncCall_Bool_NotInSeq()
         {
             string code =
-@"def foo (x1,y1,z1){    return = x1 == true ? y1 : z1;}x = {true, false};y = {false, true};z = {true, true};test1 = foo(x<2>, y<4>, z<5>) ;   class A{    x ;    y ;    z ;    a ;    constructor A ( x2, y2, z2)    {        y = y2;        x = x2;        z = z2;        a = x2 == true ? y2 : z2;    }    def foo (x1,y1,z1)    {        return = x1 == true ? y1 : z1;    }    static def foo2 (x1,y1,z1)    {        return = x1 == true ? y1 : z1;    } }t1 = A.A(x<2>, y<4>, z<5>);  test2 = t1.a;test = A.A(0,0,0);test3 = test.foo(x<2>, y<4>, z<5>); test4 = A.foo2(x<2>, y<4>, z<5>);          ";
+@"def foo (x1,y1,z1){    return = x1 == true ? y1 : z1;}x = {true, false};y = {false, true};z = {true, true};test1 = foo(x<2>, y<4>, z<5>) ;          ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test1", new object[] { new object[] { new object[] { false, false }, new object[] { true, true } }, new object[] { new object[] { true, true }, new object[] { true, true } } });
-            thisTest.Verify("test2", new object[] { new object[] { new object[] { false, false }, new object[] { true, true } }, new object[] { new object[] { true, true }, new object[] { true, true } } });
-            thisTest.Verify("test3", new object[] { new object[] { new object[] { false, false }, new object[] { true, true } }, new object[] { new object[] { true, true }, new object[] { true, true } } });
-            thisTest.Verify("test4", new object[] { new object[] { new object[] { false, false }, new object[] { true, true } }, new object[] { new object[] { true, true }, new object[] { true, true } } });
-
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T0104_FuncCall_Bool_NotInSeq()
         {
             string code =
-@"def foo (x1,y1,z1){    return = x1 == true ? y1 : z1;}x = {true, false};y = {false, true};z = {true, true};test1 = foo(x<4>, y<3>, z<5>) ;class A{    x ;    y ;    z ;    a ;    constructor A ( x2, y2, z2)    {        y = y2;        x = x2;        z = z2;        a = x2 == true ? y2 : z2;    }    def foo (x1,y1,z1)    {        return = x1 == true ? y1 : z1;    }    static def foo2 (x1,y1,z1)    {        return = x1 == true ? y1 : z1;    } }t1 = A.A(x<4>, y<3>, z<5>);test2 = t1.a ; test = A.A(0,0,0);test3 = test.foo(x<4>, y<3>, z<5>); test4 = A.foo2(x<4>, y<3>, z<5>);        ";
+@"def foo (x1,y1,z1){    return = x1 == true ? y1 : z1;}x = {true, false};y = {false, true};z = {true, true};test1 = foo(x<4>, y<3>, z<5>) ;   ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test1", new object[] { new object[] { new object[] { false, false }, new object[] { true, true } }, new object[] { new object[] { true, true }, new object[] { true, true } } });
-            thisTest.Verify("test2", new object[] { new object[] { new object[] { false, false }, new object[] { true, true } }, new object[] { new object[] { true, true }, new object[] { true, true } } });
-            thisTest.Verify("test3", new object[] { new object[] { new object[] { false, false }, new object[] { true, true } }, new object[] { new object[] { true, true }, new object[] { true, true } } });
-            thisTest.Verify("test4", new object[] { new object[] { new object[] { false, false }, new object[] { true, true } }, new object[] { new object[] { true, true }, new object[] { true, true } } });
-
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Failure")]
         public void T0105_FuncCall_Int_NotAllGuides_NotInSeq()
         {
             string code =
-@"def foo (x1,y1,z1){    return = x1 + y1 + z1;}x = {0, 1};y = {2, 3};z = {4, 5};test1 = foo(x, y<2>, z<2>) ;  class A{    x : int;    y : int;    z : int;    a : int;    constructor A ( x2, y2, z2)    {        y = y2;        x = x2;        z = z2;        a = x + y + z;    }    def foo (x1,y1,z1)    {        return = x1+y1+z1;    }    static def foo2 (x1,y1,z1)    {        return = x1+y1+z1;    } }t1 = A.A(x, y<2>, z<2>);test2 = t1.a ; test = A.A(0,0,0);test3 = test.foo(x, y<2>, z<2>); test4 = A.foo2(x, y<2>, z<2>);          ";
+@"def foo (x1,y1,z1){    return = x1 + y1 + z1;}x = {0, 1};y = {2, 3};z = {4, 5};test1 = foo(x, y<2>, z<2>) ;       ";
             string errmsg = "DNL-1467580 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test1", new object[] { new object[] { 6, 8 }, new object[] { 7, 9 } });
-            thisTest.Verify("test2", new object[] { new object[] { 6, 8 }, new object[] { 7, 9 } });
-            thisTest.Verify("test3", new object[] { new object[] { 6, 8 }, new object[] { 7, 9 } });
-            thisTest.Verify("test4", new object[] { new object[] { 6, 8 }, new object[] { 7, 9 } });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T0106_FuncCall_Int_MultipleGuides()
         {
             string code =
-@"def foo (x1,y1){    return = x1 + y1;}x = {{0, 1},{2,3}};y = {{4,5},{6,7}};test1 = foo(x<1><2>, y<3><4>) ;   class A{    x : int;    y : int;        a : int;    constructor A ( x2, y2)    {        y = y2;        x = x2;               a = x + y ;    }    def foo (x1,y1)    {        return = x1+y1;    }    static def foo2 (x1,y1)    {        return = x1+y1;    } }t1 = A.A(x<1><2>, y<3><4>);test2 = t1.a ; test = A.A(0,0);test3 = test.foo(x<1><2>, y<3><4>); test4 = A.foo2(x<1><2>, y<3><4>);          ";
+@"def foo (x1,y1){    return = x1 + y1;}x = {{0, 1},{2,3}};y = {{4,5},{6,7}};test1 = foo(x<1><2>, y<3><4>) ;          ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test1", new object[] { new object[] { new object[] { new object[] { 4, 5 }, new object[] { 6, 7 } }, new object[] { new object[] { 5, 6 }, new object[] { 7, 8 } } }, new object[] { new object[] { new object[] { 6, 7 }, new object[] { 8, 9 } }, new object[] { new object[] { 7, 8 }, new object[] { 9, 10 } } } });
-            thisTest.Verify("test2", new object[] { new object[] { new object[] { new object[] { 4, 5 }, new object[] { 6, 7 } }, new object[] { new object[] { 5, 6 }, new object[] { 7, 8 } } }, new object[] { new object[] { new object[] { 6, 7 }, new object[] { 8, 9 } }, new object[] { new object[] { 7, 8 }, new object[] { 9, 10 } } } });
-            thisTest.Verify("test3", new object[] { new object[] { new object[] { new object[] { 4, 5 }, new object[] { 6, 7 } }, new object[] { new object[] { 5, 6 }, new object[] { 7, 8 } } }, new object[] { new object[] { new object[] { 6, 7 }, new object[] { 8, 9 } }, new object[] { new object[] { 7, 8 }, new object[] { 9, 10 } } } });
-            thisTest.Verify("test4", new object[] { new object[] { new object[] { new object[] { 4, 5 }, new object[] { 6, 7 } }, new object[] { new object[] { 5, 6 }, new object[] { 7, 8 } } }, new object[] { new object[] { new object[] { 6, 7 }, new object[] { 8, 9 } }, new object[] { new object[] { 7, 8 }, new object[] { 9, 10 } } } });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T0107_FuncCall_Int_MultipleGuides_NotAllInSeq()
         {
             string code =
-@"def foo (x1,y1){    return = x1 + y1;}x = {{0, 1},{2,3}};y = {{4,5},{6,7}};test1 = foo(x<1><1>, y<2><3>) ; class A{    x : int;    y : int;        a : int;    constructor A ( x2, y2)    {        y = y2;        x = x2;               a = x + y ;    }    def foo (x1,y1)    {        return = x1+y1;    }    static def foo2 (x1,y1)    {        return = x1+y1;    } }t1 = A.A(x<1><1>, y<2><3>);test2 = t1.a ;test = A.A(0,0); test3 = test.foo(x<1><1>, y<2><3>); test4 = A.foo2(x<1><1>, y<2><3>);           ";
+@"def foo (x1,y1){    return = x1 + y1;}x = {{0, 1},{2,3}};y = {{4,5},{6,7}};test1 = foo(x<1><1>, y<2><3>) ;         ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test1", new object[] { new object[] { new object[] { new object[] { 4, 5 }, new object[] { 5, 6 } }, new object[] { new object[] { 6, 7 }, new object[] { 7, 8 } } }, new object[] { new object[] { new object[] { 6, 7 }, new object[] { 7, 8 } }, new object[] { new object[] { 8, 9 }, new object[] { 9, 10 } } } });
-            thisTest.Verify("test2", new object[] { new object[] { new object[] { new object[] { 4, 5 }, new object[] { 5, 6 } }, new object[] { new object[] { 6, 7 }, new object[] { 7, 8 } } }, new object[] { new object[] { new object[] { 6, 7 }, new object[] { 7, 8 } }, new object[] { new object[] { 8, 9 }, new object[] { 9, 10 } } } });
-            thisTest.Verify("test3", new object[] { new object[] { new object[] { new object[] { 4, 5 }, new object[] { 5, 6 } }, new object[] { new object[] { 6, 7 }, new object[] { 7, 8 } } }, new object[] { new object[] { new object[] { 6, 7 }, new object[] { 7, 8 } }, new object[] { new object[] { 8, 9 }, new object[] { 9, 10 } } } });
-            thisTest.Verify("test4", new object[] { new object[] { new object[] { new object[] { 4, 5 }, new object[] { 5, 6 } }, new object[] { new object[] { 6, 7 }, new object[] { 7, 8 } } }, new object[] { new object[] { new object[] { 6, 7 }, new object[] { 7, 8 } }, new object[] { new object[] { 8, 9 }, new object[] { 9, 10 } } } });
-
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T0108_FuncCall_Int_MultipleGuides_NotAllInSeq()
         {
             string code =
-@"def foo (x1,y1){    return = x1 + y1;}x = {{0, 1},{2,3}};y = {{4,5},{6,7}};test1 = foo(x<1><3>, y<4><5>) ; class A{    x : int;    y : int;        a : int;    constructor A ( x2, y2)    {        y = y2;        x = x2;               a = x + y ;    }    def foo (x1,y1)    {        return = x1+y1;    }    static def foo2 (x1,y1)    {        return = x1+y1;    } }t1 = A.A(x<1><3>, y<4><5>);test2 = t1.a ; test = A.A(0,0);test3 = test.foo(x<1><3>, y<4><5>); test4 = A.foo2(x<1><3>, y<4><5>);           ";
+@"def foo (x1,y1){    return = x1 + y1;}x = {{0, 1},{2,3}};y = {{4,5},{6,7}};test1 = foo(x<1><3>, y<4><5>) ;        ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test1", new object[] { new object[] { new object[] { new object[] { 4, 5 }, new object[] { 6, 7 } }, new object[] { new object[] { 5, 6 }, new object[] { 7, 8 } } }, new object[] { new object[] { new object[] { 6, 7 }, new object[] { 8, 9 } }, new object[] { new object[] { 7, 8 }, new object[] { 9, 10 } } } });
-            thisTest.Verify("test2", new object[] { new object[] { new object[] { new object[] { 4, 5 }, new object[] { 6, 7 } }, new object[] { new object[] { 5, 6 }, new object[] { 7, 8 } } }, new object[] { new object[] { new object[] { 6, 7 }, new object[] { 8, 9 } }, new object[] { new object[] { 7, 8 }, new object[] { 9, 10 } } } });
-            thisTest.Verify("test3", new object[] { new object[] { new object[] { new object[] { 4, 5 }, new object[] { 6, 7 } }, new object[] { new object[] { 5, 6 }, new object[] { 7, 8 } } }, new object[] { new object[] { new object[] { 6, 7 }, new object[] { 8, 9 } }, new object[] { new object[] { 7, 8 }, new object[] { 9, 10 } } } });
-            thisTest.Verify("test4", new object[] { new object[] { new object[] { new object[] { 4, 5 }, new object[] { 6, 7 } }, new object[] { new object[] { 5, 6 }, new object[] { 7, 8 } } }, new object[] { new object[] { new object[] { 6, 7 }, new object[] { 8, 9 } }, new object[] { new object[] { 7, 8 }, new object[] { 9, 10 } } } });
-
         }
 
         [Test]
@@ -1364,31 +1371,26 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T0112_FuncCall_Int_SingleAndMultipleGuides()
         {
             string code =
-@"def foo (x1,y1){    return = x1 + y1;}x = {0,1};y = {{4,5},{6,7}};test1 = foo(x<1>, y<2><3>) ;  class A{    x : int;    y : int;        a : int;    constructor A ( x2, y2)    {        y = y2;        x = x2;               a = x + y ;    }    def foo (x1,y1)    {        return = x1+y1;    }    static def foo2 (x1,y1)    {        return = x1+y1;    } }t1 = A.A(x<1>, y<2><3>);test2 = t1.a ; test = A.A(0,0);test3 = test.foo(x<1>, y<2><3>); test4 = A.foo2(x<1>, y<2><3>);          ";
+@"def foo (x1,y1){    return = x1 + y1;}x = {0,1};y = {{4,5},{6,7}};test1 = foo(x<1>, y<2><3>) ;        ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test1", new object[] { new object[] { new object[] { 4, 5 }, new object[] { 6, 7 } }, new object[] { new object[] { 5, 6 }, new object[] { 7, 8 } } });
-            thisTest.Verify("test2", new object[] { new object[] { new object[] { 4, 5 }, new object[] { 6, 7 } }, new object[] { new object[] { 5, 6 }, new object[] { 7, 8 } } });
-            thisTest.Verify("test3", new object[] { new object[] { new object[] { 4, 5 }, new object[] { 6, 7 } }, new object[] { new object[] { 5, 6 }, new object[] { 7, 8 } } });
-            thisTest.Verify("test4", new object[] { new object[] { new object[] { 4, 5 }, new object[] { 6, 7 } }, new object[] { new object[] { 5, 6 }, new object[] { 7, 8 } } });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Failure")]
         public void T0113_FuncCall_Int_SingleAndMultipleGuides_NotInSeq()
         {
             string code =
-@"def foo (x1,y1){    return = x1 + y1;}x = {0,1};y = {{4,5},{6,7}};test1 = foo(x, y<2><3>) ;  class A{    x : int;    y : int;        a : int;    constructor A ( x2, y2)    {        y = y2;        x = x2;               a = x + y ;    }    def foo (x1,y1)    {        return = x1+y1;    }    static def foo2 (x1,y1)    {        return = x1+y1;    } }t1 = A.A(x, y<2><3>);test2 = t1.a ; test = A.A(0,0);test3 = test.foo(x, y<2><3>); test4 = A.foo2(x, y<2><3>);          ";
+@"def foo (x1,y1){    return = x1 + y1;}x = {0,1};y = {{4,5},{6,7}};test1 = foo(x, y<2><3>) ;        ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test1", new object[] { new object[] { new object[] { 4, 5 }, new object[] { 6, 7 } }, new object[] { new object[] { 5, 6 }, new object[] { 7, 8 } } });
-            thisTest.Verify("test2", new object[] { new object[] { new object[] { 4, 5 }, new object[] { 6, 7 } }, new object[] { new object[] { 5, 6 }, new object[] { 7, 8 } } });
-            thisTest.Verify("test3", new object[] { new object[] { new object[] { 4, 5 }, new object[] { 6, 7 } }, new object[] { new object[] { 5, 6 }, new object[] { 7, 8 } } });
-            thisTest.Verify("test4", new object[] { new object[] { new object[] { 4, 5 }, new object[] { 6, 7 } }, new object[] { new object[] { 5, 6 }, new object[] { 7, 8 } } });
-
         }
 
         [Test]
@@ -1402,62 +1404,68 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T0115_FuncCall_HeterogenousInput()
         {
             string code =
-@" class A{    y : int;    constructor A ( y2)    {        y = y2;    }}def foo (x1:int,y1:A){    return = x1 + y1.y;}x = {0,1};y = {A.A(2), A.A(3)};test1 = foo(x<1>, y<3>) ;            ";
+@" import(""FFITarget.dll"");def foo (x1:int,y1:TestObjectA){    return = x1 + y1.a;}x = {0,1};y = {TestObjectA.TestObjectA(2), TestObjectA.TestObjectA(3)};test1 = foo(x<1>, y<3>) ;            ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test1", new object[] { new object[] { 2, 3 }, new object[] { 3, 4 } });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T0116_FuncCall_HeterogenousInput_MultipleGuides()
         {
             string code =
-@" class A{    y : int;    constructor A ( y2)    {        y = y2;    }}def foo (x1:double,y1:A){    return = x1 + y1.y;}x = {{0.0,1.0}, {2.0, 3.0} };y = { A.A(2), A.A(3)};test1 = foo(x<1><2>, y<1>) ;            ";
+@" import(""FFITarget.dll"");def foo (x1:double,y1:TestObjectA){    return = x1 + y1.a;}x = {{0.0,1.0}, {2.0, 3.0} };y = { TestObjectA.TestObjectA(2), TestObjectA.TestObjectA(3)};test1 = foo(x<1><2>, y<1>) ;            ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test1", new object[] { new object[] { 2.0, 3.0 }, new object[] { 5.0, 6.0 } });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T0117_FuncCall_HeterogenousInput_MultipleGuides()
         {
             string code =
-@" class A{    y : int;    constructor A ( y2)    {        y = y2;    }}def foo (x1:double,y1:A){    return = x1 + y1.y;}x = {{0.0,1.0}, {2.0, 3.0} };y = { {A.A(4), A.A(5)}, { A.A(6), A.A(7) } };test1 = foo(x<1><2>, y<3><4>) ;            ";
+@" import(""FFITarget.dll"");def foo (x1:double,y1:TestObjectA){    return = x1 + y1.a;}x = {{0.0,1.0}, {2.0, 3.0} };y = { {TestObjectA.TestObjectA(4), TestObjectA.TestObjectA(5)}, { TestObjectA.TestObjectA(6), TestObjectA.TestObjectA(7) } };test1 = foo(x<1><2>, y<3><4>) ;            ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test1", new object[] { new object[] { new object[] { new object[] { 4.0, 5.0 }, new object[] { 6.0, 7.0 } }, new object[] { new object[] { 5.0, 6.0 }, new object[] { 7.0, 8.0 } } }, new object[] { new object[] { new object[] { 6.0, 7.0 }, new object[] { 8.0, 9.0 } }, new object[] { new object[] { 7.0, 8.0 }, new object[] { 9.0, 10.0 } } } });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Failure")]
         public void T0118_FuncCall_HeterogenousInput_SingleGuides()
         {
             string code =
-@" class A{    y : int;    constructor A ( y2)    {        y = y2;    }}def foo (x1:double,y1:A){    return = x1 + y1.y;}x = {0.0,1.0 };y = { A.A(2), A.A(3) };test1 = foo(x<1>, y) ;            ";
+@" import(""FFITarget.dll"");def foo (x1:double,y1:TestObjectA){    return = x1 + y1.a;}x = {0.0,1.0 };y = { TestObjectA.TestObjectA(2), TestObjectA.TestObjectA(3) };test1 = foo(x<1>, y) ;            ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test1", new object[] { 2.0, 4.0 });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         [Category("Failure")]
         public void T0119_FuncCall_HeterogenousInput_SingleGuides()
         {
             string code =
-@" class A{    y : int;    constructor A ( y2)    {        y = y2;    }}def foo (x1:double,y1:A, z : int){    return = x1 + y1.y + z;}x = { 0.0,1.0 };y = { A.A(2), A.A(3) };z = {4, 5};test1 = foo(x<1>, y, z<2>) ;            ";
+@" import(""FFITarget.dll"");def foo (x1:double,y1:TestObjectA, z : int){    return = x1 + y1.a + z;}x = { 0.0,1.0 };y = { TestObjectA.TestObjectA(2), TestObjectA.TestObjectA(3) };z = {4, 5};test1 = foo(x<1>, y, z<2>) ;            ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test1", new object[] { new object[] { 6.0, 7.0 }, new object[] { 8.0, 9.0 } });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T0120_FuncCall_HeterogenousInput_jagged_SingleGuides()
         {
             string code =
-@" class A{    y : int;    constructor A ( y2)    {        y = y2;    }}def foo (x1:double,y1:A, z : int){    return = x1 + y1.y + z;}x = { 0.0 };y = { A.A(2), A.A(3) };z = {4, 5};test1 = foo(x<1>, y<2>, z<3>) ;            ";
+@" import(""FFITarget.dll"");def foo (x1:double,y1:TestObjectA, z : int){    return = x1 + y1.a + z;}x = { 0.0 };y = { TestObjectA.TestObjectA(2), TestObjectA.TestObjectA(3) };z = {4, 5};test1 = foo(x<1>, y<2>, z<3>) ;            ";
             // This is just a sample test case of replication guides on jagged array. Replication on jagged array is not yet defined properly
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
@@ -1465,6 +1473,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_Redunadant")]
         public void T0121_InstanceCall_Int_SingleGuides()
         {
             string code =
@@ -1475,6 +1484,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_ReplicationGuidesWithinDSDefinedClass")]
         [Category("Failure")]
         public void T0122_ReplicationGudes_Inside_ClassAndFunctionBody()
         {
@@ -1559,6 +1569,8 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("ModifierBlock")] 
+        [Ignore][Category("DSDefinedClass_Ignored_ModifierBlock")]
         [Category("Failure")]
         public void T0127_ReplicationGudes_ModifierBlock()
         {
@@ -1576,6 +1588,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_ReplicationGuidesWithinDSDefinedClass")]
         [Category("Failure")]
         public void T0128_ReplicationGudes_InlineCondition()
         {
@@ -1606,30 +1619,33 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T0130_ReplicationGudes_InlineCondition()
         {
             string code =
-@" class A{    static def foo1(x,y)    {        return = x + y;    }    static def foo2()    {        return = {1, 2};    }    static def foo3()    {        return = {3, 4};    }    static def foo ( x )    {        return = x;    }}def foo( x){    return = x;}x = 2;t1 = A.foo ( x > 1 ? A.foo1(A.foo2()<1>,A.foo3()<2>) : 0);";
+@" def foo1(x,y){    return = x + y;}def foo2(){    return = {1, 2};}def foo3(){    return = {3, 4};}def foo ( x ){    return = x;}x = 2;t1 = foo ( x > 1 ? foo1(foo2()<1>,foo3()<2>) : 0);";
             string errmsg = "DNL-1467591 replication guides in class instantiation is not giving expected output";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("t1", new Object[] { new Object[] { 4, 5 }, new Object[] { 5, 6 } });
+            thisTest.Verify("t1", new [] { new object[] {4, 5}, new object[]{5, 6} });
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T0131_ReplicationGudes_InlineCondition()
         {
             string code =
-@" class A{    static def foo1(x,y)    {        return = x + y;    }    static def foo2()    {        return = {1, 2};    }    static def foo3()    {        return = {3, 4};    }    static def fooo ( x )    {        return = x;    }    static def foo ( x )    {        return = A.fooo ( x > 1 ? A.foo1(A.foo2()<1>,A.foo3()<2>) : 0);    }}x = 2;t1 = A.foo ( x );";
+@" def foo1(x,y){    return = x + y;}def foo2(){    return = {1, 2};}def foo3(){    return = {3, 4};}def fooo ( x ){    return = x;}def foo ( x ){    return = fooo ( x > 1 ? foo1(foo2()<1>,foo3()<2>) : 0);}x = 2;t1 = foo ( x );";
             string errmsg = "DNL-1467591 replication guides in class instantiation is not giving expected output";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("t1", new Object[] { new Object[] { 4, 5 }, new Object[] { 5, 6 } });
+            thisTest.Verify("t1", new Object[] { new object[]{4, 5}, new object[] {5, 6}});
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T0132_ReplicationGudes_InlineCondition()
         {
             string code =
-@" class A{    static def foo(x,y,z)    {        return = x + y + z;    }    }def foo (x,y,z){    return = x + y + z;}x = 2;t1 = x > 2 ? 0 : foo({1,2}<1>,{3,4}<5>, {5,6}<3>);t2 = x > 2 ? 0 : foo({1,2}<1>,{3,4}<3>, x);t3 = x > 2 ? 0 : A.foo({1,2}<1>,{3,4}<5>, {5,6}<3>);t4 = [Associative]{     return = [Imperative]     {          return = [Associative]          {               return = x > 2 ? 0 : A.foo({1,2}<1>,{3,4}<3>, x);          }     }}";
+@" def foo (x,y,z){    return = x + y + z;}x = 2;t1 = x > 2 ? 0 : foo({1,2}<1>,{3,4}<5>, {5,6}<3>);t2 = x > 2 ? 0 : foo({1,2}<1>,{3,4}<3>, x);t3 = x > 2 ? 0 : foo({1,2}<1>,{3,4}<5>, {5,6}<3>);t4 = [Associative]{     return = [Imperative]     {          return = [Associative]          {               return = x > 2 ? 0 : foo({1,2}<1>,{3,4}<3>, x);          }     }}";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("t1", new Object[] { new Object[] { new Object[] { 9, 10 }, new Object[] { 10, 11 } }, new Object[] { new Object[] { 10, 11 }, new Object[] { 11, 12 } } });
@@ -1639,10 +1655,11 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T0133_ReplicationGudes_RangeExpr()
         {
             string code =
-@" class A{    static def foo(x,y,z)    {        return = x + y + z;    }    }def foo (x,y,z){    return = x + y + z;}x = 2;t1 = 0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>));t2 = Count(foo({1,2}<1>,{3,4}<3>, x))..4..#3;t3 = 0..Count(A.foo({1,2}<1>,{3,4}<5>, {5,6}<3>));t4 = Count(A.foo({1,2}<1>,{3,4}<3>, x))..4..#3;";
+@" def foo (x,y,z){    return = x + y + z;}x = 2;t1 = 0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>));t2 = Count(foo({1,2}<1>,{3,4}<3>, x))..4..#3;t3 = 0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>));t4 = Count(foo({1,2}<1>,{3,4}<3>, x))..4..#3;";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("t1", new Object[] { 0, 1, 2 });
@@ -1652,10 +1669,11 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T0134_ReplicationGudes_RangeExpr()
         {
             string code =
-@" class A{    static def foo()    {        return = 0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>));    }    }def foo (x,y,z){    return = x + y + z;}def foo2 (){    return = 0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>));}x = 2;t1 = 0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>));t2 = A.foo();t3 = foo2();t4 = [Associative]{    return = [Imperative]    {         return = [Associative]         {              return = 0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>));                       }    }}";
+@" def foo(){    return = 0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>));}    def foo (x,y,z){    return = x + y + z;}def foo2 (){    return = 0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>));}x = 2;t1 = 0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>));t2 = foo();t3 = foo2();t4 = [Associative]{    return = [Imperative]    {         return = [Associative]         {              return = 0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>));                       }    }}";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("t1", new Object[] { 0, 1, 2 });
@@ -1665,10 +1683,11 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void T0135_ReplicationGudes_ArraySlicingScope()
         {
             string code =
-@" def foo (x,y,z){    return = x + y + z;}def foo2 : int[] (){    return = a[0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>))];}class A{    static def foo: int[] ()    {        return = a[0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>))];    }}a = {1,2,3,4};b = a[0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>))];c = foo2();d = A.foo();f = [Associative]{    return = [Imperative]    {         return = [Associative]         {              return = a[0..Count(foo({1,2}<1>,{3,4}<5>, 5))];                       }    }}";
+@" def foo (x,y,z){    return = x + y + z;}def foo2 : int[] (){    return = a[0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>))];}def foo: int[] (){    return = a[0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>))];}a = {1,2,3,4};b = a[0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>))];c = foo2();d = foo();f = [Associative]{    return = [Imperative]    {         return = [Associative]         {              return = a[0..Count(foo({1,2}<1>,{3,4}<5>, 5))];                       }    }}";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", new Object[] { 1, 2, 3 });
@@ -1750,6 +1769,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void T0142_ReplicationGudes_On_Both_Instance_And_Method_Call()
         {
             string code =
@@ -1765,6 +1785,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Failure")]
         public void T0143_ReplicationGudes_On_Both_Instance_And_Method_Call()
         {
@@ -1915,67 +1936,72 @@ namespace ProtoTest.TD.Associative
             thisTest.VerifyRunScriptSource(code, errmsg);
 
             // Should get clear after running
-            Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
+            Assert.AreEqual(0, thisTest.GetTestRuntimeCore().ReplicationGuides.Count);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void RegressMagn4853_2()
         {
             // Test replication on singleton
             string code =
-            @" class Test{    def foo()    {    }}t = Test();r1 = t.foo();r2 = t<1>.foo();r3 = t<1L>.foo();";
+            @" import(""FFITarget.dll"");t = TestObjectA.TestObjectA(1);r1 = t.Set(1);r2 = t<1>.Set(1);r3 = t<1L>.Set(1);";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             // Should get clear after running
-            Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
+            Assert.AreEqual(0, thisTest.GetTestRuntimeCore().ReplicationGuides.Count);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void RegressMagn4853_3()
         {
             // Test replication on singleton 
             string code =
-            @" class Test{    def foo(x)    {       return = x;    }}t = Test();v = 42;r1 = t.foo(v);r2 = t<1>.foo(v<1>);r3 = t<1L>.foo(v<1L>);r4 = t<1>.foo(v<2>);";
+            @" import(""FFITarget.dll"");t = TestObjectA.TestObjectA(1);v = 42;r1 = t.Set(v);r2 = t<1>.Set(v<1>);r3 = t<1L>.Set(v<1L>);r4 = t<1>.Set(v<2>);";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             // Should get clear after running
-            Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
+            Assert.AreEqual(0, thisTest.GetTestRuntimeCore().ReplicationGuides.Count);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void RegressMagn4853_4()
         {
             // Test replication on LHS
             string code =
-            @" class Test{    def foo()    {    }}ts = {Test(), Test()};r1 = ts.foo();r2 = ts<1>.foo();r3 = ts<1L>.foo();";
+            @" import(""FFITarget.dll"");ts = {TestObjectA.TestObjectA(), TestObjectA.TestObjectA()};r1 = ts.Set(1);r2 = ts<1>.Set(1);r3 = ts<1L>.Set(1);";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             // Should get clear after running
-            Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
+            Assert.AreEqual(0, thisTest.GetTestRuntimeCore().ReplicationGuides.Count);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void RegressMagn4853_5()
         {
             // Test replication on LHS
             string code =
-            @" class Test{    def foo(x)    {       return = 42;    }}ts = {Test(), Test()};vs = {42, 43};r1 = ts.foo(vs);r2 = ts<1>.foo(vs<1>);r3 = ts<1L>.foo(vs<1L>);r4 = ts<1>.foo(vs<2>);";
+            @" import(""FFITarget.dll"");ts = {TestObjectA.TestObjectA(), TestObjectA.TestObjectA()};vs = {42, 43};r1 = ts.Set(vs);r2 = ts<1>.Set(vs<1>);r3 = ts<1L>.Set(vs<1L>);r4 = ts<1>.Set(vs<2>);";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             // Should get clear after running
-            Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
+            Assert.AreEqual(0, thisTest.GetTestRuntimeCore().ReplicationGuides.Count);
         }
 
         [Test]
+        [Category("DSDefinedClass_Ported")]
         public void RegressMagn4853_6()
         {
             // Test replication on LHS
             string code =
-            @" class Test{    x = 42;}t = Test();r1 = t.x;ts = {Test(), Test()};r2 = ts.x;";
+            @" import(""FFITarget.dll"");t = TestObjectA.TestObjectA(42);r1 = t.a;ts = {TestObjectA.TestObjectA(42), TestObjectA.TestObjectA(42)};r2 = ts.a;";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             // Should get clear after running
-            Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
+            Assert.AreEqual(0, thisTest.GetTestRuntimeCore().ReplicationGuides.Count);
         }
     }
 }

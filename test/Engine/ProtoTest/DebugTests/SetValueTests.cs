@@ -12,30 +12,8 @@ using ProtoTestFx.TD;
 namespace ProtoTest.DebugTests
 {
     [TestFixture]
-    class SetValueTests
+    class SetValueTests : ProtoTestBase
     {
-        public ProtoCore.Core core;
-        private DebugRunner fsr;
-        private ProtoScript.Config.RunConfiguration runnerConfig;
-        private string testPath = @"..\..\..\test\Engine\ProtoTest\ImportFiles\";
-        public TestFrameWork thisTest = new TestFrameWork();
-        [SetUp]
-        public void Setup()
-        {
-            // Specify some of the requirements of IDE.
-            var options = new ProtoCore.Options();
-            options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-            options.SuppressBuildOutput = false;
-            core = new ProtoCore.Core(options);
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
-            runnerConfig = new ProtoScript.Config.RunConfiguration();
-            runnerConfig.IsParrallel = false;
-            fsr = new DebugRunner(core);
-            DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
-            CLRModuleType.ClearTypes();
-        }
-
         [Test]
         public void MinimalSetValue()
         {

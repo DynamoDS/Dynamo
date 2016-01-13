@@ -4,6 +4,7 @@ using System.Collections;
 using System.Linq;
 using ProtoCore.Utils;
 using ProtoCore.DSASM;
+using ProtoCore.AST.AssociativeAST;
 
 namespace ProtoCore
 {
@@ -12,10 +13,8 @@ namespace ProtoCore
     /// </summary>
     public class CodeGenDS
     {
-        public List<ProtoCore.AST.AssociativeAST.AssociativeNode> astNodeList { get; private set; }
+        public IEnumerable<AssociativeNode> astNodeList { get; private set; }
         string code = string.Empty;
-
-        public string Code { get { return code; } }
 
         /// <summary>
         /// This is used during ProtoAST generation to connect BinaryExpressionNode's 
@@ -23,18 +22,10 @@ namespace ProtoCore
         /// </summary>
         //protected ProtoCore.AST.AssociativeAST.BinaryExpressionNode ChildTree { get; set; }
 
-        public CodeGenDS(List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList)
+        public CodeGenDS(IEnumerable<AssociativeNode> astList)
         {
             this.astNodeList = astList;
         }
-
-        //public CodeGenDS(ProtoCore.AST.AssociativeAST.BinaryExpressionNode bNode) 
-        //{
-        //    ChildTree = bNode;
-        //}
-
-        public CodeGenDS() 
-        {}
         
         /// <summary>
         /// This function prints the DS code into the destination stream
@@ -48,10 +39,10 @@ namespace ProtoCore
         public string GenerateCode()
         {
             Validity.Assert(null != astNodeList);
-            
-            for (int i = 0; i < astNodeList.Count; i++)
+
+            foreach (var astNode in astNodeList)
             {
-                EmitCode(astNodeList[i].ToString());
+                EmitCode(astNode.ToString());
             }
             return code;
         }

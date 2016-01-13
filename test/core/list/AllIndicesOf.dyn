@@ -1,0 +1,14 @@
+<Workspace Version="0.8.1.1181" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="100" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="a3111ceb-e391-4e9a-993d-43611df84599" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="390" y="390" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{&quot;foo&quot;, &quot;bar&quot;, &quot;foo&quot;};" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="4aa2b2f2-c157-4a4a-9be2-92bfcc217402" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="376" y="557" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="&quot;foo&quot;;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction guid="404af9cd-3668-4aa8-aea1-314a228bd6e1" type="Dynamo.Nodes.DSFunction" nickname="List.AllIndicesOf" x="778.6159" y="492.68978125" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.AllIndicesOf@var[]..[],var" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="a3111ceb-e391-4e9a-993d-43611df84599" start_index="0" end="404af9cd-3668-4aa8-aea1-314a228bd6e1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4aa2b2f2-c157-4a4a-9be2-92bfcc217402" start_index="0" end="404af9cd-3668-4aa8-aea1-314a228bd6e1" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+</Workspace>

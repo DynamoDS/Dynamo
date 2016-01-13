@@ -1,6 +1,5 @@
-﻿using System.Dynamic;
-using Autodesk.DesignScript.Runtime;
-
+﻿using Autodesk.DesignScript.Runtime;
+using Dynamo.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,7 +9,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-
+using Dynamo.Graph.Nodes;
 using Path = System.IO.Path;
 using Rectangle = System.Drawing.Rectangle;
 
@@ -53,6 +52,7 @@ namespace DSCore.IO
         ///     Gets the directory name of a file path.
         /// </summary>
         /// <param name="path">Path to get directory information of.</param>
+        /// <search>directorypath</search>
         public static string DirectoryName(string path)
         {
             return Path.GetDirectoryName(path);
@@ -100,7 +100,7 @@ namespace DSCore.IO
         }
 
         /// <summary>
-        /// 
+        ///  Moves a specified file to a new location
         /// </summary>
         /// <param name="path"></param>
         /// <param name="newPath"></param>
@@ -113,7 +113,7 @@ namespace DSCore.IO
         }
 
         /// <summary>
-        /// 
+        ///   Deletes the specified file.
         /// </summary>
         /// <param name="path"></param>
         public static void Delete(string path)
@@ -136,6 +136,7 @@ namespace DSCore.IO
         ///     Determines if a file exists at the given path.
         /// </summary>
         /// <param name="path"></param>
+        /// <search>filepath</search>
         public static bool Exists(string path)
         {
             return System.IO.File.Exists(path);
@@ -146,11 +147,50 @@ namespace DSCore.IO
         /// </summary>
         /// <param name="filePath">Path to write to</param>
         /// <param name="text">Text content</param>
-        /// <search>write file,text,file</search>
+        /// <search>write file,text,file,filepath</search>
         public static void WriteText(string filePath, string text)
         {
             System.IO.File.WriteAllText(filePath, text);
         }
+
+        #region Obsolete Methods
+
+
+        [NodeObsolete("ReadImageObsolete", typeof(Properties.Resources))]
+        public static Color[] ReadImage(string path, int xSamples, int ySamples)
+        {
+            var info = FromPath(path);
+            var image = Image.ReadFromFile(info);
+            return Image.Pixels(image, xSamples, ySamples).SelectMany(x => x).ToArray();
+        }
+
+        [NodeObsolete("LoadImageFromPathObsolete", typeof(Properties.Resources))]
+        public static Bitmap LoadImageFromPath(string path)
+        {
+            return Image.ReadFromFile(FromPath(path));
+        }
+
+        [NodeObsolete("ReadTextObsolete", typeof(Properties.Resources))]
+        public static string ReadText(string path)
+        {
+            return ReadText(FromPath(path));
+        }
+
+        [NodeObsolete("WriteImageObsolete", typeof(Properties.Resources))]
+        public static bool WriteImage(string filePath, string fileName, Bitmap image)
+        {
+            fileName = Path.ChangeExtension(fileName, "png");
+            Image.WriteToFile(Path.Combine(filePath, fileName), image);
+            return true;
+        }
+
+        [NodeObsolete("ExportToCSVObsolete", typeof(Properties.Resources))]
+        public static void ExportToCSV(string filePath, object[][] data)
+        {
+            CSV.WriteToFile(filePath, data);
+        }
+
+        #endregion
     }
 
     /// <summary>
@@ -247,6 +287,7 @@ namespace DSCore.IO
         ///     Determines if a directory exists at the given path.
         /// </summary>
         /// <param name="path">Path to a directory on disk.</param>
+        /// <search>directorypath</search>
         public static bool Exists(string path)
         {
             return System.IO.Directory.Exists(path);
@@ -262,7 +303,7 @@ namespace DSCore.IO
         ///     Loads the file as a bitmap.
         /// </summary>
         /// <param name="file">File object to load image from.</param>
-        /// <returns name="bitmap">Bitmap</returns>
+        /// <returns name="image">Image</returns>
         public static Bitmap ReadFromFile(FileInfo file)
         {
             using (var fs = new FileStream(file.FullName, FileMode.Open))
@@ -297,6 +338,7 @@ namespace DSCore.IO
         ///     Constructs an image from a 2d list of pixels.
         /// </summary>
         /// <param name="colors">2d rectangular list of colors representing the pixels.</param>
+        /// <returns name="image">Image</returns>
         public static Bitmap FromPixels(Color[][] colors)
         {
             var height = colors.Length;
@@ -313,6 +355,7 @@ namespace DSCore.IO
         /// <param name="colors">List of colors representing the pixels.</param>
         /// <param name="width">Width of the new image, in pixels.</param>
         /// <param name="height">Height of the new image, in pixels.</param>
+        /// <returns name="image">Image</returns>
         public static Bitmap FromPixels(Color[] colors, int width, int height)
         {
             return FromPixelsHelper(colors, width, height);
@@ -339,10 +382,10 @@ namespace DSCore.IO
 
         private static IEnumerable<byte> PixelsFromColor(Color color)
         {
-            yield return color.Alpha;
-            yield return color.Red;
-            yield return color.Green;
             yield return color.Blue;
+            yield return color.Green;
+            yield return color.Red;
+            yield return color.Alpha;
         }
 
         /// <summary>
@@ -352,7 +395,11 @@ namespace DSCore.IO
         [MultiReturn("width", "height")]
         public static Dictionary<string, int> Dimensions(Bitmap image)
         {
-            return new Dictionary<string, int> { { "width", image.Width }, { "height", image.Height } };
+            return new Dictionary<string, int> 
+            { 
+                { "width", image.Width }, 
+                { "height", image.Height } 
+            };
         }
 
         /// <summary>
@@ -361,7 +408,7 @@ namespace DSCore.IO
         /// <param name="path"></param>
         /// <param name="image">The image to write</param>
         /// <returns name="ok">It is successful or not.</returns>
-        /// <search>write image,image,file</search>
+        /// <search>write image,image,file,filepath</search>
         public static void WriteToFile(string path, Bitmap image)
         {
             image.Save(path);
@@ -392,7 +439,7 @@ namespace DSCore.IO
                     {
                         writer.Write(entry);
                         if (++count < line.Length)
-                            writer.Write(", ");
+                            writer.Write(",");
                     }
                     writer.WriteLine();
                 }
@@ -419,7 +466,7 @@ namespace DSCore.IO
                 csvDataList.Select(
                     row =>
                         row.data
-                            .Concat(Enumerable.Repeat(null as object, numCols - row.count))
+                            .Concat(Enumerable.Repeat("", numCols - row.count))
                             .ToArray())
                     .ToArray();
             return resultArray;

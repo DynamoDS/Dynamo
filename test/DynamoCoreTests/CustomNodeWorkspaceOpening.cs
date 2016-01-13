@@ -1,38 +1,60 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using Dynamo.Models;
-using Dynamo.Nodes;
-using Dynamo.ViewModels;
-
+using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Workspaces;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
-    public class CustomNodeWorkspaceOpening : DynamoViewModelUnitTest
+    internal class CustomNodeWorkspaceOpening : DynamoModelTestBase
     {
-        [Test]
-        public void CanOpenCustomNodeWorkspace()
+        public void OpenTestFile(string folder, string fileName)
         {
-            var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "Sequence2.dyf");
-            ViewModel.OpenCommand.Execute(examplePath);
-
-            var nodeWorkspace = model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel);
-            Assert.IsNotNull(nodeWorkspace);
-            Assert.AreEqual( model.CurrentWorkspace.Name, "Sequence2");
+            var examplePath = Path.Combine(TestDirectory, folder, fileName);
+            OpenModel(examplePath);
         }
 
         [Test]
-        [Category("Failure")]
+        public void CanOpenWorkspaceWithMissingCustomNodeThenFixByOpeningNeededCustomNodeWorkspace()
+        {
+            // a file with a missing custom node definition is opened
+            OpenTestFile(@"core\CustomNodes", "noro.dyn");
+
+            var homeWorkspace = CurrentDynamoModel.CurrentWorkspace as HomeWorkspaceModel;
+            Assert.NotNull(homeWorkspace);
+
+            var funcNode = homeWorkspace.Nodes.OfType<Function>().First();
+            Assert.IsTrue( funcNode.Definition.IsProxy );
+
+            // the required custom node is opened
+            OpenTestFile(@"core\CustomNodes\files", "ro.dyf");
+            Assert.IsFalse( funcNode.Definition.IsProxy );
+            
+            homeWorkspace.Run();
+
+            CurrentDynamoModel.CurrentWorkspace = homeWorkspace;
+
+            Assert.AreEqual(12.0, GetPreviewValue(funcNode.GUID));
+        }
+
+        [Test]
+        public void CanOpenCustomNodeWorkspace()
+        {
+            OpenTestFile(@"core\combine", "Sequence2.dyf");
+
+            var nodeWorkspace = CurrentDynamoModel.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel);
+            Assert.IsNotNull(nodeWorkspace);
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Name, "Sequence2");
+        }
+
+        [Test]
         public void CustomNodeWorkspaceIsAddedToSearchOnOpening()
         {
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "Sequence2.dyf");
-            ViewModel.OpenCommand.Execute(examplePath);
+            OpenTestFile(@"core\combine", "Sequence2.dyf");
             
-            ViewModel.SearchViewModel.SearchAndUpdateResults("Sequence2");
-            Assert.AreEqual(1, ViewModel.SearchViewModel.SearchResults.Count);
-            Assert.AreEqual("Sequence2", ViewModel.SearchViewModel.SearchResults[0].Name);
+            var res = CurrentDynamoModel.SearchModel.Search("Sequence2");
+            Assert.AreEqual(6, res.Count());
+            Assert.AreEqual("Sequence2", res.First().Name);
         }
     }
 

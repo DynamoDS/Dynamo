@@ -1,0 +1,9 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="202.4" Y="206.4" Width="0" Height="0" IsCrossSelection="false" />
+  <CreateNodeCommand X="202.4" Y="206.4" DefaultPosition="false" TransformCoordinates="true">
+    <Dynamo.Nodes.CodeBlockNodeModel guid="87f66299-8cb0-4d9a-a9d2-28bb07fb5267" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="110" y="175" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <PausePlaybackCommand Tag="FirstRun" PauseDurationInMs="20" />
+  <OpenFileCommand XmlFilePath=".\empty.dyn" />
+</Commands>

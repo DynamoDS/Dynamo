@@ -7,16 +7,12 @@ using System.Text;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
-    class Old_Language_Manual_Examples
+    class Old_Language_Manual_Examples : ProtoTestBase
     {
-        readonly TestFrameWork thisTest = new TestFrameWork();
         string importPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
-        [SetUp]
-        public void SetUp()
-        {
-        }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_ComplexUseCase")]
         [Category("SmokeTest")]
         public void Test_4_4_properties_1()
         {
@@ -104,6 +100,7 @@ g = d[f+1]; // c
         }
 
         [Test]
+        [Ignore][Category("DSDefinedClass_Ignored_ComplexUseCase")]
         [Category("SmokeTest")]
         public void Test_4_12_isRectangular()
         {

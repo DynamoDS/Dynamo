@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Windows.Annotations;
+
 using Autodesk.DesignScript.Runtime;
 
 namespace DSCore
@@ -7,7 +7,7 @@ namespace DSCore
     /// <summary>
     ///     Comparison methods.
     /// </summary>
-    [IsVisibleInDynamoLibrary(false)] 
+    [IsVisibleInDynamoLibrary(false)]
     public static class Compare
     {
         /// <summary>
