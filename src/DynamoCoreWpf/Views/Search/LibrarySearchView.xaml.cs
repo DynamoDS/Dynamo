@@ -140,5 +140,30 @@ namespace Dynamo.UI.Views
         }
 
         #endregion
+
+        private void OnClassNamePreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            var senderButton = e.OriginalSource as FrameworkElement;
+            if (senderButton == null)
+            {
+                return;
+            }
+
+            var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
+            if (searchElementVM == null)
+            {
+                return;
+            }
+
+            int lastIndex =
+                searchElementVM.FullName.LastIndexOf(Configuration.Configurations.CategoryDelimiterString,
+                    StringComparison.Ordinal);
+
+            var selectedClassWithCategory = lastIndex == -1
+                ? searchElementVM.FullName
+                : searchElementVM.FullName.Substring(0,
+                    lastIndex);
+            viewModel.OpenSelectedClass(selectedClassWithCategory);
+        }
     }
 }
