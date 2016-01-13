@@ -31,7 +31,7 @@ namespace Dynamo.Controls
         /// ZIndex is used to order nodes, when some node is clicked.
         /// This selected node should be moved above others.
         /// </summary>
-        private static int ZIndex = 0;
+        private static uint zIndex = 0;
 
         /// <summary>
         /// If false - hides preview control until it will be explicitly shown.
@@ -326,12 +326,12 @@ namespace Dynamo.Controls
             ViewModel.DynamoViewModel.OnRequestReturnFocusToView();
             view.mainGrid.Focus();
 
-            if (ZIndex >= Int16.MaxValue)
+            if (zIndex == UInt32.MaxValue)
             {
                 PrepareZIndex();
             }
 
-            ViewModel.ZIndex = ZIndex++;
+            ViewModel.ZIndex = zIndex++;
 
             Guid nodeGuid = ViewModel.NodeModel.GUID;
             ViewModel.DynamoViewModel.ExecuteCommand(
@@ -351,7 +351,7 @@ namespace Dynamo.Controls
         /// </summary>
         private void PrepareZIndex()
         {
-            ZIndex = 0;
+            zIndex = 0;
 
             var parent = TemplatedParent as ContentPresenter;
             if (parent == null) return;
