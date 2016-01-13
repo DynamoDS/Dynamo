@@ -112,6 +112,8 @@ namespace Dynamo.ViewModels
                     break;
 
                 case "DeleteModelCommand":
+                    CurrentSpaceViewModel.CancelActiveState();
+                    break;
                 case "CreateNodeCommand":
                 case "CreateProxyNodeCommand":
                 case "CreateNoteCommand":
