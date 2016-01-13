@@ -1001,6 +1001,17 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(group.SelectedModels.Any(m => m.GUID == Guid.Parse("7dc3b638-284f-4296-a793-8185ef42cd71")));
         }
 
+        [Test, RequiresSTA]
+        public void TestNodeDeletionWhileMakingConnectionToOtherNode()
+        {
+            RunCommandsFromFile("DeleteNodeWhileConnecting.xml");
+
+            // 1 node and no connectors
+            Assert.AreEqual(1, workspace.Nodes.Count());
+            Assert.AreEqual(false, workspace.Connectors.Any());
+        }
+
+
         #endregion
 
         #region General Node Operations Test Cases
