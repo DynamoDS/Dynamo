@@ -468,7 +468,8 @@ namespace Dynamo.Controls
 
         private void OnPreviewControlMouseLeave(object sender, MouseEventArgs e)
         {
-            if (!PreviewControl.StaysOpen && !PreviewControl.IsInTransition)
+            if (!PreviewControl.StaysOpen && !PreviewControl.IsInTransition 
+                && Keyboard.Modifiers != System.Windows.Input.ModifierKeys.Control)
             {
                 PreviewControl.TransitionToState(PreviewControl.State.Condensed);
             }
