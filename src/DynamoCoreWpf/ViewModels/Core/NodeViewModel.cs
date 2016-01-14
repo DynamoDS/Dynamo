@@ -40,7 +40,7 @@ namespace Dynamo.ViewModels
         ObservableCollection<PortViewModel> inPorts = new ObservableCollection<PortViewModel>();
         ObservableCollection<PortViewModel> outPorts = new ObservableCollection<PortViewModel>();
         NodeModel nodeLogic;
-        private double zIndex = 3;
+        private double zIndex = 0;
         private string astText = string.Empty;
         private bool isexplictFrozen;
         private bool canToggleFrozen = true;
