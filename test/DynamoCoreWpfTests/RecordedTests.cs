@@ -17,7 +17,7 @@ using Dynamo.ViewModels;
 using DynamoShapeManager;
 using NUnit.Framework;
 using System.Reflection;
-using DSCoreNodesUI.Input;
+using CoreNodeModels.Input;
 using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
@@ -29,7 +29,7 @@ using TestServices;
 
 using PythonNodeModels;
 
-using IntegerSlider = DSCoreNodesUI.Input.IntegerSlider;
+using IntegerSlider = CoreNodeModels.Input.IntegerSlider;
 
 namespace DynamoCoreWpfTests
 {
@@ -1000,6 +1000,17 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, group.SelectedModels.Count());
             Assert.IsTrue(group.SelectedModels.Any(m => m.GUID == Guid.Parse("7dc3b638-284f-4296-a793-8185ef42cd71")));
         }
+
+        [Test, RequiresSTA]
+        public void TestNodeDeletionWhileMakingConnectionToOtherNode()
+        {
+            RunCommandsFromFile("DeleteNodeWhileConnecting.xml");
+
+            // 1 node and no connectors
+            Assert.AreEqual(1, workspace.Nodes.Count());
+            Assert.AreEqual(false, workspace.Connectors.Any());
+        }
+
 
         #endregion
 

@@ -3,7 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using DSCore.IO;
-using DSCoreNodesUI.Input;
+using CoreNodeModels.Input;
 using NUnit.Framework;
 using Color = DSCore.Color;
 using Directory = System.IO.Directory;

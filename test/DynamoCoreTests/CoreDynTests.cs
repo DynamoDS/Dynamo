@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using DSCoreNodesUI;
-using DSCoreNodesUI.Input;
+using CoreNodeModels;
+using CoreNodeModels.Input;
 using Dynamo.Graph.Nodes;
 using NUnit.Framework;
 

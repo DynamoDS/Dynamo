@@ -39,6 +39,33 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 
 ## Releases ##
 
+### 0.9.1 ###
+
+Dynamo Core
+- Direct manipulation: Sometimes numerical manipulation isn’t the right approach. Now you can manually push and pull Point geometry when in navigating in the background 3d preview.
+- Freeze Functionality: When you have long running portions of your graph, or don’t want to export data to other applications, or want to debug some logic, don’t unplug your nodes. Now you can suspend execution of specified nodes in the graph by using Freeze in the right-click contextual menu
+- Search Enhancements: Only look at the node libraries you want to with new filtering tools.  See more options at once by using a compact view, or get more information with the detail view.
+- Zoom re-center: Select a node, then zoom and recenter your orbit on it in the 3d Preview Navigation
+- CNtrl-drag:  Copy/Paste nodes in a familiar way
+- Add comments to custom node inputs and full default states for complex data types
+- More forgiving DesignScript syntax:  Users can now write instance methods (ex. MyCurve.PointAtParameter(0.5)) as Static Methods (ex. - Curve.PointAtParameter(MyCurve, 0.5))
+
+Known issues
+- No backwards compatibility with 0.9.0 and before
+
+Dynamo Studio
+- Share your work online:  Share interactive parametric models online.  Just publish your Dynamo graph and send a link to your colleagues or the whole world.  People can view and interact with your designs in a regular web browser with no Dynamo installed
+- ImportExport: Read directly from DWG files and only pull out those pieces of the file that you want.  
+
+Known issues
+- Customizer not using  Display.SurfaceGeometry
+
+Dynamo for Revit
+- Batch placement of adaptive components : Huge improvements to the speed and reliability of placing large numbers of adaptive components.
+
+Known issues:
+- In some situations, placement of Adaptive components requires a change in list structure.  The AC placement nodes now expect to receive lists of lists of placement coordinates.  In the past, the nodes expected to only place one AC, now it expects to place many. If you are going to only place a single component, it needs to be nesting into a list.
+
 ### 0.9.0 ###
 
 Create DirectShape Elements in Dynamo

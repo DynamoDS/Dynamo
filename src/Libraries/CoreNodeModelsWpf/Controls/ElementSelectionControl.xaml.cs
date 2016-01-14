@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace Dynamo.Wpf
+namespace CoreNodeModelsWpf
 {
     /// <summary>
     /// Interaction logic for ElementSelectionControl.xaml

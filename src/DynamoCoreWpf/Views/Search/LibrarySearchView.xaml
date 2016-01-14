@@ -73,7 +73,25 @@
                                     <!-- Node class, group icon, node category -->
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="{Binding Class}"
-                                                   Foreground="{StaticResource NodeCategoryForeground}" />
+                                                   PreviewMouseDown="OnClassNamePreviewMouseDown">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground"
+                                                            Value="{StaticResource NodeCategoryForeground}" />
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver"
+                                                                 Value="True">
+                                                            <Setter Property="Foreground"
+                                                                    Value="White" />
+                                                            <Setter Property="Cursor"
+                                                                    Value="Hand" />
+                                                            <Setter Property="TextBlock.TextDecorations"
+                                                                    Value="Underline" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
                                         <fa:ImageAwesome Icon="{Binding GroupIconName}"
                                                          Foreground="{Binding Group, 
                                                                               Converter={StaticResource ElementGroupToColorConverter}}"

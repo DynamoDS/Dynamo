@@ -718,7 +718,55 @@ namespace Dynamo.Tests
             //Redo the operation - notes should be within that group
             model.CurrentWorkspace.Redo();
             Assert.AreEqual(4, annotation.SelectedModels.Count());
-   
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCopyPasteGroup_IfItsNodeDeletedAfterCopying()
+        {
+            //Add a Node
+            var ws = CurrentDynamoModel.CurrentWorkspace;
+            var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
+            ws.AddAndRegisterNode(addNode);
+            Assert.AreEqual(ws.Nodes.Count(), 1);
+
+            //Add a Note 
+            var addNote = ws.AddNote(false, 200, 200, "This is a test note", Guid.NewGuid());
+            Assert.AreEqual(ws.Notes.Count(), 1);
+
+            //Select the node and notes
+            DynamoSelection.Instance.Selection.Add(addNode);
+            DynamoSelection.Instance.Selection.Add(addNote);
+
+            //create the group around selected nodes and notes
+            var groupId = Guid.NewGuid();
+            var annotation = ws.AddAnnotation("This is a test group", groupId);
+            Assert.AreEqual(ws.Annotations.Count(), 1);
+            Assert.AreNotEqual(0, annotation.Width);
+
+            //Add the group  selection
+            DynamoSelection.Instance.Selection.Add(annotation);
+
+            //Copy the group
+            CurrentDynamoModel.Copy();
+
+            var modelToDelete = new List<ModelBase> { addNode };
+
+            //Delete the node
+            CurrentDynamoModel.DeleteModelInternal(modelToDelete);
+
+            // only the note should remain
+            Assert.AreEqual(1, annotation.SelectedModels.Count());
+
+            //paste the group
+            CurrentDynamoModel.Paste();
+
+            //there should be 2 groups in the workspace
+            Assert.AreEqual(ws.Annotations.Count(), 2);
+            var pastedGroup = ws.Annotations.First(g => g != annotation);
+
+            // group has been copied with 1 node and 1 note
+            Assert.AreEqual(2, pastedGroup.SelectedModels.Count());
         }
     }
 }

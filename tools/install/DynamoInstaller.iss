@@ -42,6 +42,7 @@ UsePreviousAppDir=no
 [Dirs]
 Name: "{app}\libg_220"
 Name: "{app}\libg_221"
+Name: "{app}\libg_222"
 Name: "{app}\libg_locale"
 Name: "{app}\nodes"
 Name: "{app}\extensions"
@@ -92,6 +93,7 @@ Source: Extra\RevitAddinUtility.dll; DestDir: {app}; Flags: ignoreversion overwr
 ;LibG
 Source: temp\bin\LibG_220\*; DestDir: {app}\libg_220; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: temp\bin\LibG_221\*; DestDir: {app}\libg_221; Flags: ignoreversion overwritereadonly; Components: DynamoCore
+Source: temp\bin\LibG_222\*; DestDir: {app}\libg_222; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: temp\bin\LibG_locale\*; DestDir: {app}\libg_locale; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 
 ;Icon
@@ -132,6 +134,7 @@ Type: files; Name: "{app}\DynamoAddinGenerator.exe"
 Type: files; Name: "{app}\RevitAddinUtility.dll"
 Type: filesandordirs; Name: {app}\libg_220
 Type: filesandordirs; Name: {app}\libg_221
+Type: filesandordirs; Name: {app}\libg_222
 Type: filesandordirs; Name: {app}\libg_locale
 
 [Run]

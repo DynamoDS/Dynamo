@@ -117,6 +117,7 @@ namespace ProtoFFI
                 ProtoCore.Lang.FFIFunctionEndPoint.FFIHandlers.Add("dll", Instance);
                 helpers.Add(FFILanguage.CSharp, new CSModuleHelper());
             }
+            registered = true;
         }
 
         public static void Register(FFILanguage type, ModuleHelper helper)

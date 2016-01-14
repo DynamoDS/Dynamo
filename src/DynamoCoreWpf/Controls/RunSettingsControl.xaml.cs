@@ -45,7 +45,7 @@ namespace Dynamo.Wpf.Controls
         {
             var dynamoView = WpfUtilities.FindUpVisualTree<DynamoView>(this);
             var dynamoVm = dynamoView.DataContext as DynamoViewModel;
-            dynamoVm.ReturnFocusToSearch();
+            dynamoVm.OnRequestReturnFocusToView();
         }
     }
 }

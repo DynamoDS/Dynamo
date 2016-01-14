@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-
+using System.Windows.Media;
 using Dynamo.Graph.Nodes;
 using Dynamo.Prompts;
 using Dynamo.Selection;
@@ -334,7 +334,7 @@ namespace Dynamo.Controls
             if (ViewModel == null) return;
 
             var view = WpfUtilities.FindUpVisualTree<DynamoView>(this);
-            ViewModel.DynamoViewModel.ReturnFocusToSearch();
+            ViewModel.DynamoViewModel.OnRequestReturnFocusToView();
             view.mainGrid.Focus();
 
             Guid nodeGuid = ViewModel.NodeModel.GUID;
@@ -401,7 +401,7 @@ namespace Dynamo.Controls
                 PreviewControl.TransitionToState(PreviewControl.State.Condensed);
             }
             // If it's condensed, then try to hide it.
-            if (PreviewControl.IsCondensed)
+            if (PreviewControl.IsCondensed && Mouse.Captured == null)
             {
                 PreviewControl.TransitionToState(PreviewControl.State.Hidden);
             }
@@ -474,6 +474,34 @@ namespace Dynamo.Controls
             }
         }
 
+
+        private void OnNodeViewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (Mouse.Captured == null) return;
+
+            bool isInside = false;
+            VisualTreeHelper.HitTest(
+                this,
+                d =>
+                {
+                    if (d == this)
+                    {
+                        isInside = true;
+                    }
+
+                    return HitTestFilterBehavior.Stop;
+                },
+                ht => HitTestResultBehavior.Stop,
+                new PointHitTestParameters(e.GetPosition(this)));
+            if (!isInside)
+            {
+                if (previewControl.IsCondensed)
+                {
+                    PreviewControl.TransitionToState(PreviewControl.State.Hidden);
+                }
+            }
+        }
+
         /// <summary>
         /// Enables/disables preview control. 
         /// </summary>
@@ -488,6 +516,5 @@ namespace Dynamo.Controls
         }
 
         #endregion
-      
     }
 }

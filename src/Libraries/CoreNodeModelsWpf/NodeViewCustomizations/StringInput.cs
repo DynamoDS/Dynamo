@@ -1,15 +1,16 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using DSCoreNodesUI.Input;
+using CoreNodeModels.Input;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.UI.Prompts;
 using Dynamo.ViewModels;
 using Binding = System.Windows.Data.Binding;
 using VerticalAlignment = System.Windows.VerticalAlignment;
+using Dynamo.Wpf;
 
-namespace Dynamo.Wpf.Nodes
+namespace CoreNodeModelsWpf.Nodes
 {
     public class StringInputNodeViewCustomization : INodeViewCustomization<StringInput>
     {
@@ -24,7 +25,7 @@ namespace Dynamo.Wpf.Nodes
 
             this.editWindowItem = new MenuItem
             {
-                Header = Properties.Resources.StringInputNodeEditMenu, 
+                Header = Dynamo.Wpf.Properties.Resources.StringInputNodeEditMenu, 
                 IsCheckable = false
             };
             nodeView.MainContextMenu.Items.Add(editWindowItem);

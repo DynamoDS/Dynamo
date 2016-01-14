@@ -8,7 +8,7 @@ using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
-using DSCoreNodesUI.Input;
+using CoreNodeModels.Input;
 using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
@@ -348,7 +348,7 @@ namespace Dynamo.Manipulation
             var inputNodeGuid = Guid.NewGuid();
 
             var command = new DynamoModel.CreateAndConnectNodeCommand(inputNodeGuid, Node.GUID,
-                "DSCoreNodesUI.Input.DoubleSlider", outputPortIndex, inputPortIndex, loc.Item1, loc.Item2, false, false);
+                "CoreNodeModels.Input.DoubleSlider", outputPortIndex, inputPortIndex, loc.Item1, loc.Item2, false, false);
 
             CommandExecutive.ExecuteCommand(command, UniqueId, ExtensionName);
 
@@ -566,16 +566,20 @@ namespace Dynamo.Manipulation
 
         public static Line ToLine(this IRay ray)
         {
-            var origin = ray.Origin.ToPoint();
-            var direction = ray.Direction.ToVector();
-            return Line.ByStartPointEndPoint(origin, origin.Add(direction.Scale(rayScaleFactor)));
+            using(var origin = ray.Origin.ToPoint())
+            using (var direction = ray.Direction.ToVector())
+            {
+                return Line.ByStartPointEndPoint(origin, origin.Add(direction.Scale(rayScaleFactor)));
+            }
         }
 
         public static Line ToOriginCenteredLine(this IRay ray)
         {
-            var origin = ray.Origin.ToPoint();
-            var direction = ray.Direction.ToVector();
-            return ToOriginCenteredLine(origin, direction);
+            using(var origin = ray.Origin.ToPoint())
+            using (var direction = ray.Direction.ToVector())
+            {
+                return ToOriginCenteredLine(origin, direction);
+            }
         }
 
         public static Line ToOriginCenteredLine(Point origin, Vector axis)

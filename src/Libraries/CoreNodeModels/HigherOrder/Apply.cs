@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using DSCoreNodesUI.Properties;
+using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
 
-namespace DSCoreNodesUI.HigherOrder
+namespace CoreNodeModels.HigherOrder
 {
     [NodeName("Function.Apply")]
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
-    [NodeDescription("FunctionApplyDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("FunctionApplyDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("DSCoreNodesUI.HigherOrder.ApplyFunction")]
     public class ApplyFunction : VariableInputNode
     {
         public ApplyFunction() : base()
@@ -64,8 +65,9 @@ namespace DSCoreNodesUI.HigherOrder
 
     [NodeName("Function.Compose")]
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
-    [NodeDescription("FunctionComposeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("FunctionComposeDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("DSCoreNodesUI.HigherOrder.ComposeFunctions")]
     public class ComposeFunctions : VariableInputNode
     {
         public ComposeFunctions()
