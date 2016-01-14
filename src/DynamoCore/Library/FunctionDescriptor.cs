@@ -240,7 +240,10 @@ namespace Dynamo.Engine
                         .FirstOrDefault();
                     
                     //if attribute is found compose node category string with last part from attribute
-                    if (!string.IsNullOrEmpty(nodeCat))
+                    if (!string.IsNullOrEmpty(nodeCat) && (
+                        nodeCat == LibraryServices.Categories.Constructors
+                        || nodeCat == LibraryServices.Categories.Properties
+                        || nodeCat == LibraryServices.Categories.MemberFunctions))
                     {
                         categoryBuf.Append("." + UnqualifedClassName + "." + nodeCat);
                         return categoryBuf.ToString();
