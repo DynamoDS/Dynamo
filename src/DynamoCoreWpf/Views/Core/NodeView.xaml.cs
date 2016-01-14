@@ -444,7 +444,10 @@ namespace Dynamo.Controls
                     }
                     if (!IsMouseOver)
                     {
-                        preview.TransitionToState(PreviewControl.State.Hidden);
+                        if (!(Mouse.Captured != null && IsMouseInsideNodeOrPreview(Mouse.GetPosition(this))))
+                        {
+                            preview.TransitionToState(PreviewControl.State.Hidden);
+                        }
                     }
                     break;
                 }
