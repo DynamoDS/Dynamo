@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using Dynamo.Graph.Nodes;
 using Dynamo.Interfaces;
 using Dynamo.Library;
 
@@ -222,6 +224,30 @@ namespace Dynamo.Engine
             {
                 var categoryBuf = new StringBuilder();
                 categoryBuf.Append(GetRootCategory());
+                
+                //if this is not BuiltIn function search NodeCategoryAttribute for it
+                if(ClassName!=null)
+                {
+                    //get class type of function
+                    var type = AppDomain.CurrentDomain.GetAssemblies().First(x => x.GetName().Name == Path.GetFileNameWithoutExtension(Assembly)).GetType(ClassName);
+
+                    //get NodeCategoryAttribute for this function if it was been defined
+                    var nodeCat = type.GetMethods().Where(x=>x.Name==FunctionName)
+                        .Select(x => x.GetCustomAttribute(typeof (NodeCategoryAttribute)))
+                        .Where(x=>x!=null)
+                        .Cast<NodeCategoryAttribute>()
+                        .Select(x=>x.ElementCategory)
+                        .FirstOrDefault();
+                    
+                    //if attribute is found compose node category string with last part from attribute
+                    if (!string.IsNullOrEmpty(nodeCat))
+                    {
+                        categoryBuf.Append("." + UnqualifedClassName + "." + nodeCat);
+                        return categoryBuf.ToString();
+                    }
+
+                }
+               
                 switch (Type)
                 {
                     case FunctionType.Constructor:
