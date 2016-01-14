@@ -71,6 +71,11 @@ namespace Dynamo.ViewModels
             set { _port.UsingDefaultValue = value; }
         }
 
+        public bool IsHitTestVisible
+        {
+            get { return _node.WorkspaceViewModel.ActiveConnector != null; }
+        }
+
         public System.Windows.Thickness MarginThickness
         {
             get { return _port.MarginThickness.AsWindowsType(); }
@@ -126,7 +131,18 @@ namespace Dynamo.ViewModels
             _port = port;
            
             _port.PropertyChanged += _port_PropertyChanged;
-            _node.PropertyChanged += _node_PropertyChanged;          
+            _node.PropertyChanged += _node_PropertyChanged;
+            _node.WorkspaceViewModel.PropertyChanged += Workspace_PropertyChanged;
+        }
+
+        private void Workspace_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "ActiveConnector":
+                    RaisePropertyChanged("IsHitTestVisible");
+                    break;
+            }
         }
 
         void _node_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

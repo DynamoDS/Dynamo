@@ -23,7 +23,9 @@ namespace Dynamo.Controls
     public partial class NodeView : IViewModelView<NodeViewModel>
     {
         public delegate void SetToolTipDelegate(string message);
+
         public delegate void UpdateLayoutDelegate(FrameworkElement el);
+
         private NodeViewModel viewModel = null;
         private PreviewControl previewControl = null;
 
@@ -116,7 +118,7 @@ namespace Dynamo.Controls
         {
             if (ViewModel == null || ViewModel.PreferredSize.HasValue) return;
 
-            var size = new[] { ActualWidth, nodeBorder.ActualHeight };
+            var size = new[] {ActualWidth, nodeBorder.ActualHeight};
             if (ViewModel.SetModelSizeCommand.CanExecute(size))
             {
                 ViewModel.SetModelSizeCommand.Execute(size);
@@ -167,7 +169,7 @@ namespace Dynamo.Controls
             ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
         }
 
-        void NodeLogic_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void NodeLogic_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -216,7 +218,7 @@ namespace Dynamo.Controls
             }));
         }
 
-        void ViewModel_RequestsSelection(object sender, EventArgs e)
+        private void ViewModel_RequestsSelection(object sender, EventArgs e)
         {
             if (!ViewModel.NodeLogic.IsSelected)
             {
@@ -236,7 +238,7 @@ namespace Dynamo.Controls
             }
         }
 
-        void ViewModel_RequestShowNodeRename(object sender, NodeDialogEventArgs e)
+        private void ViewModel_RequestShowNodeRename(object sender, NodeDialogEventArgs e)
         {
             if (e.Handled) return;
 
@@ -261,7 +263,7 @@ namespace Dynamo.Controls
             editWindow.ShowDialog();
         }
 
-        void ViewModel_RequestShowNodeHelp(object sender, NodeDialogEventArgs e)
+        private void ViewModel_RequestShowNodeHelp(object sender, NodeDialogEventArgs e)
         {
             if (e.Handled) return;
 
@@ -274,12 +276,13 @@ namespace Dynamo.Controls
 
         }
 
-        void NodeLogic_DispatchedToUI(object sender, UIDispatcherEventArgs e)
+        private void NodeLogic_DispatchedToUI(object sender, UIDispatcherEventArgs e)
         {
             Dispatcher.Invoke(e.ActionToDispatch);
         }
 
         private bool nodeViewReadyCalledOnce = false;
+
         private void NodeViewReady(object sender, RoutedEventArgs e)
         {
             if (nodeViewReadyCalledOnce) return;
@@ -318,20 +321,23 @@ namespace Dynamo.Controls
             ViewModel.ValidateConnectionsCommand.Execute(null);
         }
 
-        private void topControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (ViewModel == null) return;
-
-            var view = WpfUtilities.FindUpVisualTree<DynamoView>(this);
-            ViewModel.DynamoViewModel.OnRequestReturnFocusToView();
-            view.mainGrid.Focus();
-
             if (zIndex == UInt32.MaxValue)
             {
                 PrepareZIndex();
             }
 
             ViewModel.ZIndex = zIndex++;
+        }
+
+        private void topControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (ViewModel == null) return;
+
+            var view = WpfUtilities.FindUpVisualTree<DynamoView>(this);
+            ViewModel.DynamoViewModel.OnRequestReturnFocusToView();
+            view.mainGrid.Focus();            
 
             Guid nodeGuid = ViewModel.NodeModel.GUID;
             ViewModel.DynamoViewModel.ExecuteCommand(
