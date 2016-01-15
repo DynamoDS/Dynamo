@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>DynamoVisualProgramming.WpfUILibrary</id>
-    <version>0.9.1-beta1</version>
+    <version>1.0.0-beta1</version>
     <authors>Autodesk</authors>
     <owners>Autodesk</owners>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
@@ -10,7 +10,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Build node libraries for Dynamo with custom UI in WPF.</description>
     <summary>This package contains all that is required to get up and running building nodes for the Dynamo Visual Programming language with custom UI in WPF.</summary>
-    <copyright>Copyright Autodesk 2015</copyright>
+    <copyright>Copyright Autodesk 2016</copyright>
     <iconUrl>https://raw.githubusercontent.com/DynamoDS/Dynamo/master/doc/distrib/Images/logo_square_32x32.png</iconUrl>
     <frameworkAssemblies>
         <frameworkAssembly assemblyName="System.Xaml"/>
