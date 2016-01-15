@@ -26,6 +26,7 @@ namespace Dynamo.Controls
         public delegate void UpdateLayoutDelegate(FrameworkElement el);       
         private NodeViewModel viewModel = null;
         private PreviewControl previewControl = null;
+        private const int previewDelay = 1000;
 
         /// <summary>
         /// If false - hides preview control until it will be explicitly shown.
@@ -388,7 +389,7 @@ namespace Dynamo.Controls
 
                 PreviewControl.TransitionToState(PreviewControl.State.Condensed);
 
-                Dispatcher.DelayInvoke(500, ExpandPreviewControl);
+                Dispatcher.DelayInvoke(previewDelay, ExpandPreviewControl);
             }
         }
 
@@ -442,7 +443,7 @@ namespace Dynamo.Controls
                 {
                     if (preview.IsMouseOver)
                     {
-                        Dispatcher.DelayInvoke(500, ExpandPreviewControl);
+                        Dispatcher.DelayInvoke(previewDelay, ExpandPreviewControl);
                     }
                     if (!IsMouseOver)
                     {
@@ -479,7 +480,7 @@ namespace Dynamo.Controls
         {
             if (PreviewControl.IsCondensed)
             {
-                Dispatcher.DelayInvoke(500, ExpandPreviewControl);
+                Dispatcher.DelayInvoke(previewDelay, ExpandPreviewControl);
             }
         }
 
