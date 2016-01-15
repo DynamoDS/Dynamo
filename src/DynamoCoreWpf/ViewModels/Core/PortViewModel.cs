@@ -71,6 +71,13 @@ namespace Dynamo.ViewModels
             set { _port.UsingDefaultValue = value; }
         }
 
+        /// <summary>
+        /// IsHitTestVisible property gets a value that declares whether 
+        /// a Snapping rectangle can possibly be returned as a hit test result.
+        /// When ActiveConnector is not null, Snapping rectangle handles click events.
+        /// When ActiveConnector is null, Snapping rectangle does not handle click events 
+        /// and user can "click though invisible snapping area".
+        /// </summary>
         public bool IsHitTestVisible
         {
             get { return _node.WorkspaceViewModel.ActiveConnector != null; }
