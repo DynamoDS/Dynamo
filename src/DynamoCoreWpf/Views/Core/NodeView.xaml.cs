@@ -26,6 +26,7 @@ namespace Dynamo.Controls
         public delegate void UpdateLayoutDelegate(FrameworkElement el);       
         private NodeViewModel viewModel = null;
         private PreviewControl previewControl = null;
+        private const int previewDelay = 1000;
 
         /// <summary>
         /// If false - hides preview control until it will be explicitly shown.
@@ -387,6 +388,8 @@ namespace Dynamo.Controls
                     PreviewControl.BindToDataSource(ViewModel.NodeModel.CachedValue);
 
                 PreviewControl.TransitionToState(PreviewControl.State.Condensed);
+
+                Dispatcher.DelayInvoke(previewDelay, ExpandPreviewControl);
             }
         }
 
@@ -440,7 +443,7 @@ namespace Dynamo.Controls
                 {
                     if (preview.IsMouseOver)
                     {
-                        preview.TransitionToState(PreviewControl.State.Expanded);
+                        Dispatcher.DelayInvoke(previewDelay, ExpandPreviewControl);
                     }
                     if (!IsMouseOver)
                     {
@@ -453,7 +456,7 @@ namespace Dynamo.Controls
                 }
                 case PreviewControl.State.Expanded:
                 {
-                    if (!IsMouseOver || !preview.IsMouseOver)
+                    if (!IsMouseOver && !preview.IsMouseOver)
                     {
                         preview.TransitionToState(PreviewControl.State.Condensed);
                     }
@@ -462,18 +465,30 @@ namespace Dynamo.Controls
             };
         }
 
+        /// <summary>
+        /// If mouse is over node or preview control, then preview control is expanded.
+        /// </summary>
+        private void ExpandPreviewControl()
+        {
+            if ((IsMouseOver || PreviewControl.IsMouseOver) && PreviewControl.IsCondensed)
+            {
+                PreviewControl.TransitionToState(PreviewControl.State.Expanded);
+            }
+        }
+
         private void OnPreviewControlMouseEnter(object sender, MouseEventArgs e)
         {
             if (PreviewControl.IsCondensed)
             {
-                PreviewControl.TransitionToState(PreviewControl.State.Expanded);
+                Dispatcher.DelayInvoke(previewDelay, ExpandPreviewControl);
             }
         }
 
         private void OnPreviewControlMouseLeave(object sender, MouseEventArgs e)
         {
             if (!PreviewControl.StaysOpen && !PreviewControl.IsInTransition 
-                && Keyboard.Modifiers != System.Windows.Input.ModifierKeys.Control)
+                && Keyboard.Modifiers != System.Windows.Input.ModifierKeys.Control
+                && !IsMouseOver)
             {
                 PreviewControl.TransitionToState(PreviewControl.State.Condensed);
             }
