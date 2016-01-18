@@ -63,7 +63,7 @@ namespace Dynamo.ViewModels
 
         public double ZIndex
         {
-            get { return 1; }
+            get { return Configuration.Configurations.StartZIndexForGroup; }
             
         }
 
