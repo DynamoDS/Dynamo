@@ -132,7 +132,8 @@
     <Grid Name="outerContainer"
           HorizontalAlignment="Left"
           VerticalAlignment="Top"
-          Background="#01000000">
+          Background="#01000000"
+          IsHitTestVisible="True">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />

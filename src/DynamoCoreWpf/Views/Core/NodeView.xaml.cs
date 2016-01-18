@@ -32,8 +32,10 @@ namespace Dynamo.Controls
         /// <summary>
         /// ZIndex is used to order nodes, when some node is clicked.
         /// This selected node should be moved above others.
+        /// Start value of zIndex is 3, because 1 is for groups and 2 is for connectors.
+        /// Nodes should be always at the top.
         /// </summary>
-        private static uint zIndex = 0;
+        private static uint zIndex = 3;
 
         /// <summary>
         /// If false - hides preview control until it will be explicitly shown.
@@ -357,14 +359,14 @@ namespace Dynamo.Controls
         /// </summary>
         private void PrepareZIndex()
         {
-            zIndex = 0;
+            zIndex = 3;
 
             var parent = TemplatedParent as ContentPresenter;
             if (parent == null) return;
 
             foreach (var child in parent.ChildrenOfType<NodeView>())
             {
-                child.ViewModel.ZIndex = 0;
+                child.ViewModel.ZIndex = 3;
             }
         }
 
