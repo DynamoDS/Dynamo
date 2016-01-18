@@ -508,7 +508,7 @@ namespace Dynamo.Controls
         {
             if (!PreviewControl.StaysOpen && !PreviewControl.IsInTransition 
                 && Keyboard.Modifiers != System.Windows.Input.ModifierKeys.Control
-                && !IsMouseOver)
+                && !IsMouseOver && Mouse.Captured != null && !IsMouseInsideNodeOrPreview(e.GetPosition(this)))
             {
                 PreviewControl.TransitionToState(PreviewControl.State.Condensed);
             }
