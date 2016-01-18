@@ -403,7 +403,7 @@ namespace Dynamo.Manipulation
         {
             var packages = GenerateRenderPackages();
 
-            BackgroundPreviewViewModel.AddGeometryForRenderPackages(packages);
+            BackgroundPreviewViewModel.AddGeometryForRenderPackages(packages, true);
         }
 
         /// <summary>

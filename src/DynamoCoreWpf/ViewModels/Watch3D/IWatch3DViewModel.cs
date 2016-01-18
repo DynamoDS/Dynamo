@@ -81,7 +81,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// for display in the canvas
         /// </summary>
         /// <param name="packages">render packages to be drawn</param>
-        void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages);
+        /// <param name="forceAsyncCall"></param>
+        void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages, bool forceAsyncCall = false);
 
         /// <summary>
         /// Finds a geometry corresponding to a string identifier

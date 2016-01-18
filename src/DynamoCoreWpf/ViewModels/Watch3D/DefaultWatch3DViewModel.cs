@@ -447,7 +447,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             return null;
         }
 
-        public virtual void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages)
+        public virtual void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages, bool forceAsyncCall = false)
         {
             // Override in inherited classes.
         }
