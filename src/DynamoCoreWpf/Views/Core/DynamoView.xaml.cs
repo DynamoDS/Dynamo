@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
@@ -19,7 +18,6 @@ using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Dynamo.Search;
 using Dynamo.Selection;
-using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
@@ -32,7 +30,6 @@ using Dynamo.UI.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Configuration;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
@@ -45,10 +42,8 @@ using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views.Gallery;
 using Dynamo.Wpf.Extensions;
-using Dynamo.Interfaces;
 using Dynamo.Wpf.Views.PackageManager;
 using Dynamo.Views;
-using System.Threading.Tasks;
 
 namespace Dynamo.Controls
 {
@@ -1712,15 +1707,6 @@ namespace Dynamo.Controls
             {
                 dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin -= loginService.ShowLogin;
             }
-        }
-    }
-
-    public static class DispatcherExtension
-    {
-        public static async void DelayInvoke(this Dispatcher ds, int delay, Action callback)
-        {
-            await Task.Delay(delay);
-            await ds.BeginInvoke(callback);
         }
     }
 }
