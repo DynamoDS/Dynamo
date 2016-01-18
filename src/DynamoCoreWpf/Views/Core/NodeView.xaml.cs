@@ -476,7 +476,7 @@ namespace Dynamo.Controls
                     }
                 case PreviewControl.State.Expanded:
                     {
-                        if (!IsMouseOver || !preview.IsMouseOver)
+                        if (!IsMouseOver && !preview.IsMouseOver)
                         {
                             preview.TransitionToState(PreviewControl.State.Condensed);
                         }
