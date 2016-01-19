@@ -160,7 +160,24 @@ namespace Dynamo.Views
             };
         }
 
-        void OnSelectionCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        internal Point GetCenterPoint()
+        {
+            var x = outerCanvas.ActualWidth / 2.0;
+            var y = outerCanvas.ActualHeight / 2.0;
+            var centerPt = new Point(x, y);
+            var transform = outerCanvas.TransformToDescendant(WorkspaceElements);
+            return transform.Transform(centerPt);
+        }
+
+        internal Rect GetVisibleBounds()
+        {
+            var t = outerCanvas.TransformToDescendant(WorkspaceElements);
+            var topLeft = t.Transform(new Point());
+            var bottomRight = t.Transform(new Point(outerCanvas.ActualWidth, outerCanvas.ActualHeight));
+            return new Rect(topLeft, bottomRight);
+        }
+
+        void OnSelectionCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (ViewModel == null) return;
             ViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
@@ -340,12 +357,6 @@ namespace Dynamo.Views
             // center the node at the drop point
             if (!Double.IsNaN(node.Width))
                 dropPt.X -= (node.Width / 2.0);
-
-            if (!Double.IsNaN(node.Height))
-                dropPt.Y -= (node.Height / 2.0);
-
-            if (!Double.IsNaN(node.Width))
-                dropPt.X -= (node.Height / 2.0);
 
             if (!Double.IsNaN(node.Height))
                 dropPt.Y -= (node.Height / 2.0);
