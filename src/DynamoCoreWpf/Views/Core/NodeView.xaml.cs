@@ -542,6 +542,7 @@ namespace Dynamo.Controls
 
             if (previewEnabled == false && !PreviewControl.StaysOpen)
             {
+                PreviewControl.TransitionToState(PreviewControl.State.Condensed);
                 PreviewControl.TransitionToState(PreviewControl.State.Hidden);
             }
         }
