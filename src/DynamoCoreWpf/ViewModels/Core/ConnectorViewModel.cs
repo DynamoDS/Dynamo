@@ -61,6 +61,11 @@ namespace Dynamo.ViewModels
         }
 
         private int zIndex = Configurations.StartZIndexForConnector;
+
+        /// <summary>
+        /// ZIndex is used to order UI elements on drag canvas.
+        /// Every time when node is clicked, ZIndex of its' connector should be increased.
+        /// </summary>
         public int ZIndex
         {
             get { return zIndex; }
@@ -194,6 +199,9 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Node from which connector was dragged.
+        /// </summary>
         public NodeViewModel StartNode
         {
             get
@@ -202,6 +210,9 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Node to which connector was dragged.
+        /// </summary>
         public NodeViewModel EndNode
         {
             get
