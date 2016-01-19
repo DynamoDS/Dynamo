@@ -226,29 +226,36 @@ namespace Dynamo.Engine
                 categoryBuf.Append(GetRootCategory());
                 
                 //if this is not BuiltIn function search NodeCategoryAttribute for it
-                if(ClassName!=null)
+                if (ClassName!=null)
                 {
-                    //get class type of function
-                    var type = AppDomain.CurrentDomain.GetAssemblies().First(x => x.GetName().Name == Path.GetFileNameWithoutExtension(Assembly)).GetType(ClassName);
+                    //get function assembly
+                    var asm = AppDomain.CurrentDomain.GetAssemblies()
+                        .Where(x => x.GetName().Name == Path.GetFileNameWithoutExtension(Assembly))
+                        .ToArray();
 
-                    //get NodeCategoryAttribute for this function if it was been defined
-                    var nodeCat = type.GetMethods().Where(x=>x.Name==FunctionName)
-                        .Select(x => x.GetCustomAttribute(typeof (NodeCategoryAttribute)))
-                        .Where(x=>x!=null)
-                        .Cast<NodeCategoryAttribute>()
-                        .Select(x=>x.ElementCategory)
-                        .FirstOrDefault();
-                    
-                    //if attribute is found compose node category string with last part from attribute
-                    if (!string.IsNullOrEmpty(nodeCat) && (
-                        nodeCat == LibraryServices.Categories.Constructors
-                        || nodeCat == LibraryServices.Categories.Properties
-                        || nodeCat == LibraryServices.Categories.MemberFunctions))
+                    if (asm.Any() && asm.First().GetType(ClassName)!=null)
                     {
-                        categoryBuf.Append("." + UnqualifedClassName + "." + nodeCat);
-                        return categoryBuf.ToString();
-                    }
+                        //get class type of function
+                        var type = asm.First().GetType(ClassName);
 
+                        //get NodeCategoryAttribute for this function if it was been defined
+                        var nodeCat = type.GetMethods().Where(x=>x.Name==FunctionName)
+                            .Select(x => x.GetCustomAttribute(typeof (NodeCategoryAttribute)))
+                            .Where(x=>x!=null)
+                            .Cast<NodeCategoryAttribute>()
+                            .Select(x=>x.ElementCategory)
+                            .FirstOrDefault();
+                    
+                        //if attribute is found compose node category string with last part from attribute
+                        if (!string.IsNullOrEmpty(nodeCat) && (
+                            nodeCat == LibraryServices.Categories.Constructors
+                            || nodeCat == LibraryServices.Categories.Properties
+                            || nodeCat == LibraryServices.Categories.MemberFunctions))
+                        {
+                            categoryBuf.Append("." + UnqualifedClassName + "." + nodeCat);
+                            return categoryBuf.ToString();
+                        }
+                    }
                 }
                
                 switch (Type)
