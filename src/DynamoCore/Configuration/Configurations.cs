@@ -228,27 +228,5 @@ namespace Dynamo.Configuration
         public static string BackupFileNamePrefix = "backup";
 
         #endregion
-
-        #region NodeView & Connectors
-
-        /// <summary>
-        /// ZIndex is used to order items on drag canvas.
-        /// Groups are situated under connectors.
-        /// </summary>
-        public static readonly int StartZIndexForGroup = 1;
-
-        /// <summary>
-        /// ZIndex is used to order items on drag canvas.
-        /// Connectors are situated under nodes.
-        /// </summary>
-        public static readonly int StartZIndexForConnector = 2;
-
-        /// <summary>
-        /// ZIndex is used to order items on drag canvas.
-        /// Nodes are at the top.
-        /// </summary>
-        public static readonly int StartZIndexForNode = 3;
-
-        #endregion
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
@@ -60,20 +59,10 @@ namespace Dynamo.ViewModels
             get { return 0; }
         }
 
-        private int zIndex = Configurations.StartZIndexForConnector;
-
-        /// <summary>
-        /// ZIndex is used to order UI elements on drag canvas.
-        /// Every time when node is clicked, ZIndex of its' connector should be increased.
-        /// </summary>
-        public int ZIndex
+        //Changed the connectors ZIndex to 2. Groups have ZIndex of 1.
+        public double ZIndex
         {
-            get { return zIndex; }
-            set
-            {
-                zIndex = value;
-                RaisePropertyChanged("ZIndex");
-            }
+            get { return 2; }
         }
 
         /// <summary>
@@ -199,25 +188,11 @@ namespace Dynamo.ViewModels
             }
         }
 
-        /// <summary>
-        /// Node from which connector was dragged.
-        /// </summary>
-        public NodeViewModel StartNode
+        public NodeViewModel Nodevm
         {
             get
             {
                 return workspaceViewModel.Nodes.FirstOrDefault(x => x.NodeLogic.GUID == _model.Start.Owner.GUID);
-            }
-        }
-
-        /// <summary>
-        /// Node to which connector was dragged.
-        /// </summary>
-        public NodeViewModel EndNode
-        {
-            get
-            {
-                return workspaceViewModel.Nodes.FirstOrDefault(x => x.NodeLogic.GUID == _model.End.Owner.GUID);
             }
         }
 
@@ -230,7 +205,7 @@ namespace Dynamo.ViewModels
                     return PreviewState.None;
                 }
               
-                if (StartNode.ShowExecutionPreview)
+                if (Nodevm.ShowExecutionPreview)
                 {                  
                     return PreviewState.ExecutionPreview;
                 }
@@ -247,7 +222,7 @@ namespace Dynamo.ViewModels
          
         public bool IsFrozen
         {
-            get { return _model == null ? _activeStartPort.Owner.IsFrozen : StartNode.IsFrozen; }
+            get { return _model == null ? _activeStartPort.Owner.IsFrozen : Nodevm.IsFrozen; }
         }
 
         #endregion
@@ -279,12 +254,11 @@ namespace Dynamo.ViewModels
             _model.End.Owner.PropertyChanged += EndOwner_PropertyChanged;
 
             workspaceViewModel.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
-            StartNode.PropertyChanged += startNodeViewModel_PropertyChanged;
-            EndNode.PropertyChanged += endNodeViewModel_PropertyChanged;
+            Nodevm.PropertyChanged += nodeViewModel_PropertyChanged;
             Redraw();
         }
 
-        private void startNodeViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void nodeViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -293,19 +267,6 @@ namespace Dynamo.ViewModels
                     break;
                 case "IsFrozen":
                     RaisePropertyChanged("IsFrozen");
-                    break;
-                case "ZIndex":
-                    ZIndex = StartNode.ZIndex != Configurations.StartZIndexForNode ? StartNode.ZIndex : Configurations.StartZIndexForConnector;
-                    break;
-            }
-        }
-
-        private void endNodeViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "ZIndex":
-                    ZIndex = EndNode.ZIndex != Configurations.StartZIndexForNode ? EndNode.ZIndex : Configurations.StartZIndexForConnector;
                     break;
             }
         }
