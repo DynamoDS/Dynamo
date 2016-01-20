@@ -185,6 +185,35 @@ namespace Dynamo.PackageManager.Tests
             Assert.Contains(files[1], fs.DeletedFiles.ToList());
         }
 
+        [Test]
+        public void BuildPackageDirectory_DoesNotIncludeUnselectedFiles()
+        {
+            // For http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7676
+
+            var files = new[] { "C:/pkg/bin/file1.dll", "C:/pkg/dyf/file2.dyf",
+                "C:/pkg/extra/file3.txt", "C:/pkg/extra/subfolder/file4.dwg" };
+            var pkg = new Package("C:/pkg", "Foo", "0.1.0", "MIT");
+            var fs = new RecordedFileSystem((fn) => files.Any((x) => ComparePaths(x, fn)));
+
+            // Specifying directory contents in the disk
+            fs.SetFiles(new List<string>() {
+                "C:/pkg/bin/file1.dll", "C:/pkg/dyf/file2.dyf", "C:/pkg/dyf/backup/file2.dyf.0.backup",
+                "C:/pkg/extra/file3.txt", "C:/pkg/extra/Backup/file3.txt.backup", "C:/pkg/extra/subfolder/file4.dwg" });
+            fs.SetDirectories(new List<string>() {
+                "C:/pkg/bin", "C:/pkg/dyf", "C:/pkg/dyf/backup", "C:/pkg/extra",
+                "C:/pkg/extra/Backup", "C:/pkg/extra/subfolder" });
+
+            var db = new PackageDirectoryBuilder(fs, MockMaker.Empty<IPathRemapper>());
+            var pkgsDir = @"C:\dynamopackages";
+            db.BuildDirectory(pkg, pkgsDir, files);
+
+            Assert.AreEqual(4, fs.DirectoriesCreated.Count());
+            Assert.AreEqual(4, fs.CopiedFiles.Count());
+            Assert.AreEqual(3, fs.DeletedFiles.Count());
+            Assert.AreEqual(2, fs.DeletedDirectories.Count());
+            Assert.AreEqual(1, fs.NewFilesWritten.Count());
+        }
+
         #endregion
 
         #region CopyFilesIntoPackageDirectory

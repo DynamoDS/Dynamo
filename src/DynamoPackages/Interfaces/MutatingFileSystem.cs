@@ -1,4 +1,5 @@
 using System.IO;
+using System.Collections.Generic;
 using Dynamo.Annotations;
 using Dynamo.PackageManager.Interfaces;
 
@@ -9,6 +10,16 @@ namespace Dynamo.PackageManager
     /// </summary>
     public class MutatingFileSystem : IFileSystem
     {
+        public IEnumerable<string> GetFiles(string dir)
+        {
+            return Directory.GetFiles(dir, "*", SearchOption.AllDirectories);
+        }
+
+        public IEnumerable<string> GetDirectories(string dir)
+        {
+            return Directory.GetDirectories(dir, "*", SearchOption.AllDirectories);
+        }
+
         public void CopyFile(string filePath, string destinationPath)
         {
             File.Copy(filePath, destinationPath);
@@ -17,6 +28,11 @@ namespace Dynamo.PackageManager
         public void DeleteFile(string filePath)
         {
             File.Delete(filePath);
+        }
+
+        public void DeleteDirectory(string directoryPath)
+        {
+            Directory.Delete(directoryPath);
         }
 
         public  IDirectoryInfo TryCreateDirectory(string path)
