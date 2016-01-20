@@ -129,6 +129,7 @@ namespace Dynamo.Visualization
         public void SetColors(byte[] colors)
         {
             this.colors = colors;
+            Colors = this.colors;
         }
 
         public void Clear()
