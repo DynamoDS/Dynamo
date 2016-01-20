@@ -160,6 +160,12 @@ namespace Dynamo.Configuration
 
         #endregion
 
+        #region NodeView
+
+        public static readonly int NodeStartZIndex = 3;
+
+        #endregion
+
         #region Preview Control Settings
 
         public static readonly double MaxExpandedPreviewWidth = MaxWatchNodeWidth;

@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Prompts;
 using Dynamo.Selection;
@@ -36,7 +37,7 @@ namespace Dynamo.Controls
         /// Start value of zIndex is 3, because 1 is for groups and 2 is for connectors.
         /// Nodes should be always at the top.
         /// </summary>
-        private static uint zIndex = 3;
+        private static int zIndex = Configurations.NodeStartZIndex;
 
         /// <summary>
         /// If false - hides preview control until it will be explicitly shown.
@@ -326,7 +327,7 @@ namespace Dynamo.Controls
 
         private void OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (zIndex == UInt32.MaxValue)
+            if (zIndex == Int32.MaxValue)
             {
                 PrepareZIndex();
             }
@@ -360,14 +361,14 @@ namespace Dynamo.Controls
         /// </summary>
         private void PrepareZIndex()
         {
-            zIndex = 3;
+            zIndex = Configurations.NodeStartZIndex;
 
             var parent = TemplatedParent as ContentPresenter;
             if (parent == null) return;
 
             foreach (var child in parent.ChildrenOfType<NodeView>())
             {
-                child.ViewModel.ZIndex = 3;
+                child.ViewModel.ZIndex = Configurations.NodeStartZIndex;
             }
         }
 
