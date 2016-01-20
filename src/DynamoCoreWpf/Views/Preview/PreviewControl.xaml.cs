@@ -385,8 +385,12 @@ namespace Dynamo.UI.Controls
                     {
                         var tree = new WatchTree
                         {
-                            Margin = (System.Windows.Thickness)this.Resources["PreviewContentMargin"],
-                            DataContext = new WatchViewModel()
+                            DataContext = new WatchViewModel(),
+
+                            // If Content is 1 string, e.g. "Empty", "null", margin should be more to the left side. 
+                            Margin = newViewModel.Children.Count > 0
+                                ? (System.Windows.Thickness)this.Resources["PreviewContentMargin"]
+                                : (System.Windows.Thickness)this.Resources["PreviewContentEmptyMargin"]
                         };
                         largeContentGrid.Children.Add(tree);
                     }
