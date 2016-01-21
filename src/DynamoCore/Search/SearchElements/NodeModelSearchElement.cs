@@ -13,7 +13,7 @@ namespace Dynamo.Search.SearchElements
     {
         private readonly Func<NodeModel> constructor; 
 
-        public NodeModelSearchElement(TypeLoadData typeLoadData) : base(typeLoadData)
+        internal NodeModelSearchElement(TypeLoadData typeLoadData) : base(typeLoadData)
         {
             constructor = typeLoadData.Type.GetDefaultConstructor<NodeModel>();
         }
