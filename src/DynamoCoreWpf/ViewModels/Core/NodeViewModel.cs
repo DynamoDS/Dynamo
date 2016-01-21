@@ -41,7 +41,7 @@ namespace Dynamo.ViewModels
         ObservableCollection<PortViewModel> inPorts = new ObservableCollection<PortViewModel>();
         ObservableCollection<PortViewModel> outPorts = new ObservableCollection<PortViewModel>();
         NodeModel nodeLogic;
-        private double zIndex = Configurations.NodeStartZIndex;
+        private int zIndex = Configurations.NodeStartZIndex;
         private string astText = string.Empty;
         private bool isexplictFrozen;
         private bool canToggleFrozen = true;
@@ -174,7 +174,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// ZIndex represents the order on the z-plane in which nodes appear.
         /// </summary>
-        public double ZIndex
+        public int ZIndex
         {
             get { return zIndex; }
             set
