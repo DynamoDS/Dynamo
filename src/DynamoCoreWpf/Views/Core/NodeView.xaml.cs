@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Prompts;
 using Dynamo.Selection;
@@ -23,10 +24,20 @@ namespace Dynamo.Controls
     public partial class NodeView : IViewModelView<NodeViewModel>
     {
         public delegate void SetToolTipDelegate(string message);
-        public delegate void UpdateLayoutDelegate(FrameworkElement el);       
+
+        public delegate void UpdateLayoutDelegate(FrameworkElement el);
+
         private NodeViewModel viewModel = null;
         private PreviewControl previewControl = null;
         private const int previewDelay = 1000;
+
+        /// <summary>
+        /// ZIndex is used to order nodes, when some node is clicked.
+        /// This selected node should be moved above others.
+        /// Start value of zIndex is 3, because 1 is for groups and 2 is for connectors.
+        /// Nodes should be always at the top.
+        /// </summary>
+        private static int zIndex = Configurations.NodeStartZIndex;
 
         /// <summary>
         /// If false - hides preview control until it will be explicitly shown.
@@ -111,7 +122,7 @@ namespace Dynamo.Controls
         {
             if (ViewModel == null || ViewModel.PreferredSize.HasValue) return;
 
-            var size = new [] { ActualWidth, nodeBorder.ActualHeight };
+            var size = new[] {ActualWidth, nodeBorder.ActualHeight};
             if (ViewModel.SetModelSizeCommand.CanExecute(size))
             {
                 ViewModel.SetModelSizeCommand.Execute(size);
@@ -137,7 +148,7 @@ namespace Dynamo.Controls
             // but ViewModel should not be updated in that case (hence the null-check).
             // 
             if (null != ViewModel) return;
- 
+
             ViewModel = e.NewValue as NodeViewModel;
             if (!ViewModel.PreferredSize.HasValue) return;
 
@@ -162,7 +173,7 @@ namespace Dynamo.Controls
             ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
         }
 
-        void NodeLogic_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void NodeLogic_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -211,7 +222,7 @@ namespace Dynamo.Controls
             }));
         }
 
-        void ViewModel_RequestsSelection(object sender, EventArgs e)
+        private void ViewModel_RequestsSelection(object sender, EventArgs e)
         {
             if (!ViewModel.NodeLogic.IsSelected)
             {
@@ -231,7 +242,7 @@ namespace Dynamo.Controls
             }
         }
 
-        void ViewModel_RequestShowNodeRename(object sender, NodeDialogEventArgs e)
+        private void ViewModel_RequestShowNodeRename(object sender, NodeDialogEventArgs e)
         {
             if (e.Handled) return;
 
@@ -240,7 +251,7 @@ namespace Dynamo.Controls
             var editWindow = new EditWindow(viewModel.DynamoViewModel)
             {
                 DataContext = ViewModel,
-                Title = Dynamo.Wpf.Properties.Resources.EditNodeWindowTitle 
+                Title = Dynamo.Wpf.Properties.Resources.EditNodeWindowTitle
             };
 
             editWindow.Owner = Window.GetWindow(this);
@@ -256,7 +267,7 @@ namespace Dynamo.Controls
             editWindow.ShowDialog();
         }
 
-        void ViewModel_RequestShowNodeHelp(object sender, NodeDialogEventArgs e)
+        private void ViewModel_RequestShowNodeHelp(object sender, NodeDialogEventArgs e)
         {
             if (e.Handled) return;
 
@@ -269,12 +280,13 @@ namespace Dynamo.Controls
 
         }
 
-        void NodeLogic_DispatchedToUI(object sender, UIDispatcherEventArgs e)
+        private void NodeLogic_DispatchedToUI(object sender, UIDispatcherEventArgs e)
         {
             Dispatcher.Invoke(e.ActionToDispatch);
         }
 
         private bool nodeViewReadyCalledOnce = false;
+
         private void NodeViewReady(object sender, RoutedEventArgs e)
         {
             if (nodeViewReadyCalledOnce) return;
@@ -313,21 +325,14 @@ namespace Dynamo.Controls
             ViewModel.ValidateConnectionsCommand.Execute(null);
         }
 
-        private void topControl_Loaded(object sender, RoutedEventArgs e)
+        private void OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (zIndex == Int32.MaxValue)
+            {
+                PrepareZIndex();
+            }
 
-        }
-
-        private void OnPreviewKeyUp(object sender, KeyEventArgs e)
-        {
-            //e.Handled = true;
-        }
-
-        private void OnKeyUp(object sender, KeyEventArgs e)
-        {
-            //set handled to avoid triggering key press
-            //events on the workbench
-            //e.Handled = true;
+            ViewModel.ZIndex = zIndex++;
         }
 
         private void topControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -348,6 +353,22 @@ namespace Dynamo.Controls
                     e.Handled = true;
                     ViewModel.GotoWorkspaceCommand.Execute(null);
                 }
+            }
+        }
+
+        /// <summary>
+        /// If Zindex is more then max value of int, it should be set back to 0 to all elements.
+        /// </summary>
+        private void PrepareZIndex()
+        {
+            zIndex = Configurations.NodeStartZIndex;
+
+            var parent = TemplatedParent as ContentPresenter;
+            if (parent == null) return;
+
+            foreach (var child in parent.ChildrenOfType<NodeView>())
+            {
+                child.ViewModel.ZIndex = Configurations.NodeStartZIndex;
             }
         }
 
@@ -432,36 +453,36 @@ namespace Dynamo.Controls
             switch (preview.CurrentState)
             {
                 case PreviewControl.State.Hidden:
-                {
-                    if (IsMouseOver && previewEnabled)
                     {
-                        preview.TransitionToState(PreviewControl.State.Condensed);
-                    }
-                    break;
-                }
-                case PreviewControl.State.Condensed:
-                {
-                    if (preview.IsMouseOver)
-                    {
-                        Dispatcher.DelayInvoke(previewDelay, ExpandPreviewControl);
-                    }
-                    if (!IsMouseOver)
-                    {
-                        if (!(Mouse.Captured != null && IsMouseInsideNodeOrPreview(Mouse.GetPosition(this))))
+                        if (IsMouseOver && previewEnabled)
                         {
-                            preview.TransitionToState(PreviewControl.State.Hidden);
+                            preview.TransitionToState(PreviewControl.State.Condensed);
                         }
+                        break;
                     }
-                    break;
-                }
-                case PreviewControl.State.Expanded:
-                {
-                    if (!IsMouseOver && !preview.IsMouseOver)
+                case PreviewControl.State.Condensed:
                     {
-                        preview.TransitionToState(PreviewControl.State.Condensed);
+                        if (preview.IsMouseOver)
+                        {
+                            Dispatcher.DelayInvoke(previewDelay, ExpandPreviewControl);
+                        }
+                        if (!IsMouseOver)
+                        {
+                            if (!(Mouse.Captured != null && IsMouseInsideNodeOrPreview(Mouse.GetPosition(this))))
+                            {
+                                preview.TransitionToState(PreviewControl.State.Hidden);
+                            }
+                        }
+                        break;
                     }
-                    break;
-                }
+                case PreviewControl.State.Expanded:
+                    {
+                        if (!IsMouseOver && !preview.IsMouseOver)
+                        {
+                            preview.TransitionToState(PreviewControl.State.Condensed);
+                        }
+                        break;
+                    }
             };
         }
 
@@ -488,7 +509,7 @@ namespace Dynamo.Controls
         {
             if (!PreviewControl.StaysOpen && !PreviewControl.IsInTransition 
                 && Keyboard.Modifiers != System.Windows.Input.ModifierKeys.Control
-                && !IsMouseOver)
+                && !IsMouseOver && Mouse.Captured != null && !IsMouseInsideNodeOrPreview(e.GetPosition(this)))
             {
                 PreviewControl.TransitionToState(PreviewControl.State.Condensed);
             }
