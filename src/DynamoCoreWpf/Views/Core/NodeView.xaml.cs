@@ -40,11 +40,7 @@ namespace Dynamo.Controls
         /// </summary>
         private int oldZIndex;
 
-        /// <summary>
-        /// If user moves mouse on node, it should be brought in front.
-        /// This variable is used to determine whether we will hide node or leave it at the top position.
-        /// </summary>
-        private bool temporarilyBroughtInFront;
+        private bool nodeWasClicked;
 
         /// <summary>
         /// ZIndex is used to order nodes, when some node is clicked.
@@ -336,8 +332,8 @@ namespace Dynamo.Controls
 
         private void OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            nodeWasClicked = true;
             BringInFront();
-            temporarilyBroughtInFront = false;
         }
 
         /// <summary>
@@ -403,6 +399,8 @@ namespace Dynamo.Controls
 
         private void OnNodeViewMouseEnter(object sender, MouseEventArgs e)
         {
+            nodeWasClicked = false;
+
             if (!previewEnabled) return; // Preview is hidden. There is no need run further.
 
             if (PreviewControl.IsInTransition) // In transition state, come back later.
@@ -416,13 +414,16 @@ namespace Dynamo.Controls
                 PreviewControl.TransitionToState(PreviewControl.State.Condensed);
 
                 Dispatcher.DelayInvoke(previewDelay, ExpandPreviewControl);
-                Dispatcher.DelayInvoke(previewDelay, BringInFront);
-                temporarilyBroughtInFront = true;
+
             }
+
+            Dispatcher.DelayInvoke(previewDelay, BringInFront);
         }
 
         private void OnNodeViewMouseLeave(object sender, MouseEventArgs e)
         {
+            ViewModel.ZIndex = oldZIndex;
+
             // If mouse in over node/preview control or preview control is pined, we can not hide preview control.
             if (IsMouseOver || PreviewControl.IsMouseOver || PreviewControl.StaysOpen ||
                 (Mouse.Captured != null && IsMouseInsideNodeOrPreview(e.GetPosition(this)))) return;
@@ -436,11 +437,6 @@ namespace Dynamo.Controls
             if (PreviewControl.IsCondensed && Mouse.Captured == null)
             {
                 PreviewControl.TransitionToState(PreviewControl.State.Hidden);
-            }
-
-            if (temporarilyBroughtInFront)
-            {
-                ViewModel.ZIndex = oldZIndex;
             }
         }
 
@@ -520,8 +516,7 @@ namespace Dynamo.Controls
                 {
                     PrepareZIndex();
                 }
-
-                oldZIndex = ViewModel.ZIndex;
+                oldZIndex = nodeWasClicked ? zIndex++ : ViewModel.ZIndex;
                 ViewModel.ZIndex = zIndex++;
             }
         }
