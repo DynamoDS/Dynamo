@@ -162,6 +162,9 @@ namespace Dynamo.Configuration
 
         #region NodeView
 
+        /// <summary>
+        /// Start ZIndex for nodes is set to 3, because 1 is for groups, 2 is for connectors.
+        /// </summary>
         public static readonly int NodeStartZIndex = 3;
 
         #endregion
