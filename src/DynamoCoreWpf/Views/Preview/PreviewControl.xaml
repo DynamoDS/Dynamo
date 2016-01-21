@@ -132,8 +132,7 @@
 
     <Grid Name="outerContainer"
           HorizontalAlignment="Left"
-          VerticalAlignment="Top"
-          Background="#01000000">
+          VerticalAlignment="Top">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
@@ -146,6 +145,13 @@
             <RowDefinition Height="20" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+
+        <!-- Invisible part. Background is set to #01000000. It's almost invisible color.
+              But with this color we can handle mouse moves.-->
+
+        <Grid Grid.Column="0"
+              Grid.Row="0"
+              Background="#01000000" />
 
         <Grid Grid.Column="0"
               Grid.Row="1"

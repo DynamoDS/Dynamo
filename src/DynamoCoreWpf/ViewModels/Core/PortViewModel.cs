@@ -71,6 +71,18 @@ namespace Dynamo.ViewModels
             set { _port.UsingDefaultValue = value; }
         }
 
+        /// <summary>
+        /// IsHitTestVisible property gets a value that declares whether 
+        /// a Snapping rectangle can possibly be returned as a hit test result.
+        /// When ActiveConnector is not null, Snapping rectangle handles click events.
+        /// When ActiveConnector is null, Snapping rectangle does not handle click events 
+        /// and user can "click though invisible snapping area".
+        /// </summary>
+        public bool IsHitTestVisible
+        {
+            get { return _node.WorkspaceViewModel.ActiveConnector != null; }
+        }
+
         public System.Windows.Thickness MarginThickness
         {
             get { return _port.MarginThickness.AsWindowsType(); }
@@ -124,9 +136,20 @@ namespace Dynamo.ViewModels
         {
             _node = node;
             _port = port;
-           
+
             _port.PropertyChanged += _port_PropertyChanged;
-            _node.PropertyChanged += _node_PropertyChanged;          
+            _node.PropertyChanged += _node_PropertyChanged;
+            _node.WorkspaceViewModel.PropertyChanged += Workspace_PropertyChanged;
+        }
+
+        private void Workspace_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "ActiveConnector":
+                    RaisePropertyChanged("IsHitTestVisible");
+                    break;
+            }
         }
 
         void _node_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
