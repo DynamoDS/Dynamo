@@ -5,18 +5,15 @@
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
-             xmlns:controls="clr-namespace:Dynamo.Controls"
              Height="Auto"
              Width="Auto"
              Name="topControl"
-             Loaded="topControl_Loaded"
-             KeyUp="OnKeyUp"
-             PreviewKeyUp="OnPreviewKeyUp"
              MouseLeftButtonDown="topControl_MouseLeftButtonDown"
              MouseRightButtonDown="topControl_MouseRightButtonDown"
              MouseEnter="OnNodeViewMouseEnter"
              MouseLeave="OnNodeViewMouseLeave"
-             PreviewMouseMove="OnNodeViewMouseMove">
+             PreviewMouseMove="OnNodeViewMouseMove"
+             PreviewMouseLeftButtonDown="OnPreviewMouseLeftButtonDown">
     
     <Grid Name="grid"
           x:FieldModifier="public"

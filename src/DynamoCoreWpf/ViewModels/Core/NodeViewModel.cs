@@ -6,6 +6,7 @@ using System.Linq;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Text.RegularExpressions;
+using Dynamo.Configuration;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Models;
 using System.Windows; 
@@ -40,7 +41,7 @@ namespace Dynamo.ViewModels
         ObservableCollection<PortViewModel> inPorts = new ObservableCollection<PortViewModel>();
         ObservableCollection<PortViewModel> outPorts = new ObservableCollection<PortViewModel>();
         NodeModel nodeLogic;
-        private double zIndex = 3;
+        private int zIndex = Configurations.NodeStartZIndex;
         private string astText = string.Empty;
         private bool isexplictFrozen;
         private bool canToggleFrozen = true;
@@ -170,11 +171,18 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public double ZIndex
-         {
+        /// <summary>
+        /// ZIndex represents the order on the z-plane in which nodes appear.
+        /// </summary>
+        public int ZIndex
+        {
             get { return zIndex; }
-            set { zIndex = value; RaisePropertyChanged("ZIndex"); }
-         }
+            set
+            {
+                zIndex = value;
+                RaisePropertyChanged("ZIndex");
+            }
+        }
 
         /// <summary>
         /// Input grid's enabled state is now bound to this property
