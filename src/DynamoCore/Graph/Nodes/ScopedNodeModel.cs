@@ -131,7 +131,7 @@ namespace Dynamo.Graph.Nodes
         /// all upstream nodes of that node.
         /// </param>
         /// <returns></returns>
-        public IEnumerable<NodeModel> GetInScopeNodes(bool checkEscape = true, bool isInclusive = true)
+        internal IEnumerable<NodeModel> GetInScopeNodes(bool checkEscape = true, bool isInclusive = true)
         {
             var inScopedNodes = new List<NodeModel>();
 
@@ -155,7 +155,7 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         /// <param name="nodes"></param>
         /// <returns></returns>
-        public static IEnumerable<NodeModel> GetNodesInTopScope(IEnumerable<NodeModel> nodes)
+        internal static IEnumerable<NodeModel> GetNodesInTopScope(IEnumerable<NodeModel> nodes)
         {
             HashSet<NodeModel> topScopedNodes = new HashSet<NodeModel>(nodes);
             foreach (var node in nodes)

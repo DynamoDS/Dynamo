@@ -135,7 +135,7 @@ namespace Dynamo
             ReturnType = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
         }
 
-        public static CustomNodeDefinition MakeProxy(Guid functionId, string displayName)
+        internal static CustomNodeDefinition MakeProxy(Guid functionId, string displayName)
         {
             var def = new CustomNodeDefinition(functionId, displayName);
             def.IsProxy = true;

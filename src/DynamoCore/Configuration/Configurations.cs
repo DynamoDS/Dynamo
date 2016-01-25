@@ -50,93 +50,93 @@ namespace Dynamo.Configuration
         #endregion
 
         #region Information Bubble
-        public static double MaxOpacity = 0.95;
+        internal static double MaxOpacity = 0.95;
 
         #region Preview Bubble
-        public static double PreviewTextFontSize = 10;
+        internal static double PreviewTextFontSize = 10;
 
-        public static double PreviewMaxWidth = 500;
-        public static double PreviewMinWidth = 40;
-        public static double PreviewMinHeight = 30;
-        public static double PreviewDefaultMaxWidth = 300;
-        public static double PreviewDefaultMaxHeight = 200;
+        internal static double PreviewMaxWidth = 500;
+        internal static double PreviewMinWidth = 40;
+        internal static double PreviewMinHeight = 30;
+        internal static double PreviewDefaultMaxWidth = 300;
+        internal static double PreviewDefaultMaxHeight = 200;
 
-        public static double PreviewCondensedMaxWidth = 300;
-        public static double PreviewCondensedMaxHeight = 200;
-        public static double PreviewCondensedMinWidth = 40;
-        public static double PreviewCondensedMinHeight = 0;
-        public static double PreviewCondensedContentMaxWidth = PreviewCondensedMaxWidth - 10;
-        public static double PreviewCondensedContentMaxHeight = PreviewCondensedMaxHeight - 17;
+        internal static double PreviewCondensedMaxWidth = 300;
+        internal static double PreviewCondensedMaxHeight = 200;
+        internal static double PreviewCondensedMinWidth = 40;
+        internal static double PreviewCondensedMinHeight = 0;
+        internal static double PreviewCondensedContentMaxWidth = PreviewCondensedMaxWidth - 10;
+        internal static double PreviewCondensedContentMaxHeight = PreviewCondensedMaxHeight - 17;
 
-        public static double PreviewArrowWidth = 12;
-        public static double PreviewArrowHeight = 6;
+        internal static double PreviewArrowWidth = 12;
+        internal static double PreviewArrowHeight = 6;
 
         #endregion
 
         #region Error Bubble
 
-        public static double ErrorFrameStrokeThickness = 1;
+        internal static double ErrorFrameStrokeThickness = 1;
 
-        public static double ErrorMaxWidth = 300;
-        public static double ErrorMaxHeight = 200;
-        public static double ErrorContentMaxWidth = ErrorMaxWidth - 10;
-        public static double ErrorContentMaxHeight = ErrorMaxHeight - 16;
+        internal static double ErrorMaxWidth = 300;
+        internal static double ErrorMaxHeight = 200;
+        internal static double ErrorContentMaxWidth = ErrorMaxWidth - 10;
+        internal static double ErrorContentMaxHeight = ErrorMaxHeight - 16;
 
-        public static double ErrorCondensedMaxWidth = 75;
-        public static double ErrorCondensedMinWidth = 25;
-        public static double ErrorCondensedMaxHeight = 50;
-        public static double ErrorCondensedMinHeight = 25;
-        public static double ErrorCondensedContentMaxWidth = ErrorCondensedMaxWidth - 10;
-        public static double ErrorCondensedContentMaxHeight = ErrorCondensedMaxHeight - 16;
+        internal static double ErrorCondensedMaxWidth = 75;
+        internal static double ErrorCondensedMinWidth = 25;
+        internal static double ErrorCondensedMaxHeight = 50;
+        internal static double ErrorCondensedMinHeight = 25;
+        internal static double ErrorCondensedContentMaxWidth = ErrorCondensedMaxWidth - 10;
+        internal static double ErrorCondensedContentMaxHeight = ErrorCondensedMaxHeight - 16;
 
-        public static double ErrorTextFontSize = 13;
-        public static Thickness ErrorContentMargin = new Thickness(5, 5, 5, 12);
+        internal static double ErrorTextFontSize = 13;
+        internal static Thickness ErrorContentMargin = new Thickness(5, 5, 5, 12);
 
-        public static double ErrorArrowWidth = 12;
-        public static double ErrorArrowHeight = 6;
+        internal static double ErrorArrowWidth = 12;
+        internal static double ErrorArrowHeight = 6;
         #endregion
 
         #region Node Tooltip
-        public static double NodeTooltipFrameStrokeThickness = 1;
+        internal static double NodeTooltipFrameStrokeThickness = 1;
 
-        public static double NodeTooltipMaxWidth = 200;
-        public static double NodeTooltipMaxHeight = 200;
-        public static double NodeTooltipContentMaxWidth = NodeTooltipMaxWidth - 10;
-        public static double NodeTooltipContentMaxHeight = NodeTooltipMaxHeight - 16;
+        internal static double NodeTooltipMaxWidth = 200;
+        internal static double NodeTooltipMaxHeight = 200;
+        internal static double NodeTooltipContentMaxWidth = NodeTooltipMaxWidth - 10;
+        internal static double NodeTooltipContentMaxHeight = NodeTooltipMaxHeight - 16;
 
-        public static double NodeTooltipTextFontSize = 11;
+        internal static double NodeTooltipTextFontSize = 11;
 
-        public static Thickness NodeTooltipContentMarginLeft = new Thickness(11, 5, 5, 5);
-        public static Thickness NodeTooltipContentMarginRight = new Thickness(5, 5, 11, 5);
-        public static Thickness NodeTooltipContentMarginBottom = new Thickness(5, 5, 5, 11);
+        internal static Thickness NodeTooltipContentMarginLeft = new Thickness(11, 5, 5, 5);
+        internal static Thickness NodeTooltipContentMarginRight = new Thickness(5, 5, 11, 5);
+        internal static Thickness NodeTooltipContentMarginBottom = new Thickness(5, 5, 5, 11);
 
-        public static double NodeTooltipArrowWidth_BottomConnecting = 12;
-        public static double NodeTooltipArrowHeight_BottomConnecting = 6;
-        public static double NodeTooltipArrowWidth_SideConnecting = 6;
-        public static double NodeTooltipArrowHeight_SideConnecting = 12;
+        internal static double NodeTooltipArrowWidth_BottomConnecting = 12;
+        internal static double NodeTooltipArrowHeight_BottomConnecting = 6;
+        internal static double NodeTooltipArrowWidth_SideConnecting = 6;
+        internal static double NodeTooltipArrowHeight_SideConnecting = 12;
 
-        public static double ToolTipTargetGapInPixels = 3.0;
-        public static double NodeButtonHeight = 32; // Height of node button.
-        public static double BottomPanelHeight = 48; // Height of black bottom panel with 2 buttons: Run & Canсel.
-        public static int MaxLengthTooltipCode = 35; // Max length of field code in tooltip, it's near copy icon.
-        public static string NoDescriptionAvailable = Resources.NoDescriptionAvailable;
+        internal static double ToolTipTargetGapInPixels = 3.0;
+        internal static double NodeButtonHeight = 32; // Height of node button.
+        internal static double BottomPanelHeight = 48; // Height of black bottom panel with 2 buttons: Run & Canсel.
+        internal static int MaxLengthTooltipCode = 35; // Max length of field code in tooltip, it's near copy icon.
+        internal static string NoDescriptionAvailable = Resources.NoDescriptionAvailable;
 
         #endregion
 
         #region Library Item Tooltip
 
-        public static double LibraryTooltipFrameStrokeThickness = 1;
+        internal static double LibraryTooltipFrameStrokeThickness = 1;
 
-        public static double LibraryTooltipMaxWidth = 400;
-        public static double LibraryTooltipMaxHeight = 200;
-        public static double LibraryTooltipContentMaxWidth = LibraryTooltipMaxWidth - 10;
-        public static double LibraryTooltipContentMaxHeight = LibraryTooltipMaxHeight - 17;
+        internal static double LibraryTooltipMaxWidth = 400;
+        internal static double LibraryTooltipMaxHeight = 200;
+        internal static double LibraryTooltipContentMaxWidth = LibraryTooltipMaxWidth - 10;
+        internal static double LibraryTooltipContentMaxHeight = LibraryTooltipMaxHeight - 17;
 
-        public static double LibraryTooltipTextFontSize = 11;
-        public static Thickness LibraryTooltipContentMargin = new Thickness(12, 5, 5, 5);
+        internal static double LibraryTooltipTextFontSize = 11;
+        internal static Thickness LibraryTooltipContentMargin = new Thickness(12, 5, 5, 5);
 
-        public static double LibraryTooltipArrowHeight = 12;
-        public static double LibraryTooltipArrowWidth = 6;
+        internal static double LibraryTooltipArrowHeight = 12;
+        internal static double LibraryTooltipArrowWidth = 6;
 
         #endregion
 
@@ -153,10 +153,10 @@ namespace Dynamo.Configuration
 
         #region Externally Visible Strings
 
-        public static readonly string SessionTraceDataXmlTag = "SessionTraceData";
-        public static readonly string NodeTraceDataXmlTag = "NodeTraceData";
-        public static readonly string CallsiteTraceDataXmlTag = "CallsiteTraceData";
-        public static readonly string NodeIdAttribName = "NodeId";
+        internal static readonly string SessionTraceDataXmlTag = "SessionTraceData";
+        internal static readonly string NodeTraceDataXmlTag = "NodeTraceData";
+        internal static readonly string CallsiteTraceDataXmlTag = "CallsiteTraceData";
+        internal static readonly string NodeIdAttribName = "NodeId";
 
         #endregion
 
@@ -165,70 +165,70 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Start ZIndex for nodes is set to 3, because 1 is for groups, 2 is for connectors.
         /// </summary>
-        public static readonly int NodeStartZIndex = 3;
+        internal static readonly int NodeStartZIndex = 3;
 
         #endregion
 
         #region Preview Control Settings
 
-        public static readonly double MaxExpandedPreviewWidth = MaxWatchNodeWidth;
-        public static readonly double MaxExpandedPreviewHeight = MaxWatchNodeHeight;
-        public static readonly double MaxCondensedPreviewWidth = 280.0;
-        public static readonly double MaxCondensedPreviewHeight = 64.0;
-        public static readonly double DefCondensedContentWidth = 33.0;
-        public static readonly double DefCondensedContentHeight = 28.0;
+        internal static readonly double MaxExpandedPreviewWidth = MaxWatchNodeWidth;
+        internal static readonly double MaxExpandedPreviewHeight = MaxWatchNodeHeight;
+        internal static readonly double MaxCondensedPreviewWidth = 280.0;
+        internal static readonly double MaxCondensedPreviewHeight = 64.0;
+        internal static readonly double DefCondensedContentWidth = 33.0;
+        internal static readonly double DefCondensedContentHeight = 28.0;
 
         #endregion
 
         #region Icon Resources Strings
 
-        public const string SmallIconPostfix = ".Small";
-        public const string LargeIconPostfix = ".Large";
-        public const string IconResourcesDLL = ".customization.dll";
-        public const string DefaultIcon = "DefaultIcon";
-        public const string DefaultCustomNodeIcon = "DefaultCustomNode";
-        public const string DefaultAssembly = "DynamoCore";
+        internal const string SmallIconPostfix = ".Small";
+        internal const string LargeIconPostfix = ".Large";
+        internal const string IconResourcesDLL = ".customization.dll";
+        internal const string DefaultIcon = "DefaultIcon";
+        internal const string DefaultCustomNodeIcon = "DefaultCustomNode";
+        internal const string DefaultAssembly = "DynamoCore";
 
         #endregion
 
         #region Class button
-        public const int MaxRowNumber = 2;
-        public const int MaxLengthRowClassButtonTitle = 9; // How many characters can be in one row.
-        public const string TwoDots = "..";
+        internal const int MaxRowNumber = 2;
+        internal const int MaxLengthRowClassButtonTitle = 9; // How many characters can be in one row.
+        internal const string TwoDots = "..";
         #endregion
 
         #region LibraryView
 
-        public const double MinWidthLibraryView = 204;
+        internal const double MinWidthLibraryView = 204;
 
-        public static string TopResult = Resources.TopResult;
-        public const string CategoryGroupCreate = "Create";
-        public const string CategoryGroupAction = "Actions";
-        public const string CategoryGroupQuery = "Query";
-        public const string CategoryDelimiterString = ".";
-        public const string ShortenedCategoryDelimiter = "-";
-        public const string CategoryDelimiterWithSpaces = " - ";
+        internal static string TopResult = Resources.TopResult;
+        internal const string CategoryGroupCreate = "Create";
+        internal const string CategoryGroupAction = "Actions";
+        internal const string CategoryGroupQuery = "Query";
+        internal const string CategoryDelimiterString = ".";
+        internal const string ShortenedCategoryDelimiter = "-";
+        internal const string CategoryDelimiterWithSpaces = " - ";
 
-        public const string ClassesDefaultName = "Classes";
+        internal const string ClassesDefaultName = "Classes";
 
-        public const string ElementTypeShorthandCategory = "CTGRY";
-        public const string ElementTypeShorthandPackage = "PKG";
-        public const string ElementTypeShorthandImportedDll = "DLL";
+        internal const string ElementTypeShorthandCategory = "CTGRY";
+        internal const string ElementTypeShorthandPackage = "PKG";
+        internal const string ElementTypeShorthandImportedDll = "DLL";
 
         #endregion
 
         #region ClassInformationView
 
-        public static string MoreButtonTextFormat = Resources.MoreButtonTextFormat;
-        public static string HeaderCreate = Resources.HeaderCreate;
-        public static string HeaderAction = Resources.HeaderAction;
-        public static string HeaderQuery = Resources.HeaderQuery;
+        internal static string MoreButtonTextFormat = Resources.MoreButtonTextFormat;
+        internal static string HeaderCreate = Resources.HeaderCreate;
+        internal static string HeaderAction = Resources.HeaderAction;
+        internal static string HeaderQuery = Resources.HeaderQuery;
 
         #endregion
 
         #region InCanvasSearch
 
-        public const double InCanvasSearchTextBoxHeight = 40.0;
+        internal const double InCanvasSearchTextBoxHeight = 40.0;
 
         #endregion
 

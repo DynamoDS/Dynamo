@@ -23,7 +23,7 @@ namespace Dynamo.Scheduler
         {
         }
         
-        public DelegateBasedAsyncTask(IScheduler scheduler, Action action)
+        internal DelegateBasedAsyncTask(IScheduler scheduler, Action action)
             : base(scheduler)
         {
             this.Initialize(action);

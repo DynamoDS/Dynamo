@@ -74,7 +74,7 @@ namespace Dynamo.Graph.Nodes
             return gathered.Contains(node);
         }
 
-        public static List<IGraphicItem> GeneratedGraphicItems(this NodeModel node, EngineController engineController)
+        internal static List<IGraphicItem> GeneratedGraphicItems(this NodeModel node, EngineController engineController)
         {
             var ids = node.GetAllOutportAstIdentifiers();
 

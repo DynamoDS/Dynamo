@@ -110,7 +110,7 @@ namespace Dynamo.Graph.Nodes
         ///     Returns the names of all the variables defined in this code block.
         /// </summary>
         /// <returns>List containing all the names</returns>
-        public List<string> GetDefinedVariableNames()
+        internal List<string> GetDefinedVariableNames()
         {
             var defVarNames = new List<string>();
 
@@ -136,7 +136,7 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         /// <param name="variableName"> Name of the variable corresponding to an input port </param>
         /// <returns> Index of the required port in the InPorts collection </returns>
-        public static int GetInportIndex(CodeBlockNodeModel cbn, string variableName)
+        internal static int GetInportIndex(CodeBlockNodeModel cbn, string variableName)
         {
             return cbn.inputIdentifiers.IndexOf(variableName);
         }
@@ -146,7 +146,7 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         /// <param name="variableName"></param>
         /// <returns></returns>
-        public int GetOutportIndex(string variableName)
+        internal int GetOutportIndex(string variableName)
         {
             var svs = CodeBlockUtils.GetStatementVariables(codeStatements, true);
             for (int i = 0; i < codeStatements.Count; i++)
