@@ -178,7 +178,7 @@ namespace Dynamo.Manipulation
             GizmoInAction = null; //Reset Drag.
 
             var gizmos = GetGizmos(false);
-            if (!Active || !IsEnabled() || null == gizmos || !gizmos.Any()) return;
+            if (!IsEnabled() || null == gizmos || !gizmos.Any()) return;
 
             var ray = BackgroundPreviewViewModel.GetClickRay(mouseButtonEventArgs);
             if (ray == null) return;
@@ -439,7 +439,7 @@ namespace Dynamo.Manipulation
 
             UpdatePosition();
 
-            if (!Active || !IsEnabled())
+            if (!IsEnabled())
             {
                 return packages;
             }
@@ -540,7 +540,7 @@ namespace Dynamo.Manipulation
                 return false;
             }
 
-            return true;
+            return Active;
         }
         #endregion
     }
