@@ -452,6 +452,8 @@ namespace Dynamo.UI.Controls
         /// </summary>
         private void ComputeWatchContentSize(object sender, RoutedEventArgs e)
         {
+            if (IsExpanded == false || StaysOpen == false) return;
+
             // Used delay invoke, because TreeView hasn't changed its'appearance with usual Dispatcher call.
             Dispatcher.DelayInvoke(50,() =>
             {
