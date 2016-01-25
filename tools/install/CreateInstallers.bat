@@ -49,6 +49,10 @@ robocopy %cwd%\Extra\DirectX %cwd%\temp\DirectX
 
 robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\gallery %cwd%\temp\gallery /s
 
+rem Licenses and source code of 3rdParty open-source components
+robocopy %cwd%\..\..\extern\Installer\3rdParty %cwd%\temp\3rdParty\OpenSourceComponents /s /nfl /ndl /njh /njs /nc /ns /np
+if %ERRORLEVEL% equ 1 ( set errorlevel=0 ) else if %ERRORLEVEL% equ 3 ( set errorlevel=0)
+
 "C:\Program Files (x86)\Inno Setup 5\iscc.exe" %cwd%\DynamoInstaller.iss
 
 if not errorlevel 0 (
