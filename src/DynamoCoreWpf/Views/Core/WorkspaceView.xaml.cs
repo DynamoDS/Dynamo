@@ -535,11 +535,17 @@ namespace Dynamo.Views
         {
             if (e == null) return; // in certain bizarre cases, e can be null
 
-            this.snappedPort = null;
+            snappedPort = null;
+            if (ViewModel == null) return;
 
-            var wvm = (DataContext as WorkspaceViewModel);
-            if (wvm == null) return;
-            wvm.HandleMouseRelease(workBench, e);
+            // check IsInIdleState before finishing an action with HandleMouseRelease
+            var returnToSearch = ViewModel.IsInIdleState && Keyboard.Modifiers == ModifierKeys.Control;
+
+            ViewModel.HandleMouseRelease(workBench, e);
+            if (returnToSearch)
+            {
+                ViewModel.DynamoViewModel.SearchViewModel.OnRequestFocusSearch();
+            }
         }
 
         private void OnMouseMove(object sender, MouseEventArgs e)
