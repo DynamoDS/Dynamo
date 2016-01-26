@@ -174,22 +174,7 @@
                   MinWidth="{Binding RelativeSource={RelativeSource FindAncestor, 
                              AncestorType={x:Type controls:NodeView}}, 
                              Path=ActualWidth}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="15" />
-                </Grid.ColumnDefinitions>
-                <TextBlock Margin="{StaticResource PreviewContentMargin}"
-                           Grid.Column="0"
-                           FontFamily="Consolas">null</TextBlock>
-
-                <Image x:Name="ExpandIcon"
-                       Grid.Column="1"
-                       Source="/DynamoCoreWpf;component/UI/Images/bubble-arrow.png"
-                       VerticalAlignment="Bottom"
-                       Height="6"
-                       Width="6"
-                       Margin="0,5,5,5" />
-
+                <uicontrols:PreviewCompactView />
             </Grid>
 
             <Grid Name="largeContentGrid"

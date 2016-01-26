@@ -3229,6 +3229,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to null.
+        /// </summary>
+        public static string NullString {
+            get {
+                return ResourceManager.GetString("NullString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to OK.
         /// </summary>
         public static string OKButton {

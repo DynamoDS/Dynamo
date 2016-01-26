@@ -6,6 +6,7 @@ using Dynamo.Interfaces;
 using Dynamo.Utilities;
 using Dynamo.Scheduler;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Utilities;
 using ProtoCore.Mirror;
 using System;
 using System.Collections.Generic;
@@ -57,7 +58,7 @@ namespace Dynamo.UI.Controls
         private Canvas hostingCanvas = null;
 
         // Data source and display.
-        private String cachedSmallContent = null;
+        private CompactBubbleViewModel cachedSmallContent = null;
         private WatchViewModel cachedLargeContent = null;
 
         // Animation storyboards.
@@ -262,12 +263,14 @@ namespace Dynamo.UI.Controls
         }
 
         private void ResetContentViews()
-        {
-            var smallContentView = smallContentGrid.Children[0] as TextBlock;
-            smallContentView.Text = string.Empty;
+        {            
+            if (smallContentGrid.Children.Count <= 0) return;
 
-            if (largeContentGrid.Children.Count <= 0)
-                return; // No view to reset, return now.
+            var smallContentView = smallContentGrid.Children[0] as PreviewCompactView;
+            BindingOperations.ClearAllBindings(smallContentView);
+
+            // No view to reset, return now.
+            if (largeContentGrid.Children.Count <= 0) return;
 
             var watchTree = largeContentGrid.Children[0] as WatchTree;
             var rootDataContext = watchTree.DataContext as WatchViewModel;
@@ -312,47 +315,19 @@ namespace Dynamo.UI.Controls
                 return;
             }
 
-            string newContent = "null";
+            CompactBubbleViewModel newContent = null;
 
             RunOnSchedulerSync(
                 () =>
                 {
                     var mirrorData = nodeViewModel.NodeModel.CachedValue;
-                    if (mirrorData != null)
-                    {
-                        if (mirrorData.IsCollection)
-                        {
-                            // TODO(Ben): Can we display details of the array and 
-                            // probably display the first element of the array (even 
-                            // when it is multi-dimensional array)?
-                            newContent = Wpf.Properties.Resources.PreviewListLabel;
-                        }
-                        else if (mirrorData.Data == null && !mirrorData.IsNull && mirrorData.Class != null)
-                        {
-                            newContent = mirrorData.Class.ClassName;
-                        }
-                        else if (mirrorData.Data is Enum)
-                        {
-                            newContent = ((Enum)mirrorData.Data).GetDescription();
-                        }
-                        else
-                        {
-                            if (String.IsNullOrEmpty(mirrorData.StringData))
-                            {
-                                newContent = String.Empty;
-                                return;
-                            }
-
-                            int index = mirrorData.StringData.IndexOf('(');
-                            newContent = index != -1 ? mirrorData.StringData.Substring(0, index) : mirrorData.StringData;
-                        }
-                    }
-                },
+                    newContent = CompactBubbleHandler.Process(mirrorData);                },
                 (m) =>
                 {
                     cachedSmallContent = newContent;
-                    var smallContentView = smallContentGrid.Children[0] as TextBlock;
-                    smallContentView.Text = cachedSmallContent; // Update displayed text.
+                    var smallContentView = smallContentGrid.Children[0] as PreviewCompactView;
+                    smallContentView.DataContext = cachedSmallContent;
+
                     if (refreshDisplay != null)
                     {
                         refreshDisplay();

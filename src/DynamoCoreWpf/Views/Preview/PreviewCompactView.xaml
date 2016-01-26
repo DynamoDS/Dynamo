@@ -1,0 +1,53 @@
+﻿<UserControl x:Class="Dynamo.UI.Controls.PreviewCompactView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ui="clr-namespace:Dynamo.UI"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="15" />
+        </Grid.ColumnDefinitions>
+        <TextBlock Name="label"
+                   Grid.Column="0"
+                   Margin="5,5,0,5"
+                   FontFamily="Consolas"
+                   Text="{Binding Path=NodeLabel}" />
+        <TextBlock Name="levels"
+                   Grid.Column="1"
+                   Margin="0,3,0,7"
+                   Foreground="Gray"
+                   FontStyle="Italic"
+                   Visibility="{Binding ShowNumberOfItems,Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"><Run Text="@" /><Run Text="{Binding NumberOfLevels}" />
+        </TextBlock>
+
+        <TextBlock Name="items"
+                   Grid.Column="3"
+                   Margin="0,3,0,7"
+                   Foreground="Gray"
+                   FontStyle="Italic"
+                   Visibility="{Binding ShowNumberOfItems,Converter={StaticResource BooleanToVisibilityCollapsedConverter},ConverterParameter=''}"><Run Text="{}{" /><Run Foreground="DarkRed" Text="{Binding NumberOfItems}" /><Run Text="{}}" />
+        </TextBlock>
+
+
+        <Image x:Name="ExpandIcon"
+               Grid.Column="4"
+               Source="/DynamoCoreWpf;component/UI/Images/bubble-arrow.png"
+               VerticalAlignment="Bottom"
+               Height="6"
+               Width="6"
+               Margin="0,5,5,5" />
+    </Grid>
+</UserControl>
