@@ -25,6 +25,7 @@
 
             <!-- MaxContentGrid = (MaxPreviewControl - (2 * Margin)) -->
             <fwk:Thickness x:Key="PreviewContentMargin">5.0</fwk:Thickness>
+            <fwk:Thickness x:Key="PreviewContentEmptyMargin">-15.0,5.0,5.0,5.0</fwk:Thickness>
             <clr:Double x:Key="MaxContentGridWidth">488.0</clr:Double>
             <clr:Double x:Key="MaxContentGridHeight">288</clr:Double>
 

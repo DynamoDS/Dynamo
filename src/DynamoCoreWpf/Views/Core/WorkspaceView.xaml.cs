@@ -160,7 +160,24 @@ namespace Dynamo.Views
             };
         }
 
-        void OnSelectionCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        internal Point GetCenterPoint()
+        {
+            var x = outerCanvas.ActualWidth / 2.0;
+            var y = outerCanvas.ActualHeight / 2.0;
+            var centerPt = new Point(x, y);
+            var transform = outerCanvas.TransformToDescendant(WorkspaceElements);
+            return transform.Transform(centerPt);
+        }
+
+        internal Rect GetVisibleBounds()
+        {
+            var t = outerCanvas.TransformToDescendant(WorkspaceElements);
+            var topLeft = t.Transform(new Point());
+            var bottomRight = t.Transform(new Point(outerCanvas.ActualWidth, outerCanvas.ActualHeight));
+            return new Rect(topLeft, bottomRight);
+        }
+
+        void OnSelectionCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (ViewModel == null) return;
             ViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
@@ -344,12 +361,6 @@ namespace Dynamo.Views
             if (!Double.IsNaN(node.Height))
                 dropPt.Y -= (node.Height / 2.0);
 
-            if (!Double.IsNaN(node.Width))
-                dropPt.X -= (node.Height / 2.0);
-
-            if (!Double.IsNaN(node.Height))
-                dropPt.Y -= (node.Height / 2.0);
-
             node.X = dropPt.X;
             node.Y = dropPt.Y;
             node.ReportPosition();
@@ -524,11 +535,17 @@ namespace Dynamo.Views
         {
             if (e == null) return; // in certain bizarre cases, e can be null
 
-            this.snappedPort = null;
+            snappedPort = null;
+            if (ViewModel == null) return;
 
-            var wvm = (DataContext as WorkspaceViewModel);
-            if (wvm == null) return;
-            wvm.HandleMouseRelease(workBench, e);
+            // check IsInIdleState before finishing an action with HandleMouseRelease
+            var returnToSearch = ViewModel.IsInIdleState && Keyboard.Modifiers == ModifierKeys.Control;
+
+            ViewModel.HandleMouseRelease(workBench, e);
+            if (returnToSearch)
+            {
+                ViewModel.DynamoViewModel.SearchViewModel.OnRequestFocusSearch();
+            }
         }
 
         private void OnMouseMove(object sender, MouseEventArgs e)

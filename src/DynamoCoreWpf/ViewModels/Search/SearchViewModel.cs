@@ -348,8 +348,7 @@ namespace Dynamo.ViewModels
 
         private IEnumerable<RootNodeCategoryViewModel> CategorizeEntries(IEnumerable<NodeSearchElement> entries, bool expanded)
         {
-            var tempRoot =
-                entries.GroupByRecursive<NodeSearchElement, string, NodeCategoryViewModel>(
+            var tempRoot = entries.GroupByRecursive<NodeSearchElement, string, NodeCategoryViewModel>(
                     element => element.Categories,
                     (name, subs, es) =>
                     {
@@ -357,15 +356,21 @@ namespace Dynamo.ViewModels
                             new NodeCategoryViewModel(name, es.OrderBy(en => en.Name).Select(MakeNodeSearchElementVM), subs);
                         category.IsExpanded = expanded;
                         category.RequestBitmapSource += SearchViewModelRequestBitmapSource;
+                        category.RequestReturnFocusToSearch += OnRequestFocusSearch;
                         return category;
                     }, "");
-            var result =
-                tempRoot.SubCategories.Select(
-                    cat =>
-                        new RootNodeCategoryViewModel(cat.Name, cat.Entries, cat.SubCategories)
-                        {
-                            IsExpanded = expanded
-                        });
+
+            var result = tempRoot.SubCategories.Select(cat =>
+            {
+                var rootCat = new RootNodeCategoryViewModel(cat.Name, cat.Entries, cat.SubCategories)
+                {
+                    IsExpanded = expanded
+                };
+
+                rootCat.RequestReturnFocusToSearch += OnRequestFocusSearch;
+                return rootCat;
+            });
+
             tempRoot.Dispose();
             return result.OrderBy(cat => cat.Name);
         }
@@ -1020,7 +1025,7 @@ namespace Dynamo.ViewModels
             dynamoViewModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(
                 nodeModel, position.X, position.Y, useDeafultPosition, true));
 
-            dynamoViewModel.OnRequestReturnFocusToView();
+            OnRequestFocusSearch();
         }
 
         #endregion
