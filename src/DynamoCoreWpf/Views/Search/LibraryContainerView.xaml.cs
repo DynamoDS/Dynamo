@@ -50,6 +50,14 @@ namespace Dynamo.Search
             };
         }
 
+        protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+        {
+            if (e.ClickCount == 1)
+            {
+                SearchTextBox.Focus();
+            }
+        }
+
         private void OnSearchViewUnloaded(object sender, EventArgs e)
         {
             viewModel.RequestFocusSearch -= OnSearchViewModelRequestFocusSearch;
