@@ -17,7 +17,7 @@ namespace Dynamo.Core
         /// <summary>
         ///     Determines if the this.client has login capabilities
         /// </summary>
-        internal bool HasAuthProvider
+        public bool HasAuthProvider
         {
             get { return authProvider != null; }
         }
