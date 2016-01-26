@@ -120,6 +120,14 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
+        // This is being used to remove mismatching related to shared custom nodes
+        // described here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-9333
+        public override string GetSharedName()
+        {
+            string[] splited = this.FileName.Split(new string[] { @"\" }, StringSplitOptions.None);
+            return splited[splited.Length - 1].Replace(".dyf", "");
+        }
+
         public void SetInfo(string newName = null, string newCategory = null, string newDescription = null, string newFilename = null)
         {
             PropertyChanged -= OnPropertyChanged;
