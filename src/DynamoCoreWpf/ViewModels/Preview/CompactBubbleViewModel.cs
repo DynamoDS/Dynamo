@@ -42,7 +42,7 @@ namespace Dynamo.ViewModels
 
         public bool ShowNumberOfItems
         {
-            get { return NumberOfItems > 1; }
+            get { return NumberOfItems >= 1 && NumberOfLevels < -1; }
         }
 
         #endregion
