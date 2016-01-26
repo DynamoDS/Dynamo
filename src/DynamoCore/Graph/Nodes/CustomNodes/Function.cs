@@ -302,24 +302,28 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     //    x : type
                     //    x : type = default_value
                     IdentifierNode identifierNode;
-                    if (!TryParseInputExpression(inputSymbol, out identifierNode, out defaultValue, out comment))
+                    if (TryParseInputExpression(inputSymbol, out identifierNode, out defaultValue, out comment))
                     {
-                        this.Warning(Properties.Resources.WarningInvalidInput);
+                        nickName = identifierNode.Value;
+
+                        if (substrings.Count() > 1)
+                        {
+                            if (identifierNode.datatype.UID == Constants.kInvalidIndex)
+                            {
+                                string warningMessage = String.Format(
+                                    Properties.Resources.WarningCannotFindType,
+                                    identifierNode.datatype.Name);
+                                this.Warning(warningMessage);
+                            }
+                            else
+                            {
+                                type = identifierNode.datatype;
+                            }
+                        }
                     }
                     else
                     {
-                        if (identifierNode.datatype.UID == Constants.kInvalidIndex)
-                        {
-                            string warningMessage = String.Format(
-                                Properties.Resources.WarningCannotFindType, 
-                                identifierNode.datatype.Name);
-                            this.Warning(warningMessage);
-                        }
-                        else
-                        {
-                            nickName = identifierNode.Value;
-                            type = identifierNode.datatype;
-                        }
+                        this.Warning(Properties.Resources.WarningInvalidInput);
                     }
                 }
 
