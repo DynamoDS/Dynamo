@@ -77,7 +77,7 @@
     <Grid>
         <TreeView Name="treeView1"
                   ItemsSource="{Binding Children}"
-                  Background="Transparent"
+                  Background="White"
                   Opacity=".5"
                   BorderBrush="{x:Null}"
                   VirtualizingStackPanel.IsVirtualizing="True"
