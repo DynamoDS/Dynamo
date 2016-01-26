@@ -2936,9 +2936,6 @@ namespace ProtoCore.AST.AssociativeAST
             if (rhs == null)
                 throw new ArgumentNullException("rhs");
 
-            if (op == null)
-                throw new ArgumentNullException("op");
-
             return new BinaryExpressionNode(lhs, rhs, op);
         }
 

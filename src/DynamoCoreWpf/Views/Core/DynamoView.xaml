@@ -1659,7 +1659,7 @@
             </Grid.Background>
         </Grid>
 
+        <Grid Name="FocusableGrid" Width="0" Height="0" Focusable="True"/>
     </Grid>
-
 
 </Window>

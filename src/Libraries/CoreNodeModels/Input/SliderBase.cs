@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace DSCoreNodesUI.Input
+namespace CoreNodeModels.Input
 {
     public abstract class SliderBase<T> : BasicInteractive<T> where T : IComparable<T>
     {

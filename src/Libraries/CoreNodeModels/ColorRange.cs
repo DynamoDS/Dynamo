@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 
 using DSCore;
-using DSCoreNodesUI.Properties;
+using CoreNodeModels.Properties;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using System.Globalization;
@@ -12,13 +12,13 @@ using System.Globalization;
 using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
 
-namespace DSCoreNodesUI
+namespace CoreNodeModels
 {
     [IsDesignScriptCompatible]
     [NodeName("Color Range")]
     [NodeCategory("Core.Color.Create")]
-    [NodeDescription("ColorRangeDescription",typeof(DSCoreNodesUI.Properties.Resources))]
-    [NodeSearchTags("ColorRangeSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("ColorRangeDescription",typeof(Resources))]
+    [NodeSearchTags("ColorRangeSearchTags", typeof(Resources))]
 
     [InPortNames("colors", "indices", "value")]
     [InPortTypes("Color[]", "double[]", "double")]
@@ -30,7 +30,7 @@ namespace DSCoreNodesUI
     [OutPortTypes("Color")]
     [OutPortDescriptions(typeof(Resources),
         "ColorRangePortDataResultToolTip")]
-
+    [AlsoKnownAs("DSCoreNodesUI.ColorRange")]
     public class ColorRange : NodeModel
     {
         public event Action RequestChangeColorRange;

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading;
-using DSCoreNodesUI.Input;
+using CoreNodeModels.Input;
 using Dynamo.Tests;
 using DynamoConversions;
 using NUnit.Framework;
-using DynamoConverter = DSCoreNodesUI.DynamoConvert;
+using DynamoConverter = CoreNodeModels.DynamoConvert;
 
 namespace DynamoCoreWpfTests
 {

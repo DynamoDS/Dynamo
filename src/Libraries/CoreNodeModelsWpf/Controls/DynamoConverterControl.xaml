@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Dynamo.Wpf.Controls.DynamoConverterControl"
+﻿<UserControl x:Class="CoreNodeModelsWpf.Controls.DynamoConverterControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 

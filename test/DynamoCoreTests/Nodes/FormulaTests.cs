@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using DSCoreNodesUI;
+using CoreNodeModels;
 using NUnit.Framework;
 
 namespace Dynamo.Tests

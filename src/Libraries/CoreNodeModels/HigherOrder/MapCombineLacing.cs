@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Runtime;
-using DSCoreNodesUI.Properties;
+using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
 
-namespace DSCoreNodesUI.HigherOrder
+namespace CoreNodeModels.HigherOrder
 {
     [NodeName("List.Map")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListMapDescription", typeof(DSCoreNodesUI.Properties.Resources))]
-    [NodeSearchTags("ListMapSearchTags",typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("ListMapDescription", typeof(Resources))]
+    [NodeSearchTags("ListMapSearchTags",typeof(Resources))]
     [IsDesignScriptCompatible]
-    [AlsoKnownAs("DSCore.Map")]
+    [AlsoKnownAs("DSCore.Map", "DSCoreNodesUI.HigherOrder.Map")]
     public class Map : NodeModel
     {
         public Map()
@@ -81,10 +81,10 @@ namespace DSCoreNodesUI.HigherOrder
 
     [NodeName("List.Combine")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListCombineDescription", typeof(DSCoreNodesUI.Properties.Resources))]
-    [NodeSearchTags("ListCombineSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("ListCombineDescription", typeof(Resources))]
+    [NodeSearchTags("ListCombineSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
-    [AlsoKnownAs("DSCore.Combine")]
+    [AlsoKnownAs("DSCore.Combine", "DSCoreNodesUI.HigherOrder.Combine")]
     public class Combine : CombinatorNode
     {
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -107,10 +107,10 @@ namespace DSCoreNodesUI.HigherOrder
     [IsVisibleInDynamoLibrary(false)]
     [NodeName("List.ForEach")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListForEachDescription", typeof(DSCoreNodesUI.Properties.Resources))]
-    [NodeSearchTags("ListForEachSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("ListForEachDescription", typeof(Resources))]
+    [NodeSearchTags("ListForEachSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
-    [AlsoKnownAs("DSCore.ForEach")]
+    [AlsoKnownAs("DSCore.ForEach", "DSCoreNodesUI.HigherOrder.ForEach")]
     public class ForEach : CombinatorNode
     {
         public ForEach() : base(2) { }
@@ -135,10 +135,10 @@ namespace DSCoreNodesUI.HigherOrder
     //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
     [NodeName("List.LaceShortest")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListLaceShortestDescription", typeof(DSCoreNodesUI.Properties.Resources))]
-    [NodeSearchTags("ListLaceShortestSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("ListLaceShortestDescription", typeof(Resources))]
+    [NodeSearchTags("ListLaceShortestSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
-    [AlsoKnownAs("DSCore.LaceShortest")]
+    [AlsoKnownAs("DSCore.LaceShortest", "DSCoreNodesUI.HigherOrder.LaceShortest")]
     public class LaceShortest : CombinatorNode
     {
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -161,10 +161,10 @@ namespace DSCoreNodesUI.HigherOrder
     //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
     [NodeName("List.LaceLongest")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListLaceLongestDescription", typeof(DSCoreNodesUI.Properties.Resources))]
-    [NodeSearchTags("ListLaceLongestSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("ListLaceLongestDescription", typeof(Resources))]
+    [NodeSearchTags("ListLaceLongestSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
-    [AlsoKnownAs("DSCore.LaceLongest")]
+    [AlsoKnownAs("DSCore.LaceLongest", "DSCoreNodesUI.HigherOrder.LaceLongest")]
     public class LaceLongest : CombinatorNode
     {
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -188,10 +188,10 @@ namespace DSCoreNodesUI.HigherOrder
     //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
     [NodeName("List.CartesianProduct")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListCartesianProductDescription", typeof(DSCoreNodesUI.Properties.Resources))]
-    [NodeSearchTags("ListCartesianProductSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("ListCartesianProductDescription", typeof(Resources))]
+    [NodeSearchTags("ListCartesianProductSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
-    [AlsoKnownAs("DSCore.CartesianProduct")]
+    [AlsoKnownAs("DSCore.CartesianProduct", "DSCoreNodesUI.HigherOrder.CartesianProduct")]
     public class CartesianProduct : CombinatorNode
     {
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -275,10 +275,10 @@ namespace DSCoreNodesUI.HigherOrder
 
     [NodeName("List.Reduce")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListReduceDescription", typeof(DSCoreNodesUI.Properties.Resources))]
-    [NodeSearchTags("ListReduceSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("ListReduceDescription", typeof(Resources))]
+    [NodeSearchTags("ListReduceSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
-    [AlsoKnownAs("DSCore.Reduce")]
+    [AlsoKnownAs("DSCore.Reduce", "DSCoreNodesUI.HigherOrder.Reduce")]
     public class Reduce : VariableInputNode
     {
         private readonly PortData reductorPort;
@@ -364,10 +364,10 @@ namespace DSCoreNodesUI.HigherOrder
 
     [NodeName("List.Scan")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListScanDescription", typeof(DSCoreNodesUI.Properties.Resources))]
-    [NodeSearchTags("ListScanSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("ListScanDescription", typeof(Resources))]
+    [NodeSearchTags("ListScanSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
-    [AlsoKnownAs("DSCore.ScanList")]
+    [AlsoKnownAs("DSCore.ScanList", "DSCoreNodesUI.HigherOrder.ScanList")]
     public class ScanList : VariableInputNode
     {
         private readonly PortData reductorPort;
@@ -453,10 +453,10 @@ namespace DSCoreNodesUI.HigherOrder
 
     [NodeName("List.Filter")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListFilterDescription", typeof(DSCoreNodesUI.Properties.Resources))]
-    [NodeSearchTags("ListFilterSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("ListFilterDescription", typeof(Resources))]
+    [NodeSearchTags("ListFilterSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
-    [AlsoKnownAs("DSCore.Filter")]
+    [AlsoKnownAs("DSCore.Filter", "DSCoreNodesUI.HigherOrder.Filter")]
     public class Filter : NodeModel
     {
         public Filter()
@@ -497,10 +497,10 @@ namespace DSCoreNodesUI.HigherOrder
 
     [NodeName("ReplaceByCondition")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ReplaceByConditionDescription", typeof(DSCoreNodesUI.Properties.Resources))]
-    [NodeSearchTags("ReplaceByConditionSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("ReplaceByConditionDescription", typeof(Resources))]
+    [NodeSearchTags("ReplaceByConditionSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
-    [AlsoKnownAs("DSCore.Replace")]
+    [AlsoKnownAs("DSCore.Replace", "DSCoreNodesUI.HigherOrder.Replace")]
     public class Replace : NodeModel
     {
         public Replace()

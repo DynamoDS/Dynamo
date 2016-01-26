@@ -85,7 +85,7 @@ namespace Dynamo.Nodes
         {
             var migrationData = new NodeMigrationData(data.Document);
             migrationData.AppendNode(MigrationManager.CloneAndChangeName(
-                data.MigratedNodes.ElementAt(0), "DSCoreNodesUI.ColorRange", "Color Range"));
+                data.MigratedNodes.ElementAt(0), "CoreNodeModels.ColorRange", "Color Range"));
 
             return migrationData;
         }

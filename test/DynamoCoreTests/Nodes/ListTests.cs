@@ -1205,7 +1205,7 @@ namespace Dynamo.Tests
 			Assert.AreEqual(6, workspace.Nodes.Count());
 			Assert.AreEqual(5, workspace.Connectors.Count());
 
-			var numberRange = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSCoreNodesUI.Range>("4e781f03-5b48-4d58-a511-8c732665e961");
+            var numberRange = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CoreNodeModels.Range>("4e781f03-5b48-4d58-a511-8c732665e961");
 
 			var actual = numberRange.GetValue(0, CurrentDynamoModel.EngineController).GetElements();
 			var innerList1 = actual[0].GetElements();

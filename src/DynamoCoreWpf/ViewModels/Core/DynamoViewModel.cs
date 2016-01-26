@@ -540,8 +540,8 @@ namespace Dynamo.ViewModels
                 case "CanNavigateBackground":
                     if (!BackgroundPreviewViewModel.CanNavigateBackground)
                     {
-                        // Return focus back to Search View (Search Field)
-                        SearchViewModel.OnRequestReturnFocusToSearch(this, new EventArgs());
+                        // Return focus back to Dynamo View
+                        OnRequestReturnFocusToView();
                     }
                     break;
             }
@@ -699,11 +699,6 @@ namespace Dynamo.ViewModels
 
             // Reset workspace state
             CurrentSpaceViewModel.CancelActiveState();
-        }
-
-        public void ReturnFocusToSearch()
-        {
-            this.SearchViewModel.OnRequestReturnFocusToSearch(null, EventArgs.Empty);
         }
 
         internal void ForceRunExprCmd(object parameters)

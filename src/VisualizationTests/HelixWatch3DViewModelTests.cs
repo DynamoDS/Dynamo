@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Media.Media3D;
 using System.Xml;
 using SystemTestServices;
-using DSCoreNodesUI.Input;
+using CoreNodeModels.Input;
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Graph;

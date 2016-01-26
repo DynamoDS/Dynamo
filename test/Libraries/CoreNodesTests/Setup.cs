@@ -20,7 +20,7 @@ namespace DSCoreNodesTests
 
             var resolutionPaths = new[]
             {
-                // These tests need "DSCoreNodesUI.dll" under "nodes" folder.
+                // These tests need "CoreNodeModels.dll" under "nodes" folder.
                 Path.Combine(moduleRootFolder, "nodes")
             };
 

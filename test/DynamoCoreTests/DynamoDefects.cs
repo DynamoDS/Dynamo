@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using DSCoreNodesUI.Input;
+using CoreNodeModels.Input;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using NUnit.Framework;
 using ProtoCore.Mirror;
 
-using IntegerSlider = DSCoreNodesUI.Input.IntegerSlider;
+using IntegerSlider = CoreNodeModels.Input.IntegerSlider;
 
 namespace Dynamo.Tests
 {

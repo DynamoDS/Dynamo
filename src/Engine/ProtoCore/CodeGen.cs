@@ -770,8 +770,6 @@ namespace ProtoCore
             ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone,
             ProtoCore.AST.Node binaryExpNode = null)
         {
-            bool isRefFromIdentifier = false;
-
             dynamic node = pNode;
             if (node is ProtoCore.AST.ImperativeAST.IdentifierListNode || node is ProtoCore.AST.AssociativeAST.IdentifierListNode)
             {
@@ -783,7 +781,7 @@ namespace ProtoCore
                     throw new BuildHaltException(message);
                 }
 
-                isRefFromIdentifier = DfsEmitIdentList(bnode.LeftNode, bnode, contextClassScope, ref lefttype, ref depth, ref finalType, isLeftidentList, ref isFirstIdent, ref isMethodCallPresent, ref firstSymbol, graphNode, subPass);
+                DfsEmitIdentList(bnode.LeftNode, bnode, contextClassScope, ref lefttype, ref depth, ref finalType, isLeftidentList, ref isFirstIdent, ref isMethodCallPresent, ref firstSymbol, graphNode, subPass);
 
                 if (lefttype.rank > 0)
                 {
@@ -2779,12 +2777,12 @@ namespace ProtoCore
                 ulong mergedKey = (((ulong)blk) << 32 | ((uint)pc));
                 ulong location = (((ulong)line) << 32 | ((uint)col));
 
-                if (core.codeToLocation.ContainsKey(mergedKey))
+                if (core.CodeToLocation.ContainsKey(mergedKey))
                 {
-                    core.codeToLocation.Remove(mergedKey);
+                    core.CodeToLocation.Remove(mergedKey);
                 }
                 
-                core.codeToLocation.Add(mergedKey, location);
+                core.CodeToLocation.Add(mergedKey, location);
             }
         }
 

@@ -549,7 +549,6 @@ namespace ProtoCore.DSASM
                 return false;
             }
 
-            var dict1 = array1.ToDictionary();
             for (int i = 0; i < array1.Count; i++)
             {
                 if (!StackUtils.CompareStackValues(array1.GetValueAt(i), array2.GetValueAt(i), rtCore1, rtCore2, context))

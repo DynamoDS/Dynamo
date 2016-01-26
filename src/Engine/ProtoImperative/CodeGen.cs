@@ -880,8 +880,6 @@ namespace ProtoImperative
                 inferedType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
 
                 DfsTraverse(node, ref inferedType);
-
-                BinaryExpressionNode binaryNode = node as BinaryExpressionNode;
             }
             core.InferedType = inferedType;
 
@@ -1428,7 +1426,7 @@ namespace ProtoImperative
         {
             FunctionCallNode fnode = node as FunctionCallNode;
 
-            ProtoCore.DSASM.ProcedureNode procNode = TraverseFunctionCall(node, null, ProtoCore.DSASM.Constants.kInvalidIndex, 0, ref inferedType, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone, bnode);
+            TraverseFunctionCall(node, null, ProtoCore.DSASM.Constants.kInvalidIndex, 0, ref inferedType, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone, bnode);
             if (fnode != null && fnode.ArrayDimensions != null)
             {
                 int dimensions = DfsEmitArrayIndexHeap(fnode.ArrayDimensions);

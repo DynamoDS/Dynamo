@@ -4,7 +4,7 @@ using Dynamo;
 using Dynamo.Configuration;
 using Dynamo.Tests;
 using NUnit.Framework;
-using DateTime = DSCoreNodesUI.Input.DateTime;
+using DateTime = CoreNodeModels.Input.DateTime;
 
 namespace DynamoCoreWpfTests
 {

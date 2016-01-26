@@ -2,7 +2,7 @@
 using Dynamo.Graph;
 using ProtoCore.AST.AssociativeAST;
 
-namespace DSCoreNodesUI.Input
+namespace CoreNodeModels.Input
 {
     public abstract class String : BasicInteractive<string>
     {

@@ -23,7 +23,7 @@ namespace Dynamo.TestInfrastructure
         {
             string assemblyPath = Assembly.GetExecutingAssembly().Location;
             string assemblyDir = Path.GetDirectoryName(assemblyPath);
-            string pathToNodesDll = assemblyDir + "\\nodes\\DSCoreNodesUI.dll";
+            string pathToNodesDll = assemblyDir + "\\nodes\\CoreNodeModels.dll";
             Assembly assembly = Assembly.LoadFile(pathToNodesDll);
             Type type = assembly.GetType("Dynamo.Nodes.DoubleSlider");
 
@@ -109,7 +109,7 @@ namespace Dynamo.TestInfrastructure
 
         public override int Mutate(NodeModel node)
         {
-            string assemblyPass = Environment.CurrentDirectory + "\\nodes\\DSCoreNodesUI.dll";
+            string assemblyPass = Environment.CurrentDirectory + "\\nodes\\CoreNodeModels.dll";
             Assembly assembly = Assembly.LoadFile(assemblyPass);
             Type type = assembly.GetType("Dynamo.Nodes.DoubleSlider");
             

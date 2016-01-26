@@ -44,9 +44,9 @@
     <IntermediateOutputPath>C:\Users\prabhum\AppData\Local\Temp\vsE9AE.tmp\Release\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DSCoreNodesUI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="CoreNodeModels, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(DynamoPath)\nodes\DSCoreNodesUI.dll</HintPath>
+      <HintPath>$(DynamoPath)\nodes\CoreNodeModels.dll</HintPath>
     </Reference>
     <Reference Include="DSIronPython">
       <HintPath>$(DynamoPath)\DSIronPython.dll</HintPath>

@@ -4,7 +4,7 @@ using Autodesk.DesignScript.Geometry;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
-using DSCoreNodesUI.Input;
+using CoreNodeModels.Input;
 using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Tests

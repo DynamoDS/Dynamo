@@ -8,7 +8,7 @@ using Dynamo.Selection;
 
 using NUnit.Framework;
 using System.Collections;
-using DSCoreNodesUI;
+using CoreNodeModels;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
@@ -602,7 +602,7 @@ namespace Dynamo.Tests
         public void CollapsedNodeWOrkspaceIsAddedToDynamoWithUnsavedChanges()
         {
             NodeModel node;
-            if (!CurrentDynamoModel.NodeFactory.CreateNodeFromTypeName("DSCoreNodesUI.Input.DoubleInput", out node))
+            if (!CurrentDynamoModel.NodeFactory.CreateNodeFromTypeName("CoreNodeModels.Input.DoubleInput", out node))
             {
                 throw new Exception("Failed to create node!");
             }

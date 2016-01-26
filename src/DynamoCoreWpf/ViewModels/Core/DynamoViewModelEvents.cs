@@ -118,5 +118,12 @@ namespace Dynamo.ViewModels
                 RequestPaste();
             }
         }
+
+        internal event Action RequestReturnFocusToView;
+        internal void OnRequestReturnFocusToView()
+        {
+            if (RequestReturnFocusToView != null)
+                RequestReturnFocusToView();
+        }
     }
 }

@@ -1,4 +1,4 @@
-using DSCoreNodesUI.Input;
+using CoreNodeModels.Input;
 using NUnit.Framework;
 using Dynamo.Tests;
 using Dynamo.Selection;

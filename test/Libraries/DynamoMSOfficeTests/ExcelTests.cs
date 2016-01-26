@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using DSCoreNodesUI.Input;
+using CoreNodeModels.Input;
 using DSOffice;
 using Dynamo.Configuration;
 using NUnit.Framework;

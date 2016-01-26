@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Xml;
-using DSCoreNodesUI.Properties;
+using CoreNodeModels.Properties;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 
-namespace DSCoreNodesUI
+namespace CoreNodeModels
 {
     /// <summary>
     /// A class used to store a name and associated item for a drop down menu

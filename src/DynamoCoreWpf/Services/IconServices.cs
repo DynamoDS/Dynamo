@@ -54,7 +54,11 @@ namespace Dynamo.Wpf.Services
             if (resAssembly != null)
             {
                 resourceAssembly = resAssembly;
-                assemblyName = resAssembly.GetName().Name.Split('.').First();
+
+                // "Name" can be "Some.Assembly.Name.customization" with multiple dots, 
+                // we are interested in removal of the "customization" part and the middle dots.
+                var temp = resAssembly.GetName().Name.Split('.');
+                assemblyName = String.Join("", temp.Take(temp.Length - 1));
             }
         }
 

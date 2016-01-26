@@ -30,7 +30,7 @@ namespace ProtoTestConsoleRunner
 
             ProtoScriptRunner runner = new ProtoScriptRunner();
 
-            RuntimeCore runtimeCore = runner.LoadAndExecute(filename, core);
+            runner.LoadAndExecute(filename, core);
             long ms = sw.ElapsedMilliseconds;
             sw.Stop();
             Console.WriteLine(ms);

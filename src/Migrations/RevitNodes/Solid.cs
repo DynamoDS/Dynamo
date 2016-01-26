@@ -146,7 +146,7 @@ namespace Dynamo.Nodes
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
 
             XmlElement createListNode = MigrationManager.CreateNode(data.Document,
-                oldNode, 0, "DSCoreNodesUI.CreateList", "Create List");
+                oldNode, 0, "CoreNodeModels.CreateList", "Create List");
             migratedData.AppendNode(createListNode);
             createListNode.SetAttribute("inputcount", "2");
             string createListNodeId = MigrationManager.GetGuidFromXmlElement(createListNode);

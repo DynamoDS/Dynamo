@@ -616,7 +616,7 @@ namespace ProtoCore.DSASM
         {
             StackValue value = new StackValue();
             value.optype = AddressType.BlockIndex;
-            value.opdata = value.opdata = block;
+            value.opdata = block;
 
             MetaData mdata;
             mdata.type = (int)PrimitiveType.kTypeVar;

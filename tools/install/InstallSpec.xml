@@ -88,13 +88,6 @@
       <Author />
     </ModuleSpec>
     <ModuleSpec>
-	  <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\cs-CZ\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>DynamoPython.resources.dll</Name>
       <FilePath>.\cs-CZ\DynamoPython.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -261,13 +254,6 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-	  <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\de-DE\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>DynamoPython.XML</Name>
       <FilePath>.\de-DE\DynamoPython.XML</FilePath>
       <DigitalSignature>false</DigitalSignature>
@@ -428,13 +414,6 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-	  <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\en-US\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>InstallUpdate.resources.dll</Name>
       <FilePath>.\en-US\InstallUpdate.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -592,13 +571,6 @@
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\es-ES\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>InstallUpdate.resources.dll</Name>
@@ -773,13 +745,6 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-	<Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\fr-FR\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
--    <ModuleSpec>
       <Name>Operators.xml</Name>
       <FilePath>.\fr-FR\Operators.xml</FilePath>
       <DigitalSignature>false</DigitalSignature>
@@ -943,13 +908,6 @@
       <FilePath>.\it-IT\Operators.xml</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
-    </ModuleSpec>
-    <ModuleSpec>
-	  <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\it-IT\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>ProtoAssociative.resources.dll</Name>
@@ -1118,13 +1076,6 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-	<Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\ja-JP\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>ProtoCore.resources.dll</Name>
       <FilePath>.\ja-JP\ProtoCore.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -1291,13 +1242,6 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-	<Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\ko-KR\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>ProtoGeometry.resources.dll</Name>
       <FilePath>.\ko-KR\ProtoGeometry.resources.dll</FilePath>
       <DigitalSignature>false</DigitalSignature>
@@ -1357,34 +1301,34 @@
     <ModuleSpec>
       <Name>LibG.AsmPreloader.Managed.dll</Name>
       <FilePath>.\libg_220\LibG.AsmPreloader.Managed.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
+      <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>LibG.AsmPreloader.Unmanaged.dll</Name>
       <FilePath>.\libg_220\LibG.AsmPreloader.Unmanaged.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
+      <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
     <ModuleSpec>
       <Name>LibG.dll</Name>
       <FilePath>.\libg_220\LibG.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
+      <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc.</Author>
     </ModuleSpec>
     <ModuleSpec>
       <Name>LibG.Managed.dll</Name>
       <FilePath>.\libg_220\LibG.Managed.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
+      <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc.</Author>
     </ModuleSpec>
     <ModuleSpec>
       <Name>LibG.ProtoInterface.dll</Name>
       <FilePath>.\libg_220\LibG.ProtoInterface.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
+      <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc.</Author>
     </ModuleSpec>
@@ -1397,7 +1341,7 @@
     <ModuleSpec>
       <Name>LibGCore.dll</Name>
       <FilePath>.\libg_220\LibGCore.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
+      <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc.</Author>
     </ModuleSpec>
@@ -1482,34 +1426,34 @@
     <ModuleSpec>
       <Name>LibG.AsmPreloader.Managed.dll</Name>
       <FilePath>.\libg_221\LibG.AsmPreloader.Managed.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
+      <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>LibG.AsmPreloader.Unmanaged.dll</Name>
       <FilePath>.\libg_221\LibG.AsmPreloader.Unmanaged.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
+      <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
     <ModuleSpec>
       <Name>LibG.dll</Name>
       <FilePath>.\libg_221\LibG.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
+      <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc.</Author>
     </ModuleSpec>
     <ModuleSpec>
       <Name>LibG.Managed.dll</Name>
       <FilePath>.\libg_221\LibG.Managed.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
+      <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc.</Author>
     </ModuleSpec>
     <ModuleSpec>
       <Name>LibG.ProtoInterface.dll</Name>
       <FilePath>.\libg_221\LibG.ProtoInterface.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
+      <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc.</Author>
     </ModuleSpec>
@@ -1522,7 +1466,7 @@
     <ModuleSpec>
       <Name>LibGCore.dll</Name>
       <FilePath>.\libg_221\LibGCore.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
+      <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc.</Author>
     </ModuleSpec>
@@ -1569,6 +1513,131 @@
     <ModuleSpec>
       <Name>msvcr110.dll</Name>
       <FilePath>.\libg_221\msvcr110.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Microsoft Corporation</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>boost_chrono-vc110-mt-1_51.dll</Name>
+      <FilePath>.\libg_222\boost_chrono-vc110-mt-1_51.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>boost_regex-vc110-mt-1_51.dll</Name>
+      <FilePath>.\libg_222\boost_regex-vc110-mt-1_51.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>boost_system-vc110-mt-1_51.dll</Name>
+      <FilePath>.\libg_222\boost_system-vc110-mt-1_51.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>boost_thread-vc110-mt-1_51.dll</Name>
+      <FilePath>.\libg_222\boost_thread-vc110-mt-1_51.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>GNU.Gettext.dll</Name>
+      <FilePath>.\libg_222\GNU.Gettext.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>LibG.AsmPreloader.Managed.dll</Name>
+      <FilePath>.\libg_222\LibG.AsmPreloader.Managed.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author />
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>LibG.AsmPreloader.Unmanaged.dll</Name>
+      <FilePath>.\libg_222\LibG.AsmPreloader.Unmanaged.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>LibG.dll</Name>
+      <FilePath>.\libg_222\LibG.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>LibG.Managed.dll</Name>
+      <FilePath>.\libg_222\LibG.Managed.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>LibG.ProtoInterface.dll</Name>
+      <FilePath>.\libg_222\LibG.ProtoInterface.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>libgcc_s_sjlj-1.dll</Name>
+      <FilePath>.\libg_222\libgcc_s_sjlj-1.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>LibGCore.dll</Name>
+      <FilePath>.\libg_222\LibGCore.dll</FilePath>
+      <DigitalSignature>true</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Autodesk, Inc.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>libgomp-1.dll</Name>
+      <FilePath>.\libg_222\libgomp-1.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>libiconv-2.dll</Name>
+      <FilePath>.\libg_222\libiconv-2.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Free Software Foundation</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>libintl-8.dll</Name>
+      <FilePath>.\libg_222\libintl-8.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Free Software Foundation</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>libstdc++-6.dll</Name>
+      <FilePath>.\libg_222\libstdc++-6.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>libwinpthread-1.dll</Name>
+      <FilePath>.\libg_222\libwinpthread-1.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>MingW-W64 Project. All rights reserved.</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>msvcp110.dll</Name>
+      <FilePath>.\libg_222\msvcp110.dll</FilePath>
+      <DigitalSignature>false</DigitalSignature>
+      <CopyForInstaller>true</CopyForInstaller>
+      <Author>Microsoft Corporation</Author>
+    </ModuleSpec>
+    <ModuleSpec>
+      <Name>msvcr110.dll</Name>
+      <FilePath>.\libg_222\msvcr110.dll</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Microsoft Corporation</Author>
@@ -1737,8 +1806,8 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.resources.dll</Name>
-      <FilePath>.\nodes\cs-CZ\DSCoreNodesUI.resources.dll</FilePath>
+      <Name>CoreNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\cs-CZ\CoreNodeModels.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -1800,8 +1869,8 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.resources.dll</Name>
-      <FilePath>.\nodes\de-DE\DSCoreNodesUI.resources.dll</FilePath>
+      <Name>CoreNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\de-DE\CoreNodeModels.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -1863,8 +1932,8 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.resources.dll</Name>
-      <FilePath>.\nodes\en-US\DSCoreNodesUI.resources.dll</FilePath>
+      <Name>CoreNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\en-US\CoreNodeModels.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -1926,8 +1995,8 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.resources.dll</Name>
-      <FilePath>.\nodes\es-ES\DSCoreNodesUI.resources.dll</FilePath>
+      <Name>CoreNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\es-ES\CoreNodeModels.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -1989,8 +2058,8 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.resources.dll</Name>
-      <FilePath>.\nodes\fr-FR\DSCoreNodesUI.resources.dll</FilePath>
+      <Name>CoreNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\fr-FR\CoreNodeModels.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2052,8 +2121,8 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.resources.dll</Name>
-      <FilePath>.\nodes\it-IT\DSCoreNodesUI.resources.dll</FilePath>
+      <Name>CoreNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\it-IT\CoreNodeModels.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2115,8 +2184,8 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.resources.dll</Name>
-      <FilePath>.\nodes\ja-JP\DSCoreNodesUI.resources.dll</FilePath>
+      <Name>CoreNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\ja-JP\CoreNodeModels.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2178,8 +2247,8 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.resources.dll</Name>
-      <FilePath>.\nodes\ko-KR\DSCoreNodesUI.resources.dll</FilePath>
+      <Name>CoreNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\ko-KR\CoreNodeModels.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2241,8 +2310,8 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.resources.dll</Name>
-      <FilePath>.\nodes\pl-PL\DSCoreNodesUI.resources.dll</FilePath>
+      <Name>CoreNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\pl-PL\CoreNodeModels.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2304,8 +2373,8 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.resources.dll</Name>
-      <FilePath>.\nodes\pt-BR\DSCoreNodesUI.resources.dll</FilePath>
+      <Name>CoreNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\pt-BR\CoreNodeModels.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2367,8 +2436,8 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.resources.dll</Name>
-      <FilePath>.\nodes\ru-RU\DSCoreNodesUI.resources.dll</FilePath>
+      <Name>CoreNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\ru-RU\CoreNodeModels.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2430,8 +2499,8 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.resources.dll</Name>
-      <FilePath>.\nodes\zh-CN\DSCoreNodesUI.resources.dll</FilePath>
+      <Name>CoreNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\zh-CN\CoreNodeModels.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2493,8 +2562,8 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.resources.dll</Name>
-      <FilePath>.\nodes\zh-TW\DSCoreNodesUI.resources.dll</FilePath>
+      <Name>CoreNodeModels.resources.dll</Name>
+      <FilePath>.\nodes\zh-TW\CoreNodeModels.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2556,15 +2625,15 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.customization.dll</Name>
-      <FilePath>.\nodes\DSCoreNodesUI.customization.dll</FilePath>
+      <Name>CoreNodeModels.customization.dll</Name>
+      <FilePath>.\nodes\CoreNodeModels.customization.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author />
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DSCoreNodesUI.dll</Name>
-      <FilePath>.\nodes\DSCoreNodesUI.dll</FilePath>
+      <Name>CoreNodeModels.dll</Name>
+      <FilePath>.\nodes\CoreNodeModels.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author>Autodesk, Inc</Author>
@@ -2934,13 +3003,6 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-      <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\pl-PL\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>DynamoPython.XML</Name>
       <FilePath>.\pt-BR\DynamoPython.XML</FilePath>
       <DigitalSignature>false</DigitalSignature>
@@ -3119,13 +3181,6 @@
       <FilePath>.\Revit_2015\en-US\RevitNodes.xml</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
-    </ModuleSpec>
-    <ModuleSpec>
-	  <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\pt-BR\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
     </ModuleSpec>
     <ModuleSpec>
       <Name>RevitRaaS.resources.dll</Name>
@@ -5090,13 +5145,6 @@
       <Author>Autodesk, Inc</Author>
     </ModuleSpec>
     <ModuleSpec>
-	  <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\ru-RU\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>RevitNodes.xml</Name>
       <FilePath>.\Revit_2017\ja-JP\RevitNodes.xml</FilePath>
       <DigitalSignature>false</DigitalSignature>
@@ -5392,13 +5440,6 @@
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>
     <ModuleSpec>
-     <Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\zh-CN\DynamoPublish.resources.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
       <Name>DynamoRevitDS.resources.dll</Name>
       <FilePath>.\Revit_2017\pt-BR\DynamoRevitDS.resources.dll</FilePath>
       <DigitalSignature>true</DigitalSignature>
@@ -5561,13 +5602,6 @@
     <ModuleSpec>
       <Name>DSRevitNodesUI.customization.dll</Name>
       <FilePath>.\Revit_2017\DSRevitNodesUI.customization.dll</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
-	<Name>DynamoPublish.resources.dll</Name>
-      <FilePath>.\zh-TW\DynamoPublish.resources.dll</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
       <Author />
@@ -5938,19 +5972,6 @@
     <ModuleSpec>
       <Name>OpenSans-Light.ttf</Name>
       <FilePath>.\UI\Fonts\OpenSans-Light.ttf</FilePath>
-      <DigitalSignature>false</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-    </ModuleSpec>
-    <ModuleSpec>
-	  <Name>DynamoPublish.dll</Name>
-      <FilePath>.\DynamoPublish.dll</FilePath>
-      <DigitalSignature>true</DigitalSignature>
-      <CopyForInstaller>true</CopyForInstaller>
-      <Author />
-    </ModuleSpec>
-    <ModuleSpec>
-      <Name>DynamoPublish.dll.config</Name>
-      <FilePath>.\DynamoPublish.dll.config</FilePath>
       <DigitalSignature>false</DigitalSignature>
       <CopyForInstaller>true</CopyForInstaller>
     </ModuleSpec>

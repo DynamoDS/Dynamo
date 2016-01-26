@@ -2,11 +2,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
-using DSCoreNodesUI.Input;
+using CoreNodeModels.Input;
 using Dynamo.Controls;
 using Dynamo.Nodes;
+using Dynamo.Wpf;
 
-namespace Dynamo.Wpf.Nodes
+namespace CoreNodeModelsWpf.Nodes
 {
     public class DoubleInputNodeViewCustomization : INodeViewCustomization<DoubleInput>
     {

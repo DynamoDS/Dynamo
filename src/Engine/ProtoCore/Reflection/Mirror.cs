@@ -40,8 +40,6 @@ namespace ProtoCore
             /// </summary>
             private MirrorData mirrorData;
 
-            Dictionary<string, List<string>> AssemblyType = new Dictionary<string, List<string>>();
-
             //
             // TODO Jun: 
             //      Retire the mirror from DSASM.Mirror and migrat them to ProtoCore.Mirror

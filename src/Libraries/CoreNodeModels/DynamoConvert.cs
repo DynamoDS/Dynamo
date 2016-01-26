@@ -7,13 +7,14 @@ using System.Xml;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 
-namespace DSCoreNodesUI
+namespace CoreNodeModels
 {
     [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
     [NodeName("Convert Between Units")]
     [NodeDescription("ConversionNodeDescription", typeof(Properties.Resources))]
     [NodeSearchTags("DynamoConvertSearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("DSCoreNodesUI.DynamoConvert")]
     public class DynamoConvert : NodeModel
     {
         private ConversionUnit selectedFromConversion;

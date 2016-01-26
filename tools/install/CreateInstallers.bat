@@ -30,6 +30,7 @@ copy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\ProtoGeometry_DynamoCust
 
 robocopy %cwd%\..\..\extern\LibG_220 %cwd%\temp\bin\LibG_220
 robocopy %cwd%\..\..\extern\LibG_221 %cwd%\temp\bin\LibG_221
+robocopy %cwd%\..\..\extern\LibG_222 %cwd%\temp\bin\LibG_222
 robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\LibG_locale %cwd%\temp\bin\LibG_locale /e *.po *.mo
 
 SET PATH=%PATH%;%cwd%\..\..\src\Tools\XmlDocumentationsUtility\bin\%OPT_CONFIGURATION%
@@ -47,6 +48,10 @@ robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\samples %cwd%\temp\s
 robocopy %cwd%\Extra\DirectX %cwd%\temp\DirectX
 
 robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\gallery %cwd%\temp\gallery /s
+
+rem Licenses and source code of 3rdParty open-source components
+robocopy %cwd%\..\..\extern\Installer\3rdParty %cwd%\temp\3rdParty\OpenSourceComponents /s /nfl /ndl /njh /njs /nc /ns /np
+if %ERRORLEVEL% equ 1 ( set errorlevel=0 ) else if %ERRORLEVEL% equ 3 ( set errorlevel=0)
 
 "C:\Program Files (x86)\Inno Setup 5\iscc.exe" %cwd%\DynamoInstaller.iss
 

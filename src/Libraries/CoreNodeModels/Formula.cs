@@ -9,12 +9,13 @@ using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 using Expression = NCalc.Expression;
 
-namespace DSCoreNodesUI
+namespace CoreNodeModels
 {
     [NodeName("Formula")]
-    [NodeDescription("FormulaDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("FormulaDescription", typeof(Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("DSCoreNodesUI.Formula")]
     public class Formula : NodeModel
     {
         private string formulaString = "";

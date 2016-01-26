@@ -500,6 +500,8 @@ namespace Dynamo.Manipulation
             axes.ForEach(x => x.Dispose());
             planes.ForEach(x => x.Dispose());
 
+            if(ReferenceCoordinateSystem != null) ReferenceCoordinateSystem.Dispose();
+
             base.Dispose(disposing);
         }
     }

@@ -5,7 +5,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-
+using System.Windows.Media;
+using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Prompts;
 using Dynamo.Selection;
@@ -23,15 +24,25 @@ namespace Dynamo.Controls
     public partial class NodeView : IViewModelView<NodeViewModel>
     {
         public delegate void SetToolTipDelegate(string message);
-        public delegate void UpdateLayoutDelegate(FrameworkElement el);       
+        public delegate void UpdateLayoutDelegate(FrameworkElement el);
         private NodeViewModel viewModel = null;
         private PreviewControl previewControl = null;
+        private const int previewDelay = 1000;
 
         /// <summary>
         /// If false - hides preview control until it will be explicitly shown.
         /// If true -preview control is shown and hidden on mouse enter/leave events.
         /// </summary>
         private bool previewEnabled = true;
+
+        /// <summary>
+        /// ZIndex is used to order nodes, when some node is clicked.
+        /// This selected node should be moved above others.
+        /// Start value of zIndex is 3, because 1 is for groups and 2 is for connectors.
+        /// Nodes should be always at the top.
+        /// </summary>
+        private static int zIndex = Configurations.NodeStartZIndex;
+
 
         public NodeView TopControl
         {
@@ -110,7 +121,7 @@ namespace Dynamo.Controls
         {
             if (ViewModel == null || ViewModel.PreferredSize.HasValue) return;
 
-            var size = new [] { ActualWidth, nodeBorder.ActualHeight };
+            var size = new[] { ActualWidth, nodeBorder.ActualHeight };
             if (ViewModel.SetModelSizeCommand.CanExecute(size))
             {
                 ViewModel.SetModelSizeCommand.Execute(size);
@@ -136,7 +147,7 @@ namespace Dynamo.Controls
             // but ViewModel should not be updated in that case (hence the null-check).
             // 
             if (null != ViewModel) return;
- 
+
             ViewModel = e.NewValue as NodeViewModel;
             if (!ViewModel.PreferredSize.HasValue) return;
 
@@ -239,7 +250,7 @@ namespace Dynamo.Controls
             var editWindow = new EditWindow(viewModel.DynamoViewModel)
             {
                 DataContext = ViewModel,
-                Title = Dynamo.Wpf.Properties.Resources.EditNodeWindowTitle 
+                Title = Dynamo.Wpf.Properties.Resources.EditNodeWindowTitle
             };
 
             editWindow.Owner = Window.GetWindow(this);
@@ -312,29 +323,38 @@ namespace Dynamo.Controls
             ViewModel.ValidateConnectionsCommand.Execute(null);
         }
 
-        private void topControl_Loaded(object sender, RoutedEventArgs e)
+        private void OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (zIndex == Int32.MaxValue)
+            {
+                PrepareZIndex();
+            }
 
+            ViewModel.ZIndex = zIndex++;
         }
 
-        private void OnPreviewKeyUp(object sender, KeyEventArgs e)
+        /// <summary>
+        /// If Zindex is more then max value of int, it should be set back to 0 to all elements.
+        /// </summary>
+        private void PrepareZIndex()
         {
-            //e.Handled = true;
-        }
+            zIndex = Configurations.NodeStartZIndex;
 
-        private void OnKeyUp(object sender, KeyEventArgs e)
-        {
-            //set handled to avoid triggering key press
-            //events on the workbench
-            //e.Handled = true;
+            var parent = TemplatedParent as ContentPresenter;
+            if (parent == null) return;
+
+            foreach (var child in parent.ChildrenOfType<NodeView>())
+            {
+                child.ViewModel.ZIndex = Configurations.NodeStartZIndex;
+            }
         }
 
         private void topControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (ViewModel == null) return;
+            if (ViewModel == null || Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Control) return;
 
             var view = WpfUtilities.FindUpVisualTree<DynamoView>(this);
-            ViewModel.DynamoViewModel.ReturnFocusToSearch();
+            ViewModel.DynamoViewModel.OnRequestReturnFocusToView();
             view.mainGrid.Focus();
 
             Guid nodeGuid = ViewModel.NodeModel.GUID;
@@ -387,13 +407,16 @@ namespace Dynamo.Controls
                     PreviewControl.BindToDataSource(ViewModel.NodeModel.CachedValue);
 
                 PreviewControl.TransitionToState(PreviewControl.State.Condensed);
+
+                Dispatcher.DelayInvoke(previewDelay, ExpandPreviewControl);
             }
         }
 
         private void OnNodeViewMouseLeave(object sender, MouseEventArgs e)
         {
             // If mouse in over node/preview control or preview control is pined, we can not hide preview control.
-            if (IsMouseOver || PreviewControl.IsMouseOver || PreviewControl.StaysOpen) return;
+            if (IsMouseOver || PreviewControl.IsMouseOver || PreviewControl.StaysOpen ||
+                (Mouse.Captured != null && IsMouseInsideNodeOrPreview(e.GetPosition(this)))) return;
 
             // If it's expanded, then first condense it.
             if (PreviewControl.IsExpanded)
@@ -401,7 +424,7 @@ namespace Dynamo.Controls
                 PreviewControl.TransitionToState(PreviewControl.State.Condensed);
             }
             // If it's condensed, then try to hide it.
-            if (PreviewControl.IsCondensed)
+            if (PreviewControl.IsCondensed && Mouse.Captured == null)
             {
                 PreviewControl.TransitionToState(PreviewControl.State.Hidden);
             }
@@ -428,50 +451,106 @@ namespace Dynamo.Controls
             switch (preview.CurrentState)
             {
                 case PreviewControl.State.Hidden:
-                {
-                    if (IsMouseOver && previewEnabled)
                     {
-                        preview.TransitionToState(PreviewControl.State.Condensed);
+                        if (IsMouseOver && previewEnabled)
+                        {
+                            preview.TransitionToState(PreviewControl.State.Condensed);
+                        }
+                        break;
                     }
-                    break;
-                }
                 case PreviewControl.State.Condensed:
-                {
-                    if (preview.IsMouseOver)
                     {
-                        preview.TransitionToState(PreviewControl.State.Expanded);
+                        if (preview.IsMouseOver)
+                        {
+                            Dispatcher.DelayInvoke(previewDelay, ExpandPreviewControl);
+                        }
+                        if (!IsMouseOver)
+                        {
+                            if (!(Mouse.Captured != null && IsMouseInsideNodeOrPreview(Mouse.GetPosition(this))))
+                            {
+                                preview.TransitionToState(PreviewControl.State.Hidden);
+                            }
+                        }
+                        break;
                     }
-                    if (!IsMouseOver)
-                    {
-                        preview.TransitionToState(PreviewControl.State.Hidden);
-                    }
-                    break;
-                }
                 case PreviewControl.State.Expanded:
-                {
-                    if (!IsMouseOver || !preview.IsMouseOver)
                     {
-                        preview.TransitionToState(PreviewControl.State.Condensed);
+                        if (!IsMouseOver && !preview.IsMouseOver && !preview.StaysOpen)
+                        {
+                            preview.TransitionToState(PreviewControl.State.Condensed);
+                        }
+                        break;
                     }
-                    break;
-                }
             };
+        }
+
+        /// <summary>
+        /// If mouse is over node or preview control, then preview control is expanded.
+        /// </summary>
+        private void ExpandPreviewControl()
+        {
+            if ((IsMouseOver || PreviewControl.IsMouseOver) && PreviewControl.IsCondensed)
+            {
+                PreviewControl.TransitionToState(PreviewControl.State.Expanded);
+            }
         }
 
         private void OnPreviewControlMouseEnter(object sender, MouseEventArgs e)
         {
             if (PreviewControl.IsCondensed)
             {
-                PreviewControl.TransitionToState(PreviewControl.State.Expanded);
+                Dispatcher.DelayInvoke(previewDelay, ExpandPreviewControl);
             }
         }
 
         private void OnPreviewControlMouseLeave(object sender, MouseEventArgs e)
         {
-            if (!PreviewControl.StaysOpen && !PreviewControl.IsInTransition)
+            if (!PreviewControl.StaysOpen && !PreviewControl.IsInTransition
+                && Keyboard.Modifiers != System.Windows.Input.ModifierKeys.Control
+                && !IsMouseOver
+                && Mouse.Captured != null && !IsMouseInsideNodeOrPreview(e.GetPosition(this)))
             {
                 PreviewControl.TransitionToState(PreviewControl.State.Condensed);
             }
+        }
+
+
+        private void OnNodeViewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (Mouse.Captured == null) return;
+
+            bool isInside = IsMouseInsideNodeOrPreview(e.GetPosition(this));
+
+            if (!isInside && previewControl.IsCondensed)
+            {
+                PreviewControl.TransitionToState(PreviewControl.State.Hidden);
+            }
+        }
+
+        /// <summary>
+        /// When Mouse is captured, all mouse events are handled by element, that captured it.
+        /// So we can't use MouseLeave/MouseEnter events.
+        /// In this case, when we want to ensure, that mouse really left node, we use HitTest.
+        /// </summary>
+        /// <param name="mousePosition">Currect position of mouse</param>
+        /// <returns>bool</returns>
+        private bool IsMouseInsideNodeOrPreview(Point mousePosition)
+        {
+            bool isInside = false;
+            VisualTreeHelper.HitTest(
+                this,
+                d =>
+                {
+                    if (d == this)
+                    {
+                        isInside = true;
+                    }
+
+                    return HitTestFilterBehavior.Stop;
+                },
+                ht => HitTestResultBehavior.Stop,
+                new PointHitTestParameters(mousePosition));
+            return isInside;
         }
 
         /// <summary>
@@ -483,11 +562,12 @@ namespace Dynamo.Controls
 
             if (previewEnabled == false && !PreviewControl.StaysOpen)
             {
+                PreviewControl.TransitionToState(PreviewControl.State.Condensed);
                 PreviewControl.TransitionToState(PreviewControl.State.Hidden);
             }
         }
 
         #endregion
-      
+
     }
 }

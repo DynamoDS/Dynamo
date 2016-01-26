@@ -138,8 +138,10 @@ namespace Dynamo.Manipulation
                         return Point.ByCoordinates(ManipulatorOrigin.X, ManipulatorOrigin.Y, ManipulatorOrigin.Z);
                     }
 
-                    var vec = Vector.ByTwoPoints(cameraPos, ManipulatorOrigin).Normalized();
-                    origin = cameraPos.Add(vec.Scale(zDepth));
+                    using (var vec = Vector.ByTwoPoints(cameraPos, ManipulatorOrigin).Normalized())
+                    {
+                        origin = cameraPos.Add(vec.Scale(zDepth));
+                    }
                 }
                 return origin;
             }

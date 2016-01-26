@@ -1,17 +1,19 @@
-﻿using DSCoreNodesUI.Input;
+﻿using CoreNodeModels.Input;
 using Dynamo.Controls;
 using Dynamo.Search;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Controls;
-using DSCoreNodesUI;
+using CoreNodeModels;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using DynamoConversions;
 using ProtoCore.AST;
+using Dynamo.Wpf;
+using CoreNodeModelsWpf.Controls;
 
-namespace Dynamo.Wpf.NodeViewCustomizations
+namespace CoreNodeModelsWpf.NodeViewCustomizations
 {
     class ConverterNodeViewCustomization : INodeViewCustomization<DynamoConvert>
     {

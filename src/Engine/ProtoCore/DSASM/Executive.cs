@@ -1207,7 +1207,6 @@ namespace ProtoCore.DSASM
             }
             else if (snode.IsChar)
             {
-                Int64 data = snode.opdata;
                 Char character = Convert.ToChar(snode.RawIntValue);
                 rhs = "'" + character + "'";
             }
@@ -1434,7 +1433,7 @@ namespace ProtoCore.DSASM
         private void HandleCycle()
         {
             List<AssociativeGraph.GraphNode> nodeIterations = Properties.nodeIterations;
-            var CycleStartNodeAndEndNode = FindCycleStartNodeAndEndNode(nodeIterations);
+            FindCycleStartNodeAndEndNode(nodeIterations);
 
             if (enableLogging)
             {
@@ -4535,7 +4534,6 @@ namespace ProtoCore.DSASM
                 dimList.Insert(0, rmem.Pop());
             }
 
-            bool isSSANode = Properties.executingGraphNode != null && Properties.executingGraphNode.IsSSANode();
             StackValue svData = rmem.Pop();
 
             // The returned stackvalue is used by watch test framework - pratapa
@@ -4577,7 +4575,6 @@ namespace ProtoCore.DSASM
             var thisObject = rmem.Heap.ToHeapObject<DSObject>(svThis);
             StackValue svProperty = thisObject.GetValueFromIndex(stackIndex, runtimeCore);
 
-            StackValue svOldData = svData;
             Type targetType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
             if (staticType != (int)PrimitiveType.kTypeFunctionPointer)
             {
@@ -4808,7 +4805,7 @@ namespace ProtoCore.DSASM
                 {
                     if (data.IsNull)
                     {
-                        StackValue ptr = rmem.Heap.AllocatePointer(new[] { data });
+                        rmem.Heap.AllocatePointer(new[] { data });
                     }
 
                     // Setting a pointer
@@ -6198,7 +6195,7 @@ namespace ProtoCore.DSASM
             }
 
             // Find dependent nodes and mark them dirty
-            int reachableNodes = UpdateGraph(exprID, modBlkID, isSSA);
+            UpdateGraph(exprID, modBlkID, isSSA);
 
             if (runtimeCore.Options.ApplyUpdate)
             {

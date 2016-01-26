@@ -1137,7 +1137,8 @@ namespace Dynamo.Core
                         Category = args.Category,
                         Description = args.Description,
                         ID = newId.ToString(),
-                        FileName = string.Empty
+                        FileName = string.Empty,
+                        IsVisibleInDynamoLibrary = true
                     });
                 
                 newWorkspace.HasUnsavedChanges = true;

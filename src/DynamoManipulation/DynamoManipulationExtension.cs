@@ -12,7 +12,7 @@ using Dynamo.Models;
 using Dynamo.Visualization;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.ViewModels.Watch3D;
-using DoubleSlider = DSCoreNodesUI.Input.DoubleSlider;
+using DoubleSlider = CoreNodeModels.Input.DoubleSlider;
 
 namespace Dynamo.Manipulation
 {

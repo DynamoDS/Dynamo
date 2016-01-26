@@ -3,8 +3,9 @@ using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using System.Xml;
-using DSCoreNodesUI.Input;
-using DSCoreNodesUI.Logic;
+using CoreNodeModels;
+using CoreNodeModels.Input;
+using CoreNodeModels.Logic;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using PythonNodeModels;
@@ -56,6 +57,12 @@ namespace Dynamo.Tests
         public void TestMigration_Core_Input()
         {
             TestMigration("TestMigration_Core_Input.dyn");
+        }
+
+        [Test]
+        public void TestMigration_DSCoreNodesUI_to_CoreNodeModels()
+        {
+            TestMigration("TestMigration_DSCoreNodesUI_to_CoreNodeModels.dyn");
         }
 
         [Test]
@@ -1078,9 +1085,9 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestIf.dyn"));
 
             var workspace = CurrentDynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSCoreNodesUI.Logic.If>(
+            var logicn1 = workspace.NodeFromWorkspace<If>(
                 "c3685d47-d29e-4015-83d1-4b7e20274c0e");
-            var logicn2 = workspace.NodeFromWorkspace<DSCoreNodesUI.Logic.If>(
+            var logicn2 = workspace.NodeFromWorkspace<If>(
                 "274166dc-4c76-4e42-8856-817978a0dd7c");
 
             Assert.AreEqual(6, workspace.Nodes.Count());
@@ -1100,17 +1107,17 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestListCreate.dyn"));
 
             var workspace = CurrentDynamoModel.CurrentWorkspace;
-            var listn1 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
+            var listn1 = workspace.NodeFromWorkspace<CreateList>(
                 "db161881-4239-408c-9ab2-d507fcb4d25f");
-            var listn2 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
+            var listn2 = workspace.NodeFromWorkspace<CreateList>(
                 "f336c24a-3617-4da4-ace2-d0bd5fe02ebc");
-            var listn3 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
+            var listn3 = workspace.NodeFromWorkspace<CreateList>(
                 "ec723754-21fe-48bc-98ca-d8231e6879af");
-            var listn4 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
+            var listn4 = workspace.NodeFromWorkspace<CreateList>(
                 "82a91a49-0c3b-4ed3-851d-ffe9d64593ea");
-            var listn5 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
+            var listn5 = workspace.NodeFromWorkspace<CreateList>(
                 "9bb7f4ae-3ace-43c4-ab91-2cc6126975c1");
-            var listn6 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
+            var listn6 = workspace.NodeFromWorkspace<CreateList>(
                 "e8f77740-93b5-4129-9cf2-9ae7b4a0aa06");
 
             Assert.AreEqual(12, workspace.Nodes.Count());
@@ -1601,11 +1608,11 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestNewList.dyn"));
 
             var workspace = CurrentDynamoModel.CurrentWorkspace;
-            var listn1 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
+            var listn1 = workspace.NodeFromWorkspace<CreateList>(
                 "ff8f5f64-c9f3-4814-896a-6ef679a35275");
-            var listn2 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
+            var listn2 = workspace.NodeFromWorkspace<CreateList>(
                 "2d58dbc4-62ad-4a12-974b-52d5986053b5");
-            var listn3 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
+            var listn3 = workspace.NodeFromWorkspace<CreateList>(
                 "0c98e395-e2f4-49c1-abda-d1bcb3c24cbd");
 
             Assert.AreEqual(10, workspace.Nodes.Count());

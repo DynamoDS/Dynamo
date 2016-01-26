@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using DSCoreNodesUI.Input;
+using CoreNodeModels.Input;
 using Dynamo.Graph.Nodes;
 using NUnit.Framework;
 using Dynamo.Tests;

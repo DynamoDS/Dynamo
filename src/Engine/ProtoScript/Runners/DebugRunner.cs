@@ -21,7 +21,6 @@ namespace ProtoScript.Runners
         private ProtoCore.Core core;
         public ProtoCore.RuntimeCore runtimeCore;
         private String code;
-        private List<Dictionary<DebugInfo, Instruction>> diList;
         private readonly List<Instruction> allbreakPoints = new List<Instruction>();
         public bool isEnded { get; set; }
 
@@ -85,7 +84,7 @@ namespace ProtoScript.Runners
                 runtimeCore = CreateRuntimeCore(core);
 
                 FirstExec();
-                diList = BuildReverseIndex();
+                BuildReverseIndex();
                 return true;
             }
             else
@@ -292,60 +291,7 @@ namespace ProtoScript.Runners
             return instr.debug.Location.EndExclusive;
         }
 
-        /* private Instruction BreakpointToInstruction(Breakpoint bp)
-        {
-            //@PERF
-            //Compute the distance between this location and all the registered available codepoints
-
-            int lineNo = bp.Location.LineNo;
-            int closestDistance = int.MaxValue;
-            Dictionary<DebugInfo, Instruction> closest = diList[0];
-
-            //First find the closest list to this
-            foreach (Dictionary<DebugInfo, Instruction> lineDis in diList)
-            {
-                int diLine = lineDis.Values.First().debug.line;
-                if (Math.Abs(lineNo - diLine) < closestDistance)
-                {
-                    closestDistance = Math.Abs(lineNo - diLine);
-                    closest = lineDis;
-                }
-            }
-
-            //@TODO(luke)
-            //For now return the first item on the line, this won't be correct in general
-            return closest.Values.First();
-
-        } */
-
-        /// <summary>
-        /// This method runs until the next breakpoint is reached
-        /// </summary>
-        
-
-        
-
-        /// <summary>
-        /// Terminate the program and reclaim the resources
-        /// </summary>
-        
-
         #region Breakpoints
-
-        //Handle registration of breakpoints
-        //For now do the simple add/remove, may need to do more than this
-
-        //public Breakpoint GetBreakpointAtLine(int line)
-        //{
-        //    foreach (Breakpoint b in RegisteredBreakpoints)
-        //    {
-        //        if (b.Location.LineNo == line)
-        //        {
-        //            return b;
-        //        }
-        //    }
-        //    return null;
-        //}
 
         public List<Breakpoint> RegisteredBreakpoints
         {
@@ -420,8 +366,6 @@ namespace ProtoScript.Runners
         
 
         #endregion
-
-        private readonly ProtoCore.DebugServices.EventSink EventSink = new ProtoCore.DebugServices.ConsoleEventSink();
 
         private bool Compile(out int blockId)
         {
@@ -566,14 +510,12 @@ namespace ProtoScript.Runners
         public class VMState
         {
             public ExecutionMirror mirror { get; private set; }
-            private ProtoCore.Core core;
             public bool isEnded { get; set; }
             public ProtoCore.CodeModel.CodeRange ExecutionCursor { get; set; }
 
             public VMState(ExecutionMirror mirror, ProtoCore.Core core, int fi = -1)
             {
                 this.mirror = mirror;
-                this.core = core;
             }
 
             /// <summary>

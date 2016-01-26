@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Globalization;
 
-using DSCoreNodesUI.Input;
+using CoreNodeModels.Input;
 
 using Dynamo.Core;
 
-namespace Dynamo.Wpf
+namespace CoreNodeModelsWpf
 {
     /// <summary>
     /// The SliderViewModel acts as the converter

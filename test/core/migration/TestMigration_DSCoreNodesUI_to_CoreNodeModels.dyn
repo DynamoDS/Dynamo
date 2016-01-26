@@ -1,0 +1,31 @@
+<Workspace Version="0.9.1.3574" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <DSCoreNodesUI.Input.DoubleSlider guid="dfd6da31-414f-484b-b932-5de75e2484f5" type="DSCoreNodesUI.Input.DoubleSlider" nickname="Number Slider" x="151.5" y="181.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false">
+      <System.Double>11.5</System.Double>
+      <Range min="0" max="100" step="0.1" />
+    </DSCoreNodesUI.Input.DoubleSlider>
+    <DSCoreNodesUI.Input.IntegerSlider guid="c4ea66ec-5a25-46e6-b19f-4278230fc1a8" type="DSCoreNodesUI.Input.IntegerSlider" nickname="Integer Slider" x="159.5" y="289.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false">
+      <System.Int32>15</System.Int32>
+      <Range min="0" max="100" step="1" />
+    </DSCoreNodesUI.Input.IntegerSlider>
+    <DSCoreNodesUI.Input.StringInput guid="42d26c2a-0480-4238-a59e-a35c871a1952" type="DSCoreNodesUI.Input.StringInput" nickname="String" x="403.5" y="397.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false">
+      <System.String>lalala</System.String>
+      <System.String value="lalala" />
+    </DSCoreNodesUI.Input.StringInput>
+    <DSCoreNodesUI.CreateList guid="945c84dd-1f34-4ae8-bbed-6ec7df5f9929" type="DSCoreNodesUI.CreateList" nickname="List.Create" x="599.5" y="227.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" inputcount="3" />
+    <DSCoreNodesUI.FromObject guid="bec63fee-e4b6-4355-9134-eb4ff1181afe" type="DSCoreNodesUI.FromObject" nickname="String from Object" x="600.5" y="446.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="dfd6da31-414f-484b-b932-5de75e2484f5" start_index="0" end="945c84dd-1f34-4ae8-bbed-6ec7df5f9929" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="c4ea66ec-5a25-46e6-b19f-4278230fc1a8" start_index="0" end="945c84dd-1f34-4ae8-bbed-6ec7df5f9929" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="42d26c2a-0480-4238-a59e-a35c871a1952" start_index="0" end="945c84dd-1f34-4ae8-bbed-6ec7df5f9929" end_index="2" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="42d26c2a-0480-4238-a59e-a35c871a1952" start_index="0" end="bec63fee-e4b6-4355-9134-eb4ff1181afe" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>

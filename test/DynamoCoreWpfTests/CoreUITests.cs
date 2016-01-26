@@ -5,7 +5,7 @@ using System.Threading;
 using System.Windows;
 
 using SystemTestServices;
-using DSCoreNodesUI.Input;
+using CoreNodeModels.Input;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Connectors;

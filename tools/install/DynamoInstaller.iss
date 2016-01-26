@@ -12,7 +12,7 @@
 [Setup]
 AppName={#ProductName}
 AppPublisher={#ProductName}
-AppID={{86B8C99A-85CE-45e1-8149-0A22AAAB3792}
+AppID={{0B41FA6D-F38C-4B57-BB44-ADBB5AF403B4}
 AppCopyright=
 AppPublisherURL=http://www.dynamobim.org
 AppSupportURL=http://www.dynamobim.org
@@ -42,6 +42,7 @@ UsePreviousAppDir=no
 [Dirs]
 Name: "{app}\libg_220"
 Name: "{app}\libg_221"
+Name: "{app}\libg_222"
 Name: "{app}\libg_locale"
 Name: "{app}\nodes"
 Name: "{app}\extensions"
@@ -49,6 +50,7 @@ Name: "{app}\viewExtensions"
 Name: "{userappdata}\Dynamo\{#Major}.{#Minor}\definitions"
 Name: "{userappdata}\Dynamo\{#Major}.{#Minor}\Logs"
 Name: "{userappdata}\Dynamo\{#Major}.{#Minor}\packages"
+Name: "{app}\3rdParty\OpenSourceComponents"
 
 
 [Components]
@@ -92,6 +94,7 @@ Source: Extra\RevitAddinUtility.dll; DestDir: {app}; Flags: ignoreversion overwr
 ;LibG
 Source: temp\bin\LibG_220\*; DestDir: {app}\libg_220; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: temp\bin\LibG_221\*; DestDir: {app}\libg_221; Flags: ignoreversion overwritereadonly; Components: DynamoCore
+Source: temp\bin\LibG_222\*; DestDir: {app}\libg_222; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: temp\bin\LibG_locale\*; DestDir: {app}\libg_locale; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 
 ;Icon
@@ -111,6 +114,9 @@ Source: temp\DirectX\*.*; DestDir: {tmp}\DirectX;
 
 ;Gallery
 Source: temp\gallery\*; DestDir: "{commonappdata}\Dynamo\{#Major}.{#Minor}\gallery"; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
+
+;3rdParty
+Source: temp\3rdParty\OpenSourceComponents\*; DestDir: "{app}\3rdParty\OpenSourceComponents"; Flags: ignoreversion overwritereadonly recursesubdirs;
 
 [Registry]
 Root: HKCU64; Subkey: "Software\{#ProductName}\{#Major}.{#Minor}"; Flags: uninsdeletekey
@@ -132,6 +138,7 @@ Type: files; Name: "{app}\DynamoAddinGenerator.exe"
 Type: files; Name: "{app}\RevitAddinUtility.dll"
 Type: filesandordirs; Name: {app}\libg_220
 Type: filesandordirs; Name: {app}\libg_221
+Type: filesandordirs; Name: {app}\libg_222
 Type: filesandordirs; Name: {app}\libg_locale
 
 [Run]

@@ -3,10 +3,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
-using DSCoreNodesUI.Input;
+using CoreNodeModels.Input;
 using Dynamo.Graph.Nodes;
 using NUnit.Framework;
-using Directory = DSCoreNodesUI.Input.Directory;
+using Directory = CoreNodeModels.Input.Directory;
 
 
 namespace Dynamo.Tests

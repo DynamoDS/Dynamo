@@ -1,8 +1,10 @@
-﻿using DSCoreNodesUI.Input;
+﻿using CoreNodeModelsWpf.Controls;
+using CoreNodeModels.Input;
 using Dynamo.Controls;
+using Dynamo.Wpf;
 using Dynamo.Wpf.Controls;
 
-namespace Dynamo.Wpf.NodeViewCustomizations
+namespace CoreNodeModelsWpf.NodeViewCustomizations
 {
     public class DateTimeNodeViewCustomization : INodeViewCustomization<DateTime>
     {

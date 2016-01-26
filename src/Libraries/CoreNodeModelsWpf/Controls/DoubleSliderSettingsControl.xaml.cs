@@ -3,7 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using Dynamo.Controls;
 
-namespace Dynamo.Wpf
+namespace CoreNodeModelsWpf
 {
     /// <summary>
     /// Interaction logic for SliderSettingsControl.xaml
