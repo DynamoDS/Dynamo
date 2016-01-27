@@ -4,14 +4,14 @@ using Dynamo.Controls;
 namespace Dynamo.UI.Controls
 {
     /// <summary>
-    /// Auto-completion editor for Output node.
+    /// Syntax highligh editor for Output node.
     /// </summary>
     public class OutputEditor : CodeCompletionEditor
     {
         private Output output;
 
         /// <summary>
-        /// Create input editor by the view of symbol node.
+        /// Create syntax highligh editor by the view of output node.
         /// </summary>
         /// <param name="view"></param>
         public OutputEditor(NodeView view) : base(view)
@@ -19,6 +19,9 @@ namespace Dynamo.UI.Controls
             output = nodeViewModel.NodeModel as Output;
         }
 
+        /// <summary>
+        /// Handler for escape key.
+        /// </summary>
         protected override void OnEscape()
         {
             var text = InnerTextEditor.Text;
@@ -32,6 +35,10 @@ namespace Dynamo.UI.Controls
             }
         }
 
+        /// <summary>
+        /// Handler for commit. The commit event is triggered by
+        /// clicking mouse outside the editor.
+        /// </summary>
         protected override void OnCommitChange()
         {
             var lastInput = output.Symbol;
