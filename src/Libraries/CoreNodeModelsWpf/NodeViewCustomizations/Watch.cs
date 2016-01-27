@@ -90,8 +90,8 @@ namespace CoreNodeModelsWpf.Nodes
             this.dynamoViewModel.Model.PreferenceSettings.PropertyChanged += PreferenceSettingsOnPropertyChanged;
             rootWatchViewModel.PropertyChanged += RootWatchViewModelOnPropertyChanged;
 
-            watch.InPorts[0].PortConnected += OnPortConnected;
-            watch.InPorts[0].PortDisconnected += OnPortDisconnected;
+            watch.PortConnected += OnPortConnected;
+            watch.PortDisconnected += OnPortDisconnected;
         }
 
         public void Dispose()
@@ -100,8 +100,8 @@ namespace CoreNodeModelsWpf.Nodes
             dynamoViewModel.Model.PreferenceSettings.PropertyChanged -= PreferenceSettingsOnPropertyChanged;
             rootWatchViewModel.PropertyChanged -= RootWatchViewModelOnPropertyChanged;
 
-            watch.InPorts[0].PortConnected -= OnPortConnected;
-            watch.InPorts[0].PortDisconnected -= OnPortDisconnected;
+            watch.PortConnected -= OnPortConnected;
+            watch.PortDisconnected -= OnPortDisconnected;
         }
 
         private void OnPortConnected(PortModel port, ConnectorModel connectorModel)
