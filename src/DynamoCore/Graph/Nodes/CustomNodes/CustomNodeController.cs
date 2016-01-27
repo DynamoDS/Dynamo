@@ -160,6 +160,12 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     return false;
             }
 
+            if (Definition.Returns != null)
+            {
+                var tooltips = model.OutPortData.Select(p => p.ToolTipString);
+                if (!Definition.Returns.Select(r => r.Item2).SequenceEqual(tooltips))
+                    return false;
+            }
             return true;
         }
     }
