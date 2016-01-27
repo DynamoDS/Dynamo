@@ -474,6 +474,9 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         /// </summary>
         public ElementResolver  ElementResolver { get; set;}
 
+        /// <summary>
+        /// Create output node.
+        /// </summary>
         public Output()
         {
             InPortData.Add(new PortData("", ""));
@@ -483,6 +486,9 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
+        /// <summary>
+        /// Text in output node.
+        /// </summary>
         public string Symbol
         {
             get { return symbol; }
@@ -509,7 +515,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         }
 
         /// <summary>
-        /// The name of output and its description.
+        /// Output name and its description tuple.
         /// </summary>
         public Tuple<string, string> Return
         {
@@ -590,17 +596,24 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                 }
 
                 var node = parseParam.ParsedNodes.First() as BinaryExpressionNode;
-                if (node != null)
+                if (node == null)
+                {
+                    if (parseParam.Errors.Any())
+                    {
+                        this.Error(Properties.Resources.WarningInvalidOutput);
+                    }
+                }
+                else
                 {
                     var leftIdent = node.LeftNode as IdentifierNode;
                     var rightIdent = node.RightNode as IdentifierNode;
 
-                    // x will be converted to temp_guid = x;
+                    // "x" will be compiled to "temp_guid = x;"
                     if (leftIdent != null && leftIdent.Value.StartsWith(Constants.kTempVarForNonAssignment))
                     {
                         outputIdentifier = rightIdent;
                     }
-                    // x:int will be converted to x:int = tTypedIdent0;
+                    // "x:int" will be compiled to "x:int = tTypedIdent0;"
                     else if (rightIdent != null && rightIdent.Value.StartsWith(Constants.kTempVarForTypedIdentifier))
                     {
                         outputIdentifier = leftIdent;
@@ -618,13 +631,6 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                         outputIdentifier = leftIdent;
                     }
                     return outputIdentifier != null;
-                }
-            }
-            else
-            {
-                if (parseParam.Errors.Any())
-                {
-                    this.Error(Properties.Resources.WarningInvalidOutput);
                 }
             }
 

@@ -34,8 +34,8 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                 foreach (var pair in Definition.Returns)
                 {
                     string key = pair.Item1;
-
                     string tooltip = pair.Item2;
+
                     if (string.IsNullOrEmpty(tooltip))
                     {
                         tooltip = Properties.Resources.ToolTipReturnValue;
@@ -45,7 +45,9 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                 }
             }
             else
+            {
                 model.OutPortData.Add(new PortData("", Properties.Resources.ToolTipReturnValue));
+            }
         }
 
         protected override AssociativeNode GetFunctionApplication(NodeModel model, List<AssociativeNode> inputAstNodes)

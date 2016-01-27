@@ -99,7 +99,7 @@ namespace Dynamo
                 if (nameDict.TryGetValue(name, out amt))
                 {
                     nameDict[name] = amt - 1;
-                    var newName = name == "" ? amt + ">" : name + amt;
+                    var newName = string.IsNullOrEmpty(name) ? amt + ">" : name + amt;
 
                     returnKeys.Add(newName);
                     returns[i] = new Tuple<string, string>(newName, info.Item2);
@@ -206,7 +206,7 @@ namespace Dynamo
 
         private List<Tuple<string, string>> returns;
         /// <summary>
-        ///     Output and description pairs.
+        ///     The collection of output name and its description.
         /// </summary>
         public IEnumerable<Tuple<string, string>> Returns
         {
