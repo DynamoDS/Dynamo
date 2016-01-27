@@ -156,7 +156,8 @@ namespace Dynamo.UI.Views
             }
 
             int lastIndex =
-                searchElementVM.FullName.LastIndexOf(Configuration.Configurations.CategoryDelimiterString,
+                searchElementVM.FullName.LastIndexOf(
+                Configuration.Configurations.CategoryDelimiterString + searchElementVM.Name,
                     StringComparison.Ordinal);
 
             var selectedClassWithCategory = lastIndex == -1
