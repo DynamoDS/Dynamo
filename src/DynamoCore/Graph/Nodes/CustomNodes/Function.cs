@@ -281,21 +281,15 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             set
             {
                 inputSymbol = value;
-
+                nickName = inputSymbol;
                 ClearRuntimeError();
-                var substrings = inputSymbol.Split(':');
 
-                nickName = substrings[0].Trim();
                 var type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
                 AssociativeNode defaultValue = null;
 
                 string comment = null;
 
-                if (substrings.Count() > 2)
-                {
-                    this.Warning(Properties.Resources.WarningInvalidInput);
-                }
-                else if (!string.IsNullOrEmpty(nickName))
+                if (!string.IsNullOrEmpty(nickName))
                 {
                     // three cases:
                     //    x = default_value
@@ -306,24 +300,17 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     {
                         nickName = identifierNode.Value;
 
-                        if (substrings.Count() > 1)
+                        if (identifierNode.datatype.UID == Constants.kInvalidIndex)
                         {
-                            if (identifierNode.datatype.UID == Constants.kInvalidIndex)
-                            {
-                                string warningMessage = String.Format(
-                                    Properties.Resources.WarningCannotFindType,
-                                    identifierNode.datatype.Name);
-                                this.Warning(warningMessage);
-                            }
-                            else
-                            {
-                                type = identifierNode.datatype;
-                            }
+                            string warningMessage = String.Format(
+                                Properties.Resources.WarningCannotFindType,
+                                identifierNode.datatype.Name);
+                            this.Warning(warningMessage);
                         }
-                    }
-                    else
-                    {
-                        this.Warning(Properties.Resources.WarningInvalidInput);
+                        else
+                        {
+                            type = identifierNode.datatype;
+                        }
                     }
                 }
 
