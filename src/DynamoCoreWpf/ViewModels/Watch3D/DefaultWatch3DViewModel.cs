@@ -90,6 +90,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 RaisePropertyChanged("Active");
 
                 OnActiveStateChanged();
+
+                if (active)
+                {
+                    RegenerateAllPackages();
+                }
             }
         }
 
