@@ -386,12 +386,7 @@ namespace Dynamo.UI.Controls
                     {
                         var tree = new WatchTree
                         {
-                            DataContext = new WatchViewModel(),
-
-                            // If Content is 1 string, e.g. "Empty", "null", margin should be more to the left side. 
-                            Margin = newViewModel.Children.Count > 0
-                                ? (System.Windows.Thickness)this.Resources["PreviewContentMargin"]
-                                : (System.Windows.Thickness)this.Resources["PreviewContentEmptyMargin"]
+                            DataContext = new WatchViewModel()
                         };
                         tree.treeView1.ItemContainerGenerator.StatusChanged += WatchContainer_StatusChanged;
 
@@ -403,6 +398,7 @@ namespace Dynamo.UI.Controls
 
                     cachedLargeContent = newViewModel;
 
+                    rootDataContext.IsOneRowContent = cachedLargeContent.Children.Count == 0;
                     rootDataContext.Children.Clear();
                     rootDataContext.Children.Add(cachedLargeContent);
 
@@ -452,7 +448,7 @@ namespace Dynamo.UI.Controls
         /// </summary>
         private void ComputeWatchContentSize(object sender, RoutedEventArgs e)
         {
-            if (IsExpanded == false || StaysOpen == false) return;
+            if (!IsExpanded) return;
 
             // Used delay invoke, because TreeView hasn't changed its'appearance with usual Dispatcher call.
             Dispatcher.DelayInvoke(50,() =>
