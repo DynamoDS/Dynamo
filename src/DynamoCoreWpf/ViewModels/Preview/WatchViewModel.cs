@@ -29,6 +29,7 @@ namespace Dynamo.ViewModels
         private string _link;
         private bool _showRawData;
         private string _path = "";
+        private bool _isOneRowContent;
 
         public DelegateCommand FindNodeForPathCommand { get; set; }
 
@@ -121,6 +122,21 @@ namespace Dynamo.ViewModels
         }
 
         public bool IsNodeExpanded { get; set; }
+
+        /// <summary>
+        /// If Content is 1 string, e.g. "Empty", "null", "_SingleFunctionObject", margin should be more to the left side.
+        /// For this purpose used this value. When it's true, margin in DataTrigger is set to -15,5,5,5; otherwise
+        /// it's set to 5,5,5,5
+        /// </summary>
+        public bool IsOneRowContent
+        {
+            get { return _isOneRowContent; }
+            set
+            {
+                _isOneRowContent = value;
+                RaisePropertyChanged("IsOneRowContent");
+            }
+        }
 
         #endregion
 
