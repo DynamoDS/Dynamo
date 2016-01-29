@@ -8134,17 +8134,6 @@ namespace ProtoAssociative
                     graphNode.ResolveLHSArrayIndex();
                     graphNode.updateBlock.endpc = pc - 1;
 
-                    string identName = t.Name;
-                    if (ProtoCore.Utils.CoreUtils.IsSSATemp(identName))
-                    {
-                        // Extract the SSA subscript from the ID
-                        // TODO Jun: Store the subscript before embedding it into the ID so we dont need to parse and extract it here
-                        int first = identName.IndexOf('_');
-                        int last = identName.LastIndexOf('_');
-                        string subscript = identName.Substring(first + 1, last - first - 1);
-                        graphNode.SSASubscript = Convert.ToInt32(subscript);
-                    }
-
                     PushGraphNode(graphNode);
                     if (core.InlineConditionalBodyGraphNodes.Count > 0)
                     {
