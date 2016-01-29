@@ -1295,16 +1295,6 @@ namespace ProtoCore.DSASM
                         pc = graphNode.updateBlock.startpc;
                         isUpdated = true;
 
-                        if (graphNode.forPropertyChanged)
-                        {
-                            Properties.updateStatus = AssociativeEngine.UpdateStatus.kPropertyChangedUpdate;
-                            graphNode.forPropertyChanged = false;
-                        }
-                        else
-                        {
-                            Properties.updateStatus = AssociativeEngine.UpdateStatus.kNormalUpdate;
-                        }
-
                         // Clear runtime warning for the first run in delta
                         // execution.
                         if (runtimeCore.Options.IsDeltaExecution && 

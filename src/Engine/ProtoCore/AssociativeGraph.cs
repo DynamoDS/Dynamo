@@ -7,12 +7,6 @@ using System.Linq;
 
 namespace ProtoCore.AssociativeEngine
 {
-    public enum UpdateStatus
-    {
-        kNormalUpdate,
-        kPropertyChangedUpdate
-    }
-
     public class Utils
     {
         /// <summary>
@@ -409,7 +403,6 @@ namespace ProtoCore.AssociativeEngine
         /// <param name="isSSAAssign"></param>
         /// <param name="executeSSA"></param>
         /// <param name="languageBlockID"></param>
-        /// <param name="propertyChanged"></param>
         /// <returns></returns>
         public static List<AssociativeGraph.GraphNode> UpdateDependencyGraph(
             AssociativeGraph.GraphNode executingGraphNode,
@@ -418,8 +411,7 @@ namespace ProtoCore.AssociativeEngine
             bool isSSAAssign,
             bool executeSSA,
             int languageBlockID,
-            bool recursiveSearch,
-            bool propertyChanged = false)
+            bool recursiveSearch )
         {
             AssociativeGraph.DependencyGraph dependencyGraph = executive.exe.instrStreamList[languageBlockID].dependencyGraph;
             List<AssociativeGraph.GraphNode> reachableGraphNodes = new List<AssociativeGraph.GraphNode>();
@@ -459,12 +451,6 @@ namespace ProtoCore.AssociativeEngine
                 {
                     allowUpdateWithinSSA = true;
                     isSSAAssign = false; // Remove references to this when ssa flag is removed
-
-                    // Do not update if its a property change and the current graphnode is the same expression
-                    if (propertyChanged && graphNode.exprUID == executingGraphNode.exprUID)
-                    {
-                        continue;
-                    }
                 }
                 else
                 {
@@ -473,7 +459,7 @@ namespace ProtoCore.AssociativeEngine
                     allowUpdateWithinSSA = !withinSSAStatement;
                 }
 
-                if (!allowUpdateWithinSSA || (propertyChanged && graphNode == executingGraphNode))
+                if (!allowUpdateWithinSSA)
                 {
                     continue;
                 }
@@ -484,7 +470,7 @@ namespace ProtoCore.AssociativeEngine
                     // then find all that nodes in that lang block and mark them dirty
                     if (graphNode.isLanguageBlock)
                     {
-                        List<AssociativeGraph.GraphNode> subGraphNodes = ProtoCore.AssociativeEngine.Utils.UpdateDependencyGraph(
+                        List<AssociativeGraph.GraphNode> subGraphNodes = Utils.UpdateDependencyGraph(
                             executingGraphNode, executive, exprUID, isSSAAssign, executeSSA, graphNode.languageBlockId, recursiveSearch);
                         if (subGraphNodes.Count > 0)
                         {
@@ -496,27 +482,6 @@ namespace ProtoCore.AssociativeEngine
                     if (!graphNode.DependsOn(noderef, ref matchingNode))
                     {
                         continue;
-                    }
-
-                    // @keyu: if we are modifying an object's property, e.g.,
-                    // 
-                    //    foo.id = 42;
-                    //
-                    // both dependent list and update list of the corresponding 
-                    // graph node contains "foo" and "id", so if property "id"
-                    // is changed, this graph node will be re-executed and the
-                    // value of "id" is incorrectly set back to old value.
-                    if (propertyChanged)
-                    {
-                        var depUpdateNodeRef = graphNode.dependentList[0].updateNodeRefList[0];
-                        if (graphNode.updateNodeRefList.Count == 1)
-                        {
-                            var updateNodeRef = graphNode.updateNodeRefList[0];
-                            if (depUpdateNodeRef.Equals(updateNodeRef))
-                            {
-                                continue;
-                            }
-                        }
                     }
 
                     //
@@ -580,7 +545,6 @@ namespace ProtoCore.AssociativeEngine
                         }
                         else if (!graphNode.isDirty)
                         {
-                            graphNode.forPropertyChanged = propertyChanged;
                             reachableGraphNodes.Add(graphNode);
 
                             // On debug mode:
@@ -1010,7 +974,6 @@ namespace ProtoCore.AssociativeGraph
             isLanguageBlock = false;
             languageBlockId = Constants.kInvalidIndex;
             updateDimensions = new List<StackValue>();
-            forPropertyChanged = false;
             lastGraphNode = null;
             isActive = true;
             symbolListWithinExpression = new List<SymbolNode>();
