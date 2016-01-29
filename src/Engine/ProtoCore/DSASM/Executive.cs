@@ -1429,7 +1429,12 @@ namespace ProtoCore.DSASM
             foreach (AssociativeGraph.GraphNode node in nodeIterations)
             {
                 node.isCyclic = true;
-                SetGraphNodeStackValueNull(node);
+
+                Validity.Assert(!node.isReturn);
+                SymbolNode symbol = node.updateNodeRefList[0].nodeList[0].symbol;
+                Validity.Assert(null != symbol);
+                rmem.SetSymbolValue(symbol, StackValue.Null);
+
                 node.dependentList.Clear();
                 node.isActive = false;
             }
@@ -1438,13 +1443,7 @@ namespace ProtoCore.DSASM
 
         private bool HasCyclicDependency(AssociativeGraph.GraphNode node)
         {
-            return IsExecutedTooManyTimes(node, runtimeCore.Options.kDynamicCycleThreshold);
-        }
-
-        private bool IsExecutedTooManyTimes(AssociativeGraph.GraphNode node, int limit)
-        {
-            Validity.Assert(null != node);
-            return (node.counter > limit);
+            return node.counter > runtimeCore.Options.kDynamicCycleThreshold;
         }
 
         private AssociativeGraph.GraphNode[] FindCycleStartNodeAndEndNode(List<AssociativeGraph.GraphNode> nodesExecutedSameTime)
@@ -1477,22 +1476,6 @@ namespace ProtoCore.DSASM
             bool isInvalid = svGraphNode.IsInvalid || svUpdateNode.IsInvalid;
 
             return isInvalid || isPointerModified || isArrayModified || isDataModified || isDoubleDataModified || isTypeModified;
-        }
-
-
-        private void SetGraphNodeStackValue(AssociativeGraph.GraphNode graphNode, StackValue sv)
-        {
-            Validity.Assert(!graphNode.isReturn);
-            // TODO Jun: Expand me to handle complex ident lists
-            SymbolNode symbol = graphNode.updateNodeRefList[0].nodeList[0].symbol;
-            Validity.Assert(null != symbol);
-            rmem.SetSymbolValue(symbol, sv);
-        }
-
-        private void SetGraphNodeStackValueNull(AssociativeGraph.GraphNode graphNode)
-        {
-            StackValue svNull = StackValue.Null;
-            SetGraphNodeStackValue(graphNode, svNull);
         }
 
         private int UpdateGraph(int exprUID, int modBlkId, bool isSSAAssign)
@@ -6471,28 +6454,6 @@ namespace ProtoCore.DSASM
                         MOD_Handler(instruction);
                         return;
                     }
-#if ENABLE_BIT_OP
-                case OpCode.BITAND:
-                    {
-                        BITAND_HANDLER(instruction);
-                        return;
-                    }
-
-                case OpCode.BITOR:
-                    {
-                        BITOR_HANDLER(instruction);
-                        return;
-                    }
-                case OpCode.BITXOR:
-                    {
-                        BITXOR_HANDLER(instruction);
-                        return;
-                    }
-                    case OpCode.NEGATE:
-                    {
-                        NEGATE_HAndler(instruction);
-                        return;
-#endif
                 case OpCode.NEG:
                     {
                         NEG_Handler(instruction);

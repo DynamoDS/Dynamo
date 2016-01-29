@@ -109,9 +109,7 @@ namespace ProtoCore.DSASM
         public const string popw = "popw";
         public const string popg = "popg";
         public const string popm = "popm";
-        public const string poplist = "poplist";
         public const string not = "not";
-        public const string negate = "negate";
         public const string dep = "dep";
         public const string setexpuid = "setexpuid";
         public const string pushb = "pushb";

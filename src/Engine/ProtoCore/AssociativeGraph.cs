@@ -844,7 +844,7 @@ namespace ProtoCore.AssociativeGraph
         public int AstID { get; set; }
         public int OriginalAstID { get; set; }    // The original AST that this graphnode is associated with
         public int exprUID { get; set; }
-        public int ssaExprID { get; set; }
+        public int ssaSubExpressionID { get; set; }
         public string CallsiteIdentifier { get; set; }
         public List<UpdateNode> dimensionNodeList { get; set; }
         public List<UpdateNodeRef> updateNodeRefList { get; set; }
@@ -1049,55 +1049,6 @@ namespace ProtoCore.AssociativeGraph
                 }
             }
             return isUpdateable;
-        }
-
-        public bool DependsOnProperty(string propertyName)
-        {
-            string getter = Constants.kGetterPrefix + propertyName;
-
-            foreach (var dependent in dependentList)
-            {
-                foreach (var updateNodeRef in dependent.updateNodeRefList)
-                {
-                    foreach (var node in updateNodeRef.nodeList)
-                    {
-                        if (node.procNode != null && node.procNode.Name == getter)
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-
-            return false;
-        }
-
-
-        /// <summary>
-        /// For a list of update node like x.y.z, for specified property name
-        /// "y", return x.
-        /// </summary>
-        /// <param name="propertyName"></param>
-        /// <returns></returns>
-        public UpdateNode GetUpdateNodeForGetter(string propertyName)
-        {
-            string getter = Constants.kGetterPrefix + propertyName;
-
-            foreach (var dependent in dependentList)
-            {
-                foreach (var updateNodeRef in dependent.updateNodeRefList)
-                {
-                    for (int i = 0; i < updateNodeRef.nodeList.Count; ++i)
-                    {
-                        if (updateNodeRef.nodeList[i].procNode.Name == getter && i == 1)
-                        {
-                            return updateNodeRef.nodeList[0];
-                        }
-                    }
-                }
-            }
-
-            return null;
         }
 
         public bool DependsOn(UpdateNodeRef modifiedRef, ref GraphNode dependentNode)
