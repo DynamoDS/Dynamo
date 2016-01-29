@@ -144,7 +144,7 @@
         </Grid>
 
         <Border BorderThickness="0"
-                Background="#F1F2F2"
+                Background="{StaticResource SearchTextBoxBackground}"
                 CornerRadius="8"
                 Margin="5"
                 Grid.Row="1">
