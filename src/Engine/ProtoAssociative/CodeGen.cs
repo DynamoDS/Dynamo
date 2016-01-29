@@ -245,7 +245,6 @@ namespace ProtoAssociative
             if (subNode.UID == node.UID
                 || subNode.exprUID == node.exprUID
                 || subNode.ssaExprID == node.ssaExprID
-                || (subNode.modBlkUID == node.modBlkUID && node.modBlkUID != ProtoCore.DSASM.Constants.kInvalidIndex)
                 || subNode.procIndex != node.procIndex
                 || subNode.classIndex != node.classIndex
                 || subNode.isReturn)
@@ -5432,7 +5431,6 @@ namespace ProtoAssociative
                     {
                         ProtoCore.AssociativeGraph.GraphNode graphNode = new ProtoCore.AssociativeGraph.GraphNode();
                         graphNode.exprUID = bNode.ExpressionUID;
-                        graphNode.modBlkUID = bNode.modBlkUID;
                         graphNode.ssaExpressionUID = bNode.SSAExpressionUID;
                         graphNode.procIndex = globalProcIndex;
                         graphNode.classIndex = globalClassIndex;
@@ -7620,7 +7618,6 @@ namespace ProtoAssociative
                     graphNode.ssaExpressionUID = bnode.SSAExpressionUID;
                     graphNode.IsModifier = bnode.IsModifier;
                     graphNode.guid = bnode.guid;
-                    graphNode.modBlkUID = bnode.modBlkUID;
                     graphNode.procIndex = globalProcIndex;
                     graphNode.classIndex = globalClassIndex;
                     graphNode.languageBlockId = codeBlock.codeBlockId;

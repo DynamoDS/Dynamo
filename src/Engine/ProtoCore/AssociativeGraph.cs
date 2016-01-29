@@ -415,7 +415,6 @@ namespace ProtoCore.AssociativeEngine
             AssociativeGraph.GraphNode executingGraphNode,
             DSASM.Executive executive,
             int exprUID,
-            int modBlkId,
             bool isSSAAssign,
             bool executeSSA,
             int languageBlockID,
@@ -486,7 +485,7 @@ namespace ProtoCore.AssociativeEngine
                     if (graphNode.isLanguageBlock)
                     {
                         List<AssociativeGraph.GraphNode> subGraphNodes = ProtoCore.AssociativeEngine.Utils.UpdateDependencyGraph(
-                            executingGraphNode, executive, exprUID, modBlkId, isSSAAssign, executeSSA, graphNode.languageBlockId, recursiveSearch);
+                            executingGraphNode, executive, exprUID, isSSAAssign, executeSSA, graphNode.languageBlockId, recursiveSearch);
                         if (subGraphNodes.Count > 0)
                         {
                             reachableGraphNodes.Add(graphNode);
@@ -557,16 +556,14 @@ namespace ProtoCore.AssociativeEngine
                     // TODO Jun: Optimization - Reimplement update delta evaluation using registers
                     //if (IsNodeModified(EX, FX))
                     bool isLastSSAAssignment = (exprUID == graphNode.exprUID) && graphNode.IsLastNodeInSSA && !graphNode.isReturn;
-                    if (exprUID != graphNode.exprUID && modBlkId != graphNode.modBlkUID)
+                    if (exprUID != graphNode.exprUID)
                     {
                         UpdateModifierBlockDependencyGraph(graphNode, dependencyGraph.GraphList);
                     }
                     else if (allowSSADownstream
                                 || isSSAAssign
                                 || isLastSSAAssignment
-                                || (exprUID != graphNode.exprUID
-                                    && modBlkId == Constants.kInvalidIndex
-                                    && graphNode.modBlkUID == Constants.kInvalidIndex)
+                                || (exprUID != graphNode.exprUID)
                         )
                     {
                         if (graphNode.isCyclic)
@@ -620,7 +617,6 @@ namespace ProtoCore.AssociativeEngine
                                     graphNode,
                                     executive,
                                     graphNode.exprUID,
-                                    graphNode.modBlkUID,
                                     graphNode.IsSSANode(),
                                     executeSSA,
                                     graphNode.languageBlockId,
@@ -686,9 +682,6 @@ namespace ProtoCore.AssociativeEngine
 
         public static void UpdateModifierBlockDependencyGraph(AssociativeGraph.GraphNode graphNode, List<AssociativeGraph.GraphNode> graphNodeList)
         {
-            int modBlkUID = graphNode.modBlkUID;
-            int index = graphNode.UID;
-            bool setModifierNode = true;
             if (graphNode.isCyclic)
             {
                 // If the graphnode is cyclic, mark it as not first so it wont get executed 
@@ -700,24 +693,9 @@ namespace ProtoCore.AssociativeEngine
                     graphNode.cyclePoint.isDirty = false;
                     graphNode.cyclePoint.isCyclic = true;
                 }
-                setModifierNode = false;
             }
 
-            if (modBlkUID != Constants.kInvalidIndex)
-            {
-                for (int i = index; i < graphNodeList.Count; ++i)
-                {
-                    AssociativeGraph.GraphNode node = graphNodeList[i];
-                    if (node.modBlkUID == modBlkUID)
-                    {
-                        node.isDirty = setModifierNode;
-                    }
-                }
-            }
-            else
-            {
-                graphNode.isDirty = true;
-            }
+            graphNode.isDirty = true;
         }
 
         /// <summary>
@@ -925,7 +903,6 @@ namespace ProtoCore.AssociativeGraph
         public int OriginalAstID { get; set; }    // The original AST that this graphnode is associated with
         public int exprUID { get; set; }
         public int ssaExprID { get; set; }
-        public int modBlkUID { get; set; }
         public string CallsiteIdentifier { get; set; }
         public List<UpdateNode> dimensionNodeList { get; set; }
         public List<UpdateNodeRef> updateNodeRefList { get; set; }
@@ -1033,7 +1010,6 @@ namespace ProtoCore.AssociativeGraph
             isLanguageBlock = false;
             languageBlockId = Constants.kInvalidIndex;
             updateDimensions = new List<StackValue>();
-            propertyChanged = false;
             forPropertyChanged = false;
             lastGraphNode = null;
             isActive = true;

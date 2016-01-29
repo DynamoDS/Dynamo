@@ -428,15 +428,7 @@ namespace ProtoCore.DSASM
                 }
                 else
                 {
-                    // See if we need to repond to property changed event.
-                    if (UpdatePropertyChangedGraphNode())
-                    {
-                        SetupNextExecutableGraph(-1, -1);
-                    }
-                    else
-                    {
-                        SetupGraphEntryPoint(pc, IsGlobalScope());
-                    }
+                    SetupGraphEntryPoint(pc, IsGlobalScope());
                 }
             }
         }
@@ -1513,54 +1505,8 @@ namespace ProtoCore.DSASM
             SetGraphNodeStackValue(graphNode, svNull);
         }
 
-        private bool UpdatePropertyChangedGraphNode()
-        {
-            bool propertyChanged = false;
-            var graphNodes = graphNodesInProgramScope;
-            foreach (var node in graphNodes)
-            {
-                if (node.propertyChanged)
-                {
-                    propertyChanged = true;
-                    int exprUID = node.exprUID;
-                    int modBlkId = node.modBlkUID;
-                    bool isSSAAssign = node.IsSSANode();
-                    List<AssociativeGraph.GraphNode> reachableGraphNodes = null;
-                    bool recursiveSearch = false;
-                    if (runtimeCore.Options.ExecuteSSA)
-                    {
-                        reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
-                            node.lastGraphNode, this, exprUID, modBlkId, isSSAAssign, runtimeCore.Options.ExecuteSSA, executingBlock, recursiveSearch, propertyChanged);
-                    }
-                    else
-                    {
-                        reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
-                            node, this, exprUID, modBlkId, isSSAAssign, runtimeCore.Options.ExecuteSSA, executingBlock, recursiveSearch, propertyChanged);
-                    }
-
-                    // Mark reachable nodes as dirty
-                    Validity.Assert(reachableGraphNodes != null);
-                    foreach (AssociativeGraph.GraphNode gnode in reachableGraphNodes)
-                    {
-                        gnode.isDirty = true;
-                    }
-
-                    node.propertyChanged = false;
-                }
-            }
-            return propertyChanged;
-        }
-     
         private int UpdateGraph(int exprUID, int modBlkId, bool isSSAAssign)
         {
-            if (null != Properties.executingGraphNode)
-            {
-                if (!Properties.executingGraphNode.IsSSANode())
-                {
-                    UpdatePropertyChangedGraphNode();
-                }
-            }
-
             List<AssociativeGraph.GraphNode> reachableGraphNodes = null;
             if (runtimeCore.Options.DirectDependencyExecution)
             {
@@ -1573,7 +1519,7 @@ namespace ProtoCore.DSASM
             {
                 // Find reachable graphnodes
                 reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
-                    Properties.executingGraphNode, this, exprUID, modBlkId, isSSAAssign, runtimeCore.Options.ExecuteSSA, executingBlock, false);
+                    Properties.executingGraphNode, this, exprUID, isSSAAssign, runtimeCore.Options.ExecuteSSA, executingBlock, false);
             }
 
             // Mark reachable nodes as dirty
