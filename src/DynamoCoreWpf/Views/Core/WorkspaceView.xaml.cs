@@ -538,13 +538,16 @@ namespace Dynamo.Views
             snappedPort = null;
             if (ViewModel == null) return;
 
-            // check IsInIdleState before finishing an action with HandleMouseRelease
-            var returnToSearch = ViewModel.IsInIdleState && Keyboard.Modifiers == ModifierKeys.Control;
+            // check IsInIdleState and IsPanning before finishing an action with HandleMouseRelease
+            var returnToSearch = (ViewModel.IsInIdleState || ViewModel.IsPanning) 
+                && e.ChangedButton == MouseButton.Right && Keyboard.Modifiers == ModifierKeys.Control;
 
             ViewModel.HandleMouseRelease(workBench, e);
             if (returnToSearch)
             {
                 ViewModel.DynamoViewModel.SearchViewModel.OnRequestFocusSearch();
+                // do not open context menu in this case
+                e.Handled = true;
             }
         }
 
