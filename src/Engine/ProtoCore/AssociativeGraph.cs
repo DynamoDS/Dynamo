@@ -521,11 +521,7 @@ namespace ProtoCore.AssociativeEngine
                     // TODO Jun: Optimization - Reimplement update delta evaluation using registers
                     //if (IsNodeModified(EX, FX))
                     bool isLastSSAAssignment = (exprUID == graphNode.exprUID) && graphNode.IsLastNodeInSSA && !graphNode.isReturn;
-                    if (exprUID != graphNode.exprUID)
-                    {
-                        UpdateModifierBlockDependencyGraph(graphNode, dependencyGraph.GraphList);
-                    }
-                    else if (allowSSADownstream
+                    if (allowSSADownstream
                                 || isSSAAssign
                                 || isLastSSAAssignment
                                 || (exprUID != graphNode.exprUID)
@@ -642,24 +638,6 @@ namespace ProtoCore.AssociativeEngine
             }
 
             return true;
-        }
-
-        public static void UpdateModifierBlockDependencyGraph(AssociativeGraph.GraphNode graphNode, List<AssociativeGraph.GraphNode> graphNodeList)
-        {
-            if (graphNode.isCyclic)
-            {
-                // If the graphnode is cyclic, mark it as not first so it wont get executed 
-                // Sets its cyclePoint graphnode to be not dirty so it also doesnt execute.
-                // The cyclepoint is the other graphNode that the current node cycles with
-                graphNode.isDirty = false;
-                if (null != graphNode.cyclePoint)
-                {
-                    graphNode.cyclePoint.isDirty = false;
-                    graphNode.cyclePoint.isCyclic = true;
-                }
-            }
-
-            graphNode.isDirty = true;
         }
 
         /// <summary>
