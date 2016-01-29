@@ -1610,7 +1610,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		}
 		
 		var identNode = AstFactory.BuildIdentifier(t.val);
-		identNode.datatype = TypeSystem.BuildPrimitiveTypeObject((ProtoCore.PrimitiveType)ltype, 0);
+		identNode.datatype = TypeSystem.BuildPrimitiveTypeObject((ProtoCore.PrimitiveType)ltype);
 		node = identNode;
 		NodeUtils.SetNodeLocation(node, t);
 		

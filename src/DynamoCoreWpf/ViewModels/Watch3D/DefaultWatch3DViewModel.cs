@@ -494,20 +494,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected void RegisterPortEventHandlers(NodeModel node)
         {
-            foreach (var p in node.InPorts)
-            {
-                p.PortDisconnected += PortDisconnectedHandler;
-                p.PortConnected += PortConnectedHandler;
-            }
+            node.PortConnected += PortConnectedHandler;
+            node.PortDisconnected += PortDisconnectedHandler;
         }
 
         private void UnregisterPortEventHandlers(NodeModel node)
         {
-            foreach (var p in node.InPorts)
-            {
-                p.PortDisconnected -= PortDisconnectedHandler;
-                p.PortConnected -= PortConnectedHandler;
-            }
+            node.PortConnected -= PortConnectedHandler;
+            node.PortDisconnected -= PortDisconnectedHandler;
         }
 
         protected virtual void PortConnectedHandler(PortModel arg1, ConnectorModel arg2)
@@ -517,7 +511,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected virtual void PortDisconnectedHandler(PortModel port)
         {
-            DeleteGeometryForIdentifier(port.Owner.AstIdentifierBase);
+            if (port.PortType == PortType.Input)
+            {
+                DeleteGeometryForIdentifier(port.Owner.AstIdentifierBase);
+            }
         }
 
         protected virtual void SelectionChangedHandler(object sender, NotifyCollectionChangedEventArgs e)
