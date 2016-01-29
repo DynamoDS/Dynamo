@@ -55,13 +55,13 @@ namespace ProtoCore.DSASM
     public enum OpCode
     {
         NONE,
-        MOV,
         ADD,
         SUB,
         MUL,
         DIV,
         MOD,
         PUSH,
+        PUSHB,
         PUSHG,
         PUSHM,
         PUSHW,
@@ -70,6 +70,7 @@ namespace ProtoCore.DSASM
         POP,
         POPW,
         POPG,
+        POPM,
         CALL,
         CALLR,
         RETURN,
@@ -88,22 +89,12 @@ namespace ProtoCore.DSASM
         BOUNCE,
         ALLOCA,
         ALLOCC,
-        POPM,
-      
-        POPLIST,
         PUSHLIST,
         RETC,
         RETB,
         RETCN,
-        BITAND,
-        BITOR,
-        BITXOR,
-        NEGATE,
         NEG,
-        CAST,
         DEP,
-        
-        PUSHB,
 
         // TODO Jun: This is temporary until the lib system is implemented. 
         PUSH_ARRAYKEY,
