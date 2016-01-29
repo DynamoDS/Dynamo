@@ -48,6 +48,8 @@ namespace CoreNodeModelsWpf.Nodes
             nodeView.PresentationGrid.MaxHeight = Configurations.MaxWatchNodeHeight;
             nodeView.PresentationGrid.Children.Add(watchTree);
             nodeView.PresentationGrid.Visibility = Visibility.Visible;
+            // disable preview control
+            nodeView.TogglePreviewControlAllowance();
 
             Bind(watchTree, nodeView);
 
