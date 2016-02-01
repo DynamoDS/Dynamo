@@ -321,7 +321,7 @@ namespace Dynamo.Controls
                 PrepareZIndex();
             }
 
-            ViewModel.ZIndex = NodeViewModel.StaticZIndex++;
+            ViewModel.ZIndex = ++NodeViewModel.StaticZIndex;
         }
 
         /// <summary>
