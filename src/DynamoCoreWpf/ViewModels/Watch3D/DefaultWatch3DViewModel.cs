@@ -565,9 +565,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public event Action<object, MouseButtonEventArgs> ViewMouseDown;
         internal void OnViewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            HandleViewClick(sender, e);
             var handler = ViewMouseDown;
             if (handler != null) handler(sender, e);
         }
+
+        protected virtual void HandleViewClick(object sender, MouseButtonEventArgs e)
+        { }
 
         public event Action<object, MouseButtonEventArgs> ViewMouseUp;
         internal void OnViewMouseUp(object sender, MouseButtonEventArgs e)
