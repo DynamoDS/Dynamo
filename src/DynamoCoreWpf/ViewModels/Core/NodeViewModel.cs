@@ -179,7 +179,7 @@ namespace Dynamo.ViewModels
         /// 
         /// Static is used because every node should know what is the highest z-index right now.
         /// </summary>
-        public static int StaticZIndex = Configurations.NodeStartZIndex;
+        internal static int StaticZIndex = Configurations.NodeStartZIndex;
 
         /// <summary>
         /// ZIndex represents the order on the z-plane in which nodes appear.
