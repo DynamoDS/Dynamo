@@ -30,8 +30,6 @@ namespace ProtoCore
         public List<StackValue> functionCallArguments { get; set; }
         public List<StackValue> functionCallDotCallDimensions { get; set; }
 
-        public UpdateStatus updateStatus { get; set; }
-
         public InterpreterProperties()
         {
             Reset();
@@ -43,7 +41,6 @@ namespace ProtoCore
             nodeIterations = rhs.nodeIterations;
             functionCallArguments = rhs.functionCallArguments;
             functionCallDotCallDimensions = rhs.functionCallDotCallDimensions;
-            updateStatus = rhs.updateStatus;
         }
 
         public void Reset()
@@ -52,7 +49,6 @@ namespace ProtoCore
             nodeIterations = new List<GraphNode>();
             functionCallArguments = new List<StackValue>();
             functionCallDotCallDimensions = new List<StackValue>();
-            updateStatus = UpdateStatus.kNormalUpdate;
         }
     }
 
@@ -292,30 +288,6 @@ namespace ProtoCore
                 ExecutionEvent(this, new ExecutionStateEventArgs(state));
         }
         
-        public bool IsEvalutingPropertyChanged()
-        {
-            foreach (var prop in InterpreterProps)
-            {
-                if (prop.updateStatus == UpdateStatus.kPropertyChangedUpdate)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public void RequestCancellation()
-        {
-            if (cancellationPending)
-            {
-                var message = "Cancellation cannot be requested twice";
-                throw new InvalidOperationException(message);
-            }
-
-            cancellationPending = true;
-        }
-
         public int GetCurrentBlockId()
         {
             int constructBlockId = RuntimeMemory.CurrentConstructBlockId;

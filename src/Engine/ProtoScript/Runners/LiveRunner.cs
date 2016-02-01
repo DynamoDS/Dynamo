@@ -415,7 +415,6 @@ namespace ProtoScript.Runners
                     executingNode,
                     rt.CurrentExecutive.CurrentDSASMExec,
                     executingNode.exprUID,
-                    executingNode.modBlkUID,
                     executingNode.IsSSANode(),
                     true,
                     0,

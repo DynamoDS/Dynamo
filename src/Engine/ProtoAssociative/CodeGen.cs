@@ -244,8 +244,7 @@ namespace ProtoAssociative
         {
             if (subNode.UID == node.UID
                 || subNode.exprUID == node.exprUID
-                || subNode.ssaExprID == node.ssaExprID
-                || (subNode.modBlkUID == node.modBlkUID && node.modBlkUID != ProtoCore.DSASM.Constants.kInvalidIndex)
+                || subNode.ssaSubExpressionID == node.ssaSubExpressionID
                 || subNode.procIndex != node.procIndex
                 || subNode.classIndex != node.classIndex
                 || subNode.isReturn)
@@ -3378,7 +3377,7 @@ namespace ProtoAssociative
                                 // Set the exprID of the SSA's node
                                 BinaryExpressionNode ssaNode = aNode as BinaryExpressionNode;
                                 ssaNode.ExpressionUID = ssaID;
-                                ssaNode.ssaExprID = ssaExprID;
+                                ssaNode.SSASubExpressionID = ssaExprID;
                                 ssaNode.SSAExpressionUID = core.SSAExpressionUID;
                                 ssaNode.guid = bnode.guid;
                                 ssaNode.OriginalAstID = bnode.OriginalAstID;
@@ -3389,7 +3388,7 @@ namespace ProtoAssociative
                             // Assigne the exprID of the original node 
                             // (This is the node prior to ssa transformation)
                             bnode.ExpressionUID = ssaID;
-                            bnode.ssaExprID = ssaExprID;
+                            bnode.SSASubExpressionID = ssaExprID;
                             bnode.SSAExpressionUID = core.SSAExpressionUID;
                             newAstList.AddRange(newASTList);
                         }
@@ -5432,7 +5431,6 @@ namespace ProtoAssociative
                     {
                         ProtoCore.AssociativeGraph.GraphNode graphNode = new ProtoCore.AssociativeGraph.GraphNode();
                         graphNode.exprUID = bNode.ExpressionUID;
-                        graphNode.modBlkUID = bNode.modBlkUID;
                         graphNode.ssaExpressionUID = bNode.SSAExpressionUID;
                         graphNode.procIndex = globalProcIndex;
                         graphNode.classIndex = globalClassIndex;
@@ -7616,11 +7614,10 @@ namespace ProtoAssociative
                     graphNode.AstID = bnode.ID;
                     graphNode.OriginalAstID = bnode.OriginalAstID; 
                     graphNode.exprUID = bnode.ExpressionUID;
-                    graphNode.ssaExprID = bnode.ssaExprID;
+                    graphNode.ssaSubExpressionID = bnode.SSASubExpressionID;
                     graphNode.ssaExpressionUID = bnode.SSAExpressionUID;
                     graphNode.IsModifier = bnode.IsModifier;
                     graphNode.guid = bnode.guid;
-                    graphNode.modBlkUID = bnode.modBlkUID;
                     graphNode.procIndex = globalProcIndex;
                     graphNode.classIndex = globalClassIndex;
                     graphNode.languageBlockId = codeBlock.codeBlockId;
@@ -8136,17 +8133,6 @@ namespace ProtoAssociative
 
                     graphNode.ResolveLHSArrayIndex();
                     graphNode.updateBlock.endpc = pc - 1;
-
-                    string identName = t.Name;
-                    if (ProtoCore.Utils.CoreUtils.IsSSATemp(identName))
-                    {
-                        // Extract the SSA subscript from the ID
-                        // TODO Jun: Store the subscript before embedding it into the ID so we dont need to parse and extract it here
-                        int first = identName.IndexOf('_');
-                        int last = identName.LastIndexOf('_');
-                        string subscript = identName.Substring(first + 1, last - first - 1);
-                        graphNode.SSASubscript = Convert.ToInt32(subscript);
-                    }
 
                     PushGraphNode(graphNode);
                     if (core.InlineConditionalBodyGraphNodes.Count > 0)

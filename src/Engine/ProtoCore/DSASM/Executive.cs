@@ -428,15 +428,7 @@ namespace ProtoCore.DSASM
                 }
                 else
                 {
-                    // See if we need to repond to property changed event.
-                    if (UpdatePropertyChangedGraphNode())
-                    {
-                        SetupNextExecutableGraph(-1, -1);
-                    }
-                    else
-                    {
-                        SetupGraphEntryPoint(pc, IsGlobalScope());
-                    }
+                    SetupGraphEntryPoint(pc, IsGlobalScope());
                 }
             }
         }
@@ -1303,16 +1295,6 @@ namespace ProtoCore.DSASM
                         pc = graphNode.updateBlock.startpc;
                         isUpdated = true;
 
-                        if (graphNode.forPropertyChanged)
-                        {
-                            Properties.updateStatus = AssociativeEngine.UpdateStatus.kPropertyChangedUpdate;
-                            graphNode.forPropertyChanged = false;
-                        }
-                        else
-                        {
-                            Properties.updateStatus = AssociativeEngine.UpdateStatus.kNormalUpdate;
-                        }
-
                         // Clear runtime warning for the first run in delta
                         // execution.
                         if (runtimeCore.Options.IsDeltaExecution && 
@@ -1447,7 +1429,12 @@ namespace ProtoCore.DSASM
             foreach (AssociativeGraph.GraphNode node in nodeIterations)
             {
                 node.isCyclic = true;
-                SetGraphNodeStackValueNull(node);
+
+                Validity.Assert(!node.isReturn);
+                SymbolNode symbol = node.updateNodeRefList[0].nodeList[0].symbol;
+                Validity.Assert(null != symbol);
+                rmem.SetSymbolValue(symbol, StackValue.Null);
+
                 node.dependentList.Clear();
                 node.isActive = false;
             }
@@ -1456,13 +1443,7 @@ namespace ProtoCore.DSASM
 
         private bool HasCyclicDependency(AssociativeGraph.GraphNode node)
         {
-            return IsExecutedTooManyTimes(node, runtimeCore.Options.kDynamicCycleThreshold);
-        }
-
-        private bool IsExecutedTooManyTimes(AssociativeGraph.GraphNode node, int limit)
-        {
-            Validity.Assert(null != node);
-            return (node.counter > limit);
+            return node.counter > runtimeCore.Options.kDynamicCycleThreshold;
         }
 
         private AssociativeGraph.GraphNode[] FindCycleStartNodeAndEndNode(List<AssociativeGraph.GraphNode> nodesExecutedSameTime)
@@ -1497,70 +1478,8 @@ namespace ProtoCore.DSASM
             return isInvalid || isPointerModified || isArrayModified || isDataModified || isDoubleDataModified || isTypeModified;
         }
 
-
-        private void SetGraphNodeStackValue(AssociativeGraph.GraphNode graphNode, StackValue sv)
-        {
-            Validity.Assert(!graphNode.isReturn);
-            // TODO Jun: Expand me to handle complex ident lists
-            SymbolNode symbol = graphNode.updateNodeRefList[0].nodeList[0].symbol;
-            Validity.Assert(null != symbol);
-            rmem.SetSymbolValue(symbol, sv);
-        }
-
-        private void SetGraphNodeStackValueNull(AssociativeGraph.GraphNode graphNode)
-        {
-            StackValue svNull = StackValue.Null;
-            SetGraphNodeStackValue(graphNode, svNull);
-        }
-
-        private bool UpdatePropertyChangedGraphNode()
-        {
-            bool propertyChanged = false;
-            var graphNodes = graphNodesInProgramScope;
-            foreach (var node in graphNodes)
-            {
-                if (node.propertyChanged)
-                {
-                    propertyChanged = true;
-                    int exprUID = node.exprUID;
-                    int modBlkId = node.modBlkUID;
-                    bool isSSAAssign = node.IsSSANode();
-                    List<AssociativeGraph.GraphNode> reachableGraphNodes = null;
-                    bool recursiveSearch = false;
-                    if (runtimeCore.Options.ExecuteSSA)
-                    {
-                        reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
-                            node.lastGraphNode, this, exprUID, modBlkId, isSSAAssign, runtimeCore.Options.ExecuteSSA, executingBlock, recursiveSearch, propertyChanged);
-                    }
-                    else
-                    {
-                        reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
-                            node, this, exprUID, modBlkId, isSSAAssign, runtimeCore.Options.ExecuteSSA, executingBlock, recursiveSearch, propertyChanged);
-                    }
-
-                    // Mark reachable nodes as dirty
-                    Validity.Assert(reachableGraphNodes != null);
-                    foreach (AssociativeGraph.GraphNode gnode in reachableGraphNodes)
-                    {
-                        gnode.isDirty = true;
-                    }
-
-                    node.propertyChanged = false;
-                }
-            }
-            return propertyChanged;
-        }
-     
         private int UpdateGraph(int exprUID, int modBlkId, bool isSSAAssign)
         {
-            if (null != Properties.executingGraphNode)
-            {
-                if (!Properties.executingGraphNode.IsSSANode())
-                {
-                    UpdatePropertyChangedGraphNode();
-                }
-            }
-
             List<AssociativeGraph.GraphNode> reachableGraphNodes = null;
             if (runtimeCore.Options.DirectDependencyExecution)
             {
@@ -1573,7 +1492,7 @@ namespace ProtoCore.DSASM
             {
                 // Find reachable graphnodes
                 reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
-                    Properties.executingGraphNode, this, exprUID, modBlkId, isSSAAssign, runtimeCore.Options.ExecuteSSA, executingBlock, false);
+                    Properties.executingGraphNode, this, exprUID, isSSAAssign, runtimeCore.Options.ExecuteSSA, executingBlock, false);
             }
 
             // Mark reachable nodes as dirty
@@ -4666,195 +4585,6 @@ namespace ProtoCore.DSASM
             POPM_Helper(instruction, out blockId, out ci);
         }
 
-        private void POPLIST_Handler(Instruction instruction)
-        {
-            runtimeVerify(instruction.op1.IsInteger);
-            int depth = (int)instruction.op1.opdata;
-
-            runtimeVerify(instruction.op2.IsInteger);
-
-            runtimeVerify(instruction.op3.IsBlockIndex);
-            int blockId = (int)instruction.op3.opdata;
-            // TODO(Jun/Jiong): Find a more reliable way to update the current block Id
-            //runtimeCore.DebugProps.CurrentBlockId = blockId;
-            RTSymbol[] listInfo = new RTSymbol[depth];
-            for (int n = 0; n < depth; ++n)
-            {
-                listInfo[n].Sv = rmem.Pop();
-                if (listInfo[n].Sv.IsStaticVariableIndex)
-                {
-                    StackValue block = rmem.Pop();
-                    Validity.Assert(block.IsBlockIndex);
-                    listInfo[n].BlockId = (int)block.opdata;
-                }
-                int dim = (int)rmem.Pop().opdata;
-                if (dim == 0)
-                    listInfo[n].Dimlist = null;
-                else
-                    listInfo[n].Dimlist = new int[dim];
-
-                for (int d = 0; d < dim; ++d)
-                {
-                    listInfo[n].Dimlist[d] = (int)rmem.Pop().opdata;
-                }
-            }
-
-            // Handle depth until one before the last pointer
-            StackValue finalPointer = StackValue.Null; 
-            int classsccope = listInfo.Last().Sv.metaData.type;
-            for (int n = listInfo.Length - 1; n >= 1; --n)
-            {
-                if (n == listInfo.Length - 1)
-                    finalPointer = listInfo[n].Sv;
-                else
-                {
-                    //resolve dynamic reference
-                    if (listInfo[n].Sv.IsDynamic)
-                    {
-                        classsccope = listInfo[n + 1].Sv.metaData.type;
-                        bool succeeded = ProcessDynamicVariable((listInfo[n].Dimlist != null), ref listInfo[n].Sv, classsccope);
-                        //if the identifier is unbounded. Push null
-                        if (!succeeded)
-                        {
-                            finalPointer = StackValue.Null;
-                            break;
-                        }
-                    }
-
-                    if (listInfo[n].Sv.IsStaticVariableIndex)
-                        finalPointer = listInfo[n].Sv = GetOperandData(blockId, listInfo[n].Sv, new StackValue());
-                    else
-                        finalPointer = listInfo[n].Sv = rmem.Heap.ToHeapObject<DSObject>(finalPointer).GetValueFromIndex((int)listInfo[n].Sv.opdata, runtimeCore);
-                }
-                if (listInfo[n].Dimlist != null)
-                {
-                    for (int d = listInfo[n].Dimlist.Length - 1; d >= 0; --d)
-                    {
-                        finalPointer = listInfo[n].Sv = rmem.Heap.ToHeapObject<DSObject>(finalPointer).GetValueFromIndex(listInfo[n].Dimlist[d], runtimeCore);
-                    }
-                }
-            }
-
-            // Handle the last pointer
-            StackValue tryPointer = StackValue.Null;
-            StackValue data = rmem.Pop();
-            if (!finalPointer.IsNull)
-            {
-                StackValue rtSymbol = listInfo[0].Sv;
-                if (rtSymbol.IsDynamic)
-                {
-                    classsccope = listInfo[1].Sv.metaData.type;
-                    bool succeeded = ProcessDynamicVariable((listInfo[0].Dimlist != null), ref rtSymbol, classsccope);
-                    //if the identifier is unbounded. Push null
-                    if (!succeeded)
-                    {
-                        tryPointer = StackValue.Null;
-                    }
-                    else
-                    {
-                        if (rtSymbol.IsStaticVariableIndex)
-                        {
-                            SetOperandData(rtSymbol, data, listInfo[0].BlockId);
-                            ++pc;
-                            return;
-                        }
-                        tryPointer = rmem.Heap.ToHeapObject<DSObject>(finalPointer).GetValueFromIndex((int)rtSymbol.opdata, runtimeCore);
-                    }
-                }
-                else if (rtSymbol.IsStaticVariableIndex)
-                {
-                    SetOperandData(rtSymbol, data, listInfo[0].BlockId);
-                    ++pc;
-                    return;
-                }
-                else
-                {
-                    tryPointer = rmem.Heap.ToHeapObject<DSObject>(finalPointer).GetValueFromIndex((int)rtSymbol.opdata, runtimeCore);
-                }
-            }
-            else
-            {
-                tryPointer = StackValue.Null;
-            }
-
-            if (listInfo[0].Dimlist != null)
-            {
-                finalPointer = tryPointer;
-                for (int d = listInfo[0].Dimlist.Length - 1; d >= 1; --d)
-                    finalPointer = rmem.Heap.ToHeapObject<DSObject>(finalPointer).GetValueFromIndex(listInfo[0].Dimlist[d], runtimeCore);
-                tryPointer = rmem.Heap.ToHeapObject<DSObject>(finalPointer).GetValueFromIndex(listInfo[0].Dimlist[0], runtimeCore);
-            }
-
-            if (tryPointer.IsNull)
-            { //do nothing
-            }
-            else
-            {
-                var pointer = rmem.Heap.ToHeapObject<DSObject>(tryPointer);
-                var firstItem = pointer.Count == 1 ? pointer.GetValueFromIndex(0, runtimeCore) : StackValue.Null;
-                if (pointer.Count == 1 && !firstItem.IsPointer && !firstItem.IsArray)
-                {
-                    // TODO Jun:
-                    // Spawn GC here
-
-                    // Setting a primitive
-                    DX = firstItem;
-                    pointer.SetValueAtIndex(0, data, null);
-                }
-                else if (finalPointer.IsPointer || data.IsNull)
-                {
-                    if (data.IsNull)
-                    {
-                        rmem.Heap.AllocatePointer(new[] { data });
-                    }
-
-                    // Setting a pointer
-                    int idx = (int)listInfo[0].Sv.opdata;
-
-                    DSObject dsObject = rmem.Heap.ToHeapObject<DSObject>(finalPointer);
-                    DX = dsObject.GetValueFromIndex(idx, runtimeCore);
-                    dsObject.SetValueAtIndex(idx, data, runtimeCore);
-                }
-                else
-                {
-                    // TODO Jun:
-                    // Spawn GC here
-                    runtimeVerify(finalPointer.IsArray);
-
-                    // Setting an array
-                    var finalPointerArray = rmem.Heap.ToHeapObject<DSArray>(finalPointer);
-                    var index = listInfo[0].Dimlist[0];
-                    DX = finalPointerArray.GetValueFromIndex(index, runtimeCore);
-                    finalPointerArray.SetValueForIndex(index, data, runtimeCore);
-                }
-            }
-
-            ++pc;
-        }
-
-        private void MOV_Handler(Instruction instruction)
-        {
-            int blockId = Constants.kInvalidIndex;
-            if (instruction.op2.IsVariableIndex ||
-                instruction.op2.IsMemberVariableIndex ||
-                instruction.op2.IsPointer ||
-                instruction.op2.IsArray)
-            {
-                StackValue svDim = rmem.Pop();
-                runtimeVerify(svDim.IsArrayDimension);
-
-                StackValue svBlock = rmem.Pop();
-                runtimeVerify(svBlock.IsBlockIndex);
-                blockId = (int)svBlock.opdata;
-            }
-
-            StackValue opClass = StackValue.BuildClassIndex(Constants.kGlobalScope);
-            StackValue opdata1 = GetOperandData(blockId, instruction.op2, opClass);
-            SetOperandData(instruction.op1, opdata1);
-
-            ++pc;
-        }
-
         private void ADD_Handler(Instruction instruction)
         {
             StackValue opdata1 = rmem.Pop();
@@ -6494,18 +6224,6 @@ namespace ProtoCore.DSASM
                         return;
                     }
 
-                case OpCode.POPLIST:
-                    {
-                        POPLIST_Handler(instruction);
-                        return;
-                    }
-
-                case OpCode.MOV:
-                    {
-                        MOV_Handler(instruction);
-                        return;
-                    }
-
                 case OpCode.ADD:
                     {
                         ADD_Handler(instruction);
@@ -6535,28 +6253,6 @@ namespace ProtoCore.DSASM
                         MOD_Handler(instruction);
                         return;
                     }
-#if ENABLE_BIT_OP
-                case OpCode.BITAND:
-                    {
-                        BITAND_HANDLER(instruction);
-                        return;
-                    }
-
-                case OpCode.BITOR:
-                    {
-                        BITOR_HANDLER(instruction);
-                        return;
-                    }
-                case OpCode.BITXOR:
-                    {
-                        BITXOR_HANDLER(instruction);
-                        return;
-                    }
-                    case OpCode.NEGATE:
-                    {
-                        NEGATE_HAndler(instruction);
-                        return;
-#endif
                 case OpCode.NEG:
                     {
                         NEG_Handler(instruction);
