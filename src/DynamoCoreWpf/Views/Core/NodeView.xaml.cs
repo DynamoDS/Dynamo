@@ -60,7 +60,7 @@ namespace Dynamo.Controls
             private set { viewModel = value; }
         }
 
-        private PreviewControl PreviewControl
+        internal PreviewControl PreviewControl
         {
             get
             {
@@ -443,7 +443,7 @@ namespace Dynamo.Controls
             var preview = sender as PreviewControl;
             // If the preview is in a transition, return directly to avoid another
             // transition
-            if (preview == null || preview.IsInTransition)
+            if (preview == null || preview.IsInTransition || DynCmd.IsTestMode)
             {
                 return;
             }
