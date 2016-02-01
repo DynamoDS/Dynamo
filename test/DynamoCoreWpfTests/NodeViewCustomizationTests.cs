@@ -376,8 +376,9 @@ namespace DynamoCoreWpfTests
         {
             Open(@"UI\CoreUINodes.dyn");
 
-            var nodeView = NodeViewWithGuid("b8c2a62f-f1ce-4327-8d98-c4e0cc0ebed4"); // NodeViewOf<PythonStringNode>();
+            var nodeView = NodeViewWithGuid("b8c2a62f-f1ce-4327-8d98-c4e0cc0ebed4");
 
+            // Index of first node == 3.
             Assert.AreEqual(3, nodeView.ViewModel.ZIndex);
             Assert.AreEqual(3 + ViewModel.HomeSpace.Nodes.Count(), Dynamo.ViewModels.NodeViewModel.StaticZIndex);
             nodeView.RaiseEvent(new System.Windows.Input.MouseButtonEventArgs(System.Windows.Input.Mouse.PrimaryDevice, 0, System.Windows.Input.MouseButton.Left)
@@ -386,6 +387,7 @@ namespace DynamoCoreWpfTests
                 Source = this,
             });
 
+            // After click node should have The highest index.
             Assert.AreEqual(4 + ViewModel.HomeSpace.Nodes.Count(), nodeView.ViewModel.ZIndex);
             Assert.AreEqual(4 + ViewModel.HomeSpace.Nodes.Count(), Dynamo.ViewModels.NodeViewModel.StaticZIndex);
         }
