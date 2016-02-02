@@ -37,7 +37,7 @@
                                     Name="ContextMenuPanel"
                                     Height="{Binding ElementName=MenuItems, Path=ActualHeight, 
                                                      Converter={StaticResource WorkspaceContextMenuHeightConverter}}">
-                            <ui:InCanvasSearchControl DataContext="{Binding InCanvasSearchViewModel}"
+                            <ui:InCanvasSearchControl Panel.ZIndex="10" DataContext="{Binding InCanvasSearchViewModel}"
                                                       Width="{Binding ElementName=ContextMenuPanel, Path=ActualWidth}" />
                             <Border BorderThickness="1"
                                     Name="MenuItems"

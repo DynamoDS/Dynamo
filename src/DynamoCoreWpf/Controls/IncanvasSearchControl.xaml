@@ -50,7 +50,7 @@
             </Grid.ColumnDefinitions>
             <Border CornerRadius="8"
                     Background="{StaticResource SearchTextBoxBackground}"
-                    BorderBrush="{StaticResource LibraryCommonBackground}"
+                    BorderBrush="{StaticResource outerBorderSelection}"
                     BorderThickness="1"
                     Padding="5"
                     Margin="1 3"
