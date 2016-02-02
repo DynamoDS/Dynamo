@@ -533,7 +533,7 @@ namespace Dynamo.Manipulation
         /// <returns>True if enabled and can be manipulated.</returns>
         public bool IsEnabled()
         {
-            if (Node.IsFrozen) return false;
+            if (Node.IsFrozen || !Node.IsVisible) return false;
 
             if (Node.CachedValue == null || Node.CachedValue.IsNull)
             {
