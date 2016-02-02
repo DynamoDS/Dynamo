@@ -7,12 +7,6 @@ using System.Linq;
 
 namespace ProtoCore.AssociativeEngine
 {
-    public enum UpdateStatus
-    {
-        kNormalUpdate,
-        kPropertyChangedUpdate
-    }
-
     public class Utils
     {
         /// <summary>
@@ -409,18 +403,15 @@ namespace ProtoCore.AssociativeEngine
         /// <param name="isSSAAssign"></param>
         /// <param name="executeSSA"></param>
         /// <param name="languageBlockID"></param>
-        /// <param name="propertyChanged"></param>
         /// <returns></returns>
         public static List<AssociativeGraph.GraphNode> UpdateDependencyGraph(
             AssociativeGraph.GraphNode executingGraphNode,
             DSASM.Executive executive,
             int exprUID,
-            int modBlkId,
             bool isSSAAssign,
             bool executeSSA,
             int languageBlockID,
-            bool recursiveSearch,
-            bool propertyChanged = false)
+            bool recursiveSearch )
         {
             AssociativeGraph.DependencyGraph dependencyGraph = executive.exe.instrStreamList[languageBlockID].dependencyGraph;
             List<AssociativeGraph.GraphNode> reachableGraphNodes = new List<AssociativeGraph.GraphNode>();
@@ -460,12 +451,6 @@ namespace ProtoCore.AssociativeEngine
                 {
                     allowUpdateWithinSSA = true;
                     isSSAAssign = false; // Remove references to this when ssa flag is removed
-
-                    // Do not update if its a property change and the current graphnode is the same expression
-                    if (propertyChanged && graphNode.exprUID == executingGraphNode.exprUID)
-                    {
-                        continue;
-                    }
                 }
                 else
                 {
@@ -474,7 +459,7 @@ namespace ProtoCore.AssociativeEngine
                     allowUpdateWithinSSA = !withinSSAStatement;
                 }
 
-                if (!allowUpdateWithinSSA || (propertyChanged && graphNode == executingGraphNode))
+                if (!allowUpdateWithinSSA)
                 {
                     continue;
                 }
@@ -485,8 +470,8 @@ namespace ProtoCore.AssociativeEngine
                     // then find all that nodes in that lang block and mark them dirty
                     if (graphNode.isLanguageBlock)
                     {
-                        List<AssociativeGraph.GraphNode> subGraphNodes = ProtoCore.AssociativeEngine.Utils.UpdateDependencyGraph(
-                            executingGraphNode, executive, exprUID, modBlkId, isSSAAssign, executeSSA, graphNode.languageBlockId, recursiveSearch);
+                        List<AssociativeGraph.GraphNode> subGraphNodes = Utils.UpdateDependencyGraph(
+                            executingGraphNode, executive, exprUID, isSSAAssign, executeSSA, graphNode.languageBlockId, recursiveSearch);
                         if (subGraphNodes.Count > 0)
                         {
                             reachableGraphNodes.Add(graphNode);
@@ -497,27 +482,6 @@ namespace ProtoCore.AssociativeEngine
                     if (!graphNode.DependsOn(noderef, ref matchingNode))
                     {
                         continue;
-                    }
-
-                    // @keyu: if we are modifying an object's property, e.g.,
-                    // 
-                    //    foo.id = 42;
-                    //
-                    // both dependent list and update list of the corresponding 
-                    // graph node contains "foo" and "id", so if property "id"
-                    // is changed, this graph node will be re-executed and the
-                    // value of "id" is incorrectly set back to old value.
-                    if (propertyChanged)
-                    {
-                        var depUpdateNodeRef = graphNode.dependentList[0].updateNodeRefList[0];
-                        if (graphNode.updateNodeRefList.Count == 1)
-                        {
-                            var updateNodeRef = graphNode.updateNodeRefList[0];
-                            if (depUpdateNodeRef.Equals(updateNodeRef))
-                            {
-                                continue;
-                            }
-                        }
                     }
 
                     //
@@ -557,16 +521,10 @@ namespace ProtoCore.AssociativeEngine
                     // TODO Jun: Optimization - Reimplement update delta evaluation using registers
                     //if (IsNodeModified(EX, FX))
                     bool isLastSSAAssignment = (exprUID == graphNode.exprUID) && graphNode.IsLastNodeInSSA && !graphNode.isReturn;
-                    if (exprUID != graphNode.exprUID && modBlkId != graphNode.modBlkUID)
-                    {
-                        UpdateModifierBlockDependencyGraph(graphNode, dependencyGraph.GraphList);
-                    }
-                    else if (allowSSADownstream
+                    if (allowSSADownstream
                                 || isSSAAssign
                                 || isLastSSAAssignment
-                                || (exprUID != graphNode.exprUID
-                                    && modBlkId == Constants.kInvalidIndex
-                                    && graphNode.modBlkUID == Constants.kInvalidIndex)
+                                || (exprUID != graphNode.exprUID)
                         )
                     {
                         if (graphNode.isCyclic)
@@ -583,7 +541,6 @@ namespace ProtoCore.AssociativeEngine
                         }
                         else if (!graphNode.isDirty)
                         {
-                            graphNode.forPropertyChanged = propertyChanged;
                             reachableGraphNodes.Add(graphNode);
 
                             // On debug mode:
@@ -620,7 +577,6 @@ namespace ProtoCore.AssociativeEngine
                                     graphNode,
                                     executive,
                                     graphNode.exprUID,
-                                    graphNode.modBlkUID,
                                     graphNode.IsSSANode(),
                                     executeSSA,
                                     graphNode.languageBlockId,
@@ -682,42 +638,6 @@ namespace ProtoCore.AssociativeEngine
             }
 
             return true;
-        }
-
-        public static void UpdateModifierBlockDependencyGraph(AssociativeGraph.GraphNode graphNode, List<AssociativeGraph.GraphNode> graphNodeList)
-        {
-            int modBlkUID = graphNode.modBlkUID;
-            int index = graphNode.UID;
-            bool setModifierNode = true;
-            if (graphNode.isCyclic)
-            {
-                // If the graphnode is cyclic, mark it as not first so it wont get executed 
-                // Sets its cyclePoint graphnode to be not dirty so it also doesnt execute.
-                // The cyclepoint is the other graphNode that the current node cycles with
-                graphNode.isDirty = false;
-                if (null != graphNode.cyclePoint)
-                {
-                    graphNode.cyclePoint.isDirty = false;
-                    graphNode.cyclePoint.isCyclic = true;
-                }
-                setModifierNode = false;
-            }
-
-            if (modBlkUID != Constants.kInvalidIndex)
-            {
-                for (int i = index; i < graphNodeList.Count; ++i)
-                {
-                    AssociativeGraph.GraphNode node = graphNodeList[i];
-                    if (node.modBlkUID == modBlkUID)
-                    {
-                        node.isDirty = setModifierNode;
-                    }
-                }
-            }
-            else
-            {
-                graphNode.isDirty = true;
-            }
         }
 
         /// <summary>
@@ -924,13 +844,11 @@ namespace ProtoCore.AssociativeGraph
         public int AstID { get; set; }
         public int OriginalAstID { get; set; }    // The original AST that this graphnode is associated with
         public int exprUID { get; set; }
-        public int ssaExprID { get; set; }
-        public int modBlkUID { get; set; }
+        public int ssaSubExpressionID { get; set; }
         public string CallsiteIdentifier { get; set; }
         public List<UpdateNode> dimensionNodeList { get; set; }
         public List<UpdateNodeRef> updateNodeRefList { get; set; }
         public bool isDirty { get; set; }
-        public bool isDeferred { get; set; }
         public bool isReturn { get; set; }
         public int procIndex { get; set; }              // Function that this graph resides in
         public int classIndex { get; set; }             // Class index that this graph resides in
@@ -964,11 +882,7 @@ namespace ProtoCore.AssociativeGraph
         public bool isAutoGenerated { get; set; }
         public bool isLanguageBlock { get; set; }
         public int languageBlockId { get; set; }
-        public List<StackValue> updateDimensions { get; set; }
         public int counter { get; set; }
-        public ReplicationControl replicationControl {get; set;}
-        public bool propertyChanged { get; set; }       // The property of ffi object that created in this graph node is changed
-        public bool forPropertyChanged { get; set; }    // The graph node is marked as dirty because of property changed event
 
         public GraphNode lastGraphNode { get; set; }    // This is the last graphnode of an SSA'd statement
 
@@ -998,7 +912,6 @@ namespace ProtoCore.AssociativeGraph
         /// </summary>
         public bool isActive { get; set; }
 
-        public int SSASubscript { get; set; }
         public bool IsLastNodeInSSA { get; set; }
 
         public GraphNode()
@@ -1011,7 +924,6 @@ namespace ProtoCore.AssociativeGraph
             dimensionNodeList = new List<UpdateNode>();
             updateNodeRefList = new List<UpdateNodeRef>();
             isDirty = true;
-            isDeferred = false;
             isReturn = false;
             procIndex = Constants.kGlobalScope;
             classIndex = Constants.kInvalidIndex;
@@ -1032,14 +944,10 @@ namespace ProtoCore.AssociativeGraph
             isAutoGenerated = false;
             isLanguageBlock = false;
             languageBlockId = Constants.kInvalidIndex;
-            updateDimensions = new List<StackValue>();
-            propertyChanged = false;
-            forPropertyChanged = false;
             lastGraphNode = null;
             isActive = true;
             symbolListWithinExpression = new List<SymbolNode>();
             reExecuteExpression = false;
-            SSASubscript = Constants.kInvalidIndex;
             IsLastNodeInSSA = false;
         }
 
@@ -1141,55 +1049,6 @@ namespace ProtoCore.AssociativeGraph
                 }
             }
             return isUpdateable;
-        }
-
-        public bool DependsOnProperty(string propertyName)
-        {
-            string getter = Constants.kGetterPrefix + propertyName;
-
-            foreach (var dependent in dependentList)
-            {
-                foreach (var updateNodeRef in dependent.updateNodeRefList)
-                {
-                    foreach (var node in updateNodeRef.nodeList)
-                    {
-                        if (node.procNode != null && node.procNode.Name == getter)
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-
-            return false;
-        }
-
-
-        /// <summary>
-        /// For a list of update node like x.y.z, for specified property name
-        /// "y", return x.
-        /// </summary>
-        /// <param name="propertyName"></param>
-        /// <returns></returns>
-        public UpdateNode GetUpdateNodeForGetter(string propertyName)
-        {
-            string getter = Constants.kGetterPrefix + propertyName;
-
-            foreach (var dependent in dependentList)
-            {
-                foreach (var updateNodeRef in dependent.updateNodeRefList)
-                {
-                    for (int i = 0; i < updateNodeRef.nodeList.Count; ++i)
-                    {
-                        if (updateNodeRef.nodeList[i].procNode.Name == getter && i == 1)
-                        {
-                            return updateNodeRef.nodeList[0];
-                        }
-                    }
-                }
-            }
-
-            return null;
         }
 
         public bool DependsOn(UpdateNodeRef modifiedRef, ref GraphNode dependentNode)

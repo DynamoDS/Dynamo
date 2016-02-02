@@ -827,6 +827,20 @@ namespace WpfVisualizationTests
             Assert.AreEqual(2, BackgroundPreviewGeometry.TotalPoints());
         }
 
+        [Test]
+        [Category("RegressionTests")]
+        public void Switch3DBackgroundPreview()
+        {
+            // Regression test for MAGN-9140 that all geometries that created
+            // when the background preview is off should display when the
+            // background preview is switched to on.
+            ViewModel.Watch3DViewModels.First().Active = false;
+            OpenVisualizationTest("OnePoint.dyn");
+            Assert.AreEqual(0, BackgroundPreviewGeometry.TotalPoints());
+            ViewModel.Watch3DViewModels.First().Active = true;
+            Assert.AreEqual(1, BackgroundPreviewGeometry.TotalPoints());
+        }
+
         private Watch3DView FindFirstWatch3DNodeView()
         {
             var views = View.ChildrenOfType<Watch3DView>();

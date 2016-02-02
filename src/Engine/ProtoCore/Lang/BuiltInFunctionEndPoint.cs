@@ -522,19 +522,7 @@ namespace ProtoCore.Lang
                 isValidThisPointer = ArrayUtils.GetFirstNonArrayStackValue(lhs, ref thisObject, runtimeCore);
             }
 
-            if (!isValidThisPointer || (!thisObject.IsPointer && !thisObject.IsArray))
-            {
-                if (ArrayUtils.IsEmpty(lhs, runtimeCore))
-                { 
-                    return lhs;
-                }
-                else
-                {
-                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer, Resources.kDeferencingNonPointer);
-                    return StackValue.Null;
-                }
-            }
-
+            bool isInvalidDotCall = !isValidThisPointer || (!thisObject.IsPointer && !thisObject.IsArray);
             int stackPtr = rmem.Stack.Count - 1;
 
             // TODO Jun: Consider having a DynamicFunction AddressType
@@ -587,6 +575,19 @@ namespace ProtoCore.Lang
                 if (removeFirstArgument)
                 {
                     replicationGuides.RemoveAt(0);
+                }
+            }
+
+            if (isInvalidDotCall)
+            {
+                if (ArrayUtils.IsEmpty(lhs, runtimeCore))
+                {
+                    return lhs;
+                }
+                else
+                {
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer, Resources.kDeferencingNonPointer);
+                    return StackValue.Null;
                 }
             }
 
