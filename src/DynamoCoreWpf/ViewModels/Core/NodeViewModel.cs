@@ -472,7 +472,7 @@ namespace Dynamo.ViewModels
             ShowExecutionPreview = workspaceViewModel.DynamoViewModel.ShowRunPreview;
             IsNodeAddedRecently = true;
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
-            ZIndex = StaticZIndex++;
+            ZIndex = ++StaticZIndex;
         }
  
         public NodeViewModel(WorkspaceViewModel workspaceViewModel, NodeModel logic, Size preferredSize)
