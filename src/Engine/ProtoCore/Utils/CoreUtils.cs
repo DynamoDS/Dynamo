@@ -11,10 +11,7 @@ namespace ProtoCore.Utils
         {
             if (DSASM.InterpreterMode.kNormal == core.Options.RunMode)
             {
-                if (core.Options.AssocOperatorAsMethod)
-                {
-                    InsertPredefinedMethod(core, root);
-                }
+                InsertPredefinedMethod(core, root);
                 InsertBuiltInMethods(core, root);
             }
         }

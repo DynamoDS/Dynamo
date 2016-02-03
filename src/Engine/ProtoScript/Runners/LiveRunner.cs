@@ -1309,7 +1309,6 @@ namespace ProtoScript.Runners
         {
             coreOptions = new Options
             {
-                GenerateExprID = true,
                 IsDeltaExecution = true,
                 BuildOptErrorAsWarning = true,
                 ExecutionMode = ExecutionMode.Serial
