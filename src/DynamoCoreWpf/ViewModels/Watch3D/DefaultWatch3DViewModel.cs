@@ -90,6 +90,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 RaisePropertyChanged("Active");
 
                 OnActiveStateChanged();
+
+                if (active)
+                {
+                    RegenerateAllPackages();
+                }
             }
         }
 
@@ -494,20 +499,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected void RegisterPortEventHandlers(NodeModel node)
         {
-            foreach (var p in node.InPorts)
-            {
-                p.PortDisconnected += PortDisconnectedHandler;
-                p.PortConnected += PortConnectedHandler;
-            }
+            node.PortConnected += PortConnectedHandler;
+            node.PortDisconnected += PortDisconnectedHandler;
         }
 
         private void UnregisterPortEventHandlers(NodeModel node)
         {
-            foreach (var p in node.InPorts)
-            {
-                p.PortDisconnected -= PortDisconnectedHandler;
-                p.PortConnected -= PortConnectedHandler;
-            }
+            node.PortConnected -= PortConnectedHandler;
+            node.PortDisconnected -= PortDisconnectedHandler;
         }
 
         protected virtual void PortConnectedHandler(PortModel arg1, ConnectorModel arg2)
@@ -517,7 +516,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected virtual void PortDisconnectedHandler(PortModel port)
         {
-            DeleteGeometryForIdentifier(port.Owner.AstIdentifierBase);
+            if (port.PortType == PortType.Input)
+            {
+                DeleteGeometryForIdentifier(port.Owner.AstIdentifierBase);
+            }
         }
 
         protected virtual void SelectionChangedHandler(object sender, NotifyCollectionChangedEventArgs e)
@@ -568,9 +570,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public event Action<object, MouseButtonEventArgs> ViewMouseDown;
         internal void OnViewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            HandleViewClick(sender, e);
             var handler = ViewMouseDown;
             if (handler != null) handler(sender, e);
         }
+
+        protected virtual void HandleViewClick(object sender, MouseButtonEventArgs e)
+        { }
 
         public event Action<object, MouseButtonEventArgs> ViewMouseUp;
         internal void OnViewMouseUp(object sender, MouseButtonEventArgs e)

@@ -1432,20 +1432,8 @@ Associative_BitUnaryExpression<out ProtoCore.AST.AssociativeAST.AssociativeNode 
     Associative_unaryop<out op>     
     Associative_Factor<out exprNode>    
                         (. 
-                            if (!core.Options.AssocOperatorAsMethod)
-                            {
-                                // expression is converted to function call to support replication
-                                ProtoCore.AST.AssociativeAST.UnaryExpressionNode unary = new ProtoCore.AST.AssociativeAST.UnaryExpressionNode(); 
-                                unary.Operator = op;
-                                unary.Expression = exprNode;
-                                node = unary;
-                            }
-                            else
-                            {
-                                node = GenerateUnaryOperatorMethodCallNode(op, exprNode);
-                            }
-
-                            if (core.Options.AssocOperatorAsMethod && (op == UnaryOperator.Increment || op == UnaryOperator.Decrement))
+                            node = GenerateUnaryOperatorMethodCallNode(op, exprNode);
+                            if (op == UnaryOperator.Increment || op == UnaryOperator.Decrement)
                             {
                                 node = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(){ LeftNode = exprNode, Optr = Operator.assign, RightNode = node }; 
                             }
@@ -1458,19 +1446,8 @@ Associative_NegExpression<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                         (. ProtoCore.AST.AssociativeAST.AssociativeNode exprNode = null; .)
     Associative_negop<out op>
     Associative_IdentifierList <out exprNode>
-                        (.  // convert operator to function call when AssocOperatorAsMethod is set
-                            if (!core.Options.AssocOperatorAsMethod)
-                            {
-                                //expression is converted to function call to support replication
-                                ProtoCore.AST.AssociativeAST.UnaryExpressionNode unary = new ProtoCore.AST.AssociativeAST.UnaryExpressionNode(); 
-                                unary.Operator = op;
-                                unary.Expression = exprNode;
-                                node = unary;
-                            }
-                            else
-                            {
-                                node = GenerateUnaryOperatorMethodCallNode(op, exprNode);
-                            }
+                        (.  
+                           node = GenerateUnaryOperatorMethodCallNode(op, exprNode);
                         .)
 .
 
@@ -1483,20 +1460,8 @@ Associative_LogicalExpression<out ProtoCore.AST.AssociativeAST.AssociativeNode n
     Associative_LogicalOp<out op> 
                                     (. ProtoCore.AST.AssociativeAST.AssociativeNode expr2; .)
     Associative_ComparisonExpression<out expr2>
-                                    (.	// convert operator to function call when AssocOperatorAsMethod is set
-                                        if (!core.Options.AssocOperatorAsMethod)
-                                        {
-                                            // The expression is converted to function call to support replication
-                                            ProtoCore.AST.AssociativeAST.BinaryExpressionNode binaryNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-                                            binaryNode.LeftNode = node;
-                                            binaryNode.RightNode = expr2;
-                                            binaryNode.Optr = op;
-                                            node = binaryNode;
-                                        }
-                                        else 
-                                        {
-                                            node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
-                                        }
+                                    (.	
+                                        node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
                                     .)
   }
 .
@@ -1521,21 +1486,8 @@ Associative_RangeExpr<out node>
     Associative_ComparisonOp<out op>
                                 (. ProtoCore.AST.AssociativeAST.AssociativeNode expr2; .)
     Associative_RangeExpr<out expr2>
-                                (.	// convert operator to function call when AssocOperatorAsMethod is set
-                                    if (!core.Options.AssocOperatorAsMethod)
-                                    {
-                                        // The expression is converted to function call to support replication
-                                        ProtoCore.AST.AssociativeAST.BinaryExpressionNode binaryNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-                                        binaryNode.LeftNode = node;
-                                        binaryNode.RightNode = expr2;
-                                        binaryNode.Optr = op;
-                                        node = binaryNode;
-                                    }
-                                    else 
-                                    {
-                                        node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
-                                    }
-
+                                (.	
+                                   node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
                                 .)
 }
 .
@@ -1653,20 +1605,7 @@ Associative_Term<out node>
     (. ProtoCore.AST.AssociativeAST.AssociativeNode expr2; .)
     Associative_Term<out expr2>
     (.	
-        if (!core.Options.AssocOperatorAsMethod)
-        {
-            // The expression is converted to function call to support replication
-            ProtoCore.AST.AssociativeAST.BinaryExpressionNode binaryNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-            binaryNode.LeftNode = node;
-            binaryNode.RightNode = expr2;
-            binaryNode.Optr = op;
-            node = binaryNode;
-            NodeUtils.SetNodeLocation(node, node, expr2);
-        }
-        else 
-        {
-            node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
-        }
+        node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
     .)
 }
 .
@@ -1692,19 +1631,7 @@ Associative_Factor<out node>
     (. #endif            .)
 
     (.	
-        if (!core.Options.AssocOperatorAsMethod)
-        {
-            // The expression is converted to function call to support replication
-            ProtoCore.AST.AssociativeAST.BinaryExpressionNode binaryNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-            binaryNode.LeftNode = node;
-            binaryNode.RightNode = expr2;
-            binaryNode.Optr = op;
-            node = binaryNode;
-        }
-        else 
-        {
-            node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
-        }
+        node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
     .)
 }
 .
@@ -1717,20 +1644,8 @@ Associative_interimfactor<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
         Associative_BitOp<out op> 
                                 (. ProtoCore.AST.AssociativeAST.AssociativeNode expr2; .)   
         Associative_Factor<out expr2>
-                                (.	// convert operator to function call when AssocOperatorAsMethod is set
-                                    if (!core.Options.AssocOperatorAsMethod)
-                                    {
-                                        // The expression is converted to function call to support replication
-                                        ProtoCore.AST.AssociativeAST.BinaryExpressionNode binaryNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-                                        binaryNode.LeftNode = node;
-                                        binaryNode.RightNode = expr2;
-                                        binaryNode.Optr = op;
-                                        node = binaryNode;
-                                    }
-                                    else 
-                                    {
-                                        node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
-                                    }
+                                (.	
+                                    node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
                                 .)
     }
 .
@@ -1896,7 +1811,7 @@ Associative_Ident<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                 }
                 
                 var identNode = AstFactory.BuildIdentifier(t.val);
-                identNode.datatype = TypeSystem.BuildPrimitiveTypeObject((ProtoCore.PrimitiveType)ltype, 0);
+                identNode.datatype = TypeSystem.BuildPrimitiveTypeObject((ProtoCore.PrimitiveType)ltype);
                 node = identNode;
                 NodeUtils.SetNodeLocation(node, t);
             .)

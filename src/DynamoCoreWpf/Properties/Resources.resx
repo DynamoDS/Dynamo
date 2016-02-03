@@ -334,8 +334,8 @@
     <comment>File menu | Open</comment>
   </data>
   <data name="DynamoViewFileMenuRecentFiles" xml:space="preserve">
-    <value>_Recent Files</value>
-    <comment>File menu | Recent files</comment>
+    <value>_Open Recent Files...</value>
+    <comment>File menu | Open Recent files</comment>
   </data>
   <data name="DynamoViewFileMenuSave" xml:space="preserve">
     <value>_Save</value>

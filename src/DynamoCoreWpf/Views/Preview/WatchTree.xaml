@@ -77,12 +77,34 @@
     <Grid>
         <TreeView Name="treeView1"
                   ItemsSource="{Binding Children}"
-                  Background="Transparent"
+                  Background="White"
                   Opacity=".5"
                   BorderBrush="{x:Null}"
                   VirtualizingStackPanel.IsVirtualizing="True"
                   VirtualizingStackPanel.VirtualizationMode="Recycling"
                   SelectedItemChanged="TreeView1_OnSelectedItemChanged">
+            <TreeView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel>
+                        <VirtualizingPanel.Style>
+                            <Style TargetType="{x:Type VirtualizingPanel}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsOneRowContent}"
+                                                 Value="True">
+                                        <Setter Property="Margin"
+                                                Value="-10,5,5,5" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsOneRowContent}"
+                                                 Value="False">
+                                        <Setter Property="Margin"
+                                                Value="5,5,5,5" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </VirtualizingPanel.Style>
+                    </VirtualizingStackPanel>
+                </ItemsPanelTemplate>
+            </TreeView.ItemsPanel>
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}"
                                           DataType="{x:Type viewModels:WatchViewModel}">

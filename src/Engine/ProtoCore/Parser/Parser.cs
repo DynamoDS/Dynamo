@@ -1610,7 +1610,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		}
 		
 		var identNode = AstFactory.BuildIdentifier(t.val);
-		identNode.datatype = TypeSystem.BuildPrimitiveTypeObject((ProtoCore.PrimitiveType)ltype, 0);
+		identNode.datatype = TypeSystem.BuildPrimitiveTypeObject((ProtoCore.PrimitiveType)ltype);
 		node = identNode;
 		NodeUtils.SetNodeLocation(node, t);
 		
@@ -2167,19 +2167,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Associative_LogicalOp(out op);
 			ProtoCore.AST.AssociativeAST.AssociativeNode expr2; 
 			Associative_ComparisonExpression(out expr2);
-			if (!core.Options.AssocOperatorAsMethod)
-			{
-			   // The expression is converted to function call to support replication
-			   ProtoCore.AST.AssociativeAST.BinaryExpressionNode binaryNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-			   binaryNode.LeftNode = node;
-			   binaryNode.RightNode = expr2;
-			   binaryNode.Optr = op;
-			   node = binaryNode;
-			}
-			else 
-			{
-			   node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
-			}
+			node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
 			
 		}
 	}
@@ -2214,18 +2202,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		ProtoCore.AST.AssociativeAST.AssociativeNode exprNode = null; 
 		Associative_negop(out op);
 		Associative_IdentifierList(out exprNode);
-		if (!core.Options.AssocOperatorAsMethod)
-		{
-		   //expression is converted to function call to support replication
-		   ProtoCore.AST.AssociativeAST.UnaryExpressionNode unary = new ProtoCore.AST.AssociativeAST.UnaryExpressionNode(); 
-		   unary.Operator = op;
-		   unary.Expression = exprNode;
-		   node = unary;
-		}
-		else
-		{
-		   node = GenerateUnaryOperatorMethodCallNode(op, exprNode);
-		}
+		node = GenerateUnaryOperatorMethodCallNode(op, exprNode);
 		
 	}
 
@@ -2235,20 +2212,8 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		ProtoCore.AST.AssociativeAST.AssociativeNode exprNode; 
 		Associative_unaryop(out op);
 		Associative_Factor(out exprNode);
-		if (!core.Options.AssocOperatorAsMethod)
-		{
-		   // expression is converted to function call to support replication
-		   ProtoCore.AST.AssociativeAST.UnaryExpressionNode unary = new ProtoCore.AST.AssociativeAST.UnaryExpressionNode(); 
-		   unary.Operator = op;
-		   unary.Expression = exprNode;
-		   node = unary;
-		}
-		else
-		{
-		   node = GenerateUnaryOperatorMethodCallNode(op, exprNode);
-		}
-		
-		if (core.Options.AssocOperatorAsMethod && (op == UnaryOperator.Increment || op == UnaryOperator.Decrement))
+		node = GenerateUnaryOperatorMethodCallNode(op, exprNode);
+		if (op == UnaryOperator.Increment || op == UnaryOperator.Decrement)
 		{
 		   node = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(){ LeftNode = exprNode, Optr = Operator.assign, RightNode = node }; 
 		}
@@ -2314,20 +2279,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Associative_ComparisonOp(out op);
 			ProtoCore.AST.AssociativeAST.AssociativeNode expr2; 
 			Associative_RangeExpr(out expr2);
-			if (!core.Options.AssocOperatorAsMethod)
-			{
-			   // The expression is converted to function call to support replication
-			   ProtoCore.AST.AssociativeAST.BinaryExpressionNode binaryNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-			   binaryNode.LeftNode = node;
-			   binaryNode.RightNode = expr2;
-			   binaryNode.Optr = op;
-			   node = binaryNode;
-			}
-			else 
-			{
-			   node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
-			}
-			
+			node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
 			
 		}
 	}
@@ -2369,20 +2321,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Associative_AddOp(out op);
 			ProtoCore.AST.AssociativeAST.AssociativeNode expr2; 
 			Associative_Term(out expr2);
-			if (!core.Options.AssocOperatorAsMethod)
-			{
-			   // The expression is converted to function call to support replication
-			   ProtoCore.AST.AssociativeAST.BinaryExpressionNode binaryNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-			   binaryNode.LeftNode = node;
-			   binaryNode.RightNode = expr2;
-			   binaryNode.Optr = op;
-			   node = binaryNode;
-			   NodeUtils.SetNodeLocation(node, node, expr2);
-			}
-			else 
-			{
-			   node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
-			}
+			node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
 			
 		}
 	}
@@ -2434,19 +2373,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			#else             
 			Associative_Factor(out expr2);
 			#endif            
-			if (!core.Options.AssocOperatorAsMethod)
-			{
-			   // The expression is converted to function call to support replication
-			   ProtoCore.AST.AssociativeAST.BinaryExpressionNode binaryNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-			   binaryNode.LeftNode = node;
-			   binaryNode.RightNode = expr2;
-			   binaryNode.Optr = op;
-			   node = binaryNode;
-			}
-			else 
-			{
-			   node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
-			}
+			node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
 			
 		}
 	}
@@ -2458,19 +2385,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Associative_BitOp(out op);
 			ProtoCore.AST.AssociativeAST.AssociativeNode expr2; 
 			Associative_Factor(out expr2);
-			if (!core.Options.AssocOperatorAsMethod)
-			{
-			   // The expression is converted to function call to support replication
-			   ProtoCore.AST.AssociativeAST.BinaryExpressionNode binaryNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-			   binaryNode.LeftNode = node;
-			   binaryNode.RightNode = expr2;
-			   binaryNode.Optr = op;
-			   node = binaryNode;
-			}
-			else 
-			{
-			   node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
-			}
+			node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
 			
 		}
 	}

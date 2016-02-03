@@ -1794,7 +1794,7 @@ namespace ProtoCore.AST.AssociativeAST
     {
         public int SSAExpressionUID { get; set; }
         public int ExpressionUID { get; set; }
-        public int ssaExprID { get; set; }
+        public int SSASubExpressionID { get; set; }
         public int modBlkUID { get; set; }
         public Guid guid { get; set; }
         public int OriginalAstID { get; set; }    // The original AST that this Binarynode was derived from
@@ -1820,7 +1820,6 @@ namespace ProtoCore.AST.AssociativeAST
             isSSAFirstAssignment = false;
             isMultipleAssign = false;
             ExpressionUID = Constants.kInvalidIndex;
-            modBlkUID = Constants.kInvalidIndex;
             OriginalAstID = ID;
             guid = System.Guid.Empty;
             LeftNode = left;
@@ -1837,7 +1836,6 @@ namespace ProtoCore.AST.AssociativeAST
             isSSAFirstAssignment = rhs.isSSAFirstAssignment;
             isMultipleAssign = rhs.isMultipleAssign;
             ExpressionUID = rhs.ExpressionUID;
-            modBlkUID = rhs.modBlkUID;
             guid = rhs.guid;
             OriginalAstID = rhs.OriginalAstID;
 
@@ -1866,7 +1864,6 @@ namespace ProtoCore.AST.AssociativeAST
              isSSAFirstAssignment = false;
              isMultipleAssign = false;
              ExpressionUID = Constants.kInvalidIndex;
-             modBlkUID = Constants.kInvalidIndex;
              OriginalAstID = ID;
              guid = System.Guid.Empty;
             

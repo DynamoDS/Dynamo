@@ -769,6 +769,14 @@ namespace Dynamo.Graph.Workspaces
         #region public methods
 
         /// <summary>
+        ///     Gets appropriate name of workspace for sharing.
+        /// </summary>
+        public virtual string GetSharedName()
+        {
+            return this.Name;
+        }
+
+        /// <summary>
         ///     Clears this workspace of nodes, notes, and connectors.
         /// </summary>
         public virtual void Clear()

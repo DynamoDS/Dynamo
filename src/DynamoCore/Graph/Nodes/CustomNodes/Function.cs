@@ -281,44 +281,34 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             set
             {
                 inputSymbol = value;
-
+                nickName = inputSymbol;
                 ClearRuntimeError();
-                var substrings = inputSymbol.Split(':');
 
-                nickName = substrings[0].Trim();
                 var type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
                 AssociativeNode defaultValue = null;
 
                 string comment = null;
 
-                if (substrings.Count() > 2)
-                {
-                    this.Warning(Properties.Resources.WarningInvalidInput);
-                }
-                else if (!string.IsNullOrEmpty(nickName) &&
-                         (substrings.Count() == 2 || InputSymbol.Contains("=")))
+                if (!string.IsNullOrEmpty(nickName))
                 {
                     // three cases:
                     //    x = default_value
                     //    x : type
                     //    x : type = default_value
                     IdentifierNode identifierNode;
-                    if (!TryParseInputExpression(inputSymbol, out identifierNode, out defaultValue, out comment))
+                    if (TryParseInputExpression(inputSymbol, out identifierNode, out defaultValue, out comment))
                     {
-                        this.Warning(Properties.Resources.WarningInvalidInput);
-                    }
-                    else
-                    {
+                        nickName = identifierNode.Value;
+
                         if (identifierNode.datatype.UID == Constants.kInvalidIndex)
                         {
                             string warningMessage = String.Format(
-                                Properties.Resources.WarningCannotFindType, 
+                                Properties.Resources.WarningCannotFindType,
                                 identifierNode.datatype.Name);
                             this.Warning(warningMessage);
                         }
                         else
                         {
-                            nickName = identifierNode.Value;
                             type = identifierNode.datatype;
                         }
                     }
@@ -393,11 +383,26 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                 }
 
                 var node = parseParam.ParsedNodes.First() as BinaryExpressionNode;
-                Validity.Assert(node != null);
-
                 if (node != null)
                 {
-                    identifier = node.LeftNode as IdentifierNode;
+                    var leftIdent = node.LeftNode as IdentifierNode;
+                    var rightIdent = node.RightNode as IdentifierNode;
+
+                    // "x" will be compiled to "temp_guid = x";
+                    if (leftIdent != null && leftIdent.Value.StartsWith(Constants.kTempVarForNonAssignment))
+                    {
+                        identifier = rightIdent;
+                    }
+                    // "x:int" will be compiled to "x:int = tTypedIdent0";
+                    else if (rightIdent != null && rightIdent.Value.StartsWith(Constants.kTempVarForTypedIdentifier))
+                    {
+                        identifier = leftIdent;
+                    }
+                    else
+                    {
+                        identifier = leftIdent;
+                    }
+
                     if (inputSymbol.Contains('='))
                         defaultValue = node.RightNode;
 
@@ -446,8 +451,19 @@ namespace Dynamo.Graph.Nodes.CustomNodes
     [AlsoKnownAs("Dynamo.Nodes.Output")]
     public class Output : NodeModel
     {
-        private string symbol = "";
+        private string symbol = string.Empty;
+        private string outputIdentifier = string.Empty;
+        private string description = string.Empty;
+        private ElementResolver workspaceElementResolver;
 
+        /// <summary>
+        /// Element resolver 
+        /// </summary>
+        public ElementResolver  ElementResolver { get; set;}
+
+        /// <summary>
+        /// Create output node.
+        /// </summary>
         public Output()
         {
             InPortData.Add(new PortData("", ""));
@@ -457,14 +473,42 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
+        /// <summary>
+        /// Text in output node.
+        /// </summary>
         public string Symbol
         {
             get { return symbol; }
             set
             {
                 symbol = value;
+                ClearRuntimeError();
+
+                string comment = string.Empty;
+                IdentifierNode identNode;
+                if (!TryParseOutputExpression(symbol, out identNode, out comment))
+                {
+                    outputIdentifier = symbol;
+                }
+                else
+                {
+                    outputIdentifier = identNode.Value;
+                    description = comment;
+                }
+
                 OnNodeModified();
                 RaisePropertyChanged("Symbol");
+            }
+        }
+
+        /// <summary>
+        /// Output name and its description tuple.
+        /// </summary>
+        public Tuple<string, string> Return
+        {
+            get
+            {
+                return new Tuple<string, string>(outputIdentifier, description);
             }
         }
 
@@ -505,6 +549,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         {
             string name = updateValueParams.PropertyName;
             string value = updateValueParams.PropertyValue;
+            workspaceElementResolver = updateValueParams.ElementResolver;
 
             if (name == "Symbol")
             {
@@ -513,6 +558,70 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             }
 
             return base.UpdateValueCore(updateValueParams);
+        }
+
+        private bool TryParseOutputExpression(string expression, out IdentifierNode outputIdentifier, out string comment)
+        {
+            outputIdentifier = null;
+            comment = null;
+
+            var resolver = workspaceElementResolver ?? ElementResolver;
+            var parseParam = new ParseParam(GUID, expression + ";", resolver);
+
+            if (EngineController.CompilationServices.PreCompileCodeBlock(ref parseParam) 
+                && parseParam.ParsedNodes.Any())
+            {
+                var parsedComments = parseParam.ParsedComments;
+                if (parsedComments.Any())
+                {
+                    comment = String.Join("\n", parsedComments.Select(c => (c as CommentNode).Value));
+                }
+
+                if (parseParam.ParsedNodes.Count() > 1)
+                {
+                    this.Warning(Properties.Resources.WarningInvalidOutput);
+                }
+
+                var node = parseParam.ParsedNodes.First() as BinaryExpressionNode;
+                if (node == null)
+                {
+                    if (parseParam.Errors.Any())
+                    {
+                        this.Error(Properties.Resources.WarningInvalidOutput);
+                    }
+                }
+                else
+                {
+                    var leftIdent = node.LeftNode as IdentifierNode;
+                    var rightIdent = node.RightNode as IdentifierNode;
+
+                    // "x" will be compiled to "temp_guid = x;"
+                    if (leftIdent != null && leftIdent.Value.StartsWith(Constants.kTempVarForNonAssignment))
+                    {
+                        outputIdentifier = rightIdent;
+                    }
+                    // "x:int" will be compiled to "x:int = tTypedIdent0;"
+                    else if (rightIdent != null && rightIdent.Value.StartsWith(Constants.kTempVarForTypedIdentifier))
+                    {
+                        outputIdentifier = leftIdent;
+                    }
+                    else
+                    {
+                        if (parseParam.Errors.Any())
+                        {
+                            this.Error(parseParam.Errors.First().Message);
+                        }
+                        else
+                        {
+                            this.Warning(Properties.Resources.WarningInvalidOutput);
+                        }
+                        outputIdentifier = leftIdent;
+                    }
+                    return outputIdentifier != null;
+                }
+            }
+
+            return false;
         }
     }
 }

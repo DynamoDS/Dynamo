@@ -1252,7 +1252,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                         pointGeometry3D.Geometry = points;
                         pointGeometry3D.Name = baseId;
-                        pointGeometry3D.MouseDown3D += pointGeometry3D_MouseDown3D;
                     }
 
                     var l = rp.Lines;
@@ -1420,26 +1419,43 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-
-        void pointGeometry3D_MouseDown3D(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Handles View Click event and performs a hit tests for geometry selection.
+        /// </summary>
+        protected override void HandleViewClick(object sender, MouseButtonEventArgs e)
         {
-            var args = e as Mouse3DEventArgs;
-            if (args == null) return;
-            if (args.Viewport == null) return;
+            var viewport = sender as Viewport3DX;
+            if (null == viewport) return;
 
             var vm = viewModel as DynamoViewModel;
-            if(vm == null) return;
+            if (vm == null) return;
 
-            foreach (var node in vm.Model.CurrentWorkspace.Nodes)
+            var nodes = new List<NodeModel>();
+            var hits = viewport.FindHits(e.GetPosition(viewport));
+            foreach (var hit in hits)
             {
-                var foundNode = node.AstIdentifierBase.Contains(
-                    ((PointGeometryModel3D) e.OriginalSource).Name);
+                var model = hit.ModelHit;
+                if (model == null) continue;
 
-                if (!foundNode) continue;
+                foreach (var node in vm.Model.CurrentWorkspace.Nodes)
+                {
+                    var foundNode = node.AstIdentifierBase.Contains(model.Name);
 
+                    if (!foundNode) continue;
+
+                    nodes.Add(node);
+                    break;
+                }
+            }
+
+            //If any node is selected, clear the current selection and add these
+            //nodes to current selection. When nothing is selected, DONOT clear
+            //the selection because it may end up removing a manipulator while
+            //selecting it's gizmos.
+            if(nodes.Any())
+            {
                 DynamoSelection.Instance.ClearSelection();
-                vm.Model.AddToSelection(node);
-                break;
+                nodes.ForEach(x => vm.Model.AddToSelection(x));
             }
         }
 

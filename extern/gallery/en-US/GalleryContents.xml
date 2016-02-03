@@ -21,6 +21,11 @@
 		<Body>Huge improvements to the speed and reliability of placing large numbers of adaptive components.</Body>
 		<ImagePath>Revit_AdaptiveComponent.png</ImagePath>
 	</GalleryContent>
+  <GalleryContent>
+    <Header>Topology Improvements</Header>
+    <Body>- Query adjacent topology from current topology&#10;- Fixed Face.SurfaceGeometry node to get exact position&#10;- Check equality on topology</Body>
+    <ImagePath>Geometry_Adjacency.png</ImagePath>
+  </GalleryContent>
 	<GalleryContent>
 		<Header>Miscellaneous Updates and Improvements</Header>
 		<Body>- Zoom Re-Center: Select a node, then zoom and center your orbit in the 3D preview&#10;- CTRL + Drag: Copy/Paste nodes in a familiar way&#10;- Add comments to custom node inputs and full default states for complex data types&#10;- More forgiving DesignScript Syntax: Users can now write instance methods as static methods</Body>
