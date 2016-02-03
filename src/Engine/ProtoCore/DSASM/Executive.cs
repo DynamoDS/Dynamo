@@ -821,110 +821,66 @@ namespace ProtoCore.DSASM
             FunctionCounter counter = FindCounter(functionIndex, classIndex, fNode.Name);
             StackValue sv = StackValue.Null;
 
-
-            if (runtimeCore.Options.RecursionChecking)
+            if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
             {
-                //Do the recursion check before call
-                if (counter.times < Constants.kRecursionTheshold) //&& counter.sharedCounter < Constants.kRepetationTheshold)
+                if (runtimeCore.ContinuationStruct.IsFirstCall)
                 {
-
-                    // Build a context object in JILDispatch and call the Dispatch
-                    if (counter.times == 0)
-                    {
-                        counter.times++;
-                        exe.calledInFunction = true;
-                    }
-
-                    else if (counter.times >= 1)
-                    {
-                        if (fNode.Name.ToCharArray()[0] != '%' && fNode.Name.ToCharArray()[0] != '_' && !fNode.Name.Equals(Constants.kDotMethodName) && exe.calledInFunction)
-                        {
-                            counter.times++;
-                        }
-                    }
-
-
-                    if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
-                    {
-                        runtimeCore.DebugProps.SetUpCallrForDebug(runtimeCore, this, fNode, pc, false, callsite, arguments, replicationGuides, stackFrame, dotCallDimensions, hasDebugInfo);
-                    }
-
-                    sv = callsite.JILDispatch(arguments, replicationGuides, stackFrame, runtimeCore, runtimeContext);
+                    runtimeCore.DebugProps.SetUpCallrForDebug(
+                                                       runtimeCore,
+                                                       this,
+                                                       fNode,
+                                                       pc,
+                                                       false,
+                                                       callsite,
+                                                       arguments,
+                                                       replicationGuides,
+                                                       stackFrame,
+                                                       dotCallDimensions,
+                                                       hasDebugInfo);
                 }
                 else
                 {
-                    FindRecursivePoints();
-                    string message = String.Format(Resources.kMethodStackOverflow, exe.recursivePoint[0].name);
-                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kInvalidRecursion, message);
-
-                    exe.recursivePoint = new List<FunctionCounter>();
-                    exe.funcCounterTable = new List<FunctionCounter>();
-                    sv = StackValue.Null;
+                    runtimeCore.DebugProps.SetUpCallrForDebug(
+                                                       runtimeCore,
+                                                       this,
+                                                       fNode,
+                                                       pc,
+                                                       false,
+                                                       callsite,
+                                                       runtimeCore.ContinuationStruct.InitialArguments,
+                                                       replicationGuides,
+                                                       stackFrame,
+                                                       runtimeCore.ContinuationStruct.InitialDotCallDimensions,
+                                                       hasDebugInfo);
                 }
             }
-            else
+
+            SX = StackValue.BuildBlockIndex(blockDeclId);
+            stackFrame.SX = SX;
+
+            //Dispatch without recursion tracking 
+            explicitCall = false;
+            IsExplicitCall = explicitCall;
+
+            sv = callsite.JILDispatch(arguments, replicationGuides, stackFrame, runtimeCore, runtimeContext);
+            if (sv.IsExplicitCall)
             {
-                if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
-                {
-                    if (runtimeCore.ContinuationStruct.IsFirstCall)
-                    {
-                        runtimeCore.DebugProps.SetUpCallrForDebug(
-                                                           runtimeCore,
-                                                           this, 
-                                                           fNode, 
-                                                           pc, 
-                                                           false, 
-                                                           callsite, 
-                                                           arguments, 
-                                                           replicationGuides, 
-                                                           stackFrame, 
-                                                           dotCallDimensions, 
-                                                           hasDebugInfo);
-                    }
-                    else
-                    {
-                        runtimeCore.DebugProps.SetUpCallrForDebug( 
-                                                           runtimeCore,
-                                                           this, 
-                                                           fNode, 
-                                                           pc, 
-                                                           false, 
-                                                           callsite, 
-                                                           runtimeCore.ContinuationStruct.InitialArguments, 
-                                                           replicationGuides, 
-                                                           stackFrame,
-                                                           runtimeCore.ContinuationStruct.InitialDotCallDimensions, 
-                                                           hasDebugInfo);
-                    }
-                }
+                //
+                // Set the interpreter properties for function calls
+                // These are used when performing GC on return 
+                // The GC occurs: 
+                //      1. In this instruction for implicit calls
+                //      2. In the return instruction
+                //
+                Properties.functionCallArguments = arguments;
 
-                SX = StackValue.BuildBlockIndex(blockDeclId);
-                stackFrame.SX = SX;
+                Properties.functionCallDotCallDimensions = dotCallDimensions;
 
-                //Dispatch without recursion tracking 
-                explicitCall = false;
+                explicitCall = true;
                 IsExplicitCall = explicitCall;
+                int entryPC = (int)sv.opdata;
 
-                sv = callsite.JILDispatch(arguments, replicationGuides, stackFrame, runtimeCore, runtimeContext);
-                if (sv.IsExplicitCall)
-                {
-                    //
-                    // Set the interpreter properties for function calls
-                    // These are used when performing GC on return 
-                    // The GC occurs: 
-                    //      1. In this instruction for implicit calls
-                    //      2. In the return instruction
-                    //
-                    Properties.functionCallArguments = arguments;
-
-                    Properties.functionCallDotCallDimensions = dotCallDimensions;
-
-                    explicitCall = true;
-                    IsExplicitCall = explicitCall;
-                    int entryPC = (int)sv.opdata;
-
-                    CallExplicit(entryPC);
-                }
+                CallExplicit(entryPC);
             }
 
             // If the function was called implicitly, The code below assumes this and must be executed
@@ -3974,161 +3930,83 @@ namespace ProtoCore.DSASM
 
         private void PUSHG_Handler(Instruction instruction)
         {
-            if (runtimeCore.Options.TempReplicationGuideEmptyFlag)
+            int dimensions = 0;
+            int guides = 0;
+            int blockId = Constants.kInvalidIndex;
+
+            StackValue op1 = instruction.op1;
+            if (op1.IsVariableIndex ||
+                op1.IsMemberVariableIndex ||
+                op1.IsPointer ||
+                op1.IsArray ||
+                op1.IsStaticVariableIndex ||
+                op1.IsFunctionPointer)
             {
-                int dimensions = 0;
-                int guides = 0;
-                int blockId = Constants.kInvalidIndex;
 
-                StackValue op1 = instruction.op1;
-                if (op1.IsVariableIndex ||
-                    op1.IsMemberVariableIndex ||
-                    op1.IsPointer ||
-                    op1.IsArray ||
-                    op1.IsStaticVariableIndex ||
-                    op1.IsFunctionPointer)
+                // TODO: Jun this is currently unused but required for stack alignment
+                StackValue svType = rmem.Pop();
+                runtimeVerify(svType.IsStaticType);
+
+                StackValue svDim = rmem.Pop();
+                runtimeVerify(svDim.IsArrayDimension);
+                dimensions = (int)svDim.opdata;
+
+                StackValue svBlock = rmem.Pop();
+                runtimeVerify(svBlock.IsBlockIndex);
+                blockId = (int)svBlock.opdata;
+
+            }
+
+            if (0 == dimensions)
+            {
+                StackValue svNumGuides = rmem.Pop();
+                runtimeVerify(svNumGuides.IsReplicationGuide);
+                guides = (int)svNumGuides.opdata;
+
+                List<ReplicationGuide> argGuides = new List<ReplicationGuide>();
+                for (int i = 0; i < guides; ++i)
                 {
+                    StackValue svGuideProperty = rmem.Pop();
+                    runtimeVerify(svGuideProperty.IsBoolean);
+                    bool isLongest = (int)svGuideProperty.opdata == 1;
 
-                    // TODO: Jun this is currently unused but required for stack alignment
-                    StackValue svType = rmem.Pop();
-                    runtimeVerify(svType.IsStaticType);
+                    StackValue svGuide = rmem.Pop();
+                    runtimeVerify(svGuide.IsInteger);
+                    int guideNumber = (int)svGuide.opdata;
 
-                    StackValue svDim = rmem.Pop();
-                    runtimeVerify(svDim.IsArrayDimension);
-                    dimensions = (int)svDim.opdata;
-
-                    StackValue svBlock = rmem.Pop();
-                    runtimeVerify(svBlock.IsBlockIndex);
-                    blockId = (int)svBlock.opdata;
-
+                    argGuides.Add(new ReplicationGuide(guideNumber, isLongest));
                 }
 
-                if (0 == dimensions)
-                {
-                    StackValue svNumGuides = rmem.Pop();
-                    runtimeVerify(svNumGuides.IsReplicationGuide);
-                    guides = (int)svNumGuides.opdata;
+                argGuides.Reverse();
+                runtimeCore.ReplicationGuides.Add(argGuides);
 
-                    List<ReplicationGuide> argGuides = new List<ReplicationGuide>();
-                    for (int i = 0; i < guides; ++i)
-                    {
-                        StackValue svGuideProperty = rmem.Pop();
-                        runtimeVerify(svGuideProperty.IsBoolean);
-                        bool isLongest = (int)svGuideProperty.opdata == 1;
-
-                        StackValue svGuide = rmem.Pop();
-                        runtimeVerify(svGuide.IsInteger);
-                        int guideNumber = (int)svGuide.opdata;
-
-                        argGuides.Add(new ReplicationGuide(guideNumber, isLongest));
-                    }
-
-                    argGuides.Reverse();
-                    runtimeCore.ReplicationGuides.Add(argGuides);
-
-                    StackValue opdata1 = GetOperandData(blockId, instruction.op1, instruction.op2);
-                    rmem.Push(opdata1);
-                }
-                else
-                {
-                    // TODO Jun: This entire block that handles arrays shoudl be integrated with getOperandData
-
-                    runtimeVerify(op1.IsVariableIndex ||
-                                  op1.IsMemberVariableIndex ||
-                                  op1.IsArray);
-
-                    runtimeVerify(instruction.op2.IsClassIndex);
-
-                    var dims = new List<StackValue>();
-                    for (int n = 0; n < dimensions; ++n)
-                    {
-                        dims.Insert(0, rmem.Pop());
-                    }
-
-                    StackValue sv = GetIndexedArray(dims, blockId, instruction.op1, instruction.op2);
-
-
-                    StackValue svNumGuides = rmem.Pop();
-                    runtimeVerify(svNumGuides.IsReplicationGuide);
-                    guides = (int)svNumGuides.opdata;
-
-                    rmem.Push(sv);
-                }
+                StackValue opdata1 = GetOperandData(blockId, instruction.op1, instruction.op2);
+                rmem.Push(opdata1);
             }
             else
             {
-                int dimensions = 0;
-                int guides = 0;
-                int blockId = Constants.kInvalidIndex;
+                // TODO Jun: This entire block that handles arrays shoudl be integrated with getOperandData
 
-                StackValue op1 = instruction.op1;
-                if (op1.IsVariableIndex ||
-                    op1.IsMemberVariableIndex ||
-                    op1.IsPointer ||
-                    op1.IsArray ||
-                    op1.IsStaticVariableIndex ||
-                    op1.IsFunctionPointer)
+                runtimeVerify(op1.IsVariableIndex ||
+                              op1.IsMemberVariableIndex ||
+                              op1.IsArray);
+
+                runtimeVerify(instruction.op2.IsClassIndex);
+
+                var dims = new List<StackValue>();
+                for (int n = 0; n < dimensions; ++n)
                 {
-
-                    // TODO: Jun this is currently unused but required for stack alignment
-                    StackValue svType = rmem.Pop();
-                    runtimeVerify(svType.IsStaticType);
-
-                    StackValue svDim = rmem.Pop();
-                    runtimeVerify(svDim.IsArrayDimension);
-                    dimensions = (int)svDim.opdata;
-
-                    StackValue svBlock = rmem.Pop();
-                    runtimeVerify(svBlock.IsBlockIndex);
-                    blockId = (int)svBlock.opdata;
-
-                    StackValue svNumGuides = rmem.Pop();
-                    runtimeVerify(svNumGuides.IsReplicationGuide);
-                    guides = (int)svNumGuides.opdata;
-
+                    dims.Insert(0, rmem.Pop());
                 }
 
-                if (0 == dimensions)
-                {
-                    List<ReplicationGuide> argGuides = new List<ReplicationGuide>();
-                    for (int i = 0; i < guides; ++i)
-                    {
-                        StackValue svGuideProperty = rmem.Pop();
-                        runtimeVerify(svGuideProperty.IsBoolean);
-                        bool isLongest = (int)svGuideProperty.opdata == 1;
+                StackValue sv = GetIndexedArray(dims, blockId, instruction.op1, instruction.op2);
 
-                        StackValue svGuide = rmem.Pop();
-                        runtimeVerify(svGuide.IsInteger);
-                        int guideNumber = (int)svGuide.opdata;
 
-                        argGuides.Add(new ReplicationGuide(guideNumber, isLongest));
-                    }
+                StackValue svNumGuides = rmem.Pop();
+                runtimeVerify(svNumGuides.IsReplicationGuide);
+                guides = (int)svNumGuides.opdata;
 
-                    argGuides.Reverse();
-                    runtimeCore.ReplicationGuides.Add(argGuides);
-
-                    StackValue opdata1 = GetOperandData(blockId, instruction.op1, instruction.op2);
-                    rmem.Push(opdata1);
-                }
-                else
-                {
-                    // TODO Jun: This entire block that handles arrays shoudl be integrated with getOperandData
-                    runtimeVerify(op1.IsVariableIndex ||
-                                  op1.IsMemberVariableIndex ||
-                                  op1.IsArray);
-
-                    runtimeVerify(instruction.op2.IsClassIndex);
-
-                    var dims = new List<StackValue>();
-                    for (int n = 0; n < dimensions; ++n)
-                    {
-                        dims.Insert(0, rmem.Pop());
-                    }
-
-                    StackValue sv = GetIndexedArray(dims, blockId, instruction.op1, instruction.op2);
-
-                    rmem.Push(sv);
-                }
+                rmem.Push(sv);
             }
 
             ++pc;

@@ -344,7 +344,6 @@ namespace ProtoTestFx
             // Specify some of the requirements of IDE.
 
             core.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-            core.Options.SuppressBuildOutput = false;
             core.Options.WatchTestMode = true;
             core.Options.GCTempVarsOnDebug = false;
 
@@ -393,7 +392,6 @@ namespace ProtoTestFx
             // Specify some of the requirements of IDE.
             var options = new ProtoCore.Options();
             options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-            options.SuppressBuildOutput = false;
             options.GCTempVarsOnDebug = false;
             
             // Cyclic dependency threshold is lowered from the default (2000)

@@ -149,7 +149,7 @@ namespace ProtoCore.DSASM.Mirror
                 case AddressType.Int:
                     return val.opdata.ToString();
                 case AddressType.Double:
-                    return val.RawDoubleValue.ToString(runtimeCore.Options.FormatToPrintFloatingPoints);
+                    return val.RawDoubleValue.ToString("F6");
                 case AddressType.Null:
                     return "null";
                 case AddressType.Pointer:

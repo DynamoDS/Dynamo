@@ -999,19 +999,16 @@ namespace ProtoAssociative
                                 {
                                     if (exprListNode is ExprListNode || exprListNode is GroupExpressionNode)
                                     {
-                                        if (core.Options.TempReplicationGuideEmptyFlag)
+                                        // Emit the replication guide for the exprlist
+                                        var repGuideList = GetReplicationGuides(exprListNode);
+                                        if (repGuideList != null)
                                         {
-                                            // Emit the replication guide for the exprlist
-                                            var repGuideList = GetReplicationGuides(exprListNode);
-                                            if (repGuideList != null)
-                                            {
-                                                EmitReplicationGuides(repGuideList, true);
-                                                EmitInstrConsole(ProtoCore.DSASM.kw.popg);
-                                                EmitPopGuide();
-                                            }
-
-                                            emitReplicationGuide = false;
+                                            EmitReplicationGuides(repGuideList, true);
+                                            EmitInstrConsole(ProtoCore.DSASM.kw.popg);
+                                            EmitPopGuide();
                                         }
+
+                                        emitReplicationGuide = false;
                                     }
                                 }
                                 else
@@ -1050,19 +1047,16 @@ namespace ProtoAssociative
                                 {
                                     if (exprListNode is ExprListNode || exprListNode is GroupExpressionNode)
                                     {
-                                        if (core.Options.TempReplicationGuideEmptyFlag)
+                                        // Emit the replication guide for the exprlist
+                                        var repGuideList = GetReplicationGuides(exprListNode);
+                                        if (repGuideList != null)
                                         {
-                                            // Emit the replication guide for the exprlist
-                                            var repGuideList = GetReplicationGuides(exprListNode);
-                                            if (repGuideList != null)
-                                            {
-                                                EmitReplicationGuides(repGuideList, true);
-                                                EmitInstrConsole(ProtoCore.DSASM.kw.popg);
-                                                EmitPopGuide();
-                                            }
-
-                                            emitReplicationGuide = false;
+                                            EmitReplicationGuides(repGuideList, true);
+                                            EmitInstrConsole(ProtoCore.DSASM.kw.popg);
+                                            EmitPopGuide();
                                         }
+
+                                        emitReplicationGuide = false;
                                     }
                                 }
                                 else
@@ -3354,14 +3348,7 @@ namespace ProtoAssociative
                             }
                             else
                             {
-                                if (core.Options.GenerateExprID)
-                                {
-                                    ssaID = core.ExpressionUID++;
-                                }
-                                else
-                                {
-                                    ssaID = (node as BinaryExpressionNode).ExpressionUID;
-                                }
+                                ssaID = core.ExpressionUID++;
                                 ssaUIDList.Add(name, ssaID);
                                 generatedUID = ssaID;
                             }
@@ -3394,10 +3381,7 @@ namespace ProtoAssociative
                         }
                         else
                         {
-                            if (core.Options.GenerateExprID)
-                            {
-                                bnode.ExpressionUID = generatedUID = core.ExpressionUID++;
-                            }
+                            bnode.ExpressionUID = generatedUID = core.ExpressionUID++;
                             newAstList.Add(node);
                         }
 
@@ -3501,10 +3485,7 @@ namespace ProtoAssociative
                                     BinaryExpressionNode bnode = modstackNode as BinaryExpressionNode;
                                     if (bnode != null)
                                     {
-                                        if (core.Options.GenerateExprID)
-                                        {
-                                            bnode.ExpressionUID = core.ExpressionUID;
-                                        }
+                                        bnode.ExpressionUID = core.ExpressionUID;
                                         bnode.modBlkUID = core.ModifierBlockUID;
                                     }
 
@@ -3522,12 +3503,8 @@ namespace ProtoAssociative
                                 BinaryExpressionNode bnode = modstackNode as BinaryExpressionNode;
                                 if (bnode != null)
                                 {
-                                    if (core.Options.GenerateExprID)
-                                    {
-                                        bnode.ExpressionUID = core.ExpressionUID;
-                                    }
+                                    bnode.ExpressionUID = core.ExpressionUID;
                                     bnode.modBlkUID = core.ModifierBlockUID;
-                                    //newAstList.Add(bnode);
                                 }
                                 
                                 core.ExpressionUID++;
@@ -4348,7 +4325,7 @@ namespace ProtoAssociative
                     EmitInstrConsole(ProtoCore.DSASM.kw.push, t.Value);
                     EmitPushForSymbol(symbolnode, runtimeIndex, t);
 
-                    if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
+                    if (emitReplicationGuide)
                     {
                         int guides = EmitReplicationGuides(t.ReplicationGuides);
                         EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, guides + "[guide]");
@@ -4528,7 +4505,7 @@ namespace ProtoAssociative
                     EmitPushArrayIndex(dim);
                 }
 
-                if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
+                if (emitReplicationGuide)
                 {
                     int guide = EmitReplicationGuides(range.ReplicationGuides);
                     EmitInstrConsole(kw.pushindex, guide + "[guide]");
@@ -5733,12 +5710,9 @@ namespace ProtoAssociative
             }
             else if (parseGlobalFunctionBody || parseMemberFunctionBody)
             {
-                if (core.Options.DisableDisposeFunctionDebug)
+                if (CoreUtils.IsDisposeMethod(node.Name))
                 {
-                    if (CoreUtils.IsDisposeMethod(node.Name))
-                    {
-                        core.Options.EmitBreakpoints = false;
-                    }
+                    core.Options.EmitBreakpoints = false;
                 }
 
                 // Build arglist for comparison
@@ -5989,12 +5963,9 @@ namespace ProtoAssociative
                     EmitReturnNull();
                 }
 
-                if (core.Options.DisableDisposeFunctionDebug)
+                if (CoreUtils.IsDisposeMethod(node.Name))
                 {
-                    if (CoreUtils.IsDisposeMethod(node.Name))
-                    {
-                        core.Options.EmitBreakpoints = true;
-                    }
+                    core.Options.EmitBreakpoints = true;
                 }
             }
 
@@ -6108,7 +6079,7 @@ namespace ProtoAssociative
                 // 
                 // TODO: Revisit this piece of code to see how to handle array
                 // index.
-                if (!isRangeExpression && core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
+                if (!isRangeExpression && emitReplicationGuide)
                 {
                     int guides = EmitReplicationGuides(replicationGuides);
                     EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, guides + "[guide]");
@@ -6369,7 +6340,7 @@ namespace ProtoAssociative
             EmitInstrConsole(ProtoCore.DSASM.kw.push, "dynamicBlock");
             EmitPush(StackValue.BuildInt(block));
 
-            if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
+            if (emitReplicationGuide)
             {
                 EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, 0 + "[guide]");
                 EmitPushReplicationGuide(0);
@@ -8540,7 +8511,7 @@ namespace ProtoAssociative
 
             if (subPass != ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier)
             {
-                if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
+                if (emitReplicationGuide)
                 {
                     int guides = EmitReplicationGuides(group.ReplicationGuides);
                     EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, guides + "[guide]");

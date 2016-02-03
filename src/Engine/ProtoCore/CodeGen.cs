@@ -124,24 +124,7 @@ namespace ProtoCore
 
             if (core.AsmOutput == null)
             {
-                if (core.Options.CompileToLib)
-                {
-                    string path = "";
-                    if (core.Options.LibPath == null)
-                    {
-                        path += core.Options.RootModulePathName + "ASM";
-                    }
-                    else
-                    {
-                        path = Path.Combine(core.Options.LibPath, Path.GetFileNameWithoutExtension(core.Options.RootModulePathName) + ".dsASM");
-                    }
-
-                    core.AsmOutput = new StreamWriter(File.Open(path, FileMode.Create));
-                }
-                else
-                {
-                    core.AsmOutput = Console.Out;
-                }
+                core.AsmOutput = Console.Out;
             }
 
             ssaPointerStack = new Stack<List<AST.AssociativeAST.AssociativeNode>>();
@@ -282,7 +265,7 @@ namespace ProtoCore
         #region EMIT_INSTRUCTION_TO_CONSOLE
         public void EmitCompileLog(string message)
         {
-            if (dumpByteCode && !isAssocOperator && !core.Options.DumpOperatorToMethodByteCode)
+            if (dumpByteCode && !isAssocOperator)
             {
                 for (int i = 0; i < core.AsmOutputIdents; ++i)
                     core.AsmOutput.Write("\t");
@@ -292,7 +275,7 @@ namespace ProtoCore
         }
         public void EmitCompileLogFunctionStart(string function)
         {
-            if (dumpByteCode && !isAssocOperator && !core.Options.DumpOperatorToMethodByteCode)
+            if (dumpByteCode && !isAssocOperator)
             {
                 core.AsmOutput.Write(function);
                 core.AsmOutput.Write("{\n");
@@ -302,7 +285,7 @@ namespace ProtoCore
 
         public void EmitCompileLogFunctionEnd()
         {
-            if (dumpByteCode && !isAssocOperator && !core.Options.DumpOperatorToMethodByteCode)
+            if (dumpByteCode && !isAssocOperator)
             {
                 core.AsmOutputIdents--;
                 for (int i = 0; i < core.AsmOutputIdents; ++i)
@@ -313,96 +296,43 @@ namespace ProtoCore
 
         public void EmitInstrConsole(string instr)
         {
-            if (core.Options.DumpOperatorToMethodByteCode == false)
+            if (dumpByteCode && !isAssocOperator)
             {
-                if (dumpByteCode && !isAssocOperator)
-                {
-                    var str = string.Format("[{0}.{1}.{2}]{3}\n", codeBlock.language == Language.Associative ? "a" : "i", codeBlock.codeBlockId, pc, instr);
-                    for (int i = 0; i < core.AsmOutputIdents; ++i)
-                        core.AsmOutput.Write("\t");
-                    core.AsmOutput.Write(str);
-                }
-            }
-            else
-            {
-                if (dumpByteCode)
-                {
-                    var str = string.Format("[{0}.{1}.{2}]{3}\n", codeBlock.language == Language.Associative ? "a" : "i", codeBlock.codeBlockId, pc, instr);
-                    for (int i = 0; i < core.AsmOutputIdents; ++i)
-                        core.AsmOutput.Write("\t");
-                    core.AsmOutput.Write(str);
-                }
+                var str = string.Format("[{0}.{1}.{2}]{3}\n", codeBlock.language == Language.Associative ? "a" : "i", codeBlock.codeBlockId, pc, instr);
+                for (int i = 0; i < core.AsmOutputIdents; ++i)
+                    core.AsmOutput.Write("\t");
+                core.AsmOutput.Write(str);
             }
         }
         public void EmitInstrConsole(string instr, string op1)
         {
-            if (core.Options.DumpOperatorToMethodByteCode == false)
+            if (dumpByteCode && !isAssocOperator)
             {
-                if (dumpByteCode && !isAssocOperator)
-                {
-                    var str = string.Format("[{0}.{1}.{2}]{3} {4}\n", codeBlock.language == Language.Associative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1);
-                    for (int i = 0; i < core.AsmOutputIdents; ++i)
-                        core.AsmOutput.Write("\t");
-                    core.AsmOutput.Write(str);
-                }
-            }
-            else
-            {
-                if (dumpByteCode)
-                {
-                    var str = string.Format("[{0}.{1}.{2}]{3} {4}\n", codeBlock.language == Language.Associative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1);
-                    for (int i = 0; i < core.AsmOutputIdents; ++i)
-                        core.AsmOutput.Write("\t");
-                    core.AsmOutput.Write(str);
-                }
+                var str = string.Format("[{0}.{1}.{2}]{3} {4}\n", codeBlock.language == Language.Associative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1);
+                for (int i = 0; i < core.AsmOutputIdents; ++i)
+                    core.AsmOutput.Write("\t");
+                core.AsmOutput.Write(str);
             }
         }
         public void EmitInstrConsole(string instr, string op1, string op2)
         {
-            if (core.Options.DumpOperatorToMethodByteCode == false)
+            if (dumpByteCode && !isAssocOperator)
             {
-                if (dumpByteCode && !isAssocOperator)
-                {
-                    var str = string.Format("[{0}.{1}.{2}]{3} {4} {5}\n", codeBlock.language == Language.Associative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1, op2);
-                    for (int i = 0; i < core.AsmOutputIdents; ++i)
-                        core.AsmOutput.Write("\t");
-                    core.AsmOutput.Write(str);
-                }
-            }
-            else
-            {
-                if (dumpByteCode)
-                {
-                    var str = string.Format("[{0}.{1}.{2}]{3} {4} {5}\n", codeBlock.language == Language.Associative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1, op2);
-                    for (int i = 0; i < core.AsmOutputIdents; ++i)
-                        core.AsmOutput.Write("\t");
-                    core.AsmOutput.Write(str);
-                }
+                var str = string.Format("[{0}.{1}.{2}]{3} {4} {5}\n", codeBlock.language == Language.Associative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1, op2);
+                for (int i = 0; i < core.AsmOutputIdents; ++i)
+                    core.AsmOutput.Write("\t");
+                core.AsmOutput.Write(str);
             }
         }
         public void EmitInstrConsole(string instr, string op1, string op2, string op3)
         {
-            if (core.Options.DumpOperatorToMethodByteCode == false)
+            if (dumpByteCode && !isAssocOperator)
             {
-                if (dumpByteCode && !isAssocOperator)
-                {
-                    var str = string.Format("[{0}.{1}.{2}]{3} {4} {5} {6}\n", codeBlock.language == Language.Associative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1, op2, op3);
-                    for (int i = 0; i < core.AsmOutputIdents; ++i)
-                        core.AsmOutput.Write("\t");
-                    core.AsmOutput.Write(str);
-                }
+                var str = string.Format("[{0}.{1}.{2}]{3} {4} {5} {6}\n", codeBlock.language == Language.Associative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1, op2, op3);
+                for (int i = 0; i < core.AsmOutputIdents; ++i)
+                    core.AsmOutput.Write("\t");
+                core.AsmOutput.Write(str);
             }
-            else
-            {
-                if (dumpByteCode)
-                {
-                    var str = string.Format("[{0}.{1}.{2}]{3} {4} {5} {6}\n", codeBlock.language == Language.Associative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1, op2, op3);
-                    for (int i = 0; i < core.AsmOutputIdents; ++i)
-                        core.AsmOutput.Write("\t");
-                    core.AsmOutput.Write(str);
-                }
-            }
-
         }
         #endregion //   EMIT_INSTRUCTION_TO_CONSOLE
 
@@ -1907,26 +1837,21 @@ namespace ProtoCore
             {
                 inferedType.UID = (int)PrimitiveType.kTypeInt;
             }
-            
+
             inferedType.UID = isBooleanOp ? (int)PrimitiveType.kTypeBool : inferedType.UID;
-
-
-            if (core.Options.TempReplicationGuideEmptyFlag)
+            if (emitReplicationGuide)
             {
-                if (emitReplicationGuide)
-                {
-                    int replicationGuides = 0;
-                    
-                    // Push the number of guides
-                    EmitInstrConsole(ProtoCore.DSASM.kw.push, replicationGuides + "[guide]");
-                    StackValue opNumGuides = StackValue.BuildReplicationGuide(replicationGuides);
-                    EmitPush(opNumGuides);
-                }
+                int replicationGuides = 0;
+
+                // Push the number of guides
+                EmitInstrConsole(ProtoCore.DSASM.kw.push, replicationGuides + "[guide]");
+                StackValue opNumGuides = StackValue.BuildReplicationGuide(replicationGuides);
+                EmitPush(opNumGuides);
             }
 
 
             StackValue op = StackValue.BuildInt(value);
-            if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
+            if (emitReplicationGuide)
             {
                 EmitInstrConsole(ProtoCore.DSASM.kw.pushg, value.ToString());
                 EmitPushG(op, node.line, node.col);
@@ -2002,7 +1927,7 @@ namespace ProtoCore
             String strValue = "'" + value + "'";
             StackValue op = ProtoCore.DSASM.StackValue.BuildChar(value[0]);
 
-            if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
+            if (emitReplicationGuide)
             {
                 int replicationGuides = 0;
                 EmitInstrConsole(ProtoCore.DSASM.kw.push, replicationGuides + "[guide]");
@@ -2036,7 +1961,7 @@ namespace ProtoCore
                 inferedType.UID = (int)PrimitiveType.kTypeString;
             }
 
-            if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
+            if (emitReplicationGuide)
             {
                 EmitInstrConsole(ProtoCore.DSASM.kw.push, 0 + "[guide]");
                 StackValue opNumGuides = StackValue.BuildReplicationGuide(0);
@@ -2045,7 +1970,7 @@ namespace ProtoCore
 
             string value = (string)sNode.Value;
             StackValue svString = core.Heap.AllocateFixedString(value);
-            if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
+            if (emitReplicationGuide)
             {
                 EmitInstrConsole(kw.pushg, "\"" + value + "\"");
                 EmitPushG(svString, node.line, node.col);
@@ -2096,21 +2021,18 @@ namespace ProtoCore
             }
             inferedType.UID = isBooleanOp ? (int)PrimitiveType.kTypeBool : inferedType.UID;
 
-            if (core.Options.TempReplicationGuideEmptyFlag)
+            if (emitReplicationGuide)
             {
-                if (emitReplicationGuide)
-                {
-                    int replicationGuides = 0;
+                int replicationGuides = 0;
 
-                    // Push the number of guides
-                    EmitInstrConsole(ProtoCore.DSASM.kw.push, replicationGuides + "[guide]");
-                    StackValue opNumGuides = StackValue.BuildReplicationGuide(replicationGuides);
-                    EmitPush(opNumGuides);
-                }
+                // Push the number of guides
+                EmitInstrConsole(ProtoCore.DSASM.kw.push, replicationGuides + "[guide]");
+                StackValue opNumGuides = StackValue.BuildReplicationGuide(replicationGuides);
+                EmitPush(opNumGuides);
             }
 
             StackValue op = StackValue.BuildDouble(value);
-            if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
+            if (emitReplicationGuide)
             {
                 EmitInstrConsole(ProtoCore.DSASM.kw.pushg, value.ToString());
                 EmitPushG(op, node.line, node.col);
@@ -2184,22 +2106,19 @@ namespace ProtoCore
                 inferedType.UID = (int)PrimitiveType.kTypeBool;
             }
 
-            if (core.Options.TempReplicationGuideEmptyFlag)
+            if (emitReplicationGuide)
             {
-                if (emitReplicationGuide)
-                {
-                    int replicationGuides = 0;
+                int replicationGuides = 0;
 
-                    // Push the number of guides
-                    EmitInstrConsole(ProtoCore.DSASM.kw.push, replicationGuides + "[guide]");
-                    StackValue opNumGuides = StackValue.BuildReplicationGuide(replicationGuides);
-                    EmitPush(opNumGuides);
-                }
+                // Push the number of guides
+                EmitInstrConsole(ProtoCore.DSASM.kw.push, replicationGuides + "[guide]");
+                StackValue opNumGuides = StackValue.BuildReplicationGuide(replicationGuides);
+                EmitPush(opNumGuides);
             }
 
             StackValue op = StackValue.BuildBoolean(value);
 
-            if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
+            if (emitReplicationGuide)
             {
                 EmitInstrConsole(ProtoCore.DSASM.kw.pushg, value.ToString());
                 EmitPushG(op, node.line, node.col);
@@ -2223,23 +2142,19 @@ namespace ProtoCore
 
             inferedType.UID = isBooleanOp ? (int)PrimitiveType.kTypeBool : inferedType.UID;
 
-            if (core.Options.TempReplicationGuideEmptyFlag)
+            if (emitReplicationGuide)
             {
-                if (emitReplicationGuide)
-                {
-                    int replicationGuides = 0;
+                int replicationGuides = 0;
 
-                    // Push the number of guides
-                    EmitInstrConsole(ProtoCore.DSASM.kw.push, replicationGuides + "[guide]");
-                    StackValue opNumGuides = StackValue.BuildReplicationGuide(replicationGuides);
-                    EmitPush(opNumGuides);
-                }
+                // Push the number of guides
+                EmitInstrConsole(ProtoCore.DSASM.kw.push, replicationGuides + "[guide]");
+                StackValue opNumGuides = StackValue.BuildReplicationGuide(replicationGuides);
+                EmitPush(opNumGuides);
             }
-
 
             StackValue op = StackValue.Null;
 
-            if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
+            if (emitReplicationGuide)
             {
                 EmitInstrConsole(ProtoCore.DSASM.kw.pushg, ProtoCore.DSASM.Literal.Null);
                 EmitPushG(op, nullNode.line, nullNode.col);
@@ -2352,7 +2267,7 @@ namespace ProtoCore
                 EmitPushArrayIndex(dimensions);
             }
 
-            if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
+            if (emitReplicationGuide)
             {
                 if (node is ProtoCore.AST.AssociativeAST.ExprListNode)
                 {
