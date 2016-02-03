@@ -398,17 +398,6 @@ Associative_BaseConstructorCall<out ProtoCore.AST.AssociativeAST.AssociativeNode
                                                 (. bnode = f; .)
 .
 
-
-//------------------------------------------------------------------------
-Associative_ExternalLibraryReference<out string libname>
-=
-  '('
-    textstring   (. libname = t.val; .)
-                 (. libname = libname.Remove(0, 1); .)
-                 (. libname = libname.Remove(libname.Length-1, 1); .)
-  ')'
-.
-
 //------------------------------------------------------------------------
 Associative_AccessSpecifier<out ProtoCore.CompilerDefinitions.AccessModifier access>
 =                   (. access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic; .)
@@ -433,14 +422,6 @@ Associative_functiondecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node,
                                 bool isExternLib = false; 
                                 bool isDNI = false;                                 
                             .)  
-    [ 
-        kw_external         (. isExternLib = true; .) //TODO do we want to add libtype? e.g. dll/py etc?
-        [ 
-            kw_native       (. isDNI = true; .)
-        ]
-        Associative_ExternalLibraryReference<out externLibName>
-    ]
-
     kw_def                  (. NodeUtils.SetNodeLocation(f, t); .)
     Associative_MethodSignature<out methodName, out argumentSignature, out pattern, out returnType>
                             (.
@@ -2003,11 +1984,23 @@ Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
     ]
     
     [
+                                        (. 
+                                           AssociativeNode levelNode = null;
+                                           bool isDominant = false;
+                                        .)
         (
-            list_at_level                (. var atLevelNode = new AtLevelNode { Level = Int32.Parse(t.val.Substring(1)), IsDominant = false }; .)
+            list_at Associative_Number<out levelNode> 
             |
-            dominant_list_at_level       (. var atLevelNode = new AtLevelNode { Level = Int32.Parse(t.val.Substring(2)), IsDominant = true }; .)
+            dominant_list_at Associative_Number<out levelNode> (. isDominant = true; .)
         )
+                                        (. 
+                                            IntNode listAtLevel = levelNode as IntNode;
+                                            if (listAtLevel != null)
+                                            {
+                                                var atLevel = new AtLevelNode { Level = listAtLevel.Value, IsDominant = isDominant };
+                                                nameNode.AtLevel = atLevel; 
+                                            }
+                                        .)
     ]
 
     [ 

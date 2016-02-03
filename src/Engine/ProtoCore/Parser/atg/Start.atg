@@ -524,7 +524,7 @@ COMPILER DesignScriptParser
             }
 		}
 
-		if (la.kind != _kw_class && la.kind != _kw_def && la.kind != _kw_external)
+		if (la.kind != _kw_class && la.kind != _kw_def)
 			return true;
 		return false;
 	 }
@@ -554,9 +554,7 @@ COMPILER DesignScriptParser
             }
 		}
 
-		if (la.kind != _kw_external && la.kind != _kw_def)
-			return true;
-		return false;
+        return la.kind != _kw_def;
 	 }
 
 	 
@@ -591,8 +589,9 @@ TOKENS
     char = '\'' (anyButQuote | "\\\'" | "\\\"" | "\\\\" | "\\0" | "\\a" | "\\b" | "\\f" | "\\n" | "\\r" | "\\t" | "\\v" | "\\u") '\''.
     period = '.'.
     postfixed_replicationguide = digit {digit} 'L'.
-    list_at_level = '@' '-' digit {digit}.
-    dominant_list_at_level = "@@" '-' digit { digit }.
+
+    list_at = '@'.
+    dominant_list_at = "@@".
 
     openbracket = '['.
     closebracket = ']'.
@@ -611,13 +610,10 @@ TOKENS
     endline = ';'.
     rangeop = "..".
 
-    kw_native = "native".
     kw_class = "class".
     kw_constructor = "constructor".
     kw_def = "def".
-    kw_external = "external".
     kw_extend = "extends".
-    kw_heap = "__heap".
     kw_if = "if".
     kw_elseif = "elseif".
     kw_else = "else".
@@ -635,9 +631,6 @@ TOKENS
     literal_false = "false".
     literal_null = "null".
     replicationguide_postfix = 'L'.
-
-//COMMENTS FROM "/*" TO "*/" 
-//COMMENTS FROM "//" TO lf
 
 PRAGMAS
 

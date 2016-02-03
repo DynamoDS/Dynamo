@@ -245,7 +245,7 @@ namespace ProtoCore.AST.AssociativeAST
 
     public class AtLevelNode : AssociativeNode
     {
-        public int Level
+        public Int64 Level
         {
             get; set;
         }
@@ -300,6 +300,12 @@ namespace ProtoCore.AST.AssociativeAST
         }
 
         public List<AssociativeNode> ReplicationGuides
+        {
+            get;
+            set;
+        }
+
+        public AtLevelNode AtLevel
         {
             get;
             set;
