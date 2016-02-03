@@ -27,7 +27,7 @@ namespace Dynamo.Engine
         /// <param name="parameter">The TypedParameter object corresponding to the parameter.</param>
         /// <param name="xml"></param>
         /// <returns>The contents of the documentation description for the parameter.</returns>
-        public static string GetDescription(this TypedParameter parameter, XmlReader xml = null)
+        internal static string GetDescription(this TypedParameter parameter, XmlReader xml = null)
         {
             return GetMemberElement(parameter.Function, xml,
                 DocumentElementType.Description, parameter.Name);
@@ -40,7 +40,7 @@ namespace Dynamo.Engine
         /// <param name="member">The FunctionDescriptor object corresponding to the method.</param>
         /// <param name="xml"></param>
         /// <returns>The contents of the documentation summary tag.</returns>
-        public static string GetSummary(this FunctionDescriptor member, XmlReader xml = null)
+        internal static string GetSummary(this FunctionDescriptor member, XmlReader xml = null)
         {
             return GetMemberElement(member, xml, DocumentElementType.Summary);
         }
@@ -52,7 +52,7 @@ namespace Dynamo.Engine
         /// <param name="member">The FunctionDescriptor object corresponding to the method.</param>
         /// <param name="xml"></param>
         /// <returns>A collection of search tags.</returns>
-        public static IEnumerable<string> GetSearchTags(this FunctionDescriptor member, XmlReader xml = null)
+        internal static IEnumerable<string> GetSearchTags(this FunctionDescriptor member, XmlReader xml = null)
         {
             return GetMemberElement(member, xml, DocumentElementType.SearchTags)
                 .Split(',')
@@ -67,7 +67,7 @@ namespace Dynamo.Engine
         /// <param name="member">The FunctionDescriptor object corresponding to the method.</param>
         /// <param name="xml"></param>
         /// <returns>A collection of search weights, or an empty collection if the search weights tag is emtpy.</returns>
-        public static IEnumerable<double> GetSearchTagWeights(this FunctionDescriptor member, XmlReader xml = null)
+        internal static IEnumerable<double> GetSearchTagWeights(this FunctionDescriptor member, XmlReader xml = null)
         {
             var weights = GetMemberElement(member, xml, DocumentElementType.SearchTagWeights);
             if (string.IsNullOrEmpty(weights))
@@ -89,7 +89,7 @@ namespace Dynamo.Engine
         /// <param name="member">The FunctionDescriptor object corresponding to the method.</param>
         /// <param name="xml"></param>
         /// <returns>A collection of return descriptions from the documentation returns tag.</returns>
-        public static IEnumerable<Tuple<string, string>> GetReturns(this FunctionDescriptor member, XmlReader xml = null)
+        internal static IEnumerable<Tuple<string, string>> GetReturns(this FunctionDescriptor member, XmlReader xml = null)
         {
             var node = GetMemberDocumentNode(member, xml);
             if (node == null)

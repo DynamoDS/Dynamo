@@ -112,7 +112,12 @@ namespace Dynamo.Logging
             }
         }
 
-        public void Log(string message, LogLevel level)
+        /// <summary>
+        /// Logs the specified message.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="level">The level.</param>
+        internal void Log(string message, LogLevel level)
         {
             Log(message, level, true);
         }
@@ -173,6 +178,11 @@ namespace Dynamo.Logging
             }
         }
 
+        /// <summary>
+        /// Logs the warning.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="level">The level.</param>
         public void LogWarning(string message, WarningLevel level)
         {
             Warning = message;
@@ -181,6 +191,10 @@ namespace Dynamo.Logging
             Log(message, LogLevel.Console);
         }
 
+        /// <summary>
+        /// Logs the error.
+        /// </summary>
+        /// <param name="error">The error.</param>
         public void LogError(string error)
         {
             Warning = error;
@@ -188,6 +202,11 @@ namespace Dynamo.Logging
             Log(error);
         }
 
+        /// <summary>
+        /// Logs the error.
+        /// </summary>
+        /// <param name="tag">The tag.</param>
+        /// <param name="error">The error.</param>
         public void LogError(string tag, string error)
         {
             Warning = error;
@@ -200,7 +219,10 @@ namespace Dynamo.Logging
             Log(tag, LogLevel.File);
         }
 
-        public void ResetWarning()
+        /// <summary>
+        /// Resets the warning.
+        /// </summary>
+        internal void ResetWarning()
         {
             lock (this.guardMutex)
             {
@@ -239,7 +261,7 @@ namespace Dynamo.Logging
             Log(string.Format("{0}:{1}", tag, data));
         }
 
-        public void ClearLog()
+        internal void ClearLog()
         {
             lock (this.guardMutex)
             {
@@ -269,7 +291,7 @@ namespace Dynamo.Logging
         /// <summary>
         /// Dispose of the logger and finish logging.
         /// </summary>
-        public void Dispose(bool isDisposed)
+        internal void Dispose(bool isDisposed)
         {
             //Don't lock here as it risks deadlocking the collector
 

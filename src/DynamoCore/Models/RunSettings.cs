@@ -94,7 +94,7 @@ namespace Dynamo.Models
 
         #region Public Operational Methods
 
-        public void Reset()
+        internal void Reset()
         {
             RunEnabled = true;
             RunType = RunType.Automatic;

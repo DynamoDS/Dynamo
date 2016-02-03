@@ -43,7 +43,8 @@ namespace Dynamo.Engine
         private readonly IPathManager pathManager;
         public ProtoCore.Core LibraryManagementCore{get; private set;}
         private ProtoCore.Core liveRunnerCore = null;
-        public void SetLiveCore(ProtoCore.Core core)
+
+        internal void SetLiveCore(ProtoCore.Core core)
         {
             liveRunnerCore = core;
         }
@@ -71,7 +72,7 @@ namespace Dynamo.Engine
         /// Copy properties from the liveCore
         /// The properties to copy are only those used by the library core
         /// </summary>
-        public void UpdateLibraryCoreData()
+        internal void UpdateLibraryCoreData()
         {
             // If a liverunner core is provided, sync the library core data
             if (liveRunnerCore != null)
@@ -136,7 +137,7 @@ namespace Dynamo.Engine
                 CompilerUtils.TryLoadAssemblyIntoCore(LibraryManagementCore, library);
         }
 
-        public bool FunctionSignatureNeedsAdditionalAttributes(string functionSignature)
+        internal bool FunctionSignatureNeedsAdditionalAttributes(string functionSignature)
         {
             if (functionSignature == null)
             {
@@ -148,7 +149,7 @@ namespace Dynamo.Engine
             return priorNameHints[functionSignature].AdditionalAttributes.Count > 0;
         }
 
-        public bool FunctionSignatureNeedsAdditionalElements(string functionSignature)
+        internal bool FunctionSignatureNeedsAdditionalElements(string functionSignature)
         {
             if (functionSignature == null)
             {
@@ -160,7 +161,7 @@ namespace Dynamo.Engine
             return priorNameHints[functionSignature].AdditionalElements.Count > 0;
         }
 
-        public void AddAdditionalAttributesToNode(string functionSignature, XmlElement nodeElement)
+        internal void AddAdditionalAttributesToNode(string functionSignature, XmlElement nodeElement)
         {
             var shortKey = GetQualifiedFunction(functionSignature);
             if (!FunctionSignatureNeedsAdditionalAttributes(functionSignature)
@@ -184,7 +185,7 @@ namespace Dynamo.Engine
             }
         }
 
-        public void AddAdditionalElementsToNode(string functionSignature, XmlElement nodeElement)
+        internal void AddAdditionalElementsToNode(string functionSignature, XmlElement nodeElement)
         {
             var shortKey = GetQualifiedFunction(functionSignature);
             if (!FunctionSignatureNeedsAdditionalElements(functionSignature)
@@ -201,7 +202,7 @@ namespace Dynamo.Engine
             }
         }
 
-        public string NicknameFromFunctionSignatureHint(string functionSignature)
+        internal string NicknameFromFunctionSignatureHint(string functionSignature)
         {
             string[] splitted = null;
             string newName = null;
@@ -245,7 +246,7 @@ namespace Dynamo.Engine
             return splitted[splitted.Length - 2] + "." + splitted[splitted.Length - 1];
         }
 
-        public string FunctionSignatureFromFunctionSignatureHint(string functionSignature)
+        internal string FunctionSignatureFromFunctionSignatureHint(string functionSignature)
         {
             // if the hint is explicit, we can simply return the mapped function
             if (priorNameHints.ContainsKey(functionSignature))
@@ -288,7 +289,7 @@ namespace Dynamo.Engine
         /// </summary>
         /// <param name="library">Library path</param>
         /// <returns></returns>
-        public IEnumerable<FunctionGroup> GetFunctionGroups(string library)
+        internal IEnumerable<FunctionGroup> GetFunctionGroups(string library)
         {
             if (null == library)
                 throw new ArgumentNullException();
@@ -306,7 +307,7 @@ namespace Dynamo.Engine
         /// <summary>
         /// Return all function groups.
         /// </summary>
-        public IEnumerable<FunctionGroup> GetAllFunctionGroups()
+        internal IEnumerable<FunctionGroup> GetAllFunctionGroups()
         {
             return BuiltinFunctionGroups.Union(ImportedLibraries.SelectMany(GetFunctionGroups));
         }
@@ -318,7 +319,7 @@ namespace Dynamo.Engine
         /// <param name="library">Library path</param>
         /// <param name="mangledName">Mangled function name</param>
         /// <returns></returns>
-        public FunctionDescriptor GetFunctionDescriptor(string library, string mangledName)
+        internal FunctionDescriptor GetFunctionDescriptor(string library, string mangledName)
         {
             if (null == library || null == mangledName)
                 throw new ArgumentNullException();
@@ -340,7 +341,7 @@ namespace Dynamo.Engine
         /// </summary>
         /// <param name="managledName"></param>
         /// <returns></returns>
-        public FunctionDescriptor GetFunctionDescriptor(string managledName)
+        internal FunctionDescriptor GetFunctionDescriptor(string managledName)
         {
             if (string.IsNullOrEmpty(managledName))
                 throw new ArgumentException("Invalid arguments");
@@ -364,7 +365,7 @@ namespace Dynamo.Engine
         /// </summary>
         /// <param name="library"> can be either the full path or the assembly name </param>
         /// <returns> true even if the same library name is loaded from different paths </returns>
-        public bool IsLibraryLoaded(string library)
+        internal bool IsLibraryLoaded(string library)
         {
             return importedFunctionGroups.ContainsKey(library);
         }
@@ -397,7 +398,7 @@ namespace Dynamo.Engine
         ///     Import a library (if it hasn't been imported yet).
         /// </summary>
         /// <param name="library"></param>
-        public bool ImportLibrary(string library)
+        internal bool ImportLibrary(string library)
         {
             if (null == library)
                 throw new ArgumentNullException();

@@ -66,7 +66,7 @@ namespace Dynamo.Engine.CodeGeneration
         /// </summary>
         /// <param name="node"></param>
         /// <param name="astNodes"></param>
-        public CompiledEventArgs(Guid node, IEnumerable<AssociativeNode> astNodes)
+        internal CompiledEventArgs(Guid node, IEnumerable<AssociativeNode> astNodes)
         {
             Node = node;
             AstNodes = astNodes;
@@ -120,7 +120,7 @@ namespace Dynamo.Engine.CodeGeneration
         /// Construct a AstBuilder with AST node contiainer.
         /// </summary>
         /// <param name="nodeContainer"></param>
-        public AstBuilder(IAstNodeContainer nodeContainer)
+        internal AstBuilder(IAstNodeContainer nodeContainer)
         {
             this.nodeContainer = nodeContainer;
         }
@@ -157,7 +157,7 @@ namespace Dynamo.Engine.CodeGeneration
         /// </summary>
         /// <param name="nodes"></param>
         /// <returns></returns>
-        public static IEnumerable<NodeModel> TopologicalSort(IEnumerable<NodeModel> nodes)
+        internal static IEnumerable<NodeModel> TopologicalSort(IEnumerable<NodeModel> nodes)
         {
             if (nodes == null)
                 throw new ArgumentNullException("nodes");
@@ -234,7 +234,7 @@ namespace Dynamo.Engine.CodeGeneration
         /// </summary>
         /// <param name="nodes"></param>
         /// <returns></returns>
-        public static IEnumerable<NodeModel> TopologicalSortForGraph(IEnumerable<NodeModel> nodes)
+        internal static IEnumerable<NodeModel> TopologicalSortForGraph(IEnumerable<NodeModel> nodes)
         {
             if (nodes == null)
                 throw new ArgumentNullException("nodes");
@@ -426,7 +426,7 @@ namespace Dynamo.Engine.CodeGeneration
         /// <param name="outputNodes"></param>
         /// <param name="parameters"></param>
         /// <param name="verboseLogging"></param>
-        public void CompileCustomNodeDefinition(
+        internal void CompileCustomNodeDefinition(
             Guid functionId, IEnumerable<string> returnKeys, string functionName,
             IEnumerable<NodeModel> funcBody, IEnumerable<AssociativeNode> outputNodes,
             IEnumerable<TypedParameter> parameters, bool verboseLogging)

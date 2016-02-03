@@ -11,7 +11,7 @@ namespace Dynamo.Search
     /// </summary>
     public class NodeSearchModel : SearchLibrary<NodeSearchElement, NodeModel>
     {
-        public override void Add(NodeSearchElement entry)
+        internal override void Add(NodeSearchElement entry)
         {
             SearchElementGroup group = SearchElementGroup.None;
 
@@ -25,7 +25,7 @@ namespace Dynamo.Search
         ///     Dumps the contents of search into an Xml file.
         /// </summary>
         /// <param name="fileName"></param>
-        public void DumpLibraryToXml(string fileName)
+        internal void DumpLibraryToXml(string fileName)
         {
             if (string.IsNullOrEmpty(fileName))
                 return;
@@ -38,7 +38,7 @@ namespace Dynamo.Search
         ///     Serializes the contents of search into Xml.
         /// </summary>
         /// <returns></returns>
-        public XmlDocument ComposeXmlForLibrary()
+        internal XmlDocument ComposeXmlForLibrary()
         {
             var document = XmlHelper.CreateDocument("LibraryTree");
 
