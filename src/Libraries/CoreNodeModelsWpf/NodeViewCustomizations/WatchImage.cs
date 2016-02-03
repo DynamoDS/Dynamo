@@ -37,6 +37,11 @@ namespace CoreNodeModelsWpf.Nodes
 
             nodeView.PresentationGrid.Children.Add(image);
             nodeView.PresentationGrid.Visibility = Visibility.Visible;
+
+            if (nodeModel.CachedValue != null)
+            {
+                HandleMirrorData();
+            }
         }
 
         private void NodeModelOnPropertyChanged(object sender, PropertyChangedEventArgs args)
@@ -44,6 +49,11 @@ namespace CoreNodeModelsWpf.Nodes
             if (args.PropertyName != "CachedValue") 
                 return;
 
+            HandleMirrorData();
+        }
+
+        private void HandleMirrorData()
+        {
             var data = nodeModel.CachedValue;
             if (data == null)
                 return;
