@@ -3958,28 +3958,6 @@ namespace ProtoCore.DSASM
 
             ++pc;
         }
-        private void PUSHLIST_Handler(Instruction instruction)
-        {
-            bool isDotFunctionBody = false;
-            if (instruction.op1.IsDynamic)
-            {
-                isDotFunctionBody = true;
-            }
-            else
-            {
-                runtimeVerify(instruction.op1.IsInteger);
-            }
-            int depth = (int)instruction.op1.opdata;
-
-            runtimeVerify(instruction.op2.IsClassIndex);
-
-            runtimeVerify(instruction.op3.IsBlockIndex);
-
-            StackValue sv = GetFinalPointer(depth, isDotFunctionBody);
-            rmem.Push(sv);
-
-            ++pc;
-        }
 
         private void PUSH_VARSIZE_Handler(Instruction instruction)
         {
@@ -5978,11 +5956,7 @@ namespace ProtoCore.DSASM
                         PUSHM_Handler(instruction);
                         return;
                     }
-                case OpCode.PUSHLIST:
-                    {
-                        PUSHLIST_Handler(instruction);
-                        return;
-                    }
+
                 case OpCode.PUSH_ARRAYKEY:
                     {
                         PUSH_VARSIZE_Handler(instruction);

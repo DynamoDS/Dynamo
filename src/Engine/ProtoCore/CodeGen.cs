@@ -1610,18 +1610,6 @@ namespace ProtoCore
             AppendInstruction(instr);
         }
 
-        protected void EmitPushList(int depth, int startscope, int block, bool fromDotCall = false)
-        {
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.PUSHLIST;
-            instr.op1 = fromDotCall ? StackValue.BuildDynamic(depth) : StackValue.BuildInt(depth);
-            instr.op2 = StackValue.BuildClassIndex(startscope);
-            instr.op3 = StackValue.BuildBlockIndex(block);
-
-            ++pc;
-            AppendInstruction(instr);
-        }
-
         protected void EmitPush(StackValue op, 
             int blockId = 0, 
             int line = ProtoCore.DSASM.Constants.kInvalidIndex, 
@@ -2325,16 +2313,6 @@ namespace ProtoCore
                 ProtoCore.DSASM.SymbolNode firstSymbol = null;
                 bool isIdentReference = DfsEmitIdentList(node, null, globalClassIndex, ref leftType, ref depth, ref inferedType, false, ref isFirstIdent, ref isMethodCallPresent, ref firstSymbol, graphNode, subPass, bnode);
                 inferedType.UID = isBooleanOp ? (int)PrimitiveType.kTypeBool : inferedType.UID;
-
-
-                if (isIdentReference && depth > 1)
-                {
-                    EmitInstrConsole(ProtoCore.DSASM.kw.pushlist, depth.ToString(), globalClassIndex.ToString());
-
-                    // TODO Jun: Get blockid
-                    int blockId = 0;
-                    EmitPushList(depth, globalClassIndex, blockId);
-                }
             }
         }
 
