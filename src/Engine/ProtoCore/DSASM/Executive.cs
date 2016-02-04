@@ -4173,32 +4173,6 @@ namespace ProtoCore.DSASM
             ++pc;
         }
 
-        private void POPG_Handler()
-        {
-            StackValue svNumGuides = rmem.Pop();
-            runtimeVerify(svNumGuides.IsReplicationGuide);
-            int guides = (int)svNumGuides.opdata;
-
-            List<ReplicationGuide> argGuides = new List<ReplicationGuide>();
-            for (int i = 0; i < guides; ++i)
-            {
-                StackValue svGuideProperty = rmem.Pop();
-                runtimeVerify(svGuideProperty.IsBoolean);
-                bool isLongest = (int)svGuideProperty.opdata == 1;
-
-                StackValue svGuide = rmem.Pop();
-                runtimeVerify(svGuide.IsInteger);
-                int guideNumber = (int)svGuide.opdata;
-
-                argGuides.Add(new ReplicationGuide(guideNumber, isLongest));
-            }
-
-            argGuides.Reverse();
-            runtimeCore.ReplicationGuides.Add(argGuides);
-
-            ++pc;
-        }
-
         protected StackValue POPM_Helper(Instruction instruction, out int blockId, out int classIndex)
         {
             classIndex = Constants.kInvalidIndex;
@@ -5972,12 +5946,6 @@ namespace ProtoCore.DSASM
                 case OpCode.POPW:
                     {
                         POPW_Handler(instruction);
-                        return;
-                    }
-
-                case OpCode.POPG:
-                    {
-                        POPG_Handler();
                         return;
                     }
 

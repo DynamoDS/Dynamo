@@ -995,23 +995,7 @@ namespace ProtoAssociative
                             foreach (AssociativeNode exprListNode in exprList.Exprs)
                             {
                                 bool repGuideState = emitReplicationGuide;
-                                if (subPass != ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier)
-                                {
-                                    if (exprListNode is ExprListNode || exprListNode is GroupExpressionNode)
-                                    {
-                                        // Emit the replication guide for the exprlist
-                                        var repGuideList = GetReplicationGuides(exprListNode);
-                                        if (repGuideList != null)
-                                        {
-                                            EmitReplicationGuides(repGuideList, true);
-                                            EmitInstrConsole(ProtoCore.DSASM.kw.popg);
-                                            EmitPopGuide();
-                                        }
-
-                                        emitReplicationGuide = false;
-                                    }
-                                }
-                                else
+                                if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier)
                                 {
                                     emitReplicationGuide = false;
                                 }
@@ -1043,23 +1027,7 @@ namespace ProtoAssociative
                             foreach (AssociativeNode exprListNode in exprList.Exprs)
                             {
                                 bool repGuideState = emitReplicationGuide;
-                                if (subPass != ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier)
-                                {
-                                    if (exprListNode is ExprListNode || exprListNode is GroupExpressionNode)
-                                    {
-                                        // Emit the replication guide for the exprlist
-                                        var repGuideList = GetReplicationGuides(exprListNode);
-                                        if (repGuideList != null)
-                                        {
-                                            EmitReplicationGuides(repGuideList, true);
-                                            EmitInstrConsole(ProtoCore.DSASM.kw.popg);
-                                            EmitPopGuide();
-                                        }
-
-                                        emitReplicationGuide = false;
-                                    }
-                                }
-                                else
+                                if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier)
                                 {
                                     emitReplicationGuide = false;
                                 }

@@ -1485,17 +1485,6 @@ namespace ProtoCore
             AppendInstruction(instr);
         }
 
-
-        protected void EmitPopGuide()
-        {
-            SetEntry();
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.POPG;
-
-            ++pc;
-            AppendInstruction(instr);
-        }
-
         protected void EmitPushArrayIndex(int dimCount)
         {
             SetEntry();
