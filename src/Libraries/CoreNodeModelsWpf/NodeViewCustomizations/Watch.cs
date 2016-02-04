@@ -22,7 +22,6 @@ namespace CoreNodeModelsWpf.Nodes
     {
         #region Private fields
 
-        private IdentifierNode astBeingWatched;
         private IdentifierNode astBeingComputed;
 
         private DynamoViewModel dynamoViewModel;
@@ -109,11 +108,10 @@ namespace CoreNodeModelsWpf.Nodes
         {
             Tuple<int, NodeModel> input;
 
-            if (!watch.TryGetInput(watch.InPorts.IndexOf(connectorModel.End), out input)) return;
+            if (!watch.TryGetInput(watch.InPorts.IndexOf(connectorModel.End), out input)
+                || astBeingComputed == null) return;
 
-            astBeingWatched = input.Item2.GetAstIdentifierForOutputIndex(input.Item1);
-            if (astBeingComputed == null) return;
-
+            var astBeingWatched = input.Item2.GetAstIdentifierForOutputIndex(input.Item1);
             if (astBeingComputed.Value != astBeingWatched.Value)
             {
                 // the input node has changed, we clear preview
@@ -211,7 +209,7 @@ namespace CoreNodeModelsWpf.Nodes
         private void WatchOnEvaluationComplete(object o)
         {
             ResetWatch();
-            astBeingComputed = astBeingWatched;
+            astBeingComputed = watch.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview;
         }
     }
 }
