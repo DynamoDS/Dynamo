@@ -24,7 +24,7 @@
             <clr:Double x:Key="MinPreviewControlHeight">28.0</clr:Double>
 
             <!-- MaxContentGrid = (MaxPreviewControl - (2 * Margin)) -->
-            <fwk:Thickness x:Key="PreviewContentMargin">5.0</fwk:Thickness>
+            <fwk:Thickness x:Key="PreviewContentMargin">5</fwk:Thickness>            
             <clr:Double x:Key="MaxContentGridWidth">488.0</clr:Double>
             <clr:Double x:Key="MaxContentGridHeight">288</clr:Double>
 
@@ -131,8 +131,7 @@
 
     <Grid Name="outerContainer"
           HorizontalAlignment="Left"
-          VerticalAlignment="Top"
-          Background="#01000000">
+          VerticalAlignment="Top">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
@@ -145,6 +144,13 @@
             <RowDefinition Height="20" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+
+        <!-- Invisible part. Background is set to #01000000. It's almost invisible color.
+              But with this color we can handle mouse moves.-->
+
+        <Grid Grid.Column="0"
+              Grid.Row="0"
+              Background="#01000000" />
 
         <Grid Grid.Column="0"
               Grid.Row="1"

@@ -75,7 +75,7 @@ namespace Dynamo.Library
             get { return Type.ToShortString(); }
         }
 
-        public void UpdateFunctionDescriptor(FunctionDescriptor funcDesc)
+        internal void UpdateFunctionDescriptor(FunctionDescriptor funcDesc)
         {
             Function = funcDesc;
 

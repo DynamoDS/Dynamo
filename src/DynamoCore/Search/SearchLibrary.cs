@@ -17,7 +17,7 @@ namespace Dynamo.Search
         ///     Adds an entry to search.
         /// </summary>
         /// <param name="entry"></param>
-        public virtual void Add(TEntry entry)
+        internal virtual void Add(TEntry entry)
         {
             Add(entry, entry.Name);
             Add(entry, entry.SearchTags, entry.SearchTagWeights);
@@ -28,7 +28,7 @@ namespace Dynamo.Search
         ///     Updates an entry in search.
         /// </summary>
         /// <param name="entry"></param>
-        public void Update(TEntry entry, bool isCategoryChanged = false)
+        internal void Update(TEntry entry, bool isCategoryChanged = false)
         {
             // If entry's category is changed, we need to delete this entry from search.
             // And add it to new category.
@@ -91,7 +91,7 @@ namespace Dynamo.Search
                 Name = name;
             }
 
-            public static SearchCategoryImpl<TEntry> Create(string categoryName, IEnumerable<SearchCategoryImpl<TEntry>> subCategories, IEnumerable<TEntry> entries)
+            internal static SearchCategoryImpl<TEntry> Create(string categoryName, IEnumerable<SearchCategoryImpl<TEntry>> subCategories, IEnumerable<TEntry> entries)
             {
                 return new SearchCategoryImpl<TEntry>(categoryName, entries, subCategories);
             }
@@ -108,7 +108,7 @@ namespace Dynamo.Search
         /// <param name="entries"></param>
         /// <param name="categorySelector"></param>
         /// <returns></returns>
-        public static ISearchCategory<TEntry> CategorizeSearchEntries<TEntry>(
+        internal static ISearchCategory<TEntry> CategorizeSearchEntries<TEntry>(
             IEnumerable<TEntry> entries, Func<TEntry, ICollection<string>> categorySelector)
         {
             return entries.GroupByRecursive<TEntry, string, SearchCategoryImpl<TEntry>>(
@@ -124,7 +124,7 @@ namespace Dynamo.Search
         /// <typeparam name="TEntry"></typeparam>
         /// <param name="category"></param>
         /// <returns></returns>
-        public static IEnumerable<string> GetAllCategoryNames<TEntry>(this ISearchCategory<TEntry> category)
+        internal static IEnumerable<string> GetAllCategoryNames<TEntry>(this ISearchCategory<TEntry> category)
         {
             yield return category.Name;
             foreach (var name in category.SubCategories.SelectMany(GetAllCategoryNames))

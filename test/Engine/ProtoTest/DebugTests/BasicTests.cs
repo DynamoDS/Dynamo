@@ -15486,7 +15486,6 @@ x = add(y);
             // Specify some of the requirements of IDE.
             var options = new ProtoCore.Options();
             options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-            options.SuppressBuildOutput = false;
 
             core = new ProtoCore.Core(options);
             core.Compilers.Add(ProtoCore.Language.Associative, new ProtoAssociative.Compiler(core));

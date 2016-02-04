@@ -51,7 +51,7 @@ Dynamo Core
 - More forgiving DesignScript syntax:  Users can now write instance methods (ex. MyCurve.PointAtParameter(0.5)) as Static Methods (ex. - Curve.PointAtParameter(MyCurve, 0.5))
 
 Known issues
-- No backwards compatibility with 0.9.0 and before
+- No backwards compatibility with 0.9.0 and before. This is due to neccessary changes to the Dynamo API in advance of 1.0. These changes can be found in the [API Changes](https://github.com/DynamoDS/Dynamo/wiki/API-Changes) document.
 
 Dynamo Studio
 - Share your work online:  Share interactive parametric models online.  Just publish your Dynamo graph and send a link to your colleagues or the whole world.  People can view and interact with your designs in a regular web browser with no Dynamo installed

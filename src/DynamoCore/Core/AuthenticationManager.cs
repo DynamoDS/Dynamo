@@ -25,7 +25,7 @@ namespace Dynamo.Core
         /// <summary>
         ///     Specifies whether the user is logged in or not.
         /// </summary>
-        public LoginState LoginState
+        internal LoginState LoginState
         {
             get { return HasAuthProvider ? authProvider.LoginState : LoginState.LoggedOut; }
         }
@@ -33,7 +33,7 @@ namespace Dynamo.Core
         /// <summary>
         ///     The username of the current user, if logged in.  Otherwise null
         /// </summary>
-        public string Username
+        internal string Username
         {
             get { return HasAuthProvider ? authProvider.Username : ""; }
         }
@@ -62,7 +62,7 @@ namespace Dynamo.Core
         /// <summary>
         /// Toggle current login state
         /// </summary>
-        public void ToggleLoginState(object o)
+        internal void ToggleLoginState(object o)
         {
             if (LoginState == LoginState.LoggedIn)
             {
@@ -77,7 +77,7 @@ namespace Dynamo.Core
         /// <summary>
         /// Check if able to toggle login state
         /// </summary>
-        public bool CanToggleLoginState(object o)
+        internal bool CanToggleLoginState(object o)
         {
             return this.LoginState == LoginState.LoggedOut || this.LoginState == LoginState.LoggedIn;
         }

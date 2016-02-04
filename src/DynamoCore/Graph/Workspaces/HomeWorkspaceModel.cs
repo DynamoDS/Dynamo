@@ -311,7 +311,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Start periodic evaluation using the currently set RunPeriod
         /// </summary>
-        public void StartPeriodicEvaluation()
+        internal void StartPeriodicEvaluation()
         {
             if (pulseMaker == null)
             {
@@ -334,7 +334,7 @@ namespace Dynamo.Graph.Workspaces
         /// Stop the on-going periodic evaluation, if there is any.
         /// </summary>
         /// 
-        public void StopPeriodicEvaluation()
+        internal void StopPeriodicEvaluation()
         {
             if (pulseMaker == null || (pulseMaker.TimerPeriod == 0)) return;
 
@@ -379,7 +379,7 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="markNodesAsDirty">Set this parameter to true to force 
         ///     reset of the execution substrait. Note that setting this parameter 
         ///     to true will have a negative performance impact.</param>
-        public void ResetEngine(EngineController controller, bool markNodesAsDirty = false)
+        internal void ResetEngine(EngineController controller, bool markNodesAsDirty = false)
         {
             if (EngineController != null)
             {
@@ -407,7 +407,7 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <param name="nodes">The nodes to modify</param>
         /// <param name="forceExecute">The argument to NodeModel.MarkNodeAsModified</param>
-        public void MarkNodesAsModifiedAndRequestRun(IEnumerable<NodeModel> nodes, bool forceExecute = false)
+        internal void MarkNodesAsModifiedAndRequestRun(IEnumerable<NodeModel> nodes, bool forceExecute = false)
         {
             if (nodes == null)
                 throw new ArgumentNullException("nodes");
@@ -579,7 +579,7 @@ namespace Dynamo.Graph.Workspaces
         /// the executing nodes will be sent via SetNodeDeltaState event.
         /// </summary>
         /// <param name="showRunPreview">This parameter controls the delta state computation </param>
-        public void GetExecutingNodes(bool showRunPreview)
+        internal void GetExecutingNodes(bool showRunPreview)
         {
             var task = new PreviewGraphAsyncTask(scheduler, VerboseLogging);
                         
@@ -618,7 +618,7 @@ namespace Dynamo.Graph.Workspaces
         /// trace data but do not exist in the current CallSite data.
         /// </summary>
         /// <returns></returns>
-        public IList<ISerializable> GetOrphanedSerializablesAndClearHistoricalTraceData()
+        internal IList<ISerializable> GetOrphanedSerializablesAndClearHistoricalTraceData()
         {
             var orphans = new List<ISerializable>();
 

@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.Interfaces;
@@ -385,9 +386,10 @@ namespace Dynamo.UI.Controls
                     {
                         var tree = new WatchTree
                         {
-                            Margin = (System.Windows.Thickness)this.Resources["PreviewContentMargin"],
                             DataContext = new WatchViewModel()
                         };
+                        tree.treeView1.ItemContainerGenerator.StatusChanged += WatchContainer_StatusChanged;
+
                         largeContentGrid.Children.Add(tree);
                     }
 
@@ -396,6 +398,7 @@ namespace Dynamo.UI.Controls
 
                     cachedLargeContent = newViewModel;
 
+                    rootDataContext.IsOneRowContent = cachedLargeContent.Children.Count == 0;
                     rootDataContext.Children.Clear();
                     rootDataContext.Children.Add(cachedLargeContent);
 
@@ -411,6 +414,49 @@ namespace Dynamo.UI.Controls
                     }
                 }
             );
+        }
+
+        /// <summary>
+        /// It's used to apply Collapsed and Expanded events for TreeViewItems.
+        /// </summary>
+        /// <param name="sender">TreeView</param>
+        private void WatchContainer_StatusChanged(object sender, EventArgs e)
+        {
+            var generator = sender as ItemContainerGenerator;
+            if (generator == null || generator.Status != GeneratorStatus.ContainersGenerated) return;
+
+            int i = 0;
+            while (true)
+            {
+                var container = generator.ContainerFromIndex(i);
+                if (container == null)
+                    break;
+
+                var tvi = container as TreeViewItem;
+                if (tvi != null)
+                {
+                    tvi.Collapsed += ComputeWatchContentSize;
+                    tvi.Expanded += ComputeWatchContentSize;
+                }
+
+                i++;
+            }
+        }
+
+        /// <summary>
+        /// When item in WatchTree is collapsed or expanded, we should compute new large content size.
+        /// </summary>
+        private void ComputeWatchContentSize(object sender, RoutedEventArgs e)
+        {
+            if (!IsExpanded) return;
+
+            // Used delay invoke, because TreeView hasn't changed its'appearance with usual Dispatcher call.
+            Dispatcher.DelayInvoke(50,() =>
+            {
+                var largeContentSize = ComputeLargeContentSize();
+                UpdateAnimatorTargetSize(SizeAnimator.Expansion, largeContentSize);
+                this.expandStoryboard.Begin(this, true);
+            });
         }
 
         private Size ComputeSmallContentSize()

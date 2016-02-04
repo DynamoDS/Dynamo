@@ -282,6 +282,11 @@ namespace Dynamo.ViewModels
 
         public NodeSearchModel Model { get; private set; }
         private readonly DynamoViewModel dynamoViewModel;
+
+        /// <summary>
+        /// Class name, that has been clicked in library search view.
+        /// </summary>
+        internal string ClassNameToBeOpened;
         #endregion
 
         #region Initialization
@@ -343,8 +348,7 @@ namespace Dynamo.ViewModels
 
         private IEnumerable<RootNodeCategoryViewModel> CategorizeEntries(IEnumerable<NodeSearchElement> entries, bool expanded)
         {
-            var tempRoot =
-                entries.GroupByRecursive<NodeSearchElement, string, NodeCategoryViewModel>(
+            var tempRoot = entries.GroupByRecursive<NodeSearchElement, string, NodeCategoryViewModel>(
                     element => element.Categories,
                     (name, subs, es) =>
                     {
@@ -352,15 +356,21 @@ namespace Dynamo.ViewModels
                             new NodeCategoryViewModel(name, es.OrderBy(en => en.Name).Select(MakeNodeSearchElementVM), subs);
                         category.IsExpanded = expanded;
                         category.RequestBitmapSource += SearchViewModelRequestBitmapSource;
+                        category.RequestReturnFocusToSearch += OnRequestFocusSearch;
                         return category;
                     }, "");
-            var result =
-                tempRoot.SubCategories.Select(
-                    cat =>
-                        new RootNodeCategoryViewModel(cat.Name, cat.Entries, cat.SubCategories)
-                        {
-                            IsExpanded = expanded
-                        });
+
+            var result = tempRoot.SubCategories.Select(cat =>
+            {
+                var rootCat = new RootNodeCategoryViewModel(cat.Name, cat.Entries, cat.SubCategories)
+                {
+                    IsExpanded = expanded
+                };
+
+                rootCat.RequestReturnFocusToSearch += OnRequestFocusSearch;
+                return rootCat;
+            });
+
             tempRoot.Dispose();
             return result.OrderBy(cat => cat.Name);
         }
@@ -1015,7 +1025,7 @@ namespace Dynamo.ViewModels
             dynamoViewModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(
                 nodeModel, position.X, position.Y, useDeafultPosition, true));
 
-            dynamoViewModel.OnRequestReturnFocusToView();
+            OnRequestFocusSearch();
         }
 
         #endregion
@@ -1108,6 +1118,7 @@ namespace Dynamo.ViewModels
             // Clear search text.
             SearchText = String.Empty;
             CollapseAll(BrowserRootCategories);
+            ClassNameToBeOpened = className;
 
             if (String.IsNullOrEmpty(className)) return;
 

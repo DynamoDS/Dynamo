@@ -353,7 +353,7 @@ Sorry about that.</value>
     <value>The package was found to be empty and was not installed.</value>
   </data>
   <data name="PackageTooLarge" xml:space="preserve">
-    <value>The package is too large!  The package must be less than 15 MB!</value>
+    <value>The package is too large!  The package must be less than 1 GB!</value>
   </data>
   <data name="PathNotRegconizableAsStableOrDailyBuild" xml:space="preserve">
     <value>The specified file path is not recognizable as a stable or a daily build</value>
@@ -639,5 +639,8 @@ value : bool = false</value>
   </data>
   <data name="ResourceTypeDoesNotHavePropertyMessage" xml:space="preserve">
     <value>Resource Type does not have Property</value>
+  </data>
+  <data name="WarningInvalidOutput" xml:space="preserve">
+    <value>Only comments and single variable are allowed in output node.</value>
   </data>
 </root>

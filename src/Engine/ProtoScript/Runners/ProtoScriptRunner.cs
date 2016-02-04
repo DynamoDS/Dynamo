@@ -222,7 +222,7 @@ namespace ProtoScript.Runners
             }
             runtimeCoreOut = runtimeCore;
 
-            if (isTest && !core.Options.CompileToLib)
+            if (isTest)
             {
                 return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
             }
@@ -254,7 +254,7 @@ namespace ProtoScript.Runners
                 throw new ProtoCore.Exceptions.CompileErrorsOccured();
             }
 
-            if (isTest && !core.Options.CompileToLib)
+            if (isTest)
             {
                 return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
             }
@@ -295,7 +295,7 @@ namespace ProtoScript.Runners
                 throw new ProtoCore.Exceptions.CompileErrorsOccured();
             }
 
-            if (isTest && !core.Options.CompileToLib)
+            if (isTest)
             {
                 runtimeCore.Mirror = new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
             }

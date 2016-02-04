@@ -37,6 +37,7 @@ namespace Dynamo
             var topMost = new List<Tuple<int, NodeModel>>();
 
             List<string> outNames;
+            returns = new List<Tuple<string, string>>();
 
             // if we found output nodes, add select their inputs
             // these will serve as the function output
@@ -44,12 +45,10 @@ namespace Dynamo
             {
                 topMost.AddRange(
                     outputs.Where(x => x.HasInput(0)).Select(x => Tuple.Create(0, x as NodeModel)));
-                outNames = outputs.Select(x => x.Symbol).ToList();
+                returns = outputs.Select(x => x.Return).ToList();
             }
             else
             {
-                outNames = new List<string>();
-
                 // if there are no explicitly defined output nodes
                 // get the top most nodes and set THEM as the output
                 IEnumerable<NodeModel> topMostNodes = nodeModels.Where(node => node.IsTopMostNode);
@@ -72,12 +71,13 @@ namespace Dynamo
                 foreach (var rtnAndIndex in rtnPorts.Select((rtn, i) => new {rtn, idx = i}))
                 {
                     topMost.Add(Tuple.Create(rtnAndIndex.rtn.portIndex, rtnAndIndex.rtn.node));
-                    outNames.Add(rtnAndIndex.rtn.name ?? rtnAndIndex.idx.ToString());
+                    var outName = rtnAndIndex.rtn.name ?? rtnAndIndex.idx.ToString();
+                    returns.Add(new Tuple<string, string>(outName, string.Empty));
                 }
             }
 
             var nameDict = new Dictionary<string, int>();
-            foreach (var name in outNames)
+            foreach (var name in returns.Select(p => p.Item1))
             {
                 if (nameDict.ContainsKey(name))
                     nameDict[name]++;
@@ -87,22 +87,29 @@ namespace Dynamo
 
             nameDict = nameDict.Where(x => x.Value != 0).ToDictionary(x => x.Key, x => x.Value);
 
-            outNames.Reverse();
+            returns.Reverse();
 
             var returnKeys = new List<string>();
-            foreach (var name in outNames)
+            for (int i = 0; i < returns.Count(); ++i)
             {
+                var info = returns[i];
                 int amt;
+                var name = info.Item1;
+
                 if (nameDict.TryGetValue(name, out amt))
                 {
                     nameDict[name] = amt - 1;
-                    returnKeys.Add(name == "" ? amt + ">" : name + amt);
+                    var newName = string.IsNullOrEmpty(name) ? amt + ">" : name + amt;
+
+                    returnKeys.Add(newName);
+                    returns[i] = new Tuple<string, string>(newName, info.Item2);
                 }
                 else
                     returnKeys.Add(name);
             }
 
             returnKeys.Reverse();
+            returns.Reverse();
 
             #endregion
 
@@ -135,7 +142,7 @@ namespace Dynamo
             ReturnType = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
         }
 
-        public static CustomNodeDefinition MakeProxy(Guid functionId, string displayName)
+        internal static CustomNodeDefinition MakeProxy(Guid functionId, string displayName)
         {
             var def = new CustomNodeDefinition(functionId, displayName);
             def.IsProxy = true;
@@ -196,7 +203,19 @@ namespace Dynamo
         ///     Return type.
         /// </summary>
         public ProtoCore.Type ReturnType { get; private set; }
-        
+
+        private List<Tuple<string, string>> returns;
+        /// <summary>
+        ///     The collection of output name and its description.
+        /// </summary>
+        public IEnumerable<Tuple<string, string>> Returns
+        {
+            get
+            {
+                return returns;
+            }
+        }
+
         #region Dependencies
 
         public IEnumerable<CustomNodeDefinition> Dependencies

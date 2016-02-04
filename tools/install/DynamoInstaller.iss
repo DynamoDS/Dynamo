@@ -12,7 +12,7 @@
 [Setup]
 AppName={#ProductName}
 AppPublisher={#ProductName}
-AppID={{86B8C99A-85CE-45e1-8149-0A22AAAB3792}
+AppID={{0B41FA6D-F38C-4B57-BB44-ADBB5AF403B4}
 AppCopyright=
 AppPublisherURL=http://www.dynamobim.org
 AppSupportURL=http://www.dynamobim.org
@@ -50,6 +50,7 @@ Name: "{app}\viewExtensions"
 Name: "{userappdata}\Dynamo\{#Major}.{#Minor}\definitions"
 Name: "{userappdata}\Dynamo\{#Major}.{#Minor}\Logs"
 Name: "{userappdata}\Dynamo\{#Major}.{#Minor}\packages"
+Name: "{app}\3rdParty\OpenSourceComponents"
 
 
 [Components]
@@ -113,6 +114,9 @@ Source: temp\DirectX\*.*; DestDir: {tmp}\DirectX;
 
 ;Gallery
 Source: temp\gallery\*; DestDir: "{commonappdata}\Dynamo\{#Major}.{#Minor}\gallery"; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
+
+;3rdParty
+Source: temp\3rdParty\OpenSourceComponents\*; DestDir: "{app}\3rdParty\OpenSourceComponents"; Flags: ignoreversion overwritereadonly recursesubdirs;
 
 [Registry]
 Root: HKCU64; Subkey: "Software\{#ProductName}\{#Major}.{#Minor}"; Flags: uninsdeletekey

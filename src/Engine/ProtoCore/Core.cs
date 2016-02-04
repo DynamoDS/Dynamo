@@ -1,24 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Linq;
 using ProtoCore.AssociativeGraph;
-using ProtoCore.AssociativeEngine;
-using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
-using ProtoCore.BuildData;
-using ProtoCore.CodeModel;
-using ProtoCore.DebugServices;
 using ProtoCore.DSASM;
 using ProtoCore.Lang;
-using ProtoCore.Lang.Replication;
-using ProtoCore.Runtime;
 using ProtoCore.Utils;
 using ProtoFFI;
-
-using StackFrame = ProtoCore.DSASM.StackFrame;
 
 namespace ProtoCore
 {
@@ -62,7 +51,6 @@ namespace ProtoCore
             LHSGraphNodeUpdate = !DirectDependencyExecution;
 
             ApplyUpdate = false;
-
             DumpByteCode = false;
             Verbose = false;
             DumpIL = false;
@@ -72,38 +60,20 @@ namespace ProtoCore
             GCTempVarsOnDebug = true;
 
             DumpFunctionResolverLogic = false; 
-            DumpOperatorToMethodByteCode = false;
-            SuppressBuildOutput = false;
             BuildOptWarningAsError = false;
             BuildOptErrorAsWarning = false;
             ExecutionMode = ExecutionMode.Serial;
             IDEDebugMode = false;
             WatchTestMode = false;
             IncludeDirectories = new List<string>();
-
-            // defaults to 6 decimal places
-            //
-            FormatToPrintFloatingPoints = "F6";
-            RootCustomPropertyFilterPathName = @"C:\arxapiharness\Bin\AcDesignScript\CustomPropertyFilter.txt";
-            CompileToLib = false;
-            AssocOperatorAsMethod = true;
-
-            EnableProcNodeSanityCheck = true;
-            EnableReturnTypeCheck = true;
-
+            RootCustomPropertyFilterPathName = string.Empty;
             RootModulePathName = Path.GetFullPath(@".");
             staticCycleCheck = true;
             dynamicCycleCheck = true;
-            RecursionChecking = false;
             EmitBreakpoints = true;
-
             localDependsOnGlobalSet = false;
-            TempReplicationGuideEmptyFlag = true;
             AssociativeToImperativePropagation = true;
             SuppressFunctionResolutionWarning = true;
-            EnableVariableAccumulator = true;
-            DisableDisposeFunctionDebug = true;
-            GenerateExprID = true;
             IsDeltaExecution = false;
 
             IsDeltaCompile = false;
@@ -118,7 +88,6 @@ namespace ProtoCore
         public bool ExecuteSSA { get; set; }
         public bool GCTempVarsOnDebug { get; set; }
         public bool Verbose { get; set; }
-        public bool DumpOperatorToMethodByteCode { get; set; }
         public bool SuppressBuildOutput { get; set; }
         public bool BuildOptWarningAsError { get; set; }
         public bool BuildOptErrorAsWarning { get; set; }
@@ -126,23 +95,15 @@ namespace ProtoCore
         public bool WatchTestMode { get; set; }     // set to true when running automation tests for expression interpreter
         public ExecutionMode ExecutionMode { get; set; }
         public string FormatToPrintFloatingPoints { get; set; }
-        public bool CompileToLib { get; set; }
-        public bool AssocOperatorAsMethod { get; set; }
-        public string LibPath { get; set; }
         public bool staticCycleCheck { get; set; }
         public bool dynamicCycleCheck { get; set; }
-        public bool RecursionChecking { get; set; }
         public bool DumpFunctionResolverLogic { get; set; }
         public bool EmitBreakpoints { get; set; }
         public bool localDependsOnGlobalSet { get; set; }
         public bool LHSGraphNodeUpdate { get; set; }
         public bool SuppressFunctionResolutionWarning { get; set; }
 
-        public bool TempReplicationGuideEmptyFlag { get; set; }
         public bool AssociativeToImperativePropagation { get; set; }
-        public bool EnableVariableAccumulator { get; set; }
-        public bool DisableDisposeFunctionDebug { get; set; }
-        public bool GenerateExprID { get; set; }
         public bool IsDeltaExecution { get; set; }
         public InterpreterMode RunMode { get; set; }
 
@@ -211,11 +172,6 @@ namespace ProtoCore
                 }
             }
         }
-
-        public bool EnableReturnTypeCheck { get; set; }
-
-        public bool EnableProcNodeSanityCheck { get; set; }
-
     }
 
     public struct InlineConditional
@@ -555,18 +511,7 @@ namespace ProtoCore
             DynamicVariableTable = new DynamicVariableTable();
             DynamicFunctionTable = new DynamicFunctionTable();
 
-            if (Options.SuppressBuildOutput)
-            {
-                //  don't log any of the build related messages
-                //  just accumulate them in relevant containers with
-                //  BuildStatus object
-                //
-                BuildStatus = new BuildStatus(this, false, false, false);
-            }
-            else
-            {
-                BuildStatus = new BuildStatus(this, Options.BuildOptWarningAsError);
-            }
+            BuildStatus = new BuildStatus(this, Options.BuildOptWarningAsError);
             
             ExpressionUID = 0;
             ForLoopBlockIndex = Constants.kInvalidIndex;
@@ -626,18 +571,7 @@ namespace ProtoCore
 
             deltaCompileStartPC = Constants.kInvalidIndex;
 
-            if (options.SuppressBuildOutput)
-            {
-                //  don't log any of the build related messages
-                //  just accumulate them in relevant containers with
-                //  BuildStatus object
-                //
-                BuildStatus = new BuildStatus(this, false, false, false);
-            }
-            else
-            {
-                BuildStatus = new BuildStatus(this, Options.BuildOptWarningAsError, null, Options.BuildOptErrorAsWarning);
-            }
+            BuildStatus = new BuildStatus(this, Options.BuildOptWarningAsError, null, Options.BuildOptErrorAsWarning);
 
             SSAExpressionUID = 0;
             SSASubscript = 0;

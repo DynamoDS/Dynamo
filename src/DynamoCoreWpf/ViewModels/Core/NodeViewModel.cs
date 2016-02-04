@@ -6,6 +6,7 @@ using System.Linq;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Text.RegularExpressions;
+using Dynamo.Configuration;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Models;
 using System.Windows; 
@@ -40,7 +41,7 @@ namespace Dynamo.ViewModels
         ObservableCollection<PortViewModel> inPorts = new ObservableCollection<PortViewModel>();
         ObservableCollection<PortViewModel> outPorts = new ObservableCollection<PortViewModel>();
         NodeModel nodeLogic;
-        private double zIndex = 3;
+        private int zIndex = Configurations.NodeStartZIndex;
         private string astText = string.Empty;
         private bool isexplictFrozen;
         private bool canToggleFrozen = true;
@@ -170,11 +171,28 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public double ZIndex
-         {
+        /// <summary>
+        /// ZIndex is used to order nodes, when some node is clicked.
+        /// This selected node should be moved above others.
+        /// Start value of zIndex is 3, because 1 is for groups and 2 is for connectors.
+        /// Nodes should be always at the top.
+        /// 
+        /// Static is used because every node should know what is the highest z-index right now.
+        /// </summary>
+        internal static int StaticZIndex = Configurations.NodeStartZIndex;
+
+        /// <summary>
+        /// ZIndex represents the order on the z-plane in which nodes appear.
+        /// </summary>
+        public int ZIndex
+        {
             get { return zIndex; }
-            set { zIndex = value; RaisePropertyChanged("ZIndex"); }
-         }
+            set
+            {
+                zIndex = value;
+                RaisePropertyChanged("ZIndex");
+            }
+        }
 
         /// <summary>
         /// Input grid's enabled state is now bound to this property
@@ -424,9 +442,9 @@ namespace Dynamo.ViewModels
         {
             WorkspaceViewModel = workspaceViewModel;
             DynamoViewModel = workspaceViewModel.DynamoViewModel;
-           
+
             nodeLogic = logic;
-            
+
             //respond to collection changed events to add
             //and remove port model views
             logic.InPorts.CollectionChanged += inports_collectionChanged;
@@ -453,7 +471,8 @@ namespace Dynamo.ViewModels
 
             ShowExecutionPreview = workspaceViewModel.DynamoViewModel.ShowRunPreview;
             IsNodeAddedRecently = true;
-            DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;             
+            DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
+            ZIndex = ++StaticZIndex;
         }
  
         public NodeViewModel(WorkspaceViewModel workspaceViewModel, NodeModel logic, Size preferredSize)

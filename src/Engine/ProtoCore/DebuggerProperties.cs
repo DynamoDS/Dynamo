@@ -283,15 +283,12 @@ namespace ProtoCore
         private int FindEndPCForAssocGraphNode(int tempPC, InstructionStream istream, ProcedureNode fNode, GraphNode graphNode, bool handleSSATemps)
         {
             int limit = Constants.kInvalidIndex;
-            //AssociativeGraph.GraphNode currentGraphNode = executingGraphNode;
             GraphNode currentGraphNode = graphNode;
-            //Validity.Assert(currentGraphNode != null);
 
             if (currentGraphNode != null)
             {
                 if (tempPC < currentGraphNode.updateBlock.startpc || tempPC > currentGraphNode.updateBlock.endpc)
                 {
-                    //   return false;
                     return Constants.kInvalidIndex;
                 }
 
