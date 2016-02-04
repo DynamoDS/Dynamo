@@ -393,11 +393,12 @@ namespace DSCore
         /// <search>shift,offset</search>
         public static IList ShiftIndices(IList list, int amount)
         {
-            if (System.Math.Abs(amount) > list.Count)
-                amount = amount % list.Count;
-            
-            if (amount == 0)
-                return list;
+            var count = list.Count;
+            if (count > 0 && System.Math.Abs(amount) > count)
+            {
+                amount = amount % count;
+            }
+            if (amount == 0) return list;
 
             IEnumerable<object> genList = list.Cast<object>();
             return
