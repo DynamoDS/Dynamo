@@ -23,7 +23,7 @@
 	</GalleryContent>
   <GalleryContent>
     <Header>Topology Improvements</Header>
-    <Body>- Query adjacent topology from current topology&#10;- Fixed Face.SurfaceGeometry node to get exact position&#10;- Check equality on topology</Body>
+    <Body>Find adjacent geometries by using Dynamo's brand new nodes. You will now be able determine which edges are connected to a vertex, which faces are connected to an edge, and if geometries have common topology.</Body>
     <ImagePath>Geometry_Adjacency.png</ImagePath>
   </GalleryContent>
 	<GalleryContent>
