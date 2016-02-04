@@ -80,7 +80,8 @@ namespace Dynamo.PackageManager.Tests
             db.BuildDirectory(pkg, pkgsDir, files);
 
             var rootDir = Path.Combine(pkgsDir, pkg.Name);
-            
+
+            Assert.AreEqual(1, fs.NewFilesWritten.Count());
             Assert.IsTrue(fs.NewFilesWritten.Any(x => x.Item1 == Path.Combine(rootDir, PackageDirectoryBuilder.PackageJsonName)));
         }
 
@@ -159,6 +160,10 @@ namespace Dynamo.PackageManager.Tests
 
             var dyfDir = Path.Combine(pkgsDir, pkg.Name, PackageDirectoryBuilder.CustomNodeDirectoryName);
 
+            Assert.AreEqual(2, fs.CopiedFiles.Count());
+            Assert.AreEqual(2, fs.DeletedFiles.Count());
+            Assert.AreEqual(0, fs.DeletedDirectories.Count());
+
             Assert.IsTrue(fs.CopiedFiles.Any(x => ComparePaths(x.Item2, Path.Combine(dyfDir, "file1.dyf"))));
             Assert.IsTrue(fs.CopiedFiles.Any(x => ComparePaths(x.Item2, Path.Combine(dyfDir, "file2.dyf"))));
         }
@@ -180,6 +185,9 @@ namespace Dynamo.PackageManager.Tests
             db.BuildDirectory(pkg, pkgsDir, files);
 
             // The original files are moved
+
+            Assert.AreEqual(2, fs.DeletedFiles.Count());
+            Assert.AreEqual(0, fs.DeletedDirectories.Count());
 
             Assert.Contains(files[0], fs.DeletedFiles.ToList());
             Assert.Contains(files[1], fs.DeletedFiles.ToList());
@@ -213,7 +221,7 @@ namespace Dynamo.PackageManager.Tests
             Assert.AreEqual(2, fs.DeletedDirectories.Count());
             Assert.AreEqual(1, fs.NewFilesWritten.Count());
         }
-
+        
         #endregion
 
         #region CopyFilesIntoPackageDirectory
