@@ -15,14 +15,14 @@ namespace Dynamo.Search
         public BrowserItem Parent { get; set; }
         public BrowserItem OldParent { get; set; }
 
-        public void ReturnToOldParent()
+        internal void ReturnToOldParent()
         {
             if (this.OldParent == null) return;
 
             this.OldParent.AddChild(this);
         }
 
-        public void ExpandToRoot()
+        internal void ExpandToRoot()
         {
             if (this.Parent == null)
                 return;
@@ -47,14 +47,14 @@ namespace Dynamo.Search
             get { return _name; }
         }
 
-        public BrowserInternalElement()
+        internal BrowserInternalElement()
         {
             this._name = "Default";
             this.Parent = null;
             this.OldParent = null;
         }
 
-        public BrowserInternalElement(string name, BrowserItem parent)
+        internal BrowserInternalElement(string name, BrowserItem parent)
         {
             this._name = name;
             this.Parent = parent;
@@ -64,7 +64,7 @@ namespace Dynamo.Search
 
         public string FullCategoryName { get; set; }
 
-        public override void Execute()
+        internal override void Execute()
         {
             var endState = !this.IsExpanded;
 

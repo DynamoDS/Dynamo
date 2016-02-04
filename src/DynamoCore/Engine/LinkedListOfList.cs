@@ -30,7 +30,7 @@ namespace Dynamo.Engine
             return list.GetEnumerator();
         }
 
-        public void AddItem(TKey key, T item)
+        internal void AddItem(TKey key, T item)
         {
             LinkedListNode<List<T>> listNode;
             if (!map.TryGetValue(key, out listNode))

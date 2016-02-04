@@ -197,7 +197,7 @@ namespace Dynamo.Graph.Nodes
 
         #endregion
 
-        public string GetDescription()
+        internal string GetDescription()
         {
             if (NodeNature == Nature.Deprecated)
             {

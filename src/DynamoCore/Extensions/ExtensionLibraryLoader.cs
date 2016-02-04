@@ -18,6 +18,10 @@ namespace Dynamo.Extensions
             this.model = model;
         }
 
+        /// <summary>
+        /// Loads the node library.
+        /// </summary>
+        /// <param name="library">The library.</param>
         public void LoadNodeLibrary(Assembly library)
         {
             model.LoadNodeLibrary(library);
