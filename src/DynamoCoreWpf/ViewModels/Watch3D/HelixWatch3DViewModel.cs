@@ -162,12 +162,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        public event Action<IEnumerable<IRenderPackage>> RequestCreateModels;
-        public void OnRequestCreateModels(IEnumerable<IRenderPackage> packages)
+        public event Action<IEnumerable<IRenderPackage>, bool> RequestCreateModels;
+        public void OnRequestCreateModels(IEnumerable<IRenderPackage> packages, bool forceAsyncCall = false)
         {
             if (RequestCreateModels != null)
             {
-                RequestCreateModels(packages);
+                RequestCreateModels(packages, forceAsyncCall);
             }
         }
 
@@ -463,7 +463,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             return new CameraData();
         }
 
-        public override void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages)
+        public override void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages, bool forceAsyncCall = false)
         {
             if (Active == false)
             {
@@ -472,7 +472,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             // Raise request for model objects to be
             // created on the UI thread.
-            OnRequestCreateModels(packages);
+            OnRequestCreateModels(packages, forceAsyncCall);
         }
 
         protected override void OnShutdown()
