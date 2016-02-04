@@ -38,10 +38,7 @@ namespace CoreNodeModelsWpf.Nodes
             nodeView.PresentationGrid.Children.Add(image);
             nodeView.PresentationGrid.Visibility = Visibility.Visible;
 
-            if (nodeModel.CachedValue != null)
-            {
-                HandleMirrorData();
-            }
+            HandleMirrorData();
         }
 
         private void NodeModelOnPropertyChanged(object sender, PropertyChangedEventArgs args)
