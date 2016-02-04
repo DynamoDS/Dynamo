@@ -4327,9 +4327,7 @@ namespace ProtoAssociative
 
                     if (emitReplicationGuide)
                     {
-                        int guides = EmitReplicationGuides(t.ReplicationGuides);
-                        EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, guides + "[guide]");
-                        EmitPushReplicationGuide(guides);
+                        EmitReplicationGuides(t.ReplicationGuides);
                     }
                 }
 
@@ -4507,9 +4505,7 @@ namespace ProtoAssociative
 
                 if (emitReplicationGuide)
                 {
-                    int guide = EmitReplicationGuides(range.ReplicationGuides);
-                    EmitInstrConsole(kw.pushindex, guide + "[guide]");
-                    EmitPushReplicationGuide(guide);
+                    EmitReplicationGuides(range.ReplicationGuides);
                 }
             }
         }
@@ -6081,9 +6077,7 @@ namespace ProtoAssociative
                 // index.
                 if (!isRangeExpression && emitReplicationGuide)
                 {
-                    int guides = EmitReplicationGuides(replicationGuides);
-                    EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, guides + "[guide]");
-                    EmitPushReplicationGuide(guides);
+                    EmitReplicationGuides(replicationGuides);
                 }
             }
 
@@ -8509,14 +8503,9 @@ namespace ProtoAssociative
                 }
             }
 
-            if (subPass != ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier)
+            if (subPass != ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier && emitReplicationGuide)
             {
-                if (emitReplicationGuide)
-                {
-                    int guides = EmitReplicationGuides(group.ReplicationGuides);
-                    EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, guides + "[guide]");
-                    EmitPushReplicationGuide(guides);
-                }
+                EmitReplicationGuides(group.ReplicationGuides);
             }
         }
 
