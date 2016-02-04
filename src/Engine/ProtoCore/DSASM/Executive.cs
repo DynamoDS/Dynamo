@@ -3928,90 +3928,6 @@ namespace ProtoCore.DSASM
             ++pc;
         }
 
-        private void PUSHG_Handler(Instruction instruction)
-        {
-            int dimensions = 0;
-            int guides = 0;
-            int blockId = Constants.kInvalidIndex;
-
-            StackValue op1 = instruction.op1;
-            if (op1.IsVariableIndex ||
-                op1.IsMemberVariableIndex ||
-                op1.IsPointer ||
-                op1.IsArray ||
-                op1.IsStaticVariableIndex ||
-                op1.IsFunctionPointer)
-            {
-
-                // TODO: Jun this is currently unused but required for stack alignment
-                StackValue svType = rmem.Pop();
-                runtimeVerify(svType.IsStaticType);
-
-                StackValue svDim = rmem.Pop();
-                runtimeVerify(svDim.IsArrayDimension);
-                dimensions = (int)svDim.opdata;
-
-                StackValue svBlock = rmem.Pop();
-                runtimeVerify(svBlock.IsBlockIndex);
-                blockId = (int)svBlock.opdata;
-
-            }
-
-            if (0 == dimensions)
-            {
-                StackValue svNumGuides = rmem.Pop();
-                runtimeVerify(svNumGuides.IsReplicationGuide);
-                guides = (int)svNumGuides.opdata;
-
-                List<ReplicationGuide> argGuides = new List<ReplicationGuide>();
-                for (int i = 0; i < guides; ++i)
-                {
-                    StackValue svGuideProperty = rmem.Pop();
-                    runtimeVerify(svGuideProperty.IsBoolean);
-                    bool isLongest = (int)svGuideProperty.opdata == 1;
-
-                    StackValue svGuide = rmem.Pop();
-                    runtimeVerify(svGuide.IsInteger);
-                    int guideNumber = (int)svGuide.opdata;
-
-                    argGuides.Add(new ReplicationGuide(guideNumber, isLongest));
-                }
-
-                argGuides.Reverse();
-                runtimeCore.ReplicationGuides.Add(argGuides);
-
-                StackValue opdata1 = GetOperandData(blockId, instruction.op1, instruction.op2);
-                rmem.Push(opdata1);
-            }
-            else
-            {
-                // TODO Jun: This entire block that handles arrays shoudl be integrated with getOperandData
-
-                runtimeVerify(op1.IsVariableIndex ||
-                              op1.IsMemberVariableIndex ||
-                              op1.IsArray);
-
-                runtimeVerify(instruction.op2.IsClassIndex);
-
-                var dims = new List<StackValue>();
-                for (int n = 0; n < dimensions; ++n)
-                {
-                    dims.Insert(0, rmem.Pop());
-                }
-
-                StackValue sv = GetIndexedArray(dims, blockId, instruction.op1, instruction.op2);
-
-
-                StackValue svNumGuides = rmem.Pop();
-                runtimeVerify(svNumGuides.IsReplicationGuide);
-                guides = (int)svNumGuides.opdata;
-
-                rmem.Push(sv);
-            }
-
-            ++pc;
-        }
-
         private void PUSHB_Handler(Instruction instruction)
         {
             if (runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
@@ -6048,11 +5964,6 @@ namespace ProtoCore.DSASM
                 case OpCode.PUSHINDEX:
                     {
                         PUSHINDEX_Handler(instruction);
-                        return;
-                    }
-                case OpCode.PUSHG:
-                    {
-                        PUSHG_Handler(instruction);
                         return;
                     }
 

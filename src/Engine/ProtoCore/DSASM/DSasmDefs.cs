@@ -95,7 +95,7 @@ namespace ProtoCore.DSASM
         public const string alloca = "alloca";
         public const string allocc = "allocc";
         public const string push = "push";
-        public const string pushg = "pushg";
+        public const string pushg = "pushemptyguide";
         public const string pushm = "pushm";
         public const string pushw = "pushw";
         public const string pushindex = "pushindex";

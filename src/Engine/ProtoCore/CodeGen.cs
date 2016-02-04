@@ -1638,20 +1638,6 @@ namespace ProtoCore
             AppendInstruction(instr, line, col);
         }
 
-        protected void EmitPushG(StackValue op, int rank = 0, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex)
-        {
-            SetEntry();
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.PUSHG;
-            instr.op1 = op;
-            instr.op2 = StackValue.BuildClassIndex(globalClassIndex);
-            instr.op3 = StackValue.BuildArrayDimension(rank);
-
-            ++pc;
-            AppendInstruction(instr, line, col);
-        }
-
-
         protected void EmitPushType(int UID, int rank)
         {
             SetEntry();
@@ -1839,7 +1825,7 @@ namespace ProtoCore
             }
 
             inferedType.UID = isBooleanOp ? (int)PrimitiveType.kTypeBool : inferedType.UID;
-            EmitOpWithReplicationGuide(emitReplicationGuide, StackValue.BuildInt(value), value.ToString(), node);
+            EmitOpWithEmptyReplicationGuide(emitReplicationGuide, StackValue.BuildInt(value), value.ToString(), node);
 
             if (IsAssociativeArrayIndexing)
             {
@@ -1906,7 +1892,7 @@ namespace ProtoCore
             String strValue = "'" + value + "'";
             StackValue op = StackValue.BuildChar(value[0]);
 
-            EmitOpWithReplicationGuide(emitReplicationGuide, StackValue.BuildChar(value[0]), strValue, node);
+            EmitOpWithEmptyReplicationGuide(emitReplicationGuide, StackValue.BuildChar(value[0]), strValue, node);
         }
        
         protected void EmitStringNode(
@@ -1928,7 +1914,7 @@ namespace ProtoCore
 
             string value = (string)sNode.Value;
             StackValue svString = core.Heap.AllocateFixedString(value);
-            EmitOpWithReplicationGuide(emitReplicationGuide, svString, "\"" + value + "\"", node);
+            EmitOpWithEmptyReplicationGuide(emitReplicationGuide, svString, "\"" + value + "\"", node);
 
             if (IsAssociativeArrayIndexing && graphNode != null && graphNode.isIndexingLHS)
             {
@@ -1969,7 +1955,7 @@ namespace ProtoCore
                 inferedType.UID = (int)PrimitiveType.kTypeDouble;
             }
             inferedType.UID = isBooleanOp ? (int)PrimitiveType.kTypeBool : inferedType.UID;
-            EmitOpWithReplicationGuide(emitReplicationGuide, StackValue.BuildDouble(value), value.ToString(), node);
+            EmitOpWithEmptyReplicationGuide(emitReplicationGuide, StackValue.BuildDouble(value), value.ToString(), node);
 
             if (IsAssociativeArrayIndexing)
             {
@@ -2034,7 +2020,7 @@ namespace ProtoCore
                 inferedType.UID = (int)PrimitiveType.kTypeBool;
             }
 
-            EmitOpWithReplicationGuide(emitReplicationGuide, StackValue.BuildBoolean(value), value.ToString(), node);
+            EmitOpWithEmptyReplicationGuide(emitReplicationGuide, StackValue.BuildBoolean(value), value.ToString(), node);
         }
 
         protected void EmitNullNode(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone)
@@ -2045,24 +2031,17 @@ namespace ProtoCore
             }
 
             inferedType.UID = isBooleanOp ? (int)PrimitiveType.kTypeBool : inferedType.UID;
-            EmitOpWithReplicationGuide(emitReplicationGuide, StackValue.Null, Literal.Null, node);
+            EmitOpWithEmptyReplicationGuide(emitReplicationGuide, StackValue.Null, Literal.Null, node);
         }
 
-        protected void EmitOpWithReplicationGuide(bool emit, StackValue op, string value, AST.Node node)
+        protected void EmitOpWithEmptyReplicationGuide(bool emit, StackValue op, string value, AST.Node node)
         {
             if (emit)
             {
-                EmitInstrConsole(ProtoCore.DSASM.kw.push, 0 + "[guide]");
-                EmitPush(StackValue.BuildReplicationGuide(0));
-
-                EmitInstrConsole(ProtoCore.DSASM.kw.pushg, value);
-                EmitPushG(op, node.line, node.col);
+                EmitReplicationGuides(new List<AST.AssociativeAST.AssociativeNode>());
             }
-            else
-            {
-                EmitInstrConsole(ProtoCore.DSASM.kw.push, value);
-                EmitPush(op, node.line, node.col);
-            }
+            EmitInstrConsole(ProtoCore.DSASM.kw.push, value);
+            EmitPush(op, node.line, node.col);
         }
 
         protected void EmitReplicationGuides(List<ProtoCore.AST.AssociativeAST.AssociativeNode> replicationGuidesList, bool emitNumber = false)
