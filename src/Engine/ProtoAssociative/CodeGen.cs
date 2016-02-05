@@ -6024,18 +6024,22 @@ namespace ProtoAssociative
                     emitReplicationGuide = emitReplicationGuideFlag;
                 }
 
-                List<ProtoCore.AST.AssociativeAST.AssociativeNode> replicationGuides = null;
+                List<AssociativeNode> replicationGuides = null;
+                AtLevelNode atLevel;
                 bool isRangeExpression = false;
 
                 if (fnode != null)
                 {
+                    atLevel = fnode.AtLevel;
                     replicationGuides = fnode.ReplicationGuides;
                     isRangeExpression = fnode.Function.Name.Equals(Constants.kFunctionRangeExpression);
                 }
                 else if (node is FunctionDotCallNode)
                 {
                     FunctionCallNode funcNode = (node as FunctionDotCallNode).FunctionCall;
-                    replicationGuides = (funcNode.Function as IdentifierNode).ReplicationGuides;
+                    var function = funcNode.Function as IdentifierNode;
+                    replicationGuides = function.ReplicationGuides;
+                    atLevel = function.AtLevel;
                 }
 
                 // YuKe: The replication guide for range expression will be 

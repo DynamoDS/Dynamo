@@ -2021,7 +2021,7 @@ namespace ProtoCore
             EmitPush(op, node.line, node.col);
         }
 
-        protected void EmitReplicationGuides(List<ProtoCore.AST.AssociativeAST.AssociativeNode> replicationGuidesList, bool emitNumber = false)
+        protected void EmitReplicationGuides(List<AST.AssociativeAST.AssociativeNode> replicationGuidesList)
         {
             int replicationGuides = 0;
             if (null != replicationGuidesList && replicationGuidesList.Count > 0)
@@ -2029,28 +2029,21 @@ namespace ProtoCore
                 replicationGuides = replicationGuidesList.Count;
                 for (int n = 0; n < replicationGuides; ++n)
                 {
-                    Validity.Assert(replicationGuidesList[n] is ProtoCore.AST.AssociativeAST.ReplicationGuideNode);
-                    ProtoCore.AST.AssociativeAST.ReplicationGuideNode repGuideNode = replicationGuidesList[n] as ProtoCore.AST.AssociativeAST.ReplicationGuideNode;
+                    Validity.Assert(replicationGuidesList[n] is AST.AssociativeAST.ReplicationGuideNode);
+                    var repGuideNode = replicationGuidesList[n] as AST.AssociativeAST.ReplicationGuideNode;
 
-                    Validity.Assert(repGuideNode.RepGuide is ProtoCore.AST.AssociativeAST.IdentifierNode);
-                    ProtoCore.AST.AssociativeAST.IdentifierNode nodeGuide = repGuideNode.RepGuide as ProtoCore.AST.AssociativeAST.IdentifierNode;
+                    Validity.Assert(repGuideNode.RepGuide is AST.AssociativeAST.IdentifierNode);
+                    var nodeGuide = repGuideNode.RepGuide as AST.AssociativeAST.IdentifierNode;
 
                     // Emit the repguide
-                    EmitInstrConsole(ProtoCore.DSASM.kw.push, nodeGuide.Value);
+                    EmitInstrConsole(kw.push, nodeGuide.Value);
                     StackValue opguide = StackValue.BuildInt(System.Convert.ToInt64(nodeGuide.Value));
                     EmitPush(opguide);
 
                     // Emit the rep guide property
-                    EmitInstrConsole(ProtoCore.DSASM.kw.push, repGuideNode.IsLongest.ToString());
+                    EmitInstrConsole(kw.push, repGuideNode.IsLongest.ToString());
                     StackValue opGuideProperty = StackValue.BuildBoolean(repGuideNode.IsLongest);
                     EmitPush(opGuideProperty);
-                }
-
-                if (emitNumber)
-                {
-                    EmitInstrConsole(ProtoCore.DSASM.kw.push, replicationGuides + "[guide]");
-                    StackValue opNumGuides = StackValue.BuildReplicationGuide(replicationGuides);
-                    EmitPush(opNumGuides);
                 }
             }
 

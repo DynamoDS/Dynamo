@@ -90,9 +90,9 @@ namespace ProtoCore.DSASM
         CALL,
         CALLR,
         RETURN,
-        RETC,
-        RETB,
-        RETCN,
+        RETC,    // Return from constructor
+        RETB,    // Return from code block
+        RETCN,   // Return from local block
 
         BOUNCE,
         JMP,
