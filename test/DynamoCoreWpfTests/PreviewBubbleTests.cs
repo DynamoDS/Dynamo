@@ -156,5 +156,45 @@ namespace DynamoCoreWpfTests
         }
 
         #endregion
+
+        [Test]
+        public void PreviewBubble_HiddenDummyVerticalBoundaries()
+        {
+            Open(@"core\DetailedPreviewMargin_Test.dyn");
+
+            var nodeView = NodeViewWithGuid("1382aaf9-9432-4cf0-86ae-c586d311767e");
+            nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+                        
+            // preview is hidden
+            Assert.IsTrue(ElementIsInContainer(nodeView.PreviewControl.HiddenDummy, nodeView.PreviewControl));
+
+            View.Dispatcher.Invoke(() =>
+            {
+                nodeView.PreviewControl.BindToDataSource(nodeView.ViewModel.NodeModel.CachedValue);
+                nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Condensed);
+            });
+
+            DispatcherUtil.DoEvents();
+
+            // preview is condensed
+            Assert.IsTrue(ElementIsInContainer(nodeView.PreviewControl.HiddenDummy, nodeView.PreviewControl));
+
+            View.Dispatcher.Invoke(() =>
+            {
+                nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Expanded);
+            });
+
+            DispatcherUtil.DoEvents();
+
+            // preview is expanded
+            Assert.IsTrue(ElementIsInContainer(nodeView.PreviewControl.HiddenDummy, nodeView));
+        }        
+
+        private bool ElementIsInContainer(FrameworkElement element, FrameworkElement container)
+        {
+            var relativePosition = element.TranslatePoint(new Point(), container);
+            
+            return (relativePosition.X == 0) && (element.ActualWidth <= container.ActualWidth);
+        }
     }
 }

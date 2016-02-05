@@ -148,7 +148,8 @@
         <!-- Invisible part. Background is set to #01000000. It's almost invisible color.
               But with this color we can handle mouse moves.-->
 
-        <Grid Grid.Column="0"
+        <Grid Name="HiddenDummy"
+              Grid.Column="0"
               Grid.Row="0"
               HorizontalAlignment="Left"
               Width="{Binding RelativeSource={RelativeSource FindAncestor, 
