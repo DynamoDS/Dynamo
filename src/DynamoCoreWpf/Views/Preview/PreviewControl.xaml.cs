@@ -577,8 +577,9 @@ namespace Dynamo.UI.Controls
                     }
                     else
                     {
-                        smallContentGrid.Width = smallContentSize.Width;
-                        smallContentGrid.Height = smallContentSize.Height;
+                        centralizedGrid.Opacity = 1.0;
+                        centralizedGrid.Width = smallContentSize.Width;
+                        centralizedGrid.Height = smallContentSize.Height;
                         OnPreviewControlPhasedIn(null, null);
                     }
                 }
@@ -633,8 +634,10 @@ namespace Dynamo.UI.Controls
                     }
                     else
                     {
-                        smallContentGrid.Width = smallContentSize.Width;
-                        smallContentGrid.Height = smallContentSize.Height;
+                        largeContentGrid.Opacity = 0.0;
+                        smallContentGrid.Opacity = 1.0;
+                        centralizedGrid.Width = smallContentSize.Width;
+                        centralizedGrid.Height = smallContentSize.Height;
                         OnPreviewControlCondensed(null, null);
                     }
                 }
@@ -667,8 +670,10 @@ namespace Dynamo.UI.Controls
                     }
                     else
                     {
-                        largeContentGrid.Width = largeContentSize.Width;
-                        largeContentGrid.Height = largeContentSize.Height;
+                        largeContentGrid.Opacity = 1.0;
+                        smallContentGrid.Opacity = 0.0;
+                        centralizedGrid.Width = largeContentSize.Width;
+                        centralizedGrid.Height = largeContentSize.Height;
                         OnPreviewControlExpanded(null, null);
                     }
                 }
