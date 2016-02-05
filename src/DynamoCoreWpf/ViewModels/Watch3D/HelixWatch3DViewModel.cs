@@ -380,6 +380,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        protected internal virtual void UpdateUpstream()
+        {
+        }
+
         protected HelixWatch3DViewModel(Watch3DViewModelStartupParams parameters) : base(parameters)
         {
             Name = Resources.BackgroundPreviewName;
@@ -582,6 +586,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 return;
             }
+
+            node.WasRenderPackageUpdatedAfterExecution = false;
 
             switch (e.PropertyName)
             {

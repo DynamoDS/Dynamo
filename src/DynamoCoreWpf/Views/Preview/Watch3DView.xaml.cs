@@ -148,6 +148,7 @@ namespace Dynamo.Controls
             ViewModel.RequestClickRay += GetClickRay;
             ViewModel.RequestCameraPosition += GetCameraPosition;
             ViewModel.RequestZoomToFit += ViewModel_RequestZoomToFit;
+            ViewModel.UpdateUpstream();
         }
 
         private void ViewModel_RequestZoomToFit(BoundingBox bounds)

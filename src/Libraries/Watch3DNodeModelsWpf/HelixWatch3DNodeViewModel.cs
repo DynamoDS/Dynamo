@@ -46,7 +46,7 @@ namespace Watch3DNodeModelsWpf
             UpdateUpstream();
         }
 
-        private void UpdateUpstream()
+        protected override void UpdateUpstream()
         {
             OnClear();
 
