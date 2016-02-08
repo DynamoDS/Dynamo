@@ -35,6 +35,13 @@ namespace Dynamo.Controls
         /// </summary>
         private bool previewEnabled = true;
 
+        /// <summary>
+        /// Old ZIndex of node. It's set, when mouse leaves node.
+        /// </summary>
+        private int oldZIndex;
+
+        private bool nodeWasClicked;
+
         public NodeView TopControl
         {
             get { return topControl; }
@@ -316,12 +323,8 @@ namespace Dynamo.Controls
 
         private void OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (NodeViewModel.StaticZIndex == Int32.MaxValue)
-            {
-                PrepareZIndex();
-            }
-
-            ViewModel.ZIndex = ++NodeViewModel.StaticZIndex;
+            nodeWasClicked = true;
+            BringInFront();
         }
 
         /// <summary>
@@ -387,6 +390,8 @@ namespace Dynamo.Controls
 
         private void OnNodeViewMouseEnter(object sender, MouseEventArgs e)
         {
+            nodeWasClicked = false;
+
             if (!previewEnabled) return; // Preview is hidden. There is no need run further.
 
             if (PreviewControl.IsInTransition) // In transition state, come back later.
@@ -401,10 +406,14 @@ namespace Dynamo.Controls
 
                 Dispatcher.DelayInvoke(previewDelay, ExpandPreviewControl);
             }
+
+            Dispatcher.DelayInvoke(previewDelay, BringInFront);
         }
 
         private void OnNodeViewMouseLeave(object sender, MouseEventArgs e)
         {
+            ViewModel.ZIndex = oldZIndex;
+
             // If mouse in over node/preview control or preview control is pined, we can not hide preview control.
             if (IsMouseOver || PreviewControl.IsMouseOver || PreviewControl.StaysOpen ||
                 (Mouse.Captured != null && IsMouseInsideNodeOrPreview(e.GetPosition(this)))) return;
@@ -483,6 +492,22 @@ namespace Dynamo.Controls
             if ((IsMouseOver || PreviewControl.IsMouseOver) && PreviewControl.IsCondensed)
             {
                 PreviewControl.TransitionToState(PreviewControl.State.Expanded);
+            }
+        }
+
+        /// <summary>
+        /// Sets ZIndex of node the maximum value.
+        /// </summary>
+        private void BringInFront()
+        {
+            if (IsMouseOver || PreviewControl.IsMouseOver)
+            {
+                if (NodeViewModel.StaticZIndex == Int32.MaxValue)
+                {
+                    PrepareZIndex();
+                }
+                oldZIndex = nodeWasClicked ? ++NodeViewModel.StaticZIndex : ViewModel.ZIndex;
+                ViewModel.ZIndex = ++NodeViewModel.StaticZIndex;
             }
         }
 
