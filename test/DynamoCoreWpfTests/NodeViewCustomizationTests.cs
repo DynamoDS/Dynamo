@@ -432,11 +432,9 @@ namespace DynamoCoreWpfTests
                 DynamoModel.MakeConnectionCommand.Mode.Begin));
             Model.ExecuteCommand(new DynamoModel.MakeConnectionCommand(watchGuid, 0, PortType.Input,
                 DynamoModel.MakeConnectionCommand.Mode.End));
-            View.Dispatcher.BeginInvoke(new Action(() =>
-            {
-                // value should not be empty
-                Assert.AreEqual(8, items.Count());
-            }), DispatcherPriority.Loaded);
+
+            DispatcherUtil.DoEvents();
+            Assert.AreEqual(8, items.Count());
         }
     }
 }
