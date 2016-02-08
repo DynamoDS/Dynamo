@@ -18,12 +18,12 @@ namespace Dynamo.Scheduler
 
         #region Public Class Operational Methods
 
-        internal DelegateBasedAsyncTask(IScheduler scheduler)
+        public DelegateBasedAsyncTask(IScheduler scheduler)
             : base(scheduler)
         {
         }
         
-        internal DelegateBasedAsyncTask(IScheduler scheduler, Action action)
+        public DelegateBasedAsyncTask(IScheduler scheduler, Action action)
             : base(scheduler)
         {
             this.Initialize(action);

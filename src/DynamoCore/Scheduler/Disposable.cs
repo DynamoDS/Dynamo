@@ -19,7 +19,7 @@ namespace Dynamo.Scheduler
             }
         }
 
-        internal static IDisposable Create(Action disposeAction)
+        public static IDisposable Create(Action disposeAction)
         {
             return new SimpleDisposable(disposeAction);
         }
