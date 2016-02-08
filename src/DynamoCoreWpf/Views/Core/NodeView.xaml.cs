@@ -500,7 +500,7 @@ namespace Dynamo.Controls
         /// </summary>
         private void BringInFront()
         {
-            if (IsMouseOver || PreviewControl.IsMouseOver)
+            if (IsMouseOver || PreviewControl.IsMouseOver || DynCmd.IsTestMode)
             {
                 if (NodeViewModel.StaticZIndex == Int32.MaxValue)
                 {
