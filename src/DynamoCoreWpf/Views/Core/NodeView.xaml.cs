@@ -506,8 +506,10 @@ namespace Dynamo.Controls
                 {
                     PrepareZIndex();
                 }
-                oldZIndex = nodeWasClicked ? ++NodeViewModel.StaticZIndex : ViewModel.ZIndex;
-                ViewModel.ZIndex = ++NodeViewModel.StaticZIndex;
+                var index = ++NodeViewModel.StaticZIndex;
+
+                oldZIndex = nodeWasClicked ? index : ViewModel.ZIndex;
+                ViewModel.ZIndex = index;
             }
         }
 
