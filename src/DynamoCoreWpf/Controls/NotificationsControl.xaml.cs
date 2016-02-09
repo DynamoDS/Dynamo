@@ -41,7 +41,8 @@ namespace Dynamo.Wpf.Controls
         void window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             var hsvm = (HomeWorkspaceViewModel)((DynamoViewModel)DataContext).HomeSpaceViewModel;
-            hsvm.ClearWarning();
+            // Commented this after MAGN - 8423
+            // hsvm.ClearWarning();
         }
     }
 }
