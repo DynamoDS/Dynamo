@@ -324,7 +324,7 @@ namespace Dynamo.Controls
         private void OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             nodeWasClicked = true;
-            BringInFront();
+            BringToFront();
         }
 
         /// <summary>
@@ -407,7 +407,7 @@ namespace Dynamo.Controls
                 Dispatcher.DelayInvoke(previewDelay, ExpandPreviewControl);
             }
 
-            Dispatcher.DelayInvoke(previewDelay, BringInFront);
+            Dispatcher.DelayInvoke(previewDelay, BringToFront);
         }
 
         private void OnNodeViewMouseLeave(object sender, MouseEventArgs e)
@@ -498,7 +498,7 @@ namespace Dynamo.Controls
         /// <summary>
         /// Sets ZIndex of node the maximum value.
         /// </summary>
-        private void BringInFront()
+        private void BringToFront()
         {
             if (IsMouseOver || PreviewControl.IsMouseOver || DynCmd.IsTestMode)
             {

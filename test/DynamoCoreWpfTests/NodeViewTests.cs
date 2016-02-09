@@ -65,7 +65,6 @@ namespace DynamoCoreWpfTests
                      RoutedEvent = Mouse.MouseEnterEvent
                  })));
             DispatcherUtil.DoEvents();
-            //dispatcherOperation.Task.Wait();
 
             dispatcherOperation.Completed += (s, args) =>
             {
