@@ -135,5 +135,26 @@ namespace DynamoCoreWpfTests
 
             Assert.IsTrue(nodeView.PreviewControl.IsHidden);
         }
+
+        #region Watch PreviewBubble
+
+        [Test]
+        public void Watch_PreviewAllowanceDisabled()
+        {
+            OpenAndRun(@"core\WatchPreviewBubble.dyn");
+
+            var nodeView = NodeViewWithGuid("456e57f3-d06f-4a53-9771-27188ee9cb40");
+
+            // Raise mouse enter event.
+            View.Dispatcher.Invoke(() =>
+            {
+                nodeView.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0) { RoutedEvent = Mouse.MouseEnterEvent });
+            });
+            DispatcherUtil.DoEvents();
+
+            Assert.IsTrue(nodeView.PreviewControl.IsHidden);
+        }
+
+        #endregion
     }
 }
