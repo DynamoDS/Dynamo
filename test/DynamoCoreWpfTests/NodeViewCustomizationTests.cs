@@ -20,25 +20,6 @@ namespace DynamoCoreWpfTests
     public class NodeViewCustomizationTests : DynamoTestUIBase
     {
         // adapted from: http://stackoverflow.com/questions/9336165/correct-method-for-using-the-wpf-dispatcher-in-unit-tests
-
-        public NodeView NodeViewOf<T>() where T : NodeModel
-        {
-            var nodeViews = View.NodeViewsInFirstWorkspace();
-            var nodeViewsOfType = nodeViews.OfNodeModelType<T>();
-            Assert.AreEqual(1, nodeViewsOfType.Count(), "Expected a single NodeView of provided type in the workspace!");
-
-            return nodeViewsOfType.First();
-        }
-
-        public NodeView NodeViewWithGuid(string guid)
-        {
-            var nodeViews = View.NodeViewsInFirstWorkspace();
-            var nodeViewsOfType = nodeViews.Where(x => x.ViewModel.NodeLogic.GUID.ToString() == guid);
-            Assert.AreEqual(1, nodeViewsOfType.Count(), "Expected a single NodeView with guid: " + guid);
-
-            return nodeViewsOfType.First();
-        }
-
         public override void Open(string path)
         {
             base.Open(path);
