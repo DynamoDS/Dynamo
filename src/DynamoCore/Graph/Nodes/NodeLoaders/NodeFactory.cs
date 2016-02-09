@@ -57,7 +57,7 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="loader"></param>
-        public void AddLoader<T>(INodeLoader<T> loader) where T : NodeModel
+        internal void AddLoader<T>(INodeLoader<T> loader) where T : NodeModel
         {
             AddLoader(typeof(T), loader);
         }
@@ -68,7 +68,7 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
         /// <typeparam name="T"></typeparam>
         /// <param name="nodeType"></param>
         /// <param name="loader"></param>
-        public void AddLoader<T>(Type nodeType, INodeLoader<T> loader) where T : NodeModel
+        internal void AddLoader<T>(Type nodeType, INodeLoader<T> loader) where T : NodeModel
         {
             if (!nodeType.IsSubclassOf(typeof(NodeModel)))
                 throw new ArgumentException(@"Given type is not a subclass of NodeModel.", "nodeType");
@@ -82,7 +82,7 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="loader"></param>
-        public void AddFactory<T>(INodeFactory<T> loader) where T : NodeModel
+        internal void AddFactory<T>(INodeFactory<T> loader) where T : NodeModel
         {
             AddFactory(typeof(T), loader);
         }
@@ -93,7 +93,7 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
         /// <typeparam name="T"></typeparam>
         /// <param name="nodeType"></param>
         /// <param name="loader"></param>
-        public void AddFactory<T>(Type nodeType, INodeFactory<T> loader) where T : NodeModel
+        internal void AddFactory<T>(Type nodeType, INodeFactory<T> loader) where T : NodeModel
         {
             if (!nodeType.IsSubclassOf(typeof(NodeModel)))
                 throw new ArgumentException(@"Given type is not a subclass of NodeModel.", "nodeType");
@@ -106,7 +106,7 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
         ///     Attempts to create a new factory and loader for a given type.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public bool AddTypeFactoryAndLoader<T>() where T : NodeModel
+        internal bool AddTypeFactoryAndLoader<T>() where T : NodeModel
         {
             return AddTypeFactoryAndLoader(typeof(T));
         }
@@ -145,7 +145,7 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
         ///     Attempts to create a new factory and loader for a given type.
         /// </summary>
         /// <param name="nodeType"></param>
-        public bool AddTypeFactoryAndLoader(Type nodeType)
+        internal bool AddTypeFactoryAndLoader(Type nodeType)
         {
             if (!nodeType.IsSubclassOf(typeof(NodeModel)))
                 throw new ArgumentException(@"Given type is not a subclass of NodeModel.", "nodeType");
@@ -170,7 +170,7 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
         /// <param name="realType"></param>
         /// <param name="aka"></param>
         /// <param name="overwrite"></param>
-        public void AddAlsoKnownAs(Type realType, string aka, bool overwrite = false)
+        internal void AddAlsoKnownAs(Type realType, string aka, bool overwrite = false)
         {
             Type old;
             if (!overwrite && alsoKnownAsMappings.TryGetValue(aka, out old) && old != realType)
@@ -189,7 +189,7 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
         /// <param name="realType"></param>
         /// <param name="names"></param>
         /// <param name="overwrite"></param>
-        public void AddAlsoKnownAs(Type realType, IEnumerable<string> names, bool overwrite = false)
+        internal void AddAlsoKnownAs(Type realType, IEnumerable<string> names, bool overwrite = false)
         {
             foreach (var aka in names)
                 AddAlsoKnownAs(realType, aka, overwrite);
@@ -302,7 +302,7 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
         /// <param name="fullyQualifiedName"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public bool ResolveType(string fullyQualifiedName, out Type type)
+        internal bool ResolveType(string fullyQualifiedName, out Type type)
         {
             if (fullyQualifiedName == null)
                 throw new ArgumentNullException(@"fullyQualifiedName");
@@ -321,7 +321,7 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
         /// <param name="elNode"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public NodeModel CreateNodeFromXml(XmlElement elNode, SaveContext context, ElementResolver resolver)
+        internal NodeModel CreateNodeFromXml(XmlElement elNode, SaveContext context, ElementResolver resolver)
         {
             XmlAttribute typeAttrib = elNode.Attributes["type"];
             string typeName = Nodes.Utilities.PreprocessTypeName(typeAttrib.Value);
@@ -345,7 +345,7 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
         /// <param name="typeName"></param>
         /// <param name="node"></param>
         /// <returns></returns>
-        public bool CreateNodeFromTypeName(string typeName, out NodeModel node)
+        internal bool CreateNodeFromTypeName(string typeName, out NodeModel node)
         {
             Type type;
             if (ResolveType(typeName, out type) && CreateNodeModelInstanceByType(type, out node))

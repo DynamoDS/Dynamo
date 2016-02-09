@@ -160,9 +160,9 @@ namespace Dynamo.Controls
             View.InvalidateRender();
         }
 
-        private void RequestCreateModelsHandler(IEnumerable<IRenderPackage> packages)
+        private void RequestCreateModelsHandler(IEnumerable<IRenderPackage> packages, bool forceAsyncCall = false)
         {
-            if (CheckAccess())
+            if (!forceAsyncCall && CheckAccess())
             {
                 ViewModel.GenerateViewGeometryFromRenderPackagesAndRequestUpdate(packages);
             }

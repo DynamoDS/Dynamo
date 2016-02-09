@@ -81,7 +81,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// for display in the canvas
         /// </summary>
         /// <param name="packages">render packages to be drawn</param>
-        void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages);
+        /// <param name="forceAsyncCall">set to 'true' if calling from UI thread and still need to queue 
+        /// the creation of display geometry for asynchronous execution</param>
+        void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages, bool forceAsyncCall = false);
 
         /// <summary>
         /// Finds a geometry corresponding to a string identifier
@@ -103,6 +105,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <param name="nodes"></param>
         void UnHighlightNodeGraphics(IEnumerable<NodeModel> nodes);
 
+        /// <summary>
+        /// Invoke an Action synchronously on the UI thread via the ViewModel's Dispatcher 
+        /// </summary>
+        /// <param name="action"></param>
         void Invoke(Action action);
 
         #region Watch view Events to be handled by extensions

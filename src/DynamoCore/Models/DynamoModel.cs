@@ -1534,7 +1534,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="node"></param>
         /// <param name="centered"></param>
-        public void AddNodeToCurrentWorkspace(NodeModel node, bool centered, bool addToSelection = true)
+        internal void AddNodeToCurrentWorkspace(NodeModel node, bool centered, bool addToSelection = true)
         {
             CurrentWorkspace.AddAndRegisterNode(node, centered);
 

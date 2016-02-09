@@ -63,6 +63,7 @@ namespace Dynamo.PackageManager.Tests
         public void CopyFile(string filePath, string destinationPath)
         {
             this.copiedFiles.Add(new Tuple<string, string>(filePath, destinationPath));
+            this.allFiles.Add(destinationPath);
         }
 
         public void DeleteFile(string filePath)

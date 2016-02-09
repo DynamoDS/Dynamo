@@ -117,7 +117,7 @@ namespace Dynamo.Graph.Connectors
         /// </summary>
         /// <param name="silent">If silent is true, the start and end ports will be disconnected
         /// without raising port disconnection events.</param>
-        public void Delete(bool silent = false)
+        internal void Delete(bool silent = false)
         {
             if (Start != null && Start.Connectors.Contains(this))
             {

@@ -75,7 +75,7 @@ namespace Dynamo.Models
         /// <param name="context"></param>
         /// <param name="modelTypes"></param>
         /// <param name="migrationTypes"></param>
-        public void LoadNodeModelsAndMigrations(IEnumerable<string> nodeDirectories, 
+        internal void LoadNodeModelsAndMigrations(IEnumerable<string> nodeDirectories, 
             string context, out List<TypeLoadData> modelTypes, out List<TypeLoadData> migrationTypes)
         {
             var loadedAssembliesByPath = new Dictionary<string, Assembly>();
@@ -164,7 +164,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <parameter>The type</parameter>
         /// <returns>True if the type is node.</returns>
-        public static bool IsNodeSubType(Type t)
+        internal static bool IsNodeSubType(Type t)
         {
             return //t.Namespace == "Dynamo.Graph.Nodes" &&
                 !t.IsAbstract &&
@@ -172,7 +172,7 @@ namespace Dynamo.Models
                     && t.GetConstructor(Type.EmptyTypes) != null;
         }
 
-        public static bool IsMigration(Type t)
+        internal static bool IsMigration(Type t)
         {
             return
                 t.GetMethods(BindingFlags.Public | BindingFlags.Static)
@@ -191,7 +191,7 @@ namespace Dynamo.Models
         ///     to the console.
         /// </summary>
         /// <Returns>The list of node types loaded from this assembly</Returns>
-        public void LoadNodesFromAssembly(
+        internal void LoadNodesFromAssembly(
             Assembly assembly, string context, List<TypeLoadData> nodeModels,
             List<TypeLoadData> migrationTypes)
         {

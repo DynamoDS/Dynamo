@@ -39,17 +39,17 @@ namespace Dynamo.Core
             }
         }
 
-        public bool IsDefaultTextOverridden()
+        internal bool IsDefaultTextOverridden()
         {
             return Options.HasFlag(DisplayOptions.IsDefaultTextOverridden);
         }
 
-        public bool HasDetails()
+        internal bool HasDetails()
         {
             return Options.HasFlag(DisplayOptions.HasDetails);
         }
 
-        public bool IsFilePath()
+        internal bool IsFilePath()
         {
             return Options.HasFlag(DisplayOptions.HasFilePath);
         }
