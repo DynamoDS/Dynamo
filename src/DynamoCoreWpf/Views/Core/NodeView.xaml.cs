@@ -451,7 +451,7 @@ namespace Dynamo.Controls
                     }
                 case PreviewControl.State.Condensed:
                     {
-                        if (preview.IsMouseOver)
+                        if (preview.IsMouseOver || IsMouseOver)
                         {
                             Dispatcher.DelayInvoke(previewDelay, ExpandPreviewControl);
                         }
