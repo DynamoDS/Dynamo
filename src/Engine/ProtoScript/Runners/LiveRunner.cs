@@ -415,7 +415,6 @@ namespace ProtoScript.Runners
                     executingNode,
                     rt.CurrentExecutive.CurrentDSASMExec,
                     executingNode.exprUID,
-                    executingNode.modBlkUID,
                     executingNode.IsSSANode(),
                     true,
                     0,
@@ -1310,7 +1309,6 @@ namespace ProtoScript.Runners
         {
             coreOptions = new Options
             {
-                GenerateExprID = true,
                 IsDeltaExecution = true,
                 BuildOptErrorAsWarning = true,
                 ExecutionMode = ExecutionMode.Serial

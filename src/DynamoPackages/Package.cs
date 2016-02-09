@@ -208,8 +208,8 @@ namespace Dynamo.PackageManager
                 "*",
                 SearchOption.AllDirectories)
                 .Where(x => !x.ToLower().EndsWith(".dyf") && !x.ToLower().EndsWith(".dll") &&
-                       !x.ToLower().EndsWith("pkg.json") && !x.ToLower().EndsWith(".backup") &&
-                       !x.ToLower().Contains(backupFolderName))
+                    !x.ToLower().EndsWith("pkg.json") && !x.ToLower().EndsWith(".backup") &&
+                    !x.ToLower().Contains(backupFolderName))
                 .Select(x => new PackageFileInfo(RootDirectory, x));
 
             AdditionalFiles.Clear();

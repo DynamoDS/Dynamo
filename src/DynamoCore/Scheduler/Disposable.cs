@@ -8,7 +8,7 @@ namespace Dynamo.Scheduler
         {
             private readonly Action action;
 
-            public SimpleDisposable(Action dispose)
+            internal SimpleDisposable(Action dispose)
             {
                 action = dispose;
             }
@@ -19,7 +19,7 @@ namespace Dynamo.Scheduler
             }
         }
 
-        public static IDisposable Create(Action disposeAction)
+        internal static IDisposable Create(Action disposeAction)
         {
             return new SimpleDisposable(disposeAction);
         }

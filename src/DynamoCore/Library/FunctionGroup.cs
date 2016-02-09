@@ -29,7 +29,7 @@ namespace Dynamo.Engine
         /// </summary>
         /// <param name="function"></param>
         /// <returns></returns>
-        public bool AddFunctionDescriptor(FunctionDescriptor function)
+        internal bool AddFunctionDescriptor(FunctionDescriptor function)
         {
             if (!QualifiedName.Equals(function.QualifiedName) || functions.Contains(function))
                 return false;
@@ -50,7 +50,7 @@ namespace Dynamo.Engine
         /// </summary>
         /// <param name="managledName"></param>
         /// <returns></returns>
-        public FunctionDescriptor GetFunctionDescriptor(string managledName)
+        internal FunctionDescriptor GetFunctionDescriptor(string managledName)
         {
             if (null == managledName)
                 throw new ArgumentNullException();

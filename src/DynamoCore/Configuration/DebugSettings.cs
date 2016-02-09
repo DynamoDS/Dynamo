@@ -10,7 +10,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Enable verbose logging this is a lot of data
         /// </summary>
-        public bool VerboseLogging
+        internal bool VerboseLogging
         {
             get { return verboseLogging; }
             set
@@ -20,7 +20,7 @@ namespace Dynamo.Configuration
             }
         }
 
-        public bool ShowDebugASTs
+        internal bool ShowDebugASTs
         {
             get { return showDebugASTs; }
             set

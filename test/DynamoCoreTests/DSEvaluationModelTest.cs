@@ -1011,6 +1011,18 @@ namespace Dynamo.Tests
             RunModel(dynFilePath);
             AssertPreviewValue("dc61bae7-a661-477f-a438-ace939d958f4", 5.0);
         }
+
+        [Test]
+        public void Regress9279_NoRandomNull()
+        {
+            var dynFilePath = Path.Combine(TestDirectory, @"core\dsevaluation\regress9297.dyn");
+            OpenModel(dynFilePath);
+            var filename = this.CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<CoreNodeModels.Input.Filename>();
+            filename.Value = filename.Value.Replace(@"{path}", Path.Combine(TestDirectory, @"core\dsevaluation\layer3.png"));
+            RunCurrentModel();
+
+            AssertPreviewValue("2a944080-94e1-4cf9-88e2-64556335c838", 2);
+        }
     }
 
     [Category("DSCustomNode")]

@@ -158,6 +158,10 @@ namespace Dynamo.Graph.Nodes
             Height = Math.Abs(data.Height) < 0.001 ? Configurations.PortHeightInPixels : data.Height;
         }
 
+        /// <summary>
+        /// Sets the port data.
+        /// </summary>
+        /// <param name="data">The data.</param>
         public void SetPortData(PortData data)
         {
             portData = data;
@@ -171,7 +175,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Deletes all connectors attached to this PortModel.
         /// </summary>
-        public void DestroyConnectors()
+        internal void DestroyConnectors()
         {
             if (Owner == null)
                 return;
@@ -183,7 +187,7 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
-        public void Connect(ConnectorModel connector)
+        internal void Connect(ConnectorModel connector)
         {
             connectors.Add(connector);
 
@@ -193,7 +197,7 @@ namespace Dynamo.Graph.Nodes
             IsConnected = true;
         }
 
-        public void Disconnect(ConnectorModel connector, bool silent = false)
+        internal void Disconnect(ConnectorModel connector, bool silent = false)
         {
             if (!connectors.Contains(connector))
                 return;

@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-
+using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
@@ -338,18 +339,83 @@ namespace DynamoCoreWpfTests
         [Test]
         public void InvalidValueShouldNotCrashColorRangeNode()
         {
-            var guid0 = System.Guid.Parse("1a245b04-ad9e-4b9c-8301-730afbd4e6fc");
-            var guid1 = System.Guid.Parse("cece298a-22de-4f4a-a323-fdb04af406a4");
+            var guid0 = Guid.Parse("1a245b04-ad9e-4b9c-8301-730afbd4e6fc");
+            var guid1 = Guid.Parse("cece298a-22de-4f4a-a323-fdb04af406a4");
 
             OpenAndRun(@"UI\InvalidValueShouldNotCrashColorRangeNode.dyn");
-            var nodes0 = Model.CurrentWorkspace.Nodes.Where(n => n.GUID == guid0);
-            var nodes1 = Model.CurrentWorkspace.Nodes.Where(n => n.GUID == guid0);
-            var node0 = nodes0.ElementAt(0) as CodeBlockNodeModel;
-            var node1 = nodes0.ElementAt(0) as CodeBlockNodeModel;
+            var node0 = Model.CurrentWorkspace.Nodes.First(n => n.GUID == guid0);
+            var node1 = Model.CurrentWorkspace.Nodes.First(n => n.GUID == guid1);
             node0.OnNodeModified(); // Mark node as dirty to tigger an immediate run.
             node1.OnNodeModified(); // Mark node as dirty to tigger an immediate run.
 
             Assert.Pass(); // We should reach here safely without exception.
+        }
+
+        [Test]
+        public void ZIndex_Test()
+        {
+            // Reset zindex to start value.
+            Dynamo.ViewModels.NodeViewModel.StaticZIndex = 3;
+            Open(@"UI\CoreUINodes.dyn");
+
+            var nodeView = NodeViewWithGuid("b8c2a62f-f1ce-4327-8d98-c4e0cc0ebed4");
+
+            // Index of first node == 4.
+            Assert.AreEqual(4, nodeView.ViewModel.ZIndex);
+            Assert.AreEqual(3 + ViewModel.HomeSpace.Nodes.Count(), Dynamo.ViewModels.NodeViewModel.StaticZIndex);
+            nodeView.RaiseEvent(new System.Windows.Input.MouseButtonEventArgs(System.Windows.Input.Mouse.PrimaryDevice, 0, System.Windows.Input.MouseButton.Left)
+            {
+                RoutedEvent = System.Windows.Input.Mouse.PreviewMouseDownEvent,
+                Source = this,
+            });
+
+            // After click node should have The highest index.
+            Assert.AreEqual(nodeView.ViewModel.ZIndex, Dynamo.ViewModels.NodeViewModel.StaticZIndex);
+        }
+
+        [Test]
+        public void WatchConnectDisconnectTest()
+        {
+            WatchIsEmptyWhenLoaded();
+            Run();
+
+            var watchGuid = "ed970d46-4fe0-4640-b13b-0fe313f94fe4";
+            var cbnGuid = "b4fc5d9a-4c5a-4dba-b7a0-b2e1d8876d33";
+            var anotherNodeGuid = "84509ca2-09bc-4294-82a0-3844021c1a65";
+
+            var nodeView = NodeViewWithGuid(watchGuid);
+
+            var tree = nodeView.ChildrenOfType<WatchTree>();
+            Assert.AreEqual(1, tree.Count());
+
+            var items = tree.First().treeView1.ChildrenOfType<TextBlock>();
+            // watch is computed with cbn and has its value
+            Assert.AreEqual(8, items.Count());
+
+            // disconnect watch
+            Model.ExecuteCommand(new DynamoModel.MakeConnectionCommand(watchGuid, 0, PortType.Input,
+                DynamoModel.MakeConnectionCommand.Mode.Begin));
+            Model.ExecuteCommand(new DynamoModel.MakeConnectionCommand(Guid.Empty, -1, PortType.Input,
+                DynamoModel.MakeConnectionCommand.Mode.Cancel));
+            // value should be empty
+            Assert.AreEqual(0, items.Count());
+
+            // connect another node to watch
+            Model.ExecuteCommand(new DynamoModel.MakeConnectionCommand(anotherNodeGuid, 0, PortType.Output,
+                DynamoModel.MakeConnectionCommand.Mode.Begin));
+            Model.ExecuteCommand(new DynamoModel.MakeConnectionCommand(watchGuid, 0, PortType.Input,
+                DynamoModel.MakeConnectionCommand.Mode.End));
+            // value should be empty
+            Assert.AreEqual(0, items.Count());
+
+            // connect back cbn whose value watch node has
+            Model.ExecuteCommand(new DynamoModel.MakeConnectionCommand(cbnGuid, 0, PortType.Output,
+                DynamoModel.MakeConnectionCommand.Mode.Begin));
+            Model.ExecuteCommand(new DynamoModel.MakeConnectionCommand(watchGuid, 0, PortType.Input,
+                DynamoModel.MakeConnectionCommand.Mode.End));
+
+            DispatcherUtil.DoEvents();
+            Assert.AreEqual(8, items.Count());
         }
     }
 }

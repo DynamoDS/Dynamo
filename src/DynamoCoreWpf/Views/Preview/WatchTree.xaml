@@ -92,7 +92,7 @@
                                     <DataTrigger Binding="{Binding IsOneRowContent}"
                                                  Value="True">
                                         <Setter Property="Margin"
-                                                Value="-15,5,5,5" />
+                                                Value="-10,5,5,5" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding IsOneRowContent}"
                                                  Value="False">
