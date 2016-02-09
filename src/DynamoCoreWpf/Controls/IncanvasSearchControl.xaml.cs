@@ -3,19 +3,12 @@ using Dynamo.Wpf.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
-using Dynamo.Models;
 using Dynamo.Controls;
 using Dynamo.Utilities;
 using Dynamo.Views;
@@ -25,7 +18,7 @@ namespace Dynamo.UI.Controls
     /// <summary>
     /// Interaction logic for IncanvasLibrarySearchControl.xaml
     /// </summary>
-    public partial class InCanvasSearchControl : UserControl
+    public partial class InCanvasSearchControl
     {
         ListBoxItem HighlightedItem;
 
@@ -43,15 +36,19 @@ namespace Dynamo.UI.Controls
         {
             InitializeComponent();
 
-            this.Loaded += (sender, e) =>
+            Loaded += (sender, e) =>
             {
                 if (workspaceView == null)
-                    workspaceView = WpfUtilities.FindUpVisualTree<WorkspaceView>(this.Parent);
-                if (dynamoView == null)
                 {
-                    dynamoView = WpfUtilities.FindUpVisualTree<DynamoView>(this.Parent);
-                    if (dynamoView != null)
-                        dynamoView.Deactivated += (s, args) => { OnRequestShowInCanvasSearch(ShowHideFlags.Hide); };
+                    workspaceView = WpfUtilities.FindUpVisualTree<WorkspaceView>(Parent);
+                }
+
+                if (dynamoView != null) return;
+
+                dynamoView = WpfUtilities.FindUpVisualTree<DynamoView>(Parent);
+                if (dynamoView != null)
+                {
+                    dynamoView.Deactivated += (s, args) => { OnRequestShowInCanvasSearch(ShowHideFlags.Hide); };
                 }
             };
         }
@@ -101,7 +98,6 @@ namespace Dynamo.UI.Controls
 
             toolTipPopup.DataContext = fromSender.DataContext;
             toolTipPopup.IsOpen = true;
-
         }
 
         private void OnMouseLeave(object sender, MouseEventArgs e)
