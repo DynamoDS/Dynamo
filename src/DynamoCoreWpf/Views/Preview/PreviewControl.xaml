@@ -166,7 +166,6 @@
             <Grid Name="smallContentGrid"
                   HorizontalAlignment="Left"
                   VerticalAlignment="Center"
-                  Margin="3,0,0,0"
                   MinWidth="{Binding RelativeSource={RelativeSource FindAncestor, 
                              AncestorType={x:Type controls:NodeView}}, 
                              Path=ActualWidth}">
