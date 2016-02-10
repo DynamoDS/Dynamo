@@ -8,13 +8,13 @@ namespace Dynamo.Scheduler
     /// <summary>
     ///     Tools for working productively with AsyncTask's
     /// </summary>
-    internal static class AsyncTaskExtensions
+    public static class AsyncTaskExtensions
     {
         /// <summary>
         ///     Upon completion of the task, invoke the specified action
         /// </summary>
         /// <returns>An IDisposable representing the event subscription</returns>
-        internal static IDisposable Then(this AsyncTask task, AsyncTaskCompletedHandler action)
+        public static IDisposable Then(this AsyncTask task, AsyncTaskCompletedHandler action)
         {
             task.Completed += action;
             return Disposable.Create(() => task.Completed -= action);
@@ -25,7 +25,7 @@ namespace Dynamo.Scheduler
         ///     SynchronizationContext
         /// </summary>
         /// <returns>An IDisposable representing the event subscription</returns>
-        internal static IDisposable ThenPost(this AsyncTask task, AsyncTaskCompletedHandler action, SynchronizationContext context = null)
+        public static IDisposable ThenPost(this AsyncTask task, AsyncTaskCompletedHandler action, SynchronizationContext context = null)
         {
             if (context == null) context = new SynchronizationContext(); // uses the default
             return task.Then((t) => context.Post((_) => action(task), null));
@@ -36,7 +36,7 @@ namespace Dynamo.Scheduler
         ///     SynchronizationContext
         /// </summary>
         /// <returns>An IDisposable representing the event subscription</returns>
-        internal static IDisposable ThenSend(this AsyncTask task, AsyncTaskCompletedHandler action, SynchronizationContext context = null)
+        public static IDisposable ThenSend(this AsyncTask task, AsyncTaskCompletedHandler action, SynchronizationContext context = null)
         {
             if (context == null) context = new SynchronizationContext(); // uses the default
             return task.Then((t) => context.Send((_) => action(task), null));
@@ -49,7 +49,7 @@ namespace Dynamo.Scheduler
         ///     executed.
         /// </summary>
         /// <returns>An IDisposable representing all of the event subscription</returns>
-        internal static IDisposable AllComplete(this IEnumerable<AsyncTask> tasks, Action<IEnumerable<AsyncTask>> action)
+        public static IDisposable AllComplete(this IEnumerable<AsyncTask> tasks, Action<IEnumerable<AsyncTask>> action)
         {
             // If the task list is empty, we immediately invoke the action
             if (!tasks.Any())

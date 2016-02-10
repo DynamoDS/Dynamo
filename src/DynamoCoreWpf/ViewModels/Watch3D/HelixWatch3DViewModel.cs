@@ -586,6 +586,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 return;
             }
+            node.WasRenderPackageUpdatedAfterExecution = false;
 
             node.WasRenderPackageUpdatedAfterExecution = false;
 

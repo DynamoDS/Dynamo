@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Threading;
 using Dynamo.Controls;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
-using Dynamo.Wpf.Controls;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 using CoreNodeModelsWpf.Controls;
@@ -20,24 +17,6 @@ namespace DynamoCoreWpfTests
     public class NodeViewCustomizationTests : DynamoTestUIBase
     {
         // adapted from: http://stackoverflow.com/questions/9336165/correct-method-for-using-the-wpf-dispatcher-in-unit-tests
-
-        public NodeView NodeViewOf<T>() where T : NodeModel
-        {
-            var nodeViews = View.NodeViewsInFirstWorkspace();
-            var nodeViewsOfType = nodeViews.OfNodeModelType<T>();
-            Assert.AreEqual(1, nodeViewsOfType.Count(), "Expected a single NodeView of provided type in the workspace!");
-
-            return nodeViewsOfType.First();
-        }
-
-        public NodeView NodeViewWithGuid(string guid)
-        {
-            var nodeViews = View.NodeViewsInFirstWorkspace();
-            var nodeViewsOfType = nodeViews.Where(x => x.ViewModel.NodeLogic.GUID.ToString() == guid);
-            Assert.AreEqual(1, nodeViewsOfType.Count(), "Expected a single NodeView with guid: " + guid);
-
-            return nodeViewsOfType.First();
-        }
 
         public override void Open(string path)
         {
@@ -371,28 +350,6 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void ZIndex_Test()
-        {
-            // Reset zindex to start value.
-            Dynamo.ViewModels.NodeViewModel.StaticZIndex = 3;
-            Open(@"UI\CoreUINodes.dyn");
-
-            var nodeView = NodeViewWithGuid("b8c2a62f-f1ce-4327-8d98-c4e0cc0ebed4");
-
-            // Index of first node == 4.
-            Assert.AreEqual(4, nodeView.ViewModel.ZIndex);
-            Assert.AreEqual(3 + ViewModel.HomeSpace.Nodes.Count(), Dynamo.ViewModels.NodeViewModel.StaticZIndex);
-            nodeView.RaiseEvent(new System.Windows.Input.MouseButtonEventArgs(System.Windows.Input.Mouse.PrimaryDevice, 0, System.Windows.Input.MouseButton.Left)
-            {
-                RoutedEvent = System.Windows.Input.Mouse.PreviewMouseDownEvent,
-                Source = this,
-            });
-
-            // After click node should have The highest index.
-            Assert.AreEqual(nodeView.ViewModel.ZIndex, Dynamo.ViewModels.NodeViewModel.StaticZIndex);
-        }
-
-        [Test]
         public void WatchConnectDisconnectTest()
         {
             WatchIsEmptyWhenLoaded();
@@ -432,11 +389,9 @@ namespace DynamoCoreWpfTests
                 DynamoModel.MakeConnectionCommand.Mode.Begin));
             Model.ExecuteCommand(new DynamoModel.MakeConnectionCommand(watchGuid, 0, PortType.Input,
                 DynamoModel.MakeConnectionCommand.Mode.End));
-            View.Dispatcher.BeginInvoke(new Action(() =>
-            {
-                // value should not be empty
-                Assert.AreEqual(8, items.Count());
-            }), DispatcherPriority.Loaded);
+
+            DispatcherUtil.DoEvents();
+            Assert.AreEqual(8, items.Count());
         }
     }
 }

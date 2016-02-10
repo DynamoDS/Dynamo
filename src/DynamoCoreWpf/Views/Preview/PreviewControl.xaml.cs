@@ -15,6 +15,7 @@ using System.Windows.Data;
 using System.Windows.Media.Animation;
 using Dynamo.Configuration;
 using Dynamo.Extensions;
+using Dynamo.Models;
 
 namespace Dynamo.UI.Controls
 {
@@ -133,7 +134,9 @@ namespace Dynamo.UI.Controls
             // with respect to the HostingCanvas). So if the control is not yet 
             // loaded, then do not attempt to process the transition request.
             // 
-            if (this.IsLoaded)
+            // If Dynamo is in test mode, preview control is not loaded.
+            // You should RaiseEvent inside test manually in order to test this control.
+            if (this.IsLoaded || DynamoModel.IsTestMode)
                 BeginNextTransition();
         }
 
@@ -396,6 +399,7 @@ namespace Dynamo.UI.Controls
                     var watchTree = largeContentGrid.Children[0] as WatchTree;
                     var rootDataContext = watchTree.DataContext as WatchViewModel;
 
+
                     cachedLargeContent = newViewModel;
 
                     rootDataContext.IsOneRowContent = cachedLargeContent.Children.Count == 0;
@@ -448,7 +452,7 @@ namespace Dynamo.UI.Controls
         /// </summary>
         private void ComputeWatchContentSize(object sender, RoutedEventArgs e)
         {
-            if (!IsExpanded) return;
+           if (!IsExpanded) return;
 
             // Used delay invoke, because TreeView hasn't changed its'appearance with usual Dispatcher call.
             Dispatcher.DelayInvoke(50,() =>
@@ -565,7 +569,19 @@ namespace Dynamo.UI.Controls
 
                     // The real transition starts
                     SetCurrentStateAndNotify(State.InTransition);
-                    phaseInStoryboard.Begin(this, true);
+
+                    // If it's test mode - skip storyboard.
+                    if (!DynamoModel.IsTestMode)
+                    {
+                        phaseInStoryboard.Begin(this, true);
+                    }
+                    else
+                    {
+                        centralizedGrid.Opacity = 1.0;
+                        centralizedGrid.Width = smallContentSize.Width;
+                        centralizedGrid.Height = smallContentSize.Height;
+                        OnPreviewControlPhasedIn(null, null);
+                    }
                 }
             );
         }
@@ -578,7 +594,18 @@ namespace Dynamo.UI.Controls
             bubbleTools.Visibility = Visibility.Collapsed;
 
             SetCurrentStateAndNotify(State.InTransition);
-            phaseOutStoryboard.Begin(this, true);
+
+            // If it's test mode - skip storyboard.
+            if (!DynamoModel.IsTestMode)
+            {
+                phaseOutStoryboard.Begin(this, true);
+            }
+            else
+            {
+                centralizedGrid.Opacity = 0;
+                thisPreviewControl.Visibility = Visibility.Collapsed;
+                OnPreviewControlPhasedOut(null, null);
+            }
         }
 
         private void BeginCondenseTransition()
@@ -598,8 +625,21 @@ namespace Dynamo.UI.Controls
                     // The real transition starts
                     SetCurrentStateAndNotify(State.InTransition);
                     var smallContentSize = ComputeSmallContentSize();
-                    UpdateAnimatorTargetSize(SizeAnimator.Condensation, smallContentSize);
-                    this.condenseStoryboard.Begin(this, true);
+                    UpdateAnimatorTargetSize(SizeAnimator.Condensation, smallContentSize);                    
+
+                    // If it's test mode - skip storyboard.
+                    if (!DynamoModel.IsTestMode)
+                    {
+                        condenseStoryboard.Begin(this, true);
+                    }
+                    else
+                    {
+                        largeContentGrid.Opacity = 0.0;
+                        smallContentGrid.Opacity = 1.0;
+                        centralizedGrid.Width = smallContentSize.Width;
+                        centralizedGrid.Height = smallContentSize.Height;
+                        OnPreviewControlCondensed(null, null);
+                    }
                 }
             );
         }
@@ -621,8 +661,21 @@ namespace Dynamo.UI.Controls
                     // The real transition starts
                     SetCurrentStateAndNotify(State.InTransition);
                     var largeContentSize = ComputeLargeContentSize();
-                    UpdateAnimatorTargetSize(SizeAnimator.Expansion, largeContentSize);
-                    this.expandStoryboard.Begin(this, true);
+                    UpdateAnimatorTargetSize(SizeAnimator.Expansion, largeContentSize);                    
+
+                    // If it's test mode - skip storyboard.
+                    if (!DynamoModel.IsTestMode)
+                    {
+                        expandStoryboard.Begin(this, true);
+                    }
+                    else
+                    {
+                        largeContentGrid.Opacity = 1.0;
+                        smallContentGrid.Opacity = 0.0;
+                        centralizedGrid.Width = largeContentSize.Width;
+                        centralizedGrid.Height = largeContentSize.Height;
+                        OnPreviewControlExpanded(null, null);
+                    }
                 }
             );
         }

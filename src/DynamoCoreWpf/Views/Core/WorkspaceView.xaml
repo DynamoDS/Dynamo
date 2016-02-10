@@ -15,8 +15,6 @@
              PreviewMouseLeftButtonDown="OnPreviewMouseLeftButtonDown"
              MouseUp="OnMouseRelease"
              MouseMove="OnMouseMove"
-             KeyDown="WorkspaceView_KeyDown"
-             KeyUp="WorkspaceView_KeyUp"
              IsHitTestVisible="{Binding IsCurrentSpace}"
              AllowDrop="True"
              Drop="OnWorkspaceDrop">
@@ -113,6 +111,11 @@
 
         <Grid.ContextMenu>
             <ContextMenu Style="{StaticResource WorkspaceContextMenuStyle}">
+                <ContextMenu.Resources>
+                    <Style TargetType="{x:Type MenuItem}">
+                        <Setter Property="Focusable" Value="False" />
+                    </Style>
+                </ContextMenu.Resources>
                 <MenuItem Name="WorkspaceLacingMenu"
                           Header="{x:Static p:Resources.ContextMenuLacing}">
                     
