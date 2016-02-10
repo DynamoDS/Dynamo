@@ -1281,11 +1281,6 @@ namespace ProtoScript.Runners
                 }
 
                 terminating = true;
-
-                lock (taskQueue)
-                {
-                    taskQueue.Clear();
-                }
             }
         }
 
@@ -1353,26 +1348,11 @@ namespace ProtoScript.Runners
         /// <returns></returns>
         public ProtoCore.Mirror.RuntimeMirror QueryNodeValue(Guid nodeGuid)
         {
-            while (true)
+            lock (taskQueue)
             {
-                lock (taskQueue)
-                {
-                    //Spin waiting for the queue to be empty
-                    if (taskQueue.Count == 0)
-                    {
-
-                        //No entries and we have the lock
-                        //Synchronous query to get the node
-
-                        return InternalGetNodeValue(nodeGuid);
-                    }
-                }
-                Thread.Sleep(0);
+                return InternalGetNodeValue(nodeGuid);
             }
-
         }
-
-
 
         /// <summary>
         /// Inspects the VM for the value of a node given its variable name. 
@@ -1385,20 +1365,9 @@ namespace ProtoScript.Runners
         ///
         public ProtoCore.Mirror.RuntimeMirror InspectNodeValue(string nodeName)
         {
-            while (true)
+            lock (taskQueue)
             {
-                lock (taskQueue)
-                {
-                    //Spin waiting for the queue to be empty
-                    if (taskQueue.Count == 0)
-                    {
-                        //return GetWatchValue(nodeName);
-                        const int blockID = 0;
-                        ProtoCore.Mirror.RuntimeMirror runtimeMirror = ProtoCore.Mirror.Reflection.Reflect(nodeName, blockID, runtimeCore, runnerCore);
-                        return runtimeMirror;
-                    }
-                }
-                Thread.Sleep(0);
+                return Reflection.Reflect(nodeName, 0, runtimeCore, runnerCore);
             }
         }
 
@@ -1452,16 +1421,9 @@ namespace ProtoScript.Runners
         /// <param name="syncData"></param>
         public List<Guid> PreviewGraph(GraphSyncData syncData)
         {
-            while (true)
+            lock (taskQueue)
             {
-                lock (taskQueue)
-                {
-                    if (taskQueue.Count == 0)
-                    {
-                        return PreviewInternal(syncData);                       
-                    }
-                }
-                Thread.Sleep(1);
+                return PreviewInternal(syncData);
             }
         }
 
@@ -1471,17 +1433,9 @@ namespace ProtoScript.Runners
         /// <param name="syncData"></param>
         public void UpdateGraph(GraphSyncData syncData)
         {
-            while (true)
+            lock (taskQueue)
             {
-                lock (taskQueue)
-                {
-                    if (taskQueue.Count == 0)
-                    {
-                        SynchronizeInternal(syncData);
-                        return;
-                    }
-                }
-                Thread.Sleep(0);
+                SynchronizeInternal(syncData);
             }
         }
 
@@ -1524,18 +1478,9 @@ namespace ProtoScript.Runners
         /// <param name="code"></param>
         public void UpdateCmdLineInterpreter(string code)
         {
-            while (true)
+            lock (taskQueue)
             {
-                lock (taskQueue)
-                {
-                    //Spin waiting for the queue to be empty
-                    if (taskQueue.Count == 0)
-                    {
-                        SynchronizeInternal(code);
-                        return;
-                    }
-                }
-                Thread.Sleep(0);
+                SynchronizeInternal(code);
             }
         }
 
