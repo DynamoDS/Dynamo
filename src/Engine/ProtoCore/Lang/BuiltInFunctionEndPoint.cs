@@ -569,12 +569,16 @@ namespace ProtoCore.Lang
             string functionName = dynamicFunction.Name;
 
             var replicationGuides = new List<List<ProtoCore.ReplicationGuide>>();
+            var atLevels = new List<AtLevel>();
             if (!CoreUtils.IsGetterSetter(functionName))
             {
                 replicationGuides = runtime.GetCachedReplicationGuides(functionArgs);
+                atLevels = runtime.GetCachedAtLevels(functionArgs);
+
                 if (removeFirstArgument)
                 {
                     replicationGuides.RemoveAt(0);
+                    atLevels.RemoveAt(0);
                 }
             }
 
@@ -683,7 +687,7 @@ namespace ProtoCore.Lang
             }
 
             arguments.ForEach(x => runtimeCore.AddCallSiteGCRoot(callsite.CallSiteID, x));
-            StackValue ret = callsite.JILDispatchViaNewInterpreter(context, arguments, replicationGuides, newStackFrame, runtimeCore);
+            StackValue ret = callsite.JILDispatchViaNewInterpreter(context, arguments, replicationGuides, atLevels, newStackFrame, runtimeCore);
             runtimeCore.RemoveCallSiteGCRoot(callsite.CallSiteID);
 
             // Restore debug properties after returning from a CALL/CALLR

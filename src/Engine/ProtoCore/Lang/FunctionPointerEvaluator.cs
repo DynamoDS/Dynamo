@@ -104,8 +104,6 @@ namespace ProtoCore.Lang
             StackValue svBlockDecl = StackValue.BuildBlockIndex(blockDecl);
             interpreter.runtime.SX = svBlockDecl;
 
-            var repGuides = new List<List<ProtoCore.ReplicationGuide>>();
-
             List<StackValue> registers = new List<StackValue>();
             interpreter.runtime.SaveRegisters(registers);
             var newStackFrame = new StackFrame(thisPtr, 
@@ -132,15 +130,16 @@ namespace ProtoCore.Lang
                                                           returnAddr - 1, 
                                                           false, 
                                                           callsite, 
-                                                          args, 
-                                                          repGuides, 
+                                                          args,
+                                                          new List<List<ProtoCore.ReplicationGuide>>(), 
                                                           newStackFrame);
             }
 
             StackValue rx = callsite.JILDispatchViaNewInterpreter(
                                         new Runtime.Context(), 
-                                        args, 
-                                        repGuides, 
+                                        args,
+                                        new List<List<ProtoCore.ReplicationGuide>>(), 
+                                        new List<AtLevel>(),
                                         newStackFrame,
                                         runtimeCore);
 

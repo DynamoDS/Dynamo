@@ -1374,6 +1374,7 @@ namespace ProtoCore
         }
 
 
+
         #endregion
 
         #region Execution methods
@@ -1381,8 +1382,12 @@ namespace ProtoCore
         
         //Inbound methods
 
-        public StackValue JILDispatchViaNewInterpreter(Context context, List<StackValue> arguments, List<List<ReplicationGuide>> replicationGuides,
-                                                       StackFrame stackFrame, RuntimeCore runtimeCore)
+        public StackValue JILDispatchViaNewInterpreter(
+            Context context, 
+            List<StackValue> arguments, 
+            List<List<ReplicationGuide>> replicationGuides,
+            List<AtLevel> atLevels,
+            StackFrame stackFrame, RuntimeCore runtimeCore)
         {
 #if DEBUG
 
@@ -1391,11 +1396,16 @@ namespace ProtoCore
 
             // Dispatch method
             context.IsImplicitCall = true;
-            return DispatchNew(context, arguments, replicationGuides, stackFrame, runtimeCore);
+            return DispatchNew(context, arguments, replicationGuides, atLevels, stackFrame, runtimeCore);
         }
 
-        public StackValue JILDispatch(List<StackValue> arguments, List<List<ReplicationGuide>> replicationGuides,
-                                      StackFrame stackFrame, RuntimeCore runtimeCore, Context context)
+        public StackValue JILDispatch(
+            List<StackValue> arguments, 
+            List<List<ReplicationGuide>> replicationGuides,
+            List<AtLevel> atLevels, 
+            StackFrame stackFrame, 
+            RuntimeCore runtimeCore, 
+            Context context)
         {
 #if DEBUG
 
@@ -1403,15 +1413,19 @@ namespace ProtoCore
 #endif
 
             // Dispatch method
-            return DispatchNew(context, arguments, replicationGuides, stackFrame, runtimeCore);
+            return DispatchNew(context, arguments, replicationGuides, atLevels, stackFrame, runtimeCore);
         }
 
 
 
 
         //Dispatch
-        private StackValue DispatchNew(Context context, List<StackValue> arguments,
-                                      List<List<ReplicationGuide>> partialReplicationGuides, StackFrame stackFrame, RuntimeCore runtimeCore)
+        private StackValue DispatchNew(
+            Context context, 
+            List<StackValue> arguments, 
+            List<List<ReplicationGuide>> partialReplicationGuides, 
+            List<AtLevel> atLevels,
+            StackFrame stackFrame, RuntimeCore runtimeCore)
         {
 
             // Update the CallsiteExecutionState with 
