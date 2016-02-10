@@ -1127,7 +1127,6 @@ namespace ProtoScript.Runners
         void UpdateGraph(GraphSyncData syncData);
         List<Guid> PreviewGraph(GraphSyncData syncData);
         void UpdateCmdLineInterpreter(string code);
-        ProtoCore.Mirror.RuntimeMirror QueryNodeValue(Guid nodeId);
         ProtoCore.Mirror.RuntimeMirror InspectNodeValue(string nodeName);
 
         void UpdateGraph(AssociativeNode astNode);
@@ -1233,8 +1232,7 @@ namespace ProtoScript.Runners
         private Configuration configuration = null;
         private int deltaSymbols = 0;
         private ProtoCore.CompileTime.Context staticContext = null;
-        private Queue<Task> taskQueue;
-        private bool terminating;
+        private readonly object mutexObject = new object();
         private ChangeSetComputer changeSetComputer;
         private ChangeSetApplier changeSetApplier;
 
@@ -1251,11 +1249,8 @@ namespace ProtoScript.Runners
 
             InitCore();
 
-            taskQueue = new Queue<Task>();
-
             staticContext = new ProtoCore.CompileTime.Context();
 
-            terminating = false;
             changeSetComputer = new ChangeSetComputer(runnerCore, runtimeCore);
             changeSetApplier = new ChangeSetApplier();
         }
@@ -1279,8 +1274,6 @@ namespace ProtoScript.Runners
                 {
                     runtimeCore.Cleanup();
                 }
-
-                terminating = true;
             }
         }
 
@@ -1340,21 +1333,6 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
-        /// Query for a node value given its UID. This will block until the value is available.
-        /// This uses the expression interpreter to evaluate a node variable's value.
-        /// It will only serviced when all ASync calls have been completed
-        /// </summary>
-        /// <param name="nodeId"></param>
-        /// <returns></returns>
-        public ProtoCore.Mirror.RuntimeMirror QueryNodeValue(Guid nodeGuid)
-        {
-            lock (taskQueue)
-            {
-                return InternalGetNodeValue(nodeGuid);
-            }
-        }
-
-        /// <summary>
         /// Inspects the VM for the value of a node given its variable name. 
         /// As opposed to QueryNodeValue, this does not use the Expression Interpreter
         /// This will block until the value is available.
@@ -1365,7 +1343,7 @@ namespace ProtoScript.Runners
         ///
         public ProtoCore.Mirror.RuntimeMirror InspectNodeValue(string nodeName)
         {
-            lock (taskQueue)
+            lock (mutexObject)
             {
                 return Reflection.Reflect(nodeName, 0, runtimeCore, runnerCore);
             }
@@ -1421,7 +1399,7 @@ namespace ProtoScript.Runners
         /// <param name="syncData"></param>
         public List<Guid> PreviewGraph(GraphSyncData syncData)
         {
-            lock (taskQueue)
+            lock (mutexObject)
             {
                 return PreviewInternal(syncData);
             }
@@ -1433,7 +1411,7 @@ namespace ProtoScript.Runners
         /// <param name="syncData"></param>
         public void UpdateGraph(GraphSyncData syncData)
         {
-            lock (taskQueue)
+            lock (mutexObject)
             {
                 SynchronizeInternal(syncData);
             }
@@ -1478,7 +1456,7 @@ namespace ProtoScript.Runners
         /// <param name="code"></param>
         public void UpdateCmdLineInterpreter(string code)
         {
-            lock (taskQueue)
+            lock (mutexObject)
             {
                 SynchronizeInternal(code);
             }
@@ -1500,11 +1478,6 @@ namespace ProtoScript.Runners
             const int blockID = 0;
 
             return vmState.LookupName(varname, blockID);
-        }
-
-        private ProtoCore.Mirror.RuntimeMirror InternalGetNodeValue(Guid nodeGuid)
-        {
-            throw new NotImplementedException();
         }
 
         private bool Compile(List<AssociativeNode> astList, Core targetCore)
