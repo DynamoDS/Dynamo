@@ -84,6 +84,7 @@ namespace ProtoCore.DSASM
         PUSHDEP,
         PUSHINDEX, 
         PUSHREPGUIDE,   // Push replicaion guide to the stack
+        PUSHLEVEL,      // Push at-level to the stak
         POP,
         POPW,
         POPM,

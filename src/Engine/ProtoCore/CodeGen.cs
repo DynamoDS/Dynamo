@@ -1509,6 +1509,19 @@ namespace ProtoCore
             AppendInstruction(instr);
         }
 
+        protected void EmitPushLevel(int level, bool isDominant)
+        {
+            SetEntry();
+
+            Instruction instr = new Instruction();
+            instr.opCode = OpCode.PUSHLEVEL;
+            instr.op1 = StackValue.BuildInt(level);
+            instr.op2 = StackValue.BuildBoolean(isDominant);
+
+            ++pc;
+            AppendInstruction(instr);
+        }
+
         protected void EmitPopReplicationGuides(int replicationGuide)
         {
             SetEntry();
@@ -1815,7 +1828,7 @@ namespace ProtoCore
             }
 
             inferedType.UID = isBooleanOp ? (int)PrimitiveType.kTypeBool : inferedType.UID;
-            EmitOpWithEmptyReplicationGuide(emitReplicationGuide, StackValue.BuildInt(value), value.ToString(), node);
+            EmitOpWithEmptyAtLevelAndGuides(emitReplicationGuide, StackValue.BuildInt(value), value.ToString(), node);
 
             if (IsAssociativeArrayIndexing)
             {
@@ -1882,7 +1895,7 @@ namespace ProtoCore
             String strValue = "'" + value + "'";
             StackValue op = StackValue.BuildChar(value[0]);
 
-            EmitOpWithEmptyReplicationGuide(emitReplicationGuide, StackValue.BuildChar(value[0]), strValue, node);
+            EmitOpWithEmptyAtLevelAndGuides(emitReplicationGuide, StackValue.BuildChar(value[0]), strValue, node);
         }
        
         protected void EmitStringNode(
@@ -1904,7 +1917,7 @@ namespace ProtoCore
 
             string value = (string)sNode.Value;
             StackValue svString = core.Heap.AllocateFixedString(value);
-            EmitOpWithEmptyReplicationGuide(emitReplicationGuide, svString, "\"" + value + "\"", node);
+            EmitOpWithEmptyAtLevelAndGuides(emitReplicationGuide, svString, "\"" + value + "\"", node);
 
             if (IsAssociativeArrayIndexing && graphNode != null && graphNode.isIndexingLHS)
             {
@@ -1945,7 +1958,7 @@ namespace ProtoCore
                 inferedType.UID = (int)PrimitiveType.kTypeDouble;
             }
             inferedType.UID = isBooleanOp ? (int)PrimitiveType.kTypeBool : inferedType.UID;
-            EmitOpWithEmptyReplicationGuide(emitReplicationGuide, StackValue.BuildDouble(value), value.ToString(), node);
+            EmitOpWithEmptyAtLevelAndGuides(emitReplicationGuide, StackValue.BuildDouble(value), value.ToString(), node);
 
             if (IsAssociativeArrayIndexing)
             {
@@ -2010,7 +2023,7 @@ namespace ProtoCore
                 inferedType.UID = (int)PrimitiveType.kTypeBool;
             }
 
-            EmitOpWithEmptyReplicationGuide(emitReplicationGuide, StackValue.BuildBoolean(value), value.ToString(), node);
+            EmitOpWithEmptyAtLevelAndGuides(emitReplicationGuide, StackValue.BuildBoolean(value), value.ToString(), node);
         }
 
         protected void EmitNullNode(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone)
@@ -2021,13 +2034,14 @@ namespace ProtoCore
             }
 
             inferedType.UID = isBooleanOp ? (int)PrimitiveType.kTypeBool : inferedType.UID;
-            EmitOpWithEmptyReplicationGuide(emitReplicationGuide, StackValue.Null, Literal.Null, node);
+            EmitOpWithEmptyAtLevelAndGuides(emitReplicationGuide, StackValue.Null, Literal.Null, node);
         }
 
-        protected void EmitOpWithEmptyReplicationGuide(bool emit, StackValue op, string value, AST.Node node)
+        protected void EmitOpWithEmptyAtLevelAndGuides(bool emit, StackValue op, string value, AST.Node node)
         {
             if (emit)
             {
+                EmitAtLevel(null);
                 EmitReplicationGuides(new List<AST.AssociativeAST.AssociativeNode>());
             }
             EmitInstrConsole(ProtoCore.DSASM.kw.push, value);
@@ -2036,7 +2050,16 @@ namespace ProtoCore
 
         protected void EmitAtLevel(AST.AssociativeAST.AtLevelNode atLevel)
         {
-             
+            if (atLevel == null)
+            {
+                EmitInstrConsole(kw.pushlevel, "@0");
+                EmitPushLevel(0, false);
+            }
+            else
+            {
+                EmitInstrConsole(kw.pushlevel, atLevel.ToString());
+                EmitPushLevel((int)atLevel.Level, atLevel.IsDominant);
+            }
         }
 
         protected void EmitReplicationGuides(List<AST.AssociativeAST.AssociativeNode> replicationGuidesList)
@@ -2127,6 +2150,7 @@ namespace ProtoCore
             var exprNode = node as AST.AssociativeAST.ExprListNode;
             if (exprNode != null && emitReplicationGuide)
             {
+                EmitAtLevel(exprNode.AtLevel);
                 EmitReplicationGuides(exprNode.ReplicationGuides);
             }
         }

@@ -4007,6 +4007,18 @@ namespace ProtoCore.DSASM
             ++pc;
         }
 
+        private void PUSHLEVEL_Handler(Instruction instruction)
+        {
+            runtimeVerify(instruction.op1.IsInteger);
+            int level = (int)instruction.op1.opdata;
+
+            runtimeVerify(instruction.op2.IsBoolean);
+            bool isDominant = (int)instruction.op2.opdata == 1;
+
+            runtimeCore.AtLevels.Add(new AtLevel(level, isDominant));
+            ++pc;
+        } 
+
         private void POPREPGUIDES_Handler(Instruction instruction)
         {
             int guides = (int)instruction.op1.opdata;
@@ -5948,6 +5960,12 @@ namespace ProtoCore.DSASM
                 case OpCode.PUSHREPGUIDE:
                     {
                         PUSHREPGUIDE_Handler(instruction);
+                        return;
+                    }
+
+                case OpCode.PUSHLEVEL:
+                    {
+                        PUSHLEVEL_Handler(instruction);
                         return;
                     }
 

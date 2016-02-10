@@ -4295,8 +4295,8 @@ namespace ProtoAssociative
 
                     if (emitReplicationGuide)
                     {
-                        EmitReplicationGuides(t.ReplicationGuides);
                         EmitAtLevel(t.AtLevel);
+                        EmitReplicationGuides(t.ReplicationGuides);
                     }
                 }
 
@@ -4474,6 +4474,7 @@ namespace ProtoAssociative
 
                 if (emitReplicationGuide)
                 {
+                    EmitAtLevel(range.AtLevel);
                     EmitReplicationGuides(range.ReplicationGuides);
                 }
             }
@@ -6026,7 +6027,7 @@ namespace ProtoAssociative
                 }
 
                 List<AssociativeNode> replicationGuides = null;
-                AtLevelNode atLevel;
+                AtLevelNode atLevel = null;
                 bool isRangeExpression = false;
 
                 if (fnode != null)
@@ -6050,6 +6051,7 @@ namespace ProtoAssociative
                 // index.
                 if (!isRangeExpression && emitReplicationGuide)
                 {
+                    EmitAtLevel(atLevel);
                     EmitReplicationGuides(replicationGuides);
                 }
             }
@@ -8478,6 +8480,7 @@ namespace ProtoAssociative
 
             if (subPass != ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier && emitReplicationGuide)
             {
+                EmitAtLevel(group.AtLevel);
                 EmitReplicationGuides(group.ReplicationGuides);
             }
         }

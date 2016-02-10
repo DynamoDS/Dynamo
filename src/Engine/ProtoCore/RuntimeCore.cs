@@ -72,6 +72,7 @@ namespace ProtoCore
 
             InterpreterProps = new Stack<InterpreterProperties>();
             ReplicationGuides = new List<List<ReplicationGuide>>();
+            AtLevels = new List<AtLevel>();
 
             RunningBlock = 0;
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid; //not yet started
@@ -184,6 +185,9 @@ namespace ProtoCore
         // Cached replication guides for the current call. 
         // TODO Jun: Store this in the dynamic table node
         public List<List<ReplicationGuide>> ReplicationGuides;
+
+        // Cached at levels for the current call.
+        public List<AtLevel> AtLevels;
         
         public ProtoCore.DSASM.Mirror.ExecutionMirror Mirror { get; set; }
 
