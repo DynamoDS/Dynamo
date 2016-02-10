@@ -33,6 +33,11 @@ namespace ProtoCore.SyntaxAnalysis
             DefaultVisit(node);
         }
 
+        public virtual void VisitAtLevelNode(AtLevelNode node)
+        {
+            DefaultVisit(node);
+        }
+
         public virtual void VisitArrayNameNode(ArrayNameNode node)
         {
             DefaultVisit(node);
@@ -248,6 +253,11 @@ namespace ProtoCore.SyntaxAnalysis
         }
 
         public virtual TResult VisitReplicationGuideNode(ReplicationGuideNode node)
+        {
+            return DefaultVisit(node);
+        }
+
+        public virtual TResult VisitAtLevelNode(AtLevelNode node)
         {
             return DefaultVisit(node);
         }

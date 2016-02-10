@@ -14499,9 +14499,9 @@ a : Dummy = null;
 
 [Associative]
 {
-    a@final = Dummy.Create(2);
+    afinal = Dummy.Create(2);
     
-    a = a@final;
+    a = afinal;
 
 }
 ";

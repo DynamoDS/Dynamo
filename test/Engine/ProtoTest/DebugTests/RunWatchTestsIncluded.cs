@@ -3440,7 +3440,7 @@ b = a * 3;
         public void DebugWatch184_T51_Using_Special_Characters_In_Identifiers()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"@a = 1;
+            string src = @"a = 1;
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
