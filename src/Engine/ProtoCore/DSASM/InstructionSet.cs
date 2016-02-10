@@ -78,11 +78,11 @@ namespace ProtoCore.DSASM
         ALLOCC,
 
         PUSH,
-        PUSHB,
+        PUSHBLOCK,      // Push construction block id in imperative code
         PUSHM,
         PUSHW,
         PUSHDEP,
-        PUSHINDEX,
+        PUSHINDEX, 
         PUSHREPGUIDE,   // Push replicaion guide to the stack
         POP,
         POPW,

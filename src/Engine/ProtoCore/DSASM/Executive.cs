@@ -5927,7 +5927,7 @@ namespace ProtoCore.DSASM
                         return;
                     }
 
-                case OpCode.PUSHB:
+                case OpCode.PUSHBLOCK:
                     {
                         PUSHB_Handler(instruction);
                         return;
