@@ -841,7 +841,6 @@ namespace ProtoCore.Lang.Replication
         public static int GetMaxReductionDepth(StackValue sv, RuntimeCore runtimeCore)
         {
             return RecursiveProtectGetMaxReductionDepth(sv, runtimeCore, 0);
-            
         }
 
         /// <summary>

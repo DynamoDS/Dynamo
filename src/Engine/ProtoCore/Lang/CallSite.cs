@@ -1471,6 +1471,8 @@ namespace ProtoCore
 
             #endregion
 
+            arguments = GetArgumentsAtLevels(arguments, atLevels, runtimeCore);
+
             partialReplicationGuides = PerformRepGuideDemotion(arguments, partialReplicationGuides, runtimeCore);
 
             //Replication Control is an ordered list of the elements that we have to replicate over
@@ -1968,6 +1970,62 @@ namespace ProtoCore
             return ret;
         }
 
+        private static IEnumerable<StackValue> GetArgumentAtLevel(StackValue argument, int level, RuntimeCore runtimeCore)
+        {
+            var array = runtimeCore.Heap.ToHeapObject<DSArray>(argument);
+            if (array == null)
+            {
+                return Enumerable.Empty<StackValue>();
+            }
+
+            if (level == 0)
+            {
+                return array.Values;
+            }
+            else
+            {
+                return array.Values.SelectMany(v => GetArgumentAtLevel(v, level - 1, runtimeCore));
+            }
+        }
+
+        private static StackValue GetArgumentAtLevel(StackValue argument, AtLevel atLevel, RuntimeCore runtimeCore)
+        {
+            int maxDepth = Replicator.GetMaxReductionDepth(argument, runtimeCore);
+            int nestedLevel = maxDepth + atLevel.Level;
+
+            if (nestedLevel < 0)
+            {
+                for (int i = 0; i > nestedLevel; i--)
+                {
+                    argument = runtimeCore.RuntimeMemory.Heap.AllocateArray(new StackValue[1] { argument });
+                }
+            }
+            else if (nestedLevel == 0)
+            {
+                return argument;
+            }
+            else
+            {
+                var values = GetArgumentAtLevel(argument, nestedLevel, runtimeCore);
+                argument = runtimeCore.RuntimeMemory.Heap.AllocateArray(values.ToArray());
+            }
+
+            return argument;
+        }
+
+        private static List<StackValue> GetArgumentsAtLevels(List<StackValue> arguments, List<AtLevel> atLevels, RuntimeCore runtimeCore)
+        {
+            if (atLevels.All(x => x.Level >= 0))
+                return arguments;
+
+            List<StackValue> argumentAtLevels = new List<StackValue>();
+            for (int i = 0; i < arguments.Count; i++)
+            {
+                var arg = GetArgumentAtLevel(arguments[i], atLevels[i], runtimeCore);
+                argumentAtLevels.Add(arg);
+            }
+            return argumentAtLevels;
+        }
 
         /// <summary>
         /// If all the arguments that have rep guides are single values, then strip the rep guides
