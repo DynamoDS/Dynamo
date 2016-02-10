@@ -2775,13 +2775,12 @@ namespace ProtoAssociative
 
                     AssociativeNode lastnode = ssaStack.Pop();
                     AssociativeNode prevnode = ssaStack.Pop();
+
                     tnode.LeftNode = prevnode is BinaryExpressionNode ? (prevnode as BinaryExpressionNode).LeftNode : prevnode;
                     tnode.RightNode = lastnode is BinaryExpressionNode ? (lastnode as BinaryExpressionNode).LeftNode : lastnode;
 
-
                     // Left node
-                    var identNode =AstFactory.BuildIdentifier(ProtoCore.Utils.CoreUtils.BuildSSATemp(core));
-                    leftNode = identNode;
+                    leftNode = AstFactory.BuildIdentifier(CoreUtils.BuildSSATemp(core));
 
                     // Right node
                     rightNode = tnode;
@@ -2789,7 +2788,7 @@ namespace ProtoAssociative
                     isSSAAssignment = true;
                 }
 
-                BinaryExpressionNode bnode = new BinaryExpressionNode(leftNode, rightNode, ProtoCore.DSASM.Operator.assign);
+                var bnode = AstFactory.BuildAssignment(leftNode, rightNode);
                 bnode.isSSAAssignment = isSSAAssignment;
                 bnode.IsInputExpression = astBNode.IsInputExpression;
 
@@ -2936,9 +2935,9 @@ namespace ProtoAssociative
                         if (argNode is BinaryExpressionNode)
                         {
                             BinaryExpressionNode argBinaryExpr = argNode as BinaryExpressionNode;
-                            var leftNode = argBinaryExpr.LeftNode as IdentifierNode;
-                            leftNode.ReplicationGuides = GetReplicationGuides(arg);
-                            leftNode.AtLevel = GetAtLevel(arg);
+                            var argLeftNode = argBinaryExpr.LeftNode as IdentifierNode;
+                            argLeftNode.ReplicationGuides = GetReplicationGuides(arg);
+                            argLeftNode.AtLevel = GetAtLevel(arg);
                             
                             fcNode.FormalArguments[idx] = argBinaryExpr.LeftNode;
                         }
@@ -2951,24 +2950,16 @@ namespace ProtoAssociative
                     }
                 }
 
-                BinaryExpressionNode bnode = new BinaryExpressionNode();
-                bnode.Optr = ProtoCore.DSASM.Operator.assign;
-
                 // Left node
-                var identNode =AstFactory.BuildIdentifier(ProtoCore.Utils.CoreUtils.BuildSSATemp(core));
-                bnode.LeftNode = identNode;
-
-                // Store the replication guide from the function call to the temp
+                var leftNode =AstFactory.BuildIdentifier(CoreUtils.BuildSSATemp(core));
                 if (null != fcNode)
                 {
-                    identNode.ReplicationGuides = GetReplicationGuides(fcNode);
-                    identNode.AtLevel = GetAtLevel(fcNode);
+                    leftNode.ReplicationGuides = GetReplicationGuides(fcNode);
+                    leftNode.AtLevel = GetAtLevel(fcNode);
                 }
 
-                //Right node
-                bnode.RightNode = fcNode;
+                var bnode = AstFactory.BuildAssignment(leftNode, fcNode);
                 bnode.isSSAAssignment = true;
-
 
                 astlist.Add(bnode);
                 ssaStack.Push(bnode);
@@ -3134,15 +3125,8 @@ namespace ProtoAssociative
                     exprList.Exprs[n] = argNode is BinaryExpressionNode ? (argNode as BinaryExpressionNode).LeftNode : argNode;
                 }
 
-                BinaryExpressionNode bnode = new BinaryExpressionNode();
-                bnode.Optr = ProtoCore.DSASM.Operator.assign;
-
-                // Left node
-                var identNode =AstFactory.BuildIdentifier(ProtoCore.Utils.CoreUtils.BuildSSATemp(core));
-                bnode.LeftNode = identNode;
-
-                //Right node
-                bnode.RightNode = exprList;
+                var leftNode = AstFactory.BuildIdentifier(CoreUtils.BuildSSATemp(core));
+                var bnode = AstFactory.BuildAssignment(leftNode, exprList);
                 bnode.isSSAAssignment = true;
 
                 astlist.Add(bnode);
@@ -3161,8 +3145,9 @@ namespace ProtoAssociative
                 var namenode = ilnode.ConditionExpression as ArrayNameNode;
                 if (namenode != null)
                 {
-                    namenode.ReplicationGuides = GetReplicationGuides(cexpr is BinaryExpressionNode ? (cexpr as BinaryExpressionNode).RightNode : cexpr);
-                    namenode.AtLevel = GetAtLevel(cexpr is BinaryExpressionNode ? (cexpr as BinaryExpressionNode).RightNode : cexpr);
+                    var rightNode = (cexpr is BinaryExpressionNode) ? (cexpr as BinaryExpressionNode).RightNode : cexpr; 
+                    namenode.ReplicationGuides = GetReplicationGuides(rightNode);
+                    namenode.AtLevel = GetAtLevel(rightNode);
                 }
                 astlist.AddRange(inlineExpressionASTList);
                 inlineExpressionASTList.Clear();
@@ -3173,8 +3158,9 @@ namespace ProtoAssociative
                 namenode = ilnode.TrueExpression as ArrayNameNode;
                 if (namenode != null)
                 {
-                    namenode.ReplicationGuides = GetReplicationGuides(cexpr is BinaryExpressionNode ? (cexpr as BinaryExpressionNode).RightNode : cexpr);
-                    namenode.AtLevel = GetAtLevel(cexpr is BinaryExpressionNode ? (cexpr as BinaryExpressionNode).RightNode : cexpr);
+                    var rightNode = (cexpr is BinaryExpressionNode) ? (cexpr as BinaryExpressionNode).RightNode : cexpr; 
+                    namenode.ReplicationGuides = GetReplicationGuides(rightNode);
+                    namenode.AtLevel = GetAtLevel(rightNode);
                 }
                 astlist.AddRange(inlineExpressionASTList);
                 inlineExpressionASTList.Clear();
@@ -3185,21 +3171,15 @@ namespace ProtoAssociative
                 namenode = ilnode.FalseExpression as ArrayNameNode;
                 if (namenode != null)
                 {
-                    namenode.ReplicationGuides = GetReplicationGuides(cexpr is BinaryExpressionNode ? (cexpr as BinaryExpressionNode).RightNode : cexpr);
-                    namenode.AtLevel = GetAtLevel(cexpr is BinaryExpressionNode ? (cexpr as BinaryExpressionNode).RightNode : cexpr);
+                    var rightNode = (cexpr is BinaryExpressionNode) ? (cexpr as BinaryExpressionNode).RightNode : cexpr; 
+                    namenode.ReplicationGuides = GetReplicationGuides(rightNode);
+                    namenode.AtLevel = GetAtLevel(rightNode);
                 }
                 astlist.AddRange(inlineExpressionASTList);
                 inlineExpressionASTList.Clear();
 
-                BinaryExpressionNode bnode = new BinaryExpressionNode();
-                bnode.Optr = ProtoCore.DSASM.Operator.assign;
-
-                // Left node
-                var identNode =AstFactory.BuildIdentifier(ProtoCore.Utils.CoreUtils.BuildSSATemp(core));
-                bnode.LeftNode = identNode;
-
-                //Right node
-                bnode.RightNode = ilnode;
+                var leftNode = AstFactory.BuildIdentifier(CoreUtils.BuildSSATemp(core));
+                var bnode = AstFactory.BuildAssignment(leftNode, ilnode);
                 bnode.isSSAAssignment = true;
 
                 astlist.Add(bnode);
@@ -3224,15 +3204,8 @@ namespace ProtoAssociative
                     rangeNode.Step = stepExpr is BinaryExpressionNode ? (stepExpr as BinaryExpressionNode).LeftNode : stepExpr;
                 }
 
-                BinaryExpressionNode bnode = new BinaryExpressionNode();
-                bnode.Optr = ProtoCore.DSASM.Operator.assign;
-
-                // Left node
-                var identNode =AstFactory.BuildIdentifier(ProtoCore.Utils.CoreUtils.BuildSSATemp(core));
-                bnode.LeftNode = identNode;
-
-                //Right node
-                bnode.RightNode = rangeNode;
+                var leftNode = AstFactory.BuildIdentifier(CoreUtils.BuildSSATemp(core));
+                var bnode = AstFactory.BuildAssignment(leftNode, rangeNode);
                 bnode.isSSAAssignment = true;
 
                 astlist.Add(bnode);
@@ -3247,19 +3220,11 @@ namespace ProtoAssociative
                     {
                         DFSEmitSSA_AST(groupExpr.Expression, ssaStack, ref astlist);
 
-                        BinaryExpressionNode bnode = new BinaryExpressionNode();
-                        bnode.Optr = ProtoCore.DSASM.Operator.assign;
-
-                        
-                        // Left node
-                        var identNode =AstFactory.BuildIdentifier(ProtoCore.Utils.CoreUtils.BuildSSATemp(core));
-                        bnode.LeftNode = identNode;
-
-                        // Right node
+                        var leftNode =AstFactory.BuildIdentifier(CoreUtils.BuildSSATemp(core));
                         AssociativeNode groupExprBinaryStmt = ssaStack.Pop();
-                        Validity.Assert(groupExprBinaryStmt is BinaryExpressionNode);
-                        bnode.RightNode = (groupExprBinaryStmt as BinaryExpressionNode).LeftNode;
+                        var rightNode = (groupExprBinaryStmt as BinaryExpressionNode).LeftNode;
 
+                        var bnode = AstFactory.BuildAssignment(leftNode, rightNode);
                         bnode.isSSAAssignment = true;
 
                         astlist.Add(bnode);
@@ -3277,49 +3242,16 @@ namespace ProtoAssociative
                     ssaStack.Push(node);
                 }
             }
-
             // We allow a null to be generated an SSA variable
             // TODO Jun: Generalize this into genrating SSA temps for all literals
             else if (node is NullNode)
             {
-                if (core.Options.GenerateSSA)
-                {
-                    string ssaTempName = string.Empty;
-                    
-                    BinaryExpressionNode bnode = new BinaryExpressionNode();
-                    bnode.Optr = ProtoCore.DSASM.Operator.assign;
+                var leftNode = AstFactory.BuildIdentifier(CoreUtils.BuildSSATemp(core));
+                var bnode = AstFactory.BuildAssignment(leftNode, node);
+                bnode.isSSAAssignment = true;
 
-                    // Left node
-                    ssaTempName = ProtoCore.Utils.CoreUtils.BuildSSATemp(core);
-                    var identNode =AstFactory.BuildIdentifier(ssaTempName);
-                    bnode.LeftNode = identNode;
-
-                    // Right node
-                    bnode.RightNode = node;
-
-                    bnode.isSSAAssignment = true;
-
-                    astlist.Add(bnode);
-                    ssaStack.Push(bnode);
-                }
-                else
-                {
-                    BinaryExpressionNode bnode = new BinaryExpressionNode();
-                    bnode.Optr = ProtoCore.DSASM.Operator.assign;
-
-                    // Left node
-                    var identNode =AstFactory.BuildIdentifier(ProtoCore.Utils.CoreUtils.BuildSSATemp(core));
-                    bnode.LeftNode = identNode;
-
-                    // Right node
-                    bnode.RightNode = node;
-
-
-                    bnode.isSSAAssignment = true;
-
-                    astlist.Add(bnode);
-                    ssaStack.Push(bnode);
-                }
+                astlist.Add(bnode);
+                ssaStack.Push(bnode);
             }
             else
             {
