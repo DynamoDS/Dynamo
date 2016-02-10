@@ -3808,10 +3808,7 @@ namespace ProtoCore.DSASM
             else
             {
                 // TODO Jun: This entire block that handles arrays shoudl be integrated with getOperandData
-
-                runtimeVerify(op1.IsVariableIndex ||
-                    op1.IsMemberVariableIndex ||
-                    op1.IsArray);
+                runtimeVerify(op1.IsVariableIndex || op1.IsMemberVariableIndex || op1.IsArray);
 
                 runtimeVerify(instruction.op2.IsClassIndex);
 

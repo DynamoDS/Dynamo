@@ -3002,24 +3002,12 @@ namespace ProtoCore.AST.AssociativeAST
                                                                  AssociativeNode rhs,
                                                                  Operator op)
         {
-            if (lhs == null)
-                throw new ArgumentNullException("lhs");
-
-            if (rhs == null)
-                throw new ArgumentNullException("rhs");
-
             return new BinaryExpressionNode(lhs, rhs, op);
         }
 
         public static BinaryExpressionNode BuildAssignment(AssociativeNode lhs,
                                                            AssociativeNode rhs)
         {
-            if (lhs == null)
-                throw new ArgumentNullException("lhs");
-
-            if (rhs == null)
-                throw new ArgumentNullException("rhs");
-
             return new BinaryExpressionNode(lhs, rhs, Operator.assign);
         }
 
