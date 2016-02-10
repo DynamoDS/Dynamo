@@ -4296,6 +4296,7 @@ namespace ProtoAssociative
                     if (emitReplicationGuide)
                     {
                         EmitReplicationGuides(t.ReplicationGuides);
+                        EmitAtLevel(t.AtLevel);
                     }
                 }
 
@@ -6308,8 +6309,8 @@ namespace ProtoAssociative
 
             if (emitReplicationGuide)
             {
-                EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, 0 + "[guide]");
-                EmitPushReplicationGuide(0);
+                EmitInstrConsole(ProtoCore.DSASM.kw.poprepguides, "0");
+                EmitPopReplicationGuides(0);
             }
         }
 

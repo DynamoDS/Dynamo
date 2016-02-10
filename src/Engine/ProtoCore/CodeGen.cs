@@ -1495,13 +1495,26 @@ namespace ProtoCore
             ++pc;
             AppendInstruction(instr);
         }
+        
+        protected void EmitPushReplicationGuide(int repGuide, bool isLongest)
+        {
+            SetEntry();
 
-        protected void EmitPushReplicationGuide(int replicationGuide)
+            Instruction instr = new Instruction();
+            instr.opCode = OpCode.PUSHREPGUIDE;
+            instr.op1 = StackValue.BuildReplicationGuide(repGuide);
+            instr.op2 = StackValue.BuildBoolean(isLongest);
+
+            ++pc;
+            AppendInstruction(instr);
+        }
+
+        protected void EmitPopReplicationGuides(int replicationGuide)
         {
             SetEntry();
             
             Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.PUSHINDEX;
+            instr.opCode = ProtoCore.DSASM.OpCode.POPREPGUIDES;
             instr.op1 = StackValue.BuildReplicationGuide(replicationGuide);
 
             ++pc;
@@ -2021,6 +2034,11 @@ namespace ProtoCore
             EmitPush(op, node.line, node.col);
         }
 
+        protected void EmitAtLevel(AST.AssociativeAST.AtLevelNode atLevel)
+        {
+             
+        }
+
         protected void EmitReplicationGuides(List<AST.AssociativeAST.AssociativeNode> replicationGuidesList)
         {
             int replicationGuides = 0;
@@ -2029,26 +2047,16 @@ namespace ProtoCore
                 replicationGuides = replicationGuidesList.Count;
                 for (int n = 0; n < replicationGuides; ++n)
                 {
-                    Validity.Assert(replicationGuidesList[n] is AST.AssociativeAST.ReplicationGuideNode);
                     var repGuideNode = replicationGuidesList[n] as AST.AssociativeAST.ReplicationGuideNode;
-
-                    Validity.Assert(repGuideNode.RepGuide is AST.AssociativeAST.IdentifierNode);
                     var nodeGuide = repGuideNode.RepGuide as AST.AssociativeAST.IdentifierNode;
 
-                    // Emit the repguide
-                    EmitInstrConsole(kw.push, nodeGuide.Value);
-                    StackValue opguide = StackValue.BuildInt(System.Convert.ToInt64(nodeGuide.Value));
-                    EmitPush(opguide);
-
-                    // Emit the rep guide property
-                    EmitInstrConsole(kw.push, repGuideNode.IsLongest.ToString());
-                    StackValue opGuideProperty = StackValue.BuildBoolean(repGuideNode.IsLongest);
-                    EmitPush(opGuideProperty);
+                    EmitInstrConsole(kw.pushrepguide, nodeGuide.Value + (repGuideNode.IsLongest ? "L" : ""));
+                    EmitPushReplicationGuide(Convert.ToInt32(nodeGuide.Value), repGuideNode.IsLongest);
                 }
             }
 
-            EmitInstrConsole(kw.pushindex, replicationGuides + "[guide]");
-            EmitPushReplicationGuide(replicationGuides);
+            EmitInstrConsole(kw.poprepguides, replicationGuides.ToString());
+            EmitPopReplicationGuides(replicationGuides);
         }
 
 

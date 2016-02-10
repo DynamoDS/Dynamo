@@ -3885,44 +3885,21 @@ namespace ProtoCore.DSASM
 
         private void PUSHINDEX_Handler(Instruction instruction)
         {
-            if (instruction.op1.IsArrayDimension)
+            runtimeVerify(instruction.op1.IsArrayDimension);
+
+            int dimensions = (int)instruction.op1.opdata;
+            if (dimensions > 0)
             {
-                int dimensions = (int)instruction.op1.opdata;
-
-                if (dimensions > 0)
+                List<StackValue> dims = new List<StackValue>();
+                for (int i = 0; i < dimensions; ++i)
                 {
-                    List<StackValue> dims = new List<StackValue>();
-                    for (int i = 0; i < dimensions; ++i)
-                    {
-                        dims.Add(rmem.Pop());
-                    }
-                    dims.Reverse();
-
-                    StackValue arrayPointer = rmem.Pop();
-                    StackValue sv = GetIndexedArray(arrayPointer, dims);
-                    rmem.Push(sv);
+                    dims.Add(rmem.Pop());
                 }
-            }
-            else if (instruction.op1.IsReplicationGuide)
-            {
-                int guides = (int)instruction.op1.opdata;
+                dims.Reverse();
 
-                List<ReplicationGuide> argGuides = new List<ReplicationGuide>();
-                for (int i = 0; i < guides; ++i)
-                {
-                    StackValue svGuideProperty = rmem.Pop();
-                    runtimeVerify(svGuideProperty.IsBoolean);
-                    bool isLongest = (int)svGuideProperty.opdata == 1;
-
-                    StackValue svGuide = rmem.Pop();
-                    runtimeVerify(svGuide.IsInteger);
-                    int guideNumber = (int)svGuide.opdata;
-
-                    argGuides.Add(new ReplicationGuide(guideNumber, isLongest));
-                }
-
-                argGuides.Reverse();
-                runtimeCore.ReplicationGuides.Add(argGuides);
+                StackValue arrayPointer = rmem.Pop();
+                StackValue sv = GetIndexedArray(arrayPointer, dims);
+                rmem.Push(sv);
             }
 
             ++pc;
@@ -4018,6 +3995,37 @@ namespace ProtoCore.DSASM
                 }
             }
             rmem.Push(key); 
+            ++pc;
+        }
+
+        private void PUSHREPGUIDE_Handler(Instruction instruction)
+        {
+            runtimeVerify(instruction.op1.IsReplicationGuide);
+            runtimeVerify(instruction.op2.IsBoolean);
+            rmem.Push(instruction.op1);
+            rmem.Push(instruction.op2);
+            ++pc;
+        }
+
+        private void POPREPGUIDES_Handler(Instruction instruction)
+        {
+            int guides = (int)instruction.op1.opdata;
+            List<ReplicationGuide> argGuides = new List<ReplicationGuide>();
+            for (int i = 0; i < guides; ++i)
+            {
+                StackValue svGuideProperty = rmem.Pop();
+                runtimeVerify(svGuideProperty.IsBoolean);
+                bool isLongest = (int)svGuideProperty.opdata == 1;
+
+                StackValue svGuide = rmem.Pop();
+                runtimeVerify(svGuide.IsReplicationGuide);
+                int guideNumber = (int)svGuide.opdata;
+
+                argGuides.Add(new ReplicationGuide(guideNumber, isLongest));
+            }
+
+            argGuides.Reverse();
+            runtimeCore.ReplicationGuides.Add(argGuides);
             ++pc;
         }
 
@@ -5934,6 +5942,18 @@ namespace ProtoCore.DSASM
                 case OpCode.PUSH_ARRAYKEY:
                     {
                         PUSH_VARSIZE_Handler(instruction);
+                        return;
+                    }
+
+                case OpCode.PUSHREPGUIDE:
+                    {
+                        PUSHREPGUIDE_Handler(instruction);
+                        return;
+                    }
+
+                case OpCode.POPREPGUIDES:
+                    {
+                        POPREPGUIDES_Handler(instruction);
                         return;
                     }
 

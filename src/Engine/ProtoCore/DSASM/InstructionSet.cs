@@ -83,16 +83,18 @@ namespace ProtoCore.DSASM
         PUSHW,
         PUSHDEP,
         PUSHINDEX,
+        PUSHREPGUIDE,   // Push replicaion guide to the stack
         POP,
         POPW,
         POPM,
+        POPREPGUIDES,   // Pop replication guides from stack and save to the core
 
         CALL,
         CALLR,
         RETURN,
-        RETC,    // Return from constructor
-        RETB,    // Return from code block
-        RETCN,   // Return from local block
+        RETC,           // Return from constructor
+        RETB,           // Return from code block
+        RETCN,          // Return from local block
 
         BOUNCE,
         JMP,
