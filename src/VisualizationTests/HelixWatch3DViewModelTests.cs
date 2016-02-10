@@ -561,6 +561,20 @@ namespace WpfVisualizationTests
         }
 
         [Test]
+        public void Watch3D_FirstRun()
+        {
+            OpenVisualizationTest("FirstRunWatch3D.dyn");
+
+            // Clear the dispatcher to ensure that the 
+            // view is created.
+            DispatcherUtil.DoEvents();
+
+            var view = FindFirstWatch3DNodeView();
+            var vm = view.ViewModel as HelixWatch3DNodeViewModel;
+            Assert.AreEqual(vm.SceneItems.Count(), 3);
+        }
+
+        [Test]
         public void Watch3D_Disconnect_Reconnect_CorrectRenderings()
         {
             OpenVisualizationTest("ASM_points_line.dyn");

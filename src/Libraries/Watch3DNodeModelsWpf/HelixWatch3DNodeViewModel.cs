@@ -53,7 +53,7 @@ namespace Watch3DNodeModelsWpf
             var gathered = new List<NodeModel>();
             watchNode.VisibleUpstreamNodes(gathered);
 
-            gathered.ForEach(n => n.WasInvolvedInExecution = true);
+            gathered.ForEach(n => n.WasRenderPackageUpdatedAfterExecution = false);
             gathered.ForEach(n => n.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory));
         }
 
