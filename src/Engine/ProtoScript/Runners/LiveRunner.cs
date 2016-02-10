@@ -1234,7 +1234,6 @@ namespace ProtoScript.Runners
         private int deltaSymbols = 0;
         private ProtoCore.CompileTime.Context staticContext = null;
         private Queue<Task> taskQueue;
-        private Thread workerThread;
         private bool terminating;
         private ChangeSetComputer changeSetComputer;
         private ChangeSetApplier changeSetApplier;
@@ -1253,10 +1252,6 @@ namespace ProtoScript.Runners
             InitCore();
 
             taskQueue = new Queue<Task>();
-
-            workerThread = new Thread(new ThreadStart(TaskExecMethod));
-            workerThread.IsBackground = true;
-            workerThread.Start();
 
             staticContext = new ProtoCore.CompileTime.Context();
 
@@ -1290,17 +1285,6 @@ namespace ProtoScript.Runners
                 lock (taskQueue)
                 {
                     taskQueue.Clear();
-                }
-
-                if (workerThread != null)
-                {
-                    // waiting for thread to finish
-                    if (workerThread.IsAlive)
-                    {
-                        workerThread.Join();
-                    }
-
-                    workerThread = null;
                 }
             }
         }
@@ -1554,36 +1538,6 @@ namespace ProtoScript.Runners
                 Thread.Sleep(0);
             }
         }
-
-        //Secondary thread
-        private void TaskExecMethod()
-        {
-            while (!terminating)
-            {
-                Task task = null;
-
-                lock (taskQueue)
-                {
-                    if (taskQueue.Count > 0)
-                        task = taskQueue.Dequeue();
-
-                    //The task has to be executed inside the critical region
-                    //otherwise it will race with the sync based on the taskQueue count
-
-                    //TODO: This should be seperated into two seperate mutexes, one of the
-                    //queue and the other protecting execution
-                    if (task != null)
-                    {
-                        task.Execute();
-                        continue;
-
-                    }
-                }
-                Thread.Sleep(1);
-            }
-        }
-
-
 
         #region Internal Implementation
 
