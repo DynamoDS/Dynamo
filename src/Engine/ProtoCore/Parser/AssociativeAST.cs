@@ -255,6 +255,22 @@ namespace ProtoCore.AST.AssociativeAST
             get; set;
         }
 
+        public AtLevelNode()
+        {
+            Level = 0;
+            IsDominant = false;
+        }
+
+        public AtLevelNode(AtLevelNode rhs)
+            : base(rhs)
+        {
+            if (rhs != null)
+            {
+                Level = rhs.Level;
+                IsDominant = rhs.IsDominant;
+            }
+        }
+
         public override void Accept(AssociativeAstVisitor visitor)
         {
             visitor.VisitAtLevelNode(this);
@@ -330,6 +346,12 @@ namespace ProtoCore.AST.AssociativeAST
             if (null != rhs.ReplicationGuides)
             {
                 ReplicationGuides = rhs.ReplicationGuides.Select(NodeUtils.Clone).ToList();
+            }
+
+            AtLevel = null;
+            if (rhs.AtLevel != null)
+            {
+                AtLevel = NodeUtils.Clone(rhs.AtLevel) as AtLevelNode;
             }
         }
 

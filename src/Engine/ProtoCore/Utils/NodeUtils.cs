@@ -135,11 +135,13 @@ namespace ProtoCore.Utils
             {
                 return new ProtoCore.AST.AssociativeAST.NullNode();
             }
-
+            else if (rhsNode is AtLevelNode)
+            {
+                return new AtLevelNode(rhsNode as AtLevelNode);
+            }
 
             // Comment Jun: Leaving this as an assert to can catch unhandled nodes
             Validity.Assert(false);
-            
             return null;
         }
 

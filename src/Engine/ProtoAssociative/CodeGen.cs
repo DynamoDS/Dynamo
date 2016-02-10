@@ -2043,7 +2043,9 @@ namespace ProtoAssociative
 
                     // Left node
                     var identNode =AstFactory.BuildIdentifier(ProtoCore.Utils.CoreUtils.BuildSSATemp(core));
-                    (identNode as IdentifierNode).ReplicationGuides = GetReplicationGuides(ident);
+                    identNode.ReplicationGuides = GetReplicationGuides(ident);
+                    identNode.AtLevel = ident.AtLevel;
+
                     bnode.LeftNode = identNode;
 
                     // Right node
@@ -2078,7 +2080,8 @@ namespace ProtoAssociative
 
                     // Left node
                     var identNode =AstFactory.BuildIdentifier(ProtoCore.Utils.CoreUtils.BuildSSATemp(core));
-                    (identNode as IdentifierNode).ReplicationGuides = fcall.ReplicationGuides;
+                    identNode.ReplicationGuides = fcall.ReplicationGuides;
+                    identNode.AtLevel = fcall.AtLevel;
                     bnode.LeftNode = identNode;
 
                     // Right node
@@ -2179,14 +2182,21 @@ namespace ProtoAssociative
                             RemoveReplicationGuides(arg);
                         }
 
+                        var atLevel = GetAtLevel(arg);
+                        if (atLevel != null)
+                        {
+                            RemoveAtLevel(arg);
+                        }
+
                         DFSEmitSSA_AST(arg, ssaStack, ref astlistArgs);
 
                         var argNode = ssaStack.Pop();
                         var argBinaryExpr = argNode as BinaryExpressionNode;
                         if (argBinaryExpr != null)
                         {
-                            var newArgNode = NodeUtils.Clone(argBinaryExpr.LeftNode);
-                            (newArgNode as IdentifierNode).ReplicationGuides = replicationGuides;
+                            var newArgNode = NodeUtils.Clone(argBinaryExpr.LeftNode) as IdentifierNode;
+                            newArgNode.ReplicationGuides = replicationGuides;
+                            newArgNode.AtLevel = GetAtLevel(arg);
                             fcNode.FormalArguments[idx] = newArgNode;
                         }
                         else
@@ -2304,6 +2314,7 @@ namespace ProtoAssociative
                 // Assign the function array and guide properties to the new ident node
                 identNode.ArrayDimensions = fcall.ArrayDimensions;
                 identNode.ReplicationGuides = fcall.ReplicationGuides;
+                identNode.AtLevel = fcall.AtLevel;
 
                 // Right node - Remove the function array indexing.
                 // The array indexing to this function will be applied downstream 
@@ -2343,6 +2354,7 @@ namespace ProtoAssociative
                     // Assign the function array and guide properties to the new ident node
                     identNode.ArrayDimensions = fcall.ArrayDimensions;
                     identNode.ReplicationGuides = fcall.ReplicationGuides;
+                    identNode.AtLevel = fcall.AtLevel;
 
                     identList.RightNode = newCall;
 
@@ -2622,6 +2634,53 @@ namespace ProtoAssociative
             return null;
         }
 
+        private AtLevelNode GetAtLevel(AssociativeNode node)
+        {
+            var n1 = node as ArrayNameNode;
+            if (n1 != null)
+            {
+                return n1.AtLevel;
+            }
+
+            var n2 = node as IdentifierListNode;
+            if (n2 != null)
+            {
+                return GetAtLevel(n2.RightNode);
+            }
+
+            var n3 = node as FunctionDotCallNode;
+            if (n3 != null)
+            {
+                return GetAtLevel(n3.FunctionCall.Function);
+            }
+
+            return null;
+        }
+
+        private void RemoveAtLevel(AssociativeNode node)
+        {
+            var n1 = node as ArrayNameNode;
+            if (n1 != null)
+            {
+                n1.AtLevel = null;
+                return;
+            }
+
+            var n2 = node as IdentifierListNode;
+            if (n2 != null)
+            {
+                RemoveAtLevel(n2.RightNode);
+                return;
+            }
+
+            var n3 = node as FunctionDotCallNode;
+            if (n3 != null)
+            {
+                RemoveAtLevel(n3.FunctionCall.Function);
+                return;
+            }
+        }
+
         // Remove replication guides
         private void RemoveReplicationGuides(AssociativeNode node)
         {
@@ -2877,8 +2936,9 @@ namespace ProtoAssociative
                         if (argNode is BinaryExpressionNode)
                         {
                             BinaryExpressionNode argBinaryExpr = argNode as BinaryExpressionNode;
-                            //(argBinaryExpr.LeftNode as IdentifierNode).ReplicationGuides = GetReplicationGuidesFromASTNode(argBinaryExpr.RightNode);
-                            (argBinaryExpr.LeftNode as IdentifierNode).ReplicationGuides = GetReplicationGuides(arg);
+                            var leftNode = argBinaryExpr.LeftNode as IdentifierNode;
+                            leftNode.ReplicationGuides = GetReplicationGuides(arg);
+                            leftNode.AtLevel = GetAtLevel(arg);
                             
                             fcNode.FormalArguments[idx] = argBinaryExpr.LeftNode;
                         }
@@ -2901,7 +2961,8 @@ namespace ProtoAssociative
                 // Store the replication guide from the function call to the temp
                 if (null != fcNode)
                 {
-                    (identNode as IdentifierNode).ReplicationGuides = GetReplicationGuides(fcNode);
+                    identNode.ReplicationGuides = GetReplicationGuides(fcNode);
+                    identNode.AtLevel = GetAtLevel(fcNode);
                 }
 
                 //Right node
@@ -3101,6 +3162,7 @@ namespace ProtoAssociative
                 if (namenode != null)
                 {
                     namenode.ReplicationGuides = GetReplicationGuides(cexpr is BinaryExpressionNode ? (cexpr as BinaryExpressionNode).RightNode : cexpr);
+                    namenode.AtLevel = GetAtLevel(cexpr is BinaryExpressionNode ? (cexpr as BinaryExpressionNode).RightNode : cexpr);
                 }
                 astlist.AddRange(inlineExpressionASTList);
                 inlineExpressionASTList.Clear();
@@ -3112,6 +3174,7 @@ namespace ProtoAssociative
                 if (namenode != null)
                 {
                     namenode.ReplicationGuides = GetReplicationGuides(cexpr is BinaryExpressionNode ? (cexpr as BinaryExpressionNode).RightNode : cexpr);
+                    namenode.AtLevel = GetAtLevel(cexpr is BinaryExpressionNode ? (cexpr as BinaryExpressionNode).RightNode : cexpr);
                 }
                 astlist.AddRange(inlineExpressionASTList);
                 inlineExpressionASTList.Clear();
@@ -3123,6 +3186,7 @@ namespace ProtoAssociative
                 if (namenode != null)
                 {
                     namenode.ReplicationGuides = GetReplicationGuides(cexpr is BinaryExpressionNode ? (cexpr as BinaryExpressionNode).RightNode : cexpr);
+                    namenode.AtLevel = GetAtLevel(cexpr is BinaryExpressionNode ? (cexpr as BinaryExpressionNode).RightNode : cexpr);
                 }
                 astlist.AddRange(inlineExpressionASTList);
                 inlineExpressionASTList.Clear();
