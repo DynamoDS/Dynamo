@@ -9,47 +9,7 @@ namespace ProtoCore.Lang.Replication
 {
     public class Replicator
     {
-
-
-        /// <summary>
-        /// Build partial replication instructions for guides
-        /// </summary>
-        /// <param name="partialGuides">The guides, empty sub list if no guides for an argument</param>
-        /// <returns>The replication instructions</returns>
-        [Obsolete]
-        public static ReplicationControl Old_ConvertGuidesToInstructions(List<List<ProtoCore.ReplicationGuide>> partialGuides)
-        {
-            /*
-            //Test to ensure that we're within the known limitations, supporting at most 1 guide per argument
-            //Munge the format to use the legacy mechansi,
-            //This is temporary code
-            //@TODO(Luke)
-            List<int?> singlePartialGuides = new List<int?>();
-            foreach (List<int> guideList in partialGuides)
-            {
-                if (guideList.Count == 0)
-                    singlePartialGuides.Add(null);
-                else if (guideList.Count > 1)
-                    throw new NotImplementedException("Multiple guides on an argument not yet supported: {93AF9B93-7EDC-4EE9-8E20-1A5FF029871C}");
-                else
-                    singlePartialGuides.Add(guideList[0]);
-            }*/
-
-            ReplicationControl rc = new ReplicationControl()
-            {
-                //Instructions = Old_BuildPartialReplicationInstructions(singlePartialGuides)
-                Instructions = BuildPartialReplicationInstructions(partialGuides)
-
-            };
-            
-
-            //Now push the result to the legacy code to do the computation
-            return rc;
-
-        }
-
-
-        private static List<ReplicationInstruction> BuildPartialReplicationInstructions(List<List<ProtoCore.ReplicationGuide>> partialRepGuides)
+        public static List<ReplicationInstruction> BuildPartialReplicationInstructions(List<List<ReplicationGuide>> partialRepGuides)
         {
             //DS code:          foo(a<1><2><3>, b<2>, c)
             //partialGuides     {1,2,3}, {2}, {}
@@ -63,11 +23,11 @@ namespace ProtoCore.Lang.Replication
             List<List<int>> partialGuides = new List<List<int>>();
             List<List<ZipAlgorithm>> partialGuidesLace = new List<List<ZipAlgorithm>>();
 
-            foreach (List<ProtoCore.ReplicationGuide> guidesOnParam in partialRepGuides)
+            foreach (List<ReplicationGuide> guidesOnParam in partialRepGuides)
             {
                 List<int> tempGuide = new List<int>();
                 List<ZipAlgorithm> tempGuideLaceStrategy = new List<ZipAlgorithm>();
-                foreach (ProtoCore.ReplicationGuide guide in guidesOnParam)
+                foreach (ReplicationGuide guide in guidesOnParam)
                 {
                     tempGuide.Add(guide.guideNumber);
                     tempGuideLaceStrategy.Add(guide.isLongest ? ZipAlgorithm.Longest : ZipAlgorithm.Shortest);
@@ -102,6 +62,7 @@ namespace ProtoCore.Lang.Replication
                 indexLace.Add(guideCounter, ZipAlgorithm.Shortest);
 
                 for (int i = 0; i < partialGuides.Count; i++)
+                {
                     if (partialGuides[i].Contains(guideCounter))
                     {
                         index[guideCounter].Add(i);
@@ -135,12 +96,8 @@ namespace ProtoCore.Lang.Replication
                             }
                         }
                     }
-
-                // Validity.Assert(index[guideCounter].Count > 0, "Sorry, non-contiguous replication guides are not yet supported, please try again without leaving any gaps, err code {3E080694}");
+                }
             }
-
-
-
 
             //Now walk over the guides in order creating the replication 
             int[] uniqueGuides = new int[index.Keys.Count];

@@ -497,8 +497,11 @@ namespace ProtoCore
             //Ordering implies containment, so element 0 is the outer most forloop, element 1 is nested within it etc.
             //Take the explicit replication guides and build the replication structure
             //Turn the replication guides into a guide -> List args data structure
-            ReplicationControl replicationControl =
-                Replicator.Old_ConvertGuidesToInstructions(partialReplicationGuides);
+            ReplicationControl replicationControl = new ReplicationControl()
+            {
+                Instructions = Replicator.BuildPartialReplicationInstructions(partialReplicationGuides)
+
+            };
 
             #region First Case: Replicate only according to the replication guides
 
@@ -1445,7 +1448,6 @@ namespace ProtoCore
             //@PERF: Possible optimisation point here, to deal with static dispatches that don't need replication analysis
             //Handle resolution Pass 1: Name -> Method Group
             FunctionGroup funcGroup = GetFuncGroup(runtimeCore);
-
             if (funcGroup == null)
             {
                 log.AppendLine("Function group not located");
@@ -1457,22 +1459,12 @@ namespace ProtoCore
                 return ReportFunctionGroupNotFound(runtimeCore, arguments);
             }
 
-
-            //// Now that a function group is resolved, the callsite guid can be cached
-            //if (null != funcGroup.CallsiteInstance)
-            //{
-            //    // Sanity check, if the callsite exists, then it mean the guid is identical to the cached guid
-            //    Validity.Assert(funcGroup.CallsiteInstance.callsiteID == this.callsiteID);
-            //}
-            //else
-            //{
-            //    funcGroup.CallsiteInstance = this;
-            //}
-
             //check accesibility of function group
             bool methodAccessible = IsFunctionGroupAccessible(runtimeCore, ref funcGroup);
             if (!methodAccessible)
+            {
                 return ReportMethodNotAccessible(runtimeCore);
+            }
 
             //If we got here then the function group got resolved
             log.AppendLine("Function group resolved: " + funcGroup);
@@ -1481,13 +1473,14 @@ namespace ProtoCore
 
             partialReplicationGuides = PerformRepGuideDemotion(arguments, partialReplicationGuides, runtimeCore);
 
-
             //Replication Control is an ordered list of the elements that we have to replicate over
             //Ordering implies containment, so element 0 is the outer most forloop, element 1 is nested within it etc.
             //Take the explicit replication guides and build the replication structure
             //Turn the replication guides into a guide -> List args data structure
-            ReplicationControl replicationControl =
-                Replicator.Old_ConvertGuidesToInstructions(partialReplicationGuides);
+            ReplicationControl replicationControl = new ReplicationControl()
+            {
+                Instructions = Replicator.BuildPartialReplicationInstructions(partialReplicationGuides)
+            };
 
             log.AppendLine("Replication guides processed to: " + replicationControl);
 
@@ -1495,13 +1488,8 @@ namespace ProtoCore
             List<FunctionEndPoint> resolvesFeps;
             List<ReplicationInstruction> replicationInstructions;
 
-
-
             arguments = PerformRepGuideForcedPromotion(arguments, partialReplicationGuides, runtimeCore);
-
-
             ComputeFeps(log, context, arguments, funcGroup, replicationControl, partialReplicationGuides, stackFrame, runtimeCore, out resolvesFeps, out replicationInstructions);
-
 
             if (resolvesFeps.Count == 0)
             {
@@ -2001,20 +1989,17 @@ namespace ProtoCore
                     continue; //Ignore this case
                 }
 
-
                 //We have rep guides
                 if (arguments[i].IsArray)
                 {
                     //Rep guides on array, use guides as provided
                     return providedReplicationGuides;
                 }
-
             }
 
             //Everwhere where we have replication guides, we have single values
             //drop the guides
             return new List<List<ReplicationGuide>>();
-
         }
 
 
