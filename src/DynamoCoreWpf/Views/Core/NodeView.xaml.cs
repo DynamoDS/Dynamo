@@ -553,8 +553,15 @@ namespace Dynamo.Controls
 
             if (previewEnabled == false && !PreviewControl.StaysOpen)
             {
-                PreviewControl.TransitionToState(PreviewControl.State.Condensed);
-                PreviewControl.TransitionToState(PreviewControl.State.Hidden);
+                if (PreviewControl.IsExpanded)
+                {
+                    PreviewControl.TransitionToState(PreviewControl.State.Condensed);
+                    PreviewControl.TransitionToState(PreviewControl.State.Hidden);
+                }
+                else if (PreviewControl.IsCondensed)
+                {
+                    PreviewControl.TransitionToState(PreviewControl.State.Hidden);
+                }
             }
         }
 
