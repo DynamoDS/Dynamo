@@ -991,7 +991,7 @@ namespace Dynamo.Tests
             CurrentDynamoModel.ForceRun();
 
             // Fix expected result after MAGN-7639 is fixed.
-            AssertPreviewValue("980dcd47-84e7-412c-8d9e-d66f166d2370", new object[] { new object[] { false }, new object[] { false }, new object[] { false }, new object[] { false }, new object[] { false } });
+            AssertPreviewValue("980dcd47-84e7-412c-8d9e-d66f166d2370", true);
 
         }
 
