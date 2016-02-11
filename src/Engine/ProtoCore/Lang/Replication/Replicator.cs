@@ -440,43 +440,17 @@ namespace ProtoCore.Lang.Replication
         }
 
 
-        /// <summary>
-        /// This function takes a replication instruction set and uses it to compute all of the types that would be called
-        /// </summary>
-        /// <param name="formalParams"></param>
-        /// <param name="replicationInstructions"></param>
-        /// <param name="core"></param>
-        /// <returns></returns>
         public static List<List<StackValue>> ComputeAllReducedParams(List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, RuntimeCore runtimeCore)
         {
-            List<List<StackValue>> ret; //= new List<List<StackValue>>();
+            //Copy the types so unaffected ones get copied back directly
+            List<StackValue> basicList = new List<StackValue>(formalParams);
 
-            //First approximation generates possibilities that may never actually exist, due to 
-
-            ret = ComputeReducedParamsSuperset(formalParams, replicationInstructions, runtimeCore);
-
-            return ret;
-
-
-
-
-        }
-
-        public static List<List<StackValue>> ComputeReducedParamsSuperset(List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, RuntimeCore runtimeCore)
-        {
             //Compute the reduced Type args
             List<List<StackValue>> reducedParams = new List<List<StackValue>>();
-
-            List<StackValue> basicList = new List<StackValue>();
-
-            //Copy the types so unaffected ones get copied back directly
-            foreach (StackValue sv in formalParams)
-                basicList.Add(sv);
-
             reducedParams.Add(basicList);
 
-
             foreach (ReplicationInstruction ri in replicationInstructions)
+            {
                 if (ri.Zipped)
                 {
                     foreach (int index in ri.ZipIndecies)
@@ -486,36 +460,25 @@ namespace ProtoCore.Lang.Replication
 
                         if (target.IsArray)
                         {
-
-                            //Array arr = formalParams[index].Payload as Array;
-                            var array = runtimeCore.Heap.ToHeapObject<DSArray>(basicList[index]);
+                            var array = runtimeCore.Heap.ToHeapObject<DSArray>(target);
 
                             //The elements of the array are still type structures
                             if (array.Count != 0)
                             {
-                                var arrayStats = ArrayUtils.GetTypeExamplesForLayer(basicList[index], runtimeCore).Values;
+                                var arrayStats = ArrayUtils.GetTypeExamplesForLayer(target, runtimeCore).Values;
 
-                                List<List<StackValue>> clonedList = new List<List<StackValue>>();
-
-                                foreach (List<StackValue> list in reducedParams)
-                                    clonedList.Add(list);
-
+                                List<List<StackValue>> clonedList = new List<List<StackValue>>(reducedParams);
                                 reducedParams.Clear();
 
                                 foreach (StackValue sv in arrayStats)
                                 {
                                     foreach (List<StackValue> lst in clonedList)
                                     {
-                                        List<StackValue> newArgs = new List<StackValue>();
-                                        
-                                        newArgs.AddRange(lst);
+                                        List<StackValue> newArgs = new List<StackValue>(lst);
                                         newArgs[index] = sv;
-
                                         reducedParams.Add(newArgs);
                                     }
-                                    
                                 }
-
                             }
                         }
                         else
@@ -528,16 +491,11 @@ namespace ProtoCore.Lang.Replication
                 {
                     //This should generally be a collection, so we need to do a one phase unboxing
                     int index = ri.CartesianIndex;
-                    //This should generally be a collection, so we need to do a one phase unboxing
                     StackValue target = basicList[index];
 
                     if (target.IsArray)
                     {
-
-                        //Array arr = formalParams[index].Payload as Array;
-                        var array = runtimeCore.Heap.ToHeapObject<DSArray>(basicList[index]);
-
-
+                        var array = runtimeCore.Heap.ToHeapObject<DSArray>(target);
 
                         //It is a collection, so cast it to an array and pull the type of the first element
                         //@TODO(luke): Deal with sparse arrays, if the first element is null this will explode
@@ -545,30 +503,20 @@ namespace ProtoCore.Lang.Replication
                         //The elements of the array are still type structures
                         if (array.Count != 0)
                         {
-                            var arrayStats = ArrayUtils.GetTypeExamplesForLayer(basicList[index], runtimeCore).Values;
+                            var arrayStats = ArrayUtils.GetTypeExamplesForLayer(target, runtimeCore).Values;
 
-                            List<List<StackValue>> clonedList = new List<List<StackValue>>();
-
-                            foreach (List<StackValue> list in reducedParams)
-                                clonedList.Add(list);
-
+                            List<List<StackValue>> clonedList = new List<List<StackValue>>(reducedParams);
                             reducedParams.Clear();
-                        
 
                             foreach (StackValue sv in arrayStats)
                             {
                                 foreach (List<StackValue> lst in clonedList)
                                 {
-                                    List<StackValue> newArgs = new List<StackValue>();
-
-                                    newArgs.AddRange(lst);
+                                    List<StackValue> newArgs = new List<StackValue>(lst);
                                     newArgs[index] = sv;
-
                                     reducedParams.Add(newArgs);
                                 }
-
                             }
-
                         }
                     }
                     else
@@ -576,9 +524,9 @@ namespace ProtoCore.Lang.Replication
                         System.Console.WriteLine("WARNING: Replication unbox requested on Singleton. Trap: 437AD20D-9422-40A3-BFFD-DA4BAD7F3E5F");
                     }
                 }
+            }
 
             return reducedParams;
-
         }
 
 
