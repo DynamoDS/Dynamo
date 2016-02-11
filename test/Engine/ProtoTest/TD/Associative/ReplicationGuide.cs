@@ -748,7 +748,7 @@ namespace ProtoTest.TD.Associative
             string code = @"            def foo : int(a : int,b:int)            {                return = a * b;            }            list1 = {1,2};            list2 = {1,2};            list3 = foo(foo(foo(list1<1>, list2<2>)<1>, list2<2>)<1>, list2<2>);";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("list3", new object[] { new object[] { new object[] { new object[] { 1 }, new object[] { 2 } }, new object[] { new object[] { 2 }, new object[] { 4 } } }, new object[] { new object[] { new object[] { 2 }, new object[] { 4 } }, new object[] { new object[] { 4 }, new object[] { 8 } } } } );
+            thisTest.Verify("list3", new object[] { new object[] { new object[] { new object[] { 1 }, new object[] { 2 } }, new object[] { new object[] { 2 }, new object[] { 4 } } }  } );
         }
 
         [Test]

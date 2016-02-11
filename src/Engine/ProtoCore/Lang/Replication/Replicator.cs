@@ -739,7 +739,7 @@ namespace ProtoCore.Lang.Replication
                     //The add in the reductions associated with the provided controls.
                     //The silly copy-ctoring here is to avoid the issues of modifying a collection with an iterator on it
                     List<List<int>> completedReductions = new List<List<int>>();
-                    
+
                     List<ReplicationInstruction> reversedControl = new List<ReplicationInstruction>();
                     reversedControl.AddRange(providedControl);
                     reversedControl.Reverse();
@@ -801,6 +801,56 @@ namespace ProtoCore.Lang.Replication
                 ret.Add(ReductionToInstructions_New(reduction, providedControl));
             }
 
+            return ret;
+        }
+
+        public static List<List<ReplicationInstruction>> BuildReplicationCombinations_New(List<ReplicationInstruction> providedControl, List<StackValue> formalParams, RuntimeCore runtimeCore)
+        {
+            List<int> maxReductionDepths = formalParams.Select(p => GetMaxReductionDepth(p, runtimeCore)).ToList();
+
+            int maxDepth = maxReductionDepths.Sum();
+            if (maxDepth == 0)
+                return new List<List<ReplicationInstruction>>();
+
+            List<List<int>> reductions = new List<List<int>>();
+            for (int i = 0; i <= maxDepth; i++)
+                reductions.AddRange(BuildAllocation(formalParams.Count, maxDepth));
+
+            // Reduce reduction level if replication guides have been provided
+            if (providedControl.Count > 0)
+            {
+                var reversedControl = new List<ReplicationInstruction>(providedControl);
+                reversedControl.Reverse();
+
+                for (int i = 0; i < reductions.Count; ++i)
+                {
+                    var reduction = reductions[i];
+                    foreach (ReplicationInstruction ri in reversedControl)
+                    {
+                        if (ri.Zipped)
+                        {
+                            foreach (int idx in ri.ZipIndecies)
+                                reduction[idx] = reduction[idx] - 1;
+                        }
+                        else
+                        {
+                            reduction[ri.CartesianIndex] = reduction[ri.CartesianIndex] - 1;
+                        }
+                    }
+                }
+            }
+
+            List<List<int>> cleanedReductions = new List<List<int>>();
+            foreach (List<int> list in reductions)
+            {
+                if (list.Any(r => r < 0))
+                    continue;
+
+                if (list.Any(r => r > 0))
+                    cleanedReductions.Add(list);
+            }
+
+            var ret = cleanedReductions.Select(rs => ReductionToInstructions_New(rs, providedControl)).ToList();
             return ret;
         }
 

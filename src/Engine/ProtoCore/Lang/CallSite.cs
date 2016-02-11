@@ -830,7 +830,7 @@ namespace ProtoCore
             #endregion
 
 
-            var replicationTrials = Replicator.BuildReplicationCombinations(instructions, arguments, runtimeCore);
+            var replicationTrials = Replicator.BuildReplicationCombinations_New(instructions, arguments, runtimeCore);
             #region Case 2: Replication with no type cast
 
             {
