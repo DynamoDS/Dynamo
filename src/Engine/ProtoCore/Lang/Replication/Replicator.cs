@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using ProtoCore.DSASM;
 using ProtoCore.Exceptions;
@@ -346,16 +347,65 @@ namespace ProtoCore.Lang.Replication
 
         }
 
+        /// <summary>
+        /// Convert reduction to instruction. Using zip-first strategy.
+        /// </summary>
+        /// <param name="reductions"></param>
+        /// <param name="providedControl"></param>
+        /// <returns></returns>
+        public static List<ReplicationInstruction> ReductionToInstructions_New(List<int> reductions, List<ReplicationInstruction> providedControl)
+        {
+            List<ReplicationInstruction> ret = new List<ReplicationInstruction>(providedControl);
+
+            while (true)
+            {
+                int zippableItemCount = reductions.Count(x => x > 0);
+                if (zippableItemCount <= 1)
+                    break;
+
+                List<int> locations = new List<int>();
+                for (int i = 0; i < reductions.Count; i++)
+                {
+                    if (reductions[i] >= 1)
+                    {
+                        locations.Add(i);
+                        reductions[i] -= 1;
+                    }
+                }
+
+                ReplicationInstruction ri = new ReplicationInstruction()
+                {
+                    CartesianIndex = -1,
+                    ZipIndecies = locations,
+                    Zipped = true
+                };
+                ret.Add(ri);
+            }
+
+            for (int i = 0; i < reductions.Count; i++)
+            {
+                if (reductions[i] > 0)
+                {
+                    ReplicationInstruction ri = new ReplicationInstruction()
+                    {
+                        CartesianIndex = i, ZipIndecies = null, Zipped = false
+                    };
+                    ret.Add(ri);
+                }
+            }
+
+            return ret;
+        }
+
+        /// <summary>
+        /// Convert reduction to instruciton. Using cartesian-first strategy.
+        /// </summary>
+        /// <param name="reductionList"></param>
+        /// <param name="providedControl"></param>
+        /// <returns></returns>
         public static List<ReplicationInstruction> ReductionToInstructions(List<int> reductionList, List<ReplicationInstruction> providedControl)
         {
-            
-            List<ReplicationInstruction> ret = new List<ReplicationInstruction>();
-
-            ret.AddRange(providedControl);
-
-            //if (providedControl.Count > 0)
-            //    throw new NotImplementedException();
-
+            List<ReplicationInstruction> ret = new List<ReplicationInstruction>(providedControl);
 
             //Basic sanity check on the reductions
             foreach (int reduction in reductionList)
@@ -382,7 +432,6 @@ namespace ProtoCore.Lang.Replication
                 for (int j = 0; j < reductionList.Count; j++)
                     if (reductionList[j] == i)
                         locations.Add(j);
-                // reductionList.f .FindAll((int x) => x == i);
 
                 Validity.Assert(locations.Count > 0, "We should have trapped this case and short-cut the loop, {DF3D67B8-F1B5-4C61-BF3B-930D4C860FA9}");
 
@@ -397,16 +446,12 @@ namespace ProtoCore.Lang.Replication
                     {
                         //Add padding instructions
                         //@TODO(Luke): Suspect cartesian padding is incorrect
-
                         for (int padding = 0; padding < ((i - lastSeenReduction) - 1); padding++)
                         {
                             ReplicationInstruction riPad = new ReplicationInstruction() { CartesianIndex = locations[0], ZipIndecies = null, Zipped = false };
                             ret.Add(riPad);
-
                         }
-
                     }
-
                 }
                 else
                 {
@@ -417,26 +462,18 @@ namespace ProtoCore.Lang.Replication
                     {
                         //Add padding instructions
                         //@TODO(Luke): Suspect cartesian padding is incorrect
-
                         for (int padding = 0; padding < ((i - lastSeenReduction) - 1); padding++)
                         {
                             ReplicationInstruction riPad = new ReplicationInstruction() { CartesianIndex = -1, ZipIndecies = locations, Zipped = true };
                             ret.Add(riPad);
-
                         }
-
                     }
-
                 }
 
                 lastSeenReduction = i;
-
-
             }
 
             return ret;
-
-
         }
 
 
@@ -625,7 +662,6 @@ namespace ProtoCore.Lang.Replication
         {
             //@PERF: this algorithm is not optimal, e.g. short-cutting can be used
             //it's also needlessly recursive
-
             List<List<int>> retList = new List<List<int>>();
 
             if (count == 1)
@@ -643,7 +679,6 @@ namespace ProtoCore.Lang.Replication
 
                 for (int currVal = 0; currVal <= maxAlloc; currVal++)
                 {
-
                     List<List<int>> subLists = BuildAllocation(count - 1, maxAlloc - currVal);
 
                     //prepend all of these lists with currVal
@@ -652,35 +687,24 @@ namespace ProtoCore.Lang.Replication
                         list.Insert(0, currVal);
                         retList.Add(list);
                     }
-
                 }
-
             }
 
             return retList;
-
         }
-
-       
-
 
         public static List<List<ReplicationInstruction>> BuildReplicationCombinations(List<ReplicationInstruction> providedControl, List<StackValue> formalParams, RuntimeCore runtimeCore)
         {
-
-            
             //@TODO: Performance hint - this should really be done with a yield-generator unless the parrallelism is useful
             //@ROSO: This is not generating a minimal set
-
-
             //First build a list of reducible parameters
-
             List<int> reducibles = new List<int>();
+            List<int> maxReductionDepths = formalParams.Select(p => GetMaxReductionDepth(p, runtimeCore)).ToList();
 
             int maxDepth = 0;
-
             for (int i = 0; i < formalParams.Count; i++)
             {
-                int itemMaxDepth = GetMaxReductionDepth(formalParams[i], runtimeCore);
+                int itemMaxDepth = maxReductionDepths[i];
 
                 if (itemMaxDepth > 0)
                     reducibles.Add(i);
@@ -698,7 +722,6 @@ namespace ProtoCore.Lang.Replication
                 //Reduce the available reducions by the amount that we've been instructed to
                 maxDepth -= providedControl.Count;
             }
-
 
             List<List<int>> cleanedReductions = new List<List<int>>();
 
@@ -740,22 +763,19 @@ namespace ProtoCore.Lang.Replication
                     }
 
                     reductions = completedReductions;
-
                 }
-                
-
-
-
 
                 foreach (List<int> list in reductions)
                 {
                     bool append = true;
                     for (int i = 0; i < list.Count; i++)
-                        if (list[i] > GetMaxReductionDepth(formalParams[i], runtimeCore))
+                    {
+                        if (list[i] > maxReductionDepths[i])
                         {
                             append = false;
                             break;
                         }
+                    }
 
                     int acc = 0;
                     for (int i = 0; i < list.Count; i++)
@@ -768,60 +788,20 @@ namespace ProtoCore.Lang.Replication
                     if (append)
                         cleanedReductions.Add(list);
                 }
-
-
-
             }
-
-            //if (providedControl.Count > 0)
-            //    throw new NotImplementedException("begone.");
-
 
             List<List<ReplicationInstruction>> ret = new List<List<ReplicationInstruction>>();
 
             //At this stage cleanedReductions holds the number of times to try and reduce each argument
             //All options being suggested should be possible
-
             foreach (List<int> reduction in cleanedReductions)
             {
-
-                ////@PERF - unify data formats so we don't have to do this conversion again
-                //List<List<int>> partial = new List<List<int>>();
-                //foreach (int i in reduction)
-                //{
-                //    if (i == 0)
-                //        partial.Add(new List<int> { });
-                //    else
-                //        partial.Add(new List<int> { i });
-
-                //}
-
-                //ret.Add(ReductionToInstructions(reduction));//Replicator.Old_ConvertGuidesToInstructions(partial));
-                ret.Add(ReductionToInstructions(reduction, providedControl));//Replicator.Old_ConvertGuidesToInstructions(partial));
-
+                ret.Add(ReductionToInstructions(reduction, providedControl));
             }
 
             return ret;
-
-
         }
 
-        ///// <summary>
-        ///// Get the maximum depth to which an object can be reduced
-        ///// </summary>
-        ///// <param name="obj"></param>
-        ///// <returns></returns>
-        //[Obsolete]
-        //public static int GetMaxReductionDepth(ProtoCore.Lang.Obj obj)
-        //{
-        //    if (!obj.Type.IsIndexable)
-        //        return 0;
-        //    else
-        //    {
-        //        return 1 + GetMaxReductionDepth((Obj)((DSASM.Mirror.DsasmArray)obj.Payload).members[0]);
-        //    }
-        //}
-        
         /// <summary>
         /// Get the maximum depth to which an element can be reduced
         /// This will include cases where only partial reduction can be performed on jagged arrays
