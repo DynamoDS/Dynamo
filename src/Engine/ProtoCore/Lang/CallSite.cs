@@ -497,15 +497,12 @@ namespace ProtoCore
             //Ordering implies containment, so element 0 is the outer most forloop, element 1 is nested within it etc.
             //Take the explicit replication guides and build the replication structure
             //Turn the replication guides into a guide -> List args data structure
-            ReplicationControl replicationControl = new ReplicationControl()
-            {
-                Instructions = Replicator.BuildPartialReplicationInstructions(partialReplicationGuides)
-            };
+            var instructions = Replicator.BuildPartialReplicationInstructions(partialReplicationGuides);
 
             #region First Case: Replicate only according to the replication guides
 
             {
-                FunctionEndPoint fep = Case1GetCompleteMatchFEP(context, arguments, funcGroup, replicationControl.Instructions,
+                FunctionEndPoint fep = Case1GetCompleteMatchFEP(context, arguments, funcGroup, instructions,
                                                                 stackFrame,
                                                                 runtimeCore, new StringBuilder());
                 if (fep != null)
@@ -521,7 +518,7 @@ namespace ProtoCore
 
             {
                 //Build the possible ways in which we might replicate
-                replicationTrials = Replicator.BuildReplicationCombinations(replicationControl.Instructions, arguments, runtimeCore);
+                replicationTrials = Replicator.BuildReplicationCombinations(instructions, arguments, runtimeCore);
 
                 foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
                 {
@@ -543,15 +540,15 @@ namespace ProtoCore
 
             {
                 Dictionary<FunctionEndPoint, int> candidatesWithDistances =
-                    funcGroup.GetConversionDistances(context, arguments, replicationControl.Instructions,
+                    funcGroup.GetConversionDistances(context, arguments, instructions,
                                                      runtimeCore.DSExecutable.classTable, runtimeCore);
                 Dictionary<FunctionEndPoint, int> candidatesWithCastDistances =
-                    funcGroup.GetCastDistances(context, arguments, replicationControl.Instructions, runtimeCore.DSExecutable.classTable,
+                    funcGroup.GetCastDistances(context, arguments, instructions, runtimeCore.DSExecutable.classTable,
                                                runtimeCore);
 
                 List<FunctionEndPoint> candidateFunctions = GetCandidateFunctions(stackFrame, candidatesWithDistances);
                 FunctionEndPoint compliantTarget = GetCompliantTarget(context, arguments,
-                                                                      replicationControl.Instructions, stackFrame, runtimeCore,
+                                                                      instructions, stackFrame, runtimeCore,
                                                                       candidatesWithCastDistances, candidateFunctions,
                                                                       candidatesWithDistances);
 
@@ -568,7 +565,7 @@ namespace ProtoCore
             {
                 //Build the possible ways in which we might replicate
                 replicationTrials =
-                    Replicator.BuildReplicationCombinations(replicationControl.Instructions, arguments, runtimeCore);
+                    Replicator.BuildReplicationCombinations(instructions, arguments, runtimeCore);
 
                 //Add as a first attempt a no-replication, but allowing up-promoting
                 replicationTrials.Insert(0,
@@ -755,7 +752,7 @@ namespace ProtoCore
             Context context, 
             List<StackValue> arguments,
             FunctionGroup funcGroup,
-            ReplicationControl replicationControl, 
+            List<ReplicationInstruction> instructions, 
             List<List<ReplicationGuide>> partialReplicationGuides,
             StackFrame stackFrame,
             RuntimeCore runtimeCore,
@@ -776,7 +773,6 @@ namespace ProtoCore
             //Try replication + type casting
 
             //Try replication + type casting + Array promotion
-            List<ReplicationInstruction> instructions = replicationControl.Instructions;
 
             #region First Case: Replicate only according to the replication guides
             {
@@ -875,7 +871,7 @@ namespace ProtoCore
             {
                 log.AppendLine("Case 3: Type conversion");
 
-                FunctionEndPoint compliantTarget = GetCompliantFEP(context, arguments, funcGroup, replicationControl.Instructions, stackFrame, runtimeCore);
+                FunctionEndPoint compliantTarget = GetCompliantFEP(context, arguments, funcGroup, instructions, stackFrame, runtimeCore);
 
                 if (compliantTarget != null)
                 {
@@ -885,7 +881,7 @@ namespace ProtoCore
                         runtimeCore.DSExecutable.EventSink.PrintMessage(log.ToString());
 
                     resolvesFeps = new List<FunctionEndPoint>() { compliantTarget };
-                    replicationInstructions = replicationControl.Instructions;
+                    replicationInstructions = instructions;
                     return;
                 }
             }
@@ -947,7 +943,7 @@ namespace ProtoCore
 
 
             resolvesFeps = new List<FunctionEndPoint>();
-            replicationInstructions = replicationControl.Instructions;
+            replicationInstructions = instructions;
         }
 
 
@@ -1428,12 +1424,7 @@ namespace ProtoCore
             //Ordering implies containment, so element 0 is the outer most forloop, element 1 is nested within it etc.
             //Take the explicit replication guides and build the replication structure
             //Turn the replication guides into a guide -> List args data structure
-            ReplicationControl replicationControl = new ReplicationControl()
-            {
-                Instructions = Replicator.BuildPartialReplicationInstructions(partialReplicationGuides)
-            };
-
-            log.AppendLine("Replication guides processed to: " + replicationControl);
+            var partialInstructions = Replicator.BuildPartialReplicationInstructions(partialReplicationGuides);
 
             //Get the fep that are resolved
             List<FunctionEndPoint> resolvesFeps;
@@ -1444,7 +1435,7 @@ namespace ProtoCore
             arguments = PerformRepGuideForcedPromotion(arguments, partialReplicationGuides, runtimeCore);
 
 
-            ComputeFeps(log, context, arguments, funcGroup, replicationControl, partialReplicationGuides, stackFrame, runtimeCore, out resolvesFeps, out replicationInstructions);
+            ComputeFeps(log, context, arguments, funcGroup, partialInstructions, partialReplicationGuides, stackFrame, runtimeCore, out resolvesFeps, out replicationInstructions);
 
 
             if (resolvesFeps.Count == 0)
