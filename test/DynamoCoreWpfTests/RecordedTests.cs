@@ -3961,7 +3961,6 @@ namespace DynamoCoreWpfTests
 
         }
         [Test]
-        [Category("Failure")]
         public void recursion_6415()
         {
 
