@@ -497,8 +497,10 @@ namespace ProtoCore
             //Ordering implies containment, so element 0 is the outer most forloop, element 1 is nested within it etc.
             //Take the explicit replication guides and build the replication structure
             //Turn the replication guides into a guide -> List args data structure
-            ReplicationControl replicationControl =
-                Replicator.Old_ConvertGuidesToInstructions(partialReplicationGuides);
+            ReplicationControl replicationControl = new ReplicationControl()
+            {
+                Instructions = Replicator.BuildPartialReplicationInstructions(partialReplicationGuides)
+            };
 
             #region First Case: Replicate only according to the replication guides
 
@@ -830,7 +832,7 @@ namespace ProtoCore
             #endregion
 
 
-            var replicationTrials = Replicator.BuildReplicationCombinations_New(instructions, arguments, runtimeCore);
+            var replicationTrials = Replicator.BuildReplicationCombinations(instructions, arguments, runtimeCore);
             #region Case 2: Replication with no type cast
 
             {
@@ -1426,8 +1428,10 @@ namespace ProtoCore
             //Ordering implies containment, so element 0 is the outer most forloop, element 1 is nested within it etc.
             //Take the explicit replication guides and build the replication structure
             //Turn the replication guides into a guide -> List args data structure
-            ReplicationControl replicationControl =
-                Replicator.Old_ConvertGuidesToInstructions(partialReplicationGuides);
+            ReplicationControl replicationControl = new ReplicationControl()
+            {
+                Instructions = Replicator.BuildPartialReplicationInstructions(partialReplicationGuides)
+            };
 
             log.AppendLine("Replication guides processed to: " + replicationControl);
 

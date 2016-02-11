@@ -10,24 +10,7 @@ namespace ProtoCore.Lang.Replication
 {
     public class Replicator
     {
-        /// <summary>
-        /// Build partial replication instructions for guides
-        /// </summary>
-        /// <param name="partialGuides">The guides, empty sub list if no guides for an argument</param>
-        /// <returns>The replication instructions</returns>
-        [Obsolete]
-        public static ReplicationControl Old_ConvertGuidesToInstructions(List<List<ProtoCore.ReplicationGuide>> partialGuides)
-        {
-            ReplicationControl rc = new ReplicationControl()
-            {
-                Instructions = BuildPartialReplicationInstructions(partialGuides)
-            };
-
-            //Now push the result to the legacy code to do the computation
-            return rc;
-        }
-
-        private static List<ReplicationInstruction> BuildPartialReplicationInstructions(List<List<ProtoCore.ReplicationGuide>> partialRepGuides)
+        public static List<ReplicationInstruction> BuildPartialReplicationInstructions(List<List<ProtoCore.ReplicationGuide>> partialRepGuides)
         {
             //DS code:          foo(a<1><2><3>, b<2>, c)
             //partialGuides     {1,2,3}, {2}, {}
@@ -87,7 +70,6 @@ namespace ProtoCore.Lang.Replication
 
                         if (partialGuidesLace[i][indexOfGuide] == ZipAlgorithm.Longest)
                         {
-
                             //If we've previous seen a shortest node with this guide
                             if (i > 0 && indexLace[guideCounter] == ZipAlgorithm.Shortest)
                             {
@@ -112,12 +94,7 @@ namespace ProtoCore.Lang.Replication
                             }
                         }
                     }
-
-                // Validity.Assert(index[guideCounter].Count > 0, "Sorry, non-contiguous replication guides are not yet supported, please try again without leaving any gaps, err code {3E080694}");
             }
-
-
-
 
             //Now walk over the guides in order creating the replication 
             int[] uniqueGuides = new int[index.Keys.Count];
@@ -173,154 +150,6 @@ namespace ProtoCore.Lang.Replication
                     }
                 }
             }
-        }
-
-
-        /// <summary>
-        /// Legacy method that converts guides with at most one guide per argument
-        /// To be factored into ConvertGuidesToInstructions and removed
-        /// </summary>
-        /// <param name="partialGuides"></param>
-        /// <returns></returns>
-        [Obsolete]
-        private static List<ReplicationInstruction> Old_BuildPartialReplicationInstructions(List<int?> partialGuides)
-        {
-
-
-
-            Dictionary<int, List<int>> index = new Dictionary<int, List<int>>();
-
-            for (int i = 0; i < partialGuides.Count; i++)
-            {
-                if (partialGuides[i].HasValue)
-                {
-                    int value = partialGuides[i].Value;
-
-                    if (!index.ContainsKey(value))
-                        index.Add(value, new List<int>());
-
-                    index[value].Add(i);
-                }
-
-            }
-
-
-            //Now walk over the guides in order creating the replication 
-            int[] uniqueGuides = new int[index.Keys.Count];
-            index.Keys.CopyTo(uniqueGuides, 0);
-            Array.Sort(uniqueGuides);
-
-            List<ReplicationInstruction> ret = new List<ReplicationInstruction>();
-            foreach (int i in uniqueGuides)
-            {
-                //Create a new replication instruction
-                ReplicationInstruction ri = new ReplicationInstruction();
-
-                if (index[i].Count == 1)
-                {
-                    ri.CartesianIndex = index[i][0];
-                    ri.Zipped = false;
-                }
-                else
-                {
-                    ri.Zipped = true;
-                    ri.ZipIndecies = index[i];
-                }
-
-                ret.Add(ri);
-            }
-
-            return ret;
-        }
-
-
-        public static List<ReplicationInstruction> ReductionToInstructions(List<int> reductionList)
-        {
-
-            List<ReplicationInstruction> ret = new List<ReplicationInstruction>();
-
-            //Basic sanity check on the reductions
-            foreach (int reduction in reductionList)
-                Validity.Assert(reduction >= 0, "Negative reductions aren't supported {991CBD60-8B2B-438B-BDEB-734D18B4FE68}");
-
-            int maxReductionCount = int.MinValue;
-            foreach (int reduction in reductionList)
-                maxReductionCount = Math.Max(maxReductionCount, reduction);
-
-            //@PERF This is going to do a O(n^2) cost scan, when we could just build a reverse index once....
-
-            int lastSeenReduction = 0; //This is the last instruction that we have seen and don't need to inject further
-            //reductions from
-
-            //Walk over all the reductions that we're going to do
-            for (int i = 1; i <= maxReductionCount; i++)
-            {
-                if (!reductionList.Contains(i))
-                    continue; //We didn't have a reduction of this phase, we'll insert the padding reductions in the next line
-
-                //Otherwise look at how many times the reduction was contained. If it was more than once zip, otherwise cartesian
-                List<int> locations = new List<int>();
-
-                for (int j = 0; j < reductionList.Count; j++ )
-                    if (reductionList[j] == i)
-                        locations.Add(j);
-                    // reductionList.f .FindAll((int x) => x == i);
-
-                    Validity.Assert(locations.Count > 0, "We should have trapped this case and short-cut the loop, {DF3D67B8-F1B5-4C61-BF3B-930D4C860FA9}");
-
-                if (locations.Count == 1)
-                {
-                    //There was one location, this is a cartesian expansion
-
-                    ReplicationInstruction ri = new ReplicationInstruction()
-                                                    {CartesianIndex = locations[0], ZipIndecies = null, Zipped = false};
-                    ret.Add(ri);
-
-                    if (i - lastSeenReduction > 1)
-                    {
-                        //Add padding instructions
-                        //@TODO(Luke): Suspect cartesian padding is incorrect
-
-                        for (int padding = 0; padding < ((i - lastSeenReduction) -1); padding++)
-                        {
-                            ReplicationInstruction riPad = new ReplicationInstruction() { CartesianIndex = locations[0], ZipIndecies = null, Zipped = false };
-                            ret.Add(riPad);
-
-                        }
-
-                    }
-
-                }
-                else
-                {
-                    ReplicationInstruction ri = new ReplicationInstruction()
-                                                    {CartesianIndex = -1, ZipIndecies = locations, Zipped = true};
-                    ret.Add(ri);
-
-                    if (i - lastSeenReduction > 1)
-                    {
-                        //Add padding instructions
-                        //@TODO(Luke): Suspect cartesian padding is incorrect
-
-                        for (int padding = 0; padding < ((i - lastSeenReduction)-1); padding++)
-                        {
-                            ReplicationInstruction riPad = new ReplicationInstruction() { CartesianIndex = -1, ZipIndecies = locations, Zipped = true }; 
-                            ret.Add(riPad);
-
-                        }
-
-                    }
-
-                }
-
-                lastSeenReduction = i;
-
-
-            }
-
-            return ret;
-
-
         }
 
         /// <summary>
@@ -470,8 +299,6 @@ namespace ProtoCore.Lang.Replication
             return reducedParams;
         }
 
-
-
         /// <summary>
         /// Compute the effects of the replication guides on the formal parameter lists
         /// The results of this loose data, and will not be correct on jagged arrays of hetrogenius types
@@ -482,14 +309,10 @@ namespace ProtoCore.Lang.Replication
         public static List<StackValue> EstimateReducedParams(List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, RuntimeCore runtimeCore)
         {
             //Compute the reduced Type args
-            List<StackValue> reducedParamTypes = new List<StackValue>();
-
-            //Copy the types so unaffected ones get copied back directly
-            foreach (StackValue sv in formalParams)
-                reducedParamTypes.Add(sv);
-
+            List<StackValue> reducedParamTypes = new List<StackValue>(formalParams);
 
             foreach (ReplicationInstruction ri in replicationInstructions)
+            {
                 if (ri.Zipped)
                 {
                     foreach (int index in ri.ZipIndecies)
@@ -500,10 +323,7 @@ namespace ProtoCore.Lang.Replication
 
                         if (target.IsArray)
                         {
-
-                            //Array arr = formalParams[index].Payload as Array;
                             var array = runtimeCore.Heap.ToHeapObject<DSArray>(reducedParamTypes[index]);
-
 
                             //It is a collection, so cast it to an array and pull the type of the first element
                             //The elements of the array are still type structures
@@ -531,11 +351,9 @@ namespace ProtoCore.Lang.Replication
 
                     if (target.IsArray)
                     {
-                        //ProtoCore.DSASM.Mirror.DsasmArray arr = formalParams[index].Payload as ProtoCore.DSASM.Mirror.DsasmArray;
                         var array = runtimeCore.Heap.ToHeapObject<DSArray>(reducedParamTypes[index]);
 
                         //The elements of the array are still type structures
-                        //reducedType = arr.members[0].Type;
                         if (array.Count == 0)
                             reducedSV = StackValue.Null;
                         else
@@ -548,12 +366,11 @@ namespace ProtoCore.Lang.Replication
                         reducedSV = target;
                     }
 
-                    //reducedType.IsIndexable = false;
                     reducedParamTypes[index] = reducedSV;
                 }
+            }
 
             return reducedParamTypes;
-
         }
 
         /// <summary>
@@ -694,7 +511,5 @@ namespace ProtoCore.Lang.Replication
 
             return 1 + maxReduction;   
         }
-
-        
     }
 }
