@@ -34,6 +34,11 @@ namespace Watch3DNodeModelsWpf
             Name = string.Format("{0} Preview", node.GUID);
         }
 
+        protected override void OnWatchExecution()
+        {
+            watchNode.WasExecuted = true;
+        }
+
         void watchNode_Deserialized(XmlNode obj)
         {
             var cameraNode = obj.ChildNodes.Cast<XmlNode>().FirstOrDefault(innerNode => innerNode.Name.Equals("camera", StringComparison.OrdinalIgnoreCase));
