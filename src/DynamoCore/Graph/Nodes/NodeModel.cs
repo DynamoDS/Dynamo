@@ -1682,6 +1682,8 @@ namespace Dynamo.Graph.Nodes
                     return true;
 
                 case "Position":
+                    // Here we expect a string that represents an array of double values which are separated by ";"
+                    // For example "12.5;14.56"
                     var pos = value.Split(';');
                     double xPos, yPos;
                     if (pos.Length == 2 && double.TryParse(pos[0], out xPos)
