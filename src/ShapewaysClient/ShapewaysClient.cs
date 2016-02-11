@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using RestSharp;
-using RestSharp.Contrib;
+using RestSharp.Extensions.MonoHttp;
 
 namespace ShapewaysClient
 {
