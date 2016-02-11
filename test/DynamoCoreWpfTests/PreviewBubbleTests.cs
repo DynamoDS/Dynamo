@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -6,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
+using Dynamo.Models;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 using Dynamo.Utilities;
@@ -26,6 +28,12 @@ namespace DynamoCoreWpfTests
             base.Run();
 
             DispatcherUtil.DoEvents();
+        }
+
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("DSCoreNodes.dll");
+            base.GetLibrariesToPreload(libraries);
         }
 
         [Test]
@@ -127,13 +135,75 @@ namespace DynamoCoreWpfTests
             {
                 nodeView.PreviewControl.BindToDataSource(nodeView.ViewModel.NodeModel.CachedValue);
                 nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Condensed);
-                nodeView.ChildOfType<ICSharpCode.AvalonEdit.Editing.TextArea>().Focus();
             });
+            DispatcherUtil.DoEvents();
+            nodeView.ChildOfType<ICSharpCode.AvalonEdit.Editing.TextArea>().Focus();
+
+            Assert.IsTrue(nodeView.PreviewControl.IsHidden);
+        }
+
+        [Test]
+        public void PreviewBubble_NoCrashWithCodeBlock()
+        {
+            var code = new CodeBlockNodeModel(this.Model.LibraryServices);
+
+            this.Model.AddNodeToCurrentWorkspace(code, true);
+            this.Run();
+            var nodeView = NodeViewWithGuid(code.GUID.ToString());
             
-            
+            Assert.IsNotNull(nodeView);
+            View.Dispatcher.Invoke(() =>
+            {
+                nodeView.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0) 
+                { RoutedEvent = Mouse.MouseEnterEvent });
+                nodeView.PreviewControl.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0)
+                { RoutedEvent = Mouse.MouseEnterEvent });
+            });
             DispatcherUtil.DoEvents();
 
             Assert.IsTrue(nodeView.PreviewControl.IsHidden);
+        }
+
+        [Test]
+        public void PreviewBubble_CodeBlockIsNotInFocus()
+        {
+            var code = new CodeBlockNodeModel(this.Model.LibraryServices);
+
+            Model.AddNodeToCurrentWorkspace(code, true);
+            Run();
+
+            // Click on DragCanvas.
+            View.ChildOfType<DragCanvas>().RaiseEvent(
+                new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)
+            {
+                RoutedEvent = Mouse.MouseDownEvent
+            });
+            var nodeView = NodeViewWithGuid(code.GUID.ToString());
+            Assert.IsNotNull(nodeView);
+
+            // Move mouse on code node.
+            var dispatcherOperation = View.Dispatcher.BeginInvoke(new Action(
+            () =>
+            {
+                nodeView.RaiseEvent(
+                    new MouseEventArgs(Mouse.PrimaryDevice, 0) { RoutedEvent = Mouse.MouseEnterEvent });
+            }));
+            DispatcherUtil.DoEvents();
+
+            dispatcherOperation.Completed += (s, args) =>
+                Assert.IsTrue(nodeView.PreviewControl.IsCondensed);
+
+            // Move mouse on code node preview.
+            dispatcherOperation = View.Dispatcher.BeginInvoke(new Action(
+            () =>
+            {
+                nodeView.PreviewControl.RaiseEvent(
+                    new MouseEventArgs(Mouse.PrimaryDevice, 0) { RoutedEvent = Mouse.MouseEnterEvent });
+            }));
+            DispatcherUtil.DoEvents();
+
+            dispatcherOperation.Completed += (s, args) =>
+            Assert.IsTrue(nodeView.PreviewControl.IsExpanded);
         }
 
         #region Watch PreviewBubble

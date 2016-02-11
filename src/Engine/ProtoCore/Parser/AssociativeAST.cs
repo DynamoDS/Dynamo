@@ -243,6 +243,54 @@ namespace ProtoCore.AST.AssociativeAST
         }
     }
 
+    public class AtLevelNode : AssociativeNode
+    {
+        public Int64 Level
+        {
+            get; set;
+        }
+
+        public bool IsDominant
+        {
+            get; set;
+        }
+
+        public override void Accept(AssociativeAstVisitor visitor)
+        {
+            visitor.VisitAtLevelNode(this);
+        }
+
+        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        {
+            return visitor.VisitAtLevelNode(this);
+        }
+        
+        public override bool Equals(object other)
+        {
+            var otherNode = other as AtLevelNode;
+            if (null == otherNode)
+                return false;
+
+            return Level == otherNode.Level && IsDominant == otherNode.IsDominant;
+        }
+
+        public override int GetHashCode()
+        {
+            return Level.GetHashCode() ^ IsDominant.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            var buf = new StringBuilder();
+            if (IsDominant)
+                buf.Append("@@");
+            else
+                buf.Append("@");
+            buf.Append(Level);
+            return buf.ToString();
+        }
+    }
+
     public class ArrayNameNode : AssociativeNode
     {
         public ArrayNode ArrayDimensions
@@ -252,6 +300,12 @@ namespace ProtoCore.AST.AssociativeAST
         }
 
         public List<AssociativeNode> ReplicationGuides
+        {
+            get;
+            set;
+        }
+
+        public AtLevelNode AtLevel
         {
             get;
             set;
@@ -2628,7 +2682,6 @@ namespace ProtoCore.AST.AssociativeAST
             };
             return cond;
         }
-
 
         //Due to the lack of var arg support for generic types, we need to do
         //the manual type expansions

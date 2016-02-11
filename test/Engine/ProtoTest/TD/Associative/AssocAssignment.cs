@@ -1119,12 +1119,11 @@ b = a * 3;
         [Category("SmokeTest")]
         public void T51_Using_Special_Characters_In_Identifiers()
         {
-            // Assert.Fail("1465125 - Sprint 21 : rev 2294 : @ is not allowed as a starting symbol for identifiers ");
             string code = @"
-@a = 1;
+a = 1;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("@a", 1);
+            thisTest.Verify("a", 1);
         }
 
         [Test]
