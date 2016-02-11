@@ -1485,17 +1485,6 @@ namespace ProtoCore
             AppendInstruction(instr);
         }
 
-
-        protected void EmitPopGuide()
-        {
-            SetEntry();
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.POPG;
-
-            ++pc;
-            AppendInstruction(instr);
-        }
-
         protected void EmitPushArrayIndex(int dimCount)
         {
             SetEntry();
@@ -1610,18 +1599,6 @@ namespace ProtoCore
             AppendInstruction(instr);
         }
 
-        protected void EmitPushList(int depth, int startscope, int block, bool fromDotCall = false)
-        {
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.PUSHLIST;
-            instr.op1 = fromDotCall ? StackValue.BuildDynamic(depth) : StackValue.BuildInt(depth);
-            instr.op2 = StackValue.BuildClassIndex(startscope);
-            instr.op3 = StackValue.BuildBlockIndex(block);
-
-            ++pc;
-            AppendInstruction(instr);
-        }
-
         protected void EmitPush(StackValue op, 
             int blockId = 0, 
             int line = ProtoCore.DSASM.Constants.kInvalidIndex, 
@@ -1637,20 +1614,6 @@ namespace ProtoCore
             ++pc;
             AppendInstruction(instr, line, col);
         }
-
-        protected void EmitPushG(StackValue op, int rank = 0, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex)
-        {
-            SetEntry();
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.PUSHG;
-            instr.op1 = op;
-            instr.op2 = StackValue.BuildClassIndex(globalClassIndex);
-            instr.op3 = StackValue.BuildArrayDimension(rank);
-
-            ++pc;
-            AppendInstruction(instr, line, col);
-        }
-
 
         protected void EmitPushType(int UID, int rank)
         {
@@ -1839,28 +1802,7 @@ namespace ProtoCore
             }
 
             inferedType.UID = isBooleanOp ? (int)PrimitiveType.kTypeBool : inferedType.UID;
-            if (emitReplicationGuide)
-            {
-                int replicationGuides = 0;
-
-                // Push the number of guides
-                EmitInstrConsole(ProtoCore.DSASM.kw.push, replicationGuides + "[guide]");
-                StackValue opNumGuides = StackValue.BuildReplicationGuide(replicationGuides);
-                EmitPush(opNumGuides);
-            }
-
-
-            StackValue op = StackValue.BuildInt(value);
-            if (emitReplicationGuide)
-            {
-                EmitInstrConsole(ProtoCore.DSASM.kw.pushg, value.ToString());
-                EmitPushG(op, node.line, node.col);
-            }
-            else
-            {
-                EmitInstrConsole(ProtoCore.DSASM.kw.push, value.ToString());
-                EmitPush(op, node.line, node.col);
-            }
+            EmitOpWithEmptyReplicationGuide(emitReplicationGuide, StackValue.BuildInt(value), value.ToString(), node);
 
             if (IsAssociativeArrayIndexing)
             {
@@ -1925,23 +1867,9 @@ namespace ProtoCore
             }
   
             String strValue = "'" + value + "'";
-            StackValue op = ProtoCore.DSASM.StackValue.BuildChar(value[0]);
+            StackValue op = StackValue.BuildChar(value[0]);
 
-            if (emitReplicationGuide)
-            {
-                int replicationGuides = 0;
-                EmitInstrConsole(ProtoCore.DSASM.kw.push, replicationGuides + "[guide]");
-                StackValue opNumGuides = StackValue.BuildReplicationGuide(replicationGuides);
-                EmitPush(opNumGuides);
-
-                EmitInstrConsole(ProtoCore.DSASM.kw.pushg, strValue);
-                EmitPushG(op, node.line, node.col);
-            }
-            else
-            {
-                EmitInstrConsole(ProtoCore.DSASM.kw.push, strValue);
-                EmitPush(op, cNode.line, cNode.col);
-            }
+            EmitOpWithEmptyReplicationGuide(emitReplicationGuide, StackValue.BuildChar(value[0]), strValue, node);
         }
        
         protected void EmitStringNode(
@@ -1961,25 +1889,9 @@ namespace ProtoCore
                 inferedType.UID = (int)PrimitiveType.kTypeString;
             }
 
-            if (emitReplicationGuide)
-            {
-                EmitInstrConsole(ProtoCore.DSASM.kw.push, 0 + "[guide]");
-                StackValue opNumGuides = StackValue.BuildReplicationGuide(0);
-                EmitPush(opNumGuides);
-            }
-
             string value = (string)sNode.Value;
             StackValue svString = core.Heap.AllocateFixedString(value);
-            if (emitReplicationGuide)
-            {
-                EmitInstrConsole(kw.pushg, "\"" + value + "\"");
-                EmitPushG(svString, node.line, node.col);
-            }
-            else
-            {
-                EmitInstrConsole(kw.push, "\"" + value + "\"");
-                EmitPush(svString, node.line, node.col);
-            }
+            EmitOpWithEmptyReplicationGuide(emitReplicationGuide, svString, "\"" + value + "\"", node);
 
             if (IsAssociativeArrayIndexing && graphNode != null && graphNode.isIndexingLHS)
             {
@@ -2020,28 +1932,7 @@ namespace ProtoCore
                 inferedType.UID = (int)PrimitiveType.kTypeDouble;
             }
             inferedType.UID = isBooleanOp ? (int)PrimitiveType.kTypeBool : inferedType.UID;
-
-            if (emitReplicationGuide)
-            {
-                int replicationGuides = 0;
-
-                // Push the number of guides
-                EmitInstrConsole(ProtoCore.DSASM.kw.push, replicationGuides + "[guide]");
-                StackValue opNumGuides = StackValue.BuildReplicationGuide(replicationGuides);
-                EmitPush(opNumGuides);
-            }
-
-            StackValue op = StackValue.BuildDouble(value);
-            if (emitReplicationGuide)
-            {
-                EmitInstrConsole(ProtoCore.DSASM.kw.pushg, value.ToString());
-                EmitPushG(op, node.line, node.col);
-            }
-            else
-            {
-                EmitInstrConsole(ProtoCore.DSASM.kw.push, value.ToString());
-                EmitPush(op, node.line, node.col);
-            }
+            EmitOpWithEmptyReplicationGuide(emitReplicationGuide, StackValue.BuildDouble(value), value.ToString(), node);
 
             if (IsAssociativeArrayIndexing)
             {
@@ -2106,28 +1997,7 @@ namespace ProtoCore
                 inferedType.UID = (int)PrimitiveType.kTypeBool;
             }
 
-            if (emitReplicationGuide)
-            {
-                int replicationGuides = 0;
-
-                // Push the number of guides
-                EmitInstrConsole(ProtoCore.DSASM.kw.push, replicationGuides + "[guide]");
-                StackValue opNumGuides = StackValue.BuildReplicationGuide(replicationGuides);
-                EmitPush(opNumGuides);
-            }
-
-            StackValue op = StackValue.BuildBoolean(value);
-
-            if (emitReplicationGuide)
-            {
-                EmitInstrConsole(ProtoCore.DSASM.kw.pushg, value.ToString());
-                EmitPushG(op, node.line, node.col);
-            }
-            else
-            {
-                EmitInstrConsole(ProtoCore.DSASM.kw.push, value.ToString());
-                EmitPush(op, node.line, node.col);
-            }
+            EmitOpWithEmptyReplicationGuide(emitReplicationGuide, StackValue.BuildBoolean(value), value.ToString(), node);
         }
 
         protected void EmitNullNode(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone)
@@ -2137,36 +2007,21 @@ namespace ProtoCore
                 return;
             }
 
-            dynamic nullNode = node;
-            inferedType.UID = (int)PrimitiveType.kTypeNull;
-
             inferedType.UID = isBooleanOp ? (int)PrimitiveType.kTypeBool : inferedType.UID;
-
-            if (emitReplicationGuide)
-            {
-                int replicationGuides = 0;
-
-                // Push the number of guides
-                EmitInstrConsole(ProtoCore.DSASM.kw.push, replicationGuides + "[guide]");
-                StackValue opNumGuides = StackValue.BuildReplicationGuide(replicationGuides);
-                EmitPush(opNumGuides);
-            }
-
-            StackValue op = StackValue.Null;
-
-            if (emitReplicationGuide)
-            {
-                EmitInstrConsole(ProtoCore.DSASM.kw.pushg, ProtoCore.DSASM.Literal.Null);
-                EmitPushG(op, nullNode.line, nullNode.col);
-            }
-            else
-            {
-                EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.Literal.Null);
-                EmitPush(op, nullNode.line, nullNode.col);
-            }
+            EmitOpWithEmptyReplicationGuide(emitReplicationGuide, StackValue.Null, Literal.Null, node);
         }
 
-        protected int EmitReplicationGuides(List<ProtoCore.AST.AssociativeAST.AssociativeNode> replicationGuidesList, bool emitNumber = false)
+        protected void EmitOpWithEmptyReplicationGuide(bool emit, StackValue op, string value, AST.Node node)
+        {
+            if (emit)
+            {
+                EmitReplicationGuides(new List<AST.AssociativeAST.AssociativeNode>());
+            }
+            EmitInstrConsole(ProtoCore.DSASM.kw.push, value);
+            EmitPush(op, node.line, node.col);
+        }
+
+        protected void EmitReplicationGuides(List<AST.AssociativeAST.AssociativeNode> replicationGuidesList)
         {
             int replicationGuides = 0;
             if (null != replicationGuidesList && replicationGuidesList.Count > 0)
@@ -2174,32 +2029,26 @@ namespace ProtoCore
                 replicationGuides = replicationGuidesList.Count;
                 for (int n = 0; n < replicationGuides; ++n)
                 {
-                    Validity.Assert(replicationGuidesList[n] is ProtoCore.AST.AssociativeAST.ReplicationGuideNode);
-                    ProtoCore.AST.AssociativeAST.ReplicationGuideNode repGuideNode = replicationGuidesList[n] as ProtoCore.AST.AssociativeAST.ReplicationGuideNode;
+                    Validity.Assert(replicationGuidesList[n] is AST.AssociativeAST.ReplicationGuideNode);
+                    var repGuideNode = replicationGuidesList[n] as AST.AssociativeAST.ReplicationGuideNode;
 
-                    Validity.Assert(repGuideNode.RepGuide is ProtoCore.AST.AssociativeAST.IdentifierNode);
-                    ProtoCore.AST.AssociativeAST.IdentifierNode nodeGuide = repGuideNode.RepGuide as ProtoCore.AST.AssociativeAST.IdentifierNode;
+                    Validity.Assert(repGuideNode.RepGuide is AST.AssociativeAST.IdentifierNode);
+                    var nodeGuide = repGuideNode.RepGuide as AST.AssociativeAST.IdentifierNode;
 
                     // Emit the repguide
-                    EmitInstrConsole(ProtoCore.DSASM.kw.push, nodeGuide.Value);
+                    EmitInstrConsole(kw.push, nodeGuide.Value);
                     StackValue opguide = StackValue.BuildInt(System.Convert.ToInt64(nodeGuide.Value));
                     EmitPush(opguide);
 
                     // Emit the rep guide property
-                    EmitInstrConsole(ProtoCore.DSASM.kw.push, repGuideNode.IsLongest.ToString());
+                    EmitInstrConsole(kw.push, repGuideNode.IsLongest.ToString());
                     StackValue opGuideProperty = StackValue.BuildBoolean(repGuideNode.IsLongest);
                     EmitPush(opGuideProperty);
                 }
-
-                if (emitNumber)
-                {
-                    EmitInstrConsole(ProtoCore.DSASM.kw.push, replicationGuides + "[guide]");
-                    StackValue opNumGuides = StackValue.BuildReplicationGuide(replicationGuides);
-                    EmitPush(opNumGuides);
-                }
             }
-            
-            return replicationGuides; 
+
+            EmitInstrConsole(kw.pushindex, replicationGuides + "[guide]");
+            EmitPushReplicationGuide(replicationGuides);
         }
 
 
@@ -2267,15 +2116,10 @@ namespace ProtoCore
                 EmitPushArrayIndex(dimensions);
             }
 
-            if (emitReplicationGuide)
+            var exprNode = node as AST.AssociativeAST.ExprListNode;
+            if (exprNode != null && emitReplicationGuide)
             {
-                if (node is ProtoCore.AST.AssociativeAST.ExprListNode)
-                {
-                    var exprNode = node as ProtoCore.AST.AssociativeAST.ExprListNode;
-                    int guides = EmitReplicationGuides(exprNode.ReplicationGuides);
-                    EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, guides + "[guide]");
-                    EmitPushReplicationGuide(guides);
-                }
+                EmitReplicationGuides(exprNode.ReplicationGuides);
             }
         }
 
@@ -2451,16 +2295,6 @@ namespace ProtoCore
                 ProtoCore.DSASM.SymbolNode firstSymbol = null;
                 bool isIdentReference = DfsEmitIdentList(node, null, globalClassIndex, ref leftType, ref depth, ref inferedType, false, ref isFirstIdent, ref isMethodCallPresent, ref firstSymbol, graphNode, subPass, bnode);
                 inferedType.UID = isBooleanOp ? (int)PrimitiveType.kTypeBool : inferedType.UID;
-
-
-                if (isIdentReference && depth > 1)
-                {
-                    EmitInstrConsole(ProtoCore.DSASM.kw.pushlist, depth.ToString(), globalClassIndex.ToString());
-
-                    // TODO Jun: Get blockid
-                    int blockId = 0;
-                    EmitPushList(depth, globalClassIndex, blockId);
-                }
             }
         }
 

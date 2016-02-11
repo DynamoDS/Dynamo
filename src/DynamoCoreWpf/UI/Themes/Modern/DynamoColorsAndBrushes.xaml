@@ -71,6 +71,7 @@
     <!--Sidebar-->
     
     <!-- Library background-->
+    <SolidColorBrush x:Key="SearchTextBoxBackground" Color="#F1F2F2" />
     <SolidColorBrush x:Key="LibraryCommonBackground" Color="#333333" />
     <SolidColorBrush x:Key="LibraryMemberOnHover" Color="#404040" />
     <SolidColorBrush x:Key="LibraryItemHostBackground" Color="#353535" />

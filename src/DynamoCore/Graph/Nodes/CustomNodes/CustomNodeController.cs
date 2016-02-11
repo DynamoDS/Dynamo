@@ -163,7 +163,8 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             if (Definition.Returns != null)
             {
                 var tooltips = model.OutPortData.Select(p => p.ToolTipString);
-                if (!Definition.Returns.Select(r => r.Item2).SequenceEqual(tooltips))
+                if (!Definition.Returns.Select(r => string.IsNullOrEmpty(r.Item2) ? Properties.Resources.ToolTipReturnValue : r.Item2)
+                                       .SequenceEqual(tooltips))
                     return false;
             }
             return true;

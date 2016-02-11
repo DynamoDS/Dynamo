@@ -22,7 +22,7 @@ namespace CoreNodeModelsWpf.Nodes
     {
         #region Private fields
 
-        private IdentifierNode astBeingWatched;
+        private IdentifierNode astBeingComputed;
 
         private DynamoViewModel dynamoViewModel;
 
@@ -48,6 +48,8 @@ namespace CoreNodeModelsWpf.Nodes
             nodeView.PresentationGrid.MaxHeight = Configurations.MaxWatchNodeHeight;
             nodeView.PresentationGrid.Children.Add(watchTree);
             nodeView.PresentationGrid.Visibility = Visibility.Visible;
+            // disable preview control
+            nodeView.TogglePreviewControlAllowance();
 
             Bind(watchTree, nodeView);
 
@@ -108,15 +110,18 @@ namespace CoreNodeModelsWpf.Nodes
         {
             Tuple<int, NodeModel> input;
 
-            if (watch.TryGetInput(watch.InPorts.IndexOf(connectorModel.End), out input))
+            if (!watch.TryGetInput(watch.InPorts.IndexOf(connectorModel.End), out input)
+                || astBeingComputed == null) return;
+
+            var astBeingWatched = input.Item2.GetAstIdentifierForOutputIndex(input.Item1);
+            if (astBeingComputed.Value != astBeingWatched.Value)
             {
-                var oldId = astBeingWatched;
-                astBeingWatched = input.Item2.GetAstIdentifierForOutputIndex(input.Item1);
-                if (oldId != null && astBeingWatched.Value != oldId.Value)
-                {
-                    // the input node has changed, we clear preview
-                    rootWatchViewModel.Children.Clear();
-                }
+                // the input node has changed, we clear preview
+                rootWatchViewModel.Children.Clear();
+            }
+            else
+            {
+                ResetWatch();
             }
         }
 
@@ -206,6 +211,7 @@ namespace CoreNodeModelsWpf.Nodes
         private void WatchOnEvaluationComplete(object o)
         {
             ResetWatch();
+            astBeingComputed = watch.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview;
         }
     }
 }

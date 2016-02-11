@@ -24,7 +24,7 @@
             <clr:Double x:Key="MinPreviewControlHeight">28.0</clr:Double>
 
             <!-- MaxContentGrid = (MaxPreviewControl - (2 * Margin)) -->
-            <fwk:Thickness x:Key="PreviewContentMargin">5</fwk:Thickness>            
+            <fwk:Thickness x:Key="PreviewContentMargin">12,5,5,5</fwk:Thickness>
             <clr:Double x:Key="MaxContentGridWidth">488.0</clr:Double>
             <clr:Double x:Key="MaxContentGridHeight">288</clr:Double>
 
@@ -148,8 +148,13 @@
         <!-- Invisible part. Background is set to #01000000. It's almost invisible color.
               But with this color we can handle mouse moves.-->
 
-        <Grid Grid.Column="0"
+        <Grid Name="HiddenDummy"
+              Grid.Column="0"
               Grid.Row="0"
+              HorizontalAlignment="Left"
+              Width="{Binding RelativeSource={RelativeSource FindAncestor, 
+                             AncestorType={x:Type controls:NodeView}}, 
+                             Path=ActualWidth}"
               Background="#01000000" />
 
         <Grid Grid.Column="0"
@@ -166,7 +171,6 @@
             <Grid Name="smallContentGrid"
                   HorizontalAlignment="Left"
                   VerticalAlignment="Center"
-                  Margin="3,0,0,0"
                   MinWidth="{Binding RelativeSource={RelativeSource FindAncestor, 
                              AncestorType={x:Type controls:NodeView}}, 
                              Path=ActualWidth}">

@@ -995,23 +995,7 @@ namespace ProtoAssociative
                             foreach (AssociativeNode exprListNode in exprList.Exprs)
                             {
                                 bool repGuideState = emitReplicationGuide;
-                                if (subPass != ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier)
-                                {
-                                    if (exprListNode is ExprListNode || exprListNode is GroupExpressionNode)
-                                    {
-                                        // Emit the replication guide for the exprlist
-                                        var repGuideList = GetReplicationGuides(exprListNode);
-                                        if (repGuideList != null)
-                                        {
-                                            EmitReplicationGuides(repGuideList, true);
-                                            EmitInstrConsole(ProtoCore.DSASM.kw.popg);
-                                            EmitPopGuide();
-                                        }
-
-                                        emitReplicationGuide = false;
-                                    }
-                                }
-                                else
+                                if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier)
                                 {
                                     emitReplicationGuide = false;
                                 }
@@ -1043,23 +1027,7 @@ namespace ProtoAssociative
                             foreach (AssociativeNode exprListNode in exprList.Exprs)
                             {
                                 bool repGuideState = emitReplicationGuide;
-                                if (subPass != ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier)
-                                {
-                                    if (exprListNode is ExprListNode || exprListNode is GroupExpressionNode)
-                                    {
-                                        // Emit the replication guide for the exprlist
-                                        var repGuideList = GetReplicationGuides(exprListNode);
-                                        if (repGuideList != null)
-                                        {
-                                            EmitReplicationGuides(repGuideList, true);
-                                            EmitInstrConsole(ProtoCore.DSASM.kw.popg);
-                                            EmitPopGuide();
-                                        }
-
-                                        emitReplicationGuide = false;
-                                    }
-                                }
-                                else
+                                if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier)
                                 {
                                     emitReplicationGuide = false;
                                 }
@@ -4327,9 +4295,7 @@ namespace ProtoAssociative
 
                     if (emitReplicationGuide)
                     {
-                        int guides = EmitReplicationGuides(t.ReplicationGuides);
-                        EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, guides + "[guide]");
-                        EmitPushReplicationGuide(guides);
+                        EmitReplicationGuides(t.ReplicationGuides);
                     }
                 }
 
@@ -4507,9 +4473,7 @@ namespace ProtoAssociative
 
                 if (emitReplicationGuide)
                 {
-                    int guide = EmitReplicationGuides(range.ReplicationGuides);
-                    EmitInstrConsole(kw.pushindex, guide + "[guide]");
-                    EmitPushReplicationGuide(guide);
+                    EmitReplicationGuides(range.ReplicationGuides);
                 }
             }
         }
@@ -6060,18 +6024,22 @@ namespace ProtoAssociative
                     emitReplicationGuide = emitReplicationGuideFlag;
                 }
 
-                List<ProtoCore.AST.AssociativeAST.AssociativeNode> replicationGuides = null;
+                List<AssociativeNode> replicationGuides = null;
+                AtLevelNode atLevel;
                 bool isRangeExpression = false;
 
                 if (fnode != null)
                 {
+                    atLevel = fnode.AtLevel;
                     replicationGuides = fnode.ReplicationGuides;
                     isRangeExpression = fnode.Function.Name.Equals(Constants.kFunctionRangeExpression);
                 }
                 else if (node is FunctionDotCallNode)
                 {
                     FunctionCallNode funcNode = (node as FunctionDotCallNode).FunctionCall;
-                    replicationGuides = (funcNode.Function as IdentifierNode).ReplicationGuides;
+                    var function = funcNode.Function as IdentifierNode;
+                    replicationGuides = function.ReplicationGuides;
+                    atLevel = function.AtLevel;
                 }
 
                 // YuKe: The replication guide for range expression will be 
@@ -6081,9 +6049,7 @@ namespace ProtoAssociative
                 // index.
                 if (!isRangeExpression && emitReplicationGuide)
                 {
-                    int guides = EmitReplicationGuides(replicationGuides);
-                    EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, guides + "[guide]");
-                    EmitPushReplicationGuide(guides);
+                    EmitReplicationGuides(replicationGuides);
                 }
             }
 
@@ -8509,14 +8475,9 @@ namespace ProtoAssociative
                 }
             }
 
-            if (subPass != ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier)
+            if (subPass != ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier && emitReplicationGuide)
             {
-                if (emitReplicationGuide)
-                {
-                    int guides = EmitReplicationGuides(group.ReplicationGuides);
-                    EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, guides + "[guide]");
-                    EmitPushReplicationGuide(guides);
-                }
+                EmitReplicationGuides(group.ReplicationGuides);
             }
         }
 

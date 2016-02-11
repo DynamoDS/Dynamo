@@ -1410,9 +1410,9 @@ a = 10;
         {
 
             String code =
-             @"@a = 1;";
+             @"a = 1;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("@a").Payload == 1);
+            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 1);
 
         }
 
@@ -1788,16 +1788,6 @@ a = 10;
 
         [Test]
         [Category("SmokeTest")]
-        public void T050_Test_Identifier_Name_Tailer_31()
-        {
-            String code =
-                @"a@ = 1;";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("a@").Payload == 1);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
         public void T050_Test_Identifier_Name_Tailer_32()
         {
             String code =
@@ -1814,18 +1804,18 @@ a = 10;
             String code =
   @"
 
-  def foo(@c:var)
+  def foo(c:var)
   {
-    @a = @c;
-    return = @a;
+    a = c;
+    return = a;
   }
 
-  @a = 1;
-  @t = 3;
-  @a = foo(@t);
+  a = 1;
+  t = 3;
+  a = foo(t);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("@a").Payload == 3);
+            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 3);
         }
 
         [Test]
@@ -1834,16 +1824,16 @@ a = 10;
         {
             String code =
               @"
-def foo(@a:var)
+def foo(a:var)
 {
-  @b = @a + 1;
-  return = @b;
+  b = a + 1;
+  return = b;
 }
-@t = 1;
-@c = foo(@t);
+t = 1;
+c = foo(t);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("@c").Payload == 2);
+            Assert.IsTrue((Int64)mirror.GetValue("c").Payload == 2);
         }
 
         [Test]
@@ -1852,19 +1842,19 @@ def foo(@a:var)
         {
             String code =
               @"
-@c = [Imperative]
+c = [Imperative]
 {
-  @a = 10;
-  @b = {10,20,30};
-  for (@i in @b)
+  a = 10;
+  b = {10,20,30};
+  for (i in b)
   {
-      @a = @a + @i;
+      a = a + i;
   }
-  return = @a;
+  return = a;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("@c").Payload == 70);
+            Assert.IsTrue((Int64)mirror.GetValue("c").Payload == 70);
         }
 
         [Test]
@@ -1873,22 +1863,22 @@ def foo(@a:var)
         {
             String code =
               @"
-@c = [Imperative]
+c = [Imperative]
 {
-  @a = 20;
-  @b = 10;
-  if(@a > 0){
-    @a = @a - @b;
-    @b = 20;
+  a = 20;
+  b = 10;
+  if(a > 0){
+    a = a - b;
+    b = 20;
   }else
   {
-    @b = 30;
+    b = 30;
   }
-  return = @a;
+  return = a;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("@c").Payload == 10);
+            Assert.IsTrue((Int64)mirror.GetValue("c").Payload == 10);
         }
 
         [Test]
@@ -1897,17 +1887,17 @@ def foo(@a:var)
         {
             String code =
               @"
-@b;
+b;
 [Associative]
 {
-	@a = 1;
-	@b = @a + 2;
-	@a = 3;
+	a = 1;
+	b = a + 2;
+	a = 3;
           
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("@b").Payload == 5);
+            Assert.IsTrue((Int64)mirror.GetValue("b").Payload == 5);
         }
 
         [Test]
@@ -1916,17 +1906,17 @@ def foo(@a:var)
         {
             String code =
         @"
-@c;
+c;
 [Imperative]
 {	
-   @a = 1;
-   @b = 2;
-   @c = @a < @b ? @a : @b;			
+   a = 1;
+   b = 2;
+   c = a < b ? a : b;			
 }
                         
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("@c").Payload == 1);
+            Assert.IsTrue((Int64)mirror.GetValue("c").Payload == 1);
         }
 
         [Test]
@@ -1935,20 +1925,20 @@ def foo(@a:var)
         {
             String code =
         @"
-@a;
+a;
 [Imperative]
 {	
-   @a1 = 1;
-   @a2 = 5;
-   @a3 = 1;
-   @a = @a1..@a2..@a3;
+   a1 = 1;
+   a2 = 5;
+   a3 = 1;
+   a = a1..a2..a3;
 			
 }
                         
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> result = new List<Object> { 1, 2, 3, 4, 5 };
-            Assert.IsTrue(mirror.CompareArrays("@a", result, typeof(System.Double)));
+            Assert.IsTrue(mirror.CompareArrays("a", result, typeof(System.Double)));
         }
 
 
