@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Reflection;
 using Shapeways=ShapewaysClient.ShapewaysClient;
+using Dynamo.Wpf.Properties;
 
 namespace Dynamo.Wpf.Authentication
 {
@@ -20,18 +21,25 @@ namespace Dynamo.Wpf.Authentication
 
         public bool ShowLogin(object o)
         {
-            var url = new Uri(o.ToString());
+            if (string.IsNullOrEmpty(o as string))
+            {
+                MessageBox.Show(Resources.InvalidTimeZoneMessage, 
+                                Resources.InvalidLoginUrl, 
+                                MessageBoxButton.OK, 
+                                MessageBoxImage.Error);
+                return false;
+            }
 
-            if (o == null) throw new ArgumentException(Dynamo.Wpf.Properties.Resources.InvalidLoginUrl);
+            var url = new Uri(o.ToString());
 
             var navigateSuccess = false;
 
             // show the login
-            context.Send((_) => {
+            context.Send(_ => {
 
                 var window = new BrowserWindow(url)
                 {
-                    Title = Dynamo.Wpf.Properties.Resources.AutodeskSignIn,
+                    Title = Resources.AutodeskSignIn,
                     Owner = parent,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
