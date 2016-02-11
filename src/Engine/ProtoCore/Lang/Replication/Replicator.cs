@@ -384,13 +384,15 @@ namespace ProtoCore.Lang.Replication
 
             for (int i = 0; i < reductions.Count; i++)
             {
-                if (reductions[i] > 0)
+                int reduction = reductions[i];
+                while (reduction > 0) 
                 {
                     ReplicationInstruction ri = new ReplicationInstruction()
                     {
                         CartesianIndex = i, ZipIndecies = null, Zipped = false
                     };
                     ret.Add(ri);
+                    reduction--;
                 }
             }
 
@@ -796,7 +798,7 @@ namespace ProtoCore.Lang.Replication
             //All options being suggested should be possible
             foreach (List<int> reduction in cleanedReductions)
             {
-                ret.Add(ReductionToInstructions(reduction, providedControl));
+                ret.Add(ReductionToInstructions_New(reduction, providedControl));
             }
 
             return ret;
