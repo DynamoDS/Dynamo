@@ -639,7 +639,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         [Category("RegressionTests")]
         public void Defect_MAGN_3264()
         {

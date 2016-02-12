@@ -59,7 +59,7 @@ namespace ProtoCore.Lang.Replication
             for (int guideCounter = 1; guideCounter <= maxGuide; guideCounter++)
             {
                 index.Add(guideCounter, new List<int>());
-                indexLace.Add(guideCounter, ZipAlgorithm.Shortest);
+                // indexLace.Add(guideCounter, ZipAlgorithm.Shortest);
 
                 for (int i = 0; i < partialGuides.Count; i++)
                     if (partialGuides[i].Contains(guideCounter))
@@ -70,26 +70,35 @@ namespace ProtoCore.Lang.Replication
 
                         if (partialGuidesLace[i][indexOfGuide] == ZipAlgorithm.Longest)
                         {
-                            //If we've previous seen a shortest node with this guide
-                            if (i > 0 && indexLace[guideCounter] == ZipAlgorithm.Shortest)
+                            ZipAlgorithm zipAlgorithm;
+                            if (indexLace.TryGetValue(guideCounter, out zipAlgorithm))
                             {
-                                throw new ReplicationCaseNotCurrentlySupported(Resources.ZipAlgorithmError);
+                                //If we've previous seen a shortest node with this guide
+                                if (i > 0 && indexLace[guideCounter] == ZipAlgorithm.Shortest)
+                                {
+                                    throw new ReplicationCaseNotCurrentlySupported(Resources.ZipAlgorithmError);
+                                }
                             }
-
-                            //Overwrite the default behaviour
-                            indexLace[guideCounter] = ZipAlgorithm.Longest;
+                            else
+                            {
+                                //Overwrite the default behaviour
+                                indexLace[guideCounter] = ZipAlgorithm.Longest;
+                            }
                         }
                         else
                         {
                             //it's shortest, if we had something previous saying it should be longest
                             //then we've created a violation foo(a<1>, b1<1L>) is not allowed
-                            if (indexLace[guideCounter] == ZipAlgorithm.Longest)
+                            ZipAlgorithm zipAlgorithm;
+                            if (indexLace.TryGetValue(guideCounter, out zipAlgorithm))
                             {
-                                throw new ReplicationCaseNotCurrentlySupported(Resources.ZipAlgorithmError);
+                                if (zipAlgorithm == ZipAlgorithm.Longest)
+                                {
+                                    throw new ReplicationCaseNotCurrentlySupported(Resources.ZipAlgorithmError);
+                                }
                             }
                             else
                             {
-                                //Shortest lacing is actually the default, this call should be redundant
                                 indexLace[guideCounter] = ZipAlgorithm.Shortest;
                             }
                         }

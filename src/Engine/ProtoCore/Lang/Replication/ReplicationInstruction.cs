@@ -34,8 +34,7 @@ namespace ProtoCore.Lang.Replication
                 string indecies = "";
 
                 for (int i = 0; i < ZipIndecies.Count - 1; i++)
-                    indecies += i + ", ";
-
+                    indecies += ZipIndecies[i] + ", ";
 
                 indecies += ZipIndecies[ZipIndecies.Count - 1];
 
