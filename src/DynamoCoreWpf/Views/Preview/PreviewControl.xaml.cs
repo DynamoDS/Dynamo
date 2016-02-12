@@ -454,6 +454,8 @@ namespace Dynamo.UI.Controls
         {
             if (!IsExpanded) return;
 
+            SetCurrentStateAndNotify(State.PreTransition);
+
             // Used delay invoke, because TreeView hasn't changed its'appearance with usual Dispatcher call.
             Dispatcher.DelayInvoke(50, () => RefreshExpandedDisplay(() =>
             {
@@ -463,7 +465,7 @@ namespace Dynamo.UI.Controls
                 // The real transition starts
                 SetCurrentStateAndNotify(State.InTransition);
                 var largeContentSize = ComputeLargeContentSize();
-                UpdateAnimatorTargetSize(SizeAnimator.Expansion, largeContentSize);                    
+                UpdateAnimatorTargetSize(SizeAnimator.Expansion, largeContentSize);
 
                 // If it's test mode - skip storyboard.
                 if (!DynamoModel.IsTestMode)
