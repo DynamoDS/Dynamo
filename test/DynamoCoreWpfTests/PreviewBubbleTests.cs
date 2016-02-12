@@ -206,6 +206,47 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(nodeView.PreviewControl.IsExpanded);
         }
 
+        [Test]
+        public void PreviewBubble_IsExpandedChangedInWatchTree()
+        {
+            OpenAndRun(@"core\DetailedPreviewMargin_Test.dyn");
+
+            var nodeView = NodeViewWithGuid("81c94fd0-35a0-4680-8535-00aff41192d3");
+            nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+
+            // Fire transition on dynamo main ui thread.
+            View.Dispatcher.Invoke(() =>
+            {
+                nodeView.PreviewControl.BindToDataSource(nodeView.ViewModel.NodeModel.CachedValue);
+                nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Condensed);
+                nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Expanded);
+            });
+
+            DispatcherUtil.DoEvents();
+            var watchTree = nodeView.PreviewControl.ChildOfType<WatchTree>();
+            Assert.NotNull(watchTree);
+
+            // Save old values.
+            var oldHeight = nodeView.PreviewControl.ActualHeight;
+            var oldWidth = nodeView.PreviewControl.ActualWidth;
+
+            var dispatcherOperation = View.Dispatcher.BeginInvoke(new Action(
+                () =>
+                {
+                    // Collapse root tree view item.
+                    watchTree.ChildOfType<TreeViewItem>().IsExpanded = false;
+                }));
+            DispatcherUtil.DoEvents();
+
+            // Wait until operation is completed.
+            dispatcherOperation.Completed += (s, args) =>
+            {
+                // Width of preview bubble should stay the same, but height should be smaller.
+                Assert.AreEqual(oldWidth, nodeView.PreviewControl.ActualWidth);
+                Assert.Greater(oldHeight, nodeView.PreviewControl.ActualHeight);
+            };
+        }
+
         #region Watch PreviewBubble
 
         [Test]

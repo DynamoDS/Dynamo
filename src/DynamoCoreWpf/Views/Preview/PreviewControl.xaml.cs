@@ -452,15 +452,33 @@ namespace Dynamo.UI.Controls
         /// </summary>
         private void ComputeWatchContentSize(object sender, RoutedEventArgs e)
         {
-           if (!IsExpanded) return;
+            if (!IsExpanded) return;
 
             // Used delay invoke, because TreeView hasn't changed its'appearance with usual Dispatcher call.
-            Dispatcher.DelayInvoke(50,() =>
+            Dispatcher.DelayInvoke(50, () => RefreshExpandedDisplay(() =>
             {
+                largeContentGrid.Visibility = Visibility.Visible;
+                bubbleTools.Visibility = Visibility.Visible;
+
+                // The real transition starts
+                SetCurrentStateAndNotify(State.InTransition);
                 var largeContentSize = ComputeLargeContentSize();
-                UpdateAnimatorTargetSize(SizeAnimator.Expansion, largeContentSize);
-                this.expandStoryboard.Begin(this, true);
-            });
+                UpdateAnimatorTargetSize(SizeAnimator.Expansion, largeContentSize);                    
+
+                // If it's test mode - skip storyboard.
+                if (!DynamoModel.IsTestMode)
+                {
+                    expandStoryboard.Begin(this, true);
+                }
+                else
+                {
+                    largeContentGrid.Opacity = 1.0;
+                    smallContentGrid.Opacity = 0.0;
+                    centralizedGrid.Width = largeContentSize.Width;
+                    centralizedGrid.Height = largeContentSize.Height;
+                    OnPreviewControlExpanded(null, null);
+                }
+            }));
         }
 
         private Size ComputeSmallContentSize()
