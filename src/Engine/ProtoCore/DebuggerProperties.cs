@@ -416,7 +416,7 @@ namespace ProtoCore
                 return;
             }
 
-            // Comment Jun: A dot call does no>t replicate and  must be handled immediately
+            // Comment Jun: A dot call does not replicate and  must be handled immediately
             if (fNode.Name == Constants.kDotMethodName)
             {
                 isReplicating = false;
