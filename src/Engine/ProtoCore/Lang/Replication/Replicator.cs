@@ -373,6 +373,40 @@ namespace ProtoCore.Lang.Replication
             return reducedParamTypes;
         }
 
+        public static List<List<int>> BuildAllocation_New(List<int> reductionDepths)
+        {
+            int argumentCount = reductionDepths.Count;
+            if (argumentCount == 0)
+                return new List<List<int>>();
+
+            int count = reductionDepths.Aggregate(1, (acc, x) => acc * (x + 1));
+            List<List<int>> retList = new List<List<int>>(count);
+            for (int r = 0; r <= reductionDepths[0]; r++)
+            {
+                List<int> reductions = new List<int>(argumentCount);
+                reductions.Add(r);
+                retList.Add(reductions);
+            }
+
+            for (int i = 1; i < argumentCount; i++)
+            {
+                List<List<int>> tempRetList = new List<List<int>>(retList);
+                retList.Clear();
+
+                for (int r = 0; r <= reductionDepths[i]; r++)
+                {
+                    foreach (var reductions in tempRetList)
+                    {
+                        List<int> newReductions = new List<int>(reductions);
+                        newReductions.Add(r);
+                        retList.Add(newReductions);
+                    }
+                }
+            }
+
+            return retList;
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -431,7 +465,8 @@ namespace ProtoCore.Lang.Replication
                 return new List<List<ReplicationInstruction>>();
 
             // Generate reduction lists (x1, x2, ..., xn) where x1 + x2 + ... + xn <= maxDepth
-            List<List<int>> reductions = BuildAllocation(formalParams.Count, maxDepth);
+            // List<List<int>> reductions = BuildAllocation(formalParams.Count, maxDepth);
+            List<List<int>> reductions = BuildAllocation_New(maxReductionDepths);
 
             // Reduce reduction level on parameter if the parameter has replication guides 
             if (providedControl.Count > 0)
