@@ -355,23 +355,27 @@ namespace Dynamo.Graph.Annotations
             this.InitialTop = helper.ReadDouble("InitialTop", DoubleValue);
             this.InitialHeight = helper.ReadDouble("InitialHeight", DoubleValue);
             //Deserialize Selected models
-            if (element.HasChildNodes) 
+            if (element.HasChildNodes)
             {
                 var listOfModels = new List<ModelBase>();
-                foreach (var childnode in element.ChildNodes)
+                if (SelectedModels != null)
                 {
-                    XmlElementHelper mhelper = new XmlElementHelper(childnode as XmlElement);
-                     if (SelectedModels != null)
-                     {
-                         var result = mhelper.ReadGuid("ModelGuid", new Guid());
-                         ModelBase model = null;
-                         model = ModelBaseRequested != null ? ModelBaseRequested(result) : 
-                             SelectedModels.FirstOrDefault(x => x.GUID == result);
+                    foreach (var childnode in element.ChildNodes)
+                    {
+                        var mhelper = new XmlElementHelper(childnode as XmlElement);
+                        var result = mhelper.ReadGuid("ModelGuid", new Guid());
+                        var model = ModelBaseRequested != null
+                            ? ModelBaseRequested(result)
+                            : SelectedModels.FirstOrDefault(x => x.GUID == result);
 
-                        listOfModels.Add(model);
-                    }                  
+                        if (model != null)
+                        {
+                            listOfModels.Add(model);
+                        }
+                    }
                 }
-                SelectedModels = listOfModels;        
+
+                SelectedModels = listOfModels;
             }
 
             //On any Undo Operation, current values are restored to previous values.
