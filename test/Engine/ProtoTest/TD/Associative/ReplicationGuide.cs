@@ -2003,5 +2003,21 @@ namespace ProtoTest.TD.Associative
             // Should get clear after running
             Assert.AreEqual(0, thisTest.GetTestRuntimeCore().ReplicationGuides.Count);
         }
+
+        [Test]
+        [Category("Replication")]
+        public void TestZipFirstReplication()
+        {
+            string code = @"
+def foo(x:var, y:var)
+{
+    return = x + y;
+}
+xs = {{""a"", ""b""}, {""c"", ""d""}};
+ys = {1, 2};
+zs = foo(xs, ys);";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("zs", new object[] { new object[] { "a1", "b1" }, new object[] { "c2", "d2" } });
+        }
     }
 }
