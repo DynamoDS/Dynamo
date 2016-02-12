@@ -171,6 +171,34 @@ namespace ProtoCore.Lang.Replication
             return ret;
         }
 
+        /// <summary>
+        /// Calculate partial replication instruciton based on replication guide level.
+        /// For example, for foo(xs<1><2><3>, ys<1><1><2>, zs<1><1><3>), the guides
+        /// are:
+        /// 
+        ///     level |  0  |  1  |  2  |
+        ///     ------+-----+-----+-----+
+        ///       xs  |  1  |  2  |  3  |
+        ///     ------+-----+-----+-----+
+        ///       ys  |  1  |  1  |  2  |
+        ///     ------+-----+-----+-----+
+        ///       zs  |  1  |  1  |  3  |
+        ///
+        /// This function goes through each level and calculate replication instructions.
+        /// 
+        /// replication instructions on level 0:
+        ///     Zip replication on (0, 1, 2) (i.e., zip on xs, ys, zs)
+        ///
+        /// replication instructions on level 1:
+        ///     Zip replication on (1, 2)    (i.e., zip on ys, zs)
+        ///     Cartesian replication on 0   (i.e., on xs)
+        ///
+        /// replication instructions on level 2:
+        ///     Cartesian replication on 1   (i.e., on ys)
+        ///     Zip replication on (0, 2)    (i.e., zip on xs, zs)
+        /// </summary>
+        /// <param name="partialRepGuides"></param>
+        /// <returns></returns>
         private static List<ReplicationInstruction> BuildPartialReplicationInstructions(List<List<ReplicationGuide>> partialRepGuides)
         {
             if (!partialRepGuides.Any())
