@@ -373,7 +373,7 @@ namespace ProtoCore.Lang.Replication
             return reducedParamTypes;
         }
 
-        public static List<List<int>> BuildAllocation_New(List<int> reductionDepths)
+        public static List<List<int>> BuildReductions(List<int> reductionDepths)
         {
             int argumentCount = reductionDepths.Count;
             if (argumentCount == 0)
@@ -464,45 +464,32 @@ namespace ProtoCore.Lang.Replication
             if (maxDepth == 0)
                 return new List<List<ReplicationInstruction>>();
 
-            // Generate reduction lists (x1, x2, ..., xn) where x1 + x2 + ... + xn <= maxDepth
-            // List<List<int>> reductions = BuildAllocation(formalParams.Count, maxDepth);
-            List<List<int>> reductions = BuildAllocation_New(maxReductionDepths);
-
             // Reduce reduction level on parameter if the parameter has replication guides 
             if (providedControl.Count > 0)
             {
                 var reversedControl = new List<ReplicationInstruction>(providedControl);
                 reversedControl.Reverse();
 
-                for (int i = 0; i < reductions.Count; ++i)
+                foreach (ReplicationInstruction ri in reversedControl)
                 {
-                    var reduction = reductions[i];
-                    foreach (ReplicationInstruction ri in reversedControl)
+                    if (ri.Zipped)
                     {
-                        if (ri.Zipped)
-                        {
-                            foreach (int idx in ri.ZipIndecies)
-                                reduction[idx] = reduction[idx] - 1;
-                        }
-                        else
-                        {
-                            reduction[ri.CartesianIndex] = reduction[ri.CartesianIndex] - 1;
-                        }
+                        foreach (int idx in ri.ZipIndecies)
+                            maxReductionDepths[idx] = maxReductionDepths[idx] - 1;
+                    }
+                    else
+                    {
+                        maxReductionDepths[ri.CartesianIndex] = maxReductionDepths[ri.CartesianIndex] - 1;
                     }
                 }
             }
 
-            List<List<int>> cleanedReductions = new List<List<int>>();
-            foreach (List<int> list in reductions)
-            {
-                if (list.Any(r => r < 0))
-                    continue;
+            // Generate reduction lists (x1, x2, ..., xn) 
+            if (maxReductionDepths.Any(r => r < 0) || maxReductionDepths.All(r => r == 0))
+                return new List<List<ReplicationInstruction>>();
 
-                if (list.Any(r => r > 0))
-                    cleanedReductions.Add(list);
-            }
-
-            var ret = cleanedReductions.Select(rs => ReductionToInstructions(rs, providedControl)).ToList();
+            List<List<int>> reductions = BuildReductions(maxReductionDepths);
+            var ret = reductions.Select(rs => ReductionToInstructions(rs, providedControl)).ToList();
             return ret;
         }
 
