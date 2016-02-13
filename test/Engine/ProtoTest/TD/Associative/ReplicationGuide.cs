@@ -2003,5 +2003,22 @@ namespace ProtoTest.TD.Associative
             // Should get clear after running
             Assert.AreEqual(0, thisTest.GetTestRuntimeCore().ReplicationGuides.Count);
         }
+
+        [Test]
+        [Category("ReplicationGuide")]
+        public void ZachExample()
+        {
+            string code = @"
+def firstItem(list: var[]..[])
+{
+    return=list[0];
+}
+
+xs = {{{1, 2, 3}, {4, 5, 6}},{{7, 8, 9}, {10, 11, 12}}};
+result = firstItem(xs<1><1>);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("result", new object[] { new object[] { 1, 4 }, new object[] { 7, 10 } });
+        }
     }
 }
