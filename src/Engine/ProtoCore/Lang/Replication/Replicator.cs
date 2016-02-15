@@ -10,7 +10,7 @@ namespace ProtoCore.Lang.Replication
 {
     public class Replicator
     {
-        public static List<ReplicationInstruction> BuildPartialReplicationInstructions(List<List<ProtoCore.ReplicationGuide>> partialRepGuides)
+        public static List<ReplicationInstruction> BuildPartialReplicationInstructions_Old(List<List<ProtoCore.ReplicationGuide>> partialRepGuides)
         {
             //DS code:          foo(a<1><2><3>, b<2>, c)
             //partialGuides     {1,2,3}, {2}, {}
@@ -35,9 +35,6 @@ namespace ProtoCore.Lang.Replication
                 partialGuides.Add(tempGuide);
                 partialGuidesLace.Add(tempGuideLaceStrategy);
             }
-
-            //@TODO: remove this limitation
-            VerifyIncreasingGuideOrdering(partialGuides);
 
             //Guide -> args
             Dictionary<int, List<int>> index = new Dictionary<int, List<int>>();
@@ -136,6 +133,111 @@ namespace ProtoCore.Lang.Replication
             }
 
             return ret;
+        }
+
+        /// <summary>
+        /// Calculate partial replication instruciton based on replication guide level.
+        /// For example, for foo(xs<1><2><3>, ys<1><1><2>, zs<1><1><3>), the guides
+        /// are:
+        /// 
+        ///     level |  0  |  1  |  2  |
+        ///     ------+-----+-----+-----+
+        ///       xs  |  1  |  2  |  3  |
+        ///     ------+-----+-----+-----+
+        ///       ys  |  1  |  1  |  2  |
+        ///     ------+-----+-----+-----+
+        ///       zs  |  1  |  1  |  3  |
+        ///
+        /// This function goes through each level and calculate replication instructions.
+        /// 
+        /// replication instructions on level 0:
+        ///     Zip replication on (0, 1, 2) (i.e., zip on xs, ys, zs)
+        ///
+        /// replication instructions on level 1:
+        ///     Zip replication on (1, 2)    (i.e., zip on ys, zs)
+        ///     Cartesian replication on 0   (i.e., on xs)
+        ///
+        /// replication instructions on level 2:
+        ///     Cartesian replication on 1   (i.e., on ys)
+        ///     Zip replication on (0, 2)    (i.e., zip on xs, zs)
+        /// </summary>
+        /// <param name="partialRepGuides"></param>
+        /// <returns></returns>
+        public static List<ReplicationInstruction> BuildPartialReplicationInstructions(List<List<ReplicationGuide>> partialRepGuides)
+        {
+            if (!partialRepGuides.Any())
+            {
+                return new List<ReplicationInstruction>();
+            }
+
+            int maxGuideLevel= partialRepGuides.Max(gs => gs.Count);
+
+            var instructions = new List<ReplicationInstruction>();
+            for (int level = 0; level < maxGuideLevel; ++level)
+            {
+                var positions = new Dictionary<int, List<int>>();
+                var algorithms = new Dictionary<int, ZipAlgorithm>();
+                var guides = new HashSet<int>();
+
+                for (int i = 0; i < partialRepGuides.Count; ++i)
+                {
+                    var replicationGuides = partialRepGuides[i];
+                    if (replicationGuides == null || replicationGuides.Count <= level)
+                        continue;
+
+                    // If it is negative or 0, treat it as a stub
+                    var guide = replicationGuides[level].guideNumber;
+                    if (guide <= 0)
+                        continue;
+
+                    var algorithm = replicationGuides[level].isLongest ? ZipAlgorithm.Longest : ZipAlgorithm.Shortest;
+
+                    guides.Add(guide);
+
+                    List<int> positionList = null;
+                    if (!positions.TryGetValue(guide, out positionList))
+                    {
+                        positionList = new List<int>();
+                        positions[guide] = positionList;
+                    }
+                    positionList.Add(i);
+
+                    ZipAlgorithm zipAlgorithm;
+                    if (algorithms.TryGetValue(guide, out zipAlgorithm))
+                    {
+                        if (algorithm == ZipAlgorithm.Longest)
+                            algorithms[guide] = ZipAlgorithm.Longest;
+                    }
+                    else
+                    {
+                        algorithms[guide] = algorithm;
+                    }
+                }
+
+                var sortedGuides = guides.ToList();
+                sortedGuides.Sort();
+
+                foreach (var guide in sortedGuides)
+                {
+                    ReplicationInstruction repInstruction = new ReplicationInstruction();
+
+                    var positionList = positions[guide];
+                    if (positionList.Count == 1)
+                    {
+                        repInstruction.Zipped = false;
+                        repInstruction.CartesianIndex = positionList[0];
+                    }
+                    else
+                    {
+                        repInstruction.Zipped = true;
+                        repInstruction.ZipIndecies = positionList;
+                        repInstruction.ZipAlgorithm = algorithms[guide];
+                    }
+
+                    instructions.Add(repInstruction);
+                }
+            }
+            return instructions;
         }
 
         /// <summary>
