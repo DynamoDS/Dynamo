@@ -2646,7 +2646,6 @@ rad = foo(a, d);
 
         [Test]
         [Category("Replication")]
-        [Category("Failure")]
         public void T66_Defect_1467198_Inline_Condition_With_Jagged_Array()
         {
             String code =
@@ -4961,7 +4960,6 @@ a = { 5, 6, 7, 8 };
 
         [Test]
         [Category("Replication")]
-        [Category("Failure")]
         public void T92_add()
         {
             String code =
