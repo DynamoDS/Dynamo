@@ -221,7 +221,11 @@ namespace ProtoCore.Lang.Replication
                     if (replicationGuides == null || replicationGuides.Count <= level)
                         continue;
 
+                    // If it is negative or 0, treat it as a stub
                     var guide = replicationGuides[level].guideNumber;
+                    if (guide <= 0)
+                        continue;
+
                     var algorithm = replicationGuides[level].isLongest ? ZipAlgorithm.Longest : ZipAlgorithm.Shortest;
 
                     guides.Add(guide);
