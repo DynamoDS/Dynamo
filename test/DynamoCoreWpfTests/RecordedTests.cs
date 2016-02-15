@@ -1449,11 +1449,11 @@ namespace DynamoCoreWpfTests
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
                 NodeModel nodeModel = workspace.NodeFromWorkspace("37c9b30b-1b78-442a-b433-ec31da996c52");
-                Assert.AreEqual(ElementState.Warning, nodeModel.State);
+                Assert.AreEqual(ElementState.Active, nodeModel.State);
                 if (commandTag == "First")
                 {
                     NodeModel nodeModel2 = workspace.NodeFromWorkspace("37c9b30b-1b78-442a-b433-ec31da996c52");
-                    Assert.AreEqual(ElementState.Warning, nodeModel2.State);
+                    Assert.AreEqual(ElementState.Active, nodeModel2.State);
                 }
             });
         }
@@ -3961,7 +3961,6 @@ namespace DynamoCoreWpfTests
 
         }
         [Test]
-        [Category("Failure")]
         public void recursion_6415()
         {
 

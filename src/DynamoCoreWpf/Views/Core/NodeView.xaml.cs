@@ -489,7 +489,7 @@ namespace Dynamo.Controls
         /// </summary>
         private void ExpandPreviewControl()
         {
-            if ((IsMouseOver || PreviewControl.IsMouseOver) && PreviewControl.IsCondensed)
+            if ((IsMouseOver || PreviewControl.IsMouseOver || DynCmd.IsTestMode) && PreviewControl.IsCondensed)
             {
                 PreviewControl.TransitionToState(PreviewControl.State.Expanded);
             }
@@ -580,8 +580,14 @@ namespace Dynamo.Controls
 
             if (previewEnabled == false && !PreviewControl.StaysOpen)
             {
-                PreviewControl.TransitionToState(PreviewControl.State.Condensed);
-                PreviewControl.TransitionToState(PreviewControl.State.Hidden);
+                if (PreviewControl.IsExpanded)
+                {
+                    PreviewControl.TransitionToState(PreviewControl.State.Condensed);
+                    PreviewControl.TransitionToState(PreviewControl.State.Hidden);
+                } else if (PreviewControl.IsCondensed)
+                {
+                    PreviewControl.TransitionToState(PreviewControl.State.Hidden);
+                }
             }
         }
 

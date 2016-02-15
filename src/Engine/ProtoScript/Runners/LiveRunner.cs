@@ -1127,7 +1127,6 @@ namespace ProtoScript.Runners
         void UpdateGraph(GraphSyncData syncData);
         List<Guid> PreviewGraph(GraphSyncData syncData);
         void UpdateCmdLineInterpreter(string code);
-        ProtoCore.Mirror.RuntimeMirror QueryNodeValue(Guid nodeId);
         ProtoCore.Mirror.RuntimeMirror InspectNodeValue(string nodeName);
 
         void UpdateGraph(AssociativeNode astNode);
@@ -1233,9 +1232,7 @@ namespace ProtoScript.Runners
         private Configuration configuration = null;
         private int deltaSymbols = 0;
         private ProtoCore.CompileTime.Context staticContext = null;
-        private Queue<Task> taskQueue;
-        private Thread workerThread;
-        private bool terminating;
+        private readonly object mutexObject = new object();
         private ChangeSetComputer changeSetComputer;
         private ChangeSetApplier changeSetApplier;
 
@@ -1252,15 +1249,8 @@ namespace ProtoScript.Runners
 
             InitCore();
 
-            taskQueue = new Queue<Task>();
-
-            workerThread = new Thread(new ThreadStart(TaskExecMethod));
-            workerThread.IsBackground = true;
-            workerThread.Start();
-
             staticContext = new ProtoCore.CompileTime.Context();
 
-            terminating = false;
             changeSetComputer = new ChangeSetComputer(runnerCore, runtimeCore);
             changeSetApplier = new ChangeSetApplier();
         }
@@ -1283,24 +1273,6 @@ namespace ProtoScript.Runners
                 if (runtimeCore != null)
                 {
                     runtimeCore.Cleanup();
-                }
-
-                terminating = true;
-
-                lock (taskQueue)
-                {
-                    taskQueue.Clear();
-                }
-
-                if (workerThread != null)
-                {
-                    // waiting for thread to finish
-                    if (workerThread.IsAlive)
-                    {
-                        workerThread.Join();
-                    }
-
-                    workerThread = null;
                 }
             }
         }
@@ -1361,36 +1333,6 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
-        /// Query for a node value given its UID. This will block until the value is available.
-        /// This uses the expression interpreter to evaluate a node variable's value.
-        /// It will only serviced when all ASync calls have been completed
-        /// </summary>
-        /// <param name="nodeId"></param>
-        /// <returns></returns>
-        public ProtoCore.Mirror.RuntimeMirror QueryNodeValue(Guid nodeGuid)
-        {
-            while (true)
-            {
-                lock (taskQueue)
-                {
-                    //Spin waiting for the queue to be empty
-                    if (taskQueue.Count == 0)
-                    {
-
-                        //No entries and we have the lock
-                        //Synchronous query to get the node
-
-                        return InternalGetNodeValue(nodeGuid);
-                    }
-                }
-                Thread.Sleep(0);
-            }
-
-        }
-
-
-
-        /// <summary>
         /// Inspects the VM for the value of a node given its variable name. 
         /// As opposed to QueryNodeValue, this does not use the Expression Interpreter
         /// This will block until the value is available.
@@ -1401,20 +1343,9 @@ namespace ProtoScript.Runners
         ///
         public ProtoCore.Mirror.RuntimeMirror InspectNodeValue(string nodeName)
         {
-            while (true)
+            lock (mutexObject)
             {
-                lock (taskQueue)
-                {
-                    //Spin waiting for the queue to be empty
-                    if (taskQueue.Count == 0)
-                    {
-                        //return GetWatchValue(nodeName);
-                        const int blockID = 0;
-                        ProtoCore.Mirror.RuntimeMirror runtimeMirror = ProtoCore.Mirror.Reflection.Reflect(nodeName, blockID, runtimeCore, runnerCore);
-                        return runtimeMirror;
-                    }
-                }
-                Thread.Sleep(0);
+                return Reflection.Reflect(nodeName, 0, runtimeCore, runnerCore);
             }
         }
 
@@ -1468,16 +1399,9 @@ namespace ProtoScript.Runners
         /// <param name="syncData"></param>
         public List<Guid> PreviewGraph(GraphSyncData syncData)
         {
-            while (true)
+            lock (mutexObject)
             {
-                lock (taskQueue)
-                {
-                    if (taskQueue.Count == 0)
-                    {
-                        return PreviewInternal(syncData);                       
-                    }
-                }
-                Thread.Sleep(1);
+                return PreviewInternal(syncData);
             }
         }
 
@@ -1487,17 +1411,9 @@ namespace ProtoScript.Runners
         /// <param name="syncData"></param>
         public void UpdateGraph(GraphSyncData syncData)
         {
-            while (true)
+            lock (mutexObject)
             {
-                lock (taskQueue)
-                {
-                    if (taskQueue.Count == 0)
-                    {
-                        SynchronizeInternal(syncData);
-                        return;
-                    }
-                }
-                Thread.Sleep(0);
+                SynchronizeInternal(syncData);
             }
         }
 
@@ -1540,50 +1456,11 @@ namespace ProtoScript.Runners
         /// <param name="code"></param>
         public void UpdateCmdLineInterpreter(string code)
         {
-            while (true)
+            lock (mutexObject)
             {
-                lock (taskQueue)
-                {
-                    //Spin waiting for the queue to be empty
-                    if (taskQueue.Count == 0)
-                    {
-                        SynchronizeInternal(code);
-                        return;
-                    }
-                }
-                Thread.Sleep(0);
+                SynchronizeInternal(code);
             }
         }
-
-        //Secondary thread
-        private void TaskExecMethod()
-        {
-            while (!terminating)
-            {
-                Task task = null;
-
-                lock (taskQueue)
-                {
-                    if (taskQueue.Count > 0)
-                        task = taskQueue.Dequeue();
-
-                    //The task has to be executed inside the critical region
-                    //otherwise it will race with the sync based on the taskQueue count
-
-                    //TODO: This should be seperated into two seperate mutexes, one of the
-                    //queue and the other protecting execution
-                    if (task != null)
-                    {
-                        task.Execute();
-                        continue;
-
-                    }
-                }
-                Thread.Sleep(1);
-            }
-        }
-
-
 
         #region Internal Implementation
 
@@ -1601,11 +1478,6 @@ namespace ProtoScript.Runners
             const int blockID = 0;
 
             return vmState.LookupName(varname, blockID);
-        }
-
-        private ProtoCore.Mirror.RuntimeMirror InternalGetNodeValue(Guid nodeGuid)
-        {
-            throw new NotImplementedException();
         }
 
         private bool Compile(List<AssociativeNode> astList, Core targetCore)
