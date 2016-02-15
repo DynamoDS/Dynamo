@@ -748,7 +748,7 @@ namespace ProtoTest.TD.Associative
             string code = @"            def foo : int(a : int,b:int)            {                return = a * b;            }            list1 = {1,2};            list2 = {1,2};            list3 = foo(foo(foo(list1<1>, list2<2>)<1>, list2<2>)<1>, list2<2>);";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("list3", new object[] { new object[] { new object[] { new object[] { 1 }, new object[] { 2 } }, new object[] { new object[] { 2 }, new object[] { 4 } } }, new object[] { new object[] { new object[] { 2 }, new object[] { 4 } }, new object[] { new object[] { 4 }, new object[] { 8 } } } } );
+            thisTest.Verify("list3", new object[] { new object[] { new object[] { new object[] { 1 }, new object[] { 2 } }, new object[] { new object[] { 2 }, new object[] { 4 } } }  } );
         }
 
         [Test]
@@ -2019,6 +2019,21 @@ result = firstItem(xs<1><1>);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("result", new object[] { new object[] { 1, 4 }, new object[] { 7, 10 } });
+        }
+
+        [Category("Replication")]
+        public void TestZipFirstReplication()
+        {
+            string code = @"
+def foo(x:var, y:var)
+{
+    return = x + y;
+}
+xs = {{""a"", ""b""}, {""c"", ""d""}};
+ys = {1, 2};
+zs = foo(xs, ys);";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("zs", new object[] { new object[] { "a1", "b1" }, new object[] { "c2", "d2" } });
         }
     }
 }

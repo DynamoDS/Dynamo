@@ -1681,6 +1681,21 @@ namespace Dynamo.Graph.Nodes
                     NickName = value;
                     return true;
 
+                case "Position":
+                    // Here we expect a string that represents an array of double values which are separated by ";"
+                    // For example "12.5;14.56"
+                    var pos = value.Split(';');
+                    double xPos, yPos;
+                    if (pos.Length == 2 && double.TryParse(pos[0], out xPos)
+                        && double.TryParse(pos[1], out yPos))
+                    {
+                        X = xPos;
+                        Y = yPos;
+                        ReportPosition();
+                    }
+
+                    return true;
+
                 case "UsingDefaultValue":
                     if (string.IsNullOrWhiteSpace(value))
                         return true;
