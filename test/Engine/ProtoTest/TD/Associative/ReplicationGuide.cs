@@ -1312,7 +1312,7 @@ namespace ProtoTest.TD.Associative
 @"def foo (x1,y1){    return = x1 + y1;}x = {{0, 1},{2,3}};y = {{4,5},{6,7}};test1 = foo(x<1><2>, y<3><4>) ;          ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test1", new object[] { new object[] { new object[] { new object[] { 4, 5 }, new object[] { 6, 7 } }, new object[] { new object[] { 5, 6 }, new object[] { 7, 8 } } }, new object[] { new object[] { new object[] { 6, 7 }, new object[] { 8, 9 } }, new object[] { new object[] { 7, 8 }, new object[] { 9, 10 } } } });
+            thisTest.Verify("test1", new object[] { new object[] { new object[] { new object[] { 4, 5 }, new object[] { 5, 6 } }, new object[] { new object[] { 6, 7 }, new object[] { 7, 8 } } }, new object[] { new object[] { new object[] { 6, 7 }, new object[] { 7, 8 } }, new object[] { new object[] { 8, 9 }, new object[] { 9, 10 } } } });
         }
 
         [Test]
@@ -1334,7 +1334,7 @@ namespace ProtoTest.TD.Associative
 @"def foo (x1,y1){    return = x1 + y1;}x = {{0, 1},{2,3}};y = {{4,5},{6,7}};test1 = foo(x<1><3>, y<4><5>) ;        ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test1", new object[] { new object[] { new object[] { new object[] { 4, 5 }, new object[] { 6, 7 } }, new object[] { new object[] { 5, 6 }, new object[] { 7, 8 } } }, new object[] { new object[] { new object[] { 6, 7 }, new object[] { 8, 9 } }, new object[] { new object[] { 7, 8 }, new object[] { 9, 10 } } } });
+            thisTest.Verify("test1", new object[] { new object[] { new object[] { new object[] { 4, 5 }, new object[] { 5, 6 } }, new object[] { new object[] { 6, 7 }, new object[] { 7, 8 } } }, new object[] { new object[] { new object[] { 6, 7 }, new object[] { 7, 8 } }, new object[] { new object[] { 8, 9 }, new object[] { 9, 10 } } } });
         }
 
         [Test]
@@ -1433,7 +1433,7 @@ namespace ProtoTest.TD.Associative
 @" import(""FFITarget.dll"");def foo (x1:double,y1:TestObjectA){    return = x1 + y1.a;}x = {{0.0,1.0}, {2.0, 3.0} };y = { {TestObjectA.TestObjectA(4), TestObjectA.TestObjectA(5)}, { TestObjectA.TestObjectA(6), TestObjectA.TestObjectA(7) } };test1 = foo(x<1><2>, y<3><4>) ;            ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test1", new object[] { new object[] { new object[] { new object[] { 4.0, 5.0 }, new object[] { 6.0, 7.0 } }, new object[] { new object[] { 5.0, 6.0 }, new object[] { 7.0, 8.0 } } }, new object[] { new object[] { new object[] { 6.0, 7.0 }, new object[] { 8.0, 9.0 } }, new object[] { new object[] { 7.0, 8.0 }, new object[] { 9.0, 10.0 } } } });
+            thisTest.Verify("test1", new object[] { new object[] { new object[] { new object[] { 4.0, 5.0 }, new object[] { 5.0, 6.0 } }, new object[] { new object[] { 6.0, 7.0 }, new object[] { 7.0, 8.0 } } }, new object[] { new object[] { new object[] { 6.0, 7.0 }, new object[] { 7.0, 8.0 } }, new object[] { new object[] { 8.0, 9.0 }, new object[] { 9.0, 10.0 } } } });
         }
 
         [Test]
@@ -1740,7 +1740,7 @@ namespace ProtoTest.TD.Associative
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("c1", new Object[] { new Object[] { 4, 6 }, new Object[] { 8, 10 } });
-            thisTest.Verify("c2", new Object[] { new Object[] { new Object[] { new Object[] { -4, -5 }, new Object[] { -6, -7 } }, new Object[] { new Object[] { -3, -4 }, new Object[] { -5, -6 } } }, new Object[] { new Object[] { new Object[] { -2, -3 }, new Object[] { -4, -5 } }, new Object[] { new Object[] { -1, -2 }, new Object[] { -3, -4 } } } });
+            thisTest.Verify("c2", new Object[] { new Object[] { new Object[] { new Object[] { -4, -5 }, new Object[] { -3, -4 } }, new Object[] { new Object[] { -6, -7 }, new Object[] { -5, -6 } } }, new Object[] { new Object[] { new Object[] { -2, -3 }, new Object[] { -1, -2 } }, new Object[] { new Object[] { -4, -5 }, new Object[] { -3, -4 } } } });
             thisTest.Verify("c3", new Object[] { new Object[] { 0.0, 0.2 }, new Object[] { 0.33333333333333331, 0.42857142857142855 } });
             thisTest.Verify("c4", new Object[] { new Object[] { new Object[] { 0, 5 }, new Object[] { 0, 7 } }, new Object[] { new Object[] { 8, 15 }, new Object[] { 12, 21 } } });
             thisTest.Verify("c5", new Object[] { new Object[] { 0, 1 }, new Object[] { 2, 3 } });
@@ -2005,6 +2005,22 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("ReplicationGuide")]
+        public void ZachExample()
+        {
+            string code = @"
+def firstItem(list: var[]..[])
+{
+    return=list[0];
+}
+
+xs = {{{1, 2, 3}, {4, 5, 6}},{{7, 8, 9}, {10, 11, 12}}};
+result = firstItem(xs<1><1>);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("result", new object[] { new object[] { 1, 4 }, new object[] { 7, 10 } });
+        }
+
         [Category("Replication")]
         public void TestZipFirstReplication()
         {
