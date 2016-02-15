@@ -243,29 +243,6 @@ namespace ProtoCore.Lang.Replication
         }
 
         /// <summary>
-        /// Verify that the guides are in increasing order
-        /// </summary>
-        /// <param name="partialGuides"></param>
-        private static void VerifyIncreasingGuideOrdering(List<List<int>> partialGuides)
-        {
-            foreach (List<int> guidesOnParam in partialGuides)
-            {
-                List<int> sorted = new List<int>();
-                sorted.AddRange(guidesOnParam);
-                sorted.Sort();
-
-                for (int i = 0; i < sorted.Count; i++)
-                {
-                    if (guidesOnParam[i] != sorted[i])
-                    {
-                        throw new ReplicationCaseNotCurrentlySupported(Resources.MultipleGuidesNotSupported + 
-                            string.Format(Resources.ErrorCode, "{3C5360D1}"));
-                    }
-                }
-            }
-        }
-
-        /// <summary>
         /// Convert reduction to instruction. Using zip-first strategy.
         /// 
         /// For example,
