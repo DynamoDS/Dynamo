@@ -118,7 +118,7 @@ namespace Dynamo.Tests
         {
             RunModel(@"core\sequence\DefaultSequence.dyn");
             AssertPreviewValue("6d7f8652-6cf2-4749-b398-922992fa484b",
-                "_SingleFunctionObject");
+                "Function");
         }
 
         [Test]
@@ -126,7 +126,7 @@ namespace Dynamo.Tests
         {
             RunModel(@"core\range\DefaultRange.dyn");
             AssertPreviewValue("24323e5c-6d36-4b18-b99d-fa953eafeb73",
-                "_SingleFunctionObject");
+                "Function");
         }
 
         [Test]
