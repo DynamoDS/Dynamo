@@ -1875,6 +1875,11 @@ namespace ProtoCore
 
         private static ArgumentAtLevel GetArgumentAtLevel(StackValue argument, AtLevel atLevel, RuntimeCore runtimeCore)
         {
+            if (atLevel.Level >= 0)
+            {
+                return new ArgumentAtLevel(argument);
+            }
+
             int maxDepth = Replicator.GetMaxReductionDepth(argument, runtimeCore);
             int nestedLevel = maxDepth + atLevel.Level;
 
