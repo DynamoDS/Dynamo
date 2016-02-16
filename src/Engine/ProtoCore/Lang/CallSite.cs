@@ -1991,10 +1991,8 @@ namespace ProtoCore
 
         public static StackValue PerformReturnTypeCoerce(ProcedureNode procNode, RuntimeCore runtimeCore, StackValue ret)
         {
-            Validity.Assert(procNode != null,
-                            "Proc Node was null.... {976C039E-6FE4-4482-80BA-31850E708E79}");
+            Validity.Assert(procNode != null, "Proc Node was null.... {976C039E-6FE4-4482-80BA-31850E708E79}");
 
-            //Now cast ret into the return type
             Type retType = procNode.ReturnType;
 
             if (retType.UID == (int) PrimitiveType.kTypeVar)
@@ -2011,38 +2009,40 @@ namespace ProtoCore
             }
 
             if (ret.IsNull)
-                return ret; //IT was a var type, so don't cast
-
-            if (ret.metaData.type == retType.UID &&
-                !ret.IsArray &&
-                retType.IsIndexable)
             {
-                StackValue coercedRet = TypeSystem.Coerce(ret, retType, runtimeCore);
-                return coercedRet;
+                return ret; 
             }
 
             if (ret.metaData.type == retType.UID)
             {
-                return ret;
+                if (!ret.IsArray && retType.IsIndexable)
+                {
+                    StackValue coercedRet = TypeSystem.Coerce(ret, retType, runtimeCore);
+                    return coercedRet;
+                }
+                else
+                {
+                    return ret;
+                }
             }
 
-            if (ret.IsArray && procNode.ReturnType.IsIndexable)
+            if (ret.IsArray && retType.IsIndexable)
             {
                 StackValue coercedRet = TypeSystem.Coerce(ret, retType, runtimeCore);
                 return coercedRet;
             }
 
-            if (!runtimeCore.DSExecutable.classTable.ClassNodes[ret.metaData.type].ConvertibleTo(retType.UID))
+            if (runtimeCore.DSExecutable.classTable.ClassNodes[ret.metaData.type].ConvertibleTo(retType.UID))
             {
+                StackValue coercedRet = TypeSystem.Coerce(ret, retType, runtimeCore);
+                return coercedRet;
+            }
+            else
+            { 
                 //@TODO(Luke): log no-type coercion possible warning
                 runtimeCore.RuntimeStatus.LogWarning(WarningID.kConversionNotPossible,
                                               Resources.kConvertNonConvertibleTypes);
                 return StackValue.Null;
-            }
-            else
-            {
-                StackValue coercedRet = TypeSystem.Coerce(ret, retType, runtimeCore);
-                return coercedRet;
             }
         }
 

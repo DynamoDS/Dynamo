@@ -135,18 +135,18 @@ namespace ProtoCore
             //Compute the cost to migrate a class calls argument types to the coresponding base types
             //This cannot be used to determine whether a function can be called as it will ignore anything that doesn't
             //it should only be used to determine which class is closer
-
             if (args.Count != FormalParams.Length)
+            {
                 return int.MaxValue;
-
-            int distance = 0;
+            }
 
             if (0 == args.Count)
             {
-                return distance;
+                return 0;
             }
             else
             {
+                int distance = 0;
                 // Check if all the types match the current function at 'n'
                 for (int i = 0; i < args.Count; ++i)
                 {
@@ -161,30 +161,26 @@ namespace ProtoCore
 
                     int expectedType = FormalParams[i].UID;
 
-                    int currentCost = 0;
-
                     if (FormalParams[i].IsIndexable != args[i].IsArray) //Replication code will take care of this
                     {
                         continue;
                     }
-                    else if (FormalParams[i].IsIndexable && (FormalParams[i].IsIndexable == args[i].IsArray))
+                    else if (FormalParams[i].IsIndexable)  // both are arrays
                     {
                         continue;
-
                     }
-                    else if (expectedType == rcvdType && (FormalParams[i].IsIndexable == args[i].IsArray))
+                    else if (expectedType == rcvdType)
                     {
                         continue;
-
                     }
-                    else if (rcvdType != ProtoCore.DSASM.Constants.kInvalidIndex &&
-                        expectedType != ProtoCore.DSASM.Constants.kInvalidIndex)
+                    else if (rcvdType != Constants.kInvalidIndex && expectedType != Constants.kInvalidIndex)
                     {
-                        currentCost += ClassUtils.GetUpcastCountTo(classTable.ClassNodes[rcvdType],
-                                                                   classTable.ClassNodes[expectedType], runtimeCore);
-                 
+                        int currentCost = ClassUtils.GetUpcastCountTo(
+                            classTable.ClassNodes[rcvdType], 
+                            classTable.ClassNodes[expectedType], 
+                            runtimeCore);
+                        distance += currentCost;
                     }
-                    distance += currentCost;
                 }
                 return distance;
             }
@@ -306,7 +302,6 @@ namespace ProtoCore
 
         public int GetConversionDistance(List<StackValue> reducedParamSVs, ProtoCore.DSASM.ClassTable classTable, bool allowArrayPromotion, RuntimeCore runtimeCore)
         {
-
             int dist = ComputeTypeDistance(reducedParamSVs, classTable, runtimeCore, allowArrayPromotion);
             if (dist >= 0 && dist != (int)ProcedureDistance.kMaxDistance) //Is it possible to convert to this type?
             {
