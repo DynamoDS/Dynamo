@@ -4940,9 +4940,7 @@ r = func_1(x);
         public void TestNestedLanguageBlockReExecution05()
         {
             string code = @"
-
-
-def foo()
+def foo()
 {
     x2 = 5;
     v1 = [Associative]
