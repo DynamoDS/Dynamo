@@ -392,6 +392,9 @@ namespace Dynamo.Controls
         {
             nodeWasClicked = false;
 
+            // Always set old ZIndex to the last value, even if mouse is not over the node.
+            oldZIndex = NodeViewModel.StaticZIndex;
+
             if (!previewEnabled) return; // Preview is hidden. There is no need run further.
 
             if (PreviewControl.IsInTransition) // In transition state, come back later.
