@@ -2196,7 +2196,7 @@ namespace ProtoAssociative
                         {
                             var newArgNode = NodeUtils.Clone(argBinaryExpr.LeftNode) as IdentifierNode;
                             newArgNode.ReplicationGuides = replicationGuides;
-                            newArgNode.AtLevel = GetAtLevel(arg);
+                            newArgNode.AtLevel = atLevel;
                             fcNode.FormalArguments[idx] = newArgNode;
                         }
                         else
