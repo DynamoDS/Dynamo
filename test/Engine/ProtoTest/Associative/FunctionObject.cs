@@ -298,8 +298,7 @@ r = f;
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4037
             string err = "MAGN-4037 Defects with FunctionObject tests";
             string code =
-    @"
-import(""FFITarget.dll"");
+    @"import(""FFITarget.dll"");
 import (""DSCoreNodes.dll"");
 import (""FunctionObject.ds"");
 
@@ -339,8 +338,7 @@ t4 = __Map(getPointKey, r6);
         public void TestGroupByFunction()
         {
             string code =
-    @"
-import(""FFITarget.dll"");
+    @"import(""FFITarget.dll"");
 import (""DSCoreNodes.dll"");
 import (""FunctionObject.ds"");
 
