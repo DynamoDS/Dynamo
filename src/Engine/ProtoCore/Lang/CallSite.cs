@@ -497,13 +497,12 @@ namespace ProtoCore
             //Ordering implies containment, so element 0 is the outer most forloop, element 1 is nested within it etc.
             //Take the explicit replication guides and build the replication structure
             //Turn the replication guides into a guide -> List args data structure
-            ReplicationControl replicationControl =
-                Replicator.Old_ConvertGuidesToInstructions(partialReplicationGuides);
+            var instructions = Replicator.BuildPartialReplicationInstructions(partialReplicationGuides);
 
             #region First Case: Replicate only according to the replication guides
 
             {
-                FunctionEndPoint fep = Case1GetCompleteMatchFEP(context, arguments, funcGroup, replicationControl,
+                FunctionEndPoint fep = Case1GetCompleteMatchFEP(context, arguments, funcGroup, instructions,
                                                                 stackFrame,
                                                                 runtimeCore, new StringBuilder());
                 if (fep != null)
@@ -519,18 +518,11 @@ namespace ProtoCore
 
             {
                 //Build the possible ways in which we might replicate
-                replicationTrials =
-                    Replicator.BuildReplicationCombinations(replicationControl.Instructions, arguments, runtimeCore);
-
+                replicationTrials = Replicator.BuildReplicationCombinations(instructions, arguments, runtimeCore);
 
                 foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
                 {
-                    ReplicationControl rc = new ReplicationControl() { Instructions = replicationOption };
-
-
-                    List<List<StackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments,
-                                                                                              rc.
-                                                                                                  Instructions, runtimeCore);
+                    List<List<StackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments, replicationOption, runtimeCore);
                     int resolutionFailures;
 
                     funcGroup.GetExactMatchStatistics(context, reducedParams, stackFrame, runtimeCore, out resolutionFailures);
@@ -548,15 +540,15 @@ namespace ProtoCore
 
             {
                 Dictionary<FunctionEndPoint, int> candidatesWithDistances =
-                    funcGroup.GetConversionDistances(context, arguments, replicationControl.Instructions,
+                    funcGroup.GetConversionDistances(context, arguments, instructions,
                                                      runtimeCore.DSExecutable.classTable, runtimeCore);
                 Dictionary<FunctionEndPoint, int> candidatesWithCastDistances =
-                    funcGroup.GetCastDistances(context, arguments, replicationControl.Instructions, runtimeCore.DSExecutable.classTable,
+                    funcGroup.GetCastDistances(context, arguments, instructions, runtimeCore.DSExecutable.classTable,
                                                runtimeCore);
 
                 List<FunctionEndPoint> candidateFunctions = GetCandidateFunctions(stackFrame, candidatesWithDistances);
                 FunctionEndPoint compliantTarget = GetCompliantTarget(context, arguments,
-                                                                      replicationControl.Instructions, stackFrame, runtimeCore,
+                                                                      instructions, stackFrame, runtimeCore,
                                                                       candidatesWithCastDistances, candidateFunctions,
                                                                       candidatesWithDistances);
 
@@ -573,7 +565,7 @@ namespace ProtoCore
             {
                 //Build the possible ways in which we might replicate
                 replicationTrials =
-                    Replicator.BuildReplicationCombinations(replicationControl.Instructions, arguments, runtimeCore);
+                    Replicator.BuildReplicationCombinations(instructions, arguments, runtimeCore);
 
                 //Add as a first attempt a no-replication, but allowing up-promoting
                 replicationTrials.Insert(0,
@@ -713,13 +705,60 @@ namespace ProtoCore
 
         #region Target resolution
 
-        private void ComputeFeps(StringBuilder log, Context context, List<StackValue> arguments, FunctionGroup funcGroup, ReplicationControl replicationControl,
-                                      List<List<ReplicationGuide>> partialReplicationGuides, StackFrame stackFrame, RuntimeCore runtimeCore,
-            out List<FunctionEndPoint> resolvesFeps, out List<ReplicationInstruction> replicationInstructions)
+        private FunctionEndPoint GetCompliantFEP(
+            Context context, 
+            List<StackValue> arguments, 
+            FunctionGroup funcGroup, 
+            List<ReplicationInstruction> replicationInstructions,
+            StackFrame stackFrame, 
+            RuntimeCore runtimeCore,
+            bool allowArrayPromotion = false)
         {
+            Dictionary<FunctionEndPoint, int> candidatesWithDistances = 
+                funcGroup.GetConversionDistances(
+                    context, 
+                    arguments, 
+                    replicationInstructions, 
+                    runtimeCore.DSExecutable.classTable, 
+                    runtimeCore,
+                    allowArrayPromotion);
 
-            
+            Dictionary<FunctionEndPoint, int> candidatesWithCastDistances =
+                funcGroup.GetCastDistances(
+                    context, 
+                    arguments, 
+                    replicationInstructions, 
+                    runtimeCore.DSExecutable.classTable, 
+                    runtimeCore);
 
+            List<FunctionEndPoint> candidateFunctions = GetCandidateFunctions(stackFrame, candidatesWithDistances);
+
+            FunctionEndPoint compliantTarget = 
+                GetCompliantTarget(
+                    context, 
+                    arguments, 
+                    replicationInstructions, 
+                    stackFrame,
+                    runtimeCore, 
+                    candidatesWithCastDistances, 
+                    candidateFunctions, 
+                    candidatesWithDistances);
+
+            return compliantTarget;
+        }
+
+        private void ComputeFeps(
+            StringBuilder log, 
+            Context context, 
+            List<StackValue> arguments,
+            FunctionGroup funcGroup,
+            List<ReplicationInstruction> instructions, 
+            List<List<ReplicationGuide>> partialReplicationGuides,
+            StackFrame stackFrame,
+            RuntimeCore runtimeCore,
+            out List<FunctionEndPoint> resolvesFeps,
+            out List<ReplicationInstruction> replicationInstructions)
+        {
             //With replication guides only
 
             //Exact match
@@ -736,21 +775,19 @@ namespace ProtoCore
             //Try replication + type casting + Array promotion
 
             #region First Case: Replicate only according to the replication guides
-
             {
                 log.AppendLine("Case 1: Exact Match");
 
-                FunctionEndPoint fep = Case1GetCompleteMatchFEP(context, arguments, funcGroup, replicationControl,
+                FunctionEndPoint fep = Case1GetCompleteMatchFEP(context, arguments, funcGroup, instructions,
                                                                 stackFrame,
                                                                 runtimeCore, log);
                 if (fep != null)
                 {
-                    //log.AppendLine("Resolution completed in " + sw.ElapsedMilliseconds + "ms");
                     if (runtimeCore.Options.DumpFunctionResolverLogic)
                         runtimeCore.DSExecutable.EventSink.PrintMessage(log.ToString());
 
                     resolvesFeps = new List<FunctionEndPoint>() { fep };
-                    replicationInstructions = replicationControl.Instructions;
+                    replicationInstructions = instructions;
 
                     return;
                 }
@@ -759,75 +796,53 @@ namespace ProtoCore
             #endregion
 
             #region Case 1a: Replicate only according to the replication guides, but with a sub-typing match
-
             {
                 log.AppendLine("Case 1a: Replication guides + auto-replication + no cases");
+                List<List<StackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments, instructions, runtimeCore);
+                int resolutionFailures;
 
+                Dictionary<FunctionEndPoint, int> lookups = funcGroup.GetExactMatchStatistics(
+                    context, reducedParams, stackFrame, runtimeCore,
+                    out resolutionFailures);
 
-                List<ReplicationInstruction> replicationOption = replicationControl.Instructions;
-                    ReplicationControl rc = new ReplicationControl() { Instructions = replicationOption };
+                if (resolutionFailures == 0)
+                {
+                    log.AppendLine("Resolution succeeded against FEP Cluster");
+                    foreach (FunctionEndPoint fep in lookups.Keys)
+                        log.AppendLine("\t - " + fep);
 
-                    log.AppendLine("Attempting replication control: " + rc);
+                    List<FunctionEndPoint> feps = new List<FunctionEndPoint>();
+                    feps.AddRange(lookups.Keys);
 
-                    List<List<StackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments,
-                                                                                              rc.Instructions, runtimeCore);
-                    int resolutionFailures;
+                    if (runtimeCore.Options.DumpFunctionResolverLogic)
+                        runtimeCore.DSExecutable.EventSink.PrintMessage(log.ToString());
 
-                    Dictionary<FunctionEndPoint, int> lookups = funcGroup.GetExactMatchStatistics(
-                        context, reducedParams, stackFrame, runtimeCore,
-                        out resolutionFailures);
+                    //Otherwise we have a cluster of FEPs that can be used to dispatch the array
+                    resolvesFeps = feps;
+                    replicationInstructions = instructions;
 
-
-                    if (resolutionFailures == 0)
-                    {
-
-                        log.AppendLine("Resolution succeeded against FEP Cluster");
-                        foreach (FunctionEndPoint fep in lookups.Keys)
-                            log.AppendLine("\t - " + fep);
-
-                        List<FunctionEndPoint> feps = new List<FunctionEndPoint>();
-                        feps.AddRange(lookups.Keys);
-
-                        //log.AppendLine("Resolution completed in " + sw.ElapsedMilliseconds + "ms");
-                        if (runtimeCore.Options.DumpFunctionResolverLogic)
-                            runtimeCore.DSExecutable.EventSink.PrintMessage(log.ToString());
-
-                        //Otherwise we have a cluster of FEPs that can be used to dispatch the array
-                        resolvesFeps = feps;
-                        replicationInstructions = rc.Instructions;
-
-                        return;
-                    }
+                    return;
                 }
-            
+            }
 
             #endregion
 
 
+            var replicationTrials = Replicator.BuildReplicationCombinations(instructions, arguments, runtimeCore);
             #region Case 2: Replication with no type cast
 
             {
                 log.AppendLine("Case 2: Beginning Auto-replication, no casts");
 
                 //Build the possible ways in which we might replicate
-                List<List<ReplicationInstruction>> replicationTrials =
-                    Replicator.BuildReplicationCombinations(replicationControl.Instructions, arguments, runtimeCore);
-
-
-                foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
+                foreach (List<ReplicationInstruction> repOption in replicationTrials)
                 {
-                    ReplicationControl rc = new ReplicationControl() { Instructions = replicationOption };
-
-                    log.AppendLine("Attempting replication control: " + rc);
-
-                    List<List<StackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments,
-                                                                                              rc.Instructions, runtimeCore);
+                    List<List<StackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments, repOption, runtimeCore);
                     int resolutionFailures;
 
                     Dictionary<FunctionEndPoint, int> lookups = funcGroup.GetExactMatchStatistics(
                         context, reducedParams, stackFrame, runtimeCore,
                         out resolutionFailures);
-
 
                     if (resolutionFailures > 0)
                         continue;
@@ -839,13 +854,12 @@ namespace ProtoCore
                     List<FunctionEndPoint> feps = new List<FunctionEndPoint>();
                     feps.AddRange(lookups.Keys);
 
-                    //log.AppendLine("Resolution completed in " + sw.ElapsedMilliseconds + "ms");
                     if (runtimeCore.Options.DumpFunctionResolverLogic)
                         runtimeCore.DSExecutable.EventSink.PrintMessage(log.ToString());
 
                     //Otherwise we have a cluster of FEPs that can be used to dispatch the array
                     resolvesFeps = feps;
-                    replicationInstructions = rc.Instructions;
+                    replicationInstructions = repOption;
 
                     return;
                 }
@@ -854,23 +868,10 @@ namespace ProtoCore
             #endregion
 
             #region Case 3: Match with type conversion, but no array promotion
-
             {
                 log.AppendLine("Case 3: Type conversion");
 
-
-                Dictionary<FunctionEndPoint, int> candidatesWithDistances =
-                    funcGroup.GetConversionDistances(context, arguments, replicationControl.Instructions,
-                                                     runtimeCore.DSExecutable.classTable, runtimeCore);
-                Dictionary<FunctionEndPoint, int> candidatesWithCastDistances =
-                    funcGroup.GetCastDistances(context, arguments, replicationControl.Instructions, runtimeCore.DSExecutable.classTable,
-                                               runtimeCore);
-
-                List<FunctionEndPoint> candidateFunctions = GetCandidateFunctions(stackFrame, candidatesWithDistances);
-                FunctionEndPoint compliantTarget = GetCompliantTarget(context, arguments,
-                                                                      replicationControl.Instructions, stackFrame, runtimeCore,
-                                                                      candidatesWithCastDistances, candidateFunctions,
-                                                                      candidatesWithDistances);
+                FunctionEndPoint compliantTarget = GetCompliantFEP(context, arguments, funcGroup, instructions, stackFrame, runtimeCore);
 
                 if (compliantTarget != null)
                 {
@@ -880,7 +881,7 @@ namespace ProtoCore
                         runtimeCore.DSExecutable.EventSink.PrintMessage(log.ToString());
 
                     resolvesFeps = new List<FunctionEndPoint>() { compliantTarget };
-                    replicationInstructions = replicationControl.Instructions;
+                    replicationInstructions = instructions;
                     return;
                 }
             }
@@ -893,32 +894,10 @@ namespace ProtoCore
             {
                 if (arguments.Any(arg => arg.IsArray))
                 {
-                    //Build the possible ways in which we might replicate
-                    List<List<ReplicationInstruction>> replicationTrials =
-                        Replicator.BuildReplicationCombinations(replicationControl.Instructions, arguments, runtimeCore);
-
-
                     foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
                     {
-                        ReplicationControl rc = new ReplicationControl() { Instructions = replicationOption };
-
-                        log.AppendLine("Attempting replication control: " + rc);
-
                         //@TODO: THis should use the proper reducer?
-
-                        Dictionary<FunctionEndPoint, int> candidatesWithDistances =
-                            funcGroup.GetConversionDistances(context, arguments, rc.Instructions, runtimeCore.DSExecutable.classTable, runtimeCore);
-                        Dictionary<FunctionEndPoint, int> candidatesWithCastDistances =
-                            funcGroup.GetCastDistances(context, arguments, rc.Instructions, runtimeCore.DSExecutable.classTable, runtimeCore);
-
-                        List<FunctionEndPoint> candidateFunctions = GetCandidateFunctions(stackFrame,
-                                                                                          candidatesWithDistances);
-                        FunctionEndPoint compliantTarget = GetCompliantTarget(context, arguments,
-                                                                              rc.Instructions, stackFrame, runtimeCore,
-                                                                              candidatesWithCastDistances,
-                                                                              candidateFunctions,
-                                                                              candidatesWithDistances);
-
+                        FunctionEndPoint compliantTarget = GetCompliantFEP(context, arguments, funcGroup, replicationOption, stackFrame, runtimeCore);
                         if (compliantTarget != null)
                         {
                             log.AppendLine("Resolution Succeeded: " + compliantTarget);
@@ -927,7 +906,7 @@ namespace ProtoCore
                                 runtimeCore.DSExecutable.EventSink.PrintMessage(log.ToString());
 
                             resolvesFeps = new List<FunctionEndPoint>() { compliantTarget };
-                            replicationInstructions = rc.Instructions;
+                            replicationInstructions = replicationOption;
                             return;
                         }
                     }
@@ -940,38 +919,13 @@ namespace ProtoCore
 
             log.AppendLine("Case 5: Replication + Type conversion + Array promotion");
             {
-                //Build the possible ways in which we might replicate
-                List<List<ReplicationInstruction>> replicationTrials =
-                    Replicator.BuildReplicationCombinations(replicationControl.Instructions, arguments, runtimeCore);
-
                 //Add as a first attempt a no-replication, but allowing up-promoting
-                replicationTrials.Insert(0,
-                                         new List<ReplicationInstruction>()
-                    );
-
+                replicationTrials.Insert(0, new List<ReplicationInstruction>());
 
                 foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
                 {
-                    ReplicationControl rc = new ReplicationControl() { Instructions = replicationOption };
-
-                    log.AppendLine("Attempting replication control: " + rc);
-
                     //@TODO: THis should use the proper reducer?
-
-                    Dictionary<FunctionEndPoint, int> candidatesWithDistances =
-                        funcGroup.GetConversionDistances(context, arguments, rc.Instructions, runtimeCore.DSExecutable.classTable, runtimeCore,
-                                                         true);
-                    Dictionary<FunctionEndPoint, int> candidatesWithCastDistances =
-                        funcGroup.GetCastDistances(context, arguments, rc.Instructions, runtimeCore.DSExecutable.classTable, runtimeCore);
-
-                    List<FunctionEndPoint> candidateFunctions = GetCandidateFunctions(stackFrame,
-                                                                                      candidatesWithDistances);
-                    FunctionEndPoint compliantTarget = GetCompliantTarget(context, arguments,
-                                                                          rc.Instructions, stackFrame, runtimeCore,
-                                                                          candidatesWithCastDistances,
-                                                                          candidateFunctions,
-                                                                          candidatesWithDistances);
-
+                    FunctionEndPoint compliantTarget = GetCompliantFEP(context, arguments, funcGroup, replicationOption, stackFrame, runtimeCore, true);
                     if (compliantTarget != null)
                     {
                         log.AppendLine("Resolution Succeeded: " + compliantTarget);
@@ -979,7 +933,7 @@ namespace ProtoCore
                         if (runtimeCore.Options.DumpFunctionResolverLogic)
                             runtimeCore.DSExecutable.EventSink.PrintMessage(log.ToString());
                         resolvesFeps = new List<FunctionEndPoint>() { compliantTarget };
-                        replicationInstructions = rc.Instructions;
+                        replicationInstructions = replicationOption;
                         return;
                     }
                 }
@@ -989,7 +943,7 @@ namespace ProtoCore
 
 
             resolvesFeps = new List<FunctionEndPoint>();
-            replicationInstructions = replicationControl.Instructions;
+            replicationInstructions = instructions;
         }
 
 
@@ -1035,14 +989,12 @@ namespace ProtoCore
         /// <returns></returns>
         private FunctionEndPoint Case1GetCompleteMatchFEP(Context context, List<StackValue> arguments,
                                                           FunctionGroup funcGroup,
-                                                          ReplicationControl replicationControl, StackFrame stackFrame,
+                                                          List<ReplicationInstruction> replicationInstructions, StackFrame stackFrame,
                                                           RuntimeCore runtimeCore, StringBuilder log)
         {
-            log.AppendLine("Attempting Dispatch with ---- RC: " + replicationControl);
-
             //Exact match
             List<FunctionEndPoint> exactTypeMatchingCandindates =
-                funcGroup.GetExactTypeMatches(context, arguments, replicationControl.Instructions, stackFrame, runtimeCore);
+                funcGroup.GetExactTypeMatches(context, arguments, replicationInstructions, stackFrame, runtimeCore);
 
             FunctionEndPoint fep = null;
 
@@ -1472,10 +1424,7 @@ namespace ProtoCore
             //Ordering implies containment, so element 0 is the outer most forloop, element 1 is nested within it etc.
             //Take the explicit replication guides and build the replication structure
             //Turn the replication guides into a guide -> List args data structure
-            ReplicationControl replicationControl =
-                Replicator.Old_ConvertGuidesToInstructions(partialReplicationGuides);
-
-            log.AppendLine("Replication guides processed to: " + replicationControl);
+            var partialInstructions = Replicator.BuildPartialReplicationInstructions(partialReplicationGuides);
 
             //Get the fep that are resolved
             List<FunctionEndPoint> resolvesFeps;
@@ -1486,7 +1435,7 @@ namespace ProtoCore
             arguments = PerformRepGuideForcedPromotion(arguments, partialReplicationGuides, runtimeCore);
 
 
-            ComputeFeps(log, context, arguments, funcGroup, replicationControl, partialReplicationGuides, stackFrame, runtimeCore, out resolvesFeps, out replicationInstructions);
+            ComputeFeps(log, context, arguments, funcGroup, partialInstructions, partialReplicationGuides, stackFrame, runtimeCore, out resolvesFeps, out replicationInstructions);
 
 
             if (resolvesFeps.Count == 0)

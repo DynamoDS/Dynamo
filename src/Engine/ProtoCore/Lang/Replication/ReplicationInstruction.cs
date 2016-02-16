@@ -34,8 +34,7 @@ namespace ProtoCore.Lang.Replication
                 string indecies = "";
 
                 for (int i = 0; i < ZipIndecies.Count - 1; i++)
-                    indecies += i + ", ";
-
+                    indecies += ZipIndecies[i] + ", ";
 
                 indecies += ZipIndecies[ZipIndecies.Count - 1];
 
@@ -46,25 +45,4 @@ namespace ProtoCore.Lang.Replication
 
         }
     }
-
-    public struct ReplicationControl
-    {
-        public List<ReplicationInstruction> Instructions;
-
-
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder();
-
-            sb.AppendLine("Replication Control Instructions: "+ Instructions.Count);
-
-                foreach (ReplicationInstruction ri in Instructions)
-                    sb.AppendLine("\t" + ri.ToString());
-
-                return sb.ToString();
-        }
-
-
-    }
-
 }
