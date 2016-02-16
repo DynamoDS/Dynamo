@@ -380,6 +380,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        protected internal virtual void UpdateUpstream()
+        {
+        }
+
+        // This method is about indicating whether watch3d updated its stream or not.
+        protected internal virtual void OnWatchExecution()
+        {
+        }
+
         protected HelixWatch3DViewModel(Watch3DViewModelStartupParams parameters) : base(parameters)
         {
             Name = Resources.BackgroundPreviewName;
