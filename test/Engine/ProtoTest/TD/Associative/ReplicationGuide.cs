@@ -3680,6 +3680,7 @@ result = firstItem(xs<1><1>);
             thisTest.Verify("result", new object[] { new object[] { 1, 4 }, new object[] { 7, 10 } });
         }
 
+        [Test]
         [Category("Replication")]
         public void TestZipFirstReplication()
         {
@@ -3693,6 +3694,38 @@ ys = {1, 2};
 zs = foo(xs, ys);";
             thisTest.RunScriptSource(code);
             thisTest.Verify("zs", new object[] { new object[] { "a1", "b1" }, new object[] { "c2", "d2" } });
+        }
+
+        [Test]
+        [Category("Replication")]
+        public void RegressMAGN1708()
+        {
+            string code = @"
+def foo (x1,y1)
+{
+    return = x1 + y1;
+}
+x = {{0, 1},{2,3}};
+y = {{4,5},{6,7}};
+
+rs = foo(x<2><4>, y<3><1>);";  
+            // it is equivalent to foo(x<1><2>, y<2><1>) =  
+            // {{foo({0, 1}<2>, {4, 5}<1>), foo({0, 1}<2>, {6, 7}<2>}, {foo({2, 3}<2>, {4, 5}<1>), foo({2, 3}<2>, {6, 7}<2>}} = 
+            // {{{{4, 5}, {5, 6}}, {{6, 7}, {7, 8}}}, {{{6, 7}, {7, 8}}, {{8, 9}, {9, 10}}}}
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("rs", new object[] 
+            { 
+                new object[]
+                {
+                    new object[] { new object[] {4, 5}, new object[] {5, 6}},
+                    new object[] { new object[] {6, 7}, new object[] {7, 8}},
+                },
+                new object[]
+                {
+                    new object[] { new object[] {6, 7}, new object[] {7, 8}},
+                    new object[] { new object[] {8, 9}, new object[] {9, 10}}
+                }
+            });
         }
     }
 }
