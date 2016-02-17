@@ -835,20 +835,11 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to List #1.
+        ///   Looks up a localized string similar to List.
         /// </summary>
-        public static string PortDataList1ToolTip {
+        public static string PortDataListToolTip {
             get {
-                return ResourceManager.GetString("PortDataList1ToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to List #2.
-        /// </summary>
-        public static string PortDataList2ToolTip {
-            get {
-                return ResourceManager.GetString("PortDataList2ToolTip", resourceCulture);
+                return ResourceManager.GetString("PortDataListToolTip", resourceCulture);
             }
         }
         
