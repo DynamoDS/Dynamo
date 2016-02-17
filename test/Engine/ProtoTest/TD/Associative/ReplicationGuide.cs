@@ -288,7 +288,6 @@ test = foo( x<1>,y<2> );
 
         [Test]
         [Category("Replication")]
-        [Category("Failure")]
         public void T0001_Replication_Guide_Function_With_2_Arg_15()
         {
             String code =
@@ -305,12 +304,11 @@ test = foo( x<1>,y );
             String errmsg = "DNL-1467580 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             // verification : clarify with new spec
-            thisTest.Verify("test", new Object[] { 2, 4 });
+            thisTest.Verify("test", new Object[] { new object[] { 2, 3 }, new object[] { 3, 4 } });
         }
 
         [Test] //post R1
         [Category("Replication")]
-        [Category("Failure")]
         public void T0001_Replication_Guide_Function_With_2_Arg_16()
         {
             String code =
@@ -327,7 +325,7 @@ test = foo( x,y<1> );
             String errmsg = "DNL-1467580 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             // verification : clarify with new spec
-            thisTest.Verify("test", new Object[] { 2, 4 });
+            thisTest.Verify("test", new Object[] { new object[] { 2, 3 }, new object[] { 3, 4 } });
         }
 
         [Test]
@@ -454,7 +452,7 @@ test = foo( x<1>,y,z<2> );
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "DNL-1467580 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            Object[] x1 = new Object[] { new Object[] { 6, 7 }, new Object[] { 8, 9 } };
+            Object[] x1 = new Object[] { new Object[] { new Object[] { 6, 7 }, new Object[] { 7, 8 } }, new Object[] { new Object[] { 7, 8 }, new Object[] { 8, 9 } } };
             // verification : clarify with new spec
             thisTest.Verify("test", x1);
         }
@@ -1686,7 +1684,6 @@ test = foo(x<1>,y<3>);
 
         [Test]
         [Category("DSDefinedClass_Ported")]
-        [Category("Failure")]
         public void T041_1467460_replication_guide_not_in_sequence_02()
         {
             string code =
@@ -1702,12 +1699,11 @@ test = foo(x<1>,y<3>,z); // expect this to be treated as :  foo(x<1>,y<2>,z<1>);
 ";
             string errmsg = "MAGN-1707 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test", new object[] { new Object[] { 2, 3 }, new Object[] { 2, 3 } });
+            thisTest.Verify("test", new object[] { new object[] { new Object[] { 2, 2 }, new Object[] { 3, 3 } }, new object[] { new object[] { 2, 2 }, new object[] { 3, 3 } } });
         }
 
         [Test]
         [Category("DSDefinedClass_Ported")]
-        [Category("Failure")]
         public void T041_1467460_replication_guide_not_in_sequence_03()
         {
             string code =
@@ -1723,13 +1719,11 @@ test = foo(x, y<2>, z<3>); // expect this to be treated as :  foo(x<1>,y<2>,z<3>
 ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            Object[] t1 = new Object[] { new Object[] { 2, 2 }, new Object[] { 3, 3 } };
-            thisTest.Verify("test", new object[] { t1, t1 });
+            thisTest.Verify("test", new object[] { new object[] { new Object[] { 2, 2 }, new Object[] { 2, 2 } }, new object[] { new object[] { 3, 3 }, new object[] { 3, 3 } } });
         }
 
         [Test]
         [Category("DSDefinedClass_Ported")]
-        [Category("Failure")]
         public void T041_1467460_replication_guide_not_in_sequence_04()
         {
             string code =
@@ -1745,7 +1739,7 @@ test = foo(x<1>, y, z<3>); // expect this to be treated as :  foo(x<1>,y<1>,z<2>
 ";
             string errmsg = "MAGN-1707 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test", new object[] { new Object[] { 2, 2 }, new Object[] { 3, 3 } });
+            thisTest.Verify("test", new object[] { new object[] { new Object[] { 2, 3 }, new Object[] { 2, 3 } }, new object[] { new object[] { 2, 3 }, new object[] { 2, 3 } } });
         }
 
         [Test]
@@ -2124,7 +2118,6 @@ test1 = foo(x<4>, y<3>, z<5>) ;
 
         [Test]
         [Category("DSDefinedClass_Ported")]
-        [Category("Failure")]
         public void T0105_FuncCall_Int_NotAllGuides_NotInSeq()
         {
             string code =
@@ -2140,7 +2133,7 @@ test1 = foo(x, y<2>, z<2>) ;
 ";
             string errmsg = "DNL-1467580 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test1", new object[] { new object[] { 6, 8 }, new object[] { 7, 9 } });
+            thisTest.Verify("test1", new object[] { new object[] { 6, 7 }, new object[] { 8, 9 } });
         }
 
         [Test]
@@ -2220,7 +2213,6 @@ test1 = foo(x<2><4>, y<3><1>) ;
         }
 
         [Test]
-        [Category("Failure")]
         public void T0110_FuncCall_Int_MultipleGuides_NotAllInSeq()
         {
             string code =
@@ -2235,11 +2227,10 @@ test1 = foo(x<4><8>, y<7><3>) ;
 ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test1", new object[] { new object[] { new object[] { new object[] { 4, 5 }, new object[] { 6, 7 } }, new object[] { new object[] { 5, 6 }, new object[] { 7, 8 } } }, new object[] { new object[] { new object[] { 6, 7 }, new object[] { 8, 9 } }, new object[] { new object[] { 7, 8 }, new object[] { 9, 10 } } } });
+            thisTest.Verify("test1", new object[] { new object[] { new object[] { new object[] { 4, 5 }, new object[] { 5, 6 } }, new object[] { new object[] { 6, 7 }, new object[] { 7, 8 } } }, new object[] { new object[] { new object[] { 6, 7 }, new object[] { 7, 8 } }, new object[] { new object[] { 8, 9 }, new object[] { 9, 10 } } } });
         }
 
         [Test]
-        [Category("Failure")]
         public void T0111_FuncCall_Int_MultipleGuides_NotAllInSeq()
         {
             string code =
@@ -2254,7 +2245,7 @@ test1 = foo(x<3><5>, y<4><1>) ;
 ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test1", new object[] { new object[] { new object[] { new object[] { 4, 5 }, new object[] { 6, 7 } }, new object[] { new object[] { 5, 6 }, new object[] { 7, 8 } } }, new object[] { new object[] { new object[] { 6, 7 }, new object[] { 8, 9 } }, new object[] { new object[] { 7, 8 }, new object[] { 9, 10 } } } });
+            thisTest.Verify("test1", new object[] { new object[] { new object[] { new object[] { 4, 5 }, new object[] { 5, 6 } }, new object[] { new object[] { 6, 7 }, new object[] { 7, 8 } } }, new object[] { new object[] { new object[] { 6, 7 }, new object[] { 7, 8 } }, new object[] { new object[] { 8, 9 }, new object[] { 9, 10 } } } });
         }
 
         [Test]
@@ -2278,7 +2269,6 @@ test1 = foo(x<1>, y<2><3>) ;
 
         [Test]
         [Category("DSDefinedClass_Ported")]
-        [Category("Failure")]
         public void T0113_FuncCall_Int_SingleAndMultipleGuides_NotInSeq()
         {
             string code =
@@ -2293,7 +2283,7 @@ test1 = foo(x, y<2><3>) ;
 ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test1", new object[] { new object[] { new object[] { 4, 5 }, new object[] { 6, 7 } }, new object[] { new object[] { 5, 6 }, new object[] { 7, 8 } } });
+            thisTest.Verify("test1", new object[] { new object[] { new object[] { 4, 5 }, new object[] { 5, 6 } }, new object[] { new object[] { 6, 7 }, new object[] { 7, 8 } } });
         }
 
         [Test]
@@ -2376,7 +2366,6 @@ test1 = foo(x<1><2>, y<3><4>) ;
 
         [Test]
         [Category("DSDefinedClass_Ported")]
-        [Category("Failure")]
         public void T0118_FuncCall_HeterogenousInput_SingleGuides()
         {
             string code =
@@ -2392,12 +2381,11 @@ test1 = foo(x<1>, y) ;
 ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test1", new object[] { 2.0, 4.0 });
+            thisTest.Verify("test1", new object[] { new object[] { 2.0, 3.0 }, new object[] { 3.0, 4.0 } });
         }
 
         [Test]
         [Category("DSDefinedClass_Ported")]
-        [Category("Failure")]
         public void T0119_FuncCall_HeterogenousInput_SingleGuides()
         {
             string code =
@@ -2414,7 +2402,9 @@ test1 = foo(x<1>, y, z<2>) ;
 ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test1", new object[] { new object[] { 6.0, 7.0 }, new object[] { 8.0, 9.0 } });
+            thisTest.Verify("test1", new object[] {
+                new object[] { new object[] { 6.0, 7.0 }, new object[] { 7.0, 8.0 } } ,
+                new object[] { new object[] { 7.0, 8.0 }, new object[] { 8.0, 9.0 } } } );
         }
 
         [Test]
@@ -2543,33 +2533,27 @@ test7 = func(x, y, z);
         }
 
         [Test]
-        [Category("Failure")]
         public void T0123_Replication_BuiltinMethods()
         {
             string code =
 @" 
-[Associative]
-{
     x = {0,1,2,3};
     y = {0,1};
     z = { ""int"", ""double"" };
     test1 = Contains ( x, y);
     test2 = IndexOf ( x, y) ;
     test3 = Remove ( x, y) ;
-    test4 = Insert ( x, y, y) ; 
     test5 = NormalizeDepth ( x, y) ; 
     test6 = RemoveIfNot ( x, z) ; 
     test7 = SortIndexByValue ( x, y) ; 
     test8 = Map ( {1,2}, {3,4}, {2,3}) ;   
-}     
 ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
             thisTest.VerifyRunScriptSource(code, errmsg);
 
-            thisTest.Verify("test1", new Object[] { true, true });
-            thisTest.Verify("test2", new Object[] { 0, 1 });
+            thisTest.Verify("test1", false);
+            thisTest.Verify("test2", -1);
             thisTest.Verify("test3", new Object[] { new Object[] { 1, 2, 3 }, new Object[] { 0, 2, 3 } });
-            thisTest.Verify("test4", new Object[] { new Object[] { 0, 0, 1, 2, 3 }, new Object[] { 0, 1, 1, 2, 3 } });
             thisTest.Verify("test5", new Object[] { null, new Object[] { 0, 1, 2, 3 } });
             thisTest.Verify("test6", new Object[] { new Object[] { 0, 1, 2, 3 }, new Object[] { } });
             thisTest.Verify("test7", new Object[] { new Object[] { 3, 2, 1, 0 }, new Object[] { 0, 1, 2, 3 } });
@@ -2698,159 +2682,6 @@ test8;
             thisTest.Verify("test6", new Object[] { new Object[] { new Object[] { 0, 1 }, new Object[] { } }, new Object[] { new Object[] { 2, 3 }, new Object[] { } } });
             thisTest.Verify("test7", new Object[] { new Object[] { new Object[] { 1, 0 }, new Object[] { 0, 1 } }, new Object[] { new Object[] { 1, 0 }, new Object[] { 0, 1 } } });
             thisTest.Verify("test8", new Object[] { new Object[] { 0.25, 0.4 }, new Object[] { 0.0, 0.25 } });
-        }
-
-        [Test]
-        [Category("ModifierBlock")] 
-        [Ignore][Category("DSDefinedClass_Ignored_ModifierBlock")]
-        [Category("Failure")]
-        public void T0127_ReplicationGudes_ModifierBlock()
-        {
-            string code =
-@" 
-class A
-{
-    a;
-    constructor A (a1)
-    {
-        a = a1;
-    }
-    def foo ( a1 , b1 )
-    {
-        return = a1 + b1;
-    }
-    static def foo2 ( a1, b1 )
-    {
-        return = a1 + b1;
-    }
-}
-def foo ( x, y )
-{
-   return = x + y;
-}
-[Associative]
-{
-    x = {0,1};
-    y = {2,3};
-    
-    test1 = { foo ( x<1>, y<2>);
-            }
-              
-    test2 = { A.A(0) => a1;
-              a1.foo(x<1>, y<2>);
-            } 
-              
-    test3 = { a1.foo(x<1>,y<1>);
-            } 
-            
-    test4 = { A.foo2(x,y<2>) ;
-            }
-              
-    test5 = { A.A({0,1})=>a2;	          
-              a2<1>.foo(y<2>); 
-            }
-              
-    //test6 = { A.A({0,1})=>a2;	          
-              //a2<1>.foo(y)<2>;
-            //}
-              
-    test7 = { 1 == 1 ? foo ( x<1>, y<2>) : 0;	           
-            }
-    
-}  
-";
-            string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
-            thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test1", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
-            thisTest.Verify("test2", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
-            thisTest.Verify("test3", new Object[] { 2, 4 });
-            thisTest.Verify("test4", new Object[] { new Object[] { 2, 4 }, new Object[] { 3, 5 } });
-            thisTest.Verify("test5", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
-            //thisTest.Verify("test6", new Object[] { new Object[] { new Object[] { 0, 1 }, new Object[] { } }, new Object[] { new Object[] { 2, 3 }, new Object[] { } } });
-            thisTest.Verify("test7", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_ReplicationGuidesWithinDSDefinedClass")]
-        [Category("Failure")]
-        public void T0128_ReplicationGudes_InlineCondition()
-        {
-            string code =
-@" 
-import(""DSCoreNodes.dll"");
-def foo1(x,y)
-{
-    return = x + y;
-}
-def foo2()
-{
-    return = {1, 2};
-}
-def foo3()
-{
-    return = {3, 4};
-}
-b = Count(foo1(foo2()<1>,foo3()<2>));
-a = Count(foo1(foo2()<1>,foo3()<2>)) == 2 ? foo1((5..6)<1>, (7..8)<2>) : foo1(foo2()<1>,foo3()<2>);
-c1 = 5..6;
-c2 = Math.Min ({0,1},{0,1} );
-c3 = foo1 ( c1<1>, c2<2>); // {{5,6},{6,7}}
-c4 = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;
-class A
-{
-    a : int;
-    constructor A()
-    {
-        a = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;
-    }
-    def func ()
-    {
-        return = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;
-    }
-}
-def func ( ) 
-{
-    return = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;
-}
-t1 = 
-[Imperative]
-{
-    return = [Associative]
-    {
-        return = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;
-    }
-}
-t2 = 
-[Imperative]
-{
-    return = [Associative]
-    {
-        return = [Imperative]
-        {
-            return = [Associative]
-            {
-                return = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;
-            }
-        }
-    }
-}	
-t3 = func();
-t = A.A();
-t4 = t.a;
-t5 = t.func();	
-";
-            string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
-            thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("a", new Object[] { new Object[] { 12, 13 }, new Object[] { 13, 14 } });
-            thisTest.Verify("b", 2);
-            thisTest.Verify("c3", new Object[] { new Object[] { 5, 6 }, new Object[] { 6, 7 } });
-            thisTest.Verify("c4", new Object[] { new Object[] { 5, 6 }, new Object[] { 6, 7 } });
-            thisTest.Verify("t1", new Object[] { new Object[] { 5, 6 }, new Object[] { 6, 7 } });
-            thisTest.Verify("t2", new Object[] { new Object[] { 5, 6 }, new Object[] { 6, 7 } });
-            thisTest.Verify("t3", new Object[] { new Object[] { 5, 6 }, new Object[] { 6, 7 } });
-            thisTest.Verify("t4", new Object[] { new Object[] { 5, 6 }, new Object[] { 6, 7 } });
-            thisTest.Verify("t5", new Object[] { new Object[] { 5, 6 }, new Object[] { 6, 7 } });
-
         }
 
         [Test]
