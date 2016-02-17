@@ -3727,5 +3727,33 @@ rs = foo(x<2><4>, y<3><1>);";
                 }
             });
         }
+
+        [Test]
+        [Category("Replication")]
+        public void RegressMAGN1556_01()
+        {
+            string code = @"
+import (""FFITarget.dll"");
+zero = 0;
+            Var2 = { 0, 1 };
+            Var10 = DummyPoint.ByCoordinates(Var2 < 1 >, Var2 < 2 >, zero < 1 >); // if 'zero' does not have any replications guide, then am getting the expected value
+            rs = Var10.Z;";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("rs", new object[] { new object[] { 0.0, 0.0 } } );
+        }
+
+        [Test]
+        [Category("Replication")]
+        public void RegressMAGN1556_02()
+        {
+            string code = @"
+import (""FFITarget.dll"");
+zero = 0;
+            Var2 = { 0, 1 };
+            Var10 = DummyPoint.ByCoordinates(Var2 < 1L >, Var2 < 2 >, zero < 1 >); // if 'zero' does not have any replications guide, then am getting the expected value
+            rs = Var10.Z;";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("rs", new object[] { new object[] { 0.0, 0.0 }, new object[] { 0.0, 0.0 } }) ;
+        }
     }
 }
