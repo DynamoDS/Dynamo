@@ -435,7 +435,6 @@ test = foo( x<1>,y<2>,z<1> );
 
         [Test] // post R1
         [Category("Replication")]
-        [Category("Failure")]
         public void T0002_Replication_Guide_Function_With_3_Arg_3()
         {
             String code =
@@ -556,7 +555,6 @@ test = TestObjectC.TestObjectC(x<1>,y<2>).z;
         [Test] //post R1
         [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
-        [Category("Failure")]
         public void T0003_Replication_Guide_Class_Constructor_With_2_Arg_4()
         {
             String code =
@@ -569,7 +567,7 @@ test = TestObjectC.TestObjectC(x<1>,y<2>).z;
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "DNL-1467459 NotImplemented Exception occurs when replication guides are used on a combination of collection and singleton";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test", new Object[] { 2, 3 });
+            thisTest.Verify("test", new Object[] { new object[] { 2 }, new object[] { 3 } });
         }
 
         [Test]
@@ -616,7 +614,6 @@ test = TestObjectD.TestObjectD(x<1>,y<2>,z<1>).t;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
-        [Category("Failure")]
         public void T0004_Replication_Guide_Class_Constructor_With_3_Arg_3()
         {
             String code =
@@ -630,7 +627,7 @@ test = TestObjectD.TestObjectD(x<1>,y<2>,z).t;
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "DNL-1467580 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            Object[] x1 = new Object[] { new Object[] { 6, 7 }, new Object[] { 8, 9 } };
+            Object[] x1 = new Object[] { new object[] { new Object[] { 6, 7 }, new Object[] { 7, 8 } }, new object[] { new object[] { 7, 8 }, new object[] { 8, 9 } } };
             //Vericiation : clarify with new spec
             thisTest.Verify("test", x1);
         }
@@ -681,7 +678,7 @@ p = DummyPoint2D.ByCoordinates((1..2..1)<1>, (3..4..1)<2> );
 test = ByPoints(p).X;
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "";//1467383 - Validation Required -  [USER MANUAL] Select Trim Method Failure - Requested Coercion not implemented ";
+            String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { new Object[] { 1.0, 1.0 }, new Object[] { 2.0, 2.0 } });
         }
@@ -1957,8 +1954,8 @@ test2 = foo(x<1>, y<3>, z<3>) ; // expect this to be treated as :  foo(x<1>,y<2>
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
-        [Category("Failure")]
+        [Category("DSDefinedClass_Ported")]
+        [Category("Replication")]
         public void T042_1467555_cartesion_product_in_dot_operation_1()
         {
             string code =
@@ -1973,8 +1970,8 @@ test2 = aa.gety(x<1>, y<3>, z<3>) ; // expect this to be treated as :  foo(x<1>,
 ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test1", new object[] { new Object[] { 2, 2, }, new Object[] { 3, 3 } });
-            thisTest.Verify("test2", new object[] { new Object[] { 2, 3, }, new Object[] { 2, 3 } });
+            thisTest.Verify("test1", new object[] { new object[] { new Object[] { 2, 2, }, new Object[] { 2, 2 } }, new object[] { new Object[] { 3, 3, }, new Object[] { 3, 3 } } });
+            thisTest.Verify("test2", new object[] { new object[] { new Object[] { 2, 2, }, new Object[] { 3, 3 } }, new object[] { new Object[] { 2, 2, }, new Object[] { 3, 3 } } });
         }
 
         [Test]
@@ -2158,7 +2155,7 @@ test1 = foo(x<1><3>, y<4><5>) ;
         }
 
         [Test]
-        [Category("Failure")]
+        [Category("Replication")]
         public void T0109_FuncCall_Int_MultipleGuides_NotAllInSeq()
         {
             string code =
@@ -2173,7 +2170,7 @@ test1 = foo(x<2><4>, y<3><1>) ;
 ";
             string errmsg = "MAGN-1708 NotImplemented Exception when multiple non-sequential replication guides are used on multidimensional arrays";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test1", new object[] { new object[] { new object[] { new object[] { 4, 5 }, new object[] { 6, 7 } }, new object[] { new object[] { 5, 6 }, new object[] { 7, 8 } } }, new object[] { new object[] { new object[] { 6, 7 }, new object[] { 8, 9 } }, new object[] { new object[] { 7, 8 }, new object[] { 9, 10 } } } });
+            thisTest.Verify("test1", new object[] { new object[] { new object[] { new object[] { 4, 5 }, new object[] { 5, 6 } }, new object[] { new object[] { 6, 7 }, new object[] { 7, 8 } } }, new object[] { new object[] { new object[] { 6, 7 }, new object[] { 7, 8 } }, new object[] { new object[] { 8, 9 }, new object[] { 9, 10 } } } });
         }
 
         [Test]
@@ -2394,29 +2391,17 @@ test1 = foo(x<1>, y<2>, z<3>) ;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redunadant")]
+        [Category("Replication")]
+        [Category("DSDefinedClass_Ported")]
         public void T0121_InstanceCall_Int_SingleGuides()
         {
             string code =
 @" 
-class A
-{
-    x : int;
-    y : int;
-    z : int;
-    a : int;
-    constructor A ( x2, y2, z2)
-    {
-        y = y2;
-        x = x2;
-        z = z2;
-        a = x + y + z;
-    }
-}
+import (""FFITarget.dll"");
 x = { 1, 2 };
 y = { 3, 4 };
 z = { 5, 6 };
-test1 = A.A(x<1>, y<2>, z<3>).a ;            
+test1 = ReplicationTestA.ReplicationTestA(x<1>, y<2>, z<3>).A ;            
 ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
