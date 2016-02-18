@@ -74,8 +74,8 @@ limitations under the License.
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\CSharpAnalytics\CSharpAnalytics.WinForms.dll</HintPath>
     </Reference>
-    <Reference Include="Greg, Version=1.0.5892.24316, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Greg.1.0.5892.24316\lib\net45\Greg.dll</HintPath>
+    <Reference Include="Greg, Version=1.0.5892.25330, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Greg.1.0.5892.25330\lib\net45\Greg.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
