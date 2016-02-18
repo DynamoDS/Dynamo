@@ -3408,5 +3408,19 @@ zero = 0;
             thisTest.RunScriptSource(code);
             thisTest.Verify("rs", new object[] { new object[] { 0.0, 0.0 }, new object[] { 0.0, 0.0 } }) ;
         }
+
+        [Test]
+        [Category("Replication")]
+        public void RegressMAGN1705()
+        {
+            string code = @"
+val = { 0.5 , 0.5 };
+def foo( x : var, y : var ) { return = (x+y)/2.0 ; }
+answer=foo({ val }[0]<1> , { val }[0]<2>)[0]; // expected : { 0.5, 0.5 }
+";
+
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("answer", new object[] { 0.5, 0.5 });
+        }
     }
 }
