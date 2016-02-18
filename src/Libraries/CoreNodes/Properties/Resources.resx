@@ -177,6 +177,9 @@
   <data name="StringToNumberInvalidNumberMessage" xml:space="preserve">
     <value>Not a valid number.</value>
   </data>
+  <data name="WebRequestNullUrlMessage" xml:space="preserve">
+    <value>The url cannot be null.</value>
+  </data>
   <data name="WriteImageObsolete" xml:space="preserve">
     <value>Use Image.WriteToFile node instead</value>
   </data>

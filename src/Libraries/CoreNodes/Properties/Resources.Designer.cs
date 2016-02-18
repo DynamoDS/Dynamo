@@ -241,6 +241,15 @@ namespace DSCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The url cannot be null..
+        /// </summary>
+        internal static string WebRequestNullUrlMessage {
+            get {
+                return ResourceManager.GetString("WebRequestNullUrlMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use Image.WriteToFile node instead.
         /// </summary>
         internal static string WriteImageObsolete {
