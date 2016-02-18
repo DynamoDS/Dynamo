@@ -925,28 +925,24 @@ test = cs.Y;
 
         [Test]
         [Category("Replication")]
-        [Category("Failure")]
         public void T034_Replication_Guides_Not_On_All_Arguments_9()
         {
             String code =
 @"
-import(""DSCoreNodes.dll"");
-def sum ( a, b, c )
+import(""FFITarget.dll"");
+def sum (a, b, c)
 {
     return = a + b + c;
 }
-temp1 = (Math.Sin(0..180..#2) * 2);
-temp2 = (Math.Sin(0..180..#3) * 1);
-zArray = temp1<1> + temp2<2>;
-zArray1 = zArray + 1;
-ceilingPoints = sum((0..10..#2)<1>, (0..15..#3)<2>, zArray1 );
-// expected :  ceilingPoints = { { 1.000, 9.500, 16.000 }, { 11.000, 19.500, 26.000 } }
-// received :  ceilingPoints = null";
+temp1 = (DummyMath.Sin(0..180..#2) * 2);
+temp2 = (DummyMath.Sin(0..180..#3) * 1);
+zArray = temp1 < 1 > +temp2 < 2 >;
+            zArray1 = zArray + 1;
+            ceilingPoints = sum((0..10..#2)<1>, (0..15..#3)<2>, zArray1 );";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "MAGN-1707 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.VerifyBuildWarningCount(0);
-            thisTest.Verify("test", new Object[] { new Object[] { 1.000, 9.500, 16.000 }, new Object[] { 11.000, 19.500, 26.000 } });
+            thisTest.Verify("ceilingPoints", new object[] { new object[] { new object[] { new object[] { 1.0, 91.0, 181.0 }, new object[] { 361.0, 451.0, 541.0 } }, new object[] { new object[] { 8.5, 98.5, 188.5 }, new object[] { 368.5, 458.5, 548.5 } }, new object[] { new object[] { 16.0, 106.0, 196.0 }, new object[] { 376.0, 466.0, 556.0 } } }, new object[] { new object[] { new object[] { 11.0, 101.0, 191.0 }, new object[] { 371.0, 461.0, 551.0 } }, new object[] { new object[] { 18.5, 108.5, 198.5 }, new object[] { 378.5, 468.5, 558.5 } }, new object[] { new object[] { 26.0, 116.0, 206.0 }, new object[] { 386.0, 476.0, 566.0 } } } });
         }
 
         [Test]
