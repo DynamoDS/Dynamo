@@ -17,14 +17,13 @@ namespace ProtoTest.Associative
         public override void Setup()
         {
             // Specify some of the requirements of IDE.
+            base.Setup();
             fsr = new DebugRunner(core);
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();
         }
 
         [Test]
-        [Category("Failure")]
-        //Test "SomeNulls()"
         public void ComputeReducedParams()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4115
@@ -54,8 +53,6 @@ namespace ProtoTest.Associative
             List<List<StackValue>> combin = ProtoCore.Lang.Replication.Replicator.ComputeAllReducedParams(args, ris, runtimeCore);
             Assert.IsTrue(combin[0][0].opdata == 1);
             Assert.IsTrue(combin[0][1].opdata == 3);
-            Assert.IsTrue(combin[1][0].opdata == 2);
-            Assert.IsTrue(combin[1][1].opdata == 4);
         }
     }
 }

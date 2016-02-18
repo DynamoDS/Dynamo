@@ -9,7 +9,7 @@ class _FunctionObject
 }
 
 [InternalClass]
-class _SingleFunctionObject extends _FunctionObject
+class Function extends _FunctionObject
 {
     __functionPointers : function;
     __argumtNumber : int;
@@ -17,7 +17,7 @@ class _SingleFunctionObject extends _FunctionObject
     __hasParamAt : bool[];
     __unpackParams: bool;
     
-    constructor _SingleFunctionObject(fptr : function, 
+    constructor Function(fptr : function, 
                                       argNumber: int, 
                                       paramPositions : int[], 
                                       params : var[]..[],
@@ -87,7 +87,7 @@ class _SingleFunctionObject extends _FunctionObject
                         }
                     }
                 
-                    return = _SingleFunctionObject._SingleFunctionObject(
+                    return = Function.Function(
                                                 __functionPointers,
                                                 __argumtNumber,
                                                 _paramPositions,
@@ -167,7 +167,7 @@ def __ComposeBuffered(funcs: _FunctionObject[], amt: int, arg: var[]..[])
             i = Count(funcs)-1;
             first = funcs[i];
             funcs[i] = __Apply(first, arg);
-            return = _SingleFunctionObject(__ComposeBuffered, 3, { 0, 1 }, { funcs, amt-1, null }, true);
+            return = Function(__ComposeBuffered, 3, { 0, 1 }, { funcs, amt-1, null }, true);
         }
     };
 }

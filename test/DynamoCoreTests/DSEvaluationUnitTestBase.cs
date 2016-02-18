@@ -181,7 +181,7 @@ namespace Dynamo.Tests
                     Assert.Fail(e.Message);
                 }
             }
-            else if (data.IsPointer && data.Class.ClassName == "_SingleFunctionObject")
+            else if (data.IsPointer && data.Class.ClassName == "Function")
             {
                 Assert.AreEqual(data.Class.ClassName, value);
             }

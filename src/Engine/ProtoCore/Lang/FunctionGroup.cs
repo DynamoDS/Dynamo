@@ -1,4 +1,4 @@
-using System;
+using System.Linq;
 using System.Collections.Generic;
 using ProtoCore.DSASM;
 using ProtoCore.Lang.Replication;
@@ -118,10 +118,7 @@ namespace ProtoCore
             List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, StackFrame stackFrame, RuntimeCore runtimeCore)
         {
             List<FunctionEndPoint> ret = new List<FunctionEndPoint>();
-
-
             List<List<StackValue>> allReducedParamSVs = Replicator.ComputeAllReducedParams(formalParams, replicationInstructions, runtimeCore);
-
             
             //@TODO(Luke): Need to add type statistics checks to the below if it is an array to stop int[] matching char[]
             
@@ -133,9 +130,6 @@ namespace ProtoCore
             foreach (FunctionEndPoint fep in FunctionEndPoints)
             {
                 var proc = fep.procedureNode;
-
-
-
 
                 // Member functions are overloaded with thisptr as the first
                 // parameter, so if member function replicates on the left hand
@@ -163,7 +157,6 @@ namespace ProtoCore
 
                 if (typesOK)
                     ret.Add(fep);
-
             }
 
             return ret;
