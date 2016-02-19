@@ -74,7 +74,7 @@ namespace ProtoCore
         /// <param name="unresolvable">The number of argument sets that couldn't be resolved</param>
         /// <returns></returns>
         public Dictionary<FunctionEndPoint, int> GetExactMatchStatistics(
-            ProtoCore.Runtime.Context context,
+            Runtime.Context context,
             List<List<StackValue>> reducedFormalParams, StackFrame stackFrame, RuntimeCore runtimeCore, out int unresolvable)
         {
             List<ReplicationInstruction> replicationInstructions = new List<ReplicationInstruction>(); //We've already done the reduction before calling this
@@ -89,7 +89,6 @@ namespace ProtoCore
                                                                   runtimeCore);
                 if (feps.Count == 0)
                 {
-                    
                     //We have an arugment set that couldn't be resolved
                     unresolvable++;
                 }
@@ -101,12 +100,9 @@ namespace ProtoCore
                     else
                         ret.Add(fep, 1);
                 }
-                
+             }
 
-
-            }
-
-            return ret;
+             return ret;
         }
 
 
@@ -170,9 +166,9 @@ namespace ProtoCore
         /// <param name="formalParams"></param>
         /// <param name="replicationInstructions"></param>
         /// <returns></returns>
-        public Dictionary<FunctionEndPoint, int> GetConversionDistances(ProtoCore.Runtime.Context context,
+        public Dictionary<FunctionEndPoint, int> GetConversionDistances(Runtime.Context context,
             List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, 
-            ProtoCore.DSASM.ClassTable classTable, RuntimeCore runtimeCore, bool allowArrayPromotion = false)
+            ClassTable classTable, RuntimeCore runtimeCore, bool allowArrayPromotion = false)
         {
             Dictionary<FunctionEndPoint, int> ret = new Dictionary<FunctionEndPoint, int>();
 
