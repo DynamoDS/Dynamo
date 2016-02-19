@@ -61,6 +61,7 @@
     <Compile Include="GlobalClass.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ReplicationTest.cs" />
     <Compile Include="TestCSharpAttribute.cs" />
     <Compile Include="DisposeTracer.cs" />
     <Compile Include="DummyCollection.cs" />
