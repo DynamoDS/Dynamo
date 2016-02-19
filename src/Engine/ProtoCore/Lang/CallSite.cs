@@ -1411,85 +1411,43 @@ namespace ProtoCore
         }
 
 
-        private StackValue Execute(List<FunctionEndPoint> functionEndPoint, Context c,
-                                   List<StackValue> formalParameters,
-                                   List<ReplicationInstruction> replicationInstructions, StackFrame stackFrame,
-                                   RuntimeCore runtimeCore, FunctionGroup funcGroup)
+        private StackValue Execute(
+            List<FunctionEndPoint> functionEndPoint, 
+            Context c, 
+            List<StackValue> formalParameters, 
+            List<ReplicationInstruction> replicationInstructions, 
+            StackFrame stackFrame, 
+            RuntimeCore runtimeCore, 
+            FunctionGroup funcGroup)
         {
+            SingleRunTraceData singleRunTraceData = (invokeCount < traceData.Count) ? traceData[invokeCount] : new SingleRunTraceData();
+            SingleRunTraceData newTraceData = new SingleRunTraceData();
             StackValue ret;
 
             if (replicationInstructions.Count == 0)
             {
                 c.IsReplicating = false;
-
-
-                SingleRunTraceData singleRunTraceData;
-                //READ TRACE FOR NON-REPLICATED CALL
-                //Lookup the trace data in the cache
-                if (invokeCount < traceData.Count)
-                {
-                    singleRunTraceData = traceData[invokeCount];
-                }
-                else
-                {
-                    //We don't have any previous stored data for the previous invoke calls, so 
-                    //gen an empty packet and push it through
-                    singleRunTraceData = new SingleRunTraceData();
-                }
-
-                SingleRunTraceData newTraceData = new SingleRunTraceData();
-
                 ret = ExecWithZeroRI(functionEndPoint, c, formalParameters, stackFrame, runtimeCore, funcGroup,
                     singleRunTraceData, newTraceData);
-
-
-                //newTraceData is update with the trace cache assocaite with the single shot executions
-                
-                if (invokeCount < traceData.Count)
-                    traceData[invokeCount] = newTraceData;
-                else
-                {
-                    traceData.Add(newTraceData);
-                }
-                
             }
             else //replicated call
             {
-                //Extract the correct run data from the trace cache here
-                //This is the thing that will get unpacked from the datastore
-                SingleRunTraceData singleRunTraceData;
-                SingleRunTraceData newTraceData = new SingleRunTraceData();
-
-                //Lookup the trace data in the cache
-                if (invokeCount < traceData.Count)
-                {
-                    singleRunTraceData = traceData[invokeCount];
-                }
-                else
-                {
-                    //We don't have any previous stored data for the previous invoke calls, so 
-                    //gen an empty packet and push it through
-                    singleRunTraceData = new SingleRunTraceData();
-                }
-
                 c.IsReplicating = true;
                 ret = ExecWithRISlowPath(functionEndPoint, c, formalParameters, replicationInstructions, stackFrame,
                                          runtimeCore, funcGroup, singleRunTraceData, newTraceData);
+            }
 
-                //Do a trace save here
-                if (invokeCount < traceData.Count)
-                    traceData[invokeCount] = newTraceData;
-                else
-                {
-                    traceData.Add(newTraceData);
-                }
+            //Do a trace save here
+            if (invokeCount < traceData.Count)
+            {
+                traceData[invokeCount] = newTraceData;
+            }
+            else
+            {
+                traceData.Add(newTraceData);
             }
 
             invokeCount++; //We've completed this invocation
-
-            if (ret.IsNull)
-                return ret; //It didn't return a value
-
             return ret;
         }
 
@@ -1503,19 +1461,25 @@ namespace ProtoCore
         /// <param name="stackFrame"></param>
         /// <param name="core"></param>
         /// <returns></returns>
-        private StackValue ExecWithRISlowPath(List<FunctionEndPoint> functionEndPoint, Context c,
-                                              List<StackValue> formalParameters,
-                                              List<ReplicationInstruction> replicationInstructions,
-                                              StackFrame stackFrame, RuntimeCore runtimeCore, FunctionGroup funcGroup, 
-            SingleRunTraceData previousTraceData, SingleRunTraceData newTraceData)
+        private StackValue ExecWithRISlowPath(
+            List<FunctionEndPoint> functionEndPoint, 
+            Context c, 
+            List<StackValue> formalParameters, 
+            List<ReplicationInstruction> replicationInstructions, 
+            StackFrame stackFrame, 
+            RuntimeCore runtimeCore, 
+            FunctionGroup funcGroup, 
+            SingleRunTraceData previousTraceData, 
+            SingleRunTraceData newTraceData)
         {
             if (runtimeCore.Options.ExecutionMode == ExecutionMode.Parallel)
                 throw new NotImplementedException("Parallel mode disabled: {BF417AD5-9EA9-4292-ABBC-3526FC5A149E}");
 
-
             //Recursion base case
             if (replicationInstructions.Count == 0)
+            {
                 return ExecWithZeroRI(functionEndPoint, c, formalParameters, stackFrame, runtimeCore, funcGroup, previousTraceData, newTraceData);
+            }
 
             //Get the replication instruction that this call will deal with
             ReplicationInstruction ri = replicationInstructions[0];
@@ -1593,7 +1557,6 @@ namespace ProtoCore
                 for (int i = 0; i < retSize; i++)
                     retTrace.NestedData.Add(new SingleRunTraceData());
 
-
                 for (int i = 0; i < retSize; i++)
                 {
                     SingleRunTraceData lastExecTrace = new SingleRunTraceData();
@@ -1609,7 +1572,6 @@ namespace ProtoCore
                         //So just pass in an empty block
                         lastExecTrace = new SingleRunTraceData();
                     }
-
 
                     //Build the call
                     List<StackValue> newFormalParams = new List<StackValue>();
@@ -1739,14 +1701,12 @@ namespace ProtoCore
                         lastExecTrace.Data = previousTraceData.GetLeftMostData();
 
                     }
-
                     else
                     {
                         //We're off the edge of the previous trace window
                         //So just pass in an empty block
                         lastExecTrace = new SingleRunTraceData();
                     }
-
 
                     //previousTraceData = lastExecTrace;
                     SingleRunTraceData cleanRetTrace = new SingleRunTraceData();
