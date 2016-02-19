@@ -807,7 +807,9 @@ namespace Dynamo.Views
             // If in-canvas search box is open already, close it
             // to avoid opening multiple instances.
             if (InCanvasSearchBar.IsOpen)
+            {
                 InCanvasSearchBar.IsOpen = false;
+            }
             ViewModel.InCanvasSearchViewModel.SearchText = string.Empty;
 
             var ctrl = outerCanvas.ContextMenu.ChildOfType<InCanvasSearchControl>();
