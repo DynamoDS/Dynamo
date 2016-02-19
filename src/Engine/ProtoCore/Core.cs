@@ -39,7 +39,7 @@ namespace ProtoCore
         public bool isLongest {get; private set;}
     }
 
-    public struct AtLevel
+    public class AtLevel
     {
         public AtLevel(int level, bool isDominant)
         {
