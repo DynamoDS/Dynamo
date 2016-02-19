@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProtoCore.Lang.Replication
 {
-    public struct ElementAtLevel 
+    public class ElementAtLevel 
     {
         public List<int> Indices { get; private set; }
         public StackValue Element { get; private set; }
@@ -25,7 +25,7 @@ namespace ProtoCore.Lang.Replication
         }
     }
 
-    public struct ArgumentAtLevel
+    public class ArgumentAtLevel
     {
         public List<List<int>> Indices { get; private set; }
         public StackValue Argument { get; private set; }
