@@ -473,7 +473,7 @@ namespace CoreNodeModels.HigherOrder
         public override IEnumerable<AssociativeNode> BuildOutputAst(
             List<AssociativeNode> inputAstNodes)
         {
-            var packedId = "__temp" + GUID.ToString().Replace("-", "");
+            var packedId = "__temp" + AstIdentifierGuid;
             return new[]
             {
                 AstFactory.BuildAssignment(

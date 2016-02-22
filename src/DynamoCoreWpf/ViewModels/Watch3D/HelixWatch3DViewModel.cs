@@ -605,7 +605,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     break;
 
                 case "IsVisible":
-                    var geoms = FindAllGeometryModel3DsForNode(node.AstIdentifierBase);
+                    var geoms = FindAllGeometryModel3DsForNode(node);
                     foreach(var g in geoms)
                     {
                         g.Value.Visibility = node.IsVisible ? Visibility.Visible : Visibility.Hidden;
@@ -684,14 +684,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public override void DeleteGeometryForNode(NodeModel node, bool requestUpdate = true)
         {
-            var guid = node.GUID.ToString().Replace("-", "");
-
             KeyValuePair<string, Model3D>[] geometryModels;
             lock (Model3DDictionaryMutex)
             {
                 geometryModels =
                     Model3DDictionary
-                        .Where(x => x.Key.Contains(guid))
+                        .Where(x => x.Key.Contains(node.AstIdentifierGuid))
                         .Where(x => x.Value is GeometryModel3D)
                         .Select(x => x).ToArray();
 
@@ -842,6 +840,22 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             OnRequestViewRefresh();
         }
    
+        private KeyValuePair<string, Model3D>[] FindAllGeometryModel3DsForNode(NodeModel node)
+        {
+            KeyValuePair<string, Model3D>[] geometryModels;
+
+            lock (Model3DDictionaryMutex)
+            {
+                geometryModels =
+                    Model3DDictionary
+                        .Where(x => x.Key.Contains(node.AstIdentifierGuid))
+                        .Where(x => x.Value is GeometryModel3D)
+                        .Select(x => x).ToArray();
+            }
+
+            return geometryModels;
+        }
+
         private KeyValuePair<string, Model3D>[] FindAllGeometryModel3DsForNode(string identifier)
         {
             KeyValuePair<string, Model3D>[] geometryModels;
@@ -862,7 +876,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             foreach (var node in gathered)
             {
-                var geometryModels = FindAllGeometryModel3DsForNode(node.AstIdentifierBase);
+                var geometryModels = FindAllGeometryModel3DsForNode(node);
 
                 if (!geometryModels.Any())
                 {
@@ -888,7 +902,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     continue;
                 }
 
-                var geometryModels = FindAllGeometryModel3DsForNode(node.AstIdentifierBase);
+                var geometryModels = FindAllGeometryModel3DsForNode(node);
 
                 if (!geometryModels.Any())
                 {
@@ -1508,7 +1522,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             foreach (var node in nodes)
             {
-                var geometries = FindAllGeometryModel3DsForNode(node.AstIdentifierBase);
+                var geometries = FindAllGeometryModel3DsForNode(node);
                 foreach (var geometry in geometries)
                 {
                     var pointGeom = geometry.Value as PointGeometryModel3D;

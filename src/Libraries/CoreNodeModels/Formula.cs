@@ -193,7 +193,7 @@ namespace CoreNodeModels
 
             var functionDef = new FunctionDefinitionNode
             {
-                Name = "__formula_" + GUID.ToString().Replace("-", string.Empty),
+                Name = "__formula_" + AstIdentifierGuid, 
                 Signature =
                     new ArgumentSignatureNode
                     {
