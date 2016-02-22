@@ -684,27 +684,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public override void DeleteGeometryForNode(NodeModel node, bool requestUpdate = true)
         {
-            KeyValuePair<string, Model3D>[] geometryModels;
-            lock (Model3DDictionaryMutex)
-            {
-                geometryModels =
-                    Model3DDictionary
-                        .Where(x => x.Key.Contains(node.AstIdentifierGuid))
-                        .Where(x => x.Value is GeometryModel3D)
-                        .Select(x => x).ToArray();
-
-            }
-            
+            var geometryModels = FindAllGeometryModel3DsForNode(node);
             DeleteGeometries(geometryModels, requestUpdate);
         }
 
         public override void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
         {
-            KeyValuePair<string, Model3D>[] geometryModels;
-            lock (Model3DDictionaryMutex)
-            {
-                geometryModels = FindAllGeometryModel3DsForNode(identifier);
-            }
+            var geometryModels = FindAllGeometryModel3DsForNode(identifier);
             DeleteGeometries(geometryModels, requestUpdate); 
         }
 
