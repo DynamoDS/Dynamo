@@ -452,6 +452,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             return null;
         }
 
+        public virtual void RemoveGeometryForNode(NodeModel node)
+        {
+            // Override in inherited classes.
+        }
+
         public virtual void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages, bool forceAsyncCall = false)
         {
             // Override in inherited classes.
@@ -466,9 +471,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        public virtual void DeleteGeometryForNode(NodeModel cbn, bool requestUpdate = true)
+        public virtual void DeleteGeometryForNode(NodeModel node, bool requestUpdate = true)
         {
-
+            // Override in derived classes.
         }
 
         public virtual void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
@@ -534,6 +539,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected virtual void OnRenderPackagesUpdated(NodeModel node, IEnumerable<IRenderPackage> packages)
         {
+            RemoveGeometryForNode(node);
             AddGeometryForRenderPackages(packages);
         }
 

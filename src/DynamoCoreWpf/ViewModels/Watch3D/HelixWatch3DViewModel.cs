@@ -171,6 +171,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        public event Action<NodeModel, bool> RequestRemoveModels;
+        public void OnRequestRemoveModels(NodeModel node, bool forceAsyncCall = false)
+        {
+            if (RequestRemoveModels != null)
+            {
+                RequestRemoveModels(node, forceAsyncCall);
+            }
+        }
+
         /// <summary>
         /// An event requesting a zoom to fit operation around the provided bounds.
         /// </summary>
@@ -470,6 +479,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
 
             return new CameraData();
+        }
+
+        public override void RemoveGeometryForNode(NodeModel node)
+        {
+            if (Active == false)
+            {
+                return;
+            }
+
+            OnRequestRemoveModels(node);
         }
 
         public override void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages, bool forceAsyncCall = false)
