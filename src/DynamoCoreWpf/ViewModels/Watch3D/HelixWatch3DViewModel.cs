@@ -652,12 +652,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             OnSceneItemsChanged();
         }
 
-        public override void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
+        private void DeleteGeometries(KeyValuePair<string, Model3D>[] geometryModels, bool requestUpdate)
         {
             lock (Model3DDictionaryMutex)
             {
-                var geometryModels = FindAllGeometryModel3DsForNode(identifier);
-
                 if (!geometryModels.Any())
                 {
                     return;
@@ -681,8 +679,35 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
 
             if (!requestUpdate) return;
-
             OnSceneItemsChanged();
+        }
+
+        public override void DeleteGeometryForNode(NodeModel node, bool requestUpdate = true)
+        {
+            var guid = node.GUID.ToString().Replace("-", "");
+
+            KeyValuePair<string, Model3D>[] geometryModels;
+            lock (Model3DDictionaryMutex)
+            {
+                geometryModels =
+                    Model3DDictionary
+                        .Where(x => x.Key.Contains(guid))
+                        .Where(x => x.Value is GeometryModel3D)
+                        .Select(x => x).ToArray();
+
+            }
+            
+            DeleteGeometries(geometryModels, requestUpdate);
+        }
+
+        public override void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
+        {
+            KeyValuePair<string, Model3D>[] geometryModels;
+            lock (Model3DDictionaryMutex)
+            {
+                geometryModels = FindAllGeometryModel3DsForNode(identifier);
+            }
+            DeleteGeometries(geometryModels, requestUpdate); 
         }
 
         protected override void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e)

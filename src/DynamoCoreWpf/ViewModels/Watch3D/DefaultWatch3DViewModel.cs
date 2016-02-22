@@ -443,7 +443,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private void OnNodeRemovedFromWorkspace(NodeModel node)
         {
             UnregisterNodeEventHandlers(node);
-            DeleteGeometryForIdentifier(node.AstIdentifierBase);
+            DeleteGeometryForNode(node);
         }
 
         public virtual CameraData GetCameraInformation()
@@ -464,6 +464,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 dynamoViewModel.UIDispatcher.Invoke(action);
             }
+        }
+
+        public virtual void DeleteGeometryForNode(NodeModel cbn, bool requestUpdate = true)
+        {
+
         }
 
         public virtual void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
