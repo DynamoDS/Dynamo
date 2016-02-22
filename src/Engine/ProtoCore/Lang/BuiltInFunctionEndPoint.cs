@@ -242,8 +242,16 @@ namespace ProtoCore.Lang
                     ret = ProtoCore.DSASM.StackValue.BuildDouble(MapBuiltIns.Map(formalParameters[0], formalParameters[1], formalParameters[2], interpreter));
                     break;
                 case ProtoCore.Lang.BuiltInMethods.MethodID.kMapTo:
-                    ret = ProtoCore.DSASM.StackValue.BuildDouble(MapBuiltIns.MapTo(formalParameters[0], formalParameters[1], formalParameters[2], formalParameters[3], formalParameters[4], interpreter));
+                    if (formalParameters.Any(p => !p.IsNumeric))
+                    {
+                        return StackValue.Null;
+                    }
+
+                    List<double> parameters = formalParameters.Select(p => p.ToDouble().RawDoubleValue).ToList();
+                    var mappedValue = MapBuiltIns.MapTo(parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], interpreter);
+                    ret = StackValue.BuildDouble(mappedValue);
                     break;
+
                 case ProtoCore.Lang.BuiltInMethods.MethodID.kIsUniformDepth:
                     ret = ProtoCore.DSASM.StackValue.BuildBoolean(ArrayUtilsForBuiltIns.IsUniformDepth(formalParameters[0], interpreter));
                     break;
@@ -960,24 +968,26 @@ namespace ProtoCore.Lang
             if (result > 1) return 1.0; //Exceed the range (less than rangeMax)
             return result;
         }
-        internal static double MapTo(StackValue sv0, StackValue sv1, StackValue sv2,
-            StackValue sv3, StackValue sv4, ProtoCore.DSASM.Interpreter runtime)
+
+        internal static double MapTo(
+            double rangeMin,
+            double rangeMax,
+            double inputValue,
+            double targetRangeMin,
+            double targetRangeMax, 
+            Interpreter runtime)
         {
-            if (!(((sv0.IsDouble) || (sv0.IsInteger)) &&
-                ((sv1.IsDouble) || (sv1.IsInteger)) &&
-                ((sv2.IsDouble) || (sv2.IsInteger)) &&
-                ((sv3.IsDouble) || (sv3.IsInteger)) &&
-                ((sv4.IsDouble) || (sv4.IsInteger))))
-                return ProtoCore.DSASM.Constants.kInvalidIndex;
-            double rangeMin = sv0.ToDouble().RawDoubleValue;
-            double rangeMax = sv1.ToDouble().RawDoubleValue;
-            double inputValue = sv2.ToDouble().RawDoubleValue;
-            double targetRangeMin = sv3.ToDouble().RawDoubleValue;
-            double targetRangeMax = sv4.ToDouble().RawDoubleValue;
-            double result = targetRangeMin + (inputValue - rangeMin) * (targetRangeMax - targetRangeMin) / (rangeMax - rangeMin);
-            if (result < targetRangeMin){ return targetRangeMin; }     //clamp to targetRangeMin
-            if (result > targetRangeMax){ return targetRangeMax; }     //clamp to targetRangeMax
-            return result;
+            double percent = (inputValue - rangeMin) / (rangeMax - rangeMin);
+            if (percent < 0)
+            {
+                percent = 0;
+            }
+            else if (percent > 1)
+            {
+                percent = 1;
+            }
+
+            return targetRangeMin + (targetRangeMax - targetRangeMin) * percent;
         }
     }
     internal class RangeExpressionUntils
