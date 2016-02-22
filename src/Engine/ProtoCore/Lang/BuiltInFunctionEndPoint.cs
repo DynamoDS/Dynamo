@@ -984,7 +984,7 @@ namespace ProtoCore.Lang
             double targetRangeMin,
             double targetRangeMax) 
         {
-            double percent = Map(rangeMin, rangeMin, inputValue); 
+            double percent = Map(rangeMin, rangeMax, inputValue); 
             return targetRangeMin + (targetRangeMax - targetRangeMin) * percent;
         }
     }
