@@ -65,7 +65,6 @@ namespace Dynamo.Graph.Nodes
         {
             ArgumentLacing = LacingStrategy.Disabled;
             this.libraryServices = libraryServices;
-            this.libraryServices.LibraryLoaded += LibraryServicesOnLibraryLoaded;
             this.ElementResolver = new ElementResolver();
         }
 
@@ -78,7 +77,6 @@ namespace Dynamo.Graph.Nodes
             X = xPos;
             Y = yPos;
             this.libraryServices = libraryServices;
-            this.libraryServices.LibraryLoaded += LibraryServicesOnLibraryLoaded;
             this.ElementResolver = resolver;
             code = userCode;
             GUID = guid;
@@ -90,12 +88,6 @@ namespace Dynamo.Graph.Nodes
         public override void Dispose()
         {
             base.Dispose();
-            libraryServices.LibraryLoaded -= LibraryServicesOnLibraryLoaded;
-        }
-
-        private void LibraryServicesOnLibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs libraryLoadedEventArgs)
-        {
-            //ProcessCodeDirect();
         }
 
         /// <summary>

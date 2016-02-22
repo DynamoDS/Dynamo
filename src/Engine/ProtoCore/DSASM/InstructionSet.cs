@@ -74,27 +74,30 @@ namespace ProtoCore.DSASM
         LE,
 
         // memory allocation
-        ALLOCA,
-        ALLOCC,
+        ALLOCA,         // Allocate array
+        ALLOCC,         // Allocate object
 
         PUSH,
-        PUSHB,
+        PUSHBLOCK,      // Push construction block id in imperative code
         PUSHM,
         PUSHW,
-        PUSHDEP,
-        PUSHINDEX,
+        PUSHDEP,        // Push symbols in left-hand-side identifier list in impertiave langauge block
+        PUSHINDEX,      // Array indexing
+        PUSHREPGUIDE,   // Push replicaion guide to the stack
+        PUSHLEVEL,      // Push at-level to the stak
         POP,
         POPW,
         POPM,
+        POPREPGUIDES,   // Pop replication guides from stack and save to the core
 
         CALL,
         CALLR,
-        RETURN,
-        RETC,    // Return from constructor
-        RETB,    // Return from code block
-        RETCN,   // Return from local block
+        RETURN,         // Return from function call
+        RETC,           // Return from constructor
+        RETB,           // Return from code block (pushed by BOUNCE)
+        RETCN,          // Return from local block
 
-        BOUNCE,
+        BOUNCE,         // Bounce to different language block
         JMP,
         CJMP,
         JDEP,

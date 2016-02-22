@@ -5313,5 +5313,207 @@ b = TestThisOverload.Mul(obj, 4);
             // Here we shouldn't generate an overloaded one.
             thisTest.Verify("b", 24);
         }
+
+        [Test]
+        public void TestAtLevel01()
+        {
+            string code = @"
+def foo(x:var[]..[])
+{
+    return = x;
+}
+
+xs = 
+     {
+        {
+            {
+                {
+                    1, 
+                    2
+                },
+
+                {
+                    3,
+                    4
+                }
+            },
+            
+            {
+                {
+                    5,
+                    6
+                },
+
+                {
+                    7,
+                    8
+                }
+            }
+        }, 
+
+        {
+            {
+                {
+                    9, 
+                   10 
+                },
+
+                {
+                   11,
+                   12 
+                }
+            },
+            
+            {
+                {
+                   13,
+                   14 
+                },
+
+                {
+                   15,
+                   16 
+                }
+            }
+        } 
+    };
+    //  -4  -3  -2  -1
+
+r0 = foo(xs@0);
+r1 = foo(xs@-1);
+r2 = foo(xs@-2);
+r3 = foo(xs@-3);
+r4 = foo(xs@-4);
+r5 = foo(xs@-5);
+";
+            thisTest.RunScriptSource(code);
+
+            var x000 = new object[] { 1, 2 };
+            var x001 = new object[] { 3, 4 };
+            var x010 = new object[] { 5, 6 };
+            var x011 = new object[] { 7, 8 };
+            var x100 = new object[] { 9, 10 };
+            var x101 = new object[] { 11, 12 };
+            var x110 = new object[] { 13, 14 };
+            var x111 = new object[] { 15, 16 };
+
+            var x00 = new object[] { x000, x001 };
+            var x01 = new object[] { x010, x011 };
+            var x10 = new object[] { x100, x101 };
+            var x11 = new object[] { x110, x111 };
+
+            var x0 = new object[] { x00, x01 };
+            var x1 = new object[] { x10, x11 };
+
+            var xs = new object[] { x0, x1 };
+
+            thisTest.Verify("r1", new object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 });
+            thisTest.Verify("r2", new object[] { x000, x001, x010, x011, x100, x101, x110, x111 });
+            thisTest.Verify("r3", new object[] { x00, x01, x10, x11 });
+            thisTest.Verify("r4", new object[] { x0, x1 });
+            thisTest.Verify("r0", xs);
+            thisTest.Verify("r5", new object[] { xs });
+        }
+
+        [Test]
+        public void TestAtLevel02_DominantList()
+        {
+            string code = @"
+def foo(x:var[]..[])
+{
+    return = x;
+}
+
+xs = 
+     {
+        {
+            {
+                {
+                    1, 
+                    2
+                },
+
+                {
+                    3,
+                    4
+                }
+            },
+            
+            {
+                {
+                    5,
+                    6
+                },
+
+                {
+                    7,
+                    8
+                }
+            }
+        }, 
+
+        {
+            {
+                {
+                    9, 
+                   10 
+                },
+
+                {
+                   11,
+                   12 
+                }
+            },
+            
+            {
+                {
+                   13,
+                   14 
+                },
+
+                {
+                   15,
+                   16 
+                }
+            }
+        } 
+    };
+    //  -4  -3  -2  -1
+
+r0 = foo(xs@@0);
+r1 = foo(xs@@-1);
+r2 = foo(xs@@-2);
+r3 = foo(xs@@-3);
+r4 = foo(xs@@-4);
+r5 = foo(xs@@-5);
+";
+            thisTest.RunScriptSource(code);
+
+            var x000 = new object[] { 1, 2 };
+            var x001 = new object[] { 3, 4 };
+            var x010 = new object[] { 5, 6 };
+            var x011 = new object[] { 7, 8 };
+            var x100 = new object[] { 9, 10 };
+            var x101 = new object[] { 11, 12 };
+            var x110 = new object[] { 13, 14 };
+            var x111 = new object[] { 15, 16 };
+
+            var x00 = new object[] { x000, x001 };
+            var x01 = new object[] { x010, x011 };
+            var x10 = new object[] { x100, x101 };
+            var x11 = new object[] { x110, x111 };
+
+            var x0 = new object[] { x00, x01 };
+            var x1 = new object[] { x10, x11 };
+
+            var xs = new object[] { x0, x1 };
+
+            thisTest.Verify("r1", new object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 });
+            thisTest.Verify("r2", new object[] { x000, x001, x010, x011, x100, x101, x110, x111 });
+            thisTest.Verify("r3", new object[] { x00, x01, x10, x11 });
+            thisTest.Verify("r4", new object[] { x0, x1 });
+            thisTest.Verify("r0", xs);
+            thisTest.Verify("r5", new object[] { xs });
+        }
     }
 }
