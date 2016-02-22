@@ -1,6 +1,6 @@
 ## Dynamo version
 
-(Which version of Dynamo are you using (check the About box)?)
+(Which version of Dynamo are you using? Go to Help > About if you're not sure.)
 
 ## Operating system
 
