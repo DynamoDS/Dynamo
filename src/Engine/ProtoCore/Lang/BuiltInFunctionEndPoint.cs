@@ -1,6 +1,4 @@
-﻿
-using System;
-using System.Text;
+﻿using System;
 using System.IO;
 using System.Collections.Generic;
 using ProtoCore.DSASM;
@@ -9,7 +7,6 @@ using ProtoCore.Utils;
 using System.Linq;
 using Autodesk.DesignScript.Interfaces;
 using ProtoFFI;
-using System.Collections;
 using ProtoCore.Runtime;
 using ProtoCore.Properties;
 
@@ -239,19 +236,28 @@ namespace ProtoCore.Lang
                         break;
                     }
                 case ProtoCore.Lang.BuiltInMethods.MethodID.kMap:
-                    ret = ProtoCore.DSASM.StackValue.BuildDouble(MapBuiltIns.Map(formalParameters[0], formalParameters[1], formalParameters[2], interpreter));
-                    break;
-                case ProtoCore.Lang.BuiltInMethods.MethodID.kMapTo:
-                    if (formalParameters.Any(p => !p.IsNumeric))
                     {
-                        return StackValue.Null;
+                        if (formalParameters.Any(p => !p.IsNumeric))
+                        {
+                            return StackValue.Null;
+                        }
+                        List<double> parameters = formalParameters.Select(p => p.ToDouble().RawDoubleValue).ToList();
+                        var mappedValue = MapBuiltIns.Map(parameters[0], parameters[1], parameters[2]);
+                        ret = StackValue.BuildDouble(mappedValue);
+                        break;
                     }
+                case ProtoCore.Lang.BuiltInMethods.MethodID.kMapTo:
+                    {
+                        if (formalParameters.Any(p => !p.IsNumeric))
+                        {
+                            return StackValue.Null;
+                        }
 
-                    List<double> parameters = formalParameters.Select(p => p.ToDouble().RawDoubleValue).ToList();
-                    var mappedValue = MapBuiltIns.MapTo(parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], interpreter);
-                    ret = StackValue.BuildDouble(mappedValue);
-                    break;
-
+                        List<double> parameters = formalParameters.Select(p => p.ToDouble().RawDoubleValue).ToList();
+                        var mappedValue = MapBuiltIns.MapTo(parameters[0], parameters[1], parameters[2], parameters[3], parameters[4]);
+                        ret = StackValue.BuildDouble(mappedValue);
+                        break;
+                    }
                 case ProtoCore.Lang.BuiltInMethods.MethodID.kIsUniformDepth:
                     ret = ProtoCore.DSASM.StackValue.BuildBoolean(ArrayUtilsForBuiltIns.IsUniformDepth(formalParameters[0], interpreter));
                     break;
@@ -954,19 +960,21 @@ namespace ProtoCore.Lang
         
     internal class MapBuiltIns
     {
-        internal static double Map(StackValue sv0, StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime)
+        internal static double Map(double rangeMin, double rangeMax, double inputValue)
         {
-            if (!(((sv0.IsDouble) || (sv0.IsInteger)) &&
-                ((sv1.IsDouble) || (sv1.IsInteger)) &&                
-                ((sv2.IsDouble) || (sv2.IsInteger))))
-                return ProtoCore.DSASM.Constants.kInvalidIndex;
-            double rangeMin = sv0.ToDouble().RawDoubleValue;
-            double rangeMax = sv1.ToDouble().RawDoubleValue;
-            double inputValue = sv2.ToDouble().RawDoubleValue;
             double result =  (inputValue - rangeMin) / (rangeMax - rangeMin);
-            if (result < 0) return 0.0; //Exceed the range (less than rangeMin)
-            if (result > 1) return 1.0; //Exceed the range (less than rangeMax)
-            return result;
+            if (result < 0)
+            {
+                return 0.0;
+            }
+            else if (result > 1)
+            {
+                return 1.0;
+            }
+            else
+            {
+                return result;
+            }
         }
 
         internal static double MapTo(
@@ -974,19 +982,9 @@ namespace ProtoCore.Lang
             double rangeMax,
             double inputValue,
             double targetRangeMin,
-            double targetRangeMax, 
-            Interpreter runtime)
+            double targetRangeMax) 
         {
-            double percent = (inputValue - rangeMin) / (rangeMax - rangeMin);
-            if (percent < 0)
-            {
-                percent = 0;
-            }
-            else if (percent > 1)
-            {
-                percent = 1;
-            }
-
+            double percent = Map(rangeMin, rangeMin, inputValue); 
             return targetRangeMin + (targetRangeMax - targetRangeMin) * percent;
         }
     }
