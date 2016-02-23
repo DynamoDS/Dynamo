@@ -1155,7 +1155,7 @@ namespace ProtoScript.Runners
         void ReInitializeLiveRunner();
         IDictionary<Guid, List<ProtoCore.Runtime.WarningEntry>> GetRuntimeWarnings();
         IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings();
-        IDictionary<Guid, List<Guid>> GetModifiedASTGuids(Guid sessionID);
+        List<Guid> GetModifiedASTGuids(Guid sessionID);
     }
 
     public partial class LiveRunner : ILiveRunner, IDisposable
@@ -1976,9 +1976,16 @@ namespace ProtoScript.Runners
             return ret;
         }
 
-        public IDictionary<Guid, List<Guid>> GetModifiedASTGuids(Guid sessionID)
+        public List<Guid> GetModifiedASTGuids(Guid sessionID)
         {
-            return modifiedASTGuidsForSession;
+            if (modifiedASTGuidsForSession.ContainsKey(sessionID))
+            {
+                return modifiedASTGuidsForSession[sessionID];
+            }
+            else
+            {
+                return new List<Guid>();
+            }
         }
         #endregion
     }
