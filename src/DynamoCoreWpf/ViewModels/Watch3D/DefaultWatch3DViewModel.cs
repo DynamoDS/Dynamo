@@ -377,7 +377,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 {
                     node.PropertyChanged += OnNodePropertyChanged;
                     node.RenderPackagesUpdated += OnRenderPackagesUpdated;
-                    node.ToRemoveRenderPackages += OnRemoveRenderPackages;
                 }
             }
         }
@@ -505,7 +504,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             node.PropertyChanged += OnNodePropertyChanged;
             node.RenderPackagesUpdated += OnRenderPackagesUpdated;
-            node.ToRemoveRenderPackages += OnRemoveRenderPackages;
 
             RegisterPortEventHandlers(node);
         }
@@ -514,7 +512,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             node.PropertyChanged -= OnNodePropertyChanged;
             node.RenderPackagesUpdated -= OnRenderPackagesUpdated;
-            node.ToRemoveRenderPackages -= OnRemoveRenderPackages;
 
             UnregisterPortEventHandlers(node);
         }
