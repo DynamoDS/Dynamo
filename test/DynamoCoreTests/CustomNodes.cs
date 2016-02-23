@@ -14,6 +14,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Graph.Notes;
 
 namespace Dynamo.Tests
 {
@@ -57,6 +58,7 @@ namespace Dynamo.Tests
 
             CurrentDynamoModel.CustomNodeManager.Collapse(
                 DynamoSelection.Instance.Selection.OfType<NodeModel>(),
+                Enumerable.Empty<NoteModel>(),
                 CurrentDynamoModel.CurrentWorkspace,
                 true,
                 new FunctionNamePromptEventArgs
@@ -100,6 +102,7 @@ namespace Dynamo.Tests
 
             CurrentDynamoModel.CustomNodeManager.Collapse(
                 DynamoSelection.Instance.Selection.OfType<NodeModel>(),
+                Enumerable.Empty<NoteModel>(),
                 CurrentDynamoModel.CurrentWorkspace,
                 true,
                 new FunctionNamePromptEventArgs
@@ -140,6 +143,7 @@ namespace Dynamo.Tests
 
             CurrentDynamoModel.CustomNodeManager.Collapse(
                 DynamoSelection.Instance.Selection.OfType<NodeModel>(),
+                Enumerable.Empty<NoteModel>(),
                 CurrentDynamoModel.CurrentWorkspace,
                 true,
                 new FunctionNamePromptEventArgs
@@ -203,6 +207,7 @@ namespace Dynamo.Tests
 
             CurrentDynamoModel.CustomNodeManager.Collapse(
                 selectionSet.AsEnumerable(),
+                Enumerable.Empty<NoteModel>(),
                 CurrentDynamoModel.CurrentWorkspace,
                 true,
                 new FunctionNamePromptEventArgs
@@ -302,6 +307,7 @@ namespace Dynamo.Tests
 
             var ws = CurrentDynamoModel.CustomNodeManager.Collapse(
                 DynamoSelection.Instance.Selection.OfType<NodeModel>(),
+                Enumerable.Empty<NoteModel>(),
                 CurrentDynamoModel.CurrentWorkspace,
                 true,
                 new FunctionNamePromptEventArgs
@@ -625,7 +631,8 @@ namespace Dynamo.Tests
 
             CurrentDynamoModel.AddCustomNodeWorkspace(
                 CurrentDynamoModel.CustomNodeManager.Collapse(
-                    selectionSet, CurrentDynamoModel.CurrentWorkspace, DynamoModel.IsTestMode, arg));
+                    selectionSet, Enumerable.Empty<NoteModel>(), 
+                    CurrentDynamoModel.CurrentWorkspace, DynamoModel.IsTestMode, arg));
 
             Assert.IsNotNull(CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Function>());
 
@@ -653,6 +660,7 @@ namespace Dynamo.Tests
             var selectionSet = new[] { node };
             var customWorkspace = CurrentDynamoModel.CustomNodeManager.Collapse(
                 selectionSet,
+                Enumerable.Empty<NoteModel>(),
                 CurrentDynamoModel.CurrentWorkspace,
                 true,
                 new FunctionNamePromptEventArgs
@@ -777,6 +785,7 @@ namespace Dynamo.Tests
             var selectionSet = new List<NodeModel> { node };
             CurrentDynamoModel.CustomNodeManager.Collapse(
                 selectionSet,
+                Enumerable.Empty<NoteModel>(),
                 CurrentDynamoModel.CurrentWorkspace,
                 true,
                 new FunctionNamePromptEventArgs
@@ -851,6 +860,7 @@ namespace Dynamo.Tests
 
             var ws = CurrentDynamoModel.CustomNodeManager.Collapse(
                 DynamoSelection.Instance.Selection.OfType<NodeModel>(),
+                Enumerable.Empty<NoteModel>(),
                 CurrentDynamoModel.CurrentWorkspace,
                 true,
                 new FunctionNamePromptEventArgs
@@ -891,6 +901,7 @@ namespace Dynamo.Tests
 
             var ws = CurrentDynamoModel.CustomNodeManager.Collapse(
                 DynamoSelection.Instance.Selection.OfType<NodeModel>(),
+                Enumerable.Empty<NoteModel>(),
                 CurrentDynamoModel.CurrentWorkspace,
                 true,
                 new FunctionNamePromptEventArgs

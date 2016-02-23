@@ -727,12 +727,16 @@ namespace Dynamo.Core
         ///     Collapse a set of nodes in a given workspace.
         /// </summary>
         /// <param name="selectedNodes"> The function definition for the user-defined node </param>
+        /// <param name="selectedNotes"> The note models in current selection </param>
         /// <param name="currentWorkspace"> The workspace where</param>
         /// <param name="isTestMode"></param>
         /// <param name="args"></param>
         internal CustomNodeWorkspaceModel Collapse(
-            IEnumerable<NodeModel> selectedNodes, WorkspaceModel currentWorkspace,
-            bool isTestMode, FunctionNamePromptEventArgs args)
+            IEnumerable<NodeModel> selectedNodes,
+            IEnumerable<NoteModel> selectedNotes,
+            WorkspaceModel currentWorkspace,
+            bool isTestMode,
+            FunctionNamePromptEventArgs args)
         {
             var selectedNodeSet = new HashSet<NodeModel>(selectedNodes);
             // Note that undoable actions are only recorded for the "currentWorkspace", 
@@ -901,9 +905,10 @@ namespace Dynamo.Core
                 #region Transfer nodes and connectors to new workspace
 
                 var newNodes = new List<NodeModel>();
+                var newNotes = new List<NoteModel>();
                 var newAnnotations = new List<AnnotationModel>();
             
-                // Step 4: move all nodes to new workspace remove from old
+                // Step 4: move all nodes and notes to new workspace remove from old
                 // PB: This could be more efficiently handled by a copy paste, but we
                 // are preservering the node 
                 foreach (var node in selectedNodeSet)
@@ -921,6 +926,17 @@ namespace Dynamo.Core
                     node.Y = node.Y - topMost;
                  
                     newNodes.Add(node);
+                }
+
+                foreach(var note in selectedNotes)
+                {
+                    undoRecorder.RecordDeletionForUndo(note);
+                    currentWorkspace.RemoveNote(note);
+
+                    note.GUID = Guid.NewGuid();
+                    note.X = note.X - leftShift;
+                    note.Y = note.Y - topMost;
+                    newNotes.Add(note);
                 }
 
                 //Copy the group from newNodes
@@ -1132,7 +1148,7 @@ namespace Dynamo.Core
                 newWorkspace = new CustomNodeWorkspaceModel(
                     nodeFactory,
                     newNodes,
-                    Enumerable.Empty<NoteModel>(),
+                    newNotes,
                     newAnnotations,
                     Enumerable.Empty<PresetModel>(),
                     currentWorkspace.ElementResolver,
