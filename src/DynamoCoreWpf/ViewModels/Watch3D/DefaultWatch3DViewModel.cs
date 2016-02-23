@@ -377,7 +377,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 {
                     node.PropertyChanged += OnNodePropertyChanged;
                     node.RenderPackagesUpdated += OnRenderPackagesUpdated;
-                    node.RemoveRenderPackages += OnRemoveRenderPackages;
+                    node.ToRemoveRenderPackages += OnRemoveRenderPackages;
                 }
             }
         }
@@ -453,11 +453,20 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             return null;
         }
 
-        public virtual void RemoveGeometryForNode(NodeModel node)
+        /// <summary>
+        /// Call this method to remove render pakcages that created by node.
+        /// </summary>
+        /// <param name="node"></param>
+        public virtual void RemoveGeometryForNode(NodeModel node, bool forceAsyncCall = false)
         {
             // Override in inherited classes.
         }
 
+        /// <summary>
+        /// Call this method to add the render package. 
+        /// </summary>
+        /// <param name="packages"></param>
+        /// <param name="forceAsyncCall"></param>
         public virtual void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages, bool forceAsyncCall = false)
         {
             // Override in inherited classes.
@@ -496,7 +505,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             node.PropertyChanged += OnNodePropertyChanged;
             node.RenderPackagesUpdated += OnRenderPackagesUpdated;
-            node.RemoveRenderPackages += OnRemoveRenderPackages;
+            node.ToRemoveRenderPackages += OnRemoveRenderPackages;
 
             RegisterPortEventHandlers(node);
         }
@@ -505,7 +514,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             node.PropertyChanged -= OnNodePropertyChanged;
             node.RenderPackagesUpdated -= OnRenderPackagesUpdated;
-            node.RemoveRenderPackages -= OnRemoveRenderPackages;
+            node.ToRemoveRenderPackages -= OnRemoveRenderPackages;
 
             UnregisterPortEventHandlers(node);
         }

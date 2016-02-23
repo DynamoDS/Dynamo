@@ -2177,13 +2177,13 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
-        public event Action<NodeModel> RemoveRenderPackages;
+        public event Action<NodeModel> ToRemoveRenderPackages;
 
         private void OnRemoveRenderPackages()
         {
-            if (RemoveRenderPackages != null)
+            if (ToRemoveRenderPackages != null)
             {
-                RemoveRenderPackages(this);
+                ToRemoveRenderPackages(this);
             }
         }
     }
