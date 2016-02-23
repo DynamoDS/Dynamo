@@ -49,8 +49,8 @@ namespace CoreNodeModels.HigherOrder
         protected CombinatorNode() : this(3)
         {
             InPortData.Add(new PortData("comb", Resources.CombinatorPortDataCombToolTip));
-            InPortData.Add(new PortData("list1", Resources.PortDataList1ToolTip));
-            InPortData.Add(new PortData("list2", Resources.PortDataList2ToolTip));
+            InPortData.Add(new PortData("list1", Resources.PortDataListToolTip + " #1"));
+            InPortData.Add(new PortData("list2", Resources.PortDataListToolTip + " #2"));
 
             OutPortData.Add(new PortData("combined", Resources.CombinatorPortDataResultToolTip));
 
@@ -69,7 +69,7 @@ namespace CoreNodeModels.HigherOrder
 
         protected override string GetInputTooltip(int index)
         {
-            return "List" + index;
+            return Resources.PortDataListToolTip + " #" + index;
         }
 
         protected override void RemoveInput()
@@ -287,7 +287,7 @@ namespace CoreNodeModels.HigherOrder
         {
             InPortData.Add(new PortData("reductor", Resources.ReducePortDataReductorToolTip));
             InPortData.Add(new PortData("seed", Resources.ReducePortDataSeedToolTip));
-            InPortData.Add(new PortData("list1", Resources.PortDataList1ToolTip));
+            InPortData.Add(new PortData("list1", Resources.PortDataListToolTip + " #1"));
 
             OutPortData.Add(new PortData("reduced", Resources.ReducePortDataResultToolTip));
 
@@ -336,7 +336,7 @@ namespace CoreNodeModels.HigherOrder
 
         protected override string GetInputTooltip(int index)
         {
-            return "List" + index;
+            return Resources.PortDataListToolTip + " #" + index;
         }
 
         protected override int GetInputIndex()
@@ -376,7 +376,7 @@ namespace CoreNodeModels.HigherOrder
         {
             InPortData.Add(new PortData("reductor", Resources.ScanPortDataReductorToolTip));
             InPortData.Add(new PortData("seed", Resources.ScanPortDataSeedToolTip));
-            InPortData.Add(new PortData("list1", Resources.PortDataList1ToolTip));
+            InPortData.Add(new PortData("list1", Resources.PortDataListToolTip + " #1"));
 
             OutPortData.Add(new PortData("scanned", Resources.ScanPortDataResultToolTip));
 
