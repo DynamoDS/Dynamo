@@ -660,8 +660,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var packages = taskPackages
                 .Cast<HelixRenderPackage>().Where(rp => rp.MeshVertexCount % 3 == 0);
 
-            RemoveGeometryForUpdatedPackages(packages);
-
             AggregateRenderPackages(packages);
 
 #if DEBUG
@@ -1215,19 +1213,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             Camera.UpDirection = data.UpDirection;
             Camera.NearPlaneDistance = data.NearPlaneDistance;
             Camera.FarPlaneDistance = data.FarPlaneDistance;
-        }
-
-        private void RemoveGeometryForUpdatedPackages(IEnumerable<IRenderPackage> packages)
-        {
-            lock (Model3DDictionaryMutex)
-            {
-                var packageDescrips = packages.Select(p => p.Description.Split(':')[0]).Distinct();
-
-                foreach (var id in packageDescrips)
-                {
-                    DeleteGeometryForIdentifier(id, false);
-                }
-            }
         }
 
         private bool InCustomNode()
