@@ -551,11 +551,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             AddGeometryForRenderPackages(packages);
         }
 
-        protected virtual void OnRemoveRenderPackages(NodeModel node)
-        {
-            RemoveGeometryForNode(node);
-        }
-
         /// <summary>
         /// Called from derived classes when a collection of render packages
         /// are available to be processed as render geometry.
