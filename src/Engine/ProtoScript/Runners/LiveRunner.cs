@@ -1153,6 +1153,7 @@ namespace ProtoScript.Runners
         void ReInitializeLiveRunner();
         IDictionary<Guid, List<ProtoCore.Runtime.WarningEntry>> GetRuntimeWarnings();
         IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings();
+        IDictionary<Guid, List<Guid>> GetModifiedASTGuids(Guid sessionID);
     }
 
     public partial class LiveRunner : ILiveRunner, IDisposable
@@ -1250,6 +1251,7 @@ namespace ProtoScript.Runners
         private readonly object mutexObject = new object();
         private ChangeSetComputer changeSetComputer;
         private ChangeSetApplier changeSetApplier;
+        private Dictionary<Guid, List<Guid>> modifiedASTGuidsForSession = new Dictionary<Guid, List<Guid>>();
 
         public LiveRunner()
             : this(new Configuration())
@@ -1664,6 +1666,9 @@ namespace ProtoScript.Runners
             changeSetApplier.Apply(runnerCore, runtimeCore, changeSetComputer.csData);
 
             CompileAndExecuteForDeltaExecution(finalDeltaAstList);
+
+            var guids = new List<Guid>(runtimeCore.ModifiedASTGuids.ToList());
+            modifiedASTGuidsForSession[syncData.SessionID] = guids;
         }
 
         private void SynchronizeInternal(string code)
@@ -1841,6 +1846,10 @@ namespace ProtoScript.Runners
             return ret;
         }
 
+        public IDictionary<Guid, List<Guid>> GetModifiedASTGuids(Guid sessionID)
+        {
+            return modifiedASTGuidsForSession;
+        }
         #endregion
     }
 

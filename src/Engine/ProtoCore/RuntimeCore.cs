@@ -73,6 +73,7 @@ namespace ProtoCore
             InterpreterProps = new Stack<InterpreterProperties>();
             ReplicationGuides = new List<List<ReplicationGuide>>();
             AtLevels = new List<AtLevel>();
+            ModifiedASTGuids = new HashSet<Guid>();
 
             RunningBlock = 0;
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid; //not yet started
@@ -188,6 +189,9 @@ namespace ProtoCore
 
         // Cached at levels for the current call.
         public List<AtLevel> AtLevels;
+
+        // GUIDs of executed ASTs.
+        public HashSet<Guid> ModifiedASTGuids; 
         
         public ProtoCore.DSASM.Mirror.ExecutionMirror Mirror { get; set; }
 
@@ -250,6 +254,7 @@ namespace ProtoCore
             RunningBlock = 0;
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid;
             StartPC = Constants.kInvalidPC;
+            ModifiedASTGuids.Clear();
         }
 
         protected void OnDispose()
