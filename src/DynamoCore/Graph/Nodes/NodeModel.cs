@@ -2018,6 +2018,21 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
+        /// Call this method to asynchronously remove render packages that
+        /// gnenerated by this node. The method is typically called on
+        /// main/UI thread.
+        /// </summary>
+        /// <param name="scheduler"></param>
+        /// <returns></returns>
+        public virtual bool RemoveRenderPackageAsync(IScheduler scheduler)
+        {
+            var task = new RemoveRenderPackageAsyncTask(scheduler);
+            task.Completed += OnRemoveRenderPackagesExecuted;
+            scheduler.ScheduleForExecution(task);
+            return true;
+        }
+
+        /// <summary>
         /// This event handler is invoked when UpdateRenderPackageAsyncTask is 
         /// completed, at which point the render packages (specific to this node) 
         /// become available. 
@@ -2036,6 +2051,20 @@ namespace Dynamo.Graph.Nodes
                 packages.AddRange(OnRequestRenderPackages());
 
                 OnRenderPackagesUpdated(packages);
+            }
+        }
+
+        /// <summary>
+        /// This event handler is invoked when RemoveRenderPackageAsyncTask is
+        /// executed. 
+        /// </summary>
+        /// <param name="asyncTask"></param>
+        private void OnRemoveRenderPackagesExecuted(AsyncTask asyncTask)
+        {
+            var task = asyncTask as RemoveRenderPackageAsyncTask;
+            if (task != null)
+            {
+                OnRemoveRenderPackages();
             }
         }
 
@@ -2145,6 +2174,16 @@ namespace Dynamo.Graph.Nodes
             if (RenderPackagesUpdated != null)
             {
                 RenderPackagesUpdated(this, packages);
+            }
+        }
+
+        public event Action<NodeModel> RemoveRenderPackages;
+
+        private void OnRemoveRenderPackages()
+        {
+            if (RemoveRenderPackages != null)
+            {
+                RemoveRenderPackages(this);
             }
         }
     }

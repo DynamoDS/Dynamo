@@ -616,6 +616,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 case "CachedValue":
                     Debug.WriteLine(string.Format("Requesting render packages for {0}", node.GUID));
+                    node.RemoveRenderPackageAsync(scheduler);
                     node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
                     break;
 
