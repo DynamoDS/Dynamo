@@ -978,7 +978,7 @@ namespace Dynamo.Graph.Workspaces
             OnNotesCleared();
         }
 
-        private void RemoveNote(NoteModel note)
+        internal void RemoveNote(NoteModel note)
         {
             lock (notes)
             {
