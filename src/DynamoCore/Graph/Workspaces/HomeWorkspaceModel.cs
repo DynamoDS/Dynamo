@@ -502,9 +502,14 @@ namespace Dynamo.Graph.Workspaces
             EngineController.ReconcileTraceDataAndNotify();
 
             // Refresh values of nodes that took part in update.
-            foreach (var modifiedNode in updateTask.ModifiedNodes)
+            var modifiedNodeIDs = EngineController.GetModifiedAstGuids(updateTask.SessionID);
+            foreach (var id in modifiedNodeIDs)
             {
-                modifiedNode.RequestValueUpdateAsync(scheduler, EngineController);
+                var modifiedNode = this.Nodes.FirstOrDefault(n => n.GUID.Equals(id));
+                if (modifiedNode != null)
+                {
+                    modifiedNode.RequestValueUpdateAsync(scheduler, EngineController);
+                }
             }
 
             scheduler.Tasks.AllComplete(_ =>

@@ -188,6 +188,7 @@ namespace Dynamo.Scheduler
         internal WorkspaceModel TargetedWorkspace { get; private set; }
         internal IDictionary<Guid, List<WarningEntry>> BuildWarnings { get; private set; }
         internal IDictionary<Guid, List<ProtoCore.Runtime.WarningEntry>> RuntimeWarnings { get; private set; }
+        internal Guid SessionID { get { return graphSyncData.SessionID; } }
 
         #endregion
 

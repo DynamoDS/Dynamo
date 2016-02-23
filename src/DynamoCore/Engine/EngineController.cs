@@ -437,6 +437,11 @@ namespace Dynamo.Engine
             return liveRunnerServices.GetRuntimeWarnings();
         }
 
+        internal List<Guid> GetModifiedAstGuids(Guid sessionID)
+        {
+            return liveRunnerServices.GetModifiedAstGuids(sessionID);
+        }
+
         /// <summary>
         /// Update graph with graph sync data.
         /// </summary>
