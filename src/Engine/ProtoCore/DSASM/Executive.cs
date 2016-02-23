@@ -2739,6 +2739,14 @@ namespace ProtoCore.DSASM
                     {
                         logWatchWindow(blockId, (int)op1.opdata);
                     }
+
+                    if (runtimeCore.Options.IsDeltaExecution && Properties.executingGraphNode != null)
+                    {
+                        if (symbol.classScope == Constants.kGlobalScope && symbol.functionIndex == Constants.kGlobalScope)
+                        {
+                            runtimeCore.ModifiedASTGuids.Add(Properties.executingGraphNode.guid);
+                        }
+                    }
                     break;
 
                 case AddressType.StaticMemVarIndex:
