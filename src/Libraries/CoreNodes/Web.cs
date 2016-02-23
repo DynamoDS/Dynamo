@@ -11,7 +11,7 @@ namespace DSCore
         {
             if (string.IsNullOrEmpty(url))
             {
-                throw new ArgumentException("The url cannot be null.");
+                throw new ArgumentException(Properties.Resources.WebRequestNullUrlMessage);
             }
 
             Uri uriResult;
