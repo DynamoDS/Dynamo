@@ -456,7 +456,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// Call this method to remove render pakcages that created by node.
         /// </summary>
         /// <param name="node"></param>
-        public virtual void RemoveGeometryForNode(NodeModel node, bool forceAsyncCall = false)
+        public virtual void RemoveGeometryForNode(NodeModel node)
         {
             // Override in inherited classes.
         }

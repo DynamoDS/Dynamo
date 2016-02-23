@@ -178,9 +178,9 @@ namespace Dynamo.Controls
             }
         }
 
-        private void RequestRemoveModelsHandler(NodeModel node, bool forceAsyncCall = false)
+        private void RequestRemoveModelsHandler(NodeModel node)
         {
-            if (!forceAsyncCall && CheckAccess())
+            if (CheckAccess())
             {
                 ViewModel.DeleteGeometryForNode(node);
             }
