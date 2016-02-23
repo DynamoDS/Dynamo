@@ -64,6 +64,15 @@ namespace ProtoScript.Runners
     public class GraphSyncData
     {
         /// <summary>
+        /// Session ID
+        /// </summary>
+        public Guid SessionID
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
         /// Deleted sub trees.
         /// </summary>
         public List<Subtree> DeletedSubtrees
@@ -134,8 +143,14 @@ namespace ProtoScript.Runners
             }
         }
 
-        public GraphSyncData(List<Subtree> deleted, List<Subtree> added, List<Subtree> modified)
+        public GraphSyncData(List<Subtree> deleted, List<Subtree> added, List<Subtree> modified):
+            this(Guid.Empty, deleted, added, modified)
         {
+        }
+
+        public GraphSyncData(Guid sessionID, List<Subtree> deleted, List<Subtree> added, List<Subtree> modified)
+        {
+            SessionID = sessionID;
             DeletedSubtrees = deleted ?? new List<Subtree>();
             AddedSubtrees = added ?? new List<Subtree>();
             ModifiedSubtrees = modified ?? new List<Subtree>();
