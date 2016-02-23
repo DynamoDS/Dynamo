@@ -2552,6 +2552,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not sign in at this moment. Check the date, time and time zone settings and try to sign in again..
+        /// </summary>
+        public static string InvalidTimeZoneMessage {
+            get {
+                return ResourceManager.GetString("InvalidTimeZoneMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to For two lists {a,b,c}{1,2,3} returns {a1,a2,a3}{b1,b2,b3}{c1,c2,c3}..
         /// </summary>
         public static string LacingCrossProductToolTip {
