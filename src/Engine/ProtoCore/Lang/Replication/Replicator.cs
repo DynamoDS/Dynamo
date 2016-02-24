@@ -534,7 +534,7 @@ namespace ProtoCore.Lang.Replication
 
             // Generate reduction lists (x1, x2, ..., xn) 
             if (maxReductionDepths.Any(r => r < 0) || maxReductionDepths.All(r => r == 0))
-                return new List<List<ReplicationInstruction>>();
+                return new List<List<ReplicationInstruction>> { providedControl };
 
             List<List<int>> reductions = BuildReductions(maxReductionDepths);
             var ret = reductions.Select(rs => ReductionToInstructions(rs, providedControl)).ToList();

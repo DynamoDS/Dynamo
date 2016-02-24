@@ -966,7 +966,7 @@ namespace Dynamo.Tests
 
             RunModel(dynFilePath);
 
-            AssertPreviewValue("c739b941-ece7-4b87-ae69-9a16f04dbe5d", null);
+            AssertPreviewValue("c739b941-ece7-4b87-ae69-9a16f04dbe5d", new object[] { null, null, null, null });
 
             // Reset engine and mark all nodes as dirty. A.k.a., force re-execute.
             CurrentDynamoModel.ForceRun();
