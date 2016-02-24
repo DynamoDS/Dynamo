@@ -557,55 +557,19 @@ namespace ProtoCore.DSASM
             return ret;
         }
 
-        private void PopArgumentsFromStack(int argumentCount,
-                                           ref List<StackValue> arguments,
-                                           ref List<List<ReplicationGuide>> replicationGuides)
+        private List<StackValue> PopArgumentsFromStack(int argumentCount)
         {
-            int argFrameSize = 0;
+            List<StackValue> arguments = new List<StackValue>();
             int stackindex = rmem.Stack.Count - 1;
 
             for (int p = 0; p < argumentCount; ++p)
             {
-                // Must iterate through the args in the stack in reverse as 
-                // its unknown how many replication guides were pushed
-                StackValue value = rmem.Stack[stackindex--];
-                ++argFrameSize;
-                arguments.Add(value);
-
-                bool hasGuide = rmem.Stack[stackindex].IsReplicationGuide;
-                if (hasGuide)
-                {
-                    var replicationGuideList = new List<ReplicationGuide>();
-
-                    // Retrieve replication guides
-                    value = rmem.Stack[stackindex--];
-                    ++argFrameSize;
-                    runtimeVerify(value.IsReplicationGuide);
-
-                    int guides = (int)value.opdata;
-                    for (int i = 0; i < guides; ++i)
-                    {
-                        // Get the replicationguide number from the stack
-                        value = rmem.Stack[stackindex--];
-                        Validity.Assert(value.IsInteger);
-                        int guideNumber = (int)value.opdata;
-
-                        // Get the replication guide property from the stack
-                        value = rmem.Stack[stackindex--];
-                        Validity.Assert(value.IsBoolean);
-                        bool isLongest = value.IsBoolean && value.RawBooleanValue;
-
-                        var guide = new ReplicationGuide(guideNumber, isLongest);
-                        replicationGuideList.Add(guide);
-                        ++argFrameSize;
-                    }
-
-                    replicationGuideList.Reverse();
-                    replicationGuides.Add(replicationGuideList);
-                }
+                arguments.Add(rmem.Stack[stackindex]);
+                stackindex = stackindex - 1;
             }
+            rmem.PopFrame(argumentCount);
 
-            rmem.PopFrame(argFrameSize);
+            return arguments;
         }
 
         public void GCDotMethods(string name, ref StackValue sv, List<StackValue> dotCallDimensions = null, List<StackValue> arguments = null)
@@ -662,7 +626,6 @@ namespace ProtoCore.DSASM
 
             // Build the arg values list
             var arguments = new List<StackValue>();
-            var replicationGuides = new List<List<ReplicationGuide>>();
 
             // Retrive the param values from the stack
             int stackindex = rmem.Stack.Count - 1;
@@ -693,11 +656,12 @@ namespace ProtoCore.DSASM
             }
             else
             {
-                PopArgumentsFromStack(fNode.ArgumentTypes.Count, ref arguments, ref replicationGuides);
+                arguments = PopArgumentsFromStack(fNode.ArgumentTypes.Count);
+                arguments.Reverse();
             }
 
-            replicationGuides.Reverse();
-            arguments.Reverse();
+            var replicationGuides = new List<List<ReplicationGuide>>();
+            var atLevels = new List<AtLevel>();
 
             Runtime.Context runtimeContext = new Runtime.Context();
 
@@ -709,6 +673,7 @@ namespace ProtoCore.DSASM
                 // Comment Jun: If this is a non-dot call, cache the guides first and retrieve them on the actual function call
                 // TODO Jun: Ideally, cache the replication guides in the dynamic function node
                 replicationGuides = GetCachedReplicationGuides(arguments.Count);
+                atLevels = GetCachedAtLevels(arguments.Count);
             }
 
             // if is dynamic call, the final pointer has been resovled in the ProcessDynamicFunction function
@@ -862,7 +827,7 @@ namespace ProtoCore.DSASM
             explicitCall = false;
             IsExplicitCall = explicitCall;
 
-            sv = callsite.JILDispatch(arguments, replicationGuides, stackFrame, runtimeCore, runtimeContext);
+            sv = callsite.JILDispatch(arguments, replicationGuides, atLevels, stackFrame, runtimeCore, runtimeContext);
             if (sv.IsExplicitCall)
             {
                 //
@@ -918,13 +883,10 @@ namespace ProtoCore.DSASM
             ProcedureNode procNode = classNode.ProcTable.Procedures[procIndex];
 
             // Get all arguments and replications 
-            var arguments = new List<StackValue>();
-            var repGuides = new List<List<ReplicationGuide>>();
-            PopArgumentsFromStack(procNode.ArgumentTypes.Count,
-                                  ref arguments,
-                                  ref repGuides);
+            var arguments = PopArgumentsFromStack(procNode.ArgumentTypes.Count);
             arguments.Reverse();
-            repGuides = GetCachedReplicationGuides( arguments.Count + 1);
+            var repGuides = GetCachedReplicationGuides( arguments.Count + 1);
+            var atLevels = GetCachedAtLevels(arguments.Count + 1);
 
             StackValue lhs = rmem.Pop();
             StackValue thisObject = lhs;
@@ -990,6 +952,7 @@ namespace ProtoCore.DSASM
 
             StackValue sv = callsite.JILDispatch(arguments,
                                                  repGuides,
+                                                 atLevels,
                                                  stackFrame,
                                                  runtimeCore,
                                                  new Runtime.Context());
@@ -3752,6 +3715,18 @@ namespace ProtoCore.DSASM
             return new List<List<ReplicationGuide>>();
         }
 
+        public List<AtLevel> GetCachedAtLevels(int argumentCount)
+        {
+            int index = runtimeCore.AtLevels.Count - argumentCount;
+            if (index >= 0)
+            {
+                var atLevels = runtimeCore.AtLevels.GetRange(index, argumentCount);
+                runtimeCore.AtLevels.RemoveRange(index, argumentCount);
+                return atLevels;
+            }
+            return new List<AtLevel>();
+        }
+
         #region Opcode Handlers
         private void ALLOCC_Handler(Instruction instruction)
         {
@@ -3808,10 +3783,7 @@ namespace ProtoCore.DSASM
             else
             {
                 // TODO Jun: This entire block that handles arrays shoudl be integrated with getOperandData
-
-                runtimeVerify(op1.IsVariableIndex ||
-                    op1.IsMemberVariableIndex ||
-                    op1.IsArray);
+                runtimeVerify(op1.IsVariableIndex || op1.IsMemberVariableIndex || op1.IsArray);
 
                 runtimeVerify(instruction.op2.IsClassIndex);
 
@@ -3885,44 +3857,21 @@ namespace ProtoCore.DSASM
 
         private void PUSHINDEX_Handler(Instruction instruction)
         {
-            if (instruction.op1.IsArrayDimension)
+            runtimeVerify(instruction.op1.IsArrayDimension);
+
+            int dimensions = (int)instruction.op1.opdata;
+            if (dimensions > 0)
             {
-                int dimensions = (int)instruction.op1.opdata;
-
-                if (dimensions > 0)
+                List<StackValue> dims = new List<StackValue>();
+                for (int i = 0; i < dimensions; ++i)
                 {
-                    List<StackValue> dims = new List<StackValue>();
-                    for (int i = 0; i < dimensions; ++i)
-                    {
-                        dims.Add(rmem.Pop());
-                    }
-                    dims.Reverse();
-
-                    StackValue arrayPointer = rmem.Pop();
-                    StackValue sv = GetIndexedArray(arrayPointer, dims);
-                    rmem.Push(sv);
+                    dims.Add(rmem.Pop());
                 }
-            }
-            else if (instruction.op1.IsReplicationGuide)
-            {
-                int guides = (int)instruction.op1.opdata;
+                dims.Reverse();
 
-                List<ReplicationGuide> argGuides = new List<ReplicationGuide>();
-                for (int i = 0; i < guides; ++i)
-                {
-                    StackValue svGuideProperty = rmem.Pop();
-                    runtimeVerify(svGuideProperty.IsBoolean);
-                    bool isLongest = (int)svGuideProperty.opdata == 1;
-
-                    StackValue svGuide = rmem.Pop();
-                    runtimeVerify(svGuide.IsInteger);
-                    int guideNumber = (int)svGuide.opdata;
-
-                    argGuides.Add(new ReplicationGuide(guideNumber, isLongest));
-                }
-
-                argGuides.Reverse();
-                runtimeCore.ReplicationGuides.Add(argGuides);
+                StackValue arrayPointer = rmem.Pop();
+                StackValue sv = GetIndexedArray(arrayPointer, dims);
+                rmem.Push(sv);
             }
 
             ++pc;
@@ -4018,6 +3967,49 @@ namespace ProtoCore.DSASM
                 }
             }
             rmem.Push(key); 
+            ++pc;
+        }
+
+        private void PUSHREPGUIDE_Handler(Instruction instruction)
+        {
+            runtimeVerify(instruction.op1.IsReplicationGuide);
+            runtimeVerify(instruction.op2.IsBoolean);
+            rmem.Push(instruction.op1);
+            rmem.Push(instruction.op2);
+            ++pc;
+        }
+
+        private void PUSHLEVEL_Handler(Instruction instruction)
+        {
+            runtimeVerify(instruction.op1.IsInteger);
+            int level = (int)instruction.op1.opdata;
+
+            runtimeVerify(instruction.op2.IsBoolean);
+            bool isDominant = (int)instruction.op2.opdata == 1;
+
+            runtimeCore.AtLevels.Add(new AtLevel(level, isDominant));
+            ++pc;
+        } 
+
+        private void POPREPGUIDES_Handler(Instruction instruction)
+        {
+            int guides = (int)instruction.op1.opdata;
+            List<ReplicationGuide> argGuides = new List<ReplicationGuide>();
+            for (int i = 0; i < guides; ++i)
+            {
+                StackValue svGuideProperty = rmem.Pop();
+                runtimeVerify(svGuideProperty.IsBoolean);
+                bool isLongest = (int)svGuideProperty.opdata == 1;
+
+                StackValue svGuide = rmem.Pop();
+                runtimeVerify(svGuide.IsReplicationGuide);
+                int guideNumber = (int)svGuide.opdata;
+
+                argGuides.Add(new ReplicationGuide(guideNumber, isLongest));
+            }
+
+            argGuides.Reverse();
+            runtimeCore.ReplicationGuides.Add(argGuides);
             ++pc;
         }
 
@@ -5919,7 +5911,7 @@ namespace ProtoCore.DSASM
                         return;
                     }
 
-                case OpCode.PUSHB:
+                case OpCode.PUSHBLOCK:
                     {
                         PUSHB_Handler(instruction);
                         return;
@@ -5934,6 +5926,24 @@ namespace ProtoCore.DSASM
                 case OpCode.PUSH_ARRAYKEY:
                     {
                         PUSH_VARSIZE_Handler(instruction);
+                        return;
+                    }
+
+                case OpCode.PUSHREPGUIDE:
+                    {
+                        PUSHREPGUIDE_Handler(instruction);
+                        return;
+                    }
+
+                case OpCode.PUSHLEVEL:
+                    {
+                        PUSHLEVEL_Handler(instruction);
+                        return;
+                    }
+
+                case OpCode.POPREPGUIDES:
+                    {
+                        POPREPGUIDES_Handler(instruction);
                         return;
                     }
 

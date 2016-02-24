@@ -255,6 +255,22 @@ namespace ProtoCore.AST.AssociativeAST
             get; set;
         }
 
+        public AtLevelNode()
+        {
+            Level = 0;
+            IsDominant = false;
+        }
+
+        public AtLevelNode(AtLevelNode rhs)
+            : base(rhs)
+        {
+            if (rhs != null)
+            {
+                Level = rhs.Level;
+                IsDominant = rhs.IsDominant;
+            }
+        }
+
         public override void Accept(AssociativeAstVisitor visitor)
         {
             visitor.VisitAtLevelNode(this);
@@ -331,6 +347,12 @@ namespace ProtoCore.AST.AssociativeAST
             {
                 ReplicationGuides = rhs.ReplicationGuides.Select(NodeUtils.Clone).ToList();
             }
+
+            AtLevel = null;
+            if (rhs.AtLevel != null)
+            {
+                AtLevel = NodeUtils.Clone(rhs.AtLevel) as AtLevelNode;
+            }
         }
 
         public override bool Equals(object other)
@@ -345,13 +367,19 @@ namespace ProtoCore.AST.AssociativeAST
                 arrayDimEqual = EqualityComparer<ArrayNode>.Default.Equals(ArrayDimensions, otherNode.ArrayDimensions);
             }
 
+            bool atLevelEquals = (AtLevel == null && otherNode.AtLevel == null);
+            if (AtLevel != null && otherNode.AtLevel != null)
+            {
+                atLevelEquals = AtLevel.Equals(otherNode.AtLevel);
+            }
+
             bool repGuidesEqual = (null == ReplicationGuides && null == otherNode.ReplicationGuides);
             if (null != ReplicationGuides && null != otherNode.ReplicationGuides)
             {
                 repGuidesEqual = ReplicationGuides.SequenceEqual(otherNode.ReplicationGuides);
             }
 
-            return arrayDimEqual && repGuidesEqual;
+            return arrayDimEqual && atLevelEquals && repGuidesEqual;
         }
 
         public override int GetHashCode()
@@ -370,6 +398,9 @@ namespace ProtoCore.AST.AssociativeAST
 
             if (ArrayDimensions != null)
                 buf.Append(ArrayDimensions.ToString());
+
+            if (AtLevel != null)
+                buf.Append(AtLevel.ToString());
 
             ReplicationGuides.ForEach(x => buf.Append("<" + x.ToString() + ">"));
 
@@ -2980,24 +3011,12 @@ namespace ProtoCore.AST.AssociativeAST
                                                                  AssociativeNode rhs,
                                                                  Operator op)
         {
-            if (lhs == null)
-                throw new ArgumentNullException("lhs");
-
-            if (rhs == null)
-                throw new ArgumentNullException("rhs");
-
             return new BinaryExpressionNode(lhs, rhs, op);
         }
 
         public static BinaryExpressionNode BuildAssignment(AssociativeNode lhs,
                                                            AssociativeNode rhs)
         {
-            if (lhs == null)
-                throw new ArgumentNullException("lhs");
-
-            if (rhs == null)
-                throw new ArgumentNullException("rhs");
-
             return new BinaryExpressionNode(lhs, rhs, Operator.assign);
         }
 

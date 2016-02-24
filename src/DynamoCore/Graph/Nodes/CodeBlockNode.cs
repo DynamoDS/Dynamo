@@ -65,7 +65,6 @@ namespace Dynamo.Graph.Nodes
         {
             ArgumentLacing = LacingStrategy.Disabled;
             this.libraryServices = libraryServices;
-            this.libraryServices.LibraryLoaded += LibraryServicesOnLibraryLoaded;
             this.ElementResolver = new ElementResolver();
         }
 
@@ -78,7 +77,6 @@ namespace Dynamo.Graph.Nodes
             X = xPos;
             Y = yPos;
             this.libraryServices = libraryServices;
-            this.libraryServices.LibraryLoaded += LibraryServicesOnLibraryLoaded;
             this.ElementResolver = resolver;
             code = userCode;
             GUID = guid;
@@ -90,12 +88,6 @@ namespace Dynamo.Graph.Nodes
         public override void Dispose()
         {
             base.Dispose();
-            libraryServices.LibraryLoaded -= LibraryServicesOnLibraryLoaded;
-        }
-
-        private void LibraryServicesOnLibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs libraryLoadedEventArgs)
-        {
-            //ProcessCodeDirect();
         }
 
         /// <summary>
@@ -856,8 +848,7 @@ namespace Dynamo.Graph.Nodes
 
         private string LocalizeIdentifier(string identifierName)
         {
-            var guid = GUID.ToString().Replace("-", string.Empty);
-            return string.Format("{0}_{1}", identifierName, guid);
+            return string.Format("{0}_{1}", identifierName, AstIdentifierGuid);
         }
 
         private class ImperativeIdentifierInPlaceMapper : ImperativeAstReplacer

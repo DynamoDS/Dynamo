@@ -63,6 +63,7 @@ namespace WpfVisualizationTests
             List<NodeModel> selectionSet = new List<NodeModel>() { node };
             var customWorkspace = model.CustomNodeManager.Collapse(
                 selectionSet.AsEnumerable(),
+                Enumerable.Empty<Dynamo.Graph.Notes.NoteModel>(),
                 model.CurrentWorkspace,
                 true,
                 new FunctionNamePromptEventArgs

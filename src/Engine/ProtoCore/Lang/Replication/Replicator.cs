@@ -23,11 +23,11 @@ namespace ProtoCore.Lang.Replication
             List<List<int>> partialGuides = new List<List<int>>();
             List<List<ZipAlgorithm>> partialGuidesLace = new List<List<ZipAlgorithm>>();
 
-            foreach (List<ProtoCore.ReplicationGuide> guidesOnParam in partialRepGuides)
+            foreach (List<ReplicationGuide> guidesOnParam in partialRepGuides)
             {
                 List<int> tempGuide = new List<int>();
                 List<ZipAlgorithm> tempGuideLaceStrategy = new List<ZipAlgorithm>();
-                foreach (ProtoCore.ReplicationGuide guide in guidesOnParam)
+                foreach (ReplicationGuide guide in guidesOnParam)
                 {
                     tempGuide.Add(guide.guideNumber);
                     tempGuideLaceStrategy.Add(guide.isLongest ? ZipAlgorithm.Longest : ZipAlgorithm.Shortest);
@@ -59,6 +59,7 @@ namespace ProtoCore.Lang.Replication
                 // indexLace.Add(guideCounter, ZipAlgorithm.Shortest);
 
                 for (int i = 0; i < partialGuides.Count; i++)
+                {
                     if (partialGuides[i].Contains(guideCounter))
                     {
                         index[guideCounter].Add(i);
@@ -100,6 +101,7 @@ namespace ProtoCore.Lang.Replication
                             }
                         }
                     }
+                }
             }
 
             //Now walk over the guides in order creating the replication 
@@ -241,29 +243,6 @@ namespace ProtoCore.Lang.Replication
         }
 
         /// <summary>
-        /// Verify that the guides are in increasing order
-        /// </summary>
-        /// <param name="partialGuides"></param>
-        private static void VerifyIncreasingGuideOrdering(List<List<int>> partialGuides)
-        {
-            foreach (List<int> guidesOnParam in partialGuides)
-            {
-                List<int> sorted = new List<int>();
-                sorted.AddRange(guidesOnParam);
-                sorted.Sort();
-
-                for (int i = 0; i < sorted.Count; i++)
-                {
-                    if (guidesOnParam[i] != sorted[i])
-                    {
-                        throw new ReplicationCaseNotCurrentlySupported(Resources.MultipleGuidesNotSupported + 
-                            string.Format(Resources.ErrorCode, "{3C5360D1}"));
-                    }
-                }
-            }
-        }
-
-        /// <summary>
         /// Convert reduction to instruction. Using zip-first strategy.
         /// 
         /// For example,
@@ -321,7 +300,32 @@ namespace ProtoCore.Lang.Replication
             return ret;
         }
 
-        public static List<List<StackValue>> ComputeAllReducedParams(List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, RuntimeCore runtimeCore)
+        /// <summary>
+        /// For each parameter, if there is a replication instruction for it, and
+        /// if it is an array, expand parameter list based on the types of elements
+        /// in that array. For example, for parameters
+        /// 
+        ///     {p1, p2, ..., pk, ..., pn} where pk is an array 
+        ///     
+        ///     {a1:int, a2:string, a3:double, ...} 
+        /// 
+        /// and there is a Cartesian replication on pk, the parameter list will be
+        /// expanded to
+        /// 
+        ///     {p1, p2, ..., a1, ..., pn}
+        ///     {p1, p2, ..., a2, ..., pn}
+        ///     {p1, p2, ..., a3, ..., pn}
+        ///     ...
+        /// 
+        /// </summary>
+        /// <param name="formalParams"></param>
+        /// <param name="replicationInstructions"></param>
+        /// <param name="runtimeCore"></param>
+        /// <returns></returns>
+        public static List<List<StackValue>> ComputeAllReducedParams(
+            List<StackValue> formalParams, 
+            List<ReplicationInstruction> replicationInstructions, 
+            RuntimeCore runtimeCore)
         {
             //Copy the types so unaffected ones get copied back directly
             List<StackValue> basicList = new List<StackValue>(formalParams);
@@ -332,54 +336,15 @@ namespace ProtoCore.Lang.Replication
 
             foreach (ReplicationInstruction ri in replicationInstructions)
             {
-                if (ri.Zipped)
-                {
-                    foreach (int index in ri.ZipIndecies)
-                    {
-                        //This should generally be a collection, so we need to do a one phase unboxing
-                        StackValue target = basicList[index];
-
-                        if (target.IsArray)
-                        {
-                            var array = runtimeCore.Heap.ToHeapObject<DSArray>(target);
-
-                            //The elements of the array are still type structures
-                            if (array.Count != 0)
-                            {
-                                var arrayStats = ArrayUtils.GetTypeExamplesForLayer(target, runtimeCore).Values;
-
-                                List<List<StackValue>> clonedList = new List<List<StackValue>>(reducedParams);
-                                reducedParams.Clear();
-
-                                foreach (StackValue sv in arrayStats)
-                                {
-                                    foreach (List<StackValue> lst in clonedList)
-                                    {
-                                        List<StackValue> newArgs = new List<StackValue>(lst);
-                                        newArgs[index] = sv;
-                                        reducedParams.Add(newArgs);
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            System.Console.WriteLine("WARNING: Replication unbox requested on Singleton. Trap: 437AD20D-9422-40A3-BFFD-DA4BAD7F3E5F");
-                        }
-                    }
-                }
-                else
+                var indices = ri.Zipped ? ri.ZipIndecies : new List<int> { ri.CartesianIndex };
+                foreach (int index in indices)
                 {
                     //This should generally be a collection, so we need to do a one phase unboxing
-                    int index = ri.CartesianIndex;
                     StackValue target = basicList[index];
 
                     if (target.IsArray)
                     {
                         var array = runtimeCore.Heap.ToHeapObject<DSArray>(target);
-
-                        //It is a collection, so cast it to an array and pull the type of the first element
-                        //@TODO(luke): Deal with sparse arrays, if the first element is null this will explode
 
                         //The elements of the array are still type structures
                         if (array.Count != 0)
@@ -424,52 +389,23 @@ namespace ProtoCore.Lang.Replication
 
             foreach (ReplicationInstruction ri in replicationInstructions)
             {
-                if (ri.Zipped)
-                {
-                    foreach (int index in ri.ZipIndecies)
-                    {
-                        //This should generally be a collection, so we need to do a one phase unboxing
-                        StackValue target = reducedParamTypes[index];
-                        StackValue reducedSV = StackValue.Null;
-
-                        if (target.IsArray)
-                        {
-                            var array = runtimeCore.Heap.ToHeapObject<DSArray>(reducedParamTypes[index]);
-
-                            //It is a collection, so cast it to an array and pull the type of the first element
-                            //The elements of the array are still type structures
-                            if (array.Count == 0)
-                                reducedSV = StackValue.Null;
-                            else
-                                reducedSV = array.GetValueFromIndex(0, runtimeCore);
-                        }
-                        else
-                        {
-                            System.Console.WriteLine("WARNING: Replication unbox requested on Singleton. Trap: 437AD20D-9422-40A3-BFFD-DA4BAD7F3E5F");
-                            reducedSV = target;
-                        }
-
-                        //reducedType.IsIndexable = false;
-                        reducedParamTypes[index] = reducedSV;
-                    }
-                }
-                else
+                var indices = ri.Zipped ? ri.ZipIndecies : new List<int> { ri.CartesianIndex };
+                foreach (int index in indices)
                 {
                     //This should generally be a collection, so we need to do a one phase unboxing
-                    int index = ri.CartesianIndex;
                     StackValue target = reducedParamTypes[index];
-                    StackValue reducedSV;
+                    StackValue reducedSV = StackValue.Null;
 
                     if (target.IsArray)
                     {
                         var array = runtimeCore.Heap.ToHeapObject<DSArray>(reducedParamTypes[index]);
 
+                        //It is a collection, so cast it to an array and pull the type of the first element
                         //The elements of the array are still type structures
                         if (array.Count == 0)
                             reducedSV = StackValue.Null;
                         else
                             reducedSV = array.GetValueFromIndex(0, runtimeCore);
-
                     }
                     else
                     {
@@ -507,6 +443,7 @@ namespace ProtoCore.Lang.Replication
                 for (int r = 0; r <= reductionDepths[i]; r++)
                 {
                     foreach (var reductions in tempRetList)
+                    //reducedType.IsIndexable = false;
                     {
                         List<int> newReductions = new List<int>(reductions);
                         newReductions.Add(r);

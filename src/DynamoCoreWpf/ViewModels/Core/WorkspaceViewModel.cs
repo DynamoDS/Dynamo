@@ -907,9 +907,7 @@ namespace Dynamo.ViewModels
 
         private void CreateNodeFromSelection(object parameter)
         {
-            CollapseNodes(
-                DynamoSelection.Instance.Selection.Where(x => x is NodeModel)
-                    .Select(x => (x as NodeModel)));
+            CollapseSelectedNodes();
         }
 
         //private void NodeFromSelectionCanExecuteChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -1063,10 +1061,9 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        ///     Collapse a set of nodes in this workspace
+        /// Collapse a set of nodes and notes currently selected in workspace
         /// </summary>
-        /// <param name="selectedNodes"> The function definition for the user-defined node </param>
-        internal void CollapseNodes(IEnumerable<NodeModel> selectedNodes)
+        internal void CollapseSelectedNodes()
         {
             var args = new FunctionNamePromptEventArgs();
             DynamoViewModel.Model.OnRequestsFunctionNamePrompt(null, args);
@@ -1074,9 +1071,12 @@ namespace Dynamo.ViewModels
             if (!args.Success)
                 return;
 
+            var selectedNodes = DynamoSelection.Instance.Selection.OfType<NodeModel>();
+            var selectedNotes = DynamoSelection.Instance.Selection.OfType<NoteModel>();
+
             DynamoViewModel.Model.AddCustomNodeWorkspace(
-                DynamoViewModel.Model.CustomNodeManager.Collapse(
-                    selectedNodes, Model, DynamoModel.IsTestMode, args));
+                DynamoViewModel.Model.CustomNodeManager.Collapse(selectedNodes,
+                selectedNotes, Model, DynamoModel.IsTestMode, args));
         }
 
         internal void Loaded()

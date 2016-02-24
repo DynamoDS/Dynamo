@@ -855,6 +855,40 @@ namespace WpfVisualizationTests
             Assert.AreEqual(1, BackgroundPreviewGeometry.TotalPoints());
         }
 
+        [Test]
+        [Category("RegressionTests")]
+        public void MAGN9434_DeleteCodeBlockNode()
+        {
+            OpenVisualizationTest("CreatePoint.dyn");
+            Assert.AreEqual(1, BackgroundPreviewGeometry.TotalPoints());
+            var codeBlockNode = ViewModel.CurrentSpace.NodeFromWorkspace<CodeBlockNodeModel>(Guid.Parse("7883d92a-ef8b-4e05-8c7d-46cfc627c994"));
+
+            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty, codeBlockNode.GUID, "Code", "p2 = Point.ByCoordinates();");
+            ViewModel.Model.ExecuteCommand(command);
+            Assert.AreEqual(1, BackgroundPreviewGeometry.TotalPoints());
+
+            var deleteCommand = new DynamoModel.DeleteModelCommand(codeBlockNode.GUID);
+            ViewModel.Model.ExecuteCommand(deleteCommand);
+            Assert.AreEqual(0, BackgroundPreviewGeometry.TotalPoints());
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void MAGN9434_DisablePreview()
+        {
+            OpenVisualizationTest("CreatePoint.dyn");
+            Assert.AreEqual(1, BackgroundPreviewGeometry.TotalPoints());
+            var codeBlockNode = ViewModel.CurrentSpace.NodeFromWorkspace<CodeBlockNodeModel>(Guid.Parse("7883d92a-ef8b-4e05-8c7d-46cfc627c994"));
+
+            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty, codeBlockNode.GUID, "Code", "p2 = Point.ByCoordinates();");
+            ViewModel.Model.ExecuteCommand(command);
+            Assert.AreEqual(1, BackgroundPreviewGeometry.TotalPoints());
+
+            var disableCommand = new DynamoModel.UpdateModelValueCommand(Guid.Empty, codeBlockNode.GUID, "IsVisible", "false");
+            ViewModel.Model.ExecuteCommand(disableCommand);
+            Assert.AreEqual(0, BackgroundPreviewGeometry.TotalPoints());
+        }
+
         private Watch3DView FindFirstWatch3DNodeView()
         {
             var views = View.ChildrenOfType<Watch3DView>();

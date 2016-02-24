@@ -573,8 +573,18 @@ namespace Dynamo.Graph.Nodes
         {
             get
             {
-                return AstBuilder.StringConstants.VarPrefix
-                    + GUID.ToString().Replace("-", string.Empty);
+                return AstBuilder.StringConstants.VarPrefix + AstIdentifierGuid;
+            }
+        }
+
+        /// <summary>
+        ///     A unique ID that will be appended to all identifiers of this node.
+        /// </summary>
+        public string AstIdentifierGuid
+        {
+            get
+            {
+                return GUID.ToString().Replace("-", string.Empty).ToLower();
             }
         }
 

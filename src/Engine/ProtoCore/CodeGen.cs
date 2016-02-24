@@ -1495,13 +1495,39 @@ namespace ProtoCore
             ++pc;
             AppendInstruction(instr);
         }
+        
+        protected void EmitPushReplicationGuide(int repGuide, bool isLongest)
+        {
+            SetEntry();
 
-        protected void EmitPushReplicationGuide(int replicationGuide)
+            Instruction instr = new Instruction();
+            instr.opCode = OpCode.PUSHREPGUIDE;
+            instr.op1 = StackValue.BuildReplicationGuide(repGuide);
+            instr.op2 = StackValue.BuildBoolean(isLongest);
+
+            ++pc;
+            AppendInstruction(instr);
+        }
+
+        protected void EmitPushLevel(int level, bool isDominant)
+        {
+            SetEntry();
+
+            Instruction instr = new Instruction();
+            instr.opCode = OpCode.PUSHLEVEL;
+            instr.op1 = StackValue.BuildInt(level);
+            instr.op2 = StackValue.BuildBoolean(isDominant);
+
+            ++pc;
+            AppendInstruction(instr);
+        }
+
+        protected void EmitPopReplicationGuides(int replicationGuide)
         {
             SetEntry();
             
             Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.PUSHINDEX;
+            instr.opCode = ProtoCore.DSASM.OpCode.POPREPGUIDES;
             instr.op1 = StackValue.BuildReplicationGuide(replicationGuide);
 
             ++pc;
@@ -1592,7 +1618,7 @@ namespace ProtoCore
         {
             EmitInstrConsole(ProtoCore.DSASM.kw.pushb, blockID.ToString());
             Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.PUSHB;
+            instr.opCode = ProtoCore.DSASM.OpCode.PUSHBLOCK;
             instr.op1 = StackValue.BuildInt(blockID);
 
             ++pc;
@@ -1802,7 +1828,7 @@ namespace ProtoCore
             }
 
             inferedType.UID = isBooleanOp ? (int)PrimitiveType.kTypeBool : inferedType.UID;
-            EmitOpWithEmptyReplicationGuide(emitReplicationGuide, StackValue.BuildInt(value), value.ToString(), node);
+            EmitOpWithEmptyAtLevelAndGuides(emitReplicationGuide, StackValue.BuildInt(value), value.ToString(), node);
 
             if (IsAssociativeArrayIndexing)
             {
@@ -1869,7 +1895,7 @@ namespace ProtoCore
             String strValue = "'" + value + "'";
             StackValue op = StackValue.BuildChar(value[0]);
 
-            EmitOpWithEmptyReplicationGuide(emitReplicationGuide, StackValue.BuildChar(value[0]), strValue, node);
+            EmitOpWithEmptyAtLevelAndGuides(emitReplicationGuide, StackValue.BuildChar(value[0]), strValue, node);
         }
        
         protected void EmitStringNode(
@@ -1891,7 +1917,7 @@ namespace ProtoCore
 
             string value = (string)sNode.Value;
             StackValue svString = core.Heap.AllocateFixedString(value);
-            EmitOpWithEmptyReplicationGuide(emitReplicationGuide, svString, "\"" + value + "\"", node);
+            EmitOpWithEmptyAtLevelAndGuides(emitReplicationGuide, svString, "\"" + value + "\"", node);
 
             if (IsAssociativeArrayIndexing && graphNode != null && graphNode.isIndexingLHS)
             {
@@ -1932,7 +1958,7 @@ namespace ProtoCore
                 inferedType.UID = (int)PrimitiveType.kTypeDouble;
             }
             inferedType.UID = isBooleanOp ? (int)PrimitiveType.kTypeBool : inferedType.UID;
-            EmitOpWithEmptyReplicationGuide(emitReplicationGuide, StackValue.BuildDouble(value), value.ToString(), node);
+            EmitOpWithEmptyAtLevelAndGuides(emitReplicationGuide, StackValue.BuildDouble(value), value.ToString(), node);
 
             if (IsAssociativeArrayIndexing)
             {
@@ -1997,7 +2023,7 @@ namespace ProtoCore
                 inferedType.UID = (int)PrimitiveType.kTypeBool;
             }
 
-            EmitOpWithEmptyReplicationGuide(emitReplicationGuide, StackValue.BuildBoolean(value), value.ToString(), node);
+            EmitOpWithEmptyAtLevelAndGuides(emitReplicationGuide, StackValue.BuildBoolean(value), value.ToString(), node);
         }
 
         protected void EmitNullNode(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone)
@@ -2008,17 +2034,32 @@ namespace ProtoCore
             }
 
             inferedType.UID = isBooleanOp ? (int)PrimitiveType.kTypeBool : inferedType.UID;
-            EmitOpWithEmptyReplicationGuide(emitReplicationGuide, StackValue.Null, Literal.Null, node);
+            EmitOpWithEmptyAtLevelAndGuides(emitReplicationGuide, StackValue.Null, Literal.Null, node);
         }
 
-        protected void EmitOpWithEmptyReplicationGuide(bool emit, StackValue op, string value, AST.Node node)
+        protected void EmitOpWithEmptyAtLevelAndGuides(bool emit, StackValue op, string value, AST.Node node)
         {
             if (emit)
             {
+                EmitAtLevel(null);
                 EmitReplicationGuides(new List<AST.AssociativeAST.AssociativeNode>());
             }
             EmitInstrConsole(ProtoCore.DSASM.kw.push, value);
             EmitPush(op, node.line, node.col);
+        }
+
+        protected void EmitAtLevel(AST.AssociativeAST.AtLevelNode atLevel)
+        {
+            if (atLevel == null)
+            {
+                EmitInstrConsole(kw.pushlevel, "@0");
+                EmitPushLevel(0, false);
+            }
+            else
+            {
+                EmitInstrConsole(kw.pushlevel, atLevel.ToString());
+                EmitPushLevel((int)atLevel.Level, atLevel.IsDominant);
+            }
         }
 
         protected void EmitReplicationGuides(List<AST.AssociativeAST.AssociativeNode> replicationGuidesList)
@@ -2029,26 +2070,16 @@ namespace ProtoCore
                 replicationGuides = replicationGuidesList.Count;
                 for (int n = 0; n < replicationGuides; ++n)
                 {
-                    Validity.Assert(replicationGuidesList[n] is AST.AssociativeAST.ReplicationGuideNode);
                     var repGuideNode = replicationGuidesList[n] as AST.AssociativeAST.ReplicationGuideNode;
-
-                    Validity.Assert(repGuideNode.RepGuide is AST.AssociativeAST.IdentifierNode);
                     var nodeGuide = repGuideNode.RepGuide as AST.AssociativeAST.IdentifierNode;
 
-                    // Emit the repguide
-                    EmitInstrConsole(kw.push, nodeGuide.Value);
-                    StackValue opguide = StackValue.BuildInt(System.Convert.ToInt64(nodeGuide.Value));
-                    EmitPush(opguide);
-
-                    // Emit the rep guide property
-                    EmitInstrConsole(kw.push, repGuideNode.IsLongest.ToString());
-                    StackValue opGuideProperty = StackValue.BuildBoolean(repGuideNode.IsLongest);
-                    EmitPush(opGuideProperty);
+                    EmitInstrConsole(kw.pushrepguide, nodeGuide.Value + (repGuideNode.IsLongest ? "L" : ""));
+                    EmitPushReplicationGuide(Convert.ToInt32(nodeGuide.Value), repGuideNode.IsLongest);
                 }
             }
 
-            EmitInstrConsole(kw.pushindex, replicationGuides + "[guide]");
-            EmitPushReplicationGuide(replicationGuides);
+            EmitInstrConsole(kw.poprepguides, replicationGuides.ToString());
+            EmitPopReplicationGuides(replicationGuides);
         }
 
 
@@ -2119,6 +2150,7 @@ namespace ProtoCore
             var exprNode = node as AST.AssociativeAST.ExprListNode;
             if (exprNode != null && emitReplicationGuide)
             {
+                EmitAtLevel(exprNode.AtLevel);
                 EmitReplicationGuides(exprNode.ReplicationGuides);
             }
         }

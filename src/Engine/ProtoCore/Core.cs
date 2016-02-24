@@ -39,6 +39,18 @@ namespace ProtoCore
         public bool isLongest {get; private set;}
     }
 
+    public class AtLevel
+    {
+        public AtLevel(int level, bool isDominant)
+        {
+            Level = level;
+            IsDominant = isDominant;
+        }
+
+        public int Level { get; private set; }
+        public bool IsDominant { get; private set; }
+    }
+
     public class Options
     {
         public Options()

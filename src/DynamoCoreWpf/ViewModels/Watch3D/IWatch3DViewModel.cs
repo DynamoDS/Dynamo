@@ -94,6 +94,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true);
 
         /// <summary>
+        /// Finds geometries corresponding to a node and remove
+        /// them from the collection of geometry objects to be drawn.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="requestUpdate"></param>
+        void DeleteGeometryForNode(NodeModel node, bool requestUpdate = true);
+
+        /// <summary>
         /// Highlight geometry corresponding to their respective nodes 
         /// </summary>
         /// <param name="nodes"></param>
