@@ -848,8 +848,7 @@ namespace Dynamo.Graph.Nodes
 
         private string LocalizeIdentifier(string identifierName)
         {
-            var guid = GUID.ToString().Replace("-", string.Empty);
-            return string.Format("{0}_{1}", identifierName, guid);
+            return string.Format("{0}_{1}", identifierName, AstIdentifierGuid);
         }
 
         private class ImperativeIdentifierInPlaceMapper : ImperativeAstReplacer

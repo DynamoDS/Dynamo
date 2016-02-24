@@ -1110,7 +1110,7 @@ namespace Dynamo.Tests
             SelectAll(nodes);
 
             var functionNode = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DSFunction>().FirstOrDefault();
-            var guid = functionNode.GUID.ToString().Replace("-", "").ToLower();
+            var guid = functionNode.AstIdentifierGuid;
 
             var command = new DynamoModel.ConvertNodesToCodeCommand();
             CurrentDynamoModel.ExecuteCommand(command);
