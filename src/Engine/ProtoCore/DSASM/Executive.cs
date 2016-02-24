@@ -2740,13 +2740,7 @@ namespace ProtoCore.DSASM
                         logWatchWindow(blockId, (int)op1.opdata);
                     }
 
-                    if (runtimeCore.Options.IsDeltaExecution && Properties.executingGraphNode != null)
-                    {
-                        if (symbol.classScope == Constants.kGlobalScope && symbol.functionIndex == Constants.kGlobalScope)
-                        {
-                            runtimeCore.ModifiedASTGuids.Add(Properties.executingGraphNode.guid);
-                        }
-                    }
+                    RecordExecutedGraphNode();
                     break;
 
                 case AddressType.StaticMemVarIndex:
@@ -2898,6 +2892,8 @@ namespace ProtoCore.DSASM
             {
                 logWatchWindow(blockId, symbolnode.symbolTableIndex);
             }
+
+            RecordExecutedGraphNode();
             return ret;
         }
 
@@ -6710,6 +6706,19 @@ namespace ProtoCore.DSASM
                     }
                 default: //Unknown OpCode
                     throw new NotImplementedException("Unknown Op code, NIE Marker: {D6028708-CD47-4D0B-97FC-E681BD65DB5C}");
+            }
+        }
+
+        private void RecordExecutedGraphNode()
+        {
+            if (runtimeCore.Options.IsDeltaExecution && IsGlobalScope())
+            {
+                // Record GUID of executed graph node.
+                var graphNode = Properties.executingGraphNode;
+                if (graphNode != null && !graphNode.guid.Equals(Guid.Empty))
+                {
+                    runtimeCore.ExecutedAstGuids.Add(graphNode.guid);
+                }
             }
         }
 

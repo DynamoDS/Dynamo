@@ -1155,7 +1155,8 @@ namespace ProtoScript.Runners
         void ReInitializeLiveRunner();
         IDictionary<Guid, List<ProtoCore.Runtime.WarningEntry>> GetRuntimeWarnings();
         IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings();
-        List<Guid> GetModifiedASTGuids(Guid sessionID);
+        List<Guid> GetExecutedAstGuids(Guid sessionID);
+        void RemoveRecordedAstGuidsForSession(Guid SessionID);
     }
 
     public partial class LiveRunner : ILiveRunner, IDisposable
@@ -1255,7 +1256,7 @@ namespace ProtoScript.Runners
         private bool terminating;
         private ChangeSetComputer changeSetComputer;
         private ChangeSetApplier changeSetApplier;
-        private Dictionary<Guid, List<Guid>> modifiedASTGuidsForSession = new Dictionary<Guid, List<Guid>>();
+        private Dictionary<Guid, List<Guid>> executedAstGuids = new Dictionary<Guid, List<Guid>>();
 
         public LiveRunner()
             : this(new Configuration())
@@ -1797,8 +1798,8 @@ namespace ProtoScript.Runners
 
             CompileAndExecuteForDeltaExecution(finalDeltaAstList);
 
-            var guids = new List<Guid>(runtimeCore.ModifiedASTGuids.ToList());
-            modifiedASTGuidsForSession[syncData.SessionID] = guids;
+            var guids = new List<Guid>(runtimeCore.ExecutedAstGuids.ToList());
+            executedAstGuids[syncData.SessionID] = guids;
         }
 
         private void SynchronizeInternal(string code)
@@ -1976,16 +1977,22 @@ namespace ProtoScript.Runners
             return ret;
         }
 
-        public List<Guid> GetModifiedASTGuids(Guid sessionID)
+        public List<Guid> GetExecutedAstGuids(Guid sessionID)
         {
-            if (modifiedASTGuidsForSession.ContainsKey(sessionID))
+            List<Guid> guids = null;
+            if (executedAstGuids.TryGetValue(sessionID, out guids))
             {
-                return modifiedASTGuidsForSession[sessionID];
+                return guids;
             }
             else
             {
                 return new List<Guid>();
             }
+        }
+
+        public void RemoveRecordedAstGuidsForSession(Guid SessionID)
+        {
+            executedAstGuids.Remove(SessionID);
         }
         #endregion
     }
