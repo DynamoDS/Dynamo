@@ -437,9 +437,14 @@ namespace Dynamo.Engine
             return liveRunnerServices.GetRuntimeWarnings();
         }
 
-        internal List<Guid> GetModifiedAstGuids(Guid sessionID)
+        internal List<Guid> GetExecutedAstGuids(Guid sessionID)
         {
-            return liveRunnerServices.GetModifiedAstGuids(sessionID);
+            return liveRunnerServices.GetExecutedAstGuids(sessionID);
+        }
+
+        internal void RemoveRecordedAstGuidsForSession(Guid sessionID)
+        {
+            liveRunnerServices.RemoveRecordedAstGuidsForSession(sessionID);
         }
 
         /// <summary>
