@@ -1395,7 +1395,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 case RenderDescriptions.ManipulatorAxis:
                     var manipulator = model as DynamoGeometryModel3D;
                     if (null == manipulator)
+                    {
                         manipulator = CreateDynamoGeometryModel3D(rp);
+                        AttachedProperties.SetIsSpecialRenderPackage(manipulator, true);
+                    }
                     
                     var mb = new MeshBuilder();
                     mb.AddArrow(rp.Lines.Positions[0], rp.Lines.Positions[1], 0.1);
@@ -1413,14 +1416,20 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 case RenderDescriptions.AxisLine:
                     var centerline = model as DynamoLineGeometryModel3D;
                     if (null == centerline)
+                    {
                         centerline = CreateLineGeometryModel3D(rp, 0.3);
+                        AttachedProperties.SetIsSpecialRenderPackage(centerline, true);
+                    }
                     centerline.Geometry = rp.Lines;
                     Model3DDictionary[id] = centerline;
                     return true;
                 case RenderDescriptions.ManipulatorPlane:
                     var plane = model as DynamoLineGeometryModel3D;
                     if (null == plane)
+                    {
                         plane = CreateLineGeometryModel3D(rp, 0.7);
+                        AttachedProperties.SetIsSpecialRenderPackage(plane, true);
+                    }
                     plane.Geometry = rp.Lines;
                     Model3DDictionary[id] = plane;
                     return true;

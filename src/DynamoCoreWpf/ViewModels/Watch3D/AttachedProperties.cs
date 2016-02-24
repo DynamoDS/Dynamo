@@ -81,7 +81,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public static bool GetIsFrozen(UIElement element)
         {
-            return (bool)element.GetValue(IsFrozenProperty);
+            return (bool)element.GetValue(IsFrozenProperty) &&
+                !IsSpecialRenderPackage(element);
         }
 
 
@@ -124,6 +125,25 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     geom.Attach(host);
                 }
             }
+        }
+
+        /// <summary>
+        /// A flag indicating whether the geometry is special render package, such as used to draw manipulators.
+        /// </summary>
+        public static readonly DependencyProperty IsSpecialRenderPackageProperty = DependencyProperty.RegisterAttached(
+            "IsSpecialRenderPackage",
+            typeof(bool),
+            typeof(GeometryModel3D),
+            new PropertyMetadata(false));
+
+        public static void SetIsSpecialRenderPackage(UIElement element, bool value)
+        {
+            element.SetValue(IsSpecialRenderPackageProperty, value);
+        }
+
+        public static bool IsSpecialRenderPackage(UIElement element)
+        {
+            return (bool)element.GetValue(IsSpecialRenderPackageProperty);
         }
 
     }
