@@ -3422,5 +3422,45 @@ answer=foo({ val }[0]<1> , { val }[0]<2>)[0]; // expected : { 0.5, 0.5 }
             thisTest.RunScriptSource(code);
             thisTest.Verify("answer", new object[] { 0.5, 0.5 });
         }
+
+        [Test]
+        [Category("Replication")]
+        public void TestReplicationGuideTakesPriotry()
+        {
+            // Verify it always replicates on the first parameter
+            string code = @"
+def foo(xs:var[], ys:var, zs:var)
+{
+    return = Sum(xs) + ys + zs;
+};
+xs = {1, 2, 3};
+ys = ""-foo"";
+zs = ""-bar"";
+r = foo(xs<1>, ys, zs);
+            ";
+
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r", new object[] { "1-foo-bar", "2-foo-bar", "3-foo-bar" });
+        }
+
+        [Test]
+        [Category("Replication")]
+        public void TestReplicationGuideTakesPriotry2()
+        {
+            // Verify it always replicates on the first parameter
+            string code = @"
+def foo(xs:var[], ys:var, zs:var)
+{
+    return = Sum(xs) + ys + zs;
+};
+xs = {1, 2, 3};
+ys = ""-foo"";
+zs = ""-bar"";
+r = foo(xs<1L>, ys<1L>, zs<1L>);
+            ";
+
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r", new object[] { "1-foo-bar", "2-foo-bar", "3-foo-bar" });
+        }
     }
 }

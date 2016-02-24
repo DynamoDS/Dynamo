@@ -5,7 +5,7 @@
     <Dynamo.Nodes.CodeBlockNodeModel guid="60444879-4643-48c0-83b4-b7ab2b42adc2" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="248.53774214748" y="349.487222166938" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1..10;" ShouldFocus="false" />
     <Dynamo.Nodes.CodeBlockNodeModel guid="94e29f41-376b-4206-ad54-63c012589bd0" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="244.634449314005" y="178.450434042835" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{1,2,5,4};" ShouldFocus="false" />
     <Dynamo.Nodes.CodeBlockNodeModel guid="c1892233-f4ad-4922-af6f-ed361027181f" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="243.749349222392" y="91.5725441901859" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="null;" ShouldFocus="false" />
-    <Dynamo.Nodes.DSFunction guid="79d158b3-fa40-4069-8bb5-153e6fb13858" type="Dynamo.Nodes.DSFunction" nickname="Reorder" x="455.994549059398" y="346.302249145124" isVisible="true" isUpstreamVisible="true" lacing="Longest" assembly="" function="Reorder@var[],var[]" />
+    <Dynamo.Nodes.DSFunction guid="79d158b3-fa40-4069-8bb5-153e6fb13858" type="Dynamo.Nodes.DSFunction" nickname="Reorder" x="455.994549059398" y="346.302249145124" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="Reorder@var[],var[]" />
     <Dynamo.Nodes.CodeBlockNodeModel guid="c938e81e-37b9-4720-a8d8-86299345c95c" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="250.348021450983" y="455.657717362613" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{1,2,5,4};" ShouldFocus="false" />
   </Elements>
   <Connectors>
