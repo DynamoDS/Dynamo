@@ -112,7 +112,12 @@ namespace CoreNodeModels
             }
         }
 
-        public static int ParseSelectedIndex(string index, IList<DynamoDropDownItem> items)
+        protected virtual int ParseSelectedIndex(string index, IList<DynamoDropDownItem> items)
+        {
+            return ParseSelectedIndexImpl(index, items);
+        }
+
+        public static int ParseSelectedIndexImpl(string index, IList<DynamoDropDownItem> items)
         {
             int selectedIndex = -1;
 
@@ -136,7 +141,12 @@ namespace CoreNodeModels
             return selectedIndex;
         }
 
-        public static string SaveSelectedIndex(int index, IList<DynamoDropDownItem> items )
+        protected virtual string SaveSelectedIndex(int index, IList<DynamoDropDownItem> items )
+        {
+            return SaveSelectedIndexImpl(index, items);
+        }
+
+        public static string SaveSelectedIndexImpl(int index, IList<DynamoDropDownItem> items )
         {
             // If nothing is selected or there are no
             // items in the collection, than return -1
@@ -149,7 +159,7 @@ namespace CoreNodeModels
             return string.Format("{0}:{1}", index, XmlEscape(item.Name));
         }
 
-        private static string XmlEscape(string unescaped)
+        protected static string XmlEscape(string unescaped)
         {
             var doc = new XmlDocument();
             XmlNode node = doc.CreateElement("root");
@@ -157,7 +167,7 @@ namespace CoreNodeModels
             return node.InnerXml;
         }
 
-        private static string XmlUnescape(string escaped)
+        protected static string XmlUnescape(string escaped)
         {
             var doc = new XmlDocument();
             XmlNode node = doc.CreateElement("root");

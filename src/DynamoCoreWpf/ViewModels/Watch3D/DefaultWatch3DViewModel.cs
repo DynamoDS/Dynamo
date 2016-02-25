@@ -443,7 +443,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private void OnNodeRemovedFromWorkspace(NodeModel node)
         {
             UnregisterNodeEventHandlers(node);
-            DeleteGeometryForIdentifier(node.AstIdentifierBase);
+            DeleteGeometryForNode(node);
         }
 
         public virtual CameraData GetCameraInformation()
@@ -452,6 +452,20 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             return null;
         }
 
+        /// <summary>
+        /// Call this method to remove render pakcages that created by node.
+        /// </summary>
+        /// <param name="node"></param>
+        public virtual void RemoveGeometryForNode(NodeModel node)
+        {
+            // Override in inherited classes.
+        }
+
+        /// <summary>
+        /// Call this method to add the render package. 
+        /// </summary>
+        /// <param name="packages"></param>
+        /// <param name="forceAsyncCall"></param>
         public virtual void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages, bool forceAsyncCall = false)
         {
             // Override in inherited classes.
@@ -464,6 +478,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 dynamoViewModel.UIDispatcher.Invoke(action);
             }
+        }
+
+        public virtual void DeleteGeometryForNode(NodeModel node, bool requestUpdate = true)
+        {
+            // Override in derived classes.
         }
 
         public virtual void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)

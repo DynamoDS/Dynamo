@@ -1981,4 +1981,7 @@ Do you want to install the latest Dynamo update?</value>
   <data name="PreviewListLabel" xml:space="preserve">
     <value>List</value>
   </data>
+  <data name="InvalidTimeZoneMessage" xml:space="preserve">
+    <value>Could not sign in at this moment. Check the date, time and time zone settings and try to sign in again.</value>
+  </data>
 </root>
