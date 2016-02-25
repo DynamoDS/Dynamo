@@ -5515,5 +5515,21 @@ r5 = foo(xs@@-5);
             thisTest.Verify("r0", xs);
             thisTest.Verify("r5", new object[] { xs });
         }
+
+        [Test]
+        public void TestDominantList()
+        {
+            string code = @"
+def foo(xs:var[])
+{
+    return = Sum(xs);
+}
+
+xs = {{{1,2}, {3, 4}}, {{5, 6}, {7, 8}}};
+r1 = foo(xs@@-2);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { new object[] { 3, 7 }, new object[] { 11, 15 } });
+        }
     }
 }
