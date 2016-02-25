@@ -1848,27 +1848,21 @@ namespace ProtoCore
                 }
             }
 
-            if (ret.IsArray)
-            {
-                // Allocate an empty array to hold the value
-                var newArray = runtimeCore.RuntimeMemory.Heap.AllocateArray(new StackValue[] { });
-                var newRet = runtimeCore.Heap.ToHeapObject<DSArray>(newArray);
+            // Allocate an empty array to hold the value
+            var newRet = runtimeCore.RuntimeMemory.Heap.AllocateArray(new StackValue[] { });
+            var array = runtimeCore.Heap.ToHeapObject<DSArray>(newRet);
 
-                var values = runtimeCore.Heap.ToHeapObject<DSArray>(ret).Values;
-                var valueIndicePairs = values.Zip(indicesList, (val, idx) => new { Value = val, Indices = idx });
-                foreach (var item in valueIndicePairs)
-                {
-                    var value = item.Value;
-                    var indices = item.Indices.Select(x => StackValue.BuildInt(x)).ToArray();
-                    newRet.SetValueForIndices(indices, value, runtimeCore);
-                }
-
-                return newArray;
-            }
-            else
+            // Write the result back
+            var values = ret.IsArray ? runtimeCore.Heap.ToHeapObject<DSArray>(ret).Values : Enumerable.Repeat(ret, 1);
+            var valueIndicePairs = values.Zip(indicesList, (val, idx) => new { Value = val, Indices = idx });
+            foreach (var item in valueIndicePairs)
             {
-                return ret;
+                var value = item.Value;
+                var indices = item.Indices.Select(x => StackValue.BuildInt(x)).ToArray();
+                array.SetValueForIndices(indices, value, runtimeCore);
             }
+
+            return newRet;
         }
 
         private static List<ElementAtLevel> GetElementsAtLevel(StackValue argument, int level, List<int> indices, RuntimeCore runtimeCore)
