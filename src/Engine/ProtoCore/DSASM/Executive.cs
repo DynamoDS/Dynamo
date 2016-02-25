@@ -858,11 +858,6 @@ namespace ProtoCore.DSASM
                 }
 
                 GCDotMethods(fNode.Name, ref sv, dotCallDimensions, arguments);
-
-                if (fNode.Name.ToCharArray()[0] != '%' && fNode.Name.ToCharArray()[0] != '_')
-                {
-                    exe.calledInFunction = false;
-                }
             }
             return sv;
         }
@@ -5286,12 +5281,7 @@ namespace ProtoCore.DSASM
 
             int ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
             int fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
-
-            int blockId = (int)SX.opdata;
-
-            StackValue svBlockDecl = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterSX);
-            Validity.Assert(svBlockDecl.IsBlockIndex);
-            blockId = (int)svBlockDecl.opdata;
+            int blockId = (int)rmem.GetAtRelative(StackFrame.kFrameIndexRegisterSX).opdata;
 
             ProcedureNode procNode = GetProcedureNode(blockId, ci, fi);
 
@@ -5318,14 +5308,11 @@ namespace ProtoCore.DSASM
             RestoreFromCall();
             runtimeCore.RunningBlock = executingBlock;
 
-
             // If we're returning from a block to a function, the instruction stream needs to be restored.
             StackValue sv = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterTX);
             Validity.Assert(sv.IsCallingConvention);
             CallingConvention.CallType callType = (CallingConvention.CallType)sv.opdata;
-            bool explicitCall = CallingConvention.CallType.kExplicit == callType;
-            IsExplicitCall = explicitCall;
-
+            IsExplicitCall = CallingConvention.CallType.kExplicit == callType; ;
 
             List<bool> execStateRestore = new List<bool>();
             if (!runtimeCore.Options.IDEDebugMode || runtimeCore.Options.RunMode == InterpreterMode.kExpressionInterpreter)
@@ -5353,9 +5340,7 @@ namespace ProtoCore.DSASM
                 }
             }
 
-
-
-            terminate = !explicitCall;
+            terminate = !IsExplicitCall;
 
             // Comment Jun: Dispose calls are always implicit and need to terminate
             // TODO Jun: This instruction should not know about dispose
@@ -5373,13 +5358,12 @@ namespace ProtoCore.DSASM
 
             Properties = PopInterpreterProps();
 
-            if (explicitCall)
+            if (IsExplicitCall)
             {
                 bool wasDebugPropsPopped = false;
                 if (!isDispose)
                 {
                     wasDebugPropsPopped = DebugReturn(procNode, pc);
-
                 }
 
                 // This condition should only be reached in the following cases:
@@ -5396,133 +5380,6 @@ namespace ProtoCore.DSASM
 
             SetupGraphNodesInScope();          
             RestoreGraphNodeExecutionStates(procNode, execStateRestore);
-        }
-
-        private void SerialReplication(ProcedureNode procNode, ref int exeblock, int ci, int fi, DebugFrame debugFrame = null)
-        {
-            // TODO: Decide where to insert this common code block for Serial mode and Debugging - pratapa
-            if (runtimeCore.Options.ExecutionMode == ProtoCore.ExecutionMode.Serial || runtimeCore.Options.IDEDebugMode)
-            {
-                RX = CallSite.PerformReturnTypeCoerce(procNode, runtimeCore, RX);
-
-                runtimeCore.ContinuationStruct.RunningResult.Add(RX);
-                runtimeCore.ContinuationStruct.Result = RX;
-
-                pc = runtimeCore.ContinuationStruct.InitialPC;
-
-                if (runtimeCore.ContinuationStruct.Done)
-                {
-                    RX = rmem.Heap.AllocateArray(runtimeCore.ContinuationStruct.RunningResult.ToArray());
-
-                    runtimeCore.ContinuationStruct.RunningResult.Clear();
-                    runtimeCore.ContinuationStruct.IsFirstCall = true;
-
-                    if (runtimeCore.Options.IDEDebugMode)
-                    {
-                        // If stepping over function call in debug mode
-                        if (runtimeCore.DebugProps.RunMode == Runmode.StepNext)
-                        {
-                            // if stepping over outermost function call
-                            if (!runtimeCore.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.IsFunctionStepOver))
-                            {
-                                runtimeCore.DebugProps.SetUpStepOverFunctionCalls(runtimeCore, procNode, debugFrame.ExecutingGraphNode, debugFrame.HasDebugInfo);
-                            }
-                        }
-                        // The DebugFrame passed here is the previous one that was popped off before this call
-                        // In the case of Dot call the debugFrame obtained here is the one for the member function
-                        // for both Break and non Break cases - pratapa
-                        DebugPerformCoercionAndGC(debugFrame);
-
-                        // If call returns to Dot Call, restore debug props for Dot call
-                        debugFrame = runtimeCore.DebugProps.DebugStackFrame.Peek();
-                        if (debugFrame.IsDotCall)
-                        {
-                            List<Instruction> instructions = istream.instrList;
-                            bool wasPopped = RestoreDebugPropsOnReturnFromBuiltIns();
-                            if (wasPopped)
-                            {
-                                executingBlock = exeblock;
-                                runtimeCore.DebugProps.CurrentBlockId = exeblock;
-                            }
-                            else
-                            {
-                                runtimeCore.DebugProps.RestoreCallrForNoBreak(runtimeCore, procNode, false);
-                            }
-                            DebugPerformCoercionAndGC(debugFrame);
-                        }
-
-                        //runtimeCore.DebugProps.DebugEntryPC = currentPC;
-                    }
-                    // Perform return type coercion, GC and/or GC for Dot methods for Non-debug, Serial mode replication case
-                    else
-                    {
-                        // If member function
-                        // 1. Release array arguments to Member function
-                        // 2. Release this pointer
-                        bool isBaseCall = false;
-                        StackValue? thisPtr = null;
-                        if (thisPtr != null)
-                        {
-                            // Replicating member function
-                            PerformCoercionAndGC(null, false, thisPtr, runtimeCore.ContinuationStruct.InitialArguments, runtimeCore.ContinuationStruct.InitialDotCallDimensions);
-
-                            // Perform coercion and GC for Dot call
-                            ProcedureNode dotCallprocNode = null;
-                            List<StackValue> dotCallArgs = new List<StackValue>();
-                            List<StackValue> dotCallDimensions = new List<StackValue>();
-                            PerformCoercionAndGC(dotCallprocNode, false, null, dotCallArgs, dotCallDimensions);
-                        }
-                        else
-                        {
-                            PerformCoercionAndGC(procNode, isBaseCall, null, runtimeCore.ContinuationStruct.InitialArguments, runtimeCore.ContinuationStruct.InitialDotCallDimensions);
-                        }
-                    }
-
-                    pc++;
-                    return;
-
-                }
-                else
-                {
-                    // Jump back to Callr to call ResolveForReplication and recompute fep with next argument
-                    runtimeCore.ContinuationStruct.IsFirstCall = false;
-
-                    ReturnToCallSiteForReplication(procNode, ci, fi);
-                    return;
-                }
-
-            }
-        }
-
-        private void ReturnToCallSiteForReplication(ProcedureNode procNode, int ci, int fi)
-        {
-            // Jump back to Callr to call ResolveForReplication and recompute fep with next argument
-            // Need to push new arguments, then cache block, dim and type, push them before calling callr - pratapa
-
-            // This functionality has to be common for both Serial mode execution and the debugger - pratap
-            List<StackValue> nextArgs = runtimeCore.ContinuationStruct.NextDispatchArgs;
-
-            foreach (var arg in nextArgs)
-            {
-                rmem.Push(arg);
-            }
-
-            // TODO: Currently functions can be defined only in the global and level 1 blocks (BlockIndex = 0 or 1)
-            // Ideally the procNode.runtimeIndex should capture this information but this needs to be tested - pratapa
-            rmem.Push(StackValue.BuildBlockIndex(procNode.RuntimeIndex));
-
-            // The function call dimension for the subsequent feps are assumed to be 0 for now
-            // This is not being used currently except for stack alignment - pratapa
-            rmem.Push(StackValue.BuildArrayDimension(0));
-
-            // This is unused in Callr() but needed for stack alignment
-            rmem.Push(StackValue.BuildStaticType((int)PrimitiveType.kTypeVar));
-
-            // Depth
-            rmem.Push(StackValue.BuildInt(runtimeCore.ContinuationStruct.InitialDepth));
-
-            bool explicitCall = true;
-            Callr(procNode.RuntimeIndex, fi, ci, ref explicitCall);
         }
 
         private void JMP_Handler(Instruction instruction)
@@ -6150,129 +6007,6 @@ namespace ProtoCore.DSASM
             gcRoots.AddRange(runtimeCore.CallSiteGCRoots);
             gcRoots.AddRange(rmem.Stack.Where(s => s.IsReferenceType));
             return gcRoots;
-        }
-
-        private void GC()
-        {
-            var currentFramePointer = rmem.FramePointer;
-            var frames = rmem.GetStackFrames();
-            var blockId = executingBlock;
-            var gcRoots = new List<StackValue>();
-
-            // Now garbage collection only happens on the top most block. 
-            // We will loose this limiation soon.
-            if (blockId != 0 || 
-                rmem.CurrentStackFrame.StackFrameType != StackFrameType.kTypeLanguage)
-            {
-                return;
-            }
-
-#if DEBUG
-            var gcRootSymbolNames = new List<string>();
-#endif
-
-            var isInNestedImperativeBlock = frames.Any(f =>
-                {
-                    var callerBlockId = f.FunctionCallerBlock;
-                    var cbn = exe.CompleteCodeBlocks[callerBlockId];
-                    return cbn.language == Language.Imperative;
-                });
-
-            if (isInNestedImperativeBlock)
-            {
-                return;
-            }
-
-            foreach (var stackFrame in frames)
-            {
-                Validity.Assert(blockId != Constants.kInvalidIndex);
-                var functionScope = stackFrame.FunctionScope;
-                var classScope = stackFrame.ClassScope;
-
-                IEnumerable<SymbolNode> symbolsInScope;
-                if (blockId == 0)
-                {
-                    ICollection<SymbolNode> symbols;
-                    if (classScope == Constants.kGlobalScope)
-                    {
-                        symbols = exe.runtimeSymbols[blockId].symbolList.Values;
-                    }
-                    else
-                    {
-                        symbols = exe.classTable.ClassNodes[classScope].Symbols.symbolList.Values;
-                    }
-
-                    symbolsInScope = symbols.Where(s => s.functionIndex == functionScope);
-                }
-                else
-                {
-                    // Call some language block, so symbols should come from
-                    // the corresponding language block. 
-                    var symbols = exe.runtimeSymbols[blockId]
-                                     .symbolList
-                                     .Values
-                                     .Where(s => s.absoluteFunctionIndex == functionScope &&
-                                                 s.absoluteClassScope == classScope);
-
-                    List<SymbolNode> blockSymbols = new List<SymbolNode>();
-                    blockSymbols.AddRange(symbols);
-
-                    // One kind of block is construct block. This kind of block
-                    // is not true block because the VM doesn't push a stack
-                    // frame for it, and all variables defined in construct
-                    // block are visible in language block. For example, 
-                    // if-else, for-loop
-                    var workingList = new Stack<int>();
-                    workingList.Push(blockId);
-
-                    while (workingList.Any())
-                    {
-                        blockId = workingList.Pop();
-                        var block = runtimeCore.DSExecutable.CompleteCodeBlocks[blockId];
-
-                        foreach (var child in block.children)
-                        {
-                            if (child.blockType != CodeBlockType.kConstruct)
-                            {
-                                continue;
-                            }
-
-                            var childBlockId = child.codeBlockId;
-                            workingList.Push(childBlockId);
-
-                            var childSymbols = exe.runtimeSymbols[childBlockId]
-                                                  .symbolList
-                                                  .Values
-                                                  .Where(s => s.absoluteFunctionIndex == functionScope && 
-                                                              s.absoluteClassScope == classScope);
-                            blockSymbols.AddRange(childSymbols);
-                        }
-                    }
-
-                    symbolsInScope = blockSymbols;
-                }
-
-                foreach (var symbol in symbolsInScope)
-                {
-                    StackValue value = rmem.GetSymbolValueOnFrame(symbol, currentFramePointer);
-                    if (value.IsReferenceType)
-                    {
-                        gcRoots.Add(value);
-#if DEBUG
-                        gcRootSymbolNames.Add(symbol.name);
-#endif
-                    }
-                }
-#if DEBUG
-                gcRootSymbolNames.Add("__thisptr");
-#endif
-                gcRoots.Add(stackFrame.ThisPtr);
-                blockId = stackFrame.FunctionCallerBlock;
-                currentFramePointer = stackFrame.FramePointer;
-            }
-            gcRoots.Add(RX);
-
-            rmem.Heap.GCMarkAndSweep(gcRoots, this);
         }
     }
 }
