@@ -1409,7 +1409,7 @@ namespace ProtoCore
             StackValue ret = Execute(resolvesFeps, context, arguments, replicationInstructions, stackFrame, runtimeCore, funcGroup);
             if (!ret.IsExplicitCall)
             {
-                ret = RestoreDominantListStructure(ret, argumentAtLevels, replicationInstructions);      
+                ret = RestoreDominantListStructure(ret, argumentAtLevels, replicationInstructions, runtimeCore); 
             }
             runtimeCore.RemoveCallSiteGCRoot(CallSiteID);
             return ret;
@@ -1809,10 +1809,20 @@ namespace ProtoCore
             return ret;
         }
 
-        private static StackValue RestoreDominantListStructure(StackValue ret, List<ArgumentAtLevel> argAtLevels, List<ReplicationInstruction> instructions)
+        private static StackValue RestoreDominantListStructure(
+            StackValue ret,
+            List<ArgumentAtLevel> argAtLevels,
+            List<ReplicationInstruction> instructions,
+            RuntimeCore runtimeCore)
         {
             int domListIndex = argAtLevels.FindIndex(x => x.IsDominant);
             if (domListIndex < 0)
+            {
+                return ret;
+            }
+
+            var indicesList = argAtLevels[domListIndex].Indices;
+            if (!indicesList.Any())
             {
                 return ret;
             }
@@ -1838,8 +1848,27 @@ namespace ProtoCore
                 }
             }
 
-            var argumentAtLevel = argAtLevels[domListIndex];
-            return ret;
+            if (ret.IsArray)
+            {
+                // Allocate an empty array to hold the value
+                var newArray = runtimeCore.RuntimeMemory.Heap.AllocateArray(new StackValue[] { });
+                var newRet = runtimeCore.Heap.ToHeapObject<DSArray>(newArray);
+
+                var values = runtimeCore.Heap.ToHeapObject<DSArray>(ret).Values;
+                var valueIndicePairs = values.Zip(indicesList, (val, idx) => new { Value = val, Indices = idx });
+                foreach (var item in valueIndicePairs)
+                {
+                    var value = item.Value;
+                    var indices = item.Indices.Select(x => StackValue.BuildInt(x)).ToArray();
+                    newRet.SetValueForIndices(indices, value, runtimeCore);
+                }
+
+                return newArray;
+            }
+            else
+            {
+                return ret;
+            }
         }
 
         private static List<ElementAtLevel> GetElementsAtLevel(StackValue argument, int level, List<int> indices, RuntimeCore runtimeCore)
