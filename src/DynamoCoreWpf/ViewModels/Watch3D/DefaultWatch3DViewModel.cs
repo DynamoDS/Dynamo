@@ -471,6 +471,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in inherited classes.
         }
 
+        public virtual void AddLabelForPath(string path)
+        {
+            // Override in inherited classes.
+        }
+
         public void Invoke(Action action)
         {
             var dynamoViewModel = viewModel as DynamoViewModel;
