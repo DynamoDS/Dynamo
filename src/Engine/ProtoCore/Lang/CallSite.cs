@@ -1377,7 +1377,8 @@ namespace ProtoCore
 
             #endregion
 
-            arguments = GetArgumentsAtLevels(arguments, atLevels, runtimeCore).Select(a => a.Argument).ToList();
+            var argumentAtLevels = GetArgumentsAtLevels(arguments, atLevels, runtimeCore);
+            arguments = argumentAtLevels.Select(a => a.Argument).ToList();
 
             partialReplicationGuides = PerformRepGuideDemotion(arguments, partialReplicationGuides, runtimeCore);
 
@@ -1406,6 +1407,10 @@ namespace ProtoCore
 
             arguments.ForEach(x => runtimeCore.AddCallSiteGCRoot(CallSiteID, x));
             StackValue ret = Execute(resolvesFeps, context, arguments, replicationInstructions, stackFrame, runtimeCore, funcGroup);
+            if (!ret.IsExplicitCall)
+            {
+                ret = RestoreDominantListStructure(ret, argumentAtLevels, replicationInstructions);      
+            }
             runtimeCore.RemoveCallSiteGCRoot(CallSiteID);
             return ret;
         }
@@ -1801,6 +1806,39 @@ namespace ProtoCore
             {
                 ret = PerformReturnTypeCoerce(finalFep, runtimeCore, ret);
             }
+            return ret;
+        }
+
+        private static StackValue RestoreDominantListStructure(StackValue ret, List<ArgumentAtLevel> argAtLevels, List<ReplicationInstruction> instructions)
+        {
+            int domListIndex = argAtLevels.FindIndex(x => x.IsDominant);
+            if (domListIndex < 0)
+            {
+                return ret;
+            }
+
+            // If there is replication on the dominant list, it should be the
+            // topest replicaiton. 
+            if (instructions != null && instructions.Any())
+            {
+                var firstInstruciton = instructions.First();
+                if (firstInstruciton.Zipped)
+                {
+                    if (!firstInstruciton.ZipIndecies.Contains(domListIndex))
+                    {
+                        return ret;
+                    }
+                }
+                else
+                {
+                    if (firstInstruciton.CartesianIndex != domListIndex)
+                    {
+                        return ret;
+                    }
+                }
+            }
+
+            var argumentAtLevel = argAtLevels[domListIndex];
             return ret;
         }
 
