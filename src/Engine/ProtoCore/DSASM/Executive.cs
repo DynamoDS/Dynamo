@@ -329,19 +329,96 @@ namespace ProtoCore.DSASM
 
         private void RestoreFromCall()
         {
-            StackValue svExecutingBlock = rmem.GetAtRelative(StackFrame.kFrameIndexFunctionCallerBlock);
-            Validity.Assert(svExecutingBlock.IsBlockIndex);
+            int ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
+            int fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
+            int blockId = (int)rmem.GetAtRelative(StackFrame.kFrameIndexRegisterSX).opdata;
+            if (runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
+            {
+                ReturnSiteGC(blockId, ci, fi);
+            }
 
-            executingBlock = (int)svExecutingBlock.opdata;
+            ProcedureNode procNode = GetProcedureNode(blockId, ci, fi);
+            if (procNode.IsConstructor)
+            {
+                RX = rmem.GetAtRelative(StackFrame.kFrameIndexThisPtr);
+            }
+
+            pc = (int)rmem.GetAtRelative(StackFrame.kFrameIndexReturnAddress).opdata;
+            executingBlock = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunctionCallerBlock).opdata;
             istream = exe.instrStreamList[executingBlock];
-
-            fepRun = false;
+            runtimeCore.RunningBlock = executingBlock;
 
             StackFrameType callerType = (StackFrameType)rmem.GetAtRelative(StackFrame.kFrameIndexCallerStackFrameType).opdata;
-            if (callerType == StackFrameType.kTypeFunction)
+            fepRun = callerType == StackFrameType.kTypeFunction;
+
+            // If we're returning from a block to a function, the instruction stream needs to be restored.
+            StackValue sv = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterTX);
+            CallingConvention.CallType callType = (CallingConvention.CallType)sv.opdata;
+            IsExplicitCall = CallingConvention.CallType.kExplicit == callType || CallingConvention.CallType.kExplicitBase == callType;
+
+            List<bool> execStateRestore = new List<bool>();
+            if (!runtimeCore.Options.IDEDebugMode || runtimeCore.Options.RunMode == InterpreterMode.kExpressionInterpreter)
             {
-                fepRun = true;
+                int localCount = procNode.LocalCount;
+                int paramCount = procNode.ArgumentTypes.Count;
+
+                execStateRestore = RetrieveExecutionStatesFromStack(localCount, paramCount);
+
+                rmem.FramePointer = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer).opdata;
+                rmem.PopFrame(StackFrame.kStackFrameSize + localCount + paramCount + execStateRestore.Count);
+
+                if (runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
+                {
+                    // Restoring the registers require the current frame pointer of the stack frame 
+                    RestoreRegistersFromStackFrame();
+                    bounceType = (CallingConvention.BounceType)TX.opdata;
+                }
+
+                if (execStateRestore.Any())
+                {
+                    Validity.Assert(execStateRestore.Count == procNode.GraphNodeList.Count);
+                    for (int n = 0; n < execStateRestore.Count; ++n)
+                    {
+                        procNode.GraphNodeList[n].isDirty = execStateRestore[n];
+                    }
+                }
             }
+
+            terminate = !IsExplicitCall;
+            bool isDispose = CoreUtils.IsDisposeMethod(procNode.Name);
+            if (isDispose)
+            {
+                terminate = true;
+            }
+
+            // Let the return graphNode always be active 
+            if (!procNode.IsConstructor && null != Properties.executingGraphNode)
+            {
+                Properties.executingGraphNode.isDirty = true;
+            }
+            Properties = PopInterpreterProps();
+
+            if (IsExplicitCall)
+            {
+                bool wasDebugPropsPopped = false;
+                if (!isDispose)
+                {
+                    wasDebugPropsPopped = DebugReturn(procNode, pc);
+                }
+
+                // This condition should only be reached in the following cases:
+                // 1. Debug StepOver or External Function call in non-replicating mode
+                // 2. Normal execution in Serial (explicit call), non-replicating mode
+                if (!procNode.IsConstructor && !wasDebugPropsPopped)
+                {
+                    RX = CallSite.PerformReturnTypeCoerce(procNode, runtimeCore, RX);
+                    StackValue svRet = RX;
+                    GCDotMethods(procNode.Name, ref svRet, Properties.functionCallDotCallDimensions, Properties.functionCallArguments);
+                    RX = svRet;
+                }
+            }
+
+            SetupGraphNodesInScope();          
         }
 
         private void RestoreFromBounce()
@@ -3675,11 +3752,14 @@ namespace ProtoCore.DSASM
 
         public ProcedureNode GetProcedureNode(int blockId, int classIndex, int functionIndex)
         {
-            if (Constants.kGlobalScope != classIndex)
+            if (classIndex == Constants.kGlobalScope)
             {
+                return exe.procedureTable[blockId].Procedures[functionIndex];
+            }
+            else
+            { 
                 return exe.classTable.ClassNodes[classIndex].ProcTable.Procedures[functionIndex];
             }
-            return exe.procedureTable[blockId].Procedures[functionIndex];
         }
 
         private void GetLocalAndParamCount(int blockId, int classIndex, int functionIndex, out int localCount, out int paramCount)
@@ -5088,68 +5168,7 @@ namespace ProtoCore.DSASM
         private void RETC_Handler()
         {
             runtimeVerify(rmem.ValidateStackFrame());
-
-            RX = rmem.GetAtRelative(StackFrame.kFrameIndexThisPtr);
-
-            int ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
-            int fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
-
-            pc = (int)rmem.GetAtRelative(StackFrame.kFrameIndexReturnAddress).opdata;
-
-            // block id is used in ReturnSiteGC to get the procedure node if it is not a member function 
-            // not meaningful here, because we are inside a constructor
-            int blockId = (int)SX.opdata;
-
-            if (runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
-            {
-                ReturnSiteGC(blockId, ci, fi);
-            }
-
-
             RestoreFromCall();
-            runtimeCore.RunningBlock = executingBlock;
-
-            // If we're returning from a block to a function, the instruction stream needs to be restored.
-            StackValue sv = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterTX);
-            Validity.Assert(sv.IsCallingConvention);
-            CallingConvention.CallType callType = (CallingConvention.CallType)sv.opdata;
-            bool explicitCall = CallingConvention.CallType.kExplicit == callType || CallingConvention.CallType.kExplicitBase == callType;
-            IsExplicitCall = explicitCall;
-
-            List<bool> execStateRestore = new List<bool>();
-            if (!runtimeCore.Options.IDEDebugMode || runtimeCore.Options.RunMode == InterpreterMode.kExpressionInterpreter)
-            {
-                int localCount;
-                int paramCount;
-                GetLocalAndParamCount(blockId, ci, fi, out localCount, out paramCount);
-
-                execStateRestore = RetrieveExecutionStatesFromStack(localCount, paramCount);
-
-                rmem.FramePointer = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer).opdata;
-                rmem.PopFrame(StackFrame.kStackFrameSize + localCount + paramCount + execStateRestore.Count);
-
-                if (runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
-                {
-                    // Restoring the registers require the current frame pointer of the stack frame 
-                    RestoreRegistersFromStackFrame();
-
-                    bounceType = (CallingConvention.BounceType)TX.opdata;
-                }
-            }
-
-
-            terminate = !explicitCall;
-
-            Properties = PopInterpreterProps();
-
-            ProcedureNode procNode = GetProcedureNode(blockId, ci, fi);
-            if (explicitCall)
-            {
-                DebugReturn(procNode, pc);
-            }
-
-            SetupGraphNodesInScope();   
-            RestoreGraphNodeExecutionStates(procNode, execStateRestore);
         }
 
         private void RETB_Handler()
@@ -5263,27 +5282,9 @@ namespace ProtoCore.DSASM
             return execStateRestore;
         }
 
-        private void RestoreGraphNodeExecutionStates(ProcedureNode procNode, List<bool> execStateRestore)
-        {
-            if (execStateRestore.Count > 0 )
-            {
-                Validity.Assert(execStateRestore.Count == procNode.GraphNodeList.Count);
-                for (int n = 0; n < execStateRestore.Count; ++n)
-                {
-                    procNode.GraphNodeList[n].isDirty = execStateRestore[n];
-                }
-            }
-        }
-
         private void RETURN_Handler()
         {
             runtimeVerify(rmem.ValidateStackFrame());
-
-            int ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
-            int fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
-            int blockId = (int)rmem.GetAtRelative(StackFrame.kFrameIndexRegisterSX).opdata;
-
-            ProcedureNode procNode = GetProcedureNode(blockId, ci, fi);
 
             if (runtimeCore.Options.ExecuteSSA)
             {
@@ -5297,89 +5298,7 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            pc = (int)rmem.GetAtRelative(StackFrame.kFrameIndexReturnAddress).opdata;
-            executingBlock = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunctionCallerBlock).opdata;
-
-            if (runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
-            {
-                ReturnSiteGC(blockId, ci, fi);
-            }
-
             RestoreFromCall();
-            runtimeCore.RunningBlock = executingBlock;
-
-            // If we're returning from a block to a function, the instruction stream needs to be restored.
-            StackValue sv = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterTX);
-            Validity.Assert(sv.IsCallingConvention);
-            CallingConvention.CallType callType = (CallingConvention.CallType)sv.opdata;
-            IsExplicitCall = CallingConvention.CallType.kExplicit == callType; ;
-
-            List<bool> execStateRestore = new List<bool>();
-            if (!runtimeCore.Options.IDEDebugMode || runtimeCore.Options.RunMode == InterpreterMode.kExpressionInterpreter)
-            {
-                // Get stack frame size
-                int localCount;
-                int paramCount;
-                GetLocalAndParamCount(blockId, ci, fi, out localCount, out paramCount);
-
-                execStateRestore = RetrieveExecutionStatesFromStack(localCount, paramCount);
-
-                // Pop the stackframe
-                rmem.FramePointer = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer).opdata;
-
-                // Get the size of the stackframe and all variable size contents (local, args and exec states)
-                int stackFrameSize = StackFrame.kStackFrameSize + localCount + paramCount + execStateRestore.Count;
-                rmem.PopFrame(stackFrameSize);
-
-                if (runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
-                {
-                    // Restoring the registers require the current frame pointer of the stack frame 
-                    RestoreRegistersFromStackFrame();
-
-                    bounceType = (CallingConvention.BounceType)TX.opdata;
-                }
-            }
-
-            terminate = !IsExplicitCall;
-
-            // Comment Jun: Dispose calls are always implicit and need to terminate
-            // TODO Jun: This instruction should not know about dispose
-            bool isDispose = CoreUtils.IsDisposeMethod(procNode.Name);
-            if (isDispose)
-            {
-                terminate = true;
-            }
-
-            // Let the return graphNode always be active 
-            if (null != Properties.executingGraphNode)
-            {
-                Properties.executingGraphNode.isDirty = true;
-            }
-
-            Properties = PopInterpreterProps();
-
-            if (IsExplicitCall)
-            {
-                bool wasDebugPropsPopped = false;
-                if (!isDispose)
-                {
-                    wasDebugPropsPopped = DebugReturn(procNode, pc);
-                }
-
-                // This condition should only be reached in the following cases:
-                // 1. Debug StepOver or External Function call in non-replicating mode
-                // 2. Normal execution in Serial (explicit call), non-replicating mode
-                if (!wasDebugPropsPopped)
-                {
-                    RX = CallSite.PerformReturnTypeCoerce(procNode, runtimeCore, RX);
-                    StackValue svRet = RX;
-                    GCDotMethods(procNode.Name, ref svRet, Properties.functionCallDotCallDimensions, Properties.functionCallArguments);
-                    RX = svRet;
-                }
-            }
-
-            SetupGraphNodesInScope();          
-            RestoreGraphNodeExecutionStates(procNode, execStateRestore);
         }
 
         private void JMP_Handler(Instruction instruction)
