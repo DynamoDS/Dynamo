@@ -406,6 +406,11 @@ namespace ProtoCore.DSASM
                         RX = IndexIntoArray(RX, Properties.functionCallDotCallDimensions);
                         rmem.PopFrame(Constants.kDotCallArgCount);
                     }
+
+                    if (Properties.DominantStructure != null)
+                    {
+                        RX = AtLevelExtractor.RestoreDominantStructure(RX, Properties.DominantStructure, null, runtimeCore); 
+                    }
                 }
             }
 
@@ -897,8 +902,8 @@ namespace ProtoCore.DSASM
                 //      2. In the return instruction
                 //
                 Properties.functionCallArguments = arguments;
-
                 Properties.functionCallDotCallDimensions = dotCallDimensions;
+                Properties.DominantStructure = domStructure;
 
                 explicitCall = true;
                 IsExplicitCall = explicitCall;
@@ -1024,6 +1029,7 @@ namespace ProtoCore.DSASM
             {
                 Properties.functionCallArguments = arguments;
                 Properties.functionCallDotCallDimensions = new List<StackValue>();
+                Properties.DominantStructure = domStructure;
 
                 int entryPC = (int)sv.opdata;
                 CallExplicit(entryPC);
