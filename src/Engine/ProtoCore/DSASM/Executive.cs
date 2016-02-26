@@ -412,9 +412,11 @@ namespace ProtoCore.DSASM
                 if (!procNode.IsConstructor && !wasDebugPropsPopped)
                 {
                     RX = CallSite.PerformReturnTypeCoerce(procNode, runtimeCore, RX);
-                    StackValue svRet = RX;
-                    GCDotMethods(procNode.Name, ref svRet, Properties.functionCallDotCallDimensions, Properties.functionCallArguments);
-                    RX = svRet;
+                    if (CoreUtils.IsDotMethod(procNode.Name))
+                    {
+                        RX = IndexIntoArray(RX, Properties.functionCallDotCallDimensions);
+                        rmem.PopFrame(Constants.kDotCallArgCount);
+                    }
                 }
             }
 
@@ -647,16 +649,6 @@ namespace ProtoCore.DSASM
             rmem.PopFrame(argumentCount);
 
             return arguments;
-        }
-
-        public void GCDotMethods(string name, ref StackValue sv, List<StackValue> dotCallDimensions = null, List<StackValue> arguments = null)
-        {
-            // Index into the resulting array
-            if (name == Constants.kDotMethodName)
-            {
-                sv = IndexIntoArray(sv, dotCallDimensions);
-                rmem.PopFrame(Constants.kDotCallArgCount);
-            }
         }
 
         public StackValue Callr(int blockDeclId,
@@ -934,7 +926,11 @@ namespace ProtoCore.DSASM
                     runtimeCore.DebugProps.RestoreCallrForNoBreak(runtimeCore, fNode);
                 }
 
-                GCDotMethods(fNode.Name, ref sv, dotCallDimensions, arguments);
+                if (CoreUtils.IsDotMethod(fNode.Name))
+                {
+                    sv = IndexIntoArray(sv, dotCallDimensions);
+                    rmem.PopFrame(Constants.kDotCallArgCount);
+                }
             }
             return sv;
         }
@@ -1852,23 +1848,14 @@ namespace ProtoCore.DSASM
         private void DebugPerformCoercionAndGC(DebugFrame debugFrame)
         {
             ProcedureNode procNode = debugFrame.FinalFepChosen != null ? debugFrame.FinalFepChosen.procedureNode : null;
-
-            PerformCoercionAndGC(procNode, debugFrame.IsBaseCall, debugFrame.ThisPtr, debugFrame.Arguments, debugFrame.DotCallDimensions);
-        }
-
-        private void PerformCoercionAndGC(ProcedureNode procNode, bool isBaseCall, StackValue? thisPtr, List<StackValue> Arguments, List<StackValue> DotCallDimensions)
-        {
-            // finalFep is forced to be null for base class constructor calls
-            // and for such calls 'PerformReturnTypeCoerce' is not called 
-            if (!isBaseCall)
+            if (!debugFrame.IsBaseCall)
             {
                 RX = CallSite.PerformReturnTypeCoerce(procNode, runtimeCore, RX);
 
-                if (thisPtr == null)
+                if (debugFrame.ThisPtr == null && CoreUtils.IsDotMethod(procNode.Name))
                 {
-                    StackValue sv = RX;
-                    GCDotMethods(procNode.Name, ref sv, DotCallDimensions, Arguments);
-                    RX = sv;
+                    RX = IndexIntoArray(RX, debugFrame.DotCallDimensions);
+                    rmem.PopFrame(Constants.kDotCallArgCount);
                 }
             }
         }
