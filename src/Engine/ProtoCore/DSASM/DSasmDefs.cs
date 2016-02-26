@@ -102,7 +102,6 @@ namespace ProtoCore.DSASM
         public const string pushrepguide = "pushguide";
         public const string pushlevel = "pushlevel";
         public const string ret = "ret";
-        public const string retc = "retc";
         public const string retb = "retb";
         public const string retcn = "retcn";
         public const string pop = "pop";
