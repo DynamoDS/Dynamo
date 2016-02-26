@@ -105,20 +105,21 @@ r5 = foo(xs@-5);
             thisTest.Verify("r5", new object[] { xs });
         }
 
+        [Test]
         public void TestDominantListOnConstructor()
         {
             string code = @"
 import (AtLevelTestClass from ""FFITarget.dll"");
 xs = { { { 1,2}, { 3, 4} } };
-as = AtLevelTestClass(xs@@-1);
-r1 = as.Y;
+as = AtLevelTestClass.AtLevelTestClass(xs@@-1);
+r1 = as.V;
             ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r1", new object[] { new object[] { new object[] { 1, 2 }, new object[] { 3, 4 } } });
         }
 
         [Test]
-        public void TestDominantList01()
+        public void TestDominantList01Case1()
         {
             string code = @"
 def foo(xs:var[])
@@ -131,6 +132,22 @@ r1 = foo(xs@@-2);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r1", new object[] { new object[] { 3, 7 }, new object[] { 11, 15 } });
+        }
+
+        [Test]
+        public void TestDominantList01Case2()
+        {
+            string code = @"
+def foo(xs:var[])
+{
+    return = Sum(xs);
+}
+
+xs = {{{1,2}, {3, 4}}, {{5, 6}, {7, 8}}};
+r1 = foo(xs@@-1);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { new object[] { new object[] { 36 } } });
         }
 
         [Test]

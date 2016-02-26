@@ -10,9 +10,13 @@ namespace FFITarget
     {
         public int V { get; set; }
 
+        public AtLevelTestClass()
+        {
+        }
+
         public AtLevelTestClass(int v)
         {
-            V = V;
+            V = v;
         }
 
         public static int Sum(List<int> values)
