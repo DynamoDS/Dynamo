@@ -6,6 +6,7 @@ using ProtoCore.Exceptions;
 using ProtoCore.Utils;
 using ProtoCore.Runtime;
 using ProtoCore.Properties;
+using ProtoCore.Lang.Replication;
 
 namespace ProtoCore.DSASM
 { 
@@ -881,7 +882,11 @@ namespace ProtoCore.DSASM
             explicitCall = false;
             IsExplicitCall = explicitCall;
 
-            sv = callsite.JILDispatch(arguments, replicationGuides, atLevels, stackFrame, runtimeCore, runtimeContext);
+            var argumentAtLevels = AtLevelExtractor.GetArgumentsAtLevels(arguments, atLevels, runtimeCore);
+            var domStructure = AtLevelExtractor.GetDominantStructure(argumentAtLevels);
+            arguments = argumentAtLevels.Select(a => a.Argument).ToList();
+
+            sv = callsite.JILDispatch(arguments, replicationGuides, domStructure, stackFrame, runtimeCore, runtimeContext);
             if (sv.IsExplicitCall)
             {
                 //
@@ -1003,9 +1008,13 @@ namespace ProtoCore.DSASM
             SX = StackValue.BuildBlockIndex(0);
             stackFrame.SX = SX;
 
+            var argumentAtLevels = AtLevelExtractor.GetArgumentsAtLevels(arguments, atLevels, runtimeCore);
+            var domStructure = AtLevelExtractor.GetDominantStructure(argumentAtLevels);
+            arguments = argumentAtLevels.Select(a => a.Argument).ToList();
+
             StackValue sv = callsite.JILDispatch(arguments,
                                                  repGuides,
-                                                 atLevels,
+                                                 domStructure,
                                                  stackFrame,
                                                  runtimeCore,
                                                  new Runtime.Context());

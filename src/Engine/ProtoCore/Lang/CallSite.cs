@@ -1303,7 +1303,7 @@ namespace ProtoCore
             Context context, 
             List<StackValue> arguments, 
             List<List<ReplicationGuide>> replicationGuides,
-            List<AtLevel> atLevels,
+            DominantListStructure domintListStructure,
             StackFrame stackFrame, RuntimeCore runtimeCore)
         {
 #if DEBUG
@@ -1311,13 +1311,13 @@ namespace ProtoCore
 #endif
             // Dispatch method
             context.IsImplicitCall = true;
-            return DispatchNew(context, arguments, replicationGuides, atLevels, stackFrame, runtimeCore);
+            return DispatchNew(context, arguments, replicationGuides, domintListStructure, stackFrame, runtimeCore);
         }
 
         public StackValue JILDispatch(
             List<StackValue> arguments, 
             List<List<ReplicationGuide>> replicationGuides,
-            List<AtLevel> atLevels, 
+            DominantListStructure domintListStructure,
             StackFrame stackFrame, 
             RuntimeCore runtimeCore, 
             Context context)
@@ -1327,7 +1327,7 @@ namespace ProtoCore
             ArgumentSanityCheck(arguments);
 #endif
             // Dispatch method
-            return DispatchNew(context, arguments, replicationGuides, atLevels, stackFrame, runtimeCore);
+            return DispatchNew(context, arguments, replicationGuides, domintListStructure, stackFrame, runtimeCore);
         }
 
         //Dispatch
@@ -1335,7 +1335,7 @@ namespace ProtoCore
             Context context, 
             List<StackValue> arguments, 
             List<List<ReplicationGuide>> partialReplicationGuides, 
-            List<AtLevel> atLevels,
+            DominantListStructure domintListStructure,
             StackFrame stackFrame, RuntimeCore runtimeCore)
         {
             // Update the CallsiteExecutionState with 
@@ -1377,9 +1377,6 @@ namespace ProtoCore
 
             #endregion
 
-            var argumentAtLevels = GetArgumentsAtLevels(arguments, atLevels, runtimeCore);
-            arguments = argumentAtLevels.Select(a => a.Argument).ToList();
-
             partialReplicationGuides = PerformRepGuideDemotion(arguments, partialReplicationGuides, runtimeCore);
 
             //Replication Control is an ordered list of the elements that we have to replicate over
@@ -1409,7 +1406,7 @@ namespace ProtoCore
             StackValue ret = Execute(resolvesFeps, context, arguments, replicationInstructions, stackFrame, runtimeCore, funcGroup);
             if (!ret.IsExplicitCall)
             {
-                ret = RestoreDominantListStructure(ret, argumentAtLevels, replicationInstructions, runtimeCore); 
+                ret = AtLevelExtractor.RestoreDominantStructure(ret, domintListStructure, replicationInstructions, runtimeCore); 
             }
             runtimeCore.RemoveCallSiteGCRoot(CallSiteID);
             return ret;
@@ -1807,135 +1804,6 @@ namespace ProtoCore
                 ret = PerformReturnTypeCoerce(finalFep, runtimeCore, ret);
             }
             return ret;
-        }
-
-        private static StackValue RestoreDominantListStructure(
-            StackValue ret,
-            List<ArgumentAtLevel> argAtLevels,
-            List<ReplicationInstruction> instructions,
-            RuntimeCore runtimeCore)
-        {
-            int domListIndex = argAtLevels.FindIndex(x => x.IsDominant);
-            if (domListIndex < 0)
-            {
-                return ret;
-            }
-
-            var indicesList = argAtLevels[domListIndex].Indices;
-            if (!indicesList.Any())
-            {
-                return ret;
-            }
-
-            // If there is replication on the dominant list, it should be the
-            // topest replicaiton. 
-            if (instructions != null && instructions.Any())
-            {
-                var firstInstruciton = instructions.First();
-                if (firstInstruciton.Zipped)
-                {
-                    if (!firstInstruciton.ZipIndecies.Contains(domListIndex))
-                    {
-                        return ret;
-                    }
-                }
-                else
-                {
-                    if (firstInstruciton.CartesianIndex != domListIndex)
-                    {
-                        return ret;
-                    }
-                }
-            }
-
-            // Allocate an empty array to hold the value
-            var newRet = runtimeCore.RuntimeMemory.Heap.AllocateArray(new StackValue[] { });
-            var array = runtimeCore.Heap.ToHeapObject<DSArray>(newRet);
-
-            // Write the result back
-            var values = ret.IsArray ? runtimeCore.Heap.ToHeapObject<DSArray>(ret).Values : Enumerable.Repeat(ret, 1);
-            var valueIndicePairs = values.Zip(indicesList, (val, idx) => new { Value = val, Indices = idx });
-            foreach (var item in valueIndicePairs)
-            {
-                var value = item.Value;
-                var indices = item.Indices.Select(x => StackValue.BuildInt(x)).ToArray();
-                array.SetValueForIndices(indices, value, runtimeCore);
-            }
-
-            return newRet;
-        }
-
-        private static List<ElementAtLevel> GetElementsAtLevel(StackValue argument, int level, List<int> indices, RuntimeCore runtimeCore)
-        {
-            var array = runtimeCore.Heap.ToHeapObject<DSArray>(argument);
-            if (array == null)
-            {
-                return new List<ElementAtLevel>();
-            }
-
-            int count = array.Values.Count();
-            if (level == 0)
-            {
-                return array.Values.Zip(Enumerable.Range(0, count), (v, i) =>
-                {
-                    var newIndices = new List<int>(indices);
-                    newIndices.Add(i);
-                    return new ElementAtLevel(v, newIndices);
-                }).ToList() ;
-            }
-            else
-            {
-                return array.Values.Zip(Enumerable.Range(0, count), (v, i) =>
-                {
-                    var newIndices = new List<int>(indices);
-                    newIndices.Add(i);
-                    return GetElementsAtLevel(v, level - 1, newIndices, runtimeCore);
-                }).SelectMany(vs => vs).ToList();
-            }
-        }
-
-        private static ArgumentAtLevel GetArgumentAtLevel(StackValue argument, AtLevel atLevel, RuntimeCore runtimeCore)
-        {
-            if (atLevel.Level >= 0)
-            {
-                return new ArgumentAtLevel(argument);
-            }
-
-            int maxDepth = Replicator.GetMaxReductionDepth(argument, runtimeCore);
-            int nestedLevel = maxDepth + atLevel.Level;
-
-            // Promote the array
-            while (nestedLevel < 0)
-            {
-                argument = runtimeCore.RuntimeMemory.Heap.AllocateArray(new StackValue[1] { argument });
-                nestedLevel++;
-            }
-
-            if (nestedLevel == 0)
-            {
-                return new ArgumentAtLevel(argument);
-            }
-            else
-            {
-                var elements = GetElementsAtLevel(argument, nestedLevel, new List<int>(), runtimeCore);
-                argument = runtimeCore.RuntimeMemory.Heap.AllocateArray(elements.Select(e => e.Element).ToArray());
-                var indices = elements.Select(e => e.Indices).ToList();
-                return new ArgumentAtLevel(argument, indices, atLevel.IsDominant); 
-            }
-        }
-
-        private static List<ArgumentAtLevel> GetArgumentsAtLevels(List<StackValue> arguments, List<AtLevel> atLevels, RuntimeCore runtimeCore)
-        {
-            if (atLevels.All(x => x.Level >= 0))
-                return arguments.Select(a => new ArgumentAtLevel(a)).ToList();
-
-            List<ArgumentAtLevel> argumentAtLevels = new List<ArgumentAtLevel>();
-            for (int i = 0; i < arguments.Count; i++)
-            {
-                var arg = GetArgumentAtLevel(arguments[i], atLevels[i], runtimeCore);
-                argumentAtLevels.Add(arg);
-            }
-            return argumentAtLevels;
         }
 
         /// <summary>

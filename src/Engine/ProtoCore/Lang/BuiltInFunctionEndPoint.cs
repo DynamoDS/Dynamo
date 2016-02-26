@@ -700,8 +700,12 @@ namespace ProtoCore.Lang
                                                    thisObject);
             }
 
+            var argumentAtLevels = AtLevelExtractor.GetArgumentsAtLevels(arguments, atLevels, runtimeCore);
+            var domStructure = AtLevelExtractor.GetDominantStructure(argumentAtLevels);
+            arguments = argumentAtLevels.Select(a => a.Argument).ToList();
+
             arguments.ForEach(x => runtimeCore.AddCallSiteGCRoot(callsite.CallSiteID, x));
-            StackValue ret = callsite.JILDispatchViaNewInterpreter(context, arguments, replicationGuides, atLevels, newStackFrame, runtimeCore);
+            StackValue ret = callsite.JILDispatchViaNewInterpreter(context, arguments, replicationGuides, domStructure, newStackFrame, runtimeCore);
             runtimeCore.RemoveCallSiteGCRoot(callsite.CallSiteID);
 
             // Restore debug properties after returning from a CALL/CALLR

@@ -139,7 +139,7 @@ namespace ProtoCore.Lang
                                         new Runtime.Context(), 
                                         args,
                                         new List<List<ProtoCore.ReplicationGuide>>(), 
-                                        new List<AtLevel>(),
+                                        null,
                                         newStackFrame,
                                         runtimeCore);
 
