@@ -655,21 +655,6 @@ namespace ProtoAssociative
             //AppendInstruction(instr);
         }
 
-        private void EmitRetc(int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
-            int eline = ProtoCore.DSASM.Constants.kInvalidIndex, int ecol = ProtoCore.DSASM.Constants.kInvalidIndex)
-        {
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.RETC;
-
-            ++pc;
-            instr.debug = GetDebugObject(line, col, eline, ecol, ProtoCore.DSASM.Constants.kInvalidIndex);
-            codeBlock.instrStream.instrList.Add(instr);
-
-            // TODO: Figure out why using AppendInstruction fails for adding these instructions to ExpressionInterpreter
-            //AppendInstruction(instr, line, col);
-            updatePcDictionary(line, col);
-        }
-        
         protected override void EmitRetb( int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
             int endline = ProtoCore.DSASM.Constants.kInvalidIndex, int endcol = ProtoCore.DSASM.Constants.kInvalidIndex)
         {
@@ -5487,7 +5472,7 @@ namespace ProtoAssociative
                 int startpc = pc;
 
                 // Constructors auto return
-                EmitInstrConsole(ProtoCore.DSASM.kw.retc);
+                EmitInstrConsole(ProtoCore.DSASM.kw.ret);
 
                 // Stepping out of a constructor body will have the execution cursor 
                 // placed right at the closing curly bracket of the constructor definition.
@@ -5504,7 +5489,7 @@ namespace ProtoAssociative
                 // because end-column of "FunctionBody" here is *after* the closing 
                 // curly bracket, so we want one before that.
                 // 
-                EmitRetc(closeCurlyBracketLine, closeCurlyBracketColumn - 1,
+                EmitReturn(closeCurlyBracketLine, closeCurlyBracketColumn - 1,
                     closeCurlyBracketLine, closeCurlyBracketColumn);
 
                 // Build and append a graphnode for this return statememt

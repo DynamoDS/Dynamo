@@ -617,8 +617,7 @@ namespace ProtoCore
                 {
                     Instruction instr = istream.instrList[pc];
                     // We still want to break at the closing brace of a function or ctor call or language block
-                    if (instr.debug != null && instr.opCode != OpCode.RETC && instr.opCode != OpCode.RETURN && 
-                        (instr.opCode != OpCode.RETB)) 
+                    if (instr.debug != null && instr.opCode != OpCode.RETURN && (instr.opCode != OpCode.RETB)) 
                     {
                         if (runtimeCore.Breakpoints.Contains(instr))
                             runtimeCore.Breakpoints.Remove(instr);

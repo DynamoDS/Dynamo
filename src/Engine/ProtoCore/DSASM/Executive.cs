@@ -2364,10 +2364,7 @@ namespace ProtoCore.DSASM
                 Instruction executeInstruction = instructions[pc];
                 Exec(instructions[pc]);
 
-                bool restoreInstructionStream =
-                    executeInstruction.opCode == OpCode.CALLR ||
-                    executeInstruction.opCode == OpCode.RETURN
-                    || executeInstruction.opCode == OpCode.RETC;
+                bool restoreInstructionStream = executeInstruction.opCode == OpCode.CALLR || executeInstruction.opCode == OpCode.RETURN;
                 if (restoreInstructionStream && IsExplicitCall)
                 {
                     // The instruction stream list is updated on callr
@@ -2380,7 +2377,7 @@ namespace ProtoCore.DSASM
                 // Check if the current instruction is a return from a function call or constructor
 
                 DebugFrame tempFrame = null;
-                if (!IsExplicitCall && (instructions[runtimeCore.DebugProps.DebugEntryPC].opCode == OpCode.RETURN || instructions[runtimeCore.DebugProps.DebugEntryPC].opCode == OpCode.RETC))
+                if (!IsExplicitCall && instructions[runtimeCore.DebugProps.DebugEntryPC].opCode == OpCode.RETURN)
                 {
                     int ci, fi;
                     bool isReplicating;
@@ -5167,8 +5164,7 @@ namespace ProtoCore.DSASM
 
         private void RETC_Handler()
         {
-            runtimeVerify(rmem.ValidateStackFrame());
-            RestoreFromCall();
+            RETURN_Handler();
         }
 
         private void RETB_Handler()
@@ -5851,12 +5847,6 @@ namespace ProtoCore.DSASM
                 case OpCode.CALLR:
                     {
                         CALLR_Handler(instruction);
-                        return;
-                    }
-
-                case OpCode.RETC:
-                    {
-                        RETC_Handler();
                         return;
                     }
 
