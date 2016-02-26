@@ -105,6 +105,18 @@ r5 = foo(xs@-5);
             thisTest.Verify("r5", new object[] { xs });
         }
 
+        public void TestDominantListOnConstructor()
+        {
+            string code = @"
+import (AtLevelTestClass from ""FFITarget.dll"");
+xs = { { { 1,2}, { 3, 4} } };
+as = AtLevelTestClass(xs@@-1);
+r1 = as.Y;
+            ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { new object[] { new object[] { 1, 2 }, new object[] { 3, 4 } } });
+        }
+
         [Test]
         public void TestDominantList01()
         {
@@ -122,6 +134,31 @@ r1 = foo(xs@@-2);
         }
 
         [Test]
+        public void TestDominantList01ForStaticMethod()
+        {
+            string code = @"
+import (AtLevelTestClass from ""FFITarget.dll"");
+xs = { { { 1,2}, { 3, 4} }, { { 5, 6}, { 7, 8} } };
+r1 = AtLevelTestClass.Sum(xs@@-2);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { new object[] { 3, 7 }, new object[] { 11, 15 } });
+        }
+
+        [Test]
+        public void TestDominantList01ForMember()
+        {
+            string code = @"
+import (AtLevelTestClass from ""FFITarget.dll"");
+t = AtLevelTestClass();
+xs = { { { 1,2}, { 3, 4} }, { { 5, 6}, { 7, 8} } };
+r1 = t.sum(xs@@-2);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { new object[] { 3, 7 }, new object[] { 11, 15 } });
+        }
+
+        [Test]
         public void TestDominantList02()
         {
             string code = @"
@@ -132,6 +169,31 @@ def foo(xs)
 
 xs = {{{1,2}, {3, 4}}};
 r1 = foo(xs@@-2);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { new object[] { new object[] { 2, 3 }, new object[] { 4, 5 } } });
+        }
+
+        [Test]
+        public void TestDominantList02ForStaticMethod()
+        {
+            string code = @"
+import (AtLevelTestClass from ""FFITarget.dll"");
+xs = {{{1,2}, {3, 4}}};
+r1 = AtLevelTestClass.Inc(xs@@-2);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { new object[] { new object[] { 2, 3 }, new object[] { 4, 5 } } });
+        }
+
+        [Test]
+        public void TestDominantList02ForMethod()
+        {
+            string code = @"
+import (AtLevelTestClass from ""FFITarget.dll"");
+t = AtLevelTestClass();
+xs = {{{1,2}, {3, 4}}};
+r1 = t.inc(xs@@-2);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r1", new object[] { new object[] { new object[] { 2, 3 }, new object[] { 4, 5 } } });
@@ -155,6 +217,33 @@ r1 = foo(xs@@-2, ys@-1);
         }
 
         [Test]
+        public void TestDominantList03ForStaticMethod()
+        {
+            string code = @"
+import (AtLevelTestClass from ""FFITarget.dll"");
+xs = {{{1,2}, {3, 4}}, {{5, 6}, {7, 8}}};
+ys = {""a"", ""b"", ""c""};
+r1 = AtLevelTestClass.SumAndConcat(xs@@-2, ys@-1);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { new object[] { "3a", "7b" }, new object[] { "11c" } });
+        }
+
+        [Test]
+        public void TestDominantList03ForMethod()
+        {
+            string code = @"
+import (AtLevelTestClass from ""FFITarget.dll"");
+t = AtLevelTestClass();
+xs = {{{1,2}, {3, 4}}, {{5, 6}, {7, 8}}};
+ys = {""a"", ""b"", ""c""};
+r1 = t.SumAndConcat(xs@@-2, ys@-1);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { new object[] { "3a", "7b" }, new object[] { "11c" } });
+        }
+
+        [Test]
         public void TestDominantList04()
         {
             string code = @"
@@ -166,6 +255,33 @@ def foo(xs:var[], ys)
 xs = {{{1,2}, {3, 4}}, {{5, 6}, {7, 8}}};
 ys = {""a"", ""b"", ""c""};
 r1 = foo(xs@-2, ys@@-1);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { "3a", "7b", "11c" });
+        }
+
+        [Test]
+        public void TestDominantList04ForStaticMethod()
+        {
+            string code = @"
+import (AtLevelTestClass from ""FFITarget.dll"");
+xs = {{{1,2}, {3, 4}}, {{5, 6}, {7, 8}}};
+ys = {""a"", ""b"", ""c""};
+r1 = AtLevelTestClass.SumAndConcat(xs@-2, ys@@-1);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { "3a", "7b", "11c" });
+        }
+
+        [Test]
+        public void TestDominantList04ForMethod()
+        {
+            string code = @"
+import (AtLevelTestClass from ""FFITarget.dll"");
+t = AtLevelTestClass();
+xs = {{{1,2}, {3, 4}}, {{5, 6}, {7, 8}}};
+ys = {""a"", ""b"", ""c""};
+r1 = t.sumAndConcat(xs@-2, ys@@-1);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r1", new object[] { "3a", "7b", "11c" });
@@ -189,6 +305,34 @@ r1 = foo(xs@-2<1L>, ys@@-1<1L>);
         }
 
         [Test]
+        public void TestDominantList05ForStaticMethod()
+        {
+            string code = @"
+import (AtLevelTestClass from ""FFITarget.dll"");
+xs = {{{1,2}, {3, 4}}, {{5, 6}, {7, 8}}};
+ys = {""a"", ""b"", ""c""};
+r1 = AtLevelTestClass.SumAndConcat(xs@-2<1L>, ys@@-1<1L>);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { "3a", "7b", "11c", "15c" });
+        }
+
+        [Test]
+        public void TestDominantList05ForMethod()
+        {
+            string code = @"
+import (AtLevelTestClass from ""FFITarget.dll"");
+t = AtLevelTestClass();
+xs = {{{1,2}, {3, 4}}, {{5, 6}, {7, 8}}};
+ys = {""a"", ""b"", ""c""};
+r1 = t.sumAndConcat(xs@-2<1L>, ys@@-1<1L>);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { "3a", "7b", "11c", "15c" });
+        }
+
+
+        [Test]
         public void TestDominantList06()
         {
             string code = @"
@@ -199,6 +343,33 @@ def foo(xs:var[], ys)
 xs = {{{1,2}, {3, 4}}, {{5, 6}}};
 ys = {""a"", ""b"", ""c"", ""d""};
 r1 = foo(xs@-2<1L>, ys@@-1<1L>);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { "3a", "7b", "11c", "11d" });
+        }
+
+        [Test]
+        public void TestDominantList06ForStaticMethod()
+        {
+            string code = @"
+import (AtLevelTestClass from ""FFITarget.dll"");
+xs = {{{1,2}, {3, 4}}, {{5, 6}}};
+ys = {""a"", ""b"", ""c"", ""d""};
+r1 = AtLevelTestClass.SumAndConcat(xs@-2<1L>, ys@@-1<1L>);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { "3a", "7b", "11c", "11d" });
+        }
+
+        [Test]
+        public void TestDominantList06ForMethod()
+        {
+            string code = @"
+import (AtLevelTestClass from ""FFITarget.dll"");
+t = AtLevelTestClass();
+xs = {{{1,2}, {3, 4}}, {{5, 6}}};
+ys = {""a"", ""b"", ""c"", ""d""};
+r1 = t.sumAndConcat(xs@-2<1L>, ys@@-1<1L>);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r1", new object[] { "3a", "7b", "11c", "11d" });
@@ -218,6 +389,33 @@ r1 = foo(xs@@-2<1L>, ys@-1<1L>);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r1", new object[] { new object[] { "3a", "7b" }, new object[] { "11c", "15c"} });
+        }
+
+        [Test]
+        public void TestDominantList07ForStaticMethod()
+        {
+            string code = @"
+import (AtLevelTestClass from ""FFITarget.dll"");
+xs = {{{1,2}, {3, 4}}, {{5, 6}, {7, 8}}};
+ys = {""a"", ""b"", ""c""};
+r1 = AtLevelTestClass.SumAndConcat(xs@@-2<1L>, ys@-1<1L>);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { new object[] { "3a", "7b" }, new object[] { "11c", "15c" } });
+        }
+
+        [Test]
+        public void TestDominantList07ForMethod()
+        {
+            string code = @"
+import (AtLevelTestClass from ""FFITarget.dll"");
+t = AtLevelTestClass();
+xs = {{{1,2}, {3, 4}}, {{5, 6}, {7, 8}}};
+ys = {""a"", ""b"", ""c""};
+r1 = t.sumAndConcat(xs@@-2<1L>, ys@-1<1L>);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { new object[] { "3a", "7b" }, new object[] { "11c", "15c" } });
         }
     }
 }

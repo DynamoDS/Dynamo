@@ -50,6 +50,7 @@
       <Link>AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="AbstractDisposeTracert.cs" />
+    <Compile Include="AtLevelTestClass.cs" />
     <Compile Include="ClassFunctionality.cs" />
     <Compile Include="ClassWithRefParams.cs" />
     <Compile Include="CodeCompletionClass.cs" />
