@@ -4686,6 +4686,16 @@ y = ContainsKey(x, x);
             Assert.DoesNotThrow(() => thisTest.RunScriptSource(code));
             thisTest.Verify("y", false);
         }
+
+        [Test]
+        public void TestMapToWithReverserRange()
+        {
+            string code = @"
+r = MapTo(5, 10, 5..10, 2, 0);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r", new object[] { 2.0, 1.6, 1.2, 0.8, 0.4, 0 });
+        }
     }
 
 }

@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Reflection;
 using Shapeways=ShapewaysClient.ShapewaysClient;
+using Dynamo.Wpf.Properties;
 
 namespace Dynamo.Wpf.Authentication
 {
@@ -20,18 +21,30 @@ namespace Dynamo.Wpf.Authentication
 
         public bool ShowLogin(object o)
         {
-            var url = new Uri(o.ToString());
+            if (o == null) throw new ArgumentException(Resources.InvalidLoginUrl);
 
-            if (o == null) throw new ArgumentException(Dynamo.Wpf.Properties.Resources.InvalidLoginUrl);
+            // URL shouldn't be empty.
+            // URL can be empty, if user's local date is incorrect.
+            // This a known bug, described here: https://github.com/DynamoDS/Dynamo/pull/6112
+            if ((o as string).Length == 0)
+            {
+                MessageBox.Show(Resources.InvalidTimeZoneMessage,
+                                Resources.InvalidLoginUrl,
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Error);
+                return false;
+            }
+
+            var url = new Uri(o.ToString());
 
             var navigateSuccess = false;
 
             // show the login
-            context.Send((_) => {
+            context.Send(_ => {
 
                 var window = new BrowserWindow(url)
                 {
-                    Title = Dynamo.Wpf.Properties.Resources.AutodeskSignIn,
+                    Title = Resources.AutodeskSignIn,
                     Owner = parent,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };

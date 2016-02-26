@@ -84,7 +84,6 @@ namespace ProtoCore.DSASM
         // Recursion handling
         public List<FunctionCounter> recursivePoint { get; set; }
         public List<FunctionCounter> funcCounterTable { get; set; }
-        public bool calledInFunction;
 #endregion
 
 #region RUNTIME_GENERATED
@@ -119,7 +118,6 @@ namespace ProtoCore.DSASM
             CurrentDSFileName = string.Empty;
             recursivePoint = new List<FunctionCounter>();
             funcCounterTable = new List<FunctionCounter>();
-            calledInFunction = false;
             UpdatedSymbols = new HashSet<SymbolNode>();
         }
     }

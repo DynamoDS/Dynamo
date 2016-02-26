@@ -53,7 +53,7 @@
         <Grid Grid.Row="2">
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
                
             </Grid.ColumnDefinitions>
@@ -61,12 +61,13 @@
             <TextBlock 
             Text="{x:Static p:Resources.Units}"       
             Grid.Column="0"
-            Margin="5,5,0,0"
+            Margin="5,5,5,0"
             VerticalAlignment="Center"
             FontSize="13"
             FontWeight="SemiBold"
             FontFamily="{StaticResource OpenSansSemibold}"
             Height ="{x:Static configuration:Configurations.PortHeightInPixels}"/>
+            
 
             <ComboBox Name="SelectExportedUnit"
                 Grid.Column="1"

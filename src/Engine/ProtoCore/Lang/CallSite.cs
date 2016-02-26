@@ -916,7 +916,7 @@ namespace ProtoCore
             log.AppendLine("Case 5: Replication + Type conversion + Array promotion");
             {
                 //Add as a first attempt a no-replication, but allowing up-promoting
-                replicationTrials.Insert(0, new List<ReplicationInstruction>());
+                replicationTrials.Add(new List<ReplicationInstruction>());
 
                 foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
                 {

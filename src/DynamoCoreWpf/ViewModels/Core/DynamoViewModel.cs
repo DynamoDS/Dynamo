@@ -1422,9 +1422,7 @@ namespace Dynamo.ViewModels
 
         private void CreateNodeFromSelection(object parameter)
         {
-            CurrentSpaceViewModel.CollapseNodes(
-                DynamoSelection.Instance.Selection.Where(x => x is NodeModel)
-                    .Select(x => (x as NodeModel)));
+            CurrentSpaceViewModel.CollapseSelectedNodes();
         }
 
 
