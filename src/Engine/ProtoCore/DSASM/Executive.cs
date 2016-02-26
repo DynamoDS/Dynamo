@@ -1,12 +1,10 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ProtoCore.Exceptions;
 using ProtoCore.Utils;
 using ProtoCore.Runtime;
-using System.Diagnostics;
 using ProtoCore.Properties;
 
 namespace ProtoCore.DSASM
@@ -29,19 +27,13 @@ namespace ProtoCore.DSASM
         public Language executingLanguage = Language.Associative;
 
         protected int pc = Constants.kInvalidPC;
-        public int PC
-        {
-            get
-            {
-                return pc;
-            }
-        }
+        public int PC { get { return pc; } }
 
         private bool fepRun;
         bool terminate;
 
         private InstructionStream istream;
-        public Runtime.RuntimeMemory rmem { get; set; }
+        public RuntimeMemory rmem { get; set; }
 
         private StackValue AX;
         private StackValue BX;
@@ -158,9 +150,7 @@ namespace ProtoCore.DSASM
             List<StackValue> registers = stackFrame.GetRegisters();
 
             rmem.PushStackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerFrameType, frameType, depth + 1, framePointer, registers, locals, 0);
-            
         }
-
 
         /// <summary>
         /// Bounce instantiates a new Executive 
@@ -249,7 +239,6 @@ namespace ProtoCore.DSASM
             }
         }
 
-
         private void BounceExplicit(int exeblock, int entry, Language language, StackFrame frame)
         {
             fepRun = false;
@@ -311,7 +300,6 @@ namespace ProtoCore.DSASM
             rmem.FramePointer = fpRestore;
             return false;
         }
-
 
         private void RestoreRegistersFromStackFrame()
         {
@@ -442,13 +430,11 @@ namespace ProtoCore.DSASM
             logVMMessage("End JIL Execution - " + CoreUtils.GetLanguageString(currentLang));
         }
 
-
         private void RestoreExecutive(int exeblock)
         {
             // Jun Comment: the stackframe mpof the current language must still be present for this this method to restore the executuve
             // It must be popped off after this call
             executingLanguage = exe.instrStreamList[exeblock].language;
-
 
             // TODO Jun: Remove this check once the global bounce stackframe is pushed
             if (rmem.FramePointer >= StackFrame.kStackFrameSize)
@@ -606,7 +592,6 @@ namespace ProtoCore.DSASM
                 UpdateMethodDependencyGraph(pc, fi, ci);
             }
         }
-
 
         public void GetCallerInformation(out int classIndex, out int functionIndex)
         {
@@ -1037,19 +1022,6 @@ namespace ProtoCore.DSASM
 
             return sv;
         }
-
-        private void FindRecursivePoints()
-        {
-            foreach (FunctionCounter c in exe.funcCounterTable)
-            {
-                if (c.times == Constants.kRecursionTheshold || c.times == Constants.kRecursionTheshold - 1)
-                {
-                    exe.recursivePoint.Add(c);
-                }
-                exe.recursivePoint.Add(c);
-            }
-        }
-
 
         private FunctionCounter FindCounter(int funcIndex, int classScope, string name)
         {
@@ -3620,7 +3592,6 @@ namespace ProtoCore.DSASM
                 bool allowGC = sn.classScope == classIndex 
                     && sn.functionIndex == functionIndex 
                     && !sn.name.Equals(Constants.kWatchResultVar);
-                    /*&& !CoreUtils.IsSSATemp(sn.name)*/
 
                 if (runtimeCore.Options.GCTempVarsOnDebug && runtimeCore.Options.ExecuteSSA)
                 {
@@ -3657,42 +3628,6 @@ namespace ProtoCore.DSASM
 
         public void ReturnSiteGC(int blockId, int classIndex, int functionIndex)
         {
-            SymbolTable st;
-            List<StackValue> ptrList = new List<StackValue>();
-            if (Constants.kInvalidIndex == classIndex)
-            {
-                st = exe.CompleteCodeBlocks[blockId].symbolTable;
-            }
-            else
-            {
-                st = exe.classTable.ClassNodes[classIndex].Symbols;
-            }
-
-            foreach (SymbolNode symbol in st.symbolList.Values)
-            {
-                bool allowGC = symbol.functionIndex == functionIndex
-                    && !symbol.name.Equals(Constants.kWatchResultVar);
-
-                if (runtimeCore.Options.GCTempVarsOnDebug && runtimeCore.Options.ExecuteSSA)
-                {
-                    if (runtimeCore.Options.IDEDebugMode)
-                    {
-                        allowGC = symbol.functionIndex == functionIndex
-                            && !symbol.name.Equals(Constants.kWatchResultVar)
-                            && !CoreUtils.IsSSATemp(symbol.name);
-                    }
-                }
-
-                if (allowGC)
-                {
-                    StackValue sv = rmem.GetSymbolValue(symbol);
-                    if (sv.IsPointer || sv.IsArray)
-                    {
-                        ptrList.Add(sv);
-                    }
-                }
-            }
-
             foreach (CodeBlock cb in exe.CompleteCodeBlocks[blockId].children)
             {
                 if (cb.blockType == CodeBlockType.kConstruct)
