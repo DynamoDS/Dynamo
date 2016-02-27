@@ -701,7 +701,7 @@ namespace ProtoCore.Lang
             }
 
             var argumentAtLevels = AtLevelExtractor.GetArgumentsAtLevels(arguments, atLevels, runtimeCore);
-            var domStructure = AtLevelExtractor.GetDominantStructure(argumentAtLevels);
+            var domStructure = AtLevelExtractor.GetDominantStructure(argumentAtLevels, runtimeCore);
             arguments = argumentAtLevels.Select(a => a.Argument).ToList();
 
             arguments.ForEach(x => runtimeCore.AddCallSiteGCRoot(callsite.CallSiteID, x));

@@ -434,5 +434,22 @@ r1 = t.sumAndConcat(xs@@-2<1L>, ys@-1<1L>);
             thisTest.RunScriptSource(code);
             thisTest.Verify("r1", new object[] { new object[] { "3a", "7b" }, new object[] { "11c", "15c" } });
         }
+
+        [Test]
+        public void TestTwoDominatListsThrowWarning()
+        {
+            string code = @"
+def foo(x, y)
+{
+    return = x + y;
+}
+
+xs = {{1,2,3}};
+ys = {{4,5,6}};
+r = foo(xs@@-1, ys@@-1);
+";
+            thisTest.RunAndVerifyRuntimeWarning(code, ProtoCore.Runtime.WarningID.kMoreThanOneDominantList);
+            thisTest.Verify("r", new object[] { 5, 7, 9 });
+        }
     }
 }

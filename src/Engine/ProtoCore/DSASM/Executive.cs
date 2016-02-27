@@ -888,7 +888,7 @@ namespace ProtoCore.DSASM
             IsExplicitCall = explicitCall;
 
             var argumentAtLevels = AtLevelExtractor.GetArgumentsAtLevels(arguments, atLevels, runtimeCore);
-            var domStructure = AtLevelExtractor.GetDominantStructure(argumentAtLevels);
+            var domStructure = AtLevelExtractor.GetDominantStructure(argumentAtLevels, runtimeCore);
             arguments = argumentAtLevels.Select(a => a.Argument).ToList();
 
             sv = callsite.JILDispatch(arguments, replicationGuides, domStructure, stackFrame, runtimeCore, runtimeContext);
@@ -1014,7 +1014,7 @@ namespace ProtoCore.DSASM
             stackFrame.SX = SX;
 
             var argumentAtLevels = AtLevelExtractor.GetArgumentsAtLevels(arguments, atLevels, runtimeCore);
-            var domStructure = AtLevelExtractor.GetDominantStructure(argumentAtLevels);
+            var domStructure = AtLevelExtractor.GetDominantStructure(argumentAtLevels, runtimeCore);
             arguments = argumentAtLevels.Select(a => a.Argument).ToList();
 
             StackValue sv = callsite.JILDispatch(arguments,
