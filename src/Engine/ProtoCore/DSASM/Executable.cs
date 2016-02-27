@@ -94,9 +94,7 @@ namespace ProtoCore.DSASM
         /// </summary>
         public HashSet<SymbolNode> UpdatedSymbols { get; private set; }
         public GraphNode ExecutingGraphnode { get; set; }
-        public int RunningBlock { get; private set; }
 #endregion
-       
 #endregion
 
         public Executable()
