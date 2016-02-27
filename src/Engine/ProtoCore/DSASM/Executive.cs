@@ -837,7 +837,6 @@ namespace ProtoCore.DSASM
                                             registers, 
                                             null);
 
-            FunctionCounter counter = FindCounter(functionIndex, classIndex, fNode.Name);
             StackValue sv = StackValue.Null;
 
             if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
@@ -1021,20 +1020,6 @@ namespace ProtoCore.DSASM
             }
 
             return sv;
-        }
-
-        private FunctionCounter FindCounter(int funcIndex, int classScope, string name)
-        {
-            foreach (FunctionCounter c in exe.funcCounterTable)
-            {
-                if (c.classScope == classScope && c.functionIndex == funcIndex)
-                {
-                    return c;
-                }
-            }
-            FunctionCounter newC = new FunctionCounter(funcIndex, classScope, 0, name, 1);
-            exe.funcCounterTable.Add(newC);
-            return newC;
         }
 
         private void logVMMessage(string msg)
