@@ -1,4 +1,5 @@
 ﻿using ProtoCore.DSASM;
+using ProtoCore.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -133,7 +134,7 @@ namespace ProtoCore.Lang.Replication
 
         }
 
-        public static DominantListStructure GetDominantStructure(List<ArgumentAtLevel> arguments)
+        public static DominantListStructure GetDominantStructure(List<ArgumentAtLevel> arguments, RuntimeCore runtimeCore = null)
         {
             int domListIndex = arguments.FindIndex(x => x.IsDominant);
             if (domListIndex < 0)
@@ -141,10 +142,29 @@ namespace ProtoCore.Lang.Replication
                 return null;
             }
 
+            if (runtimeCore != null && arguments.Count(x => x.IsDominant) > 1)
+            {
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kMoreThanOneDominantList, Resources.MoreThanOneDominantList);
+                return null;
+            }
+
             var indices = arguments[domListIndex].Indices;
             return new DominantListStructure(indices, domListIndex);
         }
 
+        /// <summary>
+        /// If an input is a dominant list, restructure the result based on the
+        /// structure of dominant list. 
+        /// 
+        /// Note the dominant structure will be restored only if the dominant
+        /// list is zipped with other arguments, or the replication is applied
+        /// to the dominant list firstly.
+        /// </summary>
+        /// <param name="ret"></param>
+        /// <param name="domStructure"></param>
+        /// <param name="instructions"></param>
+        /// <param name="runtimeCore"></param>
+        /// <returns></returns>
         public static StackValue RestoreDominantStructure(
             StackValue ret,
             DominantListStructure domStructure,

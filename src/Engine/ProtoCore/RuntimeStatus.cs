@@ -34,7 +34,8 @@ namespace ProtoCore
             kReplicationWarning,
             kInvalidIndexing,
             kModuloByZero,
-            kInvalidType
+            kInvalidType,
+            kMoreThanOneDominantList
         }
 
         public struct WarningEntry
