@@ -117,7 +117,7 @@ namespace Dynamo.Engine
         /// </summary>
         /// <param name="sessionID"></param>
         /// <returns></returns>
-        internal List<Guid> GetExecutedAstGuids(Guid sessionID)
+        internal IEnumerable<Guid> GetExecutedAstGuids(Guid sessionID)
         {
             return liveRunner.GetExecutedAstGuids(sessionID);
         }
