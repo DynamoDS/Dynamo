@@ -167,6 +167,10 @@
             <Border Background="White"
                     BorderThickness="1"
                     BorderBrush="{StaticResource BubblePreviewBorderColor}" />
+            
+            <TextBlock Name="BusyTextBlock"
+                       Text=". . ."
+                       Visibility="Collapsed"/>
 
             <Grid Name="smallContentGrid"
                   HorizontalAlignment="Left"

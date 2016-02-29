@@ -16,6 +16,7 @@ using System.Windows.Media.Animation;
 using Dynamo.Configuration;
 using Dynamo.Extensions;
 using Dynamo.Models;
+using System.Threading.Tasks;
 
 namespace Dynamo.UI.Controls
 {
@@ -358,7 +359,7 @@ namespace Dynamo.UI.Controls
         ///     Scheduler thread or this could cause a live-lock.
         /// </summary>
         /// 
-        private void RefreshExpandedDisplay(Action refreshDisplay)
+        private async void RefreshExpandedDisplay(Action refreshDisplay)
         {
             // The preview control will not have its content refreshed unless 
             // the content is null. In order to perform real refresh, new data 
@@ -375,49 +376,47 @@ namespace Dynamo.UI.Controls
                 return;
             }
 
-            WatchViewModel newViewModel = null;
+            WatchViewModel newViewModel = await GetWatchVMAsync();
 
-            RunOnSchedulerSync(
-                () =>
+            if (largeContentGrid.Children.Count == 0)
+            {
+                var tree = new WatchTree
                 {
-                    newViewModel = nodeViewModel.DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
-                        mirrorData, null, nodeViewModel.NodeModel.AstIdentifierForPreview.Name, false);
-                },
-                (m) =>
+                    DataContext = new WatchViewModel()
+                };
+                //tree.treeView1.ItemContainerGenerator.StatusChanged += WatchContainer_StatusChanged;
+
+                largeContentGrid.Children.Add(tree);
+            }
+
+            var watchTree = largeContentGrid.Children[0] as WatchTree;
+            var rootDataContext = watchTree.DataContext as WatchViewModel;
+
+
+            cachedLargeContent = newViewModel;
+
+            rootDataContext.IsOneRowContent = cachedLargeContent.Children.Count == 0;
+            rootDataContext.Children.Clear();
+            rootDataContext.Children.Add(cachedLargeContent);
+
+            watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty,
+                new Binding("Children")
                 {
-                    if (largeContentGrid.Children.Count == 0)
-                    {
-                        var tree = new WatchTree
-                        {
-                            DataContext = new WatchViewModel(nodeViewModel.DynamoViewModel.BackgroundPreviewViewModel.AddLabelForPath)
-                        };
-                        tree.treeView1.ItemContainerGenerator.StatusChanged += WatchContainer_StatusChanged;
-
-                        largeContentGrid.Children.Add(tree);
-                    }
-
-                    var watchTree = largeContentGrid.Children[0] as WatchTree;
-                    var rootDataContext = watchTree.DataContext as WatchViewModel;
+                    Mode = BindingMode.TwoWay,
+                    Source = rootDataContext
+                });
+            if (refreshDisplay != null)
+            {
+                refreshDisplay();
+            }
 
 
-                    cachedLargeContent = newViewModel;
+        }
 
-                    rootDataContext.IsOneRowContent = cachedLargeContent.Children.Count == 0;
-                    rootDataContext.Children.Clear();
-                    rootDataContext.Children.Add(cachedLargeContent);
-
-                    watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty,
-                        new Binding("Children")
-                        {
-                            Mode = BindingMode.TwoWay,
-                            Source = rootDataContext
-                        });
-                    if (refreshDisplay != null)
-                    {
-                        refreshDisplay();
-                    }
-                }
-            );
+        private async Task<WatchViewModel> GetWatchVMAsync()
+        {
+            return nodeViewModel.DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
+                mirrorData, null, string.Empty, false);
         }
 
         /// <summary>
@@ -673,6 +672,8 @@ namespace Dynamo.UI.Controls
             // indicate a new transition is about to be started
             SetCurrentStateAndNotify(State.PreTransition);
 
+            BusyTextBlock.Visibility = System.Windows.Visibility.Visible;
+
             RefreshExpandedDisplay(() =>
                 {
                     largeContentGrid.Visibility = Visibility.Visible;
@@ -772,6 +773,7 @@ namespace Dynamo.UI.Controls
         private void OnPreviewControlExpanded(object sender, EventArgs e)
         {
             SetCurrentStateAndNotify(State.Expanded);
+            BusyTextBlock.Visibility = System.Windows.Visibility.Collapsed;
             BeginNextTransition(); // See if there's any more requests.
         }
 
