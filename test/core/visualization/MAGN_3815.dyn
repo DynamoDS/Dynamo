@@ -1,0 +1,17 @@
+<Workspace Version="0.7.0.32659" X="153.12438364821" Y="138.911191408532" zoom="0.965566782607742" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="ee1744e5-409f-498c-a019-97ec80a05cb7" nickname="Point.ByCoordinates" x="30.6845657580702" y="-18.8567422071499" isVisible="true" isUpstreamVisible="true" lacing="CrossProduct" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="6be1af3b-bfd0-4018-b35b-d7062655c992" nickname="Code Block" x="-122.988360624713" y="-16.6417579254424" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0..100..10;" ShouldFocus="false" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="fce2bf5b-558f-4bba-a516-0809d4fcfe30" nickname="Watch" x="213.197365233978" y="-79.2351495048878" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="ee1744e5-409f-498c-a019-97ec80a05cb7" start_index="0" end="fce2bf5b-558f-4bba-a516-0809d4fcfe30" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6be1af3b-bfd0-4018-b35b-d7062655c992" start_index="0" end="ee1744e5-409f-498c-a019-97ec80a05cb7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6be1af3b-bfd0-4018-b35b-d7062655c992" start_index="0" end="ee1744e5-409f-498c-a019-97ec80a05cb7" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
