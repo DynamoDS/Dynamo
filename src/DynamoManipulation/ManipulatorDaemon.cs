@@ -12,6 +12,17 @@ namespace Dynamo.Manipulation
 
         public IEnumerable<string> NodeNames { get; private set; }
 
+        /// <summary>
+        /// Checks if the given node has any manipulator attached with it.
+        /// </summary>
+        /// <param name="node">Input Node</param>
+        /// <returns>true if node has any manipulator</returns>
+        public bool HasNodeManipulator(NodeModel node)
+        {
+            IDisposable manipulator;
+            return activeManipulators.TryGetValue(node.GUID, out manipulator);
+        }
+
         private ManipulatorDaemon(Dictionary<Type, IEnumerable<INodeManipulatorFactory>> creators, IEnumerable<string> nodeNames)
         {
             registeredManipulatorCreators = creators;

@@ -22,6 +22,8 @@ namespace Dynamo.Manipulation
         private ManipulatorDaemon manipulatorDaemon;
         private ViewLoadedParams viewLoadedParams;
         private IWorkspaceModel workspaceModel;
+        //Keeps track of Node Guids for which event handler is attached.
+        private HashSet<Guid> trackedNodeGuids = new HashSet<Guid>();
 
         internal IWatch3DViewModel BackgroundPreviewViewModel { get; private set; }
         internal IRenderPackageFactory RenderPackageFactory { get; private set; }
@@ -276,9 +278,73 @@ namespace Dynamo.Manipulation
         {
             foreach (var nm in nodes)
             {
-                if (nm.IsFrozen || !nm.IsSelected) continue;
+                TryCreateManipulator(nm);
+            }
+        }
 
-                manipulatorDaemon.CreateManipulator(nm, this);
+        /// <summary>
+        /// Tries to create a manipulator for the given node. This method
+        /// also registers the property changed event handler.
+        /// </summary>
+        /// <param name="node">The input node</param>
+        /// <returns>true if manipulator was created</returns>
+        private bool TryCreateManipulator(NodeModel node)
+        {
+            //Can't create manipulator for node that is not selected.
+            if (!node.IsSelected) return false;
+
+            //Make sure we register property changed notification if node is selected.
+            if (trackedNodeGuids.Add(node.GUID))
+            {
+                node.PropertyChanged += OnNodePropertyChanged;
+            }
+            
+            //No manipulator for frozen node
+            if (node.IsFrozen) return false;
+
+            //If the node already has a manipulator, then skip creating new one.
+            if (manipulatorDaemon.HasNodeManipulator(node)) return false;
+
+            //Finally let the Daemon create the manipulator.
+            manipulatorDaemon.CreateManipulator(node, this);
+            return true;
+        }
+
+        /// <summary>
+        /// Kills the manipulators on the given node. This method will unregister the
+        /// property changed event handler if the node is not selected.
+        /// </summary>
+        /// <param name="node">Input node</param>
+        private void KillManipulators(NodeModel node)
+        {
+            //Remove the event handler
+            if (!node.IsSelected)
+            {
+                node.PropertyChanged -= OnNodePropertyChanged;
+                trackedNodeGuids.Remove(node.GUID);
+            }
+            manipulatorDaemon.KillManipulators(node);
+        }
+
+        /// <summary>
+        /// Event handler for property changed. Kills manipulator on node if 
+        /// its frozen and creates manipulator if node is selected and unfrozen.
+        /// </summary>
+        private void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var node = sender as NodeModel;
+            if (null == node) return;
+
+            if(e.PropertyName == "IsFrozen")
+            {
+                if(node.IsFrozen)
+                {
+                    KillManipulators(node);
+                }
+                else if(node.IsSelected)
+                {
+                    TryCreateManipulator(node);
+                }
             }
         }
 
