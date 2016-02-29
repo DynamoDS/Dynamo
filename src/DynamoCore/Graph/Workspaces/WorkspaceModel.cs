@@ -757,9 +757,12 @@ namespace Dynamo.Graph.Workspaces
             foreach (var connector in Connectors)
                 OnConnectorDeleted(connector);
 
+            WorkspaceEvents.WorkspaceAdded -= computeUpstreamNodesWhenWorkspaceAdded;
+
             var handler = Disposed;
             if (handler != null) 
                 handler();
+
             Disposed = null;
         }
 
