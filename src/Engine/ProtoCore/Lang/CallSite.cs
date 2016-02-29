@@ -1406,7 +1406,7 @@ namespace ProtoCore
             StackValue ret = Execute(resolvesFeps, context, arguments, replicationInstructions, stackFrame, runtimeCore, funcGroup);
             if (!ret.IsExplicitCall)
             {
-                ret = AtLevelExtractor.RestoreDominantStructure(ret, domintListStructure, replicationInstructions, runtimeCore); 
+                ret = AtLevelHandler.RestoreDominantStructure(ret, domintListStructure, replicationInstructions, runtimeCore); 
             }
             runtimeCore.RemoveCallSiteGCRoot(CallSiteID);
             return ret;

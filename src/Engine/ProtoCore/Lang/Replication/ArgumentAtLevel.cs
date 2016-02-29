@@ -26,7 +26,7 @@ namespace ProtoCore.Lang.Replication
         }
     }
 
-    public class ArgumentAtLevel
+    internal class ArgumentAtLevel
     {
         public List<List<int>> Indices;
         public bool IsDominant { get; private set; }
@@ -47,6 +47,9 @@ namespace ProtoCore.Lang.Replication
         }
     }
 
+    /// <summary>
+    /// The positions of items at dominant list.
+    /// </summary>
     public class DominantListStructure
     {
         public int ArgumentIndex { get; private set; }
@@ -58,9 +61,20 @@ namespace ProtoCore.Lang.Replication
         }
     }
 
-    public class AtLevelExtractor
+    public class ArgumentAtLevelStructure
     {
-        private static List<ElementAtLevel> GetElementsAtLevel(StackValue argument, int level, List<int> indices, RuntimeCore runtimeCore)
+        public List<StackValue> Arguments { get; private set; }
+        public DominantListStructure DominantStructure { get; private set; }
+        public ArgumentAtLevelStructure(List<StackValue> arguments, DominantListStructure dominantStructure)
+        {
+            Arguments = arguments;
+            DominantStructure = dominantStructure;
+        }
+    }
+
+    public class AtLevelHandler
+    {
+        private static List<ElementAtLevel> GetElementsAtLevel(StackValue argument, int level, List<int> indices, bool recordIndices, RuntimeCore runtimeCore)
         {
             var array = runtimeCore.Heap.ToHeapObject<DSArray>(argument);
             if (array == null)
@@ -73,18 +87,32 @@ namespace ProtoCore.Lang.Replication
             {
                 return array.Values.Zip(Enumerable.Range(0, count), (v, i) =>
                 {
-                    var newIndices = new List<int>(indices);
-                    newIndices.Add(i);
-                    return new ElementAtLevel(v, newIndices);
-                }).ToList();
+                    if (recordIndices)
+                    {
+                        var newIndices = new List<int>(indices);
+                        newIndices.Add(i);
+                        return new ElementAtLevel(v, newIndices);
+                    }
+                    else
+                    { 
+                        return new ElementAtLevel(v);
+                    }
+               }).ToList();
             }
             else
             {
                 return array.Values.Zip(Enumerable.Range(0, count), (v, i) =>
                 {
-                    var newIndices = new List<int>(indices);
-                    newIndices.Add(i);
-                    return GetElementsAtLevel(v, level - 1, newIndices, runtimeCore);
+                    if (recordIndices)
+                    {
+                        var newIndices = new List<int>(indices);
+                        newIndices.Add(i);
+                        return GetElementsAtLevel(v, level - 1, newIndices, recordIndices, runtimeCore);
+                    }
+                    else
+                    {
+                        return GetElementsAtLevel(v, level - 1, new List<int>(), recordIndices, runtimeCore);
+                    }
                 }).SelectMany(vs => vs).ToList();
             }
         }
@@ -112,14 +140,14 @@ namespace ProtoCore.Lang.Replication
             }
             else
             {
-                var elements = GetElementsAtLevel(argument, nestedLevel, new List<int>(), runtimeCore);
+                var elements = GetElementsAtLevel(argument, nestedLevel, new List<int>(), atLevel.IsDominant, runtimeCore);
                 argument = runtimeCore.RuntimeMemory.Heap.AllocateArray(elements.Select(e => e.Element).ToArray());
                 var indices = elements.Select(e => e.Indices).ToList();
                 return new ArgumentAtLevel(argument, indices, atLevel.IsDominant);
             }
         }
 
-        public static List<ArgumentAtLevel> GetArgumentsAtLevels(List<StackValue> arguments, List<AtLevel> atLevels, RuntimeCore runtimeCore)
+        private static List<ArgumentAtLevel> GetArgumentsAtLevels(List<StackValue> arguments, List<AtLevel> atLevels, RuntimeCore runtimeCore)
         {
             if (atLevels.All(x => x.Level >= 0))
                 return arguments.Select(a => new ArgumentAtLevel(a)).ToList();
@@ -134,22 +162,33 @@ namespace ProtoCore.Lang.Replication
 
         }
 
-        public static DominantListStructure GetDominantStructure(List<ArgumentAtLevel> arguments, RuntimeCore runtimeCore = null)
+        /// <summary>
+        /// Return arguments at the corresponding levles and dominant list structure.
+        /// </summary>
+        /// <param name="arguments"></param>
+        /// <param name="atLevels"></param>
+        /// <param name="runtimeCore"></param>
+        /// <returns></returns>
+        public static ArgumentAtLevelStructure GetArgumentAtLevelStructure(List<StackValue> arguments, List<AtLevel> atLevels, RuntimeCore runtimeCore)
         {
-            int domListIndex = arguments.FindIndex(x => x.IsDominant);
+            var argumentAtLevels = GetArgumentsAtLevels(arguments, atLevels, runtimeCore);
+            arguments = argumentAtLevels.Select(a => a.Argument).ToList();
+
+            int domListIndex = argumentAtLevels.FindIndex(x => x.IsDominant);
             if (domListIndex < 0)
             {
-                return null;
+                return new ArgumentAtLevelStructure(arguments, null);
             }
 
-            if (runtimeCore != null && arguments.Count(x => x.IsDominant) > 1)
+            if (runtimeCore != null && argumentAtLevels.Count(x => x.IsDominant) > 1)
             {
                 runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kMoreThanOneDominantList, Resources.MoreThanOneDominantList);
                 return null;
             }
 
-            var indices = arguments[domListIndex].Indices;
-            return new DominantListStructure(indices, domListIndex);
+            var indices = argumentAtLevels[domListIndex].Indices;
+            var dominantStructure = new DominantListStructure(indices, domListIndex);
+            return new ArgumentAtLevelStructure(arguments, dominantStructure);
         }
 
         /// <summary>

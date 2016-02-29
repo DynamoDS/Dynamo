@@ -409,7 +409,7 @@ namespace ProtoCore.DSASM
 
                     if (Properties.DominantStructure != null)
                     {
-                        RX = AtLevelExtractor.RestoreDominantStructure(RX, Properties.DominantStructure, null, runtimeCore); 
+                        RX = AtLevelHandler.RestoreDominantStructure(RX, Properties.DominantStructure, null, runtimeCore); 
                     }
                 }
             }
@@ -887,11 +887,8 @@ namespace ProtoCore.DSASM
             explicitCall = false;
             IsExplicitCall = explicitCall;
 
-            var argumentAtLevels = AtLevelExtractor.GetArgumentsAtLevels(arguments, atLevels, runtimeCore);
-            var domStructure = AtLevelExtractor.GetDominantStructure(argumentAtLevels, runtimeCore);
-            arguments = argumentAtLevels.Select(a => a.Argument).ToList();
-
-            sv = callsite.JILDispatch(arguments, replicationGuides, domStructure, stackFrame, runtimeCore, runtimeContext);
+            var argumentAtLevels = AtLevelHandler.GetArgumentAtLevelStructure(arguments, atLevels, runtimeCore);
+            sv = callsite.JILDispatch(argumentAtLevels.Arguments, replicationGuides, argumentAtLevels.DominantStructure, stackFrame, runtimeCore, runtimeContext);
             if (sv.IsExplicitCall)
             {
                 //
@@ -901,9 +898,9 @@ namespace ProtoCore.DSASM
                 //      1. In this instruction for implicit calls
                 //      2. In the return instruction
                 //
-                Properties.functionCallArguments = arguments;
+                Properties.functionCallArguments = argumentAtLevels.Arguments;
                 Properties.functionCallDotCallDimensions = dotCallDimensions;
-                Properties.DominantStructure = domStructure;
+                Properties.DominantStructure = argumentAtLevels.DominantStructure;
 
                 explicitCall = true;
                 IsExplicitCall = explicitCall;
@@ -1013,13 +1010,11 @@ namespace ProtoCore.DSASM
             SX = StackValue.BuildBlockIndex(0);
             stackFrame.SX = SX;
 
-            var argumentAtLevels = AtLevelExtractor.GetArgumentsAtLevels(arguments, atLevels, runtimeCore);
-            var domStructure = AtLevelExtractor.GetDominantStructure(argumentAtLevels, runtimeCore);
-            arguments = argumentAtLevels.Select(a => a.Argument).ToList();
+            var argumentAtLevels = AtLevelHandler.GetArgumentAtLevelStructure(arguments, atLevels, runtimeCore);
 
-            StackValue sv = callsite.JILDispatch(arguments,
+            StackValue sv = callsite.JILDispatch(argumentAtLevels.Arguments,
                                                  repGuides,
-                                                 domStructure,
+                                                 argumentAtLevels.DominantStructure,
                                                  stackFrame,
                                                  runtimeCore,
                                                  new Runtime.Context());
@@ -1027,9 +1022,9 @@ namespace ProtoCore.DSASM
             isExplicitCall = sv.IsExplicitCall;
             if (isExplicitCall)
             {
-                Properties.functionCallArguments = arguments;
+                Properties.functionCallArguments = argumentAtLevels.Arguments;
                 Properties.functionCallDotCallDimensions = new List<StackValue>();
-                Properties.DominantStructure = domStructure;
+                Properties.DominantStructure = argumentAtLevels.DominantStructure;
 
                 int entryPC = (int)sv.opdata;
                 CallExplicit(entryPC);
