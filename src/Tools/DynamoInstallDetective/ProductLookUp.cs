@@ -126,7 +126,7 @@ namespace DynamoInstallDetective
         /// Product name for lookup
         /// </summary>
         public string ProductLookUpName { get; private set; }
-        private readonly string fileLookup;
+        private readonly Func<string, string> fileLocator;
 
         static RegistryKey OpenKey(string key)
         {
@@ -158,7 +158,13 @@ namespace DynamoInstallDetective
         public InstalledProductLookUp(string lookUpName, string fileLookup)
         {
             this.ProductLookUpName = lookUpName;
-            this.fileLookup = fileLookup;
+            this.fileLocator = (path) => Directory.GetFiles(path, fileLookup).FirstOrDefault();
+        }
+
+        public InstalledProductLookUp(string lookUpName, Func<string, string> fileLocator)
+        {
+            this.ProductLookUpName = lookUpName;
+            this.fileLocator = fileLocator;
         }
 
         public IInstalledProduct GetProductFromInstallPath(string path)
@@ -202,7 +208,7 @@ namespace DynamoInstallDetective
             if (string.IsNullOrEmpty(basePath))
                 return false;
 
-            return Directory.Exists(basePath) && Directory.GetFiles(basePath, fileLookup).Any();
+            return Directory.Exists(basePath) && File.Exists(fileLocator(basePath));
         }
 
         public virtual string GetInstallLocationFromProductName(string name)
@@ -226,7 +232,7 @@ namespace DynamoInstallDetective
 
         public virtual string GetCoreFilePathFromInstallation(string installPath)
         {
-            return Directory.GetFiles(installPath, fileLookup).FirstOrDefault();
+            return fileLocator(installPath);
         }
 
         public virtual Tuple<int, int, int, int> GetVersionInfoFromFile(string filePath)
