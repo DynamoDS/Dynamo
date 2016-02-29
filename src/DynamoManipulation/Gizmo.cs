@@ -48,6 +48,8 @@ namespace Dynamo.Manipulation
         /// <returns>List of render packages.</returns>
         IEnumerable<IRenderPackage> GetDrawables();
 
+        IEnumerable<IRenderPackage> GetDrawablesForTransientGraphics();
+
         /// <summary>
         /// Delete any transient graphics associated with the Gizmo
         /// such as those used in highlights, etc.
@@ -69,7 +71,7 @@ namespace Dynamo.Manipulation
         /// Update graphics widgets associated with the gizmo whenever it needs to be updated
         /// for example, after a view transformation
         /// </summary>
-        void UpdateGizmoGraphics();
+        //void UpdateGizmoGraphics();
     }
 
     internal abstract class Gizmo : IGizmo
@@ -184,13 +186,23 @@ namespace Dynamo.Manipulation
 
         public abstract IEnumerable<IRenderPackage> GetDrawables();
 
-        public abstract void HighlightGizmo();
+        public abstract IEnumerable<IRenderPackage> GetDrawablesForTransientGraphics();
 
-        public abstract void UnhighlightGizmo();
-
-        public abstract void UpdateGizmoGraphics();
+        //public abstract void UpdateGizmoGraphics();
 
         public abstract void DeleteTransientGraphics();
+
+        public void HighlightGizmo()
+        {
+            var drawables = GetDrawablesForTransientGraphics();
+            BackgroundPreviewViewModel.AddGeometryForRenderPackages(drawables);
+        }
+
+        public void UnhighlightGizmo()
+        {
+            // Delete all transient geometry used to highlight gizmo
+            DeleteTransientGraphics();
+        }
 
         public void Dispose()
         {

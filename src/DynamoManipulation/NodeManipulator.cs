@@ -173,6 +173,10 @@ namespace Dynamo.Manipulation
         /// <param name="mouseButtonEventArgs"></param>
         protected virtual void MouseDown(object sender, MouseButtonEventArgs mouseButtonEventArgs)
         {
+            // Decouple manipulator update from graph (node) execution
+            // to allow it move freely with mouse move
+            Node.RequestRenderPackages -= GenerateRenderPackages;
+
             UpdatePosition();
 
             GizmoInAction = null; //Reset Drag.
@@ -214,12 +218,16 @@ namespace Dynamo.Manipulation
         {
             GizmoInAction = null;
 
+            // Recouple manipulator with graph (node) execution in order to 
+            // update final gizmo position based on node evaluation
+            Node.RequestRenderPackages += GenerateRenderPackages;
+
             //Delete all transient graphics for gizmos
-            var gizmos = GetGizmos(false);
-            foreach (var gizmo in gizmos)
-            {
-                gizmo.UpdateGizmoGraphics();
-            }
+            //var gizmos = GetGizmos(false);
+            //foreach (var gizmo in gizmos)
+            //{
+            //    gizmo.UpdateGizmoGraphics();
+            //}
         }
 
         /// <summary>
@@ -240,12 +248,19 @@ namespace Dynamo.Manipulation
                 return;
             }
 
-            if (!CanMoveGizmo(GizmoInAction)) return;
+            //if (!CanMoveGizmo(GizmoInAction)) return;
 
+            // GetOffset must use current position of manipulator origin (not node origin)
             var offset = GizmoInAction.GetOffset(clickRay.GetOriginPoint(), clickRay.GetDirectionVector());
             if (offset.Length < 0.01) return;
 
+            // Update sliders attached to node -> goes off and triggers graph update on scheduler thread
             newPosition = OnGizmoMoved(GizmoInAction, offset);
+
+            // BuildRenderPackage
+            // AddGeometry synchronously
+            var packages = BuildRenderPackage();
+            BackgroundPreviewViewModel.AddGeometryForRenderPackages(packages);
         }
 
         /// <summary>

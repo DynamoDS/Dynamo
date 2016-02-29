@@ -178,6 +178,8 @@ namespace Dynamo.Manipulation
         /// <returns>New expected position of the Gizmo</returns>
         protected override Point OnGizmoMoved(IGizmo gizmoInAction, Vector offset)
         {
+            origin = origin.Add(offset);
+
             expectedPosition = origin.Add(offset);
 
             foreach (var item in indexedAxisNodePairs)
