@@ -27,7 +27,7 @@ namespace Dynamo.Scheduler
 
         protected IEnumerable<NodeModel> ModifiedNodes { get; set; }
         private List<NodeModel> executedNodes;
-        public List<NodeModel> ExecutedNodes { get { return executedNodes; } }
+        public IEnumerable<NodeModel> ExecutedNodes { get { return executedNodes; } }
 
         #endregion
 
