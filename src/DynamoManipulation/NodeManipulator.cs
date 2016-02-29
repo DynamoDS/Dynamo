@@ -397,12 +397,15 @@ namespace Dynamo.Manipulation
         }
 
         /// <summary>
-        /// Method to draw manipulator
+        /// Method to draw manipulator. 
+        /// It's always called on the UI thread
         /// </summary>
         private void DrawManipulator()
         {
             var packages = GenerateRenderPackages();
 
+            // Add manipulator geometry to view asynchronously 
+            // since it has to be queued up in UI dispatcher after drawing node geometry
             BackgroundPreviewViewModel.AddGeometryForRenderPackages(packages, true);
         }
 
@@ -423,27 +426,34 @@ namespace Dynamo.Manipulation
         /// Before actually generating the render packages it ensures that this
         /// object is properly updated. This method is called when the output 
         /// of the node is rendered.
+        /// This function can only be called on the UI thread if there's a node selection OR
+        /// called on the scheduler thread if there's a node update
         /// </summary>
         /// <returns>List of render packages</returns>
         private IEnumerable<IRenderPackage> GenerateRenderPackages()
         {
-
             var packages = new List<IRenderPackage>();
 
-            AssignInputNodes();
-
+            // This can happen only when the node is updating along with the manipulator
+            // and meanwhile it is deselected in the UI before the manipulator is killed
             if (!Node.IsSelected)
             {
                 return packages;
             }
-
+            
+            AssignInputNodes();
+            
             UpdatePosition();
 
             if (!IsEnabled())
             {
                 return packages;
             }
-
+            
+            // Blocking call to build render packages only in UI thread
+            // to avoid race condition with gizmo members b/w scheduler and UI threads.
+            // Race condition can occur if say one gizmo is moving due to another gizmo
+            // and it is highlighted when it comes near the mouse pointer.
             IEnumerable<IRenderPackage> result = null;
             BackgroundPreviewViewModel.Invoke(() => result = BuildRenderPackage());
             return result;
