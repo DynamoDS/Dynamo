@@ -327,6 +327,11 @@ namespace ProtoCore.Utils
             return methodName.Equals(DSDefinitions.Keyword.Dispose);
         }
 
+        public static bool IsDotMethod(string methodName)
+        {
+            return methodName.Equals(Constants.kDotMethodName);
+        }
+
         public static bool IsGetTypeMethod(string methodName)
         {
             Validity.Assert(!string.IsNullOrEmpty(methodName));
