@@ -159,12 +159,12 @@ namespace Dynamo.Manipulation
         /// </summary>
         /// <param name="gizmo">Gizmo in action.</param>
         /// <returns>True if Gizmo is ready to move.</returns>
-        protected virtual bool CanMoveGizmo(IGizmo gizmo)
-        {
-            //Wait until node has been evaluated and has got new origin
-            //as expected position.
-            return gizmo != null && newPosition.DistanceTo(Origin) < 0.01;
-        }
+        //protected virtual bool CanMoveGizmo(IGizmo gizmo)
+        //{
+        //    //Wait until node has been evaluated and has got new origin
+        //    //as expected position.
+        //    return gizmo != null && newPosition.DistanceTo(Origin) < 0.01;
+        //}
 
         /// <summary>
         /// Implements the MouseDown event handler for the manipulator
@@ -173,10 +173,7 @@ namespace Dynamo.Manipulation
         /// <param name="mouseButtonEventArgs"></param>
         protected virtual void MouseDown(object sender, MouseButtonEventArgs mouseButtonEventArgs)
         {
-            // Decouple manipulator update from graph (node) execution
-            // to allow it move freely with mouse move
-            Node.RequestRenderPackages -= GenerateRenderPackages;
-
+            
             UpdatePosition();
 
             GizmoInAction = null; //Reset Drag.
@@ -203,6 +200,11 @@ namespace Dynamo.Manipulation
                             WorkspaceModel.RecordModelsForModification(nodes);
                         }
                         newPosition = Origin;
+
+                        // Decouple manipulator update from graph (node) execution
+                        // to allow it move freely with mouse move
+                        Node.RequestRenderPackages -= GenerateRenderPackages;
+
                         return;
                     }
                 }
@@ -216,11 +218,14 @@ namespace Dynamo.Manipulation
         /// <param name="e"></param>
         protected virtual void MouseUp(object sender, MouseButtonEventArgs e)
         {
-            GizmoInAction = null;
-
             // Recouple manipulator with graph (node) execution in order to 
             // update final gizmo position based on node evaluation
-            Node.RequestRenderPackages += GenerateRenderPackages;
+            if (GizmoInAction != null)
+            {
+                Node.RequestRenderPackages += GenerateRenderPackages;
+            }
+
+            GizmoInAction = null;
 
             //Delete all transient graphics for gizmos
             //var gizmos = GetGizmos(false);

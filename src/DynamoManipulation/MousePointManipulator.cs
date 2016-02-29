@@ -180,7 +180,7 @@ namespace Dynamo.Manipulation
         {
             origin = origin.Add(offset);
 
-            expectedPosition = origin.Add(offset);
+            //expectedPosition = origin.Add(offset);
 
             foreach (var item in indexedAxisNodePairs)
             {
