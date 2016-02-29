@@ -1155,7 +1155,7 @@ namespace ProtoScript.Runners
         void ReInitializeLiveRunner();
         IDictionary<Guid, List<ProtoCore.Runtime.WarningEntry>> GetRuntimeWarnings();
         IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings();
-        List<Guid> GetExecutedAstGuids(Guid sessionID);
+        IEnumerable<Guid> GetExecutedAstGuids(Guid sessionID);
         void RemoveRecordedAstGuidsForSession(Guid SessionID);
     }
 
@@ -1798,7 +1798,7 @@ namespace ProtoScript.Runners
 
             CompileAndExecuteForDeltaExecution(finalDeltaAstList);
 
-            var guids = new List<Guid>(runtimeCore.ExecutedAstGuids.ToList());
+            var guids = runtimeCore.ExecutedAstGuids.ToList();
             executedAstGuids[syncData.SessionID] = guids;
         }
 
@@ -1977,7 +1977,7 @@ namespace ProtoScript.Runners
             return ret;
         }
 
-        public List<Guid> GetExecutedAstGuids(Guid sessionID)
+        public IEnumerable<Guid> GetExecutedAstGuids(Guid sessionID)
         {
             List<Guid> guids = null;
             if (executedAstGuids.TryGetValue(sessionID, out guids))

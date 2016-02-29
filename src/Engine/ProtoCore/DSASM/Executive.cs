@@ -6713,12 +6713,7 @@ namespace ProtoCore.DSASM
         {
             if (runtimeCore.Options.IsDeltaExecution && IsGlobalScope())
             {
-                // Record GUID of executed graph node.
-                var graphNode = Properties.executingGraphNode;
-                if (graphNode != null && !graphNode.guid.Equals(Guid.Empty))
-                {
-                    runtimeCore.ExecutedAstGuids.Add(graphNode.guid);
-                }
+                runtimeCore.RecordExtecutedGraphNode(Properties.executingGraphNode);
             }
         }
 

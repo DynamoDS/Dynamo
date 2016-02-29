@@ -393,5 +393,17 @@ namespace ProtoCore
         {
             StartPC = pc;
         }
+
+        /// <summary>
+        /// Record the GUID of executed graph node.
+        /// </summary>
+        /// <param name="graphNode"></param>
+        public void RecordExtecutedGraphNode(GraphNode graphNode)
+        {
+            if (graphNode != null && !graphNode.guid.Equals(Guid.Empty))
+            {
+                ExecutedAstGuids.Add(graphNode.guid);
+            }
+        }
     }
 }
