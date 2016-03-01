@@ -71,7 +71,7 @@ namespace Dynamo.Manipulation
         /// Update graphics widgets associated with the gizmo whenever it needs to be updated
         /// for example, after a view transformation
         /// </summary>
-        //void UpdateGizmoGraphics();
+        void UpdateGizmoGraphics();
     }
 
     internal abstract class Gizmo : IGizmo
@@ -188,7 +188,7 @@ namespace Dynamo.Manipulation
 
         public abstract IEnumerable<IRenderPackage> GetDrawablesForTransientGraphics();
 
-        //public abstract void UpdateGizmoGraphics();
+        public abstract void UpdateGizmoGraphics();
 
         public abstract void DeleteTransientGraphics();
 

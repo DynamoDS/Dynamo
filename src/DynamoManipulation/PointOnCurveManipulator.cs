@@ -125,7 +125,7 @@ namespace Dynamo.Manipulation
             return new[] { inputNode };
         }
 
-        protected override Point OnGizmoMoved(IGizmo gizmoInAction, Vector offset)
+        protected override void OnGizmoMoved(IGizmo gizmoInAction, Vector offset)
         {
             double param;
             using (var offsetPosition = pointOnCurve.Add(offset))
@@ -136,14 +136,15 @@ namespace Dynamo.Manipulation
                 }
             }
             param = Math.Round(param, 3);
-            var newPosition = curve.PointAtParameter(param);
+            
+            tangent = curve.TangentAtParameter(param);
+            pointOnCurve = curve.PointAtParameter(param);
+
             if (inputNode != null)
             {
                 dynamic uinode = inputNode;
                 uinode.Value = param;
             }
-
-            return newPosition;
         }
 
         protected override void Dispose(bool disposing)

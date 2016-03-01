@@ -21,7 +21,7 @@ namespace Dynamo.Manipulation
         private Point origin;
         internal override Point Origin { get { return origin; } }
 
-        private Point expectedPosition;
+        //private Point expectedPosition;
 
         private TranslationGizmo gizmo;
 
@@ -176,7 +176,7 @@ namespace Dynamo.Manipulation
         /// <param name="gizmoInAction">Gizmo that moved.</param>
         /// <param name="offset">Offset by which the gizmo has moved.</param>
         /// <returns>New expected position of the Gizmo</returns>
-        protected override Point OnGizmoMoved(IGizmo gizmoInAction, Vector offset)
+        protected override void OnGizmoMoved(IGizmo gizmoInAction, Vector offset)
         {
             origin = origin.Add(offset);
 
@@ -196,8 +196,6 @@ namespace Dynamo.Manipulation
                     }
                 }
             }
-
-            return expectedPosition;
         }
 
         /// <summary>

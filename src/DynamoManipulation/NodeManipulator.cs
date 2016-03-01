@@ -134,7 +134,7 @@ namespace Dynamo.Manipulation
         /// <param name="gizmoInAction">The Gizmo in action.</param>
         /// <param name="offset">Offset amount by which Gizmo has moved.</param>
         /// <returns>New expected position of the Gizmo</returns>
-        protected abstract Point OnGizmoMoved(IGizmo gizmoInAction, Vector offset);
+        protected abstract void OnGizmoMoved(IGizmo gizmoInAction, Vector offset);
 
         #endregion
 
@@ -203,7 +203,7 @@ namespace Dynamo.Manipulation
 
                         // Decouple manipulator update from graph (node) execution
                         // to allow it move freely with mouse move
-                        Node.RequestRenderPackages -= GenerateRenderPackages;
+                        //Node.RequestRenderPackages -= GenerateRenderPackages;
 
                         return;
                     }
@@ -220,19 +220,19 @@ namespace Dynamo.Manipulation
         {
             // Recouple manipulator with graph (node) execution in order to 
             // update final gizmo position based on node evaluation
-            if (GizmoInAction != null)
-            {
-                Node.RequestRenderPackages += GenerateRenderPackages;
-            }
+            //if (GizmoInAction != null)
+            //{
+            //    Node.RequestRenderPackages += GenerateRenderPackages;
+            //}
 
             GizmoInAction = null;
 
             //Delete all transient graphics for gizmos
-            //var gizmos = GetGizmos(false);
-            //foreach (var gizmo in gizmos)
-            //{
-            //    gizmo.UpdateGizmoGraphics();
-            //}
+            var gizmos = GetGizmos(false);
+            foreach (var gizmo in gizmos)
+            {
+                gizmo.UpdateGizmoGraphics();
+            }
         }
 
         /// <summary>
@@ -260,7 +260,7 @@ namespace Dynamo.Manipulation
             if (offset.Length < 0.01) return;
 
             // Update sliders attached to node -> goes off and triggers graph update on scheduler thread
-            newPosition = OnGizmoMoved(GizmoInAction, offset);
+            OnGizmoMoved(GizmoInAction, offset);
 
             // BuildRenderPackage
             // AddGeometry synchronously
