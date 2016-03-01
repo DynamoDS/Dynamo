@@ -647,18 +647,7 @@ namespace ProtoCore.DSASM
             var svDepth = rmem.Pop();
             int depth = (int)svDepth.opdata;
 
-            if (!isDynamicCall)
-            {
-                StackValue svType = rmem.Pop();
-                runtimeVerify(svType.IsStaticType);
-            }
-
             ProcedureNode fNode = null;
-
-            // Pop off number of dimensions indexed into this function call
-            // f()[0][1] -> 2 dimensions
-            StackValue svDim = rmem.Pop();
-            runtimeVerify(svDim.IsArrayDimension);
 
             bool isCallingMemberFunction = Constants.kInvalidIndex != classIndex;
             if (isCallingMemberFunction)
@@ -3547,10 +3536,6 @@ namespace ProtoCore.DSASM
                 StackValue opblock = StackValue.BuildBlockIndex(procNode.RuntimeIndex);
                 instr.op3 = opblock;
 
-                int dimensions = 0;
-                StackValue opdim = StackValue.BuildArrayDimension(dimensions);
-                rmem.Push(opdim);
-
                 rmem.Push(StackValue.BuildInt(depth));
 
                 //Modify the operand data
@@ -3561,11 +3546,6 @@ namespace ProtoCore.DSASM
                 return true;
             }
 
-            if (!(isFunctionPointerCall && depth == 0))
-            {
-                rmem.Pop(); //remove the array dimension for "isLeftClass" or final pointer
-                rmem.Push(StackValue.BuildInt(0));
-            }
             return false;
         }
 
@@ -3880,8 +3860,28 @@ namespace ProtoCore.DSASM
             }
             else
             {
-                StackValue opdata1 = GetOperandData(blockId, instruction.op1, instruction.op2);
-                rmem.Push(opdata1);
+                var svDim = rmem.Pop();
+                runtimeVerify(svDim.IsArrayDimension);
+                var dim = (int)svDim.opdata;
+
+                if (dim == 0)
+                {
+                    StackValue opdata1 = GetOperandData(blockId, instruction.op1, instruction.op2);
+                    rmem.Push(opdata1);
+                }
+                else
+                {
+                    var dims = new List<StackValue>();
+
+                    for (int n = 0; n < dim; n++)
+                    {
+                        dims.Add(rmem.Pop());
+                    }
+                    dims.Reverse();
+
+                    StackValue sv = GetIndexedArray(dims, blockId, instruction.op1, instruction.op2);
+                    rmem.Push(sv);
+                }
             }
 
             ++pc;
