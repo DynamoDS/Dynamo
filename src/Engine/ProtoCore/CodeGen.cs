@@ -743,14 +743,14 @@ namespace ProtoCore
                 dynamic identnode = node;
 
                 int ci = core.ClassTable.IndexOf(identnode.Value);
-                if (ProtoCore.DSASM.Constants.kInvalidIndex != ci)
+                if (Constants.kInvalidIndex != ci)
                 {
                     finalType.UID = lefttype.UID = ci;
                 }
-                else if (identnode.Value == ProtoCore.DSDefinitions.Keyword.This)
+                else if (identnode.Value == DSDefinitions.Keyword.This)
                 {
                     finalType.UID = lefttype.UID = contextClassScope;
-                    EmitInstrConsole(ProtoCore.DSASM.kw.push, 0 + "[dim]");
+                    EmitInstrConsole(kw.push, 0 + "[dim]");
                     StackValue opdim = StackValue.BuildArrayDimension(0);
                     EmitPush(opdim);
                     EmitThisPointerNode();
@@ -759,7 +759,7 @@ namespace ProtoCore
                 }
                 else
                 {
-                    ProtoCore.DSASM.SymbolNode symbolnode = null;
+                    SymbolNode symbolnode = null;
                     bool isAllocated = false;
                     bool isAccessible = false;
                     if (lefttype.UID != -1)
@@ -771,37 +771,6 @@ namespace ProtoCore
                         isAllocated = VerifyAllocation(identnode.Value, contextClassScope, globalProcIndex, out symbolnode, out isAccessible);
                         Validity.Assert(null == firstSymbol);
                         firstSymbol = symbolnode;
-                    }
-
-                    bool callOnClass = false;
-                    string leftClassName = "";
-                    int leftci = Constants.kInvalidIndex;
-
-                    if (pNode is ProtoCore.AST.ImperativeAST.IdentifierListNode ||
-                        pNode is ProtoCore.AST.AssociativeAST.IdentifierListNode)
-                    {
-                        dynamic leftnode = ((dynamic)pNode).LeftNode;
-                        if (leftnode != null && 
-                            (leftnode is ProtoCore.AST.ImperativeAST.IdentifierNode ||
-                            leftnode is ProtoCore.AST.AssociativeAST.IdentifierNode))
-                        {
-                            leftClassName = leftnode.Name;
-                            leftci = core.ClassTable.IndexOf(leftClassName);
-                            if (leftci != ProtoCore.DSASM.Constants.kInvalidIndex)
-                            {
-                                callOnClass = true;
-
-                                EmitInstrConsole(ProtoCore.DSASM.kw.push, 0 + "[dim]");
-                                StackValue dynamicOpdim = StackValue.BuildArrayDimension(0);
-                                EmitPush(dynamicOpdim);
-
-                                EmitInstrConsole(ProtoCore.DSASM.kw.pushm, leftClassName);
-                                StackValue classOp = StackValue.BuildClassIndex(leftci);
-                                EmitPushm(classOp, globalClassIndex, codeBlock.codeBlockId);
-
-                                depth = depth + 1;
-                            }
-                        }
                     }
 
                     if (null == symbolnode)    //unbound identifier
@@ -853,35 +822,6 @@ namespace ProtoCore
                             return true;
                         }
                     }
-                    else
-                    {
-                        if (callOnClass && !symbolnode.isStatic)
-                        {
-                            string procName = identnode.Name;
-                            string property;
-                            ProtoCore.DSASM.ProcedureNode staticProcCallNode = core.ClassTable.ClassNodes[leftci].GetFirstStaticFunctionBy(procName);
-
-                            if (null != staticProcCallNode)
-                            {
-                                string message = String.Format(Resources.kMethodHasInvalidArguments, procName);
-                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
-                            }
-                            else if (CoreUtils.TryGetPropertyName(procName, out property))
-                            {
-                                string message = String.Format(Resources.kPropertyIsInaccessible, property);
-                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
-                            }
-                            else
-                            {
-                                string message = String.Format(Resources.kMethodIsInaccessible, procName);
-                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
-                            }
-
-                            lefttype.UID = finalType.UID = (int)PrimitiveType.kTypeNull;
-                            EmitPushNull();
-                            return false;
-                        }
-                    }
 
                     //
                     // The graph node depends on the first identifier in this identifier list
@@ -893,10 +833,6 @@ namespace ProtoCore
                     if (isFirstIdent && null != graphNode)
                     {
                         isFirstIdent = false;
-                        //ProtoCore.AssociativeGraph.GraphNode dependentNode = new ProtoCore.AssociativeGraph.GraphNode();
-                        //dependentNode.symbol = symbolnode;
-                        //dependentNode.symbolList.Add(symbolnode);
-                        //graphNode.PushDependent(dependentNode);
                     }
                     
                     /* Dont try to figure out the type at compile time if it is
