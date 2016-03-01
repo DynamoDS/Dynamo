@@ -342,40 +342,25 @@ namespace ProtoCore
             {
                 get
                 {
-                    var stackFrames = GetStackFrames();
-                    if (stackFrames.Any())
+                    var fp = FramePointer;
+
+                    // Note the first stack frame starts after the space for global 
+                    // variables, so here we need to check the frame pointer is 
+                    // large enought to contain a stack frame and all global variables
+                    if (fp - StackFrame.kStackFrameSize >= startFramePointer)
                     {
-                        return stackFrames.First();
+                        var frame = new StackValue[StackFrame.kStackFrameSize];
+                        for (int sourceIndex = fp - 1, destIndex = 0; sourceIndex >= fp - StackFrame.kStackFrameSize; sourceIndex--, destIndex++)
+                        {
+                            frame[destIndex] = Stack[sourceIndex];
+                        }
+                        var stackFrame = new StackFrame(frame);
+                        return stackFrame;
                     }
                     else
                     {
                         return null;
                     }
-                }
-            }
-
-            /// <summary>
-            /// Get all stack frames. 
-            /// </summary>
-            /// <returns></returns>
-            public IEnumerable<StackFrame> GetStackFrames()
-            {
-                var fp = FramePointer;
-                
-                // Note the first stack frame starts after the space for global 
-                // variables, so here we need to check the frame pointer is 
-                // large enought to contain a stack frame and all global variables
-                while (fp - StackFrame.kStackFrameSize >= startFramePointer)
-                {
-                    var frame = new StackValue[StackFrame.kStackFrameSize];
-                    for (int sourceIndex = fp - StackFrame.kStackFrameSize; sourceIndex < fp; sourceIndex++)
-                    {
-                        int destIndex = fp - sourceIndex - 1;
-                        frame[destIndex] = Stack[sourceIndex];
-                    }
-                    var stackFrame = new StackFrame(frame);
-                    fp = stackFrame.FramePointer;
-                    yield return stackFrame;
                 }
             }
         }
