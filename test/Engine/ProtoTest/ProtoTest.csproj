@@ -124,6 +124,7 @@
     <Compile Include="Associative\TypeSystemTests.cs" />
     <Compile Include="Associative\VerificationErrorFormat.cs" />
     <Compile Include="Associative\VerificationFormatJSON.cs" />
+    <Compile Include="AtLevel\AtLevelTest.cs" />
     <Compile Include="CompileAndExecute.cs" />
     <Compile Include="CoreUnitTests\StaticMirrorTest.cs" />
     <Compile Include="DebugTests\BasicTests.cs" />

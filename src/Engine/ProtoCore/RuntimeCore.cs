@@ -29,6 +29,7 @@ namespace ProtoCore
 
         public List<StackValue> functionCallArguments { get; set; }
         public List<StackValue> functionCallDotCallDimensions { get; set; }
+        public DominantListStructure DominantStructure { get; set; }
 
         public InterpreterProperties()
         {
@@ -41,6 +42,7 @@ namespace ProtoCore
             nodeIterations = rhs.nodeIterations;
             functionCallArguments = rhs.functionCallArguments;
             functionCallDotCallDimensions = rhs.functionCallDotCallDimensions;
+            DominantStructure = rhs.DominantStructure;
         }
 
         public void Reset()

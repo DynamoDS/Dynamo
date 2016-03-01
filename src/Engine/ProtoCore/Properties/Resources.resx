@@ -905,4 +905,7 @@ Parameter name: {0}</value>
   <data name="kInvalidUnicodeArgumentInRangeExpression" xml:space="preserve">
     <value>Sequence node supports only ASCII characters</value>
   </data>
+  <data name="MoreThanOneDominantList" xml:space="preserve">
+    <value>Only one dominant list is allowed</value>
+  </data>
 </root>
