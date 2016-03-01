@@ -1435,14 +1435,7 @@ namespace ProtoCore.AssociativeGraph
 
         public bool DependsOnTempSSA()
         {
-            foreach (GraphNode dnode in dependentList)
-            {
-                if (dnode.IsSSANode())
-                {
-                    return true;
-                }
-            }
-            return false;
+            return dependentList.Any(d => d.IsSSANode());
         }
 
         public bool IsSSANode()
@@ -1452,7 +1445,8 @@ namespace ProtoCore.AssociativeGraph
                 return false;
             }
 
-            return CoreUtils.IsSSATemp(updateNodeRefList[0].nodeList[0].symbol.name);
+            var firstNode = updateNodeRefList.First().nodeList.FirstOrDefault();
+            return firstNode != null && firstNode.nodeType == UpdateNodeType.kSymbol && CoreUtils.IsSSATemp(firstNode.symbol.name);
         }
     }
 
