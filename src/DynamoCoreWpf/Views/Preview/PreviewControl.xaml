@@ -166,7 +166,7 @@
               Visibility="Hidden">
             <Border Background="White"
                     BorderThickness="1"
-                    BorderBrush="{StaticResource BubblePreviewBorderColor}" />           
+                    BorderBrush="{StaticResource BubblePreviewBorderColor}" />
 
             <Grid Name="smallContentGrid"
                   HorizontalAlignment="Left"
