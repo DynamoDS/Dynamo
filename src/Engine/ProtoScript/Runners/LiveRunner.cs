@@ -1800,6 +1800,7 @@ namespace ProtoScript.Runners
 
             var guids = runtimeCore.ExecutedAstGuids.ToList();
             executedAstGuids[syncData.SessionID] = guids;
+            runtimeCore.RemoveExecutedAstGuids();
         }
 
         private void SynchronizeInternal(string code)

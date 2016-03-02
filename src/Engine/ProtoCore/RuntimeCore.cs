@@ -259,7 +259,6 @@ namespace ProtoCore
             RunningBlock = 0;
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid;
             StartPC = Constants.kInvalidPC;
-            executedAstGuids.Clear();
         }
 
         protected void OnDispose()
@@ -409,6 +408,14 @@ namespace ProtoCore
             {
                 executedAstGuids.Add(graphNode.guid);
             }
+        }
+
+        /// <summary>
+        /// Clear all recorded AST guids
+        /// </summary>
+        public void RemoveExecutedAstGuids()
+        {
+            executedAstGuids.Clear();
         }
     }
 }
