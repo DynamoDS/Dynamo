@@ -166,11 +166,7 @@
               Visibility="Hidden">
             <Border Background="White"
                     BorderThickness="1"
-                    BorderBrush="{StaticResource BubblePreviewBorderColor}" />
-            
-            <TextBlock Name="BusyTextBlock"
-                       Text=". . ."
-                       Visibility="Collapsed"/>
+                    BorderBrush="{StaticResource BubblePreviewBorderColor}" />           
 
             <Grid Name="smallContentGrid"
                   HorizontalAlignment="Left"

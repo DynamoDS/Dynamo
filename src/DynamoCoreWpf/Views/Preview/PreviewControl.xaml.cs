@@ -1,10 +1,8 @@
 ﻿using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.Interfaces;
 using Dynamo.Utilities;
-using Dynamo.Scheduler;
 using Dynamo.ViewModels;
 using ProtoCore.Mirror;
 using System;
@@ -50,7 +48,6 @@ namespace Dynamo.UI.Controls
             public const string GridHeightAnimator = "gridHeightAnimator";
         }
 
-        private readonly IScheduler scheduler;
         private readonly NodeViewModel nodeViewModel;
 
         private State currentState = State.Hidden;
@@ -100,10 +97,10 @@ namespace Dynamo.UI.Controls
 
         public PreviewControl(NodeViewModel nodeViewModel)
         {
-            this.scheduler = nodeViewModel.DynamoViewModel.Model.Scheduler;
             this.nodeViewModel = nodeViewModel;
             InitializeComponent();
             Loaded += OnPreviewControlLoaded;
+            Unloaded += OnPreviewControlUnLoaded;
             StaysOpen = false;
         }
 
@@ -155,9 +152,6 @@ namespace Dynamo.UI.Controls
         /// 
         internal void BindToDataSource(MirrorData mirrorData)
         {
-            // First detach the bound data from its view.
-            ResetContentViews();
-
             this.mirrorData = mirrorData;
             this.cachedLargeContent = null; // Reset expanded content.
             this.cachedSmallContent = null; // Reset condensed content.
@@ -255,41 +249,11 @@ namespace Dynamo.UI.Controls
                 this.StateChanged(this, EventArgs.Empty);
         }
 
-        private void ResetContentViews()
-        {
-            var smallContentView = smallContentGrid.Children[0] as TextBlock;
-            smallContentView.Text = string.Empty;
-
-            if (largeContentGrid.Children.Count <= 0)
-                return; // No view to reset, return now.
-
-            var watchTree = largeContentGrid.Children[0] as WatchTree;
-            var rootDataContext = watchTree.DataContext as WatchViewModel;
-
-            // Unbind the view from data context, then clear the data context.
-            BindingOperations.ClearAllBindings(watchTree.treeView1);
-            rootDataContext.Children.Clear();
-        }
-
         /// <summary>
-        /// Add a new task to the scheduler to be executed and after that run a
-        /// follow-up task.
-        /// </summary>
-        /// <param name="a">The task to be run in the scheduler</param>
-        /// <param name="h">The follow up handler to be executed</param>
-        private void RunOnSchedulerSync(Action a, AsyncTaskCompletedHandler h)
-        {
-            var task = new DelegateBasedAsyncTask(scheduler, a);
-            task.ThenPost(h, DispatcherSynchronizationContext.Current);
-            scheduler.ScheduleForExecution(task);
-        }
-
-        /// <summary>
-        /// Obtain the condensed preview values for this control.  Must not be called from 
-        /// Scheduler thread or this could cause a live-lock.
+        /// Obtain the condensed preview values for this control.
         /// </summary>
         /// <param name="refreshDisplay">The action to refresh the UI</param>
-        private void RefreshCondensedDisplay(Action refreshDisplay)
+        private async void RefreshCondensedDisplay(Action refreshDisplay)
         {
             // The preview control will not have its content refreshed unless 
             // the content is null. In order to perform real refresh, new data 
@@ -306,57 +270,19 @@ namespace Dynamo.UI.Controls
                 return;
             }
 
-            string newContent = "null";
+            string newContent = await GetCondensedStringAsync();
 
-            RunOnSchedulerSync(
-                () =>
-                {
-                    if (mirrorData != null)
-                    {
-                        if (mirrorData.IsCollection)
-                        {
-                            // TODO(Ben): Can we display details of the array and 
-                            // probably display the first element of the array (even 
-                            // when it is multi-dimensional array)?
-                            newContent = Wpf.Properties.Resources.PreviewListLabel;
-                        }
-                        else if (mirrorData.Data == null && !mirrorData.IsNull && mirrorData.Class != null)
-                        {
-                            newContent = mirrorData.Class.ClassName;
-                        }
-                        else if (mirrorData.Data is Enum)
-                        {
-                            newContent = ((Enum)mirrorData.Data).GetDescription();
-                        }
-                        else
-                        {
-                            if (String.IsNullOrEmpty(mirrorData.StringData))
-                            {
-                                newContent = String.Empty;
-                                return;
-                            }
-
-                            int index = mirrorData.StringData.IndexOf('(');
-                            newContent = index != -1 ? mirrorData.StringData.Substring(0, index) : mirrorData.StringData;
-                        }
-                    }
-                },
-                (m) =>
-                {
-                    cachedSmallContent = newContent;
-                    var smallContentView = smallContentGrid.Children[0] as TextBlock;
-                    smallContentView.Text = cachedSmallContent; // Update displayed text.
-                    if (refreshDisplay != null)
-                    {
-                        refreshDisplay();
-                    }
-                }
-            );
+            cachedSmallContent = newContent;
+            var smallContentView = smallContentGrid.Children[0] as TextBlock;
+            smallContentView.Text = cachedSmallContent; // Update displayed text.
+            if (refreshDisplay != null)
+            {
+                refreshDisplay();
+            }
         }
 
         /// <summary>
-        ///     Obtain the expanded preview values for this control.  Must not be called from 
-        ///     Scheduler thread or this could cause a live-lock.
+        ///     Obtain the expanded preview values for this control.
         /// </summary>
         /// 
         private async void RefreshExpandedDisplay(Action refreshDisplay)
@@ -376,7 +302,7 @@ namespace Dynamo.UI.Controls
                 return;
             }
 
-            WatchViewModel newViewModel = await GetWatchVMAsync();
+            WatchViewModel newViewModel = await GetWatchViewModelAsync();
 
             if (largeContentGrid.Children.Count == 0)
             {
@@ -384,14 +310,13 @@ namespace Dynamo.UI.Controls
                 {
                     DataContext = new WatchViewModel()
                 };
-                //tree.treeView1.ItemContainerGenerator.StatusChanged += WatchContainer_StatusChanged;
+                tree.treeView1.ItemContainerGenerator.StatusChanged += WatchContainer_StatusChanged;
 
                 largeContentGrid.Children.Add(tree);
             }
 
             var watchTree = largeContentGrid.Children[0] as WatchTree;
             var rootDataContext = watchTree.DataContext as WatchViewModel;
-
 
             cachedLargeContent = newViewModel;
 
@@ -403,20 +328,75 @@ namespace Dynamo.UI.Controls
                 new Binding("Children")
                 {
                     Mode = BindingMode.TwoWay,
-                    Source = rootDataContext
+                    Source = rootDataContext,
                 });
+
             if (refreshDisplay != null)
             {
                 refreshDisplay();
             }
-
-
         }
 
-        private async Task<WatchViewModel> GetWatchVMAsync()
+        /// <summary>
+        /// Gets condensed string asynchronously, so that UI thread is not frozen.
+        /// </summary>        
+        private Task<string> GetCondensedStringAsync()
         {
-            return nodeViewModel.DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
-                mirrorData, null, string.Empty, false);
+            return Task.Run(() =>
+            {
+                string newContent = "null";
+                if (nodeViewModel.NodeLogic.IsEvaluating)
+                {
+                    newContent = Configurations.BusyString;
+                    return newContent;
+                }
+
+                if (mirrorData == null)
+                {
+                    return newContent;
+                }
+                if (mirrorData.IsCollection)
+                {
+                    // TODO(Ben): Can we display details of the array and 
+                    // probably display the first element of the array (even 
+                    // when it is multi-dimensional array)?
+                    newContent = Wpf.Properties.Resources.PreviewListLabel;
+                }
+                else if (mirrorData.Data == null && !mirrorData.IsNull && mirrorData.Class != null)
+                {
+                    newContent = mirrorData.Class.ClassName;
+                }
+                else if (mirrorData.Data is Enum)
+                {
+                    newContent = ((Enum)mirrorData.Data).GetDescription();
+                }
+                else
+                {
+                    if (String.IsNullOrEmpty(mirrorData.StringData))
+                    {
+                        newContent = String.Empty;
+                        return newContent;
+                    }
+
+                    int index = mirrorData.StringData.IndexOf('(');
+                    newContent = index != -1 ? mirrorData.StringData.Substring(0, index) : mirrorData.StringData;
+                }
+
+                return newContent;
+            });
+        }
+
+        /// <summary>
+        /// Gets WatchViewModel asynchronously, so that UI thread is not frozen.
+        /// </summary>        
+        private Task<WatchViewModel> GetWatchViewModelAsync()
+        {
+            // If node is runing, return busy string(i.e. ". . .").
+            // Otherwise process MirrorData.
+            return Task.Run(() => nodeViewModel.NodeLogic.IsEvaluating
+                ? new WatchViewModel(Configurations.BusyString, String.Empty)
+                : nodeViewModel.DynamoViewModel.WatchHandler.
+                    GenerateWatchViewModelForData(mirrorData, null, String.Empty, false));
         }
 
         /// <summary>
@@ -672,8 +652,6 @@ namespace Dynamo.UI.Controls
             // indicate a new transition is about to be started
             SetCurrentStateAndNotify(State.PreTransition);
 
-            BusyTextBlock.Visibility = System.Windows.Visibility.Visible;
-
             RefreshExpandedDisplay(() =>
                 {
                     largeContentGrid.Visibility = Visibility.Visible;
@@ -753,9 +731,24 @@ namespace Dynamo.UI.Controls
                 throw new InvalidOperationException(message);
             }
 
+            nodeViewModel.NodeLogic.EvaluationEdged += OnNodeEvaluationTookPlace;
+
             // If there was a request queued before this control is loaded, 
             // then process the request as we now have the right width.
             BeginNextTransition();
+        }
+
+        private void OnPreviewControlUnLoaded(object sender, RoutedEventArgs e)
+        {
+            nodeViewModel.NodeLogic.EvaluationEdged -= OnNodeEvaluationTookPlace;
+        }
+
+        private void OnNodeEvaluationTookPlace(bool isEvaluated)
+        {
+            // When node started or ended running, we clear cached values.
+            // Cached values will be updated in RefreshCondensedDisplay or RefreshExpandedDisplay.
+            cachedSmallContent = null;
+            cachedLargeContent = null;
         }
 
         private void OnPreviewControlPhasedIn(object sender, EventArgs e)
@@ -773,7 +766,6 @@ namespace Dynamo.UI.Controls
         private void OnPreviewControlExpanded(object sender, EventArgs e)
         {
             SetCurrentStateAndNotify(State.Expanded);
-            BusyTextBlock.Visibility = System.Windows.Visibility.Collapsed;
             BeginNextTransition(); // See if there's any more requests.
         }
 

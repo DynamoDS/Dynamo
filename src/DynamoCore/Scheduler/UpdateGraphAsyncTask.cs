@@ -77,7 +77,12 @@ namespace Dynamo.Scheduler
                 {
                     var node = workspace.Nodes.FirstOrDefault(n => n.GUID.Equals(nodeGuid));
                     if (node != null)
+                    {
                         node.ClearDirtyFlag();
+
+                        // Set IsEvaluating to true, so that node's preview bubble won't crash.
+                        node.IsEvaluating = true;
+                    }
                 }
 
                 return true;
