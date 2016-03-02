@@ -1827,7 +1827,7 @@ namespace DynamoUnits
                 partialFeet = decimalFeet - wholeFeet;
             }
 
-            string fractionalInches = ToFractionalInches(Math.Round(partialFeet * 12.0,4));
+            string fractionalInches = ToFractionalInches(Math.Round(partialFeet * 12.0, 6));
 
             if (fractionalInches == "11 1\"" ||
                 fractionalInches == "12\"")
@@ -1849,7 +1849,7 @@ namespace DynamoUnits
 
         public static string ToFractionalInches(double decimalInches)
         {
-            decimalInches = RoundToSignificantDigits(decimalInches, 3);
+            decimalInches = RoundToSignificantDigits(decimalInches, 6);
 
             string inches = Utils.ParseWholeInchesToString(decimalInches);
             string fraction = Utils.ParsePartialInchesToString(decimalInches, 0.015625);
