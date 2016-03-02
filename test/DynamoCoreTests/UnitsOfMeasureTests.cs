@@ -396,15 +396,30 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void CreateFraction()
         {
-            Assert.AreEqual("", Utils.ParsePartialInchesToString(0.0, 0.015625));
-            Assert.AreEqual("1/2", Utils.ParsePartialInchesToString(0.5, 0.015625));
-            Assert.AreEqual("3/8", Utils.ParsePartialInchesToString(0.375, 0.015625));
-            Assert.AreEqual("3/4", Utils.ParsePartialInchesToString(0.75, 0.015625));
-            Assert.AreEqual("7/64", Utils.ParsePartialInchesToString(0.109375, 0.015625));
-            Assert.AreEqual("3/32", Utils.ParsePartialInchesToString(0.09375, 0.015625));
-            Assert.AreEqual("17/32", Utils.ParsePartialInchesToString(0.53125, 0.015625));
-            Assert.AreEqual("1/64", Utils.ParsePartialInchesToString(.015625, 0.015625)); //1/64"
-            Assert.AreEqual("63/64", Utils.ParsePartialInchesToString(.984375, 0.015625)); //63/64"
+            Func<int, int, int> gcd = (x, y) =>
+            {
+                while (x != 0 && y != 0)
+                {
+                    if (x > y)
+                        x %= y;
+                    else
+                        y %= x;
+                }
+
+                return (x == 0) ? y : x;
+            };
+
+            int denominator = 64;
+            double precision = 0.015625;
+
+            for (int numerator = 1; numerator <= denominator - 1; numerator++)
+            {
+                int commonDivisor = gcd(numerator, denominator);
+                double inches = ((double)numerator) / denominator;
+                string expectedString = (numerator / commonDivisor) + "/" + (denominator / commonDivisor);
+                string parsedString = Utils.ParsePartialInchesToString(inches, precision);
+                Assert.AreEqual(expectedString, parsedString);
+            }
             Assert.AreEqual("1", Utils.ParsePartialInchesToString(.99, 0.015625));
         }
 
