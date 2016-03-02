@@ -1871,6 +1871,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Only one dominant list is allowed.
+        /// </summary>
+        public static string MoreThanOneDominantList {
+            get {
+                return ResourceManager.GetString("MoreThanOneDominantList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Couldn&apos;t decide which function to execute. Please provide more specific type information. Possible functions were: .
         /// </summary>
         public static string MultipleFunctionsFound {

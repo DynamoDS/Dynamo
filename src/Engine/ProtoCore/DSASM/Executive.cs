@@ -6,6 +6,7 @@ using ProtoCore.Exceptions;
 using ProtoCore.Utils;
 using ProtoCore.Runtime;
 using ProtoCore.Properties;
+using ProtoCore.Lang.Replication;
 
 namespace ProtoCore.DSASM
 { 
@@ -404,6 +405,11 @@ namespace ProtoCore.DSASM
                     {
                         RX = IndexIntoArray(RX, Properties.functionCallDotCallDimensions);
                         rmem.PopFrame(Constants.kDotCallArgCount);
+                    }
+
+                    if (Properties.DominantStructure != null)
+                    {
+                        RX = AtLevelHandler.RestoreDominantStructure(RX, Properties.DominantStructure, null, runtimeCore); 
                     }
                 }
             }
@@ -880,7 +886,8 @@ namespace ProtoCore.DSASM
             explicitCall = false;
             IsExplicitCall = explicitCall;
 
-            sv = callsite.JILDispatch(arguments, replicationGuides, atLevels, stackFrame, runtimeCore, runtimeContext);
+            var argumentAtLevels = AtLevelHandler.GetArgumentAtLevelStructure(arguments, atLevels, runtimeCore);
+            sv = callsite.JILDispatch(argumentAtLevels.Arguments, replicationGuides, argumentAtLevels.DominantStructure, stackFrame, runtimeCore, runtimeContext);
             if (sv.IsExplicitCall)
             {
                 //
@@ -890,9 +897,9 @@ namespace ProtoCore.DSASM
                 //      1. In this instruction for implicit calls
                 //      2. In the return instruction
                 //
-                Properties.functionCallArguments = arguments;
-
+                Properties.functionCallArguments = argumentAtLevels.Arguments;
                 Properties.functionCallDotCallDimensions = dotCallDimensions;
+                Properties.DominantStructure = argumentAtLevels.DominantStructure;
 
                 explicitCall = true;
                 IsExplicitCall = explicitCall;
@@ -1002,9 +1009,11 @@ namespace ProtoCore.DSASM
             SX = StackValue.BuildBlockIndex(0);
             stackFrame.SX = SX;
 
-            StackValue sv = callsite.JILDispatch(arguments,
+            var argumentAtLevels = AtLevelHandler.GetArgumentAtLevelStructure(arguments, atLevels, runtimeCore);
+
+            StackValue sv = callsite.JILDispatch(argumentAtLevels.Arguments,
                                                  repGuides,
-                                                 atLevels,
+                                                 argumentAtLevels.DominantStructure,
                                                  stackFrame,
                                                  runtimeCore,
                                                  new Runtime.Context());
@@ -1012,8 +1021,9 @@ namespace ProtoCore.DSASM
             isExplicitCall = sv.IsExplicitCall;
             if (isExplicitCall)
             {
-                Properties.functionCallArguments = arguments;
+                Properties.functionCallArguments = argumentAtLevels.Arguments;
                 Properties.functionCallDotCallDimensions = new List<StackValue>();
+                Properties.DominantStructure = argumentAtLevels.DominantStructure;
 
                 int entryPC = (int)sv.opdata;
                 CallExplicit(entryPC);
