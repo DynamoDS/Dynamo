@@ -30,6 +30,7 @@ namespace Dynamo.ViewModels
         private bool _showRawData;
         private string _path = "";
         private bool _isOneRowContent;
+        private readonly Action<string> tagGeometry;
 
         public DelegateCommand FindNodeForPathCommand { get; set; }
 
@@ -140,19 +141,15 @@ namespace Dynamo.ViewModels
 
         #endregion
 
-        public WatchViewModel()
-        {
-            FindNodeForPathCommand = new DelegateCommand(FindNodeForPath, CanFindNodeForPath);
-            IsNodeExpanded = true;
-            _showRawData = false;
-        }
+        public WatchViewModel(Action<string> tagGeometry): this(null, null, tagGeometry, true) { }
 
-        public WatchViewModel(string label, string path, bool expanded = false)
+        public WatchViewModel(string label, string path, Action<string> tagGeometry, bool expanded = false)
         {
             FindNodeForPathCommand = new DelegateCommand(FindNodeForPath, CanFindNodeForPath);
             _path = path;
             _label = label;
             IsNodeExpanded = expanded;
+            this.tagGeometry = tagGeometry;
         }
 
         private bool CanFindNodeForPath(object obj)
@@ -162,6 +159,10 @@ namespace Dynamo.ViewModels
 
         private void FindNodeForPath(object obj)
         {
+            if (tagGeometry != null)
+            {
+                tagGeometry(obj.ToString());
+            }
             //visualizationManager.TagRenderPackageForPath(obj.ToString());
         }
     }

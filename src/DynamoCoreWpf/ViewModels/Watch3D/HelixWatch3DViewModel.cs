@@ -102,6 +102,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private static readonly Color4 defaultPointColor = new Color4(new Color3(0, 0, 0));
         private static readonly Color4 defaultDeadColor = new Color4(new Color3(0.7f,0.7f,0.7f));
         private static readonly float defaultDeadAlphaScale = 0.2f;
+        private const float defaultLabelOffset = 0.025f;
 
         internal const string DefaultGridName = "Grid";
         internal const string DefaultAxesName = "Axes";
@@ -1236,6 +1237,58 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         /// <summary>
+        /// Display a label for geometry based on the paths.
+        /// </summary>
+        public override void AddLabelForPath(string path)
+        {
+            // make var_guid from var_guid:0:1
+            var nodePath = path.Contains(':') ? path.Remove(path.IndexOf(':')) : path;
+            var labelName = nodePath + TextKey;
+            lock (Model3DDictionaryMutex)
+            {
+                // first, remove current labels of the node
+                // it does not crash if there is no such key in dictionary
+                var sceneItemsChanged = Model3DDictionary.Remove(labelName);
+
+                // it may be requested an array of items to put labels
+                // for example, the first item in 2-dim array - path will look like var_guid:0
+                // and it will select var_guid:0:0, var_guid:0:1, var_guid:0:2 and so on
+                var nodeLabelKeys = Model3DDictionary.Keys
+                    .Where(k => k.StartsWith(path + ':') && Model3DDictionary[k] is GeometryModel3D).ToList();
+
+                // if there is a geometry to add label
+                if (nodeLabelKeys.Any())
+                {
+                    // second, add requested labels
+                    var textGeometry = HelixRenderPackage.InitText3D();
+                    var bbText = new BillboardTextModel3D
+                    {
+                        Geometry = textGeometry
+                    };
+
+                    foreach (var key in nodeLabelKeys)
+                    {
+                        var geom = (GeometryModel3D)Model3DDictionary[key];
+                        var id = key.Remove(key.LastIndexOf(':'));
+                        var text = HelixRenderPackage.CleanTag(id.Remove(0, nodePath.Length));
+                        var textPosition = geom.Geometry.Positions[0] + defaultLabelOffset;
+                        var textInfo = new TextInfo(text, textPosition);
+                        textGeometry.TextInfo.Add(textInfo);
+                    }
+
+                    Model3DDictionary.Add(nodePath + TextKey, bbText);
+                    sceneItemsChanged = true;
+                    AttachAllGeometryModel3DToRenderHost();
+                }
+
+                if (sceneItemsChanged)
+                {
+                    OnSceneItemsChanged();
+                }
+            }
+        }
+
+        /// <summary>
         /// Given a collection of render packages, generates
         /// corresponding <see cref="GeometryModel3D"/> objects for visualization, and
         /// attaches them to the visual scene.
@@ -1243,14 +1296,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <param name="packages">An <see cref="IEnumerable"/> of <see cref="HelixRenderPackage"/>.</param>
         private void AggregateRenderPackages(IEnumerable<HelixRenderPackage> packages)
         {
-            
             IEnumerable<string> customNodeIdents = null;
             if (InCustomNode())
             {
                 var hs = model.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
                 if (hs != null)
                 {
-                    customNodeIdents = FindIdentifiersForCustomNodes((HomeWorkspaceModel)hs);
+                    customNodeIdents = FindIdentifiersForCustomNodes(hs);
                 }
             }
 
@@ -1264,26 +1316,27 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     // with `points`, `lines`, or `mesh`. For each RenderPackage, we check whether the geometry dictionary
                     // has entries for the points, lines, or mesh already. If so, we add the RenderPackage's geometry
                     // to those geometry objects.
-                    
+
                     var baseId = rp.Description;
                     if (baseId.IndexOf(":", StringComparison.Ordinal) > 0)
                     {
                         baseId = baseId.Split(':')[0];
                     }
-                    var id = baseId;
+                    
                     //If this render package belongs to special render package, then create
                     //and update the corresponding GeometryModel. Sepcial renderpackage are
                     //defined based on its description containing one of the constants from
                     //RenderDescriptions struct.
-                    if (UpdateGeometryModelForSpecialRenderPackage(rp, id))
+                    if (UpdateGeometryModelForSpecialRenderPackage(rp, baseId))
                         continue;
 
                     var drawDead = InCustomNode() && !customNodeIdents.Contains(baseId);
 
+                    string id;
                     var p = rp.Points;
                     if (p.Positions.Any())
                     {
-                        id = baseId + PointsKey;
+                        id = rp.Description + PointsKey;
 
                         PointGeometryModel3D pointGeometry3D;
 
@@ -1327,7 +1380,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     var l = rp.Lines;
                     if (l.Positions.Any())
                     {
-                        id = baseId + LinesKey;
+                        id = rp.Description + LinesKey;
 
                         LineGeometryModel3D lineGeometry3D;
 
@@ -1592,7 +1645,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
             var geom = bbText.Geometry as BillboardText3D;
             geom.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description),
-                new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
+                pt + defaultLabelOffset));
         }
 
         private DynamoGeometryModel3D CreateDynamoGeometryModel3D(HelixRenderPackage rp)

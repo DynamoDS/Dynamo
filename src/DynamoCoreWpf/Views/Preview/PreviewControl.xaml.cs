@@ -381,7 +381,7 @@ namespace Dynamo.UI.Controls
                 () =>
                 {
                     newViewModel = nodeViewModel.DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
-                        mirrorData, null, string.Empty, false);
+                        mirrorData, null, nodeViewModel.NodeModel.AstIdentifierForPreview.Name, false);
                 },
                 (m) =>
                 {
@@ -389,7 +389,7 @@ namespace Dynamo.UI.Controls
                     {
                         var tree = new WatchTree
                         {
-                            DataContext = new WatchViewModel()
+                            DataContext = new WatchViewModel(nodeViewModel.DynamoViewModel.BackgroundPreviewViewModel.AddLabelForPath)
                         };
                         tree.treeView1.ItemContainerGenerator.StatusChanged += WatchContainer_StatusChanged;
 
