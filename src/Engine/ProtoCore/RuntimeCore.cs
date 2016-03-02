@@ -75,6 +75,7 @@ namespace ProtoCore
             InterpreterProps = new Stack<InterpreterProperties>();
             ReplicationGuides = new List<List<ReplicationGuide>>();
             AtLevels = new List<AtLevel>();
+            executedAstGuids = new HashSet<Guid>();
 
             RunningBlock = 0;
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid; //not yet started
@@ -190,6 +191,14 @@ namespace ProtoCore
 
         // Cached at levels for the current call.
         public List<AtLevel> AtLevels;
+
+        private HashSet<Guid> executedAstGuids; 
+        // GUIDs of executed ASTs.
+        public IEnumerable<Guid> ExecutedAstGuids
+        {
+            get { return executedAstGuids; }
+        }
+
         
         public ProtoCore.DSASM.Mirror.ExecutionMirror Mirror { get; set; }
 
@@ -252,6 +261,7 @@ namespace ProtoCore
             RunningBlock = 0;
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid;
             StartPC = Constants.kInvalidPC;
+            executedAstGuids.Clear();
         }
 
         protected void OnDispose()
@@ -365,6 +375,18 @@ namespace ProtoCore
         public void SetStartPC(int pc)
         {
             StartPC = pc;
+        }
+
+        /// <summary>
+        /// Record the GUID of executed graph node.
+        /// </summary>
+        /// <param name="graphNode"></param>
+        public void RecordExtecutedGraphNode(GraphNode graphNode)
+        {
+            if (graphNode != null && !graphNode.guid.Equals(Guid.Empty))
+            {
+                executedAstGuids.Add(graphNode.guid);
+            }
         }
     }
 }

@@ -25,7 +25,9 @@ namespace Dynamo.Scheduler
             get { return TaskPriority.AboveNormal; }
         }
 
-        public IEnumerable<NodeModel> ModifiedNodes { get; protected set; }
+        protected IEnumerable<NodeModel> ModifiedNodes { get; set; }
+        private List<NodeModel> executedNodes;
+        public IEnumerable<NodeModel> ExecutedNodes { get { return executedNodes; } }
 
         #endregion
 
@@ -124,13 +126,26 @@ namespace Dynamo.Scheduler
                 // restored to warning state when task completion handler sets the 
                 // corresponding build/runtime warning on it.
                 // 
-                foreach (var modifiedNode in ModifiedNodes)
+                executedNodes = new List<NodeModel>();
+                var executedNodeGuids = engineController.GetExecutedAstGuids(graphSyncData.SessionID);
+                foreach (var guid in executedNodeGuids)
                 {
-                    modifiedNode.WasInvolvedInExecution = true;
-                    modifiedNode.WasRenderPackageUpdatedAfterExecution = false;
-                    if (modifiedNode.State == ElementState.Warning)
-                        modifiedNode.ClearRuntimeError();
+                    var node = TargetedWorkspace.Nodes.FirstOrDefault(n => n.GUID.Equals(guid));
+                    if (node != null)
+                    {
+                        executedNodes.Add(node);
+                    }
                 }
+
+                foreach (var node in executedNodes)
+                {
+                    node.WasInvolvedInExecution = true;
+                    node.WasRenderPackageUpdatedAfterExecution = false;
+                    if (node.State == ElementState.Warning)
+                        node.ClearRuntimeError();
+                }
+
+                engineController.RemoveRecordedAstGuidsForSession(graphSyncData.SessionID);
             }
         }
 

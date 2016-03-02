@@ -32,7 +32,7 @@ namespace Dynamo.Engine
             var added = GetSubtrees(State.Added).ToList();
             var modified = GetSubtrees(State.Modified).ToList();
             var deleted = GetSubtrees(State.Deleted).ToList();
-            return new GraphSyncData(deleted, added, modified);
+            return new GraphSyncData(Guid.NewGuid(), deleted, added, modified);
         }
 
         /// <summary>
