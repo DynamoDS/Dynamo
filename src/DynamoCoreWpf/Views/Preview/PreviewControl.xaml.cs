@@ -308,7 +308,7 @@ namespace Dynamo.UI.Controls
             {
                 var tree = new WatchTree
                 {
-                    DataContext = new WatchViewModel()
+                    DataContext = new WatchViewModel(nodeViewModel.DynamoViewModel.BackgroundPreviewViewModel.AddLabelForPath)
                 };
                 tree.treeView1.ItemContainerGenerator.StatusChanged += WatchContainer_StatusChanged;
 
@@ -394,9 +394,9 @@ namespace Dynamo.UI.Controls
             // If node is runing, return busy string(i.e. ". . .").
             // Otherwise process MirrorData.
             return Task.Run(() => nodeViewModel.NodeLogic.IsEvaluating
-                ? new WatchViewModel(Configurations.BusyString, String.Empty)
-                : nodeViewModel.DynamoViewModel.WatchHandler.
-                    GenerateWatchViewModelForData(mirrorData, null, String.Empty, false));
+                ? new WatchViewModel(Configurations.BusyString, null, null)
+                : nodeViewModel.DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
+                         mirrorData, null, nodeViewModel.NodeModel.AstIdentifierForPreview.Name, false));
         }
 
         /// <summary>
