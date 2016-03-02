@@ -1248,40 +1248,43 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 // first, remove current labels of the node
                 // it does not crash if there is no such key in dictionary
-                Model3DDictionary.Remove(labelName);
-                
-                // second, add requested labels
-                var textGeometry = HelixRenderPackage.InitText3D();
-                var bbText = new BillboardTextModel3D
-                {
-                    Geometry = textGeometry
-                };
+                var sceneItemsChanged = Model3DDictionary.Remove(labelName);
 
                 // it may be requested an array of items to put labels
                 // for example, the first item in 2-dim array - path will look like var_guid:0
                 // and it will select var_guid:0:0, var_guid:0:1, var_guid:0:2 and so on
-                var nodeLabelKeys = Model3DDictionary.Keys.Where(k => k.StartsWith(path + ':')).ToList();
-                foreach (var key in nodeLabelKeys)
+                var nodeLabelKeys = Model3DDictionary.Keys
+                    .Where(k => k.StartsWith(path + ':') && Model3DDictionary[k] is GeometryModel3D).ToList();
+
+                // if there is a geometry to add label
+                if (nodeLabelKeys.Any())
                 {
-                    var geom = Model3DDictionary[key] as GeometryModel3D;
-                    if (geom == null) continue;
+                    // second, add requested labels
+                    var textGeometry = HelixRenderPackage.InitText3D();
+                    var bbText = new BillboardTextModel3D
+                    {
+                        Geometry = textGeometry
+                    };
 
-                    var id = key.Remove(key.LastIndexOf(':'));
+                    foreach (var key in nodeLabelKeys)
+                    {
+                        var geom = (GeometryModel3D)Model3DDictionary[key];
+                        var id = key.Remove(key.LastIndexOf(':'));
+                        var text = HelixRenderPackage.CleanTag(id.Remove(0, nodePath.Length));
+                        var textPosition = geom.Geometry.Positions[0] + defaultLabelOffset;
+                        var textInfo = new TextInfo(text, textPosition);
+                        textGeometry.TextInfo.Add(textInfo);
+                    }
 
-                    var pt = geom.Geometry.Positions[0];
-                    var off = defaultLabelOffset;
-                    var text = HelixRenderPackage.CleanTag(id.Remove(0, nodePath.Length));
-                    var textInfo = new TextInfo(text, new Vector3(pt.X + off, pt.Y + off, pt.Z + off));
-                    textGeometry.TextInfo.Add(textInfo);
-                }
-
-                if (textGeometry.TextInfo.Any())
-                {
                     Model3DDictionary.Add(nodePath + TextKey, bbText);
+                    sceneItemsChanged = true;
+                    AttachAllGeometryModel3DToRenderHost();
                 }
 
-                AttachAllGeometryModel3DToRenderHost();
-                OnSceneItemsChanged();
+                if (sceneItemsChanged)
+                {
+                    OnSceneItemsChanged();
+                }
             }
         }
 
@@ -1642,7 +1645,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
             var geom = bbText.Geometry as BillboardText3D;
             geom.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description),
-                new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
+                pt + defaultLabelOffset));
         }
 
         private DynamoGeometryModel3D CreateDynamoGeometryModel3D(HelixRenderPackage rp)

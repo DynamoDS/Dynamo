@@ -58,7 +58,7 @@ namespace Dynamo.Interfaces
             {
                 var list = (value as IEnumerable).Cast<dynamic>().ToList();
 
-                node = new WatchViewModel(list.Count == 0 ? "Empty List" : "List", tag, OnRequestSelectGeometry, true);
+                node = new WatchViewModel(list.Count == 0 ? "Empty List" : "List", tag, RequestSelectGeometry, true);
                 foreach (var e in list.Select((element, idx) => new { element, idx }))
                 {
                     node.Children.Add(callback(e.element, runtimeCore, tag + ":" + e.idx, showRawData));
@@ -78,15 +78,15 @@ namespace Dynamo.Interfaces
                     int typeId = runtimeCore.DSExecutable.TypeSystem.GetType(stackValue);
                     stringValue = runtimeCore.DSExecutable.classTable.ClassNodes[typeId].Name;
                 }
-                node = new WatchViewModel(stringValue, tag, OnRequestSelectGeometry);
+                node = new WatchViewModel(stringValue, tag, RequestSelectGeometry);
             }
             else if (value is Enum)
             {
-                return new WatchViewModel(((Enum)value).GetDescription(), tag, OnRequestSelectGeometry);
+                return new WatchViewModel(((Enum)value).GetDescription(), tag, RequestSelectGeometry);
             }
             else
             {
-                node = new WatchViewModel(ToString(value), tag, OnRequestSelectGeometry);
+                node = new WatchViewModel(ToString(value), tag, RequestSelectGeometry);
             }
 
             return node;
@@ -97,28 +97,28 @@ namespace Dynamo.Interfaces
             return showRawData
                 ? new WatchViewModel(
                     unit.Value.ToString(preferences.NumberFormat, CultureInfo.InvariantCulture),
-                    tag, OnRequestSelectGeometry)
-                : new WatchViewModel(unit.ToString(), tag, OnRequestSelectGeometry);
+                    tag, RequestSelectGeometry)
+                : new WatchViewModel(unit.ToString(), tag, RequestSelectGeometry);
         }
 
         private WatchViewModel ProcessThing(double value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
         {
-            return new WatchViewModel(value.ToString(numberFormat, CultureInfo.InvariantCulture), tag, OnRequestSelectGeometry);
+            return new WatchViewModel(value.ToString(numberFormat, CultureInfo.InvariantCulture), tag, RequestSelectGeometry);
         }
 
         private WatchViewModel ProcessThing(DateTime value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
         {
-            return new WatchViewModel(value.ToString(PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture), tag, OnRequestSelectGeometry);
+            return new WatchViewModel(value.ToString(PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture), tag, RequestSelectGeometry);
         }
 
         private WatchViewModel ProcessThing(long value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
         {
-            return new WatchViewModel(value.ToString(CultureInfo.InvariantCulture), tag, OnRequestSelectGeometry);
+            return new WatchViewModel(value.ToString(CultureInfo.InvariantCulture), tag, RequestSelectGeometry);
         }
 
         private WatchViewModel ProcessThing(string value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
         {
-            return new WatchViewModel(value, tag, OnRequestSelectGeometry);
+            return new WatchViewModel(value, tag, RequestSelectGeometry);
         }
 
         private WatchViewModel ProcessThing(MirrorData data, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
@@ -127,7 +127,7 @@ namespace Dynamo.Interfaces
             {
                 var list = data.GetElements();
 
-                var node = new WatchViewModel(list.Count == 0 ? "Empty List" : "List", tag, OnRequestSelectGeometry, true);
+                var node = new WatchViewModel(list.Count == 0 ? "Empty List" : "List", tag, RequestSelectGeometry, true);
                 foreach (var e in list.Select((element, idx) => new { element, idx }))
                 {
                     node.Children.Add(ProcessThing(e.element, runtimeCore, tag + ":" + e.idx, showRawData, callback));
@@ -137,7 +137,7 @@ namespace Dynamo.Interfaces
             }
             if (data.Data is Enum)
             {
-                return new WatchViewModel(((Enum)data.Data).GetDescription(), tag, OnRequestSelectGeometry);
+                return new WatchViewModel(((Enum)data.Data).GetDescription(), tag, RequestSelectGeometry);
             }
 
             if (data.Data == null)
@@ -146,7 +146,7 @@ namespace Dynamo.Interfaces
                 // representation instead of casting it as dynamic (that leads to 
                 // a crash).
                 if (data.IsNull)
-                    return new WatchViewModel(NULL_STRING, tag, OnRequestSelectGeometry);
+                    return new WatchViewModel(NULL_STRING, tag, RequestSelectGeometry);
                 
                 //If the input data is an instance of a class, create a watch node
                 //with the class name and let WatchHandler process the underlying CLR data
@@ -172,18 +172,10 @@ namespace Dynamo.Interfaces
         public WatchViewModel Process(dynamic value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
         {
             return Object.ReferenceEquals(value, null)
-                ? new WatchViewModel(NULL_STRING, tag, OnRequestSelectGeometry)
+                ? new WatchViewModel(NULL_STRING, tag, RequestSelectGeometry)
                 : ProcessThing(value, runtimeCore, tag, showRawData, callback);
         }
 
         public event Action<string> RequestSelectGeometry;
-
-        private void OnRequestSelectGeometry(string path)
-        {
-            if (RequestSelectGeometry != null)
-            {
-                RequestSelectGeometry(path);
-            }
-        }
     }
 }
