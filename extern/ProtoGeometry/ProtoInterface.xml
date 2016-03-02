@@ -1911,6 +1911,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IFaceEntity.Loops">
+            <summary>
+            All of the Loops contained by this Face 
+            </summary>
+            <returns></returns>
+        </member>
         <member name="P:Autodesk.DesignScript.Interfaces.IVertexEntity.PointGeometry">
             <summary>
             The Point where this Vertex is located
@@ -1950,6 +1956,72 @@
         <member name="P:Autodesk.DesignScript.Interfaces.IEdgeEntity.EndVertex">
             <summary>
             The Vertex at which this Edge ends
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IEdgeEntity.CoEdges">
+            <summary>
+            The CoEdges associated with this Edge
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ILoopEntity.Face">
+            <summary>
+            The containing Face of the Loop
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ILoopEntity.CoEdges">
+            <summary>
+            The CoEdges contained in the Loop
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ICoEdgeEntity.Previous">
+            <summary>
+            The previous CoEdge in the containing Loop
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ICoEdgeEntity.Next">
+            <summary>
+            The next CoEdge in the containing Loop
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ICoEdgeEntity.Partner">
+            <summary>
+            The neighbouring CoEdge in the reverse direction
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ICoEdgeEntity.Edge">
+            <summary>
+            The adjacent Edge associated with the CoEdge
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ICoEdgeEntity.Loop">
+            <summary>
+            The containing Loop to which the CoEdge belongs
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ICoEdgeEntity.StartVertex">
+            <summary>
+            The Vertex at which this Edge starts
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ICoEdgeEntity.EndVertex">
+            <summary>
+            The Vertex at which this Edge ends
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ICoEdgeEntity.Reversed">
+            <summary>
+            The sense of the CoEdge with respect to its Edge
             </summary>
             <returns></returns>
         </member>

@@ -621,6 +621,51 @@
             The radius of the circle
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.CoEdge.ToString">
+            <summary>
+            Get a string representation of the CoEdge
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.CoEdge.Previous">
+            <summary>
+            The previous CoEdge in the containing Loop
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.CoEdge.Next">
+            <summary>
+            The next CoEdge in the containing Loop
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.CoEdge.Partner">
+            <summary>
+            The neighbouring CoEdge in the reverse direction
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.CoEdge.Edge">
+            <summary>
+            The adjacent Edge associated with the CoEdge
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.CoEdge.Loop">
+            <summary>
+            The containing Loop to which the CoEdge belongs
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.CoEdge.StartVertex">
+            <summary>
+            The Vertex at which this Edge starts
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.CoEdge.EndVertex">
+            <summary>
+            The Vertex at which this Edge ends
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.CoEdge.Reversed">
+            <summary>
+            The sense of the CoEdge with respect to its Edge
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cone.ToString">
             <summary>
             Get a string representation of the Cone
@@ -1259,6 +1304,11 @@
             The Vertex at which this Edge ends
             </summary>
         </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Edge.CoEdges">
+            <summary>
+            The CoEdges associated with this Edge
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Ellipse.ToString">
             <summary>
             Get a string representation of the Ellipse
@@ -1362,6 +1412,11 @@
         <member name="P:Autodesk.DesignScript.Geometry.Face.Vertices">
             <summary>
             All of the Vertices around this Face in counterclockwise order
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Face.Loops">
+            <summary>
+            All of the Loops contained by this Face
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Face.SurfaceGeometry">
@@ -1509,6 +1564,21 @@
         <member name="P:Autodesk.DesignScript.Geometry.Line.Direction">
             <summary>
             The direction of the Curve
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Loop.ToString">
+            <summary>
+            Get a string representation of the Loop
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Loop.Face">
+            <summary>
+            The containing Face of the Loop
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Loop.CoEdges">
+            <summary>
+            The CoEdges contained in the Loop
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ToString">
