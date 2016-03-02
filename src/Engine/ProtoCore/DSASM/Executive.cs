@@ -724,18 +724,7 @@ namespace ProtoCore.DSASM
 
             if (depth > 0)
             {
-                // locals are not yet in the stack so there is no need to account for that in this stack frame
-
-                if (isDynamicCall)
-                {
-                    svThisPtr = rmem.Pop();
-                }
-                else
-                {
-                    svThisPtr = GetFinalPointer(depth);
-                }
-
-                // 
+                svThisPtr = rmem.Pop();
                 if (!svThisPtr.IsPointer)
                 {
                     string message = String.Format(Resources.kInvokeMethodOnInvalidObject, fNode.Name);

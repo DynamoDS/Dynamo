@@ -747,9 +747,6 @@ namespace ProtoCore
                 else if (identnode.Value == DSDefinitions.Keyword.This)
                 {
                     finalType.UID = lefttype.UID = contextClassScope;
-                    EmitInstrConsole(kw.push, 0 + "[dim]");
-                    StackValue opdim = StackValue.BuildArrayDimension(0);
-                    EmitPush(opdim);
                     EmitThisPointerNode();
                     depth++;
                     return true;
