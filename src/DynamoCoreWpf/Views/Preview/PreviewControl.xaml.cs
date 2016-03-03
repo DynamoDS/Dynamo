@@ -16,7 +16,6 @@ using System.Windows.Media.Animation;
 using Dynamo.Configuration;
 using Dynamo.Extensions;
 using Dynamo.Models;
-using System.Threading.Tasks;
 
 namespace Dynamo.UI.Controls
 {
@@ -312,7 +311,7 @@ namespace Dynamo.UI.Controls
                             // TODO(Ben): Can we display details of the array and 
                             // probably display the first element of the array (even 
                             // when it is multi-dimensional array)?
-                            newContent = "Array";
+                            newContent = Wpf.Properties.Resources.PreviewListLabel;
                         }
                         else if (mirrorData.Data == null && !mirrorData.IsNull && mirrorData.Class != null)
                         {
@@ -387,7 +386,7 @@ namespace Dynamo.UI.Controls
                 () =>
                 {
                     newViewModel = nodeViewModel.DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
-                        mirrorData, null, string.Empty, false);
+                        mirrorData, null, nodeViewModel.NodeModel.AstIdentifierForPreview.Name, false);
                 },
                 (m) =>
                 {
@@ -421,7 +420,6 @@ namespace Dynamo.UI.Controls
             {
                 var tree = new WatchTree
                 {
-                    Margin = (System.Windows.Thickness)this.Resources["PreviewContentMargin"],
                     DataContext = new WatchViewModel(nodeViewModel.DynamoViewModel.BackgroundPreviewViewModel.AddLabelForPath)
                 };
                 tree.treeView1.ItemContainerGenerator.StatusChanged += WatchContainer_StatusChanged;

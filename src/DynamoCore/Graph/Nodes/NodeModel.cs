@@ -115,7 +115,7 @@ namespace Dynamo.Graph.Nodes
         public event Action<PortModel> PortDisconnected;
 
         /// <summary>
-        /// Event triggered when node is ready after update graph task.
+        /// Event triggered when node's evaluation started/ended.
         /// </summary>
         public event Action<bool> EvaluationEdged;
 
