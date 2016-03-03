@@ -4032,8 +4032,6 @@ namespace ProtoCore.DSASM
                 {
                     StackValue svNewProperty = rmem.Heap.AllocatePointer(new [] { svData });
                     thisObject.SetValueAtIndex(stackIndex, svNewProperty, runtimeCore);
-
-                    exe.classTable.ClassNodes[classIndex].Symbols.symbolList[stackIndex].heapIndex = (int)svNewProperty.opdata;
                 }
             }
             else if (svProperty.IsArray && (dimensions > 0))
@@ -4051,8 +4049,6 @@ namespace ProtoCore.DSASM
                 {
                     StackValue svNewProperty = rmem.Heap.AllocatePointer(new [] {svData});
                     thisObject.SetValueAtIndex(stackIndex, svNewProperty, runtimeCore);
-
-                    exe.classTable.ClassNodes[classIndex].Symbols.symbolList[stackIndex].heapIndex = (int)svNewProperty.opdata;
                 }
             }
 

@@ -9,7 +9,6 @@ namespace ProtoCore.DSASM
         public string           name;
         public string           forArrayName;
         public int              index;
-        public int              heapIndex;
         public int              classScope;
         public int              functionIndex;
         public int              absoluteClassScope;

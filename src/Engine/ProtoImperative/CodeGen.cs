@@ -274,72 +274,7 @@ namespace ProtoImperative
             }
         }
 
-        private void AllocateArray(ProtoCore.DSASM.SymbolNode symbol, ImperativeNode nodeArray)
-        {
-            //===================================================
-            // TODO Jun: 
-            //  Determine which is optimal-
-            //  1. Storing the array flag in the symbol, or...
-            //  2. Storing the array flag as an instruction operand
-            //===================================================
-
-            // TODO Jun: allocate to the stack is the array has empty expressions
-            ArrayNode array = nodeArray as ArrayNode;
-            bool heapAlloc = null != array.Expr;
-            symbol.memregion = heapAlloc ? ProtoCore.DSASM.MemoryRegion.kMemHeap : ProtoCore.DSASM.MemoryRegion.kMemStack;
-
-            if (ProtoCore.DSASM.MemoryRegion.kMemStack == symbol.memregion)
-            {
-                symbol.arraySizeList = new List<int>();
-                List<int> indexlist = new List<int>();
-
-                // TODO Jun: Optimize this
-                DfsBuildIndex(nodeArray, indexlist);
-                foreach (int indexVal in indexlist) 
-                {
-                    if (0 != indexVal) 
-                    {
-                        symbol.size *= indexVal;
-                    }
-                }
-
-                // Rebuild the array that is needed to compute the size at each index
-                indexlist.RemoveAt(0);
-                indexlist.Add(symbol.datasize);
-
-                for (int n = 0; n < indexlist.Count; ++n)
-                {
-                    symbol.arraySizeList.Add(1);
-                    for (int i = n; i < indexlist.Count; ++i)
-                    {
-                        symbol.arraySizeList[n] *= indexlist[i];
-                    }
-                }
-            }
-            else if (ProtoCore.DSASM.MemoryRegion.kMemHeap == symbol.memregion)
-            {
-                int indexCnt = DfsEmitArrayIndexHeap(nodeArray);
-
-                EmitInstrConsole(ProtoCore.DSASM.kw.push, indexCnt.ToString());
-                StackValue opSize = StackValue.BuildInt(indexCnt);
-                EmitPush(opSize);
-                SetHeapData(symbol);
-            }
-            else
-            {
-                Validity.Assert(false, "Invalid memory region");
-            }
-            SetStackIndex(symbol);
-        }
-
-        private ProtoCore.DSASM.SymbolNode Allocate( 
-            string ident, 
-            int funcIndex, 
-            ProtoCore.Type datatype, 
-            int size = 1, 
-            int datasize = ProtoCore.DSASM.Constants.kPrimitiveSize, 
-            ImperativeNode nodeArray = null,
-            ProtoCore.DSASM.MemoryRegion region = ProtoCore.DSASM.MemoryRegion.kMemStack)
+        private ProtoCore.DSASM.SymbolNode Allocate(string ident, int funcIndex, ProtoCore.Type datatype)
         {
             if (core.ClassTable.IndexOf(ident) != ProtoCore.DSASM.Constants.kInvalidIndex)
                 buildStatus.LogSemanticError(String.Format(Resources.ClassNameAsVariableError,ident));
@@ -351,11 +286,11 @@ namespace ProtoImperative
                 funcIndex, 
                 datatype,
                 TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
-                size, 
-                datasize,
+                1,
+                Constants.kPrimitiveSize,
                 false,
                 codeBlock.symbolTable.RuntimeIndex,
-                region,
+                MemoryRegion.kMemStack,
                 false,
                 null,
                 globalClassIndex,
@@ -368,15 +303,7 @@ namespace ProtoImperative
 
 
             Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex == symbolnode.symbolTableIndex);
-
-            if (null == nodeArray)
-            {
-                AllocateVar(symbolnode);
-            }
-            else
-            {
-                AllocateArray(symbolnode, nodeArray);
-            }
+            AllocateVar(symbolnode);
 
             // This is to handle that a variable is defined in a language
             // block which defined in a function, so the variable's scope
@@ -401,14 +328,7 @@ namespace ProtoImperative
             return symbolnode;
         }
 
-        private int AllocateArg(
-            string ident, 
-            int funcIndex, 
-            ProtoCore.Type datatype, 
-            int size = 1,
-            int datasize = ProtoCore.DSASM.Constants.kPrimitiveSize,
-            ImperativeNode nodeArray = null,
-            ProtoCore.DSASM.MemoryRegion region = ProtoCore.DSASM.MemoryRegion.kMemStack)
+        private int AllocateArg(string ident, int funcIndex, ProtoCore.Type datatype)
         {
             ProtoCore.DSASM.SymbolNode symbolnode = new ProtoCore.DSASM.SymbolNode(
                 ident,
@@ -417,11 +337,11 @@ namespace ProtoImperative
                 funcIndex,
                 datatype,
                 datatype,
-                size,
-                datasize,
+                1,
+                Constants.kPrimitiveSize,
                 true,
                 codeBlock.symbolTable.RuntimeIndex,
-                region);
+                MemoryRegion.kMemStack);
             symbolnode.codeBlockId = codeBlock.codeBlockId;
             if (this.isEmittingImportNode)
                 symbolnode.ExternLib = core.CurrentDSFileName;
@@ -1795,90 +1715,7 @@ namespace ProtoImperative
 
         private void EmitVarDeclNode(ImperativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode = null)
         {
-            VarDeclNode varNode = node as VarDeclNode;
-
-            ProtoCore.Type type = BuildArgumentTypeFromVarDeclNode(varNode, graphNode);
-            type.rank = 0;
-
-            // TODO Jun: Create a class table for holding the primitive and custom data types
-            const int primitivesize = 1;
-            int datasize = primitivesize;
-
-            int symindex = ProtoCore.DSASM.Constants.kInvalidIndex;
-            IdentifierNode tVar = null;
-            if (varNode.NameNode is IdentifierNode)
-            {
-                // Allocate with no initializer
-                tVar = varNode.NameNode as IdentifierNode;
-                ProtoCore.DSASM.SymbolNode symnode = Allocate(tVar.Value, globalProcIndex, type, datasize, datasize, tVar.ArrayDimensions, varNode.memregion);
-                symindex = symnode.symbolTableIndex;
-            }
-            else if (varNode.NameNode is BinaryExpressionNode)
-            {
-                BinaryExpressionNode bNode = varNode.NameNode as BinaryExpressionNode;
-                tVar = bNode.LeftNode as IdentifierNode;
-
-                Validity.Assert(null != tVar, "Check generated AST");
-                Validity.Assert(null != bNode.RightNode, "Check generated AST");
-
-                ProtoCore.DSASM.SymbolNode symnode = null;
-
-                // Is it an array
-                if (null != tVar.ArrayDimensions)
-                {
-                    // Allocate an array with initializer
-                    if (bNode.RightNode is ExprListNode)
-                    {
-                        ExprListNode exprlist = bNode.RightNode as ExprListNode;
-                        int size = datasize * exprlist.Exprs.Count;
-
-                        symnode = Allocate(tVar.Value, globalProcIndex, type, size, datasize, tVar.ArrayDimensions, varNode.memregion);
-                        symindex = symnode.symbolTableIndex;
-
-                        for (int n = 0; n < exprlist.Exprs.Count; ++n)
-                        {
-                            DfsTraverse(exprlist.Exprs[n], ref inferedType);
-
-                            ArrayNode array = new ArrayNode();
-                            array.Expr = nodeBuilder.BuildIdentfier(n.ToString(), PrimitiveType.kTypeInt);
-                            array.Type = null;
-
-                            DfsEmitArrayIndex(array, symindex);
-
-                            EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regDX);
-                            StackValue opRes = StackValue.BuildRegister(Registers.DX);
-                            EmitPop(opRes, Constants.kGlobalScope);
-
-                            EmitInstrConsole(ProtoCore.DSASM.kw.pop, tVar.Value);
-                            EmitPopForSymbol(symnode, symnode.runtimeTableIndex);
-                        }
-                    }
-                    else
-                    {
-                        buildStatus.LogSemanticError(Resources.InvalidArrayInitializer, core.CurrentDSFileName, bNode.RightNode.line, bNode.RightNode.col);
-                    }
-                }
-                else
-                {
-                    // Allocate a single variable with initializer
-
-                    symnode = Allocate(tVar.Value, globalProcIndex, type, datasize, datasize, tVar.ArrayDimensions, varNode.memregion);
-                    symindex = symnode.symbolTableIndex;
-                    DfsTraverse(bNode.RightNode, ref inferedType);
-
-                    EmitInstrConsole(ProtoCore.DSASM.kw.pop, tVar.Value);
-                    EmitPopForSymbol(symnode, symnode.runtimeTableIndex);
-                }
-            }
-            else
-            {
-                Validity.Assert(false, "Check generated AST");
-            }
-
-            if (ProtoCore.DSASM.Constants.kInvalidIndex == symindex)
-            {
-                throw new BuildHaltException("0CB5BD17");
-            }
+            throw new NotImplementedException("EmitVarDeclNode");
         }
 
         private void EmitBinaryExpressionNode(ImperativeNode node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null,

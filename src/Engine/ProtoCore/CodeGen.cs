@@ -208,7 +208,6 @@ namespace ProtoCore
         protected void SetHeapData(ProtoCore.DSASM.SymbolNode symbol)
         {
             symbol.size = ProtoCore.DSASM.Constants.kPointerSize;
-            symbol.heapIndex = core.GlobHeapOffset++;
         }
 
         protected void SetStackIndex(ProtoCore.DSASM.SymbolNode symbol)
