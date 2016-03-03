@@ -1047,10 +1047,10 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Regress9540()
+        public void Regress9450()
         {
             // Verify the function with default argument works.
-            var dynFilePath = Path.Combine(TestDirectory, @"core\dsevaluation\regress9540.dyn");
+            var dynFilePath = Path.Combine(TestDirectory, @"core\dsevaluation\regress9450.dyn");
             OpenModel(dynFilePath);
             AssertPreviewValue("25a90516-9e46-4268-a745-266524844158", 6);
         }
