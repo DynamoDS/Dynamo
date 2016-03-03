@@ -3331,7 +3331,7 @@ namespace ProtoCore.DSASM
                         allowGC = sn.classScope == classIndex 
                             && sn.functionIndex == functionIndex 
                             && !sn.name.Equals(Constants.kWatchResultVar)
-                            && !CoreUtils.IsSSATemp(sn.name);
+                            && !sn.isSSATemp;
                     }
                 }
 

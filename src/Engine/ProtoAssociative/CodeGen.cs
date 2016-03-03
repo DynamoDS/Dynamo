@@ -421,6 +421,7 @@ namespace ProtoAssociative
             ProtoCore.DSASM.SymbolNode symbolnode = new ProtoCore.DSASM.SymbolNode();
             symbolnode.name = ident;
             symbolnode.isTemp = ident.StartsWith("%");
+            symbolnode.isSSATemp = CoreUtils.IsSSATemp(ident);
             symbolnode.size = datasize;
             symbolnode.functionIndex = funcIndex;
             symbolnode.absoluteFunctionIndex = funcIndex;
@@ -479,6 +480,7 @@ namespace ProtoAssociative
                     ProtoCore.DSASM.SymbolNode staticSymbolnode = new ProtoCore.DSASM.SymbolNode();
                     staticSymbolnode.name = ident;
                     staticSymbolnode.isTemp = ident.StartsWith("%");
+                    staticSymbolnode.isSSATemp = CoreUtils.IsSSATemp(ident);
                     staticSymbolnode.size = datasize;
                     staticSymbolnode.functionIndex = funcIndex;
                     staticSymbolnode.datatype = datatype;
@@ -7737,7 +7739,6 @@ namespace ProtoAssociative
                     Validity.Assert(null == symbolnode);
                     symbolnode = new ProtoCore.DSASM.SymbolNode();
                     symbolnode.name = s;
-                    symbolnode.isTemp = s.StartsWith("%");
                     symbolnode.functionIndex = globalProcIndex;
                     symbolnode.classScope = globalClassIndex;
 

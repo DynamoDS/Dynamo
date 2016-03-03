@@ -19,6 +19,7 @@ namespace ProtoCore.DSASM
         
         public bool             isArgument;
         public bool             isTemp;
+        public bool             isSSATemp;
         public int              size;
         public int              datasize;
         public List<int>        arraySizeList;
@@ -65,6 +66,7 @@ namespace ProtoCore.DSASM
         {
             this.name           = name;
             isTemp         = name.StartsWith("%");
+            isSSATemp = name.StartsWith(Constants.kSSATempPrefix); 
             this.index          = index;
             this.functionIndex = functionIndex;
             this.absoluteFunctionIndex = functionIndex;
