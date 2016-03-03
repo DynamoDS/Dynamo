@@ -216,64 +216,6 @@ namespace ProtoImperative
             }
         }
 
-        // this method is used in conjuction with array indexing
-        private void DfsEmitArrayIndex(ImperativeNode node, int symbolindex, int index = 0)
-        {
-            // s = b + ((i * i.w) + (j * j.w) + (n * n.w))
-
-            if (node is ArrayNode)
-            {
-                ArrayNode array = node as ArrayNode;
-
-                ProtoCore.Type type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
-
-                DfsTraverse(array.Expr, ref type);
-
-                // Max size of the current dimension
-                int w = codeBlock.symbolTable.symbolList[symbolindex].arraySizeList[index];
-
-                // TODO Jun: Performance improvement
-                // Avoid having to generate instructions for the current index if 'w' is 0
-
-                EmitInstrConsole(ProtoCore.DSASM.kw.push, w.ToString());
-                StackValue opWidth = StackValue.BuildInt(w);
-                EmitPush(opWidth);
-
-                string op = null;
-                op = Op.GetOpName(ProtoCore.DSASM.Operator.mul);
-                EmitInstrConsole(op);
-                EmitBinary(Op.GetOpCode(ProtoCore.DSASM.Operator.mul));
-
-                if (array.Type is ArrayNode)
-                {
-                    DfsEmitArrayIndex(array.Type, symbolindex, index + 1);
-
-                    op = Op.GetOpName(ProtoCore.DSASM.Operator.add);
-                    EmitInstrConsole(op);
-                    EmitBinary(Op.GetOpCode(ProtoCore.DSASM.Operator.add));
-                }
-            }
-            else
-            {
-                Validity.Assert(false, "ast error ? check ast construction");
-            }
-        }
-
-        // this method is used in conjuction with array var declarations
-        private void DfsBuildIndex(ImperativeNode node, List<int> indexlist) 
-        {
-            if (node is ArrayNode)
-            {
-                ArrayNode array = node as ArrayNode;
-                int exprval = 0;
-                if (null != array.Expr) {
-                    exprval = DfsExprValue(array.Expr);
-                }
-                indexlist.Add(exprval);
-                DfsBuildIndex(array.Type, indexlist);
-            }
-        }
-
         private ProtoCore.DSASM.SymbolNode Allocate(string ident, int funcIndex, ProtoCore.Type datatype)
         {
             if (core.ClassTable.IndexOf(ident) != ProtoCore.DSASM.Constants.kInvalidIndex)
