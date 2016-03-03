@@ -694,12 +694,6 @@ namespace ProtoImperative
                         EmitDefaultArgNode();
                     }
 
-                    // Push the function declaration block  
-                    // Jun TODO: Implementeation of indexing into a function call:
-                    //  x = f()[0][1]
-                    int dimensions = 0;
-                    EmitPushVarData(dimensions);
-
                     // Emit depth
                     EmitInstrConsole(kw.push, depth + "[depth]");
                     EmitPush(StackValue.BuildInt(depth));

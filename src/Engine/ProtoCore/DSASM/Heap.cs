@@ -567,8 +567,6 @@ namespace ProtoCore.DSASM
                 // TODO Jun/Jiong: Use build pointer utilities 
                 exe.rmem.Push(StackValue.BuildArrayDimension(0));
                 exe.rmem.Push(StackValue.BuildPointer(svPtr.opdata, svPtr.metaData));
-                exe.rmem.Push(StackValue.BuildArrayDimension(0));
-                exe.rmem.Push(StackValue.BuildStaticType((int)PrimitiveType.kTypeVar));
                 exe.rmem.Push(StackValue.BuildInt(1));
                 
                 ++exe.RuntimeCore.FunctionCallDepth;
