@@ -1698,13 +1698,16 @@ namespace DynamoUnits
     [SupressImportIntoVM]
     public class Utils
     {
+        private const int ROUND_DIGITS = 5;
+        private const double EPSILON = 0.00001;
+
         public static string ParseWholeInchesToString(double value)
         {
             double result = value <0 ? 
                 Math.Abs(System.Math.Ceiling(value)): 
                 Math.Abs(System.Math.Floor(value));
 
-            if (result.AlmostEquals(0.0, 0.00001))
+            if (result.AlmostEquals(0.0, EPSILON))
                 return "";
             return result.ToString();
         }
@@ -1733,7 +1736,7 @@ namespace DynamoUnits
 
             double denominator = 1 / precision;
 
-            if (numerator.AlmostEquals(denominator, 0.00001))
+            if (numerator.AlmostEquals(denominator, EPSILON))
                 return "1";
 
             if (numerator != 0.0)
@@ -1808,7 +1811,7 @@ namespace DynamoUnits
         /// <returns></returns>
         public static string ToFeetAndFractionalInches(double decimalFeet)
         {
-            decimalFeet = RoundToSignificantDigits(decimalFeet, 5);
+            decimalFeet = RoundToSignificantDigits(decimalFeet, ROUND_DIGITS);
 
             double wholeFeet = 0.0;
             double partialFeet = 0.0;
@@ -1841,7 +1844,7 @@ namespace DynamoUnits
             if (wholeFeet != 0.0)
                 feet = string.Format("{0}'", wholeFeet);
 
-            if (wholeFeet.AlmostEquals(0.0, 0.00001) && (partialFeet * 12.0).AlmostEquals(0.0,0.00001))
+            if (wholeFeet.AlmostEquals(0.0, EPSILON) && (partialFeet * 12.0).AlmostEquals(0.0, EPSILON))
                 feet = "0'";
 
             return string.Format("{0} {1}", feet, fractionalInches).Trim();
@@ -1849,7 +1852,7 @@ namespace DynamoUnits
 
         public static string ToFractionalInches(double decimalInches)
         {
-            decimalInches = RoundToSignificantDigits(decimalInches, 6);
+            decimalInches = RoundToSignificantDigits(decimalInches, ROUND_DIGITS);
 
             string inches = Utils.ParseWholeInchesToString(decimalInches);
             string fraction = Utils.ParsePartialInchesToString(decimalInches, 0.015625);
