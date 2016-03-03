@@ -1045,6 +1045,15 @@ namespace Dynamo.Tests
 
             AssertPreviewValue(watchNodeGuid, 42);
         }
+
+        [Test]
+        public void Regress9540()
+        {
+            // Verify the function with default argument works.
+            var dynFilePath = Path.Combine(TestDirectory, @"core\dsevaluation\regress9540.dyn");
+            OpenModel(dynFilePath);
+            AssertPreviewValue("25a90516-9e46-4268-a745-266524844158", 6);
+        }
     }
 
     [Category("DSCustomNode")]
