@@ -229,7 +229,7 @@ namespace Dynamo.Tests
             Assert.AreEqual("1/64\"", length.ToString());
 
             length.Value = 0.025146; //.99"
-            Assert.AreEqual("1\"", length.ToString());
+            Assert.AreEqual("63/64\"", length.ToString());
         }
 
         [Test]
@@ -259,10 +259,10 @@ namespace Dynamo.Tests
             Assert.AreEqual("1/8\"", length.ToString());
 
             length.Value = 0.301752; //.99ft
-            Assert.AreEqual("11 57/64\"", length.ToString());
+            Assert.AreEqual("11 7/8\"", length.ToString());
 
             length.Value = 0.3044952; //.999ft
-            Assert.AreEqual("1' 0\"", length.ToString());
+            Assert.AreEqual("11 63/64\"", length.ToString());
 
             length.Value = 0.35560000000142239; //1'2"
             Assert.AreEqual("1' 2\"", length.ToString());
@@ -420,7 +420,7 @@ namespace Dynamo.Tests
                 string parsedString = Utils.ParsePartialInchesToString(inches, precision);
                 Assert.AreEqual(expectedString, parsedString);
             }
-            Assert.AreEqual("1", Utils.ParsePartialInchesToString(.99, 0.015625));
+            Assert.AreEqual("1", Utils.ParsePartialInchesToString(0.99999, 0.015625));
         }
 
         [Test]

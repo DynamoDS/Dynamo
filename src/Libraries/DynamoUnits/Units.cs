@@ -1730,9 +1730,7 @@ namespace DynamoUnits
         public static string CreateFraction(double value, double precision)
         {
             double numerator = 0.0;
-            numerator = value < 0 ?
-                Math.Floor(value / precision) :
-                Math.Ceiling(value / precision);
+            numerator = Math.Round(value / precision);
 
             double denominator = 1 / precision;
 
