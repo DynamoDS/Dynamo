@@ -1811,8 +1811,6 @@ namespace DynamoUnits
         /// <returns></returns>
         public static string ToFeetAndFractionalInches(double decimalFeet)
         {
-            decimalFeet = RoundToSignificantDigits(decimalFeet, ROUND_DIGITS);
-
             double wholeFeet = 0.0;
             double partialFeet = 0.0;
 
@@ -1830,14 +1828,18 @@ namespace DynamoUnits
                 partialFeet = decimalFeet - wholeFeet;
             }
 
-            string fractionalInches = ToFractionalInches(Math.Round(partialFeet * 12.0, 6));
+            string fractionalInches = ToFractionalInches(Math.Round(partialFeet * 12.0, ROUND_DIGITS));
 
-            if (fractionalInches == "11 1\"" ||
-                fractionalInches == "12\"")
+            if (fractionalInches == "11 1\"" || fractionalInches == "12\"" )
             {
                 //add a foot to the whole feet
                 wholeFeet += 1.0;
-                fractionalInches = "";
+                fractionalInches = "0\"";
+            }
+            else if (fractionalInches == "-11 1\"" || fractionalInches == "-12\"")
+            {
+                wholeFeet -= 1.0;
+                fractionalInches = "0\"";
             }
 
             string feet = "";
