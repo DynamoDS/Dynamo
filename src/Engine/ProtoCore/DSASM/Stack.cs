@@ -311,13 +311,6 @@ namespace ProtoCore.DSASM
         }
     }
     
-    public struct RTSymbol
-    {
-        public StackValue Sv;
-        public int BlockId;
-        public int[] Dimlist;
-    }
-    
     public static class StackUtils
     {
         /// <summary>

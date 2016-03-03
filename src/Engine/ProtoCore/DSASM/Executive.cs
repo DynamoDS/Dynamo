@@ -653,18 +653,7 @@ namespace ProtoCore.DSASM
             var svDepth = rmem.Pop();
             int depth = (int)svDepth.opdata;
 
-            if (!isDynamicCall)
-            {
-                StackValue svType = rmem.Pop();
-                runtimeVerify(svType.IsStaticType);
-            }
-
             ProcedureNode fNode = null;
-
-            // Pop off number of dimensions indexed into this function call
-            // f()[0][1] -> 2 dimensions
-            StackValue svDim = rmem.Pop();
-            runtimeVerify(svDim.IsArrayDimension);
 
             bool isCallingMemberFunction = Constants.kInvalidIndex != classIndex;
             if (isCallingMemberFunction)
@@ -741,18 +730,7 @@ namespace ProtoCore.DSASM
 
             if (depth > 0)
             {
-                // locals are not yet in the stack so there is no need to account for that in this stack frame
-
-                if (isDynamicCall)
-                {
-                    svThisPtr = rmem.Pop();
-                }
-                else
-                {
-                    svThisPtr = GetFinalPointer(depth);
-                }
-
-                // 
+                svThisPtr = rmem.Pop();
                 if (!svThisPtr.IsPointer)
                 {
                     string message = String.Format(Resources.kInvokeMethodOnInvalidObject, fNode.Name);
@@ -2853,165 +2831,6 @@ namespace ProtoCore.DSASM
                 throw new RuntimeException(msg);
         }
 
-        private StackValue GetFinalPointer(int depth, bool isDotFunctionBody = false)
-        {
-            RTSymbol[] rtSymbols = new RTSymbol[depth];
-            bool isInvalidIdentList = false;
-            for (int i = depth - 1; i >= 0; --i)
-            {
-                // Get the symbol
-                rtSymbols[i].Sv = rmem.Pop();
-
-                AddressType optype = rtSymbols[i].Sv.optype;
-                if (!isDotFunctionBody
-                    && optype != AddressType.Pointer
-                    && optype != AddressType.ArrayPointer
-                    && optype != AddressType.Dynamic
-                    && optype != AddressType.ClassIndex)
-                {
-                    isInvalidIdentList = true;
-                }
-
-                if (isDotFunctionBody && i != 0)
-                {
-                    StackValue dimSv = rmem.Pop();
-                    dimSv.optype = AddressType.ArrayDim;
-                    rmem.Push(dimSv);
-                }
-
-                if (rmem.Stack[rmem.Stack.Count - 1].IsArrayDimension)
-                {
-                    // Get the number of demension pushed
-                    StackValue svDim = rmem.Pop();
-                    int dimensions = (int)svDim.opdata;
-
-                    if (dimensions > 0)
-                    {
-                        if (isDotFunctionBody && i != 0)
-                        {
-                            //push its dimension value
-                            StackValue dimValArraySv = rmem.Pop();
-                            var dimValArray = rmem.Heap.ToHeapObject<DSArray>(dimValArraySv);
-                            foreach (StackValue dimValSv in dimValArray.Values)
-                            {
-                                rmem.Push(dimValSv);
-                            }
-                        }
-                        // Pop off each dimension
-                        rtSymbols[i].Dimlist = new int[dimensions];
-                        for (int j = dimensions - 1; j >= 0; --j)
-                        {
-                            svDim = rmem.Pop();
-                            if (!svDim.IsInteger)
-                            {
-                                isInvalidIdentList = true;
-                            }
-                            rtSymbols[i].Dimlist[j] = (int)svDim.opdata;
-                        }
-                    }
-                    else if (isDotFunctionBody && i != 0)
-                    {
-                        rmem.Pop(); //pop the rhsDimExprList (arrayPointer)
-                    }
-                }
-            }
-
-            if (isInvalidIdentList)
-            {
-                return StackValue.Null;
-            }
-
-            if (isDotFunctionBody)
-            {
-                if (rtSymbols[0].Sv.IsInteger) // static, class UID
-                {
-                    // if static, the opdata of rtSymbols[0] is not used, no need to bother that 
-                    int type = (int)rtSymbols[0].Sv.opdata;
-                    rtSymbols[0].Sv.metaData.type = type;
-                    rtSymbols[0].Sv.optype = AddressType.ClassIndex;
-                }
-                rtSymbols[1].Sv.optype = AddressType.Dynamic;
-            }
-
-
-            if (1 == depth)
-            {
-                return GetIndexedArray(rtSymbols[0].Sv, rtSymbols[0].Dimlist);
-            }
-
-            // Get first stackvalue of the first elemnt in the ident list
-            // Get its indexed value
-            rtSymbols[0].Sv = GetIndexedArray(rtSymbols[0].Sv, rtSymbols[0].Dimlist);
-
-            //If the value of the first identifier is null, return null stack value
-            if (rtSymbols[0].Sv.IsNull)
-            {
-                return rtSymbols[0].Sv;
-            }
-
-            int index = -1;
-            StackValue ptr = rtSymbols[0].Sv;
-
-            // Traverse the heap until the last pointer
-            int n;
-            int classsccope = rtSymbols[0].Sv.metaData.type;
-            for (n = 1; n < rtSymbols.Length; ++n)
-            {
-                // Index into the current pointer
-                // 'index' is the index of the member variable
-
-                // class f {
-                //   x : var; y : var // index of x = 0, y = 1
-                // }
-
-                //resolve dynamic reference
-                if (rtSymbols[n].Sv.IsDynamic)
-                {
-                    classsccope = rtSymbols[n - 1].Sv.metaData.type;
-                    bool succeeded = ProcessDynamicVariable((rtSymbols[n].Dimlist != null), ref rtSymbols[n].Sv, classsccope);
-                    //if the identifier is unbounded. Push null
-                    if (!succeeded)
-                    {
-                        return StackValue.Null;
-                    }
-                }
-
-                if (rtSymbols[n].Sv.IsStaticVariableIndex)
-                {
-                    StackValue op2 = StackValue.BuildClassIndex(Constants.kInvalidIndex);
-                    rtSymbols[n].Sv = GetOperandData(0, rtSymbols[n].Sv, op2);
-                }
-                else
-                {
-                    index = (int)rtSymbols[n].Sv.opdata;
-                    rtSymbols[n].Sv = rmem.Heap.ToHeapObject<DSObject>(ptr).GetValueFromIndex(index, runtimeCore);
-                }
-
-                // Once a pointer to the member is retrieved, get its indexed value
-                rtSymbols[n].Sv = GetIndexedArray(rtSymbols[n].Sv, rtSymbols[n].Dimlist);
-                ptr = rtSymbols[n].Sv;
-            }
-
-            // Check the last pointer
-            StackValue opVal = rtSymbols[n - 1].Sv;
-            if (opVal.IsPointer || opVal.IsInvalid)
-            {
-                // Determine if we still need to move one more time on the heap
-                // Peek into the pointed data using nextPtr. 
-                // If nextPtr is not a pointer (a primitive) then return the data at nextPtr
-                StackValue nextPtr = opVal;
-                var data = rmem.Heap.ToHeapObject<DSObject>(nextPtr).GetValueFromIndex(0, runtimeCore);
-
-                bool isActualData = !data.IsPointer && !data.IsArray && !data.IsInvalid;
-                if (isActualData)
-                {
-                    // Move one more and get the value at the first heapstack
-                    opVal = data;
-                }
-            }
-            return opVal;
-        }
-
         private StackValue GetIndexedArray(StackValue svPtr, int[] dimList)
         {
             // 'svPtr' is the array pointer that is to be indexed into
@@ -3282,19 +3101,10 @@ namespace ProtoCore.DSASM
             int functionDynamicIndex = (int)instr.op1.opdata;
             int classIndex = (int)instr.op2.opdata;
             int depth = (int)rmem.Pop().opdata;
-            bool isDotMemFuncBody = functionDynamicIndex == Constants.kInvalidIndex;
+            runtimeVerify(functionDynamicIndex != Constants.kInvalidIndex);
             bool isFunctionPointerCall = false;
-            if (isDotMemFuncBody)
-            {
-                functionDynamicIndex = (int)rmem.Pop().opdata;
-            }
 
             var dynamicFunction = exe.DynamicFuncTable.GetFunctionAtIndex(functionDynamicIndex);
-
-            if (isDotMemFuncBody)
-            {
-                classIndex = dynamicFunction.ClassIndex;
-            }
 
             string procName = dynamicFunction.Name;
             int argumentNumber = dynamicFunction.ArgumentNumber;
@@ -3319,63 +3129,17 @@ namespace ProtoCore.DSASM
 
             //retrieve the function arguments
             List<StackValue> argSvList = new List<StackValue>();
-            if (isDotMemFuncBody)
+            for (int i = 0; i < argumentNumber; i++)
             {
-                arglist = new List<Type>();
-                StackValue argArraySv = rmem.Pop();
-                DSArray array = rmem.Heap.ToHeapObject<DSArray>(argArraySv);
-                for (int i = 0; i < array.Count; ++i)
-                {
-                    StackValue sv = array.GetValueFromIndex(i, runtimeCore);
-                    argSvList.Add(sv); //actual arguments
-                    Type paramType = new Type();
-                    paramType.UID = sv.metaData.type;
-                    paramType.rank = 0;
-                    if (sv.IsArray)
-                    {
-                        StackValue paramSv = sv;
-                        while (paramSv.IsArray)
-                        {
-                            paramType.rank++;
-                            var paramArray = rmem.Heap.ToHeapObject<DSArray>(paramSv);
+                StackValue argSv = rmem.Pop();
+                argSvList.Add(argSv);
+            }
 
-                            if (paramArray.Values.Any())
-                            {
-                                paramSv = paramArray.Values.First();
-                                paramType.UID = paramSv.metaData.type;
-                            }
-                            else
-                            {
-                                paramType.UID = (int)PrimitiveType.kTypeArray;
-                                break;
-                            }
-                        }
-                    }
-                    arglist.Add(paramType); //build arglist
-                }
-                argSvList.Reverse();
-            }
-            else
-            {
-                for (int i = 0; i < argumentNumber; i++)
-                {
-                    StackValue argSv = rmem.Pop();
-                    argSvList.Add(argSv);
-                }
-            }
             int lefttype = Constants.kGlobalScope;
-            bool isLeftClass = false;
-            if (isDotMemFuncBody && rmem.Stack.Last().IsInteger) //constructor or static function
-            {
-                //in this case, ptr won't be used
-                lefttype = (int)rmem.Pop().opdata;
-                isLeftClass = true;
-            }
-            else if (depth > 0)
+            if (depth > 0)
             {
                 //resolve the identifier list            
-                StackValue pSv = GetFinalPointer(depth);
-                //push the resolved stack value to stack
+                StackValue pSv = rmem.Pop();
                 rmem.Push(pSv);
                 lefttype = pSv.metaData.type;
             }
@@ -3386,24 +3150,14 @@ namespace ProtoCore.DSASM
             {
                 // check whether it is function pointer, this checking is done at runtime to handle the case
                 // when turning on converting dot operator to function call
-                if (!((int)PrimitiveType.kTypeVoid == type
-                    || Constants.kInvalidIndex == type
-                    || exe.classTable.ClassNodes[type].Symbols == null))
+                if (!((int)PrimitiveType.kTypeVoid == type || Constants.kInvalidIndex == type || exe.classTable.ClassNodes[type].Symbols == null))
                 {
                     bool hasThisSymbol;
                     AddressType addressType;
                     SymbolNode node = null;
                     bool isStatic = false;
                     ClassNode classNode = exe.classTable.ClassNodes[type];
-                    int symbolIndex = ClassUtils.GetSymbolIndex(
-                        classNode, 
-                        procName, 
-                        type, 
-                        Constants.kGlobalScope, 
-                        runtimeCore.RunningBlock,
-                        exe.CompleteCodeBlocks, 
-                        out hasThisSymbol,
-                        out addressType);
+                    int symbolIndex = ClassUtils.GetSymbolIndex(classNode, procName, type, Constants.kGlobalScope, runtimeCore.RunningBlock, exe.CompleteCodeBlocks, out hasThisSymbol, out addressType);
 
                     if (Constants.kInvalidIndex != symbolIndex)
                     {
@@ -3436,29 +3190,16 @@ namespace ProtoCore.DSASM
                             StackValue ptr = rmem.Stack.Last();
                             fpSv = rmem.Heap.ToHeapObject<DSObject>(ptr).GetValueFromIndex((int)fpSv.opdata, runtimeCore);
                         }
-                        //assuming the dimension is zero, as funtion call with nonzero dimension is not supported yet
 
                         // Check the last pointer
                         if (fpSv.IsPointer || fpSv.IsInvalid)
                         {
-                            /*
-                              if lookahead is Not a pointer then
-                                  move to that pointer and get its value at stack index 0 (or further if array)
-                                  push that
-                              else 
-                                  push the current ptr
-                              end
-                            */
-
                             // Determine if we still need to move one more time on the heap
                             // Peek into the pointed data using nextPtr. 
                             // If nextPtr is not a pointer (a primitive) then return the data at nextPtr
                             var data = rmem.Heap.ToHeapObject<DSObject>(fpSv).GetValueFromIndex(0, runtimeCore);
 
-                            bool isActualData = !data.IsPointer && 
-                                                !data.IsArray && 
-                                                !data.IsInvalid; 
-
+                            bool isActualData = !data.IsPointer && !data.IsArray && !data.IsInvalid; 
                             if (isActualData)
                             {
                                 // Move one more and get the value at the first heapstack
@@ -3540,7 +3281,7 @@ namespace ProtoCore.DSASM
 
             if (null != procNode && Constants.kInvalidIndex != procNode.ID)
             {
-                if (isLeftClass || (isFunctionPointerCall && depth > 0)) //constructor or static function or function pointer call
+                if (isFunctionPointerCall && depth > 0) //constructor or static function or function pointer call
                 {
                     rmem.Pop(); //remove the array dimension for "isLeftClass" or final pointer for "isFunctionPointerCall"
                     depth = 0;
@@ -3561,10 +3302,6 @@ namespace ProtoCore.DSASM
                 StackValue opblock = StackValue.BuildBlockIndex(procNode.RuntimeIndex);
                 instr.op3 = opblock;
 
-                int dimensions = 0;
-                StackValue opdim = StackValue.BuildArrayDimension(dimensions);
-                rmem.Push(opdim);
-
                 rmem.Push(StackValue.BuildInt(depth));
 
                 //Modify the operand data
@@ -3575,11 +3312,6 @@ namespace ProtoCore.DSASM
                 return true;
             }
 
-            if (!(isFunctionPointerCall && depth == 0))
-            {
-                rmem.Pop(); //remove the array dimension for "isLeftClass" or final pointer
-                rmem.Push(StackValue.BuildInt(0));
-            }
             return false;
         }
 
@@ -3894,8 +3626,28 @@ namespace ProtoCore.DSASM
             }
             else
             {
-                StackValue opdata1 = GetOperandData(blockId, instruction.op1, instruction.op2);
-                rmem.Push(opdata1);
+                var svDim = rmem.Pop();
+                runtimeVerify(svDim.IsArrayDimension);
+                var dim = (int)svDim.opdata;
+
+                if (dim == 0)
+                {
+                    StackValue opdata1 = GetOperandData(blockId, instruction.op1, instruction.op2);
+                    rmem.Push(opdata1);
+                }
+                else
+                {
+                    var dims = new List<StackValue>();
+
+                    for (int n = 0; n < dim; n++)
+                    {
+                        dims.Add(rmem.Pop());
+                    }
+                    dims.Reverse();
+
+                    StackValue sv = GetIndexedArray(dims, blockId, instruction.op1, instruction.op2);
+                    rmem.Push(sv);
+                }
             }
 
             ++pc;
