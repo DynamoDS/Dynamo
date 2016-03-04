@@ -558,7 +558,6 @@ namespace ProtoAssociative
                 codeBlock.symbolTable.RuntimeIndex,
                 region,
                 false,
-                null,
                 globalClassIndex);
 
             node.name = ident;

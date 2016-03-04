@@ -1046,11 +1046,6 @@ namespace ProtoCore.DSASM
                 }
                 string lhs = watchPrompt + symbolName;
 
-                if (null != exe.runtimeSymbols[blockId].symbolList[index].arraySizeList)
-                {
-                    lhs = lhs + "[" + "offset:" + DX + "]";
-                }
-
                 string rhs = null;
                 StackValue snode = rmem.GetSymbolValue(symbol);
                 if (snode.IsPointer)

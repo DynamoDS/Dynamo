@@ -234,7 +234,6 @@ namespace ProtoImperative
                 codeBlock.symbolTable.RuntimeIndex,
                 MemoryRegion.kMemStack,
                 false,
-                null,
                 globalClassIndex,
                 ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
                 false,

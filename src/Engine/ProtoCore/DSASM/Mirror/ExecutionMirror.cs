@@ -532,10 +532,6 @@ namespace ProtoCore.DSASM.Mirror
 
                 if (index != Constants.kInvalidIndex)
                 {
-                    if (classnode.Symbols.symbolList[index].arraySizeList != null)
-                    {
-                        throw new NotImplementedException("{C5877FF2-968D-444C-897F-FE83650D5201}");
-                    }
                     symbol = classnode.Symbols.symbolList[index];
                     return index;
                 }
@@ -607,10 +603,6 @@ namespace ProtoCore.DSASM.Mirror
 
                 if (index != ProtoCore.DSASM.Constants.kInvalidIndex)
                 {
-                    if (exe.runtimeSymbols[searchBlock.codeBlockId].symbolList[index].arraySizeList != null)
-                    {
-                        throw new NotImplementedException("{C5877FF2-968D-444C-897F-FE83650D5201}");
-                    }
                     block = searchBlock.codeBlockId;
                     symbol = exe.runtimeSymbols[searchBlock.codeBlockId].symbolList[index];
                     return index;
@@ -782,11 +774,6 @@ namespace ProtoCore.DSASM.Mirror
             else
             {
                 var symbol = exe.runtimeSymbols[block].symbolList[index];
-                if (symbol.arraySizeList != null)
-                {
-                    throw new NotImplementedException("{C5877FF2-968D-444C-897F-FE83650D5201}");
-                }
-
                 Obj retVal = Unpack(MirrorTarget.rmem.GetSymbolValue(symbol), MirrorTarget.rmem.Heap, runtimeCore);
 
                 return retVal;
@@ -1042,12 +1029,6 @@ namespace ProtoCore.DSASM.Mirror
                 int index = exe.runtimeSymbols[block].IndexOf(name, Constants.kInvalidIndex, Constants.kGlobalScope);
                 if (Constants.kInvalidIndex != index)
                 {
-                    //Q(Luke): This seems to imply that the LHS is an array index?
-                    if (exe.runtimeSymbols[block].symbolList[index].arraySizeList != null)
-                    {
-                        throw new NotImplementedException("{C5877FF2-968D-444C-897F-FE83650D5202}");
-                    }
-
                     SymbolNode symNode = exe.runtimeSymbols[block].symbolList[index];
                     if (symNode.absoluteFunctionIndex == Constants.kGlobalScope)
                     {
@@ -1069,11 +1050,6 @@ namespace ProtoCore.DSASM.Mirror
                 {
                     //Q(Luke): This seems to imply that the LHS is an array index?
                     var symbol = exe.runtimeSymbols[block].symbolList[index];
-                    if (symbol.arraySizeList != null)
-                    {
-                        throw new NotImplementedException("{C5877FF2-968D-444C-897F-FE83650D5201}");
-                    }
-
                     return MirrorTarget.rmem.GetSymbolValue(symbol);
                 }
             }

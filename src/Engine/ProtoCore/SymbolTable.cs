@@ -21,7 +21,6 @@ namespace ProtoCore.DSASM
         public bool             isSSATemp;
         public int              size;
         public int              datasize;
-        public List<int>        arraySizeList;
         public MemoryRegion     memregion;
         public int              symbolTableIndex = Constants.kInvalidIndex;
         public int              runtimeTableIndex = Constants.kInvalidIndex;
@@ -34,7 +33,6 @@ namespace ProtoCore.DSASM
         public SymbolNode()
         {
             name = string.Empty;
-            arraySizeList   = null;
             memregion       = MemoryRegion.kInvalidRegion;
             classScope      = Constants.kInvalidIndex;
             functionIndex   = Constants.kGlobalScope;
@@ -57,7 +55,6 @@ namespace ProtoCore.DSASM
             int runtimeIndex,
             MemoryRegion memregion = MemoryRegion.kInvalidRegion, 
             bool isArray = false, 
-            List<int> arraySizeList = null, 
             int scope = -1,
             ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
             bool isStatic = false,
@@ -74,7 +71,6 @@ namespace ProtoCore.DSASM
             this.size           = size;
             this.datasize       = datasize;
             this.isArgument     = isArgument;
-            this.arraySizeList  = arraySizeList;
             this.memregion      = memregion;
             this.classScope     = scope;
             this.absoluteClassScope = scope;
