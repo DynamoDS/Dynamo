@@ -254,6 +254,8 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        public bool PreviewPinned { get; private set; }
+
         /// <summary>
         ///     Text that is displayed as this Node's tooltip.
         /// </summary>
@@ -832,6 +834,16 @@ namespace Dynamo.Graph.Nodes
         public MirrorData GetValue(int outPortIndex, EngineController engine)
         {
             return engine.GetMirror(GetAstIdentifierForOutputIndex(outPortIndex).Value).GetData();
+        }
+
+        public void SetPinStatus(bool pinned)
+        {
+            if (PreviewPinned != pinned)
+            {
+                PreviewPinned = pinned;
+                OnNodeModified();
+            }
+            
         }
 
         /// <summary>
@@ -1780,6 +1792,7 @@ namespace Dynamo.Graph.Nodes
             helper.SetAttribute("lacing", ArgumentLacing.ToString());
             helper.SetAttribute("isSelectedInput", IsSetAsInput.ToString());
             helper.SetAttribute("IsFrozen", isFrozenExplicitly);
+            helper.SetAttribute("isPinned", PreviewPinned);
 
             var portsWithDefaultValues =
                 inPorts.Select((port, index) => new { port, index })
@@ -1832,6 +1845,7 @@ namespace Dynamo.Graph.Nodes
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
             IsSetAsInput = helper.ReadBoolean("isSelectedInput", true);
             isFrozenExplicitly = helper.ReadBoolean("IsFrozen", false);
+            PreviewPinned = helper.ReadBoolean("isPinned", false);
 
             var portInfoProcessed = new HashSet<int>();
 

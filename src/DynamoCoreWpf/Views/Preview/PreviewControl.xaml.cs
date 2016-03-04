@@ -103,7 +103,16 @@ namespace Dynamo.UI.Controls
             this.nodeViewModel = nodeViewModel;
             InitializeComponent();
             Loaded += OnPreviewControlLoaded;
-            StaysOpen = false;
+            if (this.nodeViewModel.PreviewPinned)
+            {
+                StaysOpen = true;
+                TransitionToState(State.Condensed);
+                TransitionToState(State.Expanded);
+            }
+            else
+            {
+                StaysOpen = false;
+            }
         }
 
         /// <summary>
@@ -608,6 +617,7 @@ namespace Dynamo.UI.Controls
 
         private void BeginFadeOutTransition()
         {
+            if (StaysOpen) return;
             if (this.IsCondensed == false)
                 throw new InvalidOperationException();
 
@@ -784,6 +794,7 @@ namespace Dynamo.UI.Controls
         private void OnMapPinMouseClick(object sender, MouseButtonEventArgs e)
         {
             StaysOpen = !StaysOpen;
+            nodeViewModel.PreviewPinned = StaysOpen;
         }
 
         #endregion

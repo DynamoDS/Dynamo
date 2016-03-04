@@ -30,10 +30,12 @@ namespace Dynamo.ViewModels
         public delegate void SetToolTipDelegate(string message);
         public delegate void NodeDialogEventHandler(object sender, NodeDialogEventArgs e);
         public delegate void SnapInputEventHandler(PortViewModel portViewModel);
+        public delegate void PreviewPinStatusHandler(bool pinned);
         #endregion
 
         #region events
-        public event SnapInputEventHandler SnapInputEvent;        
+        public event SnapInputEventHandler SnapInputEvent;
+        public event PreviewPinStatusHandler PreviewPinEvent;
         #endregion
 
         #region private members
@@ -52,6 +54,17 @@ namespace Dynamo.ViewModels
         public readonly DynamoViewModel DynamoViewModel;
         public readonly WorkspaceViewModel WorkspaceViewModel;
         public readonly Size? PreferredSize;
+
+        private bool previewPinned;
+        public bool PreviewPinned {
+            get { return previewPinned; }
+            set
+            {
+                previewPinned = value;
+                if (PreviewPinEvent != null)
+                    PreviewPinEvent(value);
+            }
+        }
 
         public NodeModel NodeModel { get { return nodeLogic; } private set { nodeLogic = value; } }
 
@@ -444,6 +457,8 @@ namespace Dynamo.ViewModels
             DynamoViewModel = workspaceViewModel.DynamoViewModel;
 
             nodeLogic = logic;
+            this.PreviewPinned = logic.PreviewPinned;
+            PreviewPinEvent += logic.SetPinStatus;
 
             //respond to collection changed events to add
             //and remove port model views
