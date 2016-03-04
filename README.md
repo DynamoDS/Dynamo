@@ -52,19 +52,16 @@ Dynamo Core
 
 Known issues
 - No backwards compatibility with 0.9.0 and before. This is due to neccessary changes to the Dynamo API in advance of 1.0. These changes can be found in the [API Changes](https://github.com/DynamoDS/Dynamo/wiki/API-Changes) document.
+- Customizer not using  Display.SurfaceGeometry
+- In some situations, placement of Adaptive components requires a change in list structure.  The AC placement nodes now expect to receive lists of lists of placement coordinates.  In the past, the nodes expected to only place one AC, now it expects to place many. If you are going to only place a single component, it needs to be nesting into a list.
 
 Dynamo Studio
 - Share your work online:  Share interactive parametric models online.  Just publish your Dynamo graph and send a link to your colleagues or the whole world.  People can view and interact with your designs in a regular web browser with no Dynamo installed
 - ImportExport: Read directly from DWG files and only pull out those pieces of the file that you want.  
 
-Known issues
-- Customizer not using  Display.SurfaceGeometry
-
 Dynamo for Revit
 - Batch placement of adaptive components : Huge improvements to the speed and reliability of placing large numbers of adaptive components.
 
-Known issues:
-- In some situations, placement of Adaptive components requires a change in list structure.  The AC placement nodes now expect to receive lists of lists of placement coordinates.  In the past, the nodes expected to only place one AC, now it expects to place many. If you are going to only place a single component, it needs to be nesting into a list.
 
 ### 0.9.0 ###
 
