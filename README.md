@@ -51,8 +51,7 @@ Dynamo Core
 - More forgiving DesignScript syntax:  Users can now write instance methods (ex. MyCurve.PointAtParameter(0.5)) as Static Methods (ex. - Curve.PointAtParameter(MyCurve, 0.5))
 
 Known issues
-- No backwards compatibility with 0.9.0 and before. This is due to neccessary changes to the Dynamo API in advance of 1.0. These changes can be found in the [API Changes](https://github.com/DynamoDS/Dynamo/wiki/API-Changes) document.
-- Customizer not using  Display.SurfaceGeometry
+- No backwards compatibility with 0.9.0 and before. This is due to neccessary changes to the Dynamo API in advance of 1.0. These changes can be found in the [API Changes](https://github.com/DynamoDS/Dynamo/wiki/API-Changes) document
 - In some situations, placement of Adaptive components requires a change in list structure.  The AC placement nodes now expect to receive lists of lists of placement coordinates.  In the past, the nodes expected to only place one AC, now it expects to place many. If you are going to only place a single component, it needs to be nesting into a list.
 
 Dynamo Studio
