@@ -58,6 +58,8 @@ Known issues
 Dynamo Studio
 - Share your work online:  Share interactive parametric models online.  Just publish your Dynamo graph and send a link to your colleagues or the whole world.  People can view and interact with your designs in a regular web browser with no Dynamo installed
 - ImportExport: Read directly from DWG files and only pull out those pieces of the file that you want.  
+- When a user downloads a dyn from the Customizer (or Shared Workspace), the dyn's Run setting is automatically set to "Manual". This may be confusing to some users when they open the dyn in Dynamo and see all Nulls in the outputs: simply click the Run button.
+
 
 Dynamo for Revit
 - Batch placement of adaptive components : Huge improvements to the speed and reliability of placing large numbers of adaptive components.
