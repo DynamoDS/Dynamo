@@ -74,10 +74,12 @@ namespace DynamoCoreWpfTests
             ViewModel.OpenCommand.Execute(openPath);
 
             var ws = Model.CurrentWorkspace as HomeWorkspaceModel;
-            var dataTimeNow = ws.FirstNodeFromWorkspace<DSFunction>();
-            Assert.NotNull(dataTimeNow);
+            var dateTimeNow = ws.FirstNodeFromWorkspace<DSFunction>();
+            var guid = dateTimeNow.GUID.ToString();
 
-            var time1 = GetPreviewValue(dataTimeNow.GUID.ToString()).ToString();
+            Assert.NotNull(dateTimeNow);
+
+            var time1 = GetPreviewValue(guid).ToString();
 
             var stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -89,7 +91,7 @@ namespace DynamoCoreWpfTests
             while (stopWatch.Elapsed.Seconds <= 1) { }
 
             stopWatch.Stop();
-            var time2 = GetPreviewValue(dataTimeNow.GUID.ToString()).ToString();
+            var time2 = GetPreviewValue(guid).ToString();
 
             Assert.AreNotEqual(time1, time2);
         }
