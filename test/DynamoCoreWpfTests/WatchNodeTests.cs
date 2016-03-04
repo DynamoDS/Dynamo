@@ -192,7 +192,7 @@ namespace DynamoCoreWpfTests
                 ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
                 watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name);
 
-            Assert.AreEqual("_SingleFunctionObject", watchVM.NodeLabel);
+            Assert.AreEqual("Function", watchVM.NodeLabel);
         }
 
         [Test]
@@ -228,7 +228,7 @@ namespace DynamoCoreWpfTests
                ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
                 watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name);
 
-            Assert.AreEqual("_SingleFunctionObject", watchVM.NodeLabel);
+            Assert.AreEqual("Function", watchVM.NodeLabel);
         }
     }
 }

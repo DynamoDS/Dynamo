@@ -29,6 +29,8 @@ namespace Dynamo.ViewModels
         private string _link;
         private bool _showRawData;
         private string _path = "";
+        private bool _isOneRowContent;
+        private readonly Action<string> tagGeometry;
 
         public DelegateCommand FindNodeForPathCommand { get; set; }
 
@@ -122,21 +124,32 @@ namespace Dynamo.ViewModels
 
         public bool IsNodeExpanded { get; set; }
 
-        #endregion
-
-        public WatchViewModel()
+        /// <summary>
+        /// If Content is 1 string, e.g. "Empty", "null", "Function", margin should be more to the left side.
+        /// For this purpose used this value. When it's true, margin in DataTrigger is set to -15,5,5,5; otherwise
+        /// it's set to 5,5,5,5
+        /// </summary>
+        public bool IsOneRowContent
         {
-            FindNodeForPathCommand = new DelegateCommand(FindNodeForPath, CanFindNodeForPath);
-            IsNodeExpanded = true;
-            _showRawData = false;
+            get { return _isOneRowContent; }
+            set
+            {
+                _isOneRowContent = value;
+                RaisePropertyChanged("IsOneRowContent");
+            }
         }
 
-        public WatchViewModel(string label, string path, bool expanded = false)
+        #endregion
+
+        public WatchViewModel(Action<string> tagGeometry): this(null, null, tagGeometry, true) { }
+
+        public WatchViewModel(string label, string path, Action<string> tagGeometry, bool expanded = false)
         {
             FindNodeForPathCommand = new DelegateCommand(FindNodeForPath, CanFindNodeForPath);
             _path = path;
             _label = label;
             IsNodeExpanded = expanded;
+            this.tagGeometry = tagGeometry;
         }
 
         private bool CanFindNodeForPath(object obj)
@@ -146,6 +159,10 @@ namespace Dynamo.ViewModels
 
         private void FindNodeForPath(object obj)
         {
+            if (tagGeometry != null)
+            {
+                tagGeometry(obj.ToString());
+            }
             //visualizationManager.TagRenderPackageForPath(obj.ToString());
         }
     }

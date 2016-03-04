@@ -55,27 +55,14 @@ namespace ProtoCore.DSASM
     public enum OpCode
     {
         NONE,
-        MOV,
+
+        // operators
         ADD,
         SUB,
         MUL,
         DIV,
         MOD,
-        PUSH,
-        PUSHG,
-        PUSHM,
-        PUSHW,
-        PUSHDEP,
-        PUSHINDEX,
-        POP,
-        POPW,
-        POPG,
-        CALL,
-        CALLR,
-        RETURN,
-        JMP,
-        CJMP,
-        JDEP,
+        NEG,
         AND,
         OR,
         NOT,
@@ -85,26 +72,36 @@ namespace ProtoCore.DSASM
         LT,
         GE,
         LE,
-        BOUNCE,
-        ALLOCA,
-        ALLOCC,
+
+        // memory allocation
+        ALLOCA,         // Allocate array
+        ALLOCC,         // Allocate object
+
+        PUSH,
+        PUSHBLOCK,      // Push construction block id in imperative code
+        PUSHM,
+        PUSHW,
+        PUSHDEP,        // Push symbols in left-hand-side identifier list in impertiave langauge block
+        PUSHINDEX,      // Array indexing
+        PUSHREPGUIDE,   // Push replicaion guide to the stack
+        PUSHLEVEL,      // Push at-level to the stak
+        POP,
+        POPW,
         POPM,
-      
-        POPLIST,
-        PUSHLIST,
-        RETC,
-        RETB,
-        RETCN,
-        BITAND,
-        BITOR,
-        BITXOR,
-        NEGATE,
-        NEG,
-        CAST,
+        POPREPGUIDES,   // Pop replication guides from stack and save to the core
+
+        CALL,
+        CALLR,
+        RETURN,         // Return from function call
+        RETB,           // Return from code block (pushed by BOUNCE)
+        RETCN,          // Return from local block
+
+        BOUNCE,         // Bounce to different language block
+        JMP,
+        CJMP,
+        JDEP,
         DEP,
         
-        PUSHB,
-
         // TODO Jun: This is temporary until the lib system is implemented. 
         PUSH_ARRAYKEY,
         SETEXPUID

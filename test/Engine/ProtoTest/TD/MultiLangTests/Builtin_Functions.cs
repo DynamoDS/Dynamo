@@ -265,7 +265,7 @@ result =
 	a1 = {
 	{{null},{}},
 	{1,2,4},
-	{@a,@b,@null},//{null,null,null}
+	{a,b,null},//{null,null,null}
 	{null}
 	};
 	a2 = {};
@@ -677,8 +677,8 @@ result =
 {
 	a1 = {
 	{{true},{}},
-	{@a,2,{false}},
-	{@a,@b,@null},//{null,null,null}
+	{a,2,{false}},
+	{a,b,null},//{null,null,null}
 	{null}
 	};
 	a2 = {};
@@ -968,8 +968,8 @@ result =
 {
 	a1 = {
 	{{false},{}},
-	{@a,2,{true}},
-	{@a,@b,@null},//{null,null,null}
+	{a,2,{true}},
+	{a,b,null},//{null,null,null}
 	{null}
 	};
 	a2 = {};
@@ -4685,6 +4685,16 @@ y = ContainsKey(x, x);
 ";
             Assert.DoesNotThrow(() => thisTest.RunScriptSource(code));
             thisTest.Verify("y", false);
+        }
+
+        [Test]
+        public void TestMapToWithReverserRange()
+        {
+            string code = @"
+r = MapTo(5, 10, 5..10, 2, 0);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r", new object[] { 2.0, 1.6, 1.2, 0.8, 0.4, 0 });
         }
     }
 

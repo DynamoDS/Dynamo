@@ -209,7 +209,7 @@ namespace UnitsUI
         {
             Measure = Length.FromDouble(0.0, LengthUnit.FractionalFoot);
 
-            OutPortData.Add(new PortData("number", Resources.LengthFromStringPortDataLengthToolTip));
+            OutPortData.Add(new PortData(Resources.LengthFromStringPortDataLengthToolTip, Resources.LengthFromStringPortDataLengthToolTip));
             RegisterAllPorts();
         }
 

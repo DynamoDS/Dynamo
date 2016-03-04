@@ -243,6 +243,70 @@ namespace ProtoCore.AST.AssociativeAST
         }
     }
 
+    public class AtLevelNode : AssociativeNode
+    {
+        public Int64 Level
+        {
+            get; set;
+        }
+
+        public bool IsDominant
+        {
+            get; set;
+        }
+
+        public AtLevelNode()
+        {
+            Level = 0;
+            IsDominant = false;
+        }
+
+        public AtLevelNode(AtLevelNode rhs)
+            : base(rhs)
+        {
+            if (rhs != null)
+            {
+                Level = rhs.Level;
+                IsDominant = rhs.IsDominant;
+            }
+        }
+
+        public override void Accept(AssociativeAstVisitor visitor)
+        {
+            visitor.VisitAtLevelNode(this);
+        }
+
+        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        {
+            return visitor.VisitAtLevelNode(this);
+        }
+        
+        public override bool Equals(object other)
+        {
+            var otherNode = other as AtLevelNode;
+            if (null == otherNode)
+                return false;
+
+            return Level == otherNode.Level && IsDominant == otherNode.IsDominant;
+        }
+
+        public override int GetHashCode()
+        {
+            return Level.GetHashCode() ^ IsDominant.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            var buf = new StringBuilder();
+            if (IsDominant)
+                buf.Append("@@");
+            else
+                buf.Append("@");
+            buf.Append(Level);
+            return buf.ToString();
+        }
+    }
+
     public class ArrayNameNode : AssociativeNode
     {
         public ArrayNode ArrayDimensions
@@ -252,6 +316,12 @@ namespace ProtoCore.AST.AssociativeAST
         }
 
         public List<AssociativeNode> ReplicationGuides
+        {
+            get;
+            set;
+        }
+
+        public AtLevelNode AtLevel
         {
             get;
             set;
@@ -277,6 +347,12 @@ namespace ProtoCore.AST.AssociativeAST
             {
                 ReplicationGuides = rhs.ReplicationGuides.Select(NodeUtils.Clone).ToList();
             }
+
+            AtLevel = null;
+            if (rhs.AtLevel != null)
+            {
+                AtLevel = NodeUtils.Clone(rhs.AtLevel) as AtLevelNode;
+            }
         }
 
         public override bool Equals(object other)
@@ -291,13 +367,19 @@ namespace ProtoCore.AST.AssociativeAST
                 arrayDimEqual = EqualityComparer<ArrayNode>.Default.Equals(ArrayDimensions, otherNode.ArrayDimensions);
             }
 
+            bool atLevelEquals = (AtLevel == null && otherNode.AtLevel == null);
+            if (AtLevel != null && otherNode.AtLevel != null)
+            {
+                atLevelEquals = AtLevel.Equals(otherNode.AtLevel);
+            }
+
             bool repGuidesEqual = (null == ReplicationGuides && null == otherNode.ReplicationGuides);
             if (null != ReplicationGuides && null != otherNode.ReplicationGuides)
             {
                 repGuidesEqual = ReplicationGuides.SequenceEqual(otherNode.ReplicationGuides);
             }
 
-            return arrayDimEqual && repGuidesEqual;
+            return arrayDimEqual && atLevelEquals && repGuidesEqual;
         }
 
         public override int GetHashCode()
@@ -316,6 +398,9 @@ namespace ProtoCore.AST.AssociativeAST
 
             if (ArrayDimensions != null)
                 buf.Append(ArrayDimensions.ToString());
+
+            if (AtLevel != null)
+                buf.Append(AtLevel.ToString());
 
             ReplicationGuides.ForEach(x => buf.Append("<" + x.ToString() + ">"));
 
@@ -1794,7 +1879,7 @@ namespace ProtoCore.AST.AssociativeAST
     {
         public int SSAExpressionUID { get; set; }
         public int ExpressionUID { get; set; }
-        public int ssaExprID { get; set; }
+        public int SSASubExpressionID { get; set; }
         public int modBlkUID { get; set; }
         public Guid guid { get; set; }
         public int OriginalAstID { get; set; }    // The original AST that this Binarynode was derived from
@@ -1820,7 +1905,6 @@ namespace ProtoCore.AST.AssociativeAST
             isSSAFirstAssignment = false;
             isMultipleAssign = false;
             ExpressionUID = Constants.kInvalidIndex;
-            modBlkUID = Constants.kInvalidIndex;
             OriginalAstID = ID;
             guid = System.Guid.Empty;
             LeftNode = left;
@@ -1837,7 +1921,6 @@ namespace ProtoCore.AST.AssociativeAST
             isSSAFirstAssignment = rhs.isSSAFirstAssignment;
             isMultipleAssign = rhs.isMultipleAssign;
             ExpressionUID = rhs.ExpressionUID;
-            modBlkUID = rhs.modBlkUID;
             guid = rhs.guid;
             OriginalAstID = rhs.OriginalAstID;
 
@@ -1866,7 +1949,6 @@ namespace ProtoCore.AST.AssociativeAST
              isSSAFirstAssignment = false;
              isMultipleAssign = false;
              ExpressionUID = Constants.kInvalidIndex;
-             modBlkUID = Constants.kInvalidIndex;
              OriginalAstID = ID;
              guid = System.Guid.Empty;
             
@@ -2632,7 +2714,6 @@ namespace ProtoCore.AST.AssociativeAST
             return cond;
         }
 
-
         //Due to the lack of var arg support for generic types, we need to do
         //the manual type expansions
 
@@ -2930,24 +3011,12 @@ namespace ProtoCore.AST.AssociativeAST
                                                                  AssociativeNode rhs,
                                                                  Operator op)
         {
-            if (lhs == null)
-                throw new ArgumentNullException("lhs");
-
-            if (rhs == null)
-                throw new ArgumentNullException("rhs");
-
             return new BinaryExpressionNode(lhs, rhs, op);
         }
 
         public static BinaryExpressionNode BuildAssignment(AssociativeNode lhs,
                                                            AssociativeNode rhs)
         {
-            if (lhs == null)
-                throw new ArgumentNullException("lhs");
-
-            if (rhs == null)
-                throw new ArgumentNullException("rhs");
-
             return new BinaryExpressionNode(lhs, rhs, Operator.assign);
         }
 
@@ -3027,7 +3096,7 @@ namespace ProtoCore.AST.AssociativeAST
                 AstFactory.BuildBooleanNode(true)
             };
 
-            return BuildFunctionCall("_SingleFunctionObject", inputParams);
+            return BuildFunctionCall("Function", inputParams);
         }
 
         /// <summary>

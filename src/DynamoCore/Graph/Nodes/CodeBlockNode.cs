@@ -65,7 +65,6 @@ namespace Dynamo.Graph.Nodes
         {
             ArgumentLacing = LacingStrategy.Disabled;
             this.libraryServices = libraryServices;
-            this.libraryServices.LibraryLoaded += LibraryServicesOnLibraryLoaded;
             this.ElementResolver = new ElementResolver();
         }
 
@@ -78,7 +77,6 @@ namespace Dynamo.Graph.Nodes
             X = xPos;
             Y = yPos;
             this.libraryServices = libraryServices;
-            this.libraryServices.LibraryLoaded += LibraryServicesOnLibraryLoaded;
             this.ElementResolver = resolver;
             code = userCode;
             GUID = guid;
@@ -90,12 +88,6 @@ namespace Dynamo.Graph.Nodes
         public override void Dispose()
         {
             base.Dispose();
-            libraryServices.LibraryLoaded -= LibraryServicesOnLibraryLoaded;
-        }
-
-        private void LibraryServicesOnLibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs libraryLoadedEventArgs)
-        {
-            //ProcessCodeDirect();
         }
 
         /// <summary>
@@ -110,7 +102,7 @@ namespace Dynamo.Graph.Nodes
         ///     Returns the names of all the variables defined in this code block.
         /// </summary>
         /// <returns>List containing all the names</returns>
-        public List<string> GetDefinedVariableNames()
+        internal List<string> GetDefinedVariableNames()
         {
             var defVarNames = new List<string>();
 
@@ -136,7 +128,7 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         /// <param name="variableName"> Name of the variable corresponding to an input port </param>
         /// <returns> Index of the required port in the InPorts collection </returns>
-        public static int GetInportIndex(CodeBlockNodeModel cbn, string variableName)
+        internal static int GetInportIndex(CodeBlockNodeModel cbn, string variableName)
         {
             return cbn.inputIdentifiers.IndexOf(variableName);
         }
@@ -146,7 +138,7 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         /// <param name="variableName"></param>
         /// <returns></returns>
-        public int GetOutportIndex(string variableName)
+        internal int GetOutportIndex(string variableName)
         {
             var svs = CodeBlockUtils.GetStatementVariables(codeStatements, true);
             for (int i = 0; i < codeStatements.Count; i++)
@@ -856,8 +848,7 @@ namespace Dynamo.Graph.Nodes
 
         private string LocalizeIdentifier(string identifierName)
         {
-            var guid = GUID.ToString().Replace("-", string.Empty);
-            return string.Format("{0}_{1}", identifierName, guid);
+            return string.Format("{0}_{1}", identifierName, AstIdentifierGuid);
         }
 
         private class ImperativeIdentifierInPlaceMapper : ImperativeAstReplacer

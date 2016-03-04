@@ -35,6 +35,7 @@ using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using ISelectable = Dynamo.Selection.ISelectable;
+using Autodesk.DesignScript.Interfaces;
 
 namespace Dynamo.ViewModels
 {
@@ -496,6 +497,7 @@ namespace Dynamo.ViewModels
 
             BackgroundPreviewViewModel = startConfiguration.Watch3DViewModel;
             BackgroundPreviewViewModel.PropertyChanged += Watch3DViewModelPropertyChanged;
+            WatchHandler.RequestSelectGeometry += BackgroundPreviewViewModel.AddLabelForPath;
             RegisterWatch3DViewModel(BackgroundPreviewViewModel, RenderPackageFactoryViewModel.Factory);
         }
 
@@ -1422,9 +1424,7 @@ namespace Dynamo.ViewModels
 
         private void CreateNodeFromSelection(object parameter)
         {
-            CurrentSpaceViewModel.CollapseNodes(
-                DynamoSelection.Instance.Selection.Where(x => x is NodeModel)
-                    .Select(x => (x as NodeModel)));
+            CurrentSpaceViewModel.CollapseSelectedNodes();
         }
 
 

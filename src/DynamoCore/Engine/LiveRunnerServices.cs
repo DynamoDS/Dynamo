@@ -57,7 +57,7 @@ namespace Dynamo.Engine
         /// <param name="var"></param>
         /// <param name="verboseLogging"></param>
         /// <returns></returns>
-        public RuntimeMirror GetMirror(string var, bool verboseLogging)
+        internal RuntimeMirror GetMirror(string var, bool verboseLogging)
         {
 
             var mirror = liveRunner.InspectNodeValue(var);
@@ -74,7 +74,7 @@ namespace Dynamo.Engine
         /// </summary>
         /// <param name="graphData"></param>
         /// <param name="verboseLogging"></param>
-        public void UpdateGraph(GraphSyncData graphData, bool verboseLogging)
+        internal void UpdateGraph(GraphSyncData graphData, bool verboseLogging)
         {
             if (verboseLogging)
                 Log("LRS.UpdateGraph: " + graphData);
@@ -86,7 +86,7 @@ namespace Dynamo.Engine
         /// Preview graph with graph sync data.
         /// </summary>
         /// <param name="graphData"></param>
-        public List<Guid> PreviewGraph(GraphSyncData graphData, bool verboseLogging)
+        internal List<Guid> PreviewGraph(GraphSyncData graphData, bool verboseLogging)
         {
             if (verboseLogging)
                Log("LRS.PreviewGraph: " + graphData);
@@ -98,7 +98,7 @@ namespace Dynamo.Engine
         /// Return runtime warnings for this run.
         /// </summary>
         /// <returns></returns>
-        public IDictionary<Guid, List<ProtoCore.Runtime.WarningEntry>> GetRuntimeWarnings()
+        internal IDictionary<Guid, List<ProtoCore.Runtime.WarningEntry>> GetRuntimeWarnings()
         {
             return liveRunner.GetRuntimeWarnings();
         }
@@ -107,9 +107,28 @@ namespace Dynamo.Engine
         /// Return build warnings for this run.
         /// </summary>
         /// <returns></returns>
-        public IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings()
+        internal IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings()
         {
             return liveRunner.GetBuildWarnings();
+        }
+
+        /// <summary>
+        /// Return GUIDs of exectued ASTs in this run.
+        /// </summary>
+        /// <param name="sessionID"></param>
+        /// <returns></returns>
+        internal IEnumerable<Guid> GetExecutedAstGuids(Guid sessionID)
+        {
+            return liveRunner.GetExecutedAstGuids(sessionID);
+        }
+
+        /// <summary>
+        /// Remove recorded GUIDs of executed ASTs for the specified session.
+        /// </summary>
+        /// <param name="sessionID"></param>
+        internal void RemoveRecordedAstGuidsForSession(Guid sessionID)
+        {
+            liveRunner.RemoveRecordedAstGuidsForSession(sessionID);
         }
 
         /// <summary>
@@ -117,7 +136,7 @@ namespace Dynamo.Engine
         /// all libraries and reset VM.
         /// </summary>
         /// <param name="libraries"></param>
-        public void ReloadAllLibraries(IEnumerable<string> libraries)
+        internal void ReloadAllLibraries(IEnumerable<string> libraries)
         { 
             liveRunner.ResetVMAndResyncGraph(libraries);
         }

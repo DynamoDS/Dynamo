@@ -2341,7 +2341,7 @@ r = Equals(x, {41, 42});
             liveRunner.ResetVMAndResyncGraph(new List<string> { "FunctionObject.ds" });
             string code = @"
  def foo(x,y ) { return = x + y; }
- f = _SingleFunctionObject(foo, 2, {1}, {null, 42}, true); r = __Apply(f, 3);
+ f = Function(foo, 2, {1}, {null, 42}, true); r = __Apply(f, 3);
  ";
 
             Guid guid = System.Guid.NewGuid();
@@ -4086,7 +4086,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             Guid guid2 = System.Guid.NewGuid();
             Subtree cbnPt = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[2]);
             Subtree cbnDel = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2,
-                "v0 = _SingleFunctionObject(FFITarget.DummyPoint.ByCoordinates, 3, {}, {null, null, null}, true);");
+                "v0 = Function(FFITarget.DummyPoint.ByCoordinates, 3, {}, {null, null, null}, true);");
 
             added.Add(cbnPt);
 
@@ -4204,7 +4204,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             Guid guid2 = System.Guid.NewGuid();
             Subtree cbnPt = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[2]);
             Subtree cbnDel = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2,
-                "v0 = _SingleFunctionObject(FFITarget.DummyPoint.ByCoordinates, 3, {}, {null, null, null}, true);");
+                "v0 = Function(FFITarget.DummyPoint.ByCoordinates, 3, {}, {null, null, null}, true);");
 
             added.Add(cbnPt);
 
@@ -5807,9 +5807,9 @@ k = __TryGetValueFromNestedDictionaries(i, ""a"");
 ,
 
 @"
-partialVar = _SingleFunctionObject(foosa, 2, {0}, {x, null}, true);
-j = _SingleFunctionObject(__ComposeBuffered, 3, {0, 1}, {{_SingleFunctionObject(__GetOutput, 2, {1}, {null, ""b""}, true), partialVar}, 1, null}, true);
-i_out1 = _SingleFunctionObject(__ComposeBuffered, 3, {0, 1}, {{_SingleFunctionObject(__GetOutput, 2, {1}, {null, ""a""}, true), partialVar}, 1, null}, true);
+partialVar = Function(foosa, 2, {0}, {x, null}, true);
+j = Function(__ComposeBuffered, 3, {0, 1}, {{Function(__GetOutput, 2, {1}, {null, ""b""}, true), partialVar}, 1, null}, true);
+i_out1 = Function(__ComposeBuffered, 3, {0, 1}, {{Function(__GetOutput, 2, {1}, {null, ""a""}, true), partialVar}, 1, null}, true);
 i = {};
 i[""b""] = j;
 i[""a""] = k;

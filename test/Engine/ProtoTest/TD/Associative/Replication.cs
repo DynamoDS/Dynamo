@@ -2646,7 +2646,6 @@ rad = foo(a, d);
 
         [Test]
         [Category("Replication")]
-        [Category("Failure")]
         public void T66_Defect_1467198_Inline_Condition_With_Jagged_Array()
         {
             String code =
@@ -3457,31 +3456,20 @@ y = sum(a, b);
             String errmsg = "";//DNL-1467315 rev 3830 : System.NotImplementedException : only <1> and <2> are supported as replication guides";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             // verification 
-            thisTest.Verify("x", new Object[] { new Object[] { new Object[] { new Object[] { 5, 6 }, new Object[] { 5, 6 } }, new Object[] { new Object[] { 6, 7 }, new Object[] { 6, 7 } } }, new Object[] { new Object[] { new Object[] { 5, 6 }, new Object[] { 5, 6 } }, new Object[] { new Object[] { 6, 7 }, new Object[] { 6, 7 } } } });
+            thisTest.Verify("x", new Object[] 
+            {
+                new Object[] 
+                {
+                    new Object[] { new Object[] { 5, 6 }, new Object[] { 6, 7 } },
+                    new Object[] { new Object[] { 5, 6 }, new Object[] { 6, 7 } }
+                },
+                new Object[] 
+                {
+                    new Object[] { new Object[] { 5, 6 }, new Object[] { 6, 7 } },
+                    new Object[] { new Object[] { 5, 6 }, new Object[] { 6, 7 } }
+                }
+            });
             thisTest.Verify("y", new Object[] { new Object[] { 5, 7 }, new Object[] { 5, 7 } });
-        }
-
-        [Test]
-        [Category("Replication")]
-        public void T75_Defect_1467282_3()
-        {
-            String code =
-@"
-def sum ( a : int, b : int)
-{
-    return = a + b;
-}
-a = { {5, 6}, {5,6} };
-b = { {0, 1}, {0,1} };
-test = sum(a<1><2>, b<3><4> );
-//expected :   test = { { { { 5, 6 }, { 5, 6 } }, { { 6, 7 }, { 6, 7 } } }, { { { 5, 6 }, { 5, 6 } }, { { 6, 7 }, { 6, 7 } } } }
-//recieved :   System.NotImplemented exception
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "";//DNL-1467315 rev 3830 : System.NotImplementedException : only <1> and <2> are supported as replication guides";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            // verification 
-            thisTest.Verify("test", new Object[] { new Object[] { new Object[] { new Object[] { 5, 6 }, new Object[] { 5, 6 } }, new Object[] { new Object[] { 6, 7 }, new Object[] { 6, 7 } } }, new Object[] { new Object[] { new Object[] { 5, 6 }, new Object[] { 5, 6 } }, new Object[] { new Object[] { 6, 7 }, new Object[] { 6, 7 } } } });
         }
 
         [Test]
@@ -4972,7 +4960,6 @@ a = { 5, 6, 7, 8 };
 
         [Test]
         [Category("Replication")]
-        [Category("Failure")]
         public void T92_add()
         {
             String code =
@@ -4985,28 +4972,6 @@ c = foo(a,b);
             string errmsg = "MAGN-1673 Sprint 27 - Rev4014 - function argument with jagged array - its expected to replicate for the attached code";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("c", new object[] { new object[] { 6, 7 }, new object[] { 9, 10 } });
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        [Category("Replication")]
-        public void T93_Defect_1467315()
-        {
-            String code =
-@"
-def foo(a : int, b : int)
-{
-    return = a + b;
-}
-a = { {5, 6}, {5,6} };
-b = { {0, 1}, {0,1} };
-y = foo(a<1><2>,b<3><4>);
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "";//DNL-1467315 rev 3830 : System.NotImplementedException : only <1> and <2> are supported as replication guides";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            // verification 
-            thisTest.Verify("y", new Object[] { new Object[] { new Object[] { new Object[] { 5, 6 }, new Object[] { 5, 6 } }, new Object[] { new Object[] { 6, 7 }, new Object[] { 6, 7 } } }, new Object[] { new Object[] { new Object[] { 5, 6 }, new Object[] { 5, 6 } }, new Object[] { new Object[] { 6, 7 }, new Object[] { 6, 7 } } } });
         }
 
         [Test]

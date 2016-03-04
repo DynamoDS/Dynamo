@@ -283,15 +283,12 @@ namespace ProtoCore
         private int FindEndPCForAssocGraphNode(int tempPC, InstructionStream istream, ProcedureNode fNode, GraphNode graphNode, bool handleSSATemps)
         {
             int limit = Constants.kInvalidIndex;
-            //AssociativeGraph.GraphNode currentGraphNode = executingGraphNode;
             GraphNode currentGraphNode = graphNode;
-            //Validity.Assert(currentGraphNode != null);
 
             if (currentGraphNode != null)
             {
                 if (tempPC < currentGraphNode.updateBlock.startpc || tempPC > currentGraphNode.updateBlock.endpc)
                 {
-                    //   return false;
                     return Constants.kInvalidIndex;
                 }
 
@@ -620,8 +617,7 @@ namespace ProtoCore
                 {
                     Instruction instr = istream.instrList[pc];
                     // We still want to break at the closing brace of a function or ctor call or language block
-                    if (instr.debug != null && instr.opCode != OpCode.RETC && instr.opCode != OpCode.RETURN && 
-                        (instr.opCode != OpCode.RETB)) 
+                    if (instr.debug != null && instr.opCode != OpCode.RETURN && (instr.opCode != OpCode.RETB)) 
                     {
                         if (runtimeCore.Breakpoints.Contains(instr))
                             runtimeCore.Breakpoints.Remove(instr);

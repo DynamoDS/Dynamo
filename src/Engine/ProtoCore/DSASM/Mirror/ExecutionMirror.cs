@@ -149,7 +149,7 @@ namespace ProtoCore.DSASM.Mirror
                 case AddressType.Int:
                     return val.opdata.ToString();
                 case AddressType.Double:
-                    return val.RawDoubleValue.ToString(runtimeCore.Options.FormatToPrintFloatingPoints);
+                    return val.RawDoubleValue.ToString("F6");
                 case AddressType.Null:
                     return "null";
                 case AddressType.Pointer:
@@ -882,7 +882,7 @@ namespace ProtoCore.DSASM.Mirror
             const int outerBlock = 0;
             ProtoCore.DSASM.Executable exe = MirrorTarget.exe;
             List<AssociativeGraph.GraphNode> reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
-                graphNode, MirrorTarget, graphNode.exprUID, ProtoCore.DSASM.Constants.kInvalidIndex, false, runtimeCore.Options.ExecuteSSA, outerBlock, false);
+                graphNode, MirrorTarget, graphNode.exprUID, false, runtimeCore.Options.ExecuteSSA, outerBlock, false);
 
             // Mark reachable nodes as dirty
             Validity.Assert(reachableGraphNodes != null);

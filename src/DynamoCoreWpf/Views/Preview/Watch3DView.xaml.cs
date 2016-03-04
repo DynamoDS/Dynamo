@@ -13,6 +13,7 @@ using HelixToolkit.Wpf.SharpDX;
 using SharpDX;
 using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 using Point = System.Windows.Point;
+using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Controls
 {
@@ -63,6 +64,7 @@ namespace Dynamo.Controls
 
             ViewModel.RequestAttachToScene -= ViewModelRequestAttachToSceneHandler;
             ViewModel.RequestCreateModels -= RequestCreateModelsHandler;
+            ViewModel.RequestRemoveModels -= RequestRemoveModelsHandler;
             ViewModel.RequestViewRefresh -= RequestViewRefreshHandler;
             ViewModel.RequestClickRay -= GetClickRay;
             ViewModel.RequestCameraPosition -= GetCameraPosition;
@@ -144,10 +146,14 @@ namespace Dynamo.Controls
 
             ViewModel.RequestAttachToScene += ViewModelRequestAttachToSceneHandler;
             ViewModel.RequestCreateModels += RequestCreateModelsHandler;
+            ViewModel.RequestRemoveModels += RequestRemoveModelsHandler;
             ViewModel.RequestViewRefresh += RequestViewRefreshHandler;
             ViewModel.RequestClickRay += GetClickRay;
             ViewModel.RequestCameraPosition += GetCameraPosition;
             ViewModel.RequestZoomToFit += ViewModel_RequestZoomToFit;
+
+            ViewModel.UpdateUpstream();
+            ViewModel.OnWatchExecution();
         }
 
         private void ViewModel_RequestZoomToFit(BoundingBox bounds)
@@ -160,15 +166,27 @@ namespace Dynamo.Controls
             View.InvalidateRender();
         }
 
-        private void RequestCreateModelsHandler(IEnumerable<IRenderPackage> packages)
+        private void RequestCreateModelsHandler(IEnumerable<IRenderPackage> packages, bool forceAsyncCall = false)
         {
-            if (CheckAccess())
+            if (!forceAsyncCall && CheckAccess())
             {
                 ViewModel.GenerateViewGeometryFromRenderPackagesAndRequestUpdate(packages);
             }
             else
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => ViewModel.GenerateViewGeometryFromRenderPackagesAndRequestUpdate(packages)));
+            }
+        }
+
+        private void RequestRemoveModelsHandler(NodeModel node)
+        {
+            if (CheckAccess())
+            {
+                ViewModel.DeleteGeometryForNode(node);
+            }
+            else
+            {
+                Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => ViewModel.DeleteGeometryForNode(node)));
             }
         }
 

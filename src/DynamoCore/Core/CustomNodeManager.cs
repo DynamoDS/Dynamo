@@ -280,7 +280,7 @@ namespace Dynamo.Core
         ///     disk.
         /// </summary>
         /// <param name="guid">Custom node identifier.</param>
-        public bool Uninitialize(Guid guid)
+        internal bool Uninitialize(Guid guid)
         {
             CustomNodeWorkspaceModel ws;
             if (loadedWorkspaceModels.TryGetValue(guid, out ws))
@@ -400,6 +400,13 @@ namespace Dynamo.Core
             return false;
         }
 
+        /// <summary>
+        /// Gets the function workspace.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="isTestMode">if set to <c>true</c> [is test mode].</param>
+        /// <param name="ws">The workspace.</param>
+        /// <returns></returns>
         public bool TryGetFunctionWorkspace(Guid id, bool isTestMode, out ICustomNodeWorkspaceModel ws)
         {
             CustomNodeWorkspaceModel workSpace;
@@ -456,7 +463,7 @@ namespace Dynamo.Core
         /// </summary>
         /// <param name="name">The name of the node</param>
         /// <returns>The name of the </returns>
-        public bool IsInitialized(string name)
+        internal bool IsInitialized(string name)
         {
             CustomNodeInfo info;
             return TryGetNodeInfo(name, out info) && IsInitialized(info.FunctionId);
@@ -466,7 +473,7 @@ namespace Dynamo.Core
         ///     Tells whether the custom node is initialized in the manager
         /// </summary>
         /// <param name="guid">Whether the definition is stored with the manager.</param>
-        public bool IsInitialized(Guid guid)
+        internal bool IsInitialized(Guid guid)
         {
             return loadedCustomNodes.ContainsKey(guid);
         }
@@ -480,7 +487,7 @@ namespace Dynamo.Core
         /// </param>
         /// <param name="info"></param>
         /// <returns>The custom node info object - null if we failed</returns>
-        public bool TryGetInfoFromPath(string path, bool isTestMode, out CustomNodeInfo info)
+        internal bool TryGetInfoFromPath(string path, bool isTestMode, out CustomNodeInfo info)
         {
             try
             {
@@ -666,7 +673,7 @@ namespace Dynamo.Core
         ///     Optional identifier to be used for the custom node. By default, will make a new unique one.
         /// </param>
         /// <returns>Newly created Custom Node Workspace.</returns>
-        public WorkspaceModel CreateCustomNode(string name, string category, string description, Guid? functionId = null)
+        internal WorkspaceModel CreateCustomNode(string name, string category, string description, Guid? functionId = null)
         {
             var newId = functionId ?? Guid.NewGuid();
 
@@ -698,7 +705,7 @@ namespace Dynamo.Core
         /// <param name="id">Custom node identifier.</param>
         /// <param name="info"></param>
         /// <returns>Success or failure.</returns>
-        public bool TryGetNodeInfo(Guid id, out CustomNodeInfo info)
+        internal bool TryGetNodeInfo(Guid id, out CustomNodeInfo info)
         {
             return NodeInfos.TryGetValue(id, out info);
         }
@@ -710,7 +717,7 @@ namespace Dynamo.Core
         /// <param name="name">Name of a custom node.</param>
         /// <param name="info"></param>
         /// <returns></returns>
-        public bool TryGetNodeInfo(string name, out CustomNodeInfo info)
+        internal bool TryGetNodeInfo(string name, out CustomNodeInfo info)
         {
             info = NodeInfos.Values.FirstOrDefault(x => x.Name == name);
             return info != null;
@@ -720,12 +727,16 @@ namespace Dynamo.Core
         ///     Collapse a set of nodes in a given workspace.
         /// </summary>
         /// <param name="selectedNodes"> The function definition for the user-defined node </param>
+        /// <param name="selectedNotes"> The note models in current selection </param>
         /// <param name="currentWorkspace"> The workspace where</param>
         /// <param name="isTestMode"></param>
         /// <param name="args"></param>
         internal CustomNodeWorkspaceModel Collapse(
-            IEnumerable<NodeModel> selectedNodes, WorkspaceModel currentWorkspace,
-            bool isTestMode, FunctionNamePromptEventArgs args)
+            IEnumerable<NodeModel> selectedNodes,
+            IEnumerable<NoteModel> selectedNotes,
+            WorkspaceModel currentWorkspace,
+            bool isTestMode,
+            FunctionNamePromptEventArgs args)
         {
             var selectedNodeSet = new HashSet<NodeModel>(selectedNodes);
             // Note that undoable actions are only recorded for the "currentWorkspace", 
@@ -894,9 +905,10 @@ namespace Dynamo.Core
                 #region Transfer nodes and connectors to new workspace
 
                 var newNodes = new List<NodeModel>();
+                var newNotes = new List<NoteModel>();
                 var newAnnotations = new List<AnnotationModel>();
             
-                // Step 4: move all nodes to new workspace remove from old
+                // Step 4: move all nodes and notes to new workspace remove from old
                 // PB: This could be more efficiently handled by a copy paste, but we
                 // are preservering the node 
                 foreach (var node in selectedNodeSet)
@@ -914,6 +926,17 @@ namespace Dynamo.Core
                     node.Y = node.Y - topMost;
                  
                     newNodes.Add(node);
+                }
+
+                foreach(var note in selectedNotes)
+                {
+                    undoRecorder.RecordDeletionForUndo(note);
+                    currentWorkspace.RemoveNote(note);
+
+                    note.GUID = Guid.NewGuid();
+                    note.X = note.X - leftShift;
+                    note.Y = note.Y - topMost;
+                    newNotes.Add(note);
                 }
 
                 //Copy the group from newNodes
@@ -1125,7 +1148,7 @@ namespace Dynamo.Core
                 newWorkspace = new CustomNodeWorkspaceModel(
                     nodeFactory,
                     newNodes,
-                    Enumerable.Empty<NoteModel>(),
+                    newNotes,
                     newAnnotations,
                     Enumerable.Empty<PresetModel>(),
                     currentWorkspace.ElementResolver,

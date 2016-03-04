@@ -31,7 +31,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        internal const long MaximumPackageSize = 100 * 1024 * 1024;
+        internal const long MaximumPackageSize = 1000 * 1024 * 1024; // 1 GB
 
         internal PackageUploadBuilder(IPackageDirectoryBuilder builder, IFileCompressor fileCompressor)
         {

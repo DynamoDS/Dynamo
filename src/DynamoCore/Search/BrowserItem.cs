@@ -4,6 +4,7 @@ using System.Linq;
 
 using Dynamo.Core;
 using Dynamo.Search.SearchElements;
+using ProtoCore.AST.AssociativeAST;
 
 
 namespace Dynamo.Search
@@ -16,7 +17,7 @@ namespace Dynamo.Search
         ///     If this is a leaf and visible, add to items, otherwise, recurse on children
         /// </summary>
         /// <param name="items">The accumulator</param>
-        public void GetVisibleLeaves(ref List<BrowserItem> items)
+        internal void GetVisibleLeaves(ref List<BrowserItem> items)
         {
             if (this.Visibility == true && this.Items.Count == 0)
             {
@@ -72,7 +73,7 @@ namespace Dynamo.Search
         /// <summary>
         /// Collapse element and all its children
         /// </summary>
-        public void CollapseToLeaves()
+        internal void CollapseToLeaves()
         {
             this.IsExpanded = false;
             foreach (var ele in Items)
@@ -84,7 +85,7 @@ namespace Dynamo.Search
         /// <summary>
         /// Hide element and all its children
         /// </summary>
-        public void SetVisibilityToLeaves(bool visibility)
+        internal void SetVisibilityToLeaves(bool visibility)
         {
             this.Visibility = visibility;
             foreach (var ele in Items)
@@ -138,7 +139,7 @@ namespace Dynamo.Search
             }
         }
 
-        public abstract void Execute();
+        internal abstract void Execute();
 
         public delegate void BrowserItemHandler(BrowserItem ele);
         public event BrowserItemHandler Executed;

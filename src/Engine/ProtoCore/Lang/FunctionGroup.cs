@@ -1,4 +1,4 @@
-using System;
+using System.Linq;
 using System.Collections.Generic;
 using ProtoCore.DSASM;
 using ProtoCore.Lang.Replication;
@@ -74,7 +74,7 @@ namespace ProtoCore
         /// <param name="unresolvable">The number of argument sets that couldn't be resolved</param>
         /// <returns></returns>
         public Dictionary<FunctionEndPoint, int> GetExactMatchStatistics(
-            ProtoCore.Runtime.Context context,
+            Runtime.Context context,
             List<List<StackValue>> reducedFormalParams, StackFrame stackFrame, RuntimeCore runtimeCore, out int unresolvable)
         {
             List<ReplicationInstruction> replicationInstructions = new List<ReplicationInstruction>(); //We've already done the reduction before calling this
@@ -89,7 +89,6 @@ namespace ProtoCore
                                                                   runtimeCore);
                 if (feps.Count == 0)
                 {
-                    
                     //We have an arugment set that couldn't be resolved
                     unresolvable++;
                 }
@@ -101,12 +100,9 @@ namespace ProtoCore
                     else
                         ret.Add(fep, 1);
                 }
-                
+             }
 
-
-            }
-
-            return ret;
+             return ret;
         }
 
 
@@ -118,10 +114,7 @@ namespace ProtoCore
             List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, StackFrame stackFrame, RuntimeCore runtimeCore)
         {
             List<FunctionEndPoint> ret = new List<FunctionEndPoint>();
-
-
             List<List<StackValue>> allReducedParamSVs = Replicator.ComputeAllReducedParams(formalParams, replicationInstructions, runtimeCore);
-
             
             //@TODO(Luke): Need to add type statistics checks to the below if it is an array to stop int[] matching char[]
             
@@ -133,9 +126,6 @@ namespace ProtoCore
             foreach (FunctionEndPoint fep in FunctionEndPoints)
             {
                 var proc = fep.procedureNode;
-
-
-
 
                 // Member functions are overloaded with thisptr as the first
                 // parameter, so if member function replicates on the left hand
@@ -163,7 +153,6 @@ namespace ProtoCore
 
                 if (typesOK)
                     ret.Add(fep);
-
             }
 
             return ret;
@@ -177,9 +166,9 @@ namespace ProtoCore
         /// <param name="formalParams"></param>
         /// <param name="replicationInstructions"></param>
         /// <returns></returns>
-        public Dictionary<FunctionEndPoint, int> GetConversionDistances(ProtoCore.Runtime.Context context,
+        public Dictionary<FunctionEndPoint, int> GetConversionDistances(Runtime.Context context,
             List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, 
-            ProtoCore.DSASM.ClassTable classTable, RuntimeCore runtimeCore, bool allowArrayPromotion = false)
+            ClassTable classTable, RuntimeCore runtimeCore, bool allowArrayPromotion = false)
         {
             Dictionary<FunctionEndPoint, int> ret = new Dictionary<FunctionEndPoint, int>();
 

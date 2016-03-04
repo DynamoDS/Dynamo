@@ -44,7 +44,7 @@ namespace Dynamo.Graph.Nodes
 
     public static class Utilities
     {
-        public static string Ellipsis(string value, int desiredLength)
+        internal static string Ellipsis(string value, int desiredLength)
         {
             return desiredLength > value.Length ? value : value.Remove(desiredLength - 1) + "...";
         }
@@ -61,7 +61,7 @@ namespace Dynamo.Graph.Nodes
         /// <returns>The processed fully qualified name. For an example, the 
         /// name "Dynamo.Elements.UV" will be returned as "Dynamo.Graph.Nodes.Uv".
         /// </returns>
-        public static string PreprocessTypeName(string fullyQualifiedName)
+        internal static string PreprocessTypeName(string fullyQualifiedName)
         {
             if (string.IsNullOrEmpty(fullyQualifiedName))
                 throw new ArgumentNullException("fullyQualifiedName");
@@ -108,7 +108,7 @@ namespace Dynamo.Graph.Nodes
         /// If overridePrefix is empty, it uses QualifiedName property.
         /// e.g. Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin
         /// </param>
-        public static string TypedParametersToString(FunctionDescriptor descriptor, string overridePrefix = "")
+        internal static string TypedParametersToString(FunctionDescriptor descriptor, string overridePrefix = "")
         {
             var builder = new StringBuilder();
 
@@ -263,7 +263,7 @@ namespace Dynamo.Graph.Nodes
         /// <param name="nodeTraceDataList">A dictionary of node-data-list pairs
         /// to be saved to the XmlDocument. This parameter cannot be null and 
         /// must represent a non-empty list of node-data-list pairs.</param>
-        public static void SaveTraceDataToXmlDocument(XmlDocument document,
+        internal static void SaveTraceDataToXmlDocument(XmlDocument document,
             IEnumerable<KeyValuePair<Guid, List<string>>> nodeTraceDataList)
         {
             #region Parameter Validations
@@ -330,7 +330,7 @@ namespace Dynamo.Graph.Nodes
         /// data-list pairs are to be deserialized.</param>
         /// <returns>Returns a dictionary of deserialized node-data-list pairs
         /// loaded from the given XmlDocument.</returns>
-        public static IEnumerable<KeyValuePair<Guid, List<string>>>
+        internal static IEnumerable<KeyValuePair<Guid, List<string>>>
             LoadTraceDataFromXmlDocument(XmlDocument document)
         {
             if (document == null)

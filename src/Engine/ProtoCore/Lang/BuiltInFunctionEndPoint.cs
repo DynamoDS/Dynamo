@@ -1,6 +1,4 @@
-﻿
-using System;
-using System.Text;
+﻿using System;
 using System.IO;
 using System.Collections.Generic;
 using ProtoCore.DSASM;
@@ -9,7 +7,6 @@ using ProtoCore.Utils;
 using System.Linq;
 using Autodesk.DesignScript.Interfaces;
 using ProtoFFI;
-using System.Collections;
 using ProtoCore.Runtime;
 using ProtoCore.Properties;
 
@@ -239,11 +236,28 @@ namespace ProtoCore.Lang
                         break;
                     }
                 case ProtoCore.Lang.BuiltInMethods.MethodID.kMap:
-                    ret = ProtoCore.DSASM.StackValue.BuildDouble(MapBuiltIns.Map(formalParameters[0], formalParameters[1], formalParameters[2], interpreter));
-                    break;
+                    {
+                        if (formalParameters.Any(p => !p.IsNumeric))
+                        {
+                            return StackValue.Null;
+                        }
+                        List<double> parameters = formalParameters.Select(p => p.ToDouble().RawDoubleValue).ToList();
+                        var mappedValue = MapBuiltIns.Map(parameters[0], parameters[1], parameters[2]);
+                        ret = StackValue.BuildDouble(mappedValue);
+                        break;
+                    }
                 case ProtoCore.Lang.BuiltInMethods.MethodID.kMapTo:
-                    ret = ProtoCore.DSASM.StackValue.BuildDouble(MapBuiltIns.MapTo(formalParameters[0], formalParameters[1], formalParameters[2], formalParameters[3], formalParameters[4], interpreter));
-                    break;
+                    {
+                        if (formalParameters.Any(p => !p.IsNumeric))
+                        {
+                            return StackValue.Null;
+                        }
+
+                        List<double> parameters = formalParameters.Select(p => p.ToDouble().RawDoubleValue).ToList();
+                        var mappedValue = MapBuiltIns.MapTo(parameters[0], parameters[1], parameters[2], parameters[3], parameters[4]);
+                        ret = StackValue.BuildDouble(mappedValue);
+                        break;
+                    }
                 case ProtoCore.Lang.BuiltInMethods.MethodID.kIsUniformDepth:
                     ret = ProtoCore.DSASM.StackValue.BuildBoolean(ArrayUtilsForBuiltIns.IsUniformDepth(formalParameters[0], interpreter));
                     break;
@@ -522,19 +536,7 @@ namespace ProtoCore.Lang
                 isValidThisPointer = ArrayUtils.GetFirstNonArrayStackValue(lhs, ref thisObject, runtimeCore);
             }
 
-            if (!isValidThisPointer || (!thisObject.IsPointer && !thisObject.IsArray))
-            {
-                if (ArrayUtils.IsEmpty(lhs, runtimeCore))
-                { 
-                    return lhs;
-                }
-                else
-                {
-                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer, Resources.kDeferencingNonPointer);
-                    return StackValue.Null;
-                }
-            }
-
+            bool isInvalidDotCall = !isValidThisPointer || (!thisObject.IsPointer && !thisObject.IsArray);
             int stackPtr = rmem.Stack.Count - 1;
 
             // TODO Jun: Consider having a DynamicFunction AddressType
@@ -581,12 +583,29 @@ namespace ProtoCore.Lang
             string functionName = dynamicFunction.Name;
 
             var replicationGuides = new List<List<ProtoCore.ReplicationGuide>>();
+            var atLevels = new List<AtLevel>();
             if (!CoreUtils.IsGetterSetter(functionName))
             {
                 replicationGuides = runtime.GetCachedReplicationGuides(functionArgs);
+                atLevels = runtime.GetCachedAtLevels(functionArgs);
+
                 if (removeFirstArgument)
                 {
                     replicationGuides.RemoveAt(0);
+                    atLevels.RemoveAt(0);
+                }
+            }
+
+            if (isInvalidDotCall)
+            {
+                if (ArrayUtils.IsEmpty(lhs, runtimeCore))
+                {
+                    return lhs;
+                }
+                else
+                {
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer, Resources.kDeferencingNonPointer);
+                    return StackValue.Null;
                 }
             }
 
@@ -681,8 +700,9 @@ namespace ProtoCore.Lang
                                                    thisObject);
             }
 
-            arguments.ForEach(x => runtimeCore.AddCallSiteGCRoot(callsite.CallSiteID, x));
-            StackValue ret = callsite.JILDispatchViaNewInterpreter(context, arguments, replicationGuides, newStackFrame, runtimeCore);
+            var argumentAtLevels = AtLevelHandler.GetArgumentAtLevelStructure(arguments, atLevels, runtimeCore);
+            argumentAtLevels.Arguments.ForEach(x => runtimeCore.AddCallSiteGCRoot(callsite.CallSiteID, x));
+            StackValue ret = callsite.JILDispatchViaNewInterpreter(context, argumentAtLevels.Arguments, replicationGuides, argumentAtLevels.DominantStructure, newStackFrame, runtimeCore);
             runtimeCore.RemoveCallSiteGCRoot(callsite.CallSiteID);
 
             // Restore debug properties after returning from a CALL/CALLR
@@ -941,38 +961,32 @@ namespace ProtoCore.Lang
         
     internal class MapBuiltIns
     {
-        internal static double Map(StackValue sv0, StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime)
+        internal static double Map(double rangeMin, double rangeMax, double inputValue)
         {
-            if (!(((sv0.IsDouble) || (sv0.IsInteger)) &&
-                ((sv1.IsDouble) || (sv1.IsInteger)) &&                
-                ((sv2.IsDouble) || (sv2.IsInteger))))
-                return ProtoCore.DSASM.Constants.kInvalidIndex;
-            double rangeMin = sv0.ToDouble().RawDoubleValue;
-            double rangeMax = sv1.ToDouble().RawDoubleValue;
-            double inputValue = sv2.ToDouble().RawDoubleValue;
             double result =  (inputValue - rangeMin) / (rangeMax - rangeMin);
-            if (result < 0) return 0.0; //Exceed the range (less than rangeMin)
-            if (result > 1) return 1.0; //Exceed the range (less than rangeMax)
-            return result;
+            if (result < 0)
+            {
+                return 0.0;
+            }
+            else if (result > 1)
+            {
+                return 1.0;
+            }
+            else
+            {
+                return result;
+            }
         }
-        internal static double MapTo(StackValue sv0, StackValue sv1, StackValue sv2,
-            StackValue sv3, StackValue sv4, ProtoCore.DSASM.Interpreter runtime)
+
+        internal static double MapTo(
+            double rangeMin,
+            double rangeMax,
+            double inputValue,
+            double targetRangeMin,
+            double targetRangeMax) 
         {
-            if (!(((sv0.IsDouble) || (sv0.IsInteger)) &&
-                ((sv1.IsDouble) || (sv1.IsInteger)) &&
-                ((sv2.IsDouble) || (sv2.IsInteger)) &&
-                ((sv3.IsDouble) || (sv3.IsInteger)) &&
-                ((sv4.IsDouble) || (sv4.IsInteger))))
-                return ProtoCore.DSASM.Constants.kInvalidIndex;
-            double rangeMin = sv0.ToDouble().RawDoubleValue;
-            double rangeMax = sv1.ToDouble().RawDoubleValue;
-            double inputValue = sv2.ToDouble().RawDoubleValue;
-            double targetRangeMin = sv3.ToDouble().RawDoubleValue;
-            double targetRangeMax = sv4.ToDouble().RawDoubleValue;
-            double result = targetRangeMin + (inputValue - rangeMin) * (targetRangeMax - targetRangeMin) / (rangeMax - rangeMin);
-            if (result < targetRangeMin){ return targetRangeMin; }     //clamp to targetRangeMin
-            if (result > targetRangeMax){ return targetRangeMax; }     //clamp to targetRangeMax
-            return result;
+            double percent = Map(rangeMin, rangeMax, inputValue); 
+            return targetRangeMin + (targetRangeMax - targetRangeMin) * percent;
         }
     }
     internal class RangeExpressionUntils

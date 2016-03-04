@@ -29,8 +29,7 @@ namespace ProtoCore
 
         public List<StackValue> functionCallArguments { get; set; }
         public List<StackValue> functionCallDotCallDimensions { get; set; }
-
-        public UpdateStatus updateStatus { get; set; }
+        public DominantListStructure DominantStructure { get; set; }
 
         public InterpreterProperties()
         {
@@ -43,7 +42,7 @@ namespace ProtoCore
             nodeIterations = rhs.nodeIterations;
             functionCallArguments = rhs.functionCallArguments;
             functionCallDotCallDimensions = rhs.functionCallDotCallDimensions;
-            updateStatus = rhs.updateStatus;
+            DominantStructure = rhs.DominantStructure;
         }
 
         public void Reset()
@@ -52,7 +51,6 @@ namespace ProtoCore
             nodeIterations = new List<GraphNode>();
             functionCallArguments = new List<StackValue>();
             functionCallDotCallDimensions = new List<StackValue>();
-            updateStatus = UpdateStatus.kNormalUpdate;
         }
     }
 
@@ -76,6 +74,8 @@ namespace ProtoCore
 
             InterpreterProps = new Stack<InterpreterProperties>();
             ReplicationGuides = new List<List<ReplicationGuide>>();
+            AtLevels = new List<AtLevel>();
+            executedAstGuids = new HashSet<Guid>();
 
             RunningBlock = 0;
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid; //not yet started
@@ -188,6 +188,17 @@ namespace ProtoCore
         // Cached replication guides for the current call. 
         // TODO Jun: Store this in the dynamic table node
         public List<List<ReplicationGuide>> ReplicationGuides;
+
+        // Cached at levels for the current call.
+        public List<AtLevel> AtLevels;
+
+        private HashSet<Guid> executedAstGuids; 
+        // GUIDs of executed ASTs.
+        public IEnumerable<Guid> ExecutedAstGuids
+        {
+            get { return executedAstGuids; }
+        }
+
         
         public ProtoCore.DSASM.Mirror.ExecutionMirror Mirror { get; set; }
 
@@ -292,30 +303,6 @@ namespace ProtoCore
                 ExecutionEvent(this, new ExecutionStateEventArgs(state));
         }
         
-        public bool IsEvalutingPropertyChanged()
-        {
-            foreach (var prop in InterpreterProps)
-            {
-                if (prop.updateStatus == UpdateStatus.kPropertyChangedUpdate)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public void RequestCancellation()
-        {
-            if (cancellationPending)
-            {
-                var message = "Cancellation cannot be requested twice";
-                throw new InvalidOperationException(message);
-            }
-
-            cancellationPending = true;
-        }
-
         public int GetCurrentBlockId()
         {
             int constructBlockId = RuntimeMemory.CurrentConstructBlockId;
@@ -387,6 +374,26 @@ namespace ProtoCore
         public void SetStartPC(int pc)
         {
             StartPC = pc;
+        }
+
+        /// <summary>
+        /// Record the GUID of executed graph node.
+        /// </summary>
+        /// <param name="graphNode"></param>
+        public void RecordExtecutedGraphNode(GraphNode graphNode)
+        {
+            if (graphNode != null && !graphNode.guid.Equals(Guid.Empty))
+            {
+                executedAstGuids.Add(graphNode.guid);
+            }
+        }
+
+        /// <summary>
+        /// Clear all recorded AST guids
+        /// </summary>
+        public void RemoveExecutedAstGuids()
+        {
+            executedAstGuids.Clear();
         }
     }
 }

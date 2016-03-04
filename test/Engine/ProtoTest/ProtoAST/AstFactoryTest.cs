@@ -13,10 +13,6 @@ namespace ProtoTest.ProtoAST
         public void TestMethodHasNullCheck()
         {
             AssociativeNode foo = new IdentifierNode("foo");
-            Assert.Throws<ArgumentNullException>(() => AstFactory.BuildAssignment(foo, null));
-            Assert.Throws<ArgumentNullException>(() => AstFactory.BuildAssignment(null, foo));
-            Assert.Throws<ArgumentNullException>(() => AstFactory.BuildBinaryExpression(foo, null, ProtoCore.DSASM.Operator.assign));
-            Assert.Throws<ArgumentNullException>(() => AstFactory.BuildBinaryExpression(null, foo, ProtoCore.DSASM.Operator.assign));
             Assert.Throws<ArgumentNullException>(() => AstFactory.BuildConditionalNode(null, foo, foo));
             Assert.Throws<ArgumentNullException>(() => AstFactory.BuildConditionalNode(foo, null, foo));
             Assert.Throws<ArgumentNullException>(() => AstFactory.BuildConditionalNode(foo, foo, null));

@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,17 +7,14 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Soap;
 using System.Text;
-using ProtoCore.BuildData;
 using ProtoCore.DSASM;
 using ProtoCore.Exceptions;
 using ProtoCore.Lang;
 using ProtoCore.Lang.Replication;
 using ProtoCore.Utils;
 using StackFrame = ProtoCore.DSASM.StackFrame;
-using System.Xml;
 using ProtoCore.Properties;
 using ProtoCore.Runtime;
-
 using WarningID = ProtoCore.Runtime.WarningID;
 
 namespace ProtoCore
@@ -497,13 +493,12 @@ namespace ProtoCore
             //Ordering implies containment, so element 0 is the outer most forloop, element 1 is nested within it etc.
             //Take the explicit replication guides and build the replication structure
             //Turn the replication guides into a guide -> List args data structure
-            ReplicationControl replicationControl =
-                Replicator.Old_ConvertGuidesToInstructions(partialReplicationGuides);
+           var instructions = Replicator.BuildPartialReplicationInstructions(partialReplicationGuides);
 
             #region First Case: Replicate only according to the replication guides
 
             {
-                FunctionEndPoint fep = Case1GetCompleteMatchFEP(context, arguments, funcGroup, replicationControl,
+                FunctionEndPoint fep = Case1GetCompleteMatchFEP(context, arguments, funcGroup, instructions,
                                                                 stackFrame,
                                                                 runtimeCore, new StringBuilder());
                 if (fep != null)
@@ -519,18 +514,11 @@ namespace ProtoCore
 
             {
                 //Build the possible ways in which we might replicate
-                replicationTrials =
-                    Replicator.BuildReplicationCombinations(replicationControl.Instructions, arguments, runtimeCore);
-
+                replicationTrials = Replicator.BuildReplicationCombinations(instructions, arguments, runtimeCore);
 
                 foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
                 {
-                    ReplicationControl rc = new ReplicationControl() { Instructions = replicationOption };
-
-
-                    List<List<StackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments,
-                                                                                              rc.
-                                                                                                  Instructions, runtimeCore);
+                    List<List<StackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments, replicationOption, runtimeCore);
                     int resolutionFailures;
 
                     funcGroup.GetExactMatchStatistics(context, reducedParams, stackFrame, runtimeCore, out resolutionFailures);
@@ -548,15 +536,15 @@ namespace ProtoCore
 
             {
                 Dictionary<FunctionEndPoint, int> candidatesWithDistances =
-                    funcGroup.GetConversionDistances(context, arguments, replicationControl.Instructions,
+                    funcGroup.GetConversionDistances(context, arguments, instructions,
                                                      runtimeCore.DSExecutable.classTable, runtimeCore);
                 Dictionary<FunctionEndPoint, int> candidatesWithCastDistances =
-                    funcGroup.GetCastDistances(context, arguments, replicationControl.Instructions, runtimeCore.DSExecutable.classTable,
+                    funcGroup.GetCastDistances(context, arguments, instructions, runtimeCore.DSExecutable.classTable,
                                                runtimeCore);
 
                 List<FunctionEndPoint> candidateFunctions = GetCandidateFunctions(stackFrame, candidatesWithDistances);
                 FunctionEndPoint compliantTarget = GetCompliantTarget(context, arguments,
-                                                                      replicationControl.Instructions, stackFrame, runtimeCore,
+                                                                      instructions, stackFrame, runtimeCore,
                                                                       candidatesWithCastDistances, candidateFunctions,
                                                                       candidatesWithDistances);
 
@@ -573,7 +561,7 @@ namespace ProtoCore
             {
                 //Build the possible ways in which we might replicate
                 replicationTrials =
-                    Replicator.BuildReplicationCombinations(replicationControl.Instructions, arguments, runtimeCore);
+                    Replicator.BuildReplicationCombinations(instructions, arguments, runtimeCore);
 
                 //Add as a first attempt a no-replication, but allowing up-promoting
                 replicationTrials.Insert(0,
@@ -713,13 +701,60 @@ namespace ProtoCore
 
         #region Target resolution
 
-        private void ComputeFeps(StringBuilder log, Context context, List<StackValue> arguments, FunctionGroup funcGroup, ReplicationControl replicationControl,
-                                      List<List<ReplicationGuide>> partialReplicationGuides, StackFrame stackFrame, RuntimeCore runtimeCore,
-            out List<FunctionEndPoint> resolvesFeps, out List<ReplicationInstruction> replicationInstructions)
+        private FunctionEndPoint GetCompliantFEP(
+            Context context, 
+            List<StackValue> arguments, 
+            FunctionGroup funcGroup, 
+            List<ReplicationInstruction> replicationInstructions,
+            StackFrame stackFrame, 
+            RuntimeCore runtimeCore,
+            bool allowArrayPromotion = false)
         {
+            Dictionary<FunctionEndPoint, int> candidatesWithDistances = 
+                funcGroup.GetConversionDistances(
+                    context, 
+                    arguments, 
+                    replicationInstructions, 
+                    runtimeCore.DSExecutable.classTable, 
+                    runtimeCore,
+                    allowArrayPromotion);
 
-            
+            Dictionary<FunctionEndPoint, int> candidatesWithCastDistances =
+                funcGroup.GetCastDistances(
+                    context, 
+                    arguments, 
+                    replicationInstructions, 
+                    runtimeCore.DSExecutable.classTable, 
+                    runtimeCore);
 
+            List<FunctionEndPoint> candidateFunctions = GetCandidateFunctions(stackFrame, candidatesWithDistances);
+
+            FunctionEndPoint compliantTarget = 
+                GetCompliantTarget(
+                    context, 
+                    arguments, 
+                    replicationInstructions, 
+                    stackFrame,
+                    runtimeCore, 
+                    candidatesWithCastDistances, 
+                    candidateFunctions, 
+                    candidatesWithDistances);
+
+            return compliantTarget;
+        }
+
+        private void ComputeFeps(
+            StringBuilder log, 
+            Context context, 
+            List<StackValue> arguments,
+            FunctionGroup funcGroup,
+            List<ReplicationInstruction> instructions, 
+            List<List<ReplicationGuide>> partialReplicationGuides,
+            StackFrame stackFrame,
+            RuntimeCore runtimeCore,
+            out List<FunctionEndPoint> resolvesFeps,
+            out List<ReplicationInstruction> replicationInstructions)
+        {
             //With replication guides only
 
             //Exact match
@@ -736,21 +771,19 @@ namespace ProtoCore
             //Try replication + type casting + Array promotion
 
             #region First Case: Replicate only according to the replication guides
-
             {
                 log.AppendLine("Case 1: Exact Match");
 
-                FunctionEndPoint fep = Case1GetCompleteMatchFEP(context, arguments, funcGroup, replicationControl,
+                FunctionEndPoint fep = Case1GetCompleteMatchFEP(context, arguments, funcGroup, instructions,
                                                                 stackFrame,
                                                                 runtimeCore, log);
                 if (fep != null)
                 {
-                    //log.AppendLine("Resolution completed in " + sw.ElapsedMilliseconds + "ms");
                     if (runtimeCore.Options.DumpFunctionResolverLogic)
                         runtimeCore.DSExecutable.EventSink.PrintMessage(log.ToString());
 
                     resolvesFeps = new List<FunctionEndPoint>() { fep };
-                    replicationInstructions = replicationControl.Instructions;
+                    replicationInstructions = instructions;
 
                     return;
                 }
@@ -759,75 +792,53 @@ namespace ProtoCore
             #endregion
 
             #region Case 1a: Replicate only according to the replication guides, but with a sub-typing match
-
             {
                 log.AppendLine("Case 1a: Replication guides + auto-replication + no cases");
+                List<List<StackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments, instructions, runtimeCore);
+                int resolutionFailures;
 
+                Dictionary<FunctionEndPoint, int> lookups = funcGroup.GetExactMatchStatistics(
+                    context, reducedParams, stackFrame, runtimeCore,
+                    out resolutionFailures);
 
-                List<ReplicationInstruction> replicationOption = replicationControl.Instructions;
-                    ReplicationControl rc = new ReplicationControl() { Instructions = replicationOption };
+                if (resolutionFailures == 0)
+                {
+                    log.AppendLine("Resolution succeeded against FEP Cluster");
+                    foreach (FunctionEndPoint fep in lookups.Keys)
+                        log.AppendLine("\t - " + fep);
 
-                    log.AppendLine("Attempting replication control: " + rc);
+                    List<FunctionEndPoint> feps = new List<FunctionEndPoint>();
+                    feps.AddRange(lookups.Keys);
 
-                    List<List<StackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments,
-                                                                                              rc.Instructions, runtimeCore);
-                    int resolutionFailures;
+                    if (runtimeCore.Options.DumpFunctionResolverLogic)
+                        runtimeCore.DSExecutable.EventSink.PrintMessage(log.ToString());
 
-                    Dictionary<FunctionEndPoint, int> lookups = funcGroup.GetExactMatchStatistics(
-                        context, reducedParams, stackFrame, runtimeCore,
-                        out resolutionFailures);
+                    //Otherwise we have a cluster of FEPs that can be used to dispatch the array
+                    resolvesFeps = feps;
+                    replicationInstructions = instructions;
 
-
-                    if (resolutionFailures == 0)
-                    {
-
-                        log.AppendLine("Resolution succeeded against FEP Cluster");
-                        foreach (FunctionEndPoint fep in lookups.Keys)
-                            log.AppendLine("\t - " + fep);
-
-                        List<FunctionEndPoint> feps = new List<FunctionEndPoint>();
-                        feps.AddRange(lookups.Keys);
-
-                        //log.AppendLine("Resolution completed in " + sw.ElapsedMilliseconds + "ms");
-                        if (runtimeCore.Options.DumpFunctionResolverLogic)
-                            runtimeCore.DSExecutable.EventSink.PrintMessage(log.ToString());
-
-                        //Otherwise we have a cluster of FEPs that can be used to dispatch the array
-                        resolvesFeps = feps;
-                        replicationInstructions = rc.Instructions;
-
-                        return;
-                    }
+                    return;
                 }
-            
+            }
 
             #endregion
 
 
+            var replicationTrials = Replicator.BuildReplicationCombinations(instructions, arguments, runtimeCore);
             #region Case 2: Replication with no type cast
 
             {
                 log.AppendLine("Case 2: Beginning Auto-replication, no casts");
 
                 //Build the possible ways in which we might replicate
-                List<List<ReplicationInstruction>> replicationTrials =
-                    Replicator.BuildReplicationCombinations(replicationControl.Instructions, arguments, runtimeCore);
-
-
-                foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
+                foreach (List<ReplicationInstruction> repOption in replicationTrials)
                 {
-                    ReplicationControl rc = new ReplicationControl() { Instructions = replicationOption };
-
-                    log.AppendLine("Attempting replication control: " + rc);
-
-                    List<List<StackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments,
-                                                                                              rc.Instructions, runtimeCore);
+                    List<List<StackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments, repOption, runtimeCore);
                     int resolutionFailures;
 
                     Dictionary<FunctionEndPoint, int> lookups = funcGroup.GetExactMatchStatistics(
                         context, reducedParams, stackFrame, runtimeCore,
                         out resolutionFailures);
-
 
                     if (resolutionFailures > 0)
                         continue;
@@ -839,13 +850,12 @@ namespace ProtoCore
                     List<FunctionEndPoint> feps = new List<FunctionEndPoint>();
                     feps.AddRange(lookups.Keys);
 
-                    //log.AppendLine("Resolution completed in " + sw.ElapsedMilliseconds + "ms");
                     if (runtimeCore.Options.DumpFunctionResolverLogic)
                         runtimeCore.DSExecutable.EventSink.PrintMessage(log.ToString());
 
                     //Otherwise we have a cluster of FEPs that can be used to dispatch the array
                     resolvesFeps = feps;
-                    replicationInstructions = rc.Instructions;
+                    replicationInstructions = repOption;
 
                     return;
                 }
@@ -854,23 +864,10 @@ namespace ProtoCore
             #endregion
 
             #region Case 3: Match with type conversion, but no array promotion
-
             {
                 log.AppendLine("Case 3: Type conversion");
 
-
-                Dictionary<FunctionEndPoint, int> candidatesWithDistances =
-                    funcGroup.GetConversionDistances(context, arguments, replicationControl.Instructions,
-                                                     runtimeCore.DSExecutable.classTable, runtimeCore);
-                Dictionary<FunctionEndPoint, int> candidatesWithCastDistances =
-                    funcGroup.GetCastDistances(context, arguments, replicationControl.Instructions, runtimeCore.DSExecutable.classTable,
-                                               runtimeCore);
-
-                List<FunctionEndPoint> candidateFunctions = GetCandidateFunctions(stackFrame, candidatesWithDistances);
-                FunctionEndPoint compliantTarget = GetCompliantTarget(context, arguments,
-                                                                      replicationControl.Instructions, stackFrame, runtimeCore,
-                                                                      candidatesWithCastDistances, candidateFunctions,
-                                                                      candidatesWithDistances);
+                FunctionEndPoint compliantTarget = GetCompliantFEP(context, arguments, funcGroup, instructions, stackFrame, runtimeCore);
 
                 if (compliantTarget != null)
                 {
@@ -880,7 +877,7 @@ namespace ProtoCore
                         runtimeCore.DSExecutable.EventSink.PrintMessage(log.ToString());
 
                     resolvesFeps = new List<FunctionEndPoint>() { compliantTarget };
-                    replicationInstructions = replicationControl.Instructions;
+                    replicationInstructions = instructions;
                     return;
                 }
             }
@@ -893,32 +890,10 @@ namespace ProtoCore
             {
                 if (arguments.Any(arg => arg.IsArray))
                 {
-                    //Build the possible ways in which we might replicate
-                    List<List<ReplicationInstruction>> replicationTrials =
-                        Replicator.BuildReplicationCombinations(replicationControl.Instructions, arguments, runtimeCore);
-
-
                     foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
                     {
-                        ReplicationControl rc = new ReplicationControl() { Instructions = replicationOption };
-
-                        log.AppendLine("Attempting replication control: " + rc);
-
                         //@TODO: THis should use the proper reducer?
-
-                        Dictionary<FunctionEndPoint, int> candidatesWithDistances =
-                            funcGroup.GetConversionDistances(context, arguments, rc.Instructions, runtimeCore.DSExecutable.classTable, runtimeCore);
-                        Dictionary<FunctionEndPoint, int> candidatesWithCastDistances =
-                            funcGroup.GetCastDistances(context, arguments, rc.Instructions, runtimeCore.DSExecutable.classTable, runtimeCore);
-
-                        List<FunctionEndPoint> candidateFunctions = GetCandidateFunctions(stackFrame,
-                                                                                          candidatesWithDistances);
-                        FunctionEndPoint compliantTarget = GetCompliantTarget(context, arguments,
-                                                                              rc.Instructions, stackFrame, runtimeCore,
-                                                                              candidatesWithCastDistances,
-                                                                              candidateFunctions,
-                                                                              candidatesWithDistances);
-
+                        FunctionEndPoint compliantTarget = GetCompliantFEP(context, arguments, funcGroup, replicationOption, stackFrame, runtimeCore);
                         if (compliantTarget != null)
                         {
                             log.AppendLine("Resolution Succeeded: " + compliantTarget);
@@ -927,7 +902,7 @@ namespace ProtoCore
                                 runtimeCore.DSExecutable.EventSink.PrintMessage(log.ToString());
 
                             resolvesFeps = new List<FunctionEndPoint>() { compliantTarget };
-                            replicationInstructions = rc.Instructions;
+                            replicationInstructions = replicationOption;
                             return;
                         }
                     }
@@ -940,38 +915,13 @@ namespace ProtoCore
 
             log.AppendLine("Case 5: Replication + Type conversion + Array promotion");
             {
-                //Build the possible ways in which we might replicate
-                List<List<ReplicationInstruction>> replicationTrials =
-                    Replicator.BuildReplicationCombinations(replicationControl.Instructions, arguments, runtimeCore);
-
                 //Add as a first attempt a no-replication, but allowing up-promoting
-                replicationTrials.Insert(0,
-                                         new List<ReplicationInstruction>()
-                    );
-
+                replicationTrials.Add(new List<ReplicationInstruction>());
 
                 foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
                 {
-                    ReplicationControl rc = new ReplicationControl() { Instructions = replicationOption };
-
-                    log.AppendLine("Attempting replication control: " + rc);
-
                     //@TODO: THis should use the proper reducer?
-
-                    Dictionary<FunctionEndPoint, int> candidatesWithDistances =
-                        funcGroup.GetConversionDistances(context, arguments, rc.Instructions, runtimeCore.DSExecutable.classTable, runtimeCore,
-                                                         true);
-                    Dictionary<FunctionEndPoint, int> candidatesWithCastDistances =
-                        funcGroup.GetCastDistances(context, arguments, rc.Instructions, runtimeCore.DSExecutable.classTable, runtimeCore);
-
-                    List<FunctionEndPoint> candidateFunctions = GetCandidateFunctions(stackFrame,
-                                                                                      candidatesWithDistances);
-                    FunctionEndPoint compliantTarget = GetCompliantTarget(context, arguments,
-                                                                          rc.Instructions, stackFrame, runtimeCore,
-                                                                          candidatesWithCastDistances,
-                                                                          candidateFunctions,
-                                                                          candidatesWithDistances);
-
+                    FunctionEndPoint compliantTarget = GetCompliantFEP(context, arguments, funcGroup, replicationOption, stackFrame, runtimeCore, true);
                     if (compliantTarget != null)
                     {
                         log.AppendLine("Resolution Succeeded: " + compliantTarget);
@@ -979,7 +929,7 @@ namespace ProtoCore
                         if (runtimeCore.Options.DumpFunctionResolverLogic)
                             runtimeCore.DSExecutable.EventSink.PrintMessage(log.ToString());
                         resolvesFeps = new List<FunctionEndPoint>() { compliantTarget };
-                        replicationInstructions = rc.Instructions;
+                        replicationInstructions = replicationOption;
                         return;
                     }
                 }
@@ -989,10 +939,8 @@ namespace ProtoCore
 
 
             resolvesFeps = new List<FunctionEndPoint>();
-            replicationInstructions = replicationControl.Instructions;
+            replicationInstructions = instructions;
         }
-
-
 
         private bool IsFunctionGroupAccessible(RuntimeCore runtimeCore, ref FunctionGroup funcGroup)
         {
@@ -1020,8 +968,6 @@ namespace ProtoCore
             return methodAccessible;
         }
 
-
-
         /// <summary>
         /// Get complete match attempts to locate a function endpoint where 1 FEP matches all of the requirements for dispatch
         /// </summary>
@@ -1035,14 +981,12 @@ namespace ProtoCore
         /// <returns></returns>
         private FunctionEndPoint Case1GetCompleteMatchFEP(Context context, List<StackValue> arguments,
                                                           FunctionGroup funcGroup,
-                                                          ReplicationControl replicationControl, StackFrame stackFrame,
+                                                          List<ReplicationInstruction> replicationInstructions, StackFrame stackFrame,
                                                           RuntimeCore runtimeCore, StringBuilder log)
         {
-            log.AppendLine("Attempting Dispatch with ---- RC: " + replicationControl);
-
             //Exact match
             List<FunctionEndPoint> exactTypeMatchingCandindates =
-                funcGroup.GetExactTypeMatches(context, arguments, replicationControl.Instructions, stackFrame, runtimeCore);
+                funcGroup.GetExactTypeMatches(context, arguments, replicationInstructions, stackFrame, runtimeCore);
 
             FunctionEndPoint fep = null;
 
@@ -1067,7 +1011,6 @@ namespace ProtoCore
 
             return fep;
         }
-
 
        /// <summary>
         /// Get the function group associated with this callsite
@@ -1185,10 +1128,6 @@ namespace ProtoCore
             }
 
             return feps[0];
-
-            //Validity.Assert(false, "We failed to find a single FEP when there should have been multiple. {CA6E1A93-4CF4-4030-AD94-3BF1C3CFC5AF}");
-
-            //throw new Exceptions.CompilerInternalException("{CA6E1A93-4CF4-4030-AD94-3BF1C3CFC5AF}");
         }
 
         private FunctionEndPoint GetCompliantTarget(Context context, List<StackValue> formalParams,
@@ -1214,52 +1153,47 @@ namespace ProtoCore
             List<int> conversionCosts = new List<int>(conversionCostList.Keys);
             conversionCosts.Sort();
 
+            List<FunctionEndPoint> fepsToSplit = new List<FunctionEndPoint>();
 
-            //TestWhetherDispatchIsDeterministic(context, formalParams, replicationControl, candidatesWithDistances, candidatesWithCastDistances, candidateFunctions);
-
+            foreach (int cost in conversionCosts)
             {
-                List<FunctionEndPoint> fepsToSplit = new List<FunctionEndPoint>();
-
-                foreach (int cost in conversionCosts)
+                foreach (FunctionEndPoint funcFep in conversionCostList[cost])
                 {
-                    foreach (FunctionEndPoint funcFep in conversionCostList[cost])
+                    if (funcFep.DoesPredicateMatch(context, formalParams, replicationControl))
                     {
-                        if (funcFep.DoesPredicateMatch(context, formalParams, replicationControl))
-                        {
-                            compliantTarget = funcFep;
-                            fepsToSplit.Add(funcFep);
-                        }
+                        compliantTarget = funcFep;
+                        fepsToSplit.Add(funcFep);
                     }
-
-                    if (compliantTarget != null)
-                        break;
                 }
 
-                if (fepsToSplit.Count > 1)
+                if (compliantTarget != null)
+                    break;
+            }
+
+            if (fepsToSplit.Count > 1)
+            {
+                int lowestCost = candidatesWithCastDistances[fepsToSplit[0]];
+                compliantTarget = fepsToSplit[0];
+
+                List<FunctionEndPoint> lowestCostFeps = new List<FunctionEndPoint>();
+
+                foreach (FunctionEndPoint fep in fepsToSplit)
                 {
-                    int lowestCost = candidatesWithCastDistances[fepsToSplit[0]];
-                    compliantTarget = fepsToSplit[0];
-
-                    List<FunctionEndPoint> lowestCostFeps = new List<FunctionEndPoint>();
-
-                    foreach (FunctionEndPoint fep in fepsToSplit)
+                    if (candidatesWithCastDistances[fep] < lowestCost)
                     {
-                        if (candidatesWithCastDistances[fep] < lowestCost)
-                        {
-                            lowestCost = candidatesWithCastDistances[fep];
-                            compliantTarget = fep;
-                            lowestCostFeps = new List<FunctionEndPoint>() {fep};
-                        }
-                        else if (candidatesWithCastDistances[fep] == lowestCost)
-                        {
-                            lowestCostFeps.Add(fep);
-                        }
+                        lowestCost = candidatesWithCastDistances[fep];
+                        compliantTarget = fep;
+                        lowestCostFeps = new List<FunctionEndPoint>() { fep };
                     }
-
-                    //We have multiple feps, e.g. form overriding
-                    if (lowestCostFeps.Count > 0)
-                        compliantTarget = SelectFEPFromMultiple(stackFrame, runtimeCore, lowestCostFeps, formalParams);
+                    else if (candidatesWithCastDistances[fep] == lowestCost)
+                    {
+                        lowestCostFeps.Add(fep);
+                    }
                 }
+
+                //We have multiple feps, e.g. form overriding
+                if (lowestCostFeps.Count > 0)
+                    compliantTarget = SelectFEPFromMultiple(stackFrame, runtimeCore, lowestCostFeps, formalParams);
             }
             return compliantTarget;
         }
@@ -1271,11 +1205,6 @@ namespace ProtoCore
 
             foreach (FunctionEndPoint fep in candidatesWithDistances.Keys)
             {
-                // The first line checks if the lhs of a dot operation was a class name
-                //if (stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr).IsClassIndex
-                //    && !fep.procedureNode.isConstructor
-                //    && !fep.procedureNode.isStatic)
-
                 if ((stackFrame.ThisPtr.IsPointer &&
                      stackFrame.ThisPtr.opdata == -1 && fep.procedureNode != null
                      && !fep.procedureNode.IsConstructor) && !fep.procedureNode.IsStatic
@@ -1289,14 +1218,12 @@ namespace ProtoCore
             return candidateFunctions;
         }
 
-        
-
         private FunctionEndPoint SelectFinalFep(Context context,
                                                 List<FunctionEndPoint> functionEndPoint,
                                                 List<StackValue> formalParameters, StackFrame stackFrame, RuntimeCore runtimeCore)
         {
             List<ReplicationInstruction> replicationControl = new List<ReplicationInstruction>();
-                //We're never going to replicate so create an empty structure to allow us to use
+            //We're never going to replicate so create an empty structure to allow us to use
             //the existing utility methods
 
             //Filter for exact matches
@@ -1349,12 +1276,6 @@ namespace ProtoCore
                     candidatesWithCastDistances.Add(fep, dist);
                 }
 
-
-                //funcGroup.GetConversionDistances(context, formalParams, replicationControl, runtimeCore.DSExecutable.classTable, core);
-
-                //Dictionary<FunctionEndPoint, int> candidatesWithCastDistances =
-                //    funcGroup.GetCastDistances(context, formalParams, replicationControl, runtimeCore.DSExecutable.classTable, core);
-
                 List<FunctionEndPoint> candidateFunctions = GetCandidateFunctions(stackFrame, candidatesWithDistances);
 
                 if (candidateFunctions.Count == 0)
@@ -1373,54 +1294,56 @@ namespace ProtoCore
             }
         }
 
-
         #endregion
 
         #region Execution methods
-
-        
         //Inbound methods
 
-        public StackValue JILDispatchViaNewInterpreter(Context context, List<StackValue> arguments, List<List<ReplicationGuide>> replicationGuides,
-                                                       StackFrame stackFrame, RuntimeCore runtimeCore)
+        public StackValue JILDispatchViaNewInterpreter(
+            Context context, 
+            List<StackValue> arguments, 
+            List<List<ReplicationGuide>> replicationGuides,
+            DominantListStructure domintListStructure,
+            StackFrame stackFrame, RuntimeCore runtimeCore)
         {
 #if DEBUG
-
             ArgumentSanityCheck(arguments);
 #endif
-
             // Dispatch method
             context.IsImplicitCall = true;
-            return DispatchNew(context, arguments, replicationGuides, stackFrame, runtimeCore);
+            return DispatchNew(context, arguments, replicationGuides, domintListStructure, stackFrame, runtimeCore);
         }
 
-        public StackValue JILDispatch(List<StackValue> arguments, List<List<ReplicationGuide>> replicationGuides,
-                                      StackFrame stackFrame, RuntimeCore runtimeCore, Context context)
+        public StackValue JILDispatch(
+            List<StackValue> arguments, 
+            List<List<ReplicationGuide>> replicationGuides,
+            DominantListStructure domintListStructure,
+            StackFrame stackFrame, 
+            RuntimeCore runtimeCore, 
+            Context context)
         {
 #if DEBUG
 
             ArgumentSanityCheck(arguments);
 #endif
-
             // Dispatch method
-            return DispatchNew(context, arguments, replicationGuides, stackFrame, runtimeCore);
+            return DispatchNew(context, arguments, replicationGuides, domintListStructure, stackFrame, runtimeCore);
         }
 
-
-
-
         //Dispatch
-        private StackValue DispatchNew(Context context, List<StackValue> arguments,
-                                      List<List<ReplicationGuide>> partialReplicationGuides, StackFrame stackFrame, RuntimeCore runtimeCore)
+        private StackValue DispatchNew(
+            Context context, 
+            List<StackValue> arguments, 
+            List<List<ReplicationGuide>> partialReplicationGuides, 
+            DominantListStructure domintListStructure,
+            StackFrame stackFrame, RuntimeCore runtimeCore)
         {
-
             // Update the CallsiteExecutionState with 
             // TODO: Replace this with the real data
             UpdateCallsiteExecutionState(null, runtimeCore);
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
-
 
             StringBuilder log = new StringBuilder();
 
@@ -1431,7 +1354,6 @@ namespace ProtoCore
             //@PERF: Possible optimisation point here, to deal with static dispatches that don't need replication analysis
             //Handle resolution Pass 1: Name -> Method Group
             FunctionGroup funcGroup = GetFuncGroup(runtimeCore);
-
             if (funcGroup == null)
             {
                 log.AppendLine("Function group not located");
@@ -1443,22 +1365,12 @@ namespace ProtoCore
                 return ReportFunctionGroupNotFound(runtimeCore, arguments);
             }
 
-
-            //// Now that a function group is resolved, the callsite guid can be cached
-            //if (null != funcGroup.CallsiteInstance)
-            //{
-            //    // Sanity check, if the callsite exists, then it mean the guid is identical to the cached guid
-            //    Validity.Assert(funcGroup.CallsiteInstance.callsiteID == this.callsiteID);
-            //}
-            //else
-            //{
-            //    funcGroup.CallsiteInstance = this;
-            //}
-
             //check accesibility of function group
             bool methodAccessible = IsFunctionGroupAccessible(runtimeCore, ref funcGroup);
             if (!methodAccessible)
+            {
                 return ReportMethodNotAccessible(runtimeCore);
+            }
 
             //If we got here then the function group got resolved
             log.AppendLine("Function group resolved: " + funcGroup);
@@ -1467,27 +1379,18 @@ namespace ProtoCore
 
             partialReplicationGuides = PerformRepGuideDemotion(arguments, partialReplicationGuides, runtimeCore);
 
-
             //Replication Control is an ordered list of the elements that we have to replicate over
             //Ordering implies containment, so element 0 is the outer most forloop, element 1 is nested within it etc.
             //Take the explicit replication guides and build the replication structure
             //Turn the replication guides into a guide -> List args data structure
-            ReplicationControl replicationControl =
-                Replicator.Old_ConvertGuidesToInstructions(partialReplicationGuides);
-
-            log.AppendLine("Replication guides processed to: " + replicationControl);
+           var partialInstructions = Replicator.BuildPartialReplicationInstructions(partialReplicationGuides);
 
             //Get the fep that are resolved
             List<FunctionEndPoint> resolvesFeps;
             List<ReplicationInstruction> replicationInstructions;
 
-
-
             arguments = PerformRepGuideForcedPromotion(arguments, partialReplicationGuides, runtimeCore);
-
-
-            ComputeFeps(log, context, arguments, funcGroup, replicationControl, partialReplicationGuides, stackFrame, runtimeCore, out resolvesFeps, out replicationInstructions);
-
+            ComputeFeps(log, context, arguments, funcGroup, partialInstructions, partialReplicationGuides, stackFrame, runtimeCore, out resolvesFeps, out replicationInstructions);
 
             if (resolvesFeps.Count == 0)
             {
@@ -1501,100 +1404,54 @@ namespace ProtoCore
 
             arguments.ForEach(x => runtimeCore.AddCallSiteGCRoot(CallSiteID, x));
             StackValue ret = Execute(resolvesFeps, context, arguments, replicationInstructions, stackFrame, runtimeCore, funcGroup);
+            if (!ret.IsExplicitCall)
+            {
+                ret = AtLevelHandler.RestoreDominantStructure(ret, domintListStructure, replicationInstructions, runtimeCore); 
+            }
             runtimeCore.RemoveCallSiteGCRoot(CallSiteID);
             return ret;
         }
 
-       
 
-        private StackValue Execute(List<FunctionEndPoint> functionEndPoint, Context c,
-                                   List<StackValue> formalParameters,
-                                   List<ReplicationInstruction> replicationInstructions, StackFrame stackFrame,
-                                   RuntimeCore runtimeCore, FunctionGroup funcGroup)
+        private StackValue Execute(
+            List<FunctionEndPoint> functionEndPoint, 
+            Context c, 
+            List<StackValue> formalParameters, 
+            List<ReplicationInstruction> replicationInstructions, 
+            StackFrame stackFrame, 
+            RuntimeCore runtimeCore, 
+            FunctionGroup funcGroup)
         {
+            SingleRunTraceData singleRunTraceData = (invokeCount < traceData.Count) ? traceData[invokeCount] : new SingleRunTraceData();
+            SingleRunTraceData newTraceData = new SingleRunTraceData();
             StackValue ret;
 
             if (replicationInstructions.Count == 0)
             {
                 c.IsReplicating = false;
-
-
-                SingleRunTraceData singleRunTraceData;
-                //READ TRACE FOR NON-REPLICATED CALL
-                //Lookup the trace data in the cache
-                if (invokeCount < traceData.Count)
-                {
-                    singleRunTraceData = traceData[invokeCount];
-                }
-                else
-                {
-                    //We don't have any previous stored data for the previous invoke calls, so 
-                    //gen an empty packet and push it through
-                    singleRunTraceData = new SingleRunTraceData();
-                }
-
-                SingleRunTraceData newTraceData = new SingleRunTraceData();
-
                 ret = ExecWithZeroRI(functionEndPoint, c, formalParameters, stackFrame, runtimeCore, funcGroup,
                     singleRunTraceData, newTraceData);
-
-
-                //newTraceData is update with the trace cache assocaite with the single shot executions
-                
-                if (invokeCount < traceData.Count)
-                    traceData[invokeCount] = newTraceData;
-                else
-                {
-                    traceData.Add(newTraceData);
-                }
-                
             }
             else //replicated call
             {
-                //Extract the correct run data from the trace cache here
-
-                //This is the thing that will get unpacked from the datastore
-
-                SingleRunTraceData singleRunTraceData;
-                SingleRunTraceData newTraceData = new SingleRunTraceData();
-
-                //Lookup the trace data in the cache
-                if (invokeCount < traceData.Count)
-                {
-                    singleRunTraceData = traceData[invokeCount];
-                }
-                else
-                {
-                    //We don't have any previous stored data for the previous invoke calls, so 
-                    //gen an empty packet and push it through
-                    singleRunTraceData = new SingleRunTraceData();
-                }
-
-
                 c.IsReplicating = true;
                 ret = ExecWithRISlowPath(functionEndPoint, c, formalParameters, replicationInstructions, stackFrame,
                                          runtimeCore, funcGroup, singleRunTraceData, newTraceData);
+            }
 
-                //Do a trace save here
-                if (invokeCount < traceData.Count)
-                    traceData[invokeCount] = newTraceData;
-                else
-                {
-                    traceData.Add(newTraceData);
-                }
+            //Do a trace save here
+            if (invokeCount < traceData.Count)
+            {
+                traceData[invokeCount] = newTraceData;
+            }
+            else
+            {
+                traceData.Add(newTraceData);
             }
 
             invokeCount++; //We've completed this invocation
-
-            if (ret.IsNull)
-                return ret; //It didn't return a value
-
             return ret;
         }
-
-
-
-        //Repication
 
         /// <summary>
         /// Excecute an arbitrary depth replication using the full slow path algorithm
@@ -1606,19 +1463,25 @@ namespace ProtoCore
         /// <param name="stackFrame"></param>
         /// <param name="core"></param>
         /// <returns></returns>
-        private StackValue ExecWithRISlowPath(List<FunctionEndPoint> functionEndPoint, Context c,
-                                              List<StackValue> formalParameters,
-                                              List<ReplicationInstruction> replicationInstructions,
-                                              StackFrame stackFrame, RuntimeCore runtimeCore, FunctionGroup funcGroup, 
-            SingleRunTraceData previousTraceData, SingleRunTraceData newTraceData)
+        private StackValue ExecWithRISlowPath(
+            List<FunctionEndPoint> functionEndPoint, 
+            Context c, 
+            List<StackValue> formalParameters, 
+            List<ReplicationInstruction> replicationInstructions, 
+            StackFrame stackFrame, 
+            RuntimeCore runtimeCore, 
+            FunctionGroup funcGroup, 
+            SingleRunTraceData previousTraceData, 
+            SingleRunTraceData newTraceData)
         {
             if (runtimeCore.Options.ExecutionMode == ExecutionMode.Parallel)
                 throw new NotImplementedException("Parallel mode disabled: {BF417AD5-9EA9-4292-ABBC-3526FC5A149E}");
 
-
             //Recursion base case
             if (replicationInstructions.Count == 0)
+            {
                 return ExecWithZeroRI(functionEndPoint, c, formalParameters, stackFrame, runtimeCore, funcGroup, previousTraceData, newTraceData);
+            }
 
             //Get the replication instruction that this call will deal with
             ReplicationInstruction ri = replicationInstructions[0];
@@ -1696,7 +1559,6 @@ namespace ProtoCore
                 for (int i = 0; i < retSize; i++)
                     retTrace.NestedData.Add(new SingleRunTraceData());
 
-
                 for (int i = 0; i < retSize; i++)
                 {
                     SingleRunTraceData lastExecTrace = new SingleRunTraceData();
@@ -1712,7 +1574,6 @@ namespace ProtoCore
                         //So just pass in an empty block
                         lastExecTrace = new SingleRunTraceData();
                     }
-
 
                     //Build the call
                     List<StackValue> newFormalParams = new List<StackValue>();
@@ -1738,12 +1599,8 @@ namespace ProtoCore
                                 {
                                     newFormalParams[repIndecies[repIi]] = parameters[repIi].Last();
                                 }
-
                                 break;
                         }
-
-
-                        
                     }
 
                     List<ReplicationInstruction> newRIs = new List<ReplicationInstruction>();
@@ -1759,7 +1616,6 @@ namespace ProtoCore
                     runtimeCore.AddCallSiteGCRoot(CallSiteID, retSVs[i]);
 
                     retTrace.NestedData[i] = cleanRetTrace;
-
                 }
 
                 StackValue ret = runtimeCore.RuntimeMemory.Heap.AllocateArray(retSVs);
@@ -1771,12 +1627,9 @@ namespace ProtoCore
                 //where the n is the product of the next item
 
                 //We will call the subsequent reductions n times
-
                 int cartIndex = ri.CartesianIndex;
 
                 //this will hold the heap elements for all the arrays that are going to be replicated over
-
-
                 bool supressArray = false;
                 int retSize;
                 StackValue[] parameters = null; 
@@ -1793,7 +1646,6 @@ namespace ProtoCore
                     supressArray = true;
                 }
 
-
                 StackValue[] retSVs = new StackValue[retSize];
 
                 SingleRunTraceData retTrace = newTraceData;
@@ -1806,10 +1658,8 @@ namespace ProtoCore
                     retTrace.NestedData.Add(new SingleRunTraceData());
                 }
 
- 
                 if (supressArray)
                 {
-
                     List<ReplicationInstruction> newRIs = new List<ReplicationInstruction>();
                     newRIs.AddRange(replicationInstructions);
                     newRIs.RemoveAt(0);
@@ -1820,9 +1670,6 @@ namespace ProtoCore
                     return ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore,
                                                 funcGroup, previousTraceData, newTraceData);
                 }
-
-
-                    
 
                 //Now iterate over each of these options
                 for (int i = 0; i < retSize; i++)
@@ -1856,14 +1703,12 @@ namespace ProtoCore
                         lastExecTrace.Data = previousTraceData.GetLeftMostData();
 
                     }
-
                     else
                     {
                         //We're off the edge of the previous trace window
                         //So just pass in an empty block
                         lastExecTrace = new SingleRunTraceData();
                     }
-
 
                     //previousTraceData = lastExecTrace;
                     SingleRunTraceData cleanRetTrace = new SingleRunTraceData();
@@ -1879,13 +1724,10 @@ namespace ProtoCore
 
                 StackValue ret = runtimeCore.RuntimeMemory.Heap.AllocateArray(retSVs);
                 return ret;
-
             }
         }
 
-
         //Single function call
-
         /// <summary>
         /// Dispatch without replication
         /// </summary>
@@ -1943,7 +1785,6 @@ namespace ProtoCore
 
             if (ret.IsNull)
             {
-
                 //wipe the trace cache
                 TraceUtils.ClearTLSKey(TRACE_KEY);
             }
@@ -1957,7 +1798,6 @@ namespace ProtoCore
                 newTraceData.Data = val;
             }
 
-
             // An explicit call requires return coercion at the return instruction
             if (!ret.IsExplicitCall)
             {
@@ -1965,7 +1805,6 @@ namespace ProtoCore
             }
             return ret;
         }
-
 
         /// <summary>
         /// If all the arguments that have rep guides are single values, then strip the rep guides
@@ -1987,25 +1826,18 @@ namespace ProtoCore
                     continue; //Ignore this case
                 }
 
-
                 //We have rep guides
                 if (arguments[i].IsArray)
                 {
                     //Rep guides on array, use guides as provided
                     return providedReplicationGuides;
                 }
-
             }
 
             //Everwhere where we have replication guides, we have single values
             //drop the guides
             return new List<List<ReplicationGuide>>();
-
         }
-
-
-
-
 
         /// <summary>
         /// Method to ensure that dimensionality of the arguments is at least
@@ -2018,20 +1850,16 @@ namespace ProtoCore
         public static List<StackValue> PerformRepGuideForcedPromotion(List<StackValue> arguments,
                                                                       List<List<ReplicationGuide>> providedRepGuides, RuntimeCore runtimeCore)
         {
-
             if (providedRepGuides.Count == 0)
                 return arguments;
 
             //copy the arguments
-
             List<StackValue> newArgs = new List<StackValue>();
             newArgs.AddRange(arguments);
-
 
             //Compute depth of rep guides
             List<int> listOfGuidesCounts =  providedRepGuides.Select((x) => x.Count).ToList();
             List<int> maxDepths = new List<int>();
-
 
             for (int i = 0; i < newArgs.Count; i++)
             {
@@ -2057,10 +1885,8 @@ namespace ProtoCore
 
         public static StackValue PerformReturnTypeCoerce(ProcedureNode procNode, RuntimeCore runtimeCore, StackValue ret)
         {
-            Validity.Assert(procNode != null,
-                            "Proc Node was null.... {976C039E-6FE4-4482-80BA-31850E708E79}");
+            Validity.Assert(procNode != null, "Proc Node was null.... {976C039E-6FE4-4482-80BA-31850E708E79}");
 
-            //Now cast ret into the return type
             Type retType = procNode.ReturnType;
 
             if (retType.UID == (int) PrimitiveType.kTypeVar)
@@ -2077,40 +1903,40 @@ namespace ProtoCore
             }
 
             if (ret.IsNull)
-                return ret; //IT was a var type, so don't cast
-
-            if (ret.metaData.type == retType.UID &&
-                !ret.IsArray &&
-                retType.IsIndexable)
             {
-                StackValue coercedRet = TypeSystem.Coerce(ret, retType, runtimeCore);
-                return coercedRet;
+                return ret; 
             }
 
             if (ret.metaData.type == retType.UID)
             {
-                return ret;
+                if (!ret.IsArray && retType.IsIndexable)
+                {
+                    StackValue coercedRet = TypeSystem.Coerce(ret, retType, runtimeCore);
+                    return coercedRet;
+                }
+                else
+                {
+                    return ret;
+                }
             }
 
-            if (ret.IsArray && procNode.ReturnType.IsIndexable)
+            if (ret.IsArray && retType.IsIndexable)
             {
                 StackValue coercedRet = TypeSystem.Coerce(ret, retType, runtimeCore);
                 return coercedRet;
             }
 
-            if (!runtimeCore.DSExecutable.classTable.ClassNodes[ret.metaData.type].ConvertibleTo(retType.UID))
+            if (runtimeCore.DSExecutable.classTable.ClassNodes[ret.metaData.type].ConvertibleTo(retType.UID))
             {
-                //@TODO(Luke): log no-type coercion possible warning
-
-                runtimeCore.RuntimeStatus.LogWarning(WarningID.kConversionNotPossible,
-                                              Resources.kConvertNonConvertibleTypes);
-
-                return StackValue.Null;
+                StackValue coercedRet = TypeSystem.Coerce(ret, retType, runtimeCore);
+                return coercedRet;
             }
             else
-            {
-                StackValue coercedRet = TypeSystem.Coerce(ret, retType, runtimeCore);
-                return coercedRet;
+            { 
+                //@TODO(Luke): log no-type coercion possible warning
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kConversionNotPossible,
+                                              Resources.kConvertNonConvertibleTypes);
+                return StackValue.Null;
             }
         }
 
@@ -2138,400 +1964,5 @@ namespace ProtoCore
             var serializables = helper.TraceData.SelectMany(std => std.RecursiveGetNestedData()).ToList();
             return serializables;
         }
-
-        #region Unused legacy code
-
-        // ======== UNUSED =======
-
-        /*
-        /// <summary>
-        ///  This function handles generating a unique callsite ID and serializing the data associated with this callsite
-        /// </summary>
-        /// <param name="data"></param>
-        private Object SimulateGetData()
-        {
-            // Get the data for this callite (Simulate unique data)
-            Object callsiteData = ProtoCore.TLSUtils.GetTLSData();
-            return callsiteData;
-        }
-        */
-
-        /*
-         * 
-         * 
-        /// <summary>
-        /// This is the function that should be executed next, passing the same arugments as previously
-        /// </summary>
-        /// <returns></returns>
-        public FunctionEndPoint ResolveForReplication(ProtoCore.Runtime.Context context, List<StackValue> arguments,
-                                                      List<List<int>> partialReplicationGuides, StackFrame stackFrame,
-                                                      RuntimeCore runtimeCore, ContinuationStructure continuation)
-        {
-
-             //throw new NotImplementedException();           
-
-            //
-            // Comment Jun: This simulates what the resolver is doing 
-            //
-            //      We just want a fep for testing
-            //      Make sure you define an Increment function as such:
-            //
-            //      def Increment(i : int)
-            //      {
-            //          return = i + 1;
-            //      }
-            //      x = { 1, 2 };
-            //      z = Increment(x);
-
-            const string testFunction = "Increment";
-            JILFunctionEndPoint testFep = new JILFunctionEndPoint();
-            testFep.procedureNode = core.DSExecutable.procedureTable[0].GetFirst(testFunction);
-
-            // Aparajit: The following hardcodes:
-            // 1. A dummy "NextDispatchArg"
-            // 2. The ContinuationStructure.Done flag is manually forced to TRUE (while testing) at the last iteration or if NextDispatchArgs is null
-            // 3. Pushing the next argument onto the Stack
-            
-            // Use continuation.NextDispatchArgs to compute next FEP
-            
-            StackValue currentArg = continuation.NextDispatchArgs[0];
-
-            // The second time, the array of two elements has no more next args and so this could be set to null or Done is true
-            continuation.NextDispatchArgs.Clear();
-            StackValue nextArg = StackValue.BuildInt(2);    
-            continuation.NextDispatchArgs.Add(nextArg);
-            continuation.Done = false;  // return true the second time
-
-            core.Rmem.Push(currentArg);
-
-            return testFep;
-            
-        }
-     
-         * 
-         * 
-         * 
-         * 
-         * 
-         */
-
-
-        /*
-            public FunctionEndPoint GetFep(ProtoCore.Runtime.Context context, List<StackValue> arguments, StackFrame stackFrame, List<List<int>> partialReplicationGuides, RuntimeCore runtimeCore)
-            {
-                StringBuilder log = new StringBuilder();
-
-                log.AppendLine("Method name: " + methodName);
-
-                #region Get Function Group
-                //@PERF: Possible optimisation point here, to deal with static dispatches that don't need replication analysis
-                //Handle resolution Pass 1: Name -> Method Group
-                FunctionGroup funcGroup = null;
-                List<int> clist = new List<int> { classScope };
-                int i = 0;
-
-                while (i < clist.Count)
-                {
-                    int cidx = clist[i];
-                    if (globalFunctionTable.GlobalFuncTable[cidx + 1].ContainsKey(methodName))
-                    {
-                        funcGroup = globalFunctionTable.GlobalFuncTable[cidx + 1][methodName];
-                        break;
-                    }
-                    else
-                    {
-                        clist.AddRange(runtimeCore.DSExecutable.classTable.ClassNodes[cidx].baseList);
-                        ++i;
-                    }
-                }
-
-                if (funcGroup == null)
-                {
-                    if (core.Options.DumpFunctionResolverLogic)
-                        core.DSExecutable.EventSink.PrintMessage(log.ToString());
-
-                    return null;
-                }
-
-                if (classScope != Constants.kGlobalScope)
-                {
-                    int callerci, callerfi;
-                    core.CurrentExecutive.CurrentDSASMExec.GetCallerInformation(out callerci, out callerfi);
-                    if (callerci == Constants.kGlobalScope || (classScope != callerci && !runtimeCore.DSExecutable.classTable.ClassNodes[classScope].IsMyBase(callerci)))
-                    {
-                        bool hasFEP = funcGroup.FunctionEndPoints.Count > 0;
-                        FunctionGroup visibleFuncGroup = new FunctionGroup();
-                        visibleFuncGroup.CopyPublic(funcGroup.FunctionEndPoints);
-                        funcGroup = visibleFuncGroup;
-
-                        if (hasFEP && funcGroup.FunctionEndPoints.Count == 0)
-                        {
-                            return null;
-                        }
-                    }
-                }
-
-                if (core.Options.DotOpToMethodOn)
-                    if (null == funcGroup)
-                    {
-                        return null;
-                    }
-                log.AppendLine("Function group resolved: " + funcGroup);
-
-                #endregion
-
-                //Replication Control is an ordered list of the elements that we have to replicate over
-                //Ordering implies containment, so element 0 is the outer most forloop, element 1 is nested within it etc.
-                //Take the explicit replication guides and build the replication structure
-                //Turn the replication guides into a guide -> List args data structure
-                ReplicationControl replicationControl =
-                    Replicator.Old_ConvertGuidesToInstructions(partialReplicationGuides);
-
-                log.AppendLine("Replication guides processed to: " + replicationControl);
-
-
-                #region First Case: Replicate only according to the replication guides
-                {
-                    log.AppendLine("Case 1: Exact Match");
-
-                    FunctionEndPoint fep = Case1GetCompleteMatchFEP(context, arguments, funcGroup, replicationControl, stackFrame,
-                                                               core, log);
-                    if (fep != null)
-                    {
-                        return fep;
-                    }
-
-                }
-                #endregion
-
-                #region Case 2: Replication with no type cast
-                {
-
-                    log.AppendLine("Case 2: Beginning Auto-replication, no casts");
-
-                    //Build the possible ways in which we might replicate
-                    List<List<ReplicationInstruction>> replicationTrials =
-                        Replicator.BuildReplicationCombinations(replicationControl.Instructions, arguments, core);
-
-                    foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
-                    {
-                        ReplicationControl rc = new ReplicationControl() { Instructions = replicationOption };
-
-                        log.AppendLine("Attempting replication control: " + rc);
-
-                        List<List<StackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments,
-                                                                                                  rc.
-                                                                                                      Instructions, core);
-                        int resolutionFailures;
-
-                        Dictionary<FunctionEndPoint, int> lookups = funcGroup.GetExactMatchStatistics(
-                            context, reducedParams, stackFrame, core,
-                            out resolutionFailures);
-
-
-                        if (resolutionFailures > 0)
-                            continue;
-
-                        log.AppendLine("Resolution succeeded against FEP Cluster");
-                        foreach (FunctionEndPoint fep in lookups.Keys)
-                            log.AppendLine("\t - " + fep);
-
-                        List<FunctionEndPoint> feps = new List<FunctionEndPoint>();
-                        feps.AddRange(lookups.Keys);
-
-                        if (core.Options.DumpFunctionResolverLogic)
-                            core.DSExecutable.EventSink.PrintMessage(log.ToString());
-
-
-                        return feps[0];
-                    }
-                }
-                #endregion
-
-                #region Case 3: Match with type conversion, but no array promotion
-                {
-                    Dictionary<FunctionEndPoint, int> candidatesWithDistances =
-                    funcGroup.GetConversionDistances(context, arguments, replicationControl.Instructions, runtimeCore.DSExecutable.classTable, core);
-                    Dictionary<FunctionEndPoint, int> candidatesWithCastDistances =
-                        funcGroup.GetCastDistances(context, arguments, replicationControl.Instructions, runtimeCore.DSExecutable.classTable, core);
-
-                    List<FunctionEndPoint> candidateFunctions = GetCandidateFunctions(stackFrame, candidatesWithDistances);
-                    FunctionEndPoint compliantTarget = GetCompliantTarget(context, arguments, replicationControl.Instructions, stackFrame, core, candidatesWithCastDistances, candidateFunctions, candidatesWithDistances);
-
-                    if (compliantTarget != null)
-                    {
-                        return compliantTarget;
-                    }
-
-                }
-                #endregion
-
-                #region Case 4: Match with type conversion and replication
-                {
-                    if (arguments.Any(StackUtils.IsArray))
-                    {
-
-                        //Build the possible ways in which we might replicate
-                        List<List<ReplicationInstruction>> replicationTrials =
-                            Replicator.BuildReplicationCombinations(replicationControl.Instructions, arguments, core);
-
-
-                        foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
-                        {
-                            ReplicationControl rc = new ReplicationControl() { Instructions = replicationOption };
-
-                            log.AppendLine("Attempting replication control: " + rc);
-
-                            //@TODO: THis should use the proper reducer?
-
-                            Dictionary<FunctionEndPoint, int> candidatesWithDistances =
-                                funcGroup.GetConversionDistances(context, arguments, rc.Instructions, runtimeCore.DSExecutable.classTable, core);
-                            Dictionary<FunctionEndPoint, int> candidatesWithCastDistances =
-                                funcGroup.GetCastDistances(context, arguments, rc.Instructions, runtimeCore.DSExecutable.classTable, core);
-
-                            List<FunctionEndPoint> candidateFunctions = GetCandidateFunctions(stackFrame,
-                                                                                              candidatesWithDistances);
-                            FunctionEndPoint compliantTarget = GetCompliantTarget(context, arguments,
-                                                                                  rc.Instructions, stackFrame, core,
-                                                                                  candidatesWithCastDistances,
-                                                                                  candidateFunctions,
-                                                                                  candidatesWithDistances);
-
-                            if (compliantTarget != null)
-                            {
-                                return compliantTarget;
-                            }
-                        }
-                    }
-                }
-                #endregion
-
-                #region Case 5: Match with type conversion, replication and array promotion
-                {
-
-                    //Build the possible ways in which we might replicate
-                    List<List<ReplicationInstruction>> replicationTrials =
-                        Replicator.BuildReplicationCombinations(replicationControl.Instructions, arguments, core);
-
-                    //Add as a first attempt a no-replication, but allowing up-promoting
-                    replicationTrials.Insert(0,
-                        new List<ReplicationInstruction>()
-                        );
-
-
-                    foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
-                    {
-                        ReplicationControl rc = new ReplicationControl() { Instructions = replicationOption };
-
-                        log.AppendLine("Attempting replication control: " + rc);
-
-                        //@TODO: THis should use the proper reducer?
-
-                        Dictionary<FunctionEndPoint, int> candidatesWithDistances =
-                            funcGroup.GetConversionDistances(context, arguments, rc.Instructions, runtimeCore.DSExecutable.classTable, core, true);
-                        Dictionary<FunctionEndPoint, int> candidatesWithCastDistances =
-                            funcGroup.GetCastDistances(context, arguments, rc.Instructions, runtimeCore.DSExecutable.classTable, core);
-
-                        List<FunctionEndPoint> candidateFunctions = GetCandidateFunctions(stackFrame,
-                                                                                            candidatesWithDistances);
-                        FunctionEndPoint compliantTarget = GetCompliantTarget(context, arguments,
-                                                                                rc.Instructions, stackFrame, core,
-                                                                                candidatesWithCastDistances,
-                                                                                candidateFunctions,
-                                                                                candidatesWithDistances);
-
-                        if (compliantTarget != null)
-                        {
-                            return compliantTarget;
-                        }
-                    }
-                }
-                #endregion
-
-                log.AppendLine("Resolution Failed");
-
-                if (core.Options.DumpFunctionResolverLogic)
-                    core.DSExecutable.EventSink.PrintMessage(log.ToString());
-
-                return null;
-            }
-
-            */
-
-
-        /*
-
-        /// <summary>
-        /// Fast Dispatch handles the whole of a function call internally without allowing replicated debugging
-        /// This should be used in Run Mode and Parallel execution mode
-        /// This is the fastest way of dispatching to a callsite
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="arguments"></param>
-        /// <param name="partialReplicationGuides"></param>
-        /// <param name="stackFrame"></param>
-        /// <param name="core"></param>
-        /// <returns></returns>
-        public StackValue FastDispatch(ProtoCore.Runtime.Context context, List<StackValue> arguments,
-                                       List<List<int>> partialReplicationGuides, StackFrame stackFrame, RuntimeCore runtimeCore)
-        {
-            return DispatchNew(context, arguments, partialReplicationGuides, stackFrame, core);
-        }
-
-        */
-
-        /*
-         * REMOVED as not used
-         * 
-        public StackValue ExecuteContinuation(FunctionEndPoint jilFep, StackFrame stackFrame, RuntimeCore runtimeCore)
-        {
-            // Pushing a dummy stackframe onto the Stack for the current fep
-            int ci = -1;
-            int fi = 0;
-
-            // Hardcoded for Increment as member function
-            if (jilFep.procedureNode == null)
-            {
-                ci = 14;
-                jilFep.procedureNode = core.DSExecutable.classTable.ClassNodes[ci].vtable.procList[fi];
-            }
-            Validity.Assert(jilFep.procedureNode != null);
-
-            if (core.Options.IDEDebugMode)
-            {
-                DebugFrame debugFrame = core.DebugProps.DebugStackFrame.Peek();
-                debugFrame.FinalFepChosen = jilFep;
-            }
-
-            StackValue svThisPtr = stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kThisPtr);
-            StackValue svBlockDecl = stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionBlock);
-            int blockCaller = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionCallerBlock).opdata;
-            int depth = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kStackFrameDepth).opdata;
-            DSASM.StackFrameType type = (DSASM.StackFrameType)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kStackFrameType).opdata;
-
-            int locals = 0; 
-            int returnAddr = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kReturnAddress).opdata;
-            int framePointer = core.Rmem.FramePointer;
-            DSASM.StackFrameType callerType = (DSASM.StackFrameType)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kCallerStackFrameType).opdata;
-
-            StackValue svCallConvention = ProtoCore.DSASM.StackValue.BuildNode(ProtoCore.DSASM.AddressType.CallingConvention, (long)ProtoCore.DSASM.CallingConvention.CallType.kExplicit);
-            // Set TX register 
-            stackFrame.SetAt(DSASM.StackFrame.AbsoluteIndex.kRegisterTX, svCallConvention);
-
-            // Set SX register 
-            stackFrame.SetAt(DSASM.StackFrame.AbsoluteIndex.kRegisterSX, svBlockDecl);
-
-            List<StackValue> registers = new List<DSASM.StackValue>();
-            registers.AddRange(stackFrame.GetRegisters());
-
-            core.Rmem.PushStackFrame(svThisPtr, ci, fi, returnAddr, (int)svBlockDecl.opdata, blockCaller, callerType, type, depth, framePointer, registers, locals, 0);
-
-            return StackValue.BuildNode(AddressType.ExplicitCall, jilFep.procedureNode.pc);
-
-        }
-        */
-
-
-        #endregion
     }
 }

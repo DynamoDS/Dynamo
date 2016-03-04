@@ -8,7 +8,7 @@ namespace Dynamo.Scheduler
         {
             private readonly Action action;
 
-            public SimpleDisposable(Action dispose)
+            internal SimpleDisposable(Action dispose)
             {
                 action = dispose;
             }
@@ -19,6 +19,11 @@ namespace Dynamo.Scheduler
             }
         }
 
+        /// <summary>
+        /// construct a new disposable that calls the delegate when disposed 
+        /// </summary>
+        /// <param name="disposeAction"> an action that is run when this object is disposed</param>
+        /// <returns></returns>
         public static IDisposable Create(Action disposeAction)
         {
             return new SimpleDisposable(disposeAction);

@@ -48,9 +48,12 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Border CornerRadius="5"
-                    Background="{StaticResource LibraryCommonBackground}"
+            <Border CornerRadius="8"
+                    Background="{StaticResource SearchTextBoxBackground}"
+                    BorderBrush="{StaticResource outerBorderSelection}"
+                    BorderThickness="1"
                     Padding="5"
+                    Margin="1 3"
                     Grid.ColumnSpan="2">
                 <Grid>
                     <StackPanel Name="SearchIconAndTextBlockGrid"
@@ -93,7 +96,7 @@
                     </StackPanel>
 
                     <TextBox Name="SearchTextBox"
-                             Foreground="{StaticResource CommonSidebarTextColor}"
+                             Foreground="{StaticResource SearchBoxBackgroundColor}"
                              Background="Transparent"
                              BorderThickness="0"
                              FontSize="14"

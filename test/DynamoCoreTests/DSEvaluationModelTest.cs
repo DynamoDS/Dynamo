@@ -639,7 +639,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         [Category("RegressionTests")]
         public void Defect_MAGN_3264()
         {
@@ -967,7 +966,7 @@ namespace Dynamo.Tests
 
             RunModel(dynFilePath);
 
-            AssertPreviewValue("c739b941-ece7-4b87-ae69-9a16f04dbe5d", null);
+            AssertPreviewValue("c739b941-ece7-4b87-ae69-9a16f04dbe5d", new object[] { null, null, null, null });
 
             // Reset engine and mark all nodes as dirty. A.k.a., force re-execute.
             CurrentDynamoModel.ForceRun();
@@ -991,7 +990,7 @@ namespace Dynamo.Tests
             CurrentDynamoModel.ForceRun();
 
             // Fix expected result after MAGN-7639 is fixed.
-            AssertPreviewValue("980dcd47-84e7-412c-8d9e-d66f166d2370", new object[] { new object[] { false }, new object[] { false }, new object[] { false }, new object[] { false }, new object[] { false } });
+            AssertPreviewValue("980dcd47-84e7-412c-8d9e-d66f166d2370", true);
 
         }
 
@@ -1010,6 +1009,41 @@ namespace Dynamo.Tests
             var dynFilePath = Path.Combine(TestDirectory, @"core\dsevaluation\TestCallingStaticMethod.dyn");
             RunModel(dynFilePath);
             AssertPreviewValue("dc61bae7-a661-477f-a438-ace939d958f4", 5.0);
+        }
+
+        [Test]
+        public void Regress9279_NoRandomNull()
+        {
+            var dynFilePath = Path.Combine(TestDirectory, @"core\dsevaluation\regress9297.dyn");
+            OpenModel(dynFilePath);
+            var filename = this.CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<CoreNodeModels.Input.Filename>();
+            filename.Value = filename.Value.Replace(@"{path}", Path.Combine(TestDirectory, @"core\dsevaluation\layer3.png"));
+            RunCurrentModel();
+
+            AssertPreviewValue("2a944080-94e1-4cf9-88e2-64556335c838", 2);
+        }
+
+        [Test]
+        public void Regress7808()
+        {
+            // Verify that updating the function defintion will execute code blocks node that use
+            // this function.
+            var dynFilePath = Path.Combine(TestDirectory, @"core\dsevaluation\regress7808.dyn");
+            OpenModel(dynFilePath);
+
+            // Original function defintion is 
+            // def foo() { return = 21;}
+            var watchNodeGuid = "aef2375c-3dd8-4be0-8230-d964a2417f99";
+            AssertPreviewValue(watchNodeGuid, 21);
+
+            // change to
+            // def foo() { return = 42; }
+            var cbnGuid = Guid.Parse("6a260ba7-d658-4350-a777-49511f725454");
+            var command = new Models.DynamoModel.UpdateModelValueCommand(Guid.Empty, cbnGuid, "Code", @"def foo() { return = 42; }");
+            CurrentDynamoModel.ExecuteCommand(command);
+            RunCurrentModel();
+
+            AssertPreviewValue(watchNodeGuid, 42);
         }
     }
 

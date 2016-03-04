@@ -16,20 +16,6 @@ namespace Dynamo.Graph.Nodes
 
     public class PortModel : ModelBase
     {
-        #region events
-
-        /// <summary>
-        /// Event triggered when a port is connected.
-        /// </summary>
-        public event Action<PortModel, ConnectorModel> PortConnected;
-
-        /// <summary>
-        /// Event triggered when a port is disconnected.
-        /// </summary>
-        public event Action<PortModel> PortDisconnected;
-
-        #endregion
-
         #region private fields
         ObservableCollection<ConnectorModel> connectors = new ObservableCollection<ConnectorModel>();
         private bool usingDefaultValue;
@@ -172,6 +158,10 @@ namespace Dynamo.Graph.Nodes
             Height = Math.Abs(data.Height) < 0.001 ? Configurations.PortHeightInPixels : data.Height;
         }
 
+        /// <summary>
+        /// Sets the port data.
+        /// </summary>
+        /// <param name="data">The data.</param>
         public void SetPortData(PortData data)
         {
             portData = data;
@@ -185,7 +175,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Deletes all connectors attached to this PortModel.
         /// </summary>
-        public void DestroyConnectors()
+        internal void DestroyConnectors()
         {
             if (Owner == null)
                 return;
@@ -197,7 +187,7 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
-        public void Connect(ConnectorModel connector)
+        internal void Connect(ConnectorModel connector)
         {
             connectors.Add(connector);
 
@@ -207,7 +197,7 @@ namespace Dynamo.Graph.Nodes
             IsConnected = true;
         }
 
-        public void Disconnect(ConnectorModel connector, bool silent = false)
+        internal void Disconnect(ConnectorModel connector, bool silent = false)
         {
             if (!connectors.Contains(connector))
                 return;
@@ -234,8 +224,8 @@ namespace Dynamo.Graph.Nodes
         /// <param name="connector"></param>
         protected virtual void OnPortConnected(ConnectorModel connector)
         {
-            if (PortConnected != null)
-                PortConnected(this, connector);
+            if (Owner != null)
+                Owner.RaisePortConnectedEvent(this, connector);
         }
 
         /// <summary>
@@ -244,8 +234,8 @@ namespace Dynamo.Graph.Nodes
         /// <param name="e"></param>
         protected virtual void OnPortDisconnected()
         {
-            if (PortDisconnected != null)
-                PortDisconnected(this);
+            if (Owner != null)
+                Owner.RaisePortDisconnectedEvent(this);
         }
 
         #region Serialization/Deserialization Methods

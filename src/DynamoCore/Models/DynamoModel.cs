@@ -1534,7 +1534,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="node"></param>
         /// <param name="centered"></param>
-        public void AddNodeToCurrentWorkspace(NodeModel node, bool centered, bool addToSelection = true)
+        internal void AddNodeToCurrentWorkspace(NodeModel node, bool centered, bool addToSelection = true)
         {
             CurrentWorkspace.AddAndRegisterNode(node, centered);
 
@@ -1656,7 +1656,7 @@ namespace Dynamo.Models
 
                 var lacing = node.ArgumentLacing.ToString();
                 newNode.UpdateValue(new UpdateValueParams("ArgumentLacing", lacing));
-                if (!string.IsNullOrEmpty(node.NickName))
+                if (!string.IsNullOrEmpty(node.NickName) && !(node is Symbol) && !(node is Output))
                     newNode.NickName = node.NickName;
 
                 newNode.Width = node.Width;

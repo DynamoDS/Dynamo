@@ -90,7 +90,7 @@ namespace Dynamo.Graph.Presets
         /// </summary>
         /// <param name="nodesInGraph"></param>
  
-        public PresetModel(IEnumerable<NodeModel> nodesInGraph)
+        internal PresetModel(IEnumerable<NodeModel> nodesInGraph)
         {
             this.nodes = nodesInGraph.ToList();
         }

@@ -136,7 +136,7 @@
     <comment>Description for Length From String</comment>
   </data>
   <data name="LengthFromStringPortDataLengthToolTip" xml:space="preserve">
-    <value>number</value>
+    <value>number (Feet)</value>
   </data>
   <data name="LengthFromStringSearchTags" xml:space="preserve">
     <value>Imperial;Metric;Length;Project;units</value>

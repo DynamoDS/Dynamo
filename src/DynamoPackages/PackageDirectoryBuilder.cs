@@ -62,10 +62,10 @@ namespace Dynamo.PackageManager
             package.RootDirectory = rootDir.FullName;
 
             WritePackageHeader(package, rootDir);
+            RemoveUnselectedFiles(files, rootDir);
             CopyFilesIntoPackageDirectory(files, dyfDir, binDir, extraDir);
             RemoveDyfFiles(files, dyfDir);
             RemapCustomNodeFilePaths(files, dyfDir.FullName);
-            RemoveUnselectedFiles(files, rootDir);
 
             return rootDir;
         }

@@ -95,23 +95,20 @@ namespace ProtoCore.DSASM
         public const string alloca = "alloca";
         public const string allocc = "allocc";
         public const string push = "push";
-        public const string pushg = "pushg";
         public const string pushm = "pushm";
         public const string pushw = "pushw";
         public const string pushindex = "pushindex";
         public const string pushdep = "pushdep";
-        public const string pushlist = "pushlist";
+        public const string pushrepguide = "pushguide";
+        public const string pushlevel = "pushlevel";
         public const string ret = "ret";
-        public const string retc = "retc";
         public const string retb = "retb";
         public const string retcn = "retcn";
         public const string pop = "pop";
         public const string popw = "popw";
-        public const string popg = "popg";
         public const string popm = "popm";
-        public const string poplist = "poplist";
-        public const string not = "not";
-        public const string negate = "negate";
+        public const string poprepguides = "popguides";
+        public const string poplevel = "poplevel";
         public const string dep = "dep";
         public const string setexpuid = "setexpuid";
         public const string pushb = "pushb";
@@ -269,7 +266,6 @@ namespace ProtoCore.DSASM
             unaryOpCodeTable = new Dictionary<UnaryOperator, OpCode>();
             unaryOpCodeTable.Add(UnaryOperator.None, ProtoCore.DSASM.OpCode.NONE);
             unaryOpCodeTable.Add(UnaryOperator.Not, ProtoCore.DSASM.OpCode.NOT);
-            unaryOpCodeTable.Add(UnaryOperator.Negate, ProtoCore.DSASM.OpCode.NEGATE);
             unaryOpCodeTable.Add(UnaryOperator.Neg, ProtoCore.DSASM.OpCode.NEG);
         }
 
@@ -278,7 +274,6 @@ namespace ProtoCore.DSASM
             unaryOpNameTable = new Dictionary<UnaryOperator, string>();
             unaryOpNameTable.Add(UnaryOperator.None, "none");
             unaryOpNameTable.Add(UnaryOperator.Not, "not");
-            unaryOpNameTable.Add(UnaryOperator.Negate, "negate");
             unaryOpNameTable.Add(UnaryOperator.Neg, "neg");
         }
  
@@ -291,9 +286,6 @@ namespace ProtoCore.DSASM
             opNameTable.Add(Operator.and, "and");
             opNameTable.Add(Operator.or, "or");
             opNameTable.Add(Operator.dot, "dot");
-            opNameTable.Add(Operator.bitwiseand, "bitand");
-            opNameTable.Add(Operator.bitwiseor, "biteor");
-            opNameTable.Add(Operator.bitwisexor, "bitxor");
 
             opNameTable.Add(Operator.lt, ProtoCore.DSASM.kw.lt);
             opNameTable.Add(Operator.gt, ProtoCore.DSASM.kw.gt);
@@ -326,9 +318,6 @@ namespace ProtoCore.DSASM
             opCodeTable.Add(Operator.mod, ProtoCore.DSASM.OpCode.MOD);
             opCodeTable.Add(Operator.and, ProtoCore.DSASM.OpCode.AND);
             opCodeTable.Add(Operator.or, ProtoCore.DSASM.OpCode.OR);
-            opCodeTable.Add(Operator.bitwiseand, ProtoCore.DSASM.OpCode.BITAND);
-            opCodeTable.Add(Operator.bitwiseor, ProtoCore.DSASM.OpCode.BITOR);
-            opCodeTable.Add(Operator.bitwisexor, ProtoCore.DSASM.OpCode.BITXOR);
         }
 
         private static void initOpSymbolTable()
@@ -339,9 +328,6 @@ namespace ProtoCore.DSASM
             opSymbolTable.Add(Operator.mul, "*");
             opSymbolTable.Add(Operator.div, "/");
             opSymbolTable.Add(Operator.mod, "%");
-            opSymbolTable.Add(Operator.bitwiseand, "&");
-            opSymbolTable.Add(Operator.bitwiseor, "|");
-            opSymbolTable.Add(Operator.bitwisexor, "^");
             opSymbolTable.Add(Operator.eq, "==");
             opSymbolTable.Add(Operator.nq, "!=");
             opSymbolTable.Add(Operator.ge, ">=");
@@ -359,7 +345,6 @@ namespace ProtoCore.DSASM
             unaryOpSymbolTable.Add(UnaryOperator.Decrement, "--");
             unaryOpSymbolTable.Add(UnaryOperator.Increment, "++");
             unaryOpSymbolTable.Add(UnaryOperator.Neg, "-");
-            unaryOpSymbolTable.Add(UnaryOperator.Negate, "~");
             unaryOpSymbolTable.Add(UnaryOperator.Not, "!");
         }
     }
@@ -399,7 +384,7 @@ namespace ProtoCore.DSASM
         public const string kTempDefaultArg = "%tmpDefaultArg";
         public const string kTempArg = "%targ";
         public const string kTempVar = "%tvar";
-        public const string kTempPropertyVar = "%tvar_property";
+        public const string kTempPropertyVar = "%t_property";
         public const string kTempLangBlock = "%tempLangBlock";
         public const string kForLoopExpression = "%forloop_expr_";
         public const string kForLoopKey = "%forloop_key_";
@@ -411,13 +396,12 @@ namespace ProtoCore.DSASM
         public const string kGetTypeMethodName = "%get_type";
         public const string kNodeAstFailed = "%nodeAstFailed";
         public const string kWatchResultVar = "watch_result_var";
-        public const string kSSATempPrefix = "%tSSA_";
+        public const string kSSATempPrefix = "%t_";
         public const string kThisPointerArgName = "%thisPtrArg";
         public const string kTempModifierStateNamePrefix = "%tmp_modifierState_";
-        public const string kTempProcConstant = "temp_proc_var_";
-        public const string kTempProcLeftVar = "%" + kTempProcConstant;
+        public const string kTempProcLeftVar = "%temp_proc_var_";
         public const string kImportData = "ImportData";
-        public const string kTempVarForNonAssignment = "temp6BBA4B28C5E54CF89F300D510499A00E_";
+        public const string kTempVarForNonAssignment = "t6BBA4B28C5E54CF89F300D510499A00E_";
         public const char kLongestPostfix = 'L';
         public const string kDoubleUnderscores = "__";
         public const string kSingleUnderscore = "_";

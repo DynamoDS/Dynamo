@@ -178,7 +178,7 @@ namespace Dynamo.Manipulation
             GizmoInAction = null; //Reset Drag.
 
             var gizmos = GetGizmos(false);
-            if (!Active || !IsEnabled() || null == gizmos || !gizmos.Any()) return;
+            if (!IsEnabled() || null == gizmos || !gizmos.Any()) return;
 
             var ray = BackgroundPreviewViewModel.GetClickRay(mouseButtonEventArgs);
             if (ray == null) return;
@@ -403,7 +403,7 @@ namespace Dynamo.Manipulation
         {
             var packages = GenerateRenderPackages();
 
-            BackgroundPreviewViewModel.AddGeometryForRenderPackages(packages);
+            BackgroundPreviewViewModel.AddGeometryForRenderPackages(packages, true);
         }
 
         /// <summary>
@@ -439,7 +439,7 @@ namespace Dynamo.Manipulation
 
             UpdatePosition();
 
-            if (!Active || !IsEnabled())
+            if (!IsEnabled())
             {
                 return packages;
             }
@@ -533,14 +533,14 @@ namespace Dynamo.Manipulation
         /// <returns>True if enabled and can be manipulated.</returns>
         public bool IsEnabled()
         {
-            if (Node.IsFrozen) return false;
+            if (Node.IsFrozen || !Node.IsVisible) return false;
 
             if (Node.CachedValue == null || Node.CachedValue.IsNull)
             {
                 return false;
             }
 
-            return true;
+            return Active;
         }
         #endregion
     }

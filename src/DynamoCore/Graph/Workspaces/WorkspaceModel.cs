@@ -757,9 +757,12 @@ namespace Dynamo.Graph.Workspaces
             foreach (var connector in Connectors)
                 OnConnectorDeleted(connector);
 
+            WorkspaceEvents.WorkspaceAdded -= computeUpstreamNodesWhenWorkspaceAdded;
+
             var handler = Disposed;
             if (handler != null) 
                 handler();
+
             Disposed = null;
         }
 
@@ -767,6 +770,14 @@ namespace Dynamo.Graph.Workspaces
         #endregion
 
         #region public methods
+
+        /// <summary>
+        ///     Gets appropriate name of workspace for sharing.
+        /// </summary>
+        public virtual string GetSharedName()
+        {
+            return this.Name;
+        }
 
         /// <summary>
         ///     Clears this workspace of nodes, notes, and connectors.
@@ -848,7 +859,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Adds a node to this workspace.
         /// </summary>
-        public void AddAndRegisterNode(NodeModel node, bool centered = false)
+        internal void AddAndRegisterNode(NodeModel node, bool centered = false)
         {
             if (nodes.Contains(node))
                 return;
@@ -905,7 +916,7 @@ namespace Dynamo.Graph.Workspaces
         /// This method does not raise a NodesModified event. (LC notes this is clearly not true)
         /// </summary>
         /// <param name="model"></param>
-        public void RemoveNode(NodeModel model)
+        internal void RemoveNode(NodeModel model)
         {
             lock (nodes)
             {
@@ -939,7 +950,7 @@ namespace Dynamo.Graph.Workspaces
             OnNoteAdded(note);
         }
 
-        public void AddNote(NoteModel note, bool centered)
+        internal void AddNote(NoteModel note, bool centered)
         {
             if (centered)
             {
@@ -949,7 +960,7 @@ namespace Dynamo.Graph.Workspaces
             AddNote(note);
         }
 
-        public NoteModel AddNote(bool centerNote, double xPos, double yPos, string text, Guid id)
+        internal NoteModel AddNote(bool centerNote, double xPos, double yPos, string text, Guid id)
         {
             var noteModel = new NoteModel(xPos, yPos, string.IsNullOrEmpty(text) ? Resources.NewNoteString : text, id);
 
@@ -960,7 +971,7 @@ namespace Dynamo.Graph.Workspaces
             return noteModel;
         }
 
-        public void ClearNotes()
+        internal void ClearNotes()
         {
             lock (notes)
             {
@@ -970,7 +981,7 @@ namespace Dynamo.Graph.Workspaces
             OnNotesCleared();
         }
 
-        private void RemoveNote(NoteModel note)
+        internal void RemoveNote(NoteModel note)
         {
             lock (notes)
             {
@@ -989,7 +1000,7 @@ namespace Dynamo.Graph.Workspaces
             OnAnnotationAdded(annotation);
         }
 
-        public void ClearAnnotations()
+        internal void ClearAnnotations()
         {
             lock (annotations)
             {
@@ -1008,14 +1019,14 @@ namespace Dynamo.Graph.Workspaces
             OnAnnotationRemoved(annotation);
         }
 
-        public void AddAnnotation(AnnotationModel annotationModel)
+        internal void AddAnnotation(AnnotationModel annotationModel)
         {
             annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
             annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
             AddNewAnnotation(annotationModel);
         }
 
-        public AnnotationModel AddAnnotation(string text, Guid id)
+        internal AnnotationModel AddAnnotation(string text, Guid id)
         {
             var selectedNodes = this.Nodes == null ? null:this.Nodes.Where(s => s.IsSelected);
             var selectedNotes = this.Notes == null ? null: this.Notes.Where(s => s.IsSelected);
@@ -1516,7 +1527,7 @@ namespace Dynamo.Graph.Workspaces
         {
         }
         
-        public IEnumerable<NodeModel> GetHangingNodes()
+        internal IEnumerable<NodeModel> GetHangingNodes()
         {
             return
                 Nodes.Where(

@@ -27,7 +27,7 @@ namespace Dynamo.Extensions
         }
     }
 
-    public static class EnumDescription
+    internal static class EnumDescription
     {
         public static string GetDescription(this Enum enumValue)
         {

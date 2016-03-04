@@ -326,7 +326,7 @@ namespace DSCore
         /// <summary>
         ///     Adds an item to the beginning of a list.
         /// </summary>
-        /// <param name="item">Item to be added.</param>
+        /// <param name="item">Item to be added. Item could be an object or a list.</param>
         /// <param name="list">List to add on to.</param>
         /// <returns name="list">New list.</returns>
         /// <search>insert,add,item,front,start,begin</search>
@@ -340,10 +340,10 @@ namespace DSCore
         /// <summary>
         ///     Adds an item to the end of a list.
         /// </summary>
-        /// <param name="item">Item to be added.</param>
+        /// <param name="item">Item to be added.Item could be an object or a list.</param>
         /// <param name="list">List to add on to.</param>
         /// <search>insert,add,item,end</search>
-        public static IList AddItemToEnd(object item, IList list)
+        public static IList AddItemToEnd([ArbitraryDimensionArrayImport] object item, IList list)
         {
             return new ArrayList(list) //Clone original list
             {
@@ -393,8 +393,12 @@ namespace DSCore
         /// <search>shift,offset</search>
         public static IList ShiftIndices(IList list, int amount)
         {
-            if (amount == 0)
-                return list;
+            var count = list.Count;
+            if (count > 0 && System.Math.Abs(amount) > count)
+            {
+                amount = amount % count;
+            }
+            if (amount == 0) return list;
 
             IEnumerable<object> genList = list.Cast<object>();
             return

@@ -70,7 +70,6 @@ namespace ProtoTestFx
 
             var options = new ProtoCore.Options();
             options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-            options.SuppressBuildOutput = false;
             options.WatchTestMode = true;
 
             // Cyclic dependency threshold is lowered from the default (2000)

@@ -122,6 +122,7 @@ namespace Watch3DNodeModels
 
         public double WatchWidth { get; private set; }
         public double WatchHeight { get; private set; }
+        public bool WasExecuted { get; internal set; }
 
         public delegate void VoidHandler();
 

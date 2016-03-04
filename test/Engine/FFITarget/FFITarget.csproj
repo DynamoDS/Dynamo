@@ -50,6 +50,7 @@
       <Link>AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="AbstractDisposeTracert.cs" />
+    <Compile Include="AtLevelTestClass.cs" />
     <Compile Include="ClassFunctionality.cs" />
     <Compile Include="ClassWithRefParams.cs" />
     <Compile Include="CodeCompletionClass.cs" />
@@ -61,6 +62,7 @@
     <Compile Include="GlobalClass.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ReplicationTest.cs" />
     <Compile Include="TestCSharpAttribute.cs" />
     <Compile Include="DisposeTracer.cs" />
     <Compile Include="DummyCollection.cs" />

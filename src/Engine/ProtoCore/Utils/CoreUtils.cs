@@ -11,10 +11,7 @@ namespace ProtoCore.Utils
         {
             if (DSASM.InterpreterMode.kNormal == core.Options.RunMode)
             {
-                if (core.Options.AssocOperatorAsMethod)
-                {
-                    InsertPredefinedMethod(core, root);
-                }
+                InsertPredefinedMethod(core, root);
                 InsertBuiltInMethods(core, root);
             }
         }
@@ -328,6 +325,11 @@ namespace ProtoCore.Utils
         {
             Validity.Assert(!string.IsNullOrEmpty(methodName));
             return methodName.Equals(DSDefinitions.Keyword.Dispose);
+        }
+
+        public static bool IsDotMethod(string methodName)
+        {
+            return methodName.Equals(Constants.kDotMethodName);
         }
 
         public static bool IsGetTypeMethod(string methodName)

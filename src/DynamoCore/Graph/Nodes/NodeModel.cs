@@ -103,6 +103,16 @@ namespace Dynamo.Graph.Nodes
 
         internal event DispatchedToUIThreadHandler DispatchedToUI;
 
+        /// <summary>
+        /// Event triggered when a port is connected.
+        /// </summary>
+        public event Action<PortModel, ConnectorModel> PortConnected;
+
+        /// <summary>
+        /// Event triggered when a port is disconnected.
+        /// </summary>
+        public event Action<PortModel> PortDisconnected;
+
         #endregion
 
         #region public properties
@@ -563,8 +573,18 @@ namespace Dynamo.Graph.Nodes
         {
             get
             {
-                return AstBuilder.StringConstants.VarPrefix
-                    + GUID.ToString().Replace("-", string.Empty);
+                return AstBuilder.StringConstants.VarPrefix + AstIdentifierGuid;
+            }
+        }
+
+        /// <summary>
+        ///     A unique ID that will be appended to all identifiers of this node.
+        /// </summary>
+        public string AstIdentifierGuid
+        {
+            get
+            {
+                return GUID.ToString().Replace("-", string.Empty).ToLower();
             }
         }
 
@@ -788,6 +808,10 @@ namespace Dynamo.Graph.Nodes
                         break;
                 }
             };
+
+            //Register port connection events.
+            PortConnected += OnPortConnected;
+            PortDisconnected += OnPortDisconnected;
 
             //Fetch the element name from the custom attribute.
             SetNickNameFromAttribute();
@@ -1518,11 +1542,7 @@ namespace Dynamo.Graph.Nodes
                                 OnNodeModified();
                             }
                         };
-
-                        //register listeners on the port
-                        p.PortConnected += PortConnected;
-                        p.PortDisconnected += PortDisconnected;
-
+                        
                         InPorts.Add(p);
                     }
 
@@ -1538,10 +1558,6 @@ namespace Dynamo.Graph.Nodes
                     {
                         p = new PortModel(portType, this, data);
                         OutPorts.Add(p);
-
-                        //register listeners on the port
-                        p.PortConnected += PortConnected;
-                        p.PortDisconnected += PortDisconnected;
                     }
 
                     return p;
@@ -1550,7 +1566,28 @@ namespace Dynamo.Graph.Nodes
             return null;
         }
 
-        private void PortConnected(PortModel port, ConnectorModel connector)
+        /// <summary>
+        /// This method to be called by the ports to raise the PortConnected event.
+        /// </summary>
+        /// <param name="port"></param>
+        /// <param name="connector"></param>
+        internal void RaisePortConnectedEvent(PortModel port, ConnectorModel connector)
+        {
+            var handler = PortConnected;
+            if (null != handler) handler(port, connector);
+        }
+
+        /// <summary>
+        /// This method to be called by the ports to raise the PortDisconnected event.
+        /// </summary>
+        /// <param name="port"></param>
+        internal void RaisePortDisconnectedEvent(PortModel port)
+        {
+            var handler = PortDisconnected;
+            if (null != handler) handler(port);
+        }
+
+        private void OnPortConnected(PortModel port, ConnectorModel connector)
         {
             ValidateConnections();
 
@@ -1566,7 +1603,7 @@ namespace Dynamo.Graph.Nodes
             OnNodeModified();
         }
 
-        private void PortDisconnected(PortModel port)
+        private void OnPortDisconnected(PortModel port)
         {
             ValidateConnections();
 
@@ -1652,6 +1689,21 @@ namespace Dynamo.Graph.Nodes
             {
                 case "NickName":
                     NickName = value;
+                    return true;
+
+                case "Position":
+                    // Here we expect a string that represents an array of double values which are separated by ";"
+                    // For example "12.5;14.56"
+                    var pos = value.Split(';');
+                    double xPos, yPos;
+                    if (pos.Length == 2 && double.TryParse(pos[0], out xPos)
+                        && double.TryParse(pos[1], out yPos))
+                    {
+                        X = xPos;
+                        Y = yPos;
+                        ReportPosition();
+                    }
+
                     return true;
 
                 case "UsingDefaultValue":
