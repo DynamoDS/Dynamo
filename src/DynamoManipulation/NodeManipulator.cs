@@ -152,21 +152,6 @@ namespace Dynamo.Manipulation
         }
 
         /// <summary>
-        /// This method is called when mouse is moved, to check if the
-        /// Gizmo in action can be moved successfully. If it returns true
-        /// then this manipulator will compute the movement and call
-        /// OnGizmoMoved.
-        /// </summary>
-        /// <param name="gizmo">Gizmo in action.</param>
-        /// <returns>True if Gizmo is ready to move.</returns>
-        //protected virtual bool CanMoveGizmo(IGizmo gizmo)
-        //{
-        //    //Wait until node has been evaluated and has got new origin
-        //    //as expected position.
-        //    return gizmo != null && newPosition.DistanceTo(Origin) < 0.01;
-        //}
-
-        /// <summary>
         /// Implements the MouseDown event handler for the manipulator
         /// </summary>
         /// <param name="sender"></param>
@@ -227,12 +212,12 @@ namespace Dynamo.Manipulation
 
             GizmoInAction = null;
 
-            //Delete all transient graphics for gizmos
-            var gizmos = GetGizmos(false);
-            foreach (var gizmo in gizmos)
-            {
-                gizmo.UpdateGizmoGraphics();
-            }
+            ////Delete all transient graphics for gizmos
+            //var gizmos = GetGizmos(false);
+            //foreach (var gizmo in gizmos)
+            //{
+            //    gizmo.UpdateGizmoGraphics();
+            //}
         }
 
         /// <summary>
@@ -253,17 +238,13 @@ namespace Dynamo.Manipulation
                 return;
             }
 
-            //if (!CanMoveGizmo(GizmoInAction)) return;
-
-            // GetOffset must use current position of manipulator origin (not node origin)
             var offset = GizmoInAction.GetOffset(clickRay.GetOriginPoint(), clickRay.GetDirectionVector());
             if (offset.Length < 0.01) return;
 
-            // Update sliders attached to node -> goes off and triggers graph update on scheduler thread
+            // Update sliders attached to node - this goes off and triggers graph update on scheduler thread
             OnGizmoMoved(GizmoInAction, offset);
 
-            // BuildRenderPackage
-            // AddGeometry synchronously
+            // redraw manipulator at new position synchronously
             var packages = BuildRenderPackage();
             BackgroundPreviewViewModel.AddGeometryForRenderPackages(packages);
         }

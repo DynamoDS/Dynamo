@@ -21,8 +21,6 @@ namespace Dynamo.Manipulation
         private Point origin;
         internal override Point Origin { get { return origin; } }
 
-        //private Point expectedPosition;
-
         private TranslationGizmo gizmo;
 
         private Dictionary<int, Tuple<Vector, NodeModel>> indexedAxisNodePairs;
@@ -179,8 +177,6 @@ namespace Dynamo.Manipulation
         protected override void OnGizmoMoved(IGizmo gizmoInAction, Vector offset)
         {
             origin = origin.Add(offset);
-
-            //expectedPosition = origin.Add(offset);
 
             foreach (var item in indexedAxisNodePairs)
             {
