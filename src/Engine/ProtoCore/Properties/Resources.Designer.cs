@@ -2115,6 +2115,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The number of items in range expression is over limit.
+        /// </summary>
+        public static string RangeExpressionOutOfMemory {
+            get {
+                return ResourceManager.GetString("RangeExpressionOutOfMemory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to rangeop expected.
         /// </summary>
         public static string rangeop_expected {

@@ -106,13 +106,21 @@ namespace ProtoCore.Lang
                         break;
                     }
                 case ProtoCore.Lang.BuiltInMethods.MethodID.kRangeExpression:
-                    ret = RangeExpressionUntils.RangeExpression(formalParameters[0],
-                                                                formalParameters[1],
-                                                                formalParameters[2],
-                                                                formalParameters[3],
-                                                                formalParameters[4],
-                                                                formalParameters[5],
-                                                                runtimeCore);
+                    try
+                    {
+                        ret = RangeExpressionUntils.RangeExpression(formalParameters[0],
+                                                                    formalParameters[1],
+                                                                    formalParameters[2],
+                                                                    formalParameters[3],
+                                                                    formalParameters[4],
+                                                                    formalParameters[5],
+                                                                    runtimeCore);
+                    }
+                    catch (OutOfMemoryException)
+                    {
+                        runtimeCore.RuntimeStatus.LogWarning(WarningID.kRangeExpressionOutOfMemory, Resources.RangeExpressionOutOfMemory);
+                        ret = StackValue.Null;
+                    }
                     break;
                 case ProtoCore.Lang.BuiltInMethods.MethodID.kAllFalse:
                     {
