@@ -121,6 +121,11 @@ namespace ProtoCore.Lang
                         runtimeCore.RuntimeStatus.LogWarning(WarningID.kRangeExpressionOutOfMemory, Resources.RangeExpressionOutOfMemory);
                         ret = StackValue.Null;
                     }
+                    catch (OverflowException)
+                    {
+                        runtimeCore.RuntimeStatus.LogWarning(WarningID.kRangeExpressionOutOfMemory, Resources.RangeExpressionOutOfMemory);
+                        ret = StackValue.Null;
+                    }
                     break;
                 case ProtoCore.Lang.BuiltInMethods.MethodID.kAllFalse:
                     {
