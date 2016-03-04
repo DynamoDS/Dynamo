@@ -5095,8 +5095,6 @@ namespace ProtoAssociative
                                 currentClassScope = sn.classScope;
                                 ix = 0;
                             }
-                            // copy attribute information from base class
-                            sn.Attributes = core.ClassTable.ClassNodes[currentClassScope].Symbols.symbolList[ix++].Attributes;
                         }
                         else
                         {

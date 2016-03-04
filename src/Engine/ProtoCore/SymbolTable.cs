@@ -24,7 +24,6 @@ namespace ProtoCore.DSASM
         public int              runtimeTableIndex = Constants.kInvalidIndex;
         public CompilerDefinitions.AccessModifier  access;
         public bool isStatic;
-        public List<AttributeEntry> Attributes { get; set; }
         public int codeBlockId = Constants.kInvalidIndex;
         public string ExternLib = "";
 
