@@ -19,8 +19,6 @@ namespace ProtoCore.DSASM
         public bool             isArgument;
         public bool             isTemp;
         public bool             isSSATemp;
-        public int              size;
-        public int              datasize;
         public MemoryRegion     memregion;
         public int              symbolTableIndex = Constants.kInvalidIndex;
         public int              runtimeTableIndex = Constants.kInvalidIndex;
@@ -45,20 +43,16 @@ namespace ProtoCore.DSASM
         public SymbolNode(
             string name,
             int index, 
-            int heapIndex, 
             int functionIndex,
-            ProtoCore.Type datatype,
-            ProtoCore.Type enforcedType,
-            int size,
-            int datasize, 
+            Type datatype,
+            Type enforcedType,
             bool isArgument, 
             int runtimeIndex,
             MemoryRegion memregion = MemoryRegion.kInvalidRegion, 
-            bool isArray = false, 
             int scope = -1,
-            ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
+            CompilerDefinitions.AccessModifier access = CompilerDefinitions.AccessModifier.kPublic,
             bool isStatic = false,
-            int codeBlockId = ProtoCore.DSASM.Constants.kInvalidIndex)
+            int codeBlockId = Constants.kInvalidIndex)
         {
             this.name           = name;
             isTemp         = name.StartsWith("%");
@@ -68,8 +62,6 @@ namespace ProtoCore.DSASM
             this.absoluteFunctionIndex = functionIndex;
             this.datatype       = datatype;
             this.staticType   = enforcedType;
-            this.size           = size;
-            this.datasize       = datasize;
             this.isArgument     = isArgument;
             this.memregion      = memregion;
             this.classScope     = scope;
@@ -183,7 +175,7 @@ namespace ProtoCore.DSASM
             symbolList[symbolTableIndex] = node;
             if (Constants.kGlobalScope == node.functionIndex)
             {
-                size += node.size;
+                size += 1;
             }
 
             if (!lookAsideSymbolCache.ContainsKey(node.name))
