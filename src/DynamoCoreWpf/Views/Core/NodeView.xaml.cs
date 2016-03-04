@@ -59,7 +59,10 @@ namespace Dynamo.Controls
             {
                 viewModel = value;
                 if (viewModel.PreviewPinned)
+                {
                     CreatePreview(viewModel);
+                    //previewControl.EnqueueBindToDataSource(ViewModel.NodeModel.CachedValue);
+                }                
             }
         }
 

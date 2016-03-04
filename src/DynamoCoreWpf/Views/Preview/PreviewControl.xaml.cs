@@ -106,6 +106,7 @@ namespace Dynamo.UI.Controls
             if (this.nodeViewModel.PreviewPinned)
             {
                 StaysOpen = true;
+                BindToDataSource(this.nodeViewModel.NodeModel.CachedValue);
                 TransitionToState(State.Condensed);
                 TransitionToState(State.Expanded);
             }
