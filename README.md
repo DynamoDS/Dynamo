@@ -63,7 +63,7 @@ Dynamo Studio
 
 
 Dynamo for Revit
-- Batch placement of adaptive components : Huge improvements to the speed and reliability of placing large numbers of adaptive components.
+- Batch placement of adaptive components : Huge improvements to the speed and reliability of placing large numbers of adaptive components. Note that the nodes now expect lists of lists as inputs, so you may have to update your 9.0 graphs.
 
 
 ### 0.9.0 ###
