@@ -254,6 +254,9 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        /// <summary>
+        ///     Indicates if node preview is pinned
+        /// </summary>
         public bool PreviewPinned { get; private set; }
 
         /// <summary>

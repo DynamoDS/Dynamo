@@ -61,7 +61,6 @@ namespace Dynamo.Controls
                 if (viewModel.PreviewPinned)
                 {
                     CreatePreview(viewModel);
-                    //previewControl.EnqueueBindToDataSource(ViewModel.NodeModel.CachedValue);
                 }                
             }
         }
