@@ -43,7 +43,6 @@ namespace Dynamo.Manipulation
         private readonly DynamoManipulationExtension manipulatorContext;
         private const double NewNodeOffsetX = 350;
         private const double NewNodeOffsetY = 50;
-        private Point newPosition;
 
         protected const double gizmoScale = 1.2;
 
@@ -76,7 +75,7 @@ namespace Dynamo.Manipulation
         internal NodeModel Node { get; private set; }
 
         /// <summary>
-        /// Base location of geometry being manipulated by manipulator
+        /// Base position of geometry being manipulated by manipulator
         /// </summary>
         internal abstract Point Origin { get; }
 
@@ -128,12 +127,11 @@ namespace Dynamo.Manipulation
 
         /// <summary>
         /// This method is called when the Gizmo in action is moved during mouse
-        /// move event. Derived class can use this notification to update the 
-        /// input nodes.
+        /// move event. Derived class must use this notification to update the 
+        /// input nodes AND update the manipulator origin based on the mouse move.
         /// </summary>
         /// <param name="gizmoInAction">The Gizmo in action.</param>
         /// <param name="offset">Offset amount by which Gizmo has moved.</param>
-        /// <returns>New expected position of the Gizmo</returns>
         protected abstract void OnGizmoMoved(IGizmo gizmoInAction, Vector offset);
 
         #endregion
@@ -146,9 +144,7 @@ namespace Dynamo.Manipulation
         /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
-            if (Origin != null) Origin.Dispose();
-
-            if (newPosition != null) newPosition.Dispose();
+            Origin?.Dispose();
         }
 
         /// <summary>
@@ -184,7 +180,6 @@ namespace Dynamo.Manipulation
                         {
                             WorkspaceModel.RecordModelsForModification(nodes);
                         }
-                        newPosition = Origin;
 
                         // Decouple manipulator update from graph (node) execution
                         // to allow it move freely with mouse move
@@ -241,7 +236,8 @@ namespace Dynamo.Manipulation
             var offset = GizmoInAction.GetOffset(clickRay.GetOriginPoint(), clickRay.GetDirectionVector());
             if (offset.Length < 0.01) return;
 
-            // Update sliders attached to node - this goes off and triggers graph update on scheduler thread
+            // Update input nodes attached to manipulator node 
+            // Doing this triggers a graph update on scheduler thread
             OnGizmoMoved(GizmoInAction, offset);
 
             // redraw manipulator at new position synchronously

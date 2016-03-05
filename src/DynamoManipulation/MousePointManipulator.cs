@@ -173,10 +173,11 @@ namespace Dynamo.Manipulation
         /// </summary>
         /// <param name="gizmoInAction">Gizmo that moved.</param>
         /// <param name="offset">Offset by which the gizmo has moved.</param>
-        /// <returns>New expected position of the Gizmo</returns>
         protected override void OnGizmoMoved(IGizmo gizmoInAction, Vector offset)
         {
-            origin = origin.Add(offset);
+            var offsetPos = origin.Add(offset);
+            origin.Dispose();
+            origin = offsetPos;
 
             foreach (var item in indexedAxisNodePairs)
             {
