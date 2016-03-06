@@ -205,19 +205,13 @@ namespace ProtoCore
             SetStackIndex(symbol);
         }
 
-        protected void SetHeapData(ProtoCore.DSASM.SymbolNode symbol)
-        {
-            symbol.size = ProtoCore.DSASM.Constants.kPointerSize;
-            symbol.heapIndex = core.GlobHeapOffset++;
-        }
-
         protected void SetStackIndex(ProtoCore.DSASM.SymbolNode symbol)
         {
             if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
             {
                 //Set the index of the symbol relative to the watching stack
                 symbol.index = core.watchBaseOffset;
-                core.watchBaseOffset += symbol.size;
+                core.watchBaseOffset += 1; 
                 return;
             }
 
@@ -230,7 +224,7 @@ namespace ProtoCore
                 {
                     // Local variable in a member function
                     symbol.index = -1 - ProtoCore.DSASM.StackFrame.kStackFrameSize - langblockOffset - core.BaseOffset;
-                    core.BaseOffset += symbol.size;
+                    core.BaseOffset += 1;
                 }
                 else
                 {
@@ -239,12 +233,12 @@ namespace ProtoCore
                     if (symbol.isStatic)
                     {
                         symbol.index = core.GlobOffset - langblockOffset;
-                        core.GlobOffset += symbol.size;
+                        core.GlobOffset += 1;
                     }
                     else
                     {
                         symbol.index = classOffset - langblockOffset;
-                        classOffset += symbol.size;
+                        classOffset += 1;
                     }
                 }
             }
@@ -252,13 +246,13 @@ namespace ProtoCore
             {
                 // Local variable in a global function
                 symbol.index = -1 - ProtoCore.DSASM.StackFrame.kStackFrameSize - langblockOffset - core.BaseOffset;
-                core.BaseOffset += symbol.size;
+                core.BaseOffset += 1;
             }
             else
             {
                 // Global variable
                 symbol.index = core.GlobOffset + langblockOffset;
-                core.GlobOffset += symbol.size;
+                core.GlobOffset += 1;
             }
         }
 
