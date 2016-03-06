@@ -745,26 +745,6 @@ namespace DynamoCoreWpfTests
             System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
 
-        [Test]
-        [Category("UnitTests")]
-        public void WorkspaceContextMenu_TestIfInCanvasSearchHidesOnOpeningContextMenu()
-        {
-            var currentWs = View.ChildOfType<WorkspaceView>();
-
-            // show in-canvas search
-            ViewModel.CurrentSpaceViewModel.ShowInCanvasSearchCommand.Execute(ShowHideFlags.Show);
-            Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
-
-            // open context menu
-            RightClick(currentWs.zoomBorder);
-
-            Assert.IsTrue(currentWs.ContextMenuPopup.IsOpen);
-            Assert.IsFalse(currentWs.InCanvasSearchBar.IsOpen);
-
-            // for not throwing 'System.Runtime.InteropServices.InvalidComObjectException' in PresentationCore.dll
-            System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
-        }
-
         private void RightClick(IInputElement element)
         {
             element.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Right)
