@@ -112,9 +112,10 @@ namespace Dynamo.Manipulation
         protected abstract void AssignInputNodes();
 
         /// <summary>
-        /// Implement to update the position(s) of all manipulator inputs when the node is updated
+        /// Implement to update the position(s) of the manipulator when the node is updated
         /// </summary>
-        protected abstract void UpdatePosition();
+        /// <returns>return true if position is updated successfully else return false</returns>
+        protected abstract bool UpdatePosition();
 
         /// <summary>
         /// This method is called when a gizmo provided by derived class is hit.
@@ -155,7 +156,7 @@ namespace Dynamo.Manipulation
         protected virtual void MouseDown(object sender, MouseButtonEventArgs mouseButtonEventArgs)
         {
             
-            UpdatePosition();
+            Active = UpdatePosition();
 
             GizmoInAction = null; //Reset Drag.
 
@@ -440,7 +441,7 @@ namespace Dynamo.Manipulation
             
             AssignInputNodes();
             
-            UpdatePosition();
+            Active = UpdatePosition();
 
             if (!IsEnabled())
             {

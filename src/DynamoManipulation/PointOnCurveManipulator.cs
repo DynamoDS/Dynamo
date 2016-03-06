@@ -89,18 +89,17 @@ namespace Dynamo.Manipulation
             }
         }
 
-        protected override void UpdatePosition()
+        protected override bool UpdatePosition()
         {
-            Active = false;
             if (curve == null) //Curve is not initialized, can't be manipulated now.
-                return;
+                return false;
 
             if (pointOnCurve == null)
                 pointOnCurve = curve.StartPoint;
 
             //Node output could be a collection, consider the first item as origin.
             Point pt = GetFirstValueFromNode(Node) as Point;
-            if (pt == null) return; //The node output is not Point, could be a function object.
+            if (pt == null) return false; //The node output is not Point, could be a function object.
 
             var param = curve.ParameterAtPoint(pt);
             tangent = curve.TangentAtParameter(param);
@@ -109,7 +108,7 @@ namespace Dynamo.Manipulation
             //pt may be GC'ed by VM.
             pointOnCurve = Point.ByCoordinates(pt.X, pt.Y, pt.Z);
 
-            Active = tangent != null;
+            return tangent != null;
         }
 
         protected override IEnumerable<NodeModel> OnGizmoClick(IGizmo gizmoInAction, object hitObject)
