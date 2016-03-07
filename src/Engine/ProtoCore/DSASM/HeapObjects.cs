@@ -431,7 +431,9 @@ namespace ProtoCore.DSASM
             }
             else if (index.IsArrayKey)
             {
-                int fullIndex = (int)index.opdata;
+                int fullIndex = Constants.kInvalidIndex;
+                StackValue array;
+                index.TryGetArrayKey(out array, out fullIndex);
 
                 if (Count > fullIndex)
                 {
@@ -685,7 +687,8 @@ namespace ProtoCore.DSASM
             }
             else if (index.IsArrayKey)
             {
-                pos = (int)index.opdata;
+                StackValue array;
+                index.TryGetArrayKey(out array, out pos);
                 return GetValueAtIndex(pos, runtimeCore);
             }
             else

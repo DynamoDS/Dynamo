@@ -1006,25 +1006,28 @@ namespace ProtoCore.DSASM
         /// type of StackValue should be AddressType.ArrayKey. 
         /// </summary>
         /// <param name="array"></param>
-        /// <param name="index"></param>
+        /// <param name="key"></param>
         /// <returns></returns>
-        public bool TryGetArrayKey(out StackValue array, out int index)
+        public bool TryGetArrayKey(out StackValue array, out int key)
         {
             array = StackValue.Null;
-            index = Constants.kInvalidIndex;
+            key = Constants.kInvalidIndex;
 
-            if (!this.IsArrayKey || opdata == Constants.kInvalidIndex)
-            {
+            if (!IsArrayKey)
                 return false;
-            }
-
-            if (this.metaData.type == (int)PrimitiveType.kTypeString)
-                array = StackValue.BuildString((long)RawDoubleValue);
-            else
-                array = StackValue.BuildArrayPointer((long)RawDoubleValue);
-
-            index = (int)this.opdata;
-
+            
+            if (opdata == Constants.kInvalidIndex)
+               return false;
+            
+            // Array key information is encoded in 64bits opdata. 
+            // High 32 bits: array pointer
+            // Low 32 bits : array key
+            //
+            // TODO: find out a cleaner way to represent array key instead of
+            // using this kind of hacking.
+            var rawArrayPointer = ((ulong)opdata >> 32);
+            array = BuildArrayPointer((long)rawArrayPointer);
+            key = (int)((ulong)opdata << 32 >> 32);
             return true;
         }
 
