@@ -554,7 +554,7 @@ namespace ProtoCore.DSASM
             }
         }
 
-        public CallingConvention.CallType CallingConvention
+        public CallingConvention.CallType CallType
         {
             get
             {
@@ -562,6 +562,17 @@ namespace ProtoCore.DSASM
                     throw new InvalidTypeException("The Type of StackValue is not CallingConvention");
 
                 return (CallingConvention.CallType)RawIntValue;
+            }
+        }
+
+        public CallingConvention.BounceType BounceType 
+        {
+            get
+            {
+                if (!IsCallingConvention)
+                    throw new InvalidTypeException("The Type of StackValue is not CallingConvention");
+
+                return (CallingConvention.BounceType)RawIntValue;
             }
         }
 
