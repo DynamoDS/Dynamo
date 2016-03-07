@@ -174,61 +174,61 @@ namespace ProtoCore.DSASM
 
         public int ClassScope
         {
-            get { return (int)GetAt(AbsoluteIndex.kClass).opdata; }
+            get { return (int)GetAt(AbsoluteIndex.kClass).ClassIndex; }
             set { SetAt(AbsoluteIndex.kClass, StackValue.BuildClassIndex(value)); }
         }
 
         public int FunctionScope
         {
-            get { return (int)GetAt(AbsoluteIndex.kFunction).opdata; }
+            get { return (int)GetAt(AbsoluteIndex.kFunction).FunctionIndex; }
             set { SetAt(AbsoluteIndex.kFunction, StackValue.BuildFunctionIndex(value)); }
         }
 
         public int ReturnPC
         {
-            get { return (int)GetAt(AbsoluteIndex.kReturnAddress).opdata; }
+            get { return (int)GetAt(AbsoluteIndex.kReturnAddress).IntegerValue; }
             set { SetAt(AbsoluteIndex.kReturnAddress, StackValue.BuildInt(value));}
         }
 
         public int FunctionBlock
         {
-            get { return (int)GetAt(AbsoluteIndex.kFunctionBlock).opdata; }
+            get { return (int)GetAt(AbsoluteIndex.kFunctionBlock).BlockIndex; }
             set { SetAt(AbsoluteIndex.kFunctionBlock, StackValue.BuildBlockIndex(value)); }
         }
 
         public int FunctionCallerBlock
         {
-            get { return (int)GetAt(AbsoluteIndex.kFunctionCallerBlock).opdata; }
+            get { return (int)GetAt(AbsoluteIndex.kFunctionCallerBlock).BlockIndex; }
             set { SetAt(AbsoluteIndex.kFunctionCallerBlock, StackValue.BuildBlockIndex(value)); }
         }
 
         public StackFrameType CallerStackFrameType
         {
-            get { return (StackFrameType)GetAt(AbsoluteIndex.kCallerStackFrameType).opdata; }
-            set { SetAt(AbsoluteIndex.kCallerStackFrameType, StackValue.BuildInt((int)value));}
+            get { return GetAt(AbsoluteIndex.kCallerStackFrameType).FrameType; }
+            set { SetAt(AbsoluteIndex.kCallerStackFrameType, StackValue.BuildFrameType((int)value));}
         }
 
         public StackFrameType StackFrameType
         {
-            get { return (StackFrameType)GetAt(AbsoluteIndex.kStackFrameType).opdata; }
-            set { SetAt(AbsoluteIndex.kStackFrameType, StackValue.BuildInt((int)value)); }
+            get { return GetAt(AbsoluteIndex.kStackFrameType).FrameType; }
+            set { SetAt(AbsoluteIndex.kStackFrameType, StackValue.BuildFrameType((int)value)); }
         }
 
         public int Depth
         {
-            get { return (int)GetAt(AbsoluteIndex.kStackFrameDepth).opdata; }
+            get { return (int)GetAt(AbsoluteIndex.kStackFrameDepth).IntegerValue; }
             set { SetAt(AbsoluteIndex.kStackFrameDepth, StackValue.BuildInt(value)); }
         }
 
         public int FramePointer
         {
-            get { return (int)GetAt(AbsoluteIndex.kFramePointer).opdata; }
+            get { return (int)GetAt(AbsoluteIndex.kFramePointer).IntegerValue; }
             set { SetAt(AbsoluteIndex.kFramePointer, StackValue.BuildInt(value));}
         }
 
         public int ExecutionStateSize
         {
-            get { return (int)GetAt(AbsoluteIndex.kExecutionStates).opdata; }
+            get { return (int)GetAt(AbsoluteIndex.kExecutionStates).IntegerValue; }
             set { SetAt(AbsoluteIndex.kExecutionStates, StackValue.BuildInt(value)); }
         }
 
@@ -338,7 +338,7 @@ namespace ProtoCore.DSASM
 
                 case AddressType.Int:
                 case AddressType.Char:
-                    return sv1.opdata == sv2.opdata;
+                    return sv1.CharValue == sv2.CharValue;
                 case AddressType.Double:
                     var value1 = sv1.RawDoubleValue;
                     var value2 = sv2.RawDoubleValue;
@@ -347,9 +347,9 @@ namespace ProtoCore.DSASM
                         return true;
                     return MathUtils.Equals(value1, value2);
                 case AddressType.Boolean:
-                    return (sv1.opdata > 0 && sv2.opdata > 0) || (sv1.opdata == 0 && sv2.opdata == 0);
+                    return sv1.BooleanValue == sv2.BooleanValue;
                 case AddressType.ArrayPointer:
-                    if (Object.ReferenceEquals(rtCore1, rtCore2) && sv1.opdata == sv2.opdata) //if both cores are same and the stack values point to the same heap element, then the stack values are equal
+                    if (Object.ReferenceEquals(rtCore1, rtCore2) && sv1.ArrayPointer == sv2.ArrayPointer) //if both cores are same and the stack values point to the same heap element, then the stack values are equal
                         return true;
 
                     DSArray array1 = rtCore1.Heap.ToHeapObject<DSArray>(sv1);
@@ -357,7 +357,7 @@ namespace ProtoCore.DSASM
                     return DSArray.CompareFromDifferentCore(array1, array2, rtCore1, rtCore2, context);
 
                 case AddressType.String:
-                    if (Object.ReferenceEquals(rtCore1, rtCore2) && sv1.opdata == sv2.opdata) //if both cores are same and the stack values point to the same heap element, then the stack values are equal
+                    if (Object.ReferenceEquals(rtCore1, rtCore2) && sv1.StringPointer == sv2.StringPointer) //if both cores are same and the stack values point to the same heap element, then the stack values are equal
                         return true;
                     DSString s1 = rtCore1.Heap.ToHeapObject<DSString>(sv1);
                     DSString s2 = rtCore1.Heap.ToHeapObject<DSString>(sv2);
@@ -365,7 +365,7 @@ namespace ProtoCore.DSASM
                 case AddressType.Pointer:
                     if (sv1.metaData.type != sv2.metaData.type) //if the type of class is different, then stack values can never be equal
                         return false;
-                    if (Object.ReferenceEquals(rtCore1, rtCore2) && sv1.opdata == sv2.opdata) //if both cores are same and the stack values point to the same heap element, then the stack values are equal
+                    if (Object.ReferenceEquals(rtCore1, rtCore2) && sv1.Pointer == sv2.Pointer) //if both cores are same and the stack values point to the same heap element, then the stack values are equal
                         return true;
                     ClassNode classnode = rtCore1.DSExecutable.classTable.ClassNodes[sv1.metaData.type];
                     if (classnode.IsImportedClass)

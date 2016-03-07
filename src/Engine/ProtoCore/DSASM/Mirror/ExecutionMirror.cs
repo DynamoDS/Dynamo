@@ -147,15 +147,15 @@ namespace ProtoCore.DSASM.Mirror
             switch (val.optype)
             {
                 case AddressType.Int:
-                    return val.opdata.ToString();
+                    return val.IntegerValue.ToString();
                 case AddressType.Double:
-                    return val.RawDoubleValue.ToString("F6");
+                    return val.DoubleValue.ToString("F6");
                 case AddressType.Null:
                     return "null";
                 case AddressType.Pointer:
                     return GetClassTrace(val, heap, langblock, forPrint);
                 case AddressType.ArrayPointer:
-                    HashSet<int> pointers = new HashSet<int>{(int)val.opdata};
+                    HashSet<int> pointers = new HashSet<int>{val.ArrayPointer};
                     string arrTrace = GetArrayTrace(val, heap, langblock, pointers, forPrint);
                     if (forPrint)
                         return "{" + arrTrace + "}";
@@ -173,17 +173,17 @@ namespace ProtoCore.DSASM.Mirror
 
                         return "function: " + className + procNode.Name; 
                     }
-                    return "function: " + val.opdata.ToString();
+                    return "function: " + val.FunctionPointer.ToString();
 
                 case AddressType.Boolean:
-                    return (val.opdata == 0) ? "false" : "true";
+                    return val.BooleanValue ? "false" : "true";
                 case AddressType.String:
                     if (forPrint)
                         return heap.ToHeapObject<DSString>(val).Value;
                     else
                         return "\"" + heap.ToHeapObject<DSString>(val).Value + "\"";                    
                 case AddressType.Char:
-                    Char character = Convert.ToChar(val.opdata); 
+                    Char character = Convert.ToChar(val.CharValue); 
                     if (forPrint)
                         return character.ToString();
                     else
@@ -1148,7 +1148,7 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 case AddressType.Int:
                     {
-                        Int64 data = val.opdata;
+                        Int64 data = val.IntegerValue;
                         Obj o = new Obj(val) 
                         { 
                             Payload = data, 
@@ -1158,10 +1158,9 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 case AddressType.Boolean:
                     {
-                        Int64 data = val.opdata;
-                        Obj o = new Obj(val) 
-                        { 
-                            Payload = (data != 0), 
+                        Obj o = new Obj(val)
+                        {
+                            Payload = val.BooleanValue,
                             Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0) 
                         };
                         return o;
@@ -1178,7 +1177,7 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 case AddressType.Char:
                     {
-                        Int64 data = val.opdata;
+                        Int64 data = val.CharValue;
                         Obj o = new Obj(val) 
                         {
                             Payload = data, 
@@ -1198,7 +1197,7 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 case AddressType.Pointer:
                     {
-                        Int64 data = val.opdata;
+                        Int64 data = val.Pointer;
                         Obj o = new Obj(val) 
                         { 
                             Payload = data,
@@ -1208,7 +1207,7 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 case AddressType.FunctionPointer:
                     {
-                        Int64 data = val.opdata;
+                        Int64 data = val.FunctionPointer;
                         Obj o = new Obj(val) 
                         { 
                             Payload = data, 
@@ -1258,7 +1257,7 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 case AddressType.Int:
                     {
-                        Int64 data = val.opdata;
+                        Int64 data = val.IntegerValue;
                         Obj o = new Obj(val) 
                         { 
                             Payload = data, 
@@ -1268,9 +1267,9 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 case AddressType.Boolean:
                     {
-                        Obj o = new Obj(val) 
-                        { 
-                            Payload = val.opdata == 0 ? false : true, 
+                        Obj o = new Obj(val)
+                        {
+                            Payload = val.BooleanValue,
                             Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0) 
                         };
                         return o;
@@ -1296,7 +1295,7 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 case AddressType.Char:
                     {
-                        Int64 data = val.opdata;
+                        Int64 data = val.CharValue;
                         Obj o = new Obj(val) 
                         { 
                             Payload = data, 
@@ -1306,7 +1305,7 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 case AddressType.Pointer:
                     {
-                        Int64 data = val.opdata;
+                        Int64 data = val.Pointer;
                         Obj o = new Obj(val) 
                         { 
                             Payload = data,
@@ -1316,17 +1315,16 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 case AddressType.DefaultArg:
                     {
-                        Int64 data = val.opdata;
                         Obj o = new Obj(val) 
                         { 
-                            Payload = data, 
+                            Payload = null, 
                             Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0) 
                         };
                         return o;
                     }
                 case AddressType.FunctionPointer:
                     {
-                        Int64 data = val.opdata;
+                        Int64 data = val.FunctionPointer;
                         Obj o = new Obj(val) 
                         { 
                             Payload = data, 
@@ -1357,14 +1355,14 @@ namespace ProtoCore.DSASM.Mirror
                 case AddressType.Pointer:
                     obj = new Obj(val) 
                     { 
-                        Payload = val.opdata, 
+                        Payload = val.Pointer, 
                         Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypePointer, 0) 
                     };
                     break;
                 case AddressType.ArrayPointer:
                     obj = new Obj(val) 
                     { 
-                        Payload = val.opdata, 
+                        Payload = val.ArrayPointer, 
                         Type =
                         TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeArray, Constants.kArbitraryRank)
                     };
@@ -1372,21 +1370,21 @@ namespace ProtoCore.DSASM.Mirror
                 case AddressType.Int:
                     obj = new Obj(val) 
                     { 
-                        Payload = val.opdata, 
+                        Payload = val.IntegerValue, 
                         Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0) 
                     };
                     break;
                 case AddressType.Boolean:
-                    obj = new Obj(val) 
-                    { 
-                        Payload = val.opdata == 0 ? false : true, 
+                    obj = new Obj(val)
+                    {
+                        Payload = val.BooleanValue,
                         Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0) 
                     };
                     break;
                 case AddressType.Double:
                     obj = new Obj(val) 
                     { 
-                        Payload = val.RawDoubleValue, 
+                        Payload = val.DoubleValue, 
                         Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0) 
                     };
                     break;
@@ -1400,21 +1398,21 @@ namespace ProtoCore.DSASM.Mirror
                 case AddressType.FunctionPointer:
                     obj = new Obj(val) 
                     { 
-                        Payload = val.opdata, 
+                        Payload = val.FunctionPointer, 
                         Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeFunctionPointer, 0) 
                     };
                     break;
                 case AddressType.String:
                     obj = new Obj(val) 
                     { 
-                        Payload = val.opdata, 
+                        Payload = val.StringPointer, 
                         Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, Constants.kPrimitiveSize) 
                     };
                     break;
                 case AddressType.Char:
                     obj = new Obj(val) 
                     { 
-                        Payload = val.opdata, 
+                        Payload = val.CharValue, 
                         Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeChar, 0) 
                     };
                     break;

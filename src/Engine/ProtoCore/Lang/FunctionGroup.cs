@@ -120,8 +120,8 @@ namespace ProtoCore
             
             //Now test the reduced Params over all of the available end points
             StackValue thisptr = stackFrame.ThisPtr;
-            bool isInstance = thisptr.IsPointer && thisptr.opdata != Constants.kInvalidIndex;
-            bool isGlobal = thisptr.IsPointer && thisptr.opdata == Constants.kInvalidIndex;
+            bool isInstance = thisptr.IsPointer && thisptr.Pointer!= Constants.kInvalidIndex;
+            bool isGlobal = thisptr.IsPointer && thisptr.Pointer == Constants.kInvalidIndex;
                                   
             foreach (FunctionEndPoint fep in FunctionEndPoints)
             {

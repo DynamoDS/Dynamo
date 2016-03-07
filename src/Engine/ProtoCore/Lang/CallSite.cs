@@ -1206,7 +1206,7 @@ namespace ProtoCore
             foreach (FunctionEndPoint fep in candidatesWithDistances.Keys)
             {
                 if ((stackFrame.ThisPtr.IsPointer &&
-                     stackFrame.ThisPtr.opdata == -1 && fep.procedureNode != null
+                     stackFrame.ThisPtr.Pointer == Constants.kInvalidIndex && fep.procedureNode != null
                      && !fep.procedureNode.IsConstructor) && !fep.procedureNode.IsStatic
                     && (fep.procedureNode.ClassID != -1))
                 {

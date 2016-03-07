@@ -123,13 +123,13 @@ namespace ProtoFFI
 
         public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, Type type)
         {
-            if (dsObject.opdata > MaxValue || dsObject.opdata < MinValue)
+            if (dsObject.IntegerValue > MaxValue || dsObject.IntegerValue< MinValue)
             {
-                string message = String.Format(Resources.kFFIInvalidCast, dsObject.opdata, type.Name, MinValue, MaxValue);
+                string message = String.Format(Resources.kFFIInvalidCast, dsObject.IntegerValue, type.Name, MinValue, MaxValue);
                 dsi.LogWarning(ProtoCore.Runtime.WarningID.kTypeMismatch, message);
             }
 
-            return CastToObject(dsObject.opdata);
+            return CastToObject(dsObject.IntegerValue);
         }
     }
 
@@ -183,7 +183,7 @@ namespace ProtoFFI
 
         public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, Type type)
         {
-            return dsObject.opdata == 0 ? false : true;
+            return dsObject.BooleanValue;
         }
     }
 
@@ -202,7 +202,7 @@ namespace ProtoFFI
 
         public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, Type type)
         {
-            return Convert.ToChar(dsObject.opdata);
+            return Convert.ToChar(dsObject.CharValue);
         }
     }
 
@@ -1329,7 +1329,7 @@ namespace ProtoFFI
     {
         public bool Equals(StackValue x, StackValue y)
         {
-            return x.opdata == y.opdata && x.metaData.type == y.metaData.type;
+            return x.Pointer == y.Pointer && x.metaData.type == y.metaData.type;
         }
 
         public int GetHashCode(StackValue obj)
@@ -1337,7 +1337,7 @@ namespace ProtoFFI
             unchecked
             {
                 var hash = 0;
-                hash = (hash * 397) ^ obj.opdata.GetHashCode();
+                hash = (hash * 397) ^ obj.Pointer.GetHashCode();
                 hash = (hash * 397) ^ obj.metaData.type.GetHashCode();
                 return hash;
             }

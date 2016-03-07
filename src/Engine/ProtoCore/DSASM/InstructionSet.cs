@@ -411,6 +411,17 @@ namespace ProtoCore.DSASM
             }
         }
 
+        public int SymbolIndex
+        {
+            get
+            {
+                if (!IsVariableIndex || !IsStaticVariableIndex || !IsMemberVariableIndex)
+                    throw new InvalidTypeException("It is not a symbol type");
+
+                return (int)RawIntValue;
+            }
+        }
+
         public int ClassIndex
         {
             get
@@ -428,6 +439,17 @@ namespace ProtoCore.DSASM
             {
                 if (!IsInteger)
                     throw new InvalidTypeException("The Type of StackValue is not Integer");
+
+                return (int)RawIntValue;
+            }
+        }
+
+        public long CharValue
+        {
+            get
+            {
+                if (!IsChar)
+                    throw new InvalidTypeException("The Type of StackValue is not Char");
 
                 return (int)RawIntValue;
             }

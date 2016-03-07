@@ -23,7 +23,7 @@ namespace ProtoCore.Lang
             interpreter = dsi;
             RuntimeCore runtimeCore = dsi.runtime.RuntimeCore;
 
-            int fptr = (int)pointer.opdata;
+            int fptr = pointer.FunctionPointer;
             FunctionPointerNode fptrNode;
             int classScope = Constants.kGlobalScope;
 
@@ -154,7 +154,7 @@ namespace ProtoCore.Lang
         public static string GetMethodName(StackValue pointer, Interpreter dsi)
         {
             Validity.Assert(pointer.IsFunctionPointer);
-            return dsi.runtime.exe.procedureTable[0].Procedures[(int)pointer.opdata].Name;
+            return dsi.runtime.exe.procedureTable[0].Procedures[pointer.FunctionPointer].Name;
         }
     }
 }

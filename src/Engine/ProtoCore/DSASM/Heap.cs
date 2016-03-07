@@ -191,7 +191,7 @@ namespace ProtoCore.DSASM
                 unchecked
                 {
                     int hash = 0;
-                    hash = (hash * 397) ^ value.opdata.GetHashCode();
+                    hash = (hash * 397) ^ value.RawIntValue.GetHashCode();
                     hash = (hash * 397) ^ value.metaData.type.GetHashCode();
                     return hash;
                 }
@@ -429,7 +429,7 @@ namespace ProtoCore.DSASM
         /// <returns></returns>
         public string GetString(DSString dsString)
         {
-            int index = (int)dsString.Pointer.opdata;
+            int index = dsString.Pointer.StringPointer;
             Validity.Assert(index >= 0 && index < heapElements.Count);
 
             string s;
@@ -566,7 +566,7 @@ namespace ProtoCore.DSASM
             {
                 // TODO Jun/Jiong: Use build pointer utilities 
                 exe.rmem.Push(StackValue.BuildArrayDimension(0));
-                exe.rmem.Push(StackValue.BuildPointer(svPtr.opdata, svPtr.metaData));
+                exe.rmem.Push(StackValue.BuildPointer(svPtr.Pointer, svPtr.metaData));
                 exe.rmem.Push(StackValue.BuildInt(1));
                 
                 ++exe.RuntimeCore.FunctionCallDepth;

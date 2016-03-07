@@ -229,7 +229,7 @@ namespace ProtoCore
             // TO BE DELETED
             public int GetStackIndex(int offset)
             {
-                int depth = (int)GetAtRelative(StackFrame.kFrameIndexStackFrameDepth).opdata;
+                int depth = GetAtRelative(StackFrame.kFrameIndexStackFrameDepth).IntegerValue;
                 int blockOffset = depth * StackFrame.kStackFrameSize;
 
                 offset -= blockOffset;
@@ -249,7 +249,7 @@ namespace ProtoCore
                 if (symbol.absoluteClassScope != Constants.kGlobalScope ||
                     symbol.absoluteFunctionIndex != Constants.kGlobalScope)
                 {
-                    int depth = (int)GetAtRelative(StackFrame.kFrameIndexStackFrameDepth, framePointer).opdata;
+                    int depth = GetAtRelative(StackFrame.kFrameIndexStackFrameDepth, framePointer).IntegerValue;
                     int blockOffset = depth * StackFrame.kStackFrameSize;
                     offset -= blockOffset;
                 }
