@@ -77,7 +77,10 @@ namespace Dynamo.Scheduler
                 {
                     var node = workspace.Nodes.FirstOrDefault(n => n.GUID.Equals(nodeGuid));
                     if (node != null)
+                    {
                         node.ClearDirtyFlag();
+                        node.SetCachedValueInProgress();
+                    }
                 }
 
                 return true;

@@ -177,6 +177,7 @@ namespace Dynamo.Configuration
         internal static readonly double MaxCondensedPreviewHeight = 64.0;
         internal static readonly double DefCondensedContentWidth = 33.0;
         internal static readonly double DefCondensedContentHeight = 28.0;
+        internal static readonly string BusyString = ". . .";
 
         #endregion
 

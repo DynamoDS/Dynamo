@@ -16,6 +16,8 @@ using System.Windows.Media.Animation;
 using Dynamo.Configuration;
 using Dynamo.Extensions;
 using Dynamo.Models;
+using System.Windows.Media;
+using Dynamo.Graph.Nodes;
 
 namespace Dynamo.UI.Controls
 {
@@ -48,6 +50,19 @@ namespace Dynamo.UI.Controls
             public const string GridWidthAnimator = "gridWidthAnimator";
             public const string GridHeightAnimator = "gridHeightAnimator";
         }
+
+        /// <summary>
+        /// TextBlock, which is shown during graph calculation.
+        /// TODO: this should be replaced with some animated text. 
+        /// http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-9584
+        /// </summary>
+        private readonly TextBlock busyTextBlock = new TextBlock
+        {
+            Text = Configurations.BusyString,
+            FontFamily = new FontFamily("Consolas"),
+            Opacity = 0.5,
+            Margin = new System.Windows.Thickness(12, 6, 0, 10)
+        };
 
         private readonly IScheduler scheduler;
         private readonly NodeViewModel nodeViewModel;
@@ -256,13 +271,14 @@ namespace Dynamo.UI.Controls
 
         private void ResetContentViews()
         {
-            var smallContentView = smallContentGrid.Children[0] as TextBlock;
-            smallContentView.Text = string.Empty;
-
             if (largeContentGrid.Children.Count <= 0)
                 return; // No view to reset, return now.
 
             var watchTree = largeContentGrid.Children[0] as WatchTree;
+
+            // Watch tree can be null, when 0-element of largeContentGrid busyTextBlock.
+            if (watchTree == null) return;
+
             var rootDataContext = watchTree.DataContext as WatchViewModel;
 
             // Unbind the view from data context, then clear the data context.
@@ -306,6 +322,22 @@ namespace Dynamo.UI.Controls
             }
 
             string newContent = "null";
+
+            if (mirrorData is ProtoCore.MirrorDataInProgress
+                // When CBN is created, its cached value is set to MirrorDataInProgress.
+                // And it's not updated after update graph task is complited.
+                && !((nodeViewModel.NodeLogic is CodeBlockNodeModel) && (nodeViewModel.NodeLogic as CodeBlockNodeModel).Code == String.Empty))
+            {
+                var smallContentView = smallContentGrid.Children[0] as TextBlock;
+                smallContentView.Text = Configurations.BusyString;
+
+                if (refreshDisplay != null)
+                {
+                    refreshDisplay();
+                }
+
+                return;
+            }
 
             RunOnSchedulerSync(
                 () =>
@@ -377,6 +409,24 @@ namespace Dynamo.UI.Controls
 
             WatchViewModel newViewModel = null;
 
+            if (mirrorData is ProtoCore.MirrorDataInProgress
+                // When CBN is created, its cached value is set to MirrorDataInProgress.
+                // And it's not updated after update graph task is complited.
+                && !((nodeViewModel.NodeLogic is CodeBlockNodeModel) && (nodeViewModel.NodeLogic as CodeBlockNodeModel).Code == String.Empty))
+            {
+                if (!largeContentGrid.Children.Contains(busyTextBlock))
+                {
+                    largeContentGrid.Children.Add(busyTextBlock);
+                }
+
+                if (refreshDisplay != null)
+                {
+                    refreshDisplay();
+                }
+
+                return;
+            }
+
             RunOnSchedulerSync(
                 () =>
                 {
@@ -385,6 +435,8 @@ namespace Dynamo.UI.Controls
                 },
                 (m) =>
                 {
+                    largeContentGrid.Children.Remove(busyTextBlock);
+
                     if (largeContentGrid.Children.Count == 0)
                     {
                         var tree = new WatchTree

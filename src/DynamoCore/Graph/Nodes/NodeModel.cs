@@ -485,6 +485,17 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
+        /// Call this method only, when graph calculation is started.
+        /// CachedValue will be set to MirrorDataInProgress.
+        /// It's done in order to fix crash with preview bubble, when node hasn't been calculated,
+        /// but UI thread tried to get value.
+        /// </summary>
+        internal void SetCachedValueInProgress()
+        {
+            CachedValue = ProtoCore.MirrorDataInProgress.Instance;
+        }
+
+        /// <summary>
         /// This flag is used to determine if a node was involved in a recent execution.
         /// The primary purpose of this flag is to determine if the node's render packages 
         /// should be returned to client browser when it requests for them. This is mainly 
