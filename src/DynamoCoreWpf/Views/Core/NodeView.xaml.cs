@@ -116,6 +116,15 @@ namespace Dynamo.Controls
             ViewModel.RequestShowNodeRename -= ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection -= ViewModel_RequestsSelection;
             ViewModel.NodeLogic.PropertyChanged -= NodeLogic_PropertyChanged;
+
+            if (previewControl != null)
+            {
+                previewControl.StateChanged -= OnPreviewControlStateChanged;
+                previewControl.MouseEnter -= OnPreviewControlMouseEnter;
+                previewControl.MouseLeave -= OnPreviewControlMouseLeave;
+                expansionBay.Children.Remove(previewControl);
+                previewControl = null;
+            }
         }
 
         #endregion

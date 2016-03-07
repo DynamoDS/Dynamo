@@ -60,9 +60,10 @@ namespace Dynamo.ViewModels
             get { return previewPinned; }
             set
             {
+                if (previewPinned == value) return;
                 previewPinned = value;
                 if (PreviewPinEvent != null)
-                    PreviewPinEvent(value);
+                    PreviewPinEvent(previewPinned);
             }
         }
 
@@ -457,7 +458,7 @@ namespace Dynamo.ViewModels
             DynamoViewModel = workspaceViewModel.DynamoViewModel;
 
             nodeLogic = logic;
-            this.PreviewPinned = logic.PreviewPinned;
+            PreviewPinned = logic.PreviewPinned;
             PreviewPinEvent += logic.SetPinStatus;
 
             //respond to collection changed events to add
