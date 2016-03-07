@@ -1072,7 +1072,7 @@ namespace ProtoCore.DSASM
                 }
                 else if (snode.IsChar)
                 {
-                    Char character = Convert.ToChar(snode.RawIntValue);
+                    Char character = Convert.ToChar(snode.CharValue);
                     rhs = "'" + character + "'";
                 }
                 else if (snode.IsString)
@@ -1120,7 +1120,7 @@ namespace ProtoCore.DSASM
             }
             else if (snode.IsChar)
             {
-                Char character = Convert.ToChar(snode.RawIntValue);
+                Char character = Convert.ToChar(snode.CharValue);
                 rhs = "'" + character + "'";
             }
             else if (snode.IsString)
@@ -1389,8 +1389,8 @@ namespace ProtoCore.DSASM
         {
             bool isPointerModified = svGraphNode.IsPointer || svUpdateNode.IsPointer;
             bool isArrayModified = svGraphNode.IsArray || svUpdateNode.IsArray;
-            bool isDataModified = svGraphNode.RawIntValue != svUpdateNode.RawIntValue;
-            bool isDoubleDataModified = svGraphNode.IsDouble && svGraphNode.RawDoubleValue != svUpdateNode.ToDouble().RawDoubleValue;
+            bool isDataModified = svGraphNode.RawData != svUpdateNode.RawData;
+            bool isDoubleDataModified = svGraphNode.IsDouble && svGraphNode.DoubleValue != svUpdateNode.ToDouble().DoubleValue;
             bool isTypeModified = !svGraphNode.IsInvalid && !svUpdateNode.IsInvalid && svGraphNode.optype != svUpdateNode.optype;
 
             // Jun Comment: an invalid optype means that the value was not set
@@ -3846,13 +3846,13 @@ namespace ProtoCore.DSASM
             // Need to optmize these if-elses to a table. 
             if (opdata1.IsInteger && opdata2.IsInteger)
             {
-                opdata2 = StackValue.BuildInt(opdata1.RawIntValue + opdata2.RawIntValue);
+                opdata2 = StackValue.BuildInt(opdata1.IntegerValue + opdata2.IntegerValue);
 
             }
             else if (opdata1.IsNumeric && opdata2.IsNumeric)
             {
-                double value1 = opdata1.IsDouble ? opdata1.RawDoubleValue : opdata1.RawIntValue;
-                double value2 = opdata2.IsDouble ? opdata2.RawDoubleValue : opdata2.RawIntValue;
+                double value1 = opdata1.IsDouble ? opdata1.DoubleValue : opdata1.IntegerValue;
+                double value2 = opdata2.IsDouble ? opdata2.DoubleValue : opdata2.IntegerValue;
 
                 opdata2 = StackValue.BuildDouble(value1 + value2);
             }
@@ -3887,12 +3887,12 @@ namespace ProtoCore.DSASM
 
             if (opdata1.IsInteger && opdata2.IsInteger)
             {
-                opdata2 = StackValue.BuildInt(opdata2.RawIntValue - opdata1.RawIntValue);
+                opdata2 = StackValue.BuildInt(opdata2.IntegerValue - opdata1.IntegerValue);
             }
             else if (opdata1.IsNumeric && opdata2.IsNumeric)
             {
-                double value1 = opdata2.IsDouble ? opdata2.RawDoubleValue : opdata2.RawIntValue;
-                double value2 = opdata1.IsDouble ? opdata1.RawDoubleValue : opdata1.RawIntValue;
+                double value1 = opdata2.IsDouble ? opdata2.DoubleValue: opdata2.IntegerValue;
+                double value2 = opdata1.IsDouble ? opdata1.DoubleValue: opdata1.IntegerValue;
                 opdata2 = StackValue.BuildDouble(value1 - value2);
             }
             else
@@ -3936,8 +3936,8 @@ namespace ProtoCore.DSASM
             //division is always carried out as a double
             if (opdata1.IsNumeric && opdata2.IsNumeric)
             {
-                double lhs = opdata2.IsDouble ? opdata2.RawDoubleValue : opdata2.RawIntValue;
-                double rhs = opdata1.IsDouble ? opdata1.RawDoubleValue : opdata1.RawIntValue;
+                double lhs = opdata2.IsDouble ? opdata2.DoubleValue: opdata2.IntegerValue;
+                double rhs = opdata1.IsDouble ? opdata1.DoubleValue: opdata1.IntegerValue;
                 opdata2 = StackValue.BuildDouble(lhs / rhs);
             }
             else
@@ -3958,8 +3958,8 @@ namespace ProtoCore.DSASM
             {
                 if (opdata1.IsInteger && opdata2.IsInteger)
                 {
-                    long lhs = opdata2.RawIntValue;
-                    long rhs = opdata1.RawIntValue;
+                    long lhs = opdata2.IntegerValue;
+                    long rhs = opdata1.IntegerValue;
                     if (rhs == 0)
                     {
                         runtimeCore.RuntimeStatus.LogWarning(WarningID.kModuloByZero, Resources.ModuloByZero);
@@ -3972,8 +3972,8 @@ namespace ProtoCore.DSASM
                 }
                 else
                 {
-                    double lhs = opdata2.IsDouble ? opdata2.RawDoubleValue : opdata2.RawIntValue;
-                    double rhs = opdata1.IsDouble ? opdata1.RawDoubleValue : opdata1.RawIntValue;
+                    double lhs = opdata2.IsDouble ? opdata2.DoubleValue : opdata2.IntegerValue;
+                    double rhs = opdata1.IsDouble ? opdata1.DoubleValue : opdata1.IntegerValue;
                     opdata2 = StackValue.BuildDouble(lhs % rhs);
                 }
             }
@@ -3991,11 +3991,11 @@ namespace ProtoCore.DSASM
             StackValue opdata1 = rmem.Pop();
             if (opdata1.IsInteger)
             {
-                opdata1 = StackValue.BuildInt(-opdata1.RawIntValue);
+                opdata1 = StackValue.BuildInt(-opdata1.IntegerValue);
             }
             else if (opdata1.IsDouble)
             {
-                opdata1 = StackValue.BuildDouble(-opdata1.RawDoubleValue);
+                opdata1 = StackValue.BuildDouble(-opdata1.DoubleValue);
             }
             else 
             {
@@ -4075,20 +4075,20 @@ namespace ProtoCore.DSASM
                 }
                 else
                 {
-                    opdata2 = StackValue.BuildBoolean(opdata1.RawBooleanValue == opdata2.RawBooleanValue);
+                    opdata2 = StackValue.BuildBoolean(opdata1.BooleanValue == opdata2.BooleanValue);
                 }
             }
             else if (opdata1.IsNumeric && opdata2.IsNumeric)
             {
                 if (opdata1.IsDouble || opdata2.IsDouble)
                 {
-                    double value1 = opdata1.IsDouble ? opdata1.RawDoubleValue : opdata1.RawIntValue;
-                    double value2 = opdata2.IsDouble ? opdata2.RawDoubleValue : opdata2.RawIntValue;
+                    double value1 = opdata1.IsDouble ? opdata1.DoubleValue: opdata1.IntegerValue;
+                    double value2 = opdata2.IsDouble ? opdata2.DoubleValue: opdata2.IntegerValue;
                     opdata2 = StackValue.BuildBoolean(MathUtils.Equals(value1, value2));
                 }
                 else
                 {
-                    opdata2 = StackValue.BuildBoolean(opdata1.RawIntValue == opdata2.RawIntValue);
+                    opdata2 = StackValue.BuildBoolean(opdata1.IntegerValue== opdata2.IntegerValue);
                 }
             }
             else if (opdata1.IsString && opdata2.IsString)
@@ -4120,8 +4120,8 @@ namespace ProtoCore.DSASM
             {
                 if (opdata1.IsDouble || opdata2.IsDouble)
                 {
-                    double value1 = opdata1.IsDouble ? opdata1.RawDoubleValue : opdata1.RawIntValue;
-                    double value2 = opdata2.IsDouble ? opdata2.RawDoubleValue : opdata2.RawIntValue;
+                    double value1 = opdata1.IsDouble ? opdata1.DoubleValue: opdata1.IntegerValue;
+                    double value2 = opdata2.IsDouble ? opdata2.DoubleValue: opdata2.IntegerValue;
                     opdata2 = StackValue.BuildBoolean(!MathUtils.Equals(value1, value2));
                 }
                 else
@@ -4134,13 +4134,9 @@ namespace ProtoCore.DSASM
                 int diffIndex = StringUtils.CompareString(opdata1, opdata2, runtimeCore);
                 opdata2 = StackValue.BuildBoolean(diffIndex != 0);
             }
-            else if (opdata1.optype == opdata2.optype)
+            else 
             {
-                opdata2 = StackValue.BuildBoolean(opdata1.RawIntValue != opdata2.RawIntValue);
-            }
-            else
-            {
-                opdata2 = StackValue.BuildBoolean(true);
+                opdata2 = StackValue.BuildBoolean(opdata1.Equals(opdata2));
             }
 
             rmem.Push(opdata2);
@@ -4154,8 +4150,8 @@ namespace ProtoCore.DSASM
 
             if (opdata1.IsNumeric && opdata2.IsNumeric)
             {
-                var value1 = opdata2.IsDouble ? opdata2.RawDoubleValue : opdata2.RawIntValue;
-                var value2 = opdata1.IsDouble ? opdata1.RawDoubleValue : opdata1.RawIntValue;
+                var value1 = opdata2.IsDouble ? opdata2.DoubleValue: opdata2.IntegerValue;
+                var value2 = opdata1.IsDouble ? opdata1.DoubleValue: opdata1.IntegerValue;
                 opdata2 = StackValue.BuildBoolean(value1 > value2);
             }
             else
@@ -4174,8 +4170,8 @@ namespace ProtoCore.DSASM
 
             if (opdata1.IsNumeric && opdata2.IsNumeric)
             {
-                double value1 = opdata2.IsDouble ? opdata2.RawDoubleValue : opdata2.RawIntValue;
-                double value2 = opdata1.IsDouble ? opdata1.RawDoubleValue : opdata1.RawIntValue;
+                double value1 = opdata2.IsDouble ? opdata2.DoubleValue: opdata2.IntegerValue;
+                double value2 = opdata1.IsDouble ? opdata1.DoubleValue: opdata1.IntegerValue;
                 opdata2 = StackValue.BuildBoolean(MathUtils.IsLessThan(value1, value2));
             }
             else
@@ -4223,8 +4219,8 @@ namespace ProtoCore.DSASM
             {
                 if (opdata1.IsDouble || opdata2.IsDouble)
                 {
-                    double lhs = opdata2.IsDouble ? opdata2.RawDoubleValue : opdata2.RawIntValue;
-                    double rhs = opdata1.IsDouble ? opdata1.RawDoubleValue : opdata1.RawIntValue;
+                    double lhs = opdata2.IsDouble ? opdata2.DoubleValue: opdata2.IntegerValue;
+                    double rhs = opdata1.IsDouble ? opdata1.DoubleValue: opdata1.IntegerValue;
                     opdata2 = StackValue.BuildBoolean(MathUtils.IsLessThanOrEquals(lhs, rhs));
                 }
                 else
@@ -4276,7 +4272,7 @@ namespace ProtoCore.DSASM
 
             if (instruction.op3.IsReplicationGuide)
             {
-                Validity.Assert(instruction.op3.RawIntValue == 0);
+                Validity.Assert(instruction.op3.ReplicationGuide == 0);
                 runtimeCore.ReplicationGuides.Add(new List<ReplicationGuide> { });
             }
 

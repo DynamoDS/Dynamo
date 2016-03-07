@@ -158,13 +158,13 @@ namespace ProtoFFI
 
         public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, Type type)
         {
-            if (dsObject.RawDoubleValue > MaxValue || dsObject.RawDoubleValue < MinValue)
+            if (dsObject.DoubleValue > MaxValue || dsObject.DoubleValue < MinValue)
             {
-                string message = String.Format(Resources.kFFIInvalidCast, dsObject.RawDoubleValue, type.Name, MinValue, MaxValue);
+                string message = String.Format(Resources.kFFIInvalidCast, dsObject.DoubleValue, type.Name, MinValue, MaxValue);
                 dsi.LogWarning(ProtoCore.Runtime.WarningID.kTypeMismatch, message);
             }
 
-            return CastToDouble(dsObject.RawDoubleValue);
+            return CastToDouble(dsObject.DoubleValue);
         }
     }
 

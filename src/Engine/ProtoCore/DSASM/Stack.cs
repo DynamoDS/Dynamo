@@ -340,8 +340,8 @@ namespace ProtoCore.DSASM
                 case AddressType.Char:
                     return sv1.CharValue == sv2.CharValue;
                 case AddressType.Double:
-                    var value1 = sv1.RawDoubleValue;
-                    var value2 = sv2.RawDoubleValue;
+                    var value1 = sv1.DoubleValue;
+                    var value2 = sv2.DoubleValue;
 
                     if(Double.IsInfinity(value1) && Double.IsInfinity(value2))
                         return true;

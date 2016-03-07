@@ -73,7 +73,7 @@ namespace ProtoCore.Lang
                         {
                             if (formalParameters[0].IsBoolean)
                             {
-                                ret = StackValue.BuildInt(formalParameters[0].RawBooleanValue ? 1 : 0);
+                                ret = StackValue.BuildInt(formalParameters[0].BooleanValue ? 1 : 0);
                             }
                             else
                             {
@@ -92,7 +92,7 @@ namespace ProtoCore.Lang
                         {
                             if (formalParameters[0].IsBoolean)
                             {
-                                ret = ProtoCore.DSASM.StackValue.BuildInt(formalParameters[0].RawBooleanValue ? 0 : 1);
+                                ret = ProtoCore.DSASM.StackValue.BuildInt(formalParameters[0].BooleanValue ? 0 : 1);
                             }
                             else
                             {
@@ -241,7 +241,7 @@ namespace ProtoCore.Lang
                         {
                             return StackValue.Null;
                         }
-                        List<double> parameters = formalParameters.Select(p => p.ToDouble().RawDoubleValue).ToList();
+                        List<double> parameters = formalParameters.Select(p => p.ToDouble().DoubleValue).ToList();
                         var mappedValue = MapBuiltIns.Map(parameters[0], parameters[1], parameters[2]);
                         ret = StackValue.BuildDouble(mappedValue);
                         break;
@@ -253,7 +253,7 @@ namespace ProtoCore.Lang
                             return StackValue.Null;
                         }
 
-                        List<double> parameters = formalParameters.Select(p => p.ToDouble().RawDoubleValue).ToList();
+                        List<double> parameters = formalParameters.Select(p => p.ToDouble().DoubleValue).ToList();
                         var mappedValue = MapBuiltIns.MapTo(parameters[0], parameters[1], parameters[2], parameters[3], parameters[4]);
                         ret = StackValue.BuildDouble(mappedValue);
                         break;
@@ -308,7 +308,7 @@ namespace ProtoCore.Lang
                         // create language blocks for true and false branch, 
                         // so directly return the value.
                         if (runtimeCore.Options.GenerateSSA)
-                            return svCondition.RawBooleanValue ? svTrue : svFalse;
+                            return svCondition.BooleanValue ? svTrue : svFalse;
 
                         Validity.Assert(svTrue.IsInteger);
                         Validity.Assert(svFalse.IsInteger);
@@ -1062,8 +1062,8 @@ namespace ProtoCore.Lang
                                                    StackValue svHasAmountOp,
                                                    RuntimeCore runtimeCore)
         {
-            bool hasStep = svHasStep.IsBoolean && svHasStep.RawBooleanValue;
-            bool hasAmountOp = svHasAmountOp.IsBoolean && svHasAmountOp.RawBooleanValue;
+            bool hasStep = svHasStep.IsBoolean && svHasStep.BooleanValue;
+            bool hasAmountOp = svHasAmountOp.IsBoolean && svHasAmountOp.BooleanValue;
 
             // If start parameter is not the same as end parameter, show warning.
             // If start parameter is not number/string and there is no amount op, show warning.
@@ -1150,12 +1150,12 @@ namespace ProtoCore.Lang
                                                          bool hasAmountOp,
                                                          RuntimeCore runtimeCore)
         {
-            double startValue = svStart.ToDouble().RawDoubleValue;
-            double endValue = svEnd.ToDouble().RawDoubleValue;
+            double startValue = svStart.ToDouble().DoubleValue;
+            double endValue = svEnd.ToDouble().DoubleValue;
 
             if (double.IsInfinity(startValue) || double.IsNaN(startValue) ||
                 double.IsInfinity(endValue) || double.IsNaN(endValue) ||
-                svStep.IsDouble && (double.IsInfinity(svStep.RawDoubleValue) || double.IsNaN(svStep.RawDoubleValue)))
+                svStep.IsDouble && (double.IsInfinity(svStep.DoubleValue) || double.IsNaN(svStep.DoubleValue)))
             {
                 runtimeCore.RuntimeStatus.LogWarning(
                     WarningID.kInvalidArguments,
@@ -1177,7 +1177,7 @@ namespace ProtoCore.Lang
                        Resources.kInvalidAmountInRangeExpression);
                     return null;
                 }
-                decimal stepsize = new decimal(svStep.ToDouble().RawDoubleValue);
+                decimal stepsize = new decimal(svStep.ToDouble().DoubleValue);
                 return GenerateRangeByAmount(start, amount, stepsize, isIntRange);
             }
             else
@@ -1189,7 +1189,7 @@ namespace ProtoCore.Lang
                             decimal stepsize = (start > end) ? -1 : 1;
                             if (hasStep)
                             {
-                                stepsize = new decimal(svStep.IsDouble ? svStep.RawDoubleValue : svStep.RawIntValue);
+                                stepsize = new decimal(svStep.IsDouble ? svStep.DoubleValue: svStep.IntegerValue);
                                 isIntRange = isIntRange && (svStep.IsInteger);
                             }
 
@@ -1197,7 +1197,7 @@ namespace ProtoCore.Lang
                         }
                     case (int)RangeStepOperator.Number:
                         {
-                            decimal stepnum = new decimal(Math.Round(svStep.IsDouble ? svStep.RawDoubleValue : svStep.RawIntValue));
+                            decimal stepnum = new decimal(Math.Round(svStep.IsDouble ? svStep.DoubleValue: svStep.IntegerValue));
                             if (stepnum > 0)
                             {
                                 return GenerateRangeByStepNumber(start, end, stepnum, isIntRange);
@@ -1206,7 +1206,7 @@ namespace ProtoCore.Lang
                         }
                     case (int)RangeStepOperator.ApproximateSize:
                         {
-                            decimal astepsize = new decimal(svStep.IsDouble ? svStep.RawDoubleValue : svStep.RawIntValue);
+                            decimal astepsize = new decimal(svStep.IsDouble ? svStep.DoubleValue: svStep.IntegerValue);
                             if (astepsize != 0)
                             {
                                 decimal dist = end - start;
@@ -1266,7 +1266,7 @@ namespace ProtoCore.Lang
 
             var startLetter = startValue.ToCharArray().First();
             var endLetter = endValue.ToCharArray().First();
-            int step = svStep.IsNull ? 1 : Convert.ToInt32(svStep.RawIntValue);
+            int step = svStep.IsNull ? 1 : Convert.ToInt32(svStep.RawData);
 
             // Alphabet sequence can be made just from letters (that are not unicode).
             if (!Char.IsLetter(startLetter) || !Char.IsLetter(endLetter) || step <= 0 ||
@@ -1319,8 +1319,8 @@ namespace ProtoCore.Lang
             }
 
             var startValue = runtimeCore.Heap.ToHeapObject<DSString>(svStart).Value;
-            var amount = Convert.ToInt32(svEnd.RawIntValue);
-            var step = Convert.ToInt32(svStep.RawIntValue);
+            var amount = svEnd.IntegerValue;
+            var step = svStep.IntegerValue;
 
             // Start value can be just alphabet letter. So its length can't be more than 1.
             // End value must be int. (we checked it before)
@@ -1672,9 +1672,9 @@ namespace ProtoCore.Lang
                 bContainsValidElement = true;
 
                 if (type == AddressType.Double)
-                    sum += element.ToDouble().RawDoubleValue;
+                    sum += element.ToDouble().DoubleValue;
                 else
-                    sum += element.ToInteger().RawIntValue;
+                    sum += element.ToInteger().IntegerValue;
             }
 
             if (!bContainsValidElement)
@@ -1711,7 +1711,7 @@ namespace ProtoCore.Lang
                 return ProtoCore.DSASM.StackValue.Null;
             StackValue resSv = Sum(newsv, runtime);
             if (resSv.IsDouble)
-                return ProtoCore.DSASM.StackValue.BuildDouble(resSv.RawDoubleValue / length);
+                return ProtoCore.DSASM.StackValue.BuildDouble(resSv.DoubleValue / length);
             else if (resSv.IsInteger)
                 return ProtoCore.DSASM.StackValue.BuildDouble((double)(resSv.IntegerValue) / length);
             else
@@ -2402,9 +2402,9 @@ namespace ProtoCore.Lang
                 ret = evaluator.Evaluate(args, stackFrame);
                 Validity.Assert(ret.IsNumeric);
                 if (ret.IsDouble)
-                    return (int)ret.RawDoubleValue;
+                    return (int)ret.DoubleValue;
                 else
-                    return (int)ret.RawIntValue;
+                    return ret.IntegerValue;
             };
 
             try
@@ -2432,7 +2432,7 @@ namespace ProtoCore.Lang
             var evaluator = new FunctionPointerEvaluator(function, runtime);
 
             StackValue ret;
-            if (unpackParams.IsBoolean && unpackParams.RawBooleanValue)
+            if (unpackParams.IsBoolean && unpackParams.BooleanValue)
             {
                 DSArray argArray = runtime.runtime.RuntimeCore.Heap.ToHeapObject<DSArray>(parameters);
                 var args = argArray.Values;
@@ -2464,8 +2464,8 @@ namespace ProtoCore.Lang
             if (sv1null || sv2null)
                 return false;
 
-            var v1 = sv1.IsDouble ? sv1.RawDoubleValue : sv1.RawIntValue;
-            var v2 = sv2.IsDouble ? sv2.RawDoubleValue : sv2.RawIntValue;
+            var v1 = sv1.IsDouble ? sv1.DoubleValue: sv1.IntegerValue;
+            var v2 = sv2.IsDouble ? sv2.DoubleValue: sv2.IntegerValue;
 
             return MathUtils.Equals(v1, v2);
         }
@@ -2481,8 +2481,8 @@ namespace ProtoCore.Lang
             if (!sv2.IsNumeric)
                 return mbAscending ? int.MaxValue : int.MinValue;
 
-            var value1 = sv1.IsDouble ? sv1.RawDoubleValue : sv1.RawIntValue;
-            var value2 = sv2.IsDouble ? sv2.RawDoubleValue : sv2.RawIntValue;
+            var value1 = sv1.IsDouble ? sv1.DoubleValue: sv1.IntegerValue;
+            var value2 = sv2.IsDouble ? sv2.DoubleValue: sv2.IntegerValue;
 
             double x = mbAscending ? value1 : value2;
             double y = mbAscending ? value2 : value1; 

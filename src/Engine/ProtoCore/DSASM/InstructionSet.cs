@@ -154,10 +154,10 @@ namespace ProtoCore.DSASM
             switch (optype)
             {
                 case AddressType.Double:
-                    return MathUtils.Equals(this.RawDoubleValue, rhs.RawDoubleValue);
+                    return MathUtils.Equals(this.DoubleValue, rhs.DoubleValue);
 
                 case AddressType.Boolean:
-                    return this.RawBooleanValue == rhs.RawBooleanValue;
+                    return this.BooleanValue == rhs.BooleanValue;
 
                 default:
                     return opdata == rhs.opdata;
@@ -172,38 +172,14 @@ namespace ProtoCore.DSASM
 
         #region Get raw values
         /// <summary>
-        /// Get integer value without checking its type or do type conversion,
-        /// so the StackValue shoule be boolean typed.
+        /// Get raw data without checking its type or do type conversion.
+        /// Use with caution.
         /// </summary>
-        public long RawIntValue
+        public long RawData
         {
             get
             {
                 return opdata;
-            }
-        }
-
-        /// <summary>
-        /// Get double value without checking its type or do type conversion. 
-        /// The StackValue should be double typed. 
-        /// </summary>
-        public double RawDoubleValue
-        {
-            get
-            {
-                return BitConverter.Int64BitsToDouble(opdata);
-            }
-        }
-
-        /// <summary>
-        /// Get boolean value without checking its type or do type conversion,
-        /// so the StackValue shoule be boolean typed.
-        /// </summary>
-        public bool RawBooleanValue
-        {
-            get
-            {
-                return opdata != 0;
             }
         }
         #endregion
@@ -374,7 +350,7 @@ namespace ProtoCore.DSASM
                 if (!IsVariableIndex)
                     throw new InvalidTypeException("The type of StackValue is not VariableIndex");
 
-                return (int)RawIntValue;
+                return (int)opdata;
             }
         }
 
@@ -385,7 +361,7 @@ namespace ProtoCore.DSASM
                 if (!IsFunctionIndex)
                     throw new InvalidTypeException("The type of StackValue is not FunctionIndex");
 
-                return (int)RawIntValue;
+                return (int)opdata;
             }
         }
 
@@ -396,7 +372,7 @@ namespace ProtoCore.DSASM
                 if (!IsMemberVariableIndex)
                     throw new InvalidTypeException("The type of StackValue is not MemberVariableIndex");
 
-                return (int)RawIntValue;
+                return (int)opdata;
             }
         }
 
@@ -407,7 +383,7 @@ namespace ProtoCore.DSASM
                 if (!IsStaticVariableIndex)
                     throw new InvalidTypeException("The type of StackValue is not StaticVariableIndex");
 
-                return (int)RawIntValue;
+                return (int)opdata;
             }
         }
 
@@ -418,7 +394,7 @@ namespace ProtoCore.DSASM
                 if (!IsVariableIndex || !IsStaticVariableIndex || !IsMemberVariableIndex)
                     throw new InvalidTypeException("It is not a symbol type");
 
-                return (int)RawIntValue;
+                return (int)opdata;
             }
         }
 
@@ -429,7 +405,7 @@ namespace ProtoCore.DSASM
                 if (!IsClassIndex)
                     throw new InvalidTypeException("The Type of StackValue is not ClassIndex");
 
-                return (int)RawIntValue;
+                return (int)opdata;
             }
         }
 
@@ -440,7 +416,7 @@ namespace ProtoCore.DSASM
                 if (!IsInteger)
                     throw new InvalidTypeException("The Type of StackValue is not Integer");
 
-                return (int)RawIntValue;
+                return (int)opdata;
             }
         }
 
@@ -451,7 +427,7 @@ namespace ProtoCore.DSASM
                 if (!IsChar)
                     throw new InvalidTypeException("The Type of StackValue is not Char");
 
-                return (int)RawIntValue;
+                return (int)opdata;
             }
         }
 
@@ -462,7 +438,7 @@ namespace ProtoCore.DSASM
                 if (!IsInteger)
                     throw new InvalidTypeException("The Type of StackValue is not Double");
 
-                return RawDoubleValue;
+                return BitConverter.Int64BitsToDouble(opdata);
             }
         }
 
@@ -473,7 +449,7 @@ namespace ProtoCore.DSASM
                 if (!IsBoolean)
                     throw new InvalidTypeException("The Type of StackValue is not Boolean");
 
-                return RawBooleanValue;
+                return opdata != 0;
             }
         }
 
@@ -484,7 +460,7 @@ namespace ProtoCore.DSASM
                 if (!IsString)
                     throw new InvalidTypeException("The Type of StackValue is not String");
 
-                return (int)RawIntValue;
+                return (int)opdata;
             }
         }
 
@@ -495,7 +471,7 @@ namespace ProtoCore.DSASM
                 if (!IsLabelIndex)
                     throw new InvalidTypeException("The Type of StackValue is not LabelIndex");
 
-                return (int)RawIntValue;
+                return (int)opdata;
             }
         }
 
@@ -506,7 +482,7 @@ namespace ProtoCore.DSASM
                 if (!IsBlockIndex)
                     throw new InvalidTypeException("The Type of StackValue is not BlockIndex");
 
-                return (int)RawIntValue;
+                return (int)opdata;
             }
         }
 
@@ -517,7 +493,7 @@ namespace ProtoCore.DSASM
                 if (!IsPointer)
                     throw new InvalidTypeException("The Type of StackValue is not Pointer");
 
-                return (int)RawIntValue;
+                return (int)opdata;
             }
         }
 
@@ -528,7 +504,7 @@ namespace ProtoCore.DSASM
                 if (!IsArray)
                     throw new InvalidTypeException("The Type of StackValue is not ArrayPointer");
 
-                return (int)RawIntValue;
+                return (int)opdata;
             }
         }
 
@@ -539,7 +515,7 @@ namespace ProtoCore.DSASM
                 if (!IsFunctionPointer)
                     throw new InvalidTypeException("The Type of StackValue is not FunctionPointer");
 
-                return (int)RawIntValue;
+                return (int)opdata;
             }
         }
 
@@ -550,7 +526,7 @@ namespace ProtoCore.DSASM
                 if (!IsArrayDimension)
                     throw new InvalidTypeException("The Type of StackValue is not ArrayDimension");
 
-                return (int)RawIntValue;
+                return (int)opdata;
             }
         }
 
@@ -561,7 +537,7 @@ namespace ProtoCore.DSASM
                 if (!IsReplicationGuide)
                     throw new InvalidTypeException("The Type of StackValue is not ReplicationGuide");
 
-                return (int)RawIntValue;
+                return (int)opdata;
             }
         }
 
@@ -572,7 +548,7 @@ namespace ProtoCore.DSASM
                 if (!IsStaticType)
                     throw new InvalidTypeException("The Type of StackValue is not StaticType");
 
-                return (int)RawIntValue;
+                return (int)opdata;
             }
         }
 
@@ -583,7 +559,7 @@ namespace ProtoCore.DSASM
                 if (!IsCallingConvention)
                     throw new InvalidTypeException("The Type of StackValue is not CallingConvention");
 
-                return (CallingConvention.CallType)RawIntValue;
+                return (CallingConvention.CallType)opdata;
             }
         }
 
@@ -594,7 +570,7 @@ namespace ProtoCore.DSASM
                 if (!IsCallingConvention)
                     throw new InvalidTypeException("The Type of StackValue is not CallingConvention");
 
-                return (CallingConvention.BounceType)RawIntValue;
+                return (CallingConvention.BounceType)opdata;
             }
         }
 
@@ -605,7 +581,7 @@ namespace ProtoCore.DSASM
                 if (!IsExplicitCall)
                     throw new InvalidTypeException("The Type of StackValue is not ExplicitCall");
 
-                return (int)RawIntValue;
+                return (int)opdata;
             }
         }
 
@@ -616,7 +592,7 @@ namespace ProtoCore.DSASM
                 if (!IsFrameType)
                     throw new InvalidTypeException("The Type of StackValue is not FrameType");
 
-                return (StackFrameType)RawIntValue;
+                return (StackFrameType)opdata;
             }
         }
 
@@ -627,7 +603,7 @@ namespace ProtoCore.DSASM
                 if (!IsDynamic)
                     throw new InvalidTypeException("The Type of StackValue is not Dynamic");
 
-                return (int)RawIntValue;
+                return (int)opdata;
             }
         }
 
@@ -638,7 +614,7 @@ namespace ProtoCore.DSASM
                 if (!IsThisPtr)
                     throw new InvalidTypeException("The Type of StackValue is not ThisPtr");
 
-                return (int)RawIntValue;
+                return (int)opdata;
             }
         }
 
@@ -649,7 +625,7 @@ namespace ProtoCore.DSASM
                 if (!IsArrayKey)
                     throw new InvalidTypeException("The Type of StackValue is not ArrayKey");
 
-                return (int)RawIntValue;
+                return (int)opdata;
             }
         }
 
@@ -660,7 +636,7 @@ namespace ProtoCore.DSASM
                 if (!IsRegister)
                     throw new InvalidTypeException("The Type of StackValue is not ArrayKey");
 
-                return (Registers)(int)RawIntValue;
+                return (Registers)(int)opdata;
             }
         }
 
@@ -780,7 +756,8 @@ namespace ProtoCore.DSASM
         public static StackValue BuildArrayKey(StackValue array, int index)
         {
             Validity.Assert(array.IsArray || array.IsString);
-            return BuildArrayKey((int)array.RawIntValue, index);
+            int ptr = array.IsArray ? array.ArrayPointer : array.StringPointer;
+            return BuildArrayKey(ptr, index);
         }
 
         public static StackValue BuildThisPtr(int thisptr)
@@ -1088,7 +1065,7 @@ namespace ProtoCore.DSASM
                     return StackValue.Null; 
 
                 case AddressType.Double:
-                    bool b = !Double.IsNaN(RawDoubleValue) && !RawDoubleValue.Equals(0.0);
+                    bool b = !Double.IsNaN(DoubleValue) && !DoubleValue.Equals(0.0);
                     return BuildBoolean(b);
 
                 case AddressType.Pointer:
@@ -1117,7 +1094,7 @@ namespace ProtoCore.DSASM
             switch (optype)
             {
                 case AddressType.Int:
-                    return BuildDouble(RawIntValue);
+                    return BuildDouble(opdata);
 
                 case AddressType.Double:
                     return this;
@@ -1140,7 +1117,7 @@ namespace ProtoCore.DSASM
                     return this;
 
                 case AddressType.Double:
-                    double value = RawDoubleValue;
+                    double value = DoubleValue;
                     return BuildInt((Int64)Math.Round(value, 0, MidpointRounding.AwayFromZero));
 
                 default:

@@ -191,7 +191,7 @@ namespace ProtoCore.DSASM
                 unchecked
                 {
                     int hash = 0;
-                    hash = (hash * 397) ^ value.RawIntValue.GetHashCode();
+                    hash = (hash * 397) ^ value.RawData.GetHashCode();
                     hash = (hash * 397) ^ value.metaData.type.GetHashCode();
                     return hash;
                 }
@@ -611,7 +611,7 @@ namespace ProtoCore.DSASM
             while (ptrs.Any())
             {
                 StackValue value = ptrs.Dequeue();
-                int rawPtr = (int)value.RawIntValue;
+                int rawPtr = (int)value.RawData;
                 var hp = heapElements[rawPtr];
                 if (hp.Mark == GCMark.Black)
                     continue;
@@ -659,7 +659,7 @@ namespace ProtoCore.DSASM
             grayList = new LinkedList<StackValue>();
             foreach (var heapPointer in roots)
             {
-                var ptr = (int)heapPointer.RawIntValue;
+                var ptr = (int)heapPointer.RawData;
                 heapElements[ptr].Mark = GCMark.Gray;
                 grayList.AddLast(heapPointer);
             }
@@ -793,9 +793,9 @@ namespace ProtoCore.DSASM
                 return false;
 
             var validPointers = gcroots.Where(r => r.IsReferenceType && 
-                                                   r.RawIntValue < heapElements.Count() && 
-                                                   r.RawIntValue >= 0 && 
-                                                   heapElements[(int)r.RawIntValue] != null);
+                                                   r.RawData < heapElements.Count() && 
+                                                   r.RawData >= 0 && 
+                                                   heapElements[(int)r.RawData] != null);
             roots = new List<StackValue>(validPointers);
             executive = exe;
             StartCollection();
@@ -864,7 +864,7 @@ namespace ProtoCore.DSASM
                 while (workingStack.Any())
                 {
                     var pointer = workingStack.Pop();
-                    var ptr = (int)pointer.RawIntValue;
+                    var ptr = (int)pointer.RawData;
                     if (!pointer.IsReferenceType || markBits.Get(ptr))
                     {
                         continue;
@@ -889,7 +889,7 @@ namespace ProtoCore.DSASM
                     foreach (var subElement in subElements)
                     {
                         if (subElement.IsReferenceType &&
-                            !markBits.Get((int)subElement.RawIntValue))
+                            !markBits.Get((int)subElement.RawData))
                         {
                             workingStack.Push(subElement);
                         }

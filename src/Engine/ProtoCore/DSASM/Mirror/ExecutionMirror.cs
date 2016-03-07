@@ -1155,7 +1155,7 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 case AddressType.Double:
                     {
-                        double data = val.RawDoubleValue;
+                        double data = val.DoubleValue;
                         Obj o = new Obj(val) 
                         { 
                             Payload = data, Type =
@@ -1253,7 +1253,7 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 case AddressType.Double:
                     {
-                        double data = val.RawDoubleValue;
+                        double data = val.DoubleValue;
                         Obj o = new Obj(val) 
                         { 
                             Payload = data, 
