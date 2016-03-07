@@ -11,10 +11,7 @@ using Dynamo.ViewModels;
 using Dynamo.UI;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
-using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
-using System.Windows.Interactivity;
 using Dynamo.Controls;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
@@ -26,7 +23,6 @@ using Dynamo.Search.SearchElements;
 using Dynamo.UI.Controls;
 using Dynamo.Wpf.UI;
 using ModifierKeys = System.Windows.Input.ModifierKeys;
-using System.ComponentModel;
 
 namespace Dynamo.Views
 {
@@ -110,61 +106,30 @@ namespace Dynamo.Views
             DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
 
             ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
-            ViewModel.DynamoViewModel.PropertyChanged += ViewModel_PropertyChanged;
+
+            var ctrl = InCanvasSearchBar.Child as InCanvasSearchControl;
+            if (ctrl != null)
+            {
+                ctrl.RequestShowInCanvasSearch += ShowHideInCanvasControl;
+            }
 
             infiniteGridView.AttachToZoomBorder(zoomBorder);
-        }
-
-        void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "CurrentSpace":
-                case "ShowStartPage":
-                    // When workspace is changed(e.g. from home to custom) 
-                    // or when go to start page, close InCanvasSearch and ContextMenu.
-                    ShowHideInCanvasControl(ShowHideFlags.Hide);
-                    ShowHideContextMenu(ShowHideFlags.Hide);
-                    break;
-            }
         }
 
         void OnWorkspaceViewUnloaded(object sender, RoutedEventArgs e)
         {
             DynamoSelection.Instance.Selection.CollectionChanged -= OnSelectionCollectionChanged;
-
+            
             if (ViewModel != null)
-            {
                 ViewModel.RequestShowInCanvasSearch -= ShowHideInCanvasControl;
-                ViewModel.DynamoViewModel.PropertyChanged -= ViewModel_PropertyChanged;
+
+            var ctrl = InCanvasSearchBar.Child as InCanvasSearchControl;
+            if (ctrl != null)
+            {
+                ctrl.RequestShowInCanvasSearch -= ShowHideInCanvasControl;
             }
 
             infiniteGridView.DetachFromZoomBorder(zoomBorder);
-        }
-
-        private void ShowHideInCanvasControl(ShowHideFlags flag)
-        {
-            ShowHidePopup(flag, InCanvasSearchBar);
-        }
-
-        private void ShowHideContextMenu(ShowHideFlags flag)
-        {
-            ShowHidePopup(flag, ContextMenuPopup);
-        }
-
-        private void ShowHidePopup(ShowHideFlags flag, Popup popup)
-        {
-            switch (flag)
-            {
-                case ShowHideFlags.Hide:
-                    popup.IsOpen = false;
-                    break;
-                case ShowHideFlags.Show:
-                    // Show InCanvas search just in case, when mouse is over workspace.
-                    popup.IsOpen = DynamoModel.IsTestMode || IsMouseOver;
-                    ViewModel.InCanvasSearchViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
-                    break;
-            }
         }
 
         internal Point GetCenterPoint()
@@ -511,11 +476,7 @@ namespace Dynamo.Views
             {
                 ViewModel.HandleLeftButtonDown(workBench, e);
             }
-        }
 
-        private void OnCanvasMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            ContextMenuPopup.IsOpen = false;
             InCanvasSearchBar.IsOpen = false;
         }
 
@@ -527,20 +488,15 @@ namespace Dynamo.Views
             if (ViewModel == null) return;
 
             // check IsInIdleState and IsPanning before finishing an action with HandleMouseRelease
-            var returnToSearch = (ViewModel.IsInIdleState || ViewModel.IsPanning)
+            var returnToSearch = (ViewModel.IsInIdleState || ViewModel.IsPanning) 
                 && e.ChangedButton == MouseButton.Right && Keyboard.Modifiers == ModifierKeys.Control;
 
             ViewModel.HandleMouseRelease(workBench, e);
-            ContextMenuPopup.IsOpen = false;
             if (returnToSearch)
             {
                 ViewModel.DynamoViewModel.SearchViewModel.OnRequestFocusSearch();
-            }
-            else if (e.ChangedButton == MouseButton.Right && e.OriginalSource == zoomBorder)
-            {
-                // open if workspace is right-clicked itself 
-                // (not node, note, not buttons from viewControlPanel such as zoom, pan and so on)
-                ContextMenuPopup.IsOpen = true;
+                // do not open context menu in this case
+                e.Handled = true;
             }
         }
 
@@ -762,6 +718,21 @@ namespace Dynamo.Views
             return HitTestResultBehavior.Continue;
         }
 
+        private void ShowHideInCanvasControl(ShowHideFlags flag)
+        {
+            switch (flag)
+            {
+                case ShowHideFlags.Hide:
+                    InCanvasSearchBar.IsOpen = false;
+                    break;
+                case ShowHideFlags.Show:
+                    // Show InCanvas search just in case, when mouse is over workspace.
+                    InCanvasSearchBar.IsOpen = IsMouseOver;
+                    ViewModel.InCanvasSearchViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
+                    break;
+            }
+        }
+
         private void OnWorkspaceDrop(object sender, DragEventArgs e)
         {
 
@@ -792,7 +763,7 @@ namespace Dynamo.Views
 
         private void OnInCanvasSearchContextMenuKeyDown(object sender, KeyEventArgs e)
         {
-            var contextMenu = sender as Popup;
+            var contextMenu = sender as ContextMenu;
             if (e.Key == Key.Enter)
             {
                 ViewModel.InCanvasSearchViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
@@ -808,12 +779,10 @@ namespace Dynamo.Views
         /// </summary>
         private void OnInCanvasSearchContextMenuMouseUp(object sender, MouseButtonEventArgs e)
         {
-            var contextMenu = sender as Popup;
-            if (!(e.OriginalSource is Thumb) && !(e.OriginalSource is TextBox)
+            var contextMenu = sender as ContextMenu;
+            if (!(e.OriginalSource is System.Windows.Controls.Primitives.Thumb) && !(e.OriginalSource is TextBox)
                 && contextMenu != null)
-            {
                 contextMenu.IsOpen = false;
-            }
         }
 
         /// <summary>
@@ -833,7 +802,7 @@ namespace Dynamo.Views
             inCanvasSearchPosition = Mouse.GetPosition(this.WorkspaceElements);
         }
 
-        private void OnContextMenuOpened(object sender, EventArgs e)
+        private void OnContextMenuOpened(object sender, RoutedEventArgs e)
         {
             // If in-canvas search box is open already, close it
             // to avoid opening multiple instances.
@@ -842,6 +811,9 @@ namespace Dynamo.Views
                 InCanvasSearchBar.IsOpen = false;
             }
             ViewModel.InCanvasSearchViewModel.SearchText = string.Empty;
+
+            var ctrl = outerCanvas.ContextMenu.ChildOfType<InCanvasSearchControl>();
+            ctrl.SearchTextBox.Focus();
         }
     }
 }
