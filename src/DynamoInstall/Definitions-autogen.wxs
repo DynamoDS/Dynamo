@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="PROGDATA">
+            <Directory Id="dir104526B88E0527BE72BE9AC544A2525E" Name="definitions" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="DEFINITIONS">
+            <Component Id="cmpBB173D076574B6CC5E3ED0E040B6A5E3" Directory="dir104526B88E0527BE72BE9AC544A2525E" Guid="{5C9FDB97-0BFF-4C1E-8DE3-F4E749712D0D}">
+                <File Id="filDD7A3B109BAF976F2AFDF242BA76A1F3" KeyPath="yes" Source="$(var.definitions)\BoundingBoxXYZ.dyf" />
+            </Component>
+            <Component Id="cmp3F3ED4C99B2C01A1DA18B509B00C2502" Directory="dir104526B88E0527BE72BE9AC544A2525E" Guid="{CF20EA7A-7E98-4DF3-9269-9B5C8C770272}">
+                <File Id="filB4A05AC1AF301EDDF69BBD50366A5AA6" KeyPath="yes" Source="$(var.definitions)\ModelCurveFromCurveLoop.dyf" />
+            </Component>
+            <Component Id="cmp267B6D7108BD7D750C5323A6C89CF6C2" Directory="dir104526B88E0527BE72BE9AC544A2525E" Guid="{0D4DD35F-6A98-47E9-8637-4EE08C74F24F}">
+                <File Id="fil3FF63559CD159740BFA58D204E147C8C" KeyPath="yes" Source="$(var.definitions)\TransformOriginVectors.dyf" />
+            </Component>
+            <Component Id="cmpAB58E7E0F69161AFCFE9973CF5F819E4" Directory="dir104526B88E0527BE72BE9AC544A2525E" Guid="{FCD851A6-9657-42FC-AB6A-69FA2D5C742B}">
+                <File Id="filF7DB0DA385057E590A5B8E40F7E66911" KeyPath="yes" Source="$(var.definitions)\XyzFromListOfNumbers.dyf" />
+            </Component>
+            <Component Id="cmp0532C44E015082861C9CB781C0D60BD1" Directory="dir104526B88E0527BE72BE9AC544A2525E" Guid="{21566D72-A5A9-4472-A6C1-155E4B93899D}">
+                <File Id="fil113A2E8A2AA856A4D06D234B7440D81E" KeyPath="yes" Source="$(var.definitions)\XyzGrid.dyf" />
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+</Wix>
