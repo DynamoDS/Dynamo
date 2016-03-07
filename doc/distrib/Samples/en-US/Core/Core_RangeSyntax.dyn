@@ -1,4 +1,4 @@
-<Workspace Version="0.8.0.684" X="-517.584810758433" Y="831.316312494702" zoom="0.338533966155978" Name="Home" RunType="Automatic" RunPeriod="100">
+<Workspace Version="0.8.0.684" X="-517.584810758433" Y="831.316312494702" zoom="0.338533966155978" Name="Home" RunType="Automatic" RunPeriod="100" HasRunWithoutCrash="True">
   <NamespaceResolutionMap />
   <Elements>
     <DSCoreNodesUI.NumberSeq guid="e29704c3-dbc2-4eb8-bd2c-f671c4629051" type="DSCoreNodesUI.NumberSeq" nickname="Number Sequence" x="2230.49505500963" y="152.17945003846" isVisible="true" isUpstreamVisible="true" lacing="Longest" />

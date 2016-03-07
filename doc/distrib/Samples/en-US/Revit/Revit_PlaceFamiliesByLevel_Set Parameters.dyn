@@ -1,4 +1,4 @@
-<Workspace Version="0.8.0.760" X="40.3825423699763" Y="357.930838899495" zoom="0.276850713044813" Name="Home" RunType="Automatic" RunPeriod="100">
+<Workspace Version="0.8.0.760" X="40.3825423699763" Y="357.930838899495" zoom="0.276850713044813" Name="Home" RunType="Automatic" RunPeriod="100" HasRunWithoutCrash="True">
   <NamespaceResolutionMap />
   <Elements>
     <DSRevitNodesUI.FamilyTypes guid="4fdfc107-656f-4557-9bb8-3abe69963c59" type="DSRevitNodesUI.FamilyTypes" nickname="Family Types" x="-37.502313993664" y="267.022198142644" isVisible="true" isUpstreamVisible="true" lacing="Disabled" index="41:Photovoltaic-Panel-SolarWorld-SunModule-(235-240):SunModule SW 245 Silver Mono - 10 Deg. Angle" />

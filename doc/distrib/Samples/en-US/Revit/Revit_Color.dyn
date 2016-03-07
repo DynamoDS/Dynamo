@@ -1,4 +1,4 @@
-<Workspace Version="0.8.1.976" X="189.421828301832" Y="305.164831697055" zoom="0.467640139924576" Name="Home" RunType="Manual" RunPeriod="100" HasRunWithoutCrash="True">
+<Workspace Version="0.8.1.976" X="189.421828301832" Y="305.164831697055" zoom="0.467640139924576" Name="Home" RunType="Automatic" RunPeriod="100" HasRunWithoutCrash="True">
   <NamespaceResolutionMap />
   <Elements>
     <Dynamo.Nodes.DSFunction guid="ecb2936d-6ee9-4b99-9ab1-24269ffedfc5" type="Dynamo.Nodes.DSFunction" nickname="Element.OverrideColorInView" x="2782.70064191332" y="635.102760274287" isVisible="true" isUpstreamVisible="true" lacing="Longest" assembly="RevitNodes.dll" function="Revit.Elements.Element.OverrideColorInView@DSCore.Color" />

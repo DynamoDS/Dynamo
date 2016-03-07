@@ -1,4 +1,4 @@
-<Workspace Version="0.8.0.706" X="761.639973569609" Y="-68.7262892989265" zoom="0.767272747272974" Name="Home" RunType="Automatic" RunPeriod="100">
+<Workspace Version="0.8.0.706" X="761.639973569609" Y="-68.7262892989265" zoom="0.767272747272974" Name="Home" RunType="Automatic" RunPeriod="100" HasRunWithoutCrash="True">
   <NamespaceResolutionMap />
   <Elements>
     <Dynamo.Nodes.DSFunction guid="48175079-300b-4b1d-9953-e23d570dce12" type="Dynamo.Nodes.DSFunction" nickname="Point.ByCoordinates" x="222.212117893843" y="457.062054843618" isVisible="true" isUpstreamVisible="true" lacing="Longest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">

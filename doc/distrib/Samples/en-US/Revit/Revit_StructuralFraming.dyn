@@ -1,4 +1,4 @@
-<Workspace Version="0.8.0.760" X="-171.495004696313" Y="310.187577757409" zoom="0.25709570359128" Name="Home" RunType="Manual" RunPeriod="100">
+<Workspace Version="0.8.0.760" X="-171.495004696313" Y="310.187577757409" zoom="0.25709570359128" Name="Home" RunType="Automatic" RunPeriod="100" HasRunWithoutCrash="True">
   <NamespaceResolutionMap />
   <Elements>
     <Dynamo.Nodes.DSModelElementSelection guid="f46e385f-3b0a-446c-adeb-8d419a480cba" type="Dynamo.Nodes.DSModelElementSelection" nickname="Select Model Element" x="846.35713721073" y="671.368151070194" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
