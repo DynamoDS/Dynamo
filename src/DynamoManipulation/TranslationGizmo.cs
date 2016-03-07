@@ -211,7 +211,7 @@ namespace Dynamo.Manipulation
             using (var ray = GetRayGeometry(source, direction))
             {
                 //First hit test for position
-                if (ray.DistanceTo(ManipulatorOrigin) < tolerance)
+                if (ray.DistanceTo(Origin) < tolerance)
                 {
                     if (planes.Any())
                     {
@@ -365,8 +365,6 @@ namespace Dynamo.Manipulation
             planes.Clear();
 
             planes.AddRange(newPlanes);
-
-            DeleteTransientGraphics();
         }
 
 

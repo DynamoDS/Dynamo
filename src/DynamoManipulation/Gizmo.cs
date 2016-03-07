@@ -168,8 +168,10 @@ namespace Dynamo.Manipulation
 
         private void Redraw()
         {
-            if(manipulator.IsEnabled())
+            if (manipulator.IsEnabled())
+            {
                 BackgroundPreviewViewModel.AddGeometryForRenderPackages(GetDrawables());
+            }
         }
 
         private void OnViewCameraChanged(object o, RoutedEventArgs routedEventArgs)

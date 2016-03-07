@@ -181,11 +181,6 @@ namespace Dynamo.Manipulation
                         {
                             WorkspaceModel.RecordModelsForModification(nodes);
                         }
-
-                        // Decouple manipulator update from graph (node) execution
-                        // to allow it move freely with mouse move
-                        //Node.RequestRenderPackages -= GenerateRenderPackages;
-
                         return;
                     }
                 }
@@ -199,21 +194,14 @@ namespace Dynamo.Manipulation
         /// <param name="e"></param>
         protected virtual void MouseUp(object sender, MouseButtonEventArgs e)
         {
-            // Recouple manipulator with graph (node) execution in order to 
-            // update final gizmo position based on node evaluation
-            //if (GizmoInAction != null)
-            //{
-            //    Node.RequestRenderPackages += GenerateRenderPackages;
-            //}
-
             GizmoInAction = null;
 
-            ////Delete all transient graphics for gizmos
-            //var gizmos = GetGizmos(false);
-            //foreach (var gizmo in gizmos)
-            //{
-            //    gizmo.UpdateGizmoGraphics();
-            //}
+            //Update gizmo graphics after every camera view change
+            var gizmos = GetGizmos(false);
+            foreach (var gizmo in gizmos)
+            {
+                gizmo.UpdateGizmoGraphics();
+            }
         }
 
         /// <summary>
