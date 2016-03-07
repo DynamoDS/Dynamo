@@ -576,6 +576,17 @@ namespace ProtoCore.DSASM
             }
         }
 
+        public int ExplicitCallEntry
+        {
+            get
+            {
+                if (!IsExplicitCall)
+                    throw new InvalidTypeException("The Type of StackValue is not ExplicitCall");
+
+                return (int)RawIntValue;
+            }
+        }
+
         public StackFrameType FrameType
         {
             get
