@@ -1,4 +1,4 @@
-<Workspace Version="0.8.0.684" X="-30.2935980786463" Y="508.421125073234" zoom="0.0972267586264545" Name="Home" RunType="Automatic" RunPeriod="100">
+<Workspace Version="0.8.0.684" X="-30.2935980786463" Y="508.421125073234" zoom="0.0972267586264545" Name="Home" RunType="Automatic" RunPeriod="100" HasRunWithoutCrash="True">
   <NamespaceResolutionMap>
     <ClassMap partialName="Point" resolvedName="Autodesk.DesignScript.Geometry.Point" assemblyName="ProtoGeometry.dll" />
     <ClassMap partialName="Math" resolvedName="DSCore.Math" assemblyName="DSCoreNodes.dll" />
