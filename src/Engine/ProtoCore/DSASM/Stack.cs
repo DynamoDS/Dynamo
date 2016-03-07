@@ -396,7 +396,7 @@ namespace ProtoCore.DSASM
                         return ComparePointerFromHeap(sv1, sv2, rtCore1, rtCore2, context);
                     }
                 default :
-                    return sv1.opdata == sv2.opdata;
+                    return sv1.Equals(sv2);
             }
         }
 

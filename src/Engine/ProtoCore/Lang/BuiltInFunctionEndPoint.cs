@@ -578,7 +578,7 @@ namespace ProtoCore.Lang
 
             // Find the first visible method in the class and its heirarchy
             // The callsite will handle the overload
-            var dynamicFunction = runtimeCore.DSExecutable.DynamicFuncTable.GetFunctionAtIndex((int)dynamicTableIndex.opdata);
+            var dynamicFunction = runtimeCore.DSExecutable.DynamicFuncTable.GetFunctionAtIndex(dynamicTableIndex.IntegerValue);
             string functionName = dynamicFunction.Name;
 
             var replicationGuides = new List<List<ProtoCore.ReplicationGuide>>();
@@ -926,7 +926,7 @@ namespace ProtoCore.Lang
             }
             StackValue result = runtime.runtime.rmem.Heap.AllocateArray(rows);
             //Judge whether the array needed to be transposed(when Boolean:trans is false) or not(when Boolean:trans is true)
-            if (trans.opdata == 1)
+            if (trans.BooleanValue)
             {
                 return result; 
             }

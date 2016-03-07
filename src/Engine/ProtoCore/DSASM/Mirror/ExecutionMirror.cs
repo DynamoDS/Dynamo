@@ -289,13 +289,13 @@ namespace ProtoCore.DSASM.Mirror
 
         private string GetPointerTrace(StackValue ptr, Heap heap, int langblock, HashSet<int> pointers, bool forPrint)
         {
-            if (pointers.Contains((int)ptr.opdata))
+            if (pointers.Contains(ptr.ArrayPointer))
             {
                 return "{ ... }";
             }
             else
             {
-                pointers.Add((int)ptr.opdata);
+                pointers.Add(ptr.ArrayPointer);
 
                 if (forPrint)
                 {
@@ -1055,38 +1055,6 @@ namespace ProtoCore.DSASM.Mirror
             }
             throw new NotImplementedException("{F5ACC95F-AEC9-486D-BC82-FF2CB26E7E6A}"); //@TODO(Luke): Replace this with a symbol lookup exception
         }
-
-        public string GetFirstNameFromValue(StackValue v)
-        {
-            if (!v.IsPointer)
-                throw new ArgumentException("SV to highlight must be a pointer");
-
-            ProtoCore.DSASM.Executable exe = MirrorTarget.exe;
-
-            List<SymbolNode> symNodes = new List<SymbolNode>();
-
-            foreach (SymbolTable symTable in exe.runtimeSymbols)
-            {
-                foreach (SymbolNode symNode in symTable.symbolList.Values)
-                {
-                    symNodes.Add(symNode);
-                }
-
-            }
-
-
-            int index = MirrorTarget.rmem.Stack.FindIndex(0, value => value.opdata == v.opdata);
-
-            List<SymbolNode> matchingNodes = symNodes.FindAll(value => value.index == index);
-
-            if (matchingNodes.Count > 0)
-                return matchingNodes[0].name;
-            else
-            {
-                return null;
-            }
-        }
-
 
         public Obj GetFirstValue(string name, int startBlock = 0, int classcope = Constants.kGlobalScope)
         {

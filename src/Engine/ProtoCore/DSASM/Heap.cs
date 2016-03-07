@@ -442,7 +442,20 @@ namespace ProtoCore.DSASM
         private bool TryGetHeapElement(StackValue pointer, out HeapElement heapElement)
         {
             heapElement = null;
-            int index = (int)pointer.opdata;
+            int index = Constants.kInvalidIndex;
+            if (pointer.IsPointer)
+            {
+                index = pointer.Pointer;
+            }
+            else if (pointer.IsArray)
+            {
+                index = pointer.ArrayPointer;
+            }
+            else if (pointer.IsString)
+            {
+                index = pointer.StringPointer;
+            }
+
 
             if (index >= 0 && index < heapElements.Count)
             {

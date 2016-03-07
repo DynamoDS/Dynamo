@@ -282,7 +282,6 @@ namespace ProtoCore
                 }
 
                 StackValue nextPtr = sv;
-                Validity.Assert(nextPtr.opdata >= 0);
                 obj = Heap.ToHeapObject<DSObject>(nextPtr);
 
                 if (obj.Values.Any()) 

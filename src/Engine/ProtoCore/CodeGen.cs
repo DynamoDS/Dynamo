@@ -838,23 +838,23 @@ namespace ProtoCore
                         }
                     }
 
+                    StackValue op = StackValue.Null;
                     if (0 == depth || (symbolnode != null && symbolnode.isStatic))
                     {
                         if (ProtoCore.DSASM.Constants.kGlobalScope == symbolnode.functionIndex
                             && ProtoCore.DSASM.Constants.kInvalidIndex != symbolnode.classScope)
                         {
                             // member var
-                            operandType = symbolnode.isStatic ? ProtoCore.DSASM.AddressType.StaticMemVarIndex : ProtoCore.DSASM.AddressType.MemVarIndex;
+                            if (symbolnode.isStatic)
+                                op = StackValue.BuildStaticMemVarIndex(symbolnode.symbolTableIndex);
+                            else
+                                op = StackValue.BuildMemVarIndex(symbolnode.symbolTableIndex);
                         }
                         else
                         {
-                            operandType = ProtoCore.DSASM.AddressType.VarIndex;
+                            op = StackValue.BuildVarIndex(symbolnode.symbolTableIndex);
                         }
                     }
-
-                    StackValue op = new StackValue();
-                    op.optype = operandType;
-                    op.opdata = symbolnode.symbolTableIndex;
 
                     // TODO Jun: Performance. 
                     // Is it faster to have a 'push' specific to arrays to prevent pushing dimension for push instruction?

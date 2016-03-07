@@ -2906,7 +2906,7 @@ namespace ProtoCore.DSASM
                     rmem.PopFrame(argumentNumber); //remove the arguments
                     return false;
                 }
-                fptr = (int)fpSv.opdata;
+                fptr = fpSv.FunctionPointer;
             }
 
             //retrieve the function arguments
@@ -2988,7 +2988,7 @@ namespace ProtoCore.DSASM
                             rmem.Pop(); //remove final pointer
                             return false;
                         }
-                        fptr = (int)fpSv.opdata;
+                        fptr = fpSv.FunctionPointer;
                     }
                 }
             }
@@ -3083,7 +3083,7 @@ namespace ProtoCore.DSASM
 
                 //Modify the operand data
                 instr.op1 = StackValue.BuildFunctionIndex(procNode.ID);
-                instr.op2.opdata = type;
+                instr.op2 = StackValue.BuildStaticType(type, instr.op2.Rank);
 
                 return true;
             }
@@ -4019,7 +4019,7 @@ namespace ProtoCore.DSASM
             }
             else
             {
-                opdata2 = StackValue.BuildBoolean(opdata2.opdata != 0L && opdata1.opdata != 0L);
+                opdata2 = StackValue.BuildBoolean(opdata2.BooleanValue && opdata1.BooleanValue);
             }
             rmem.Push(opdata2);
 
@@ -4096,13 +4096,9 @@ namespace ProtoCore.DSASM
                 int diffIndex = StringUtils.CompareString(opdata2, opdata1, runtimeCore);
                 opdata2 = StackValue.BuildBoolean(diffIndex == 0);
             }
-            else if (opdata1.optype == opdata2.optype)
-            {
-                opdata2 = StackValue.BuildBoolean(opdata1.opdata == opdata2.opdata);
-            }
             else
             {
-                opdata2 = StackValue.BuildBoolean(false);
+                opdata2 = StackValue.BuildBoolean(opdata1.Equals(opdata2));
             }
 
             rmem.Push(opdata2);
@@ -4463,7 +4459,7 @@ namespace ProtoCore.DSASM
                             for (int i = 0; i < guides; ++i)
                             {
                                 value = rmem.Stack[stackindex--];
-                                replicationGuideList.Add((int)value.opdata);
+                                replicationGuideList.Add(value.ReplicationGuide);
                             }
                         }
                         replicationGuideList.Reverse();
@@ -4739,7 +4735,7 @@ namespace ProtoCore.DSASM
 
         private void JMP_Handler(Instruction instruction)
         {
-            pc = (int)instruction.op1.opdata;
+            pc = instruction.op1.LabelIndex;
         }
 
         private void CJMP_Handler(Instruction instruction)
@@ -4749,8 +4745,8 @@ namespace ProtoCore.DSASM
             if (opdata1.IsDouble)
             {
                 if (opdata1.DoubleValue.Equals(0))
-                { 
-                    pc = (int)GetOperandData(instruction.op1).opdata;
+                {
+                    pc = instruction.op1.LabelIndex;
                 }
                 else
                 {
@@ -4763,9 +4759,9 @@ namespace ProtoCore.DSASM
                 {
                     pc += 1;
                 }
-                else if (0 == opdata1.opdata)
+                else if (0 == opdata1.ToInteger().IntegerValue)
                 {
-                    pc = (int)GetOperandData(instruction.op1).opdata;
+                    pc = instruction.op1.LabelIndex;
                 }
                 else
                 {
