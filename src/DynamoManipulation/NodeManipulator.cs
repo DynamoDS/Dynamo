@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
@@ -43,12 +45,11 @@ namespace Dynamo.Manipulation
         private readonly DynamoManipulationExtension manipulatorContext;
         private const double NewNodeOffsetX = 350;
         private const double NewNodeOffsetY = 50;
+        private bool active;
 
         protected const double gizmoScale = 1.2;
 
         #region properties
-
-        protected bool Active { get; set; }
 
         protected IWorkspaceModel WorkspaceModel
         {
@@ -76,6 +77,7 @@ namespace Dynamo.Manipulation
 
         /// <summary>
         /// Base position of geometry being manipulated by manipulator
+        /// Derived classes should update this value in UpdatePosition and OnGizmoMoved
         /// </summary>
         internal abstract Point Origin { get; }
 
@@ -112,7 +114,8 @@ namespace Dynamo.Manipulation
         protected abstract void AssignInputNodes();
 
         /// <summary>
-        /// Implement to update the position(s) of the manipulator when the node is updated
+        /// Implement to update the position(s) of the manipulator including Origin
+        /// when the node is updated
         /// </summary>
         /// <returns>return true if position is updated successfully else return false</returns>
         protected abstract bool UpdatePosition();
@@ -129,7 +132,7 @@ namespace Dynamo.Manipulation
         /// <summary>
         /// This method is called when the Gizmo in action is moved during mouse
         /// move event. Derived class must use this notification to update the 
-        /// input nodes AND update the manipulator origin based on the mouse move.
+        /// input nodes AND update the manipulator Origin based on the mouse move.
         /// </summary>
         /// <param name="gizmoInAction">The Gizmo in action.</param>
         /// <param name="offset">Offset amount by which Gizmo has moved.</param>
@@ -156,7 +159,7 @@ namespace Dynamo.Manipulation
         protected virtual void MouseDown(object sender, MouseButtonEventArgs mouseButtonEventArgs)
         {
             
-            Active = UpdatePosition();
+            active = UpdatePosition();
 
             GizmoInAction = null; //Reset Drag.
 
@@ -388,6 +391,8 @@ namespace Dynamo.Manipulation
         /// </summary>
         private void DrawManipulator()
         {
+            Debug.Assert(IsMainThread());
+
             var packages = GenerateRenderPackages();
 
             // Add manipulator geometry to view asynchronously 
@@ -429,7 +434,7 @@ namespace Dynamo.Manipulation
             
             AssignInputNodes();
             
-            Active = UpdatePosition();
+            active = UpdatePosition();
 
             if (!IsEnabled())
             {
@@ -476,6 +481,8 @@ namespace Dynamo.Manipulation
         /// <param name="clickRay"></param>
         private void HighlightGizmoOnRollOver(IRay clickRay)
         {
+            Debug.Assert((IsMainThread()));
+
             var gizmos = GetGizmos(false);
             foreach (var item in gizmos)
             {
@@ -492,6 +499,15 @@ namespace Dynamo.Manipulation
                     }
                 }
             }
+        }
+
+        internal static bool IsMainThread()
+        {
+            if (Thread.CurrentThread.GetApartmentState() == ApartmentState.STA &&
+                !Thread.CurrentThread.IsBackground && !Thread.CurrentThread.IsThreadPoolThread &&
+                Thread.CurrentThread.IsAlive) return true;
+
+            return false;
         }
 
         #endregion
@@ -512,6 +528,8 @@ namespace Dynamo.Manipulation
         /// <returns>List of render packages</returns>
         public IEnumerable<IRenderPackage> BuildRenderPackage()
         {
+            Debug.Assert(IsMainThread());
+
             var packages = new List<IRenderPackage>();
             var gizmos = GetGizmos(true);
             foreach (var item in gizmos)
@@ -536,7 +554,7 @@ namespace Dynamo.Manipulation
                 return false;
             }
 
-            return Active;
+            return active;
         }
         #endregion
     }
