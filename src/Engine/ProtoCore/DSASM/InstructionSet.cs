@@ -115,8 +115,7 @@ namespace ProtoCore.DSASM
     [System.Diagnostics.DebuggerDisplay("{optype}, opdata = {opdata}, metaData = {metaData.type}")]
     public struct StackValue
     {
-        public Int64 opdata;
-        public double opdata_d;
+        public long opdata;
         public AddressType optype;
         public MetaData metaData;
 
@@ -131,7 +130,6 @@ namespace ProtoCore.DSASM
             StackValue newSv = new StackValue();
             newSv.optype = optype;
             newSv.opdata = opdata;
-            newSv.opdata_d = opdata_d;
             newSv.metaData = new MetaData { type = metaData.type };
             return newSv;
         }
@@ -170,7 +168,7 @@ namespace ProtoCore.DSASM
         /// Get integer value without checking its type or do type conversion,
         /// so the StackValue shoule be boolean typed.
         /// </summary>
-        public Int64 RawIntValue
+        public long RawIntValue
         {
             get
             {
@@ -186,7 +184,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                return opdata_d;
+                return BitConverter.Int64BitsToDouble(opdata);
             }
         }
 
@@ -387,7 +385,7 @@ namespace ProtoCore.DSASM
         {
             StackValue value = new StackValue();
             value.optype = AddressType.Double;
-            value.opdata_d = data;
+            value.opdata = BitConverter.DoubleToInt64Bits(data);
 
             MetaData mdata = new MetaData();
             mdata.type = (int)PrimitiveType.kTypeDouble;
@@ -451,23 +449,32 @@ namespace ProtoCore.DSASM
         {
             StackValue value = new StackValue();
             value.optype = AddressType.ArrayKey;
-            value.opdata = index;
-            value.opdata_d = arrayPtr;
+
+            if (index == Constants.kInvalidIndex || arrayPtr == Constants.kInvalidIndex)
+            {
+                value.opdata = Constants.kInvalidIndex;
+            }
+            else
+            {
+                // Array key information is encoded in 64bits opdata. 
+                //
+                // High 32 bits: array pointer
+                // Low 32 bits : array key
+                
+                // TODO: find out a cleaner way to represent array key instead 
+                // of using this kind of hacking.
+                ulong key = (ulong)arrayPtr;
+                key = (key << 32) | (uint)index;
+                value.opdata = (long)key;
+            }
 
             return value;
         }
 
         public static StackValue BuildArrayKey(StackValue array, int index)
         {
-            StackValue value = new StackValue();
-            value.optype = AddressType.ArrayKey;
-            value.opdata = index;
-            value.metaData = array.metaData;
-
             Validity.Assert(array.IsArray || array.IsString);
-            value.opdata_d = (int)array.opdata;
-
-            return value;
+            return BuildArrayKey((int)array.RawIntValue, index);
         }
 
         public static StackValue BuildThisPtr(int thisptr)
