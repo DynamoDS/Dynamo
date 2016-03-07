@@ -1049,7 +1049,7 @@ namespace ProtoCore.Lang
             return range;
         }
 
-        internal static StackValue[] GenerateRangeByAmount(decimal start, long amount, decimal stepsize, bool isIntRange)
+        internal static StackValue[] GenerateRangeByAmount(double start, double stepsize, int amount, bool isIntRange)
         {
             if (amount == 0)
             {
@@ -1061,7 +1061,7 @@ namespace ProtoCore.Lang
                 StackValue[] range = new StackValue[amount];
                 for (int i = 0; i < amount; ++i)
                 {
-                    range[i] = isIntRange ? StackValue.BuildInt((int)start) : StackValue.BuildDouble((double)start);
+                    range[i] = isIntRange ? StackValue.BuildInt((int)start) : StackValue.BuildDouble(start);
                     start += stepsize;
                 }
                 return range;
@@ -1155,14 +1155,14 @@ namespace ProtoCore.Lang
 
             if (hasAmountOp)
             {
-                long amount = svEnd.ToInteger().opdata;
+                int amount = (int)svEnd.ToInteger().opdata;
                 if (amount < 0)
                 {
                     runtimeCore.RuntimeStatus.LogWarning(WarningID.kInvalidArguments, Resources.kInvalidAmountInRangeExpression);
                     return null;
                 }
-                decimal stepsize = new decimal(svStep.ToDouble().RawDoubleValue);
-                return GenerateRangeByAmount(start, amount, stepsize, isIntRange);
+                double stepsize = svStep.ToDouble().RawDoubleValue;
+                return GenerateRangeByAmount(startValue, stepsize, amount, isIntRange);
             }
             else
             {
