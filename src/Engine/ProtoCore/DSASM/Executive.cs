@@ -4755,7 +4755,7 @@ namespace ProtoCore.DSASM
                 {
                     pc += 1;
                 }
-                else if (0 == opdata1.ToInteger().IntegerValue)
+                else if (0 == opdata1.RawData)
                 {
                     pc = instruction.op1.LabelIndex;
                 }

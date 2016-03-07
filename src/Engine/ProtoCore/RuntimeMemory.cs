@@ -106,8 +106,8 @@ namespace ProtoCore
                 Push(StackValue.BuildBlockIndex(functionBlockCaller));
                 Push(StackValue.BuildBlockIndex(functionBlockDecl));
                 Push(StackValue.BuildInt(pc));
-                Push(StackValue.BuildInt(funcIndex));
-                Push(StackValue.BuildInt(classIndex));
+                Push(StackValue.BuildFunctionIndex(funcIndex));
+                Push(StackValue.BuildClassIndex(classIndex));
                 Push(svThisPtr);
                 FramePointer = Stack.Count;
             }
@@ -149,8 +149,8 @@ namespace ProtoCore
             public bool ValidateStackFrame()
             {
                 return Stack[GetRelative(StackFrame.kFrameIndexThisPtr)].IsPointer
-                    && Stack[GetRelative(StackFrame.kFrameIndexClass)].IsInteger
-                    && Stack[GetRelative(StackFrame.kFrameIndexFunction)].IsInteger
+                    && Stack[GetRelative(StackFrame.kFrameIndexClass)].IsClassIndex
+                    && Stack[GetRelative(StackFrame.kFrameIndexFunction)].IsFunctionIndex
                     && Stack[GetRelative(StackFrame.kFrameIndexReturnAddress)].IsInteger
                     && Stack[GetRelative(StackFrame.kFrameIndexFunctionBlock)].IsBlockIndex
                     && Stack[GetRelative(StackFrame.kFrameIndexFunctionCallerBlock)].IsBlockIndex

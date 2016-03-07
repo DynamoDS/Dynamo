@@ -1527,7 +1527,7 @@ namespace ProtoCore
             EmitInstrConsole(ProtoCore.DSASM.kw.pushb, blockID.ToString());
             Instruction instr = new Instruction();
             instr.opCode = ProtoCore.DSASM.OpCode.PUSHBLOCK;
-            instr.op1 = StackValue.BuildInt(blockID);
+            instr.op1 = StackValue.BuildBlockIndex(blockID);
 
             ++pc;
             AppendInstruction(instr);

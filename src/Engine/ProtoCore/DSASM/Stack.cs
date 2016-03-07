@@ -96,8 +96,8 @@ namespace ProtoCore.DSASM
             Frame[(int)AbsoluteIndex.kFunctionCallerBlock] = StackValue.BuildBlockIndex(functionBlockCaller);
             Frame[(int)AbsoluteIndex.kFunctionBlock] = StackValue.BuildBlockIndex(functionBlockDecl);
             Frame[(int)AbsoluteIndex.kReturnAddress] = StackValue.BuildInt(pc);
-            Frame[(int)AbsoluteIndex.kFunction] = StackValue.BuildInt(funcIndex);
-            Frame[(int)AbsoluteIndex.kClass] = StackValue.BuildInt(classIndex);
+            Frame[(int)AbsoluteIndex.kFunction] = StackValue.BuildFunctionIndex(funcIndex);
+            Frame[(int)AbsoluteIndex.kClass] = StackValue.BuildClassIndex(classIndex);
             Frame[(int)AbsoluteIndex.kThisPtr] = svThisPtr;
 
             Frame[(int)AbsoluteIndex.kRegisterAX] = stack[0];

@@ -391,7 +391,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                if (!IsVariableIndex || !IsStaticVariableIndex || !IsMemberVariableIndex)
+                if (!IsVariableIndex && !IsStaticVariableIndex && !IsMemberVariableIndex)
                     throw new InvalidTypeException("It is not a symbol type");
 
                 return (int)opdata;
@@ -435,7 +435,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                if (!IsInteger)
+                if (!IsDouble)
                     throw new InvalidTypeException("The Type of StackValue is not Double");
 
                 return BitConverter.Int64BitsToDouble(opdata);
