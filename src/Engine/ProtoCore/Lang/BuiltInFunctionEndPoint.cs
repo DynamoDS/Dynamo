@@ -1068,28 +1068,23 @@ namespace ProtoCore.Lang
             }
         }
 
-        internal static StackValue RangeExpression(StackValue svStart,
-                                                   StackValue svEnd,
-                                                   StackValue svStep,
-                                                   StackValue svOp,
-                                                   StackValue svHasStep,
-                                                   StackValue svHasAmountOp,
-                                                   RuntimeCore runtimeCore)
+        internal static StackValue RangeExpression(
+            StackValue svStart,
+            StackValue svEnd,
+            StackValue svStep,
+            StackValue svOp,
+            StackValue svHasStep,
+            StackValue svHasAmountOp,
+            RuntimeCore runtimeCore)
         {
             bool hasStep = svHasStep.IsBoolean && svHasStep.RawBooleanValue;
             bool hasAmountOp = svHasAmountOp.IsBoolean && svHasAmountOp.RawBooleanValue;
 
             // If start parameter is not the same as end parameter, show warning.
             // If start parameter is not number/string and there is no amount op, show warning.
-            if (!((svStart.IsNumeric && svEnd.IsNumeric)
-                  ||
-                  (svStart.IsString && svEnd.IsString))
-                  &&
-                  (!hasAmountOp))
+            if (!((svStart.IsNumeric && svEnd.IsNumeric) || (svStart.IsString && svEnd.IsString)) && (!hasAmountOp))
             {
-                runtimeCore.RuntimeStatus.LogWarning(
-                    WarningID.kInvalidArguments, 
-                    Resources.kInvalidArgumentsInRangeExpression);
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kInvalidArguments, Resources.kInvalidArgumentsInRangeExpression);
                 return StackValue.Null;
             }
 
@@ -1097,25 +1092,19 @@ namespace ProtoCore.Lang
             {
                 if (!svEnd.IsNumeric)
                 {
-                    runtimeCore.RuntimeStatus.LogWarning(
-                        WarningID.kInvalidArguments,
-                        Resources.kInvalidAmountInRangeExpression);
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kInvalidArguments, Resources.kInvalidAmountInRangeExpression);
                     return StackValue.Null;
                 }
                 if (!hasStep)
                 {
-                    runtimeCore.RuntimeStatus.LogWarning(
-                        WarningID.kInvalidArguments,
-                        Resources.kNoStepSizeInAmountRangeExpression);
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kInvalidArguments, Resources.kNoStepSizeInAmountRangeExpression);
                     return StackValue.Null;
                 }
             }
 
             if ((svStep.IsNull && hasStep) || (!svStep.IsNull && !svStep.IsNumeric))
             {
-                runtimeCore.RuntimeStatus.LogWarning(
-                    WarningID.kInvalidArguments,
-                    Resources.kInvalidArgumentsInRangeExpression);
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kInvalidArguments, Resources.kInvalidArgumentsInRangeExpression);
                 return StackValue.Null;
             }
 
@@ -1123,46 +1112,31 @@ namespace ProtoCore.Lang
 
             if (svStart.IsNumeric)
             {
-                range = GenerateNumericRange(
-                    svStart,
-                    svEnd,
-                    svStep,
-                    svOp,
-                    hasStep,
-                    hasAmountOp,
-                    runtimeCore);
+                range = GenerateNumericRange(svStart, svEnd, svStep, svOp, hasStep, hasAmountOp, runtimeCore);
             }
             else
             {
                 if (svStart.IsString && !hasAmountOp)
                 {
-                    range = GenerateAlphabetRange(
-                    svStart,
-                    svEnd,
-                    svStep,                   
-                    runtimeCore);
+                    range = GenerateAlphabetRange(svStart, svEnd, svStep, runtimeCore);
                 }
                 else if (svStart.IsString && hasAmountOp)
                 {
-                    range = GenerateAlphabetSequence(
-                        svStart,
-                        svEnd,
-                        svStep,
-                        svOp,                        
-                        runtimeCore);
+                    range = GenerateAlphabetSequence(svStart, svEnd, svStep, svOp, runtimeCore);
                 }
             }
 
             return range == null ? StackValue.Null : runtimeCore.RuntimeMemory.Heap.AllocateArray(range);
         }
 
-        private static StackValue[] GenerateNumericRange(StackValue svStart,
-                                                         StackValue svEnd,
-                                                         StackValue svStep,
-                                                         StackValue svOp,
-                                                         bool hasStep,
-                                                         bool hasAmountOp,
-                                                         RuntimeCore runtimeCore)
+        private static StackValue[] GenerateNumericRange(
+            StackValue svStart,
+            StackValue svEnd,
+            StackValue svStep,
+            StackValue svOp,
+            bool hasStep,
+            bool hasAmountOp,
+            RuntimeCore runtimeCore)
         {
             double startValue = svStart.ToDouble().RawDoubleValue;
             double endValue = svEnd.ToDouble().RawDoubleValue;
@@ -1171,9 +1145,7 @@ namespace ProtoCore.Lang
                 double.IsInfinity(endValue) || double.IsNaN(endValue) ||
                 svStep.IsDouble && (double.IsInfinity(svStep.RawDoubleValue) || double.IsNaN(svStep.RawDoubleValue)))
             {
-                runtimeCore.RuntimeStatus.LogWarning(
-                    WarningID.kInvalidArguments,
-                    Resources.kInvalidArgumentsInRangeExpression);
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kInvalidArguments, Resources.kInvalidArgumentsInRangeExpression);
                 return null;
             }
 
@@ -1186,9 +1158,7 @@ namespace ProtoCore.Lang
                 long amount = svEnd.ToInteger().opdata;
                 if (amount < 0)
                 {
-                    runtimeCore.RuntimeStatus.LogWarning(
-                       WarningID.kInvalidArguments,
-                       Resources.kInvalidAmountInRangeExpression);
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kInvalidArguments, Resources.kInvalidAmountInRangeExpression);
                     return null;
                 }
                 decimal stepsize = new decimal(svStep.ToDouble().RawDoubleValue);
