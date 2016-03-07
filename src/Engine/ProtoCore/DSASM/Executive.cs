@@ -3083,7 +3083,7 @@ namespace ProtoCore.DSASM
 
                 //Modify the operand data
                 instr.op1 = StackValue.BuildFunctionIndex(procNode.ID);
-                instr.op2 = StackValue.BuildStaticType(type, instr.op2.Rank);
+                instr.op2 = StackValue.BuildClassIndex(type);
 
                 return true;
             }
@@ -4136,7 +4136,7 @@ namespace ProtoCore.DSASM
             }
             else 
             {
-                opdata2 = StackValue.BuildBoolean(opdata1.Equals(opdata2));
+                opdata2 = StackValue.BuildBoolean(!opdata1.Equals(opdata2));
             }
 
             rmem.Push(opdata2);
