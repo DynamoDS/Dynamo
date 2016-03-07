@@ -112,10 +112,17 @@ namespace ProtoCore.DSASM
         public int type;
     }
 
+    public class InvalidTypeException : Exception
+    {
+        public InvalidTypeException(string message) : base(message)
+        {
+        }
+    }
+
     [System.Diagnostics.DebuggerDisplay("{optype}, opdata = {opdata}, metaData = {metaData.type}")]
     public struct StackValue
     {
-        public long opdata;
+        private long opdata;
         public AddressType optype;
         public MetaData metaData;
 
@@ -255,8 +262,7 @@ namespace ProtoCore.DSASM
 
         public bool IsNumeric
         {
-            get { return optype == AddressType.Int || optype ==
-            AddressType.Double; }
+            get { return optype == AddressType.Int || optype == AddressType.Double; }
         }
 
         public bool IsBoolean
@@ -358,6 +364,240 @@ namespace ProtoCore.DSASM
         {
             get { return opdata != Constants.kInvalidIndex && (IsArray || IsPointer || IsString); }
         }
+        #endregion
+
+        #region Type-dependent value extractor
+        public int VariableIndex
+        {
+            get
+            {
+                if (!IsVariableIndex)
+                    throw new InvalidTypeException("The type of StackValue is not VariableIndex");
+
+                return (int)RawIntValue;
+            }
+        }
+
+        public int FunctionIndex
+        {
+            get
+            {
+                if (!IsFunctionIndex)
+                    throw new InvalidTypeException("The type of StackValue is not FunctionIndex");
+
+                return (int)RawIntValue;
+            }
+        }
+
+        public int MemberVariableIndex
+        {
+            get
+            {
+                if (!IsMemberVariableIndex)
+                    throw new InvalidTypeException("The type of StackValue is not MemberVariableIndex");
+
+                return (int)RawIntValue;
+            }
+        }
+
+        public int StaticVariableIndex
+        {
+            get
+            {
+                if (!IsStaticVariableIndex)
+                    throw new InvalidTypeException("The type of StackValue is not StaticVariableIndex");
+
+                return (int)RawIntValue;
+            }
+        }
+
+        public int ClassIndex
+        {
+            get
+            {
+                if (!IsClassIndex)
+                    throw new InvalidTypeException("The Type of StackValue is not ClassIndex");
+
+                return (int)RawIntValue;
+            }
+        }
+
+        public int IntegerValue
+        {
+            get
+            {
+                if (!IsInteger)
+                    throw new InvalidTypeException("The Type of StackValue is not Integer");
+
+                return (int)RawIntValue;
+            }
+        }
+
+        public double DoubleValue
+        {
+            get
+            {
+                if (!IsInteger)
+                    throw new InvalidTypeException("The Type of StackValue is not Double");
+
+                return RawDoubleValue;
+            }
+        }
+
+        public bool BooleanValue
+        {
+            get
+            {
+                if (!IsBoolean)
+                    throw new InvalidTypeException("The Type of StackValue is not Boolean");
+
+                return RawBooleanValue;
+            }
+        }
+
+        public int StringPointer
+        {
+            get
+            {
+                if (!IsString)
+                    throw new InvalidTypeException("The Type of StackValue is not String");
+
+                return (int)RawIntValue;
+            }
+        }
+
+        public int LabelIndex
+        {
+            get
+            {
+                if (!IsLabelIndex)
+                    throw new InvalidTypeException("The Type of StackValue is not LabelIndex");
+
+                return (int)RawIntValue;
+            }
+        }
+
+        public int BlockIndex
+        {
+            get
+            {
+                if (!IsBlockIndex)
+                    throw new InvalidTypeException("The Type of StackValue is not BlockIndex");
+
+                return (int)RawIntValue;
+            }
+        }
+
+        public int Pointer
+        {
+            get
+            {
+                if (!IsPointer)
+                    throw new InvalidTypeException("The Type of StackValue is not Pointer");
+
+                return (int)RawIntValue;
+            }
+        }
+
+        public int ArrayPointer
+        {
+            get
+            {
+                if (!IsArray)
+                    throw new InvalidTypeException("The Type of StackValue is not ArrayPointer");
+
+                return (int)RawIntValue;
+            }
+        }
+
+        public int FunctionPointer
+        {
+            get
+            {
+                if (!IsFunctionPointer)
+                    throw new InvalidTypeException("The Type of StackValue is not FunctionPointer");
+
+                return (int)RawIntValue;
+            }
+        }
+
+        public int ArrayDimension
+        {
+            get
+            {
+                if (!IsArrayDimension)
+                    throw new InvalidTypeException("The Type of StackValue is not ArrayDimension");
+
+                return (int)RawIntValue;
+            }
+        }
+
+        public int ReplicationGuide
+        {
+            get
+            {
+                if (!IsReplicationGuide)
+                    throw new InvalidTypeException("The Type of StackValue is not ReplicationGuide");
+
+                return (int)RawIntValue;
+            }
+        }
+
+        public int Rank 
+        {
+            get
+            {
+                if (!IsStaticType)
+                    throw new InvalidTypeException("The Type of StackValue is not StaticType");
+
+                return (int)RawIntValue;
+            }
+        }
+
+        public CallingConvention.CallType CallingConvention
+        {
+            get
+            {
+                if (!IsCallingConvention)
+                    throw new InvalidTypeException("The Type of StackValue is not CallingConvention");
+
+                return (CallingConvention.CallType)RawIntValue;
+            }
+        }
+
+        public StackFrameType FrameType
+        {
+            get
+            {
+                if (!IsFrameType)
+                    throw new InvalidTypeException("The Type of StackValue is not FrameType");
+
+                return (StackFrameType)RawIntValue;
+            }
+        }
+
+        public int ThisPtr
+        {
+            get
+            {
+                if (!IsThisPtr)
+                    throw new InvalidTypeException("The Type of StackValue is not ThisPtr");
+
+                return (int)RawIntValue;
+            }
+        }
+
+        public int ArrayKeyIndex
+        {
+            get
+            {
+                if (!IsArrayKey)
+                    throw new InvalidTypeException("The Type of StackValue is not ArrayKey");
+
+                return (int)RawIntValue;
+            }
+        }
+
         #endregion
 
         #region Builders
