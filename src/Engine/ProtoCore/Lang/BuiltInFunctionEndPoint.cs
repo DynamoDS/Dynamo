@@ -1004,27 +1004,6 @@ namespace ProtoCore.Lang
     }
     internal class RangeExpressionUntils
     {
-        internal static StackValue[] GenerateRangeByStepSize(decimal start, decimal end, decimal stepsize, bool isIntRange)
-        {
-            if ((stepsize == 0) || (end > start && stepsize < 0) || (end < start && stepsize > 0))
-            {
-                return null;
-            }
-            else
-            {
-                int stepnum = (int)Math.Truncate((end - start) / stepsize) + 1;
-                StackValue[] range = new StackValue[stepnum];
-
-                decimal cur = start;
-                for (int i = 0; i < stepnum; ++i)
-                {
-                    range[i] = isIntRange ? StackValue.BuildInt((int)cur) : StackValue.BuildDouble((double)cur);
-                    cur += stepsize;
-                }
-                return range;
-            }
-        }
-
         // For to include start and end. 
         internal static StackValue[] GenerateRangeByStepNumber(decimal start, decimal end, decimal stepnum, bool isIntRange)
         {
@@ -1047,25 +1026,6 @@ namespace ProtoCore.Lang
             }
 
             return range;
-        }
-
-        internal static StackValue[] GenerateRangeByAmount(double start, double stepsize, int amount, bool isIntRange)
-        {
-            if (amount == 0)
-            {
-                return new StackValue[] { };
-            }
-            else
-            {
-                isIntRange = isIntRange && (Math.Truncate(stepsize) == stepsize);
-                StackValue[] range = new StackValue[amount];
-                for (int i = 0; i < amount; ++i)
-                {
-                    range[i] = isIntRange ? StackValue.BuildInt((int)start) : StackValue.BuildDouble(start);
-                    start += stepsize;
-                }
-                return range;
-            }
         }
 
         internal static StackValue RangeExpression(
@@ -1149,8 +1109,6 @@ namespace ProtoCore.Lang
                 return null;
             }
 
-            decimal start = new decimal(startValue);
-            decimal end = new decimal(endValue);
             bool isIntRange = svStart.IsInteger && svEnd.IsInteger;
 
             if (hasAmountOp)
@@ -1161,11 +1119,29 @@ namespace ProtoCore.Lang
                     runtimeCore.RuntimeStatus.LogWarning(WarningID.kInvalidArguments, Resources.kInvalidAmountInRangeExpression);
                     return null;
                 }
-                double stepsize = svStep.ToDouble().RawDoubleValue;
-                return GenerateRangeByAmount(startValue, stepsize, amount, isIntRange);
+
+                if (amount == 0)
+                {
+                    return new StackValue[] { };
+                }
+                else
+                {
+                    double stepsize = svStep.ToDouble().RawDoubleValue;
+                    isIntRange = isIntRange && (Math.Truncate(stepsize) == stepsize);
+                    StackValue[] range = new StackValue[amount];
+                    for (int i = 0; i < amount; ++i)
+                    {
+                        range[i] = isIntRange ? StackValue.BuildInt((int)startValue) : StackValue.BuildDouble(startValue);
+                        startValue += stepsize;
+                    }
+                    return range;
+                }
             }
             else
             {
+                decimal start = new decimal(startValue);
+                decimal end = new decimal(endValue);
+
                 switch (svOp.opdata)
                 {
                     case (int)ProtoCore.DSASM.RangeStepOperator.StepSize:
@@ -1177,43 +1153,59 @@ namespace ProtoCore.Lang
                                 isIntRange = isIntRange && (svStep.IsInteger);
                             }
 
-                            return GenerateRangeByStepSize(start, end, stepsize, isIntRange);
+                            if ((stepsize == 0) || (end > start && stepsize < 0) || (end < start && stepsize > 0))
+                            {
+                                return null;
+                            }
+
+                            int stepnum = (int)Math.Truncate((end - start) / stepsize) + 1;
+                            StackValue[] range = new StackValue[stepnum];
+
+                            decimal cur = start;
+                            for (int i = 0; i < stepnum; ++i)
+                            {
+                                range[i] = isIntRange ? StackValue.BuildInt((int)cur) : StackValue.BuildDouble((double)cur);
+                                cur += stepsize;
+                            }
+                            return range;
                         }
                     case (int)ProtoCore.DSASM.RangeStepOperator.Number:
                         {
                             decimal stepnum = new decimal(Math.Round(svStep.IsDouble ? svStep.RawDoubleValue : svStep.RawIntValue));
-                            if (stepnum > 0)
+                            if (stepnum <= 0)
                             {
-                                return GenerateRangeByStepNumber(start, end, stepnum, isIntRange);
+                                return null;
                             }
-                            break;
+
+                            return GenerateRangeByStepNumber(start, end, stepnum, isIntRange);
                         }
                     case (int)ProtoCore.DSASM.RangeStepOperator.ApproximateSize:
                         {
                             decimal astepsize = new decimal(svStep.IsDouble ? svStep.RawDoubleValue : svStep.RawIntValue);
-                            if (astepsize != 0)
+                            if (astepsize == 0)
                             {
-                                decimal dist = end - start;
-                                decimal stepnum = 1;
-                                if (dist != 0)
-                                {
-                                    decimal cstepnum = Math.Ceiling(dist / astepsize);
-                                    decimal fstepnum = Math.Floor(dist / astepsize);
-
-                                    if (cstepnum == 0 || fstepnum == 0)
-                                    {
-                                        stepnum = 2;
-                                    }
-                                    else
-                                    {
-                                        decimal capprox = Math.Abs(dist / cstepnum - astepsize);
-                                        decimal fapprox = Math.Abs(dist / fstepnum - astepsize);
-                                        stepnum = capprox < fapprox ? cstepnum + 1 : fstepnum + 1;
-                                    }
-                                }
-                                return GenerateRangeByStepNumber(start, end, stepnum, isIntRange);
+                                return null;
                             }
-                            break;
+
+                            decimal dist = end - start;
+                            decimal stepnum = 1;
+                            if (dist != 0)
+                            {
+                                decimal cstepnum = Math.Ceiling(dist / astepsize);
+                                decimal fstepnum = Math.Floor(dist / astepsize);
+
+                                if (cstepnum == 0 || fstepnum == 0)
+                                {
+                                    stepnum = 2;
+                                }
+                                else
+                                {
+                                    decimal capprox = Math.Abs(dist / cstepnum - astepsize);
+                                    decimal fapprox = Math.Abs(dist / fstepnum - astepsize);
+                                    stepnum = capprox < fapprox ? cstepnum + 1 : fstepnum + 1;
+                                }
+                            }
+                            return GenerateRangeByStepNumber(start, end, stepnum, isIntRange);
                         }
                     default:
                         {
