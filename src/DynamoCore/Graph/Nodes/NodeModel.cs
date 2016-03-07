@@ -42,6 +42,7 @@ namespace Dynamo.Graph.Nodes
         private string persistentWarning = "";
         private bool areInputPortsRegistered;
         private bool areOutputPortsRegistered;
+        private bool isEvaluating;
 
         ///A flag indicating whether the node has been explicitly frozen.
         internal bool isFrozenExplicitly;
@@ -112,6 +113,11 @@ namespace Dynamo.Graph.Nodes
         /// Event triggered when a port is disconnected.
         /// </summary>
         public event Action<PortModel> PortDisconnected;
+
+        /// <summary>
+        /// Event triggered when node's evaluation started/ended.
+        /// </summary>
+        public event Action<bool> EvaluationEdged;
 
         #endregion
 
@@ -499,6 +505,26 @@ namespace Dynamo.Graph.Nodes
         /// is false.
         /// </summary>
         internal bool WasRenderPackageUpdatedAfterExecution { get; set; }
+
+        /// <summary>
+        /// This flag is used in preview bubble. When node is not ready and user tries to get some value in preview,
+        /// it's occurred null-exception. In order to protect Dynamo from crash, when node is taking part in the evaluation,
+        /// this flag is set to true.
+        /// </summary>
+        internal bool IsEvaluating
+        {
+            get { return isEvaluating; }
+            set
+            {
+                if (isEvaluating == value) return;
+
+                isEvaluating = value;
+                if (EvaluationEdged != null)
+                {
+                    EvaluationEdged(isEvaluating);
+                }
+            }
+        }
 
         /// <summary>
         ///     Search tags for this Node.
@@ -1983,6 +2009,7 @@ namespace Dynamo.Graph.Nodes
             }
 
             this.CachedValue = task.MirrorData;
+            this.IsEvaluating = false;
         }
 
         /// <summary>

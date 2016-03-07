@@ -3,8 +3,8 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.Interfaces;
-using Dynamo.Utilities;
 using Dynamo.Scheduler;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using ProtoCore.Mirror;
 using System;
@@ -103,6 +103,7 @@ namespace Dynamo.UI.Controls
             this.nodeViewModel = nodeViewModel;
             InitializeComponent();
             Loaded += OnPreviewControlLoaded;
+            Unloaded += OnPreviewControlUnLoaded;
             StaysOpen = false;
         }
 
@@ -154,9 +155,6 @@ namespace Dynamo.UI.Controls
         /// 
         internal void BindToDataSource(MirrorData mirrorData)
         {
-            // First detach the bound data from its view.
-            ResetContentViews();
-
             this.mirrorData = mirrorData;
             this.cachedLargeContent = null; // Reset expanded content.
             this.cachedSmallContent = null; // Reset condensed content.
@@ -254,22 +252,6 @@ namespace Dynamo.UI.Controls
                 this.StateChanged(this, EventArgs.Empty);
         }
 
-        private void ResetContentViews()
-        {
-            var smallContentView = smallContentGrid.Children[0] as TextBlock;
-            smallContentView.Text = string.Empty;
-
-            if (largeContentGrid.Children.Count <= 0)
-                return; // No view to reset, return now.
-
-            var watchTree = largeContentGrid.Children[0] as WatchTree;
-            var rootDataContext = watchTree.DataContext as WatchViewModel;
-
-            // Unbind the view from data context, then clear the data context.
-            BindingOperations.ClearAllBindings(watchTree.treeView1);
-            rootDataContext.Children.Clear();
-        }
-
         /// <summary>
         /// Add a new task to the scheduler to be executed and after that run a
         /// follow-up task.
@@ -307,6 +289,18 @@ namespace Dynamo.UI.Controls
 
             string newContent = "null";
 
+            if (nodeViewModel.NodeModel.IsEvaluating)
+            {
+                newContent = Configurations.BusyString;
+                UpdateCondensedTextblock(newContent);
+
+                if (refreshDisplay != null)
+                {
+                    refreshDisplay();
+                }
+                return;
+            }
+
             RunOnSchedulerSync(
                 () =>
                 {
@@ -342,9 +336,8 @@ namespace Dynamo.UI.Controls
                 },
                 (m) =>
                 {
-                    cachedSmallContent = newContent;
-                    var smallContentView = smallContentGrid.Children[0] as TextBlock;
-                    smallContentView.Text = cachedSmallContent; // Update displayed text.
+                    UpdateCondensedTextblock(newContent);
+
                     if (refreshDisplay != null)
                     {
                         refreshDisplay();
@@ -377,6 +370,18 @@ namespace Dynamo.UI.Controls
 
             WatchViewModel newViewModel = null;
 
+            if (nodeViewModel.NodeModel.IsEvaluating)
+            {
+                newViewModel = new WatchViewModel(Configurations.BusyString, null, null);
+                UpdateWatchTree(newViewModel);
+                if (refreshDisplay != null)
+                {
+                    refreshDisplay();
+                }
+
+                return;
+            }
+
             RunOnSchedulerSync(
                 () =>
                 {
@@ -385,39 +390,57 @@ namespace Dynamo.UI.Controls
                 },
                 (m) =>
                 {
-                    if (largeContentGrid.Children.Count == 0)
-                    {
-                        var tree = new WatchTree
-                        {
-                            DataContext = new WatchViewModel(nodeViewModel.DynamoViewModel.BackgroundPreviewViewModel.AddLabelForPath)
-                        };
-                        tree.treeView1.ItemContainerGenerator.StatusChanged += WatchContainer_StatusChanged;
+                    UpdateWatchTree(newViewModel);
 
-                        largeContentGrid.Children.Add(tree);
-                    }
-
-                    var watchTree = largeContentGrid.Children[0] as WatchTree;
-                    var rootDataContext = watchTree.DataContext as WatchViewModel;
-
-
-                    cachedLargeContent = newViewModel;
-
-                    rootDataContext.IsOneRowContent = cachedLargeContent.Children.Count == 0;
-                    rootDataContext.Children.Clear();
-                    rootDataContext.Children.Add(cachedLargeContent);
-
-                    watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty,
-                        new Binding("Children")
-                        {
-                            Mode = BindingMode.TwoWay,
-                            Source = rootDataContext
-                        });
                     if (refreshDisplay != null)
                     {
                         refreshDisplay();
                     }
                 }
             );
+        }
+
+        /// <summary>
+        /// Sets new content to smallContentView textblock.
+        /// </summary>        
+        private void UpdateCondensedTextblock(string newContent)
+        {
+            cachedSmallContent = newContent;
+            var smallContentView = smallContentGrid.Children[0] as TextBlock;
+            smallContentView.Text = cachedSmallContent; // Update displayed text.
+        }
+
+        /// <summary>
+        /// Sets new binding to WatchTree.
+        /// </summary>
+        /// <param name="newViewModel"></param>
+        private void UpdateWatchTree(WatchViewModel newViewModel)
+        {
+            if (largeContentGrid.Children.Count == 0)
+            {
+                var tree = new WatchTree
+                {
+                    DataContext = new WatchViewModel(nodeViewModel.DynamoViewModel.BackgroundPreviewViewModel.AddLabelForPath)
+                };
+                tree.treeView1.ItemContainerGenerator.StatusChanged += WatchContainer_StatusChanged;
+                largeContentGrid.Children.Add(tree);
+            }
+
+            var watchTree = largeContentGrid.Children[0] as WatchTree;
+            var rootDataContext = watchTree.DataContext as WatchViewModel;
+
+            cachedLargeContent = newViewModel;
+
+            rootDataContext.IsOneRowContent = cachedLargeContent.Children.Count == 0;
+            rootDataContext.Children.Clear();
+            rootDataContext.Children.Add(cachedLargeContent);
+
+            watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty,
+                new Binding("Children")
+                {
+                    Mode = BindingMode.TwoWay,
+                    Source = rootDataContext
+                });
         }
 
         /// <summary>
@@ -752,9 +775,24 @@ namespace Dynamo.UI.Controls
                 throw new InvalidOperationException(message);
             }
 
+            nodeViewModel.NodeLogic.EvaluationEdged += OnNodeEvaluationTookPlace;
+
             // If there was a request queued before this control is loaded, 
             // then process the request as we now have the right width.
             BeginNextTransition();
+        }
+
+        private void OnPreviewControlUnLoaded(object sender, RoutedEventArgs e)
+        {
+            nodeViewModel.NodeLogic.EvaluationEdged -= OnNodeEvaluationTookPlace;
+        }
+
+        private void OnNodeEvaluationTookPlace(bool isEvaluated)
+        {
+            // When node started or ended running, we clear cached values.
+            // Cached values will be updated in RefreshCondensedDisplay or RefreshExpandedDisplay.
+            cachedSmallContent = null;
+            cachedLargeContent = null;
         }
 
         private void OnPreviewControlPhasedIn(object sender, EventArgs e)
