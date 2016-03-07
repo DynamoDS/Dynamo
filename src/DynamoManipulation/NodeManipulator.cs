@@ -148,7 +148,7 @@ namespace Dynamo.Manipulation
         /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
-            Origin?.Dispose();
+            if (Origin != null) Origin.Dispose();
         }
 
         /// <summary>
