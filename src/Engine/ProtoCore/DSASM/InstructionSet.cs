@@ -620,6 +620,17 @@ namespace ProtoCore.DSASM
             }
         }
 
+        public int DynamiIndex
+        {
+            get
+            {
+                if (!IsDynamic)
+                    throw new InvalidTypeException("The Type of StackValue is not Dynamic");
+
+                return (int)RawIntValue;
+            }
+        }
+
         public int ThisPtr
         {
             get
@@ -639,6 +650,17 @@ namespace ProtoCore.DSASM
                     throw new InvalidTypeException("The Type of StackValue is not ArrayKey");
 
                 return (int)RawIntValue;
+            }
+        }
+
+        public Registers Register
+        {
+            get
+            {
+                if (!IsRegister)
+                    throw new InvalidTypeException("The Type of StackValue is not ArrayKey");
+
+                return (Registers)(int)RawIntValue;
             }
         }
 

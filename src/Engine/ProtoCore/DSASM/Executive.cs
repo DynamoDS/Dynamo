@@ -1389,7 +1389,7 @@ namespace ProtoCore.DSASM
         {
             bool isPointerModified = svGraphNode.IsPointer || svUpdateNode.IsPointer;
             bool isArrayModified = svGraphNode.IsArray || svUpdateNode.IsArray;
-            bool isDataModified = svGraphNode.opdata != svUpdateNode.opdata;
+            bool isDataModified = svGraphNode.RawIntValue != svUpdateNode.RawIntValue;
             bool isDoubleDataModified = svGraphNode.IsDouble && svGraphNode.RawDoubleValue != svUpdateNode.ToDouble().RawDoubleValue;
             bool isTypeModified = !svGraphNode.IsInvalid && !svUpdateNode.IsInvalid && svGraphNode.optype != svUpdateNode.optype;
 
@@ -2448,7 +2448,7 @@ namespace ProtoCore.DSASM
                     data = opSymbol;
                     break;
                 case AddressType.Register:
-                    switch ((Registers)opSymbol.opdata)
+                    switch (opSymbol.Register)
                     {
                         case Registers.AX:
                             data = AX;
@@ -2588,7 +2588,7 @@ namespace ProtoCore.DSASM
                 case AddressType.Register:
                     {
                         StackValue data = opVal;
-                        switch ((Registers)op1.opdata)
+                        switch (op1.Register)
                         {
                             case Registers.AX:
                                 opPrev = AX;
@@ -2863,7 +2863,7 @@ namespace ProtoCore.DSASM
                 // of character, wrap it into a string. 
                 if (result.IsArray && thisArray.IsString)
                 {
-                    result = StackValue.BuildString(result.opdata);
+                    result = StackValue.BuildString(result.ArrayPointer);
                 }
             }
             catch (ArgumentOutOfRangeException)
@@ -2876,76 +2876,11 @@ namespace ProtoCore.DSASM
             return result;
         }
 
-        private bool ProcessDynamicVariable(bool isArray, ref StackValue svPtr, int classIndex)
-        {
-            int variableDynamicIndex = (int)svPtr.opdata;
-            var dynamicVariableNode = exe.DynamicVarTable.variableTable[variableDynamicIndex];
-
-            SymbolNode node = null;
-            bool isStatic = false;
-
-            if (!((int)PrimitiveType.kTypeVoid == classIndex
-                || Constants.kInvalidIndex == classIndex
-                || exe.classTable.ClassNodes[classIndex].Symbols == null))
-            {
-                bool hasThisSymbol;
-                AddressType addressType;
-
-                string name = dynamicVariableNode.variableName;
-                int contextClassIndex = dynamicVariableNode.classIndex;
-                int contextProcIndex = dynamicVariableNode.procIndex;
-                ClassNode classNode = exe.classTable.ClassNodes[classIndex];
-                int symbolIndex = ClassUtils.GetSymbolIndex(
-                    classNode, 
-                    name, 
-                    contextClassIndex, 
-                    contextProcIndex, 
-                    runtimeCore.RunningBlock,
-                    exe.CompleteCodeBlocks, 
-                    out hasThisSymbol,
-                    out addressType);
-                if (Constants.kInvalidIndex != symbolIndex)
-                {
-                    if (addressType == AddressType.StaticMemVarIndex)
-                    {
-                        node = exe.CodeBlocks[0].symbolTable.symbolList[symbolIndex];
-                        isStatic = true;
-                    }
-                    else
-                    {
-                        node = exe.classTable.ClassNodes[classIndex].Symbols.symbolList[symbolIndex];
-                    }
-                }
-            }
-
-            if (null == node)
-            {
-                return false;
-            }
-
-            if (isArray)
-            {
-                svPtr = StackValue.BuildArrayPointer(node.symbolTableIndex);
-            }
-            else
-            {
-                if (isStatic)
-                {
-                    svPtr = StackValue.BuildStaticMemVarIndex(node.symbolTableIndex);
-                }
-                else
-                {
-                    svPtr = StackValue.BuildPointer(node.symbolTableIndex);
-                }
-            }
-            return true;
-        }
-
         private bool ResolveDynamicFunction(Instruction instr, out bool isMemberFunctionPointer)
         {
             isMemberFunctionPointer = false;
             int fptr = Constants.kInvalidIndex;
-            int functionDynamicIndex = (int)instr.op1.opdata;
+            int functionDynamicIndex = instr.op1.DynamiIndex;
             int classIndex = instr.op2.ClassIndex;
             int depth = rmem.Pop().IntegerValue;
             runtimeVerify(functionDynamicIndex != Constants.kInvalidIndex);
@@ -4104,7 +4039,7 @@ namespace ProtoCore.DSASM
             }
             else
             {
-                opdata2 = StackValue.BuildBoolean(opdata2.opdata != 0L || opdata1.opdata != 0L);
+                opdata2 = StackValue.BuildBoolean(opdata2.BooleanValue || opdata1.BooleanValue);
             }
 
             rmem.Push(opdata2);
@@ -4118,7 +4053,7 @@ namespace ProtoCore.DSASM
             opdata1 = opdata1.ToBoolean(runtimeCore);
             if (!opdata1.IsNull)
             {
-                opdata1 = StackValue.BuildBoolean(opdata1.opdata == 0L);
+                opdata1 = StackValue.BuildBoolean(!opdata1.BooleanValue);
             }
 
             rmem.Push(opdata1);
@@ -4298,7 +4233,7 @@ namespace ProtoCore.DSASM
                 }
                 else
                 {
-                    opdata2 = StackValue.BuildBoolean(opdata2.opdata <= opdata1.opdata);
+                    opdata2 = StackValue.BuildBoolean(opdata2.IntegerValue <= opdata1.IntegerValue);
                 }
             }
             else
