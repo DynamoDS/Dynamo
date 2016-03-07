@@ -1259,6 +1259,9 @@ namespace ProtoCore
 
         protected void Backpatch(int bp, int pc)
         {
+            if (core.IsParsingCodeBlockNode)
+                return;
+
             if (ProtoCore.DSASM.OpCode.JMP == codeBlock.instrStream.instrList[bp].opCode
                 && codeBlock.instrStream.instrList[bp].op1.IsLabelIndex)
             {
