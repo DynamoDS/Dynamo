@@ -45,10 +45,6 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
                 string id = AstIdentifierBase + "_out" + outputIndex;
                 return AstFactory.BuildIdentifier(id);
             }
-            else if (OutPortData.Count == 1)
-            {
-                return AstIdentifierForPreview;
-            }
             else
             {
                 return base.GetAstIdentifierForOutputIndex(outputIndex); 
