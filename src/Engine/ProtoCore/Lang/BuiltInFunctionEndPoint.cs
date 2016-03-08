@@ -121,11 +121,6 @@ namespace ProtoCore.Lang
                         runtimeCore.RuntimeStatus.LogWarning(WarningID.kRangeExpressionOutOfMemory, Resources.RangeExpressionOutOfMemory);
                         ret = StackValue.Null;
                     }
-                    catch (OverflowException)
-                    {
-                        runtimeCore.RuntimeStatus.LogWarning(WarningID.kRangeExpressionOutOfMemory, Resources.RangeExpressionOutOfMemory);
-                        ret = StackValue.Null;
-                    }
                     break;
                 case ProtoCore.Lang.BuiltInMethods.MethodID.kAllFalse:
                     {
@@ -1005,12 +1000,12 @@ namespace ProtoCore.Lang
     internal class RangeExpressionUntils
     {
         // For to include start and end. 
-        internal static StackValue[] GenerateRangeByStepNumber(decimal start, decimal end, decimal stepnum, bool isIntRange)
+        internal static StackValue[] GenerateRangeByStepNumber(decimal start, decimal end, int stepnum, bool isIntRange)
         {
             decimal stepsize = (stepnum == 1) ? 0 : (end - start) / (stepnum - 1);
             isIntRange = isIntRange && (Math.Truncate(stepsize) == stepsize);
 
-            StackValue[] range = new StackValue[(int)stepnum > 1 ? (int)stepnum : 1];
+            StackValue[] range = new StackValue[stepnum > 1 ? stepnum : 1];
             range[0] = isIntRange ? StackValue.BuildInt((int)start) : StackValue.BuildDouble((double)start);
 
             decimal cur = start;
@@ -1158,11 +1153,16 @@ namespace ProtoCore.Lang
                                 return null;
                             }
 
-                            int stepnum = (int)Math.Truncate((end - start) / stepsize) + 1;
-                            StackValue[] range = new StackValue[stepnum];
+                            decimal stepnum = Math.Truncate((end - start) / stepsize) + 1;
+                            if (stepnum > int.MaxValue)
+                            {
+                                runtimeCore.RuntimeStatus.LogWarning(WarningID.kRangeExpressionOutOfMemory, Resources.RangeExpressionOutOfMemory);
+                                return null;
+                            }
+                            StackValue[] range = new StackValue[(int)stepnum];
 
                             decimal cur = start;
-                            for (int i = 0; i < stepnum; ++i)
+                            for (int i = 0; i < (int)stepnum; ++i)
                             {
                                 range[i] = isIntRange ? StackValue.BuildInt((int)cur) : StackValue.BuildDouble((double)cur);
                                 cur += stepsize;
@@ -1176,8 +1176,13 @@ namespace ProtoCore.Lang
                             {
                                 return null;
                             }
+                            else if (stepnum > int.MaxValue)
+                            {
+                                runtimeCore.RuntimeStatus.LogWarning(WarningID.kRangeExpressionOutOfMemory, Resources.RangeExpressionOutOfMemory);
+                                return null;
+                            }
 
-                            return GenerateRangeByStepNumber(start, end, stepnum, isIntRange);
+                            return GenerateRangeByStepNumber(start, end, (int)stepnum, isIntRange);
                         }
                     case (int)ProtoCore.DSASM.RangeStepOperator.ApproximateSize:
                         {
@@ -1205,7 +1210,14 @@ namespace ProtoCore.Lang
                                     stepnum = capprox < fapprox ? cstepnum + 1 : fstepnum + 1;
                                 }
                             }
-                            return GenerateRangeByStepNumber(start, end, stepnum, isIntRange);
+
+                            if (stepnum > int.MaxValue)
+                            {
+                                runtimeCore.RuntimeStatus.LogWarning(WarningID.kRangeExpressionOutOfMemory, Resources.RangeExpressionOutOfMemory);
+                                return null;
+                            }
+
+                            return GenerateRangeByStepNumber(start, end, (int)stepnum, isIntRange);
                         }
                     default:
                         {
