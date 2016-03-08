@@ -40,11 +40,19 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
 
         public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
         {
-            return Controller.ReturnKeys != null && Controller.ReturnKeys.Any()
-                ? base.GetAstIdentifierForOutputIndex(outputIndex)
-                : (OutPortData.Count == 1
-                    ? AstIdentifierForPreview
-                    : base.GetAstIdentifierForOutputIndex(outputIndex));
+            if (Controller.ReturnKeys != null && Controller.ReturnKeys.Any())
+            {
+                string id = AstIdentifierBase + "_out" + outputIndex;
+                return AstFactory.BuildIdentifier(id);
+            }
+            else if (OutPortData.Count == 1)
+            {
+                return AstIdentifierForPreview;
+            }
+            else
+            {
+                return base.GetAstIdentifierForOutputIndex(outputIndex); 
+            }
         }
 
         /// <summary>
