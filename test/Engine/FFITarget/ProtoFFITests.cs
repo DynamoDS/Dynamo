@@ -431,6 +431,18 @@ namespace FFITarget
             };
         }
 
+        [MultiReturn(new string[] { "color"})]
+        public Dictionary<string, object> SingleKeyDictionary()
+        {
+            return new Dictionary<string, object>() 
+            {
+                {"color", "green"},
+                {"weight", 42},
+                {"ok", false},
+                {"nums", new int[] {101, 202}}
+            };
+        }
+
         public static Hashtable GetHashTable()
         {
             var hashTable = new Hashtable();
