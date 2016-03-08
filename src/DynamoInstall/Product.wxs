@@ -36,14 +36,7 @@
              Title="Dynamo Core"
              Level="1">
       <ComponentGroupRef Id="RELEASE"/>
-      <ComponentGroupRef Id="DEFINITIONS"/>
-      <ComponentGroupRef Id="GALLERY"/>
       <ComponentRef Id="ProductRegistry" />
-      <Feature Id="DYNAMO_CORE_SAMPLES"
-               Title="Sample Content"
-               Level="1" >
-        <ComponentGroupRef Id="SAMPLES"/>
-      </Feature>
     </Feature>
 
     <Icon Id="DynamoInstaller.ico" SourceFile="$(var.base)\tools\install\Extra\DynamoInstaller.ico"/>
