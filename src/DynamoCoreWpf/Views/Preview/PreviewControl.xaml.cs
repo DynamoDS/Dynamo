@@ -16,9 +16,6 @@ using System.Windows.Media.Animation;
 using Dynamo.Configuration;
 using Dynamo.Extensions;
 using Dynamo.Models;
-using System.Windows.Media;
-using Dynamo.Graph.Nodes;
-using Dynamo.Engine;
 
 namespace Dynamo.UI.Controls
 {
@@ -259,10 +256,18 @@ namespace Dynamo.UI.Controls
 
         private void ResetContentViews()
         {
+            var smallContentView = smallContentGrid.Children[0] as TextBlock;
+            smallContentView.Text = string.Empty;
+
             if (largeContentGrid.Children.Count <= 0)
                 return; // No view to reset, return now.
 
-            largeContentGrid.Children.Clear();
+            var watchTree = largeContentGrid.Children[0] as WatchTree;
+            var rootDataContext = watchTree.DataContext as WatchViewModel;
+
+            // Unbind the view from data context, then clear the data context.
+            BindingOperations.ClearAllBindings(watchTree.treeView1);
+            rootDataContext.Children.Clear();
         }
 
         /// <summary>
@@ -381,8 +386,9 @@ namespace Dynamo.UI.Controls
                         {
                             DataContext = new WatchViewModel(nodeViewModel.DynamoViewModel.BackgroundPreviewViewModel.AddLabelForPath)
                         };
-                        //TODO: ComputeWatchContentSize causes crash, when it's fired on Collapsed/Expanded events.
-                        // ComputeWatchContentSize should subscribe on PropetyChange on WatchViewModel. 
+                        //TODO(Anna): ComputeWatchContentSize causes crash, when it's fired on Collapsed/Expanded events.
+                        // ComputeWatchContentSize should subscribe on PropetyChange on WatchViewModel.
+                        // For now comment it.
                         //tree.treeView1.ItemContainerGenerator.StatusChanged += WatchContainer_StatusChanged;
 
                         largeContentGrid.Children.Add(tree);
