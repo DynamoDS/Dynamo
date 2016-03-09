@@ -970,5 +970,19 @@ namespace Dynamo.Tests
             Assert.AreEqual("y2", customInstance.OutPortData[2].NickName);
             Assert.AreEqual("comment1\ncomment2\ncomment3", customInstance.OutPortData[2].ToolTipString);
         }
+
+        [Test]
+        public void Regress9548_OutputNameIsClassName()
+        {
+            var filePath = Path.Combine(TestDirectory, @"core\CustomNodes\PointAsOutput.dyn");
+            OpenModel(filePath);
+
+            var customInstance = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(x => x is Function) as Function;
+            Assert.AreEqual("comment", customInstance.OutPortData[0].ToolTipString);
+            Assert.AreEqual("Point", customInstance.OutPortData[0].NickName);
+
+            var previewValue = GetPreviewValue(customInstance.GUID.ToString());
+            Assert.AreEqual(21, previewValue);
+        }
     }
 }

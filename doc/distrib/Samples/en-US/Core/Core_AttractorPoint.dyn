@@ -1,4 +1,4 @@
-<Workspace Version="0.8.0.684" X="-751.267541188747" Y="-14.8067112496868" zoom="0.384722275865884" Name="Home" RunType="Automatic" RunPeriod="100">
+<Workspace Version="0.8.0.684" X="-751.267541188747" Y="-14.8067112496868" zoom="0.384722275865884" Name="Home" RunType="Automatic" RunPeriod="100" HasRunWithoutCrash="True">
   <NamespaceResolutionMap />
   <Elements>
     <Dynamo.Nodes.DoubleInput guid="d0036752-d644-4511-9937-c17b4f152313" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="2122.37470588" y="834.676641352278" isVisible="true" isUpstreamVisible="true" lacing="Disabled">

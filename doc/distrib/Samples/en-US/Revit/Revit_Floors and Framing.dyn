@@ -1,4 +1,4 @@
-<Workspace Version="0.8.0.760" X="124.50940978673" Y="435.84515336798" zoom="0.167746268292266" Name="Home" RunType="Automatic" RunPeriod="100">
+<Workspace Version="0.8.0.760" X="124.50940978673" Y="435.84515336798" zoom="0.167746268292266" Name="Home" RunType="Automatic" RunPeriod="100" HasRunWithoutCrash="True">
   <NamespaceResolutionMap />
   <Elements>
     <DSRevitNodesUI.FloorTypes guid="435bd334-2d79-4536-a50f-92a8d775960d" type="DSRevitNodesUI.FloorTypes" nickname="Floor Types" x="2380.60580485592" y="130.287958202263" isVisible="true" isUpstreamVisible="true" lacing="Disabled" index="3:Generic 300" />
