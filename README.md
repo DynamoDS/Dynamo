@@ -53,6 +53,9 @@ Dynamo Core
 Known issues
 - No backwards compatibility with 0.9.0 and before. This is due to neccessary changes to the Dynamo API in advance of 1.0. These changes can be found in the [API Changes](https://github.com/DynamoDS/Dynamo/wiki/API-Changes) document
 - In some situations, placement of Adaptive components requires a change in list structure.  The AC placement nodes now expect to receive lists of lists of placement coordinates.  In the past, the nodes expected to only place one AC, now it expects to place many. If you are going to only place a single component, it needs to be nesting into a list.
+- With Win10 the Dynamo Background Preview is blank. If your Win10 workstation contains a graphics card that used to work with Dynamo running Win7 or 8 and you experience an inability to render graphics you may wish to consult:
+
+https://github.com/helix-toolkit/helix-toolkit/issues/257#issuecomment-194145932
 
 Dynamo Studio
 - Share your work online:  Share interactive parametric models online.  Just publish your Dynamo graph and send a link to your colleagues or the whole world.  People can view and interact with your designs in a regular web browser with no Dynamo installed
