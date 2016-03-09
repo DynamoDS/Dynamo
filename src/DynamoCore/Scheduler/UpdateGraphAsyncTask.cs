@@ -79,7 +79,7 @@ namespace Dynamo.Scheduler
                     if (node != null)
                     {
                         node.ClearDirtyFlag();
-                        node.SetCachedValueInProgress();
+                        node.SetCachedValueInProgress(engineController.LiveRunnerCore, engineController.LiveRunnerRuntimeCore);
                     }
                 }
 

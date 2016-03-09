@@ -52,19 +52,6 @@ namespace Dynamo.UI.Controls
             public const string GridHeightAnimator = "gridHeightAnimator";
         }
 
-        /// <summary>
-        /// TextBlock, which is shown during graph calculation.
-        /// TODO: this should be replaced with some animated text. 
-        /// http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-9584
-        /// </summary>
-        private readonly TextBlock busyTextBlock = new TextBlock
-        {
-            Text = Configurations.BusyString,
-            FontFamily = new FontFamily("Consolas"),
-            Opacity = 0.5,
-            Margin = new System.Windows.Thickness(12, 6, 0, 10)
-        };
-
         private readonly IScheduler scheduler;
         private readonly NodeViewModel nodeViewModel;
 
@@ -315,66 +302,45 @@ namespace Dynamo.UI.Controls
 
             string newContent = "null";
 
-            if (mirrorData is MirrorDataInProgress
-                // When CBN is created, its cached value is set to MirrorDataInProgress.
-                // And it's not updated after update graph task is complited.
-                && (nodeViewModel.NodeLogic as CodeBlockNodeModel == null || (nodeViewModel.NodeLogic as CodeBlockNodeModel).Code != String.Empty))
+            if (mirrorData != null)
             {
-                var smallContentView = smallContentGrid.Children[0] as TextBlock;
-                smallContentView.Text = Configurations.BusyString;
-
-                if (refreshDisplay != null)
+                if (mirrorData.IsCollection)
                 {
-                    refreshDisplay();
+                    // TODO(Ben): Can we display details of the array and 
+                    // probably display the first element of the array (even 
+                    // when it is multi-dimensional array)?
+                    newContent = Wpf.Properties.Resources.PreviewListLabel;
                 }
-
-                return;
+                else if (mirrorData.Data == null && !mirrorData.IsNull && mirrorData.Class != null)
+                {
+                    newContent = mirrorData.Class.ClassName;
+                }
+                else if (mirrorData.Data is Enum)
+                {
+                    newContent = ((Enum)mirrorData.Data).GetDescription();
+                }
+                else
+                {
+                    if (String.IsNullOrEmpty(mirrorData.StringData))
+                    {
+                        newContent = String.Empty;
+                    }
+                    else
+                    {
+                        int index = mirrorData.StringData.IndexOf('(');
+                        newContent = index != -1 ? mirrorData.StringData.Substring(0, index) : mirrorData.StringData;
+                    }
+                }
             }
 
-            RunOnSchedulerSync(
-                () =>
-                {
-                    if (mirrorData != null)
-                    {
-                        if (mirrorData.IsCollection)
-                        {
-                            // TODO(Ben): Can we display details of the array and 
-                            // probably display the first element of the array (even 
-                            // when it is multi-dimensional array)?
-                            newContent = Wpf.Properties.Resources.PreviewListLabel;
-                        }
-                        else if (mirrorData.Data == null && !mirrorData.IsNull && mirrorData.Class != null)
-                        {
-                            newContent = mirrorData.Class.ClassName;
-                        }
-                        else if (mirrorData.Data is Enum)
-                        {
-                            newContent = ((Enum)mirrorData.Data).GetDescription();
-                        }
-                        else
-                        {
-                            if (String.IsNullOrEmpty(mirrorData.StringData))
-                            {
-                                newContent = String.Empty;
-                                return;
-                            }
+            cachedSmallContent = newContent;
+            var smallContentView = smallContentGrid.Children[0] as TextBlock;
+            smallContentView.Text = cachedSmallContent; // Update displayed text.
+            if (refreshDisplay != null)
+            {
+                refreshDisplay();
+            }
 
-                            int index = mirrorData.StringData.IndexOf('(');
-                            newContent = index != -1 ? mirrorData.StringData.Substring(0, index) : mirrorData.StringData;
-                        }
-                    }
-                },
-                (m) =>
-                {
-                    cachedSmallContent = newContent;
-                    var smallContentView = smallContentGrid.Children[0] as TextBlock;
-                    smallContentView.Text = cachedSmallContent; // Update displayed text.
-                    if (refreshDisplay != null)
-                    {
-                        refreshDisplay();
-                    }
-                }
-            );
         }
 
         /// <summary>
@@ -401,24 +367,6 @@ namespace Dynamo.UI.Controls
 
             WatchViewModel newViewModel = null;
 
-            if (mirrorData is MirrorDataInProgress
-                // When CBN is created, its cached value is set to MirrorDataInProgress.
-                // And it's not updated after update graph task is complited.
-                && (nodeViewModel.NodeLogic as CodeBlockNodeModel == null || (nodeViewModel.NodeLogic as CodeBlockNodeModel).Code != String.Empty))
-            {
-                if (!largeContentGrid.Children.Contains(busyTextBlock))
-                {
-                    largeContentGrid.Children.Add(busyTextBlock);
-                }
-
-                if (refreshDisplay != null)
-                {
-                    refreshDisplay();
-                }
-
-                return;
-            }
-
             RunOnSchedulerSync(
                 () =>
                 {
@@ -427,15 +375,15 @@ namespace Dynamo.UI.Controls
                 },
                 (m) =>
                 {
-                    largeContentGrid.Children.Remove(busyTextBlock);
-
                     if (largeContentGrid.Children.Count == 0)
                     {
                         var tree = new WatchTree
                         {
                             DataContext = new WatchViewModel(nodeViewModel.DynamoViewModel.BackgroundPreviewViewModel.AddLabelForPath)
                         };
-                        tree.treeView1.ItemContainerGenerator.StatusChanged += WatchContainer_StatusChanged;
+                        //TODO: ComputeWatchContentSize causes crash, when it's fired on Collapsed/Expanded events.
+                        // ComputeWatchContentSize should subscribe on PropetyChange on WatchViewModel. 
+                        //tree.treeView1.ItemContainerGenerator.StatusChanged += WatchContainer_StatusChanged;
 
                         largeContentGrid.Children.Add(tree);
                     }
