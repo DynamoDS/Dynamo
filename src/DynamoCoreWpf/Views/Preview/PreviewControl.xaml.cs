@@ -18,6 +18,7 @@ using Dynamo.Extensions;
 using Dynamo.Models;
 using System.Windows.Media;
 using Dynamo.Graph.Nodes;
+using Dynamo.Engine;
 
 namespace Dynamo.UI.Controls
 {
@@ -323,10 +324,10 @@ namespace Dynamo.UI.Controls
 
             string newContent = "null";
 
-            if (mirrorData is ProtoCore.MirrorDataInProgress
+            if (mirrorData is MirrorDataInProgress
                 // When CBN is created, its cached value is set to MirrorDataInProgress.
                 // And it's not updated after update graph task is complited.
-                && !((nodeViewModel.NodeLogic is CodeBlockNodeModel) && (nodeViewModel.NodeLogic as CodeBlockNodeModel).Code == String.Empty))
+                && (nodeViewModel.NodeLogic as CodeBlockNodeModel == null || (nodeViewModel.NodeLogic as CodeBlockNodeModel).Code != String.Empty))
             {
                 var smallContentView = smallContentGrid.Children[0] as TextBlock;
                 smallContentView.Text = Configurations.BusyString;
@@ -409,10 +410,10 @@ namespace Dynamo.UI.Controls
 
             WatchViewModel newViewModel = null;
 
-            if (mirrorData is ProtoCore.MirrorDataInProgress
+            if (mirrorData is MirrorDataInProgress
                 // When CBN is created, its cached value is set to MirrorDataInProgress.
                 // And it's not updated after update graph task is complited.
-                && !((nodeViewModel.NodeLogic is CodeBlockNodeModel) && (nodeViewModel.NodeLogic as CodeBlockNodeModel).Code == String.Empty))
+                && (nodeViewModel.NodeLogic as CodeBlockNodeModel == null || (nodeViewModel.NodeLogic as CodeBlockNodeModel).Code != String.Empty))
             {
                 if (!largeContentGrid.Children.Contains(busyTextBlock))
                 {

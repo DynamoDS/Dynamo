@@ -1,7 +1,7 @@
 ﻿using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 
-namespace ProtoCore
+namespace Dynamo.Engine
 {
     /// <summary>
     /// WARNING: this class is used as temp value for CachedValue in NodeModel.

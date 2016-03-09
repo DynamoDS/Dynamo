@@ -11,7 +11,6 @@ using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes.CustomNodes;
-using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Migration;
 using Dynamo.Scheduler;
 using Dynamo.Selection;
@@ -492,7 +491,7 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         internal void SetCachedValueInProgress()
         {
-            CachedValue = ProtoCore.MirrorDataInProgress.Instance;
+            CachedValue = MirrorDataInProgress.Instance;
         }
 
         /// <summary>
