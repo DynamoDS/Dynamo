@@ -275,16 +275,7 @@ namespace Dynamo.UI.Controls
             if (largeContentGrid.Children.Count <= 0)
                 return; // No view to reset, return now.
 
-            var watchTree = largeContentGrid.Children[0] as WatchTree;
-
-            // Watch tree can be null, when 0-element of largeContentGrid busyTextBlock.
-            if (watchTree == null) return;
-
-            var rootDataContext = watchTree.DataContext as WatchViewModel;
-
-            // Unbind the view from data context, then clear the data context.
-            BindingOperations.ClearAllBindings(watchTree.treeView1);
-            rootDataContext.Children.Clear();
+            largeContentGrid.Children.Clear();
         }
 
         /// <summary>
