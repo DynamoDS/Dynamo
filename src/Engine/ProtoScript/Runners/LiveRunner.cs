@@ -1812,10 +1812,14 @@ namespace ProtoScript.Runners
                                      .OrderBy(w => w.GraphNodeGuid)
                                      .GroupBy(w => w.GraphNodeGuid);
 
-            foreach (var w in warnings)
+            foreach (var warningGroup in warnings)
             {
-                Guid guid = w.FirstOrDefault().GraphNodeGuid;
-                ret[guid] = new List<ProtoCore.Runtime.WarningEntry>(w);
+                Guid guid = warningGroup.FirstOrDefault().GraphNodeGuid;
+                // If there are two warnings in the same expression, take the first one.
+                var trimmedWarnings = warningGroup.OrderBy(w => w.ExpressionID)
+                                                  .GroupBy(w => w.ExpressionID)
+                                                  .Select(g => g.FirstOrDefault());
+                ret[guid] = new List<ProtoCore.Runtime.WarningEntry>(trimmedWarnings);
             }
 
             return ret;
