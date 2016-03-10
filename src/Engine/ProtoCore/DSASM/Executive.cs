@@ -4384,7 +4384,7 @@ namespace ProtoCore.DSASM
             rmem.Pop();
 
             StackValue svBlock = rmem.Pop();
-            int blockId = svBlock.IntegerValue;
+            int blockId = svBlock.BlockIndex;
             if (runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
             {
                 rmem.PushConstructBlockId(blockId);
