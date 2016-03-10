@@ -56,7 +56,6 @@ namespace Dynamo.UI.Controls
         private Canvas hostingCanvas = null;
 
         // Data source and display.
-        private MirrorData mirrorData = null;
         private String cachedSmallContent = null;
         private WatchViewModel cachedLargeContent = null;
 
@@ -72,7 +71,6 @@ namespace Dynamo.UI.Controls
 
         // Queued data refresh
         private bool queuedRefresh;
-        private MirrorData queuedMirrorData;
 
         private static readonly DependencyProperty StaysOpenProperty =
             DependencyProperty.Register("StaysOpen", typeof(bool), typeof(PreviewControl));
@@ -149,12 +147,11 @@ namespace Dynamo.UI.Controls
         /// to. This value can be null to reset the preview control to its 
         /// initial state.</param>
         /// 
-        internal void BindToDataSource(MirrorData mirrorData)
+        internal void BindToDataSource()
         {
             // First detach the bound data from its view.
             ResetContentViews();
 
-            this.mirrorData = mirrorData;
             this.cachedLargeContent = null; // Reset expanded content.
             this.cachedSmallContent = null; // Reset condensed content.
 
@@ -168,6 +165,8 @@ namespace Dynamo.UI.Controls
             {
                 RefreshExpandedDisplay(delegate { BeginViewSizeTransition(ComputeLargeContentSize()); });
             }
+
+            IsDataBound = true;
         }
 
         /// <summary>
@@ -175,9 +174,8 @@ namespace Dynamo.UI.Controls
         /// in transition.  In these situations, we can store the MirrorData and
         /// set a flag to refresh the display.
         /// </summary>
-        internal void EnqueueBindToDataSource(MirrorData mirrorData)
+        internal void RequestForRefresh()
         {
-            this.queuedMirrorData = mirrorData;
             this.queuedRefresh = true;
         }
 
@@ -185,7 +183,7 @@ namespace Dynamo.UI.Controls
 
         #region Public Class Properties
 
-        internal bool IsDataBound { get { return mirrorData != null; } }
+        internal bool IsDataBound { get; set;}
         internal bool IsHidden { get { return currentState == State.Hidden; } }
         internal bool IsCondensed { get { return currentState == State.Condensed; } }
         internal bool IsExpanded { get { return currentState == State.Expanded; } }
@@ -210,8 +208,7 @@ namespace Dynamo.UI.Controls
             if (queuedRefresh)
             {
                 queuedRefresh = false;
-                BindToDataSource(queuedMirrorData);
-                this.queuedMirrorData = null;
+                BindToDataSource();
                 return;
             }
 
@@ -307,6 +304,7 @@ namespace Dynamo.UI.Controls
             RunOnSchedulerSync(
                 () =>
                 {
+                    var mirrorData = nodeViewModel.NodeModel.CachedValue;
                     if (mirrorData != null)
                     {
                         if (mirrorData.IsCollection)
@@ -378,7 +376,7 @@ namespace Dynamo.UI.Controls
                 () =>
                 {
                     newViewModel = nodeViewModel.DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
-                        mirrorData, null, string.Empty, false);
+                        nodeViewModel.NodeModel.CachedValue, null, nodeViewModel.NodeModel.AstIdentifierForPreview.Name, false);
                 },
                 (m) =>
                 {

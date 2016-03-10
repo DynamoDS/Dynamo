@@ -196,19 +196,17 @@ namespace Dynamo.Controls
                 // transition
                 if (previewControl.IsInTransition)
                 {
-                    previewControl.EnqueueBindToDataSource(ViewModel.NodeModel.CachedValue);
+                    previewControl.RequestForRefresh();
                     return;
                 }
 
                 if (previewControl.IsHidden) // The preview control is hidden.
                 {
-                    // Invalidate the previously bound data, if any.
-                    if (previewControl.IsDataBound)
-                        previewControl.BindToDataSource(null);
+                    previewControl.IsDataBound = false;
                     return;
                 }
 
-                previewControl.BindToDataSource(ViewModel.NodeModel.CachedValue);
+                previewControl.BindToDataSource();
             }));
         }
 
@@ -394,8 +392,8 @@ namespace Dynamo.Controls
 
             if (PreviewControl.IsHidden)
             {
-                if (PreviewControl.IsDataBound == false)
-                    PreviewControl.BindToDataSource(ViewModel.NodeModel.CachedValue);
+                if (!previewControl.IsDataBound)
+                    PreviewControl.BindToDataSource();
 
                 PreviewControl.TransitionToState(PreviewControl.State.Condensed);
 
