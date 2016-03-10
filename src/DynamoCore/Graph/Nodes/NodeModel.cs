@@ -430,7 +430,7 @@ namespace Dynamo.Graph.Nodes
                     return cachedValue;
                 }
             }
-            private set
+            set
             {
                 lock (cachedValueMutex)
                 {
@@ -1852,13 +1852,11 @@ namespace Dynamo.Graph.Nodes
         #region Visualization Related Methods
 
         /// <summary>
-        /// Call this method to asynchronously update the cached MirrorData for 
-        /// this NodeModel through DynamoScheduler. AstIdentifierForPreview is 
-        /// being accessed within this method, therefore the method is typically
-        /// called from the main/UI thread.
+        /// Call this method to update the cached MirrorData for this NodeModel.
+        /// Note this method should be called from scheduler thread. 
         /// </summary>
         /// 
-        internal void RequestValueUpdateAsync(IScheduler scheduler, EngineController engine)
+        internal void RequestValueUpdate(EngineController engine)
         {
             // A NodeModel should have its cachedMirrorData reset when it is 
             // requested to update its value. When the QueryMirrorDataAsyncTask 
@@ -1875,29 +1873,11 @@ namespace Dynamo.Graph.Nodes
             if (string.IsNullOrEmpty(variableName))
                 return;
 
-            var task = new QueryMirrorDataAsyncTask(new QueryMirrorDataParams
+            var runtimeMirror = engine.GetMirror(variableName);
+            if (runtimeMirror != null)
             {
-                Scheduler = scheduler,
-                EngineController = engine,
-                VariableName = variableName
-            });
-
-            task.Completed += QueryMirrorDataAsyncTaskCompleted;
-            scheduler.ScheduleForExecution(task);
-        }
-
-        private void QueryMirrorDataAsyncTaskCompleted(AsyncTask asyncTask)
-        {
-            asyncTask.Completed -= QueryMirrorDataAsyncTaskCompleted;
-
-            var task = asyncTask as QueryMirrorDataAsyncTask;
-            if (task == null)
-            {
-                throw new InvalidOperationException("Expected a " + typeof(QueryMirrorDataAsyncTask).Name
-                    + ", but got a " + asyncTask.GetType().Name);
+                CachedValue = runtimeMirror.GetData();
             }
-
-            this.CachedValue = task.MirrorData;
         }
 
         /// <summary>
