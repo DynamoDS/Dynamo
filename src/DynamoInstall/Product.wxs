@@ -24,8 +24,8 @@
     <MediaTemplate EmbedCab="yes" />
 
     <Property Id="INSTALLDIR"/>
-    <CustomAction Id="DIRCA_DEFAULT_INSTALLDIR" Property="DYNAMO_INSTALLDIR" Value="[ProgramFiles64Folder][Manufacturer]\$(var.ProductName) $(var.Major).$(var.Minor)" Execute="immediate" />
-    <CustomAction Id="DIRCA_SET_INSTALLDIR" Property="DYNAMO_INSTALLDIR" Value="[INSTALLDIR]" Execute="immediate" />
+    <CustomAction Id="DIRCA_DEFAULT_INSTALLDIR" Property="DYNAMO_INSTALLDIR" Value="[ProgramFiles64Folder][Manufacturer]\DynamoCore\$(var.Major).$(var.Minor)" Execute="immediate" />
+    <CustomAction Id="DIRCA_SET_INSTALLDIR" Property="DYNAMO_INSTALLDIR" Value="[INSTALLDIR]\DynamoCore\$(var.Major).$(var.Minor)" Execute="immediate" />
 
     <InstallExecuteSequence>
       <Custom Action="DIRCA_DEFAULT_INSTALLDIR" Before="CostInitialize">INSTALLDIR=""</Custom>
