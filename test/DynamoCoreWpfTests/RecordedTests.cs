@@ -2574,6 +2574,7 @@ namespace DynamoCoreWpfTests
         public void Defect_MAGN_2100()
         {
             // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2100
+            string nodeGuid = "3f309016-7b00-4487-9b68-f0640e892d39";
 
             RunCommandsFromFile("Defect_MAGN_2100.xml", (commandTag) =>
             {
@@ -2591,11 +2592,9 @@ namespace DynamoCoreWpfTests
 
             });
 
-            NodeModel nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(
-                "3f309016-7b00-4487-9b68-f0640e892d39");
-
+            NodeModel nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(nodeGuid);
             Assert.AreNotEqual(ElementState.Warning, nodeModel.State);
-            AssertPreviewValue("3f309016-7b00-4487-9b68-f0640e892d39", 11);
+            AssertPreviewValue(nodeGuid, 11);
         }
 
         [Test, RequiresSTA]
