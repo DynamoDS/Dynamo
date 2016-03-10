@@ -4615,8 +4615,8 @@ r = foo(3);
             Dictionary<string, Object> context = new Dictionary<string, object>();
             context.Add("x", 1);
             context.Add("y", 2);
-            ProtoScript.Runners.ProtoRunner.ProtoVMState vmstate = runner.PreStart(code, context);
-            runner.RunToNextBreakpoint(vmstate);
+            runner.PreStart(code, context);
+            runner.RunToNextBreakpoint();
         }
 
         [Test]

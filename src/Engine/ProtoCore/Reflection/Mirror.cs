@@ -46,7 +46,6 @@ namespace ProtoCore
             //
             private ProtoCore.DSASM.Mirror.ExecutionMirror deprecateThisMirror;
 
-
             /// <summary>
             ///  The runtime executive that we are reflecting on
             /// </summary>
@@ -56,20 +55,6 @@ namespace ProtoCore
             // TODO Jun: Determin if these properties can just be retrived from the symbolNode associated with the stackvalue
             private string variableName = string.Empty;
             private int blockDeclaration = ProtoCore.DSASM.Constants.kInvalidIndex;
-
-            /// <summary>
-            /// This consutructor is for instantiating a Runtime mirror object where we already have the mirrorData
-            /// </summary>
-            /// <param name="mirrorData"></param>
-            /// <param name="core"></param>
-            public RuntimeMirror(MirrorData mirrorData, ProtoCore.RuntimeCore runtimeCoreReflect, ProtoCore.Core staticCore = null)
-                : base(runtimeCoreReflect, staticCore)
-            {
-                Validity.Assert(this.runtimeCore != null);
-                TargetExecutive = runtimeCoreReflect.CurrentExecutive.CurrentDSASMExec;
-                deprecateThisMirror = new DSASM.Mirror.ExecutionMirror(TargetExecutive, runtimeCoreReflect);
-                this.mirrorData = mirrorData;
-            }
 
             public RuntimeMirror(string varname, int blockDecl, ProtoCore.RuntimeCore runtimeCore, ProtoCore.Core staticCore = null)
                 : base(runtimeCore, staticCore)
@@ -116,124 +101,6 @@ namespace ProtoCore
                 Validity.Assert(this.runtimeCore != null);
                 Validity.Assert(TargetExecutive != null);
                 return deprecateThisMirror.GetStringValue(mirrorData.GetStackValue(), TargetExecutive.rmem.Heap, blockDeclaration);
-            }
-
-            // Returns a list of unique types in the input array
-            //private List<string> GetArrayTypes(StackValue svData)
-            private Dictionary<string, List<string>> GetArrayTypes(StackValue svData)
-            {
-                Dictionary<string, List<string>> asmTypes = new Dictionary<string, List<string>>();
-                //List<string> types = new List<string>();
-
-                Validity.Assert(svData.IsArray);
-
-                DSArray hs = runtimeCore.RuntimeMemory.Heap.ToHeapObject<DSArray>(svData);
-                foreach (var sv in hs.Values)
-                {
-                    if (sv.IsArray)
-                    {
-                        Dictionary<string, List<string>> types = GetArrayTypes(sv);
-                        foreach (var kvp in types)
-                        {
-                            if (!asmTypes.ContainsKey(kvp.Key))
-                            {
-                                asmTypes.Add(kvp.Key, kvp.Value);
-                            }
-                            else
-                            {
-                                List<string> cTypes = asmTypes[kvp.Key];
-                                // Check if each type in kvp.Value is not in cTypes
-                                foreach (string s in kvp.Value)
-                                {
-                                    if (!cTypes.Contains(s))
-                                        cTypes.Add(s);
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        Dictionary<string, List<string>> asmType = GetType(sv);
-                        var iter = asmType.GetEnumerator();
-                        iter.MoveNext();
-                        KeyValuePair<string, List<string>> kvp = iter.Current;
-                        if (!asmTypes.ContainsKey(kvp.Key))
-                        {
-                            asmTypes.Add(kvp.Key, kvp.Value);
-                        }
-                        else
-                        {
-                            List<string> cTypes = asmTypes[kvp.Key];
-                            cTypes.AddRange(kvp.Value);
-                        }
-                    }
-                }
-
-                //return types;
-                return asmTypes;
-            }
-
-            // If the type is an array, it returns a list of unique types in the array
-            // corresponding to one assembly and a list of assemblies if the types belong to more than one assembly
-            private Dictionary<string, List<string>> GetType(StackValue sv)
-            {
-                Dictionary<string, List<string>> asmType = new Dictionary<string, List<string>>();
-                if (sv.IsPointer)
-                {
-                    ClassNode classNode = runtimeCore.DSExecutable.classTable.ClassNodes[sv.metaData.type];
-                    List<string> types = new List<string>();
-                    types.Add(classNode.Name);
-                    asmType.Add(classNode.ExternLib, types);
-
-                    return asmType;
-                }
-                else
-                {
-                    List<string> type = new List<string>();
-                    switch (sv.optype)
-                    {
-                        case AddressType.ArrayPointer:
-                            {
-                                //List<string> types = GetArrayTypes(sv);
-                                //return "array";
-                                //return GetTypesHelper(types);
-                                asmType = GetArrayTypes(sv);
-                                break;
-                            }
-                        case AddressType.Int:
-                            type.Add("int");
-                            asmType.Add("", type);
-                            break;
-                        case AddressType.Double:
-                            type.Add("double");
-                            asmType.Add("", type);
-                            break;
-                        case AddressType.Null:
-                            type.Add("null");
-                            asmType.Add("", type);
-                            break;
-                        case AddressType.Boolean:
-                            type.Add("bool");
-                            asmType.Add("", type);
-                            break;
-                        case AddressType.String:
-                            type.Add("string");
-                            asmType.Add("", type);
-                            break;
-                        case AddressType.Char:
-                            type.Add("char");
-                            asmType.Add("", type);
-                            break;
-                        case AddressType.FunctionPointer:
-                            type.Add("function pointer");
-                            asmType.Add("", type);
-                            break;
-                        default:
-                            break;
-
-                    }
-                    return asmType;
-                }
             }
         }
 
