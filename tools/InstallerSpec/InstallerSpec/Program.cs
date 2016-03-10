@@ -14,7 +14,7 @@ namespace InstallerSpec
         public string Name { get; set; }
         public string FilePath { get; set; }
         public bool DigitalSignature { get; set; }
-        public bool CopyForInstaller { get; set; }
+        public string Version { get; set; }
         public string Author { get; set; }
     }
 
@@ -86,7 +86,7 @@ namespace InstallerSpec
                 { 
                     Name = item.Name, 
                     FilePath = item.FullName.Replace(DynamoVersion.BaseDirectory, @".\"), 
-                    CopyForInstaller = true, 
+                    Version = info != null ? info.FileVersion : "", 
                     DigitalSignature = NeedSignature(info), 
                     Author = info != null ? info.CompanyName : "" 
                 };
@@ -167,6 +167,19 @@ InstallerSpec.exe [binfolder] [xmlfilepath]
 
             var installspec = DynamoInstallSpec.CreateFromPath(binpath);
             installspec.Save(filePath);
+
+            var binariestosigntxt = Path.Combine(Path.GetDirectoryName(filePath), @"binariestosign.txt");
+            using (var writer = new StreamWriter(binariestosigntxt))
+            {
+                foreach (var item in installspec.Modules)
+                {
+                    if(item.DigitalSignature)
+                    {
+                        writer.WriteLine(Path.GetFullPath(Path.Combine(binpath, item.FilePath)));
+                    }
+                }
+                writer.Flush();
+            }
         }
 
     }
