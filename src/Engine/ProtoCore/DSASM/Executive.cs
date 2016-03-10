@@ -280,20 +280,22 @@ namespace ProtoCore.DSASM
                 if (svFrameType.FrameType == StackFrameType.kTypeFunction)
                 {
                     rmem.FramePointer = fpRestore;
-
                     return true;
                 }
 
                 rmem.FramePointer -= StackFrame.kStackFrameSize;
-                if (rmem.FramePointer >= StackFrame.kStackFrameSize)
-                {
-                    svFrameType = rmem.GetAtRelative(StackFrame.kFrameIndexStackFrameType);
-                    classIndex = rmem.GetAtRelative(StackFrame.kFrameIndexClass).ClassIndex;
-                    functionIndex = rmem.GetAtRelative(StackFrame.kFrameIndexFunction).FunctionIndex;
-                }
-                else
+                if (rmem.FramePointer < StackFrame.kStackFrameSize)
                 {
                     break;
+                }
+                
+                // The top of stack is for global variables, so it is possible to 
+                // be an invalid frame.
+                svFrameType = rmem.GetAtRelative(StackFrame.kFrameIndexStackFrameType);
+                if (svFrameType.IsFrameType)
+                {
+                    classIndex = rmem.GetAtRelative(StackFrame.kFrameIndexClass).ClassIndex;
+                    functionIndex = rmem.GetAtRelative(StackFrame.kFrameIndexFunction).FunctionIndex;
                 }
             }
             rmem.FramePointer = fpRestore;
@@ -4787,7 +4789,6 @@ namespace ProtoCore.DSASM
             // This expression ID of this instruction
             runtimeVerify(instruction.op1.IsInteger);
             int exprID = instruction.op1.IntegerValue;
-
 
             // The SSA assignment flag
             runtimeVerify(instruction.op2.IsInteger);
