@@ -13,7 +13,7 @@ namespace Dynamo.Scheduler
 
         public override TaskPriority Priority
         {
-            get { return TaskPriority.BelowNormal; }
+            get { return TaskPriority.Normal; }
         }
 
         #region Public Class Operational Methods

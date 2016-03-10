@@ -497,8 +497,10 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         internal void SetCachedValueInProgress(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore)
         {
-            CachedValue =
+            cachedValueInProgress =
                 cachedValueInProgress ?? new MirrorData(core, runtimeCore, core.Heap.AllocateFixedString(Configurations.BusyString));
+
+            CachedValue = cachedValueInProgress;
         }
 
         /// <summary>
