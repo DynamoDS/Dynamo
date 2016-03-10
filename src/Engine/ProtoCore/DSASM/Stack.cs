@@ -335,8 +335,8 @@ namespace ProtoCore.DSASM
             {
                 case AddressType.Invalid:
                     return true;
-
                 case AddressType.Int:
+                    return sv1.IntegerValue == sv2.IntegerValue;
                 case AddressType.Char:
                     return sv1.CharValue == sv2.CharValue;
                 case AddressType.Double:
