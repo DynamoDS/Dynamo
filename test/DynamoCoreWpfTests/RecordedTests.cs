@@ -2595,11 +2595,7 @@ namespace DynamoCoreWpfTests
                 "3f309016-7b00-4487-9b68-f0640e892d39");
 
             Assert.AreNotEqual(ElementState.Warning, nodeModel.State);
-
-            Assert.IsNotNull(nodeModel.GetCachedValueFromEngine(ViewModel.Model.EngineController).Data);
-
             AssertPreviewValue("3f309016-7b00-4487-9b68-f0640e892d39", 11);
-
         }
 
         [Test, RequiresSTA]

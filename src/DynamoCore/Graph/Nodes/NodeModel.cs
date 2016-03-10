@@ -457,39 +457,6 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// WARNING: This method is meant for unit test only. It directly accesses
-        /// the EngineController for the mirror data without waiting for any 
-        /// possible execution to complete (which, in single-threaded nature of 
-        /// unit test, is an okay thing to do). The right way to get the cached 
-        /// value for a NodeModel is by going through its RequestValueUpdateAsync
-        /// method).
-        /// </summary>
-        /// <param name="engine">Instance of EngineController from which the node
-        /// value is to be retrieved.</param>
-        /// <returns>Returns the MirrorData if the node's value is computed, or 
-        /// null otherwise.</returns>
-        /// 
-        internal MirrorData GetCachedValueFromEngine(EngineController engine)
-        {
-            if (cachedValue != null)
-                return cachedValue;
-
-            // Do not have an identifier for preview right now. For an example,
-            // this can be happening at the beginning of a code block node creation.
-            if (AstIdentifierForPreview.Value == null)
-                return null;
-
-            cachedValue = null;
-
-            var runtimeMirror = engine.GetMirror(AstIdentifierForPreview.Value);
-
-            if (runtimeMirror != null)
-                cachedValue = runtimeMirror.GetData();
-
-            return cachedValue;
-        }
-
-        /// <summary>
         /// This flag is used to determine if a node was involved in a recent execution.
         /// The primary purpose of this flag is to determine if the node's render packages 
         /// should be returned to client browser when it requests for them. This is mainly 
