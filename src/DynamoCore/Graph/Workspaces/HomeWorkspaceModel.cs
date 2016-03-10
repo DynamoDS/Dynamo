@@ -504,7 +504,7 @@ namespace Dynamo.Graph.Workspaces
             // Refresh values of nodes that took part in update.
             foreach (var executedNode in updateTask.ExecutedNodes)
             {
-                executedNode.RequestValueUpdateAsync(scheduler, EngineController);
+                executedNode.RequestValueUpdate(EngineController);
             }
 
             scheduler.Tasks.AllComplete(_ =>
