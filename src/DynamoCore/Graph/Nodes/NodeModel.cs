@@ -7,11 +7,11 @@ using System.Linq;
 using System.Reflection;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
+using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes.CustomNodes;
-using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Migration;
 using Dynamo.Scheduler;
 using Dynamo.Selection;
@@ -487,6 +487,25 @@ namespace Dynamo.Graph.Nodes
                 cachedValue = runtimeMirror.GetData();
 
             return cachedValue;
+        }
+
+        /// <summary>
+        /// Value which is set, when node hasn't been calculated.
+        /// </summary>
+        private MirrorData cachedValueInProgress;
+
+        /// <summary>
+        /// Call this method only, when graph calculation is started.
+        /// CachedValue will be set to MirrorDataInProgress.
+        /// It's done in order to fix crash with preview bubble, when node hasn't been calculated,
+        /// but UI thread tried to get value.
+        /// </summary>
+        internal void SetCachedValueInProgress(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore)
+        {
+            cachedValueInProgress =
+                cachedValueInProgress ?? new MirrorData(core, runtimeCore, core.Heap.AllocateFixedString(Configurations.BusyString));
+
+            CachedValue = cachedValueInProgress;
         }
 
         /// <summary>

@@ -317,50 +317,45 @@ namespace Dynamo.UI.Controls
 
             string newContent = "null";
 
-            RunOnSchedulerSync(
-                () =>
+            if (mirrorData != null)
+            {
+                if (mirrorData.IsCollection)
                 {
-                    if (mirrorData != null)
+                    // TODO(Ben): Can we display details of the array and 
+                    // probably display the first element of the array (even 
+                    // when it is multi-dimensional array)?
+                    newContent = Wpf.Properties.Resources.PreviewListLabel;
+                }
+                else if (mirrorData.Data == null && !mirrorData.IsNull && mirrorData.Class != null)
+                {
+                    newContent = mirrorData.Class.ClassName;
+                }
+                else if (mirrorData.Data is Enum)
+                {
+                    newContent = ((Enum)mirrorData.Data).GetDescription();
+                }
+                else
+                {
+                    if (String.IsNullOrEmpty(mirrorData.StringData))
                     {
-                        if (mirrorData.IsCollection)
-                        {
-                            // TODO(Ben): Can we display details of the array and 
-                            // probably display the first element of the array (even 
-                            // when it is multi-dimensional array)?
-                            newContent = Wpf.Properties.Resources.PreviewListLabel;
-                        }
-                        else if (mirrorData.Data == null && !mirrorData.IsNull && mirrorData.Class != null)
-                        {
-                            newContent = mirrorData.Class.ClassName;
-                        }
-                        else if (mirrorData.Data is Enum)
-                        {
-                            newContent = ((Enum)mirrorData.Data).GetDescription();
-                        }
-                        else
-                        {
-                            if (String.IsNullOrEmpty(mirrorData.StringData))
-                            {
-                                newContent = String.Empty;
-                                return;
-                            }
-
-                            int index = mirrorData.StringData.IndexOf('(');
-                            newContent = index != -1 ? mirrorData.StringData.Substring(0, index) : mirrorData.StringData;
-                        }
+                        newContent = String.Empty;
                     }
-                },
-                (m) =>
-                {
-                    cachedSmallContent = newContent;
-                    var smallContentView = smallContentGrid.Children[0] as TextBlock;
-                    smallContentView.Text = cachedSmallContent; // Update displayed text.
-                    if (refreshDisplay != null)
+                    else
                     {
-                        refreshDisplay();
+                        int index = mirrorData.StringData.IndexOf('(');
+                        newContent = index != -1 ? mirrorData.StringData.Substring(0, index) : mirrorData.StringData;
                     }
                 }
-            );
+            }
+
+            cachedSmallContent = newContent;
+            var smallContentView = smallContentGrid.Children[0] as TextBlock;
+            smallContentView.Text = cachedSmallContent; // Update displayed text.
+            if (refreshDisplay != null)
+            {
+                refreshDisplay();
+            }
+
         }
 
         /// <summary>
@@ -401,7 +396,10 @@ namespace Dynamo.UI.Controls
                         {
                             DataContext = new WatchViewModel(nodeViewModel.DynamoViewModel.BackgroundPreviewViewModel.AddLabelForPath)
                         };
-                        tree.treeView1.ItemContainerGenerator.StatusChanged += WatchContainer_StatusChanged;
+                        //TODO(Anna): ComputeWatchContentSize causes crash, when it's fired on Collapsed/Expanded events.
+                        // ComputeWatchContentSize should subscribe on PropetyChange on WatchViewModel.
+                        // For now comment it.
+                        //tree.treeView1.ItemContainerGenerator.StatusChanged += WatchContainer_StatusChanged;
 
                         largeContentGrid.Children.Add(tree);
                     }
