@@ -430,7 +430,7 @@ namespace Dynamo.Graph.Nodes
                     return cachedValue;
                 }
             }
-            set
+            private set
             {
                 lock (cachedValueMutex)
                 {
