@@ -3211,6 +3211,17 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please, load assembly just one time.
+        ///Next assemblies were loaded several times:
+        ///.
+        /// </summary>
+        public static string OneAssemblyWasLoadedSeveralTimesErrorMessage {
+            get {
+                return ResourceManager.GetString("OneAssemblyWasLoadedSeveralTimesErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to only.
         /// </summary>
         public static string OnlyTitle {

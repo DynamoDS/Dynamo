@@ -597,26 +597,50 @@ namespace Dynamo.PackageManager
 
             var nodeLibraryNames = l.Header.node_libraries;
 
+            var assembliesLoadedTwice = new List<string>();
             // load assemblies into reflection only context
             foreach (var file in l.EnumerateAssemblyFilesInBinDirectory())
             {
                 Assembly assem;
                 var result = PackageLoader.TryReflectionOnlyLoadFrom(file, out assem);
 
-                if (result)
+                switch (result)
                 {
-                    var isNodeLibrary = nodeLibraryNames == null || nodeLibraryNames.Contains(assem.FullName);
-                    vm.Assemblies.Add(new  PackageAssembly()
-                    {
-                        IsNodeLibrary = isNodeLibrary,
-                        Assembly = assem
-                    });
+                    case AssemblyLoadingState.Succes:
+                        {
+                            var isNodeLibrary = nodeLibraryNames == null || nodeLibraryNames.Contains(assem.FullName);
+                            vm.Assemblies.Add(new PackageAssembly()
+                            {
+                                IsNodeLibrary = isNodeLibrary,
+                                Assembly = assem
+                            });
+                            break;
+                        }
+                    case AssemblyLoadingState.NotManagedAssembly:
+                        {
+                            // if it's not a .NET assembly, we load it as an additional file
+                            vm.AdditionalFiles.Add(file);
+                            break;
+                        }
+                    case AssemblyLoadingState.AlreadyLoaded:
+                        {
+                            assembliesLoadedTwice.Add(file);
+                            break;
+                        }
                 }
-                else
+            }
+
+            if (assembliesLoadedTwice.Count != 0)
+            {
+                vm.UploadState = PackageUploadHandle.State.Error;
+                var st = new System.Text.StringBuilder();
+                st.Append(Resources.OneAssemblyWasLoadedSeveralTimesErrorMessage);
+                foreach (var assembly in assembliesLoadedTwice)
                 {
-                    // if it's not a .NET assembly, we load it as an additional file
-                    vm.AdditionalFiles.Add(file);
+                    st.Append(assembly + "\n");
                 }
+
+                vm.ErrorString = st.ToString();
             }
 
             if (l.VersionName == null) return vm;
