@@ -156,7 +156,7 @@ namespace ProtoCore.Lang
                     {
                         StackValue stackValue = formalParameters[0];
                         if (stackValue.IsInteger)
-                            System.Threading.Thread.Sleep(stackValue.IntegerValue);
+                            System.Threading.Thread.Sleep((int)stackValue.IntegerValue);
                         else
                         {
                             runtimeCore.RuntimeStatus.LogWarning(
@@ -312,7 +312,7 @@ namespace ProtoCore.Lang
 
                         Validity.Assert(svTrue.IsInteger);
                         Validity.Assert(svFalse.IsInteger);
-                        int blockId = svCondition.BooleanValue ? svTrue.IntegerValue : svFalse.IntegerValue;
+                        int blockId = svCondition.BooleanValue ? (int)svTrue.IntegerValue : (int)svFalse.IntegerValue;
                         int oldRunningBlockId = runtimeCore.RunningBlock;
                         runtimeCore.RunningBlock = blockId;
 
@@ -333,7 +333,7 @@ namespace ProtoCore.Lang
                         int blockDecl = 0;
                         int blockCaller = oldRunningBlockId;
                         StackFrameType type = StackFrameType.kTypeLanguage;
-                        int depth = interpreter.runtime.rmem.GetAtRelative(StackFrame.kFrameIndexStackFrameDepth).IntegerValue;
+                        int depth = (int)interpreter.runtime.rmem.GetAtRelative(StackFrame.kFrameIndexStackFrameDepth).IntegerValue;
                         int framePointer = rmem.FramePointer;
                         List<StackValue> registers = new List<StackValue>();
 
@@ -553,7 +553,7 @@ namespace ProtoCore.Lang
 
             StackValue argumentCount = rmem.Stack[stackPtr];
             Validity.Assert(argumentCount.IsInteger);
-            int functionArgs = argumentCount.IntegerValue;
+            int functionArgs = (int)argumentCount.IntegerValue;
 
             // Build the function arguments
             var argArray = rmem.Heap.ToHeapObject<DSArray>(functionArguments);
@@ -578,7 +578,7 @@ namespace ProtoCore.Lang
 
             // Find the first visible method in the class and its heirarchy
             // The callsite will handle the overload
-            var dynamicFunction = runtimeCore.DSExecutable.DynamicFuncTable.GetFunctionAtIndex(dynamicTableIndex.IntegerValue);
+            var dynamicFunction = runtimeCore.DSExecutable.DynamicFuncTable.GetFunctionAtIndex((int)dynamicTableIndex.IntegerValue);
             string functionName = dynamicFunction.Name;
 
             var replicationGuides = new List<List<ProtoCore.ReplicationGuide>>();
@@ -1730,7 +1730,7 @@ namespace ProtoCore.Lang
 
             var svArray = runtimeCore.Heap.ToHeapObject<DSArray>(sv1).Values.ToArray();
             int length = svArray.Length;
-            int indexToBeRemoved = sv2.IntegerValue;
+            int indexToBeRemoved = (int)sv2.IntegerValue;
             if (indexToBeRemoved < 0)
             {
                 indexToBeRemoved += length;
@@ -2145,7 +2145,7 @@ namespace ProtoCore.Lang
         }
         private static StackValue InsertCore(StackValue svArray, StackValue value, StackValue idx, ProtoCore.DSASM.Interpreter runtime)
         {
-            int idxToBeInsert = idx.IntegerValue;
+            int idxToBeInsert = (int)idx.IntegerValue;
 
             List<StackValue> svList = new List<StackValue>();
             var array = runtime.runtime.RuntimeCore.Heap.ToHeapObject<DSArray>(svArray);
@@ -2241,7 +2241,7 @@ namespace ProtoCore.Lang
                 return DSASM.StackValue.Null;
             }
             int overallDepth = Rank(sv, runtime);
-            int expectedDepth = r.IntegerValue;
+            int expectedDepth = (int)r.IntegerValue;
             if (expectedDepth <= 0) return DSASM.StackValue.Null;
             if (expectedDepth == 1) return Flatten(sv, runtime);
             sv = Traverse(sv, expectedDepth, overallDepth, 0, runtime);
@@ -2404,7 +2404,7 @@ namespace ProtoCore.Lang
                 if (ret.IsDouble)
                     return (int)ret.DoubleValue;
                 else
-                    return ret.IntegerValue;
+                    return (int)ret.IntegerValue;
             };
 
             try

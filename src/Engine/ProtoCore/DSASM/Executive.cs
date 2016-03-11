@@ -332,7 +332,7 @@ namespace ProtoCore.DSASM
                 RX = rmem.GetAtRelative(StackFrame.kFrameIndexThisPtr);
             }
 
-            pc = rmem.GetAtRelative(StackFrame.kFrameIndexReturnAddress).IntegerValue;
+            pc = (int)rmem.GetAtRelative(StackFrame.kFrameIndexReturnAddress).IntegerValue;
             executingBlock = rmem.GetAtRelative(StackFrame.kFrameIndexFunctionCallerBlock).BlockIndex;
             istream = exe.instrStreamList[executingBlock];
             runtimeCore.RunningBlock = executingBlock;
@@ -353,7 +353,7 @@ namespace ProtoCore.DSASM
 
                 execStateRestore = RetrieveExecutionStatesFromStack(localCount, paramCount);
 
-                rmem.FramePointer = rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer).IntegerValue;
+                rmem.FramePointer = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer).IntegerValue;
                 rmem.PopFrame(StackFrame.kStackFrameSize + localCount + paramCount + execStateRestore.Count);
 
                 if (runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
@@ -457,7 +457,7 @@ namespace ProtoCore.DSASM
             Validity.Assert(null != istream);
             Validity.Assert(null != istream.instrList);
 
-            pc = rmem.GetAtRelative(StackFrame.kFrameIndexReturnAddress).IntegerValue;
+            pc = (int)rmem.GetAtRelative(StackFrame.kFrameIndexReturnAddress).IntegerValue;
         }
 
         private void PushInterpreterProps(InterpreterProperties properties)
@@ -651,7 +651,7 @@ namespace ProtoCore.DSASM
         {
             // This is curently unused but required for stack alignment
             var svDepth = rmem.Pop();
-            int depth = svDepth.IntegerValue;
+            int depth = (int)svDepth.IntegerValue;
 
             ProcedureNode fNode = null;
 
@@ -1103,7 +1103,7 @@ namespace ProtoCore.DSASM
             }
             else if (snode.IsInteger)
             {
-                int data = snode.IntegerValue;
+                int data = (int)snode.IntegerValue;
                 rhs = data.ToString();
             }
             else if (snode.IsDouble)
@@ -1899,7 +1899,7 @@ namespace ProtoCore.DSASM
             }
 
             // Restore return address and lang block
-            pc = rmem.GetAtRelative(StackFrame.kFrameIndexReturnAddress).IntegerValue;
+            pc = (int)rmem.GetAtRelative(StackFrame.kFrameIndexReturnAddress).IntegerValue;
             exeblock = rmem.GetAtRelative(StackFrame.kFrameIndexFunctionCallerBlock).BlockIndex;
 
             istream = exe.instrStreamList[exeblock];
@@ -1919,7 +1919,7 @@ namespace ProtoCore.DSASM
             execStateRestore = RetrieveExecutionStatesFromStack(localCount, paramCount);
 
             // Pop function stackframe as this is not allowed in Ret/Retc in debug mode
-            rmem.FramePointer = rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer).IntegerValue;
+            rmem.FramePointer = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer).IntegerValue;
 
             rmem.PopFrame(StackFrame.kStackFrameSize + localCount + paramCount + execStateRestore.Count); 
 
@@ -1962,7 +1962,7 @@ namespace ProtoCore.DSASM
                 }
 
                 // Restore return address and lang block    
-                pc = rmem.GetAtRelative(StackFrame.kFrameIndexReturnAddress).IntegerValue;
+                pc = (int)rmem.GetAtRelative(StackFrame.kFrameIndexReturnAddress).IntegerValue;
                 exeblock = rmem.GetAtRelative(StackFrame.kFrameIndexFunctionCallerBlock).BlockIndex;
 
                 istream = exe.instrStreamList[exeblock];
@@ -1972,7 +1972,7 @@ namespace ProtoCore.DSASM
                 Properties.executingGraphNode = debugFrame.ExecutingGraphNode;
 
                 // Pop language stackframe as this is not allowed in Retb in debug mode
-                rmem.FramePointer = rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer).IntegerValue;
+                rmem.FramePointer = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer).IntegerValue;
                 rmem.PopFrame(StackFrame.kStackFrameSize);
 
                 ResumeRegistersFromStackExceptRX();
@@ -2884,7 +2884,7 @@ namespace ProtoCore.DSASM
             int fptr = Constants.kInvalidIndex;
             int functionDynamicIndex = instr.op1.DynamiIndex;
             int classIndex = instr.op2.ClassIndex;
-            int depth = rmem.Pop().IntegerValue;
+            int depth = (int)rmem.Pop().IntegerValue;
             runtimeVerify(functionDynamicIndex != Constants.kInvalidIndex);
             bool isFunctionPointerCall = false;
 
@@ -3503,7 +3503,7 @@ namespace ProtoCore.DSASM
         private void PUSHLEVEL_Handler(Instruction instruction)
         {
             runtimeVerify(instruction.op1.IsInteger);
-            int level = instruction.op1.IntegerValue;
+            int level = (int)instruction.op1.IntegerValue;
 
             runtimeVerify(instruction.op2.IsBoolean);
             bool isDominant = instruction.op2.BooleanValue;
@@ -4247,13 +4247,13 @@ namespace ProtoCore.DSASM
             int size;
             if (op1.IsInteger)
             {
-                size = op1.IntegerValue; //Number of the elements in the array
+                size = (int)op1.IntegerValue; //Number of the elements in the array
             }
             else
             {
                 StackValue arraySize = GetOperandData(op1);
                 runtimeVerify(arraySize.IsInteger);
-                size = arraySize.IntegerValue;
+                size = (int)arraySize.IntegerValue;
             }
 
             runtimeVerify(Constants.kInvalidIndex != size);
@@ -4335,7 +4335,7 @@ namespace ProtoCore.DSASM
             int blockCaller = executingBlock;
 
             StackFrameType type = StackFrameType.kTypeLanguage;
-            int depth = rmem.GetAtRelative(StackFrame.kFrameIndexStackFrameDepth).IntegerValue;
+            int depth = (int)rmem.GetAtRelative(StackFrame.kFrameIndexStackFrameDepth).IntegerValue;
             int framePointer = runtimeCore.RuntimeMemory.FramePointer;
 
             // Comment Jun: Use the register TX to store explicit/implicit bounce state
@@ -4429,7 +4429,7 @@ namespace ProtoCore.DSASM
                 // thisptr should be the pointer to the instance of derive class
                 svThisPointer = rmem.GetAtRelative(StackFrame.kFrameIndexThisPtr);
                 // how many instruction offset? basically it should be 1 to skip ALLOCC
-                pcoffset = instruction.op3.IntegerValue;
+                pcoffset = (int)instruction.op3.IntegerValue;
 
                 // To simulate CALLR. We have to retrive the param values from the
                 // stack and reverse these values and save back to the stack. Otherwise
@@ -4622,7 +4622,7 @@ namespace ProtoCore.DSASM
 
             if (CallingConvention.BounceType.kImplicit == bounceType)
             {
-                pc = rmem.GetAtRelative(StackFrame.kFrameIndexReturnAddress).IntegerValue;
+                pc = (int)rmem.GetAtRelative(StackFrame.kFrameIndexReturnAddress).IntegerValue;
                 terminate = true;
             }
 
@@ -4641,7 +4641,7 @@ namespace ProtoCore.DSASM
             //if (runtimeCore.RunningBlock != 0)
             if (!runtimeCore.Options.IDEDebugMode || runtimeCore.Options.RunMode == InterpreterMode.kExpressionInterpreter)
             {
-                rmem.FramePointer = rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer).IntegerValue;
+                rmem.FramePointer = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer).IntegerValue;
                 rmem.PopFrame(StackFrame.kStackFrameSize);
 
                 if (bounceType == CallingConvention.BounceType.kExplicit)
@@ -4697,7 +4697,7 @@ namespace ProtoCore.DSASM
         {
             // Retrieve the execution execution states 
             List<bool> execStateRestore = new List<bool>();
-            int execstates = rmem.GetAtRelative(StackFrame.kFrameIndexExecutionStates).IntegerValue;
+            int execstates = (int)rmem.GetAtRelative(StackFrame.kFrameIndexExecutionStates).IntegerValue;
             if (execstates > 0)
             {
                 int offset = StackFrame.kStackFrameSize + localSize + paramSize;
@@ -4788,14 +4788,14 @@ namespace ProtoCore.DSASM
         {
             // This expression ID of this instruction
             runtimeVerify(instruction.op1.IsInteger);
-            int exprID = instruction.op1.IntegerValue;
+            int exprID = (int)instruction.op1.IntegerValue;
 
             // The SSA assignment flag
             runtimeVerify(instruction.op2.IsInteger);
             bool isSSA = (1 == instruction.op2.IntegerValue);
 
             runtimeVerify(instruction.op3.IsInteger);
-            int modBlkID = instruction.op3.IntegerValue;
+            int modBlkID = (int)instruction.op3.IntegerValue;
 
 
             // The current function and class scope
@@ -4962,7 +4962,7 @@ namespace ProtoCore.DSASM
             int block = instruction.op1.BlockIndex;
 
             runtimeVerify(instruction.op2.IsInteger);
-            int depth = instruction.op2.IntegerValue;
+            int depth = (int)instruction.op2.IntegerValue;
 
             // The symbol and its class index
             runtimeVerify(instruction.op3.IsClassIndex);
@@ -4981,7 +4981,7 @@ namespace ProtoCore.DSASM
 
             // TODO Jun: use the proper ID for this
             runtimeVerify(symbolList[0].IsInteger);
-            int symindex = symbolList[0].IntegerValue;
+            int symindex = (int)symbolList[0].IntegerValue;
 
             if (Constants.kInvalidIndex != symindex)
             {
@@ -5012,7 +5012,7 @@ namespace ProtoCore.DSASM
                 {
                     // TODO Jun: This should be a memvarindex address type
                     runtimeVerify(symbolList[n].IsInteger);
-                    symindex = symbolList[n].IntegerValue;
+                    symindex = (int)symbolList[n].IntegerValue;
 
                     // Get the symbol and append it to the modified ref
                     updateNode = new AssociativeGraph.UpdateNode();

@@ -409,7 +409,7 @@ namespace ProtoCore.DSASM
             }
         }
 
-        public int IntegerValue
+        public long IntegerValue
         {
             get
             {

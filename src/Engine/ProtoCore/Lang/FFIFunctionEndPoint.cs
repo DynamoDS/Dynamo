@@ -176,7 +176,7 @@ namespace ProtoCore.Lang
 
                     // Clear the FFI stack frame 
                     // FFI stack frames have no local variables
-                    interpreter.runtime.rmem.FramePointer = interpreter.runtime.rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer).IntegerValue;
+                    interpreter.runtime.rmem.FramePointer = (int)interpreter.runtime.rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer).IntegerValue;
                     interpreter.runtime.rmem.PopFrame(StackFrame.kStackFrameSize + formalParameters.Count);
 
                     return op; 
