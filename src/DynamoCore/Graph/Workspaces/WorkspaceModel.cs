@@ -1634,6 +1634,7 @@ namespace Dynamo.Graph.Workspaces
                         //overwrite the xy coords of the serialized node with the current position, so the node is not moved
                         serializedNode.SetAttribute("x", originalpos.X.ToString(CultureInfo.InvariantCulture));
                         serializedNode.SetAttribute("y", originalpos.Y.ToString(CultureInfo.InvariantCulture));
+                        serializedNode.SetAttribute("isPinned", node.PreviewPinned.ToString());
 
                         this.undoRecorder.RecordModificationForUndo(node);
                         this.ReloadModel(serializedNode);
