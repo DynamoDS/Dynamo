@@ -231,6 +231,8 @@ namespace Dynamo.UI.Controls
             // Make delta less to achieve smooth scrolling and not jump over other elements.
             var delta = e.Delta / 100;
             scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - delta);
+            // do not propagate to child items with scrollable content
+            e.Handled = true;
         }
     }
 }
