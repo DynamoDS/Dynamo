@@ -1708,7 +1708,7 @@ namespace ProtoCore.DSASM
         private void ResumeRegistersFromStack()
         {
             int fp = rmem.FramePointer;
-            if (fp >= StackFrame.kStackFrameSize)
+            if (fp >= rmem.GlobOffset + StackFrame.kStackFrameSize)
             {
                 AX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterAX);
                 BX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterBX);
@@ -1726,7 +1726,7 @@ namespace ProtoCore.DSASM
         private void ResumeRegistersFromStackExceptRX()
         {
             int fp = rmem.FramePointer;
-            if (fp >= StackFrame.kStackFrameSize)
+            if (fp >= rmem.GlobOffset + StackFrame.kStackFrameSize)
             {
                 AX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterAX);
                 BX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterBX);
@@ -1743,7 +1743,7 @@ namespace ProtoCore.DSASM
         private void SaveRegistersToStack()
         {
             int fp = rmem.FramePointer;
-            if (fp >= StackFrame.kStackFrameSize)
+            if (fp >= rmem.GlobOffset + StackFrame.kStackFrameSize)
             {
                 rmem.SetAtRelative(StackFrame.kFrameIndexRegisterAX, AX);
                 rmem.SetAtRelative(StackFrame.kFrameIndexRegisterBX, BX);
