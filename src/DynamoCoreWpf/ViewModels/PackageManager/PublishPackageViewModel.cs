@@ -538,7 +538,8 @@ namespace Dynamo.PackageManager
 
         private void BeginInvoke(Action action)
         {
-            if (dynamoViewModel != null)
+            // dynamoViewModel.UIDispatcher can be null in unit tests.
+            if (dynamoViewModel != null && dynamoViewModel.UIDispatcher != null)
                 dynamoViewModel.UIDispatcher.BeginInvoke(action);
         }
 
@@ -606,7 +607,7 @@ namespace Dynamo.PackageManager
 
                 switch (result)
                 {
-                    case AssemblyLoadingState.Succes:
+                    case AssemblyLoadingState.Success:
                         {
                             var isNodeLibrary = nodeLibraryNames == null || nodeLibraryNames.Contains(assem.FullName);
                             vm.Assemblies.Add(new PackageAssembly()

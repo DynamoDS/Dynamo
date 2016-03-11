@@ -21,7 +21,7 @@ namespace Dynamo.PackageManager
 
     public enum AssemblyLoadingState
     {
-        Succes,
+        Success,
         NotManagedAssembly,
         AlreadyLoaded
     }
@@ -243,13 +243,13 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <param name="filename">The filename of a DLL</param>
         /// <param name="assem">out Assembly - the passed value does not matter and will only be set if loading succeeds</param>
-        /// <returns>Returns Succes if success, NotManagedAssembly if BadImageFormatException, AlreadyLoaded if FileLoadException</returns>
+        /// <returns>Returns Success if success, NotManagedAssembly if BadImageFormatException, AlreadyLoaded if FileLoadException</returns>
         internal static AssemblyLoadingState TryReflectionOnlyLoadFrom(string filename, out Assembly assem)
         {
             try
             {
                 assem = Assembly.ReflectionOnlyLoadFrom(filename);
-                return AssemblyLoadingState.Succes;
+                return AssemblyLoadingState.Success;
             }
             catch (BadImageFormatException)
             {
