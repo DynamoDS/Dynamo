@@ -906,6 +906,6 @@ Parameter name: {0}</value>
     <value>Only one dominant list is allowed</value>
   </data>
   <data name="IndexIntoNonArrayObject" xml:space="preserve">
-    <value>Cannot apply indexing to non-array object</value>
+    <value>No item exists at specified index address</value>
   </data>
 </root>

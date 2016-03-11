@@ -566,7 +566,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot apply indexing to non-array object.
+        ///   Looks up a localized string similar to No item exists at specified index address.
         /// </summary>
         public static string IndexIntoNonArrayObject {
             get {
