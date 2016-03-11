@@ -631,17 +631,10 @@ namespace Dynamo.PackageManager
                 }
             }
 
-            if (assembliesLoadedTwice.Count != 0)
+            if (assembliesLoadedTwice.Any())
             {
                 vm.UploadState = PackageUploadHandle.State.Error;
-                var st = new System.Text.StringBuilder();
-                st.Append(Resources.OneAssemblyWasLoadedSeveralTimesErrorMessage);
-                foreach (var assembly in assembliesLoadedTwice)
-                {
-                    st.Append(assembly + "\n");
-                }
-
-                vm.ErrorString = st.ToString();
+                vm.ErrorString = Resources.OneAssemblyWasLoadedSeveralTimesErrorMessage + string.Join("\n", assembliesLoadedTwice);
             }
 
             if (l.VersionName == null) return vm;
