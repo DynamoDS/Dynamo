@@ -4485,7 +4485,7 @@ namespace ProtoCore.DSASM
 
             // On implicit call, the SX is set in JIL Fep
             // On explicit call, the SX should be directly set here
-            SX = StackValue.BuildInt(blockDecl);
+            SX = StackValue.BuildBlockIndex(blockDecl);
 
             List<StackValue> registers = new List<StackValue>();
             SaveRegisters(registers);
