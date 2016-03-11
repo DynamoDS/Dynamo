@@ -566,6 +566,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No item exists at specified index address.
+        /// </summary>
+        public static string IndexIntoNonArrayObject {
+            get {
+                return ResourceManager.GetString("IndexIntoNonArrayObject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Inserts an element into a list at specified index.
         /// </summary>
         public static string InsertsAnElementIntoList {
@@ -1561,15 +1570,6 @@ namespace ProtoCore.Properties {
         public static string kStringOverIndexed {
             get {
                 return ResourceManager.GetString("kStringOverIndexed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is over indexed.
-        /// </summary>
-        public static string kSymbolOverIndexed {
-            get {
-                return ResourceManager.GetString("kSymbolOverIndexed", resourceCulture);
             }
         }
         
