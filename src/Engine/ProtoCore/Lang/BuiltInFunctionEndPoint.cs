@@ -1513,7 +1513,7 @@ namespace ProtoCore.Lang
             int countFalse = 0;
             foreach (var element in array.Values)
             {
-                if (element.IsBoolean && element.BooleanValue) 
+                if (element.IsBoolean && !element.BooleanValue) 
                 {
                     countFalse++;
                 }
