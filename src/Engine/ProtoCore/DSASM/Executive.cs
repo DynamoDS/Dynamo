@@ -4311,10 +4311,10 @@ namespace ProtoCore.DSASM
             {
                 StackValue sci = rmem.GetAtRelative(StackFrame.kFrameIndexClass);
                 StackValue sfi = rmem.GetAtRelative(StackFrame.kFrameIndexFunction);
-                if (sci.IsInteger && sfi.IsInteger)
+                if (sci.IsClassIndex && sfi.IsFunctionIndex)
                 {
-                    ci = sci.IntegerValue;
-                    fi = sfi.IntegerValue;
+                    ci = sci.ClassIndex;
+                    fi = sfi.FunctionIndex;
                 }
             }
 
