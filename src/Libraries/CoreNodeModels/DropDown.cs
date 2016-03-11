@@ -78,6 +78,29 @@ namespace CoreNodeModels
             }
         }
 
+        public string getNameOfSelectedDropDownItem ()
+        {
+            return (items.ElementAt(selectedIndex)).Name;
+        }
+
+        public object getItemOfSelectedDropDownItem()
+        {
+            return (items.ElementAt(selectedIndex)).Item;
+        }
+
+        public int getIndexOfItem(string itemName)
+        {
+            int index = 0;
+           for(int i = 0; i< items.Count;i++)
+            {
+                if ((items.ElementAt(i)).Name.Equals(itemName))
+                {
+                    index = i;
+                }
+            }
+            return index;
+        }
+
         protected DSDropDownBase(string outputName)
         {
             OutPortData.Add(new PortData(outputName, string.Format(Resources.DropDownPortDataResultToolTip, outputName)));

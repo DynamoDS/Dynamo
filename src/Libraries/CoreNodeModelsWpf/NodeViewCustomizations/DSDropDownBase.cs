@@ -36,17 +36,16 @@ namespace CoreNodeModelsWpf.Nodes
             combo.SelectionChanged += delegate
             {
                 if (combo.SelectedIndex != -1)
-                    model.OnNodeModified();
-            };
-
-            combo.DropDownClosed += delegate
-            {
-                //disallow selection of nothing
-                if (combo.SelectedIndex == -1)
                 {
-                    model.SelectedIndex = 0;
+                    model.OnNodeModified();
+                }
+                else
+                {
+                    combo.SelectedIndex = model.SelectedIndex;
                 }
             };
+
+  
 
             combo.DataContext = model;
             //bind this combo box to the selected item hash
@@ -74,7 +73,9 @@ namespace CoreNodeModelsWpf.Nodes
         /// <param name="e"></param>
         void combo_DropDownOpened(object sender, EventArgs e)
         {
+            string itemName = model.getNameOfSelectedDropDownItem();
             this.model.PopulateItems();
+            model.SelectedIndex = model.getIndexOfItem(itemName); 
         }
 
     }
