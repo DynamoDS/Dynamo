@@ -299,6 +299,10 @@ namespace ProtoCore.Lang
                             // Comment Jun: Perhaps we can allow coercion?
                             Type booleanType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0);
                             svCondition = TypeSystem.Coerce(svCondition, booleanType, runtimeCore);
+                            if (svCondition.IsNull)
+                            {
+                                svCondition = StackValue.False;
+                            }
                         }
 
                         StackValue svTrue = formalParameters[1];

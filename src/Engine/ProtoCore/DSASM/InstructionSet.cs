@@ -757,7 +757,9 @@ namespace ProtoCore.DSASM
         {
             Validity.Assert(array.IsArray || array.IsString);
             int ptr = array.IsArray ? array.ArrayPointer : array.StringPointer;
-            return BuildArrayKey(ptr, index);
+            var arrayKey = BuildArrayKey(ptr, index);
+            arrayKey.metaData = array.metaData;
+            return arrayKey;
         }
 
         public static StackValue BuildThisPtr(int thisptr)
@@ -1003,7 +1005,14 @@ namespace ProtoCore.DSASM
             // TODO: find out a cleaner way to represent array key instead of
             // using this kind of hacking.
             var rawArrayPointer = ((ulong)opdata >> 32);
-            array = BuildArrayPointer((long)rawArrayPointer);
+            if (this.metaData.type == (int)PrimitiveType.kTypeString)
+            {
+                array = BuildString((long)rawArrayPointer);
+            }
+            else
+            {
+                array = BuildArrayPointer((long)rawArrayPointer);
+            }
             key = (int)((ulong)opdata << 32 >> 32);
             return true;
         }
