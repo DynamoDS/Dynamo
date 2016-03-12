@@ -112,9 +112,9 @@ namespace ProtoCore.DSASM
         public int type;
     }
 
-    public class InvalidTypeException : Exception
+    public class InvalidStackValueTypeException : Exception
     {
-        public InvalidTypeException(string message) : base(message)
+        public InvalidStackValueTypeException(string message) : base(message)
         {
         }
     }
@@ -342,14 +342,18 @@ namespace ProtoCore.DSASM
         }
         #endregion
 
+        private void Check(bool cond, string errorMessage)
+        {
+            if (!cond)
+                throw new InvalidStackValueTypeException(errorMessage);
+        }
+
         #region Type-dependent value extractor
         public int VariableIndex
         {
             get
             {
-                if (!IsVariableIndex)
-                    throw new InvalidTypeException("The type of StackValue is not VariableIndex");
-
+                Check(IsVariableIndex, "The type of StackValue is not VariableIndex");
                 return (int)opdata;
             }
         }
@@ -358,9 +362,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                if (!IsFunctionIndex)
-                    throw new InvalidTypeException("The type of StackValue is not FunctionIndex");
-
+                Check(IsFunctionIndex, "The type of StackValue is not FunctionIndex");
                 return (int)opdata;
             }
         }
@@ -369,9 +371,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                if (!IsMemberVariableIndex)
-                    throw new InvalidTypeException("The type of StackValue is not MemberVariableIndex");
-
+                Check(IsMemberVariableIndex, "The type of StackValue is not MemberVariableIndex");
                 return (int)opdata;
             }
         }
@@ -380,9 +380,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                if (!IsStaticVariableIndex)
-                    throw new InvalidTypeException("The type of StackValue is not StaticVariableIndex");
-
+                Check(IsStaticVariableIndex, "The type of StackValue is not StaticVariableIndex");
                 return (int)opdata;
             }
         }
@@ -391,9 +389,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                if (!IsVariableIndex && !IsStaticVariableIndex && !IsMemberVariableIndex)
-                    throw new InvalidTypeException("It is not a symbol type");
-
+                Check(IsVariableIndex || IsStaticVariableIndex || IsMemberVariableIndex, "It is not a symbol type");
                 return (int)opdata;
             }
         }
@@ -402,9 +398,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                if (!IsClassIndex)
-                    throw new InvalidTypeException("The Type of StackValue is not ClassIndex");
-
+                Check(IsClassIndex, "The Type of StackValue is not ClassIndex");
                 return (int)opdata;
             }
         }
@@ -413,9 +407,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                if (!IsInteger)
-                    throw new InvalidTypeException("The Type of StackValue is not Integer");
-
+                Check(IsInteger, "The Type of StackValue is not Integer");
                 return (int)opdata;
             }
         }
@@ -424,9 +416,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                if (!IsChar)
-                    throw new InvalidTypeException("The Type of StackValue is not Char");
-
+                Check(IsChar, "The Type of StackValue is not Char");
                 return (int)opdata;
             }
         }
@@ -435,9 +425,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                if (!IsDouble)
-                    throw new InvalidTypeException("The Type of StackValue is not Double");
-
+                Check(IsDouble, "The Type of StackValue is not Double");
                 return BitConverter.Int64BitsToDouble(opdata);
             }
         }
@@ -446,9 +434,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                if (!IsBoolean)
-                    throw new InvalidTypeException("The Type of StackValue is not Boolean");
-
+                Check(IsBoolean, "The Type of StackValue is not Boolean");
                 return opdata != 0;
             }
         }
@@ -457,9 +443,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                if (!IsString)
-                    throw new InvalidTypeException("The Type of StackValue is not String");
-
+                Check(IsString, "The Type of StackValue is not String");
                 return (int)opdata;
             }
         }
@@ -468,9 +452,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                if (!IsLabelIndex)
-                    throw new InvalidTypeException("The Type of StackValue is not LabelIndex");
-
+                Check(IsLabelIndex, "The Type of StackValue is not LabelIndex");
                 return (int)opdata;
             }
         }
@@ -479,9 +461,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                if (!IsBlockIndex)
-                    throw new InvalidTypeException("The Type of StackValue is not BlockIndex");
-
+                Check(IsBlockIndex, "The Type of StackValue is not BlockIndex");
                 return (int)opdata;
             }
         }
@@ -490,9 +470,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                if (!IsPointer)
-                    throw new InvalidTypeException("The Type of StackValue is not Pointer");
-
+                Check(IsPointer, "The Type of StackValue is not Pointer");
                 return (int)opdata;
             }
         }
@@ -501,9 +479,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                if (!IsArray)
-                    throw new InvalidTypeException("The Type of StackValue is not ArrayPointer");
-
+                Check(IsArray, "The Type of StackValue is not ArrayPointer");
                 return (int)opdata;
             }
         }
@@ -512,9 +488,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                if (!IsFunctionPointer)
-                    throw new InvalidTypeException("The Type of StackValue is not FunctionPointer");
-
+                Check(IsFunctionPointer, "The Type of StackValue is not FunctionPointer");
                 return (int)opdata;
             }
         }
@@ -523,9 +497,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                if (!IsArrayDimension)
-                    throw new InvalidTypeException("The Type of StackValue is not ArrayDimension");
-
+                Check(IsArrayDimension, "The Type of StackValue is not ArrayDimension");
                 return (int)opdata;
             }
         }
@@ -534,9 +506,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                if (!IsReplicationGuide)
-                    throw new InvalidTypeException("The Type of StackValue is not ReplicationGuide");
-
+                Check(IsReplicationGuide, "The Type of StackValue is not ReplicationGuide");
                 return (int)opdata;
             }
         }
@@ -545,9 +515,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                if (!IsStaticType)
-                    throw new InvalidTypeException("The Type of StackValue is not StaticType");
-
+                Check(IsStaticType, "The Type of StackValue is not StaticType");
                 return (int)opdata;
             }
         }
@@ -556,9 +524,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                if (!IsCallingConvention)
-                    throw new InvalidTypeException("The Type of StackValue is not CallingConvention");
-
+                Check(IsCallingConvention, "The Type of StackValue is not CallingConvention");
                 return (CallingConvention.CallType)opdata;
             }
         }
@@ -567,9 +533,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                if (!IsCallingConvention)
-                    throw new InvalidTypeException("The Type of StackValue is not CallingConvention");
-
+                Check(IsCallingConvention, "The Type of StackValue is not CallingConvention");
                 return (CallingConvention.BounceType)opdata;
             }
         }
@@ -578,9 +542,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                if (!IsExplicitCall)
-                    throw new InvalidTypeException("The Type of StackValue is not ExplicitCall");
-
+                Check(IsExplicitCall, "The Type of StackValue is not ExplicitCall");
                 return (int)opdata;
             }
         }
@@ -589,9 +551,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                if (!IsFrameType)
-                    throw new InvalidTypeException("The Type of StackValue is not FrameType");
-
+                Check(IsFrameType, "The Type of StackValue is not FrameType");
                 return (StackFrameType)opdata;
             }
         }
@@ -600,9 +560,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                if (!IsDynamic)
-                    throw new InvalidTypeException("The Type of StackValue is not Dynamic");
-
+                Check(IsDynamic, "The Type of StackValue is not Dynamic");
                 return (int)opdata;
             }
         }
@@ -611,9 +569,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                if (!IsThisPtr)
-                    throw new InvalidTypeException("The Type of StackValue is not ThisPtr");
-
+                Check(IsThisPtr, "The Type of StackValue is not ThisPtr");
                 return (int)opdata;
             }
         }
@@ -622,9 +578,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                if (!IsArrayKey)
-                    throw new InvalidTypeException("The Type of StackValue is not ArrayKey");
-
+                Check(IsArrayKey, "The Type of StackValue is not ArrayKey");
                 return (int)opdata;
             }
         }
@@ -633,9 +587,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                if (!IsRegister)
-                    throw new InvalidTypeException("The Type of StackValue is not ArrayKey");
-
+                Check(IsRegister, "The Type of StackValue is not ArrayKey");
                 return (Registers)(int)opdata;
             }
         }
