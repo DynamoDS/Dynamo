@@ -283,7 +283,8 @@ namespace ProtoCore.DSASM
                     return true;
                 }
 
-                rmem.FramePointer -= StackFrame.kStackFrameSize;
+                StackValue framePointer = rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer);
+                rmem.FramePointer = (int)framePointer.IntegerValue;
                 if (rmem.FramePointer < StackFrame.kStackFrameSize)
                 {
                     break;
