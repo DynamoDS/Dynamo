@@ -89,28 +89,16 @@ namespace ProtoCore.DSASM
 
             Frame = new StackValue[kStackFrameSize];
 
-            Frame[(int)AbsoluteIndex.kFramePointer] = StackValue.BuildInt(framePointer);
-            Frame[(int)AbsoluteIndex.kStackFrameType] = StackValue.BuildFrameType((int)type);
-            Frame[(int)AbsoluteIndex.kCallerStackFrameType] = StackValue.BuildFrameType((int)callerType);
-            Frame[(int)AbsoluteIndex.kStackFrameDepth] = StackValue.BuildInt(depth);
-            Frame[(int)AbsoluteIndex.kFunctionCallerBlock] = StackValue.BuildBlockIndex(functionBlockCaller);
-            Frame[(int)AbsoluteIndex.kFunctionBlock] = StackValue.BuildBlockIndex(functionBlockDecl);
-            Frame[(int)AbsoluteIndex.kReturnAddress] = StackValue.BuildInt(pc);
-            Frame[(int)AbsoluteIndex.kFunction] = StackValue.BuildFunctionIndex(funcIndex);
-            Frame[(int)AbsoluteIndex.kClass] = StackValue.BuildClassIndex(classIndex);
             Frame[(int)AbsoluteIndex.kThisPtr] = svThisPtr;
-
-            Frame[(int)AbsoluteIndex.kRegisterAX] = stack[0];
-            Frame[(int)AbsoluteIndex.kRegisterBX] = stack[1];
-            Frame[(int)AbsoluteIndex.kRegisterCX] = stack[2];
-            Frame[(int)AbsoluteIndex.kRegisterDX] = stack[3];
-            Frame[(int)AbsoluteIndex.kRegisterEX] = stack[4];
-            Frame[(int)AbsoluteIndex.kRegisterFX] = stack[5];
-            Frame[(int)AbsoluteIndex.kRegisterLX] = stack[6];
-            Frame[(int)AbsoluteIndex.kRegisterRX] = stack[7];
-            Frame[(int)AbsoluteIndex.kRegisterSX] = stack[8];
-            Frame[(int)AbsoluteIndex.kRegisterTX] = stack[9];
-
+            Frame[(int)AbsoluteIndex.kClass] = StackValue.BuildClassIndex(classIndex);
+            Frame[(int)AbsoluteIndex.kFunction] = StackValue.BuildFunctionIndex(funcIndex);
+            Frame[(int)AbsoluteIndex.kReturnAddress] = StackValue.BuildInt(pc);
+            Frame[(int)AbsoluteIndex.kFunctionBlock] = StackValue.BuildBlockIndex(functionBlockDecl);
+            Frame[(int)AbsoluteIndex.kFunctionCallerBlock] = StackValue.BuildBlockIndex(functionBlockCaller);
+            Frame[(int)AbsoluteIndex.kCallerStackFrameType] = StackValue.BuildFrameType((int)callerType);
+            Frame[(int)AbsoluteIndex.kStackFrameType] = StackValue.BuildFrameType((int)type);
+            Frame[(int)AbsoluteIndex.kStackFrameDepth] = StackValue.BuildInt(depth);
+            Frame[(int)AbsoluteIndex.kLocalVariables] = StackValue.BuildInt(0);
             int execStateSize = 0;
             if (null != execStates)
             {
@@ -121,9 +109,18 @@ namespace ProtoCore.DSASM
                     ExecutionStates[n] = StackValue.BuildBoolean(execStates[n]);
                 }
             }
-
             Frame[(int)AbsoluteIndex.kExecutionStates] = StackValue.BuildInt(execStateSize);
-            Frame[(int)AbsoluteIndex.kLocalVariables] = StackValue.BuildInt(0);
+            Frame[(int)AbsoluteIndex.kRegisterAX] = stack[0];
+            Frame[(int)AbsoluteIndex.kRegisterBX] = stack[1];
+            Frame[(int)AbsoluteIndex.kRegisterCX] = stack[2];
+            Frame[(int)AbsoluteIndex.kRegisterDX] = stack[3];
+            Frame[(int)AbsoluteIndex.kRegisterEX] = stack[4];
+            Frame[(int)AbsoluteIndex.kRegisterFX] = stack[5];
+            Frame[(int)AbsoluteIndex.kRegisterLX] = stack[6];
+            Frame[(int)AbsoluteIndex.kRegisterRX] = stack[7];
+            Frame[(int)AbsoluteIndex.kRegisterSX] = stack[8];
+            Frame[(int)AbsoluteIndex.kRegisterTX] = stack[9];
+            Frame[(int)AbsoluteIndex.kFramePointer] = StackValue.BuildInt(framePointer);
             
             Validity.Assert(kStackFrameSize == Frame.Length);
         }

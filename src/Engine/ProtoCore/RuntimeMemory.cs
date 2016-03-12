@@ -182,9 +182,8 @@ namespace ProtoCore
 
             private StackValue GetAtRelative(int relativeOffset, int framePointer)
             {
-                return relativeOffset >= 0
-                    ? Stack[relativeOffset]
-                    : Stack[framePointer + relativeOffset];
+                int index = relativeOffset >= 0 ? relativeOffset : framePointer + relativeOffset;
+                return Stack[index];
             }
             
             public void SetAtRelative(int offset, StackValue data)
