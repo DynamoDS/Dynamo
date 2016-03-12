@@ -176,7 +176,7 @@ namespace ProtoCore.DSASM.Mirror
                     return "function: " + val.FunctionPointer.ToString();
 
                 case AddressType.Boolean:
-                    return val.BooleanValue ? "false" : "true";
+                    return val.BooleanValue ? "true" : "false";
                 case AddressType.String:
                     if (forPrint)
                         return heap.ToHeapObject<DSString>(val).Value;

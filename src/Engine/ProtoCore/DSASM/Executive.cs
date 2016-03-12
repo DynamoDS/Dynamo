@@ -4116,7 +4116,15 @@ namespace ProtoCore.DSASM
             {
                 opdata1 = opdata1.ToBoolean(runtimeCore);
                 opdata2 = opdata2.ToBoolean(runtimeCore);
-                opdata2 = StackValue.BuildBoolean(opdata1.BooleanValue != opdata2.BooleanValue);
+                if (opdata1.IsNull || opdata2.IsNull) 
+                {
+                    opdata2 = StackValue.Null;
+                }
+                else
+                {
+
+                    opdata2 = StackValue.BuildBoolean(opdata1.BooleanValue != opdata2.BooleanValue);
+                }
             }
             else if (opdata1.IsNumeric && opdata2.IsNumeric)
             {
