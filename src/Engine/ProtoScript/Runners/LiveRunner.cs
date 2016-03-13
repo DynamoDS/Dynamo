@@ -1586,6 +1586,11 @@ namespace ProtoScript.Runners
                 ResetForDeltaExecution();
                 runnerCore.Options.ApplyUpdate = true;
                 Execute(true);
+
+                StackValue restoreFramePointer = runtimeCore.RuntimeMemory.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFramePointer);
+                runtimeCore.RuntimeMemory.FramePointer = (int)restoreFramePointer.IntegerValue;
+                runtimeCore.RuntimeMemory.PopFrame(ProtoCore.DSASM.StackFrame.kStackFrameSize);
+
             }
             ForceGC();
         }
