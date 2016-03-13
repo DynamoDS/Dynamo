@@ -2760,6 +2760,9 @@ namespace ProtoCore.DSASM
                 }
                 var dsString = runtimeCore.Heap.ToHeapObject<DSString>(svArray);
                 var substrings = zippedIndices.Select(s => dsString.GetValueAtIndex(s[0], runtimeCore));
+                if (!substrings.All(s => s.IsString))
+                    return StackValue.Null;
+
                 string result = string.Join(string.Empty, substrings.Select(s => rmem.Heap.ToHeapObject<DSString>(s).Value));
                 return runtimeCore.RuntimeMemory.Heap.AllocateString(result);
             }
