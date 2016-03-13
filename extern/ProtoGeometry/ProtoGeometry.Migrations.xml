@@ -16,4 +16,16 @@
     <oldName>Autodesk.DesignScript.Geometry.Rectangle.ByWidthHeight</oldName>
     <newName>Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength</newName>
   </priorNameHint>
+  <priorNameHint>
+    <oldName>Autodesk.DesignScript.Geometry.Curve.ParameterSplit</oldName>
+    <newName>Autodesk.DesignScript.Geometry.Curve.SplitByParameter</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>Autodesk.DesignScript.Geometry.Curve.DivideByDistanceFromParameter</oldName>
+    <newName>Autodesk.DesignScript.Geometry.Curve.SplitByChordLength</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>Autodesk.DesignScript.Geometry.Curve.DivideByLengthFromParameter</oldName>
+    <newName>Autodesk.DesignScript.Geometry.Curve.SplitBySegmentLength</newName>
+  </priorNameHint>
 </migrations>
