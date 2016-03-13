@@ -61,7 +61,7 @@
     <CreateProperty Value="$(FullVersion.Split('.')[3])">
       <Output TaskParameter="Value" PropertyName="Build" />
     </CreateProperty>
-    <CreateProperty Value="Dynamo">
+    <CreateProperty Value="Dynamo Core">
       <Output TaskParameter="Value" PropertyName="ProductName" />
     </CreateProperty>
     <CreateProperty Value="FullVersion=$(FullVersion);ProductName=$(ProductName);Major=$(Major);Minor=$(Minor);Rev=$(Rev);Build=$(Build);$(DefineConstants)">
