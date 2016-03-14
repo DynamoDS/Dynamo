@@ -1990,7 +1990,7 @@ namespace Dynamo.ViewModels
                 }
                 catch(LibraryLoadFailedException ex)
                 {
-                    System.Windows.MessageBox.Show(ex.ToString());
+                    System.Windows.MessageBox.Show(String.Format("Failed to load {0}", ex.Path, MessageBoxButtons.OK, MessageBoxIcon.Warning));
                 }
             }
         }

@@ -92,7 +92,7 @@ namespace Dynamo.Engine
             PopulateBuiltIns();
             PopulateOperators();
             PopulatePreloadLibraries();
-            LibraryLoadFailed += new EventHandler<LibraryLoadFailedEventArgs>(ThrowLibraryLoadFailedException);
+            LibraryLoadFailed += new EventHandler<LibraryLoadFailedEventArgs>(LibraryLoadFailureHandler);
         }
 
         public void Dispose()
@@ -131,9 +131,9 @@ namespace Dynamo.Engine
         public event EventHandler<LibraryLoadFailedEventArgs> LibraryLoadFailed;
         public event EventHandler<LibraryLoadedEventArgs> LibraryLoaded;
 
-        static void ThrowLibraryLoadFailedException(object sender, LibraryLoadFailedEventArgs args)
+        static void LibraryLoadFailureHandler(object sender, LibraryLoadFailedEventArgs args)
         {
-            throw new LibraryLoadFailedException(args.Reason);
+            throw new LibraryLoadFailedException(args.LibraryPath, args.Reason);
         }
 
         private void PreloadLibraries(IEnumerable<string> preloadLibraries)
