@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ProtoCore.Utils;
 using System.Linq;
 using Operand = ProtoCore.DSASM.StackValue;
+using ProtoCore.Exceptions;
 
 namespace ProtoCore.DSASM
 {
@@ -110,13 +111,6 @@ namespace ProtoCore.DSASM
     public struct MetaData
     {
         public int type;
-    }
-
-    public class InvalidStackValueTypeException : Exception
-    {
-        public InvalidStackValueTypeException(string message) : base(message)
-        {
-        }
     }
 
     [System.Diagnostics.DebuggerDisplay("{optype}, opdata = {opdata}, metaData = {metaData.type}")]
@@ -345,7 +339,7 @@ namespace ProtoCore.DSASM
         private void Check(bool cond, string errorMessage)
         {
             if (!cond)
-                throw new InvalidStackValueTypeException(errorMessage);
+                throw new RuntimeException(errorMessage);
         }
 
         #region Type-dependent value extractor
