@@ -938,15 +938,14 @@ namespace ProtoCore.DSASM
             array = StackValue.Null;
             key = Constants.kInvalidIndex;
 
-            if (!IsArrayKey)
+            if (!IsArrayKey || opdata == Constants.kInvalidIndex)
+            {
                 return false;
-            
-            if (opdata == Constants.kInvalidIndex)
-               return false;
-            
-            // Array key information is encoded in 64bits opdata. 
+            }
+
+            // Array key information is encoded in 64 bits opdata. 
             // High 32 bits: array pointer
-            // Low 32 bits : array key
+            // Low 32 bits : array key, that is the index into the array.
             //
             // TODO: find out a cleaner way to represent array key instead of
             // using this kind of hacking.
@@ -959,7 +958,7 @@ namespace ProtoCore.DSASM
             {
                 array = BuildArrayPointer((long)rawArrayPointer);
             }
-            key = (int)((ulong)opdata << 32 >> 32);
+            key = (int)(((ulong)opdata << 32) >> 32);
             return true;
         }
 
