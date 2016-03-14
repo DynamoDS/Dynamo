@@ -1116,10 +1116,9 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 case AddressType.Int:
                     {
-                        Int64 data = val.IntegerValue;
                         Obj o = new Obj(val) 
                         { 
-                            Payload = data, 
+                            Payload = val.IntegerValue, 
                             Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0) 
                         };
                         return o;
@@ -1145,40 +1144,36 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 case AddressType.Char:
                     {
-                        Int64 data = val.CharValue;
                         Obj o = new Obj(val) 
                         {
-                            Payload = data, 
+                            Payload = val.CharValue, 
                             Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeChar, 0) 
                         };
                         return o;
                     }
                 case AddressType.Double:
                     {
-                        double data = val.DoubleValue;
                         Obj o = new Obj(val) 
                         { 
-                            Payload = data, Type =
-                            TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0) 
+                            Payload = val.DoubleValue,
+                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0) 
                         };
                         return o;
                     }
                 case AddressType.Pointer:
                     {
-                        Int64 data = val.Pointer;
                         Obj o = new Obj(val) 
                         { 
-                            Payload = data,
+                            Payload = val.Pointer,
                             Type = exe.TypeSystem.BuildTypeObject(type, 0) 
                         };
                         return o;
                     }
                 case AddressType.FunctionPointer:
                     {
-                        Int64 data = val.FunctionPointer;
                         Obj o = new Obj(val) 
                         { 
-                            Payload = data, 
+                            Payload = val.FunctionPointer, 
                             Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeFunctionPointer, 0) 
                         };
                         return o;
