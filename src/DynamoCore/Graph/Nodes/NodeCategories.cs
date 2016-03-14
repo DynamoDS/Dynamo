@@ -19,7 +19,7 @@ namespace Dynamo.Graph.Nodes
     {
         public const string CORE = "Core";
         public const string CORE_INPUT = "Core.Input";
-        public const string CORE_STRINGS = "Core.Strings";
+        public const string CORE_WEB = "Core.Web";
         public const string CORE_LISTS_CREATE = "Core.List.Create";
         public const string CORE_LISTS_ACTION = "Core.List.Actions";
         public const string CORE_LISTS_QUERY = "Core.List.Query";

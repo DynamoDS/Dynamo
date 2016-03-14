@@ -940,7 +940,7 @@ namespace WpfVisualizationTests
                 nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
                 View.Dispatcher.Invoke(() =>
                 {
-                    nodeView.PreviewControl.BindToDataSource(nodeView.ViewModel.NodeModel.CachedValue);
+                    nodeView.PreviewControl.BindToDataSource();
                     nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Condensed);
                     nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Expanded);
                 });
