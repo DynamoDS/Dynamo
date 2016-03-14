@@ -113,6 +113,25 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
+        /// Return GUIDs of exectued ASTs in this run.
+        /// </summary>
+        /// <param name="sessionID"></param>
+        /// <returns></returns>
+        internal IEnumerable<Guid> GetExecutedAstGuids(Guid sessionID)
+        {
+            return liveRunner.GetExecutedAstGuids(sessionID);
+        }
+
+        /// <summary>
+        /// Remove recorded GUIDs of executed ASTs for the specified session.
+        /// </summary>
+        /// <param name="sessionID"></param>
+        internal void RemoveRecordedAstGuidsForSession(Guid sessionID)
+        {
+            liveRunner.RemoveRecordedAstGuidsForSession(sessionID);
+        }
+
+        /// <summary>
         /// Each time when a new library is imported, LiveRunner need to reload
         /// all libraries and reset VM.
         /// </summary>

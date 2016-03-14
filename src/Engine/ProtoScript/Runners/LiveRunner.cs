@@ -64,6 +64,15 @@ namespace ProtoScript.Runners
     public class GraphSyncData
     {
         /// <summary>
+        /// Session ID
+        /// </summary>
+        public Guid SessionID
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
         /// Deleted sub trees.
         /// </summary>
         public List<Subtree> DeletedSubtrees
@@ -134,8 +143,14 @@ namespace ProtoScript.Runners
             }
         }
 
-        public GraphSyncData(List<Subtree> deleted, List<Subtree> added, List<Subtree> modified)
+        public GraphSyncData(List<Subtree> deleted, List<Subtree> added, List<Subtree> modified):
+            this(Guid.Empty, deleted, added, modified)
         {
+        }
+
+        public GraphSyncData(Guid sessionID, List<Subtree> deleted, List<Subtree> added, List<Subtree> modified)
+        {
+            SessionID = sessionID;
             DeletedSubtrees = deleted ?? new List<Subtree>();
             AddedSubtrees = added ?? new List<Subtree>();
             ModifiedSubtrees = modified ?? new List<Subtree>();
@@ -1140,6 +1155,8 @@ namespace ProtoScript.Runners
         void ReInitializeLiveRunner();
         IDictionary<Guid, List<ProtoCore.Runtime.WarningEntry>> GetRuntimeWarnings();
         IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings();
+        IEnumerable<Guid> GetExecutedAstGuids(Guid sessionID);
+        void RemoveRecordedAstGuidsForSession(Guid SessionID);
     }
 
     public partial class LiveRunner : ILiveRunner, IDisposable
@@ -1239,6 +1256,7 @@ namespace ProtoScript.Runners
         private bool terminating;
         private ChangeSetComputer changeSetComputer;
         private ChangeSetApplier changeSetApplier;
+        private Dictionary<Guid, List<Guid>> executedAstGuids = new Dictionary<Guid, List<Guid>>();
 
         public LiveRunner()
             : this(new Configuration())
@@ -1779,6 +1797,10 @@ namespace ProtoScript.Runners
             changeSetApplier.Apply(runnerCore, runtimeCore, changeSetComputer.csData);
 
             CompileAndExecuteForDeltaExecution(finalDeltaAstList);
+
+            var guids = runtimeCore.ExecutedAstGuids.ToList();
+            executedAstGuids[syncData.SessionID] = guids;
+            runtimeCore.RemoveExecutedAstGuids();
         }
 
         private void SynchronizeInternal(string code)
@@ -1956,6 +1978,23 @@ namespace ProtoScript.Runners
             return ret;
         }
 
+        public IEnumerable<Guid> GetExecutedAstGuids(Guid sessionID)
+        {
+            List<Guid> guids = null;
+            if (executedAstGuids.TryGetValue(sessionID, out guids))
+            {
+                return guids;
+            }
+            else
+            {
+                return new List<Guid>();
+            }
+        }
+
+        public void RemoveRecordedAstGuidsForSession(Guid SessionID)
+        {
+            executedAstGuids.Remove(SessionID);
+        }
         #endregion
     }
 
