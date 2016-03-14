@@ -411,7 +411,7 @@ namespace ProtoCore.DSASM
             get
             {
                 Check(IsChar, "The Type of StackValue is not Char");
-                return (int)opdata;
+                return opdata;
             }
         }
 
