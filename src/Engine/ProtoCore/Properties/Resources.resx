@@ -384,9 +384,6 @@
   <data name="kStringOverIndexed" xml:space="preserve">
     <value>String is over indexed</value>
   </data>
-  <data name="kSymbolOverIndexed" xml:space="preserve">
-    <value>'{0}' is over indexed</value>
-  </data>
   <data name="kTypeUndefined" xml:space="preserve">
     <value>Type '{0}' is not defined</value>
   </data>
@@ -910,5 +907,8 @@ Parameter name: {0}</value>
   </data>
   <data name="RangeExpressionOutOfMemory" xml:space="preserve">
     <value>The number of items in range expression is over limit</value>
+  </data>
+  <data name="IndexIntoNonArrayObject" xml:space="preserve">
+    <value>No item exists at specified index address</value>
   </data>
 </root>

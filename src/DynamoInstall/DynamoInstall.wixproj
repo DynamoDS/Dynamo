@@ -28,11 +28,8 @@
     </WixVariables>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Definitions-autogen.wxs" />
-    <Compile Include="Gallery-autogen.wxs" />
     <Compile Include="Product.wxs" />
     <Compile Include="Release-autogen.wxs" />
-    <Compile Include="Samples-autogen.wxs" />
   </ItemGroup>
   <ItemGroup>
     <WixExtension Include="WixUtilExtension">
@@ -64,53 +61,27 @@
     <CreateProperty Value="$(FullVersion.Split('.')[3])">
       <Output TaskParameter="Value" PropertyName="Build" />
     </CreateProperty>
-    <CreateProperty Value="Dynamo">
+    <CreateProperty Value="Dynamo Core">
       <Output TaskParameter="Value" PropertyName="ProductName" />
     </CreateProperty>
     <CreateProperty Value="FullVersion=$(FullVersion);ProductName=$(ProductName);Major=$(Major);Minor=$(Minor);Rev=$(Rev);Build=$(Build);$(DefineConstants)">
       <Output TaskParameter="Value" PropertyName="DefineConstants" />
     </CreateProperty>
     <Exec Command="rd /s /q $(DYNAMO_HARVEST_PATH)" />
-    <Exec Command="robocopy $(DYNAMO_BASE_PATH)\bin\AnyCPU\$(Configuration) $(DYNAMO_HARVEST_PATH) -XF %2aTest%2a.dll %2a.pdb TestResult.xml -e -XD int -XD samples -XD gallery -XD 0.8" IgnoreExitCode="true" />
-    <HeatDirectory Directory="$(DYNAMO_HARVEST_PATH)"
-                   PreprocessorVariable="var.harvest"
-                   OutputFile="$(ProjectDir)Release-autogen.wxs"
-                   ComponentGroupName="RELEASE"
-                   DirectoryRefId="DYNAMO_INSTALLDIR"
-                   GenerateGuidsNow="true"
-                   ToolPath="$(WixToolPath)"
-                   SuppressCom="true"
-                   SuppressRegistry="true"
+    <Exec Command="robocopy $(DYNAMO_BASE_PATH)\bin\AnyCPU\$(Configuration) $(DYNAMO_HARVEST_PATH) -XF %2aTest%2a.dll %2a.pdb TestResult.xml -e -XD int -XD Revit_2015 -XD Revit_2016 -XD Revit_2017 -XD samples -XD gallery -XD 0.8" IgnoreExitCode="true" />
+    <Exec Command="$(DYNAMO_BASE_PATH)\tools\install\Extra\InstallerSpec.exe $(DYNAMO_HARVEST_PATH) $(DYNAMO_HARVEST_PATH)\InstallSpec.xml" IgnoreExitCode="true" />
+    <Exec Condition="Exists('$(MSBuildProjectDirectory)\Digital_Sign.bat')" Command="$(MSBuildProjectDirectory)\Digital_Sign.bat $(DYNAMO_HARVEST_PATH)\binariestosign.txt" IgnoreExitCode="true" />
+    <HeatDirectory Directory="$(DYNAMO_HARVEST_PATH)" 
+                   PreprocessorVariable="var.harvest" 
+                   OutputFile="$(ProjectDir)Release-autogen.wxs" 
+                   ComponentGroupName="RELEASE" 
+                   DirectoryRefId="DYNAMO_INSTALLDIR" 
+                   GenerateGuidsNow="true" 
+                   Transforms="$(ProjectDir)Release.xsl" 
+                   ToolPath="$(WixToolPath)" 
+                   SuppressCom="true" 
+                   SuppressRegistry="true" 
                    SuppressRootDirectory="true"/>
-    <HeatDirectory Directory="$(DYNAMO_SAMPLES_PATH)"
-                   PreprocessorVariable="var.samples"
-                   OutputFile="$(ProjectDir)Samples-autogen.wxs"
-                   ComponentGroupName="SAMPLES"
-                   DirectoryRefId="PROGDATA"
-                   GenerateGuidsNow="true"
-                   Transforms="$(ProjectDir)Samples.xsl"
-                   ToolPath="$(WixToolPath)"
-                   SuppressCom="true"
-                   SuppressRegistry="true"/>
-    <HeatDirectory Directory="$(DYNAMO_GALLERY_PATH)"
-                   PreprocessorVariable="var.gallery"
-                   OutputFile="$(ProjectDir)Gallery-autogen.wxs"
-                   ComponentGroupName="GALLERY"
-                   DirectoryRefId="PROGDATA"
-                   GenerateGuidsNow="true"
-                   ToolPath="$(WixToolPath)"
-                   SuppressCom="true"
-                   SuppressRegistry="true"/>
-    <HeatDirectory Directory="$(DYNAMO_MIGRATION_NODES_PATH)"
-                   PreprocessorVariable="var.definitions"
-                   OutputFile="$(ProjectDir)Definitions-autogen.wxs"
-                   ComponentGroupName="DEFINITIONS"
-                   DirectoryRefId="PROGDATA"
-                   GenerateGuidsNow="true"
-                   Transforms="$(ProjectDir)Definitions.xsl"
-                   ToolPath="$(WixToolPath)"
-                   SuppressCom="true"
-                   SuppressRegistry="true"/>
   </Target>
   <Target Name="AfterBuild">
   </Target>

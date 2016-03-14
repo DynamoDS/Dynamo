@@ -114,7 +114,7 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             var add = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("ccb2eda9-0966-4ab8-a186-0d5f844559c1");
-            Assert.AreEqual(20, add.GetCachedValueFromEngine(CurrentDynamoModel.EngineController).Data);
+            AssertPreviewValue("ccb2eda9-0966-4ab8-a186-0d5f844559c1", 20);
         }
 
         [Test, Category("RegressionTests")]

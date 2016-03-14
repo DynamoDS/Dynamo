@@ -1,0 +1,17 @@
+<Workspace Version="1.0.0.672" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="41271769-11b8-46fc-bb16-fffd022dc9bc" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="TestData.SingleKeyDictionary" x="282" y="204" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="FFITarget.dll" function="FFITarget.TestData.SingleKeyDictionary" />
+    <CoreNodeModels.Watch guid="060e57e1-b889-4b94-a440-8adb0067ae79" type="CoreNodeModels.Watch" nickname="Watch" x="527" y="211" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="306c8777-ecff-4106-bfdd-dd331e61cf2b" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="TestData.TestData" x="75" y="202" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="FFITarget.dll" function="FFITarget.TestData.TestData" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="41271769-11b8-46fc-bb16-fffd022dc9bc" start_index="0" end="060e57e1-b889-4b94-a440-8adb0067ae79" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>
