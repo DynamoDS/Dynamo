@@ -1446,7 +1446,7 @@ namespace ProtoCore.AssociativeGraph
             }
 
             var firstNode = updateNodeRefList.First().nodeList.FirstOrDefault();
-            return firstNode != null && firstNode.nodeType == UpdateNodeType.kSymbol && CoreUtils.IsSSATemp(firstNode.symbol.name);
+            return firstNode != null && firstNode.nodeType == UpdateNodeType.kSymbol && firstNode.symbol.isSSATemp;
         }
     }
 

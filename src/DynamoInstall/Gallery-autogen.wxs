@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="PROGDATA">
+            <Directory Id="dir1C8915865B289EE352FDB945F1578E1B" Name="gallery" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="GALLERY">
+            <Component Id="cmpB635DB4A1E5019F1C59B0712DC740939" Directory="dir5D24B36FB145F3807090264747B92473" Guid="{AAAA0291-2744-423E-AA73-3CD2B0F5D263}">
+                <File Id="filF7FD4B4FB27B65205AD28F8E91880166" KeyPath="yes" Source="$(var.gallery)\Data\Core_DirectManip.png" />
+            </Component>
+            <Component Id="cmpDFB7B98D0B5FDC53BB727DFDBE01D834" Directory="dir5D24B36FB145F3807090264747B92473" Guid="{D484A92F-BCC3-4DB3-A6A1-035DFAD76B3B}">
+                <File Id="fil820703BE75ED155B2106D9B67C950DFE" KeyPath="yes" Source="$(var.gallery)\Data\Core_Freeze.png" />
+            </Component>
+            <Component Id="cmpD04381345C387F3C490E80F4429B8ADE" Directory="dir5D24B36FB145F3807090264747B92473" Guid="{FB1BCAF0-2D49-439A-89E5-781958E2B7CA}">
+                <File Id="fil7FA05F32EA4AA99E352F7EE20A44A875" KeyPath="yes" Source="$(var.gallery)\Data\Core_Misc.png" />
+            </Component>
+            <Component Id="cmp81B95396BE4D90EC3F126ACAEED4B5A2" Directory="dir5D24B36FB145F3807090264747B92473" Guid="{57C39924-08F4-47A8-AD2B-28D49B8E9178}">
+                <File Id="filDE1998AA246CE9CE137E8122A751EECF" KeyPath="yes" Source="$(var.gallery)\Data\Core_Search.png" />
+            </Component>
+            <Component Id="cmp689A95C4C1540F14D29F2E5406247A6D" Directory="dir5D24B36FB145F3807090264747B92473" Guid="{3D2712DB-5E27-4C05-B851-9D710B489127}">
+                <File Id="fil1F9A3722A1C0EC57D8BDC269C13EECF6" KeyPath="yes" Source="$(var.gallery)\Data\Geometry_Adjacency.png" />
+            </Component>
+            <Component Id="cmp246DA09745359F1CFBD827ED65B58464" Directory="dir5D24B36FB145F3807090264747B92473" Guid="{8C0A799B-9404-4DCB-9268-1E865A1C3CFA}">
+                <File Id="filFF43C9F1D38493E3EDD9E10473A04C5C" KeyPath="yes" Source="$(var.gallery)\Data\Revit_AdaptiveComponent.png" />
+            </Component>
+            <Component Id="cmp7C9179C446BD000477FA34ABB133C0F5" Directory="dirBADE288F68EC4D807363F9641C8A9431" Guid="{20B4E632-63C9-436D-B701-E38AA78EF674}">
+                <File Id="fil5AA0B2259F8D64A3D386AD0B68F8B707" KeyPath="yes" Source="$(var.gallery)\en-US\GalleryContents.xml" />
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir1C8915865B289EE352FDB945F1578E1B">
+            <Directory Id="dir5D24B36FB145F3807090264747B92473" Name="Data" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir1C8915865B289EE352FDB945F1578E1B">
+            <Directory Id="dirBADE288F68EC4D807363F9641C8A9431" Name="en-US" />
+        </DirectoryRef>
+    </Fragment>
+</Wix>

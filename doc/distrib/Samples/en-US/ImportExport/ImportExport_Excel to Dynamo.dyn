@@ -1,4 +1,4 @@
-<Workspace Version="0.8.0.706" X="143.214142118877" Y="116.697817780549" zoom="0.743579838459005" Name="Home" RunType="Automatic" RunPeriod="100">
+<Workspace Version="0.8.0.706" X="143.214142118877" Y="116.697817780549" zoom="0.743579838459005" Name="Home" RunType="Automatic" RunPeriod="100" HasRunWithoutCrash="True">
   <NamespaceResolutionMap />
   <Elements>
     <DSCore.File.Filename guid="ea0babea-4ab0-4aae-9a89-5cd423f67885" type="DSCore.File.Filename" nickname="File Path" x="69.9951477050781" y="128.525" isVisible="true" isUpstreamVisible="true" lacing="Disabled">

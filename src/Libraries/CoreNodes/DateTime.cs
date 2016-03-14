@@ -34,6 +34,7 @@ namespace DSCore
         ///     The current system date and time.
         /// </summary>
         /// <returns name="dateTime">DateTime</returns>
+        [CanUpdatePeriodicallyAttribute(true)]
         public static System.DateTime Now
         {
             get { return System.DateTime.Now; }

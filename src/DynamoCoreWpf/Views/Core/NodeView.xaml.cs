@@ -55,23 +55,35 @@ namespace Dynamo.Controls
         public NodeViewModel ViewModel
         {
             get { return viewModel; }
-            private set { viewModel = value; }
+            private set
+            {
+                viewModel = value;
+                if (viewModel.PreviewPinned)
+                {
+                    CreatePreview(viewModel);
+                }                
+            }
         }
 
         internal PreviewControl PreviewControl
         {
             get
             {
-                if (previewControl == null)
-                {
-                    previewControl = new PreviewControl(ViewModel);
-                    previewControl.StateChanged += OnPreviewControlStateChanged;
-                    previewControl.MouseEnter += OnPreviewControlMouseEnter;
-                    previewControl.MouseLeave += OnPreviewControlMouseLeave;
-                    expansionBay.Children.Add(previewControl);
-                }
+                CreatePreview(ViewModel);
 
                 return previewControl;
+            }
+        }
+
+        private void CreatePreview(NodeViewModel vm)
+        {
+            if (previewControl == null)
+            {
+                previewControl = new PreviewControl(vm);
+                previewControl.StateChanged += OnPreviewControlStateChanged;
+                previewControl.MouseEnter += OnPreviewControlMouseEnter;
+                previewControl.MouseLeave += OnPreviewControlMouseLeave;
+                expansionBay.Children.Add(previewControl);
             }
         }
 
@@ -95,7 +107,6 @@ namespace Dynamo.Controls
             DataContextChanged += OnDataContextChanged;
 
             Panel.SetZIndex(this, 1);
-
         }
 
         private void OnNodeViewUnloaded(object sender, RoutedEventArgs e)
@@ -105,6 +116,15 @@ namespace Dynamo.Controls
             ViewModel.RequestShowNodeRename -= ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection -= ViewModel_RequestsSelection;
             ViewModel.NodeLogic.PropertyChanged -= NodeLogic_PropertyChanged;
+
+            if (previewControl != null)
+            {
+                previewControl.StateChanged -= OnPreviewControlStateChanged;
+                previewControl.MouseEnter -= OnPreviewControlMouseEnter;
+                previewControl.MouseLeave -= OnPreviewControlMouseLeave;
+                expansionBay.Children.Remove(previewControl);
+                previewControl = null;
+            }
         }
 
         #endregion

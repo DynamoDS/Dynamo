@@ -398,16 +398,15 @@ namespace ProtoAssociative
             }
         }
 
-        private ProtoCore.DSASM.SymbolNode Allocate(
+        private SymbolNode Allocate(
             int classIndex,  // In which class table this variable will be allocated to ?
             int classScope,  // Variable's class scope. For example, it is a variable in base class
             int funcIndex,   // In which function this variable is defined? 
             string ident, 
             ProtoCore.Type datatype, 
-            int datasize = ProtoCore.DSASM.Constants.kPrimitiveSize, 
             bool isStatic = false,
             ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
-            ProtoCore.DSASM.MemoryRegion region = ProtoCore.DSASM.MemoryRegion.kMemStack,
+            MemoryRegion region = MemoryRegion.kMemStack,
             int line = -1,
             int col = -1,
             GraphNode graphNode = null
@@ -421,7 +420,7 @@ namespace ProtoAssociative
             ProtoCore.DSASM.SymbolNode symbolnode = new ProtoCore.DSASM.SymbolNode();
             symbolnode.name = ident;
             symbolnode.isTemp = ident.StartsWith("%");
-            symbolnode.size = datasize;
+            symbolnode.isSSATemp = CoreUtils.IsSSATemp(ident);
             symbolnode.functionIndex = funcIndex;
             symbolnode.absoluteFunctionIndex = funcIndex;
             symbolnode.datatype = datatype;
@@ -479,7 +478,7 @@ namespace ProtoAssociative
                     ProtoCore.DSASM.SymbolNode staticSymbolnode = new ProtoCore.DSASM.SymbolNode();
                     staticSymbolnode.name = ident;
                     staticSymbolnode.isTemp = ident.StartsWith("%");
-                    staticSymbolnode.size = datasize;
+                    staticSymbolnode.isSSATemp = CoreUtils.IsSSATemp(ident);
                     staticSymbolnode.functionIndex = funcIndex;
                     staticSymbolnode.datatype = datatype;
                     staticSymbolnode.staticType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
@@ -538,30 +537,22 @@ namespace ProtoAssociative
             string ident,
             int funcIndex,
             ProtoCore.Type datatype,
-            int size = 1,
-            int datasize = ProtoCore.DSASM.Constants.kPrimitiveSize,
             AssociativeNode nodeArray = null,
             ProtoCore.DSASM.MemoryRegion region = ProtoCore.DSASM.MemoryRegion.kMemStack)
         {
             ProtoCore.DSASM.SymbolNode node = new ProtoCore.DSASM.SymbolNode(
                 ident,
                 ProtoCore.DSASM.Constants.kInvalidIndex,
-                ProtoCore.DSASM.Constants.kInvalidIndex,
                 funcIndex,
                 datatype,
                 datatype,
-                size,
-                datasize,
                 true,
                 codeBlock.symbolTable.RuntimeIndex,
                 region,
-                false,
-                null,
                 globalClassIndex);
 
             node.name = ident;
             node.isTemp = ident.StartsWith("%");
-            node.size = datasize;
             node.functionIndex = funcIndex;
             node.absoluteFunctionIndex = funcIndex;
             node.datatype = datatype;
@@ -3795,12 +3786,7 @@ namespace ProtoAssociative
                 ProtoCore.Type type = new ProtoCore.Type();
                 foreach (string globalName in context.GlobalVarList.Keys)
                 {
-                    Allocate(
-                        ProtoCore.DSASM.Constants.kInvalidIndex,
-                        ProtoCore.DSASM.Constants.kInvalidIndex,
-                        ProtoCore.DSASM.Constants.kGlobalScope,
-                        globalName,
-                        type);
+                    Allocate(Constants.kInvalidIndex, Constants.kInvalidIndex, Constants.kGlobalScope, globalName, type);
                 }
             }
         }
@@ -3940,7 +3926,7 @@ namespace ProtoAssociative
             else
                 ptrType.UID = (int)PrimitiveType.kTypeArray;
             ptrType.rank = rank;
-            ProtoCore.DSASM.SymbolNode symnode = Allocate(classIndex, classScope, ProtoCore.DSASM.Constants.kGlobalScope, name, ptrType, datasize, isStatic, access);
+            ProtoCore.DSASM.SymbolNode symnode = Allocate(classIndex, classScope, ProtoCore.DSASM.Constants.kGlobalScope, name, ptrType, isStatic, access);
             if (null == symnode)
             {
                 buildStatus.LogSemanticError(String.Format(Resources.MemberVariableAlreadyDefined, name, core.ClassTable.ClassNodes[classIndex].Name));
@@ -4058,8 +4044,7 @@ namespace ProtoAssociative
                         ProtoCore.Type varType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
 
                         // TODO Jun: Refactor Allocate() to just return the symbol node itself
-                        unboundVariable = Allocate(globalClassIndex, globalClassIndex, globalProcIndex, t.Value, varType, ProtoCore.DSASM.Constants.kPrimitiveSize,
-                            false, ProtoCore.CompilerDefinitions.AccessModifier.kPublic, ProtoCore.DSASM.MemoryRegion.kMemStack, t.line, t.col, graphNode);
+                        unboundVariable = Allocate(globalClassIndex, globalClassIndex, globalProcIndex, t.Value, varType, line: t.line, col: t.col, graphNode: graphNode); 
                         Validity.Assert(unboundVariable != null);
 
                         int symbolindex = unboundVariable.symbolTableIndex;
@@ -5110,8 +5095,6 @@ namespace ProtoAssociative
                                 currentClassScope = sn.classScope;
                                 ix = 0;
                             }
-                            // copy attribute information from base class
-                            sn.Attributes = core.ClassTable.ClassNodes[currentClassScope].Symbols.symbolList[ix++].Attributes;
                         }
                         else
                         {
@@ -7737,7 +7720,6 @@ namespace ProtoAssociative
                     Validity.Assert(null == symbolnode);
                     symbolnode = new ProtoCore.DSASM.SymbolNode();
                     symbolnode.name = s;
-                    symbolnode.isTemp = s.StartsWith("%");
                     symbolnode.functionIndex = globalProcIndex;
                     symbolnode.classScope = globalClassIndex;
 
@@ -7844,9 +7826,7 @@ namespace ProtoAssociative
                             // TODO Jun: If this local var exists globally, should it allocate a local copy?
                             if (!isAllocated || !isAccessible)
                             {
-                                symbolnode = Allocate(globalClassIndex, globalClassIndex, globalProcIndex, t.Name, inferedType, ProtoCore.DSASM.Constants.kPrimitiveSize,
-                                    false, ProtoCore.CompilerDefinitions.AccessModifier.kPublic, ProtoCore.DSASM.MemoryRegion.kMemStack, bnode.line, bnode.col);
-
+                                symbolnode = Allocate(globalClassIndex, globalClassIndex, globalProcIndex, t.Name, inferedType, line: bnode.line, col: bnode.col); 
                                 // Add the symbols during watching process to the watch symbol list.
                                 if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                                 {
@@ -7928,9 +7908,7 @@ namespace ProtoAssociative
                     {
                         if (!isAllocated)
                         {
-                            symbolnode = Allocate(globalClassIndex, globalClassIndex, globalProcIndex, t.Name, inferedType, ProtoCore.DSASM.Constants.kPrimitiveSize,
-                                    false, ProtoCore.CompilerDefinitions.AccessModifier.kPublic, ProtoCore.DSASM.MemoryRegion.kMemStack, bnode.line, bnode.col);
-
+                            symbolnode = Allocate(globalClassIndex, globalClassIndex, globalProcIndex, t.Name, inferedType, line: bnode.line, col: bnode.col); 
                             if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                             {
                                 core.watchSymbolList.Add(symbolnode);

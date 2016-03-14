@@ -17,12 +17,7 @@ namespace ProtoScript.Runners
         // TODO Jun: The implementation of ProtoScriptRunner needs to go in here
         private ProtoScriptRunner Runner = null;
 
-        public ProtoVMState PreStart(String source)
-        {
-            return PreStart(source, new Dictionary<string, object>());
-        }
-
-        public ProtoVMState PreStart(String source, Dictionary<string, Object> context)
+        public void PreStart(String source, Dictionary<string, Object> context)
         {
             ProtoCore.Options options = new ProtoCore.Options();
             options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
@@ -34,32 +29,15 @@ namespace ProtoScript.Runners
 
             ProtoFFI.DLLFFIHandler.Register(ProtoFFI.FFILanguage.CSharp, new ProtoFFI.CSModuleHelper());
 
-            //Validity.Assert(null == ExecutionContext);
             ExecutionContext = new ProtoCore.CompileTime.Context(source, context);
 
-            //Validity.Assert(null == Runner);
             Runner = new ProtoScriptRunner();
-
-            // TODO Jun: Implement run and halt at the first instruction
-            //ProtoCore.DSASM.Mirror.ExecutionMirror mirror = null; // runner.Execute(executionContext, RunnerCore);
-
-            return new ProtoVMState(RunnerCore, runtimeCore);
-        }
-
-        public ProtoVMState PreStart(String source, ProtoVMState state)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ProtoVMState PreStart(String source, ProtoVMState state, Dictionary<string, Object> context)
-        {
-            throw new NotImplementedException();
         }
 
 
         #region Synchronous API
 
-        public ProtoVMState RunToNextBreakpoint(ProtoVMState state)
+        public void RunToNextBreakpoint()
         {
             Validity.Assert(null != RunnerCore);
             Validity.Assert(null != ExecutionContext);
@@ -68,47 +46,8 @@ namespace ProtoScript.Runners
             // TODO Jun: Implement as DebugRunner, where breakpoints are inserted here.
             ProtoCore.RuntimeCore runtimeCore = null;
             Runner.Execute(ExecutionContext, RunnerCore, out runtimeCore);
-
-            return new ProtoVMState(RunnerCore, runtimeCore);
         }
 
         #endregion
-
-        public class ProtoVMState
-        {
-            private ProtoCore.Core core;
-            private ProtoCore.RuntimeCore runtimeCore;
-
-            public ProtoVMState(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore)
-            {
-                this.core = core;
-                this.runtimeCore = runtimeCore;
-            }
-
-            public ProtoCore.Mirror.RuntimeMirror LookupName(string name, int blockID)
-            {
-                // TODO Jun: The expression interpreter must be integrated into the mirror
-                runtimeCore.RuntimeMemory.PushConstructBlockId(blockID);
-                runtimeCore.DebugProps.CurrentBlockId = blockID;
-                ProtoScript.Runners.ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
-
-                List<ProtoCore.Core.CodeBlockCompilationSnapshot> snapShots = null;
-                if (core.Options.IsDeltaExecution)
-                {
-                    snapShots = ProtoCore.Core.CodeBlockCompilationSnapshot.CaptureCoreCompileState(core);
-                }
-                ProtoCore.DSASM.Mirror.ExecutionMirror mirror = watchRunner.Execute(name);
-                if (core.Options.IsDeltaExecution && snapShots != null)
-                {
-                    core.ResetDeltaCompileFromSnapshot(snapShots);
-                }
-                ProtoCore.Lang.Obj objExecVal = mirror.GetWatchValue();
-
-                ProtoCore.Mirror.RuntimeMirror runtimeMirror = new ProtoCore.Mirror.RuntimeMirror(new ProtoCore.Mirror.MirrorData(core, objExecVal.DsasmValue), runtimeCore, core);
-                Validity.Assert(runtimeMirror != null);
-
-                return runtimeMirror;
-            }
-        }
     }
 }

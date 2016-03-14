@@ -1046,11 +1046,6 @@ namespace ProtoCore.DSASM
                 }
                 string lhs = watchPrompt + symbolName;
 
-                if (null != exe.runtimeSymbols[blockId].symbolList[index].arraySizeList)
-                {
-                    lhs = lhs + "[" + "offset:" + DX + "]";
-                }
-
                 string rhs = null;
                 StackValue snode = rmem.GetSymbolValue(symbol);
                 if (snode.IsPointer)
@@ -3331,7 +3326,7 @@ namespace ProtoCore.DSASM
                         allowGC = sn.classScope == classIndex 
                             && sn.functionIndex == functionIndex 
                             && !sn.name.Equals(Constants.kWatchResultVar)
-                            && !CoreUtils.IsSSATemp(sn.name);
+                            && !sn.isSSATemp;
                     }
                 }
 
@@ -4032,8 +4027,6 @@ namespace ProtoCore.DSASM
                 {
                     StackValue svNewProperty = rmem.Heap.AllocatePointer(new [] { svData });
                     thisObject.SetValueAtIndex(stackIndex, svNewProperty, runtimeCore);
-
-                    exe.classTable.ClassNodes[classIndex].Symbols.symbolList[stackIndex].heapIndex = (int)svNewProperty.opdata;
                 }
             }
             else if (svProperty.IsArray && (dimensions > 0))
@@ -4051,8 +4044,6 @@ namespace ProtoCore.DSASM
                 {
                     StackValue svNewProperty = rmem.Heap.AllocatePointer(new [] {svData});
                     thisObject.SetValueAtIndex(stackIndex, svNewProperty, runtimeCore);
-
-                    exe.classTable.ClassNodes[classIndex].Symbols.symbolList[stackIndex].heapIndex = (int)svNewProperty.opdata;
                 }
             }
 

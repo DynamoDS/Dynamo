@@ -51,20 +51,22 @@ Dynamo Core
 - More forgiving DesignScript syntax:  Users can now write instance methods (ex. MyCurve.PointAtParameter(0.5)) as Static Methods (ex. - Curve.PointAtParameter(MyCurve, 0.5))
 
 Known issues
-- No backwards compatibility with 0.9.0 and before. This is due to neccessary changes to the Dynamo API in advance of 1.0. These changes can be found in the [API Changes](https://github.com/DynamoDS/Dynamo/wiki/API-Changes) document.
+- No backwards compatibility with 0.9.0 and before. This is due to neccessary changes to the Dynamo API in advance of 1.0. These changes can be found in the [API Changes](https://github.com/DynamoDS/Dynamo/wiki/API-Changes) document
+- In some situations, placement of Adaptive components requires a change in list structure.  The AC placement nodes now expect to receive lists of lists of placement coordinates.  In the past, the nodes expected to only place one AC, now it expects to place many. If you are going to only place a single component, it needs to be nesting into a list.
+- With Win10 the Dynamo Background Preview is blank. If your Win10 workstation contains a graphics card that used to work with Dynamo running Win7 or 8 and you experience an inability to render graphics you may wish to consult:
+
+  https://github.com/helix-toolkit/helix-toolkit/issues/257#issuecomment-194145932
 
 Dynamo Studio
 - Share your work online:  Share interactive parametric models online.  Just publish your Dynamo graph and send a link to your colleagues or the whole world.  People can view and interact with your designs in a regular web browser with no Dynamo installed
 - ImportExport: Read directly from DWG files and only pull out those pieces of the file that you want.  
+- When a user downloads a dyn from the Customizer (or Shared Workspace), the dyn's Run setting is automatically set to "Manual". This may be confusing to some users when they open the dyn in Dynamo and see all Nulls in the outputs: simply click the Run button.
+- Users have been reporting that the Customizer (Shared Workspaces) functionality is missing in Studio 0.9.1. If this is happening to you, please try uninstalling Studio 0.9.1 and reinstalling it. We are aware of the bug and a fix will be available soon. Please reach out to us if you experience any other related issues.
 
-Known issues
-- Customizer not using  Display.SurfaceGeometry
 
 Dynamo for Revit
-- Batch placement of adaptive components : Huge improvements to the speed and reliability of placing large numbers of adaptive components.
+- Batch placement of adaptive components : Huge improvements to the speed and reliability of placing large numbers of adaptive components. Note that the nodes now expect lists of lists as inputs, so you may have to update your 9.0 graphs.
 
-Known issues:
-- In some situations, placement of Adaptive components requires a change in list structure.  The AC placement nodes now expect to receive lists of lists of placement coordinates.  In the past, the nodes expected to only place one AC, now it expects to place many. If you are going to only place a single component, it needs to be nesting into a list.
 
 ### 0.9.0 ###
 
