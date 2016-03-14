@@ -36,6 +36,7 @@ using Dynamo.Wpf.ViewModels.Watch3D;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using ISelectable = Dynamo.Selection.ISelectable;
 using Autodesk.DesignScript.Interfaces;
+using Dynamo.Exceptions;
 
 namespace Dynamo.ViewModels
 {
@@ -1979,11 +1980,18 @@ namespace Dynamo.ViewModels
             DialogResult result = openFileDialog.ShowDialog();
             if (result == DialogResult.OK)
             {
-                foreach (var file in openFileDialog.FileNames)
+                try
                 {
-                    EngineController.ImportLibrary(file);
+                    foreach (var file in openFileDialog.FileNames)
+                    {
+                        EngineController.ImportLibrary(file);
+                    }
+                    SearchViewModel.SearchAndUpdateResults();
                 }
-                SearchViewModel.SearchAndUpdateResults();
+                catch(LibraryLoadFailedException ex)
+                {
+                    System.Windows.MessageBox.Show(ex.ToString());
+                }
             }
         }
 

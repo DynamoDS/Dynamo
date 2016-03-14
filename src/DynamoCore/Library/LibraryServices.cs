@@ -19,6 +19,7 @@ using ProtoFFI;
 using Operator = ProtoCore.DSASM.Operator;
 using ProtoCore;
 using ProtoCore.Namespace;
+using Dynamo.Exceptions;
 
 namespace Dynamo.Engine
 {
@@ -91,6 +92,7 @@ namespace Dynamo.Engine
             PopulateBuiltIns();
             PopulateOperators();
             PopulatePreloadLibraries();
+            LibraryLoadFailed += new EventHandler<LibraryLoadFailedEventArgs>(ThrowLibraryLoadFailedException);
         }
 
         public void Dispose()
@@ -128,6 +130,11 @@ namespace Dynamo.Engine
         public event EventHandler<LibraryLoadingEventArgs> LibraryLoading;
         public event EventHandler<LibraryLoadFailedEventArgs> LibraryLoadFailed;
         public event EventHandler<LibraryLoadedEventArgs> LibraryLoaded;
+
+        static void ThrowLibraryLoadFailedException(object sender, LibraryLoadFailedEventArgs args)
+        {
+            throw new LibraryLoadFailedException(args.Reason);
+        }
 
         private void PreloadLibraries(IEnumerable<string> preloadLibraries)
         {
@@ -450,8 +457,7 @@ namespace Dynamo.Engine
                         errorMessage += error.Message + "\n";
                     }
 
-                    OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
-                    return false;
+                    throw new Exception(errorMessage);
                 }
 
                 LoadLibraryMigrations(library);
