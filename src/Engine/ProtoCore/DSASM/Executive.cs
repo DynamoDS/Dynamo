@@ -2886,7 +2886,7 @@ namespace ProtoCore.DSASM
         {
             isMemberFunctionPointer = false;
             int fptr = Constants.kInvalidIndex;
-            int functionDynamicIndex = instr.op1.DynamiIndex;
+            int functionDynamicIndex = instr.op1.DynamicIndex;
             int classIndex = instr.op2.ClassIndex;
             int depth = (int)rmem.Pop().IntegerValue;
             runtimeVerify(functionDynamicIndex != Constants.kInvalidIndex);

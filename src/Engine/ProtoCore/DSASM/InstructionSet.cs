@@ -550,7 +550,7 @@ namespace ProtoCore.DSASM
             }
         }
 
-        public int DynamiIndex
+        public int DynamicIndex
         {
             get
             {
