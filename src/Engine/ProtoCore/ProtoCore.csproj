@@ -209,9 +209,6 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="ProtoInterface">
-      <HintPath>..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
@@ -237,6 +234,13 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ProtoInterface\ProtoInterface.csproj">
+      <Project>{9ec0521f-84da-4196-b0bc-34e4049e50bd}</Project>
+      <Name>ProtoInterface</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <Target Name="AfterBuild">
     <ItemGroup>
