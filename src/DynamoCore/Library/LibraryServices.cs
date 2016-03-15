@@ -131,9 +131,11 @@ namespace Dynamo.Engine
         public event EventHandler<LibraryLoadFailedEventArgs> LibraryLoadFailed;
         public event EventHandler<LibraryLoadedEventArgs> LibraryLoaded;
 
-        static void LibraryLoadFailureHandler(object sender, LibraryLoadFailedEventArgs args)
+        private void LibraryLoadFailureHandler(object sender, LibraryLoadFailedEventArgs args)
         {
-            throw new LibraryLoadFailedException(args.LibraryPath, args.Reason);
+            LibraryLoadFailedException ex = new LibraryLoadFailedException(args.LibraryPath, args.Reason);
+            Log(ex.Message, WarningLevel.Moderate);
+            throw ex;
         }
 
         private void PreloadLibraries(IEnumerable<string> preloadLibraries)
