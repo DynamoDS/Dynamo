@@ -37,6 +37,18 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void PreviewBubbleVisible_OpenFile()
+        {
+            Open(@"core\PinnedNodeWorkspace.dyn");
+            var nodeView = NodeViewWithGuid("c86f23ca-2a32-49b5-97c9-d82504801483");
+            nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+
+            DispatcherUtil.DoEvents();
+
+            Assert.IsTrue(nodeView.PreviewControl.IsExpanded);
+        }
+
+        [Test]
         public void PreviewBubbleVisible_MouseMoveOverNode()
         {
             Open(@"core\DetailedPreviewMargin_Test.dyn");
@@ -90,7 +102,7 @@ namespace DynamoCoreWpfTests
             // Fire transition on dynamo main ui thread.
             View.Dispatcher.Invoke(() =>
             {
-                nodeView.PreviewControl.BindToDataSource(nodeView.ViewModel.NodeModel.CachedValue);
+                nodeView.PreviewControl.BindToDataSource();
                 nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Condensed);
                 nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Expanded);
             });
@@ -112,7 +124,7 @@ namespace DynamoCoreWpfTests
             // Fire transition on dynamo main ui thread.
             View.Dispatcher.Invoke(() =>
             {
-                nodeView.PreviewControl.BindToDataSource(nodeView.ViewModel.NodeModel.CachedValue);
+                nodeView.PreviewControl.BindToDataSource();
                 nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Condensed);
                 nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Expanded);
             });
@@ -133,7 +145,7 @@ namespace DynamoCoreWpfTests
 
             View.Dispatcher.Invoke(() =>
             {
-                nodeView.PreviewControl.BindToDataSource(nodeView.ViewModel.NodeModel.CachedValue);
+                nodeView.PreviewControl.BindToDataSource();
                 nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Condensed);
             });
             DispatcherUtil.DoEvents();
@@ -217,7 +229,7 @@ namespace DynamoCoreWpfTests
             // Fire transition on dynamo main ui thread.
             View.Dispatcher.Invoke(() =>
             {
-                nodeView.PreviewControl.BindToDataSource(nodeView.ViewModel.NodeModel.CachedValue);
+                nodeView.PreviewControl.BindToDataSource();
                 nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Condensed);
                 nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Expanded);
             });
@@ -281,7 +293,7 @@ namespace DynamoCoreWpfTests
 
             View.Dispatcher.Invoke(() =>
             {
-                nodeView.PreviewControl.BindToDataSource(nodeView.ViewModel.NodeModel.CachedValue);
+                nodeView.PreviewControl.BindToDataSource();
                 nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Condensed);
             });
 

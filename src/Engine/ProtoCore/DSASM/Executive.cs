@@ -2678,8 +2678,7 @@ namespace ProtoCore.DSASM
 
                         if (t.rank < 0)
                         {
-                            string message = String.Format(Resources.kSymbolOverIndexed, symbolnode.name);
-                            runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
+                            runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.IndexIntoNonArrayObject);
                         }
                     }
 
@@ -2810,8 +2809,7 @@ namespace ProtoCore.DSASM
                     return thisArray;
                 }
 
-                string message = String.Format(Resources.kSymbolOverIndexed, varname);
-                runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.IndexIntoNonArrayObject);
                 return StackValue.Null;
             }
 
@@ -2822,8 +2820,7 @@ namespace ProtoCore.DSASM
             }
             catch (ArgumentOutOfRangeException)
             {
-                string message = String.Format(Resources.kSymbolOverIndexed, varname);
-                runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.IndexIntoNonArrayObject);
                 return StackValue.Null;
             }
 
@@ -2855,8 +2852,7 @@ namespace ProtoCore.DSASM
                     return thisArray;
                 }
 
-                string message = String.Format(Resources.kSymbolOverIndexed, varname);
-                runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.IndexIntoNonArrayObject);
                 return StackValue.Null;
             }
 
@@ -2874,8 +2870,7 @@ namespace ProtoCore.DSASM
             }
             catch (ArgumentOutOfRangeException)
             {
-                string message = String.Format(Resources.kSymbolOverIndexed, varname);
-                runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.IndexIntoNonArrayObject);
                 return StackValue.Null;
             }
 
@@ -3748,8 +3743,7 @@ namespace ProtoCore.DSASM
 
                                 if (targetType.rank < 0)
                                 {
-                                    string message = String.Format(Resources.kSymbolOverIndexed, symbolnode.name);
-                                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
+                                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.IndexIntoNonArrayObject);
                                 }
                             }
 

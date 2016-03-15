@@ -211,7 +211,7 @@ namespace Dynamo.Manipulation
             using (var ray = GetRayGeometry(source, direction))
             {
                 //First hit test for position
-                if (ray.DistanceTo(ManipulatorOrigin) < tolerance)
+                if (ray.DistanceTo(Origin) < tolerance)
                 {
                     if (planes.Any())
                     {
@@ -356,12 +356,6 @@ namespace Dynamo.Manipulation
             return drawables;
         }
 
-        public override void HighlightGizmo()
-        {
-            var drawables = GetDrawablesForTransientGraphics();
-            BackgroundPreviewViewModel.AddGeometryForRenderPackages(drawables);
-        }
-
         public override void UpdateGizmoGraphics()
         {
             // Update gizmo geometry wrt to current Origin
@@ -371,15 +365,8 @@ namespace Dynamo.Manipulation
             planes.Clear();
 
             planes.AddRange(newPlanes);
-
-            DeleteTransientGraphics();
         }
 
-        public override void UnhighlightGizmo()
-        {
-            // Delete all transient geometry used to highlight gizmo
-            DeleteTransientGraphics();
-        }
 
         public override void DeleteTransientGraphics()
         {
@@ -395,7 +382,7 @@ namespace Dynamo.Manipulation
         /// Returns drawables for transient geometry associated with Gizmo
         /// </summary>
         /// <returns></returns>
-        private List<IRenderPackage> GetDrawablesForTransientGraphics()
+        public override IEnumerable<IRenderPackage> GetDrawablesForTransientGraphics()
         {
             var drawables = new List<IRenderPackage>();
             if (null != hitAxis)

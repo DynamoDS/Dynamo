@@ -1218,9 +1218,8 @@ namespace ProtoScript.Runners
         }
 
         private ProtoScriptRunner runner;
-        private ProtoRunner.ProtoVMState vmState;
-        private ProtoCore.Core runnerCore = null;
-        public ProtoCore.Core Core
+        private Core runnerCore = null;
+        public Core Core
         {
             get
             {
@@ -1314,8 +1313,6 @@ namespace ProtoScript.Runners
             {
                 runnerCore.Configurations[item.Key] = item.Value;
             }
-
-            vmState = null;
 
             CreateRuntimeCore();
         }
@@ -1482,22 +1479,6 @@ namespace ProtoScript.Runners
 
         #region Internal Implementation
 
-        /// <summary>
-        /// This is being called currently as it uses the Expression interpreter which does not
-        /// work well with delta execution. Instead we are currently inspecting into the VM using Mirrors
-        /// </summary>
-        /// <param name="varname"></param>
-        /// <returns></returns>
-        private ProtoCore.Mirror.RuntimeMirror InternalGetNodeValue(string varname)
-        {
-            Validity.Assert(null != vmState);
-
-            // Comment Jun: all symbols are in the global block as there is no notion of scoping the the graphUI yet.
-            const int blockID = 0;
-
-            return vmState.LookupName(varname, blockID);
-        }
-
         private bool Compile(List<AssociativeNode> astList, Core targetCore)
         {
             bool succeeded = runner.CompileAndGenerateExe(astList, targetCore, new ProtoCore.CompileTime.Context());
@@ -1510,7 +1491,7 @@ namespace ProtoScript.Runners
             return succeeded;
         }
 
-        private ProtoRunner.ProtoVMState Execute(bool isCodeCompiled)
+        private void Execute(bool isCodeCompiled)
         {
             try
             {
@@ -1529,7 +1510,6 @@ namespace ProtoScript.Runners
                 runtimeCore.Cleanup();
                 ReInitializeLiveRunner();
             }
-            return new ProtoRunner.ProtoVMState(runnerCore, runtimeCore);
         }
 
         private bool CompileAndExecute(string code)
@@ -1538,7 +1518,7 @@ namespace ProtoScript.Runners
             bool succeeded = runner.CompileAndGenerateExe(code, runnerCore, new ProtoCore.CompileTime.Context());
             if (succeeded)
             {
-                vmState = Execute(!string.IsNullOrEmpty(code));
+                Execute(!string.IsNullOrEmpty(code));
             }
             return succeeded;
         }
@@ -1548,7 +1528,7 @@ namespace ProtoScript.Runners
             bool succeeded = Compile(astList, runnerCore);
             if (succeeded)
             {
-                vmState = Execute(astList.Count > 0);
+                Execute(astList.Count > 0);
             }
             return succeeded;
         }
@@ -1827,10 +1807,14 @@ namespace ProtoScript.Runners
                                      .OrderBy(w => w.GraphNodeGuid)
                                      .GroupBy(w => w.GraphNodeGuid);
 
-            foreach (var w in warnings)
+            foreach (var warningGroup in warnings)
             {
-                Guid guid = w.FirstOrDefault().GraphNodeGuid;
-                ret[guid] = new List<ProtoCore.Runtime.WarningEntry>(w);
+                Guid guid = warningGroup.FirstOrDefault().GraphNodeGuid;
+                // If there are two warnings in the same expression, take the first one.
+                var trimmedWarnings = warningGroup.OrderBy(w => w.ExpressionID)
+                                                  .GroupBy(w => w.ExpressionID)
+                                                  .Select(g => g.FirstOrDefault());
+                ret[guid] = new List<ProtoCore.Runtime.WarningEntry>(trimmedWarnings);
             }
 
             return ret;

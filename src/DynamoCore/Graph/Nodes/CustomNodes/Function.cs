@@ -568,8 +568,8 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             var resolver = workspaceElementResolver ?? ElementResolver;
             var parseParam = new ParseParam(GUID, expression + ";", resolver);
 
-            if (EngineController.CompilationServices.PreCompileCodeBlock(ref parseParam) 
-                && parseParam.ParsedNodes.Any())
+            EngineController.CompilationServices.PreCompileCodeBlock(ref parseParam);
+            if (parseParam.ParsedNodes.Any())
             {
                 var parsedComments = parseParam.ParsedComments;
                 if (parsedComments.Any())

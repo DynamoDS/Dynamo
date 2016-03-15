@@ -1,4 +1,4 @@
-<Workspace Version="0.8.0.760" X="-258.767969522897" Y="188.584867663214" zoom="0.341189264941471" Name="Home" RunType="Automatic" RunPeriod="100">
+<Workspace Version="0.8.0.760" X="-258.767969522897" Y="188.584867663214" zoom="0.341189264941471" Name="Home" RunType="Automatic" RunPeriod="100" HasRunWithoutCrash="True">
   <NamespaceResolutionMap />
   <Elements>
     <Dynamo.Nodes.DSFunction guid="357e7a53-361c-4c1e-81ae-83e16213a39a" type="Dynamo.Nodes.DSFunction" nickname="AdaptiveComponent.ByPoints" x="2266.50061471428" y="871.04331788143" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="RevitNodes.dll" function="Revit.Elements.AdaptiveComponent.ByPoints@Autodesk.DesignScript.Geometry.Point[],Revit.Elements.FamilySymbol" />

@@ -35,6 +35,7 @@ namespace ProtoCore
             kInvalidIndexing,
             kModuloByZero,
             kInvalidType,
+            kRangeExpressionOutOfMemory,
             kMoreThanOneDominantList
         }
 

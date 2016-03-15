@@ -319,8 +319,8 @@
                                     
                                     <StackPanel.ContextMenu>
 
-                                        <ContextMenu Name="DepContextMenu" >
-                                            <MenuItem Name="IsNodeLibraryButton" Header="{x:Static p:Resources.PublishPackageViewContextMenuIsNodeLibrary}" Visibility="Collapsed" IsCheckable="True" IsChecked="{Binding IsNodeLibrary}"></MenuItem>
+                                        <ContextMenu Name="DepContextMenu">
+                                            <MenuItem Name="IsNodeLibraryButton" Header="{x:Static p:Resources.PublishPackageViewContextMenuIsNodeLibrary}" IsCheckable="True" IsChecked="{Binding IsNodeLibrary}"></MenuItem>
                                         </ContextMenu>
 
                                     </StackPanel.ContextMenu>

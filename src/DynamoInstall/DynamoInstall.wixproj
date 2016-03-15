@@ -9,30 +9,27 @@
     <ProductVersion>3.8</ProductVersion>
     <ProjectGuid>c7495640-0d0c-46ab-a5f3-d5be78f89a0d</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>DynamoInstall</OutputName>
+    <OutputName>DynamoCore</OutputName>
     <OutputType>Package</OutputType>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
-    <Name>DynamoInstall</Name>
+    <Name>DynamoCore</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>$(OutputPath)</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>Debug;definitions=$(DYNAMO_MIGRATION_NODES_PATH);base=$(DYNAMO_BASE_PATH);harvest=$(DYNAMO_HARVEST_PATH);samples=$(DYNAMO_SAMPLES_PATH);gallery=$(DYNAMO_GALLERY_PATH)</DefineConstants>
+    <DefineConstants>Debug;definitions=$(DYNAMO_MIGRATION_NODES_PATH);base=$(DYNAMO_BASE_PATH);harvest=$(DYNAMO_HARVEST_PATH);samples=$(DYNAMO_SAMPLES_PATH);gallery=$(DYNAMO_GALLERY_PATH);modules=$(DYNAMO_INSTALL_BASE_PATH);solution=$(SolutionDir)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>$(OutputPath)</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>definitions=$(DYNAMO_MIGRATION_NODES_PATH);base=$(DYNAMO_BASE_PATH);harvest=$(DYNAMO_HARVEST_PATH);samples=$(DYNAMO_SAMPLES_PATH);gallery=$(DYNAMO_GALLERY_PATH)</DefineConstants>
+    <DefineConstants>definitions=$(DYNAMO_MIGRATION_NODES_PATH);base=$(DYNAMO_BASE_PATH);harvest=$(DYNAMO_HARVEST_PATH);samples=$(DYNAMO_SAMPLES_PATH);gallery=$(DYNAMO_GALLERY_PATH);modules=$(DYNAMO_INSTALL_BASE_PATH);solution=$(SolutionDir)</DefineConstants>
     <WixVariables>
     </WixVariables>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Definitions.wxs" />
-    <Compile Include="Gallery.wxs" />
     <Compile Include="Product.wxs" />
-    <Compile Include="Release.wxs" />
-    <Compile Include="Samples.wxs" />
+    <Compile Include="Release-autogen.wxs" />
   </ItemGroup>
   <ItemGroup>
     <WixExtension Include="WixUtilExtension">
@@ -45,17 +42,6 @@
     </WixExtension>
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
-  <PropertyGroup>
-    <PreBuildEvent>rd /s /q $(DYNAMO_HARVEST_PATH)
-robocopy $(DYNAMO_BASE_PATH)\bin\AnyCPU\$(Configuration) $(DYNAMO_HARVEST_PATH) -XF %2aTest%2a.dll %2a.pdb TestResult.xml -e -XD int -XD samples -XD gallery -XD 0.8
-copy $(DYNAMO_BASE_PATH)\tools\install\Extra\DynamoAddinGenerator.exe $(DYNAMO_HARVEST_PATH)\DynamoAddinGenerator.exe
-copy $(DYNAMO_BASE_PATH)\tools\install\Extra\RevitAddinUtility.dll $(DYNAMO_HARVEST_PATH)\RevitAddinUtility.dll
-
-"%25WIX%25bin\heat.exe" dir $(DYNAMO_HARVEST_PATH) -cg RELEASE -gg -scom -sreg -srd -dr DYNAMO_INSTALLDIR -var var.harvest -out "$(ProjectDir)Release.wxs"
-"%25WIX%25bin\heat.exe" dir $(DYNAMO_SAMPLES_PATH) -cg SAMPLES -gg -scom -sreg -dr PROGDATA -var var.samples -t "$(ProjectDir)Samples.xsl" -out "$(ProjectDir)Samples.wxs"
-"%25WIX%25bin\heat.exe" dir $(DYNAMO_GALLERY_PATH) -cg GALLERY -gg -scom -sreg -dr PROGDATA -var var.gallery -out "$(ProjectDir)Gallery.wxs"
-"%25WIX%25bin\heat.exe" dir $(DYNAMO_MIGRATION_NODES_PATH) -cg DEFINITIONS -gg -scom -sreg -dr PROGDATA -var var.definitions -t "$(ProjectDir)Definitions.xsl" -out "$(ProjectDir)Definitions.wxs"</PreBuildEvent>
-  </PropertyGroup>
   <Target Name="BeforeBuild">
     <GetAssemblyIdentity AssemblyFiles="$(DYNAMO_BASE_PATH)\bin\AnyCPU\$(Configuration)\DynamoCore.dll">
       <Output TaskParameter="Assemblies" ItemName="AssemblyVersions" />
@@ -75,16 +61,35 @@ copy $(DYNAMO_BASE_PATH)\tools\install\Extra\RevitAddinUtility.dll $(DYNAMO_HARV
     <CreateProperty Value="$(FullVersion.Split('.')[3])">
       <Output TaskParameter="Value" PropertyName="Build" />
     </CreateProperty>
-    <CreateProperty Value="Dynamo">
+    <CreateProperty Value="Dynamo Core">
       <Output TaskParameter="Value" PropertyName="ProductName" />
     </CreateProperty>
     <CreateProperty Value="FullVersion=$(FullVersion);ProductName=$(ProductName);Major=$(Major);Minor=$(Minor);Rev=$(Rev);Build=$(Build);$(DefineConstants)">
       <Output TaskParameter="Value" PropertyName="DefineConstants" />
     </CreateProperty>
+    <Exec Command="rd /s /q $(DYNAMO_HARVEST_PATH)" />
+    <Exec Command="robocopy $(DYNAMO_BASE_PATH)\bin\AnyCPU\$(Configuration) $(DYNAMO_HARVEST_PATH) -XF %2aTest%2a.dll %2a.pdb TestResult.xml -e -XD int -XD Revit_2015 -XD Revit_2016 -XD Revit_2017 -XD samples -XD gallery -XD 0.8" IgnoreExitCode="true" />
+    <Exec Command="$(DYNAMO_BASE_PATH)\tools\install\Extra\InstallerSpec.exe $(DYNAMO_HARVEST_PATH) $(DYNAMO_HARVEST_PATH)\InstallSpec.xml" IgnoreExitCode="true" />
+    <Exec Condition="Exists('$(MSBuildProjectDirectory)\Digital_Sign.bat')" Command="$(MSBuildProjectDirectory)\Digital_Sign.bat $(DYNAMO_HARVEST_PATH)\binariestosign.txt" IgnoreExitCode="true" />
+    <HeatDirectory Directory="$(DYNAMO_HARVEST_PATH)" 
+                   PreprocessorVariable="var.harvest" 
+                   OutputFile="$(ProjectDir)Release-autogen.wxs" 
+                   ComponentGroupName="RELEASE" 
+                   DirectoryRefId="DYNAMO_INSTALLDIR" 
+                   GenerateGuidsNow="true" 
+                   Transforms="$(ProjectDir)Release.xsl" 
+                   ToolPath="$(WixToolPath)" 
+                   SuppressCom="true" 
+                   SuppressRegistry="true" 
+                   SuppressRootDirectory="true"/>
   </Target>
   <Target Name="AfterBuild">
   </Target>
   <PropertyGroup>
     <PostBuildEvent>xcopy $(OutputPath)$(OutputName).msi  $(DYNAMO_BASE_PATH)\tools\install\Installers\ /y</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
 </Project>
