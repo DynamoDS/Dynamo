@@ -144,52 +144,68 @@ namespace ProtoCore.DSASM.Mirror
             if (formatParams == null)
                 formatParams = new OutputFormatParameters(maxArraySize, maxOutputDepth);
 
-            switch (val.optype)
+            if (val.IsInteger)
             {
-                case AddressType.Int:
-                    return val.IntegerValue.ToString();
-                case AddressType.Double:
-                    return val.DoubleValue.ToString("F6");
-                case AddressType.Null:
-                    return "null";
-                case AddressType.Pointer:
-                    return GetClassTrace(val, heap, langblock, forPrint);
-                case AddressType.ArrayPointer:
-                    HashSet<int> pointers = new HashSet<int>{val.ArrayPointer};
-                    string arrTrace = GetArrayTrace(val, heap, langblock, pointers, forPrint);
-                    if (forPrint)
-                        return "{" + arrTrace + "}";
-                    else
-                        return "{ " + arrTrace + " }";
-                case AddressType.FunctionPointer:
-                    ProcedureNode procNode;
-                    if (runtimeCore.DSExecutable.FuncPointerTable.TryGetFunction(val, runtimeCore, out procNode))
+                return val.IntegerValue.ToString();
+            }
+            else if (val.IsDouble)
+            {
+                return val.DoubleValue.ToString("F6");
+            }
+            else if (val.IsNull)
+            {
+                return "null";
+            }
+            else if (val.IsPointer)
+            {
+                return GetClassTrace(val, heap, langblock, forPrint);
+            }
+            else if (val.IsArray)
+            {
+                HashSet<int> pointers = new HashSet<int> { val.ArrayPointer };
+                string arrTrace = GetArrayTrace(val, heap, langblock, pointers, forPrint);
+                if (forPrint)
+                    return "{" + arrTrace + "}";
+                else
+                    return "{ " + arrTrace + " }";
+            }
+            else if (val.IsFunctionPointer)
+            {
+                ProcedureNode procNode;
+                if (runtimeCore.DSExecutable.FuncPointerTable.TryGetFunction(val, runtimeCore, out procNode))
+                {
+                    string className = String.Empty;
+                    if (procNode.ClassID != Constants.kGlobalScope)
                     {
-                        string className = String.Empty;
-                        if (procNode.ClassID != Constants.kGlobalScope)
-                        {
-                            className = runtimeCore.DSExecutable.classTable.GetTypeName(procNode.ClassID).Split('.').Last() + ".";
-                        }
-
-                        return "function: " + className + procNode.Name; 
+                        className = runtimeCore.DSExecutable.classTable.GetTypeName(procNode.ClassID).Split('.').Last() + ".";
                     }
-                    return "function: " + val.FunctionPointer.ToString();
 
-                case AddressType.Boolean:
-                    return val.BooleanValue ? "true" : "false";
-                case AddressType.String:
-                    if (forPrint)
-                        return heap.ToHeapObject<DSString>(val).Value;
-                    else
-                        return "\"" + heap.ToHeapObject<DSString>(val).Value + "\"";                    
-                case AddressType.Char:
-                    Char character = Convert.ToChar(val.CharValue); 
-                    if (forPrint)
-                        return character.ToString();
-                    else
-                        return "'" + character + "'";
-                default:
-                    return "null"; // "Value not yet supported for tracing";
+                    return "function: " + className + procNode.Name;
+                }
+                return "function: " + val.FunctionPointer.ToString();
+            }
+            else if (val.IsBoolean)
+            {
+                return val.BooleanValue ? "true" : "false";
+            }
+            else if (val.IsString)
+            {
+                if (forPrint)
+                    return heap.ToHeapObject<DSString>(val).Value;
+                else
+                    return "\"" + heap.ToHeapObject<DSString>(val).Value + "\"";
+            }
+            else if (val.IsChar)
+            {
+                Char character = Convert.ToChar(val.CharValue);
+                if (forPrint)
+                    return character.ToString();
+                else
+                    return "'" + character + "'";
+            }
+            else
+            {
+                return "null"; // "Value not yet supported for tracing";
             }
         }
 
@@ -651,27 +667,38 @@ namespace ProtoCore.DSASM.Mirror
             else
                 val = rmem.GetSymbolValue(symbol);
 
-            switch (val.optype)
+            if (val.IsInteger)
             {
-                case AddressType.Int:
-                    return "int";
-                case AddressType.Double:
-                    return "double";
-                case AddressType.Null:
-                    return "null";
-                case AddressType.Pointer:
-                    {
-                        int classtype = val.metaData.type;
-                        ClassNode classnode = runtimeCore.DSExecutable.classTable.ClassNodes[classtype];
-                        return classnode.Name;
-                    }
-                case AddressType.ArrayPointer:
-                    return "array";
-                case AddressType.Boolean:
-                    return "bool";
-                case AddressType.String:
-                    return "string";
-                default:
+                return "int";
+            }
+            else if (val.IsDouble)
+            {
+                return "double";
+            }
+            else if (val.IsNull)
+            {
+                return "null";
+            }
+            else if (val.IsPointer)
+            {
+                int classtype = val.metaData.type;
+                ClassNode classnode = runtimeCore.DSExecutable.classTable.ClassNodes[classtype];
+                return classnode.Name;
+            }
+            else if (val.IsArray)
+            {
+                return "array";
+            }
+            else if (val.IsBoolean)
+            {
+                return "bool";
+            }
+            else if (val.IsString)
+            {
+                return "string";
+            }
+            else
+            { 
                     return "null"; // "Value not yet supported for tracing";
             }
         }

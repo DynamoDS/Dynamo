@@ -73,11 +73,11 @@ c;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetValue("x").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("y").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("a").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("b").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("c").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            thisTest.Verify("x", null);
+            thisTest.Verify("y", null);
+            thisTest.Verify("a", null);
+            thisTest.Verify("b", null);
+            thisTest.Verify("c", null);
         }
 
         [Test]
@@ -97,7 +97,7 @@ c;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetValue("c").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            thisTest.Verify("c", null);
         }
 
         [Test]
@@ -3958,7 +3958,7 @@ Print(check);
                 ";
             code = string.Format("{0}\n{1}", "import(\"ProtoGeometry.dll\");", code);
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetFirstValue("value").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            thisTest.Verify("value", null);
         }
 
         [Test]
