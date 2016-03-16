@@ -518,7 +518,7 @@ namespace ProtoFFI
             StackValue propValue = (StackValue)retVal;
             StackValue thisObject = dsi.runtime.rmem.Stack.Last();
 
-            bool isValidPointer = thisObject.IsPointer && thisObject.opdata != Constants.kInvalidIndex;
+            bool isValidPointer = thisObject.IsPointer && thisObject.Pointer != Constants.kInvalidIndex;
             if (isValidPointer && propValue.IsReferenceType)
             {
                 int classIndex = thisObject.metaData.type;

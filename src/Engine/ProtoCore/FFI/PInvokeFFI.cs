@@ -135,15 +135,15 @@ namespace ProtoFFI
             {
                 if (opType == AddressType.Double)
                 {
-                    elements.Add(op.RawDoubleValue);
+                    elements.Add(op.DoubleValue);
                 }
                 else if (opType == AddressType.Int)
                 {
-                    elements.Add(op.RawIntValue);
+                    elements.Add(op.IntegerValue);
                 }
                 else if (opType == AddressType.Boolean)
                 {
-                    elements.Add(op.RawIntValue == 0 ? true : false);
+                    elements.Add(op.BooleanValue);
                 }
             }
 
@@ -314,16 +314,16 @@ namespace ProtoFFI
                         //  if the function expects a double and we have passed an int
                         //  in an int then promote it to be a double!
                         //
-                        parameters.Add((double)o.RawIntValue);
+                        parameters.Add(o.IntegerValue);
                     }
                     else
                     {
-                        parameters.Add(o.RawIntValue);
+                        parameters.Add(o.RawData);
                     }
                 }
                 else if (o.IsDouble)
                 {
-                    parameters.Add(o.RawDoubleValue);
+                    parameters.Add(o.DoubleValue);
                 }
                 else if (o.IsArray)
                 {

@@ -78,7 +78,7 @@ namespace ProtoCore.DSASM
         {
             if (key.IsNumeric)
             {
-                long index = key.ToInteger().opdata;
+                int index = (int)key.ToInteger().IntegerValue;
                 if (index < 0)
                 {
                     index = index + Count;
@@ -100,7 +100,7 @@ namespace ProtoCore.DSASM
         {
             if (key.IsNumeric)
             {
-                long index = key.ToInteger().opdata;
+                int index = (int)key.ToInteger().IntegerValue;
                 if (index < 0)
                 {
                     index = index + Count;
@@ -108,7 +108,7 @@ namespace ProtoCore.DSASM
 
                 if (index >= 0 && index < Count)
                 {
-                    SetValueAt((int)index, StackValue.Null);
+                    SetValueAt(index, StackValue.Null);
 
                     if (index == Count - 1)
                     {
@@ -274,7 +274,7 @@ namespace ProtoCore.DSASM
             if (index.IsNumeric)
             {
                 index = index.ToInteger();
-                return SetValueForIndex((int)index.opdata, value, runtimeCore);
+                return SetValueForIndex((int)index.IntegerValue, value, runtimeCore);
             }
             else
             {
@@ -310,7 +310,7 @@ namespace ProtoCore.DSASM
                 if (index.IsNumeric)
                 {
                     index = index.ToInteger();
-                    int absIndex = array.ExpandByAcessingAt((int)index.opdata);
+                    int absIndex = array.ExpandByAcessingAt((int)index.IntegerValue);
                     svSubArray  = array.GetValueAt(absIndex);
                 }
                 else
@@ -427,11 +427,13 @@ namespace ProtoCore.DSASM
             if (index.IsNumeric)
             {
                 index = index.ToInteger();
-                return GetValueFromIndex((int)index.opdata, runtimeCore);
+                return GetValueFromIndex((int)index.IntegerValue, runtimeCore);
             }
             else if (index.IsArrayKey)
             {
-                int fullIndex = (int)index.opdata;
+                int fullIndex = Constants.kInvalidIndex;
+                StackValue array;
+                index.TryGetArrayKey(out array, out fullIndex);
 
                 if (Count > fullIndex)
                 {
@@ -492,7 +494,7 @@ namespace ProtoCore.DSASM
                 if (index.IsNumeric)
                 {
                     index = index.ToInteger();
-                    svArray = array.GetValueFromIndex((int)index.opdata, runtimeCore);
+                    svArray = array.GetValueFromIndex((int)index.IntegerValue, runtimeCore);
                 }
                 else
                 {
@@ -680,12 +682,13 @@ namespace ProtoCore.DSASM
             int pos = Constants.kInvalidIndex;
             if (index.IsNumeric)
             {
-                pos = (int)index.ToInteger().opdata;
+                pos = (int)index.ToInteger().IntegerValue;
                 return GetValueAtIndex(pos, runtimeCore);
             }
             else if (index.IsArrayKey)
             {
-                pos = (int)index.opdata;
+                StackValue array;
+                index.TryGetArrayKey(out array, out pos);
                 return GetValueAtIndex(pos, runtimeCore);
             }
             else
