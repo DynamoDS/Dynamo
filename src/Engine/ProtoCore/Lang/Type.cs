@@ -530,7 +530,7 @@ namespace ProtoCore
                         newSV.metaData = new MetaData { type = (int)PrimitiveType.kTypeString };
                         if (sv.metaData.type == (int)PrimitiveType.kTypeChar)
                         {
-                            char ch = Convert.ToChar(newSV.opdata);
+                            char ch = Convert.ToChar(newSV.CharValue);
                             newSV = StackValue.BuildString(ch.ToString(), rmem.Heap);
                         }
                         return newSV;

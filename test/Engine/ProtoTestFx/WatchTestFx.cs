@@ -122,7 +122,7 @@ namespace ProtoTestFx
             if (instruction.op1.IsRegister)
                 return;
 
-            SymbolNode symbolNode = GetSymbolNode(blockId, (int)instruction.op2.opdata, (int)instruction.op1.opdata);
+            SymbolNode symbolNode = GetSymbolNode(blockId, instruction.op2.ClassIndex, instruction.op1.SymbolIndex);
             string symbolName = symbolNode.name;
 
             bool isTemp = ProtoCore.Utils.CoreUtils.IsPropertyTemp(symbolName);
@@ -166,11 +166,11 @@ namespace ProtoTestFx
                 SymbolNode symbolNode = null;
                 if (instruction.op1.IsStaticVariableIndex)
                 {
-                    symbolNode = exe.runtimeSymbols[blockId].symbolList[(int)instruction.op1.opdata];
+                    symbolNode = exe.runtimeSymbols[blockId].symbolList[instruction.op1.StaticVariableIndex];
                 }
                 else
                 {
-                    symbolNode = exe.classTable.ClassNodes[ci].Symbols.symbolList[(int)instruction.op1.opdata];
+                    symbolNode = exe.classTable.ClassNodes[ci].Symbols.symbolList[instruction.op1.MemberVariableIndex];
                 }
                 string symbolName = symbolNode.name;
 
@@ -468,7 +468,7 @@ namespace ProtoTestFx
                         {
                             if (runtimeCore.DebugProps.IsPopmCall)
                             {
-                                int ci = (int)currentVms.mirror.MirrorTarget.rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexClass).opdata;
+                                int ci = currentVms.mirror.MirrorTarget.rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexClass).ClassIndex;
                                 VerifyWatch_Run(InjectionExecutive.callrLineNo, runtimeCore.DebugProps.CurrentSymbolName, core, runtimeCore, map, watchNestedMode, ci, defectID);
                             }
                         }

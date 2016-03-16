@@ -74,5 +74,26 @@ namespace DynamoCoreWpfTests
 
         }
 
+
+        [Test]
+        public void NewPackageVersionUpload_DoesNotThrowExceptionWhenDLLIsLoadedSeveralTimes()
+        {
+            string packagesDirectory = Path.Combine(TestDirectory, "pkgs");
+
+            var loader = new PackageLoader(packagesDirectory);
+            loader.LoadAll(new LoadPackageParams
+            {
+                Preferences = ViewModel.Model.PreferenceSettings
+            });
+
+            PublishPackageViewModel vm = null;
+            Assert.DoesNotThrow(() =>
+            {
+                vm = PublishPackageViewModel.FromLocalPackage(ViewModel, loader.LocalPackages.First());
+            });
+
+            Assert.AreEqual(PackageUploadHandle.State.Error, vm.UploadState);
+        }
+
     }
 }

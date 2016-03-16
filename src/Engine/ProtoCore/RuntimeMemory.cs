@@ -106,8 +106,8 @@ namespace ProtoCore
                 Push(StackValue.BuildBlockIndex(functionBlockCaller));
                 Push(StackValue.BuildBlockIndex(functionBlockDecl));
                 Push(StackValue.BuildInt(pc));
-                Push(StackValue.BuildInt(funcIndex));
-                Push(StackValue.BuildInt(classIndex));
+                Push(StackValue.BuildFunctionIndex(funcIndex));
+                Push(StackValue.BuildClassIndex(classIndex));
                 Push(svThisPtr);
                 FramePointer = Stack.Count;
             }
@@ -149,8 +149,8 @@ namespace ProtoCore
             public bool ValidateStackFrame()
             {
                 return Stack[GetRelative(StackFrame.kFrameIndexThisPtr)].IsPointer
-                    && Stack[GetRelative(StackFrame.kFrameIndexClass)].IsInteger
-                    && Stack[GetRelative(StackFrame.kFrameIndexFunction)].IsInteger
+                    && Stack[GetRelative(StackFrame.kFrameIndexClass)].IsClassIndex
+                    && Stack[GetRelative(StackFrame.kFrameIndexFunction)].IsFunctionIndex
                     && Stack[GetRelative(StackFrame.kFrameIndexReturnAddress)].IsInteger
                     && Stack[GetRelative(StackFrame.kFrameIndexFunctionBlock)].IsBlockIndex
                     && Stack[GetRelative(StackFrame.kFrameIndexFunctionCallerBlock)].IsBlockIndex
@@ -182,9 +182,8 @@ namespace ProtoCore
 
             private StackValue GetAtRelative(int relativeOffset, int framePointer)
             {
-                return relativeOffset >= 0
-                    ? Stack[relativeOffset]
-                    : Stack[framePointer + relativeOffset];
+                int index = relativeOffset >= 0 ? relativeOffset : framePointer + relativeOffset;
+                return Stack[index];
             }
             
             public void SetAtRelative(int offset, StackValue data)
@@ -229,7 +228,7 @@ namespace ProtoCore
             // TO BE DELETED
             public int GetStackIndex(int offset)
             {
-                int depth = (int)GetAtRelative(StackFrame.kFrameIndexStackFrameDepth).opdata;
+                int depth = (int)GetAtRelative(StackFrame.kFrameIndexStackFrameDepth).IntegerValue;
                 int blockOffset = depth * StackFrame.kStackFrameSize;
 
                 offset -= blockOffset;
@@ -249,7 +248,7 @@ namespace ProtoCore
                 if (symbol.absoluteClassScope != Constants.kGlobalScope ||
                     symbol.absoluteFunctionIndex != Constants.kGlobalScope)
                 {
-                    int depth = (int)GetAtRelative(StackFrame.kFrameIndexStackFrameDepth, framePointer).opdata;
+                    int depth = (int)GetAtRelative(StackFrame.kFrameIndexStackFrameDepth, framePointer).IntegerValue;
                     int blockOffset = depth * StackFrame.kStackFrameSize;
                     offset -= blockOffset;
                 }
@@ -282,7 +281,6 @@ namespace ProtoCore
                 }
 
                 StackValue nextPtr = sv;
-                Validity.Assert(nextPtr.opdata >= 0);
                 obj = Heap.ToHeapObject<DSObject>(nextPtr);
 
                 if (obj.Values.Any()) 
