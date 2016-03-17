@@ -60,7 +60,7 @@ namespace CoreNodeModelsWpf.Nodes
             var bitmap = data.Data as Bitmap;
             if (bitmap != null)
             {
-                nodeView.Dispatcher.BeginInvoke(new Action<Bitmap>(SetImageSource), new object[] { bitmap });
+                nodeView.Dispatcher.Invoke(new Action<Bitmap>(SetImageSource), new object[] { bitmap });
             }
         }
 
