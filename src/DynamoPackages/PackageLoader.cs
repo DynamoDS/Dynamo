@@ -5,9 +5,6 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Xml.Serialization;
-using Dynamo.Core;
-using Dynamo.Engine;
 using Dynamo.Interfaces;
 using Dynamo.Utilities;
 using Dynamo.Logging;
@@ -20,6 +17,13 @@ namespace Dynamo.PackageManager
     {
         public IPreferences Preferences { get; set; }
         public IPathManager PathManager { get; set; }
+    }
+
+    public enum AssemblyLoadingState
+    {
+        Success,
+        NotManagedAssembly,
+        AlreadyLoaded
     }
 
     public class PackageLoader : LogSourceBase
@@ -239,18 +243,23 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <param name="filename">The filename of a DLL</param>
         /// <param name="assem">out Assembly - the passed value does not matter and will only be set if loading succeeds</param>
-        /// <returns>Returns true if success, false if BadImageFormatException (i.e. not a managed assembly)</returns>
-        internal static bool TryReflectionOnlyLoadFrom(string filename, out Assembly assem)
+        /// <returns>Returns Success if success, NotManagedAssembly if BadImageFormatException, AlreadyLoaded if FileLoadException</returns>
+        internal static AssemblyLoadingState TryReflectionOnlyLoadFrom(string filename, out Assembly assem)
         {
             try
             {
                 assem = Assembly.ReflectionOnlyLoadFrom(filename);
-                return true;
+                return AssemblyLoadingState.Success;
             }
             catch (BadImageFormatException)
             {
                 assem = null;
-                return false;
+                return AssemblyLoadingState.NotManagedAssembly;
+            }
+            catch (FileLoadException)
+            {
+                assem = null;
+                return AssemblyLoadingState.AlreadyLoaded;
             }
         }
 

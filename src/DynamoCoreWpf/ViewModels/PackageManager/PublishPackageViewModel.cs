@@ -538,7 +538,8 @@ namespace Dynamo.PackageManager
 
         private void BeginInvoke(Action action)
         {
-            if (dynamoViewModel != null)
+            // dynamoViewModel.UIDispatcher can be null in unit tests.
+            if (dynamoViewModel != null && dynamoViewModel.UIDispatcher != null)
                 dynamoViewModel.UIDispatcher.BeginInvoke(action);
         }
 
@@ -597,26 +598,43 @@ namespace Dynamo.PackageManager
 
             var nodeLibraryNames = l.Header.node_libraries;
 
+            var assembliesLoadedTwice = new List<string>();
             // load assemblies into reflection only context
             foreach (var file in l.EnumerateAssemblyFilesInBinDirectory())
             {
                 Assembly assem;
                 var result = PackageLoader.TryReflectionOnlyLoadFrom(file, out assem);
 
-                if (result)
+                switch (result)
                 {
-                    var isNodeLibrary = nodeLibraryNames == null || nodeLibraryNames.Contains(assem.FullName);
-                    vm.Assemblies.Add(new  PackageAssembly()
-                    {
-                        IsNodeLibrary = isNodeLibrary,
-                        Assembly = assem
-                    });
+                    case AssemblyLoadingState.Success:
+                        {
+                            var isNodeLibrary = nodeLibraryNames == null || nodeLibraryNames.Contains(assem.FullName);
+                            vm.Assemblies.Add(new PackageAssembly()
+                            {
+                                IsNodeLibrary = isNodeLibrary,
+                                Assembly = assem
+                            });
+                            break;
+                        }
+                    case AssemblyLoadingState.NotManagedAssembly:
+                        {
+                            // if it's not a .NET assembly, we load it as an additional file
+                            vm.AdditionalFiles.Add(file);
+                            break;
+                        }
+                    case AssemblyLoadingState.AlreadyLoaded:
+                        {
+                            assembliesLoadedTwice.Add(file);
+                            break;
+                        }
                 }
-                else
-                {
-                    // if it's not a .NET assembly, we load it as an additional file
-                    vm.AdditionalFiles.Add(file);
-                }
+            }
+
+            if (assembliesLoadedTwice.Any())
+            {
+                vm.UploadState = PackageUploadHandle.State.Error;
+                vm.ErrorString = Resources.OneAssemblyWasLoadedSeveralTimesErrorMessage + string.Join("\n", assembliesLoadedTwice);
             }
 
             if (l.VersionName == null) return vm;
