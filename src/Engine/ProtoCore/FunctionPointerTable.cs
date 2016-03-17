@@ -23,7 +23,7 @@ namespace ProtoCore.DSASM
         {
             procNode = null;
 
-            int index = (int)functionPointer.RawIntValue;
+            int index = functionPointer.FunctionPointer;
             FunctionPointerNode fptrNode;
 
             if (functionPointerDictionary.TryGetByFirst(index, out fptrNode))

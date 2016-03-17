@@ -144,52 +144,68 @@ namespace ProtoCore.DSASM.Mirror
             if (formatParams == null)
                 formatParams = new OutputFormatParameters(maxArraySize, maxOutputDepth);
 
-            switch (val.optype)
+            if (val.IsInteger)
             {
-                case AddressType.Int:
-                    return val.opdata.ToString();
-                case AddressType.Double:
-                    return val.RawDoubleValue.ToString("F6");
-                case AddressType.Null:
-                    return "null";
-                case AddressType.Pointer:
-                    return GetClassTrace(val, heap, langblock, forPrint);
-                case AddressType.ArrayPointer:
-                    HashSet<int> pointers = new HashSet<int>{(int)val.opdata};
-                    string arrTrace = GetArrayTrace(val, heap, langblock, pointers, forPrint);
-                    if (forPrint)
-                        return "{" + arrTrace + "}";
-                    else
-                        return "{ " + arrTrace + " }";
-                case AddressType.FunctionPointer:
-                    ProcedureNode procNode;
-                    if (runtimeCore.DSExecutable.FuncPointerTable.TryGetFunction(val, runtimeCore, out procNode))
+                return val.IntegerValue.ToString();
+            }
+            else if (val.IsDouble)
+            {
+                return val.DoubleValue.ToString("F6");
+            }
+            else if (val.IsNull)
+            {
+                return "null";
+            }
+            else if (val.IsPointer)
+            {
+                return GetClassTrace(val, heap, langblock, forPrint);
+            }
+            else if (val.IsArray)
+            {
+                HashSet<int> pointers = new HashSet<int> { val.ArrayPointer };
+                string arrTrace = GetArrayTrace(val, heap, langblock, pointers, forPrint);
+                if (forPrint)
+                    return "{" + arrTrace + "}";
+                else
+                    return "{ " + arrTrace + " }";
+            }
+            else if (val.IsFunctionPointer)
+            {
+                ProcedureNode procNode;
+                if (runtimeCore.DSExecutable.FuncPointerTable.TryGetFunction(val, runtimeCore, out procNode))
+                {
+                    string className = String.Empty;
+                    if (procNode.ClassID != Constants.kGlobalScope)
                     {
-                        string className = String.Empty;
-                        if (procNode.ClassID != Constants.kGlobalScope)
-                        {
-                            className = runtimeCore.DSExecutable.classTable.GetTypeName(procNode.ClassID).Split('.').Last() + ".";
-                        }
-
-                        return "function: " + className + procNode.Name; 
+                        className = runtimeCore.DSExecutable.classTable.GetTypeName(procNode.ClassID).Split('.').Last() + ".";
                     }
-                    return "function: " + val.opdata.ToString();
 
-                case AddressType.Boolean:
-                    return (val.opdata == 0) ? "false" : "true";
-                case AddressType.String:
-                    if (forPrint)
-                        return heap.ToHeapObject<DSString>(val).Value;
-                    else
-                        return "\"" + heap.ToHeapObject<DSString>(val).Value + "\"";                    
-                case AddressType.Char:
-                    Char character = Convert.ToChar(val.opdata); 
-                    if (forPrint)
-                        return character.ToString();
-                    else
-                        return "'" + character + "'";
-                default:
-                    return "null"; // "Value not yet supported for tracing";
+                    return "function: " + className + procNode.Name;
+                }
+                return "function: " + val.FunctionPointer.ToString();
+            }
+            else if (val.IsBoolean)
+            {
+                return val.BooleanValue ? "true" : "false";
+            }
+            else if (val.IsString)
+            {
+                if (forPrint)
+                    return heap.ToHeapObject<DSString>(val).Value;
+                else
+                    return "\"" + heap.ToHeapObject<DSString>(val).Value + "\"";
+            }
+            else if (val.IsChar)
+            {
+                Char character = Convert.ToChar(val.CharValue);
+                if (forPrint)
+                    return character.ToString();
+                else
+                    return "'" + character + "'";
+            }
+            else
+            {
+                return "null"; // "Value not yet supported for tracing";
             }
         }
 
@@ -289,13 +305,13 @@ namespace ProtoCore.DSASM.Mirror
 
         private string GetPointerTrace(StackValue ptr, Heap heap, int langblock, HashSet<int> pointers, bool forPrint)
         {
-            if (pointers.Contains((int)ptr.opdata))
+            if (pointers.Contains(ptr.ArrayPointer))
             {
                 return "{ ... }";
             }
             else
             {
-                pointers.Add((int)ptr.opdata);
+                pointers.Add(ptr.ArrayPointer);
 
                 if (forPrint)
                 {
@@ -651,27 +667,38 @@ namespace ProtoCore.DSASM.Mirror
             else
                 val = rmem.GetSymbolValue(symbol);
 
-            switch (val.optype)
+            if (val.IsInteger)
             {
-                case AddressType.Int:
-                    return "int";
-                case AddressType.Double:
-                    return "double";
-                case AddressType.Null:
-                    return "null";
-                case AddressType.Pointer:
-                    {
-                        int classtype = val.metaData.type;
-                        ClassNode classnode = runtimeCore.DSExecutable.classTable.ClassNodes[classtype];
-                        return classnode.Name;
-                    }
-                case AddressType.ArrayPointer:
-                    return "array";
-                case AddressType.Boolean:
-                    return "bool";
-                case AddressType.String:
-                    return "string";
-                default:
+                return "int";
+            }
+            else if (val.IsDouble)
+            {
+                return "double";
+            }
+            else if (val.IsNull)
+            {
+                return "null";
+            }
+            else if (val.IsPointer)
+            {
+                int classtype = val.metaData.type;
+                ClassNode classnode = runtimeCore.DSExecutable.classTable.ClassNodes[classtype];
+                return classnode.Name;
+            }
+            else if (val.IsArray)
+            {
+                return "array";
+            }
+            else if (val.IsBoolean)
+            {
+                return "bool";
+            }
+            else if (val.IsString)
+            {
+                return "string";
+            }
+            else
+            { 
                     return "null"; // "Value not yet supported for tracing";
             }
         }
@@ -1056,38 +1083,6 @@ namespace ProtoCore.DSASM.Mirror
             throw new NotImplementedException("{F5ACC95F-AEC9-486D-BC82-FF2CB26E7E6A}"); //@TODO(Luke): Replace this with a symbol lookup exception
         }
 
-        public string GetFirstNameFromValue(StackValue v)
-        {
-            if (!v.IsPointer)
-                throw new ArgumentException("SV to highlight must be a pointer");
-
-            ProtoCore.DSASM.Executable exe = MirrorTarget.exe;
-
-            List<SymbolNode> symNodes = new List<SymbolNode>();
-
-            foreach (SymbolTable symTable in exe.runtimeSymbols)
-            {
-                foreach (SymbolNode symNode in symTable.symbolList.Values)
-                {
-                    symNodes.Add(symNode);
-                }
-
-            }
-
-
-            int index = MirrorTarget.rmem.Stack.FindIndex(0, value => value.opdata == v.opdata);
-
-            List<SymbolNode> matchingNodes = symNodes.FindAll(value => value.index == index);
-
-            if (matchingNodes.Count > 0)
-                return matchingNodes[0].name;
-            else
-            {
-                return null;
-            }
-        }
-
-
         public Obj GetFirstValue(string name, int startBlock = 0, int classcope = Constants.kGlobalScope)
         {
             Obj retVal = Unpack(GetRawFirstValue(name, startBlock, classcope), MirrorTarget.rmem.Heap, runtimeCore);
@@ -1148,20 +1143,18 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 case AddressType.Int:
                     {
-                        Int64 data = val.opdata;
                         Obj o = new Obj(val) 
                         { 
-                            Payload = data, 
+                            Payload = val.IntegerValue, 
                             Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0) 
                         };
                         return o;
                     }
                 case AddressType.Boolean:
                     {
-                        Int64 data = val.opdata;
-                        Obj o = new Obj(val) 
-                        { 
-                            Payload = (data != 0), 
+                        Obj o = new Obj(val)
+                        {
+                            Payload = val.BooleanValue,
                             Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0) 
                         };
                         return o;
@@ -1178,40 +1171,36 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 case AddressType.Char:
                     {
-                        Int64 data = val.opdata;
                         Obj o = new Obj(val) 
                         {
-                            Payload = data, 
+                            Payload = val.CharValue, 
                             Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeChar, 0) 
                         };
                         return o;
                     }
                 case AddressType.Double:
                     {
-                        double data = val.RawDoubleValue;
                         Obj o = new Obj(val) 
                         { 
-                            Payload = data, Type =
-                            TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0) 
+                            Payload = val.DoubleValue,
+                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0) 
                         };
                         return o;
                     }
                 case AddressType.Pointer:
                     {
-                        Int64 data = val.opdata;
                         Obj o = new Obj(val) 
                         { 
-                            Payload = data,
+                            Payload = val.Pointer,
                             Type = exe.TypeSystem.BuildTypeObject(type, 0) 
                         };
                         return o;
                     }
                 case AddressType.FunctionPointer:
                     {
-                        Int64 data = val.opdata;
                         Obj o = new Obj(val) 
                         { 
-                            Payload = data, 
+                            Payload = val.FunctionPointer, 
                             Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeFunctionPointer, 0) 
                         };
                         return o;
@@ -1258,7 +1247,7 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 case AddressType.Int:
                     {
-                        Int64 data = val.opdata;
+                        Int64 data = val.IntegerValue;
                         Obj o = new Obj(val) 
                         { 
                             Payload = data, 
@@ -1268,9 +1257,9 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 case AddressType.Boolean:
                     {
-                        Obj o = new Obj(val) 
-                        { 
-                            Payload = val.opdata == 0 ? false : true, 
+                        Obj o = new Obj(val)
+                        {
+                            Payload = val.BooleanValue,
                             Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0) 
                         };
                         return o;
@@ -1286,7 +1275,7 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 case AddressType.Double:
                     {
-                        double data = val.RawDoubleValue;
+                        double data = val.DoubleValue;
                         Obj o = new Obj(val) 
                         { 
                             Payload = data, 
@@ -1296,7 +1285,7 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 case AddressType.Char:
                     {
-                        Int64 data = val.opdata;
+                        Int64 data = val.CharValue;
                         Obj o = new Obj(val) 
                         { 
                             Payload = data, 
@@ -1306,7 +1295,7 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 case AddressType.Pointer:
                     {
-                        Int64 data = val.opdata;
+                        Int64 data = val.Pointer;
                         Obj o = new Obj(val) 
                         { 
                             Payload = data,
@@ -1316,17 +1305,16 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 case AddressType.DefaultArg:
                     {
-                        Int64 data = val.opdata;
                         Obj o = new Obj(val) 
                         { 
-                            Payload = data, 
+                            Payload = null, 
                             Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0) 
                         };
                         return o;
                     }
                 case AddressType.FunctionPointer:
                     {
-                        Int64 data = val.opdata;
+                        Int64 data = val.FunctionPointer;
                         Obj o = new Obj(val) 
                         { 
                             Payload = data, 
@@ -1357,14 +1345,14 @@ namespace ProtoCore.DSASM.Mirror
                 case AddressType.Pointer:
                     obj = new Obj(val) 
                     { 
-                        Payload = val.opdata, 
+                        Payload = val.Pointer, 
                         Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypePointer, 0) 
                     };
                     break;
                 case AddressType.ArrayPointer:
                     obj = new Obj(val) 
                     { 
-                        Payload = val.opdata, 
+                        Payload = val.ArrayPointer, 
                         Type =
                         TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeArray, Constants.kArbitraryRank)
                     };
@@ -1372,21 +1360,21 @@ namespace ProtoCore.DSASM.Mirror
                 case AddressType.Int:
                     obj = new Obj(val) 
                     { 
-                        Payload = val.opdata, 
+                        Payload = val.IntegerValue, 
                         Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0) 
                     };
                     break;
                 case AddressType.Boolean:
-                    obj = new Obj(val) 
-                    { 
-                        Payload = val.opdata == 0 ? false : true, 
+                    obj = new Obj(val)
+                    {
+                        Payload = val.BooleanValue,
                         Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0) 
                     };
                     break;
                 case AddressType.Double:
                     obj = new Obj(val) 
                     { 
-                        Payload = val.RawDoubleValue, 
+                        Payload = val.DoubleValue, 
                         Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0) 
                     };
                     break;
@@ -1400,21 +1388,21 @@ namespace ProtoCore.DSASM.Mirror
                 case AddressType.FunctionPointer:
                     obj = new Obj(val) 
                     { 
-                        Payload = val.opdata, 
+                        Payload = val.FunctionPointer, 
                         Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeFunctionPointer, 0) 
                     };
                     break;
                 case AddressType.String:
                     obj = new Obj(val) 
                     { 
-                        Payload = val.opdata, 
+                        Payload = val.StringPointer, 
                         Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, Constants.kPrimitiveSize) 
                     };
                     break;
                 case AddressType.Char:
                     obj = new Obj(val) 
                     { 
-                        Payload = val.opdata, 
+                        Payload = val.CharValue, 
                         Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeChar, 0) 
                     };
                     break;

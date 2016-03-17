@@ -88,7 +88,7 @@ namespace ProtoCore.Lang
             // Update the running block to tell the execution engine which set of instruction to execute
             // TODO(Jun/Jiong): Considering store the orig block id to stack frame
             int origRunningBlock = runtimeCore.RunningBlock;
-            runtimeCore.RunningBlock = (int)svBlockDecl.opdata;
+            runtimeCore.RunningBlock = svBlockDecl.BlockIndex;
 
             // Set SX register 
             interpreter.runtime.SX = svBlockDecl;

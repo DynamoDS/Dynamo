@@ -52,7 +52,7 @@ p = a;
 "
 );
             thisTest.VerifyBuildWarningCount(ProtoCore.BuildData.WarningID.kMultipleSymbolFoundFromName, 1);
-            Assert.IsTrue(mirror.GetValue("p").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            thisTest.Verify("p", null);
         }
 
 
