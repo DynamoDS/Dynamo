@@ -65,6 +65,12 @@ namespace Dynamo.Interfaces
         string DynamoCoreDirectory { get; }
 
         /// <summary>
+        /// The directory in which the host application such as DynamoRevit or 
+        /// DynamoStudio to be found.
+        /// </summary>
+        string HostApplicationDirectory { get; }
+
+        /// <summary>
         /// The local directory that contains user specific data files.
         /// </summary>
         string UserDataDirectory { get; }
@@ -118,14 +124,14 @@ namespace Dynamo.Interfaces
         IEnumerable<string> PackagesDirectories { get; }
 
         /// <summary>
-        /// The directory, which contains ExtensionDefinition .xml files
+        /// The directories, which contains ExtensionDefinition .xml files
         /// </summary>
-        string ExtensionsDirectory { get; }
+        IEnumerable<string> ExtensionsDirectories { get; }
 
         /// <summary>
-        /// The directory, which contains ViewExtensionDefinition.xml files
+        /// The directories, which contains ViewExtensionDefinition.xml files
         /// </summary>
-        string ViewExtensionsDirectory { get; }
+        IEnumerable<string> ViewExtensionsDirectories { get; }
 
         /// <summary>
         /// The root directory where all sample files are stored. This directory

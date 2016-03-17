@@ -400,6 +400,7 @@ namespace Dynamo.Models
         {
             string Context { get; set; }
             string DynamoCorePath { get; set; }
+            string DynamoHostPath { get; set; }
             IPreferences Preferences { get; set; }
             IPathResolver PathResolver { get; set; }
             bool StartInTestMode { get; set; }
@@ -418,6 +419,7 @@ namespace Dynamo.Models
         {
             public string Context { get; set; }
             public string DynamoCorePath { get; set; }
+            public string DynamoHostPath { get; set; }
             public IPreferences Preferences { get; set; }
             public IPathResolver PathResolver { get; set; }
             public bool StartInTestMode { get; set; }
@@ -459,6 +461,7 @@ namespace Dynamo.Models
             pathManager = new PathManager(new PathManagerParams
             {
                 CorePath = config.DynamoCorePath,
+                HostPath = config.DynamoHostPath,
                 PathResolver = config.PathResolver
             });
 
@@ -543,7 +546,7 @@ namespace Dynamo.Models
 
             extensionManager = new ExtensionManager();
             extensionManager.MessageLogged += LogMessage;
-            var extensions = config.Extensions ?? ExtensionManager.ExtensionLoader.LoadDirectory(pathManager.ExtensionsDirectory);
+            var extensions = config.Extensions ?? LoadExtensions();
 
             Loader = new NodeModelAssemblyLoader();
             Loader.MessageLogged += LogMessage;
@@ -620,6 +623,16 @@ namespace Dynamo.Models
                     Logger.Log(ex.Message);
                 }
             }
+        }
+
+        private IEnumerable<IExtension> LoadExtensions()
+        {
+            var extensions = new List<IExtension>();
+            foreach (var dir in pathManager.ExtensionsDirectories)
+            {
+                extensions.AddRange(ExtensionManager.ExtensionLoader.LoadDirectory(dir));
+            }
+            return extensions;
         }
             
         private void RemoveExtension(IExtension ext)
