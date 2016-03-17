@@ -132,31 +132,6 @@ namespace ProtoCore
                 Name = name;
             }
 
-            protected static MethodMirror FindMethod(string methodName, List<ProtoCore.Type> arguments, List<ProcedureNode> procNodes)
-            {
-                foreach (var procNode in procNodes)
-                {
-                    if (procNode.Name == methodName)
-                    {
-                        if (procNode.ArgumentInfos.Count == arguments.Count)
-                        {
-                            bool isEqual = true;
-                            for (int i = 0; i < arguments.Count; ++i)
-                            {
-                                if (!arguments[i].Equals(procNode.ArgumentTypes[i]))
-                                {
-                                    isEqual = false;
-                                    break;
-                                }
-                            }
-                            if (isEqual)
-                                return new MethodMirror(procNode);
-                        }
-                    }
-                }
-                return null;
-            }
-
             /// <summary>
             /// Returns list of overloads (one or more) for a given built-in method
             /// </summary>
@@ -309,19 +284,6 @@ namespace ProtoCore
                 libraryMirror = new LibraryMirror(classNode.ExternLib, core);
             }
 
-            public ClassMirror(int classIndex, ProtoCore.Core core)
-            {
-                if (classIndex == Constants.kInvalidIndex)
-                {
-                    throw new ArgumentException("classIndex is invalid");
-                }
-
-                ProtoCore.DSASM.ClassTable classTable = core.ClassTable;
-                classNode = classTable.ClassNodes[classIndex];
-                libraryMirror = new LibraryMirror(classNode.ExternLib, core);
-                ClassName = classNode.Name;
-            }
-
             internal ClassMirror(ProtoCore.Core core, ProtoCore.DSASM.ClassNode classNode,
                 LibraryMirror libraryMirror = null)
                 : base(core, classNode.Name)
@@ -356,15 +318,6 @@ namespace ProtoCore
             }
 
             /// <summary>
-            /// Returns the library mirror of the assembly that the class belongs to
-            /// </summary>
-            /// <returns></returns>
-            public LibraryMirror GetAssembly()
-            {
-                return libraryMirror;
-            }
-
-            /// <summary>
             /// Returns the constructors and static methods and properties 
             /// belonging to the type and its base types
             /// </summary>
@@ -385,23 +338,6 @@ namespace ProtoCore
                 members.AddRange(this.GetFunctions().Where(m => m.IsStatic).GroupBy(x => x.Name).Select(y => y.First()));
                 members.AddRange(this.GetProperties().Where(m => m.IsStatic).GroupBy(x => x.Name).Select(y => y.First()));
                 return members;
-            }
-
-
-            /// <summary>
-            ///  Get the super class of this class
-            /// </summary>
-            /// <returns></returns>
-            public ClassMirror GetSuperClass()
-            {
-                Validity.Assert(!string.IsNullOrEmpty(ClassName));
-                Validity.Assert(staticCore != null);
-
-                int ci = ClassNode.Bases[0];
-                Validity.Assert(ci != ProtoCore.DSASM.Constants.kInvalidIndex);
-
-                return new ClassMirror(staticCore, staticCore.ClassTable.ClassNodes[ci], this.libraryMirror);
-
             }
 
             /// <summary>
@@ -568,14 +504,6 @@ namespace ProtoCore
                 members.AddRange(this.GetFunctions().Where(m => !m.IsStatic).GroupBy(x => x.Name).Select(y => y.First()));
                 members.AddRange(this.GetProperties().Where(m => !m.IsStatic).GroupBy(x => x.Name).Select(y => y.First()));
                 return members;
-            }
-
-            public MethodMirror GetDeclaredMethod(string methodName, List<ProtoCore.Type> argumentTypes)
-            {
-                ProcedureTable procedureTable = ClassNode.ProcTable;
-                List<ProcedureNode> procList = procedureTable.Procedures;
-
-                return StaticMirror.FindMethod(methodName, argumentTypes, procList);
             }
 
             public ClassAttributes GetClassAttributes()
@@ -756,46 +684,6 @@ namespace ProtoCore
             public List<ClassMirror> GetClasses()
             {
                 return classMirrors;
-            }
-
-            /// <summary>
-            /// Returns list of global methods defined in an imported DS file
-            /// </summary>
-            /// <returns></returns>
-            public List<MethodMirror> GetGlobalMethods()
-            {
-                if (globalMethods == null)
-                {
-                    List<MethodMirror> methods = new List<MethodMirror>();
-
-                    Validity.Assert(staticCore != null);
-
-                    Validity.Assert(staticCore.CodeBlockList.Count > 0);
-
-                    List<ProcedureNode> procNodes = staticCore.CodeBlockList[0].procedureTable.Procedures;
-
-                    int numNewMethods = procNodes.Count - numBuiltInMethods;
-                    Validity.Assert(numNewMethods >= 0);
-
-                    for (int i = numBuiltInMethods; i < procNodes.Count; ++i)
-                    {
-                        MethodMirror method = new MethodMirror(procNodes[i]);
-                        methods.Add(method);
-                    }
-
-                    numBuiltInMethods = procNodes.Count;
-
-                    globalMethods = methods;
-                }
-
-                return globalMethods;
-            }
-
-            public enum LibraryType
-            {
-                kDSfile = 0,
-                kDLL,
-                kEXE
             }
         }
     }

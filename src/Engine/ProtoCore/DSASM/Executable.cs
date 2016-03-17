@@ -35,12 +35,6 @@ namespace ProtoCore.DSASM
     /// 
     public class Executable
     {
-        // Constants that represent indices into Executable data
-        public enum OffsetConstants
-        {
-            kInstrStreamGlobalScope = 0 // Offset into the instruction stream where global scope instructions are stored
-        }
-
         /// <summary>
         /// RuntimeData is set in the executable to isolate data passed to the runtime VM
         /// The RuntimeData will eventually be integrated completely into executable,

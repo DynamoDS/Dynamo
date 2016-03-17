@@ -340,7 +340,7 @@ namespace ProtoCore.AssociativeEngine
             // Get nodes at global scope
             int classIndex = Constants.kInvalidIndex;
             int procIndex = Constants.kGlobalScope;
-            int blockScope = (int)Executable.OffsetConstants.kInstrStreamGlobalScope;
+            int blockScope = 0;
             AssociativeGraph.DependencyGraph dependencyGraph = exe.instrStreamList[blockScope].dependencyGraph;
             List<AssociativeGraph.GraphNode> graphNodesInScope = dependencyGraph.GetGraphNodesAtScope(classIndex, procIndex);
 
