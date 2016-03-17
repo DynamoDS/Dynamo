@@ -161,156 +161,146 @@ namespace ProtoCore.DSASM
                 new List<bool>());
         }
 
-        private StackValue GetAt(int index)
-        {
-            return Frame[index];
-        }
-
-        private void SetAt(int index, StackValue sv)
-        {
-            Frame[index] = sv;
-        }
-
         public StackValue ThisPtr
         {
-            get { return GetAt(AbsoluteIndex.ThisPtr); }
-            set { SetAt(AbsoluteIndex.ThisPtr, value);}
+            get { return Frame[AbsoluteIndex.ThisPtr]; }
+            set { Frame[AbsoluteIndex.ThisPtr] = value;}
         }
 
         public int ClassScope
         {
-            get { return (int)GetAt(AbsoluteIndex.ClassIndex).ClassIndex; }
-            set { SetAt(AbsoluteIndex.ClassIndex, StackValue.BuildClassIndex(value)); }
+            get { return Frame[AbsoluteIndex.ClassIndex].ClassIndex; }
+            set { Frame[AbsoluteIndex.ClassIndex] = StackValue.BuildClassIndex(value); }
         }
 
         public int FunctionScope
         {
-            get { return (int)GetAt(AbsoluteIndex.FunctionIndex).FunctionIndex; }
-            set { SetAt(AbsoluteIndex.FunctionIndex, StackValue.BuildFunctionIndex(value)); }
+            get { return Frame[AbsoluteIndex.FunctionIndex].FunctionIndex; }
+            set { Frame[AbsoluteIndex.FunctionIndex] = StackValue.BuildFunctionIndex(value); }
         }
 
         public int ReturnPC
         {
-            get { return (int)GetAt(AbsoluteIndex.ReturnAddress).IntegerValue; }
-            set { SetAt(AbsoluteIndex.ReturnAddress, StackValue.BuildInt(value));}
+            get { return (int)Frame[AbsoluteIndex.ReturnAddress].IntegerValue; }
+            set { Frame[AbsoluteIndex.ReturnAddress] = StackValue.BuildInt(value);}
         }
 
         public int FunctionBlock
         {
-            get { return (int)GetAt(AbsoluteIndex.FunctionBlockIndex).BlockIndex; }
-            set { SetAt(AbsoluteIndex.FunctionBlockIndex, StackValue.BuildBlockIndex(value)); }
+            get { return Frame[AbsoluteIndex.FunctionBlockIndex].BlockIndex; }
+            set { Frame[AbsoluteIndex.FunctionBlockIndex] = StackValue.BuildBlockIndex(value); }
         }
 
         public int FunctionCallerBlock
         {
-            get { return (int)GetAt(AbsoluteIndex.CallerBlockIndex).BlockIndex; }
-            set { SetAt(AbsoluteIndex.CallerBlockIndex, StackValue.BuildBlockIndex(value)); }
+            get { return Frame[AbsoluteIndex.CallerBlockIndex].BlockIndex; }
+            set { Frame[AbsoluteIndex.CallerBlockIndex] = StackValue.BuildBlockIndex(value); }
         }
 
         public StackFrameType CallerStackFrameType
         {
-            get { return GetAt(AbsoluteIndex.CallerStackFrameType).FrameType; }
-            set { SetAt(AbsoluteIndex.CallerStackFrameType, StackValue.BuildFrameType((int)value));}
+            get { return Frame[AbsoluteIndex.CallerStackFrameType].FrameType; }
+            set { Frame[AbsoluteIndex.CallerStackFrameType] = StackValue.BuildFrameType((int)value);}
         }
 
         public StackFrameType StackFrameType
         {
-            get { return GetAt(AbsoluteIndex.StackFrameType).FrameType; }
-            set { SetAt(AbsoluteIndex.StackFrameType, StackValue.BuildFrameType((int)value)); }
+            get { return Frame[AbsoluteIndex.StackFrameType].FrameType; }
+            set { Frame[AbsoluteIndex.StackFrameType] = StackValue.BuildFrameType((int)value); }
         }
 
         public int Depth
         {
-            get { return (int)GetAt(AbsoluteIndex.StackFrameDepth).IntegerValue; }
-            set { SetAt(AbsoluteIndex.StackFrameDepth, StackValue.BuildInt(value)); }
+            get { return (int)Frame[AbsoluteIndex.StackFrameDepth].IntegerValue; }
+            set { Frame[AbsoluteIndex.StackFrameDepth] = StackValue.BuildInt(value); }
         }
 
         public int FramePointer
         {
-            get { return (int)GetAt(AbsoluteIndex.FramePointer).IntegerValue; }
-            set { SetAt(AbsoluteIndex.FramePointer, StackValue.BuildInt(value));}
+            get { return (int)Frame[AbsoluteIndex.FramePointer].IntegerValue; }
+            set { Frame[AbsoluteIndex.FramePointer] = StackValue.BuildInt(value);}
         }
 
         public int ExecutionStateSize
         {
-            get { return (int)GetAt(AbsoluteIndex.ExecutionStates).IntegerValue; }
-            set { SetAt(AbsoluteIndex.ExecutionStates, StackValue.BuildInt(value)); }
+            get { return (int)Frame[AbsoluteIndex.ExecutionStates].IntegerValue; }
+            set { Frame[AbsoluteIndex.ExecutionStates] = StackValue.BuildInt(value); }
         }
 
         public StackValue AX
         {
-            get { return GetAt(AbsoluteIndex.AX); }
-            set { SetAt(AbsoluteIndex.AX, value);}
+            get { return Frame[AbsoluteIndex.AX]; }
+            set { Frame[AbsoluteIndex.AX] = value;}
         }
 
         public StackValue BX
         {
-            get { return GetAt(AbsoluteIndex.BX); }
-            set { SetAt(AbsoluteIndex.BX, value);}
+            get { return Frame[AbsoluteIndex.BX]; }
+            set { Frame[AbsoluteIndex.BX] = value;}
         }
 
         public StackValue CX
         {
-            get { return GetAt(AbsoluteIndex.CX); }
-            set { SetAt(AbsoluteIndex.CX, value); }
+            get { return Frame[AbsoluteIndex.CX]; }
+            set { Frame[AbsoluteIndex.CX] = value; }
         }
 
         public StackValue DX
         {
-            get { return GetAt(AbsoluteIndex.DX); }
-            set { SetAt(AbsoluteIndex.DX, value); }
+            get { return Frame[AbsoluteIndex.DX]; }
+            set { Frame[AbsoluteIndex.DX] = value; }
         }
 
         public StackValue EX
         {
-            get { return GetAt(AbsoluteIndex.EX); }
-            set { SetAt(AbsoluteIndex.EX, value); }
+            get { return Frame[AbsoluteIndex.EX]; }
+            set { Frame[AbsoluteIndex.EX] = value; }
         }
 
         public StackValue FX
         {
-            get { return GetAt(AbsoluteIndex.FX); }
-            set { SetAt(AbsoluteIndex.FX, value); }
+            get { return Frame[AbsoluteIndex.FX]; }
+            set { Frame[AbsoluteIndex.FX] = value; }
         }
 
         public StackValue LX
         {
-            get { return GetAt(AbsoluteIndex.LX); }
-            set { SetAt(AbsoluteIndex.LX, value); }
+            get { return Frame[AbsoluteIndex.LX]; }
+            set { Frame[AbsoluteIndex.LX] = value; }
         }
 
         public StackValue RX
         {
-            get { return GetAt(AbsoluteIndex.RX); }
-            set { SetAt(AbsoluteIndex.RX, value); }
+            get { return Frame[AbsoluteIndex.RX]; }
+            set { Frame[AbsoluteIndex.RX] = value; }
         }
 
         public StackValue SX
         {
-            get { return GetAt(AbsoluteIndex.SX); }
-            set { SetAt(AbsoluteIndex.SX, value); }
+            get { return Frame[AbsoluteIndex.SX]; }
+            set { Frame[AbsoluteIndex.SX] = value; }
         }
 
         public StackValue TX
         {
-            get { return GetAt(AbsoluteIndex.TX); }
-            set { SetAt(AbsoluteIndex.TX, value); }
+            get { return Frame[AbsoluteIndex.TX]; }
+            set { Frame[AbsoluteIndex.TX] = value; }
         }
 
         public List<StackValue> GetRegisters()
         {
             List<StackValue> registers = new List<StackValue>();
 
-            registers.Add(Frame[(int)AbsoluteIndex.AX]);
-            registers.Add(Frame[(int)AbsoluteIndex.BX]);
-            registers.Add(Frame[(int)AbsoluteIndex.CX]);
-            registers.Add(Frame[(int)AbsoluteIndex.DX]);
-            registers.Add(Frame[(int)AbsoluteIndex.EX]);
-            registers.Add(Frame[(int)AbsoluteIndex.FX]);
-            registers.Add(Frame[(int)AbsoluteIndex.LX]);
-            registers.Add(Frame[(int)AbsoluteIndex.RX]);
-            registers.Add(Frame[(int)AbsoluteIndex.SX]);
-            registers.Add(Frame[(int)AbsoluteIndex.TX]);
+            registers.Add(Frame[AbsoluteIndex.AX]);
+            registers.Add(Frame[AbsoluteIndex.BX]);
+            registers.Add(Frame[AbsoluteIndex.CX]);
+            registers.Add(Frame[AbsoluteIndex.DX]);
+            registers.Add(Frame[AbsoluteIndex.EX]);
+            registers.Add(Frame[AbsoluteIndex.FX]);
+            registers.Add(Frame[AbsoluteIndex.LX]);
+            registers.Add(Frame[AbsoluteIndex.RX]);
+            registers.Add(Frame[AbsoluteIndex.SX]);
+            registers.Add(Frame[AbsoluteIndex.TX]);
 
             return registers;
         }

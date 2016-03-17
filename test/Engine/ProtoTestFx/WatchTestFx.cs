@@ -468,7 +468,7 @@ namespace ProtoTestFx
                         {
                             if (runtimeCore.DebugProps.IsPopmCall)
                             {
-                                int ci = currentVms.mirror.MirrorTarget.rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexClass).ClassIndex;
+                                int ci = currentVms.mirror.MirrorTarget.rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.FrameIndexClassIndex).ClassIndex;
                                 VerifyWatch_Run(InjectionExecutive.callrLineNo, runtimeCore.DebugProps.CurrentSymbolName, core, runtimeCore, map, watchNestedMode, ci, defectID);
                             }
                         }
