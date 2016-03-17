@@ -289,7 +289,7 @@ namespace ProtoImperative
             {
                 int locOffset = localProcedure.LocalCount;
                 locOffset = localProcedure.LocalCount;
-                symbolnode.index = -1 - ProtoCore.DSASM.StackFrame.kStackFrameSize - (locOffset + argOffset);
+                symbolnode.index = -1 - ProtoCore.DSASM.StackFrame.StackFrameSize - (locOffset + argOffset);
                 ++argOffset;
 
                 symbolindex = codeBlock.symbolTable.Append(symbolnode);

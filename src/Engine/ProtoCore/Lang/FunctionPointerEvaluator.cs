@@ -113,7 +113,7 @@ namespace ProtoCore.Lang
                                                blockDecl, 
                                                blockCaller, 
                                                callerType, 
-                                               StackFrameType.kTypeFunction, 
+                                               StackFrameType.Function, 
                                                0,   // depth
                                                framePointer, 
                                                registers, 

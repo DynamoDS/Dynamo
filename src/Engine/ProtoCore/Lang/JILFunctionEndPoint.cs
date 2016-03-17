@@ -72,7 +72,7 @@ namespace ProtoCore.Lang
             StackValue svBlockDecl = StackValue.BuildBlockIndex(stackFrame.FunctionBlock);
 
             // Jun: Make sure we have no empty or unaligned frame data
-            Validity.Assert(DSASM.StackFrame.kStackFrameSize == stackFrame.Frame.Length);
+            Validity.Assert(DSASM.StackFrame.StackFrameSize == stackFrame.Frame.Length);
 
             // Setup the stack frame data
             //int thisPtr = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kThisPtr).opdata;
@@ -128,7 +128,7 @@ namespace ProtoCore.Lang
             int depth = stackFrame.Depth;
             DSASM.StackFrameType type = stackFrame.StackFrameType;
             Validity.Assert(depth == 0);
-            Validity.Assert(type == DSASM.StackFrameType.kTypeFunction);
+            Validity.Assert(type == DSASM.StackFrameType.Function);
 
             runtimeCore.RuntimeMemory.PushStackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, locals, execStateSize);
 

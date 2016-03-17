@@ -568,7 +568,7 @@ namespace ProtoAssociative
             int locOffset = 0;
 
             // This will be offseted by the local count after locals have been allocated
-            node.index = -1 - ProtoCore.DSASM.StackFrame.kStackFrameSize - (locOffset + argOffset);
+            node.index = -1 - ProtoCore.DSASM.StackFrame.StackFrameSize - (locOffset + argOffset);
             ++argOffset;
 
             int symbolindex = ProtoCore.DSASM.Constants.kInvalidIndex;

@@ -332,7 +332,7 @@ namespace ProtoCore.Lang
 
                         int ci = ProtoCore.DSASM.Constants.kInvalidIndex;
                         int fi = ProtoCore.DSASM.Constants.kInvalidIndex;
-                        if (interpreter.runtime.rmem.Stack.Count >= ProtoCore.DSASM.StackFrame.kStackFrameSize)
+                        if (interpreter.runtime.rmem.Stack.Count >= ProtoCore.DSASM.StackFrame.StackFrameSize)
                         {
                             ci = stackFrame.ClassScope;
                             fi = stackFrame.FunctionScope;
@@ -344,8 +344,8 @@ namespace ProtoCore.Lang
 
                         int blockDecl = 0;
                         int blockCaller = oldRunningBlockId;
-                        StackFrameType type = StackFrameType.kTypeLanguage;
-                        int depth = (int)interpreter.runtime.rmem.GetAtRelative(StackFrame.kFrameIndexStackFrameDepth).IntegerValue;
+                        StackFrameType type = StackFrameType.LanguageBlock;
+                        int depth = (int)interpreter.runtime.rmem.GetAtRelative(StackFrame.FrameIndexStackFrameDepth).IntegerValue;
                         int framePointer = rmem.FramePointer;
                         List<StackValue> registers = new List<StackValue>();
 
@@ -675,7 +675,7 @@ namespace ProtoCore.Lang
                                                stackFrame.FunctionBlock, 
                                                stackFrame.FunctionCallerBlock, 
                                                stackFrame.StackFrameType,
-                                               StackFrameType.kTypeFunction, 
+                                               StackFrameType.Function, 
                                                0,
                                                rmem.FramePointer, 
                                                stackFrame.GetRegisters(), 

@@ -403,7 +403,7 @@ namespace ProtoFFI
             {
                 // Comment Jun: FFI function stack frames do not contain locals
                 int locals = 0;
-                int relative = 0 - ProtoCore.DSASM.StackFrame.kStackFrameSize - locals - i - 1;
+                int relative = 0 - ProtoCore.DSASM.StackFrame.StackFrameSize - locals - i - 1;
                 StackValue opArg = dsi.runtime.rmem.GetAtRelative(relative);
                 try
                 {

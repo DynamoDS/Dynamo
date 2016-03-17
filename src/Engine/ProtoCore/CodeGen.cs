@@ -223,7 +223,7 @@ namespace ProtoCore
                 if (!isGlobal)
                 {
                     // Local variable in a member function
-                    symbol.index = -1 - ProtoCore.DSASM.StackFrame.kStackFrameSize - langblockOffset - core.BaseOffset;
+                    symbol.index = -1 - ProtoCore.DSASM.StackFrame.StackFrameSize - langblockOffset - core.BaseOffset;
                     core.BaseOffset += 1;
                 }
                 else
@@ -245,7 +245,7 @@ namespace ProtoCore
             else if (!isGlobal)
             {
                 // Local variable in a global function
-                symbol.index = -1 - ProtoCore.DSASM.StackFrame.kStackFrameSize - langblockOffset - core.BaseOffset;
+                symbol.index = -1 - ProtoCore.DSASM.StackFrame.StackFrameSize - langblockOffset - core.BaseOffset;
                 core.BaseOffset += 1;
             }
             else
