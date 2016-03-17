@@ -121,26 +121,6 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Setup the stackframe for a Bounce operation and push it onto the stack
-        /// </summary>
-        /// <param name="exeblock"></param>
-        /// <param name="entry"></param>
-        /// <param name="context"></param>
-        /// <param name="stackFrame"></param>
-        /// <param name="locals"></param>
-        /// <param name="sink"></param>
-        private void SetupAndPushBounceStackFrame(
-          int exeblock,
-          int entry,
-          StackFrame stackFrame,
-          int locals = 0,
-          ProtoCore.DebugServices.EventSink sink = null)
-        {
-            rmem.PushFrameForLocals(locals);
-            rmem.PushStackFrame(stackFrame);
-        }
-
-        /// <summary>
         /// Bounce instantiates a new Executive 
         /// Execution jumps to the new executive
         /// This iverload handles debugger properties when bouncing
@@ -154,18 +134,12 @@ namespace ProtoCore.DSASM
         /// <param name="fepRun"></param>
         /// <param name="breakpoints"></param>
         /// <returns></returns>
-        public StackValue Bounce(
-            int exeblock, 
-            int entry, 
-            StackFrame stackFrame, 
-            int locals = 0,
-            bool fepRun = false,
-            DSASM.Executive exec = null,
-            List<Instruction> breakpoints = null)
+        public StackValue Bounce(int exeblock, int entry, StackFrame stackFrame, int locals = 0, bool fepRun = false, Executive exec = null, List<Instruction> breakpoints = null)
         {
             if (stackFrame != null)
             {
-                SetupAndPushBounceStackFrame(exeblock, entry, stackFrame, locals);
+                rmem.PushFrameForLocals(locals);
+                rmem.PushStackFrame(stackFrame);
                 runtimeCore.DebugProps.SetUpBounce(exec, stackFrame.FunctionCallerBlock, stackFrame.ReturnPC);
             }
             return runtimeCore.ExecutionInstance.Execute(exeblock, entry, fepRun, breakpoints);
@@ -195,7 +169,8 @@ namespace ProtoCore.DSASM
         {
             if (stackFrame != null)
             {
-                SetupAndPushBounceStackFrame(exeblock, entry, stackFrame, locals);
+                rmem.PushFrameForLocals(locals);
+                rmem.PushStackFrame(stackFrame);
                 runtimeCore.DebugProps.SetUpBounce(exec, stackFrame.FunctionCallerBlock, stackFrame.ReturnPC);
             }
             executive.Execute(exeblock, entry, breakpoints);
