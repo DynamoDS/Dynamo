@@ -1004,7 +1004,7 @@ namespace ProtoCore.AssociativeGraph
             }
         }
 
-        public void PushSymbolReference(SymbolNode symbol, UpdateNodeType type = UpdateNodeType.kSymbol)
+        public void PushSymbolReference(SymbolNode symbol, UpdateNodeType type = UpdateNodeType.Symbol)
         {
             Validity.Assert(null != symbol);
             UpdateNode updateNode = new UpdateNode();
@@ -1022,7 +1022,7 @@ namespace ProtoCore.AssociativeGraph
             Validity.Assert(null != symbol);
             UpdateNode updateNode = new UpdateNode();
             updateNode.symbol = symbol;
-            updateNode.nodeType = UpdateNodeType.kSymbol;
+            updateNode.nodeType = UpdateNodeType.Symbol;
 
             UpdateNodeRef nodeRef = new UpdateNodeRef();
             nodeRef.block = symbol.runtimeTableIndex;
@@ -1155,11 +1155,11 @@ namespace ProtoCore.AssociativeGraph
                                     {
                                         bothSymbolsMatch = false;
                                     }
-                                    else if (modDimNode.nodeType == UpdateNodeType.kLiteral)
+                                    else if (modDimNode.nodeType == UpdateNodeType.Literal)
                                     {
                                         bothSymbolsMatch = modDimNode.symbol.name.CompareTo(depDimNode.symbol.name) == 0;
                                     }
-                                    else if (modDimNode.nodeType == UpdateNodeType.kSymbol)
+                                    else if (modDimNode.nodeType == UpdateNodeType.Symbol)
                                     {
                                         bothSymbolsMatch = modDimNode.symbol.Equals(depDimNode.symbol);
                                     }
@@ -1194,7 +1194,7 @@ namespace ProtoCore.AssociativeGraph
                                     //Validity.Assert(!modifiedRef.nodeList[n].isMethod);
                                     //Validity.Assert(!depNodeRef.nodeList[n].isMethod);
 
-                                    if (UpdateNodeType.kMethod == modifiedRef.nodeList[n].nodeType || UpdateNodeType.kMethod == depNodeRef.nodeList[n].nodeType)
+                                    if (UpdateNodeType.Method == modifiedRef.nodeList[n].nodeType || UpdateNodeType.Method == depNodeRef.nodeList[n].nodeType)
                                     {
                                         match = false;
                                         break;
@@ -1231,7 +1231,7 @@ namespace ProtoCore.AssociativeGraph
                                         }
                                     }
 
-                                    if (UpdateNodeType.kMethod == modifiedRef.nodeList[n].nodeType || UpdateNodeType.kMethod == depNodeRef.nodeList[n].nodeType)
+                                    if (UpdateNodeType.Method == modifiedRef.nodeList[n].nodeType || UpdateNodeType.Method == depNodeRef.nodeList[n].nodeType)
                                     {
                                         match = false;
                                         break;
@@ -1258,7 +1258,7 @@ namespace ProtoCore.AssociativeGraph
                                         break;
                                     }
 
-                                    if (UpdateNodeType.kMethod == modifiedRef.nodeList[n].nodeType || UpdateNodeType.kMethod == depNodeRef.nodeList[n].nodeType)
+                                    if (UpdateNodeType.Method == modifiedRef.nodeList[n].nodeType || UpdateNodeType.Method == depNodeRef.nodeList[n].nodeType)
                                     {
                                         match = false;
                                         break;
@@ -1305,8 +1305,8 @@ namespace ProtoCore.AssociativeGraph
                                     for (int n = 0; n < modifiedRef.nodeList[m].dimensionNodeList.Count; ++n)
                                     {
                                         // Is either a non-literal
-                                        bool isEitherNonLiteral = modifiedRef.nodeList[m].dimensionNodeList[n].nodeType != UpdateNodeType.kLiteral
-                                            || depNodeRef.nodeList[m].dimensionNodeList[n].nodeType != UpdateNodeType.kLiteral;
+                                        bool isEitherNonLiteral = modifiedRef.nodeList[m].dimensionNodeList[n].nodeType != UpdateNodeType.Literal
+                                            || depNodeRef.nodeList[m].dimensionNodeList[n].nodeType != UpdateNodeType.Literal;
                                         if (isEitherNonLiteral)
                                         {
                                             bothSymbolsMatch = false;
@@ -1342,7 +1342,7 @@ namespace ProtoCore.AssociativeGraph
                                         //Validity.Assert(!modifiedRef.nodeList[n].isMethod);
                                         //Validity.Assert(!depNodeRef.nodeList[n].isMethod);
 
-                                        if (UpdateNodeType.kMethod == modifiedRef.nodeList[n].nodeType || UpdateNodeType.kMethod == depNodeRef.nodeList[n].nodeType)
+                                        if (UpdateNodeType.Method == modifiedRef.nodeList[n].nodeType || UpdateNodeType.Method == depNodeRef.nodeList[n].nodeType)
                                         {
                                             match = false;
                                             break;
@@ -1379,7 +1379,7 @@ namespace ProtoCore.AssociativeGraph
                                             }
                                         }
 
-                                        if (UpdateNodeType.kMethod == modifiedRef.nodeList[n].nodeType || UpdateNodeType.kMethod == depNodeRef.nodeList[n].nodeType)
+                                        if (UpdateNodeType.Method == modifiedRef.nodeList[n].nodeType || UpdateNodeType.Method == depNodeRef.nodeList[n].nodeType)
                                         {
                                             match = false;
                                             break;
@@ -1406,7 +1406,7 @@ namespace ProtoCore.AssociativeGraph
                                             break;
                                         }
 
-                                        if (UpdateNodeType.kMethod == modifiedRef.nodeList[n].nodeType || UpdateNodeType.kMethod == depNodeRef.nodeList[n].nodeType)
+                                        if (UpdateNodeType.Method == modifiedRef.nodeList[n].nodeType || UpdateNodeType.Method == depNodeRef.nodeList[n].nodeType)
                                         {
                                             match = false;
                                             break;
@@ -1446,7 +1446,7 @@ namespace ProtoCore.AssociativeGraph
             }
 
             var firstNode = updateNodeRefList.First().nodeList.FirstOrDefault();
-            return firstNode != null && firstNode.nodeType == UpdateNodeType.kSymbol && firstNode.symbol.isSSATemp;
+            return firstNode != null && firstNode.nodeType == UpdateNodeType.Symbol && firstNode.symbol.isSSATemp;
         }
     }
 
@@ -1532,9 +1532,9 @@ namespace ProtoCore.AssociativeGraph
 
     public enum UpdateNodeType
     {
-        kLiteral,
-        kSymbol,
-        kMethod
+        Literal,
+        Symbol,
+        Method
     };
 
     public class UpdateNode
@@ -1564,11 +1564,11 @@ namespace ProtoCore.AssociativeGraph
                 return false;
             }
 
-            if (nodeType == UpdateNodeType.kSymbol || nodeType == UpdateNodeType.kLiteral)
+            if (nodeType == UpdateNodeType.Symbol || nodeType == UpdateNodeType.Literal)
             {
                 return symbol.Equals(rhs.symbol);
             }
-            else if (nodeType == UpdateNodeType.kMethod)
+            else if (nodeType == UpdateNodeType.Method)
             {
                 return procNode.Equals(rhs.procNode);
             }
@@ -1622,7 +1622,7 @@ namespace ProtoCore.AssociativeGraph
             UpdateNodeRef newRef = new UpdateNodeRef();
             foreach (UpdateNode node in nodeList)
             {
-                if (node.nodeType != UpdateNodeType.kMethod)
+                if (node.nodeType != UpdateNodeType.Method)
                 {
                     newRef.nodeList.Add(node);
                 }

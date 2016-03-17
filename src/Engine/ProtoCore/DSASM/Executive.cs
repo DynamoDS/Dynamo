@@ -4872,7 +4872,7 @@ namespace ProtoCore.DSASM
 
                 AssociativeGraph.UpdateNode updateNode = new AssociativeGraph.UpdateNode();
                 updateNode.symbol = symnode;
-                updateNode.nodeType = AssociativeGraph.UpdateNodeType.kSymbol;
+                updateNode.nodeType = AssociativeGraph.UpdateNodeType.Symbol;
 
                 // Build the first symbol of the modified ref
                 AssociativeGraph.UpdateNodeRef modifiedRef = new AssociativeGraph.UpdateNodeRef();
@@ -4891,7 +4891,7 @@ namespace ProtoCore.DSASM
                     // Get the symbol and append it to the modified ref
                     updateNode = new AssociativeGraph.UpdateNode();
                     updateNode.symbol = exe.classTable.ClassNodes[classIndex].Symbols.symbolList[symindex];
-                    updateNode.nodeType = AssociativeGraph.UpdateNodeType.kSymbol;
+                    updateNode.nodeType = AssociativeGraph.UpdateNodeType.Symbol;
 
                     runtimeVerify(null != updateNode.symbol);
 

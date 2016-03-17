@@ -174,7 +174,7 @@ namespace ProtoAssociative
             }
 
             ProtoCore.AssociativeGraph.GraphNode dependentNode = new ProtoCore.AssociativeGraph.GraphNode();
-            dependentNode.PushSymbolReference(symbol, UpdateNodeType.kSymbol);
+            dependentNode.PushSymbolReference(symbol, UpdateNodeType.Symbol);
             graphNode.PushDependent(dependentNode);
             return dependentNode;
         }
@@ -270,7 +270,7 @@ namespace ProtoAssociative
 
             Validity.Assert(null != subNode.updateNodeRefList[0].nodeList);
             Validity.Assert(subNode.updateNodeRefList[0].nodeList.Count > 0);
-            if (subNode.updateNodeRefList[0].nodeList[0].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.kMethod)
+            if (subNode.updateNodeRefList[0].nodeList[0].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.Method)
             {
                 bool isSSAStatement = ProtoCore.Utils.CoreUtils.IsSSATemp(subNode.updateNodeRefList[0].nodeList[0].symbol.name);
                 if (isSSAStatement)
@@ -4130,7 +4130,7 @@ namespace ProtoAssociative
                 {
                     UpdateNode updateNode = new UpdateNode();
                     updateNode.symbol = symbolnode;
-                    updateNode.nodeType = UpdateNodeType.kSymbol;
+                    updateNode.nodeType = UpdateNodeType.Symbol;
 
                     if (graphNode.isIndexingLHS)
                     {
@@ -7007,7 +7007,7 @@ namespace ProtoAssociative
 
                                     // ... and the first symbol is an instance of a user-defined type
                                     int last = autogenRef.nodeList.Count - 1;
-                                    Validity.Assert(autogenRef.nodeList[last].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.kMethod && null != autogenRef.nodeList[last].symbol);
+                                    Validity.Assert(autogenRef.nodeList[last].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.Method && null != autogenRef.nodeList[last].symbol);
                                     if (autogenRef.nodeList[last].symbol.datatype.UID >= (int)PrimitiveType.kMaxPrimitives)
                                     {
                                         autogenRef.PushUpdateNodeRef(updateRef);
@@ -7028,7 +7028,7 @@ namespace ProtoAssociative
 
                                 // ... and the first symbol is an instance of a user-defined type
                                 int last = autogenRef.nodeList.Count - 1;
-                                Validity.Assert(autogenRef.nodeList[last].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.kMethod && null != autogenRef.nodeList[last].symbol);
+                                Validity.Assert(autogenRef.nodeList[last].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.Method && null != autogenRef.nodeList[last].symbol);
                                 if (autogenRef.nodeList[last].symbol.datatype.UID >= (int)PrimitiveType.kMaxPrimitives)
                                 {
                                     autogenRef.PushUpdateNodeRef(updateRef);
@@ -7086,7 +7086,7 @@ namespace ProtoAssociative
                                 {
                                     ProtoCore.AssociativeGraph.UpdateNode updateNode = new UpdateNode();
                                     updateNode.symbol = symbol;
-                                    updateNode.nodeType = ProtoCore.AssociativeGraph.UpdateNodeType.kSymbol;
+                                    updateNode.nodeType = ProtoCore.AssociativeGraph.UpdateNodeType.Symbol;
 
                                     ProtoCore.AssociativeGraph.UpdateNodeRef argNodeRef = new ProtoCore.AssociativeGraph.UpdateNodeRef();
                                     argNodeRef.PushUpdateNode(updateNode);
@@ -7141,7 +7141,7 @@ namespace ProtoAssociative
                 if (leftNodeRef.nodeList.Count >= 2)
                 {
                     firstSymbol = leftNodeRef.nodeList[0].symbol;
-                    if (null != firstSymbol && leftNodeRef.nodeList[0].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.kMethod)
+                    if (null != firstSymbol && leftNodeRef.nodeList[0].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.Method)
                     {
                         // Now check if the first element of the identifier list is an argument
                         foreach (ProtoCore.DSASM.ArgumentInfo argInfo in localProcedure.ArgumentInfos)
@@ -7221,7 +7221,7 @@ namespace ProtoAssociative
                 bool isLocalVariable = VerifyAllocationInScope(firstSymbol.name, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
                 if (!isLocalVariable)
                 {
-                    if (null != firstSymbol && leftNodeRef.nodeList[0].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.kMethod)
+                    if (null != firstSymbol && leftNodeRef.nodeList[0].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.Method)
                     {
                         if (firstSymbol.functionIndex == ProtoCore.DSASM.Constants.kGlobalScope)
                         {

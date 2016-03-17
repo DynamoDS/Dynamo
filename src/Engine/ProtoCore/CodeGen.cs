@@ -396,7 +396,7 @@ namespace ProtoCore
 
             firstSymbol = nodeRef.nodeList[0].symbol;
 
-            bool isValidNodeRef = null != firstSymbol && nodeRef.nodeList[0].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.kMethod;
+            bool isValidNodeRef = null != firstSymbol && nodeRef.nodeList[0].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.Method;
             if (!isValidNodeRef)
             {
                 return;
@@ -459,7 +459,7 @@ namespace ProtoCore
 
                     ProtoCore.AssociativeGraph.UpdateNode updateNode = new AssociativeGraph.UpdateNode();
                     updateNode.symbol = symbolnode;
-                    updateNode.nodeType = ProtoCore.AssociativeGraph.UpdateNodeType.kSymbol;
+                    updateNode.nodeType = ProtoCore.AssociativeGraph.UpdateNodeType.Symbol;
                     nodeRef.PushUpdateNode(updateNode);
                 }
                 else
@@ -479,7 +479,7 @@ namespace ProtoCore
 
                         ProtoCore.AssociativeGraph.UpdateNode updateNode = new AssociativeGraph.UpdateNode();
                         updateNode.symbol = classSymbol;
-                        updateNode.nodeType = ProtoCore.AssociativeGraph.UpdateNodeType.kSymbol;
+                        updateNode.nodeType = ProtoCore.AssociativeGraph.UpdateNodeType.Symbol;
                         nodeRef.PushUpdateNode(updateNode);
 
                     }
@@ -495,7 +495,7 @@ namespace ProtoCore
 
                             ProtoCore.AssociativeGraph.UpdateNode updateNode = new AssociativeGraph.UpdateNode();
                             updateNode.symbol = symbolnode;
-                            updateNode.nodeType = AssociativeGraph.UpdateNodeType.kSymbol;
+                            updateNode.nodeType = AssociativeGraph.UpdateNodeType.Symbol;
                             nodeRef.PushUpdateNode(updateNode);
                         }
                     }
@@ -533,7 +533,7 @@ namespace ProtoCore
 
                         ProtoCore.AssociativeGraph.UpdateNode updateNode = new AssociativeGraph.UpdateNode();
                         updateNode.symbol = symbolnode;
-                        updateNode.nodeType = AssociativeGraph.UpdateNodeType.kSymbol;
+                        updateNode.nodeType = AssociativeGraph.UpdateNodeType.Symbol;
                         nodeRef.PushUpdateNode(updateNode);
                     }
                 }
@@ -543,7 +543,7 @@ namespace ProtoCore
                     ProcedureNode procNodeDummy = new ProcedureNode();
                     procNodeDummy.Name = functionName;
                     updateNode.procNode = procNodeDummy;
-                    updateNode.nodeType = AssociativeGraph.UpdateNodeType.kMethod;
+                    updateNode.nodeType = AssociativeGraph.UpdateNodeType.Method;
                     nodeRef.PushUpdateNode(updateNode);
                 }
             }
@@ -589,7 +589,7 @@ namespace ProtoCore
 
                     ProtoCore.AssociativeGraph.UpdateNode updateNode = new AssociativeGraph.UpdateNode();
                     updateNode.symbol = symbolnode;
-                    updateNode.nodeType = ProtoCore.AssociativeGraph.UpdateNodeType.kSymbol;
+                    updateNode.nodeType = ProtoCore.AssociativeGraph.UpdateNodeType.Symbol;
                     nodeRef.PushUpdateNode(updateNode);
                 }
                 else
@@ -609,7 +609,7 @@ namespace ProtoCore
 
                         ProtoCore.AssociativeGraph.UpdateNode updateNode = new AssociativeGraph.UpdateNode();
                         updateNode.symbol = classSymbol;
-                        updateNode.nodeType = ProtoCore.AssociativeGraph.UpdateNodeType.kSymbol;
+                        updateNode.nodeType = ProtoCore.AssociativeGraph.UpdateNodeType.Symbol;
                         nodeRef.PushUpdateNode(updateNode);
 
                     }
@@ -625,7 +625,7 @@ namespace ProtoCore
 
                             ProtoCore.AssociativeGraph.UpdateNode updateNode = new AssociativeGraph.UpdateNode();
                             updateNode.symbol = symbolnode;
-                            updateNode.nodeType = AssociativeGraph.UpdateNodeType.kSymbol;
+                            updateNode.nodeType = AssociativeGraph.UpdateNodeType.Symbol;
                             nodeRef.PushUpdateNode(updateNode);
                         }
                     }
@@ -663,7 +663,7 @@ namespace ProtoCore
 
                         ProtoCore.AssociativeGraph.UpdateNode updateNode = new AssociativeGraph.UpdateNode();
                         updateNode.symbol = symbolnode;
-                        updateNode.nodeType = AssociativeGraph.UpdateNodeType.kSymbol;
+                        updateNode.nodeType = AssociativeGraph.UpdateNodeType.Symbol;
                         nodeRef.PushUpdateNode(updateNode);
                     }
                 }
@@ -673,7 +673,7 @@ namespace ProtoCore
                     ProtoCore.DSASM.ProcedureNode procNodeDummy = new DSASM.ProcedureNode();
                     procNodeDummy.Name = functionName;
                     updateNode.procNode = procNodeDummy;
-                    updateNode.nodeType = AssociativeGraph.UpdateNodeType.kMethod;
+                    updateNode.nodeType = AssociativeGraph.UpdateNodeType.Method;
                     nodeRef.PushUpdateNode(updateNode);
                 }
             }
@@ -1751,7 +1751,7 @@ namespace ProtoCore
 
                     AssociativeGraph.UpdateNode intNode = new AssociativeGraph.UpdateNode();
                     intNode.symbol = literalSymbol;
-                    intNode.nodeType = AssociativeGraph.UpdateNodeType.kLiteral;
+                    intNode.nodeType = AssociativeGraph.UpdateNodeType.Literal;
 
                     if (graphNode.isIndexingLHS)
                     {
@@ -1837,7 +1837,7 @@ namespace ProtoCore
 
                 var dimNode = new AssociativeGraph.UpdateNode();
                 dimNode.symbol = literalSymbol;
-                dimNode.nodeType = AssociativeGraph.UpdateNodeType.kLiteral;
+                dimNode.nodeType = AssociativeGraph.UpdateNodeType.Literal;
 
                 graphNode.dimensionNodeList.Add(dimNode);
             }
@@ -1881,7 +1881,7 @@ namespace ProtoCore
 
                     AssociativeGraph.UpdateNode intNode = new AssociativeGraph.UpdateNode();
                     intNode.symbol = literalSymbol;
-                    intNode.nodeType = AssociativeGraph.UpdateNodeType.kLiteral;
+                    intNode.nodeType = AssociativeGraph.UpdateNodeType.Literal;
 
                     if (graphNode.isIndexingLHS)
                     {
