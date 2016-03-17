@@ -14,12 +14,6 @@
             <xsl:apply-templates select="@*|node()"/>
         </xsl:copy>
     </xsl:template>
-
-    <!--<xsl:template match="wix:DirectoryRef[@Id='DYNAMO_INSTALLDIR']/wix:Directory/@Name['Release']">
-        <xsl:attribute name="Name">
-            <xsl:value-of select="'Dynamo'"/>
-        </xsl:attribute>
-    </xsl:template>-->
   
     <!--Exclude *.xml-->
     <xsl:key name="xml-search" match="wix:Component[contains(@Directory, 'INSTALLDIR') and (contains(wix:File/@Source, '.xml') or contains(wix:File/@Source, '.XML')) and not(contains(wix:File/@Source, '_DynamoCustomization.xml') or contains(wix:File/@Source, '.Migrations.xml'))]" use="@Id"/>
@@ -40,6 +34,14 @@
     <!--Exclude binariestosign.txt-->
     <xsl:key name="binariestosign-search" match="wix:Component[contains(wix:File/@Source, 'binariestosign.txt')]" use="@Id"/>
     <xsl:template match="wix:Component[key('binariestosign-search', @Id)]" />
+	
+	<!--Exclude RevitAddinUtility.dll-->
+    <xsl:key name="RevitAddinUtility-search" match="wix:Component[contains(wix:File/@Source, 'RevitAddinUtility.dll')]" use="@Id"/>
+    <xsl:template match="wix:Component[key('RevitAddinUtility-search', @Id)]" />
+	
+	<!--Exclude DynamoAddinGenerator.exe-->
+    <xsl:key name="DynamoAddinGenerator-search" match="wix:Component[contains(wix:File/@Source, 'DynamoAddinGenerator.exe')]" use="@Id"/>
+    <xsl:template match="wix:Component[key('DynamoAddinGenerator-search', @Id)]" />
 
     <!--Exclude DynamoSandbox-->
     <xsl:key name="DynamoSandbox-search" match="wix:Component[contains(wix:File/@Source, 'DynamoSandbox')]" use="@Id"/>
