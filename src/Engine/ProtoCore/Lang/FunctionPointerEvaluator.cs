@@ -117,7 +117,7 @@ namespace ProtoCore.Lang
                                                0,   // depth
                                                framePointer, 
                                                registers, 
-                                               null);
+                                               0);
 
             bool isInDebugMode = runtimeCore.Options.IDEDebugMode &&
                                  runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter;

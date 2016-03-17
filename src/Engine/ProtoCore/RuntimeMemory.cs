@@ -63,7 +63,12 @@ namespace ProtoCore
                 return value;
             }
 
-            public void PushFrame(int size)
+            /// <summary>
+            /// Reserve specified number of stack slots for local variables
+            /// and initialize them to Null.
+            /// </summary>
+            /// <param name="size"></param>
+            public void PushFrameForLocals(int size)
             {
                 for (int n = 0; n < size; ++n)
                 {
@@ -78,38 +83,17 @@ namespace ProtoCore
             public void PushFrameForGlobals(int size)
             {
                 GlobOffset = size;
-                PushFrame(size);
+                PushFrameForLocals(size);
                 startFramePointer = Stack.Count;
             }
 
+            /// <summary>
+            /// Remove the specified number of items from the stack.
+            /// </summary>
+            /// <param name="size"></param>
             public void PopFrame(int size)
             {
-                for (int n = 0; n < size; ++n)
-                {
-                    int last = Stack.Count - 1;
-                    Stack.RemoveAt(last);
-                }
-            }
-
-            public void PushStackFrame(StackValue svThisPtr, int classIndex, int funcIndex, int pc, int functionBlockDecl, int functionBlockCaller, StackFrameType callerType, StackFrameType type, int depth, int fp, List<StackValue> registers, int locsize, int executionStates)
-            {
-                // TODO Jun: Performance
-                // Push frame should only require adjusting the frame index instead of pushing dummy elements
-                PushFrame(locsize);
-                Push(StackValue.BuildInt(fp));
-                PushRegisters(registers);
-                Push(StackValue.BuildInt(executionStates));
-                Push(StackValue.BuildInt(0));
-                Push(StackValue.BuildInt(depth));
-                Push(StackValue.BuildFrameType((int)type));
-                Push(StackValue.BuildFrameType((int)callerType));
-                Push(StackValue.BuildBlockIndex(functionBlockCaller));
-                Push(StackValue.BuildBlockIndex(functionBlockDecl));
-                Push(StackValue.BuildInt(pc));
-                Push(StackValue.BuildFunctionIndex(funcIndex));
-                Push(StackValue.BuildClassIndex(classIndex));
-                Push(svThisPtr);
-                FramePointer = Stack.Count;
+                Stack.RemoveRange(Stack.Count - size, size);
             }
 
             public void PushStackFrame(StackFrame stackFrame)

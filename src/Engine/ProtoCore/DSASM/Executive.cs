@@ -136,21 +136,8 @@ namespace ProtoCore.DSASM
           int locals = 0,
           ProtoCore.DebugServices.EventSink sink = null)
         {
-            StackValue svThisPtr = stackFrame.ThisPtr;
-            int ci = stackFrame.ClassScope;
-            int fi = stackFrame.FunctionScope;
-            int returnAddr = stackFrame.ReturnPC;
-            int blockDecl = stackFrame.FunctionBlock;
-            int blockCaller = stackFrame.FunctionCallerBlock;
-            StackFrameType callerFrameType = stackFrame.CallerStackFrameType;
-            StackFrameType frameType = stackFrame.StackFrameType;
-            Validity.Assert(frameType == StackFrameType.LanguageBlock);
-
-            int depth = stackFrame.Depth;
-            int framePointer = stackFrame.FramePointer;
-            List<StackValue> registers = stackFrame.GetRegisters();
-
-            rmem.PushStackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerFrameType, frameType, depth + 1, framePointer, registers, locals, 0);
+            rmem.PushFrameForLocals(locals);
+            rmem.PushStackFrame(stackFrame);
         }
 
         /// <summary>
@@ -807,21 +794,8 @@ namespace ProtoCore.DSASM
             int currentScopeFunction = Constants.kInvalidIndex;
             GetCallerInformation(out currentScopeClass, out currentScopeFunction);
 
-
             // Handle execution states at the FEP
-            var stackFrame = new StackFrame(svThisPtr, 
-                                            ci, 
-                                            fi, 
-                                            returnAddr, 
-                                            blockDecl,
-                                            runtimeCore.RunningBlock, 
-                                            fepRun ? StackFrameType.Function : StackFrameType.LanguageBlock, 
-                                            StackFrameType.Function, 
-                                            0, 
-                                            rmem.FramePointer, 
-                                            registers, 
-                                            null);
-
+            var stackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, runtimeCore.RunningBlock, fepRun ? StackFrameType.Function : StackFrameType.LanguageBlock, StackFrameType.Function, 0, rmem.FramePointer, registers, 0);
             StackValue sv = StackValue.Null;
 
             if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
@@ -943,18 +917,7 @@ namespace ProtoCore.DSASM
             var registers = new List<StackValue>();
             SaveRegisters(registers);
 
-            var stackFrame = new StackFrame(thisObject,         // thisptr 
-                                            classIndex,         // function class index
-                                            procIndex,          // function index
-                                            pc + 1,             // return address
-                                            0,                  // member function always declared in block 0 */
-                                            runtimeCore.RunningBlock,  // caller block
-                                            fepRun ? StackFrameType.Function : StackFrameType.LanguageBlock,
-                                            StackFrameType.Function,   // frame type
-                                            0,                              // block depth
-                                            rmem.FramePointer,
-                                            registers,
-                                            new List<bool>());
+            var stackFrame = new StackFrame(thisObject, classIndex, procIndex, pc + 1, 0, runtimeCore.RunningBlock, fepRun ? StackFrameType.Function : StackFrameType.LanguageBlock, StackFrameType.Function, 0, rmem.FramePointer, registers, 0);
 
             var callsite = runtimeCore.RuntimeData.GetCallSite(exe.ExecutingGraphnode,
                                             classIndex,
@@ -4316,13 +4279,13 @@ namespace ProtoCore.DSASM
 
                 runtimeCore.DebugProps.SetUpBounce(this, blockCaller, returnAddr);
 
-                StackFrame stackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth + 1, framePointer, registers, null);
+                StackFrame stackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth + 1, framePointer, registers, 0);
                 Language bounceLangauge = exe.instrStreamList[blockId].language;
                 BounceExplicit(blockId, 0, bounceLangauge, stackFrame, runtimeCore.Breakpoints);
             }
             else //if (runtimeCore.Breakpoints == null)
             {
-                StackFrame stackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth + 1, framePointer, registers, null);
+                StackFrame stackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth + 1, framePointer, registers, 0);
 
                 Language bounceLangauge = exe.instrStreamList[blockId].language;
                 BounceExplicit(blockId, 0, bounceLangauge, stackFrame);
@@ -4448,8 +4411,10 @@ namespace ProtoCore.DSASM
             int depth = 0;
 
             StackFrameType type = StackFrameType.Function;
-            rmem.PushStackFrame(svThisPointer, ci, fi, pc + 1, blockDecl, blockCaller, callerType, type, depth, rmem.FramePointer, registers, fNode.LocalCount, 0);
 
+            StackFrame stackFrame = new StackFrame(svThisPointer, ci, fi, pc + 1, blockDecl, blockCaller, callerType, type, depth, rmem.FramePointer, registers, 0);
+            rmem.PushFrameForLocals(fNode.LocalCount);
+            rmem.PushStackFrame(stackFrame);
 
             // Now let's go to the function
             pc = fNode.PC + pcoffset;

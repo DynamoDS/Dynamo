@@ -360,7 +360,7 @@ namespace ProtoCore.Lang
 
                         
                         blockCaller = runtimeCore.DebugProps.CurrentBlockId;
-                        StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, null);
+                        StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, 0);
 
                         ret = interpreter.runtime.Bounce(blockId, 0, bounceStackFrame, 0, false, runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore.Breakpoints);
 
@@ -679,7 +679,7 @@ namespace ProtoCore.Lang
                                                0,
                                                rmem.FramePointer, 
                                                stackFrame.GetRegisters(), 
-                                               null);
+                                               0);
 
             ProtoCore.CallSite callsite = runtimeData.GetCallSite(
                 runtime.exe.ExecutingGraphnode, 

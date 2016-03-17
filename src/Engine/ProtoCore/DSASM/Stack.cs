@@ -84,7 +84,7 @@ namespace ProtoCore.DSASM
             int depth,
             int framePointer,
             List<StackValue> registers,
-            List<bool> execStates)
+            int execStateSize)
         {
             Frame = new StackValue[StackFrameSize];
 
@@ -98,16 +98,6 @@ namespace ProtoCore.DSASM
             Frame[AbsoluteIndex.StackFrameType] = StackValue.BuildFrameType((int)stackFrameType);
             Frame[AbsoluteIndex.StackFrameDepth] = StackValue.BuildInt(depth);
             Frame[AbsoluteIndex.LocalVariableCount] = StackValue.BuildInt(0);
-            int execStateSize = 0;
-            if (null != execStates)
-            {
-                execStateSize = execStates.Count;
-                ExecutionStates = new StackValue[execStateSize];
-                for (int n = 0; n < execStateSize; ++n)
-                {
-                    ExecutionStates[n] = StackValue.BuildBoolean(execStates[n]);
-                }
-            }
             Frame[AbsoluteIndex.ExecutionStates] = StackValue.BuildInt(execStateSize);
             Frame[AbsoluteIndex.AX] = registers[0];
             Frame[AbsoluteIndex.BX] = registers[1];
@@ -134,9 +124,9 @@ namespace ProtoCore.DSASM
             int depth,
             int framePointer,
             List<StackValue> registers,
-            List<bool> execStates) 
+            int executionStateSize) 
         {
-            Init(thisPtr, classIndex, functionIndex, returnAddress, functionBlockIndex, callerBlockIndex, callerStackFrameType, stackFrameType, depth, framePointer, registers, execStates);
+            Init(thisPtr, classIndex, functionIndex, returnAddress, functionBlockIndex, callerBlockIndex, callerStackFrameType, stackFrameType, depth, framePointer, registers, executionStateSize);
         }
 
         public StackFrame(StackValue[] frame)
@@ -158,7 +148,7 @@ namespace ProtoCore.DSASM
                 Constants.kInvalidIndex, 
                 globalOffset,
                 StackValue.BuildInvalidRegisters(), 
-                new List<bool>());
+                0);
         }
 
         public StackValue ThisPtr

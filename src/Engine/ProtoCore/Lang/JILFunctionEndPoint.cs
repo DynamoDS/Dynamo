@@ -130,8 +130,9 @@ namespace ProtoCore.Lang
             Validity.Assert(depth == 0);
             Validity.Assert(type == DSASM.StackFrameType.Function);
 
-            runtimeCore.RuntimeMemory.PushStackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, locals, execStateSize);
-
+            runtimeCore.RuntimeMemory.PushFrameForLocals(locals);
+            StackFrame newStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, execStateSize);
+            runtimeCore.RuntimeMemory.PushStackFrame(newStackFrame);
 
             StackValue svRet;
 
