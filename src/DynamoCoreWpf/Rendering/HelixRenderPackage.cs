@@ -46,7 +46,7 @@ namespace Dynamo.Wpf.Rendering
         private bool hasData;
         private List<int> lineStripVertexCounts;
         private byte[] colors;
-        private System.Windows.Media.Media3D.Transform3D transform;
+        private System.Windows.Media.Media3D.Matrix3D transform;
 
         #endregion
 
@@ -58,7 +58,7 @@ namespace Dynamo.Wpf.Rendering
             lines = InitLineGeometry();
             mesh = InitMeshGeometry();
             lineStripVertexCounts = new List<int>();
-            transform = new System.Windows.Media.Media3D.MatrixTransform3D(System.Windows.Media.Media3D.Matrix3D.Identity);
+            transform = System.Windows.Media.Media3D.Matrix3D.Identity;
         }
 
         #endregion
@@ -72,8 +72,16 @@ namespace Dynamo.Wpf.Rendering
 
         public void SetTransform(ICoordinateSystemEntity transform)
         {
-            transform.XAxis
-            transform = new System.Windows.Media.Media3D.Matrix3D().
+            var xaxis = transform.XAxis;
+            var yaxis = transform.YAxis;
+            var zaxis = transform.ZAxis;
+            var org = transform.Origin;
+
+            var csAsMat = new System.Windows.Media.Media3D.Matrix3D(xaxis.X, xaxis.Y, xaxis.Z, org.X,
+                                                                    yaxis.X, yaxis.X, yaxis.Z, org.Y,
+                                                                    zaxis.X, zaxis.Y, zaxis.Z, org.Z,
+                                                                    0, 0, 0, 1);
+            this.transform = csAsMat;
         }
 
         public void Clear()
@@ -345,6 +353,14 @@ namespace Dynamo.Wpf.Rendering
                     lines.Positions.Count > 0 ||
                     mesh.Positions.Count > 0;
                 return hasData;
+            }
+        }
+
+        public System.Windows.Media.Media3D.Matrix3D Transform
+        {
+            get
+            {
+                return transform;
             }
         }
 

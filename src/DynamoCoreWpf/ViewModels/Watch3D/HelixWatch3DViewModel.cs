@@ -37,6 +37,7 @@ using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
+using System.Windows.Threading;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -1668,14 +1669,20 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private DynamoGeometryModel3D CreateDynamoGeometryModel3D(HelixRenderPackage rp)
         {
-            var meshGeometry3D = new DynamoGeometryModel3D(renderTechnique)
+            DynamoGeometryModel3D meshGeometry3D = null;
+            Dispatcher.CurrentDispatcher.Invoke(() =>
             {
-                Transform = Model1Transform,
-                Material = WhiteMaterial,
-                IsHitTestVisible = false,
-                RequiresPerVertexColoration = rp.RequiresPerVertexColoration,
-                IsSelected = rp.IsSelected
-            };
+                meshGeometry3D = new DynamoGeometryModel3D(renderTechnique)
+                {
+                    Transform = new System.Windows.Media.Media3D.MatrixTransform3D(rp.Transform),
+                    Material = WhiteMaterial,
+                    IsHitTestVisible = false,
+                    RequiresPerVertexColoration = rp.RequiresPerVertexColoration,
+                    IsSelected = rp.IsSelected
+                };
+            }
+            );
+           
 
             if (rp.Colors != null)
             {
