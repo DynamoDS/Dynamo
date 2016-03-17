@@ -104,8 +104,8 @@ namespace ProtoCore.Utils
         {
             if (string.IsNullOrEmpty(mInstallPath))
             {
-                var protoInterface = typeof(Autodesk.DesignScript.Interfaces.IExtensionApplication).Assembly;
-                var uri = new UriBuilder(protoInterface.CodeBase);
+                var protoCore = Assembly.GetExecutingAssembly();
+                var uri = new UriBuilder(protoCore.CodeBase);
                 mInstallPath = Path.GetDirectoryName(Uri.UnescapeDataString(uri.Path));
             }
 
