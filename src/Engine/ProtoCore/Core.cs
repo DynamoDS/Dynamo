@@ -492,7 +492,7 @@ namespace ProtoCore
         {
             Options.ApplyUpdate = false;
 
-            Options.RunMode = InterpreterMode.kNormal;
+            Options.RunMode = InterpreterMode.Normal;
 
             // The main codeblock never goes out of scope
             // Resetting CodeBlockIndex means getting the number of main codeblocks that dont go out of scope.
@@ -594,7 +594,7 @@ namespace ProtoCore
             ModifierStateSubscript = 0;
 
             ExprInterpreterExe = null;
-            Options.RunMode = InterpreterMode.kNormal;
+            Options.RunMode = InterpreterMode.Normal;
 
             assocCodegen = null;
 

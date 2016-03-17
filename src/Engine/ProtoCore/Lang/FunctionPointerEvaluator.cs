@@ -99,7 +99,7 @@ namespace ProtoCore.Lang
             }
 
             var callerType = stackFrame.StackFrameType;
-            interpreter.runtime.TX = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
+            interpreter.runtime.TX = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.Implicit);
 
             StackValue svBlockDecl = StackValue.BuildBlockIndex(blockDecl);
             interpreter.runtime.SX = svBlockDecl;
@@ -120,7 +120,7 @@ namespace ProtoCore.Lang
                                                0);
 
             bool isInDebugMode = runtimeCore.Options.IDEDebugMode &&
-                                 runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter;
+                                 runtimeCore.Options.RunMode != InterpreterMode.Expression;
             if (isInDebugMode)
             {
                 runtimeCore.DebugProps.SetUpCallrForDebug(

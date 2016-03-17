@@ -103,11 +103,11 @@ namespace ProtoCore.Lang
             bool explicitCall = !c.IsReplicating && !c.IsImplicitCall && !isDispose;
             if (explicitCall)
             {
-                svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.CallType.kExplicit);
+                svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.CallType.Explicit);
             }
             else
             {
-                svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.CallType.kImplicit);                
+                svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.CallType.Implicit);                
             }
 
             stackFrame.TX = svCallConvention;

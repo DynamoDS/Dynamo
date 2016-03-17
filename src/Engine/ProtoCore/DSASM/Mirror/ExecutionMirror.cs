@@ -945,7 +945,7 @@ namespace ProtoCore.DSASM.Mirror
 
                         // Comment Jun: Tell the new bounce stackframe that this is an implicit bounce
                         // Register TX is used for this.
-                        stackFrame.TX = StackValue.BuildCallingConversion((int)CallingConvention.BounceType.kImplicit);
+                        stackFrame.TX = StackValue.BuildCallingConversion((int)CallingConvention.BounceType.Implicit);
 
                         runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(
                             codeblock.codeBlockId, 

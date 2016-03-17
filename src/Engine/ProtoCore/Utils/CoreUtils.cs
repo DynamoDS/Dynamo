@@ -9,7 +9,7 @@ namespace ProtoCore.Utils
     {
         public static void InsertPredefinedAndBuiltinMethods(Core core, CodeBlockNode root)
         {
-            if (DSASM.InterpreterMode.kNormal == core.Options.RunMode)
+            if (DSASM.InterpreterMode.Normal == core.Options.RunMode)
             {
                 InsertPredefinedMethod(core, root);
                 InsertBuiltInMethods(core, root);

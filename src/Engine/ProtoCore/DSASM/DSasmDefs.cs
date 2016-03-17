@@ -4,23 +4,23 @@ namespace ProtoCore.DSASM
 {
     public enum InterpreterMode
     {
-        kExpressionInterpreter,
-        kNormal,
+        Expression,
+        Normal,
     }
 
     namespace CallingConvention
     {
         public enum BounceType
         {
-            kExplicit,  // Explicit bounce is using the same executive for the bounce target
-            kImplicit,  // Implicit bounce is using a new executive for the bounce target
+            Explicit,  // Explicit bounce is using the same executive for the bounce target
+            Implicit,  // Implicit bounce is using a new executive for the bounce target
         }
 
         public enum CallType
         {
-            kExplicit,      // Explicit call is using the same executive for the function call
-            kExplicitBase,  // Explicit call to the base class
-            kImplicit,      // Implicit call is using a new executive for the function call
+            Explicit,      // Explicit call is using the same executive for the function call
+            ExplicitBase,  // Explicit call to the base class
+            Implicit,      // Implicit call is using a new executive for the function call
         }
     }
 

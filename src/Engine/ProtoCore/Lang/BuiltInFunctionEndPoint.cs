@@ -350,7 +350,7 @@ namespace ProtoCore.Lang
                         List<StackValue> registers = new List<StackValue>();
 
                         // Comment Jun: Calling convention data is stored on the TX register
-                        StackValue svCallconvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
+                        StackValue svCallconvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.Implicit);
                         interpreter.runtime.TX = svCallconvention;
 
                         interpreter.runtime.SaveRegisters(registers);
@@ -693,7 +693,7 @@ namespace ProtoCore.Lang
 
             // TODO: Disabling support for stepping into replicated function calls temporarily - pratapa
             if (runtimeCore.Options.IDEDebugMode &&
-                runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter &&
+                runtimeCore.Options.RunMode != InterpreterMode.Expression &&
                 procNode != null)
             {
                 runtimeCore.DebugProps.SetUpCallrForDebug(
@@ -718,7 +718,7 @@ namespace ProtoCore.Lang
 
             // Restore debug properties after returning from a CALL/CALLR
             if (runtimeCore.Options.IDEDebugMode &&
-                runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter &&
+                runtimeCore.Options.RunMode != InterpreterMode.Expression &&
                 procNode != null)
             {
                 runtimeCore.DebugProps.RestoreCallrForNoBreak(runtimeCore, procNode);
