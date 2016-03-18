@@ -19,8 +19,7 @@ namespace ProtoCore
             /// <summary>
             ///  The stack value associated with this mirror data
             /// </summary>
-            private StackValue svData;
-
+            private readonly StackValue svData;
 
             //
             // Comment Jun:
@@ -29,34 +28,69 @@ namespace ProtoCore
             //      1. Move the MirrorData properties in the RuntimeMirror class or ...
             //      2. Do the data analysis of the MirrorData in the MirrorData class itself
             //
-            private ProtoCore.Core core;
-            private ProtoCore.RuntimeCore runtimeCore;
+            private readonly ProtoCore.Core core;
+            private readonly ProtoCore.RuntimeCore runtimeCore;
 
             /// <summary>
             /// 
             /// </summary>
-            private static GraphicDataProvider dataProvider = new GraphicDataProvider();
+            private static readonly GraphicDataProvider dataProvider = new GraphicDataProvider();
 
-            /// <summary>
-            /// Experimental constructor that takes in a core object
-            /// Takes a core object to read static data
-            /// </summary>
-            /// <param name="sv"></param>
-            public MirrorData(ProtoCore.Core core, StackValue sv)
-            {
-                this.core = core;
-                svData = sv;
-            }       
-            
             /// <summary>
             /// Takes a runtime core object to read runtime data
             /// </summary>
             /// <param name="sv"></param>
-            public MirrorData(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore, StackValue sv)
+            internal MirrorData(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore, StackValue sv)
             {
                 this.core = core;
                 this.runtimeCore = runtimeCore;
                 svData = sv;
+                IsValid = true;
+                if (sv.IsPointer)
+                {
+                    RegisterCLRObjectDisposeHandler(svData, runtimeCore);
+                }
+            }
+
+            /// <summary>
+            /// Registers the ObjectDisposed event handler with the marshaler if 
+            /// this data is clr/FFI object. 
+            /// </summary>
+            /// <param name="svData">StackValue</param>
+            /// <param name="runtimeCore">RuntimeCore</param>
+            private void RegisterCLRObjectDisposeHandler(StackValue svData, RuntimeCore runtimeCore)
+            {
+                var marshaler = dataProvider.TryGetMarshaler(svData, runtimeCore);
+                if(marshaler != null)
+                    marshaler.ObjectDisposed += OnStackValueDisposed;
+            }
+
+            /// <summary>
+            /// This method marks this object invalid if the stackvalue owned by 
+            /// this MirrorData is disposed.
+            /// </summary>
+            /// <param name="sender">Object marshaler as sender.</param>
+            /// <param name="e">StackValueArgs</param>
+            private void OnStackValueDisposed(object sender, ProtoFFI.StackValueArgs e)
+            {
+                if (!e.Data.IsPointer) //Not a pointer
+                    return;
+
+                if (svData.metaData.type != e.Data.metaData.type) //if the type of class is different, then stack values can never be equal
+                    return;
+
+                if (!Object.ReferenceEquals(this.runtimeCore, e.Core)) //runtime core are not same, so not the same StackValue
+                    return;
+
+                if (svData.Pointer != e.Data.Pointer) //Not the same pointer
+                    return;
+
+                var marshaler = sender as ProtoFFI.FFIObjectMarshler;
+                marshaler.ObjectDisposed -= OnStackValueDisposed;
+                
+                //Reset the clr data and mark it invalid.
+                clrdata = null;
+                IsValid = false;
             }
 
 
@@ -207,6 +241,9 @@ namespace ProtoCore
             {
                 get
                 {
+                    if (!IsValid)
+                        return "Invalid";
+
                     if (object.ReferenceEquals(Data, null) || this.IsNull)
                     {
                         return "null";
@@ -238,7 +275,7 @@ namespace ProtoCore
             {
                 get
                 {
-                    if (null == clrdata)
+                    if (null == clrdata && IsValid)
                         clrdata = GetData(svData, runtimeCore);
 
                     return clrdata;
@@ -294,6 +331,8 @@ namespace ProtoCore
 
                 return StackUtils.CompareStackValues(this.svData, data.svData, this.runtimeCore, data.runtimeCore);
             }
+
+            public bool IsValid { get; private set; }
         }
     }
 }

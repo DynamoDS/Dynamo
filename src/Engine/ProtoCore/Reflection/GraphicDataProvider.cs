@@ -141,7 +141,7 @@ namespace ProtoCore.Mirror
             return null;
         }
 
-        internal object GetCLRObject(StackValue svData, RuntimeCore runtimeCore)
+        internal ProtoFFI.FFIObjectMarshler TryGetMarshaler(StackValue svData, RuntimeCore runtimeCore)
         {
             if (null == runtimeCore.DSExecutable.classTable)
                 return null;
@@ -154,11 +154,19 @@ namespace ProtoCore.Mirror
             if (!classnode.IsImportedClass) //TODO: look at properties to see if it contains any FFI objects.
                 return null;
 
+            var helper = ProtoFFI.DLLFFIHandler.GetModuleHelper(ProtoFFI.FFILanguage.CSharp);
+            return helper.GetMarshaller(runtimeCore);
+        }
+
+        internal object GetCLRObject(StackValue svData, RuntimeCore runtimeCore)
+        {           
             try
             {
+                var marshaler = TryGetMarshaler(svData, runtimeCore);
+                if (marshaler == null)
+                    return null;
+
                 ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore, false);
-                var helper = ProtoFFI.DLLFFIHandler.GetModuleHelper(ProtoFFI.FFILanguage.CSharp);
-                var marshaler = helper.GetMarshaller(runtimeCore);
                 return marshaler.UnMarshal(svData, null, interpreter, typeof(object));
             }
             catch (System.Exception)

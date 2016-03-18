@@ -994,6 +994,7 @@ namespace ProtoFFI
                 {
                     DSObjectMap.Remove(dsObject);
                     CLRObjectMap.Remove(clrobject);
+                    NotifyObjectDisposed(dsObject, dsi.runtime.RuntimeCore);
                 }
             }
         }
@@ -1286,8 +1287,9 @@ namespace ProtoFFI
             //Dispose all disposable CLR objects.
             foreach (var item in DSObjectMap)
             {
-                IDisposable disposable = item.Value as IDisposable;
+                NotifyObjectDisposed(item.Key, sender);
 
+                IDisposable disposable = item.Value as IDisposable;
                 if (null != disposable)
                     disposable.Dispose();
             }
