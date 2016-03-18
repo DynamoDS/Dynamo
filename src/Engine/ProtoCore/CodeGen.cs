@@ -473,7 +473,7 @@ namespace ProtoCore
                         // Comment Jun:
                         // Create a symbol node that contains information about the class type that contains static properties
                         ProtoCore.DSASM.SymbolNode classSymbol = new DSASM.SymbolNode();
-                        classSymbol.memregion = DSASM.MemoryRegion.kMemStatic;
+                        classSymbol.memregion = DSASM.MemoryRegion.MemStatic;
                         classSymbol.name = identnode.Value;
                         classSymbol.classScope = ci;
 
@@ -603,7 +603,7 @@ namespace ProtoCore
                         // Comment Jun:
                         // Create a symbol node that contains information about the class type that contains static properties
                         ProtoCore.DSASM.SymbolNode classSymbol = new DSASM.SymbolNode();
-                        classSymbol.memregion = DSASM.MemoryRegion.kMemStatic;
+                        classSymbol.memregion = DSASM.MemoryRegion.MemStatic;
                         classSymbol.name = identnode.Value;
                         classSymbol.classScope = ci;
 
@@ -688,7 +688,7 @@ namespace ProtoCore
             ref Type finalType, 
             bool isLeftidentList, 
             AssociativeGraph.GraphNode graphNode = null,
-            CompilerDefinitions.Associative.SubCompilePass subPass = CompilerDefinitions.Associative.SubCompilePass.kNone,
+            CompilerDefinitions.Associative.SubCompilePass subPass = CompilerDefinitions.Associative.SubCompilePass.None,
             Node binaryExpNode = null)
         {
             dynamic node = pNode;
@@ -706,7 +706,7 @@ namespace ProtoCore
 
                 if (lefttype.rank > 0)
                 {
-                    lefttype.UID = finalType.UID = (int)PrimitiveType.kTypeNull;
+                    lefttype.UID = finalType.UID = (int)PrimitiveType.Null;
                     EmitPushNull();
                     return false;
                 }
@@ -765,7 +765,7 @@ namespace ProtoCore
                         {
                             string message = String.Format(Resources.kPropertyIsInaccessible, identnode.Value);
                             buildStatus.LogWarning(ProtoCore.BuildData.WarningID.AccessViolation, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
-                            lefttype.UID = finalType.UID = (int)PrimitiveType.kTypeNull;
+                            lefttype.UID = finalType.UID = (int)PrimitiveType.Null;
                             EmitPushNull();
                             return false;
                         }
@@ -781,7 +781,7 @@ namespace ProtoCore
 
                         if (depth == 0)
                         {
-                            lefttype.UID = finalType.UID = (int)PrimitiveType.kTypeNull;
+                            lefttype.UID = finalType.UID = (int)PrimitiveType.Null;
                             EmitPushNull();
                             depth = 1;
                             return false;
@@ -803,7 +803,7 @@ namespace ProtoCore
                             StackValue dynamicOp = StackValue.BuildDynamic(core.DynamicVariableTable.variableTable.Count - 1);
                             EmitPushm(dynamicOp, symbolnode == null ? globalClassIndex : symbolnode.classScope, DSASM.Constants.kInvalidIndex);
 
-                            lefttype.UID = finalType.UID = (int)PrimitiveType.kTypeVar;
+                            lefttype.UID = finalType.UID = (int)PrimitiveType.Var;
                             depth++;
                             return true;
                         }
@@ -930,7 +930,7 @@ namespace ProtoCore
         }
 
 
-        protected int DfsEmitArrayIndexHeap(Node node, AssociativeGraph.GraphNode graphNode = null, ProtoCore.AST.Node parentNode = null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone)
+        protected int DfsEmitArrayIndexHeap(Node node, AssociativeGraph.GraphNode graphNode = null, ProtoCore.AST.Node parentNode = null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None)
         {
             int indexCnt = 0;
             Validity.Assert(node is ProtoCore.AST.AssociativeAST.ArrayNode || node is ProtoCore.AST.ImperativeAST.ArrayNode);
@@ -942,7 +942,7 @@ namespace ProtoCore
             {
                 ++indexCnt;
                 dynamic array = arrayNode;
-                ProtoCore.Type lastType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
+                ProtoCore.Type lastType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
                 DfsTraverse(array.Expr, ref lastType, false, graphNode, subPass, parentNode);
                 arrayNode = array.Type;
             }
@@ -1021,7 +1021,7 @@ namespace ProtoCore
                     }
                 }
 
-                if ((int)ProtoCore.PrimitiveType.kTypeVoid == classScope)
+                if ((int)ProtoCore.PrimitiveType.Void == classScope)
                 {
                     return false;
                 }
@@ -1121,7 +1121,7 @@ namespace ProtoCore
 
             if (classScope != Constants.kGlobalScope)
             {
-                if ((int)ProtoCore.PrimitiveType.kTypeVoid == classScope)
+                if ((int)ProtoCore.PrimitiveType.Void == classScope)
                 {
                     return false;
                 }
@@ -1284,7 +1284,7 @@ namespace ProtoCore
             }
         }
 
-        public abstract ProtoCore.DSASM.ProcedureNode TraverseFunctionCall(Node node, Node parentNode, int lefttype, int depth, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone, ProtoCore.AST.Node bnode = null);
+        public abstract ProtoCore.DSASM.ProcedureNode TraverseFunctionCall(Node node, Node parentNode, int lefttype, int depth, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, ProtoCore.AST.Node bnode = null);
 
         protected void EmitBounceIntrinsic(int blockId, int entry)
         {
@@ -1712,9 +1712,9 @@ namespace ProtoCore
             AppendInstruction(instr, line, col);
         }
 
-        protected void EmitIntNode(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone)
+        protected void EmitIntNode(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None)
         {
-            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier) 
+            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier) 
             {
                 return;
             }
@@ -1733,12 +1733,12 @@ namespace ProtoCore
                 throw new InvalidDataException("The input node is not a IntNode");
             }
 
-            if (!enforceTypeCheck || core.TypeSystem.IsHigherRank((int)PrimitiveType.kTypeInt, inferedType.UID))
+            if (!enforceTypeCheck || core.TypeSystem.IsHigherRank((int)PrimitiveType.Integer, inferedType.UID))
             {
-                inferedType.UID = (int)PrimitiveType.kTypeInt;
+                inferedType.UID = (int)PrimitiveType.Integer;
             }
 
-            inferedType.UID = isBooleanOp ? (int)PrimitiveType.kTypeBool : inferedType.UID;
+            inferedType.UID = isBooleanOp ? (int)PrimitiveType.Bool : inferedType.UID;
             EmitOpWithEmptyAtLevelAndGuides(emitReplicationGuide, StackValue.BuildInt(value), value.ToString(), node);
 
             if (IsAssociativeArrayIndexing)
@@ -1783,19 +1783,19 @@ namespace ProtoCore
             }
         }
 
-        protected void EmitCharNode(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone)
+        protected void EmitCharNode(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None)
         {
-            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier)
+            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier)
             {
                 return;
             }
 
             dynamic cNode = node;
-            if (!enforceTypeCheck || core.TypeSystem.IsHigherRank((int)PrimitiveType.kTypeChar, inferedType.UID))
+            if (!enforceTypeCheck || core.TypeSystem.IsHigherRank((int)PrimitiveType.Char, inferedType.UID))
             {
-                inferedType.UID = (int)PrimitiveType.kTypeChar;
+                inferedType.UID = (int)PrimitiveType.Char;
             }
-            inferedType.UID = isBooleanOp ? (int)PrimitiveType.kTypeBool : inferedType.UID;
+            inferedType.UID = isBooleanOp ? (int)PrimitiveType.Bool : inferedType.UID;
 
             String value = (String)cNode.Value;
             if (value.Length > 1)
@@ -1813,17 +1813,17 @@ namespace ProtoCore
             Node node, 
             ref Type inferedType, 
             AssociativeGraph.GraphNode graphNode = null,
-            ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone)
+            ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None)
         {
-            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier)
+            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier)
             {
                 return;
             }
 
             dynamic sNode = node;
-            if (!enforceTypeCheck || core.TypeSystem.IsHigherRank((int)PrimitiveType.kTypeString, inferedType.UID))
+            if (!enforceTypeCheck || core.TypeSystem.IsHigherRank((int)PrimitiveType.String, inferedType.UID))
             {
-                inferedType.UID = (int)PrimitiveType.kTypeString;
+                inferedType.UID = (int)PrimitiveType.String;
             }
 
             string value = (string)sNode.Value;
@@ -1843,9 +1843,9 @@ namespace ProtoCore
             }
         }
         
-        protected void EmitDoubleNode(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone)
+        protected void EmitDoubleNode(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None)
         {
-            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier)
+            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier)
             {
                 return;
             }
@@ -1864,11 +1864,11 @@ namespace ProtoCore
                 throw new InvalidDataException("The input node is not DoubleNode");
             }
 
-            if (!enforceTypeCheck || core.TypeSystem.IsHigherRank((int)PrimitiveType.kTypeDouble, inferedType.UID))
+            if (!enforceTypeCheck || core.TypeSystem.IsHigherRank((int)PrimitiveType.Double, inferedType.UID))
             {
-                inferedType.UID = (int)PrimitiveType.kTypeDouble;
+                inferedType.UID = (int)PrimitiveType.Double;
             }
-            inferedType.UID = isBooleanOp ? (int)PrimitiveType.kTypeBool : inferedType.UID;
+            inferedType.UID = isBooleanOp ? (int)PrimitiveType.Bool : inferedType.UID;
             EmitOpWithEmptyAtLevelAndGuides(emitReplicationGuide, StackValue.BuildDouble(value), value.ToString(), node);
 
             if (IsAssociativeArrayIndexing)
@@ -1907,9 +1907,9 @@ namespace ProtoCore
             }
         }
 
-        protected void EmitBooleanNode(Node node, ref ProtoCore.Type inferedType, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone)
+        protected void EmitBooleanNode(Node node, ref ProtoCore.Type inferedType, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None)
         {
-            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier)
+            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier)
             {
                 return;
             }
@@ -1929,22 +1929,22 @@ namespace ProtoCore
             }
 
             // We need to get inferedType for boolean variable so that we can perform type check
-            if (enforceTypeCheck || core.TypeSystem.IsHigherRank((int)PrimitiveType.kTypeBool, inferedType.UID))
+            if (enforceTypeCheck || core.TypeSystem.IsHigherRank((int)PrimitiveType.Bool, inferedType.UID))
             {
-                inferedType.UID = (int)PrimitiveType.kTypeBool;
+                inferedType.UID = (int)PrimitiveType.Bool;
             }
 
             EmitOpWithEmptyAtLevelAndGuides(emitReplicationGuide, StackValue.BuildBoolean(value), value.ToString(), node);
         }
 
-        protected void EmitNullNode(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone)
+        protected void EmitNullNode(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None)
         {
-            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier)
+            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier)
             {
                 return;
             }
 
-            inferedType.UID = isBooleanOp ? (int)PrimitiveType.kTypeBool : inferedType.UID;
+            inferedType.UID = isBooleanOp ? (int)PrimitiveType.Bool : inferedType.UID;
             EmitOpWithEmptyAtLevelAndGuides(emitReplicationGuide, StackValue.Null, Literal.Null, node);
         }
 
@@ -1994,12 +1994,12 @@ namespace ProtoCore
         }
 
 
-        protected void EmitExprListNode(Node node, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone, ProtoCore.AST.Node parentNode = null)
+        protected void EmitExprListNode(Node node, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, ProtoCore.AST.Node parentNode = null)
         {
             dynamic exprlist = node;
             int rank = 0;
 
-            if (subPass != ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier)
+            if (subPass != ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier)
             {
                 //get the rank
                 dynamic ltNode = exprlist;
@@ -2018,14 +2018,14 @@ namespace ProtoCore
                 }
             }
 
-            int commonType = (int)PrimitiveType.kTypeVoid;
+            int commonType = (int)PrimitiveType.Void;
             foreach (Node listNode in exprlist.Exprs)
             {
                 bool emitReplicationGuideFlag = emitReplicationGuide;
                 emitReplicationGuide = false;
 
                 DfsTraverse(listNode, ref inferedType, false, graphNode, subPass, parentNode);
-                if ((int)PrimitiveType.kTypeVoid== commonType)
+                if ((int)PrimitiveType.Void== commonType)
                 {
                     commonType = inferedType.UID;
                 }
@@ -2033,7 +2033,7 @@ namespace ProtoCore
                 {
                     if (inferedType.UID != commonType)
                     {
-                        commonType = (int)PrimitiveType.kTypeVar;
+                        commonType = (int)PrimitiveType.Var;
                     }
                 }
 
@@ -2043,7 +2043,7 @@ namespace ProtoCore
             inferedType.UID = commonType;
             inferedType.rank = rank;
 
-            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier)
+            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier)
             {
                 return;
             }
@@ -2187,10 +2187,10 @@ namespace ProtoCore
 
         protected void EmitIdentifierListNode(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, 
             ProtoCore.AssociativeGraph.GraphNode graphNode = null, 
-            ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone, 
+            ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, 
             ProtoCore.AST.Node bnode = null)
         {
-            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier)
+            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier)
             {
                 //to process all unbounded parameters if any
                 dynamic iNode = node;
@@ -2201,8 +2201,8 @@ namespace ProtoCore
                     {
                         foreach (dynamic paramNode in rightNode.FormalArguments)
                         {
-                            ProtoCore.Type paramType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
-                            DfsTraverse(paramNode, ref paramType, false, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier);
+                            ProtoCore.Type paramType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
+                            DfsTraverse(paramNode, ref paramType, false, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier);
                         }
                     }
                     iNode = iNode.LeftNode;
@@ -2212,7 +2212,7 @@ namespace ProtoCore
 
             int depth = 0;
 
-            ProtoCore.Type leftType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kInvalidType, 0);
+            ProtoCore.Type leftType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.InvalidType, 0);
 
             BuildSSADependency(node, graphNode);
             if (core.Options.GenerateSSA)
@@ -2234,13 +2234,13 @@ namespace ProtoCore
             if (!isCollapsed)
             {
                 bool isIdentReference = DfsEmitIdentList(node, null, globalClassIndex, ref leftType, ref depth, ref inferedType, false, graphNode, subPass, bnode);
-                inferedType.UID = isBooleanOp ? (int)PrimitiveType.kTypeBool : inferedType.UID;
+                inferedType.UID = isBooleanOp ? (int)PrimitiveType.Bool : inferedType.UID;
             }
         }
 
-        protected void EmitDefaultArgNode(ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone)
+        protected void EmitDefaultArgNode(ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None)
         {
-            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier)
+            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier)
             {
                 return;
             }
@@ -2248,7 +2248,7 @@ namespace ProtoCore
             EmitPush(StackValue.BuildDefaultArgument());
         }
 
-        protected void EmitPushVarData(int dimensions, int UID = (int)ProtoCore.PrimitiveType.kTypeVar, int rank = 0)
+        protected void EmitPushVarData(int dimensions, int UID = (int)ProtoCore.PrimitiveType.Var, int rank = 0)
         {
             // TODO Jun: Consider adding the block and dimension information in the instruction instead of storing them on the stack
 
@@ -2278,9 +2278,9 @@ namespace ProtoCore
 
       
 
-        protected void EmitDynamicNode(ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone)
+        protected void EmitDynamicNode(ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None)
         {
-            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier)
+            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier)
             {
                 return;
             }
@@ -2290,9 +2290,9 @@ namespace ProtoCore
             EmitPush(op);
         }
 
-        protected void EmitThisPointerNode(ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone)
+        protected void EmitThisPointerNode(ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None)
         {
-            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier)
+            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier)
             {
                 return;
             }
@@ -2434,9 +2434,9 @@ namespace ProtoCore
             ProtoCore.DSASM.CodeBlock cb = codeBlock;
             while (cb != null)
             {
-                if (cb.blockType == ProtoCore.DSASM.CodeBlockType.kFunction)
+                if (cb.blockType == ProtoCore.DSASM.CodeBlockType.Function)
                     return true;
-                else if (cb.blockType == ProtoCore.DSASM.CodeBlockType.kLanguage)
+                else if (cb.blockType == ProtoCore.DSASM.CodeBlockType.Language)
                     return false;
 
                 cb = cb.parent;
@@ -2449,7 +2449,7 @@ namespace ProtoCore
         protected abstract void EmitReturnNull();
 
         protected abstract void DfsTraverse(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null, 
-            ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone, ProtoCore.AST.Node parentNode = null);
+            ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, ProtoCore.AST.Node parentNode = null);
         
         protected static int staticPc;
         static int blk = 0;

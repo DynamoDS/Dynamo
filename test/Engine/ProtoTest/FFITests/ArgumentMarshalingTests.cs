@@ -20,10 +20,10 @@ namespace ProtoFFITests
             thisTest.RunScriptSource(code);
             var methods = thisTest.GetMethods("DummyCollection", "ReturnIList");
             //IList is marshaled as arbitrary rank var array
-            Assert.AreEqual((int)ProtoCore.PrimitiveType.kTypeVar, methods[0].ReturnType.Value.UID);
+            Assert.AreEqual((int)ProtoCore.PrimitiveType.Var, methods[0].ReturnType.Value.UID);
             Assert.AreEqual(Constants.kArbitraryRank, methods[0].ReturnType.Value.rank);
             var args = methods[0].GetArgumentTypes();
-            Assert.AreEqual((int)ProtoCore.PrimitiveType.kTypeInt, args[0].UID);
+            Assert.AreEqual((int)ProtoCore.PrimitiveType.Integer, args[0].UID);
             Assert.AreEqual(1, args[0].rank); //Expecting it tobe marshaled as 1D array
 
             thisTest.Verify("b", new int[] { 1, 2, 3, 4, 5 });
@@ -37,11 +37,11 @@ namespace ProtoFFITests
             thisTest.RunScriptSource(code);
             var methods = thisTest.GetMethods("DummyCollection", "ReturnIEnumerableOfInt");
             //IEnumerable<int> ==> int[]
-            Assert.AreEqual((int)ProtoCore.PrimitiveType.kTypeInt, methods[0].ReturnType.Value.UID);
+            Assert.AreEqual((int)ProtoCore.PrimitiveType.Integer, methods[0].ReturnType.Value.UID);
             Assert.AreEqual(1, methods[0].ReturnType.Value.rank);
 
             var args = methods[0].GetArgumentTypes();
-            Assert.AreEqual((int)ProtoCore.PrimitiveType.kTypeInt, args[0].UID);
+            Assert.AreEqual((int)ProtoCore.PrimitiveType.Integer, args[0].UID);
             Assert.AreEqual(1, args[0].rank); //Expecting it tobe marshaled as 1D array
 
             thisTest.Verify("b", new int[] { 1, 2, 3, 4, 5 });
@@ -55,11 +55,11 @@ namespace ProtoFFITests
             thisTest.RunScriptSource(code);
             var methods = thisTest.GetMethods("DummyCollection", "ReturnIEnumerablOfIList");
             //IEnumerable<IList> ==> var[]..[]
-            Assert.AreEqual((int)ProtoCore.PrimitiveType.kTypeVar, methods[0].ReturnType.Value.UID);
+            Assert.AreEqual((int)ProtoCore.PrimitiveType.Var, methods[0].ReturnType.Value.UID);
             Assert.AreEqual(Constants.kArbitraryRank, methods[0].ReturnType.Value.rank);
 
             var args = methods[0].GetArgumentTypes();
-            Assert.AreEqual((int)ProtoCore.PrimitiveType.kTypeVar, args[0].UID);
+            Assert.AreEqual((int)ProtoCore.PrimitiveType.Var, args[0].UID);
             Assert.AreEqual(Constants.kArbitraryRank, args[0].rank); //Expecting it tobe marshaled as arbitrary dimension array
 
             thisTest.Verify("b", new List<object> { new int[] { 1, 2, 3, 4, 5 }, new int[] { 6, 7, 8, 9, 10 } });
@@ -74,7 +74,7 @@ namespace ProtoFFITests
             var methods = thisTest.GetMethods("DummyCollection", "AcceptIEnumerablOfIList");
             //IEnumerable<IList> ==> var[]..[]
             var args = methods[0].GetArgumentTypes();
-            Assert.AreEqual((int)ProtoCore.PrimitiveType.kTypeVar, args[0].UID);
+            Assert.AreEqual((int)ProtoCore.PrimitiveType.Var, args[0].UID);
             Assert.AreEqual(Constants.kArbitraryRank, args[0].rank); //Expecting it tobe marshaled as arbitrary dimension array
 
             thisTest.Verify("b", new List<object> { new int[] { 1, 2, 3, 4, 5 }, new int[] { 6, 7, 8, 9, 10 } });
@@ -88,11 +88,11 @@ namespace ProtoFFITests
             thisTest.RunScriptSource(code);
             var methods = thisTest.GetMethods("DummyCollection", "ReturnIListOfIListInt");
             //IEnumerable<IList<int>> ==> int[][]
-            Assert.AreEqual((int)ProtoCore.PrimitiveType.kTypeInt, methods[0].ReturnType.Value.UID);
+            Assert.AreEqual((int)ProtoCore.PrimitiveType.Integer, methods[0].ReturnType.Value.UID);
             Assert.AreEqual(2, methods[0].ReturnType.Value.rank);
 
             var args = methods[0].GetArgumentTypes();
-            Assert.AreEqual((int)ProtoCore.PrimitiveType.kTypeInt, args[0].UID);
+            Assert.AreEqual((int)ProtoCore.PrimitiveType.Integer, args[0].UID);
             Assert.AreEqual(2, args[0].rank); //Expecting it tobe marshaled as 2D array
 
             thisTest.Verify("b", new List<object> { new int[] { 1, 2, 3, 4, 5 }, new int[] { 6, 7, 8, 9, 10 } });
@@ -107,7 +107,7 @@ namespace ProtoFFITests
             var methods = thisTest.GetMethods("DummyCollection", "AcceptIEnumerablOfIListInt");
             //IEnumerable<IList<int>> ==> int[][]
             var args = methods[0].GetArgumentTypes();
-            Assert.AreEqual((int)ProtoCore.PrimitiveType.kTypeInt, args[0].UID);
+            Assert.AreEqual((int)ProtoCore.PrimitiveType.Integer, args[0].UID);
             Assert.AreEqual(2, args[0].rank); //Expecting it tobe marshaled as 2D array
 
             thisTest.Verify("b", new List<object> { new int[] { 1, 2, 3, 4, 5 }, new int[] { 6, 7, 8, 9, 10 } });
@@ -121,11 +121,11 @@ namespace ProtoFFITests
             thisTest.RunScriptSource(code);
             var methods = thisTest.GetMethods("DummyCollection", "ReturnListOfList");
             //List<List<int>> ==> int[][]
-            Assert.AreEqual((int)ProtoCore.PrimitiveType.kTypeInt, methods[0].ReturnType.Value.UID);
+            Assert.AreEqual((int)ProtoCore.PrimitiveType.Integer, methods[0].ReturnType.Value.UID);
             Assert.AreEqual(2, methods[0].ReturnType.Value.rank);
 
             var args = methods[0].GetArgumentTypes();
-            Assert.AreEqual((int)ProtoCore.PrimitiveType.kTypeInt, args[0].UID);
+            Assert.AreEqual((int)ProtoCore.PrimitiveType.Integer, args[0].UID);
             Assert.AreEqual(2, args[0].rank); //Expecting it tobe marshaled as 2D array
 
             thisTest.Verify("b", new List<object> { new int[] { 1, 2, 3, 4, 5 }, new int[] { 6, 7, 8, 9, 10 } });
@@ -140,7 +140,7 @@ namespace ProtoFFITests
             var methods = thisTest.GetMethods("DummyCollection", "AcceptListOfList");
             //List<List<int>> ==> int[][]
             var args = methods[0].GetArgumentTypes();
-            Assert.AreEqual((int)ProtoCore.PrimitiveType.kTypeInt, args[0].UID);
+            Assert.AreEqual((int)ProtoCore.PrimitiveType.Integer, args[0].UID);
             Assert.AreEqual(2, args[0].rank); //Expecting it tobe marshaled as 2D array
 
             thisTest.Verify("b", new List<object> { new int[] { 1, 2, 3, 4, 5 }, new int[] { 6, 7, 8, 9, 10 } });
@@ -154,11 +154,11 @@ namespace ProtoFFITests
             thisTest.RunScriptSource(code);
             var methods = thisTest.GetMethods("DummyCollection", "Return3DList");
             //List<List<List<int>>> ==> int[][][]
-            Assert.AreEqual((int)ProtoCore.PrimitiveType.kTypeInt, methods[0].ReturnType.Value.UID);
+            Assert.AreEqual((int)ProtoCore.PrimitiveType.Integer, methods[0].ReturnType.Value.UID);
             Assert.AreEqual(3, methods[0].ReturnType.Value.rank); //Expecting it tobe marshaled as 3D array
 
             var args = methods[0].GetArgumentTypes();
-            Assert.AreEqual((int)ProtoCore.PrimitiveType.kTypeInt, args[0].UID);
+            Assert.AreEqual((int)ProtoCore.PrimitiveType.Integer, args[0].UID);
             Assert.AreEqual(3, args[0].rank); //Expecting it tobe marshaled as 3D array
 
             thisTest.Verify("b", new List<object> { new List<object> { new int[] { 1, 2, 3, 4, 5 } } });
@@ -173,7 +173,7 @@ namespace ProtoFFITests
             var methods = thisTest.GetMethods("DummyCollection", "Accept3DList");
             //List<List<List<int>>> ==> int[][][]
             var args = methods[0].GetArgumentTypes();
-            Assert.AreEqual((int)ProtoCore.PrimitiveType.kTypeInt, args[0].UID);
+            Assert.AreEqual((int)ProtoCore.PrimitiveType.Integer, args[0].UID);
             Assert.AreEqual(3, args[0].rank); //Expecting it tobe marshaled as 3D array
 
             thisTest.Verify("b", new List<object> { new List<object> { new int[] { 1, 2, 3, 4, 5 } } });
@@ -210,7 +210,7 @@ namespace ProtoFFITests
             Assert.IsTrue(ProtoCore.DSASM.Constants.kInvalidIndex != thisTest.GetClassIndex("DummyPoint"));
 
             //object is marshaled as arbitrary rank var array
-            Assert.AreEqual((int)ProtoCore.PrimitiveType.kTypeVar, methods[0].ReturnType.Value.UID);
+            Assert.AreEqual((int)ProtoCore.PrimitiveType.Var, methods[0].ReturnType.Value.UID);
             Assert.AreEqual(Constants.kArbitraryRank, methods[0].ReturnType.Value.rank);
 
             //IEnumerable<DummyPoint> ==> DummyPoint[]
@@ -229,12 +229,12 @@ namespace ProtoFFITests
             thisTest.RunScriptSource(code);
             var methods = thisTest.GetMethods("DummyCollection", "AcceptObjectAsVar");
             //Return object ==> var[]..[]
-            Assert.AreEqual((int)ProtoCore.PrimitiveType.kTypeVar, methods[0].ReturnType.Value.UID);
+            Assert.AreEqual((int)ProtoCore.PrimitiveType.Var, methods[0].ReturnType.Value.UID);
             Assert.AreEqual(Constants.kArbitraryRank, methods[0].ReturnType.Value.rank);
 
             //Arg object ==> var
             var args = methods[0].GetArgumentTypes();
-            Assert.AreEqual((int)ProtoCore.PrimitiveType.kTypeVar, args[0].UID);
+            Assert.AreEqual((int)ProtoCore.PrimitiveType.Var, args[0].UID);
             Assert.AreEqual(0, args[0].rank); //Expecting it tobe marshaled as singleton
 
             thisTest.Verify("c", 5);
@@ -252,7 +252,7 @@ namespace ProtoFFITests
 
             //[ArbitraryDimensionArrayImport] object ==> var[]..[]
             var args = methods[0].GetArgumentTypes();
-            Assert.AreEqual((int)ProtoCore.PrimitiveType.kTypeVar, args[0].UID);
+            Assert.AreEqual((int)ProtoCore.PrimitiveType.Var, args[0].UID);
             Assert.AreEqual(Constants.kArbitraryRank, args[0].rank); //Expecting it tobe marshaled as 3D array
 
             thisTest.Verify("c", 5);
@@ -268,7 +268,7 @@ namespace ProtoFFITests
             var methods = thisTest.GetMethods("DummyCollection", "ReturnIDictionary");
             
             //IDictionary is marshaled as arbitrary rank var array
-            Assert.AreEqual((int)ProtoCore.PrimitiveType.kTypeVar, methods[0].ReturnType.Value.UID);
+            Assert.AreEqual((int)ProtoCore.PrimitiveType.Var, methods[0].ReturnType.Value.UID);
             Assert.AreEqual(Constants.kArbitraryRank, methods[0].ReturnType.Value.rank);
 
             thisTest.Verify("b", new List<object> { new string[] { "A", "B", "C", "D" }, new int[] { 1, 2, 3, 4 } });
@@ -283,7 +283,7 @@ namespace ProtoFFITests
             var methods = thisTest.GetMethods("DummyCollection", "ReturnDictionaryAsObject");
             
             //object is marshaled as arbitrary rank var array
-            Assert.AreEqual((int)ProtoCore.PrimitiveType.kTypeVar, methods[0].ReturnType.Value.UID);
+            Assert.AreEqual((int)ProtoCore.PrimitiveType.Var, methods[0].ReturnType.Value.UID);
             Assert.AreEqual(Constants.kArbitraryRank, methods[0].ReturnType.Value.rank);
 
             thisTest.Verify("b", new List<object> { new string[] { "A", "B", "C", "D" }, new int[] { 1, 2, 3, 4 } });

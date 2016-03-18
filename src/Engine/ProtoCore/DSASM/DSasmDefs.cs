@@ -410,10 +410,8 @@ namespace ProtoCore.DSASM
 
     public enum MemoryRegion
     {
-        kInvalidRegion = -1,
-        kMemStatic,
-        kMemStack,
-        kMemHeap,
-        kMemRegionTypes
+        InvalidRegion = -1,
+        MemStatic,
+        MemStack,
     }
 }

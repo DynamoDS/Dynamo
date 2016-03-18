@@ -56,7 +56,7 @@ namespace Dynamo.Engine.NodeToCode
                 prefix = GetShortName(classNode);
 
                 // Otherwise change class name to its lower case
-                if (String.IsNullOrEmpty(prefix) && (type.UID > (int)ProtoCore.PrimitiveType.kMaxPrimitives))
+                if (String.IsNullOrEmpty(prefix) && (type.UID > (int)ProtoCore.PrimitiveType.MaxPrimitive))
                 {
                     prefix = type.Name;
                     if (!string.IsNullOrEmpty(prefix))

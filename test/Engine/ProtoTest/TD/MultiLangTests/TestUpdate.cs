@@ -210,7 +210,7 @@ d = [ Imperative ]
 e = b;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kCyclicDependency);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.CyclicDependency);
             /*
             Object[] v2 = new Object[] { 3, 4, 5 };
             Object[] v1 = new Object[] { 2, 3, 4 };
@@ -242,7 +242,7 @@ e = c;
 f = d;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kCyclicDependency);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.CyclicDependency);
 
             /*
             thisTest.Verify("d", 3, 0);
@@ -3599,7 +3599,7 @@ c = 10;
 ";
             string errmsg = "MAGN-4094 Runtime Cyclic Dependency not detected";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kCyclicDependency);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.CyclicDependency);
             
         }
 
@@ -6405,7 +6405,7 @@ test = b1.y;
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kCyclicDependency);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.CyclicDependency);
         }
 
         [Test]

@@ -284,7 +284,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                 nickName = inputSymbol;
                 ClearRuntimeError();
 
-                var type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
+                var type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var);
                 AssociativeNode defaultValue = null;
 
                 string comment = null;

@@ -30,7 +30,7 @@ namespace ProtoCore.DSASM
         public SymbolNode()
         {
             name = string.Empty;
-            memregion       = MemoryRegion.kInvalidRegion;
+            memregion       = MemoryRegion.InvalidRegion;
             classScope      = Constants.kInvalidIndex;
             functionIndex   = Constants.kGlobalScope;
             absoluteClassScope = Constants.kGlobalScope;
@@ -47,9 +47,9 @@ namespace ProtoCore.DSASM
             Type enforcedType,
             bool isArgument, 
             int runtimeIndex,
-            MemoryRegion memregion = MemoryRegion.kInvalidRegion, 
+            MemoryRegion memregion = MemoryRegion.InvalidRegion, 
             int scope = -1,
-            CompilerDefinitions.AccessModifier access = CompilerDefinitions.AccessModifier.kPublic,
+            CompilerDefinitions.AccessModifier access = CompilerDefinitions.AccessModifier.Public,
             bool isStatic = false,
             int codeBlockId = Constants.kInvalidIndex)
         {
@@ -93,7 +93,7 @@ namespace ProtoCore.DSASM
             }
 
             staticType = newtype;
-            if (staticType.UID != (int)PrimitiveType.kTypeVar || staticType.rank != 0)
+            if (staticType.UID != (int)PrimitiveType.Var || staticType.rank != 0)
             {
                 datatype = staticType;
             }

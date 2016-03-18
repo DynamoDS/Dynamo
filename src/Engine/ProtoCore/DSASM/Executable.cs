@@ -105,10 +105,9 @@ namespace ProtoCore.DSASM
 
     public enum CodeBlockType
     {
-        kLanguage,
-        kConstruct,
-        kFunction,
-        kTypesMax
+        Language,
+        Construct,
+        Function,
     }
 
     public class CodeBlock

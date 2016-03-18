@@ -1876,7 +1876,7 @@ a = 0;
 b = 0..10..a;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kInvalidArguments);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.InvalidArguments);
             thisTest.VerifyRuntimeWarningCount(1);
             thisTest.Verify("b", null);
         }

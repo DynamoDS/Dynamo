@@ -84,7 +84,7 @@ namespace ProtoAssociative
                     {
                         int tempBlockId = callContext.CurrentBlockId;
                         ProtoCore.DSASM.CodeBlock tempCodeBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(core.CodeBlockList, tempBlockId);
-                        while (null != tempCodeBlock && tempCodeBlock.blockType != ProtoCore.DSASM.CodeBlockType.kLanguage)
+                        while (null != tempCodeBlock && tempCodeBlock.blockType != ProtoCore.DSASM.CodeBlockType.Language)
                         {
                             tempCodeBlock = tempCodeBlock.parent;
                         }

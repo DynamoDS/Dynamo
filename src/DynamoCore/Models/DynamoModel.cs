@@ -1037,7 +1037,7 @@ namespace Dynamo.Models
         private void LogWarningMessage(LogWarningMessageEventArgs args)
         {
             Validity.Assert(EngineController.LiveRunnerRuntimeCore != null);
-            EngineController.LiveRunnerRuntimeCore.RuntimeStatus.LogWarning(WarningID.kDefault, args.message);
+            EngineController.LiveRunnerRuntimeCore.RuntimeStatus.LogWarning(WarningID.Default, args.message);
         }
 
         #endregion

@@ -58,7 +58,7 @@ namespace Dynamo.Engine
             IsVisibleInLibrary = true;
             Parameters = new List<TypedParameter>();
             ReturnKeys = new List<string>();
-            ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
+            ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var);
         }
 
         public string Assembly { get; set; }

@@ -290,7 +290,7 @@ namespace ProtoCore.DSASM.Mirror
                 }
 
                 formatParams.RestoreOutputTraceDepth();
-                if (classtype >= (int)ProtoCore.PrimitiveType.kMaxPrimitives)
+                if (classtype >= (int)ProtoCore.PrimitiveType.MaxPrimitive)
                     if (forPrint)
                         return (string.Format("{0}{{{1}}}", classnode.Name, classtrace.ToString()));
                     else
@@ -1097,7 +1097,7 @@ namespace ProtoCore.DSASM.Mirror
         /// </summary>
         /// <param name="val"></param>
         /// <returns></returns>
-        public static Obj Unpack(StackValue val, Heap heap, RuntimeCore runtimeCore, int type = (int)PrimitiveType.kTypePointer) 
+        public static Obj Unpack(StackValue val, Heap heap, RuntimeCore runtimeCore, int type = (int)PrimitiveType.Pointer) 
         {
             Executable exe = runtimeCore.DSExecutable;
             switch (val.optype)
@@ -1126,7 +1126,7 @@ namespace ProtoCore.DSASM.Mirror
                             Type = exe.TypeSystem.BuildTypeObject(
                                         (ret.members.Length > 0)
                                         ? exe.TypeSystem.GetType(ret.members[0].Type.Name) 
-                                        : (int)ProtoCore.PrimitiveType.kTypeVoid, Constants.kArbitraryRank) 
+                                        : (int)ProtoCore.PrimitiveType.Void, Constants.kArbitraryRank) 
                         };
 
                         return retO;
@@ -1137,7 +1137,7 @@ namespace ProtoCore.DSASM.Mirror
                         Obj o = new Obj(val)
                         {
                             Payload = str,
-                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0)
+                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.String, 0)
                         };
                         return o;
                     }
@@ -1146,7 +1146,7 @@ namespace ProtoCore.DSASM.Mirror
                         Obj o = new Obj(val) 
                         { 
                             Payload = val.IntegerValue, 
-                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0) 
+                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Integer, 0) 
                         };
                         return o;
                     }
@@ -1155,7 +1155,7 @@ namespace ProtoCore.DSASM.Mirror
                         Obj o = new Obj(val)
                         {
                             Payload = val.BooleanValue,
-                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0) 
+                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0) 
                         };
                         return o;
                     }
@@ -1165,7 +1165,7 @@ namespace ProtoCore.DSASM.Mirror
                         Obj o = new Obj(val) 
                         { 
                             Payload = null, 
-                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeNull, 0) 
+                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Null, 0) 
                         };
                         return o;
                     }
@@ -1174,7 +1174,7 @@ namespace ProtoCore.DSASM.Mirror
                         Obj o = new Obj(val) 
                         {
                             Payload = val.CharValue, 
-                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeChar, 0) 
+                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Char, 0) 
                         };
                         return o;
                     }
@@ -1183,7 +1183,7 @@ namespace ProtoCore.DSASM.Mirror
                         Obj o = new Obj(val) 
                         { 
                             Payload = val.DoubleValue,
-                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0) 
+                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, 0) 
                         };
                         return o;
                     }
@@ -1201,7 +1201,7 @@ namespace ProtoCore.DSASM.Mirror
                         Obj o = new Obj(val) 
                         { 
                             Payload = val.FunctionPointer, 
-                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeFunctionPointer, 0) 
+                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.FunctionPointer, 0) 
                         };
                         return o;
                     }
@@ -1240,7 +1240,7 @@ namespace ProtoCore.DSASM.Mirror
                         Obj retO = new Obj(val) 
                         { 
                             Payload = ret,
-                            Type = exe.TypeSystem.BuildTypeObject((ret.members.Length > 0) ? exe.TypeSystem.GetType(ret.members[0].Type.Name) : (int)ProtoCore.PrimitiveType.kTypeVar, Constants.kArbitraryRank)
+                            Type = exe.TypeSystem.BuildTypeObject((ret.members.Length > 0) ? exe.TypeSystem.GetType(ret.members[0].Type.Name) : (int)ProtoCore.PrimitiveType.Var, Constants.kArbitraryRank)
                         };
 
                         return retO;
@@ -1251,7 +1251,7 @@ namespace ProtoCore.DSASM.Mirror
                         Obj o = new Obj(val) 
                         { 
                             Payload = data, 
-                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0) 
+                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Integer, 0) 
                         };
                         return o;
                     }
@@ -1260,7 +1260,7 @@ namespace ProtoCore.DSASM.Mirror
                         Obj o = new Obj(val)
                         {
                             Payload = val.BooleanValue,
-                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0) 
+                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0) 
                         };
                         return o;
                     }
@@ -1269,7 +1269,7 @@ namespace ProtoCore.DSASM.Mirror
                         Obj o = new Obj(val) 
                         { 
                             Payload = null, 
-                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeNull, 0) 
+                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Null, 0) 
                         };
                         return o;
                     }
@@ -1279,7 +1279,7 @@ namespace ProtoCore.DSASM.Mirror
                         Obj o = new Obj(val) 
                         { 
                             Payload = data, 
-                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0) 
+                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, 0) 
                         };
                         return o;
                     }
@@ -1289,7 +1289,7 @@ namespace ProtoCore.DSASM.Mirror
                         Obj o = new Obj(val) 
                         { 
                             Payload = data, 
-                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeChar, 0) 
+                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Char, 0) 
                         };
                         return o;
                     }
@@ -1308,7 +1308,7 @@ namespace ProtoCore.DSASM.Mirror
                         Obj o = new Obj(val) 
                         { 
                             Payload = null, 
-                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0) 
+                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0) 
                         };
                         return o;
                     }
@@ -1318,7 +1318,7 @@ namespace ProtoCore.DSASM.Mirror
                         Obj o = new Obj(val) 
                         { 
                             Payload = data, 
-                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeFunctionPointer, 0) 
+                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.FunctionPointer, 0) 
                         };
                         return o;
                     }
@@ -1346,7 +1346,7 @@ namespace ProtoCore.DSASM.Mirror
                     obj = new Obj(val) 
                     { 
                         Payload = val.Pointer, 
-                        Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypePointer, 0) 
+                        Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Pointer, 0) 
                     };
                     break;
                 case AddressType.ArrayPointer:
@@ -1354,56 +1354,56 @@ namespace ProtoCore.DSASM.Mirror
                     { 
                         Payload = val.ArrayPointer, 
                         Type =
-                        TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeArray, Constants.kArbitraryRank)
+                        TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Array, Constants.kArbitraryRank)
                     };
                     break;
                 case AddressType.Int:
                     obj = new Obj(val) 
                     { 
                         Payload = val.IntegerValue, 
-                        Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0) 
+                        Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Integer, 0) 
                     };
                     break;
                 case AddressType.Boolean:
                     obj = new Obj(val)
                     {
                         Payload = val.BooleanValue,
-                        Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0) 
+                        Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0) 
                     };
                     break;
                 case AddressType.Double:
                     obj = new Obj(val) 
                     { 
                         Payload = val.DoubleValue, 
-                        Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0) 
+                        Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, 0) 
                     };
                     break;
                 case AddressType.Null:
                     obj = new Obj(val) 
                     { 
                         Payload = null, 
-                        Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeNull, 0) 
+                        Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Null, 0) 
                     };
                     break;
                 case AddressType.FunctionPointer:
                     obj = new Obj(val) 
                     { 
                         Payload = val.FunctionPointer, 
-                        Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeFunctionPointer, 0) 
+                        Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.FunctionPointer, 0) 
                     };
                     break;
                 case AddressType.String:
                     obj = new Obj(val) 
                     { 
                         Payload = val.StringPointer, 
-                        Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, Constants.kPrimitiveSize) 
+                        Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.String, Constants.kPrimitiveSize) 
                     };
                     break;
                 case AddressType.Char:
                     obj = new Obj(val) 
                     { 
                         Payload = val.CharValue, 
-                        Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeChar, 0) 
+                        Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Char, 0) 
                     };
                     break;
             }

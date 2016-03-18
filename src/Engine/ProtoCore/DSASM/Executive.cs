@@ -626,7 +626,7 @@ namespace ProtoCore.DSASM
                 if (depth > 0 && fNode.IsConstructor)
                 {
                     string message = String.Format(Resources.KCallingConstructorOnInstance, fNode.Name);
-                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kCallingConstructorOnInstance, message);
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.CallingConstructorOnInstance, message);
                     return StackValue.Null;
                 }
             }
@@ -697,7 +697,7 @@ namespace ProtoCore.DSASM
                 if (!svThisPtr.IsPointer)
                 {
                     string message = String.Format(Resources.kInvokeMethodOnInvalidObject, fNode.Name);
-                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer, message);
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.DereferencingNonPointer, message);
                     return StackValue.Null;
                 }
             }
@@ -884,7 +884,7 @@ namespace ProtoCore.DSASM
 
             if (!isValidThisPointer || (!thisObject.IsPointer && !thisObject.IsArray))
             {
-                runtimeCore.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer,
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.DereferencingNonPointer,
                                               Resources.kDeferencingNonPointer);
                 return StackValue.Null;
             }
@@ -1287,7 +1287,7 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            runtimeCore.RuntimeStatus.LogWarning(WarningID.kCyclicDependency, Resources.kCyclicDependency);
+            runtimeCore.RuntimeStatus.LogWarning(WarningID.CyclicDependency, Resources.kCyclicDependency);
             foreach (AssociativeGraph.GraphNode node in nodeIterations)
             {
                 node.isCyclic = true;
@@ -2598,7 +2598,7 @@ namespace ProtoCore.DSASM
             StackValue ret = StackValue.Null;
             if (value.IsArray)
             {
-                if (t.UID != (int)PrimitiveType.kTypeVar || t.rank >= 0)
+                if (t.UID != (int)PrimitiveType.Var || t.rank >= 0)
                 {
                     int lhsRepCount = 0;
                     foreach (var dim in dimlist)
@@ -2616,7 +2616,7 @@ namespace ProtoCore.DSASM
 
                         if (t.rank < 0)
                         {
-                            runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.IndexIntoNonArrayObject);
+                            runtimeCore.RuntimeStatus.LogWarning(WarningID.OverIndexing, Resources.IndexIntoNonArrayObject);
                         }
                     }
 
@@ -2626,7 +2626,7 @@ namespace ProtoCore.DSASM
             }
             else if (value.IsString)
             {
-                runtimeCore.RuntimeStatus.LogWarning(WarningID.kInvalidIndexing, Resources.kStringIndexingCannotBeAssigned);
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.InvalidIndexing, Resources.kStringIndexingCannotBeAssigned);
                 ret = StackValue.Null;
             }
             else
@@ -2747,7 +2747,7 @@ namespace ProtoCore.DSASM
                     return thisArray;
                 }
 
-                runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.IndexIntoNonArrayObject);
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.OverIndexing, Resources.IndexIntoNonArrayObject);
                 return StackValue.Null;
             }
 
@@ -2758,7 +2758,7 @@ namespace ProtoCore.DSASM
             }
             catch (ArgumentOutOfRangeException)
             {
-                runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.IndexIntoNonArrayObject);
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.OverIndexing, Resources.IndexIntoNonArrayObject);
                 return StackValue.Null;
             }
 
@@ -2790,7 +2790,7 @@ namespace ProtoCore.DSASM
                     return thisArray;
                 }
 
-                runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.IndexIntoNonArrayObject);
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.OverIndexing, Resources.IndexIntoNonArrayObject);
                 return StackValue.Null;
             }
 
@@ -2808,7 +2808,7 @@ namespace ProtoCore.DSASM
             }
             catch (ArgumentOutOfRangeException)
             {
-                runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.IndexIntoNonArrayObject);
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.OverIndexing, Resources.IndexIntoNonArrayObject);
                 return StackValue.Null;
             }
 
@@ -2871,7 +2871,7 @@ namespace ProtoCore.DSASM
             {
                 // check whether it is function pointer, this checking is done at runtime to handle the case
                 // when turning on converting dot operator to function call
-                if (!((int)PrimitiveType.kTypeVoid == type || Constants.kInvalidIndex == type || exe.classTable.ClassNodes[type].Symbols == null))
+                if (!((int)PrimitiveType.Void == type || Constants.kInvalidIndex == type || exe.classTable.ClassNodes[type].Symbols == null))
                 {
                     bool hasThisSymbol;
                     AddressType addressType;
@@ -2976,12 +2976,12 @@ namespace ProtoCore.DSASM
                         {
                             string classname = exe.classTable.ClassNodes[type].Name;
                             string message = String.Format(Resources.kPropertyOfClassNotFound, property, classname);
-                            runtimeCore.RuntimeStatus.LogWarning(WarningID.kMethodResolutionFailure, message);
+                            runtimeCore.RuntimeStatus.LogWarning(WarningID.MethodResolutionFailure, message);
                         }
                         else
                         {
                             string message = String.Format(Resources.kMethodResolutionFailure, procName);
-                            runtimeCore.RuntimeStatus.LogWarning(WarningID.kMethodResolutionFailure, message);
+                            runtimeCore.RuntimeStatus.LogWarning(WarningID.MethodResolutionFailure, message);
                         }
                     }
                     else
@@ -3076,7 +3076,7 @@ namespace ProtoCore.DSASM
         {
             foreach (CodeBlock cb in exe.CompleteCodeBlocks[blockId].children)
             {
-                if (cb.blockType == CodeBlockType.kConstruct)
+                if (cb.blockType == CodeBlockType.Construct)
                     GCCodeBlock(cb.codeBlockId, functionIndex, classIndex);
             }
         }
@@ -3451,7 +3451,7 @@ namespace ProtoCore.DSASM
         {
             dimensions = 0;
             blockId = Constants.kInvalidIndex;
-            int staticType = (int)PrimitiveType.kTypeVar;
+            int staticType = (int)PrimitiveType.Var;
             int rank = Constants.kArbitraryRank;
             bool objectIndexing = false;
 
@@ -3545,7 +3545,7 @@ namespace ProtoCore.DSASM
         {
             int dimensions = 0;
             int blockId = Constants.kInvalidIndex;
-            int staticType = (int)PrimitiveType.kTypeVar;
+            int staticType = (int)PrimitiveType.Var;
             int rank = Constants.kArbitraryRank;
             if (instruction.op1.IsVariableIndex ||
                 instruction.op1.IsPointer ||
@@ -3648,8 +3648,8 @@ namespace ProtoCore.DSASM
             var thisObject = rmem.Heap.ToHeapObject<DSObject>(svThis);
             StackValue svProperty = thisObject.GetValueFromIndex(stackIndex, runtimeCore);
 
-            Type targetType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
-            if (staticType != (int)PrimitiveType.kTypeFunctionPointer)
+            Type targetType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var);
+            if (staticType != (int)PrimitiveType.FunctionPointer)
             {
                 if (dimensions == 0)
                 {
@@ -3663,7 +3663,7 @@ namespace ProtoCore.DSASM
 
                     if (svProperty.IsArray)
                     {
-                        if (targetType.UID != (int)PrimitiveType.kTypeVar || targetType.rank >= 0)
+                        if (targetType.UID != (int)PrimitiveType.Var || targetType.rank >= 0)
                         {
                             int lhsRepCount = 0;
                             foreach (var dim in dimList)
@@ -3681,7 +3681,7 @@ namespace ProtoCore.DSASM
 
                                 if (targetType.rank < 0)
                                 {
-                                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.IndexIntoNonArrayObject);
+                                    runtimeCore.RuntimeStatus.LogWarning(WarningID.OverIndexing, Resources.IndexIntoNonArrayObject);
                                 }
                             }
 
@@ -3858,7 +3858,7 @@ namespace ProtoCore.DSASM
                     long rhs = opdata1.IntegerValue;
                     if (rhs == 0)
                     {
-                        runtimeCore.RuntimeStatus.LogWarning(WarningID.kModuloByZero, Resources.ModuloByZero);
+                        runtimeCore.RuntimeStatus.LogWarning(WarningID.ModuloByZero, Resources.ModuloByZero);
                         opdata2 = StackValue.Null;
                     }
                     else
@@ -4472,7 +4472,7 @@ namespace ProtoCore.DSASM
                 }
                 catch (ReplicationCaseNotCurrentlySupported e)
                 {
-                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kReplicationWarning, e.Message);
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.ReplicationWarning, e.Message);
                     RX = StackValue.Null;
                 }
             }
@@ -4575,7 +4575,7 @@ namespace ProtoCore.DSASM
             int blockId = op1.BlockIndex;
 
             CodeBlock codeBlock = exe.CompleteCodeBlocks[blockId];
-            runtimeVerify(codeBlock.blockType == CodeBlockType.kConstruct);
+            runtimeVerify(codeBlock.blockType == CodeBlockType.Construct);
             GCCodeBlock(blockId);
             pc++;
         }

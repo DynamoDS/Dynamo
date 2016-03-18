@@ -1134,8 +1134,8 @@ namespace ProtoCore.AssociativeGraph
 
 
                         bothSymbolsStatic =
-                            modifiedRef.nodeList[0].symbol.memregion == MemoryRegion.kMemStatic
-                            && depNodeRef.nodeList[0].symbol.memregion == MemoryRegion.kMemStatic
+                            modifiedRef.nodeList[0].symbol.memregion == MemoryRegion.MemStatic
+                            && depNodeRef.nodeList[0].symbol.memregion == MemoryRegion.MemStatic
                             && modifiedRef.nodeList[0].symbol.name == depNodeRef.nodeList[0].symbol.name;
 
                         // Check further if their array index match in literal values
@@ -1291,8 +1291,8 @@ namespace ProtoCore.AssociativeGraph
                         {
                             bothSymbolsMatch = modifiedRef.nodeList[m].symbol.Equals(depNodeRef.nodeList[m].symbol);
                             bothSymbolsStatic =
-                                modifiedRef.nodeList[m].symbol.memregion == MemoryRegion.kMemStatic
-                                && depNodeRef.nodeList[m].symbol.memregion == MemoryRegion.kMemStatic
+                                modifiedRef.nodeList[m].symbol.memregion == MemoryRegion.MemStatic
+                                && depNodeRef.nodeList[m].symbol.memregion == MemoryRegion.MemStatic
                                 && modifiedRef.nodeList[m].symbol.name == depNodeRef.nodeList[m].symbol.name;
 
                             // Check further if their array index match in literal values

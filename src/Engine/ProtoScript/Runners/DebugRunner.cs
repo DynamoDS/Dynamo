@@ -214,7 +214,7 @@ namespace ProtoScript.Runners
             try
             {
                 if (executionsuspended)
-                    runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionResume);
+                    runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.ExecutionResume);
 
                 Execute(runtimeCore.DebugProps.DebugEntryPC, breakPoints);
                 isEnded = true; // the script has ended smoothly, 
@@ -224,7 +224,7 @@ namespace ProtoScript.Runners
                 if (runtimeCore.CurrentExecutive == null) //This was before the VM was properly started
                     return null;
                 currentInstr = GetCurrentInstruction(); // set the current instruction to the current breakpoint instruction
-                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBreak);
+                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.ExecutionBreak);
                 executionsuspended = true;
             }
             catch (ProtoCore.Exceptions.EndOfScript)
@@ -265,7 +265,7 @@ namespace ProtoScript.Runners
             { }
 
             //Drop the VM state objects so they can be GCed
-            runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
+            runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.ExecutionEnd);
             lastState = null;
             core = null;
 

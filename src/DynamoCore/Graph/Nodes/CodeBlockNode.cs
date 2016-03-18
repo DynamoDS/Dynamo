@@ -407,7 +407,7 @@ namespace Dynamo.Graph.Nodes
         /// <returns></returns>
         public override ProtoCore.Type GetTypeHintForOutput(int index)
         {
-            ProtoCore.Type type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
+            ProtoCore.Type type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var);
             var statement = GetStatementForOutput(index);
             if (statement == null)
                 return type;
@@ -451,13 +451,13 @@ namespace Dynamo.Graph.Nodes
                 }
             }
             else if (expr.RightNode is IntNode)
-                return TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt);
+                return TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Integer);
             else if (expr.RightNode is StringNode)
-                return TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString);
+                return TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.String);
             else if (expr.RightNode is DoubleNode)
-                return TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble);
+                return TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double);
             else if (expr.RightNode is StringNode)
-                return TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString);
+                return TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.String);
 
             return type;
         }

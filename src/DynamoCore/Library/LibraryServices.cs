@@ -688,13 +688,13 @@ namespace Dynamo.Engine
 
         private static IEnumerable<TypedParameter> GetBinaryFuncArgs()
         {
-            yield return new TypedParameter("x", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar));
-            yield return new TypedParameter("y", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar));
+            yield return new TypedParameter("x", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var));
+            yield return new TypedParameter("y", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var));
         }
 
         private static IEnumerable<TypedParameter> GetUnaryFuncArgs()
         {
-            return new List<TypedParameter> { new TypedParameter("x", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar)), };
+            return new List<TypedParameter> { new TypedParameter("x", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var)), };
         }
 
         /// <summary>

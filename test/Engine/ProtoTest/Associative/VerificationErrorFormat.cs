@@ -45,7 +45,7 @@ a = 2 % 0;
 b = 2.1 % 0;
 ";
 
-            thisTest.RunAndVerifyRuntimeWarning(code, ProtoCore.Runtime.WarningID.kModuloByZero);
+            thisTest.RunAndVerifyRuntimeWarning(code, ProtoCore.Runtime.WarningID.ModuloByZero);
         }
 
         [Test]

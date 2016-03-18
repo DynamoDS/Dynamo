@@ -476,7 +476,7 @@ namespace Dynamo.Engine.CodeGeneration
                 functionBody.Body.Add(AstFactory.BuildReturnStatement(returnValue));
             }
 
-            Type allTypes = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
+            Type allTypes = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var);
 
             //Create a new function definition
             var functionDef = new FunctionDefinitionNode

@@ -664,7 +664,7 @@ namespace ProtoCore
             //Minimal sanity check
             foreach (StackValue sv in arguments)
             {
-                Validity.Assert(sv.metaData.type != (int)PrimitiveType.kInvalidType,
+                Validity.Assert(sv.metaData.type != (int)PrimitiveType.InvalidType,
                                 "Invalid object passed to JILDispatch");
 
                 Validity.Assert(!sv.IsInvalid,
@@ -1124,7 +1124,7 @@ namespace ProtoCore
 
                 possibleFuncs.AppendLine(string.Format(Resources.ErrorCode, "{DCE486C0-0975-49F9-BE2C-2E7D8CCD17DD}"));
 
-                runtimeCore.RuntimeStatus.LogWarning(WarningID.kAmbiguousMethodDispatch, possibleFuncs.ToString());
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.AmbiguousMethodDispatch, possibleFuncs.ToString());
             }
 
             return feps[0];
@@ -1266,7 +1266,7 @@ namespace ProtoCore
                     //@TODO(Luke): Is this value for allow array promotion correct?
                     int distance = fep.ComputeTypeDistance(formalParameters, runtimeCore.DSExecutable.classTable, runtimeCore, false);
                     if (distance !=
-                        (int) ProcedureDistance.kInvalidDistance)
+                        (int) ProcedureDistance.InvalidDistance)
                         candidatesWithDistances.Add(fep, distance);
                 }
 
@@ -1280,7 +1280,7 @@ namespace ProtoCore
 
                 if (candidateFunctions.Count == 0)
                 {
-                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kAmbiguousMethodDispatch,
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.AmbiguousMethodDispatch,
                                                   Resources.kAmbigousMethodDispatch);
                     return null;
                 }
@@ -1745,7 +1745,7 @@ namespace ProtoCore
 
             if (functionEndPoint == null)
             {
-                runtimeCore.RuntimeStatus.LogWarning(WarningID.kMethodResolutionFailure, 
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.MethodResolutionFailure, 
                     string.Format(Resources.FunctionDispatchFailed, "{2EB39E1B-557C-4819-94D8-CF7C9F933E8A}"));
                 return StackValue.Null;
             }
@@ -1889,7 +1889,7 @@ namespace ProtoCore
 
             Type retType = procNode.ReturnType;
 
-            if (retType.UID == (int) PrimitiveType.kTypeVar)
+            if (retType.UID == (int) PrimitiveType.Var)
             {
                 if (retType.rank < 0)
                 {
@@ -1934,7 +1934,7 @@ namespace ProtoCore
             else
             { 
                 //@TODO(Luke): log no-type coercion possible warning
-                runtimeCore.RuntimeStatus.LogWarning(WarningID.kConversionNotPossible,
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.ConversionNotPossible,
                                               Resources.kConvertNonConvertibleTypes);
                 return StackValue.Null;
             }
