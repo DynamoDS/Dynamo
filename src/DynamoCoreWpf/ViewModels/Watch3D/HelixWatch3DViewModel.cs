@@ -267,8 +267,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public PhongMaterial SelectedMaterial { get; set; }
 
-        public Transform3D Model1Transform { get; private set; }
-
+        public Transform3D StaticTransform
+        {
+            get
+            {
+                return new TranslateTransform3D(0, -0, 0);
+            }
+        }
         public RenderTechnique RenderTechnique
         {
             get
@@ -1039,8 +1044,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 SpecularShininess = 12.8f,
             };
 
-            Model1Transform = new TranslateTransform3D(0, -0, 0);
-
             // camera setup
             Camera = new PerspectiveCamera();
 
@@ -1076,7 +1079,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             gridModel3D = new DynamoLineGeometryModel3D
             {
                 Geometry = Grid,
-                Transform = Model1Transform,
+                Transform = StaticTransform,
                 Color = Color.White,
                 Thickness = 0.3,
                 IsHitTestVisible = false,
@@ -1093,7 +1096,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var axesModel3D = new DynamoLineGeometryModel3D
             {
                 Geometry = Axes,
-                Transform = Model1Transform,
+                Transform = StaticTransform,
                 Color = Color.White,
                 Thickness = 0.3,
                 IsHitTestVisible = false,
@@ -1674,7 +1677,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 meshGeometry3D = new DynamoGeometryModel3D(renderTechnique)
                 {
-                    Transform = new System.Windows.Media.Media3D.MatrixTransform3D(rp.Transform),
+                    Transform = new MatrixTransform3D(rp.Transform),
                     Material = WhiteMaterial,
                     IsHitTestVisible = false,
                     RequiresPerVertexColoration = rp.RequiresPerVertexColoration,
@@ -1719,7 +1722,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var lineGeometry3D = new DynamoLineGeometryModel3D()
             {
                 Geometry = HelixRenderPackage.InitLineGeometry(),
-                Transform = Model1Transform,
+                Transform = new MatrixTransform3D(rp.Transform),
                 Color = Color.White,
                 Thickness = thickness,
                 IsHitTestVisible = false,
@@ -1733,7 +1736,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var pointGeometry3D = new DynamoPointGeometryModel3D
             {
                 Geometry = HelixRenderPackage.InitPointGeometry(),
-                Transform = Model1Transform,
+                Transform = new MatrixTransform3D(rp.Transform),
                 Color = Color.White,
                 Figure = PointGeometryModel3D.PointFigure.Ellipse,
                 Size = defaultPointSize,
