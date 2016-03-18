@@ -87,9 +87,30 @@ namespace Dynamo.Wpf.Rendering
                                                                     org.X, org.Z,-org.Y, 1);
             this.transform = csAsMat;
         }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        public void SetTransform(Autodesk.DesignScript.Geometry.CoordinateSystem from, Autodesk.DesignScript.Geometry.CoordinateSystem to)
+        {
+            var inverse = from.Inverse();
+            var final = inverse.PostMultiplyBy(to);
+
+            this.SetTransform(final);
+        }
+
 
         /// <summary>
         /// sets the transform that will be applied to all geometry in the renderPackage
+        /// as this is a helix specific implementation it should be noted that the this matrix
+        /// should be as follows when converting from a ProtoGeometry/Dynamo CoordinateSystem
+        /// [xaxis.X, xaxis.Z, -xaxis.Y, 0,
+        ///  zaxis.X, zaxis.Z, -zaxis.Y, 0,
+        /// yaxis.X, yaxis.Z, -yaxis.Y, 0,
+        /// org.X, org.Z, -org.Y, 1] 
+        /// as Helix and Dynamo have their Y and Z axes reversed
         /// </summary>
         /// <param name="m11"></param>
         /// <param name="m12"></param>
