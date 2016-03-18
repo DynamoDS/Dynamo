@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Engine;
+using Dynamo.Exceptions;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
@@ -33,10 +34,11 @@ using Dynamo.Wpf.UI;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Watch3D;
+using DynamoUtilities;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using ISelectable = Dynamo.Selection.ISelectable;
 using Autodesk.DesignScript.Interfaces;
-using Dynamo.Exceptions;
+
 
 namespace Dynamo.ViewModels
 {
@@ -1106,25 +1108,34 @@ namespace Dynamo.ViewModels
         {
             // try catch for exceptions thrown while opening files, say from a future version, 
             // that can't be handled reliably
+            string xmlFilePath = string.Empty;
+            bool forceManualMode = false;
+            var packedParams = parameters as Tuple<string, bool>;
+            if (packedParams != null)
+            {
+                xmlFilePath = packedParams.Item1;
+                forceManualMode = packedParams.Item2;
+            }
+            else
+            {
+                xmlFilePath = parameters as string;
+            }
             try
             {
-                string xmlFilePath = string.Empty;
-                bool forceManualMode = false;
-                var packedParams = parameters as Tuple<string, bool>;
-                if (packedParams != null)
-                {
-                    xmlFilePath = packedParams.Item1;
-                    forceManualMode = packedParams.Item2;
-                }
-                else
-                {
-                    xmlFilePath = parameters as string;
-                }
+                
                 ExecuteCommand(new DynamoModel.OpenFileCommand(xmlFilePath, forceManualMode));
             }
             catch (Exception e)
             {
-                model.Logger.Log(Resources.MessageFailedToOpenFile + e.Message);
+                if (e is FileNotFoundException)
+                {
+                    System.Windows.MessageBox.Show(String.Format(Resources.MessageFileNotFound, xmlFilePath));
+                }
+                else if (e is System.Xml.XmlException)
+                {
+                    System.Windows.MessageBox.Show(String.Format(Resources.MessageFailedToOpenFile, xmlFilePath));
+                }
+                model.Logger.Log(String.Format(Resources.MessageFailedToOpenFile, xmlFilePath, "\n"));
                 model.Logger.Log(e);
                 return;
             }
@@ -1134,7 +1145,7 @@ namespace Dynamo.ViewModels
         private bool CanOpen(object parameters)
         {
             var filePath = parameters as string;
-            return ((!string.IsNullOrEmpty(filePath)) && File.Exists(filePath));
+            return PathHelper.PathValidator(filePath);
         }
 
         /// <summary>

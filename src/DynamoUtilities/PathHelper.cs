@@ -23,5 +23,19 @@ namespace DynamoUtilities
 
             return null;
         }
+
+        /// <summary>
+        /// Checks if the file path string is valid and file exist.
+        /// </summary>
+        /// <param name="folderPath"></param>
+        /// <returns></returns>
+        public static bool PathValidator(string folderPath)
+        {
+            if (string.IsNullOrEmpty(folderPath) || (File.Exists(folderPath) == false))
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }
