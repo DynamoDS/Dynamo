@@ -55,7 +55,7 @@ namespace ProtoTest.Imperative
             String code =
                 @"[Imperative]                {                    a = b;                }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kIdUnboundIdentifier);
+            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.IdUnboundIdentifier);
         }
         public void Fibonacci_recusion()
         {

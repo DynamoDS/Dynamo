@@ -412,7 +412,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     }
                     else if (parseParam.Warnings.Any())
                     {
-                        var warnings = parseParam.Warnings.Where(w => w.ID != WarningID.kIdUnboundIdentifier);
+                        var warnings = parseParam.Warnings.Where(w => w.ID != WarningID.IdUnboundIdentifier);
                         if (warnings.Any())
                         {
                             this.Warning(parseParam.Warnings.First().Message);

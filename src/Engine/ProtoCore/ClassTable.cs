@@ -574,7 +574,7 @@ namespace ProtoCore.DSASM
                         message += ", " + symbol.FullName;
                     }
 
-                    status.LogWarning(BuildData.WarningID.kMultipleSymbolFound, message, graphNode: graphNode);
+                    status.LogWarning(BuildData.WarningID.MultipleSymbolFound, message, graphNode: graphNode);
                 }
             }
         }

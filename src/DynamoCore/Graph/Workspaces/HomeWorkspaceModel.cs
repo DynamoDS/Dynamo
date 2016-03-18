@@ -449,12 +449,12 @@ namespace Dynamo.Graph.Workspaces
                 string message = string.Empty;
                 if (messages.ContainsKey(warning.Key))
                 {
-                    if (!warning.Value.Any(w => w.ID == ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency))
+                    if (!warning.Value.Any(w => w.ID == ProtoCore.BuildData.WarningID.InvalidStaticCyclicDependency))
                         continue;
 
                     messages.Remove(warning.Key);
                     message = string.Join("\n", warning.Value.
-                        Where(w => w.ID == ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency).
+                        Where(w => w.ID == ProtoCore.BuildData.WarningID.InvalidStaticCyclicDependency).
                         Select(w => w.Message));
                 }
                 else

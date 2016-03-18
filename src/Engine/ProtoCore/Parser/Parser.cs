@@ -4193,13 +4193,13 @@ public class Errors {
 	
 	public virtual void Warning (int line, int col, string s) {
 		// TODO: Jun/Jiong expand parser warnings.
-		core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kParsing, s, core.CurrentDSFileName, line, col);
+		core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.Parsing, s, core.CurrentDSFileName, line, col);
 		//warningStream.WriteLine(errMsgFormat, line, col, s);
 	}
 	
 	public virtual void Warning(string s) {
 		// TODO: Jun/Jiong expand parser warnings.
-		core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kParsing, s, core.CurrentDSFileName);
+		core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.Parsing, s, core.CurrentDSFileName);
 		//warningStream.WriteLine(String.Format("Warning: {0}",s));
 	}
 } // Errors

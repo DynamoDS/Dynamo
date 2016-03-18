@@ -695,7 +695,7 @@ a1 = A.A();
 b1 = a1.x;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kIdUnboundIdentifier);
+            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.IdUnboundIdentifier);
             Assert.IsTrue(mirror.GetValue("b1").DsasmValue.IsNull);
         }
 
@@ -3995,7 +3995,7 @@ a = Test.DoSomething(); //wrong warning is thrown:
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object n1 = null;
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kFunctionNotFound);
+            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.FunctionNotFound);
             thisTest.Verify("a", n1);
         }
 
@@ -6726,7 +6726,7 @@ a = test.sum();
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
 
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kFunctionNotFound);
+            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.FunctionNotFound);
             thisTest.Verify("a", null);
 
 

@@ -31,7 +31,7 @@ a = f();
 ";
             thisTest.RunAndVerifyBuildWarning(
                 code, 
-                ProtoCore.BuildData.WarningID.kFunctionNotFound
+                ProtoCore.BuildData.WarningID.FunctionNotFound
                 );
         }
 
@@ -55,7 +55,7 @@ b = 2.1 % 0;
 a = 1;
 b = a;
 a = b;";
-            thisTest.RunAndVerifyBuildWarning(code, ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency);
+            thisTest.RunAndVerifyBuildWarning(code, ProtoCore.BuildData.WarningID.InvalidStaticCyclicDependency);
         }
     }
 }

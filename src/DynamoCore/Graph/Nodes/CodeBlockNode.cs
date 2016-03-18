@@ -536,8 +536,8 @@ namespace Dynamo.Graph.Nodes
                     var warnings =
                         parseParam.Warnings.Where(
                             w =>
-                                w.ID != WarningID.kIdUnboundIdentifier
-                                    && w.ID != WarningID.kFunctionAlreadyDefined);
+                                w.ID != WarningID.IdUnboundIdentifier
+                                    && w.ID != WarningID.FunctionAlreadyDefined);
 
                     if (warnings.Any())
                     {

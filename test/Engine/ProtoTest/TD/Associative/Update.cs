@@ -2060,7 +2060,7 @@ b = 1;
 a = b + 1;
 b = a;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency);
+            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.InvalidStaticCyclicDependency);
             Object n1 = null;
             thisTest.Verify("a", n1);
             thisTest.Verify("b", n1);
@@ -2088,7 +2088,7 @@ a1;
 	a1[0] = b1;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency);
+            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.InvalidStaticCyclicDependency);
             Object n1 = null;
             thisTest.Verify("a1", n1);
         }

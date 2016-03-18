@@ -1124,7 +1124,7 @@ a;b;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.VerifyBuildWarningCount(2);
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kInvalidRangeExpression);
+            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.InvalidRangeExpression);
         }
 
         [Test]
