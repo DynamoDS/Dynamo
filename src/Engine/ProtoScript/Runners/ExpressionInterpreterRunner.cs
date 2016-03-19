@@ -65,7 +65,7 @@ namespace ProtoScript.Runners
             bool ssastate = Core.Options.GenerateSSA;
             bool ssastateExec = Core.Options.ExecuteSSA;
 
-            runtimeCore.Options.RunMode = ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter;
+            runtimeCore.Options.RunMode = ProtoCore.DSASM.InterpreterMode.Expression;
 
             runtimeCore.Options.GenerateSSA = false;
             runtimeCore.Options.ExecuteSSA = false;
@@ -196,7 +196,7 @@ namespace ProtoScript.Runners
 
             runtimeCore.Options.GenerateSSA = ssastate;
             runtimeCore.Options.ExecuteSSA = ssastateExec;
-            runtimeCore.Options.RunMode = ProtoCore.DSASM.InterpreterMode.kNormal;
+            runtimeCore.Options.RunMode = ProtoCore.DSASM.InterpreterMode.Normal;
 
             return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
         }

@@ -570,7 +570,7 @@ namespace ProtoTestFx.TD
             else if (expectedObject is Int32 || expectedObject is Int64)
             {
                 Int64 expectedValue = Convert.ToInt64(expectedObject);
-                if (dsObject.Type.UID != (int)ProtoCore.PrimitiveType.kTypeInt)
+                if (dsObject.Type.UID != (int)ProtoCore.PrimitiveType.Integer)
                 {
                     Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value is not an integer. \n{2}", dsVariable, 
                         BuildIndicesString(indices), expectedValue, mErrorMessage));
@@ -583,7 +583,7 @@ namespace ProtoTestFx.TD
             else if (expectedObject is Double)
             {
                 Double expectedValue = Convert.ToDouble(expectedObject);
-                if (dsObject.Type.UID != (int)ProtoCore.PrimitiveType.kTypeDouble)
+                if (dsObject.Type.UID != (int)ProtoCore.PrimitiveType.Double)
                 {
                     Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value is not a double. \n{3}", dsVariable, 
                         BuildIndicesString(indices), expectedValue, mErrorMessage));
@@ -610,7 +610,7 @@ namespace ProtoTestFx.TD
             else if (expectedObject is Boolean)
             {
                 Boolean expectedValue = Convert.ToBoolean(expectedObject);
-                if (dsObject.Type.UID != (int)ProtoCore.PrimitiveType.kTypeBool)
+                if (dsObject.Type.UID != (int)ProtoCore.PrimitiveType.Bool)
                 {
                     Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual type is not bool. \n{3}", dsVariable, 
                         BuildIndicesString(indices), expectedValue, mErrorMessage));
@@ -624,7 +624,7 @@ namespace ProtoTestFx.TD
             {
                 Char expectedValue = Convert.ToChar(expectedObject);
 
-                if (dsObject.Type.UID != (int)ProtoCore.PrimitiveType.kTypeChar)
+                if (dsObject.Type.UID != (int)ProtoCore.PrimitiveType.Char)
                 {
                     Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual type is not char. \n{3}", dsVariable, BuildIndicesString(indices), expectedValue, mErrorMessage));
                 }

@@ -206,13 +206,13 @@ namespace ProtoCore.AST.ImperativeAST
         public IdentifierNode()
         {
             ArrayDimensions = null;
-            DataType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kInvalidType, 0);
+            DataType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.InvalidType, 0);
         }
 
         public IdentifierNode(string identName = null)
         {
             ArrayDimensions = null;
-            DataType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kInvalidType, 0);
+            DataType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.InvalidType, 0);
             Value = Name = identName;
         }
 
@@ -737,7 +737,7 @@ namespace ProtoCore.AST.ImperativeAST
     {
         public VarDeclNode()
         {
-            memregion = MemoryRegion.kInvalidRegion;
+            memregion = MemoryRegion.InvalidRegion;
         }
 
         public MemoryRegion memregion { get; set; }

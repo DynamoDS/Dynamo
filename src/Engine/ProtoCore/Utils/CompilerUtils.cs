@@ -496,7 +496,7 @@ namespace ProtoCore.Utils
             List<VariableLine> result = new List<VariableLine>();
             foreach (ProtoCore.BuildData.WarningEntry warningEntry in warnings)
             {
-                if (warningEntry.ID == ProtoCore.BuildData.WarningID.kIdUnboundIdentifier)
+                if (warningEntry.ID == ProtoCore.BuildData.WarningID.IdUnboundIdentifier)
                 {
                     var varName = warningEntry.UnboundVariableSymbolNode.name;
                     result.Add(new VariableLine()

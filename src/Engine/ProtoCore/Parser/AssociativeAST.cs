@@ -473,7 +473,7 @@ namespace ProtoCore.AST.AssociativeAST
     {
         public IdentifierNode(string identName = null)
         {
-            datatype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kInvalidType, 0);
+            datatype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.InvalidType, 0);
             Value = Name = identName;
         }
 
@@ -3027,7 +3027,7 @@ namespace ProtoCore.AST.AssociativeAST
 
             return BuildParamNode(
                 paramName,
-                TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0));
+                TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0));
         }
 
         public static VarDeclNode BuildParamNode(string paramName, Type type)

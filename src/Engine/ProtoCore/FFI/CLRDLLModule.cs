@@ -661,7 +661,7 @@ namespace ProtoFFI
             func.Signature = new ProtoCore.AST.AssociativeAST.ArgumentSignatureNode();
             func.ReturnType = CLRModuleType.GetProtoCoreType(f.FieldType, Module);
             func.FunctionBody = null;
-            func.Access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic;
+            func.Access = ProtoCore.CompilerDefinitions.AccessModifier.Public;
             func.IsDNI = false;
             func.IsExternLib = true;
             func.ExternLibName = Module.Name;
@@ -714,7 +714,7 @@ namespace ProtoFFI
             }
             func.ReturnType = retype;
             func.FunctionBody = null;
-            func.Access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic;
+            func.Access = ProtoCore.CompilerDefinitions.AccessModifier.Public;
             func.IsDNI = false;
             func.IsExternLib = true;
             func.ExternLibName = Module.Name;
@@ -795,7 +795,7 @@ namespace ProtoFFI
             constr.Signature = ParseArgumentSignature(method);
             constr.ReturnType = returnType;
             constr.FunctionBody = null;
-            constr.Access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic;
+            constr.Access = ProtoCore.CompilerDefinitions.AccessModifier.Public;
             constr.IsExternLib = true;
             constr.ExternLibName = Module.Name;
 
@@ -842,14 +842,14 @@ namespace ProtoFFI
         private ProtoCore.AST.AssociativeAST.VarDeclNode ParseArgumentDeclaration(string parameterName, Type parameterType)
         {
             ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode();
-            varDeclNode.Access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic;
+            varDeclNode.Access = ProtoCore.CompilerDefinitions.AccessModifier.Public;
 
             ProtoCore.AST.AssociativeAST.IdentifierNode identifierNode = 
                 new ProtoCore.AST.AssociativeAST.IdentifierNode
                 {
                     Value = parameterName,
                     Name = parameterName,
-                    datatype = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeVar, 0)
+                    datatype = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.Var, 0)
                 };
             //Lets emit native DS type object
             ProtoCore.Type argtype = CLRModuleType.GetProtoCoreType(parameterType, Module);
