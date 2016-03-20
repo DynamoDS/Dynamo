@@ -1663,9 +1663,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private DynamoGeometryModel3D CreateDynamoGeometryModel3D(HelixRenderPackage rp)
         {
-            DynamoGeometryModel3D meshGeometry3D = null;
-           
-                meshGeometry3D = new DynamoGeometryModel3D(renderTechnique)
+          
+                var meshGeometry3D = new DynamoGeometryModel3D(renderTechnique)
                 {
                     Transform = new MatrixTransform3D(rp.Transform),
                     Material = WhiteMaterial,
