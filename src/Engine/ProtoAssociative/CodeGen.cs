@@ -5752,7 +5752,7 @@ namespace ProtoAssociative
                     record.funcIndex = localProcedure.ID;
                     fep = new ProtoCore.Lang.JILFunctionEndPoint(record);
                 }
-                else if (funcDef.BuiltInMethodId != ProtoCore.Lang.BuiltInMethods.MethodID.kInvalidMethodID)
+                else if (funcDef.BuiltInMethodId != ProtoCore.Lang.BuiltInMethods.MethodID.InvalidMethodID)
                 {
                     fep = new ProtoCore.Lang.BuiltInFunctionEndPoint(funcDef.BuiltInMethodId);
                 }
