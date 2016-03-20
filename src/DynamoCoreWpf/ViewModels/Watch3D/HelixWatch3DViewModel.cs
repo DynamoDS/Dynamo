@@ -1275,7 +1275,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         var geom = (GeometryModel3D)Model3DDictionary[key];
                         var id = key.Remove(key.LastIndexOf(':'));
                         var text = HelixRenderPackage.CleanTag(id.Remove(0, nodePath.Length));
-                        var textPosition = geom.Geometry.Positions[0] + defaultLabelOffset;
+                        //use the transform of the geometry to transform the text position
+
+                        var textPosition = geom.Transform.Transform(
+                            (geom.Geometry.Positions[0]).ToPoint3D()).ToVector3()
+                            + defaultLabelOffset;
                         var textInfo = new TextInfo(text, textPosition);
                         textGeometry.TextInfo.Add(textInfo);
                     }
@@ -1648,8 +1652,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Model3DDictionary.Add(textId, bbText);
             }
             var geom = bbText.Geometry as BillboardText3D;
+            //use the transform of the render package to transform the text position
+            var textPosition = (rp as HelixRenderPackage).Transform.Transform(
+                           (pt).ToPoint3D()).ToVector3()
+                           + defaultLabelOffset;
+
             geom.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description),
-                pt + defaultLabelOffset));
+               textPosition));
         }
 
         private DynamoGeometryModel3D CreateDynamoGeometryModel3D(HelixRenderPackage rp)
