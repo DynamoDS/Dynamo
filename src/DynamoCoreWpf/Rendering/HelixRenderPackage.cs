@@ -70,78 +70,12 @@ namespace Dynamo.Wpf.Rendering
             this.colors = colors;
         }
 
+       
         /// <summary>
         /// sets the transform that will applied to all geometry in the renderPackage
         /// </summary>
         /// <param name="transform"></param>
         public void SetTransform(Autodesk.DesignScript.Geometry.CoordinateSystem transform)
-        {
-            var worldcs = Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin(0,0,0);
-            var transformAboutWorldX = transform.Rotate(worldcs.Origin, worldcs.XAxis, -90);
-            var transformYup = transformAboutWorldX.Rotate(transformAboutWorldX.Origin, transformAboutWorldX.XAxis, 90);
-            
-            var xaxis = transformYup.XAxis;
-            var yaxis = transformYup.YAxis;
-            var zaxis = transformYup.ZAxis;
-            var org = transformYup.Origin;
-
-               var csAsMat = new System.Windows.Media.Media3D.Matrix3D( xaxis.X, xaxis.Y, xaxis.Z, 0,
-                                                                        yaxis.X, yaxis.Y, yaxis.Z, 0,
-                                                                        zaxis.X, zaxis.Y, zaxis.Z, 0,
-                                                                        org.X, org.Y,org.Z, 1);
-
-            //   var csAsMat = new System.Windows.Media.Media3D.Matrix3D(-xaxis.X, -xaxis.Z, -xaxis.Y, 0,
-            //                                                        zaxis.X, zaxis.Z, zaxis.Y, 0,
-            //                                                        yaxis.X, yaxis.Z, yaxis.Y, 0,
-            //                                                        org.X, org.Z,-org.Y, 1);
-            this.transform = csAsMat;
-            
-        }
-        
-        public void SetTransformDirect(Autodesk.DesignScript.Geometry.CoordinateSystem transform)
-        {
-            var xaxis = transform.XAxis;
-            var yaxis = transform.YAxis;
-            var zaxis = transform.ZAxis;
-            var org = transform.Origin;
-
-            var csAsMat = new System.Windows.Media.Media3D.Matrix3D(xaxis.X, xaxis.Y, xaxis.Z, 0,
-                                                                         yaxis.X, yaxis.Y, yaxis.Z, 0,
-                                                                         zaxis.X, zaxis.Y, zaxis.Z, 0,
-                                                                         org.X, org.Y, org.Z, 1);
-            csAsMat.Prepend(new System.Windows.Media.Media3D.Matrix3D
-                (1, 0, 0, 0
-                , 0, 0, -1, 0,
-                0, 1, 0, 0,
-                0, 0, 0, 1));
-
-            csAsMat.Append(new System.Windows.Media.Media3D.Matrix3D
-               (1, 0, 0, 0
-               , 0, 0, -1, 0,
-               0, 1, 0, 0,
-               0, 0, 0, 1));
-
-            this.transform = csAsMat;
-
-
-
-            var worldcs = Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin(0, 0, 0);
-            var transformAboutWorldX = transform.Rotate(worldcs.Origin, worldcs.XAxis, -90);
-            var transformYup = transformAboutWorldX.Rotate(transformAboutWorldX.Origin, transformAboutWorldX.XAxis, 90);
-
-            var xaxis2 = transformYup.XAxis;
-            var yaxis2 = transformYup.YAxis;
-            var zaxis2 = transformYup.ZAxis;
-            var org2 = transformYup.Origin;
-
-            var csAsMat2 = new System.Windows.Media.Media3D.Matrix3D(xaxis2.X, xaxis2.Y, xaxis2.Z, 0,
-                                                                     yaxis2.X, yaxis2.Y, yaxis2.Z, 0,
-                                                                     zaxis2.X, zaxis2.Y, zaxis2.Z, 0,
-                                                                     org2.X, org2.Y, org2.Z, 1);
-
-        }
-
-        public void SetTransformDirect2(Autodesk.DesignScript.Geometry.CoordinateSystem transform)
         {
             var xaxis = transform.XAxis;
             var yaxis = transform.YAxis;
