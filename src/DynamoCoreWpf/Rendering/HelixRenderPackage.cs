@@ -72,7 +72,7 @@ namespace Dynamo.Wpf.Rendering
 
        
         /// <summary>
-        /// sets the transform that will applied to all geometry in the renderPackage
+        /// sets the transform that will be applied to all geometry in the renderPackage
         /// </summary>
         /// <param name="transform"></param>
         public void SetTransform(Autodesk.DesignScript.Geometry.CoordinateSystem transform)
@@ -92,7 +92,8 @@ namespace Dynamo.Wpf.Rendering
         }
 
         /// <summary>
-        /// 
+        /// sets the transform that will be applied to all geometry in the renderPackage
+        /// by computing the matrix that transforms between from and to
         /// </summary>
         /// <param name="from"></param>
         /// <param name="to"></param>
