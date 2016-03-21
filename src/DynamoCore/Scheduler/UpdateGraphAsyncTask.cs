@@ -25,7 +25,7 @@ namespace Dynamo.Scheduler
             get { return TaskPriority.AboveNormal; }
         }
 
-        public IEnumerable<NodeModel> ModifiedNodes { get; set; }
+        public IEnumerable<NodeModel> ModifiedNodes { get; protected set; }
         private List<NodeModel> executedNodes;
         public IEnumerable<NodeModel> ExecutedNodes { get { return executedNodes; } }
 
