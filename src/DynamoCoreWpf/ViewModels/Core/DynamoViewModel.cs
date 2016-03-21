@@ -1107,20 +1107,19 @@ namespace Dynamo.ViewModels
             // try catch for exceptions thrown while opening files, say from a future version, 
             // that can't be handled reliably
             string xmlFilePath = string.Empty;
-            bool forceManualMode = false;
-            var packedParams = parameters as Tuple<string, bool>;
-            if (packedParams != null)
-            {
-                xmlFilePath = packedParams.Item1;
-                forceManualMode = packedParams.Item2;
-            }
-            else
-            {
-                xmlFilePath = parameters as string;
-            }
+            bool forceManualMode = false; 
             try
             {
-                
+                var packedParams = parameters as Tuple<string, bool>;
+                if (packedParams != null)
+                {
+                    xmlFilePath = packedParams.Item1;
+                    forceManualMode = packedParams.Item2;
+                }
+                else
+                {
+                    xmlFilePath = parameters as string;
+                }
                 ExecuteCommand(new DynamoModel.OpenFileCommand(xmlFilePath, forceManualMode));
             }
             catch (Exception e)
