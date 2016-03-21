@@ -502,7 +502,8 @@ namespace Dynamo.Graph.Workspaces
             EngineController.ReconcileTraceDataAndNotify();
 
             // Refresh values of nodes that took part in update.
-            foreach (var executedNode in updateTask.ExecutedNodes)
+            var nodes = new HashSet<NodeModel>(updateTask.ExecutedNodes.Concat(updateTask.ModifiedNodes));
+            foreach (var executedNode in nodes)
             {
                 executedNode.RequestValueUpdate(EngineController);
             }
