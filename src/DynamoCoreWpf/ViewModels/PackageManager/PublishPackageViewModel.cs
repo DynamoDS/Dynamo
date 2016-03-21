@@ -943,6 +943,8 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
+                UploadState = PackageUploadHandle.State.Error;
+                ErrorString = String.Format(Resources.MessageFailedToAddFile, filename);
                 dynamoViewModel.Model.Logger.Log(e);
             }
         }
@@ -986,6 +988,8 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
+                UploadState = PackageUploadHandle.State.Error;
+                ErrorString = String.Format(Resources.MessageFailedToAddFile, filename);
                 dynamoViewModel.Model.Logger.Log(e);
             }
         }
