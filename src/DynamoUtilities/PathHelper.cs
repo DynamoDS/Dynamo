@@ -1,7 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace DynamoUtilities
 {
@@ -29,13 +27,9 @@ namespace DynamoUtilities
         /// </summary>
         /// <param name="folderPath"></param>
         /// <returns></returns>
-        public static bool PathValidator(string folderPath)
+        public static bool IsValidPath(string folderPath)
         {
-            if (string.IsNullOrEmpty(folderPath) || (File.Exists(folderPath) == false))
-            {
-                return false;
-            }
-            return true;
+            return (!string.IsNullOrEmpty(folderPath) && (File.Exists(folderPath)));
         }
     }
 }

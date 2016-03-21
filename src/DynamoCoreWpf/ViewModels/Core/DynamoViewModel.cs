@@ -35,9 +35,7 @@ using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoUtilities;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using ISelectable = Dynamo.Selection.ISelectable;
-using Autodesk.DesignScript.Interfaces;
 
 
 namespace Dynamo.ViewModels
@@ -1145,7 +1143,7 @@ namespace Dynamo.ViewModels
         private bool CanOpen(object parameters)
         {
             var filePath = parameters as string;
-            return PathHelper.PathValidator(filePath);
+            return PathHelper.IsValidPath(filePath);
         }
 
         /// <summary>

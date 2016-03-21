@@ -6,10 +6,10 @@ using System.Linq;
 using CoreNodeModels.Input;
 using DSOffice;
 using Dynamo.Configuration;
-using NUnit.Framework;
-using ProtoCore.Mirror;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
+using NUnit.Framework;
+using ProtoCore.Mirror;
 
 
 namespace Dynamo.Tests
