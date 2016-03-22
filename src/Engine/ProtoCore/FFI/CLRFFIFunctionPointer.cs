@@ -16,12 +16,25 @@ namespace ProtoFFI
         public FFIParameterInfo(ParameterInfo info)
         {
             Info = info;
-            KeepReference = Info.GetCustomAttribute<KeepReferenceAttribute>() != null;
         }
 
+        private bool? keepReference;
+        /// <summary>
+        /// Indicate if the marshaller should keep a reference to this
+        /// parameter in the return object of the corresponding function clal.
+        /// </summary>
         public bool KeepReference
         {
-            get; private set;
+            get
+            {
+                if (keepReference.HasValue)
+                {
+                    return keepReference.Value;
+                }
+
+                keepReference = Info.GetCustomAttribute<KeepReferenceAttribute>() != null;
+                return keepReference.Value;
+            }
         }
     }
 
@@ -486,10 +499,10 @@ namespace ProtoFFI
                     var dsObject = dsi.runtime.rmem.Heap.ToHeapObject<DSObject>(pointer);
                     if (dsObject != null)
                     {
-                        int index = 0;
-                        foreach (var parameter in referencedParameters)
+                        Validity.Assert(dsObject.Count >= referencedParameters.Count);
+                        for (int i = 0; i < referencedParameters.Count; i++)
                         {
-                            dsObject.SetValueAtIndex(index, parameter, dsi.runtime.RuntimeCore);
+                            dsObject.SetValueAtIndex(i, referencedParameters[i], dsi.runtime.RuntimeCore);
                         }
                     }
                 } 
