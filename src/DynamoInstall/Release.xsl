@@ -50,10 +50,6 @@
     <!--Exclude Moq.dll-->
     <xsl:key name="moq-search" match="wix:Component[contains(wix:File/@Source, 'Moq')]" use="@Id"/>
     <xsl:template match="wix:Component[key('moq-search', @Id)]" />
-	
-	<!--Exclude NDesk*-->
-    <xsl:key name="NDesk-search" match="wix:Component[contains(wix:File/@Source, 'NDesk')]" use="@Id"/>
-    <xsl:template match="wix:Component[key('NDesk-search', @Id)]" />
 
     <!--Exclude nunit*.dll-->
     <xsl:key name="nunit-search" match="wix:Component[contains(wix:File/@Source, 'nunit')]" use="@Id"/>
