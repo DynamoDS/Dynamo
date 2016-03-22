@@ -116,7 +116,7 @@ namespace ProtoFFI
             CastToObject = castOperator;
         }
 
-        public override StackValue Marshal(object obj, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type type)
+        public override StackValue Marshal(object obj, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type type, int reservedSize = 0)
         {
             return StackValue.BuildInt(System.Convert.ToInt64(obj));
         }
@@ -151,7 +151,7 @@ namespace ProtoFFI
             CastToDouble = castOperator;
         }
 
-        public override StackValue Marshal(object obj, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type type)
+        public override StackValue Marshal(object obj, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type type, int reservedSize = 0)
         {
             return StackValue.BuildDouble(System.Convert.ToDouble(obj));
         }
@@ -176,7 +176,7 @@ namespace ProtoFFI
         private static readonly ProtoCore.Type kType = CreateType(ProtoCore.PrimitiveType.Bool);
         public BoolMarshaler() : base(kType) { }
 
-        public override StackValue Marshal(object obj, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type type)
+        public override StackValue Marshal(object obj, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type type, int reservedSize = 0)
         {
             return StackValue.BuildBoolean((bool)obj);
         }
@@ -195,7 +195,7 @@ namespace ProtoFFI
         private static readonly ProtoCore.Type kType = CreateType(ProtoCore.PrimitiveType.Char);
         public CharMarshaler() : base(kType) { }
 
-        public override StackValue Marshal(object obj, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type type)
+        public override StackValue Marshal(object obj, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type type, int reservedSize = 0)
         {
             return StackValue.BuildChar((char)obj);
         }
@@ -232,7 +232,7 @@ namespace ProtoFFI
         /// <param name="dsi"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public override StackValue Marshal(object obj, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type type)
+        public override StackValue Marshal(object obj, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type type, int reservedSize = 0)
         {
             IEnumerable collection = obj as IEnumerable;
             Validity.Assert(null != collection, "Expected IEnumerable object for marshaling as collection");
@@ -569,7 +569,7 @@ namespace ProtoFFI
 
         public StringMarshaler() : base(kType) { }
 
-        public override StackValue Marshal(object obj, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type type)
+        public override StackValue Marshal(object obj, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type type, int reservedSize = 0)
         {
             string str = (string)obj;
             return dsi.runtime.rmem.Heap.AllocateString(str);
@@ -660,7 +660,7 @@ namespace ProtoFFI
         /// <param name="dsi">Runtime Interpreter</param>
         /// <param name="expectedDSType">Expected ProtoCore.Type to marshal as</param>
         /// <returns>StackValue</returns>
-        public override StackValue Marshal(object obj, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type expectedDSType)
+        public override StackValue Marshal(object obj, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type expectedDSType, int reservedSize = 0)
         {
             //1. Null object is marshaled as null
             if (obj == null)
@@ -686,7 +686,7 @@ namespace ProtoFFI
             }
 
             //6. Seems like a new object create a new DS object and bind it.
-            return CreateDSObject(obj, context, dsi);
+            return CreateDSObject(obj, context, dsi, reservedSize);
         }
 
         /// <summary>
@@ -1048,7 +1048,7 @@ namespace ProtoFFI
         /// <param name="context"></param>
         /// <param name="dsi"></param>
         /// <returns></returns>
-        private StackValue CreateDSObject(object obj, ProtoCore.Runtime.Context context, Interpreter dsi)
+        private StackValue CreateDSObject(object obj, ProtoCore.Runtime.Context context, Interpreter dsi, int reservedSize)
         {
             //We are here, because we want to create DS object of user defined type.
             var runtimeCore = dsi.runtime.RuntimeCore;
@@ -1065,7 +1065,7 @@ namespace ProtoFFI
 
             MetaData metadata;
             metadata.type = type;
-            StackValue retval = runtimeCore.RuntimeMemory.Heap.AllocatePointer(classTable.ClassNodes[type].Size, metadata);
+            StackValue retval = runtimeCore.RuntimeMemory.Heap.AllocatePointer(classTable.ClassNodes[type].Size + reservedSize, metadata);
             BindObjects(obj, retval);
             return retval;
         }

@@ -246,7 +246,7 @@ namespace ProtoFFI
             return ReflectionInfo.Invoke(thisObject, parameters);
         }
 
-        protected object InvokeFunctionPointerNoThrow(ProtoCore.Runtime.Context c, Interpreter dsi, object thisObject, object[] parameters)
+        protected object InvokeFunctionPointerNoThrow(ProtoCore.Runtime.Context c, Interpreter dsi, object thisObject, object[] parameters, int reservedSize)
         {
             object ret = null;
             StackValue dsRetValue = StackValue.Null;
@@ -256,7 +256,7 @@ namespace ProtoFFI
                 ret = InvokeFunctionPointer(thisObject, parameters);
                 //Reduce to singleton if the attribute is specified.
                 ret = ReflectionInfo.ReduceReturnedCollectionToSingleton(ret);
-                dsRetValue = marshaller.Marshal(ret, c, dsi, mReturnType);
+                dsRetValue = marshaller.Marshal(ret, c, dsi, mReturnType, reservedSize);
             }
             catch (DllNotFoundException ex)
             {
@@ -399,6 +399,8 @@ namespace ProtoFFI
             }
 
             ParameterInfo[] paraminfos = ReflectionInfo.GetParameters();
+            List<StackValue> transferOwnershipParams = new List<StackValue>();
+
             for (int i = 0; i < mArgTypes.Length; ++i)
             {
                 // Comment Jun: FFI function stack frames do not contain locals
@@ -413,6 +415,12 @@ namespace ProtoFFI
                         param = Type.Missing;
                     else 
                         param = marshaller.UnMarshal(opArg, c, dsi, paramType);
+
+                    var attributes = paraminfos[i].GetCustomAttributes<TransferOwnershipAttribute>();
+                    if (attributes.Any() && opArg.IsReferenceType)
+                    {
+                        transferOwnershipParams.Add(opArg);
+                    }
 
                     //null is passed for a value type, so we must return null 
                     //rather than interpreting any value from null. fix defect 1462014 
@@ -443,7 +451,24 @@ namespace ProtoFFI
                 }
             }
 
-            return InvokeFunctionPointerNoThrow(c, dsi, thisObject, parameters.Count > 0 ? parameters.ToArray() : null);
+            var ret =  InvokeFunctionPointerNoThrow(c, dsi, thisObject, parameters.Count > 0 ? parameters.ToArray() : null, transferOwnershipParams.Count());
+            if (transferOwnershipParams.Any() && (ret is StackValue))
+            {
+                var pointer = (StackValue)ret;
+                if (pointer.IsPointer)
+                {
+                    var dsObject = dsi.runtime.rmem.Heap.ToHeapObject<DSObject>(pointer);
+                    if (dsObject != null)
+                    {
+                        int index = 0;
+                        foreach (var parameter in transferOwnershipParams)
+                        {
+                            dsObject.SetValueAtIndex(index, parameter, dsi.runtime.RuntimeCore);
+                        }
+                    }
+                } 
+            }
+            return ret;
         }
     }
 
@@ -482,7 +507,7 @@ namespace ProtoFFI
             }
             else
             {
-                retVal = InvokeFunctionPointerNoThrow(c, dsi, thisObject, null);
+                retVal = InvokeFunctionPointerNoThrow(c, dsi, thisObject, null, 0);
             }
 
             return retVal;
