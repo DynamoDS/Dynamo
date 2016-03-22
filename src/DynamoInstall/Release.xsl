@@ -50,10 +50,18 @@
     <!--Exclude Moq.dll-->
     <xsl:key name="moq-search" match="wix:Component[contains(wix:File/@Source, 'Moq')]" use="@Id"/>
     <xsl:template match="wix:Component[key('moq-search', @Id)]" />
+	
+	<!--Exclude NDesk*-->
+    <xsl:key name="NDesk-search" match="wix:Component[contains(wix:File/@Source, 'NDesk')]" use="@Id"/>
+    <xsl:template match="wix:Component[key('NDesk-search', @Id)]" />
 
     <!--Exclude nunit*.dll-->
     <xsl:key name="nunit-search" match="wix:Component[contains(wix:File/@Source, 'nunit')]" use="@Id"/>
     <xsl:template match="wix:Component[key('nunit-search', @Id)]" />
+	
+	<!--Exclude OpenSans* fonts-->
+    <xsl:key name="OpenSans-search" match="wix:Component[contains(wix:File/@Source, 'OpenSans')]" use="@Id"/>
+    <xsl:template match="wix:Component[key('OpenSans-search', @Id)]" />
   
     <!--Exclude *.vshost.exe*-->
     <xsl:key name="vshost-search" match="wix:Component[contains(wix:File/@Source, 'vshost.exe')]" use="@Id"/>
