@@ -547,7 +547,7 @@ public Node root { get; set; }
         return funCallNode;
     }
 
-    private AST.ImperativeAST.IdentifierNode BuildImperativeIdentifier(string name, ProtoCore.PrimitiveType type = ProtoCore.PrimitiveType.kTypeVar)
+    private AST.ImperativeAST.IdentifierNode BuildImperativeIdentifier(string name, ProtoCore.PrimitiveType type = ProtoCore.PrimitiveType.Var)
     {
         var ident = new AST.ImperativeAST.IdentifierNode();
         ident.Name = ident.Value = name;
@@ -910,7 +910,7 @@ public Node root { get; set; }
 		Expect(11);
 	}
 
-	void Associative_functiondecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic, bool isStatic = false) {
+	void Associative_functiondecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public, bool isStatic = false) {
 		ProtoCore.AST.AssociativeAST.FunctionDefinitionNode f = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode(); 
 		string methodName;  
 		ProtoCore.AST.AssociativeAST.AssociativeNode argumentSignature; 
@@ -982,7 +982,7 @@ public Node root { get; set; }
 			if (la.kind == 10) {
 				Associative_AttributeDeclaration(out attributes);
 			}
-			ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic; 
+			ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public; 
 			if (la.kind == 48 || la.kind == 49 || la.kind == 50) {
 				Associative_AccessSpecifier(out access);
 			}
@@ -1034,7 +1034,7 @@ public Node root { get; set; }
 		ProtoCore.AST.AssociativeAST.IdentifierNode leftNode = new ProtoCore.AST.AssociativeAST.IdentifierNode();
 		leftNode.Value = leftNode.Name = Constants.kTempProcLeftVar;
 		
-		var unknownType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
+		var unknownType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
 		leftNode.datatype = unknownType;
 		leftNode.line = rightNode.line;
 		leftNode.col = rightNode.col;
@@ -1072,7 +1072,7 @@ public Node root { get; set; }
 		ProtoCore.AST.AssociativeAST.IdentifierNode leftNode = new ProtoCore.AST.AssociativeAST.IdentifierNode();
 		leftNode.Value = leftNode.Name = Constants.kTempProcLeftVar;
 		
-		var unknownType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
+		var unknownType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
 		leftNode.datatype = unknownType;
 		leftNode.line = rightNode.line;
 		leftNode.col = rightNode.col;
@@ -1384,15 +1384,15 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 	}
 
 	void Associative_AccessSpecifier(out ProtoCore.CompilerDefinitions.AccessModifier access) {
-		access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic; 
+		access = ProtoCore.CompilerDefinitions.AccessModifier.Public; 
 		if (la.kind == 48) {
 			Get();
 		} else if (la.kind == 49) {
 			Get();
-			access = ProtoCore.CompilerDefinitions.AccessModifier.kPrivate; 
+			access = ProtoCore.CompilerDefinitions.AccessModifier.Private; 
 		} else if (la.kind == 50) {
 			Get();
-			access = ProtoCore.CompilerDefinitions.AccessModifier.kProtected; 
+			access = ProtoCore.CompilerDefinitions.AccessModifier.Protected; 
 		} else SynErr(85);
 	}
 
@@ -1405,7 +1405,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		Expect(26);
 		NodeUtils.SetNodeStartLocation(constr, t); 
 		Associative_CtorSignature(out methodName, out argumentSignature);
-		var returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
+		var returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank);
 		
 		constr.Name = methodName; 
 		constr.ReturnType = returnType;
@@ -1426,7 +1426,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		constrNode = constr; 
 	}
 
-	void Associative_vardecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic, bool isStatic = false, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null) {
+	void Associative_vardecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public, bool isStatic = false, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null) {
 		ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
 		ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode(); 
 		varDeclNode.Access = access;
@@ -1592,8 +1592,8 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		{
 		   errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
 		}
-		int ltype = (0 == String.Compare(t.val, "return")) ? (int)ProtoCore.PrimitiveType.kTypeReturn : (int)ProtoCore.PrimitiveType.kTypeVar;
-		if (ltype == (int)ProtoCore.PrimitiveType.kTypeReturn && la.val != "=")
+		int ltype = (0 == String.Compare(t.val, "return")) ? (int)ProtoCore.PrimitiveType.Return : (int)ProtoCore.PrimitiveType.Var;
+		if (ltype == (int)ProtoCore.PrimitiveType.Return && la.val != "=")
 		{
 		    SynErr(String.Format(Resources.InvalidReturnStatement, la.val));
 		}
@@ -1629,7 +1629,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		   errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
 		}
 		ProtoCore.AST.AssociativeAST.AssociativeNode argumentSignature = null;
-		returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
+		returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank);
 		
 		if (la.kind == 47) {
 			Associative_TypeRestriction(out returnType);
@@ -1649,7 +1649,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		
 		ProtoCore.AST.AssociativeAST.BinaryExpressionNode binaryExpr = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
 		IdentifierNode returnNode = AstFactory.BuildIdentifier("return");
-		returnNode.datatype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeReturn, 0);
+		returnNode.datatype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Return, 0);
 		binaryExpr.LeftNode = returnNode;
 		ProtoCore.AST.AssociativeAST.AssociativeNode expr;
 		
@@ -1735,7 +1735,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		pattern = p; 
 	}
 
-	void Associative_ArgDecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic) {
+	void Associative_ArgDecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public) {
 		ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
 		ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode(); 
 		varDeclNode.Access = access;
@@ -1779,7 +1779,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		node = varDeclNode; 
 	}
 
-	void Associative_DefaultArgDecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic) {
+	void Associative_DefaultArgDecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public) {
 		Associative_ArgDecl(out node);
 		ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = node as ProtoCore.AST.AssociativeAST.VarDeclNode; 
 		Expect(51);
@@ -2824,7 +2824,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 
 	void Imperative_functiondecl(out ProtoCore.AST.ImperativeAST.ImperativeNode node, List<ProtoCore.AST.ImperativeAST.ImperativeNode> attrs = null) {
 		ProtoCore.AST.ImperativeAST.FunctionDefinitionNode funcDecl = new ProtoCore.AST.ImperativeAST.FunctionDefinitionNode(); 
-		ProtoCore.Type rtype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank); 
+		ProtoCore.Type rtype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank); 
 		Expect(27);
 		NodeUtils.SetNodeStartLocation(funcDecl, t); funcDecl.Attributes = attrs; 
 		Expect(1);
@@ -3254,8 +3254,8 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		{
 		   errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
 		}
-		int ltype = (0 == String.Compare(t.val, "return")) ? (int)ProtoCore.PrimitiveType.kTypeReturn : (int)ProtoCore.PrimitiveType.kTypeVar;
-		if (ltype == (int)ProtoCore.PrimitiveType.kTypeReturn && la.val != "=")
+		int ltype = (0 == String.Compare(t.val, "return")) ? (int)ProtoCore.PrimitiveType.Return : (int)ProtoCore.PrimitiveType.Var;
+		if (ltype == (int)ProtoCore.PrimitiveType.Return && la.val != "=")
 		{
 		   SynErr(String.Format(Resources.InvalidReturnStatement, la.val)); 
 		}        
@@ -3831,7 +3831,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		ProtoCore.AST.ImperativeAST.IdentifierNode tNode = null; 
 		ProtoCore.AST.ImperativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.ImperativeAST.VarDeclNode(); 
 		NodeUtils.SetNodeLocation(varDeclNode, la);
-		varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemStack;
+		varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.MemStack;
 		
 		Expect(1);
 		if (IsKeyWord(t.val, true))
@@ -3958,7 +3958,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 	void Imperative_functionalMethodBodySingleStatement(out List<ProtoCore.AST.ImperativeAST.ImperativeNode> funcBody) {
 		funcBody = new List<ProtoCore.AST.ImperativeAST.ImperativeNode>();
 		ProtoCore.AST.ImperativeAST.BinaryExpressionNode binaryExpr = new ProtoCore.AST.ImperativeAST.BinaryExpressionNode();
-		binaryExpr.LeftNode = BuildImperativeIdentifier("return", ProtoCore.PrimitiveType.kTypeReturn);
+		binaryExpr.LeftNode = BuildImperativeIdentifier("return", ProtoCore.PrimitiveType.Return);
 		ProtoCore.AST.ImperativeAST.ImperativeNode expr;
 		
 		Imperative_expr(out expr);
@@ -4193,13 +4193,13 @@ public class Errors {
 	
 	public virtual void Warning (int line, int col, string s) {
 		// TODO: Jun/Jiong expand parser warnings.
-		core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kParsing, s, core.CurrentDSFileName, line, col);
+		core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.Parsing, s, core.CurrentDSFileName, line, col);
 		//warningStream.WriteLine(errMsgFormat, line, col, s);
 	}
 	
 	public virtual void Warning(string s) {
 		// TODO: Jun/Jiong expand parser warnings.
-		core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kParsing, s, core.CurrentDSFileName);
+		core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.Parsing, s, core.CurrentDSFileName);
 		//warningStream.WriteLine(String.Format("Warning: {0}",s));
 	}
 } // Errors

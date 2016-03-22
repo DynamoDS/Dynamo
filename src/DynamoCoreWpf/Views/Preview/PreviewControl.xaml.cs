@@ -405,21 +405,27 @@ namespace Dynamo.UI.Controls
                     }
 
                     var watchTree = largeContentGrid.Children[0] as WatchTree;
-                    var rootDataContext = watchTree.DataContext as WatchViewModel;
+                    if (watchTree != null)
+                    {
+                        var rootDataContext = watchTree.DataContext as WatchViewModel;
 
 
-                    cachedLargeContent = newViewModel;
+                        cachedLargeContent = newViewModel;
 
-                    rootDataContext.IsOneRowContent = cachedLargeContent.Children.Count == 0;
-                    rootDataContext.Children.Clear();
-                    rootDataContext.Children.Add(cachedLargeContent);
-
-                    watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty,
-                        new Binding("Children")
+                        if (rootDataContext != null)
                         {
-                            Mode = BindingMode.TwoWay,
-                            Source = rootDataContext
-                        });
+                            rootDataContext.IsOneRowContent = cachedLargeContent.Children.Count == 0;
+                            rootDataContext.Children.Clear();
+                            rootDataContext.Children.Add(cachedLargeContent);
+
+                            watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty,
+                                new Binding("Children")
+                                {
+                                    Mode = BindingMode.TwoWay,
+                                    Source = rootDataContext
+                                });
+                        }
+                    }
                     if (refreshDisplay != null)
                     {
                         refreshDisplay();

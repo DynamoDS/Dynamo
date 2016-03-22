@@ -623,7 +623,7 @@ namespace Dynamo.Graph.Nodes
         /// <returns></returns>
         public virtual ProtoCore.Type GetTypeHintForOutput(int index)
         {
-            return ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeVar);
+            return ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.Var);
         }
     
         /// <summary>

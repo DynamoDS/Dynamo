@@ -700,7 +700,7 @@ p2 = Point.ByCoordinates(0,0,0);";
             string err = "1467130 - Sprint 24 - Rev 2908 - Missing Line number information while throwing warning ";
             string code = @"a=b;";
             thisTest.VerifyRunScriptSource(code, err);
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kIdUnboundIdentifier);
+            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.IdUnboundIdentifier);
             //Verification
         }
 
@@ -957,7 +957,7 @@ return = t;
 
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
 
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kFunctionNotFound);
+            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.FunctionNotFound);
         }
 
         [Test]
@@ -978,7 +978,7 @@ return = t;
                                 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kFunctionNotFound);
+            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.FunctionNotFound);
         }
     }
 }

@@ -47,9 +47,9 @@ namespace Dynamo.Tests
         {
             var parms = new List<TypedParameter>()
             {
-                new TypedParameter("a", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
-                new TypedParameter("b", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
-                new TypedParameter("c", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0))
+                new TypedParameter("a", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, 0)),
+                new TypedParameter("b", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, 0)),
+                new TypedParameter("c", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, 0))
             };
 
             var funcDesc = new FunctionDescriptor(new FunctionDescriptorParams
@@ -58,7 +58,7 @@ namespace Dynamo.Tests
                 ClassName = "MyNamespace.MyClass",
                 FunctionName = "MyMethod",
                 Parameters = parms,
-                ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar),
+                ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var),
                 FunctionType = FunctionType.InstanceMethod
             });
 
@@ -74,7 +74,7 @@ namespace Dynamo.Tests
                 Assembly = "MyAssembly.dll",
                 ClassName = "MyNamespace.MyClass",
                 FunctionName = "MyClass",
-                ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar),
+                ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var),
                 FunctionType = FunctionType.Constructor
             });
 

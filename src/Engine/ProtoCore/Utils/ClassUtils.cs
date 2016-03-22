@@ -31,8 +31,8 @@ namespace ProtoCore.Utils
                 target = runtimeCore.DSExecutable.classTable.ClassNodes[target.Bases[0]];
             }
 
-            if (!ret.Contains((int)(PrimitiveType.kTypeVar)))
-                ret.Add((int)PrimitiveType.kTypeVar);
+            if (!ret.Contains((int)(PrimitiveType.Var)))
+                ret.Add((int)PrimitiveType.Var);
 
 
             return ret;
@@ -140,13 +140,13 @@ namespace ProtoCore.Utils
                 bool isAccessible = false;
                 if (isInMemberFunctionContext)
                 {
-                    isAccessible = (symbol.classScope == myself) || (symbol.access != ProtoCore.CompilerDefinitions.AccessModifier.kPrivate);
+                    isAccessible = (symbol.classScope == myself) || (symbol.access != ProtoCore.CompilerDefinitions.AccessModifier.Private);
                     if (isInStaticFunction)
                         isAccessible = isAccessible && symbol.isStatic;
                 }
                 else
                 {
-                    isAccessible = symbol.access == ProtoCore.CompilerDefinitions.AccessModifier.kPublic;
+                    isAccessible = symbol.access == ProtoCore.CompilerDefinitions.AccessModifier.Public;
                 }
 
                 if (isAccessible)

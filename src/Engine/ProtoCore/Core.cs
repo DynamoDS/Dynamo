@@ -492,7 +492,7 @@ namespace ProtoCore
         {
             Options.ApplyUpdate = false;
 
-            Options.RunMode = InterpreterMode.kNormal;
+            Options.RunMode = InterpreterMode.Normal;
 
             // The main codeblock never goes out of scope
             // Resetting CodeBlockIndex means getting the number of main codeblocks that dont go out of scope.
@@ -594,7 +594,7 @@ namespace ProtoCore
             ModifierStateSubscript = 0;
 
             ExprInterpreterExe = null;
-            Options.RunMode = InterpreterMode.kNormal;
+            Options.RunMode = InterpreterMode.Normal;
 
             assocCodegen = null;
 
@@ -695,7 +695,7 @@ namespace ProtoCore
 
             while (symbolIndex == Constants.kInvalidIndex &&
                    codeBlock != null &&
-                   codeBlock.blockType != CodeBlockType.kFunction)
+                   codeBlock.blockType != CodeBlockType.Function)
             {
                 symbolIndex = codeBlock.symbolTable.IndexOf(name, classScope, functionScope);
                 if (symbolIndex != Constants.kInvalidIndex)
@@ -710,7 +710,7 @@ namespace ProtoCore
 
             if (symbolIndex == Constants.kInvalidIndex &&
                 codeBlock != null &&
-                codeBlock.blockType == CodeBlockType.kFunction)
+                codeBlock.blockType == CodeBlockType.Function)
             {
                 symbolIndex = codeBlock.symbolTable.IndexOf(name, classScope, functionScope);
                 if (symbolIndex != Constants.kInvalidIndex)
@@ -755,7 +755,7 @@ namespace ProtoCore
             {
                 // if the search block is of type function, it means our search has gone out of the function itself
                 // so, we should ignore the given function index and only search its parent block's global variable
-                if (searchBlock.blockType == CodeBlockType.kFunction)
+                if (searchBlock.blockType == CodeBlockType.Function)
                     stillInsideFunction = false;
 
                 searchBlock = searchBlock.parent;
@@ -798,11 +798,11 @@ namespace ProtoCore
             Validity.Assert(null != cblock);
             while (null != cblock)
             {
-                if (CodeBlockType.kFunction == cblock.blockType)
+                if (CodeBlockType.Function == cblock.blockType)
                 {
                     return true;
                 }
-                else if (CodeBlockType.kLanguage == cblock.blockType)
+                else if (CodeBlockType.Language == cblock.blockType)
                 {
                     return false;
                 }
@@ -813,9 +813,9 @@ namespace ProtoCore
 
         private void BfsBuildSequenceTable(CodeBlock codeBlock, SymbolTable[] runtimeSymbols)
         {
-            if (CodeBlockType.kLanguage == codeBlock.blockType
-                || CodeBlockType.kFunction == codeBlock.blockType
-                || CodeBlockType.kConstruct == codeBlock.blockType)
+            if (CodeBlockType.Language == codeBlock.blockType
+                || CodeBlockType.Function == codeBlock.blockType
+                || CodeBlockType.Construct == codeBlock.blockType)
             {
                 Validity.Assert(codeBlock.symbolTable.RuntimeIndex < RuntimeTableIndex);
                 runtimeSymbols[codeBlock.symbolTable.RuntimeIndex] = codeBlock.symbolTable;
@@ -829,7 +829,7 @@ namespace ProtoCore
 
         private void BfsBuildProcedureTable(CodeBlock codeBlock, ProcedureTable[] procTable)
         {
-            if (CodeBlockType.kLanguage == codeBlock.blockType || CodeBlockType.kFunction == codeBlock.blockType)
+            if (CodeBlockType.Language == codeBlock.blockType || CodeBlockType.Function == codeBlock.blockType)
             {
                 Validity.Assert(codeBlock.procedureTable.RuntimeIndex < RuntimeTableIndex);
                 procTable[codeBlock.procedureTable.RuntimeIndex] = codeBlock.procedureTable;
@@ -845,7 +845,7 @@ namespace ProtoCore
         {
             if (null != codeBlock)
             {
-                if (CodeBlockType.kLanguage == codeBlock.blockType || CodeBlockType.kFunction == codeBlock.blockType)
+                if (CodeBlockType.Language == codeBlock.blockType || CodeBlockType.Function == codeBlock.blockType)
                 {
                     Validity.Assert(codeBlock.codeBlockId < RuntimeTableIndex);
                     istreamList[codeBlock.codeBlockId] = codeBlock.instrStream;

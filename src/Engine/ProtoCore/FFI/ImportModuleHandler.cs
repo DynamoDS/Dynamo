@@ -60,7 +60,7 @@ namespace ProtoFFI
             if (modulePathFileName == null || !File.Exists(modulePathFileName))
             {
                 System.Diagnostics.Debug.Write(@"Cannot import file: '" + modulePathFileName);
-                _coreObj.LogWarning(ProtoCore.BuildData.WarningID.kFileNotFound, string.Format(Resources.kFileNotFound, modulePathFileName));
+                _coreObj.LogWarning(ProtoCore.BuildData.WarningID.FileNotFound, string.Format(Resources.kFileNotFound, modulePathFileName));
                 return null;
             }
 

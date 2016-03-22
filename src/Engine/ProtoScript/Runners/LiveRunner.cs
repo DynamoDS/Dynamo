@@ -1578,9 +1578,9 @@ namespace ProtoScript.Runners
                 // In normal execution, that stack frame will pop in RETB. But in
                 // ApplyUpdate(), there is no RETB instruciton, so need to manually
                 // cleanup stack frame.
-                StackValue restoreFramePointer = runtimeCore.RuntimeMemory.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFramePointer);
+                StackValue restoreFramePointer = runtimeCore.RuntimeMemory.GetAtRelative(ProtoCore.DSASM.StackFrame.FrameIndexFramePointer);
                 runtimeCore.RuntimeMemory.FramePointer = (int)restoreFramePointer.IntegerValue;
-                runtimeCore.RuntimeMemory.PopFrame(ProtoCore.DSASM.StackFrame.kStackFrameSize);
+                runtimeCore.RuntimeMemory.PopFrame(ProtoCore.DSASM.StackFrame.StackFrameSize);
             }
             ForceGC();
         }

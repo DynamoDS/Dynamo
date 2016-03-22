@@ -363,7 +363,7 @@ namespace ProtoTest.ProtoAST
             // Function Return Type
             ProtoCore.Type returnType = new ProtoCore.Type();
             returnType.Initialize();
-            returnType.UID = (int)ProtoCore.PrimitiveType.kTypeVar;
+            returnType.UID = (int)ProtoCore.PrimitiveType.Var;
             returnType.Name = ProtoCore.DSDefinitions.Keyword.Var;
             funcDefNode.ReturnType = returnType;
 
@@ -615,7 +615,7 @@ namespace ProtoTest.ProtoAST
             // Function Return Type
             ProtoCore.Type returnType = new ProtoCore.Type();
             returnType.Initialize();
-            returnType.UID = (int)ProtoCore.PrimitiveType.kTypeVar;
+            returnType.UID = (int)ProtoCore.PrimitiveType.Var;
             returnType.Name = ProtoCore.DSDefinitions.Keyword.Var;
             funcDefNode.ReturnType = returnType;
 
@@ -770,7 +770,7 @@ namespace ProtoTest.ProtoAST
             // Function Return type
             ProtoCore.Type returnType = new ProtoCore.Type();
             returnType.Initialize();
-            returnType.UID = (int)ProtoCore.PrimitiveType.kTypeVar;
+            returnType.UID = (int)ProtoCore.PrimitiveType.Var;
             returnType.Name = ProtoCore.DSDefinitions.Keyword.Var;
             funcDefNode.ReturnType = returnType;
 
@@ -842,7 +842,7 @@ namespace ProtoTest.ProtoAST
             // Build the type of arg1
             ProtoCore.Type arg1Type = new ProtoCore.Type();
             arg1Type.Initialize();
-            arg1Type.UID = (int)ProtoCore.PrimitiveType.kTypeInt;
+            arg1Type.UID = (int)ProtoCore.PrimitiveType.Integer;
             arg1Type.Name = ProtoCore.DSDefinitions.Keyword.Int;
             arg1Decl.ArgumentType = arg1Type;
             funcDefNode.Signature.AddArgument(arg1Decl);
@@ -851,7 +851,7 @@ namespace ProtoTest.ProtoAST
             // Function Return type
             ProtoCore.Type returnType = new ProtoCore.Type();
             returnType.Initialize();
-            returnType.UID = (int)ProtoCore.PrimitiveType.kTypeVar;
+            returnType.UID = (int)ProtoCore.PrimitiveType.Var;
             returnType.Name = ProtoCore.DSDefinitions.Keyword.Var;
             funcDefNode.ReturnType = returnType;
 
@@ -926,7 +926,7 @@ namespace ProtoTest.ProtoAST
             // Build the type of arg1
             ProtoCore.Type arg1Type = new ProtoCore.Type();
             arg1Type.Initialize();
-            arg1Type.UID = (int)ProtoCore.PrimitiveType.kTypeInt;
+            arg1Type.UID = (int)ProtoCore.PrimitiveType.Integer;
             arg1Type.Name = ProtoCore.DSDefinitions.Keyword.Int;
             arg1Decl.ArgumentType = arg1Type;
             funcDefNode.Signature.AddArgument(arg1Decl);
@@ -938,7 +938,7 @@ namespace ProtoTest.ProtoAST
             // Build the type of arg2
             ProtoCore.Type arg2Type = new ProtoCore.Type();
             arg2Type.Initialize();
-            arg2Type.UID = (int)ProtoCore.PrimitiveType.kTypeInt;
+            arg2Type.UID = (int)ProtoCore.PrimitiveType.Integer;
             arg2Type.Name = ProtoCore.DSDefinitions.Keyword.Int;
             arg2Decl.ArgumentType = arg2Type;
             funcDefNode.Signature.AddArgument(arg2Decl);
@@ -947,7 +947,7 @@ namespace ProtoTest.ProtoAST
             // Function Return type
             ProtoCore.Type returnType = new ProtoCore.Type();
             returnType.Initialize();
-            returnType.UID = (int)ProtoCore.PrimitiveType.kTypeVar;
+            returnType.UID = (int)ProtoCore.PrimitiveType.Var;
             returnType.Name = ProtoCore.DSDefinitions.Keyword.Var;
             funcDefNode.ReturnType = returnType;
 
@@ -1007,7 +1007,7 @@ namespace ProtoTest.ProtoAST
             {
                 Name = "int",
                 rank = 0,
-                UID = (int)ProtoCore.PrimitiveType.kTypeInt
+                UID = (int)ProtoCore.PrimitiveType.Integer
             };
             classDefNode.Variables.Add(varDeclNode);
 
@@ -1111,7 +1111,7 @@ namespace ProtoTest.ProtoAST
             // Function Return type
             ProtoCore.Type returnType = new ProtoCore.Type();
             returnType.Initialize();
-            returnType.UID = (int)ProtoCore.PrimitiveType.kTypeVar;
+            returnType.UID = (int)ProtoCore.PrimitiveType.Var;
             returnType.Name = ProtoCore.DSDefinitions.Keyword.Var;
             funcDefNode.ReturnType = returnType;
 
@@ -1127,7 +1127,7 @@ namespace ProtoTest.ProtoAST
             ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode();
             varDeclNode.Name = "f";
             varDeclNode.NameNode = new ProtoCore.AST.AssociativeAST.IdentifierNode("f");
-            varDeclNode.ArgumentType = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeInt, 0);
+            varDeclNode.ArgumentType = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.Integer, 0);
             classDefNode.Variables.Add(varDeclNode);
 
 
@@ -1429,7 +1429,7 @@ namespace ProtoTest.ProtoAST
             {
                 Name = "int",
                 rank = 0,
-                UID = (int)ProtoCore.PrimitiveType.kTypeInt
+                UID = (int)ProtoCore.PrimitiveType.Integer
             };
             classDefNode.Variables.Add(varDeclNode);
 
@@ -1537,7 +1537,7 @@ namespace ProtoTest.ProtoAST
             // Function Return type
             ProtoCore.Type returnType = new ProtoCore.Type();
             returnType.Initialize();
-            returnType.UID = (int)ProtoCore.PrimitiveType.kTypeVar;
+            returnType.UID = (int)ProtoCore.PrimitiveType.Var;
             returnType.Name = ProtoCore.DSDefinitions.Keyword.Var;
             funcDefNode.ReturnType = returnType;
 
@@ -1557,7 +1557,7 @@ namespace ProtoTest.ProtoAST
             {
                 Name = "int",
                 rank = 0,
-                UID = (int)ProtoCore.PrimitiveType.kTypeInt
+                UID = (int)ProtoCore.PrimitiveType.Integer
             };
             classDefNode.Variables.Add(varDeclNode);
 

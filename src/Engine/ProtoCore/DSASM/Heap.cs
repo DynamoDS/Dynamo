@@ -320,9 +320,9 @@ namespace ProtoCore.DSASM
         /// <returns></returns>
         public StackValue AllocateArray(StackValue[] values)
         {
-            int index = AllocateInternal(values, PrimitiveType.kTypeArray);
+            int index = AllocateInternal(values, PrimitiveType.Array);
             var heapElement = heapElements[index];
-            heapElement.MetaData = new MetaData { type = (int)PrimitiveType.kTypeArray };
+            heapElement.MetaData = new MetaData { type = (int)PrimitiveType.Array };
             return StackValue.BuildArrayPointer(index);
         }
 
@@ -335,7 +335,7 @@ namespace ProtoCore.DSASM
         public StackValue AllocatePointer(StackValue[] values, 
                                           MetaData metaData)
         {
-            int index = AllocateInternal(values, PrimitiveType.kTypePointer);
+            int index = AllocateInternal(values, PrimitiveType.Pointer);
             var heapElement = heapElements[index];
             heapElement.MetaData = metaData;
             return StackValue.BuildPointer(index, metaData);
@@ -350,7 +350,7 @@ namespace ProtoCore.DSASM
         {
             return AllocatePointer(
                     values, 
-                    new MetaData { type = (int)PrimitiveType.kTypePointer });
+                    new MetaData { type = (int)PrimitiveType.Pointer });
         }
 
         /// <summary>
@@ -361,7 +361,7 @@ namespace ProtoCore.DSASM
         /// <returns></returns>
         public StackValue AllocatePointer(int size, MetaData metadata)
         {    
-            int index = AllocateInternal(size, PrimitiveType.kTypePointer);
+            int index = AllocateInternal(size, PrimitiveType.Pointer);
             var hpe = heapElements[index];
             hpe.MetaData = metadata;
             return StackValue.BuildPointer(index, metadata);
@@ -376,7 +376,7 @@ namespace ProtoCore.DSASM
         {
             return AllocatePointer(
                     size, 
-                    new MetaData { type = (int)PrimitiveType.kTypePointer });
+                    new MetaData { type = (int)PrimitiveType.Pointer });
         }
 
         /// <summary>
@@ -389,7 +389,7 @@ namespace ProtoCore.DSASM
             int index;
             if (!stringTable.TryGetPointer(str, out index))
             {
-                index = AllocateInternal(new StackValue[] {}, PrimitiveType.kTypeString);
+                index = AllocateInternal(new StackValue[] {}, PrimitiveType.String);
                 stringTable.AddString(index, str);
             }
 
@@ -495,15 +495,15 @@ namespace ProtoCore.DSASM
 
             switch (type)
             {
-                case PrimitiveType.kTypeArray:
+                case PrimitiveType.Array:
                     hpe = new DSArray(size, this);
                     break;
 
-                case PrimitiveType.kTypePointer:
+                case PrimitiveType.Pointer:
                     hpe = new DSObject(size, this);
                     break;
 
-                case PrimitiveType.kTypeString:
+                case PrimitiveType.String:
                     hpe = new DSString(size, this);
                     break;
 
@@ -520,15 +520,15 @@ namespace ProtoCore.DSASM
 
             switch (type)
             {
-                case PrimitiveType.kTypeArray:
+                case PrimitiveType.Array:
                     hpe = new DSArray(values, this);
                     break;
 
-                case PrimitiveType.kTypePointer:
+                case PrimitiveType.Pointer:
                     hpe = new DSObject(values, this);
                     break;
 
-                case PrimitiveType.kTypeString:
+                case PrimitiveType.String:
                     hpe = new DSString(values, this);
                     break;
 
@@ -905,11 +905,11 @@ namespace ProtoCore.DSASM
                     }
 
                     var metaData = heapElements[i].MetaData;
-                    if (metaData.type == (int)PrimitiveType.kTypeString)
+                    if (metaData.type == (int)PrimitiveType.String)
                     {
                         stringTable.TryRemoveString(i);
                     }
-                    else if (metaData.type >= (int)PrimitiveType.kMaxPrimitives)
+                    else if (metaData.type >= (int)PrimitiveType.MaxPrimitive)
                     {
                         var objPointer = StackValue.BuildPointer(i, metaData);
                         GCDisposeObject(objPointer, exe);
