@@ -2,11 +2,11 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 #define Major
 #define Minor
-#define Rev
 #define Build
-#expr ParseVersion("temp\bin\DynamoCore.dll", Major, Minor, Rev, Build)
+#define Rev
+#expr ParseVersion("temp\bin\DynamoCore.dll", Major, Minor, Build, Rev)
 #define ProductName "Dynamo"
-#define ProductVersion Str(Major) + "." + Str(Minor) + "." + Str(Rev)
+#define ProductVersion Str(Major) + "." + Str(Minor) + "." + Str(Build)
 #define FullVersion GetFileVersion("temp\bin\DynamoCore.dll")
 
 [Setup]
