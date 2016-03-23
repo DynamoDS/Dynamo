@@ -41,10 +41,6 @@
       <HintPath>$(DynamoExternPath)\ProtoGeometry\ProtoGeometry.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="ProtoInterface">
-      <HintPath>$(DynamoExternPath)\ProtoGeometry\ProtoInterface.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml" />
@@ -91,6 +87,10 @@
       <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
       <Name>CoreNodeModels</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\NodeServices\DynamoServices.csproj">
+      <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
+      <Name>DynamoServices</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
