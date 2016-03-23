@@ -29,30 +29,24 @@ namespace ProtoCore
 
         public enum WarningID
         {
-            kDefault,
-            kAccessViolation,
-            kCallingConstructorInConstructor,
-            kCallingConstructorOnInstance,
-            kCallingNonStaticMethodOnClass,
-            kFunctionAbnormalExit,
-            kFunctionAlreadyDefined,
-            kFunctionNotFound,
-            kIdUnboundIdentifier,
-            kInvalidArguments,
-            kInvalidStaticCyclicDependency,
-            kInvalidRangeExpression,
-            kInvalidThis,
-            kMismatchReturnType,
-            kMissingReturnStatement,
-            kParsing,
-            kTypeUndefined,
-            kPropertyNotFound,
-            kFileNotFound,
-            kAlreadyImported,
-            kMultipleSymbolFound,
-            kMultipleSymbolFoundFromName,
-            kUserDefinedClassNotAllowed,
-            kWarnMax
+            AccessViolation,
+            CallingConstructorInConstructor,
+            CallingConstructorOnInstance,
+            CallingNonStaticMethodOnClass,
+            FunctionAbnormalExit,
+            FunctionAlreadyDefined,
+            FunctionNotFound,
+            IdUnboundIdentifier,
+            InvalidStaticCyclicDependency,
+            InvalidRangeExpression,
+            InvalidThis,
+            MissingReturnStatement,
+            Parsing,
+            TypeUndefined,
+            PropertyNotFound,
+            FileNotFound,
+            MultipleSymbolFound,
+            MultipleSymbolFoundFromName,
         }
 
         public struct ErrorEntry
@@ -385,7 +379,7 @@ namespace ProtoCore
             foreach (SymbolNode symbol in symbolList)
             {
                 // Remove all warnings that match the symbol
-                warnings.RemoveAll(w => w.ID == BuildData.WarningID.kIdUnboundIdentifier && w.UnboundVariableSymbolNode != null && w.UnboundVariableSymbolNode.Equals(symbol));
+                warnings.RemoveAll(w => w.ID == BuildData.WarningID.IdUnboundIdentifier && w.UnboundVariableSymbolNode != null && w.UnboundVariableSymbolNode.Equals(symbol));
             }
         }
 
@@ -758,7 +752,7 @@ namespace ProtoCore
         {
             string message = string.Format(Resources.kMultipleSymbolFoundFromName, symbolName, "");
             message += String.Join(", ", collidingSymbolNames);
-            LogWarning(BuildData.WarningID.kMultipleSymbolFoundFromName, message);
+            LogWarning(BuildData.WarningID.MultipleSymbolFoundFromName, message);
         }
 
         /// <summary>
@@ -778,7 +772,7 @@ namespace ProtoCore
                                 int col = -1, 
                                 AssociativeGraph.GraphNode graphNode = null)
         {
-            LogWarning(BuildData.WarningID.kIdUnboundIdentifier, message, core.CurrentDSFileName, line, col, graphNode, unboundSymbol);
+            LogWarning(BuildData.WarningID.IdUnboundIdentifier, message, core.CurrentDSFileName, line, col, graphNode, unboundSymbol);
         }
 
         public void LogWarning(BuildData.WarningID warningID, 

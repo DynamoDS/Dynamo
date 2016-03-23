@@ -270,9 +270,9 @@ namespace ProtoFFI
             {
                 if (ex.InnerException != null)
                 {
-                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ex.InnerException.Message);
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.InnerException.Message);
                 }
-                dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ex.Message);
+                dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.Message);
             }
             catch (System.Reflection.TargetInvocationException ex)
             {
@@ -288,49 +288,49 @@ namespace ProtoFFI
                             ReflectionInfo.Name, 
                             innerMessage);
 
-                        dsi.LogWarning(ProtoCore.Runtime.WarningID.kInvalidArguments, msg);
+                        dsi.LogWarning(ProtoCore.Runtime.WarningID.InvalidArguments, msg);
                     }
                     else if (exc is System.ArgumentException)
-                        dsi.LogWarning(ProtoCore.Runtime.WarningID.kInvalidArguments, ErrorString(exc));
+                        dsi.LogWarning(ProtoCore.Runtime.WarningID.InvalidArguments, ErrorString(exc));
                     else if (exc is System.NullReferenceException)
-                        dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ErrorString(null));
+                        dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ErrorString(null));
                     else
-                        dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ErrorString(exc));
+                        dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ErrorString(exc));
                 }
                 else
-                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ErrorString(ex));
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ErrorString(ex));
             }
             catch (System.Reflection.TargetParameterCountException ex)
             {
                 if (ex.InnerException != null)
                 {
-                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ex.InnerException.Message);
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.InnerException.Message);
                 }
-                dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ex.Message);
+                dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.Message);
             }
             catch (System.MethodAccessException ex)
             {
                 if (ex.InnerException != null)
                 {
-                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ex.InnerException.Message);
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.InnerException.Message);
                 }
-                dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ex.Message);
+                dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.Message);
             }
             catch (System.InvalidOperationException ex)
             {
                 if (ex.InnerException != null)
                 {
-                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ex.InnerException.Message);
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.InnerException.Message);
                 }
-                dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ex.Message);
+                dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.Message);
             }
             catch (System.NotSupportedException ex)
             {
                 if (ex.InnerException != null)
                 {
-                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ex.InnerException.Message);
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.InnerException.Message);
                 }
-                dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ex.Message);
+                dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.Message);
             }
             catch (ArgumentNullException ex)
             {
@@ -340,24 +340,24 @@ namespace ProtoFFI
                     ReflectionInfo.Name,
                     innerMessage);
 
-                dsi.LogWarning(ProtoCore.Runtime.WarningID.kInvalidArguments, msg);
+                dsi.LogWarning(ProtoCore.Runtime.WarningID.InvalidArguments, msg);
             }
             catch (System.ArgumentException ex)
             {
                 if (ex.InnerException != null)
                 {
-                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kInvalidArguments, ErrorString(ex.InnerException));
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.InvalidArguments, ErrorString(ex.InnerException));
                 }
                 else
-                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kInvalidArguments, ErrorString(ex));
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.InvalidArguments, ErrorString(ex));
             }
             catch (Exception ex)
             {
                 if (ex.InnerException != null)
                 {
-                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kDefault, ErrorString(ex.InnerException));
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.Default, ErrorString(ex.InnerException));
                 }
-                dsi.LogWarning(ProtoCore.Runtime.WarningID.kDefault, ErrorString(ex));
+                dsi.LogWarning(ProtoCore.Runtime.WarningID.Default, ErrorString(ex));
             }
 
             return dsRetValue;
@@ -390,7 +390,7 @@ namespace ProtoFFI
                 catch (InvalidOperationException)
                 {
                     string message = String.Format(Resources.kFFIFailedToObtainThisObject, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
-                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, message);
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, message);
                     return null;
                 }
 
@@ -403,7 +403,7 @@ namespace ProtoFFI
             {
                 // Comment Jun: FFI function stack frames do not contain locals
                 int locals = 0;
-                int relative = 0 - ProtoCore.DSASM.StackFrame.kStackFrameSize - locals - i - 1;
+                int relative = 0 - ProtoCore.DSASM.StackFrame.StackFrameSize - locals - i - 1;
                 StackValue opArg = dsi.runtime.rmem.GetAtRelative(relative);
                 try
                 {
@@ -420,7 +420,7 @@ namespace ProtoFFI
                     {
                         //This is going to cause a cast exception. This is a very frequently called problem, so we want to short-cut the execution
 
-                        dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation,
+                        dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation,
                             string.Format(Resources.FailedToCastFromNull, paraminfos[i].ParameterType.Name));
                         
                             return null;
@@ -432,13 +432,13 @@ namespace ProtoFFI
                 }
                 catch (System.InvalidCastException ex)
                 {
-                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ex.Message);
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.Message);
                     return null;
                 }
                 catch (InvalidOperationException)
                 {
                     string message = String.Format(Resources.kFFIFailedToObtainObject, paraminfos[i].ParameterType.Name, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
-                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, message);
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, message);
                     return null;
                 }
             }

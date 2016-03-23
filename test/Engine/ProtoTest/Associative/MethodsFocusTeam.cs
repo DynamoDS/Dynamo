@@ -1525,7 +1525,7 @@ import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(va
             @"                import(""FFITarget.dll"");                a : M = DummyPoint.ByCoordinates(10, 20, 30);            ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", null);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kConversionNotPossible);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.ConversionNotPossible);
         }
 
         [Test]
@@ -1536,7 +1536,7 @@ import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(va
             @"                                import(""FFITarget.dll"");                a : DummyVector = DummyPoint.ByCoordinates(10, 20, 30);            ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", null);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kConversionNotPossible);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.ConversionNotPossible);
         }
 
         [Test]
@@ -1547,7 +1547,7 @@ import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(va
             @"                class A                {                    fa = 1;                }                class M extends A{};                a:M = A.A();            ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", null);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kConversionNotPossible);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.ConversionNotPossible);
         }
 
         [Test]

@@ -78,7 +78,7 @@ namespace ProtoCore
             executedAstGuids = new HashSet<Guid>();
 
             RunningBlock = 0;
-            ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid; //not yet started
+            ExecutionState = (int)ExecutionStateEventArgs.State.Invalid; //not yet started
 
             ContinuationStruct = new ContinuationStructure();
 
@@ -121,7 +121,7 @@ namespace ProtoCore
             WatchSymbolList = compileCore.watchSymbolList;
             SetProperties(compileCore.Options, compileCore.DSExecutable, compileCore.DebuggerProperties, null, compileCore.ExprInterpreterExe);
             RegisterDllTypes(compileCore.DllTypesToLoad);
-            NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin);
+            NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.ExecutionBegin);
         }
 
         public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null, Executable exprInterpreterExe = null)
@@ -259,7 +259,7 @@ namespace ProtoCore
         public void ResetForDeltaExecution()
         {
             RunningBlock = 0;
-            ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid;
+            ExecutionState = (int)ExecutionStateEventArgs.State.Invalid;
             StartPC = Constants.kInvalidPC;
         }
 
@@ -281,18 +281,18 @@ namespace ProtoCore
         {
             switch (state)
             {
-                case ExecutionStateEventArgs.State.kExecutionBegin:
-                    Validity.Assert(ExecutionState == (int)ExecutionStateEventArgs.State.kInvalid, "Invalid Execution state being notified.");
+                case ExecutionStateEventArgs.State.ExecutionBegin:
+                    Validity.Assert(ExecutionState == (int)ExecutionStateEventArgs.State.Invalid, "Invalid Execution state being notified.");
                     break;
-                case ExecutionStateEventArgs.State.kExecutionEnd:
-                    if (ExecutionState == (int)ExecutionStateEventArgs.State.kInvalid) //execution never begun.
+                case ExecutionStateEventArgs.State.ExecutionEnd:
+                    if (ExecutionState == (int)ExecutionStateEventArgs.State.Invalid) //execution never begun.
                         return;
                     break;
-                case ExecutionStateEventArgs.State.kExecutionBreak:
-                    Validity.Assert(ExecutionState == (int)ExecutionStateEventArgs.State.kExecutionBegin || ExecutionState == (int)ExecutionStateEventArgs.State.kExecutionResume, "Invalid Execution state being notified.");
+                case ExecutionStateEventArgs.State.ExecutionBreak:
+                    Validity.Assert(ExecutionState == (int)ExecutionStateEventArgs.State.ExecutionBegin || ExecutionState == (int)ExecutionStateEventArgs.State.ExecutionResume, "Invalid Execution state being notified.");
                     break;
-                case ExecutionStateEventArgs.State.kExecutionResume:
-                    Validity.Assert(ExecutionState == (int)ExecutionStateEventArgs.State.kExecutionBreak, "Invalid Execution state being notified.");
+                case ExecutionStateEventArgs.State.ExecutionResume:
+                    Validity.Assert(ExecutionState == (int)ExecutionStateEventArgs.State.ExecutionBreak, "Invalid Execution state being notified.");
                     break;
                 default:
                     Validity.Assert(false, "Invalid Execution state being notified.");
@@ -310,7 +310,7 @@ namespace ProtoCore
                 return DebugProps.CurrentBlockId;
 
             CodeBlock constructBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(DSExecutable.CodeBlocks, constructBlockId);
-            while (null != constructBlock && constructBlock.blockType == CodeBlockType.kConstruct)
+            while (null != constructBlock && constructBlock.blockType == CodeBlockType.Construct)
             {
                 constructBlock = constructBlock.parent;
             }

@@ -37,6 +37,8 @@ namespace Dynamo.Tests
             // not get persisted across to the subsequent test case.
             // 
             PreferenceSettings.DynamoTestPath = Path.Combine(TempFolder, "UserPreferenceTest.xml");
+
+            ExcelInterop.ShowOnStartup = false;
         }
 
         public override void Cleanup()
@@ -932,7 +934,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, runtimeCore.RuntimeStatus.WarningCount);
 
             ProtoCore.Runtime.WarningEntry warningEntry = runtimeCore.RuntimeStatus.Warnings.ElementAt(0);
-            Assert.AreEqual(ProtoCore.Runtime.WarningID.kDefault, warningEntry.ID);
+            Assert.AreEqual(ProtoCore.Runtime.WarningID.Default, warningEntry.ID);
 
             Assert.IsTrue(File.Exists(filePath));
 

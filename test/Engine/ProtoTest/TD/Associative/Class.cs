@@ -1006,7 +1006,7 @@ a = A.A();
 t = a.x;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kAccessViolation);
+            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.AccessViolation);
             thisTest.VerifyBuildWarningCount(1);
         }
 
@@ -1032,7 +1032,7 @@ class B extends A
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kAccessViolation);
+            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.AccessViolation);
             thisTest.VerifyBuildWarningCount(1);
         }
 

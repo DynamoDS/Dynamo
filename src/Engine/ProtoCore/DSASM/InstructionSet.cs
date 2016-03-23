@@ -604,7 +604,7 @@ namespace ProtoCore.DSASM
             value.opdata = data;
 
             MetaData mdata = new MetaData();
-            mdata.type = (int)PrimitiveType.kTypeInt;
+            mdata.type = (int)PrimitiveType.Integer;
             value.metaData = mdata;
             return value;
         }
@@ -616,7 +616,7 @@ namespace ProtoCore.DSASM
             value.opdata = BitConverter.DoubleToInt64Bits(data);
 
             MetaData mdata = new MetaData();
-            mdata.type = (int)PrimitiveType.kTypeDouble;
+            mdata.type = (int)PrimitiveType.Double;
             value.metaData = mdata;
             return value;
         }
@@ -628,7 +628,7 @@ namespace ProtoCore.DSASM
             value.opdata = Convert.ToInt64(ch);
 
             MetaData mdata = new MetaData();
-            mdata.type = (int)PrimitiveType.kTypeChar;
+            mdata.type = (int)PrimitiveType.Char;
             value.metaData = mdata;
             return value;
         }
@@ -639,7 +639,7 @@ namespace ProtoCore.DSASM
             value.optype = AddressType.Null;
             value.opdata = 0;
             MetaData mdata = new MetaData();
-            mdata.type = (int)PrimitiveType.kTypeNull;
+            mdata.type = (int)PrimitiveType.Null;
             value.metaData = mdata;
             return value;
         }
@@ -668,7 +668,7 @@ namespace ProtoCore.DSASM
             value.opdata = data;
 
             MetaData mdata;
-            mdata.type = (int)PrimitiveType.kTypeArray;
+            mdata.type = (int)PrimitiveType.Array;
             value.metaData = mdata;
             return value;
         }
@@ -811,7 +811,7 @@ namespace ProtoCore.DSASM
             value.opdata = data;
 
             MetaData mdata;
-            mdata.type = (int)PrimitiveType.kTypeString;
+            mdata.type = (int)PrimitiveType.String;
             value.metaData = mdata;
             return value;
         }
@@ -828,7 +828,7 @@ namespace ProtoCore.DSASM
             value.opdata = b ? 1 : 0;
 
             MetaData mdata;
-            mdata.type = (int)PrimitiveType.kTypeBool;
+            mdata.type = (int)PrimitiveType.Bool;
             value.metaData = mdata;
 
             return value;
@@ -841,7 +841,7 @@ namespace ProtoCore.DSASM
             value.opdata = 0;
 
             MetaData mdata;
-            mdata.type = (int)PrimitiveType.kTypeVar;
+            mdata.type = (int)PrimitiveType.Var;
             value.metaData = mdata;
 
             return value;
@@ -854,7 +854,7 @@ namespace ProtoCore.DSASM
             value.opdata = block;
 
             MetaData mdata;
-            mdata.type = (int)PrimitiveType.kTypeVar;
+            mdata.type = (int)PrimitiveType.Var;
             value.metaData = mdata;
 
             return value;
@@ -908,7 +908,7 @@ namespace ProtoCore.DSASM
             value.opdata = -1;
 
             MetaData mdata = new MetaData();
-            mdata.type = (int)PrimitiveType.kInvalidType;
+            mdata.type = (int)PrimitiveType.InvalidType;
             value.metaData = mdata;
 
             return value;
@@ -950,7 +950,7 @@ namespace ProtoCore.DSASM
             // TODO: find out a cleaner way to represent array key instead of
             // using this kind of hacking.
             var rawArrayPointer = ((ulong)opdata >> 32);
-            if (this.metaData.type == (int)PrimitiveType.kTypeString)
+            if (this.metaData.type == (int)PrimitiveType.String)
             {
                 array = BuildString((long)rawArrayPointer);
             }

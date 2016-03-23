@@ -782,7 +782,7 @@ r = a;
                 ";
             thisTest.RunScriptSource(code);
             // Will get an index out of range runtime warning
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kOverIndexing);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.OverIndexing);
         }
 
         [Test]
