@@ -43,10 +43,6 @@
       <HintPath>..\..\..\extern\IronPython\Microsoft.Dynamic.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="ProtoInterface">
-      <HintPath>..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -92,6 +88,11 @@
     <ProjectReference Include="..\..\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
       <Name>ProtoCore</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Engine\ProtoInterface\ProtoInterface.csproj">
+      <Project>{9ec0521f-84da-4196-b0bc-34e4049e50bd}</Project>
+      <Name>ProtoInterface</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\DSIronPython\DSIronPython.csproj">

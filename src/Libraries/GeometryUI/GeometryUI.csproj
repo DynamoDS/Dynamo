@@ -40,11 +40,6 @@
       <HintPath>..\..\..\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="ProtoInterface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
@@ -80,6 +75,11 @@
     <ProjectReference Include="..\..\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
       <Name>ProtoCore</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Engine\ProtoInterface\ProtoInterface.csproj">
+      <Project>{9ec0521f-84da-4196-b0bc-34e4049e50bd}</Project>
+      <Name>ProtoInterface</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\DynamoConversions\DynamoConversions.csproj">
