@@ -5,7 +5,7 @@
   <Product Id="*"
            Name="$(var.ProductName) $(var.Major).$(var.Minor).$(var.Build)"
            Language="1033"
-           Version="$(var.Major).$(var.Minor).$(var.Build)"
+           Version="$(var.FullVersion)"
            Manufacturer="Dynamo"
            UpgradeCode="{584B3E06-FE7A-4341-8C22-339B00ABD58A}">
 
@@ -22,6 +22,18 @@
                       DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." />
 
     <MediaTemplate EmbedCab="yes" />
+
+    <Condition Message="There is a newer [ProductName] revision version installed.">
+      NOT PREVIOUS_DYNAMO
+    </Condition>
+
+    <Property Id="PREVIOUS_DYNAMO">
+      <RegistrySearch Id="Previous_Dynamo"
+                      Root="HKLM"
+                      Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(var.ProductName) $(var.Major).$(var.Minor)"
+                      Name="RevVersion"
+                      Type="raw" />
+    </Property>
 
     <Property Id="INSTALLDIR"/>
     <CustomAction Id="DIRCA_DEFAULT_INSTALLDIR" Property="DYNAMO_INSTALLDIR" Value="[ProgramFiles64Folder][Manufacturer]\$(var.ProductName)\$(var.Major).$(var.Minor)" Execute="immediate" />
@@ -41,7 +53,7 @@
 
     <Icon Id="DynamoInstaller.ico" SourceFile="$(var.base)\tools\install\Extra\DynamoInstaller.ico"/>
     <Property Id="ARPPRODUCTICON" Value="DynamoInstaller.ico" />
-    
+
   </Product>
 
   <Fragment>
