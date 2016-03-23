@@ -21,7 +21,7 @@ namespace ProtoFFI
         private bool? keepReference;
         /// <summary>
         /// Indicate if the marshaller should keep a reference to this
-        /// parameter in the return object of the corresponding function clal.
+        /// parameter in the return object of the corresponding function call.
         /// </summary>
         public bool KeepReference
         {
@@ -493,6 +493,17 @@ namespace ProtoFFI
             var ret =  InvokeFunctionPointerNoThrow(c, dsi, thisObject, parameters.Count > 0 ? parameters.ToArray() : null, referencedParameters.Count());
             if (referencedParameters.Any() && (ret is StackValue))
             {
+                // If there is a parameter who has attribute [KeepReference],
+                // it means this parameter will cross the DesignScript boundary
+                // and be referenced by C# object. Therefore, when its DS
+                // wrapper object is out of scope, we shouldn't dispose it;
+                // otherwise that C# object will reference to an invalid object.
+                //
+                // The hack here is to treat it like a property in the return
+                // object. Note all DS wrapper objects are dummy objects who
+                // haven't any members. By allocating extra space on the heap,
+                // we store the reference in the return object so that the
+                // parameter will have the same lifecycle as the return object.
                 var pointer = (StackValue)ret;
                 if (pointer.IsPointer)
                 {
