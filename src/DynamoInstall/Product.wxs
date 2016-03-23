@@ -23,18 +23,6 @@
 
     <MediaTemplate EmbedCab="yes" />
 
-    <Condition Message="There is a newer [ProductName] revision version installed.">
-      NOT PREVIOUS_DYNAMO
-    </Condition>
-
-    <Property Id="PREVIOUS_DYNAMO">
-      <RegistrySearch Id="Previous_Dynamo"
-                      Root="HKLM"
-                      Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(var.ProductName) $(var.Major).$(var.Minor)"
-                      Name="RevVersion"
-                      Type="raw" />
-    </Property>
-
     <Property Id="INSTALLDIR"/>
     <CustomAction Id="DIRCA_DEFAULT_INSTALLDIR" Property="DYNAMO_INSTALLDIR" Value="[ProgramFiles64Folder][Manufacturer]\$(var.ProductName)\$(var.Major).$(var.Minor)" Execute="immediate" />
     <CustomAction Id="DIRCA_SET_INSTALLDIR" Property="DYNAMO_INSTALLDIR" Value="[INSTALLDIR]\$(var.ProductName)\$(var.Major).$(var.Minor)" Execute="immediate" />
