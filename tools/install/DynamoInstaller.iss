@@ -104,16 +104,16 @@ Source: Extra\DynamoInstaller.ico; DestDir: {app}; Flags: ignoreversion overwrit
 Source: temp\bin\UI\*; DestDir: {app}\UI; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 
 ;Samples
-Source: temp\samples\*.*; DestDir: {commonappdata}\Dynamo\{#Major}.{#Minor}\samples; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
+Source: temp\samples\*.*; DestDir: {commonappdata}\Dynamo\Dynamo Revit\{#Major}.{#Minor}\samples; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
 
 ;Other Custom Nodes
-Source: temp\definitions\*; DestDir: {commonappdata}\Dynamo\{#Major}.{#Minor}\definitions; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
+Source: temp\definitions\*; DestDir: {commonappdata}\Dynamo\Dynamo Revit\{#Major}.{#Minor}\definitions; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 
 ;DirectX
 Source: temp\DirectX\*.*; DestDir: {tmp}\DirectX;
 
 ;Gallery
-Source: temp\gallery\*; DestDir: "{commonappdata}\Dynamo\{#Major}.{#Minor}\gallery"; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
+Source: temp\gallery\*; DestDir: "{commonappdata}\Dynamo\Dynamo Revit\{#Major}.{#Minor}\gallery"; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 
 ;3rdParty
 Source: temp\3rdParty\OpenSourceComponents\*; DestDir: "{app}\3rdParty\OpenSourceComponents"; Flags: ignoreversion overwritereadonly recursesubdirs;
