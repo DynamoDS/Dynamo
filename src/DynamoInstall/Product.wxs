@@ -3,9 +3,9 @@
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
 
   <Product Id="*"
-           Name="$(var.ProductName) $(var.Major).$(var.Minor).$(var.Rev)"
+           Name="$(var.ProductName) $(var.Major).$(var.Minor).$(var.Build)"
            Language="1033"
-           Version="$(var.Major).$(var.Minor).$(var.Rev)"
+           Version="$(var.Major).$(var.Minor).$(var.Build)"
            Manufacturer="Dynamo"
            UpgradeCode="{584B3E06-FE7A-4341-8C22-339B00ABD58A}">
 
