@@ -1528,7 +1528,8 @@ Do you want to install the latest Dynamo update?</value>
     <value>No node could be found with that Id.</value>
   </data>
   <data name="MessageFailedToOpenFile" xml:space="preserve">
-    <value>Error opening file: </value>
+    <value>Error opening file: {0}</value>
+    <comment>Message box content</comment>
   </data>
   <data name="MessageFailedToSaveAsImage" xml:space="preserve">
     <value>Failed to save the Workspace as image.</value>
