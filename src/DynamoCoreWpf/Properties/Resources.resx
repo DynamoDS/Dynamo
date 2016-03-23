@@ -1990,4 +1990,8 @@ Do you want to install the latest Dynamo update?</value>
 Next assemblies were loaded several times:
 </value>
   </data>
+  <data name="MessageFailedToAddFile" xml:space="preserve">
+    <value>Failed to add file: {0}</value>
+    <comment>Message box content</comment>
+  </data>
 </root>

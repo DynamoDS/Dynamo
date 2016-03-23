@@ -2778,6 +2778,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to add file: {0}.
+        /// </summary>
+        public static string MessageFailedToAddFile {
+            get {
+                return ResourceManager.GetString("MessageFailedToAddFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to apply NodeViewCustomization for {0}.
         /// </summary>
         public static string MessageFailedToApplyCustomization {
