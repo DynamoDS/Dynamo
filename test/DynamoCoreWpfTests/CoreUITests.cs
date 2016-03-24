@@ -757,6 +757,24 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(currentWs.InCanvasSearchBar.IsOpen);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void WorkspaceContextMenu_IfSubmenuOpenOnMouseHover()
+        {
+            var currentWs = View.ChildOfType<WorkspaceView>();
+            RightClick(currentWs.zoomBorder);
+            Assert.IsTrue(currentWs.ContextMenuPopup.IsOpen);
+
+            currentWs.WorkspaceLacingMenu.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0)
+            {
+                RoutedEvent = Mouse.MouseEnterEvent
+            });
+
+            DispatcherUtil.DoEvents();
+
+            Assert.IsTrue(currentWs.WorkspaceLacingMenu.IsSubmenuOpen);
+        }
+
         private void RightClick(IInputElement element)
         {
             element.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Right)

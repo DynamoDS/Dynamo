@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using Dynamo.Interfaces;
-using Dynamo.Utilities;
 using Dynamo.Logging;
-using DynamoUtilities;
+using Dynamo.Utilities;
 using DynamoPackages.Properties;
+using DynamoUtilities;
 
 namespace Dynamo.PackageManager
 {
@@ -210,7 +208,7 @@ namespace Dynamo.PackageManager
                 Package discoveredPkg;
 
                 // get the package name and the installed version
-                if (File.Exists(headerPath))
+                if (PathHelper.IsValidPath(headerPath))
                 {
                     discoveredPkg = Package.FromJson(headerPath, AsLogger());
                     if (discoveredPkg == null)

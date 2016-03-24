@@ -5,31 +5,21 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Security;
-using System.Security.AccessControl;
-using System.Security.Permissions;
-using System.Security.Principal;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Dynamo.Core;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.PackageManager.UI;
-using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-
-using DynamoUtilities;
-
+using Dynamo.Wpf.Properties;
 using Greg.Requests;
 using Microsoft.Practices.Prism.Commands;
 using Double = System.Double;
-using String = System.String;
-using Dynamo.Wpf.Properties;
 using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
+using String = System.String;
 
 namespace Dynamo.PackageManager
 {
@@ -943,6 +933,8 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
+                UploadState = PackageUploadHandle.State.Error;
+                ErrorString = String.Format(Resources.MessageFailedToAddFile, filename);
                 dynamoViewModel.Model.Logger.Log(e);
             }
         }
@@ -986,6 +978,8 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
+                UploadState = PackageUploadHandle.State.Error;
+                ErrorString = String.Format(Resources.MessageFailedToAddFile, filename);
                 dynamoViewModel.Model.Logger.Log(e);
             }
         }
