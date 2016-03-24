@@ -339,7 +339,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
 
                 var values = Model3DDictionary.Values.ToList();
-                //values.Sort(new Model3DComparer(Camera.Position));
+                values.Sort(new Model3DComparer(Camera.Position));
                 return values;
             }
         }
@@ -1783,10 +1783,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// The Model3DComparer is used to sort arrays of Model3D objects. 
     /// After sorting, the target array's objects will be organized
     /// as follows:
-    /// 1. All opaque geometry.
-    /// 2. All text.
-    /// 3. All transparent geometry, ordered by distance from
-    /// the camera.
+    /// 1. All not GeometryModel3D objects
+    /// 2. All opaque mesh geometry
+    /// 3. All opaque line geometry
+    /// 4. All opaque point geometry
+    /// 5. All transparent geometry, ordered by distance from the camera.
+    /// 6. All text.
     /// </summary>
     public class Model3DComparer : IComparer<Model3D>
     {
@@ -1802,6 +1804,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var a = x as GeometryModel3D;
             var b = y as GeometryModel3D;
 
+            // if at least one of them is not GeometryModel3D
+            // we either sort by being GeometryModel3D type (result is 1 or -1) 
+            // or don't care about order (result is 0)
             if (a == null && b == null)
             {
                 return 0;
@@ -1821,7 +1826,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var textB = b.GetType() == typeof(BillboardTextModel3D);
             var result = textA.CompareTo(textB);
 
-            if (result == 0 && textA)
+            // if at least one of them is text
+            // we either sort by being text type (result is 1 or -1) 
+            // or don't care about order (result is 0)
+            if (textA || textB)
             {
                 return result;
             }
@@ -1830,16 +1838,36 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var transB = (bool) b.GetValue(AttachedProperties.HasTransparencyProperty);
             result = transA.CompareTo(transB);
 
-            if (result != 0 || !transA) return result;
+            // if only one of transA and transB has transparency, sort by having this property
+            if (result != 0) return result;
 
-            // compare distance
-            var boundsA = a.Bounds;
-            var boundsB = b.Bounds;
-            var cpA = (boundsA.Maximum + boundsA.Minimum)/2;
-            var cpB = (boundsB.Maximum + boundsB.Minimum)/2;
-            var dA = Vector3.DistanceSquared(cpA, cameraPosition);
-            var dB = Vector3.DistanceSquared(cpB, cameraPosition);
-            return -dA.CompareTo(dB);
+            // if both items has transparency, sort by distance
+            if (transA)
+            {
+                // compare distance
+                var boundsA = a.Bounds;
+                var boundsB = b.Bounds;
+                var cpA = (boundsA.Maximum + boundsA.Minimum) / 2;
+                var cpB = (boundsB.Maximum + boundsB.Minimum) / 2;
+                var dA = Vector3.DistanceSquared(cpA, cameraPosition);
+                var dB = Vector3.DistanceSquared(cpB, cameraPosition);
+                result = -dA.CompareTo(dB);
+                return result;
+            }
+
+            // if both items does not have transparency, sort following next order: mesh, line, point
+            var pointA = a is PointGeometryModel3D;
+            var pointB = b is PointGeometryModel3D;
+            result = pointA.CompareTo(pointB);
+
+            if (pointA || pointB)
+            {
+                return result;
+            }
+
+            var lineA = a is LineGeometryModel3D;
+            var lineB = b is LineGeometryModel3D;
+            return lineA.CompareTo(lineB);
         }
     }
 
