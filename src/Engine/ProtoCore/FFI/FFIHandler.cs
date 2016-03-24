@@ -49,7 +49,6 @@ namespace ProtoFFI
         /// <param name="context">DS execution context</param>
         /// <param name="dsi">The current runtime interpreter</param>
         /// <param name="type">Type of DS Object expected</param>
-        /// <param name="reservedSize">The size of DS object expected</param>
         /// <returns>Marshaled object as Operand</returns>
         public abstract StackValue Marshal(object obj, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type type);
 
