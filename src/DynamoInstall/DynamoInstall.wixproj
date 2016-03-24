@@ -64,7 +64,10 @@
     <CreateProperty Value="Dynamo Core">
       <Output TaskParameter="Value" PropertyName="ProductName" />
     </CreateProperty>
-    <CreateProperty Value="FullVersion=$(FullVersion);ProductName=$(ProductName);Major=$(Major);Minor=$(Minor);Rev=$(Rev);Build=$(Build);$(DefineConstants)">
+    <CreateProperty Value="{584B3E06-FE7A-4341-8C22-339B00ABD58A}">
+      <Output TaskParameter="Value" PropertyName="UpgradeGUID" />
+    </CreateProperty>
+    <CreateProperty Value="UpgradeGUID=$(UpgradeGUID);ProductName=$(ProductName);FullVersion=$(FullVersion);Major=$(Major);Minor=$(Minor);Rev=$(Rev);Build=$(Build);$(DefineConstants)">
       <Output TaskParameter="Value" PropertyName="DefineConstants" />
     </CreateProperty>
     <Exec Command="rd /s /q $(DYNAMO_HARVEST_PATH)" />

@@ -7,7 +7,7 @@
            Language="1033"
            Version="$(var.FullVersion)"
            Manufacturer="Dynamo"
-           UpgradeCode="{584B3E06-FE7A-4341-8C22-339B00ABD58A}">
+           UpgradeCode="$(var.UpgradeGUID)">
 
     <Package Comments="$(var.ProductName) $(var.FullVersion)"
                  Description="Install package for $(var.ProductName)"
@@ -16,10 +16,21 @@
                  Languages="1033"
                  Manufacturer="Dynamo"
                  Platform="x64"/>
+   
+    <!-- (1) To prevent downgrades. 
+         If there are any MAJOR.MINOR.BUILD version that is higher installed,
+         prevent current installation.-->
+    <MajorUpgrade AllowSameVersionUpgrades="no"
+                  Schedule="afterInstallValidate"
+                  DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." />
 
-    <MajorUpgrade AllowSameVersionUpgrades="yes"
-                      Schedule="afterInstallValidate"
-                      DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." />
+    <!-- (2) To ensure OTHER Dynamo versions of the SAME Upgrade Core is removed.
+         Considering (1),
+         if there are any lower/same MAJOR.MINOR.BUILD version installed with the same upgrade core,
+         they will be uninstalled before current installation.-->
+    <Upgrade Id="$(var.UpgradeGUID)">
+      <UpgradeVersion OnlyDetect="no" Property="OTHER_DYNAMO_FOUND" Minimum="0.0.0"  />
+    </Upgrade>
 
     <MediaTemplate EmbedCab="yes" />
 
