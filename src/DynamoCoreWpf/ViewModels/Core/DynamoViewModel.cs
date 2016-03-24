@@ -1124,15 +1124,19 @@ namespace Dynamo.ViewModels
             }
             catch (Exception e)
             {
-                if (e is FileNotFoundException)
+                // Catch all the IO exceptions here. The message provided by .Net is clear enough to indicate the problem in this case.
+                if (e is IOException)
                 {
-                    System.Windows.MessageBox.Show(String.Format(Resources.MessageFileNotFound, xmlFilePath));
+                    System.Windows.MessageBox.Show(String.Format(e.Message, xmlFilePath));
                 }
                 else if (e is System.Xml.XmlException)
                 {
-                    System.Windows.MessageBox.Show(String.Format(Resources.MessageFailedToOpenFile, xmlFilePath));
+                    System.Windows.MessageBox.Show(String.Format(Resources.MessageFailedToOpenCorruptedFile, xmlFilePath));
                 }
-                model.Logger.Log(String.Format(Resources.MessageFailedToOpenFile, xmlFilePath, "\n"));
+                else
+                {
+                    System.Windows.MessageBox.Show(String.Format(Resources.MessageUnkownErrorOpeningFile, xmlFilePath));
+                }
                 model.Logger.Log(e);
                 return;
             }
