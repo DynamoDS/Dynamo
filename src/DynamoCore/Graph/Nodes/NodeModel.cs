@@ -806,16 +806,6 @@ namespace Dynamo.Graph.Nodes
             return engine.GetMirror(GetAstIdentifierForOutputIndex(outPortIndex).Value).GetData();
         }
 
-        public void SetPinStatus(bool pinned)
-        {
-            if (PreviewPinned != pinned)
-            {
-                PreviewPinned = pinned;
-                OnNodeModified();
-            }
-            
-        }
-
         /// <summary>
         ///     Sets the nickname of this node from the attributes on the class definining it.
         /// </summary>
@@ -1731,6 +1721,15 @@ namespace Dynamo.Graph.Nodes
                         IsFrozen = newIsFrozen;
                     }
                     return true;
+
+                case "PreviewPinned":
+                    bool newIsPinned;
+                    if (bool.TryParse(value, out newIsPinned))
+                    {
+                        PreviewPinned = newIsPinned;
+                    }
+                    return true;
+
             }
 
             return base.UpdateValueCore(updateValueParams);
