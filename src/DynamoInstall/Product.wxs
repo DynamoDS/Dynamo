@@ -20,17 +20,27 @@
     <!-- (1) To prevent downgrades. 
          If there are any MAJOR.MINOR.BUILD version that is higher installed,
          prevent current installation.-->
-    <MajorUpgrade AllowSameVersionUpgrades="no"
+    <!--MajorUpgrade AllowSameVersionUpgrades="no"
                   Schedule="afterInstallValidate"
-                  DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." />
+                  DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." /-->
 
     <!-- (2) To ensure OTHER Dynamo versions of the SAME Upgrade Core is removed.
          Considering (1),
          if there are any lower/same MAJOR.MINOR.BUILD version installed with the same upgrade core,
          they will be uninstalled before current installation.-->
-    <Upgrade Id="$(var.UpgradeGUID)">
+    <!--Upgrade Id="$(var.UpgradeGUID)">
       <UpgradeVersion OnlyDetect="no" Property="OTHER_DYNAMO_FOUND" Minimum="0.0.0"  />
+    </Upgrade-->
+
+    <!-- Major upgrade -->
+    <Upgrade Id="$(var.UpgradeGUID)">
+      <UpgradeVersion Minimum="$(var.Major).$(var.Minor).$(var.Build)" IncludeMinimum="no" OnlyDetect="yes" Property="NEWERVERSIONDETECTED" />
+      <UpgradeVersion Minimum="0.0.0" IncludeMinimum="yes" Maximum="$(var.Major).$(var.Minor).$(var.Build)" IncludeMaximum="yes" Property="OLDERVERSIONBEINGUPGRADED" OnlyDetect="no" />
     </Upgrade>
+
+    <Condition Message="A newer version of $(var.ProductName) is already installed.">
+      NOT NEWERVERSIONDETECTED
+    </Condition>
 
     <MediaTemplate EmbedCab="yes" />
 
@@ -39,6 +49,7 @@
     <CustomAction Id="DIRCA_SET_INSTALLDIR" Property="DYNAMO_INSTALLDIR" Value="[INSTALLDIR]\$(var.ProductName)\$(var.Major).$(var.Minor)" Execute="immediate" />
 
     <InstallExecuteSequence>
+      <RemoveExistingProducts Before='InstallInitialize' />
       <Custom Action="DIRCA_DEFAULT_INSTALLDIR" Before="CostInitialize">INSTALLDIR=""</Custom>
       <Custom Action="DIRCA_SET_INSTALLDIR" Before="CostInitialize"><![CDATA[INSTALLDIR<>""]]></Custom>
     </InstallExecuteSequence>
