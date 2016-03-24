@@ -286,7 +286,7 @@ namespace ProtoFFI
             return ReflectionInfo.Invoke(thisObject, parameters);
         }
 
-        protected object InvokeFunctionPointerNoThrow(ProtoCore.Runtime.Context c, Interpreter dsi, object thisObject, object[] parameters, int reservedSize)
+        protected object InvokeFunctionPointerNoThrow(ProtoCore.Runtime.Context c, Interpreter dsi, object thisObject, object[] parameters)
         {
             object ret = null;
             StackValue dsRetValue = StackValue.Null;
@@ -296,7 +296,7 @@ namespace ProtoFFI
                 ret = InvokeFunctionPointer(thisObject, parameters);
                 //Reduce to singleton if the attribute is specified.
                 ret = ReflectionInfo.ReduceReturnedCollectionToSingleton(ret);
-                dsRetValue = marshaller.Marshal(ret, c, dsi, mReturnType, reservedSize);
+                dsRetValue = marshaller.Marshal(ret, c, dsi, mReturnType);
             }
             catch (DllNotFoundException ex)
             {
@@ -490,8 +490,9 @@ namespace ProtoFFI
                 }
             }
 
-            var ret =  InvokeFunctionPointerNoThrow(c, dsi, thisObject, parameters.Count > 0 ? parameters.ToArray() : null, referencedParameters.Count());
-            if (referencedParameters.Any() && (ret is StackValue))
+            var ret =  InvokeFunctionPointerNoThrow(c, dsi, thisObject, parameters.Count > 0 ? parameters.ToArray() : null);
+            int count = referencedParameters.Count;
+            if (count > 0 && (ret is StackValue))
             {
                 // If there is a parameter who has attribute [KeepReference],
                 // it means this parameter will cross the DesignScript boundary
@@ -510,10 +511,13 @@ namespace ProtoFFI
                     var dsObject = dsi.runtime.rmem.Heap.ToHeapObject<DSObject>(pointer);
                     if (dsObject != null)
                     {
+                        dsObject.ExpandBySize(count);
                         Validity.Assert(dsObject.Count >= referencedParameters.Count);
+
+                        int startIndex = dsObject.Count;
                         for (int i = 0; i < referencedParameters.Count; i++)
                         {
-                            dsObject.SetValueAtIndex(i, referencedParameters[i], dsi.runtime.RuntimeCore);
+                            dsObject.SetValueAtIndex(startIndex + i, referencedParameters[i], dsi.runtime.RuntimeCore);
                         }
                     }
                 } 
@@ -557,7 +561,7 @@ namespace ProtoFFI
             }
             else
             {
-                retVal = InvokeFunctionPointerNoThrow(c, dsi, thisObject, null, 0);
+                retVal = InvokeFunctionPointerNoThrow(c, dsi, thisObject, null);
             }
 
             return retVal;
