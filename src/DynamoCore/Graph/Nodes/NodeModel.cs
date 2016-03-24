@@ -257,7 +257,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Indicates if node preview is pinned
         /// </summary>
-        public bool PreviewPinned { get; private set; }
+        public bool PreviewPinned { get; internal set; }
 
         /// <summary>
         ///     Text that is displayed as this Node's tooltip.
