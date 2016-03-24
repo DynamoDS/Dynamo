@@ -511,10 +511,10 @@ namespace ProtoFFI
                     var dsObject = dsi.runtime.rmem.Heap.ToHeapObject<DSObject>(pointer);
                     if (dsObject != null)
                     {
+                        int startIndex = dsObject.Count;
                         dsObject.ExpandBySize(count);
                         Validity.Assert(dsObject.Count >= referencedParameters.Count);
 
-                        int startIndex = dsObject.Count;
                         for (int i = 0; i < referencedParameters.Count; i++)
                         {
                             dsObject.SetValueAtIndex(startIndex + i, referencedParameters[i], dsi.runtime.RuntimeCore);
