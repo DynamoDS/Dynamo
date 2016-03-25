@@ -3201,13 +3201,6 @@
             <param name="nativePointer">Input opaque native pointer</param>
             <returns>Returns geometries that are extracted out of the pointer.</returns>
         </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.ToNativePointer(System.Object[])">
-            <summary>
-            Call this method to convert a list of geometries to a list of native pointers.
-            </summary>
-            <param name="ffiObjects">A list of geometry objects</param>
-            <returns>Returns native pointers that are extracted out of the geometries.</returns>
-        </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.DeserializeFromSAB(System.Byte[])">
             <summary>
             Takes a SAB file as input, and deserializes the ASM geometry into
