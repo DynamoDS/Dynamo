@@ -7,7 +7,7 @@
            Language="1033"
            Version="$(var.FullVersion)"
            Manufacturer="Dynamo"
-           UpgradeCode="$(var.UpgradeGUID)">
+           UpgradeCode="$(var.UpgradeCode)">
 
     <Package Comments="$(var.ProductName) $(var.FullVersion)"
                  Description="Install package for $(var.ProductName)"
@@ -20,9 +20,17 @@
     <!-- (1) To prevent downgrades. 
          If there are any MAJOR.MINOR.BUILD version that is higher installed,
          prevent current installation.-->
-    <!--MajorUpgrade AllowSameVersionUpgrades="no"
+    <MajorUpgrade AllowSameVersionUpgrades="no"
                   Schedule="afterInstallValidate"
-                  DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." /-->
+                  DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." />
+
+    <Property Id="PREV_DYN">
+      <RegistrySearch Id="Prev_Dyn"
+                      Root="HKLM"
+                      Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(var.ProductName) $(var.Major).$(var.Minor)"
+                      Name="Version"
+                      Type="raw" />
+    </Property>
 
     <!-- (2) To ensure OTHER Dynamo versions of the SAME Upgrade Core is removed.
          Considering (1),
@@ -33,14 +41,28 @@
     </Upgrade-->
 
     <!-- Major upgrade -->
-    <Upgrade Id="$(var.UpgradeGUID)">
-      <UpgradeVersion Minimum="$(var.Major).$(var.Minor).$(var.Build)" IncludeMinimum="no" OnlyDetect="yes" Property="NEWERVERSIONDETECTED" />
-      <UpgradeVersion Minimum="0.0.0" IncludeMinimum="yes" Maximum="$(var.Major).$(var.Minor).$(var.Build)" IncludeMaximum="yes" Property="OLDERVERSIONBEINGUPGRADED" OnlyDetect="no" />
+    <Upgrade Id="$(var.UpgradeCode)">
+      <!--UpgradeVersion Property="NEWER_VERSION_DETECTED" 
+                      Minimum="$(var.Major).$(var.Minor).$(var.Build)" 
+                      IncludeMinimum="no" 
+                      OnlyDetect="yes" /-->
+      <UpgradeVersion Property='SELF_FOUND' 
+                      Minimum='$(var.Major).$(var.Minor).$(var.Build)' 
+                      IncludeMinimum='yes' 
+                      Maximum='$(var.Major).$(var.Minor).$(var.Build)' 
+                      IncludeMaximum='yes' 
+                      OnlyDetect='yes' />
+      <!--UpgradeVersion Property="OLDER_VERSION_BEING_UPGRADED"
+                      Minimum="0.0.0" 
+                      IncludeMinimum="yes" 
+                      Maximum="$(var.Major).$(var.Minor).$(var.Build)" 
+                      IncludeMaximum="no" 
+                      OnlyDetect="no" /-->
     </Upgrade>
 
-    <Condition Message="A newer version of $(var.ProductName) is already installed.">
-      NOT NEWERVERSIONDETECTED
-    </Condition>
+    <!--Condition Message="A newer version of $(var.ProductName) is already installed.">
+      NOT NEWER_VERSION_DETECTED
+    </Condition-->
 
     <MediaTemplate EmbedCab="yes" />
 
@@ -48,8 +70,21 @@
     <CustomAction Id="DIRCA_DEFAULT_INSTALLDIR" Property="DYNAMO_INSTALLDIR" Value="[ProgramFiles64Folder][Manufacturer]\$(var.ProductName)\$(var.Major).$(var.Minor)" Execute="immediate" />
     <CustomAction Id="DIRCA_SET_INSTALLDIR" Property="DYNAMO_INSTALLDIR" Value="[INSTALLDIR]\$(var.ProductName)\$(var.Major).$(var.Minor)" Execute="immediate" />
 
+    <CustomAction Id='AlreadyUpdated' Error='[ProductName] has already been updated to $(var.Major).$(var.Minor).$(var.Build).' />
+    <CustomAction Id='NoDowngrade' Error='A later version of [ProductName] is already installed.' />
+
+    <!--SetProperty Id="REINSTALLMODE" Value="amus" Sequence="first" Before="LaunchConditions">
+      PREV_DYN
+    </SetProperty-->
+
     <InstallExecuteSequence>
-      <RemoveExistingProducts Before='InstallInitialize' />
+      <Custom Action='AlreadyUpdated' Before="CostInitialize"><![CDATA[REINSTALLMODE<>"anus"]]></Custom>
+      <!--Custom Action='NoDowngrade' After='FindRelatedProducts'>NEWER_VERSION_DETECTED</Custom-->
+      <!--RemoveExistingProducts After='InstallValidate' />
+      <RemoveExistingProducts After='InstallInitialize' /-->
+      <!--RemoveExistingProducts After='InstallExecute' />
+      <RemoveExistingProducts After='InstallExecuteAgain' />
+      <RemoveExistingProducts After='InstallFinalize' /-->
       <Custom Action="DIRCA_DEFAULT_INSTALLDIR" Before="CostInitialize">INSTALLDIR=""</Custom>
       <Custom Action="DIRCA_SET_INSTALLDIR" Before="CostInitialize"><![CDATA[INSTALLDIR<>""]]></Custom>
     </InstallExecuteSequence>
