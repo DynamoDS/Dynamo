@@ -13,6 +13,44 @@ using System.Globalization;
 
 namespace ProtoCore.AST.AssociativeAST
 {
+    public enum AstKind
+    {
+        Array,
+        ArrayName,
+        ArgumentSignature,
+        AtLevel,
+        BinaryExpression,
+        Boolean,
+        Char,
+        ClassDeclaration,
+        CodeBlock,
+        Comment,
+        Constructor,
+        DefaultArgument,
+        Double,
+        Dynamic,
+        DynamicBlock,
+        ExpressionList,
+        FunctionCall,
+        FunctionDefintion,
+        FunctionDotCall,
+        IdentifierList,
+        Identifier,
+        Import,
+        InlineConditional,
+        Integer,
+        LanguageBlock,
+        ModifierBlock,
+        Null,
+        RangeExpression,
+        ReplicationGuide,
+        String,
+        ThisPointer,
+        TypedIdentifier,
+        UnaryExpression,
+        VariableDeclaration
+    }
+
     public abstract class AssociativeNode : Node
     {
         public bool IsModifier;
@@ -28,6 +66,11 @@ namespace ProtoCore.AST.AssociativeAST
         {
             IsModifier = rhs.IsModifier;
             IsProcedureOwned = rhs.IsProcedureOwned;
+        }
+
+        public abstract AstKind Kind
+        {
+            get;
         }
 
         public abstract void Accept(AssociativeAstVisitor visitor);
@@ -78,6 +121,14 @@ namespace ProtoCore.AST.AssociativeAST
                         Value = value.Substring(start + 2, end - start - 2);
                     }
                 }
+            }
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Comment;
             }
         }
 
@@ -166,6 +217,14 @@ namespace ProtoCore.AST.AssociativeAST
             return buf.ToString();
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.LanguageBlock;
+            }
+        }
+
         public override void Accept(AssociativeAstVisitor visitor)
         {
             visitor.VisitLanguageBlockNode(this);
@@ -232,6 +291,14 @@ namespace ProtoCore.AST.AssociativeAST
             return buf.ToString();
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.ReplicationGuide;
+            }
+        }
+
         public override void Accept(AssociativeAstVisitor visitor)
         {
             visitor.VisitReplicationGuideNode(this);
@@ -270,7 +337,13 @@ namespace ProtoCore.AST.AssociativeAST
                 IsDominant = rhs.IsDominant;
             }
         }
-
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.AtLevel;
+            }
+        }
         public override void Accept(AssociativeAstVisitor visitor)
         {
             visitor.VisitAtLevelNode(this);
@@ -407,6 +480,14 @@ namespace ProtoCore.AST.AssociativeAST
             return buf.ToString();
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.ArrayName;
+            }
+        }
+
         public override void Accept(AssociativeAstVisitor visitor)
         {
             visitor.VisitArrayNameNode(this);
@@ -529,6 +610,13 @@ namespace ProtoCore.AST.AssociativeAST
         {
             return Value.Replace("%", string.Empty) + base.ToString();
         }
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Identifier;
+            }
+        }
 
         public override void Accept(AssociativeAstVisitor visitor)
         {
@@ -556,7 +644,13 @@ namespace ProtoCore.AST.AssociativeAST
         {
             return base.ToString() + " : " + datatype;
         }
-
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.TypedIdentifier;
+            }
+        }
         public override void Accept(AssociativeAstVisitor visitor)
         {
             visitor.VisitTypedIdentifierNode(this);
@@ -630,6 +724,14 @@ namespace ProtoCore.AST.AssociativeAST
             return LeftNode + "." + RightNode;
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.IdentifierList;
+            }
+        }
+
         public override void Accept(AssociativeAstVisitor visitor)
         {
             visitor.VisitIdentifierListNode(this);
@@ -673,6 +775,14 @@ namespace ProtoCore.AST.AssociativeAST
         public override string ToString()
         {
             return Value.ToString(CultureInfo.InvariantCulture);
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Integer;
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -721,6 +831,14 @@ namespace ProtoCore.AST.AssociativeAST
         public override string ToString()
         {
             return Value.ToString(CultureInfo.InvariantCulture);
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Double;
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -774,6 +892,13 @@ namespace ProtoCore.AST.AssociativeAST
             return (Value ? "true" : "false");
 
         }
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Boolean;
+            }
+        }
 
         public override void Accept(AssociativeAstVisitor visitor)
         {
@@ -820,6 +945,14 @@ namespace ProtoCore.AST.AssociativeAST
         public override string ToString()
         {
             return "'" + Value + "'";
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Char;
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -870,6 +1003,14 @@ namespace ProtoCore.AST.AssociativeAST
             return "\"" + Value + "\"";
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.String;
+            }
+        }
+
         public override void Accept(AssociativeAstVisitor visitor)
         {
             visitor.VisitStringNode(this);
@@ -901,6 +1042,14 @@ namespace ProtoCore.AST.AssociativeAST
         public override string ToString()
         {
             return Keyword.Null;
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Null;
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -1035,6 +1184,14 @@ namespace ProtoCore.AST.AssociativeAST
             return buf.ToString();
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.FunctionCall;
+            }
+        }
+
         public override void Accept(AssociativeAstVisitor visitor)
         {
             visitor.VisitFunctionCallNode(this);
@@ -1117,6 +1274,14 @@ namespace ProtoCore.AST.AssociativeAST
             buf.Append(".");
             buf.Append(FunctionCall);
             return buf.ToString();
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.FunctionDotCall;
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -1202,6 +1367,14 @@ namespace ProtoCore.AST.AssociativeAST
             return argumentTypeHashCode ^ nameNodeHashCode ^ isStaticHashCode;
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.VariableDeclaration;
+            }
+        }
+
         public override void Accept(AssociativeAstVisitor visitor)
         {
             visitor.VisitVarDeclNode(this);
@@ -1261,6 +1434,13 @@ namespace ProtoCore.AST.AssociativeAST
 
             return argumentsHashCode;
         }
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.ArgumentSignature;
+            }
+        }
 
         public override void Accept(AssociativeAstVisitor visitor)
         {
@@ -1318,6 +1498,14 @@ namespace ProtoCore.AST.AssociativeAST
                 buf.Append(Body[i].ToString());
             }
             return buf.ToString();
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.CodeBlock;
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -1443,6 +1631,13 @@ namespace ProtoCore.AST.AssociativeAST
 
             return classNameHashCode ^ superClassHashCode ^ 
                 varlistHashCode ^ attributesHashCode ^ funclistHashCode;
+        }
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.ClassDeclaration;
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -1614,6 +1809,13 @@ namespace ProtoCore.AST.AssociativeAST
             return localVarsHashCode ^ signatureHashCode ^
                 returnTypeHashCode ^ functionBodyHashCode ^ attributesHashCode;
         }
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Constructor;
+            }
+        }
 
         public override void Accept(AssociativeAstVisitor visitor)
         {
@@ -1745,6 +1947,13 @@ namespace ProtoCore.AST.AssociativeAST
 
             return buf.ToString();
         }
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.FunctionDefintion;
+            }
+        }
 
         public override void Accept(AssociativeAstVisitor visitor)
         {
@@ -1862,6 +2071,13 @@ namespace ProtoCore.AST.AssociativeAST
             buf.Append(")");
 
             return buf.ToString();
+        }
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.InlineConditional;
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -2010,6 +2226,13 @@ namespace ProtoCore.AST.AssociativeAST
 
             return buf.ToString();
         }
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.BinaryExpression;
+            }
+        }
 
         public override void Accept(AssociativeAstVisitor visitor)
         {
@@ -2047,6 +2270,14 @@ namespace ProtoCore.AST.AssociativeAST
                 (Expression == null ? base.GetHashCode() : Expression.GetHashCode());
 
             return operatorHashCode ^ expressionHashCode;
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.UnaryExpression;
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -2191,6 +2422,14 @@ namespace ProtoCore.AST.AssociativeAST
             return buf.ToString();
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.ModifierBlock;
+            }
+        }
+
         public override void Accept(AssociativeAstVisitor visitor)
         {
             visitor.VisitModifierStackNode(this);
@@ -2293,6 +2532,13 @@ namespace ProtoCore.AST.AssociativeAST
 
             return buf.ToString();
         }
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.RangeExpression;
+            }
+        }
 
         public override void Accept(AssociativeAstVisitor visitor)
         {
@@ -2351,6 +2597,13 @@ namespace ProtoCore.AST.AssociativeAST
             buf.Append(base.ToString());
 
             return buf.ToString();
+        }
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.ExpressionList;
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -2430,6 +2683,14 @@ namespace ProtoCore.AST.AssociativeAST
                 buf.Append(Type);
 
             return buf.ToString();
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Array;
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -2512,6 +2773,14 @@ namespace ProtoCore.AST.AssociativeAST
             return Keyword.Import + "(\"" + ModuleName + "\")" + Constants.termline;
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Import;
+            }
+        }
+
         public override void Accept(AssociativeAstVisitor visitor)
         {
             visitor.VisitImportNode(this);
@@ -2525,6 +2794,14 @@ namespace ProtoCore.AST.AssociativeAST
 
     public class DefaultArgNode : AssociativeNode
     {// not supposed to be used in parser 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.DefaultArgument;
+            }
+        }
+
         public override void Accept(AssociativeAstVisitor visitor)
         {
             visitor.VisitDefaultArgNode(this);
@@ -2544,6 +2821,14 @@ namespace ProtoCore.AST.AssociativeAST
 
         public DynamicNode(DynamicNode rhs) : base(rhs)
         {
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Dynamic;
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -2581,6 +2866,14 @@ namespace ProtoCore.AST.AssociativeAST
             return blockHashCode;
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.DynamicBlock;
+            }
+        }
+
         public override void Accept(AssociativeAstVisitor visitor)
         {
             visitor.VisitDynamicBlockNode(this);
@@ -2615,6 +2908,14 @@ namespace ProtoCore.AST.AssociativeAST
         public override int GetHashCode()
         {
             return 10037;
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.ThisPointer;
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
