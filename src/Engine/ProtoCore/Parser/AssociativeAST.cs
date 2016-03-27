@@ -34,6 +34,7 @@ namespace ProtoCore.AST.AssociativeAST
         FunctionCall,
         FunctionDefintion,
         FunctionDotCall,
+        GroupExpression,
         IdentifierList,
         Identifier,
         If,
@@ -534,6 +535,14 @@ namespace ProtoCore.AST.AssociativeAST
             if (Expression == null)
                 return Keyword.Null;
             return "(" + Expression + ")" + base.ToString();
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.GroupExpression;
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)

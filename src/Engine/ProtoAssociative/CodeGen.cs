@@ -13,7 +13,6 @@ using ProtoAssociative.Properties;
 
 namespace ProtoAssociative
 {
-
     public class ThisPointerProcOverload
     {
         public int classIndex { get; set; }
@@ -8550,7 +8549,7 @@ namespace ProtoAssociative
         }
 
         private bool IsParsingGlobalFunctionSig()
-        {
+        { 
             return (null == localProcedure) && (ProtoCore.CompilerDefinitions.Associative.CompilePass.GlobalFuncSig == compilePass);
         }
 
@@ -8565,118 +8564,92 @@ namespace ProtoAssociative
             if (null == node || (node.skipMe))
                 return;
 
-            if (node is IdentifierNode)
+            switch (node.Kind)
             {
-                EmitIdentifierNode(node, ref inferedType, isBooleanOp, graphNode, subPass, parentNode as BinaryExpressionNode);
-            }
-            else if (node is IntNode)
-            {
-                EmitIntNode(node, ref inferedType, isBooleanOp, graphNode, subPass);
-            }
-            else if (node is DoubleNode)
-            {
-                EmitDoubleNode(node, ref inferedType, isBooleanOp, graphNode, subPass);
-            }
-            else if (node is BooleanNode)
-            {
-                EmitBooleanNode(node, ref inferedType, subPass);
-            }
-            else if (node is CharNode)
-            {
-                EmitCharNode(node, ref inferedType, isBooleanOp, subPass);
-            }
-            else if (node is StringNode)
-            {
-                EmitStringNode(node, ref inferedType, graphNode, subPass);
-            }
-            else if (node is DefaultArgNode)
-            {
-                EmitDefaultArgNode(subPass);
-            }
-            else if (node is NullNode)
-            {
-                EmitNullNode(node, ref inferedType, isBooleanOp, subPass);
-            }
-            else if (node is RangeExprNode)
-            {
-                EmitRangeExprNode(node, ref inferedType, graphNode, subPass);
-            }
-            else if (node is LanguageBlockNode)
-            {
-                EmitLanguageBlockNode(node, ref inferedType, graphNode, subPass);
-            }
-            else if (node is ClassDeclNode)
-            {
-                EmitClassDeclNode(node, ref inferedType, subPass, graphNode);
-            }
-            else if (node is ConstructorDefinitionNode)
-            {
-                EmitConstructorDefinitionNode(node, ref inferedType, subPass, graphNode);                
-            }
-            else if (node is FunctionDefinitionNode)
-            {
-                EmitFunctionDefinitionNode(node, ref inferedType, subPass, graphNode);            
-            }
-            else if (node is FunctionCallNode)
-            {
-                EmitFunctionCallNode(node, ref inferedType, isBooleanOp, graphNode, subPass, parentNode as BinaryExpressionNode);
-            }
-            else if (node is FunctionDotCallNode)
-            {
-                EmitFunctionCallNode(node, ref inferedType, isBooleanOp, graphNode, subPass, parentNode as BinaryExpressionNode);
-            }
-            else if (node is ModifierStackNode)
-            {
-                EmitModifierStackNode(node, ref inferedType, isBooleanOp, graphNode, subPass);
-            }
-            else if (node is ExprListNode)
-            {
-                EmitExprListNode(node, ref inferedType, graphNode, subPass, parentNode);
-            }
-            else if (node is IdentifierListNode)
-            {
-                EmitIdentifierListNode(node, ref inferedType, isBooleanOp, graphNode, subPass, parentNode);
-            }
-            else if (node is IfStatementNode)
-            {
-                EmitIfStatementNode(node, ref inferedType);
-            }
-            else if (node is InlineConditionalNode)
-            {
-                EmitInlineConditionalNode(node, ref inferedType, graphNode, subPass, parentNode as BinaryExpressionNode);
-            }
-            else if (node is UnaryExpressionNode)
-            {
-                EmitUnaryExpressionNode(node, ref inferedType, graphNode, subPass);
-            }
-            else if (node is BinaryExpressionNode)
-            {
-                EmitBinaryExpressionNode(node, ref inferedType, isBooleanOp, graphNode, subPass);
-            }
-            else if (node is ImportNode)
-            {
-                EmitImportNode(node, ref inferedType, subPass);
-            }
-            else if (node is DefaultArgNode)
-            {
-                EmitDefaultArgNode(subPass);
-            }
-            else if (node is DynamicBlockNode)
-            {
-                int block = (node as DynamicBlockNode).block;
-                EmitDynamicBlockNode(block,subPass);
-            }
-            else if (node is ThisPointerNode)
-            {
-                EmitThisPointerNode(subPass);
-            }
-            else if (node is DynamicNode)
-            {
-                EmitDynamicNode(subPass);
-            }
-            else if (node is GroupExpressionNode)
-            {
-                EmitGroupExpressionNode(node, ref inferedType, isBooleanOp, graphNode, subPass);
+                case AstKind.Identifier:
+                    EmitIdentifierNode(node, ref inferedType, isBooleanOp, graphNode, subPass, parentNode as BinaryExpressionNode);
+                    break;
+                case AstKind.Integer:
+                    EmitIntNode(node, ref inferedType, isBooleanOp, graphNode, subPass);
+                    break;
+                case AstKind.Double:
+                    EmitDoubleNode(node, ref inferedType, isBooleanOp, graphNode, subPass);
+                    break;
+                case AstKind.Boolean:
+                    EmitBooleanNode(node, ref inferedType, subPass);
+                    break;
+                case AstKind.Char:
+                    EmitCharNode(node, ref inferedType, isBooleanOp, subPass);
+                    break;
+                case AstKind.String:
+                    EmitStringNode(node, ref inferedType, graphNode, subPass);
+                    break;
+                case AstKind.DefaultArgument:
+                    EmitDefaultArgNode(subPass);
+                    break;
+                case AstKind.Null:
+                    EmitNullNode(node, ref inferedType, isBooleanOp, subPass);
+                    break;
+                case AstKind.RangeExpression:
+                    EmitRangeExprNode(node, ref inferedType, graphNode, subPass);
+                    break;
+                case AstKind.LanguageBlock:
+                    EmitLanguageBlockNode(node, ref inferedType, graphNode, subPass);
+                    break;
+                case AstKind.ClassDeclaration:
+                    EmitClassDeclNode(node, ref inferedType, subPass, graphNode);
+                    break;
+                case AstKind.Constructor:
+                    EmitConstructorDefinitionNode(node, ref inferedType, subPass, graphNode);
+                    break;
+                case AstKind.FunctionDefintion:
+                    EmitFunctionDefinitionNode(node, ref inferedType, subPass, graphNode);
+                    break;
+                case AstKind.FunctionCall:
+                    EmitFunctionCallNode(node, ref inferedType, isBooleanOp, graphNode, subPass, parentNode as BinaryExpressionNode);
+                    break;
+                case AstKind.FunctionDotCall:
+                    EmitFunctionCallNode(node, ref inferedType, isBooleanOp, graphNode, subPass, parentNode as BinaryExpressionNode);
+                    break;
+                case AstKind.ModifierBlock:
+                    EmitModifierStackNode(node, ref inferedType, isBooleanOp, graphNode, subPass);
+                    break;
+                case AstKind.ExpressionList:
+                    EmitExprListNode(node, ref inferedType, graphNode, subPass, parentNode);
+                    break;
+                case AstKind.IdentifierList:
+                    EmitIdentifierListNode(node, ref inferedType, isBooleanOp, graphNode, subPass, parentNode);
+                    break;
+                case AstKind.If:
+                    EmitIfStatementNode(node, ref inferedType);
+                    break;
+                case AstKind.InlineConditional:
+                    EmitInlineConditionalNode(node, ref inferedType, graphNode, subPass, parentNode as BinaryExpressionNode);
+                    break;
+                case AstKind.UnaryExpression:
+                    EmitUnaryExpressionNode(node, ref inferedType, graphNode, subPass);
+                    break;
+                case AstKind.BinaryExpression:
+                    EmitBinaryExpressionNode(node, ref inferedType, isBooleanOp, graphNode, subPass);
+                    break;
+                case AstKind.Import:
+                    EmitImportNode(node, ref inferedType, subPass);
+                    break;
+                case AstKind.DynamicBlock:
+                    {
+                        int block = (node as DynamicBlockNode).block;
+                        EmitDynamicBlockNode(block, subPass);
+                        break;
+                    }
+                case AstKind.ThisPointer:
+                    EmitThisPointerNode(subPass);
+                    break;
+                case AstKind.Dynamic:
+                    EmitDynamicNode(subPass);
+                    break;
+                case AstKind.GroupExpression:
+                    EmitGroupExpressionNode(node, ref inferedType, isBooleanOp, graphNode, subPass);
+                    break;
             }
             int blockId = codeBlock.codeBlockId; 
         }
