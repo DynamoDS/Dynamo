@@ -93,7 +93,7 @@
           <RegistryValue Name="InstallLocation" Value="[DYNAMO_INSTALLDIR]" Type="string" />
           <RegistryValue Name="UninstallString" Value="MsiExec.exe" Type="string" />
           <RegistryValue Name="UninstallParam" Value="/X[ProductCode] /quiet" Type="string" />
-          <RegistryValue Name="Version" Value="$(var.FullVersion)" Type="string" />
+          <RegistryValue Name="Version" Value="$(var.Major).$(var.Minor).$(var.Build)" Type="string" />
           <RegistryValue Name="RevVersion" Value="$(var.Rev)" Type="integer" />
         </RegistryKey>
 
