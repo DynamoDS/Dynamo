@@ -20,49 +20,21 @@
     <!-- (1) To prevent downgrades. 
          If there are any MAJOR.MINOR.BUILD version that is higher installed,
          prevent current installation.-->
-    <MajorUpgrade AllowSameVersionUpgrades="no"
+    <MajorUpgrade AllowSameVersionUpgrades="yes"
                   Schedule="afterInstallValidate"
                   DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." />
 
-    <Property Id="PREV_DYN">
-      <RegistrySearch Id="Prev_Dyn"
-                      Root="HKLM"
-                      Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(var.ProductName) $(var.Major).$(var.Minor)"
-                      Name="Version"
-                      Type="raw" />
-    </Property>
-
-    <!-- (2) To ensure OTHER Dynamo versions of the SAME Upgrade Core is removed.
-         Considering (1),
-         if there are any lower/same MAJOR.MINOR.BUILD version installed with the same upgrade core,
-         they will be uninstalled before current installation.-->
-    <!--Upgrade Id="$(var.UpgradeGUID)">
-      <UpgradeVersion OnlyDetect="no" Property="OTHER_DYNAMO_FOUND" Minimum="0.0.0"  />
-    </Upgrade-->
-
-    <!-- Major upgrade -->
+    <!-- (2) To manage same version upgrades/downgrades.
+         Considering (1), AllowSameVersionUpgrades="yes" introduces problems when downgrades happens instead of upgrades.
+         The property SELF_FOUND is set when the same MAJOR.MINOR.BUILD version and UpgradeCode is already installed.-->
     <Upgrade Id="$(var.UpgradeCode)">
-      <!--UpgradeVersion Property="NEWER_VERSION_DETECTED" 
-                      Minimum="$(var.Major).$(var.Minor).$(var.Build)" 
-                      IncludeMinimum="no" 
-                      OnlyDetect="yes" /-->
       <UpgradeVersion Property='SELF_FOUND' 
                       Minimum='$(var.Major).$(var.Minor).$(var.Build)' 
                       IncludeMinimum='yes' 
                       Maximum='$(var.Major).$(var.Minor).$(var.Build)' 
                       IncludeMaximum='yes' 
                       OnlyDetect='yes' />
-      <!--UpgradeVersion Property="OLDER_VERSION_BEING_UPGRADED"
-                      Minimum="0.0.0" 
-                      IncludeMinimum="yes" 
-                      Maximum="$(var.Major).$(var.Minor).$(var.Build)" 
-                      IncludeMaximum="no" 
-                      OnlyDetect="no" /-->
     </Upgrade>
-
-    <!--Condition Message="A newer version of $(var.ProductName) is already installed.">
-      NOT NEWER_VERSION_DETECTED
-    </Condition-->
 
     <MediaTemplate EmbedCab="yes" />
 
@@ -70,21 +42,14 @@
     <CustomAction Id="DIRCA_DEFAULT_INSTALLDIR" Property="DYNAMO_INSTALLDIR" Value="[ProgramFiles64Folder][Manufacturer]\$(var.ProductName)\$(var.Major).$(var.Minor)" Execute="immediate" />
     <CustomAction Id="DIRCA_SET_INSTALLDIR" Property="DYNAMO_INSTALLDIR" Value="[INSTALLDIR]\$(var.ProductName)\$(var.Major).$(var.Minor)" Execute="immediate" />
 
-    <CustomAction Id='AlreadyUpdated' Error='[ProductName] has already been updated to $(var.Major).$(var.Minor).$(var.Build).' />
-    <CustomAction Id='NoDowngrade' Error='A later version of [ProductName] is already installed.' />
-
-    <!--SetProperty Id="REINSTALLMODE" Value="amus" Sequence="first" Before="LaunchConditions">
-      PREV_DYN
-    </SetProperty-->
+    <CustomAction Id='AlreadyInstalled' Error='[ProductName] is already installed.\n
+                  If you wish to switch to a different Revision, please uninstall the existing [ProductName], 
+                  or set the property REINSTALLMODE=amus in the command line.' />
 
     <InstallExecuteSequence>
-      <Custom Action='AlreadyUpdated' Before="CostInitialize"><![CDATA[REINSTALLMODE<>"anus"]]></Custom>
-      <!--Custom Action='NoDowngrade' After='FindRelatedProducts'>NEWER_VERSION_DETECTED</Custom-->
-      <!--RemoveExistingProducts After='InstallValidate' />
-      <RemoveExistingProducts After='InstallInitialize' /-->
-      <!--RemoveExistingProducts After='InstallExecute' />
-      <RemoveExistingProducts After='InstallExecuteAgain' />
-      <RemoveExistingProducts After='InstallFinalize' /-->
+      <!-- REINSTALLMODE is set in the command line. 
+           REINSTALLMODE="amus" means that all binaries will be reinstalled, ignoring the individual file versions-->
+      <Custom Action='AlreadyInstalled' Before="CostInitialize"><![CDATA[SELF_FOUND AND REINSTALLMODE<>"amus"]]></Custom>
       <Custom Action="DIRCA_DEFAULT_INSTALLDIR" Before="CostInitialize">INSTALLDIR=""</Custom>
       <Custom Action="DIRCA_SET_INSTALLDIR" Before="CostInitialize"><![CDATA[INSTALLDIR<>""]]></Custom>
     </InstallExecuteSequence>
