@@ -10,9 +10,21 @@ using ProtoCore.Properties;
 
 namespace ProtoFFI
 {
+    /// <summary>
+    /// FFIParameterInfo wraps ParameterInfo and attributes that applied to
+    /// the parameter.
+    /// </summary>
     class FFIParameterInfo
     {
+        /// <summary>
+        /// ParameterInfo
+        /// </summary>
         public ParameterInfo Info { get; private set; }
+
+        /// <summary>
+        /// Create FFIParameterInfo by ParameterInfo
+        /// </summary>
+        /// <param name="info"></param>
         public FFIParameterInfo(ParameterInfo info)
         {
             Info = info;
