@@ -42,7 +42,7 @@
     <CustomAction Id="DIRCA_DEFAULT_INSTALLDIR" Property="DYNAMO_INSTALLDIR" Value="[ProgramFiles64Folder][Manufacturer]\$(var.ProductName)\$(var.Major).$(var.Minor)" Execute="immediate" />
     <CustomAction Id="DIRCA_SET_INSTALLDIR" Property="DYNAMO_INSTALLDIR" Value="[INSTALLDIR]\$(var.ProductName)\$(var.Major).$(var.Minor)" Execute="immediate" />
 
-    <CustomAction Id='AlreadyInstalled' Error='[ProductName] is already installed.\n
+    <CustomAction Id='AlreadyInstalled' Error='[ProductName] is already installed.
                   If you wish to switch to a different Revision, please uninstall the existing [ProductName], 
                   or set the property REINSTALLMODE=amus in the command line.' />
 
