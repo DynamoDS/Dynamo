@@ -249,6 +249,12 @@ namespace Dynamo.Manipulation
             // so that it always references the current workspace
             WorkspaceModel = wsm;
             manipulatorNodes = new List<NodeModel>();
+
+            // kill all manipulators in current workspace
+            if (manipulatorDaemon != null)
+            {
+                manipulatorDaemon.KillAll();
+            }
         }
 
         private void UpdateManipulators(NotifyCollectionChangedEventArgs e)
