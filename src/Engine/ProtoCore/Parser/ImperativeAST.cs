@@ -28,6 +28,7 @@ namespace ProtoCore.AST.ImperativeAST
         ForLoop,
         FunctionCall,
         FunctionDefinition,
+        GroupExpression,
         Identifier,
         IdentifierList,
         If,
@@ -238,6 +239,14 @@ namespace ProtoCore.AST.ImperativeAST
                 (Expression == null ? base.GetHashCode() : Expression.GetHashCode());
 
             return ExpressionHashCode;
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.GroupExpression;
+            }
         }
 
         public override void Accept(ImperativeAstVisitor visitor)
