@@ -63,6 +63,7 @@
     <Compile Include="ByGeometryColorTests.cs" />
     <Compile Include="ByPointsColorsTests.cs" />
     <Compile Include="BySurfaceUvsColorsTests.cs" />
+    <Compile Include="DisplayTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -80,6 +81,10 @@
       <Project>{a50c198c-da6e-4081-bc53-0f44d287f207}</Project>
       <Name>Display</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DynamoCoreTests\DynamoCoreTests.csproj">
+      <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
+      <Name>DynamoCoreTests</Name>
     </ProjectReference>
     <ProjectReference Include="..\TestServices\TestServices.csproj">
       <Project>{6cd0f0cf-8199-49f9-b0ea-0b9598b44419}</Project>
