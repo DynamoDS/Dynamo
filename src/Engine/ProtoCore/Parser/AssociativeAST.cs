@@ -36,6 +36,7 @@ namespace ProtoCore.AST.AssociativeAST
         FunctionDotCall,
         IdentifierList,
         Identifier,
+        If,
         Import,
         InlineConditional,
         Integer,
@@ -68,11 +69,7 @@ namespace ProtoCore.AST.AssociativeAST
             IsProcedureOwned = rhs.IsProcedureOwned;
         }
 
-        public abstract AstKind Kind
-        {
-            get;
-        }
-
+        public abstract AstKind Kind { get; }
         public abstract void Accept(AssociativeAstVisitor visitor);
         public abstract TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor);
     }
@@ -1999,6 +1996,14 @@ namespace ProtoCore.AST.AssociativeAST
                 (ElseBody == null ? base.GetHashCode() : ElseBody.GetHashCode());
 
             return ifExprNodeHashCode ^ ifBodyHashCode ^ elseBodyHashCode;
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.If;
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
