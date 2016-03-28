@@ -99,7 +99,7 @@ COMPILER DesignScriptParser
         return false;
     }
 
-	private bool IsModifierStack()
+    private bool IsModifierStack()
 	{
 		Token pt = la;
 		if(pt.val != "{")
@@ -472,7 +472,7 @@ COMPILER DesignScriptParser
         return funCallNode;
     }
 
-    private AST.ImperativeAST.IdentifierNode BuildImperativeIdentifier(string name, ProtoCore.PrimitiveType type = ProtoCore.PrimitiveType.kTypeVar)
+    private AST.ImperativeAST.IdentifierNode BuildImperativeIdentifier(string name, ProtoCore.PrimitiveType type = ProtoCore.PrimitiveType.Var)
     {
         var ident = new AST.ImperativeAST.IdentifierNode();
         ident.Name = ident.Value = name;
