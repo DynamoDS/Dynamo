@@ -20,7 +20,7 @@
     <!-- (1) To prevent downgrades. 
          If there are any MAJOR.MINOR.BUILD version that is higher installed,
          prevent current installation.-->
-    <MajorUpgrade AllowSameVersionUpgrades="yes"
+    <MajorUpgrade AllowSameVersionUpgrades="no"
                   Schedule="afterInstallValidate"
                   DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." />
 
@@ -42,14 +42,10 @@
     <CustomAction Id="DIRCA_DEFAULT_INSTALLDIR" Property="DYNAMO_INSTALLDIR" Value="[ProgramFiles64Folder][Manufacturer]\$(var.ProductName)\$(var.Major).$(var.Minor)" Execute="immediate" />
     <CustomAction Id="DIRCA_SET_INSTALLDIR" Property="DYNAMO_INSTALLDIR" Value="[INSTALLDIR]\$(var.ProductName)\$(var.Major).$(var.Minor)" Execute="immediate" />
 
-    <CustomAction Id='AlreadyInstalled' Error='[ProductName] is already installed.
-                  If you wish to switch to a different Revision, please uninstall the existing [ProductName], 
-                  or set the property REINSTALLMODE=amus in the command line.' />
+    <CustomAction Id='AlreadyInstalled' Error='[ProductName] is already installed.&#13;&#10;&#13;&#10;Skipping Dynamo Core Installation...' />
 
     <InstallExecuteSequence>
-      <!-- REINSTALLMODE is set in the command line. 
-           REINSTALLMODE="amus" means that all binaries will be reinstalled, ignoring the individual file versions-->
-      <Custom Action='AlreadyInstalled' Before="CostInitialize"><![CDATA[SELF_FOUND AND REINSTALLMODE<>"amus"]]></Custom>
+      <Custom Action='AlreadyInstalled' Before="CostInitialize"><![CDATA[SELF_FOUND]]></Custom>
       <Custom Action="DIRCA_DEFAULT_INSTALLDIR" Before="CostInitialize">INSTALLDIR=""</Custom>
       <Custom Action="DIRCA_SET_INSTALLDIR" Before="CostInitialize"><![CDATA[INSTALLDIR<>""]]></Custom>
     </InstallExecuteSequence>
