@@ -25,7 +25,6 @@
                   DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." />
 
     <!-- (2) To manage same version upgrades/downgrades.
-         Considering (1), AllowSameVersionUpgrades="yes" introduces problems when downgrades happens instead of upgrades.
          The property SELF_FOUND is set when the same MAJOR.MINOR.BUILD version and UpgradeCode is already installed.-->
     <Upgrade Id="$(var.UpgradeCode)">
       <UpgradeVersion Property='SELF_FOUND' 
