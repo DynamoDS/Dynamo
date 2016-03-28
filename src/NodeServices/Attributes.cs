@@ -247,13 +247,6 @@ namespace Autodesk.DesignScript.Runtime
     }
 
     /// <summary>
-    /// This attribute can be applied to methods that register callsite with
-    /// trace mechanism.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Method)]
-    public sealed class RegisterForTraceAttribute: Attribute { }
-
-    /// <summary>
     /// This attribute can be applied to parameter to specify a default 
     /// argument expressions.
     /// </summary>
