@@ -1102,7 +1102,7 @@ namespace Dynamo.ViewModels
         /// However, when this command is used in OpenFileDialog, the variable is
         /// a Tuple<string, bool> instead. The boolean flag is used to override the
         /// RunSetting of the workspace.
-        private void Open(object parameters)
+        internal void Open(object parameters)
         {
             // try catch for exceptions thrown while opening files, say from a future version, 
             // that can't be handled reliably
@@ -1124,21 +1124,27 @@ namespace Dynamo.ViewModels
             }
             catch (Exception e)
             {
-                // Catch all the IO exceptions here. The message provided by .Net is clear enough to indicate the problem in this case.
-                if (e is IOException)
+                if (!DynamoModel.IsTestMode)
                 {
-                    System.Windows.MessageBox.Show(String.Format(e.Message, xmlFilePath));
-                }
-                else if (e is System.Xml.XmlException)
-                {
-                    System.Windows.MessageBox.Show(String.Format(Resources.MessageFailedToOpenCorruptedFile, xmlFilePath));
+                    // Catch all the IO exceptions here. The message provided by .Net is clear enough to indicate the problem in this case.
+                    if (e is IOException)
+                    {
+                        System.Windows.MessageBox.Show(String.Format(e.Message, xmlFilePath));
+                    }
+                    else if (e is System.Xml.XmlException)
+                    {
+                        System.Windows.MessageBox.Show(String.Format(Resources.MessageFailedToOpenCorruptedFile, xmlFilePath));
+                    }
+                    else
+                    {
+                        System.Windows.MessageBox.Show(String.Format(Resources.MessageUnkownErrorOpeningFile, xmlFilePath));
+                    }
+                    model.Logger.Log(e);
                 }
                 else
                 {
-                    System.Windows.MessageBox.Show(String.Format(Resources.MessageUnkownErrorOpeningFile, xmlFilePath));
+                    throw (e);
                 }
-                model.Logger.Log(e);
-                return;
             }
             this.ShowStartPage = false; // Hide start page if there's one.
         }

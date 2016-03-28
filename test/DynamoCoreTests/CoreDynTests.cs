@@ -387,6 +387,21 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void CanOpenBadFile()
+        {
+            var examplePath = Path.Combine(TestDirectory, @"core\files");
+            string openPath = Path.Combine(examplePath, "Dummy.dyn");
+            try
+            {
+                OpenModel(openPath);
+            }
+            catch (System.Exception e)
+            {
+                Assert.IsTrue(e is System.Xml.XmlException);
+            }
+        }
+
+        [Test]
         public void TestExportToCSVFile()
         {
             var examplePath = Path.Combine(TestDirectory, @"core\files");
