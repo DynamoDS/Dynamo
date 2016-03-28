@@ -1926,23 +1926,6 @@ namespace ProtoAssociative
             return procNode;
         }
 
-        private BinaryExpressionNode BuildSSAIdentListAssignmentNode(IdentifierListNode identList)
-        {
-            // Build the final binary expression 
-            BinaryExpressionNode bnode = new BinaryExpressionNode();
-            bnode.Optr = ProtoCore.DSASM.Operator.assign;
-
-            // Left node
-            var identNode = AstFactory.BuildIdentifier(CoreUtils.BuildSSATemp(core));
-            bnode.LeftNode = identNode;
-
-            //Right node
-            bnode.RightNode = identList;
-            bnode.isSSAAssignment = true;
-
-            return bnode;
-        }
-
         /// <summary>
         /// This helper function extracts the replication guide data from the 
         /// AST node
@@ -7055,4 +7038,3 @@ namespace ProtoAssociative
         }
     }
 }
-
