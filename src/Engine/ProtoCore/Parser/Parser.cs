@@ -174,37 +174,6 @@ public Node root { get; set; }
         return false;
     }
 
-	private bool IsModifierStack()
-	{
-		Token pt = la;
-		if(pt.val != "{")
-		{
-			scanner.ResetPeek();
-			return false;
-		}
-
-		int counter = 1;
-		pt = scanner.Peek();
-		while(counter != 0 && pt.kind != _EOF)
-		{
-			if(pt.val == "{")
-				counter++;
-			else if(pt.val == "}")
-				counter--;
-
-			if(pt.val == ";" && counter == 1)
-			{
-				scanner.ResetPeek();
-				return true;
-			}
-
-			pt = scanner.Peek();
-		}
-		
-		scanner.ResetPeek();
-		return false;
-	}
-
     private bool IsFunctionCall()
     {
         Token pt = la;

@@ -233,7 +233,7 @@ Associative_classdecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, Li
                 Associative_AttributeDeclaration<out attributes>
             ]
             
-                                               (. ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic; .)
+                                               (. ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public; .)
             [
                 Associative_AccessSpecifier<out access>
             ]
@@ -355,7 +355,7 @@ Associative_constructordecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode co
     kw_constructor          (. NodeUtils.SetNodeStartLocation(constr, t); .)
     Associative_CtorSignature<out methodName, out argumentSignature>
                             (.
-                                var returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
+                                var returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank);
                             
                                 constr.Name = methodName; 
                                 constr.ReturnType = returnType;
@@ -400,17 +400,17 @@ Associative_BaseConstructorCall<out ProtoCore.AST.AssociativeAST.AssociativeNode
 
 //------------------------------------------------------------------------
 Associative_AccessSpecifier<out ProtoCore.CompilerDefinitions.AccessModifier access>
-=                   (. access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic; .)
+=                   (. access = ProtoCore.CompilerDefinitions.AccessModifier.Public; .)
     (
         "public"        
         |
-        "private"       (. access = ProtoCore.CompilerDefinitions.AccessModifier.kPrivate; .)
+        "private"       (. access = ProtoCore.CompilerDefinitions.AccessModifier.Private; .)
         |
-        "protected"     (. access = ProtoCore.CompilerDefinitions.AccessModifier.kProtected; .)
+        "protected"     (. access = ProtoCore.CompilerDefinitions.AccessModifier.Protected; .)
     )
 .
 
-Associative_functiondecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic, bool isStatic = false.>
+Associative_functiondecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public, bool isStatic = false.>
 =                           
                             (. 
                                 ProtoCore.AST.AssociativeAST.FunctionDefinitionNode f = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode(); 
@@ -468,7 +468,7 @@ ident                           (. methodName = t.val; .)
                                         errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                                     }
                                     ProtoCore.AST.AssociativeAST.AssociativeNode argumentSignature = null;
-                                    returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
+                                    returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank);
                                 .)
 [
     Associative_TypeRestriction<out returnType>
@@ -530,7 +530,7 @@ Associative_ArgumentSignatureDefinition<out ProtoCore.AST.AssociativeAST.Associa
                                                 (. argumentSign = argumentSignature; .)
 .
 
-Associative_vardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic, bool isStatic = false, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null.>    
+Associative_vardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public, bool isStatic = false, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null.>    
 = 
                                     (.
                                         ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
@@ -610,7 +610,7 @@ Associative_vardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, Prot
 
 .
 
-Associative_ArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic>    
+Associative_ArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public>    
 = 
                                     (.
                                         ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
@@ -652,7 +652,7 @@ Associative_ArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, Proto
 .
 
 
-Associative_DefaultArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic>	
+Associative_DefaultArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public>	
 =
     Associative_ArgDecl<out node>    (. ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = node as ProtoCore.AST.AssociativeAST.VarDeclNode; .)
     '=' 
@@ -727,7 +727,7 @@ Associative_FunctionalMethodBodySingleLine<out ProtoCore.AST.AssociativeAST.Asso
 
                                             ProtoCore.AST.AssociativeAST.BinaryExpressionNode binaryExpr = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
                                             IdentifierNode returnNode = AstFactory.BuildIdentifier("return");
-                                            returnNode.datatype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeReturn, 0);
+                                            returnNode.datatype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Return, 0);
                                             binaryExpr.LeftNode = returnNode;
                                             ProtoCore.AST.AssociativeAST.AssociativeNode expr;
                                         .)
@@ -1040,7 +1040,7 @@ Associative_NonAssignmentStatement<out ProtoCore.AST.AssociativeAST.AssociativeN
 						ProtoCore.AST.AssociativeAST.IdentifierNode leftNode = new ProtoCore.AST.AssociativeAST.IdentifierNode();
 						leftNode.Value = leftNode.Name = Constants.kTempProcLeftVar;
 
-						var unknownType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
+						var unknownType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
 						leftNode.datatype = unknownType;
 						leftNode.line = rightNode.line;
 						leftNode.col = rightNode.col;
@@ -1088,7 +1088,7 @@ Associative_FunctionCallStatement<out ProtoCore.AST.AssociativeAST.AssociativeNo
 								ProtoCore.AST.AssociativeAST.IdentifierNode leftNode = new ProtoCore.AST.AssociativeAST.IdentifierNode();
 								leftNode.Value = leftNode.Name = Constants.kTempProcLeftVar;
 
-								var unknownType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
+								var unknownType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
 								leftNode.datatype = unknownType;
 								leftNode.line = rightNode.line;
 								leftNode.col = rightNode.col;
@@ -1785,8 +1785,8 @@ Associative_Ident<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                 {
                     errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                 }
-                int ltype = (0 == String.Compare(t.val, "return")) ? (int)ProtoCore.PrimitiveType.kTypeReturn : (int)ProtoCore.PrimitiveType.kTypeVar;
-                if (ltype == (int)ProtoCore.PrimitiveType.kTypeReturn && la.val != "=")
+                int ltype = (0 == String.Compare(t.val, "return")) ? (int)ProtoCore.PrimitiveType.Return : (int)ProtoCore.PrimitiveType.Var;
+                if (ltype == (int)ProtoCore.PrimitiveType.Return && la.val != "=")
                 {
                      SynErr(String.Format(Resources.InvalidReturnStatement, la.val));
                 }
