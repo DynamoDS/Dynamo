@@ -387,6 +387,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanOpenBadFile()
         {
             var examplePath = Path.Combine(TestDirectory, @"core\files");
