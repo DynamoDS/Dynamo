@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Dynamo.Interfaces;
-using System.Globalization;
 using Dynamo.Configuration;
-using Dynamo.Graph;
 using Dynamo.Graph.Workspaces;
-using Dynamo.Models;
+using Dynamo.Interfaces;
 using Dynamo.Properties;
 using DynamoUtilities;
 
@@ -221,10 +219,10 @@ namespace Dynamo.Core
         /// 
         public bool ResolveLibraryPath(ref string library)
         {
-            if (File.Exists(library)) // Absolute path, we're done here.
+            if (PathHelper.IsValidPath(library)) // Absolute path, we're done here.
                 return true;
 
-            library = LibrarySearchPaths(library).FirstOrDefault(File.Exists);
+            library = LibrarySearchPaths(library).FirstOrDefault(PathHelper.IsValidPath);
             return library != default(string);
         }
 
@@ -238,7 +236,7 @@ namespace Dynamo.Core
             try
             {
                 document = Path.GetFullPath(document);
-                if (File.Exists(document)) // "document" is already an absolute path.
+                if (PathHelper.IsValidPath(document)) // "document" is already an absolute path.
                     return true;
 
                 // Restore "document" back to just its file name first...
@@ -249,7 +247,7 @@ namespace Dynamo.Core
                 var rootModuleDirectory = Path.GetDirectoryName(executingAssemblyPathName);
                 document = Path.Combine(rootModuleDirectory, document);
 
-                return File.Exists(document);
+                return PathHelper.IsValidPath(document);
             }
             catch(Exception)
             {
@@ -283,7 +281,7 @@ namespace Dynamo.Core
 
             dynamoCoreDir = corePath;
             var assemblyPath = Path.Combine(dynamoCoreDir, "DynamoCore.dll");
-            if (!File.Exists(assemblyPath))
+            if (!PathHelper.IsValidPath(assemblyPath))
             {
                 throw new Exception("Dynamo's core path could not be found. " +
                     "If you are running Dynamo from a test, try specifying the " +

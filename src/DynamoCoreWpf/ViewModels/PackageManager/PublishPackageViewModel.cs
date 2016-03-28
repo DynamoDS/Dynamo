@@ -5,31 +5,21 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Security;
-using System.Security.AccessControl;
-using System.Security.Permissions;
-using System.Security.Principal;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Dynamo.Core;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.PackageManager.UI;
-using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-
-using DynamoUtilities;
-
+using Dynamo.Wpf.Properties;
 using Greg.Requests;
 using Microsoft.Practices.Prism.Commands;
 using Double = System.Double;
-using String = System.String;
-using Dynamo.Wpf.Properties;
 using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
+using String = System.String;
 
 namespace Dynamo.PackageManager
 {
@@ -859,36 +849,35 @@ namespace Dynamo.PackageManager
         private void ShowAddFileDialogAndAdd()
         {
             // show file open dialog
-            FileDialog fDialog = null;
-
-            if (fDialog == null)
+            var fDialog = new OpenFileDialog()
             {
-                fDialog = new OpenFileDialog()
-                {
-                    Filter = string.Format(Resources.FileDialogCustomNodeDLLXML, "*.dyf;*.dll;*.xml") + "|" +
+                Filter = string.Format(Resources.FileDialogCustomNodeDLLXML, "*.dyf;*.dll;*.xml") + "|" +
                          string.Format(Resources.FileDialogAllFiles, "*.*"),
-                    Title = Resources.AddCustomFileToPackageDialogTitle
-                };
+                Title = Resources.AddCustomFileToPackageDialogTitle,
+                Multiselect = true
+            };
+
+            // if you've got the current space path, add it to shortcuts 
+            // so that user is able to easily navigate there
+            var currentFileName = dynamoViewModel.Model.CurrentWorkspace.FileName;
+            if (!string.IsNullOrEmpty(currentFileName))
+            {
+                var fi = new FileInfo(currentFileName);
+                fDialog.CustomPlaces.Add(fi.DirectoryName);
+            }
+            
+            // add the definitions directory to shortcuts as well
+            var pathManager = dynamoViewModel.Model.PathManager;
+            if (Directory.Exists(pathManager.DefaultUserDefinitions))
+            {
+                fDialog.CustomPlaces.Add(pathManager.DefaultUserDefinitions);
             }
 
-            // if you've got the current space path, use it as the inital dir
-            if (!string.IsNullOrEmpty(dynamoViewModel.Model.CurrentWorkspace.FileName))
-            {
-                var fi = new FileInfo(dynamoViewModel.Model.CurrentWorkspace.FileName);
-                fDialog.InitialDirectory = fi.DirectoryName;
-            }
-            else // use the definitions directory
-            {
-                var pathManager = dynamoViewModel.Model.PathManager;
-                if (Directory.Exists(pathManager.DefaultUserDefinitions))
-                {
-                    fDialog.InitialDirectory = pathManager.DefaultUserDefinitions;
-                }
-            }
+            if (fDialog.ShowDialog() != DialogResult.OK) return;
 
-            if (fDialog.ShowDialog() == DialogResult.OK)
+            foreach (var file in fDialog.FileNames)
             {
-                AddFile(fDialog.FileName);
+                AddFile(file);
             }
         }
 
@@ -943,6 +932,8 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
+                UploadState = PackageUploadHandle.State.Error;
+                ErrorString = String.Format(Resources.MessageFailedToAddFile, filename);
                 dynamoViewModel.Model.Logger.Log(e);
             }
         }
@@ -986,6 +977,8 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
+                UploadState = PackageUploadHandle.State.Error;
+                ErrorString = String.Format(Resources.MessageFailedToAddFile, filename);
                 dynamoViewModel.Model.Logger.Log(e);
             }
         }

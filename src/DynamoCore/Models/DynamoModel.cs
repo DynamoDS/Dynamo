@@ -1328,7 +1328,7 @@ namespace Dynamo.Models
                     workspace.SaveAs(savePath, null, true);
                     workspace.FileName = oldFileName;
                     workspace.Name = oldName;
-                    backupFilesDict.Add(workspace.Guid, savePath);
+                    backupFilesDict[workspace.Guid] = savePath;
                     Logger.Log("Backup file is saved: " + savePath);
                 }
                 PreferenceSettings.BackupFiles.AddRange(backupFilesDict.Values);

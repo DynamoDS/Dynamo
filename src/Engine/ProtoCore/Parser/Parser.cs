@@ -174,7 +174,7 @@ public Node root { get; set; }
         return false;
     }
 
-	private bool IsModifierStack()
+    private bool IsModifierStack()
 	{
 		Token pt = la;
 		if(pt.val != "{")
