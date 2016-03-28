@@ -38,6 +38,7 @@ namespace Dynamo.Engine.CodeCompletion
         /// </summary>
         /// <param name="code"> code typed in the code block </param>
         /// <param name="stringToComplete"> Class name or declared variable </param>
+        /// <param name="resolver"></param>
         /// <returns> list of method and property members of the type </returns>
         internal IEnumerable<CompletionData> GetCompletionsOnType(string code, string stringToComplete, ElementResolver resolver = null)
         {
@@ -138,6 +139,7 @@ namespace Dynamo.Engine.CodeCompletion
         /// <param name="functionName"> given method name for which signature is queried </param>
         /// <param name="functionPrefix"> class name in case of constructor or static method, OR
         /// declared instance variable on which method is invoked </param>
+        /// <param name="resolver"></param>
         /// <returns> list of method overload signatures </returns>
         internal IEnumerable<CompletionData> GetFunctionSignatures(string code, string functionName, string functionPrefix,
             ElementResolver resolver = null)

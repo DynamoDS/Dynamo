@@ -901,9 +901,14 @@ namespace Dynamo.Engine.NodeToCode
         /// <summary>
         /// Renumber variables used in astNode.
         /// </summary>
+        /// <param name="core"></param>
         /// <param name="astNode"></param>
+        /// <param name="node"></param>
         /// <param name="numberingMap"></param>
-        /// <param name="variableMap"></param>
+        /// <param name="renamingMap"></param>
+        /// <param name="inputMap"></param>
+        /// <param name="outputMap"></param>
+        /// <param name="mappedVariables"></param>
         private static void VariableNumbering(
             ProtoCore.Core core,
             AssociativeNode astNode, 
@@ -988,13 +993,16 @@ namespace Dynamo.Engine.NodeToCode
         /// <summary>
         /// Remap variables.
         /// </summary>
+        /// <param name="core"></param>
         /// <param name="astNode"></param>
         /// <param name="renamingMap"></param>
+        /// <param name="outputMap"></param>
+        /// <param name="mappedVariable"></param>
         private static void VariableRemapping(
             ProtoCore.Core core,
             AssociativeNode astNode, 
             Dictionary<string, string> renamingMap,
-            Dictionary<string, string> outuptMap,
+            Dictionary<string, string> outputMap,
             HashSet<string> mappedVariable)
         {
             Action<IdentifierNode> func = n =>
@@ -1004,7 +1012,7 @@ namespace Dynamo.Engine.NodeToCode
                     {
                         var ident = n.Value;
                         n.Value = n.Name = newIdent;
-                        outuptMap[ident] = newIdent;
+                        outputMap[ident] = newIdent;
                         mappedVariable.Add(newIdent);
                     }
                 };
@@ -1082,6 +1090,7 @@ namespace Dynamo.Engine.NodeToCode
         /// now should be updated to "a = x".
         /// </summary>
         /// <param name="result"></param>
+        /// <param name="outputVariables"></param>
         /// <returns></returns>
         internal static NodeToCodeResult ConstantPropagationForTemp(NodeToCodeResult result, IEnumerable<string> outputVariables)
         {
