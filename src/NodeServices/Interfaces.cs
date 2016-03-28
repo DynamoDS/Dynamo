@@ -224,7 +224,7 @@ namespace Autodesk.DesignScript.Interfaces
 
     /// <summary>
     /// Represents a connector to external data source to provide context 
-    /// speicific data. This interface provide import/export feature for any 
+    /// specific data. This interface provide import/export feature for any 
     /// context specific data. It also provides a mechanism to capture data 
     /// interactively.
     /// </summary>
@@ -236,7 +236,7 @@ namespace Autodesk.DesignScript.Interfaces
         string Name { get; }
 
         /// <summary>
-        /// Imports specific the context data using the given identifier string.
+        /// Imports the specific context data using the given identifier string.
         /// </summary>
         /// <param name="connectionParameters">Input dictionary of connection parameters 
         /// to connect to the data source to import the data. Each context data in 
@@ -245,7 +245,7 @@ namespace Autodesk.DesignScript.Interfaces
         IContextData[] ImportData(Dictionary<string, Object> connectionParameters);
 
         /// <summary>
-        /// Exports data to specified file. This context provider determines the
+        /// Exports data to the specified file. This context provider determines the
         /// format for data store and returns the connection string for the given
         /// file using which this data can be imported back again.
         /// </summary>
