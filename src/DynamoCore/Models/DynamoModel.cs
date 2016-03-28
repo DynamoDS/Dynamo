@@ -530,8 +530,14 @@ namespace Dynamo.Models
             // PackageFolders
             if (PreferenceSettings.CustomPackageFolders.Count == 0)
                 PreferenceSettings.CustomPackageFolders = new List<string> {pathManager.UserDataDirectory};
-            else
-                pathManager.LoadCustomPackageFolders(PreferenceSettings.CustomPackageFolders);
+
+            //Make sure that the default package folder is added in the list if custom packages folder.
+            var userDataFolder = pathManager.GetUserDataFolder(); //Get the default user data path
+            if (Directory.Exists(userDataFolder) && !PreferenceSettings.CustomPackageFolders.Contains(userDataFolder))
+            {
+                PreferenceSettings.CustomPackageFolders.Add(userDataFolder);
+            }
+            pathManager.LoadCustomPackageFolders(PreferenceSettings.CustomPackageFolders);
 
 
             SearchModel = new NodeSearchModel();
