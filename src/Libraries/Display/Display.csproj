@@ -65,6 +65,7 @@
     <ProjectReference Include="..\..\NodeServices\DynamoServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Analysis\Analysis.csproj">
       <Project>{76686ed6-e759-4772-81c2-768740be13fa}</Project>
