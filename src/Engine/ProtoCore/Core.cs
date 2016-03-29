@@ -590,8 +590,6 @@ namespace ProtoCore
             SSASubscript_GUID = Guid.NewGuid();
             SSAExprUID = 0;
             ExpressionUID = 0;
-            ModifierBlockUID = 0;
-            ModifierStateSubscript = 0;
 
             ExprInterpreterExe = null;
             Options.RunMode = InterpreterMode.Normal;
@@ -634,9 +632,6 @@ namespace ProtoCore
         /// It is incremented by 1 after mapping its current value to an expression
         /// </summary>
         public int ExpressionUID { get; set; }
-
-        public int ModifierBlockUID { get; set; }
-        public int ModifierStateSubscript { get; set; }
 
         private int tempVarId = 0;
         private int tempLanguageId = 0;
@@ -989,15 +984,6 @@ namespace ProtoCore
                 return false;
             }
             return varName[0] == '%';
-        }
-
-        public string GetModifierBlockTemp(string modifierName)
-        {
-            // The naming convention for auto-generated modifier block states begins with a '%'
-            // followed by "<Constants.kTempModifierStateNamePrefix>_<modifier_block_name>_<index>
-            string modStateTemp = Constants.kTempModifierStateNamePrefix + modifierName + ModifierStateSubscript.ToString();
-            ++ModifierStateSubscript;
-            return modStateTemp;
         }
 
         public GraphNode GetExecutingGraphNode()

@@ -42,7 +42,6 @@ namespace ProtoCore.AST.AssociativeAST
         InlineConditional,
         Integer,
         LanguageBlock,
-        ModifierBlock,
         Null,
         RangeExpression,
         ReplicationGuide,
@@ -2303,10 +2302,6 @@ namespace ProtoCore.AST.AssociativeAST
         {
             return visitor.VisitUnaryExpressionNode(this);
         }
-    }
-
-    public class ModifierStackNode : AssociativeNode
-    {
     }
 
     public class RangeExprNode : ArrayNameNode
