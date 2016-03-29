@@ -1067,7 +1067,7 @@ namespace Dynamo.Models
         ///     Register custom node defintion and execute all custom node 
         ///     instances.
         /// </summary>
-        /// <param name="?"></param>
+        /// <param name="definition"></param>
         private void UpdateCustomNodeDefinition(CustomNodeDefinition definition)
         {
             RegisterCustomNodeDefinitionWithEngine(definition);
@@ -1092,7 +1092,7 @@ namespace Dynamo.Models
         /// specified function definition and mark them as modified so that 
         /// their values will be re-queryed.
         /// </summary>
-        /// <param name="functionId"></param>
+        /// <param name="def"></param>
         /// <returns></returns>
         private void MarkAllDependenciesAsModified(CustomNodeDefinition def)
         {
@@ -1179,6 +1179,7 @@ namespace Dynamo.Models
         ///     Opens a Dynamo workspace from a path to an Xml file on disk.
         /// </summary>
         /// <param name="xmlPath"></param>
+        /// <param name="forceManualExecutionMode"></param>
         public void OpenFileFromPath(string xmlPath, bool forceManualExecutionMode = false)
         {
             var xmlDoc = new XmlDocument();
@@ -1553,6 +1554,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="node"></param>
         /// <param name="centered"></param>
+        /// <param name="addToSelection"></param>
         internal void AddNodeToCurrentWorkspace(NodeModel node, bool centered, bool addToSelection = true)
         {
             CurrentWorkspace.AddAndRegisterNode(node, centered);

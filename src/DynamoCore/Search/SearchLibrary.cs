@@ -28,6 +28,7 @@ namespace Dynamo.Search
         ///     Updates an entry in search.
         /// </summary>
         /// <param name="entry"></param>
+        /// <param name="isCategoryChanged"></param>
         internal void Update(TEntry entry, bool isCategoryChanged = false)
         {
             // If entry's category is changed, we need to delete this entry from search.
