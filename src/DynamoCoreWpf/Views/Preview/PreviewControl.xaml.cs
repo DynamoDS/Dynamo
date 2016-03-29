@@ -800,6 +800,14 @@ namespace Dynamo.UI.Controls
         {
             StaysOpen = !StaysOpen;
             nodeViewModel.PreviewPinned = StaysOpen;
+
+
+            // Select node.
+            nodeViewModel.DynamoViewModel.ExecuteCommand(
+               new DynamoModel.SelectModelCommand(nodeViewModel.NodeModel.GUID, Keyboard.Modifiers.AsDynamoType()));
+
+            // Handle event here is order not to bubble it to parent control like DragCanvas.
+            e.Handled = true;
         }
 
         #endregion
