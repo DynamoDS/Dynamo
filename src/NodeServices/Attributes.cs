@@ -305,4 +305,17 @@ namespace Autodesk.DesignScript.Runtime
         } 
     } 
 
+
+    /// <summary>
+    /// This attribute indicates the parameter will be referenced by the return
+    /// object, hence its DS wrap object shouldn't be disposed even it is out
+    /// of scope. The life-cycle of parameter will have the same life-cycle as
+    /// the return object.
+    /// 
+    /// Note the return object should be reference type.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Parameter)]
+    public class KeepReferenceAttribute : Attribute
+    {
+    }
 }

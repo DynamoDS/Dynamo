@@ -21,7 +21,10 @@ namespace ProtoFFI
 
         private ExtensionAppLoader()
         {
-            mProtoInterface = typeof(IExtensionApplication).Assembly.GetName().Name;
+            var assembly = typeof(IExtensionApplication).Assembly;
+            mProtoInterface = assembly.GetName().Name;
+            //Let's resolve ProtoInterface, with the assembly implementing IExtensionApplication i.e. DynamoServices
+            mAssemblies.Add("ProtoInterface", assembly);
             Initialize();
         }
 
