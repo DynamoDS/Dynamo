@@ -20,7 +20,8 @@ namespace Dynamo.Exceptions
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="message"></param>
+        /// <param name="path"></param>
+        /// <param name="reason"></param>
         public LibraryLoadFailedException(string path, string reason)
             : base(String.Format(Properties.Resources.FailedToLoadLibrary, path))
         {

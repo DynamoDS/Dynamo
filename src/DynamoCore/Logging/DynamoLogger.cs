@@ -126,6 +126,8 @@ namespace Dynamo.Logging
         /// Log the message to the the correct path
         /// </summary>
         /// <param name="message"></param>
+        /// <param name="level"></param>
+        /// <param name="reportModification"></param>
         private void Log(string message, LogLevel level, bool reportModification)
         {
             lock (this.guardMutex)

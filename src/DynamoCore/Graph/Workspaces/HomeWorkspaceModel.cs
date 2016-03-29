@@ -290,7 +290,7 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <param name="node">The node itself</param>
         /// <param name="value">A boolean value indicating whether to silence or not</param>
-        private void NodeOnRequestSilenceNodeModifiedEvents(NodeModel _, bool value)
+        private void NodeOnRequestSilenceNodeModifiedEvents(NodeModel node, bool value)
         {
             this.silenceNodeModifications = value;
         }
