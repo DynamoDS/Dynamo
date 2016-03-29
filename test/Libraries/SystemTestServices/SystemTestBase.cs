@@ -226,7 +226,11 @@ namespace SystemTestServices
 
             Assert.IsTrue(File.Exists(testPath), string.Format("Could not find file: {0} for testing.", testPath));
 
-            ViewModel.OpenCommand.Execute(testPath);
+            try
+            {
+                ViewModel.OpenCommand.Execute(testPath);
+            }
+            catch (System.Exception) { }
         }
 
         protected bool IsNodeInErrorOrWarningState(string guid)
