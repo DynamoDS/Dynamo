@@ -1124,17 +1124,27 @@ namespace Dynamo.ViewModels
             }
             catch (Exception e)
             {
-                if (e is FileNotFoundException)
+                if (!DynamoModel.IsTestMode)
                 {
-                    System.Windows.MessageBox.Show(String.Format(Resources.MessageFileNotFound, xmlFilePath));
+                    // Catch all the IO exceptions here. The message provided by .Net is clear enough to indicate the problem in this case.
+                    if (e is IOException)
+                    {
+                        System.Windows.MessageBox.Show(String.Format(e.Message, xmlFilePath));
+                    }
+                    else if (e is System.Xml.XmlException)
+                    {
+                        System.Windows.MessageBox.Show(String.Format(Resources.MessageFailedToOpenCorruptedFile, xmlFilePath));
+                    }
+                    else
+                    {
+                        System.Windows.MessageBox.Show(String.Format(Resources.MessageUnkownErrorOpeningFile, xmlFilePath));
+                    }
+                    model.Logger.Log(e);
                 }
-                else if (e is System.Xml.XmlException)
+                else
                 {
-                    System.Windows.MessageBox.Show(String.Format(Resources.MessageFailedToOpenFile, xmlFilePath));
+                    throw (e);
                 }
-                model.Logger.Log(String.Format(Resources.MessageFailedToOpenFile, xmlFilePath, "\n"));
-                model.Logger.Log(e);
-                return;
             }
             this.ShowStartPage = false; // Hide start page if there's one.
         }
