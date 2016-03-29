@@ -2890,6 +2890,7 @@ namespace ProtoImperative
             switch (node.Kind)
             {
                 case AstKind.Identifier:
+                case AstKind.TypedIdentifier:
                     EmitIdentifierNode(node, ref inferedType, isBooleanOp, graphNode);
                     break;
                 case AstKind.Integer:
