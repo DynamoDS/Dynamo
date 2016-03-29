@@ -120,7 +120,6 @@
     <Compile Include="ClassTable.cs" />
     <Compile Include="DebuggerProperties.cs" />
     <Compile Include="Diagnostics\RuntimeDiagnostics.cs" />
-    <Compile Include="DSASM\FunctionCounter.cs" />
     <Compile Include="DSASM\DSasmDefs.cs" />
     <Compile Include="DSASM\Interpreter.cs" />
     <Compile Include="DSASM\Executable.cs" />
