@@ -446,7 +446,7 @@ namespace Dynamo.Core
                 return GetDynamoDataFolder(pathResolver.UserDataRootFolder);
 
             var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            return GetDynamoDataFolder(Path.Combine(folder, "Dynamo"));
+            return GetDynamoDataFolder(Path.Combine(folder, "Dynamo", "Dynamo Core"));
         }
 
         private string GetCommonDataFolder(IPathResolver pathResolver)
@@ -455,7 +455,7 @@ namespace Dynamo.Core
                 return GetDynamoDataFolder(pathResolver.CommonDataRootFolder);
 
             var folder = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-            return GetDynamoDataFolder(Path.Combine(folder, "Dynamo"));
+            return GetDynamoDataFolder(Path.Combine(folder, "Dynamo", "Dynamo Core"));
         }
 
         private string GetDynamoDataFolder(string folder)

@@ -39,7 +39,7 @@ a = DupTargetTest.DupTargetTest();
 aO = a.Foo();
 "
 );
-            thisTest.VerifyBuildWarningCount(ProtoCore.BuildData.WarningID.kMultipleSymbolFoundFromName, 1);
+            thisTest.VerifyBuildWarningCount(ProtoCore.BuildData.WarningID.MultipleSymbolFoundFromName, 1);
         }
 
         [Test]
@@ -51,7 +51,7 @@ a = DupTargetTest.DupTargetTest();
 p = a;
 "
 );
-            thisTest.VerifyBuildWarningCount(ProtoCore.BuildData.WarningID.kMultipleSymbolFoundFromName, 1);
+            thisTest.VerifyBuildWarningCount(ProtoCore.BuildData.WarningID.MultipleSymbolFoundFromName, 1);
             thisTest.Verify("p", null);
         }
 

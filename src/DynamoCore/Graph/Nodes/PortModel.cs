@@ -231,7 +231,6 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Called when a port is disconnected.
         /// </summary>
-        /// <param name="e"></param>
         protected virtual void OnPortDisconnected()
         {
             if (Owner != null)

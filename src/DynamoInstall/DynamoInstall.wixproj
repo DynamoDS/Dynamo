@@ -56,10 +56,10 @@
       <Output TaskParameter="Value" PropertyName="Minor" />
     </CreateProperty>
     <CreateProperty Value="$(FullVersion.Split('.')[2])">
-      <Output TaskParameter="Value" PropertyName="Rev" />
+      <Output TaskParameter="Value" PropertyName="Build" />
     </CreateProperty>
     <CreateProperty Value="$(FullVersion.Split('.')[3])">
-      <Output TaskParameter="Value" PropertyName="Build" />
+      <Output TaskParameter="Value" PropertyName="Rev" />
     </CreateProperty>
     <CreateProperty Value="Dynamo Core">
       <Output TaskParameter="Value" PropertyName="ProductName" />

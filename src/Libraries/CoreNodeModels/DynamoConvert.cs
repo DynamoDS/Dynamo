@@ -171,6 +171,30 @@ namespace CoreNodeModels
 
         }
 
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
+        {
+            switch (updateValueParams.PropertyName)
+            {
+                case "Values":
+                    // Here we expect a string that represents an array of [ metric, from, to ] values which are separated by ";"
+                    // For example "Length;Meters;Feet"
+                    var vals = updateValueParams.PropertyValue.Split(';');
+                    ConversionMetricUnit metric;
+                    ConversionUnit from, to;
+                    if (vals.Length == 3 && Enum.TryParse(vals[0], out metric)
+                        && Enum.TryParse(vals[1], out from) && Enum.TryParse(vals[2], out to))
+                    {
+                        SelectedMetricConversion = metric;
+                        SelectedFromConversion = from;
+                        SelectedToConversion = to;
+                    }
+
+                    return true;
+            }
+
+            return base.UpdateValueCore(updateValueParams);
+        }
+
         #endregion
     }      
 }

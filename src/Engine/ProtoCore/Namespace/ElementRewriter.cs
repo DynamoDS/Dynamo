@@ -53,8 +53,8 @@ namespace ProtoCore.Namespace
         public override AssociativeNode VisitTypedIdentifierNode(TypedIdentifierNode node)
         {
             // If type is primitive type
-            if (node.datatype.UID != (int)PrimitiveType.kInvalidType &&
-                node.datatype.UID < (int)PrimitiveType.kMaxPrimitives)
+            if (node.datatype.UID != (int)PrimitiveType.InvalidType &&
+                node.datatype.UID < (int)PrimitiveType.MaxPrimitive)
                 return node;
 
             var identListNode = CoreUtils.CreateNodeFromString(node.TypeAlias);

@@ -631,11 +631,11 @@ namespace ProtoCore
     {
         public enum State
         {
-            kInvalid = -1,
-            kExecutionBegin,
-            kExecutionEnd,
-            kExecutionBreak,
-            kExecutionResume,
+            Invalid = -1,
+            ExecutionBegin,
+            ExecutionEnd,
+            ExecutionBreak,
+            ExecutionResume,
         }
 
         public ExecutionStateEventArgs(State state)

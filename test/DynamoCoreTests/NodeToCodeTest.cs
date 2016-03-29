@@ -1133,15 +1133,15 @@ namespace Dynamo.Tests
             string name = string.Empty;
             int typeID = -1;
 
-            t = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeInt);
+            t = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.Integer);
             name = nameProvider.GetTypeDependentName(t);
             Assert.AreEqual("num", name); 
 
-            t = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeDouble);
+            t = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.Double);
             name = nameProvider.GetTypeDependentName(t);
             Assert.AreEqual("num", name); 
 
-            t = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeString);
+            t = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.String);
             name = nameProvider.GetTypeDependentName(t);
             Assert.AreEqual("str", name);
 

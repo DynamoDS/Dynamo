@@ -1713,7 +1713,7 @@ y = foo()[1];
 }
 ";
             thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kOverIndexing);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.OverIndexing);
         }
 
         [Test]
@@ -3192,7 +3192,7 @@ b = 2.1 % 0;
             thisTest.Verify("b", double.NaN);
 
             var warnings = thisTest.GetTestRuntimeCore().RuntimeStatus.Warnings;
-            Assert.IsTrue(warnings.Any(w => w.ID == ProtoCore.Runtime.WarningID.kModuloByZero));
+            Assert.IsTrue(warnings.Any(w => w.ID == ProtoCore.Runtime.WarningID.ModuloByZero));
         }
 
         [Test]

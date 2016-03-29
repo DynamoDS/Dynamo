@@ -66,11 +66,6 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="ProtoInterface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="SharpDX, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.dll</HintPath>
     </Reference>
@@ -113,7 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
-      <Link>AssemblySharedInfo.cs</Link>
+      <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="CameraTests.cs" />
     <Compile Include="CustomNodeTests.cs" />
@@ -179,6 +174,10 @@
       <Project>{31183026-DE70-49CB-BC7C-0DFD0A088F62}</Project>
       <Name>Watch3DNodeModels</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\NodeServices\DynamoServices.csproj">
+      <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
+      <Name>DynamoServices</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
       <Project>{263FA9C1-F81E-4A8E-95E0-8CDAE20F177B}</Project>

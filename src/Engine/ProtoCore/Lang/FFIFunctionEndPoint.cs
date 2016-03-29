@@ -99,7 +99,7 @@ namespace ProtoCore.Lang
                     // But since we dont even need to to reach there if we dont have a valid this pointer, then just return null
                     if (formalParameters[thisPtrIndex].IsNull)
                     {
-                        runtimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kDereferencingNonPointer, Resources.kDeferencingNonPointer);
+                        runtimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.DereferencingNonPointer, Resources.kDeferencingNonPointer);
                         return StackValue.Null;
                     }
 
@@ -143,7 +143,9 @@ namespace ProtoCore.Lang
                     StackFrameType callerType = stackFrame.CallerStackFrameType;
 
                     // FFI calls do not have execution states
-                    runtimeCore.RuntimeMemory.PushStackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, ProtoCore.DSASM.StackFrameType.kTypeFunction, depth, framePointer, registers, locals, 0);
+                    runtimeCore.RuntimeMemory.PushFrameForLocals(locals);
+                    StackFrame newStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, StackFrameType.Function, depth, framePointer, registers, 0);
+                    runtimeCore.RuntimeMemory.PushStackFrame(newStackFrame);
 
                     //is there a way the current stack be passed across and back into the managed runtime by FFI calling back into the language?
                     //e.g. DCEnv* carrying all the stack information? look at how vmkit does this.
@@ -176,8 +178,8 @@ namespace ProtoCore.Lang
 
                     // Clear the FFI stack frame 
                     // FFI stack frames have no local variables
-                    interpreter.runtime.rmem.FramePointer = (int)interpreter.runtime.rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer).IntegerValue;
-                    interpreter.runtime.rmem.PopFrame(StackFrame.kStackFrameSize + formalParameters.Count);
+                    interpreter.runtime.rmem.FramePointer = (int)interpreter.runtime.rmem.GetAtRelative(StackFrame.FrameIndexFramePointer).IntegerValue;
+                    interpreter.runtime.rmem.PopFrame(StackFrame.StackFrameSize + formalParameters.Count);
 
                     return op; 
                 }
