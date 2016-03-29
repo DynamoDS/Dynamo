@@ -6950,6 +6950,7 @@ namespace ProtoAssociative
             switch (node.Kind)
             {
                 case AstKind.Identifier:
+                case AstKind.TypedIdentifier:
                     EmitIdentifierNode(node, ref inferedType, isBooleanOp, graphNode, subPass, parentNode as BinaryExpressionNode);
                     break;
                 case AstKind.Integer:
