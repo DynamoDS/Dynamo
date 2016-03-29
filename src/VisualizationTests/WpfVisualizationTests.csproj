@@ -178,6 +178,7 @@
     <ProjectReference Include="..\NodeServices\DynamoServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
       <Project>{263FA9C1-F81E-4A8E-95E0-8CDAE20F177B}</Project>

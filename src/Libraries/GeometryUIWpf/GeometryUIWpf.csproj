@@ -97,6 +97,7 @@
     <ProjectReference Include="..\..\NodeServices\DynamoServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\CoreNodeModelsWpf\CoreNodeModelsWpf.csproj">
       <Project>{f5932f7d-8e34-4787-80b8-e7f9d996edff}</Project>
