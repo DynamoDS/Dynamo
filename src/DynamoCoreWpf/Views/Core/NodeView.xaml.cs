@@ -487,7 +487,8 @@ namespace Dynamo.Controls
                         }
                         if (!IsMouseOver)
                         {
-                            if (!(Mouse.Captured != null && IsMouseInsideNodeOrPreview(Mouse.GetPosition(this))))
+                            // If mouse is captured by DragCanvas and mouse is still over node, preview should stay open.
+                            if (!(Mouse.Captured is DragCanvas && IsMouseInsideNodeOrPreview(Mouse.GetPosition(this))))
                             {
                                 preview.TransitionToState(PreviewControl.State.Hidden);
                             }
