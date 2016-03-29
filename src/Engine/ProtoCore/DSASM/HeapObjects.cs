@@ -617,6 +617,20 @@ namespace ProtoCore.DSASM
             SetValueAt(index, value);
             return oldValue;
         }
+
+        /// <summary>
+        /// Expand the memory by specified size so that the object can contain
+        /// extra information.
+        /// </summary>
+        /// <param name="size"></param>
+        public void ExpandBySize(int size)
+        {
+            if (size <= 0)
+            {
+                throw new ArgumentException("size is less than 0");
+            }
+            ExpandByAcessingAt(Count + size - 1);
+        }
     }
 
     public class DSString : HeapElement
