@@ -1450,13 +1450,12 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        //this sets the event on Annotation. This event return the model from the workspace.
-        //When a model is ungrouped from a group, that model will be deleted from that group.
-        //So, when UNDO execution, cannot get that model from that group, it has to get from the workspace.
-        //The below method will set the event on every annotation model, that will return the specific model
-        //from workspace.
+        /// this sets the event on Annotation. This event return the model from the workspace.
+        /// When a model is ungrouped from a group, that model will be deleted from that group.
+        /// So, when UNDO execution, cannot get that model from that group, it has to get from the workspace.
+        /// The below method will set the event on every annotation model, that will return the specific model
+        /// from workspace.
         /// </summary>
-        /// <param name="model">The model.</param>
         private void SetModelEventOnAnnotation()
         {           
             foreach (var model in this.Annotations)
