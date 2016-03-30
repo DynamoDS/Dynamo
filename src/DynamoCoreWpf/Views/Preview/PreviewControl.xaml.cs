@@ -471,30 +471,7 @@ namespace Dynamo.UI.Controls
             SetCurrentStateAndNotify(State.PreTransition);
 
             // Used delay invoke, because TreeView hasn't changed its'appearance with usual Dispatcher call.
-            Dispatcher.DelayInvoke(50, () => RefreshExpandedDisplay(() =>
-            {
-                largeContentGrid.Visibility = Visibility.Visible;
-                bubbleTools.Visibility = Visibility.Visible;
-
-                // The real transition starts
-                SetCurrentStateAndNotify(State.InTransition);
-                var largeContentSize = ComputeLargeContentSize();
-                UpdateAnimatorTargetSize(SizeAnimator.Expansion, largeContentSize);
-
-                // If it's test mode - skip storyboard.
-                if (!DynamoModel.IsTestMode)
-                {
-                    expandStoryboard.Begin(this, true);
-                }
-                else
-                {
-                    largeContentGrid.Opacity = 1.0;
-                    smallContentGrid.Opacity = 0.0;
-                    centralizedGrid.Width = largeContentSize.Width;
-                    centralizedGrid.Height = largeContentSize.Height;
-                    OnPreviewControlExpanded(null, null);
-                }
-            }));
+            Dispatcher.DelayInvoke(50, () => RefreshExpandedDisplay(RefreshExpandedDisplayAction));
         }
 
         private Size ComputeSmallContentSize()
@@ -519,7 +496,8 @@ namespace Dynamo.UI.Controls
 
         private Size ComputeLargeContentSize()
         {
-            this.largeContentGrid.Measure(new Size()
+            largeContentGrid.UpdateLayout();
+            largeContentGrid.Measure(new Size()
             {
                 Width = Configurations.MaxExpandedPreviewWidth,
                 Height = Configurations.MaxExpandedPreviewHeight
@@ -688,31 +666,32 @@ namespace Dynamo.UI.Controls
             // indicate a new transition is about to be started
             SetCurrentStateAndNotify(State.PreTransition);
 
-            RefreshExpandedDisplay(() =>
-                {
-                    largeContentGrid.Visibility = Visibility.Visible;
-                    bubbleTools.Visibility = Visibility.Visible;
+            RefreshExpandedDisplay(RefreshExpandedDisplayAction);
+        }
 
-                    // The real transition starts
-                    SetCurrentStateAndNotify(State.InTransition);
-                    var largeContentSize = ComputeLargeContentSize();
-                    UpdateAnimatorTargetSize(SizeAnimator.Expansion, largeContentSize);                    
+        private void RefreshExpandedDisplayAction()
+        {
+            largeContentGrid.Visibility = Visibility.Visible;
+            bubbleTools.Visibility = Visibility.Visible;
 
-                    // If it's test mode - skip storyboard.
-                    if (!DynamoModel.IsTestMode)
-                    {
-                        expandStoryboard.Begin(this, true);
-                    }
-                    else
-                    {
-                        largeContentGrid.Opacity = 1.0;
-                        smallContentGrid.Opacity = 0.0;
-                        centralizedGrid.Width = largeContentSize.Width;
-                        centralizedGrid.Height = largeContentSize.Height;
-                        OnPreviewControlExpanded(null, null);
-                    }
-                }
-            );
+            // The real transition starts
+            SetCurrentStateAndNotify(State.InTransition);
+            var largeContentSize = ComputeLargeContentSize();
+            UpdateAnimatorTargetSize(SizeAnimator.Expansion, largeContentSize);
+
+            // If it's test mode - skip storyboard.
+            if (!DynamoModel.IsTestMode)
+            {
+                expandStoryboard.Begin(this, true);
+            }
+            else
+            {
+                largeContentGrid.Opacity = 1.0;
+                smallContentGrid.Opacity = 0.0;
+                centralizedGrid.Width = largeContentSize.Width;
+                centralizedGrid.Height = largeContentSize.Height;
+                OnPreviewControlExpanded(null, null);
+            }
         }
 
         private void BeginViewSizeTransition(Size targetSize)
