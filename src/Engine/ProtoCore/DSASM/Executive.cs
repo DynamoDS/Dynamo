@@ -36,10 +36,6 @@ namespace ProtoCore.DSASM
         private InstructionStream istream;
         public RuntimeMemory rmem { get; set; }
 
-        private StackValue AX;
-        private StackValue BX;
-        private StackValue CX;
-        private StackValue DX;
         protected StackValue EX;
         protected StackValue FX;
         private StackValue LX;
@@ -267,10 +263,6 @@ namespace ProtoCore.DSASM
 
         private void RestoreRegistersFromStackFrame()
         {
-            AX = rmem.GetAtRelative(StackFrame.FrameIndexAX);
-            BX = rmem.GetAtRelative(StackFrame.FrameIndexBX);
-            CX = rmem.GetAtRelative(StackFrame.FrameIndexCX);
-            DX = rmem.GetAtRelative(StackFrame.FrameIndexDX);
             EX = rmem.GetAtRelative(StackFrame.FrameIndexEX);
             FX = rmem.GetAtRelative(StackFrame.FrameIndexFX);
             LX = rmem.GetAtRelative(StackFrame.FrameIndexLX);
@@ -1649,10 +1641,6 @@ namespace ProtoCore.DSASM
             int fp = rmem.FramePointer;
             if (fp >= rmem.GlobOffset + StackFrame.StackFrameSize)
             {
-                AX = rmem.GetAtRelative(StackFrame.FrameIndexAX);
-                BX = rmem.GetAtRelative(StackFrame.FrameIndexBX);
-                CX = rmem.GetAtRelative(StackFrame.FrameIndexCX);
-                DX = rmem.GetAtRelative(StackFrame.FrameIndexDX);
                 EX = rmem.GetAtRelative(StackFrame.FrameIndexEX);
                 FX = rmem.GetAtRelative(StackFrame.FrameIndexFX);
                 LX = rmem.GetAtRelative(StackFrame.FrameIndexLX);
@@ -1667,10 +1655,6 @@ namespace ProtoCore.DSASM
             int fp = rmem.FramePointer;
             if (fp >= rmem.GlobOffset + StackFrame.StackFrameSize)
             {
-                AX = rmem.GetAtRelative(StackFrame.FrameIndexAX);
-                BX = rmem.GetAtRelative(StackFrame.FrameIndexBX);
-                CX = rmem.GetAtRelative(StackFrame.FrameIndexCX);
-                DX = rmem.GetAtRelative(StackFrame.FrameIndexDX);
                 EX = rmem.GetAtRelative(StackFrame.FrameIndexEX);
                 FX = rmem.GetAtRelative(StackFrame.FrameIndexFX);
                 LX = rmem.GetAtRelative(StackFrame.FrameIndexLX);
@@ -1684,10 +1668,6 @@ namespace ProtoCore.DSASM
             int fp = rmem.FramePointer;
             if (fp >= rmem.GlobOffset + StackFrame.StackFrameSize)
             {
-                rmem.SetAtRelative(StackFrame.FrameIndexAX, AX);
-                rmem.SetAtRelative(StackFrame.FrameIndexBX, BX);
-                rmem.SetAtRelative(StackFrame.FrameIndexCX, CX);
-                rmem.SetAtRelative(StackFrame.FrameIndexDX, DX);
                 rmem.SetAtRelative(StackFrame.FrameIndexEX, EX);
                 rmem.SetAtRelative(StackFrame.FrameIndexFX, FX);
                 rmem.SetAtRelative(StackFrame.FrameIndexLX, LX);
@@ -1704,10 +1684,6 @@ namespace ProtoCore.DSASM
                 if (registers.Count > 0)
                     registers.Clear();
 
-                registers.Add(AX);
-                registers.Add(BX);
-                registers.Add(CX);
-                registers.Add(DX);
                 registers.Add(EX);
                 registers.Add(FX);
                 registers.Add(LX);
@@ -2391,18 +2367,6 @@ namespace ProtoCore.DSASM
                 case AddressType.Register:
                     switch (opSymbol.Register)
                     {
-                        case Registers.AX:
-                            data = AX;
-                            break;
-                        case Registers.BX:
-                            data = BX;
-                            break;
-                        case Registers.CX:
-                            data = CX;
-                            break;
-                        case Registers.DX:
-                            data = DX;
-                            break;
                         case Registers.EX:
                             data = EX;
                             break;
@@ -2531,22 +2495,6 @@ namespace ProtoCore.DSASM
                         StackValue data = opVal;
                         switch (op1.Register)
                         {
-                            case Registers.AX:
-                                opPrev = AX;
-                                AX = data;
-                                break;
-                            case Registers.BX:
-                                opPrev = BX;
-                                BX = data;
-                                break;
-                            case Registers.CX:
-                                opPrev = CX;
-                                CX = data;
-                                break;
-                            case Registers.DX:
-                                opPrev = DX;
-                                DX = data;
-                                break;
                             case Registers.EX:
                                 opPrev = EX;
                                 EX = data;
