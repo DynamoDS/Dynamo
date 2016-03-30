@@ -36,7 +36,7 @@ namespace ProtoCore.DSASM
         private InstructionStream istream;
         public RuntimeMemory rmem { get; set; }
 
-        private StackValue LX;
+        public StackValue LX { get; set; }
         public StackValue RX { get; set; }
         public StackValue SX { get; set; }
         public StackValue TX { get; set; }

@@ -9,11 +9,10 @@ namespace ProtoCore.DSASM
 {
     public enum Registers
     {
-        FX = 0,
-        LX = 1,
-        RX = 2,
-        SX = 3,
-        TX = 4
+        LX = 0,
+        RX = 1,
+        SX = 2,
+        TX = 3
     }
 
     public enum AddressType: int 
