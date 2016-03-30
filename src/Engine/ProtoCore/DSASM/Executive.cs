@@ -2361,12 +2361,6 @@ namespace ProtoCore.DSASM
                         case Registers.RX:
                             data = RX;
                             break;
-                        case Registers.SX:
-                            data = SX;
-                            break;
-                        case Registers.TX:
-                            data = TX;
-                            break;
                         default:
                             throw new NotImplementedException();
                     }
@@ -2480,14 +2474,6 @@ namespace ProtoCore.DSASM
                             case Registers.RX:
                                 opPrev = RX;
                                 RX = data;
-                                break;
-                            case Registers.SX:
-                                opPrev = SX;
-                                SX = data;
-                                break;
-                            case Registers.TX:
-                                opPrev = TX;
-                                TX = data;
                                 break;
                             case Registers.LX:
                                 opPrev = LX;
