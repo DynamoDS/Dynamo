@@ -1665,11 +1665,6 @@ namespace ProtoCore
         protected void EmitReturnToRegister(int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
             int endline = ProtoCore.DSASM.Constants.kInvalidIndex, int endcol = ProtoCore.DSASM.Constants.kInvalidIndex)
         {
-            // Pop to the rx register
-            StackValue op = StackValue.BuildRegister(Registers.RX);
-            EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regRX);
-            EmitPop(op, Constants.kGlobalScope, Constants.kInvalidIndex, line, col, endline, endcol);
-
             // Emit the ret instruction only if this is a function we are returning from
             if (core.IsFunctionCodeBlock(codeBlock))
             {

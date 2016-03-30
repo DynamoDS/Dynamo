@@ -282,6 +282,10 @@ namespace ProtoCore.DSASM
             {
                 RX = rmem.GetAtRelative(StackFrame.FrameIndexThisPtr);
             }
+            else
+            {
+                RX = rmem.Pop();
+            }
 
             pc = (int)rmem.GetAtRelative(StackFrame.FrameIndexReturnAddress).IntegerValue;
             executingBlock = rmem.GetAtRelative(StackFrame.FrameIndexCallerBlockIndex).BlockIndex;
@@ -4393,13 +4397,10 @@ namespace ProtoCore.DSASM
             }
         }
 
-        private void RETC_Handler()
-        {
-            RETURN_Handler();
-        }
-
         private void RETB_Handler()
         {
+            RX = rmem.Pop();
+
             if (runtimeCore.Options.RunMode != InterpreterMode.Expression)
             {
                 runtimeCore.RuntimeMemory.PopConstructBlockId();
