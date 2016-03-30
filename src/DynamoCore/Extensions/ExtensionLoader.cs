@@ -22,10 +22,12 @@ namespace Dynamo.Extensions
                 var result = assembly.CreateInstance(extension.TypeName) as IExtension;
                 return result;
             }
-            catch
+            catch(Exception ex)
             {
                 var name = extension.TypeName == null ? "null" : extension.TypeName;
                 Log("Could not create an instance of " + name);
+                Log(ex.Message);
+                Log(ex.StackTrace);
                 return null;
             }
         }
