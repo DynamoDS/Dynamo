@@ -754,6 +754,7 @@ namespace ProtoCore.DSASM
 
             // Handle execution states at the FEP
             var stackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, runtimeCore.RunningBlock, fepRun ? StackFrameType.Function : StackFrameType.LanguageBlock, StackFrameType.Function, 0, rmem.FramePointer, registers, 0);
+            stackFrame.SX = StackValue.BuildBlockIndex(blockDeclId);
             StackValue sv = StackValue.Null;
 
             if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.Expression)
@@ -789,9 +790,6 @@ namespace ProtoCore.DSASM
                                                        hasDebugInfo);
                 }
             }
-
-            SX = StackValue.BuildBlockIndex(blockDeclId);
-            stackFrame.SX = SX;
 
             //Dispatch without recursion tracking 
             explicitCall = false;
@@ -875,6 +873,7 @@ namespace ProtoCore.DSASM
             var registers = GetRegisters();
 
             var stackFrame = new StackFrame(thisObject, classIndex, procIndex, pc + 1, 0, runtimeCore.RunningBlock, fepRun ? StackFrameType.Function : StackFrameType.LanguageBlock, StackFrameType.Function, 0, rmem.FramePointer, registers, 0);
+            stackFrame.SX = StackValue.BuildBlockIndex(0);
 
             var callsite = runtimeCore.RuntimeData.GetCallSite(exe.ExecutingGraphnode,
                                             classIndex,
@@ -902,9 +901,6 @@ namespace ProtoCore.DSASM
                                                    null,
                                                    hasDebugInfo);
             }
-
-            SX = StackValue.BuildBlockIndex(0);
-            stackFrame.SX = SX;
 
             var argumentAtLevels = AtLevelHandler.GetArgumentAtLevelStructure(arguments, atLevels, runtimeCore);
 
@@ -1633,7 +1629,6 @@ namespace ProtoCore.DSASM
             {
                 LX = rmem.GetAtRelative(StackFrame.FrameIndexLX);
                 RX = rmem.GetAtRelative(StackFrame.FrameIndexRX);
-                SX = rmem.GetAtRelative(StackFrame.FrameIndexSX);
                 TX = rmem.GetAtRelative(StackFrame.FrameIndexTX);
             }
         }
@@ -1644,7 +1639,6 @@ namespace ProtoCore.DSASM
             if (fp >= rmem.GlobOffset + StackFrame.StackFrameSize)
             {
                 LX = rmem.GetAtRelative(StackFrame.FrameIndexLX);
-                SX = rmem.GetAtRelative(StackFrame.FrameIndexSX);
                 TX = rmem.GetAtRelative(StackFrame.FrameIndexTX);
             }
        }
@@ -1656,7 +1650,6 @@ namespace ProtoCore.DSASM
             {
                 rmem.SetAtRelative(StackFrame.FrameIndexLX, LX);
                 rmem.SetAtRelative(StackFrame.FrameIndexRX, RX);
-                rmem.SetAtRelative(StackFrame.FrameIndexSX, SX);
                 rmem.SetAtRelative(StackFrame.FrameIndexTX, TX);
             }
         }
@@ -4174,7 +4167,6 @@ namespace ProtoCore.DSASM
             {
                 rmem.PushConstructBlockId(blockId);
             }
-            SX = svBlock;
 
             ProcedureNode fNode;
             if (ci != Constants.kInvalidIndex)
@@ -4268,7 +4260,6 @@ namespace ProtoCore.DSASM
 
             // On implicit call, the SX is set in JIL Fep
             // On explicit call, the SX should be directly set here
-            SX = StackValue.BuildBlockIndex(blockDecl);
 
             List<StackValue> registers = GetRegisters();
 
@@ -4279,6 +4270,8 @@ namespace ProtoCore.DSASM
             StackFrameType type = StackFrameType.Function;
 
             StackFrame stackFrame = new StackFrame(svThisPointer, ci, fi, pc + 1, blockDecl, blockCaller, callerType, type, depth, rmem.FramePointer, registers, 0);
+            stackFrame.SX = StackValue.BuildBlockIndex(blockDecl);
+
             rmem.PushFrameForLocals(fNode.LocalCount);
             rmem.PushStackFrame(stackFrame);
 

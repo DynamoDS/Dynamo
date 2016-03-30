@@ -102,7 +102,7 @@ namespace ProtoCore.Lang
             interpreter.runtime.TX = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.Implicit);
 
             StackValue svBlockDecl = StackValue.BuildBlockIndex(blockDecl);
-            interpreter.runtime.SX = svBlockDecl;
+            // interpreter.runtime.SX = svBlockDecl;
 
             List<StackValue> registers = interpreter.runtime.GetRegisters();
             var newStackFrame = new StackFrame(thisPtr, 
@@ -117,6 +117,7 @@ namespace ProtoCore.Lang
                                                framePointer, 
                                                registers, 
                                                0);
+            newStackFrame.SX = svBlockDecl;
 
             bool isInDebugMode = runtimeCore.Options.IDEDebugMode &&
                                  runtimeCore.Options.RunMode != InterpreterMode.Expression;
