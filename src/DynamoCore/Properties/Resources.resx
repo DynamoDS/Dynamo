@@ -646,4 +646,7 @@ value : bool = false</value>
   <data name="FailedToLoadLibrary" xml:space="preserve">
     <value>Failed to load library: {0}</value>
   </data>
+  <data name="NoneString" xml:space="preserve">
+    <value>none</value>
+  </data>
 </root>
