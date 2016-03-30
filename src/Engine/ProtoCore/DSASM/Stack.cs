@@ -30,9 +30,9 @@ namespace ProtoCore.DSASM
         public const int FrameIndexStackFrameDepth = -9;
         public const int FrameIndexLocalVariableCount = -10;
         public const int FrameIndexExecutionStates = -11;
-        public const int FrameIndexLX = -12;
-        public const int FrameIndexRX = -13;
-        public const int FrameIndexSX = -14;
+        public const int FrameIndexBlockIndex = -12;
+        public const int FrameIndexLX = -13;
+        public const int FrameIndexRX = -14;
         public const int FrameIndexTX = -15;
         public const int FrameIndexFramePointer = -16;
         public const int StackFrameSize = 16;
@@ -50,9 +50,9 @@ namespace ProtoCore.DSASM
             public const int StackFrameDepth = -FrameIndexStackFrameDepth - 1;
             public const int LocalVariableCount  = -FrameIndexLocalVariableCount - 1;
             public const int ExecutionStates = -FrameIndexExecutionStates - 1;
+            public const int BlockIndex = -FrameIndexBlockIndex - 1;
             public const int LX = -FrameIndexLX - 1;
             public const int RX = -FrameIndexRX - 1;
-            public const int SX = -FrameIndexSX - 1;
             public const int TX = -FrameIndexTX - 1;
             public const int FramePointer = -FrameIndexFramePointer - 1;
         }
@@ -71,6 +71,7 @@ namespace ProtoCore.DSASM
             StackFrameType stackFrameType,
             int depth,
             int framePointer,
+            int blockIndex,
             List<StackValue> registers,
             int execStateSize)
         {
@@ -87,10 +88,10 @@ namespace ProtoCore.DSASM
             Frame[AbsoluteIndex.StackFrameDepth] = StackValue.BuildInt(depth);
             Frame[AbsoluteIndex.LocalVariableCount] = StackValue.BuildInt(0);
             Frame[AbsoluteIndex.ExecutionStates] = StackValue.BuildInt(execStateSize);
+            Frame[AbsoluteIndex.BlockIndex] = StackValue.BuildBlockIndex(blockIndex);
             Frame[AbsoluteIndex.LX] = registers[0];
             Frame[AbsoluteIndex.RX] = registers[1];
-            Frame[AbsoluteIndex.SX] = registers[2];
-            Frame[AbsoluteIndex.TX] = registers[3];
+            Frame[AbsoluteIndex.TX] = registers[2];
             Frame[AbsoluteIndex.FramePointer] = StackValue.BuildInt(framePointer);
         }
 
@@ -105,10 +106,11 @@ namespace ProtoCore.DSASM
             StackFrameType stackFrameType,
             int depth,
             int framePointer,
+            int blockIndex,
             List<StackValue> registers,
             int executionStateSize) 
         {
-            Init(thisPtr, classIndex, functionIndex, returnAddress, functionBlockIndex, callerBlockIndex, callerStackFrameType, stackFrameType, depth, framePointer, registers, executionStateSize);
+            Init(thisPtr, classIndex, functionIndex, returnAddress, functionBlockIndex, callerBlockIndex, callerStackFrameType, stackFrameType, depth, framePointer, blockIndex, registers, executionStateSize);
         }
 
         public StackFrame(StackValue[] frame)
@@ -129,6 +131,7 @@ namespace ProtoCore.DSASM
                 StackFrameType.LanguageBlock, 
                 Constants.kInvalidIndex, 
                 globalOffset,
+                Constants.kInvalidIndex,
                 StackValue.BuildInvalidRegisters(), 
                 0);
         }
@@ -199,6 +202,12 @@ namespace ProtoCore.DSASM
             set { Frame[AbsoluteIndex.ExecutionStates] = StackValue.BuildInt(value); }
         }
 
+        public StackValue BlockIndex
+        {
+            get { return Frame[AbsoluteIndex.BlockIndex]; }
+            set { Frame[AbsoluteIndex.BlockIndex] = value; }
+        }
+
         public StackValue LX
         {
             get { return Frame[AbsoluteIndex.LX]; }
@@ -209,12 +218,6 @@ namespace ProtoCore.DSASM
         {
             get { return Frame[AbsoluteIndex.RX]; }
             set { Frame[AbsoluteIndex.RX] = value; }
-        }
-
-        public StackValue SX
-        {
-            get { return Frame[AbsoluteIndex.SX]; }
-            set { Frame[AbsoluteIndex.SX] = value; }
         }
 
         public StackValue TX
@@ -229,7 +232,6 @@ namespace ProtoCore.DSASM
 
             registers.Add(Frame[AbsoluteIndex.LX]);
             registers.Add(Frame[AbsoluteIndex.RX]);
-            registers.Add(Frame[AbsoluteIndex.SX]);
             registers.Add(Frame[AbsoluteIndex.TX]);
 
             return registers;

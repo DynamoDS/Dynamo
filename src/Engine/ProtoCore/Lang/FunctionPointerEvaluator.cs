@@ -115,9 +115,9 @@ namespace ProtoCore.Lang
                                                StackFrameType.Function, 
                                                0,   // depth
                                                framePointer, 
+                                               svBlockDecl.BlockIndex,
                                                registers, 
                                                0);
-            newStackFrame.SX = svBlockDecl;
 
             bool isInDebugMode = runtimeCore.Options.IDEDebugMode &&
                                  runtimeCore.Options.RunMode != InterpreterMode.Expression;
