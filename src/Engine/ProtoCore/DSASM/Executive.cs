@@ -36,7 +36,6 @@ namespace ProtoCore.DSASM
         private InstructionStream istream;
         public RuntimeMemory rmem { get; set; }
 
-        protected StackValue EX;
         protected StackValue FX;
         private StackValue LX;
         public StackValue RX { get; set; }
@@ -263,7 +262,6 @@ namespace ProtoCore.DSASM
 
         private void RestoreRegistersFromStackFrame()
         {
-            EX = rmem.GetAtRelative(StackFrame.FrameIndexEX);
             FX = rmem.GetAtRelative(StackFrame.FrameIndexFX);
             LX = rmem.GetAtRelative(StackFrame.FrameIndexLX);
             //RX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterRX);
@@ -1641,7 +1639,6 @@ namespace ProtoCore.DSASM
             int fp = rmem.FramePointer;
             if (fp >= rmem.GlobOffset + StackFrame.StackFrameSize)
             {
-                EX = rmem.GetAtRelative(StackFrame.FrameIndexEX);
                 FX = rmem.GetAtRelative(StackFrame.FrameIndexFX);
                 LX = rmem.GetAtRelative(StackFrame.FrameIndexLX);
                 RX = rmem.GetAtRelative(StackFrame.FrameIndexRX);
@@ -1655,7 +1652,6 @@ namespace ProtoCore.DSASM
             int fp = rmem.FramePointer;
             if (fp >= rmem.GlobOffset + StackFrame.StackFrameSize)
             {
-                EX = rmem.GetAtRelative(StackFrame.FrameIndexEX);
                 FX = rmem.GetAtRelative(StackFrame.FrameIndexFX);
                 LX = rmem.GetAtRelative(StackFrame.FrameIndexLX);
                 SX = rmem.GetAtRelative(StackFrame.FrameIndexSX);
@@ -1668,7 +1664,6 @@ namespace ProtoCore.DSASM
             int fp = rmem.FramePointer;
             if (fp >= rmem.GlobOffset + StackFrame.StackFrameSize)
             {
-                rmem.SetAtRelative(StackFrame.FrameIndexEX, EX);
                 rmem.SetAtRelative(StackFrame.FrameIndexFX, FX);
                 rmem.SetAtRelative(StackFrame.FrameIndexLX, LX);
                 rmem.SetAtRelative(StackFrame.FrameIndexRX, RX);
@@ -1684,7 +1679,6 @@ namespace ProtoCore.DSASM
                 if (registers.Count > 0)
                     registers.Clear();
 
-                registers.Add(EX);
                 registers.Add(FX);
                 registers.Add(LX);
                 registers.Add(RX);
@@ -2367,9 +2361,6 @@ namespace ProtoCore.DSASM
                 case AddressType.Register:
                     switch (opSymbol.Register)
                     {
-                        case Registers.EX:
-                            data = EX;
-                            break;
                         case Registers.FX:
                             data = FX;
                             break;
@@ -2495,10 +2486,6 @@ namespace ProtoCore.DSASM
                         StackValue data = opVal;
                         switch (op1.Register)
                         {
-                            case Registers.EX:
-                                opPrev = EX;
-                                EX = data;
-                                break;
                             case Registers.FX:
                                 opPrev = FX;
                                 FX = data;
