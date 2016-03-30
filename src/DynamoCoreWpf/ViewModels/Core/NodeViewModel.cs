@@ -35,7 +35,6 @@ namespace Dynamo.ViewModels
 
         #region events
         public event SnapInputEventHandler SnapInputEvent;
-        public event PreviewPinStatusHandler PreviewPinEvent;
         #endregion
 
         #region private members
@@ -62,8 +61,10 @@ namespace Dynamo.ViewModels
             {
                 if (previewPinned == value) return;
                 previewPinned = value;
-                if (PreviewPinEvent != null)
-                    PreviewPinEvent(previewPinned);
+
+                DynamoViewModel.ExecuteCommand(
+              new DynamoModel.UpdateModelValueCommand(
+                        System.Guid.Empty, NodeModel.GUID, "PreviewPinned", previewPinned.ToString()));
             }
         }
 
@@ -458,8 +459,7 @@ namespace Dynamo.ViewModels
             DynamoViewModel = workspaceViewModel.DynamoViewModel;
 
             nodeLogic = logic;
-            PreviewPinned = logic.PreviewPinned;
-            PreviewPinEvent += logic.SetPinStatus;
+            previewPinned = logic.PreviewPinned;
 
             //respond to collection changed events to add
             //and remove port model views

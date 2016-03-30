@@ -23,7 +23,7 @@ namespace ProtoCore.Lang
             interpreter = dsi;
             RuntimeCore runtimeCore = dsi.runtime.RuntimeCore;
 
-            int fptr = (int)pointer.opdata;
+            int fptr = pointer.FunctionPointer;
             FunctionPointerNode fptrNode;
             int classScope = Constants.kGlobalScope;
 
@@ -93,13 +93,13 @@ namespace ProtoCore.Lang
 
             if (!isValidThisPointer || (!thisPtr.IsPointer && !thisPtr.IsArray))
             {
-                runtimeCore.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer,
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.DereferencingNonPointer,
                                               Resources.kDeferencingNonPointer);
                 return StackValue.Null;
             }
 
             var callerType = stackFrame.StackFrameType;
-            interpreter.runtime.TX = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
+            interpreter.runtime.TX = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.Implicit);
 
             StackValue svBlockDecl = StackValue.BuildBlockIndex(blockDecl);
             interpreter.runtime.SX = svBlockDecl;
@@ -113,14 +113,14 @@ namespace ProtoCore.Lang
                                                blockDecl, 
                                                blockCaller, 
                                                callerType, 
-                                               StackFrameType.kTypeFunction, 
+                                               StackFrameType.Function, 
                                                0,   // depth
                                                framePointer, 
                                                registers, 
-                                               null);
+                                               0);
 
             bool isInDebugMode = runtimeCore.Options.IDEDebugMode &&
-                                 runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter;
+                                 runtimeCore.Options.RunMode != InterpreterMode.Expression;
             if (isInDebugMode)
             {
                 runtimeCore.DebugProps.SetUpCallrForDebug(
@@ -154,7 +154,7 @@ namespace ProtoCore.Lang
         public static string GetMethodName(StackValue pointer, Interpreter dsi)
         {
             Validity.Assert(pointer.IsFunctionPointer);
-            return dsi.runtime.exe.procedureTable[0].Procedures[(int)pointer.opdata].Name;
+            return dsi.runtime.exe.procedureTable[0].Procedures[pointer.FunctionPointer].Name;
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ProtoCore.Utils;
 using System.Linq;
 using Operand = ProtoCore.DSASM.StackValue;
+using ProtoCore.Exceptions;
 
 namespace ProtoCore.DSASM
 {
@@ -115,8 +116,7 @@ namespace ProtoCore.DSASM
     [System.Diagnostics.DebuggerDisplay("{optype}, opdata = {opdata}, metaData = {metaData.type}")]
     public struct StackValue
     {
-        public Int64 opdata;
-        public double opdata_d;
+        private long opdata;
         public AddressType optype;
         public MetaData metaData;
 
@@ -131,7 +131,6 @@ namespace ProtoCore.DSASM
             StackValue newSv = new StackValue();
             newSv.optype = optype;
             newSv.opdata = opdata;
-            newSv.opdata_d = opdata_d;
             newSv.metaData = new MetaData { type = metaData.type };
             return newSv;
         }
@@ -149,10 +148,10 @@ namespace ProtoCore.DSASM
             switch (optype)
             {
                 case AddressType.Double:
-                    return MathUtils.Equals(this.RawDoubleValue, rhs.RawDoubleValue);
+                    return MathUtils.Equals(this.DoubleValue, rhs.DoubleValue);
 
                 case AddressType.Boolean:
-                    return this.RawBooleanValue == rhs.RawBooleanValue;
+                    return this.BooleanValue == rhs.BooleanValue;
 
                 default:
                     return opdata == rhs.opdata;
@@ -167,38 +166,14 @@ namespace ProtoCore.DSASM
 
         #region Get raw values
         /// <summary>
-        /// Get integer value without checking its type or do type conversion,
-        /// so the StackValue shoule be boolean typed.
+        /// Get raw data without checking its type or do type conversion.
+        /// Use with caution.
         /// </summary>
-        public Int64 RawIntValue
+        public long RawData
         {
             get
             {
                 return opdata;
-            }
-        }
-
-        /// <summary>
-        /// Get double value without checking its type or do type conversion. 
-        /// The StackValue should be double typed. 
-        /// </summary>
-        public double RawDoubleValue
-        {
-            get
-            {
-                return opdata_d;
-            }
-        }
-
-        /// <summary>
-        /// Get boolean value without checking its type or do type conversion,
-        /// so the StackValue shoule be boolean typed.
-        /// </summary>
-        public bool RawBooleanValue
-        {
-            get
-            {
-                return opdata != 0;
             }
         }
         #endregion
@@ -257,8 +232,7 @@ namespace ProtoCore.DSASM
 
         public bool IsNumeric
         {
-            get { return optype == AddressType.Int || optype ==
-            AddressType.Double; }
+            get { return optype == AddressType.Int || optype == AddressType.Double; }
         }
 
         public bool IsBoolean
@@ -362,6 +336,258 @@ namespace ProtoCore.DSASM
         }
         #endregion
 
+        private void Check(bool cond, string errorMessage)
+        {
+            if (!cond)
+                throw new RuntimeException(errorMessage);
+        }
+
+        #region Type-dependent value extractor
+        public int VariableIndex
+        {
+            get
+            {
+                Check(IsVariableIndex, "The type of StackValue is not VariableIndex");
+                return (int)opdata;
+            }
+        }
+
+        public int FunctionIndex
+        {
+            get
+            {
+                Check(IsFunctionIndex, "The type of StackValue is not FunctionIndex");
+                return (int)opdata;
+            }
+        }
+
+        public int MemberVariableIndex
+        {
+            get
+            {
+                Check(IsMemberVariableIndex, "The type of StackValue is not MemberVariableIndex");
+                return (int)opdata;
+            }
+        }
+
+        public int StaticVariableIndex
+        {
+            get
+            {
+                Check(IsStaticVariableIndex, "The type of StackValue is not StaticVariableIndex");
+                return (int)opdata;
+            }
+        }
+
+        public int SymbolIndex
+        {
+            get
+            {
+                Check(IsVariableIndex || IsStaticVariableIndex || IsMemberVariableIndex, "It is not a symbol type");
+                return (int)opdata;
+            }
+        }
+
+        public int ClassIndex
+        {
+            get
+            {
+                Check(IsClassIndex, "The Type of StackValue is not ClassIndex");
+                return (int)opdata;
+            }
+        }
+
+        public long IntegerValue
+        {
+            get
+            {
+                Check(IsInteger, "The Type of StackValue is not Integer");
+                return (int)opdata;
+            }
+        }
+
+        public long CharValue
+        {
+            get
+            {
+                Check(IsChar, "The Type of StackValue is not Char");
+                return opdata;
+            }
+        }
+
+        public double DoubleValue
+        {
+            get
+            {
+                Check(IsDouble, "The Type of StackValue is not Double");
+                return BitConverter.Int64BitsToDouble(opdata);
+            }
+        }
+
+        public bool BooleanValue
+        {
+            get
+            {
+                Check(IsBoolean, "The Type of StackValue is not Boolean");
+                return opdata != 0;
+            }
+        }
+
+        public int StringPointer
+        {
+            get
+            {
+                Check(IsString, "The Type of StackValue is not String");
+                return (int)opdata;
+            }
+        }
+
+        public int LabelIndex
+        {
+            get
+            {
+                Check(IsLabelIndex, "The Type of StackValue is not LabelIndex");
+                return (int)opdata;
+            }
+        }
+
+        public int BlockIndex
+        {
+            get
+            {
+                Check(IsBlockIndex, "The Type of StackValue is not BlockIndex");
+                return (int)opdata;
+            }
+        }
+
+        public int Pointer
+        {
+            get
+            {
+                Check(IsPointer, "The Type of StackValue is not Pointer");
+                return (int)opdata;
+            }
+        }
+
+        public int ArrayPointer
+        {
+            get
+            {
+                Check(IsArray, "The Type of StackValue is not ArrayPointer");
+                return (int)opdata;
+            }
+        }
+
+        public int FunctionPointer
+        {
+            get
+            {
+                Check(IsFunctionPointer, "The Type of StackValue is not FunctionPointer");
+                return (int)opdata;
+            }
+        }
+
+        public int ArrayDimension
+        {
+            get
+            {
+                Check(IsArrayDimension, "The Type of StackValue is not ArrayDimension");
+                return (int)opdata;
+            }
+        }
+
+        public int ReplicationGuide
+        {
+            get
+            {
+                Check(IsReplicationGuide, "The Type of StackValue is not ReplicationGuide");
+                return (int)opdata;
+            }
+        }
+
+        public int Rank 
+        {
+            get
+            {
+                Check(IsStaticType, "The Type of StackValue is not StaticType");
+                return (int)opdata;
+            }
+        }
+
+        public CallingConvention.CallType CallType
+        {
+            get
+            {
+                Check(IsCallingConvention, "The Type of StackValue is not CallingConvention");
+                return (CallingConvention.CallType)opdata;
+            }
+        }
+
+        public CallingConvention.BounceType BounceType 
+        {
+            get
+            {
+                Check(IsCallingConvention, "The Type of StackValue is not CallingConvention");
+                return (CallingConvention.BounceType)opdata;
+            }
+        }
+
+        public int ExplicitCallEntry
+        {
+            get
+            {
+                Check(IsExplicitCall, "The Type of StackValue is not ExplicitCall");
+                return (int)opdata;
+            }
+        }
+
+        public StackFrameType FrameType
+        {
+            get
+            {
+                Check(IsFrameType, "The Type of StackValue is not FrameType");
+                return (StackFrameType)opdata;
+            }
+        }
+
+        public int DynamicIndex
+        {
+            get
+            {
+                Check(IsDynamic, "The Type of StackValue is not Dynamic");
+                return (int)opdata;
+            }
+        }
+
+        public int ThisPtr
+        {
+            get
+            {
+                Check(IsThisPtr, "The Type of StackValue is not ThisPtr");
+                return (int)opdata;
+            }
+        }
+
+        public int ArrayKeyIndex
+        {
+            get
+            {
+                Check(IsArrayKey, "The Type of StackValue is not ArrayKey");
+                return (int)opdata;
+            }
+        }
+
+        public Registers Register
+        {
+            get
+            {
+                Check(IsRegister, "The Type of StackValue is not ArrayKey");
+                return (Registers)(int)opdata;
+            }
+        }
+
+        #endregion
+
         #region Builders
         public static StackValue BuildInvalid()
         {
@@ -378,7 +604,7 @@ namespace ProtoCore.DSASM
             value.opdata = data;
 
             MetaData mdata = new MetaData();
-            mdata.type = (int)PrimitiveType.kTypeInt;
+            mdata.type = (int)PrimitiveType.Integer;
             value.metaData = mdata;
             return value;
         }
@@ -387,10 +613,10 @@ namespace ProtoCore.DSASM
         {
             StackValue value = new StackValue();
             value.optype = AddressType.Double;
-            value.opdata_d = data;
+            value.opdata = BitConverter.DoubleToInt64Bits(data);
 
             MetaData mdata = new MetaData();
-            mdata.type = (int)PrimitiveType.kTypeDouble;
+            mdata.type = (int)PrimitiveType.Double;
             value.metaData = mdata;
             return value;
         }
@@ -402,7 +628,7 @@ namespace ProtoCore.DSASM
             value.opdata = Convert.ToInt64(ch);
 
             MetaData mdata = new MetaData();
-            mdata.type = (int)PrimitiveType.kTypeChar;
+            mdata.type = (int)PrimitiveType.Char;
             value.metaData = mdata;
             return value;
         }
@@ -413,7 +639,7 @@ namespace ProtoCore.DSASM
             value.optype = AddressType.Null;
             value.opdata = 0;
             MetaData mdata = new MetaData();
-            mdata.type = (int)PrimitiveType.kTypeNull;
+            mdata.type = (int)PrimitiveType.Null;
             value.metaData = mdata;
             return value;
         }
@@ -442,7 +668,7 @@ namespace ProtoCore.DSASM
             value.opdata = data;
 
             MetaData mdata;
-            mdata.type = (int)PrimitiveType.kTypeArray;
+            mdata.type = (int)PrimitiveType.Array;
             value.metaData = mdata;
             return value;
         }
@@ -451,23 +677,35 @@ namespace ProtoCore.DSASM
         {
             StackValue value = new StackValue();
             value.optype = AddressType.ArrayKey;
-            value.opdata = index;
-            value.opdata_d = arrayPtr;
+
+            if (index == Constants.kInvalidIndex || arrayPtr == Constants.kInvalidIndex)
+            {
+                value.opdata = Constants.kInvalidIndex;
+            }
+            else
+            {
+                // Array key information is encoded in 64bits opdata. 
+                //
+                // High 32 bits: array pointer
+                // Low 32 bits : array key
+                
+                // TODO: find out a cleaner way to represent array key instead 
+                // of using this kind of hacking.
+                ulong key = (ulong)arrayPtr;
+                key = (key << 32) | (uint)index;
+                value.opdata = (long)key;
+            }
 
             return value;
         }
 
         public static StackValue BuildArrayKey(StackValue array, int index)
         {
-            StackValue value = new StackValue();
-            value.optype = AddressType.ArrayKey;
-            value.opdata = index;
-            value.metaData = array.metaData;
-
             Validity.Assert(array.IsArray || array.IsString);
-            value.opdata_d = (int)array.opdata;
-
-            return value;
+            int ptr = array.IsArray ? array.ArrayPointer : array.StringPointer;
+            var arrayKey = BuildArrayKey(ptr, index);
+            arrayKey.metaData = array.metaData;
+            return arrayKey;
         }
 
         public static StackValue BuildThisPtr(int thisptr)
@@ -573,7 +811,7 @@ namespace ProtoCore.DSASM
             value.opdata = data;
 
             MetaData mdata;
-            mdata.type = (int)PrimitiveType.kTypeString;
+            mdata.type = (int)PrimitiveType.String;
             value.metaData = mdata;
             return value;
         }
@@ -590,7 +828,7 @@ namespace ProtoCore.DSASM
             value.opdata = b ? 1 : 0;
 
             MetaData mdata;
-            mdata.type = (int)PrimitiveType.kTypeBool;
+            mdata.type = (int)PrimitiveType.Bool;
             value.metaData = mdata;
 
             return value;
@@ -603,7 +841,7 @@ namespace ProtoCore.DSASM
             value.opdata = 0;
 
             MetaData mdata;
-            mdata.type = (int)PrimitiveType.kTypeVar;
+            mdata.type = (int)PrimitiveType.Var;
             value.metaData = mdata;
 
             return value;
@@ -616,7 +854,7 @@ namespace ProtoCore.DSASM
             value.opdata = block;
 
             MetaData mdata;
-            mdata.type = (int)PrimitiveType.kTypeVar;
+            mdata.type = (int)PrimitiveType.Var;
             value.metaData = mdata;
 
             return value;
@@ -670,7 +908,7 @@ namespace ProtoCore.DSASM
             value.opdata = -1;
 
             MetaData mdata = new MetaData();
-            mdata.type = (int)PrimitiveType.kInvalidType;
+            mdata.type = (int)PrimitiveType.InvalidType;
             value.metaData = mdata;
 
             return value;
@@ -693,25 +931,34 @@ namespace ProtoCore.DSASM
         /// type of StackValue should be AddressType.ArrayKey. 
         /// </summary>
         /// <param name="array"></param>
-        /// <param name="index"></param>
+        /// <param name="key"></param>
         /// <returns></returns>
-        public bool TryGetArrayKey(out StackValue array, out int index)
+        public bool TryGetArrayKey(out StackValue array, out int key)
         {
             array = StackValue.Null;
-            index = Constants.kInvalidIndex;
+            key = Constants.kInvalidIndex;
 
-            if (!this.IsArrayKey || opdata == Constants.kInvalidIndex)
+            if (!IsArrayKey || opdata == Constants.kInvalidIndex)
             {
                 return false;
             }
 
-            if (this.metaData.type == (int)PrimitiveType.kTypeString)
-                array = StackValue.BuildString((long)RawDoubleValue);
+            // Array key information is encoded in 64 bits opdata. 
+            // High 32 bits: array pointer
+            // Low 32 bits : array key, that is the index into the array.
+            //
+            // TODO: find out a cleaner way to represent array key instead of
+            // using this kind of hacking.
+            var rawArrayPointer = ((ulong)opdata >> 32);
+            if (this.metaData.type == (int)PrimitiveType.String)
+            {
+                array = BuildString((long)rawArrayPointer);
+            }
             else
-                array = StackValue.BuildArrayPointer((long)RawDoubleValue);
-
-            index = (int)this.opdata;
-
+            {
+                array = BuildArrayPointer((long)rawArrayPointer);
+            }
+            key = (int)(((ulong)opdata << 32) >> 32);
             return true;
         }
 
@@ -772,7 +1019,7 @@ namespace ProtoCore.DSASM
                     return StackValue.Null; 
 
                 case AddressType.Double:
-                    bool b = !Double.IsNaN(RawDoubleValue) && !RawDoubleValue.Equals(0.0);
+                    bool b = !Double.IsNaN(DoubleValue) && !DoubleValue.Equals(0.0);
                     return BuildBoolean(b);
 
                 case AddressType.Pointer:
@@ -801,7 +1048,7 @@ namespace ProtoCore.DSASM
             switch (optype)
             {
                 case AddressType.Int:
-                    return BuildDouble(RawIntValue);
+                    return BuildDouble(opdata);
 
                 case AddressType.Double:
                     return this;
@@ -824,7 +1071,7 @@ namespace ProtoCore.DSASM
                     return this;
 
                 case AddressType.Double:
-                    double value = RawDoubleValue;
+                    double value = DoubleValue;
                     return BuildInt((Int64)Math.Round(value, 0, MidpointRounding.AwayFromZero));
 
                 default:

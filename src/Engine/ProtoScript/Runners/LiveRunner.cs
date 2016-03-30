@@ -1496,7 +1496,14 @@ namespace ProtoScript.Runners
             try
             {
                 SetupRuntimeCoreForExecution(isCodeCompiled);
-                runner.ExecuteLive(runnerCore, runtimeCore);
+                if (isCodeCompiled)
+                {
+                    // If isCodeCompiled is false, nothing to execute but still
+                    // bounce and push stack frame. Need to investigate why 
+                    // previouslsy ExecuteLive() is called when isCodeCompiled is
+                    // false.
+                    runner.ExecuteLive(runnerCore, runtimeCore);
+                }
             }
             catch (ProtoCore.Exceptions.ExecutionCancelledException)
             {
@@ -1566,6 +1573,14 @@ namespace ProtoScript.Runners
                 ResetForDeltaExecution();
                 runnerCore.Options.ApplyUpdate = true;
                 Execute(true);
+
+                // Execute() will push a stack frame in SetupAndBounceStackFrame().
+                // In normal execution, that stack frame will pop in RETB. But in
+                // ApplyUpdate(), there is no RETB instruciton, so need to manually
+                // cleanup stack frame.
+                StackValue restoreFramePointer = runtimeCore.RuntimeMemory.GetAtRelative(ProtoCore.DSASM.StackFrame.FrameIndexFramePointer);
+                runtimeCore.RuntimeMemory.FramePointer = (int)restoreFramePointer.IntegerValue;
+                runtimeCore.RuntimeMemory.PopFrame(ProtoCore.DSASM.StackFrame.StackFrameSize);
             }
             ForceGC();
         }

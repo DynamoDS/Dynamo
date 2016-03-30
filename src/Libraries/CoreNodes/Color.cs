@@ -138,7 +138,9 @@ namespace DSCore
         /// <summary>
         /// Get a color from a color gradient between a start color and an end color.
         /// </summary>
+        /// <param name="colors"></param>
         /// <param name="parameters">The values between 0 and 1 along the range for which you would like to sample the color.</param>
+        /// <param name="parameter"></param>
         /// <returns name="colors">Colors in the given range.</returns>
         /// <search>color,range,gradient</search>
         [IsVisibleInDynamoLibrary(false)]
@@ -189,9 +191,8 @@ namespace DSCore
         /// <summary>
         /// Bilinearly interpolate between a set of colors.
         /// </summary>
-        /// <param name="start">The start color.</param>
-        /// <param name="end">The end color.</param>
-        /// <param name="t">A parameter between 0.0 and 1.0.</param>
+        /// <param name="colors"></param>
+        /// <param name="parameter"></param>
         /// <returns>The interpolated color or white.</returns>
         [IsVisibleInDynamoLibrary(false)]
         public static Color Blerp(IList<IndexedColor2D> colors, UV parameter)
@@ -433,6 +434,7 @@ namespace DSCore
         /// <summary>
         /// Get the color in this color range at the specified parameter.
         /// </summary>
+        /// <param name="colorRange"></param>
         /// <param name="parameter">A value between 0.0 and 1.0.</param>
         /// <returns>A Color.</returns>
         public static Color GetColorAtParameter(ColorRange1D colorRange, double parameter = 0.0)

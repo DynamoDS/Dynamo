@@ -1019,7 +1019,7 @@ y = 1;
             Assert.IsTrue((Int64)mirror.GetValue("y1").Payload == 3);
             Assert.IsTrue((Int64)mirror.GetValue("z").Payload == 4);
             Assert.IsTrue((Int64)mirror.GetValue("y2").Payload == 3);
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kIdUnboundIdentifier);
+            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.IdUnboundIdentifier);
 
         }
 

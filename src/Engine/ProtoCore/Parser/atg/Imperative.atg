@@ -812,8 +812,8 @@ Imperative_Ident<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                     {
                         errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                     }
-                    int ltype = (0 == String.Compare(t.val, "return")) ? (int)ProtoCore.PrimitiveType.kTypeReturn : (int)ProtoCore.PrimitiveType.kTypeVar;
-                    if (ltype == (int)ProtoCore.PrimitiveType.kTypeReturn && la.val != "=")
+                    int ltype = (0 == String.Compare(t.val, "return")) ? (int)ProtoCore.PrimitiveType.Return : (int)ProtoCore.PrimitiveType.Var;
+                    if (ltype == (int)ProtoCore.PrimitiveType.Return && la.val != "=")
                     {
                         SynErr(String.Format(Resources.InvalidReturnStatement, la.val)); 
                     }        
@@ -973,7 +973,7 @@ Imperative_ArgDecl<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                                         ProtoCore.AST.ImperativeAST.IdentifierNode tNode = null; 
                                         ProtoCore.AST.ImperativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.ImperativeAST.VarDeclNode(); 
                                         NodeUtils.SetNodeLocation(varDeclNode, la);
-                                        varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemStack;
+                                        varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.MemStack;
                                     .)
     (
         ident                       (. 
@@ -1040,7 +1040,7 @@ Imperative_DefaultArgDecl<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
 Imperative_functiondecl<.out ProtoCore.AST.ImperativeAST.ImperativeNode node, List<ProtoCore.AST.ImperativeAST.ImperativeNode> attrs = null.>    
 =                           
                                             (. ProtoCore.AST.ImperativeAST.FunctionDefinitionNode funcDecl = new ProtoCore.AST.ImperativeAST.FunctionDefinitionNode(); .)
-                                            (. ProtoCore.Type rtype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank); .)
+                                            (. ProtoCore.Type rtype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank); .)
     kw_def                                  (. NodeUtils.SetNodeStartLocation(funcDecl, t); funcDecl.Attributes = attrs; .)
     
     ident                                   (. funcDecl.Name = t.val; NodeUtils.SetNodeEndLocation(funcDecl, t); .)
@@ -1124,7 +1124,7 @@ Imperative_functionalMethodBodySingleStatement<.out List<ProtoCore.AST.Imperativ
 =                                       (.
                                             funcBody = new List<ProtoCore.AST.ImperativeAST.ImperativeNode>();
                                             ProtoCore.AST.ImperativeAST.BinaryExpressionNode binaryExpr = new ProtoCore.AST.ImperativeAST.BinaryExpressionNode();
-                                            binaryExpr.LeftNode = BuildImperativeIdentifier("return", ProtoCore.PrimitiveType.kTypeReturn);
+                                            binaryExpr.LeftNode = BuildImperativeIdentifier("return", ProtoCore.PrimitiveType.Return);
                                             ProtoCore.AST.ImperativeAST.ImperativeNode expr;
                                         .)
     Imperative_expr<out expr>

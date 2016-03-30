@@ -1557,7 +1557,7 @@ c;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             Assert.IsTrue(mirror.GetValue("a").DsasmValue.IsNull);
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kIdUnboundIdentifier);
+            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.IdUnboundIdentifier);
         }
 
         [Test]

@@ -86,7 +86,7 @@ namespace ProtoCore
                     {
                         //This was an empty array
                         Validity.Assert(cn == null, "If it was an empty array, there shouldn't be a type node");
-                        cn = runtimeCore.DSExecutable.classTable.ClassNodes[(int)PrimitiveType.kTypeNull];
+                        cn = runtimeCore.DSExecutable.classTable.ClassNodes[(int)PrimitiveType.Null];
                     }
                     else if (arrayTypes.Count == 1)
                     {
@@ -114,7 +114,7 @@ namespace ProtoCore
                     //TODO(Jun)This is worrying test
 
                     //Disable var as exact match, otherwise resolution between double and var will fail
-                    if (cn != argTypeNode && cn != runtimeCore.DSExecutable.classTable.ClassNodes[(int)PrimitiveType.kTypeNull]  && argTypeNode != runtimeCore.DSExecutable.classTable.ClassNodes[(int)PrimitiveType.kTypeVar] )
+                    if (cn != argTypeNode && cn != runtimeCore.DSExecutable.classTable.ClassNodes[(int)PrimitiveType.Null]  && argTypeNode != runtimeCore.DSExecutable.classTable.ClassNodes[(int)PrimitiveType.Var] )
                         return false;
 
                     //if (coersionScore != (int)ProcedureDistance.kExactMatchScore)
@@ -199,11 +199,11 @@ namespace ProtoCore
         {
             //Modified from proc Table, does not use quite the same arguments
                 
-            int distance = (int)ProcedureDistance.kMaxDistance;
+            int distance = (int)ProcedureDistance.MaxDistance;
 
             if (0 == args.Count && 0 == FormalParams.Length)
             {
-                distance = (int)ProcedureDistance.kExactMatchDistance;
+                distance = (int)ProcedureDistance.ExactMatchDistance;
             }
             else
             {
@@ -224,7 +224,7 @@ namespace ProtoCore
                         }
 
                         int expectedType = FormalParams[i].UID;
-                        int currentScore = (int)ProcedureDistance.kNotMatchScore;
+                        int currentScore = (int)ProcedureDistance.NotMatchScore;
 
                         //Fuqiang: For now disable rank check
                         //if function is expecting array, but non-array or array of lower rank is passed, break.
@@ -246,7 +246,7 @@ namespace ProtoCore
                             //stop array -> single
                             if (args[i].IsArray && !FormalParams[i].IsIndexable) //Replication code will take care of this
                             {
-                                distance = (int)ProcedureDistance.kMaxDistance;
+                                distance = (int)ProcedureDistance.MaxDistance;
                                 break;
                             }
                         }
@@ -256,7 +256,7 @@ namespace ProtoCore
                             if (args[i].IsArray != FormalParams[i].IsIndexable)
                             //Replication code will take care of this
                             {
-                                distance = (int)ProcedureDistance.kMaxDistance;
+                                distance = (int)ProcedureDistance.MaxDistance;
                                 break;
                             }
                         }
@@ -267,29 +267,29 @@ namespace ProtoCore
                             //There are overloaded methods and the difference is the parameter type between int and double.
                             //Add this to make it call the correct one. - Randy
                             bool bContainsDouble = ArrayUtils.ContainsDoubleElement(args[i], runtimeCore);
-                            if (FormalParams[i].UID == (int)PrimitiveType.kTypeInt && bContainsDouble)
+                            if (FormalParams[i].UID == (int)PrimitiveType.Integer && bContainsDouble)
                             {
-                                currentScore = (int)ProcedureDistance.kCoerceDoubleToIntScore;
+                                currentScore = (int)ProcedureDistance.CoerceDoubleToIntScore;
                             }
-                            else if (FormalParams[i].UID == (int)PrimitiveType.kTypeDouble && !bContainsDouble)
+                            else if (FormalParams[i].UID == (int)PrimitiveType.Double && !bContainsDouble)
                             {
-                                currentScore = (int)ProcedureDistance.kCoerceIntToDoubleScore;
+                                currentScore = (int)ProcedureDistance.CoerceIntToDoubleScore;
                             }
                             else
                             {
-                                currentScore = (int)ProcedureDistance.kExactMatchScore;
+                                currentScore = (int)ProcedureDistance.ExactMatchScore;
                             }
                         }
                         else if (expectedType == rcvdType && (FormalParams[i].IsIndexable == args[i].IsArray))
                         {
-                            currentScore = (int)ProcedureDistance.kExactMatchScore;
+                            currentScore = (int)ProcedureDistance.ExactMatchScore;
                         }
                         else if (rcvdType != ProtoCore.DSASM.Constants.kInvalidIndex)
                         {
                             currentScore = classTable.ClassNodes[rcvdType].GetCoercionScore(expectedType);
-                            if (currentScore == (int)ProcedureDistance.kNotMatchScore)
+                            if (currentScore == (int)ProcedureDistance.NotMatchScore)
                             {
-                                distance = (int)ProcedureDistance.kMaxDistance;
+                                distance = (int)ProcedureDistance.MaxDistance;
                                 break;
                             }
                         }
@@ -303,13 +303,13 @@ namespace ProtoCore
         public int GetConversionDistance(List<StackValue> reducedParamSVs, ProtoCore.DSASM.ClassTable classTable, bool allowArrayPromotion, RuntimeCore runtimeCore)
         {
             int dist = ComputeTypeDistance(reducedParamSVs, classTable, runtimeCore, allowArrayPromotion);
-            if (dist >= 0 && dist != (int)ProcedureDistance.kMaxDistance) //Is it possible to convert to this type?
+            if (dist >= 0 && dist != (int)ProcedureDistance.MaxDistance) //Is it possible to convert to this type?
             {
                 if (!FunctionGroup.CheckInvalidArrayCoersion(this, reducedParamSVs, classTable, runtimeCore, allowArrayPromotion))
                     return dist;
             }
 
-            return (int) ProcedureDistance.kInvalidDistance;
+            return (int) ProcedureDistance.InvalidDistance;
         }
 
         public abstract bool DoesPredicateMatch(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, List<ReplicationInstruction> replicationInstructions);

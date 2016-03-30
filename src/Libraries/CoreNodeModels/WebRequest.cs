@@ -9,7 +9,7 @@ namespace CoreNodeModels
 {
     [NodeName("Web Request")]
     [NodeDescription("WebRequestDescription", typeof(Resources))]
-    [NodeCategory(BuiltinNodeCategories.CORE_STRINGS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_WEB)]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.WebRequest")]
     public class WebRequest : NodeModel

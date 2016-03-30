@@ -10,6 +10,41 @@ using ProtoCore.SyntaxAnalysis;
 
 namespace ProtoCore.AST.ImperativeAST
 {
+    public enum AstKind
+    {
+        ArgumentSignature,
+        ArrayName,
+        Array,
+        BinaryExpression,
+        Boolean,
+        Break,
+        Char,
+        CodeBlock,
+        Continue,
+        DefaultArgument,
+        Double,
+        ElseIf,
+        ExpressionList,
+        ForLoop,
+        FunctionCall,
+        FunctionDefinition,
+        GroupExpression,
+        Identifier,
+        IdentifierList,
+        If,
+        IfPosition,
+        InlineConditional,
+        Integer,
+        LanguageBlock,
+        Null,
+        RangeExpression,
+        String,
+        TypedIdentifier,
+        UnaryExpression,
+        VariableDeclaration,
+        While
+    }
+
     public abstract class ImperativeNode : Node
     {
         public ImperativeNode()
@@ -20,6 +55,7 @@ namespace ProtoCore.AST.ImperativeAST
         {
         }
 
+        public abstract AstKind Kind { get; }
         public abstract void Accept(ImperativeAstVisitor visitor);
         public abstract TResult Accept<TResult>(ImperativeAstVisitor<TResult> visitor);
     }
@@ -67,6 +103,14 @@ namespace ProtoCore.AST.ImperativeAST
             bool eqAttribute = null != otherNode && Attributes.SequenceEqual(otherNode.Attributes);
 
             return eqLangBlockProperties && eqLangblockContents && eqAttribute;
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.LanguageBlock;
+            }
         }
 
         public override int GetHashCode()
@@ -159,6 +203,13 @@ namespace ProtoCore.AST.ImperativeAST
 
             return buf.ToString();
         }
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.ArrayName;
+            }
+        }
 
         public override void Accept(ImperativeAstVisitor visitor)
         {
@@ -190,6 +241,14 @@ namespace ProtoCore.AST.ImperativeAST
             return ExpressionHashCode;
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.GroupExpression;
+            }
+        }
+
         public override void Accept(ImperativeAstVisitor visitor)
         {
             visitor.VisitGroupExpressionNode(this);
@@ -206,13 +265,13 @@ namespace ProtoCore.AST.ImperativeAST
         public IdentifierNode()
         {
             ArrayDimensions = null;
-            DataType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kInvalidType, 0);
+            DataType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.InvalidType, 0);
         }
 
         public IdentifierNode(string identName = null)
         {
             ArrayDimensions = null;
-            DataType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kInvalidType, 0);
+            DataType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.InvalidType, 0);
             Value = Name = identName;
         }
 
@@ -256,6 +315,13 @@ namespace ProtoCore.AST.ImperativeAST
         {
             return Value.Replace("%", string.Empty) + base.ToString();
         }
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Identifier;
+            }
+        }
 
         public override void Accept(ImperativeAstVisitor visitor)
         {
@@ -270,6 +336,14 @@ namespace ProtoCore.AST.ImperativeAST
 
     public class TypedIdentifierNode: IdentifierNode
     {
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.TypedIdentifier;
+            }
+        }
+
         public override void Accept(ImperativeAstVisitor visitor)
         {
             visitor.VisitTypedIdentifierNode(this);
@@ -310,6 +384,14 @@ namespace ProtoCore.AST.ImperativeAST
         public override string ToString()
         {
             return Value.ToString(CultureInfo.InvariantCulture);
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Integer;
+            }
         }
 
         public override void Accept(ImperativeAstVisitor visitor)
@@ -356,6 +438,14 @@ namespace ProtoCore.AST.ImperativeAST
         public override string ToString()
         {
             return Value.ToString(CultureInfo.InvariantCulture);
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Double;
+            }
         }
 
         public override void Accept(ImperativeAstVisitor visitor)
@@ -405,6 +495,14 @@ namespace ProtoCore.AST.ImperativeAST
             return Value.ToString();
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Boolean;
+            }
+        }
+
         public override void Accept(ImperativeAstVisitor visitor)
         {
             visitor.VisitBooleanNode(this);
@@ -448,6 +546,14 @@ namespace ProtoCore.AST.ImperativeAST
         public override string ToString()
         {
             return "'" + Value + "'";
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Char;
+            }
         }
 
         public override void Accept(ImperativeAstVisitor visitor)
@@ -496,6 +602,14 @@ namespace ProtoCore.AST.ImperativeAST
             return "\"" + Value + "\"";
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.String;
+            }
+        }
+
         public override void Accept(ImperativeAstVisitor visitor)
         {
             visitor.VisitStringNode(this);
@@ -522,6 +636,14 @@ namespace ProtoCore.AST.ImperativeAST
         public override int GetHashCode()
         {
             return 10099;
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Null;
+            }
         }
 
         public override void Accept(ImperativeAstVisitor visitor)
@@ -600,6 +722,14 @@ namespace ProtoCore.AST.ImperativeAST
                 buf.Append(Type.ToString());
 
             return buf.ToString();
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Array;
+            }
         }
 
         public override void Accept(ImperativeAstVisitor visitor)
@@ -722,6 +852,14 @@ namespace ProtoCore.AST.ImperativeAST
             return buf.ToString();
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.FunctionCall;
+            }
+        }
+
         public override void Accept(ImperativeAstVisitor visitor)
         {
             visitor.VisitFunctionCallNode(this);
@@ -737,7 +875,7 @@ namespace ProtoCore.AST.ImperativeAST
     {
         public VarDeclNode()
         {
-            memregion = MemoryRegion.kInvalidRegion;
+            memregion = MemoryRegion.InvalidRegion;
         }
 
         public MemoryRegion memregion { get; set; }
@@ -783,6 +921,14 @@ namespace ProtoCore.AST.ImperativeAST
                 buf.Append(NameNode.ToString());
 
             return buf.ToString();
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.VariableDeclaration;
+            }
         }
 
         public override void Accept(ImperativeAstVisitor visitor)
@@ -834,6 +980,14 @@ namespace ProtoCore.AST.ImperativeAST
                     buf.Append(", ");
             }
             return buf.ToString();
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.ArgumentSignature;
+            }
         }
 
         public override void Accept(ImperativeAstVisitor visitor)
@@ -902,6 +1056,14 @@ namespace ProtoCore.AST.ImperativeAST
             return buf.ToString();
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.ExpressionList;
+            }
+        }
+
         public override void Accept(ImperativeAstVisitor visitor)
         {
             visitor.VisitExprListNode(this);
@@ -956,6 +1118,14 @@ namespace ProtoCore.AST.ImperativeAST
             return buf.ToString();
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.CodeBlock;
+            }
+        }
+
         public override void Accept(ImperativeAstVisitor visitor)
         {
             visitor.VisitCodeBlockNode(this);
@@ -1003,6 +1173,14 @@ namespace ProtoCore.AST.ImperativeAST
 
             return signatureHashCode ^
                 returnTypeHashCode ^ attributesHashCode;
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.FunctionDefinition;
+            }
         }
 
         public override void Accept(ImperativeAstVisitor visitor)
@@ -1061,6 +1239,14 @@ namespace ProtoCore.AST.ImperativeAST
             buf.Append(")");
 
             return buf.ToString();
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.InlineConditional;
+            }
         }
 
         public override void Accept(ImperativeAstVisitor visitor)
@@ -1150,6 +1336,14 @@ namespace ProtoCore.AST.ImperativeAST
             return buf.ToString();
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.BinaryExpression;
+            }
+        }
+
         public override void Accept(ImperativeAstVisitor visitor)
         {
             visitor.VisitBinaryExpressionNode(this);
@@ -1230,6 +1424,14 @@ namespace ProtoCore.AST.ImperativeAST
             return buf.ToString();
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.ElseIf;
+            }
+        }
+
         public override void Accept(ImperativeAstVisitor visitor)
         {
             visitor.VisitElseIfNode(this);
@@ -1249,6 +1451,14 @@ namespace ProtoCore.AST.ImperativeAST
 
         public IfStmtPositionNode(IfStmtPositionNode rhs):base(rhs)
         {
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.IfPosition;
+            }
         }
 
         public override void Accept(ImperativeAstVisitor visitor)
@@ -1386,6 +1596,14 @@ namespace ProtoCore.AST.ImperativeAST
             return buf.ToString();
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.If;
+            }
+        }
+
         public override void Accept(ImperativeAstVisitor visitor)
         {
             visitor.VisitIfStatementNode(this);
@@ -1459,6 +1677,14 @@ namespace ProtoCore.AST.ImperativeAST
             return buf.ToString();
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.While;
+            }
+        }
+
         public override void Accept(ImperativeAstVisitor visitor)
         {
             visitor.VisitWhileStatementNode(this);
@@ -1506,6 +1732,14 @@ namespace ProtoCore.AST.ImperativeAST
                 (Expression == null ? base.GetHashCode() : Expression.GetHashCode());
 
             return operatorHashCode ^ expressionHashCode;
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.UnaryExpression;
+            }
         }
 
         public override void Accept(ImperativeAstVisitor visitor)
@@ -1607,6 +1841,14 @@ namespace ProtoCore.AST.ImperativeAST
             return buf.ToString();
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.RangeExpression;
+            }
+        }
+
         public override void Accept(ImperativeAstVisitor visitor)
         {
             visitor.VisitRangeExprNode(this);
@@ -1700,6 +1942,14 @@ namespace ProtoCore.AST.ImperativeAST
             return buf.ToString();
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.ForLoop;
+            }
+        }
+
         public override void Accept(ImperativeAstVisitor visitor)
         {
             visitor.VisitForLoopNode(this);
@@ -1755,6 +2005,15 @@ namespace ProtoCore.AST.ImperativeAST
             return LeftNode.ToString() + "." + RightNode.ToString();
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.IdentifierList;
+            }
+        }
+
+
         public override void Accept(ImperativeAstVisitor visitor)
         {
             visitor.VisitIdentifierListNode(this);
@@ -1775,6 +2034,15 @@ namespace ProtoCore.AST.ImperativeAST
             buf.Append(";");
             return buf.ToString();
         }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Break;
+            }
+        }
+
 
         public override void Accept(ImperativeAstVisitor visitor)
         {
@@ -1797,6 +2065,14 @@ namespace ProtoCore.AST.ImperativeAST
             return buf.ToString();
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Continue;
+            }
+        }
+
         public override void Accept(ImperativeAstVisitor visitor)
         {
             visitor.VisitContinueNode(this);
@@ -1810,6 +2086,14 @@ namespace ProtoCore.AST.ImperativeAST
 
     public class DefaultArgNode : ImperativeNode
     {// not supposed to be used in parser 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.DefaultArgument;
+            }
+        }
+
         public override void Accept(ImperativeAstVisitor visitor)
         {
             visitor.VisitDefaultArgNode(this);

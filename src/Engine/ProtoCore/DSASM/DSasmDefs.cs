@@ -4,23 +4,23 @@ namespace ProtoCore.DSASM
 {
     public enum InterpreterMode
     {
-        kExpressionInterpreter,
-        kNormal,
+        Expression,
+        Normal,
     }
 
     namespace CallingConvention
     {
         public enum BounceType
         {
-            kExplicit,  // Explicit bounce is using the same executive for the bounce target
-            kImplicit,  // Implicit bounce is using a new executive for the bounce target
+            Explicit,  // Explicit bounce is using the same executive for the bounce target
+            Implicit,  // Implicit bounce is using a new executive for the bounce target
         }
 
         public enum CallType
         {
-            kExplicit,      // Explicit call is using the same executive for the function call
-            kExplicitBase,  // Explicit call to the base class
-            kImplicit,      // Implicit call is using a new executive for the function call
+            Explicit,      // Explicit call is using the same executive for the function call
+            ExplicitBase,  // Explicit call to the base class
+            Implicit,      // Implicit call is using a new executive for the function call
         }
     }
 
@@ -398,7 +398,6 @@ namespace ProtoCore.DSASM
         public const string kWatchResultVar = "watch_result_var";
         public const string kSSATempPrefix = "%t_";
         public const string kThisPointerArgName = "%thisPtrArg";
-        public const string kTempModifierStateNamePrefix = "%tmp_modifierState_";
         public const string kTempProcLeftVar = "%temp_proc_var_";
         public const string kImportData = "ImportData";
         public const string kTempVarForNonAssignment = "t6BBA4B28C5E54CF89F300D510499A00E_";
@@ -410,10 +409,8 @@ namespace ProtoCore.DSASM
 
     public enum MemoryRegion
     {
-        kInvalidRegion = -1,
-        kMemStatic,
-        kMemStack,
-        kMemHeap,
-        kMemRegionTypes
+        InvalidRegion = -1,
+        MemStatic,
+        MemStack,
     }
 }

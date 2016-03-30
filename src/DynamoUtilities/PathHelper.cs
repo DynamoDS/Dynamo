@@ -1,7 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace DynamoUtilities
 {
@@ -22,6 +20,16 @@ namespace DynamoUtilities
             catch (UnauthorizedAccessException ex) { return ex; }
 
             return null;
+        }
+
+        /// <summary>
+        /// Checks if the file path string is valid and file exist.
+        /// </summary>
+        /// <param name="folderPath"></param>
+        /// <returns></returns>
+        public static bool IsValidPath(string folderPath)
+        {
+            return (!string.IsNullOrEmpty(folderPath) && (File.Exists(folderPath)));
         }
     }
 }

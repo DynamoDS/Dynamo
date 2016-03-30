@@ -12,21 +12,6 @@ namespace ProtoCore.DSASM
             runtime = runtimeCore.ExecutiveProvider.CreateExecutive(runtimeCore, isFEP);
         }
         
-        public void Push(int val)
-        {
-            runtime.rmem.Push(StackValue.BuildInt(val));
-        }
-
-        public void Push(Int64 val)
-        {
-            runtime.rmem.Push(StackValue.BuildInt(val));
-        }
-
-        public void Push(double val)
-        {
-            runtime.rmem.Push(StackValue.BuildDouble(val));
-        }
-
         public void Push(StackValue val)
         {
             runtime.rmem.Push(val);

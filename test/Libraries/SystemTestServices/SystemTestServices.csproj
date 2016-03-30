@@ -47,11 +47,6 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="ProtoInterface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml" />
@@ -61,7 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
-      <Link>AssemblySharedInfo.cs</Link>
+      <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="SystemTestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -135,6 +135,8 @@ namespace Dynamo.Migration
         /// </summary>
         /// <param name="workspaceInfo"></param>
         /// <param name="xmlDoc"></param>
+        /// <param name="isTestMode"></param>
+        /// <param name="factory"></param>
         /// <returns></returns>
         public bool ProcessWorkspace(WorkspaceInfo workspaceInfo, XmlDocument xmlDoc, bool isTestMode, NodeFactory factory)
         {
@@ -565,6 +567,8 @@ namespace Dynamo.Migration
         /// basic function node information.
         /// </summary>
         /// <param name="document">The XmlDocument to create the node in.</param>
+        /// <param name="oldNode"></param>
+        /// <param name="nodeIndex"></param>
         /// <param name="assembly">Name of the assembly that implements this 
         /// function.</param>
         /// <param name="nickname">The nickname to display on the node.</param>

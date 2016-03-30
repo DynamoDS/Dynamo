@@ -9,7 +9,7 @@ namespace ProtoCore.Utils
     {
         public static void InsertPredefinedAndBuiltinMethods(Core core, CodeBlockNode root)
         {
-            if (DSASM.InterpreterMode.kNormal == core.Options.RunMode)
+            if (DSASM.InterpreterMode.Normal == core.Options.RunMode)
             {
                 InsertPredefinedMethod(core, root);
                 InsertBuiltInMethods(core, root);
@@ -49,7 +49,7 @@ namespace ProtoCore.Utils
         private static void InsertBinaryOperationMethod(Core core, CodeBlockNode root, Operator op, PrimitiveType r, PrimitiveType op1, PrimitiveType op2, int retRank = 0, int op1rank = 0, int op2rank = 0)
         {
             FunctionDefinitionNode funcDefNode = new FunctionDefinitionNode();
-            funcDefNode.Access = CompilerDefinitions.AccessModifier.kPublic;
+            funcDefNode.Access = CompilerDefinitions.AccessModifier.Public;
             funcDefNode.IsAssocOperator = true;
             funcDefNode.IsBuiltIn = true;
             funcDefNode.Name = Op.GetOpFunction(op);
@@ -57,13 +57,13 @@ namespace ProtoCore.Utils
             ArgumentSignatureNode args = new ArgumentSignatureNode();
             args.AddArgument(new VarDeclNode()
             {
-                Access = CompilerDefinitions.AccessModifier.kPublic,
+                Access = CompilerDefinitions.AccessModifier.Public,
                 NameNode = AstFactory.BuildIdentifier(DSASM.Constants.kLHS),
                 ArgumentType = new Type { Name = core.TypeSystem.GetType((int)op1), UID = (int)op1, rank = op1rank }
             });
             args.AddArgument(new VarDeclNode()
             {
-                Access = CompilerDefinitions.AccessModifier.kPublic,
+                Access = CompilerDefinitions.AccessModifier.Public,
                 NameNode = AstFactory.BuildIdentifier(DSASM.Constants.kRHS),
                 ArgumentType = new Type { Name = core.TypeSystem.GetType((int)op2), UID = (int)op2, rank = op2rank }
             });
@@ -85,7 +85,7 @@ namespace ProtoCore.Utils
         private static void InsertUnaryOperationMethod(Core core, CodeBlockNode root, UnaryOperator op, PrimitiveType r, PrimitiveType operand)
         {
             FunctionDefinitionNode funcDefNode = new FunctionDefinitionNode();
-            funcDefNode.Access = CompilerDefinitions.AccessModifier.kPublic;
+            funcDefNode.Access = CompilerDefinitions.AccessModifier.Public;
             funcDefNode.IsAssocOperator = true;
             funcDefNode.IsBuiltIn = true;
             funcDefNode.Name = Op.GetUnaryOpFunction(op);
@@ -93,7 +93,7 @@ namespace ProtoCore.Utils
             ArgumentSignatureNode args = new ArgumentSignatureNode();
             args.AddArgument(new VarDeclNode()
             {
-                Access = CompilerDefinitions.AccessModifier.kPublic,
+                Access = CompilerDefinitions.AccessModifier.Public,
                 NameNode = AstFactory.BuildIdentifier("%param"),
                 ArgumentType = new Type { Name = core.TypeSystem.GetType((int)operand), UID = (int)operand }
             });
@@ -108,21 +108,21 @@ namespace ProtoCore.Utils
 
         private static void InsertPredefinedMethod(Core core, CodeBlockNode root)
         {
-            InsertBinaryOperationMethod(core, root, Operator.add, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar);
-            InsertBinaryOperationMethod(core, root, Operator.sub, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar);
-            InsertBinaryOperationMethod(core, root, Operator.div, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar);
-            InsertBinaryOperationMethod(core, root, Operator.mul, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar);
-            InsertBinaryOperationMethod(core, root, Operator.mod, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar);
-            InsertBinaryOperationMethod(core, root, Operator.eq, PrimitiveType.kTypeBool, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar);
-            InsertBinaryOperationMethod(core, root, Operator.nq, PrimitiveType.kTypeBool, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar);
-            InsertBinaryOperationMethod(core, root, Operator.ge, PrimitiveType.kTypeBool, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar);
-            InsertBinaryOperationMethod(core, root, Operator.gt, PrimitiveType.kTypeBool, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar);
-            InsertBinaryOperationMethod(core, root, Operator.le, PrimitiveType.kTypeBool, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar);
-            InsertBinaryOperationMethod(core, root, Operator.lt, PrimitiveType.kTypeBool, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar);
-            InsertBinaryOperationMethod(core, root, Operator.and, PrimitiveType.kTypeBool, PrimitiveType.kTypeBool, PrimitiveType.kTypeBool);
-            InsertBinaryOperationMethod(core, root, Operator.or, PrimitiveType.kTypeBool, PrimitiveType.kTypeBool, PrimitiveType.kTypeBool);
-            InsertUnaryOperationMethod(core, root, UnaryOperator.Not, PrimitiveType.kTypeBool, PrimitiveType.kTypeBool);
-            InsertUnaryOperationMethod(core, root, UnaryOperator.Neg, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar);
+            InsertBinaryOperationMethod(core, root, Operator.add, PrimitiveType.Var, PrimitiveType.Var, PrimitiveType.Var);
+            InsertBinaryOperationMethod(core, root, Operator.sub, PrimitiveType.Var, PrimitiveType.Var, PrimitiveType.Var);
+            InsertBinaryOperationMethod(core, root, Operator.div, PrimitiveType.Var, PrimitiveType.Var, PrimitiveType.Var);
+            InsertBinaryOperationMethod(core, root, Operator.mul, PrimitiveType.Var, PrimitiveType.Var, PrimitiveType.Var);
+            InsertBinaryOperationMethod(core, root, Operator.mod, PrimitiveType.Var, PrimitiveType.Var, PrimitiveType.Var);
+            InsertBinaryOperationMethod(core, root, Operator.eq, PrimitiveType.Bool, PrimitiveType.Var, PrimitiveType.Var);
+            InsertBinaryOperationMethod(core, root, Operator.nq, PrimitiveType.Bool, PrimitiveType.Var, PrimitiveType.Var);
+            InsertBinaryOperationMethod(core, root, Operator.ge, PrimitiveType.Bool, PrimitiveType.Var, PrimitiveType.Var);
+            InsertBinaryOperationMethod(core, root, Operator.gt, PrimitiveType.Bool, PrimitiveType.Var, PrimitiveType.Var);
+            InsertBinaryOperationMethod(core, root, Operator.le, PrimitiveType.Bool, PrimitiveType.Var, PrimitiveType.Var);
+            InsertBinaryOperationMethod(core, root, Operator.lt, PrimitiveType.Bool, PrimitiveType.Var, PrimitiveType.Var);
+            InsertBinaryOperationMethod(core, root, Operator.and, PrimitiveType.Bool, PrimitiveType.Bool, PrimitiveType.Bool);
+            InsertBinaryOperationMethod(core, root, Operator.or, PrimitiveType.Bool, PrimitiveType.Bool, PrimitiveType.Bool);
+            InsertUnaryOperationMethod(core, root, UnaryOperator.Not, PrimitiveType.Bool, PrimitiveType.Bool);
+            InsertUnaryOperationMethod(core, root, UnaryOperator.Neg, PrimitiveType.Var, PrimitiveType.Var);
         }
 
 
@@ -150,7 +150,7 @@ namespace ProtoCore.Utils
         {
             // Consider renaming this function as there is no such thing as a semantic error at runtime
             RuntimeCore runtimeCore = dsi.runtime.RuntimeCore;
-            runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kDefault, msg, fileName, line, col);
+            runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.Default, msg, fileName, line, col);
         }
 
         public static void LogWarning(this Core core, BuildData.WarningID id, string msg, string fileName = null, int line = -1, int col = -1)

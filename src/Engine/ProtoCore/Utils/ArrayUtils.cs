@@ -53,15 +53,15 @@ namespace ProtoCore.Utils
             {
  
             if (commonTypeIDs.Contains(
-                (int)PrimitiveType.kTypeNull))
-                commonTypeIDs.Remove((int)PrimitiveType.kTypeNull);
+                (int)PrimitiveType.Null))
+                commonTypeIDs.Remove((int)PrimitiveType.Null);
 
                 List<List<int>> nonNullChains = new List<List<int>>();
 
                 foreach (List<int> chain in chains)
                 {
-                    if (chain.Contains((int)PrimitiveType.kTypeNull))
-                        chain.Remove((int)PrimitiveType.kTypeNull);
+                    if (chain.Contains((int)PrimitiveType.Null))
+                        chain.Remove((int)PrimitiveType.Null);
 
                     if (chain.Count > 0)
                         nonNullChains.Add(chain);
@@ -264,12 +264,12 @@ namespace ProtoCore.Utils
         {
             Executable exe = runtimeCore.DSExecutable;
             if (!sv.IsArray)
-                return exe.TypeSystem.GetType(sv) == (int)PrimitiveType.kTypeDouble;
+                return exe.TypeSystem.GetType(sv) == (int)PrimitiveType.Double;
 
             DSArray array = runtimeCore.Heap.ToHeapObject<DSArray>(sv);
             return array.Values.Any(
                         v => (v.IsArray && ContainsDoubleElement(v, runtimeCore)) ||
-                             (exe.TypeSystem.GetType(v) == (int)PrimitiveType.kTypeDouble));
+                             (exe.TypeSystem.GetType(v) == (int)PrimitiveType.Double));
         }
 
         /// <summary>

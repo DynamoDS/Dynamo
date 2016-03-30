@@ -2778,6 +2778,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to add file: {0}.
+        /// </summary>
+        public static string MessageFailedToAddFile {
+            get {
+                return ResourceManager.GetString("MessageFailedToAddFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to apply NodeViewCustomization for {0}.
         /// </summary>
         public static string MessageFailedToApplyCustomization {
@@ -2823,11 +2832,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error opening file: .
+        ///   Looks up a localized string similar to Error opening corrupted file: {0}.
         /// </summary>
-        public static string MessageFailedToOpenFile {
+        public static string MessageFailedToOpenCorruptedFile {
             get {
-                return ResourceManager.GetString("MessageFailedToOpenFile", resourceCulture);
+                return ResourceManager.GetString("MessageFailedToOpenCorruptedFile", resourceCulture);
             }
         }
         
@@ -2855,15 +2864,6 @@ namespace Dynamo.Wpf.Properties {
         public static string MessageFailToUninstallPackage {
             get {
                 return ResourceManager.GetString("MessageFailToUninstallPackage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to File not found: {0}.
-        /// </summary>
-        public static string MessageFileNotFound {
-            get {
-                return ResourceManager.GetString("MessageFileNotFound", resourceCulture);
             }
         }
         
@@ -3000,6 +3000,15 @@ namespace Dynamo.Wpf.Properties {
         public static string MessageUninstallToContinue2 {
             get {
                 return ResourceManager.GetString("MessageUninstallToContinue2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown error opening file: {0}.
+        /// </summary>
+        public static string MessageUnkownErrorOpeningFile {
+            get {
+                return ResourceManager.GetString("MessageUnkownErrorOpeningFile", resourceCulture);
             }
         }
         
@@ -3207,6 +3216,17 @@ namespace Dynamo.Wpf.Properties {
         public static string OKButton {
             get {
                 return ResourceManager.GetString("OKButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please, load assembly just one time.
+        ///Next assemblies were loaded several times:
+        ///.
+        /// </summary>
+        public static string OneAssemblyWasLoadedSeveralTimesErrorMessage {
+            get {
+                return ResourceManager.GetString("OneAssemblyWasLoadedSeveralTimesErrorMessage", resourceCulture);
             }
         }
         

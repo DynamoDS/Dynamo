@@ -234,7 +234,7 @@ namespace Dynamo.Search
         /// "geometry point by".
         /// </summary>
         /// <param name="key"></param>
-        /// <param name="pattern"></param>
+        /// <param name="subPatterns"></param>
         /// <returns></returns>
         private static bool MatchWithQueryString(string key, string[] subPatterns)
         {

@@ -72,7 +72,7 @@ namespace ProtoCore.Lang
             StackValue svBlockDecl = StackValue.BuildBlockIndex(stackFrame.FunctionBlock);
 
             // Jun: Make sure we have no empty or unaligned frame data
-            Validity.Assert(DSASM.StackFrame.kStackFrameSize == stackFrame.Frame.Length);
+            Validity.Assert(DSASM.StackFrame.StackFrameSize == stackFrame.Frame.Length);
 
             // Setup the stack frame data
             //int thisPtr = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kThisPtr).opdata;
@@ -88,7 +88,7 @@ namespace ProtoCore.Lang
             // Update the running block to tell the execution engine which set of instruction to execute
             // TODO(Jun/Jiong): Considering store the orig block id to stack frame
             int origRunningBlock = runtimeCore.RunningBlock;
-            runtimeCore.RunningBlock = (int)svBlockDecl.opdata;
+            runtimeCore.RunningBlock = svBlockDecl.BlockIndex;
 
             // Set SX register 
             interpreter.runtime.SX = svBlockDecl;
@@ -103,11 +103,11 @@ namespace ProtoCore.Lang
             bool explicitCall = !c.IsReplicating && !c.IsImplicitCall && !isDispose;
             if (explicitCall)
             {
-                svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.CallType.kExplicit);
+                svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.CallType.Explicit);
             }
             else
             {
-                svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.CallType.kImplicit);                
+                svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.CallType.Implicit);                
             }
 
             stackFrame.TX = svCallConvention;
@@ -128,10 +128,11 @@ namespace ProtoCore.Lang
             int depth = stackFrame.Depth;
             DSASM.StackFrameType type = stackFrame.StackFrameType;
             Validity.Assert(depth == 0);
-            Validity.Assert(type == DSASM.StackFrameType.kTypeFunction);
+            Validity.Assert(type == DSASM.StackFrameType.Function);
 
-            runtimeCore.RuntimeMemory.PushStackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, locals, execStateSize);
-
+            runtimeCore.RuntimeMemory.PushFrameForLocals(locals);
+            StackFrame newStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, execStateSize);
+            runtimeCore.RuntimeMemory.PushStackFrame(newStackFrame);
 
             StackValue svRet;
 
