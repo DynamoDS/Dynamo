@@ -259,14 +259,6 @@ namespace ProtoCore.DSASM
             return false;
         }
 
-        private void RestoreRegistersFromStackFrame()
-        {
-            LX = rmem.GetAtRelative(StackFrame.FrameIndexLX);
-            //RX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterRX);
-            SX = rmem.GetAtRelative(StackFrame.FrameIndexSX);
-            TX = rmem.GetAtRelative(StackFrame.FrameIndexTX);
-        }
-
         private void RestoreFromCall()
         {
             int ci = rmem.GetAtRelative(StackFrame.FrameIndexClassIndex).ClassIndex;
@@ -314,7 +306,7 @@ namespace ProtoCore.DSASM
                 if (runtimeCore.Options.RunMode != InterpreterMode.Expression)
                 {
                     // Restoring the registers require the current frame pointer of the stack frame 
-                    RestoreRegistersFromStackFrame();
+                    ResumeRegistersFromStackExceptRX();
                     bounceType = (CallingConvention.BounceType)TX.CallType;
                 }
 
@@ -753,8 +745,7 @@ namespace ProtoCore.DSASM
                 runtimeCore.RuntimeStatus);
             Validity.Assert(null != callsite);
 
-            List<StackValue> registers = new List<StackValue>();
-            SaveRegisters(registers);
+            List<StackValue> registers = GetRegisters();
 
             // Get the execution states of the current stackframe
             int currentScopeClass = Constants.kInvalidIndex;
@@ -881,8 +872,7 @@ namespace ProtoCore.DSASM
                 return StackValue.Null;
             }
 
-            var registers = new List<StackValue>();
-            SaveRegisters(registers);
+            var registers = GetRegisters();
 
             var stackFrame = new StackFrame(thisObject, classIndex, procIndex, pc + 1, 0, runtimeCore.RunningBlock, fepRun ? StackFrameType.Function : StackFrameType.LanguageBlock, StackFrameType.Function, 0, rmem.FramePointer, registers, 0);
 
@@ -1671,18 +1661,9 @@ namespace ProtoCore.DSASM
             }
         }
 
-        public void SaveRegisters(List<StackValue> registers)
+        public List<StackValue> GetRegisters()
         {
-            if (registers != null)
-            {
-                if (registers.Count > 0)
-                    registers.Clear();
-
-                registers.Add(LX);
-                registers.Add(RX);
-                registers.Add(SX);
-                registers.Add(TX);
-            }
+            return new List<StackValue> { LX, RX, SX, TX };
         }
 
         /// <summary>
@@ -4150,8 +4131,7 @@ namespace ProtoCore.DSASM
             bounceType = CallingConvention.BounceType.Explicit;
             TX = StackValue.BuildCallingConversion((int)CallingConvention.BounceType.Explicit);
 
-            List<StackValue> registers = new List<StackValue>();
-            SaveRegisters(registers);
+            List<StackValue> registers = GetRegisters();
 
             StackFrameType callerType = (fepRun) ? StackFrameType.Function : StackFrameType.LanguageBlock;
 
@@ -4290,8 +4270,7 @@ namespace ProtoCore.DSASM
             // On explicit call, the SX should be directly set here
             SX = StackValue.BuildBlockIndex(blockDecl);
 
-            List<StackValue> registers = new List<StackValue>();
-            SaveRegisters(registers);
+            List<StackValue> registers = GetRegisters();
 
             // Comment Jun: the depth is always 0 for a function call as we are reseting this for each function call
             // This is only incremented for every language block bounce
@@ -4444,7 +4423,7 @@ namespace ProtoCore.DSASM
                 if (bounceType == CallingConvention.BounceType.Explicit)
                 {
                     // Restoring the registers require the current frame pointer of the stack frame 
-                    RestoreRegistersFromStackFrame();
+                    ResumeRegistersFromStackExceptRX();
 
                     bounceType = TX.BounceType;
                 }

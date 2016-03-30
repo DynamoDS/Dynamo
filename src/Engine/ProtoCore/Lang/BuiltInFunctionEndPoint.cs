@@ -347,13 +347,12 @@ namespace ProtoCore.Lang
                         StackFrameType type = StackFrameType.LanguageBlock;
                         int depth = (int)interpreter.runtime.rmem.GetAtRelative(StackFrame.FrameIndexStackFrameDepth).IntegerValue;
                         int framePointer = rmem.FramePointer;
-                        List<StackValue> registers = new List<StackValue>();
 
                         // Comment Jun: Calling convention data is stored on the TX register
                         StackValue svCallconvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.Implicit);
                         interpreter.runtime.TX = svCallconvention;
 
-                        interpreter.runtime.SaveRegisters(registers);
+                        List<StackValue> registers = interpreter.runtime.GetRegisters();
 
                         // Comment Jun: the caller type is the current type in the stackframe
                         StackFrameType callerType = stackFrame.StackFrameType;

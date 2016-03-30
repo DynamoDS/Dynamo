@@ -134,8 +134,7 @@ namespace ProtoCore.Lang
                         interpreter.Push(formalParameters[i]);
                     }
 
-                    List<StackValue> registers = new List<DSASM.StackValue>();
-                    interpreter.runtime.SaveRegisters(registers);
+                    List<StackValue> registers = interpreter.runtime.GetRegisters();
 
                     // Comment Jun: the depth is always 0 for a function call as we are reseting this for each function call
                     // This is only incremented for every language block bounce

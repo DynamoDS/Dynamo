@@ -104,8 +104,7 @@ namespace ProtoCore.Lang
             StackValue svBlockDecl = StackValue.BuildBlockIndex(blockDecl);
             interpreter.runtime.SX = svBlockDecl;
 
-            List<StackValue> registers = new List<StackValue>();
-            interpreter.runtime.SaveRegisters(registers);
+            List<StackValue> registers = interpreter.runtime.GetRegisters();
             var newStackFrame = new StackFrame(thisPtr, 
                                                classScopeCaller, 
                                                1, 
