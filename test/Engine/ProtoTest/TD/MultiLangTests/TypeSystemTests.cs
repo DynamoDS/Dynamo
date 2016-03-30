@@ -1901,8 +1901,7 @@ import(""FFITarget.dll"");
                     x1= ClassFunctionality.ClassFunctionality(1);
                     e:bool[][]= {x1};
                     e1=e.IntVal;
-                    f:bool[][]= {true};
-                    g :bool[][]={null;}";
+                    f:bool[][]= {true};";
             //string error = "1467295- Sprint 26 : rev 3766 null gets converted into an array of nulls (while converting into array of any type) when the conversion is not allowed ";
             string error = "1467332  - Sprint 27 - Rev 3956 {null} to array upgrdation must null out ";
             thisTest.RunScriptSource(code, error);
@@ -1912,7 +1911,6 @@ import(""FFITarget.dll"");
             thisTest.Verify("d", new object[] { new object[] { true } });
             thisTest.Verify("e", new object[] { new object[] { true } });
             thisTest.Verify("f", new object[] { new object[] { true } });
-            thisTest.Verify("g", null);
         }
 
         [Test]

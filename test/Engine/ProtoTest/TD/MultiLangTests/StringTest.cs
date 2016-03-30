@@ -390,6 +390,7 @@ def foo(x:var)
         }
 
         [Test]
+        [Ignore]
         [Category("ModifierBlock")]
         [Category("SmokeTest")]
         public void T10_String_ModifierStack()
@@ -412,6 +413,7 @@ r = a;";
         }
 
         [Test]
+        [Ignore]
         [Category("ModifierBlock")]
         public void TV1467201_Replicate_ModifierStack_1()
         {
@@ -435,6 +437,7 @@ r = a;";
         }
 
         [Test]
+        [Ignore]
         [Category("ModifierBlock")]
         public void TV1467201_Replicate_ModifierStack_2()
         {
@@ -458,6 +461,7 @@ r = a;";
         }
 
         [Test]
+        [Ignore]
         [Category("ModifierBlock")]
         public void TV1467201_Replicate_ModifierStack_3()
         {
@@ -483,6 +487,7 @@ r = a;";
         }
 
         [Test]
+        [Ignore]
         [Category("ModifierBlock")]
         public void TV1467201_Replicate_ModifierStack_4()
         {
@@ -511,6 +516,7 @@ r = a;";
         }
 
         [Test]
+        [Ignore]
         [Category("ModifierBlock")]
         public void TV1467201_Replicate_ModifierStack_5()
         {
@@ -709,6 +715,8 @@ import(""FFITarget.dll"");
         }
 
         [Test]
+        [Ignore]
+        [Category("ModifierBlock")]
         public void Test()
         {
             string code = @"

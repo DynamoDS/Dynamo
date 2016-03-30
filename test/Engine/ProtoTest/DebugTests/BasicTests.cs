@@ -11519,6 +11519,7 @@ b = 2;");
 
 
         [Test]
+        [Ignore]
         [Category("ModifierBlock")] 
         [Category("Debugger")]
         public void Defect_IDE_721()

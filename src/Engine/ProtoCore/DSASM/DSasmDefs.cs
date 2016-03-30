@@ -398,7 +398,6 @@ namespace ProtoCore.DSASM
         public const string kWatchResultVar = "watch_result_var";
         public const string kSSATempPrefix = "%t_";
         public const string kThisPointerArgName = "%thisPtrArg";
-        public const string kTempModifierStateNamePrefix = "%tmp_modifierState_";
         public const string kTempProcLeftVar = "%temp_proc_var_";
         public const string kImportData = "ImportData";
         public const string kTempVarForNonAssignment = "t6BBA4B28C5E54CF89F300D510499A00E_";
