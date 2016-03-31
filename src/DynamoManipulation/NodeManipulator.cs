@@ -504,8 +504,10 @@ namespace Dynamo.Manipulation
         internal static bool IsMainThread()
         {
             if (Thread.CurrentThread.GetApartmentState() == ApartmentState.STA &&
-                !Thread.CurrentThread.IsBackground && !Thread.CurrentThread.IsThreadPoolThread &&
-                Thread.CurrentThread.IsAlive) return true;
+                !Thread.CurrentThread.IsThreadPoolThread && Thread.CurrentThread.IsAlive)
+            {
+                return true;
+            }
 
             return false;
         }
