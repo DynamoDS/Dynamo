@@ -134,8 +134,7 @@ namespace ProtoCore.Lang
                         interpreter.Push(formalParameters[i]);
                     }
 
-                    List<StackValue> registers = new List<DSASM.StackValue>();
-                    interpreter.runtime.SaveRegisters(registers);
+                    List<StackValue> registers = interpreter.runtime.GetRegisters();
 
                     // Comment Jun: the depth is always 0 for a function call as we are reseting this for each function call
                     // This is only incremented for every language block bounce
@@ -144,7 +143,7 @@ namespace ProtoCore.Lang
 
                     // FFI calls do not have execution states
                     runtimeCore.RuntimeMemory.PushFrameForLocals(locals);
-                    StackFrame newStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, StackFrameType.Function, depth, framePointer, registers, 0);
+                    StackFrame newStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, StackFrameType.Function, depth, framePointer, 0, registers, 0);
                     runtimeCore.RuntimeMemory.PushStackFrame(newStackFrame);
 
                     //is there a way the current stack be passed across and back into the managed runtime by FFI calling back into the language?

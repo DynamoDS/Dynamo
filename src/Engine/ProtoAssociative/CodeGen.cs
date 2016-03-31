@@ -6198,19 +6198,6 @@ namespace ProtoAssociative
                         }
                         castType = symbolnode.staticType;
 
-
-                        if (bnode.IsInputExpression)
-                        {
-                            StackValue regLX = StackValue.BuildRegister(Registers.LX);
-                            EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regLX);
-                            EmitPop(regLX, globalClassIndex);
-
-                            graphNode.updateBlock.updateRegisterStartPC = pc;
-
-                            EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regLX);
-                            EmitPush(regLX);
-                        }
-
                         EmitPushVarData(dimensions, castType.UID, castType.rank);
 
                         if (core.Options.RunMode != ProtoCore.DSASM.InterpreterMode.Expression)

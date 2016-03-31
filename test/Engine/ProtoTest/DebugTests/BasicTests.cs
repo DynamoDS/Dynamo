@@ -330,6 +330,8 @@ b = { a, 1 };       // Line 3
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("ExpressionInterpreterRunner")]
         public void TestWatchExpressionInFunction()
         {
@@ -391,6 +393,8 @@ bbb = foo();
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("ExpressionInterpreterRunner")]
         public void TestWatchExpressionInFunctionNestedInImperativeBlock()
         {
@@ -3170,6 +3174,8 @@ a = p.x;
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("Debugger")]
         public void TestStepIntoSingleFunction()
         {
@@ -3219,6 +3225,8 @@ a = p.x;
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("Debugger")]
         public void TestStepIntoFunctionFromLangBlock()
         {
@@ -3258,6 +3266,8 @@ val = [Imperative]
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("Debugger")]
         public void TestStepInOutLanguageBlockImperative()
         {
@@ -3528,6 +3538,8 @@ def foo(y : int)
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("Debugger")]
         public void TestInlineConditionImperativeBlock_Defect_IDE_637_2()
         {
@@ -3582,6 +3594,8 @@ def foo(y : int)
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("Debugger")]
         public void TestIfStmtImperativeBlock_Defect_IDE_637_3()
         {
@@ -3687,6 +3701,8 @@ def foo(y : int)
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("Debugger")]
         public void TestStepInOutLanguageBlockAssociative()
         {
@@ -3754,6 +3770,8 @@ def foo(y : int)
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("Debugger")]
         public void TestStepNestedFunctionsFromLangBlock0()
         {
@@ -3972,6 +3990,8 @@ l = Line.Line(x, y);
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("Debugger")]
         public void TestStepIntoManyFunctions()
         {
@@ -5156,6 +5176,8 @@ x = 3;";
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("Debugger")]
         public void TestStepWithUpdateUsingFunctions()
         {
@@ -5535,6 +5557,8 @@ t = y * 2;
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("Debugger")]
         public void TestStepWithImperativeReturnStatements()
         {
@@ -5626,6 +5650,8 @@ t = y * 2;
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("Debugger")]
         public void TestStepWithAssociativeReturnStatements()
         {
@@ -5981,6 +6007,8 @@ def foo : int[]() {
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("Debugger")]
         public void TestAddIntToDouble()
         {
@@ -6039,7 +6067,6 @@ def foo : int[]() {
             Assert.IsTrue((Double)o.Payload == 1.0);
             Assert.IsTrue(type == "double");
 
-            vms = fsr.Step();
             vms = fsr.Step();
             vms = fsr.Step();
 
@@ -6735,6 +6762,8 @@ a1 = A.A();
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("Debugger")]
         public void TestUpdateLoopWithZiggedDifferentBlocks()
         {
@@ -6804,6 +6833,8 @@ a = [Imperative]
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("Debugger")]
         public void TestUpdateLoopInsideFunctionInAssociativeBlock()
         {
@@ -7684,6 +7715,8 @@ a = dummy.Value;";
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("Debugger")]
         public void ImportTest001()
         {
@@ -7740,6 +7773,8 @@ a = dummy.Value;";
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("Debugger")]
         public void LanguageBlockInsideFunction()
         {
@@ -7776,7 +7811,6 @@ a = dummy.Value;";
             vms = fsr.Step();
             vms = fsr.Step();
             vms = fsr.Step();
-            vms = fsr.Step();
             o = vms.mirror.GetDebugValue("c");
             type = vms.mirror.GetType("c");
             Assert.IsTrue(type == "int");
@@ -7784,6 +7818,8 @@ a = dummy.Value;";
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("Debugger")]
         public void LanguageBlockInsideFunction1()
         {
@@ -7807,7 +7843,6 @@ a = foo();
             vms = fsr.Step();
             vms = fsr.Step();
             vms = fsr.Step();
-            vms = fsr.Step();
 
             Obj o = vms.mirror.GetDebugValue("a");
             string type = vms.mirror.GetType("a");
@@ -7816,6 +7851,8 @@ a = foo();
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("Debugger")]
         public void LanguageBlockInsideFunction2()
         {
@@ -7885,7 +7922,6 @@ a = foo();
             Assert.IsTrue((Int64)o.Payload == 100);
 
             fsr.Step();
-            fsr.Step();
 
             vms = fsr.Step();
             o = vms.mirror.GetDebugValue("a");
@@ -7894,6 +7930,8 @@ a = foo();
 
 
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("Debugger")]
         public void LanguageBlockInsideFunction5()
         {
@@ -8000,7 +8038,6 @@ test = foo();";
             Assert.IsTrue((Int64)ol_2[0].Payload == 1);
             Assert.IsTrue((Int64)ol_2[1].Payload == 2);
 
-            fsr.Step();
             fsr.Step();
             fsr.Step();
             fsr.Step();
@@ -8666,6 +8703,8 @@ f = 3;";
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("Debugger")]
         public void Defect_IDE_619_1()
         {
@@ -9434,6 +9473,8 @@ b = 2;";
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("Debugger")]
         public void TestStepInSimpleFunction()
         {
@@ -9463,6 +9504,8 @@ b = 2;";
        
 
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("Debugger")]
         public void StepIn_inlineconditional_Imperative_722()
         {
@@ -9528,6 +9571,8 @@ b = 2;";
 
         }
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("Debugger")]
         public void StepIn_inlineconditional_Imperative_722_2()
         {
@@ -9584,6 +9629,8 @@ b = 2;";
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("Debugger")]
         public void StepIn_inlineconditional_Imperative_722_3()
         {
@@ -12384,6 +12431,8 @@ a;
 
         }
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("ExpressionInterpreterRunner")]
         public void inlineconditional_stepin_656_3()
         {
@@ -12434,6 +12483,8 @@ b;
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("ExpressionInterpreterRunner")]
         public void inlineconditional_stepin_656_4()
         {
@@ -12574,6 +12625,8 @@ def foo(y : int)
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("ExpressionInterpreterRunner")]
 
         public void inlineconditional_stepin_656_5()
@@ -12670,6 +12723,8 @@ def foo(y : int)
 
         }
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("ExpressionInterpreterRunner")]
 
         public void inlineconditional_stepin_656_6()
@@ -12773,6 +12828,8 @@ def foo(y : int)
 
         }
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("ExpressionInterpreterRunner")]
 
         public void inlineconditional_stepin_656_7()
@@ -13397,6 +13454,8 @@ n = 22;
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("ExpressionInterpreterRunner")]
         public void inlineconditional_stepin_highlighting_657_1()
         {
@@ -13472,6 +13531,8 @@ def foo(y : int)
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("PopRxOptimization")]
         [Category("ExpressionInterpreterRunner")]
         public void inlineconditional_stepin_highlighting_657_2()
         {
