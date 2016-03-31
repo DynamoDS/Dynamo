@@ -20,14 +20,12 @@ namespace ProtoTest.LiveRunner
     {
         private int instrStreamStart = 0;
         private int instrStreamEnd = 0;
-        ProtoCore.Diagnostics.Runtime runtimeDiagnostics = null;
         private ProtoScript.Runners.LiveRunner liverunner = null;
 
         public override void Setup()
         {
             base.Setup();
             liverunner = new ProtoScript.Runners.LiveRunner(); 
-            runtimeDiagnostics = new ProtoCore.Diagnostics.Runtime(liverunner.RuntimeCore);
         }
 
         public override void TearDown()
