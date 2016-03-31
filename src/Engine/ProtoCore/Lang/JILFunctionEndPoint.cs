@@ -90,9 +90,6 @@ namespace ProtoCore.Lang
             int origRunningBlock = runtimeCore.RunningBlock;
             runtimeCore.RunningBlock = svBlockDecl.BlockIndex;
 
-            // Set SX register 
-            interpreter.runtime.SX = svBlockDecl;
-
             StackFrameType callerType = stackFrame.CallerStackFrameType;
 
             List<StackValue> registers = new List<DSASM.StackValue>();
@@ -114,8 +111,7 @@ namespace ProtoCore.Lang
             interpreter.runtime.TX = svCallConvention;
 
             // Set SX register 
-            stackFrame.SX = svBlockDecl;
-            interpreter.runtime.SX = svBlockDecl;
+            stackFrame.BlockIndex = svBlockDecl;
 
             // TODO Jun:
             // The stackframe carries the current set of registers
@@ -131,7 +127,7 @@ namespace ProtoCore.Lang
             Validity.Assert(type == DSASM.StackFrameType.Function);
 
             runtimeCore.RuntimeMemory.PushFrameForLocals(locals);
-            StackFrame newStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, execStateSize);
+            StackFrame newStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, svBlockDecl.BlockIndex, registers, execStateSize);
             runtimeCore.RuntimeMemory.PushStackFrame(newStackFrame);
 
             StackValue svRet;

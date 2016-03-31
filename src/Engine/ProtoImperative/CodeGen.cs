@@ -2456,8 +2456,7 @@ namespace ProtoImperative
                 if (localProcedure != null)
                 {
                     core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.FunctionAbnormalExit, ProtoCore.Properties.Resources.kInvalidBreakForFunction , core.CurrentDSFileName, node.line, node.col);
-                    EmitPushNull();
-                    EmitReturnToRegister();
+                    EmitReturnNull();
                 }
             }
         }
@@ -2478,8 +2477,7 @@ namespace ProtoImperative
                 if (localProcedure != null)
                 {
                     core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.FunctionAbnormalExit, ProtoCore.Properties.Resources.kInvalidContinueForFunction, core.CurrentDSFileName, node.line, node.col);
-                    EmitPushNull();
-                    EmitReturnToRegister();
+                    EmitReturnNull();
                 }
             }
         }

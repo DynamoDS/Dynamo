@@ -302,7 +302,7 @@ namespace Dynamo.Logging
         /// ASync add the log item onto the queue to be pushed to the db
         /// </summary>
         /// <param name="item">
-        /// A <see cref="Dictionary<String, String>"/>
+        /// A <see cref="Dictionary{String, String}"/>
         /// </param>
         private void PushItem(Dictionary<String, String> item)
         {
