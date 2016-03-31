@@ -108,6 +108,23 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void PreviewBubbleHiiden_OnFrozenNode()
+        {
+            Open(@"core\DetailedPreviewMargin_Test.dyn");
+            var nodeView = NodeViewWithGuid("7828a9dd-88e6-49f4-9ed3-72e355f89bcc");
+            nodeView.ViewModel.IsFrozen = true;
+            nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+
+            View.Dispatcher.Invoke(() =>
+            {
+                nodeView.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0) { RoutedEvent = Mouse.MouseEnterEvent });
+            });
+            DispatcherUtil.DoEvents();
+
+            Assert.IsTrue(nodeView.PreviewControl.IsHidden);
+        }
+
+        [Test]
         public void PreviewBubble_ListMargin()
         {
             OpenAndRun(@"core\DetailedPreviewMargin_Test.dyn");
