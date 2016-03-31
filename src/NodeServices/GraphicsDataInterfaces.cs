@@ -207,7 +207,7 @@ namespace Autodesk.DesignScript.Interfaces
         /// </summary>
         /// <param name="package">The render package, where graphics data to be
         /// pushed.</param>
-        /// <param name="tol">The tolerance for faceting</param>
+        /// <param name="parameters"></param>
         void Tessellate(IRenderPackage package, TessellationParameters parameters);
     }
 

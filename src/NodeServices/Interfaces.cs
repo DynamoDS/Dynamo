@@ -110,8 +110,8 @@ namespace Autodesk.DesignScript.Interfaces
         /// expected to be a "string" object which specified the assembly and class that
         /// should be hidden. The location of the config file is "\installtools\Bundle\
         /// DesignScript.bundle\Contents\Win64" The format of the string should be 
-        /// "%assemblyName%;%className&;..;%assemblyName%;%className&;", 
-        /// The CoreCoponent will look for "%assemblyName%;%className&;" (with two ';' at
+        /// "%assemblyName%;%className&amp;;..;%assemblyName%;%className&amp;;", 
+        /// The CoreCoponent will look for "%assemblyName%;%className&amp;;" (with two ';' at
         /// end of assembly name and class name) and filter the fully matched item out
         /// </summary>
         public static readonly string FilteredClasses = "FilteredClasses";
