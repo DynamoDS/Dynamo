@@ -54,7 +54,6 @@ namespace ProtoTest.LiveRunner
             added.Add(st);
             var syncData = new GraphSyncData(null, added, null);
             liverunner.UpdateGraph(syncData);
-            instrStreamStart = runtimeDiagnostics.GetExecutableInstructionCount();
 
             ProtoCore.Mirror.RuntimeMirror mirror = liverunner.InspectNodeValue("a");
             Assert.IsTrue((Int64)mirror.GetData().Data == 1);
@@ -66,7 +65,6 @@ namespace ProtoTest.LiveRunner
             modified.Add(st);
             syncData = new GraphSyncData(null, null, modified);
             liverunner.UpdateGraph(syncData);
-            instrStreamEnd = runtimeDiagnostics.GetExecutableInstructionCount();
 
             mirror = liverunner.InspectNodeValue("a");
             Assert.IsTrue((Int64)mirror.GetData().Data == 2);
@@ -91,7 +89,6 @@ namespace ProtoTest.LiveRunner
             added.Add(st);
             var syncData = new GraphSyncData(null, added, null);
             liverunner.UpdateGraph(syncData);
-            instrStreamStart = runtimeDiagnostics.GetExecutableInstructionCount();
 
             ProtoCore.Mirror.RuntimeMirror mirror = liverunner.InspectNodeValue("a");
             Assert.IsTrue((Int64)mirror.GetData().Data == 0);
@@ -108,14 +105,12 @@ namespace ProtoTest.LiveRunner
                 modified.Add(st);
                 syncData = new GraphSyncData(null, null, modified);
                 liverunner.UpdateGraph(syncData);
-
-                instrStreamEnd = runtimeDiagnostics.GetExecutableInstructionCount();
-                Assert.AreEqual(instrStreamStart, instrStreamEnd);
             }
 
             mirror = liverunner.InspectNodeValue("a");
             Assert.IsTrue((Int64)mirror.GetData().Data == 100);
 
+            // instruction stream not increaed.
         }
 
         [Test]
@@ -142,7 +137,6 @@ namespace ProtoTest.LiveRunner
 
             var syncData = new GraphSyncData(null, added, null);
             liverunner.UpdateGraph(syncData);
-            instrStreamStart = runtimeDiagnostics.GetExecutableInstructionCount();
 
             ProtoCore.Mirror.RuntimeMirror mirror = liverunner.InspectNodeValue("a");
             Assert.IsTrue((Int64)mirror.GetData().Data == 1);
@@ -153,7 +147,6 @@ namespace ProtoTest.LiveRunner
             modified.Add(st);
             syncData = new GraphSyncData(null, null, modified);
             liverunner.UpdateGraph(syncData);
-            instrStreamEnd = runtimeDiagnostics.GetExecutableInstructionCount();
 
             mirror = liverunner.InspectNodeValue("a");
             Assert.IsTrue((Int64)mirror.GetData().Data == 2);
