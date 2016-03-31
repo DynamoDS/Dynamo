@@ -31,11 +31,10 @@ namespace ProtoCore.DSASM
         public const int FrameIndexLocalVariableCount = -10;
         public const int FrameIndexExecutionStates = -11;
         public const int FrameIndexBlockIndex = -12;
-        public const int FrameIndexLX = -13;
-        public const int FrameIndexRX = -14;
-        public const int FrameIndexTX = -15;
-        public const int FrameIndexFramePointer = -16;
-        public const int StackFrameSize = 16;
+        public const int FrameIndexRX = -13;
+        public const int FrameIndexTX = -14;
+        public const int FrameIndexFramePointer = -15;
+        public const int StackFrameSize = 15;
 
         private struct AbsoluteIndex
         {
@@ -51,7 +50,6 @@ namespace ProtoCore.DSASM
             public const int LocalVariableCount  = -FrameIndexLocalVariableCount - 1;
             public const int ExecutionStates = -FrameIndexExecutionStates - 1;
             public const int BlockIndex = -FrameIndexBlockIndex - 1;
-            public const int LX = -FrameIndexLX - 1;
             public const int RX = -FrameIndexRX - 1;
             public const int TX = -FrameIndexTX - 1;
             public const int FramePointer = -FrameIndexFramePointer - 1;
@@ -89,9 +87,8 @@ namespace ProtoCore.DSASM
             Frame[AbsoluteIndex.LocalVariableCount] = StackValue.BuildInt(0);
             Frame[AbsoluteIndex.ExecutionStates] = StackValue.BuildInt(execStateSize);
             Frame[AbsoluteIndex.BlockIndex] = StackValue.BuildBlockIndex(blockIndex);
-            Frame[AbsoluteIndex.LX] = registers[0];
-            Frame[AbsoluteIndex.RX] = registers[1];
-            Frame[AbsoluteIndex.TX] = registers[2];
+            Frame[AbsoluteIndex.RX] = registers[0];
+            Frame[AbsoluteIndex.TX] = registers[1];
             Frame[AbsoluteIndex.FramePointer] = StackValue.BuildInt(framePointer);
         }
 
@@ -208,12 +205,6 @@ namespace ProtoCore.DSASM
             set { Frame[AbsoluteIndex.BlockIndex] = value; }
         }
 
-        public StackValue LX
-        {
-            get { return Frame[AbsoluteIndex.LX]; }
-            set { Frame[AbsoluteIndex.LX] = value; }
-        }
-
         public StackValue RX
         {
             get { return Frame[AbsoluteIndex.RX]; }
@@ -230,7 +221,6 @@ namespace ProtoCore.DSASM
         {
             List<StackValue> registers = new List<StackValue>();
 
-            registers.Add(Frame[AbsoluteIndex.LX]);
             registers.Add(Frame[AbsoluteIndex.RX]);
             registers.Add(Frame[AbsoluteIndex.TX]);
 

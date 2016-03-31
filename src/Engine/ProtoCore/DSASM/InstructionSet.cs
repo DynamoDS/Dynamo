@@ -9,7 +9,6 @@ namespace ProtoCore.DSASM
 {
     public enum Registers
     {
-        LX,
         RX,
     }
 
