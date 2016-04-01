@@ -721,7 +721,7 @@ namespace ProtoAssociative
             instr.opCode = ProtoCore.DSASM.OpCode.DEP;
 
             instr.op1 = StackValue.BuildInt(exprUID);
-            instr.op2 = StackValue.BuildInt(isSSAAssign ? 1 : 0);
+            instr.op2 = StackValue.BuildBoolean(isSSAAssign);
 
             ++pc;
             codeBlock.instrStream.instrList.Add(instr);
@@ -6160,7 +6160,7 @@ namespace ProtoAssociative
                         {
                             // Dependency graph top level symbol 
                             graphNode.PushSymbolReference(symbolnode);
-                            EmitDependency(bnode.ExpressionUID, node.isSSAAssignment);
+                            EmitDependency(bnode.ExpressionUID, bnode.isSSAAssignment);
                             functionCallStack.Clear();
                         }
                     }
