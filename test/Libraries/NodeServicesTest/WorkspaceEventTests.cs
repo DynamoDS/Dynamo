@@ -1,12 +1,9 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Reflection;
-
-using SystemTestServices;
-
-using DynamoServices;
-
+using Dynamo.Events;
 using NUnit.Framework;
+using SystemTestServices;
 
 namespace DynamoServicesTests
 {

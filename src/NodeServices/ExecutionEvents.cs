@@ -1,6 +1,7 @@
-﻿namespace DynamoServices
+﻿using Dynamo.Session;
+namespace Dynamo.Events
 {
-    public delegate void ExecutionStateHandler();
+    public delegate void ExecutionStateHandler(IExecutionSession session);
 
     /// <summary>
     /// Communication bridge between Dynamo and client libraries to notify
@@ -21,19 +22,19 @@
         /// <summary>
         /// Notify observers that the graph is about to evaluate
         /// </summary>
-        public static void OnGraphPreExecution()
+        internal static void OnGraphPreExecution(IExecutionSession session)
         {
             if (GraphPreExecution != null)
-                GraphPreExecution();
+                GraphPreExecution(session);
         }
 
         /// <summary>
         /// Notify observers that the graph has evaluated
         /// </summary>
-        public static void OnGraphPostExecution()
+        internal static void OnGraphPostExecution(IExecutionSession session)
         {
             if (GraphPostExecution != null)
-                GraphPostExecution();
+                GraphPostExecution(session);
         }
     }
 }
