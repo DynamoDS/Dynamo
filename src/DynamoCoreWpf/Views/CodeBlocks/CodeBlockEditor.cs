@@ -7,12 +7,56 @@ using System;
 namespace Dynamo.UI.Controls
 {
     /// <summary>
+    /// Code block node editor state machine.
+    /// </summary>
+    internal class EditorStateMachine
+    {
+        internal enum EditorState
+        {
+            Editing,
+            Commited
+        }
+
+        private EditorState state;
+
+        /// <summary>
+        /// Event handler for editor state changed.
+        /// </summary>
+        public event Action<EditorState> OnStateChanged;
+
+        /// <summary>
+        /// Constructor state machine. 
+        /// </summary>
+        public EditorStateMachine(EditorState startState)
+        {
+            state = startState;
+        }
+
+        /// <summary>
+        /// Transit to the new state.
+        /// </summary>
+        /// <param name="newState"></param>
+        public void Transit(EditorState newState)
+        {
+            if (state != newState)
+            {
+                state = newState;
+                if (OnStateChanged != null)
+                {
+                    OnStateChanged(state);
+                }
+            }
+        }
+    }
+
+    /// <summary>
     /// Code block editor.
     /// </summary>
     public partial class CodeBlockEditor : CodeCompletionEditor 
     {
         private bool createdForNewCodeBlock;
         private readonly CodeBlockNodeModel codeBlockNode;
+        private EditorStateMachine stateMachine = new EditorStateMachine(EditorStateMachine.EditorState.Commited);
 
         /// <summary>
         /// Create code block editor by the view of code block node.
@@ -39,6 +83,7 @@ namespace Dynamo.UI.Controls
             }
 
             WatermarkLabel.Text = Properties.Resources.WatermarkLabelText;
+            stateMachine.OnStateChanged += OnEditorStateChanged;
         }
 
         protected override void OnEscape()
@@ -64,6 +109,35 @@ namespace Dynamo.UI.Controls
                 CommitChanges(recorder);
 
             createdForNewCodeBlock = false; // First commit is now over.
+
+            stateMachine.Transit(EditorStateMachine.EditorState.Commited);
+        }
+
+        protected override void OnEditorTextChanged()
+        {
+            stateMachine.Transit(EditorStateMachine.EditorState.Editing);
+        }
+
+        private void OnEditorStateChanged(EditorStateMachine.EditorState state)
+        {
+            switch (state)
+            {
+                case EditorStateMachine.EditorState.Editing:
+                    EnableOutputPorts(false); 
+                    break;
+
+                case EditorStateMachine.EditorState.Commited:
+                    EnableOutputPorts(true); 
+                    break;
+            }
+        }
+
+        private void EnableOutputPorts(bool isEnabled)
+        {
+            for (int i = 0; i < codeBlockNode.OutPorts.Count; i++)
+            {
+                codeBlockNode.OutPorts[i].IsEnabled = isEnabled;
+            }
         }
 
         private void CommitChanges(UndoRedoRecorder recorder)

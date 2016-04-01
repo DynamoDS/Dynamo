@@ -189,6 +189,9 @@ namespace Dynamo.ViewModels
                 case "IsConnected":
                     RaisePropertyChanged("IsConnected");
                     break;
+                case "IsEnabled":
+                    RaisePropertyChanged("IsEnabled");
+                    break;
                 case "Center":
                     RaisePropertyChanged("Center");
                     break;
