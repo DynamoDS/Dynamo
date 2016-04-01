@@ -2370,8 +2370,6 @@ namespace ProtoAssociative
                             core.FunctionPointerTable.functionPointerDictionary.TryAdd(fptr, fptrNode);
                             core.FunctionPointerTable.functionPointerDictionary.TryGetBySecond(fptrNode, out fptr);
 
-                            EmitPushVarData(0);
-
                             EmitInstrConsole(ProtoCore.DSASM.kw.push, t.Name);
                             StackValue opFunctionPointer = StackValue.BuildFunctionPointer(fptr);
                             EmitPush(opFunctionPointer, runtimeIndex, t.line, t.col);
@@ -2404,8 +2402,6 @@ namespace ProtoAssociative
                         EmitPushNull();
 
                         // Push the identifier local block  
-                        dimensions = 0;
-                        EmitPushVarData(dimensions);
                         ProtoCore.Type varType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
 
                         // TODO Jun: Refactor Allocate() to just return the symbol node itself
@@ -2607,7 +2603,7 @@ namespace ProtoAssociative
                     }
                 }
 
-                EmitPushVarData(dimensions);
+                EmitPushDimensions(dimensions);
 
                 if (ProtoCore.DSASM.InterpreterMode.Expression == core.Options.RunMode)
                 {
@@ -6118,10 +6114,9 @@ namespace ProtoAssociative
 
                             if (bnode.LeftNode is TypedIdentifierNode)
                             {
-                                symbolnode.SetStaticType(castType);
+                                EmitCast(castType.UID, castType.rank);
                             }
-                            castType = symbolnode.staticType;
-                            EmitPushVarData(dimensions, castType.UID, castType.rank);
+                            EmitPushDimensions(dimensions);
 
                             symbol = symbolnode.symbolTableIndex;
                             if (t.Name == ProtoCore.DSASM.Constants.kTempArg)
@@ -6163,10 +6158,9 @@ namespace ProtoAssociative
                         {
                             if (bnode.LeftNode is TypedIdentifierNode)
                             {
-                                symbolnode.SetStaticType(castType);
+                                EmitCast(castType.UID, castType.rank);
                             }
-                            castType = symbolnode.staticType;
-                            EmitPushVarData(dimensions, castType.UID, castType.rank);
+                            EmitPushDimensions(dimensions);
 
                             EmitInstrConsole(ProtoCore.DSASM.kw.popm, t.Name);
 
@@ -6225,11 +6219,9 @@ namespace ProtoAssociative
 
                         if (bnode.LeftNode is TypedIdentifierNode)
                         {
-                            symbolnode.SetStaticType(castType);
+                            EmitCast(castType.UID, castType.rank);
                         }
-                        castType = symbolnode.staticType;
-
-                        EmitPushVarData(dimensions, castType.UID, castType.rank);
+                        EmitPushDimensions(dimensions);
 
                         if (core.Options.RunMode != ProtoCore.DSASM.InterpreterMode.Expression)
                         {
@@ -6329,7 +6321,6 @@ namespace ProtoAssociative
                             nullAssignGraphNode1.updateBlock.startpc = pc;
 
                             EmitPushNull();
-                            EmitPushVarData(0);
                             EmitInstrConsole(ProtoCore.DSASM.kw.pop, cyclicSymbol1.name);
                             EmitPopForSymbol(cyclicSymbol1, cyclicSymbol1.runtimeTableIndex, node.line, node.col, node.endLine, node.endCol);
 
@@ -6348,7 +6339,6 @@ namespace ProtoAssociative
                             nullAssignGraphNode2.updateBlock.startpc = pc;
 
                             EmitPushNull();
-                            EmitPushVarData(0);
                             EmitInstrConsole(ProtoCore.DSASM.kw.pop, cyclicSymbol2.name);
                             EmitPopForSymbol(cyclicSymbol2, cyclicSymbol2.runtimeTableIndex, node.line, node.col, node.endLine, node.endCol);
 

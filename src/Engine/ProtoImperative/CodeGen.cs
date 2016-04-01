@@ -862,8 +862,6 @@ namespace ProtoImperative
                         core.FunctionPointerTable.functionPointerDictionary.TryAdd(fptr, fptrNode);
                         core.FunctionPointerTable.functionPointerDictionary.TryGetBySecond(fptrNode, out fptr);
 
-                        EmitPushVarData(0);
-
                         EmitInstrConsole(ProtoCore.DSASM.kw.push, t.Name);
                         StackValue opFunctionPointer = StackValue.BuildFunctionPointer(fptr);
                         EmitPush(opFunctionPointer, runtimeIndex, t.line, t.col);
@@ -899,9 +897,6 @@ namespace ProtoImperative
                 //      warning is emitted during pre-execute phase, and at the ID is bound to null. (R1 - Feb)
 
                 EmitPushNull();
-
-                EmitPushVarData(dimensions);
-
                 ProtoCore.Type varType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
                 symbolnode = Allocate(t.Value, globalProcIndex, varType);
 
@@ -955,7 +950,7 @@ namespace ProtoImperative
                 }
             }
 
-            EmitPushVarData(dimensions);
+            EmitPushDimensions(dimensions);
 
             if (dimensions == 0)
             {
@@ -1940,10 +1935,9 @@ namespace ProtoImperative
 
                             if (b.LeftNode is TypedIdentifierNode)
                             {
-                                symbolnode.SetStaticType(castType);
+                                EmitCast(castType.UID, castType.rank);
                             }
-                            castType = symbolnode.staticType;
-                            EmitPushVarData(dimensions, castType.UID, castType.rank);
+                            EmitPushDimensions(dimensions);
 
                             EmitInstrConsole(ProtoCore.DSASM.kw.pop, s);
                             StackValue operand = StackValue.BuildVarIndex(symbol);
@@ -1953,10 +1947,9 @@ namespace ProtoImperative
                         {
                             if (b.LeftNode is TypedIdentifierNode)
                             {
-                                symbolnode.SetStaticType(castType);
+                                EmitCast(castType.UID, castType.rank);
                             }
-                            castType = symbolnode.staticType;
-                            EmitPushVarData(dimensions, castType.UID, castType.rank);
+                            EmitPushDimensions(dimensions);
 
                             EmitInstrConsole(ProtoCore.DSASM.kw.popm, t.Name);
 
@@ -1987,10 +1980,9 @@ namespace ProtoImperative
 
                         if (b.LeftNode is TypedIdentifierNode)
                         {
-                            symbolnode.SetStaticType(castType);
+                            EmitCast(castType.UID, castType.rank);
                         }
-                        castType = symbolnode.staticType;
-                        EmitPushVarData(dimensions, castType.UID, castType.rank);
+                        EmitPushDimensions(dimensions);
                         if (parentNode != null)
                         {
                             if (dimensions > 0)
@@ -2221,11 +2213,6 @@ namespace ProtoImperative
                 }
                 EmitInstrConsole(ProtoCore.DSASM.kw.pushvarsize, identName);
                 EmitPushArrayKey(symbolIndex, codeBlock.symbolTable.RuntimeIndex, (symbol == null) ? globalClassIndex : symbol.classScope);
-
-                // Push the identifier local block information 
-                // Push the array dimensions
-                int dimensions = 0;
-                EmitPushVarData(dimensions);
 
                 if (ProtoCore.DSASM.Constants.kInvalidIndex != globalClassIndex && !IsInLanguageBlockDefinedInFunction())
                 {

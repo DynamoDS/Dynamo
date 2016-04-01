@@ -3083,8 +3083,6 @@ namespace ProtoCore.DSASM
 
         private void PUSH_Handler(Instruction instruction)
         {
-            int dimensions = 0;
-
             int blockId = Constants.kInvalidIndex;
             StackValue op1 = instruction.op1;
 
@@ -3095,9 +3093,6 @@ namespace ProtoCore.DSASM
                 op1.IsStaticVariableIndex ||
                 op1.IsFunctionPointer)
             {
-                // TODO: Jun this is currently unused but required for stack alignment
-                StackValue svType = rmem.Pop();
-
                 blockId = instruction.op3.BlockIndex;
             }
 
@@ -3356,55 +3351,53 @@ namespace ProtoCore.DSASM
             ++pc;
         }
 
+        private void CAST_Handler(Instruction instruction)
+        {
+            StackValue type = instruction.op1;
+            int staticType = type.metaData.type;
+            int rank = type.Rank;
+
+            StackValue tempSvData = StackValue.Null;
+            StackValue data = rmem.Pop();
+            StackValue coercedData = TypeSystem.Coerce(data, staticType, rank, runtimeCore);
+            rmem.Push(coercedData);
+            ++pc;
+        }
+
         protected StackValue POP_helper(Instruction instruction, out int blockId, out int dimensions)
         {
             dimensions = 0;
             blockId = Constants.kInvalidIndex;
-            int staticType = (int)PrimitiveType.Var;
-            int rank = Constants.kArbitraryRank;
 
             if (instruction.op1.IsVariableIndex ||
                 instruction.op1.IsPointer ||
                 instruction.op1.IsArray)
             {
-                StackValue svType = rmem.Pop();
-                staticType = svType.metaData.type;
-                rank = svType.Rank;
-
                 blockId = instruction.op3.BlockIndex;
             }
 
             bool isSSANode = Properties.executingGraphNode != null && Properties.executingGraphNode.IsSSANode();
-            StackValue svData;
-
-            // The returned stackvalue is used by watch test framework - pratapa
-            StackValue tempSvData = StackValue.Null;
-            svData = rmem.Pop();
-            StackValue coercedValue;
+            StackValue svData = rmem.Pop();
+            StackValue tempSvData = svData;
 
             if (isSSANode)
             {
-                coercedValue = svData;
                 // Double check to avoid the case like
                 //    %tvar = obj;
                 //    %tSSA = %tvar;
                 blockId = runtimeCore.RunningBlock;
             }
-            else
-            {
-                coercedValue = TypeSystem.Coerce(svData, staticType, rank, runtimeCore);
-            }
 
-            tempSvData = coercedValue;
-            var preValue = PopTo(blockId, instruction.op1, instruction.op2, coercedValue);
+            tempSvData = svData;
+            var preValue = PopTo(blockId, instruction.op1, instruction.op2, svData);
 
             if (runtimeCore.Options.ExecuteSSA)
             {
                 if (!isSSANode)
                 {
-                    if (preValue.IsPointer && coercedValue.IsPointer)
+                    if (preValue.IsPointer && svData.IsPointer)
                     {
-                        if (preValue.Pointer != coercedValue.Pointer)
+                        if (preValue.Pointer != svData.Pointer)
                         {
                             if (null != Properties.executingGraphNode)
                             {
@@ -4849,6 +4842,12 @@ namespace ProtoCore.DSASM
                 case OpCode.ALLOCC:
                     {
                         ALLOCC_Handler(instruction);
+                        return;
+                    }
+
+                case OpCode.CAST:
+                    {
+                        CAST_Handler(instruction);
                         return;
                     }
 

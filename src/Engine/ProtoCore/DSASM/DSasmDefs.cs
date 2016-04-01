@@ -115,6 +115,7 @@ namespace ProtoCore.DSASM
         public const string pushvarsize = "pushvarsize";
         public const string loadelement = "loadelement";
         public const string setelement = "setelement";
+        public const string cast = "cast";
 
         public const string regRX = "_rx";
         public const string regLX = "_lx";

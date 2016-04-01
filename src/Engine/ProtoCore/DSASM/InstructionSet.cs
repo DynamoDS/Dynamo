@@ -85,6 +85,8 @@ namespace ProtoCore.DSASM
         LOADELEMENT,
         SETELEMENT,
 
+        CAST,
+
         CALL,
         CALLR,
         RETURN,         // Return from function call
