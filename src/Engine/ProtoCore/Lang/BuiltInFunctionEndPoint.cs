@@ -347,20 +347,19 @@ namespace ProtoCore.Lang
                         StackFrameType type = StackFrameType.LanguageBlock;
                         int depth = (int)interpreter.runtime.rmem.GetAtRelative(StackFrame.FrameIndexStackFrameDepth).IntegerValue;
                         int framePointer = rmem.FramePointer;
-                        List<StackValue> registers = new List<StackValue>();
 
                         // Comment Jun: Calling convention data is stored on the TX register
                         StackValue svCallconvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.Implicit);
                         interpreter.runtime.TX = svCallconvention;
 
-                        interpreter.runtime.SaveRegisters(registers);
+                        List<StackValue> registers = interpreter.runtime.GetRegisters();
 
                         // Comment Jun: the caller type is the current type in the stackframe
                         StackFrameType callerType = stackFrame.StackFrameType;
 
                         
                         blockCaller = runtimeCore.DebugProps.CurrentBlockId;
-                        StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, 0);
+                        StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, 0, registers, 0);
 
                         ret = interpreter.runtime.Bounce(blockId, 0, bounceStackFrame, 0, false, runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore.Breakpoints);
 
@@ -678,6 +677,7 @@ namespace ProtoCore.Lang
                                                StackFrameType.Function, 
                                                0,
                                                rmem.FramePointer, 
+                                               0,
                                                stackFrame.GetRegisters(), 
                                                0);
 
