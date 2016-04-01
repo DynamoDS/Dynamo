@@ -7,11 +7,25 @@ using Dynamo.Interfaces;
 
 namespace Dynamo.Logging
 {
+    /// <summary>
+    /// The log level at which to log the message.
+    /// </summary>
     public enum LogLevel{Console, File, Warning}
+
+    /// <summary>
+    /// The warning level for messages.
+    /// </summary>
     public enum WarningLevel{Mild, Moderate, Error}
 
+    /// <summary>
+    /// Delegate, that takes log event arguments, logs them and return nothing.
+    /// </summary>
+    /// <param name="args">Log event arguments.</param>
     public delegate void LogEventHandler(LogEventArgs args);
 
+    /// <summary>
+    /// Event arguments, that are sent to log event handler.
+    /// </summary>
     public class LogEventArgs : EventArgs
     {
         /// <summary>
@@ -24,12 +38,22 @@ namespace Dynamo.Logging
         /// </summary>
         public LogLevel Level { get; set; }
 
+        /// <summary>
+        /// Creates LogEventArgs based on log message.
+        /// </summary>
+        /// <param name="message">String message.</param>
+        /// <param name="level">Level, where message can be logged.</param>
         public LogEventArgs(string message, LogLevel level)
         {
             Message = message;
             Level = level;
         }
 
+        /// <summary>
+        /// Creates LogEventArgs based on exception.
+        /// </summary>
+        /// <param name="e">Exception.</param>
+        /// <param name="level">Level, where exception message and stack trace can be logged.</param>
         public LogEventArgs(Exception e, LogLevel level)
         {
             Message = e.Message + "\n" + e.StackTrace;
@@ -37,7 +61,7 @@ namespace Dynamo.Logging
         }
     }
 
-    public class DynamoLogger:NotificationObject, ILogger, IDisposable
+    public class DynamoLogger: NotificationObject, ILogger, IDisposable
     {
         private readonly Object guardMutex = new Object();
 

@@ -313,15 +313,51 @@ namespace Dynamo.Graph
         #endregion
     }
 
+    /// <summary>
+    /// Interface contains definitions for locatable objects.
+    /// Objects such as nodes, connectors, workspaces etc.
+    /// </summary>
     public interface ILocatable
     {
+        /// <summary>
+        /// X coordinate of locatable object.
+        /// </summary>
         double X { get; set; }
+
+        /// <summary>
+        /// Y coordinate of locatable object.
+        /// </summary>
         double Y { get; set; }
+
+        /// <summary>
+        /// Width of locatable object.
+        /// </summary>
         double Width { get; set; }
+
+        /// <summary>
+        /// Height of locatable object.
+        /// </summary>
         double Height { get; set; }
+
+        /// <summary>
+        /// Bounds of locatable object.
+        /// </summary>
         Rect2D Rect { get; }
+
+        /// <summary>
+        /// X coordinate of center point.
+        /// </summary>
         double CenterX { get; set; }
+
+        /// <summary>
+        /// Y coordinate of center point.
+        /// </summary>
         double CenterY { get; set; }
+
+        /// <summary>
+        ///  Notify listeners that the position of the object has changed,
+        ///  then all dependant objects will also redraw themselves.
+        /// </summary>
         void ReportPosition();
     }
 }

@@ -136,11 +136,19 @@ namespace Dynamo.Graph.Nodes
     [AttributeUsage(AttributeTargets.All)]
     public class DoNotLoadOnPlatformsAttribute : Attribute
     {
+        /// <summary>
+        /// Creates DoNotLoadOnPlatformsAttribute with restricted contexts.
+        /// </summary>
+        /// <param name="values"></param>
         public DoNotLoadOnPlatformsAttribute(params string[] values)
         {
             Values = values;
         }
 
+        /// <summary>
+        /// Restricted contexts, i.e. contexts in which node won't be loaded.
+        /// E.g. Revit 2014
+        /// </summary>
         public string[] Values { get; set; }
     }
 
@@ -159,11 +167,18 @@ namespace Dynamo.Graph.Nodes
     [AttributeUsage(AttributeTargets.All)]
     public class AlsoKnownAsAttribute : Attribute
     {
+        /// <summary>
+        /// Constructs AlsoKnownAsAttribute with defined old names.
+        /// </summary>
+        /// <param name="values">Old names, that node used to have.</param>
         public AlsoKnownAsAttribute(params string[] values)
         {
             Values = values;
         }
 
+        /// <summary>
+        /// Old names, that node used to have.
+        /// </summary>
         public string[] Values { get; set; }
     }
 
