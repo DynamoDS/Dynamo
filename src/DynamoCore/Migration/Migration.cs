@@ -977,6 +977,12 @@ namespace Dynamo.Migration
     /// </summary>
     public struct PortId
     {
+        /// <summary>
+        /// Creates PortId.
+        /// </summary>
+        /// <param name="owningNode">Node GUID</param>
+        /// <param name="portIndex">Index</param>
+        /// <param name="type">Port type</param>
         public PortId(string owningNode, int portIndex, PortType type)
             : this()
         {
@@ -985,8 +991,19 @@ namespace Dynamo.Migration
             PortType = type;
         }
 
+        /// <summary>
+        /// Node GUID.
+        /// </summary>
         public string OwningNode { get; private set; }
+
+        /// <summary>
+        /// Index
+        /// </summary>
         public int PortIndex { get; private set; }
+
+        /// <summary>
+        /// PortType
+        /// </summary>
         public PortType PortType { get; private set; }
     }
 

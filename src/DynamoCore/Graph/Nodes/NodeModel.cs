@@ -2131,6 +2131,10 @@ namespace Dynamo.Graph.Nodes
         CrossProduct
     };
 
+    /// <summary>
+    /// Enum, that is used when mouse enters, leaves or clicks port.
+    /// It's used for snapping ports.
+    /// </summary>
     public enum PortEventType
     {
         MouseEnter,

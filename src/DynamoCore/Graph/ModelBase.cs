@@ -8,6 +8,9 @@ using ProtoCore.Namespace;
 
 namespace Dynamo.Graph
 {
+    /// <summary>
+    /// SaveContext represents several contexts, in which node can be serialized/deserialized.
+    /// </summary>
     public enum SaveContext { File, Copy, Undo, Preset };
 
     /// <summary>
@@ -40,6 +43,10 @@ namespace Dynamo.Graph
         public ElementResolver ElementResolver { get; private set; }
     }
 
+    /// <summary>
+    /// Abstract class, that is used as base class for all objects with which user can interact in Dynamo.
+    /// Objects like nodes, connectors, ports, annotations etc.
+    /// </summary>
     public abstract class ModelBase : NotificationObject, ISelectable, ILocatable, ILogSource
     {
         /// <summary>
@@ -53,15 +60,22 @@ namespace Dynamo.Graph
         private double y;
         private double height = 100;
         private double width = 100;
-       
+
+        /// <summary>
+        /// X coordinate of center point.
+        /// </summary>
         public double CenterX
         {
             get { return X + Width / 2; }
-            set { 
-                X = value - Width/2;
+            set
+            {
+                X = value - Width / 2;
             }
         }
 
+        /// <summary>
+        /// Y coordinate of center point.
+        /// </summary>
         public double CenterY
         {
             get { return Y + Height / 2; }
@@ -104,11 +118,11 @@ namespace Dynamo.Graph
         /// </summary>
         public Point2D Position
         {
-            get{return new Point2D(x,y);}
+            get { return new Point2D(x, y); }
         }
 
         /// <summary>
-        /// The height of the node.
+        /// The height of the object.
         /// </summary>
         public virtual double Height
         {
@@ -121,31 +135,29 @@ namespace Dynamo.Graph
         }
 
         /// <summary>
-        /// The width of the node.
+        /// The width of the object.
         /// </summary>
         public virtual double Width
         {
             get { return width; }
             set
-
             {
                 width = value;
                 //RaisePropertyChanged("Width");
             }
         }
 
+        /// <summary>
+        /// The bounds of the object.
+        /// </summary>
         public virtual Rect2D Rect
         {
-            get{return new Rect2D(x,y,width,height);}
+            get { return new Rect2D(x, y, width, height); }
         }
 
-        public event EventHandler Updated; 
-        public void OnUpdated(EventArgs e)
-        {
-            if (Updated != null)
-                Updated(this, e);
-        }
-
+        /// <summary>
+        /// Bool value, that indicates is object is selected or not.
+        /// </summary>
         public bool IsSelected
         {
             get { return isSelected; }
@@ -156,6 +168,9 @@ namespace Dynamo.Graph
             }
         }
 
+        /// <summary>
+        /// Unique ID.
+        /// </summary>
         public Guid GUID
         {
             get
@@ -173,21 +188,34 @@ namespace Dynamo.Graph
             }
         }
 
+        /// <summary>
+        /// Protected constructor.
+        /// </summary>
         protected ModelBase()
         {
             GUID = Guid.NewGuid();
         }
 
+        /// <summary>
+        /// Selects object.
+        /// </summary>
         public virtual void Select()
         {
             IsSelected = true;
         }
 
+        /// <summary>
+        /// Deselects object.
+        /// </summary>
         public virtual void Deselect()
         {
             IsSelected = false;
         }
 
+        /// <summary>
+        ///  Notifies listeners that the position of the object has changed,
+        ///  then all dependant objects will also redraw themselves.
+        /// </summary>
         public void ReportPosition()
         {
             RaisePropertyChanged("Position");
@@ -197,8 +225,8 @@ namespace Dynamo.Graph
         /// Set the width and the height of the node model
         /// and report once.
         /// </summary>
-        /// <param name="w"></param>
-        /// <param name="h"></param>
+        /// <param name="w">Width</param>
+        /// <param name="h">Height</param>
         public void SetSize(double w, double h)
         {
             width = w;
@@ -206,15 +234,27 @@ namespace Dynamo.Graph
             RaisePropertyChanged("Position");
         }
 
+        /// <summary>
+        /// Notifies listeners that is going to be disposed, 
+        /// so that they can free, release, or reset their resources.
+        /// </summary>
         public virtual void Dispose()
         {
             var handler = Disposed;
             if (handler != null)
+            {
                 handler(this);
+            }
         }
 
         #region Command Framework Supporting Methods
 
+        /// <summary>
+        /// Calls protected UpdateValueCore, which updates some property of object.
+        /// UpdateValueCore is overridden in derived classes.
+        /// </summary>
+        /// <param name="updateValueParams">Please see UpdateValueParams for details.</param>
+        /// <returns>Returns true if the call has been handled, or false otherwise.</returns>
         public bool UpdateValue(UpdateValueParams updateValueParams)
         {
             return UpdateValueCore(updateValueParams);
@@ -260,6 +300,12 @@ namespace Dynamo.Graph
 
         #region Serialization/Deserialization Methods
 
+        /// <summary>
+        /// Serialize model into xml node.
+        /// </summary>
+        /// <param name="xmlDocument">Xml document</param>
+        /// <param name="context">Context in which object is saved</param>
+        /// <returns>xml node</returns>
         public XmlElement Serialize(XmlDocument xmlDocument, SaveContext context)
         {
             var element = CreateElement(xmlDocument, context);
@@ -267,6 +313,11 @@ namespace Dynamo.Graph
             return element;
         }
 
+        /// <summary>
+        /// Deserialize model from xml node.
+        /// </summary>
+        /// <param name="element">Xml node</param>
+        /// <param name="context"></param>
         public void Deserialize(XmlElement element, SaveContext context)
         {
             DeserializeCore(element, context);
@@ -278,13 +329,17 @@ namespace Dynamo.Graph
             XmlElement element = xmlDocument.CreateElement(typeName);
             return element;
         }
-        
+
         protected abstract void SerializeCore(XmlElement element, SaveContext context);
         protected abstract void DeserializeCore(XmlElement nodeElement, SaveContext context);
 
         #endregion
 
         #region ILogSource implementation
+
+        /// <summary>
+        /// Event, which is fired, when message should be logged.
+        /// </summary>
         public event Action<ILogMessage> MessageLogged;
 
         protected void Log(ILogMessage obj)

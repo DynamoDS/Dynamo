@@ -4,9 +4,18 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Graph.Notes
 {
+    /// <summary>
+    /// NoteModel represents notes in Dynamo.
+    /// Dynamo note is little square, where you can write something, 
+    /// that you want to remember or pay someone's attention.
+    /// </summary>
     public class NoteModel : ModelBase
     {
-        private string text;      
+        private string text;
+      
+        /// <summary>
+        /// Text, that is inside note.
+        /// </summary>
         public string Text
         {
             get { return text; }
@@ -17,6 +26,13 @@ namespace Dynamo.Graph.Notes
             }
         }
 
+        /// <summary>
+        /// Creates NoteModel.
+        /// </summary>
+        /// <param name="x">X coordinate of note.</param>
+        /// <param name="y">Y coordinate of note.</param>
+        /// <param name="text">Text of note</param>
+        /// <param name="guid">Unique id of note</param>
         public NoteModel(double x, double y, string text, Guid guid)
         {
             X = x;

@@ -18,20 +18,40 @@ namespace Dynamo.Graph.Nodes
         public string Name { get; set; }
     }
 
+    /// <summary>
+    ///     The NodeCategoryAttribute attribute allows the node implementer
+    ///     to define in which category node will appear, regardless its namespace. 
+    /// </summary>
     [AttributeUsage(AttributeTargets.All)]
     public class NodeCategoryAttribute : Attribute
     {
+        /// <summary>
+        /// Creates NodeCategoryAttribute.
+        /// </summary>
+        /// <param name="category">Full name of the category. E.g. Core.List.Create</param>
         public NodeCategoryAttribute(string category)
         {
             ElementCategory = category;
         }
 
+        /// <summary>
+        /// Full name of the category. E.g. Core.List.Create
+        /// </summary>
         public string ElementCategory { get; set; }
     }
 
+    /// <summary>
+    ///     The NodeCategoryAttribute attribute allows the node implementer
+    ///     to define search tags with which user can find node in library search.
+    /// </summary>
     [AttributeUsage(AttributeTargets.All)]
     public class NodeSearchTagsAttribute : Attribute
     {
+        /// <summary>
+        /// Creates NodeSearchTagsAttribute with tags from resx file. 
+        /// </summary>
+        /// <param name="tagsID">Tag name</param>
+        /// <param name="resourceType">Type of Resource. E.g. typeof(Resource)</param>
         public NodeSearchTagsAttribute(string tagsID, Type resourceType)
         {
             if (resourceType == null)
@@ -50,11 +70,19 @@ namespace Dynamo.Graph.Nodes
                 Tags = new List<String> { tagsID };
             }
         }
+
+        /// <summary>
+        /// Creates NodeSearchTagsAttribute with string tags.
+        /// </summary>
+        /// <param name="tags"></param>
         public NodeSearchTagsAttribute(params string[] tags)
         {
             Tags = tags.ToList();
         }
 
+        /// <summary>
+        /// Search tags used in library search.
+        /// </summary>
         public List<string> Tags { get; set; }
     }
 
@@ -77,14 +105,27 @@ namespace Dynamo.Graph.Nodes
         public bool IsInteractive { get; set; }
     }
 
+    /// <summary>
+    ///     The NodeCategoryAttribute attribute allows the node implementer
+    ///     to define node description.
+    /// </summary>
     [AttributeUsage(AttributeTargets.All)]
     public class NodeDescriptionAttribute : Attribute
     {
+        /// <summary>
+        /// Creates NodeDescriptionAttribute with string.
+        /// </summary>
+        /// <param name="description">String description</param>
         public NodeDescriptionAttribute(string description)
         {
             ElementDescription = description;
         }
 
+        /// <summary>
+        /// Creates NodeDescriptionAttribute with description from resx file.
+        /// </summary>
+        /// <param name="descriptionResourceID">Resource name</param>
+        /// <param name="resourceType">Type of Resource. E.g. typeof(Resource)</param>
         public NodeDescriptionAttribute(string descriptionResourceID, Type resourceType)
         {
             if (resourceType == null)
@@ -103,6 +144,9 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        /// <summary>
+        /// Description of node.
+        /// </summary>
         public string ElementDescription { get; set; }
     }
 
@@ -129,7 +173,7 @@ namespace Dynamo.Graph.Nodes
     }
 
     /// <summary>
-    ///     The DoNotLoadOnPlatforms attribute allows the node implementor
+    ///     The DoNotLoadOnPlatforms attribute allows the node implementer
     ///     to define an array of contexts in which the node will not
     ///     be loaded.
     /// </summary>
