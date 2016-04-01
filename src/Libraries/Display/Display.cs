@@ -73,7 +73,7 @@ namespace Display
         /// <param name="geometry">The geometry to which you would like to apply color.</param>
         /// <param name="color">The color.</param>
         /// <returns>A Display object.</returns>
-        public static Display ByGeometryColor(Geometry geometry, Color color)
+        public static Display ByGeometryColor([KeepReferenceAttribute]Geometry geometry, Color color)
         {
             if (geometry == null)
             {
@@ -101,7 +101,7 @@ namespace Display
         /// The list of colors must be square. Attempting to pass a jagged array
         /// will result in an exception. </param>
         /// <returns>A Display object.</returns>
-        public static Display BySurfaceColors(Surface surface, 
+        public static Display BySurfaceColors([KeepReferenceAttribute]Surface surface,
             [DefaultArgument("{{Color.ByARGB(255,255,0,0),Color.ByARGB(255,255,255,0)},{Color.ByARGB(255,0,255,255),Color.ByARGB(255,0,0,255)}};")] Color[][] colors)
         {
             if (surface == null)
@@ -153,7 +153,7 @@ namespace Display
         /// have the same number of Colors as the list of points will throw an exception.</param>
         /// <returns>A Display object.</returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static Display ByPointsColors(Point[] points, Color[] colors)
+        public static Display ByPointsColors([KeepReferenceAttribute]Point[] points, Color[] colors)
         {
             if(points == null)
             {

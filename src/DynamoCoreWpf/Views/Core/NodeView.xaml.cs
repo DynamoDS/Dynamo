@@ -214,7 +214,9 @@ namespace Dynamo.Controls
                 // There is no preview control or the preview control is 
                 // currently in transition state (it can come back to handle
                 // the new data later on when it is ready).
-                if ((previewControl == null))
+                // If node is frozen, we shouldn't update cached value.
+                // We keep value, that was before freezing. 
+                if ((previewControl == null) || ViewModel.IsFrozen)
                 {
                     return;
                 }
@@ -413,7 +415,11 @@ namespace Dynamo.Controls
             // Always set old ZIndex to the last value, even if mouse is not over the node.
             oldZIndex = NodeViewModel.StaticZIndex;
 
-            if (!previewEnabled) return; // Preview is hidden. There is no need run further.
+            // Preview is hidden.
+            // Or preview shouldn't be shown for some nodes (e.g. number sliders, watch nodes etc.)
+            // Or node is frozen.
+            // There is no need run further.
+            if (!previewEnabled || !ViewModel.IsPreviewInsetVisible || ViewModel.IsFrozen) return; 
 
             if (PreviewControl.IsInTransition) // In transition state, come back later.
                 return;

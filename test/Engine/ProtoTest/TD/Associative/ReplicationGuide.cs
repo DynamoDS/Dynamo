@@ -1891,6 +1891,8 @@ test;
         }
 
         [Test]
+        [Ignore]
+        [Category("ModifierBlock")]
         public void T041_1467460_replication_guide_not_in_sequence_012()
         {
             string code =
@@ -2497,6 +2499,8 @@ test4 = Math.Max( x<1>, y<2>);
         }
 
         [Test]
+        [Ignore]
+        [Category("ModifierBlock")]
         public void T0126_ReplicationGudes_ModifierBlock()
         {
             string code =

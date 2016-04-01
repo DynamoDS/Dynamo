@@ -4276,7 +4276,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("i");
             StackValue value = mirror.GetData().GetStackValue();
-            Assert.AreEqual(value.opdata, 1);
+            Assert.AreEqual(value.IntegerValue, 1);
         }
 
         [Test]

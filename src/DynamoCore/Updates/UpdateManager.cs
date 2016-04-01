@@ -810,6 +810,7 @@ namespace Dynamo.Updates
         /// Get the file name of the latest build on S3
         /// </summary>
         /// <param name="request"></param>
+        /// <param name="checkDailyBuilds"></param>
         /// <returns></returns>
         private string GetLatestBuildFromS3(IAsynchronousRequest request, bool checkDailyBuilds)
         {
@@ -865,6 +866,7 @@ namespace Dynamo.Updates
         /// <summary>
         /// Get a build time from a file path.
         /// </summary>
+        /// <param name="installNameBase"></param>
         /// <param name="filePath"></param>
         /// <returns>A DateTime or the DateTime MinValue.</returns>
         internal static DateTime GetBuildTimeFromFilePath(string installNameBase, string filePath)

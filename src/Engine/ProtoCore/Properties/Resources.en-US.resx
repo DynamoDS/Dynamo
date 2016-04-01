@@ -399,9 +399,6 @@
   <data name="MapsValueIntoInputRange" xml:space="preserve">
     <value>Maps a value into an input range</value>
   </data>
-  <data name="ModifierBlockNotSupported" xml:space="preserve">
-    <value>Modifier Blocks are not supported currently</value>
-  </data>
   <data name="NoConstructorForAttribute" xml:space="preserve">
     <value>No constructors for Attribute '{0}' takes {1} arguments</value>
   </data>
@@ -904,6 +901,9 @@ Parameter name: {0}</value>
   </data>
   <data name="MoreThanOneDominantList" xml:space="preserve">
     <value>Only one dominant list is allowed</value>
+  </data>
+  <data name="RangeExpressionOutOfMemory" xml:space="preserve">
+    <value>The number of items in range expression is over limit</value>
   </data>
   <data name="IndexIntoNonArrayObject" xml:space="preserve">
     <value>No item exists at specified index address</value>

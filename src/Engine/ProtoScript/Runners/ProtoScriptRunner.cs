@@ -112,7 +112,7 @@ namespace ProtoScript.Runners
 
                     // Comment Jun: Tell the new bounce stackframe that this is an implicit bounce
                     // Register TX is used for this.
-                    StackValue svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
+                    StackValue svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.Implicit);
                     stackFrame.TX = svCallConvention;
 
                     // Initialize the entry point interpreter
@@ -121,11 +121,11 @@ namespace ProtoScript.Runners
                     runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
                     runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, stackFrame, locals);
                 }
-                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
+                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.ExecutionEnd);
             }
             catch
             {
-                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
+                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.ExecutionEnd);
                 throw;
             }
             return runtimeCore;
@@ -158,7 +158,7 @@ namespace ProtoScript.Runners
 
                 // Comment Jun: Tell the new bounce stackframe that this is an implicit bounce
                 // Register TX is used for this.
-                StackValue svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
+                StackValue svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.Implicit);
                 stackFrame.TX = svCallConvention;
 
                 // Initialize the entry point interpreter
@@ -176,11 +176,11 @@ namespace ProtoScript.Runners
                     stackFrame,
                     locals);
 
-                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
+                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.ExecutionEnd);
             }
             catch
             {
-                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
+                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.ExecutionEnd);
                 throw;
             }
             return runtimeCore;

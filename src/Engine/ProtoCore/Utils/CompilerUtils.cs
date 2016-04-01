@@ -386,12 +386,7 @@ namespace ProtoCore.Utils
                 // Append the temporaries only if it is not a function def or class decl
                 bool isFunctionOrClassDef = n is FunctionDefinitionNode || n is ClassDeclNode;
 
-                // Handle non Binary expression nodes separately
-                if (n is ModifierStackNode)
-                {
-                    core.BuildStatus.LogSemanticError(Resources.ModifierBlockNotSupported);
-                }
-                else if (n is ImportNode)
+                if (n is ImportNode)
                 {
                     core.BuildStatus.LogSemanticError(Resources.ImportStatementNotSupported);
                 }
@@ -406,11 +401,6 @@ namespace ProtoCore.Utils
                     var ben = node as BinaryExpressionNode;
                     if (ben != null && ben.Optr == Operator.assign)
                     {
-                        var mNode = ben.RightNode as ModifierStackNode;
-                        if (mNode != null)
-                        {
-                            core.BuildStatus.LogSemanticError(Resources.ModifierBlockNotSupported);
-                        }
                         var lNode = ben.LeftNode as IdentifierNode;
                         if (lNode != null && lNode.Value == Constants.kTempProcLeftVar)
                         {
@@ -496,7 +486,7 @@ namespace ProtoCore.Utils
             List<VariableLine> result = new List<VariableLine>();
             foreach (ProtoCore.BuildData.WarningEntry warningEntry in warnings)
             {
-                if (warningEntry.ID == ProtoCore.BuildData.WarningID.kIdUnboundIdentifier)
+                if (warningEntry.ID == ProtoCore.BuildData.WarningID.IdUnboundIdentifier)
                 {
                     var varName = warningEntry.UnboundVariableSymbolNode.name;
                     result.Add(new VariableLine()

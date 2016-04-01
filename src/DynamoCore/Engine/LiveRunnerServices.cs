@@ -86,6 +86,7 @@ namespace Dynamo.Engine
         /// Preview graph with graph sync data.
         /// </summary>
         /// <param name="graphData"></param>
+        /// <param name="verboseLogging"></param>
         internal List<Guid> PreviewGraph(GraphSyncData graphData, bool verboseLogging)
         {
             if (verboseLogging)

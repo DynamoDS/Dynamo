@@ -411,15 +411,7 @@ namespace Dynamo.UI.Controls
         private void HandleFilePath(StartPageListItem item)
         {
             var path = item.ContextData;
-            if (string.IsNullOrEmpty(path) || (File.Exists(path) == false))
-            {
-                MessageBox.Show(string.Format(Resources.MessageFileNotFound, path));
-                return;
-            }
-
-            var dvm = this.DynamoViewModel;
-            if (dvm.OpenCommand.CanExecute(path))
-                dvm.OpenCommand.Execute(path);
+            this.DynamoViewModel.OpenCommand.Execute(path);
         }
 
         private void HandleExternalUrl(StartPageListItem item)

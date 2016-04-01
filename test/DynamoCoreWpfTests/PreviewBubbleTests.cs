@@ -65,6 +65,22 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void PreviewBubbleVisible_MouseMoveOverNode_InCustomWorkspace()
+        {
+            Open(@"core\custom_node_saving\Constant2.dyf");
+            var nodeView = NodeViewWithGuid("9ce91e89-c087-49cd-9fd9-540cca086475");
+            nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+
+            View.Dispatcher.Invoke(() =>
+            {
+                nodeView.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0) { RoutedEvent = Mouse.MouseEnterEvent });
+            });
+            DispatcherUtil.DoEvents();
+
+            Assert.IsTrue(nodeView.PreviewControl.IsHidden);
+        }
+
+        [Test]
         public void PreviewBubbleVisible_MouseMoveOutOfNode()
         {
             Open(@"core\DetailedPreviewMargin_Test.dyn");
@@ -85,6 +101,23 @@ namespace DynamoCoreWpfTests
             View.Dispatcher.Invoke(() =>
             {
                 nodeView.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0) { RoutedEvent = Mouse.MouseLeaveEvent });
+            });
+            DispatcherUtil.DoEvents();
+
+            Assert.IsTrue(nodeView.PreviewControl.IsHidden);
+        }
+
+        [Test]
+        public void PreviewBubbleHiiden_OnFrozenNode()
+        {
+            Open(@"core\DetailedPreviewMargin_Test.dyn");
+            var nodeView = NodeViewWithGuid("7828a9dd-88e6-49f4-9ed3-72e355f89bcc");
+            nodeView.ViewModel.IsFrozen = true;
+            nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+
+            View.Dispatcher.Invoke(() =>
+            {
+                nodeView.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0) { RoutedEvent = Mouse.MouseEnterEvent });
             });
             DispatcherUtil.DoEvents();
 

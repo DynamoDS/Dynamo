@@ -86,7 +86,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         ///     by adding input and output ports as far as we don't have
         ///     a corresponding custom node workspace
         /// </summary>
-        /// <param name="funcID">Identifier of the custom node instance</param>
+        /// <param name="nodeId">Identifier of the custom node instance</param>
         /// <param name="inputs">Number of inputs</param>
         /// <param name="outputs">Number of outputs</param>
         internal void LoadNode(Guid nodeId, int inputs, int outputs)
@@ -284,7 +284,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                 nickName = inputSymbol;
                 ClearRuntimeError();
 
-                var type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
+                var type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var);
                 AssociativeNode defaultValue = null;
 
                 string comment = null;
@@ -412,7 +412,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     }
                     else if (parseParam.Warnings.Any())
                     {
-                        var warnings = parseParam.Warnings.Where(w => w.ID != WarningID.kIdUnboundIdentifier);
+                        var warnings = parseParam.Warnings.Where(w => w.ID != WarningID.IdUnboundIdentifier);
                         if (warnings.Any())
                         {
                             this.Warning(parseParam.Warnings.First().Message);

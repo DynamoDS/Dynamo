@@ -19,6 +19,7 @@ using ProtoFFI;
 using Operator = ProtoCore.DSASM.Operator;
 using ProtoCore;
 using ProtoCore.Namespace;
+using Dynamo.Exceptions;
 
 namespace Dynamo.Engine
 {
@@ -91,6 +92,7 @@ namespace Dynamo.Engine
             PopulateBuiltIns();
             PopulateOperators();
             PopulatePreloadLibraries();
+            LibraryLoadFailed += new EventHandler<LibraryLoadFailedEventArgs>(LibraryLoadFailureHandler);
         }
 
         public void Dispose()
@@ -128,6 +130,13 @@ namespace Dynamo.Engine
         public event EventHandler<LibraryLoadingEventArgs> LibraryLoading;
         public event EventHandler<LibraryLoadFailedEventArgs> LibraryLoadFailed;
         public event EventHandler<LibraryLoadedEventArgs> LibraryLoaded;
+
+        private void LibraryLoadFailureHandler(object sender, LibraryLoadFailedEventArgs args)
+        {
+            LibraryLoadFailedException ex = new LibraryLoadFailedException(args.LibraryPath, args.Reason);
+            Log(ex.Message, WarningLevel.Moderate);
+            throw ex;
+        }
 
         private void PreloadLibraries(IEnumerable<string> preloadLibraries)
         {
@@ -450,8 +459,7 @@ namespace Dynamo.Engine
                         errorMessage += error.Message + "\n";
                     }
 
-                    OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
-                    return false;
+                    throw new Exception(errorMessage);
                 }
 
                 LoadLibraryMigrations(library);
@@ -688,13 +696,13 @@ namespace Dynamo.Engine
 
         private static IEnumerable<TypedParameter> GetBinaryFuncArgs()
         {
-            yield return new TypedParameter("x", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar));
-            yield return new TypedParameter("y", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar));
+            yield return new TypedParameter("x", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var));
+            yield return new TypedParameter("y", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var));
         }
 
         private static IEnumerable<TypedParameter> GetUnaryFuncArgs()
         {
-            return new List<TypedParameter> { new TypedParameter("x", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar)), };
+            return new List<TypedParameter> { new TypedParameter("x", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var)), };
         }
 
         /// <summary>

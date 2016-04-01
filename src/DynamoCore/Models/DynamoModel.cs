@@ -400,6 +400,7 @@ namespace Dynamo.Models
         {
             string Context { get; set; }
             string DynamoCorePath { get; set; }
+            string DynamoHostPath { get; set; }
             IPreferences Preferences { get; set; }
             IPathResolver PathResolver { get; set; }
             bool StartInTestMode { get; set; }
@@ -418,6 +419,7 @@ namespace Dynamo.Models
         {
             public string Context { get; set; }
             public string DynamoCorePath { get; set; }
+            public string DynamoHostPath { get; set; }
             public IPreferences Preferences { get; set; }
             public IPathResolver PathResolver { get; set; }
             public bool StartInTestMode { get; set; }
@@ -459,6 +461,7 @@ namespace Dynamo.Models
             pathManager = new PathManager(new PathManagerParams
             {
                 CorePath = config.DynamoCorePath,
+                HostPath = config.DynamoHostPath,
                 PathResolver = config.PathResolver
             });
 
@@ -527,8 +530,14 @@ namespace Dynamo.Models
             // PackageFolders
             if (PreferenceSettings.CustomPackageFolders.Count == 0)
                 PreferenceSettings.CustomPackageFolders = new List<string> {pathManager.UserDataDirectory};
-            else
-                pathManager.LoadCustomPackageFolders(PreferenceSettings.CustomPackageFolders);
+
+            //Make sure that the default package folder is added in the list if custom packages folder.
+            var userDataFolder = pathManager.GetUserDataFolder(); //Get the default user data path
+            if (Directory.Exists(userDataFolder) && !PreferenceSettings.CustomPackageFolders.Contains(userDataFolder))
+            {
+                PreferenceSettings.CustomPackageFolders.Add(userDataFolder);
+            }
+            pathManager.LoadCustomPackageFolders(PreferenceSettings.CustomPackageFolders);
 
 
             SearchModel = new NodeSearchModel();
@@ -543,7 +552,7 @@ namespace Dynamo.Models
 
             extensionManager = new ExtensionManager();
             extensionManager.MessageLogged += LogMessage;
-            var extensions = config.Extensions ?? ExtensionManager.ExtensionLoader.LoadDirectory(pathManager.ExtensionsDirectory);
+            var extensions = config.Extensions ?? LoadExtensions();
 
             Loader = new NodeModelAssemblyLoader();
             Loader.MessageLogged += LogMessage;
@@ -620,6 +629,16 @@ namespace Dynamo.Models
                     Logger.Log(ex.Message);
                 }
             }
+        }
+
+        private IEnumerable<IExtension> LoadExtensions()
+        {
+            var extensions = new List<IExtension>();
+            foreach (var dir in pathManager.ExtensionsDirectories)
+            {
+                extensions.AddRange(ExtensionManager.ExtensionLoader.LoadDirectory(dir));
+            }
+            return extensions;
         }
             
         private void RemoveExtension(IExtension ext)
@@ -1037,7 +1056,7 @@ namespace Dynamo.Models
         private void LogWarningMessage(LogWarningMessageEventArgs args)
         {
             Validity.Assert(EngineController.LiveRunnerRuntimeCore != null);
-            EngineController.LiveRunnerRuntimeCore.RuntimeStatus.LogWarning(WarningID.kDefault, args.message);
+            EngineController.LiveRunnerRuntimeCore.RuntimeStatus.LogWarning(WarningID.Default, args.message);
         }
 
         #endregion
@@ -1048,7 +1067,7 @@ namespace Dynamo.Models
         ///     Register custom node defintion and execute all custom node 
         ///     instances.
         /// </summary>
-        /// <param name="?"></param>
+        /// <param name="definition"></param>
         private void UpdateCustomNodeDefinition(CustomNodeDefinition definition)
         {
             RegisterCustomNodeDefinitionWithEngine(definition);
@@ -1073,7 +1092,7 @@ namespace Dynamo.Models
         /// specified function definition and mark them as modified so that 
         /// their values will be re-queryed.
         /// </summary>
-        /// <param name="functionId"></param>
+        /// <param name="def"></param>
         /// <returns></returns>
         private void MarkAllDependenciesAsModified(CustomNodeDefinition def)
         {
@@ -1160,6 +1179,7 @@ namespace Dynamo.Models
         ///     Opens a Dynamo workspace from a path to an Xml file on disk.
         /// </summary>
         /// <param name="xmlPath"></param>
+        /// <param name="forceManualExecutionMode"></param>
         public void OpenFileFromPath(string xmlPath, bool forceManualExecutionMode = false)
         {
             var xmlDoc = new XmlDocument();
@@ -1315,7 +1335,7 @@ namespace Dynamo.Models
                     workspace.SaveAs(savePath, null, true);
                     workspace.FileName = oldFileName;
                     workspace.Name = oldName;
-                    backupFilesDict.Add(workspace.Guid, savePath);
+                    backupFilesDict[workspace.Guid] = savePath;
                     Logger.Log("Backup file is saved: " + savePath);
                 }
                 PreferenceSettings.BackupFiles.AddRange(backupFilesDict.Values);
@@ -1534,6 +1554,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="node"></param>
         /// <param name="centered"></param>
+        /// <param name="addToSelection"></param>
         internal void AddNodeToCurrentWorkspace(NodeModel node, bool centered, bool addToSelection = true)
         {
             CurrentWorkspace.AddAndRegisterNode(node, centered);

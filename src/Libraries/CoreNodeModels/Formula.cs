@@ -199,7 +199,7 @@ namespace CoreNodeModels
                     {
                         Arguments = inputs.Select(AstFactory.BuildParamNode).ToList()
                     },
-                ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar),
+                ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var),
                 FunctionBody =
                     new CodeBlockNode
                     {

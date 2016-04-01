@@ -448,7 +448,7 @@ xs = {{1,2,3}};
 ys = {{4,5,6}};
 r = foo(xs@@-1, ys@@-1);
 ";
-            thisTest.RunAndVerifyRuntimeWarning(code, ProtoCore.Runtime.WarningID.kMoreThanOneDominantList);
+            thisTest.RunAndVerifyRuntimeWarning(code, ProtoCore.Runtime.WarningID.MoreThanOneDominantList);
             thisTest.Verify("r", new object[] { 5, 7, 9 });
         }
     }

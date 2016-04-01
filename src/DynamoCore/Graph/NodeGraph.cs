@@ -40,6 +40,7 @@ namespace Dynamo.Graph
         /// <param name="elNode">XmlElement for a NodeModel.</param>
         /// <param name="context">The serialization context for initialization.</param>
         /// <param name="nodeFactory">A NodeFactory, to be used to create the node.</param>
+        /// <param name="resolver"></param>
         /// <returns></returns>
         public static NodeModel LoadNodeFromXml(
             XmlElement elNode, SaveContext context, NodeFactory nodeFactory, ElementResolver resolver)
@@ -182,7 +183,6 @@ namespace Dynamo.Graph
         /// </summary>
         /// <param name="xmlDoc">An XmlDocument representing a serialized Dynamo workspace.</param>
         /// <param name="nodeFactory">A NodeFactory, used to load and instantiate nodes.</param>
-        /// <param name="elementResolver"></param>
         /// <returns></returns>
         public static NodeGraph LoadGraphFromXml(XmlDocument xmlDoc, NodeFactory nodeFactory)
         {

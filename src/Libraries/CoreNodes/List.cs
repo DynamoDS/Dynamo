@@ -84,10 +84,6 @@ namespace DSCore
         ///     Ex. the range \"0..3\" with an offset of 2 will yield
         ///     {0,1,2,3}{2,3,4,5}{4,5,6,7}...
         /// </param>
-        /// <param name="keepIncomplete">
-        ///     Determines if ranges where some indices are out of bounds are kept.
-        ///     If true (default): All ranges are kept, out of bounds indices are ommitted.
-        ///     If false: Any ranges with out of bounds indices are ommitted.</param>
         /// <returns name="lists">Sublists of the given list.</returns>
         /// <search>sublists,build sublists,subset,</search>
         public static IList Sublists(IList list, IList ranges, int offset)

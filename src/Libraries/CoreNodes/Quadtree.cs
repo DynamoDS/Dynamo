@@ -23,7 +23,7 @@ namespace DSCore
         /// <summary>
         /// Construct a Quadtree encompassing the (0,0)->(1,1) domain.
         /// </summary>
-        /// <param name="uv">A set of UVs in the (0,0)->(1,1) domain.</param>
+        /// <param name="uvs">A set of UVs in the (0,0)->(1,1) domain.</param>
         /// <returns>A Quadtree object.</returns>
         public static Quadtree ByUVs(IEnumerable<UV> uvs)
         {
@@ -161,7 +161,6 @@ namespace DSCore
         /// <summary>
         /// Splite a node into four quadrants.
         /// </summary>
-        /// <param name="bounds"></param>
         /// <returns></returns>
         private void Split()
         {

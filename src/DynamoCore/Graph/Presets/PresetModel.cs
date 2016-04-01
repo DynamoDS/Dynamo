@@ -47,7 +47,6 @@ namespace Dynamo.Graph.Presets
         /// <param name="name">name for the state, must not be null </param>
         /// <param name="description">description of the state, can be null</param>
         /// <param name="inputsToSave">set of nodeModels, must not be null</param>
-        /// <param name="id">an id GUID, can be empty GUID</param>
         public PresetModel(string name, string description, IEnumerable<NodeModel> inputsToSave):base()
         {
             if (String.IsNullOrEmpty(name))

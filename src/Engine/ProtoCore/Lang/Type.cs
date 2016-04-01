@@ -88,20 +88,20 @@ namespace ProtoCore
 
     public enum PrimitiveType
     {
-        kInvalidType = -1,
-        kTypeNull,
-        kTypeArray,
-        kTypeDouble,
-        kTypeInt,
-        kTypeBool,
-        kTypeChar,
-        kTypeString,
-        kTypeVar,
-        kTypeVoid,
-        kTypePointer,
-        kTypeFunctionPointer,
-        kTypeReturn,
-        kMaxPrimitives
+        InvalidType = -1,
+        Null,
+        Array,
+        Double,
+        Integer,
+        Bool,
+        Char,
+        String,
+        Var,
+        Void,
+        Pointer,
+        FunctionPointer,
+        Return,
+        MaxPrimitive
     }
 
     public class TypeSystem
@@ -118,7 +118,7 @@ namespace ProtoCore
 
         public static string GetPrimitTypeName(PrimitiveType type)
         {
-            if (type == PrimitiveType.kInvalidType || type >= PrimitiveType.kMaxPrimitives)
+            if (type == PrimitiveType.InvalidType || type >= PrimitiveType.MaxPrimitive)
             {
                 return null;
             }
@@ -126,19 +126,19 @@ namespace ProtoCore
             if (null == primitiveTypeNames)
             {
                 primitiveTypeNames = new Dictionary<PrimitiveType, string>();
-                primitiveTypeNames[PrimitiveType.kTypeArray] = DSDefinitions.Keyword.Array;
-                primitiveTypeNames[PrimitiveType.kTypeDouble] = DSDefinitions.Keyword.Double;
-                primitiveTypeNames[PrimitiveType.kTypeInt] = DSDefinitions.Keyword.Int;
-                primitiveTypeNames[PrimitiveType.kTypeBool] = DSDefinitions.Keyword.Bool;
-                primitiveTypeNames[PrimitiveType.kTypeChar] = DSDefinitions.Keyword.Char;
-                primitiveTypeNames[PrimitiveType.kTypeString] = DSDefinitions.Keyword.String;
-                primitiveTypeNames[PrimitiveType.kTypeVar] = DSDefinitions.Keyword.Var;
-                primitiveTypeNames[PrimitiveType.kTypeNull] = DSDefinitions.Keyword.Null;
-                primitiveTypeNames[PrimitiveType.kTypeVoid] = DSDefinitions.Keyword.Void;
-                primitiveTypeNames[PrimitiveType.kTypeArray] = DSDefinitions.Keyword.Array;
-                primitiveTypeNames[PrimitiveType.kTypePointer] = DSDefinitions.Keyword.PointerReserved;
-                primitiveTypeNames[PrimitiveType.kTypeFunctionPointer] = DSDefinitions.Keyword.FunctionPointer;
-                primitiveTypeNames[PrimitiveType.kTypeReturn] = "return_reserved";
+                primitiveTypeNames[PrimitiveType.Array] = DSDefinitions.Keyword.Array;
+                primitiveTypeNames[PrimitiveType.Double] = DSDefinitions.Keyword.Double;
+                primitiveTypeNames[PrimitiveType.Integer] = DSDefinitions.Keyword.Int;
+                primitiveTypeNames[PrimitiveType.Bool] = DSDefinitions.Keyword.Bool;
+                primitiveTypeNames[PrimitiveType.Char] = DSDefinitions.Keyword.Char;
+                primitiveTypeNames[PrimitiveType.String] = DSDefinitions.Keyword.String;
+                primitiveTypeNames[PrimitiveType.Var] = DSDefinitions.Keyword.Var;
+                primitiveTypeNames[PrimitiveType.Null] = DSDefinitions.Keyword.Null;
+                primitiveTypeNames[PrimitiveType.Void] = DSDefinitions.Keyword.Void;
+                primitiveTypeNames[PrimitiveType.Array] = DSDefinitions.Keyword.Array;
+                primitiveTypeNames[PrimitiveType.Pointer] = DSDefinitions.Keyword.PointerReserved;
+                primitiveTypeNames[PrimitiveType.FunctionPointer] = DSDefinitions.Keyword.FunctionPointer;
+                primitiveTypeNames[PrimitiveType.Return] = "return_reserved";
             }
             return primitiveTypeNames[type];
         }
@@ -163,16 +163,16 @@ namespace ProtoCore
         public void BuildAddressTypeMap()
         {
             addressTypeClassMap = new Dictionary<DSASM.AddressType, int>();
-            addressTypeClassMap.Add(ProtoCore.DSASM.AddressType.Null, (int)PrimitiveType.kTypeNull);
-            addressTypeClassMap.Add(ProtoCore.DSASM.AddressType.ArrayPointer, (int)PrimitiveType.kTypeArray);
-            addressTypeClassMap.Add(ProtoCore.DSASM.AddressType.Double, (int)PrimitiveType.kTypeDouble);
-            addressTypeClassMap.Add(ProtoCore.DSASM.AddressType.Char, (int)PrimitiveType.kTypeChar);
-            addressTypeClassMap.Add(ProtoCore.DSASM.AddressType.String, (int)PrimitiveType.kTypeString);
-            addressTypeClassMap.Add(ProtoCore.DSASM.AddressType.Int, (int)PrimitiveType.kTypeInt);
-            addressTypeClassMap.Add(ProtoCore.DSASM.AddressType.Boolean, (int)PrimitiveType.kTypeBool);
-            addressTypeClassMap.Add(ProtoCore.DSASM.AddressType.Pointer, (int)PrimitiveType.kTypePointer);
-            addressTypeClassMap.Add(ProtoCore.DSASM.AddressType.FunctionPointer, (int)PrimitiveType.kTypeFunctionPointer);
-            addressTypeClassMap.Add(ProtoCore.DSASM.AddressType.DefaultArg, (int)PrimitiveType.kTypeVar);
+            addressTypeClassMap.Add(ProtoCore.DSASM.AddressType.Null, (int)PrimitiveType.Null);
+            addressTypeClassMap.Add(ProtoCore.DSASM.AddressType.ArrayPointer, (int)PrimitiveType.Array);
+            addressTypeClassMap.Add(ProtoCore.DSASM.AddressType.Double, (int)PrimitiveType.Double);
+            addressTypeClassMap.Add(ProtoCore.DSASM.AddressType.Char, (int)PrimitiveType.Char);
+            addressTypeClassMap.Add(ProtoCore.DSASM.AddressType.String, (int)PrimitiveType.String);
+            addressTypeClassMap.Add(ProtoCore.DSASM.AddressType.Int, (int)PrimitiveType.Integer);
+            addressTypeClassMap.Add(ProtoCore.DSASM.AddressType.Boolean, (int)PrimitiveType.Bool);
+            addressTypeClassMap.Add(ProtoCore.DSASM.AddressType.Pointer, (int)PrimitiveType.Pointer);
+            addressTypeClassMap.Add(ProtoCore.DSASM.AddressType.FunctionPointer, (int)PrimitiveType.FunctionPointer);
+            addressTypeClassMap.Add(ProtoCore.DSASM.AddressType.DefaultArg, (int)PrimitiveType.Var);
         }
 
 
@@ -186,77 +186,77 @@ namespace ProtoCore
 
             classTable = new DSASM.ClassTable();
 
-            classTable.Reserve((int)PrimitiveType.kMaxPrimitives);
+            classTable.Reserve((int)PrimitiveType.MaxPrimitive);
 
             ClassNode cnode;
 
             cnode = new ClassNode { Name = DSDefinitions.Keyword.Array, Rank = 5, TypeSystem = this };
-            cnode.ID = (int)PrimitiveType.kTypeArray;
-            classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeArray);
+            cnode.ID = (int)PrimitiveType.Array;
+            classTable.SetClassNodeAt(cnode, (int)PrimitiveType.Array);
 
             cnode = new ClassNode { Name = DSDefinitions.Keyword.Double, Rank = 4, TypeSystem = this };
             cnode.ClassAttributes = new AST.AssociativeAST.ClassAttributes("", "num");
-            cnode.CoerceTypes.Add((int)PrimitiveType.kTypeBool, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
-            cnode.CoerceTypes.Add((int)PrimitiveType.kTypeInt, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceDoubleToIntScore);
-            cnode.ID = (int)PrimitiveType.kTypeDouble;
-            classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeDouble);
+            cnode.CoerceTypes.Add((int)PrimitiveType.Bool, (int)ProtoCore.DSASM.ProcedureDistance.CoerceScore);
+            cnode.CoerceTypes.Add((int)PrimitiveType.Integer, (int)ProtoCore.DSASM.ProcedureDistance.CoerceDoubleToIntScore);
+            cnode.ID = (int)PrimitiveType.Double;
+            classTable.SetClassNodeAt(cnode, (int)PrimitiveType.Double);
 
             cnode = new ClassNode { Name = DSDefinitions.Keyword.Int, Rank = 3, TypeSystem = this };
             cnode.ClassAttributes = new AST.AssociativeAST.ClassAttributes("", "num");
-            cnode.CoerceTypes.Add((int)PrimitiveType.kTypeBool, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
-            cnode.CoerceTypes.Add((int)PrimitiveType.kTypeDouble, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceIntToDoubleScore);
-            cnode.ID = (int)PrimitiveType.kTypeInt;
-            classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeInt);
+            cnode.CoerceTypes.Add((int)PrimitiveType.Bool, (int)ProtoCore.DSASM.ProcedureDistance.CoerceScore);
+            cnode.CoerceTypes.Add((int)PrimitiveType.Double, (int)ProtoCore.DSASM.ProcedureDistance.CoerceIntToDoubleScore);
+            cnode.ID = (int)PrimitiveType.Integer;
+            classTable.SetClassNodeAt(cnode, (int)PrimitiveType.Integer);
 
             cnode = new ClassNode { Name = DSDefinitions.Keyword.Bool, Rank = 2, TypeSystem = this };
-            cnode.ID = (int)PrimitiveType.kTypeBool;
+            cnode.ID = (int)PrimitiveType.Bool;
             cnode.ClassAttributes = new AST.AssociativeAST.ClassAttributes("", "bool");
-            classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeBool);
+            classTable.SetClassNodeAt(cnode, (int)PrimitiveType.Bool);
 
             cnode = new ClassNode { Name = DSDefinitions.Keyword.Char, Rank = 1, TypeSystem = this };
-            cnode.CoerceTypes.Add((int)PrimitiveType.kTypeBool, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
-            cnode.CoerceTypes.Add((int)PrimitiveType.kTypeString, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
+            cnode.CoerceTypes.Add((int)PrimitiveType.Bool, (int)ProtoCore.DSASM.ProcedureDistance.CoerceScore);
+            cnode.CoerceTypes.Add((int)PrimitiveType.String, (int)ProtoCore.DSASM.ProcedureDistance.CoerceScore);
 
-            cnode.ID = (int)PrimitiveType.kTypeChar;
-            classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeChar);
+            cnode.ID = (int)PrimitiveType.Char;
+            classTable.SetClassNodeAt(cnode, (int)PrimitiveType.Char);
 
             cnode = new ClassNode { Name = DSDefinitions.Keyword.String, Rank = 0, TypeSystem = this };
-            cnode.CoerceTypes.Add((int)PrimitiveType.kTypeBool, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
-            cnode.ID = (int)PrimitiveType.kTypeString;
+            cnode.CoerceTypes.Add((int)PrimitiveType.Bool, (int)ProtoCore.DSASM.ProcedureDistance.CoerceScore);
+            cnode.ID = (int)PrimitiveType.String;
             cnode.ClassAttributes = new AST.AssociativeAST.ClassAttributes("", "str");
-            classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeString);
+            classTable.SetClassNodeAt(cnode, (int)PrimitiveType.String);
 
             cnode = new ClassNode { Name = DSDefinitions.Keyword.Var, Rank = 0, TypeSystem = this };
-            cnode.ID = (int)PrimitiveType.kTypeVar;
-            classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeVar);
+            cnode.ID = (int)PrimitiveType.Var;
+            classTable.SetClassNodeAt(cnode, (int)PrimitiveType.Var);
 
             cnode = new ClassNode { Name = DSDefinitions.Keyword.Null, Rank = 0, TypeSystem = this };
-            cnode.CoerceTypes.Add((int)PrimitiveType.kTypeDouble, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
-            cnode.CoerceTypes.Add((int)PrimitiveType.kTypeInt, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
-            cnode.CoerceTypes.Add((int)PrimitiveType.kTypeBool, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
-            cnode.CoerceTypes.Add((int)PrimitiveType.kTypeChar, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
-            cnode.CoerceTypes.Add((int)PrimitiveType.kTypeString, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
-            cnode.ID = (int)PrimitiveType.kTypeNull;
-            classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeNull);
+            cnode.CoerceTypes.Add((int)PrimitiveType.Double, (int)ProtoCore.DSASM.ProcedureDistance.CoerceScore);
+            cnode.CoerceTypes.Add((int)PrimitiveType.Integer, (int)ProtoCore.DSASM.ProcedureDistance.CoerceScore);
+            cnode.CoerceTypes.Add((int)PrimitiveType.Bool, (int)ProtoCore.DSASM.ProcedureDistance.CoerceScore);
+            cnode.CoerceTypes.Add((int)PrimitiveType.Char, (int)ProtoCore.DSASM.ProcedureDistance.CoerceScore);
+            cnode.CoerceTypes.Add((int)PrimitiveType.String, (int)ProtoCore.DSASM.ProcedureDistance.CoerceScore);
+            cnode.ID = (int)PrimitiveType.Null;
+            classTable.SetClassNodeAt(cnode, (int)PrimitiveType.Null);
 
             cnode = new ClassNode { Name = DSDefinitions.Keyword.Void, Rank = 0, TypeSystem = this };
-            cnode.ID = (int)PrimitiveType.kTypeVoid;
-            classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeVoid);
+            cnode.ID = (int)PrimitiveType.Void;
+            classTable.SetClassNodeAt(cnode, (int)PrimitiveType.Void);
 
             cnode = new ClassNode { Name = DSDefinitions.Keyword.PointerReserved, Rank = 0, TypeSystem = this };
-            cnode.CoerceTypes.Add((int)PrimitiveType.kTypeInt, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
-            cnode.ID = (int)PrimitiveType.kTypePointer;
-            classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypePointer);
+            cnode.CoerceTypes.Add((int)PrimitiveType.Integer, (int)ProtoCore.DSASM.ProcedureDistance.CoerceScore);
+            cnode.ID = (int)PrimitiveType.Pointer;
+            classTable.SetClassNodeAt(cnode, (int)PrimitiveType.Pointer);
 
             cnode = new ClassNode { Name = DSDefinitions.Keyword.FunctionPointer, Rank = 0,TypeSystem = this };
-            cnode.CoerceTypes.Add((int)PrimitiveType.kTypeInt, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
-            cnode.ID = (int)PrimitiveType.kTypeFunctionPointer;
+            cnode.CoerceTypes.Add((int)PrimitiveType.Integer, (int)ProtoCore.DSASM.ProcedureDistance.CoerceScore);
+            cnode.ID = (int)PrimitiveType.FunctionPointer;
             cnode.ClassAttributes = new AST.AssociativeAST.ClassAttributes("", "func");
-            classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeFunctionPointer);
+            classTable.SetClassNodeAt(cnode, (int)PrimitiveType.FunctionPointer);
 
             cnode = new ClassNode { Name = "return_reserved", Rank = 0, TypeSystem = this };
-            cnode.ID = (int)PrimitiveType.kTypeReturn;
-            classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeReturn);
+            cnode.ID = (int)PrimitiveType.Return;
+            classTable.SetClassNodeAt(cnode, (int)PrimitiveType.Return);
         }
 
         public bool IsHigherRank(int t1, int t2)
@@ -264,11 +264,11 @@ namespace ProtoCore
             // TODO Jun: Refactor this when we implement operator overloading
             Validity.Assert(null != classTable);
             Validity.Assert(null != classTable.ClassNodes);
-            if (t1 == (int)PrimitiveType.kInvalidType || t1 >= classTable.ClassNodes.Count)
+            if (t1 == (int)PrimitiveType.InvalidType || t1 >= classTable.ClassNodes.Count)
             {
                 return true;
             }
-            else if (t2 == (int)PrimitiveType.kInvalidType || t2 >= classTable.ClassNodes.Count)
+            else if (t2 == (int)PrimitiveType.InvalidType || t2 >= classTable.ClassNodes.Count)
             {
                 return false;
             }
@@ -323,7 +323,7 @@ namespace ProtoCore
             {
                 if (!addressTypeClassMap.TryGetValue(sv.optype, out type))
                 {
-                    type = (int)PrimitiveType.kInvalidType;
+                    type = (int)PrimitiveType.InvalidType;
                 }
             }
             return type;
@@ -349,7 +349,7 @@ namespace ProtoCore
         {
             //@TODO: Add proper coersion testing here.
 
-            if (targetType.UID == (int)PrimitiveType.kTypeBool)
+            if (targetType.UID == (int)PrimitiveType.Bool)
                 return StackValue.BuildBoolean(true);
 
             return sv;
@@ -377,7 +377,7 @@ namespace ProtoCore
                 (runtimeCore.DSExecutable.classTable.ClassNodes[sv.metaData.type].ConvertibleTo(targetType.UID))
                 || sv.IsArray))
             {
-                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kConversionNotPossible, Resources.kConvertNonConvertibleTypes);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.ConversionNotPossible, Resources.kConvertNonConvertibleTypes);
                 return StackValue.Null;
             }
 
@@ -387,7 +387,7 @@ namespace ProtoCore
                 //This is an array rank reduction
                 //this may only be performed in recursion and is illegal here
                 string errorMessage = String.Format(Resources.kConvertArrayToNonArray, runtimeCore.DSExecutable.TypeSystem.GetType(targetType.UID));
-                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kConversionNotPossible, errorMessage);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.ConversionNotPossible, errorMessage);
                 return StackValue.Null;
             }
 
@@ -468,34 +468,34 @@ namespace ProtoCore
             //If it's anything other than array, just create a new copy
             switch (targetType.UID)
             {
-                case (int)PrimitiveType.kInvalidType:
-                    runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidType, Resources.kInvalidType);
+                case (int)PrimitiveType.InvalidType:
+                    runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.InvalidType, Resources.kInvalidType);
                     return StackValue.Null;
 
-                case (int)PrimitiveType.kTypeBool:
+                case (int)PrimitiveType.Bool:
                     return sv.ToBoolean(runtimeCore);
 
-                case (int)PrimitiveType.kTypeChar:
+                case (int)PrimitiveType.Char:
                     {
                         StackValue newSV = sv.ShallowClone();
-                        newSV.metaData = new MetaData { type = (int)PrimitiveType.kTypeChar };
+                        newSV.metaData = new MetaData { type = (int)PrimitiveType.Char };
                         return newSV;
                     }
 
-                case (int)PrimitiveType.kTypeDouble:
+                case (int)PrimitiveType.Double:
                     return sv.ToDouble();
 
-                case (int)PrimitiveType.kTypeFunctionPointer:
-                    if (sv.metaData.type != (int)PrimitiveType.kTypeFunctionPointer)
+                case (int)PrimitiveType.FunctionPointer:
+                    if (sv.metaData.type != (int)PrimitiveType.FunctionPointer)
                     {
-                        runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kTypeMismatch, Resources.kFailToConverToFunction);
+                        runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.TypeMismatch, Resources.kFailToConverToFunction);
                         return StackValue.Null;
                     }
                     return sv;
 
-                case (int)PrimitiveType.kTypeInt:
+                case (int)PrimitiveType.Integer:
                     {
-                        if (sv.metaData.type == (int)PrimitiveType.kTypeDouble)
+                        if (sv.metaData.type == (int)PrimitiveType.Double)
                         {
                             //TODO(lukechurch): Once the API is improved (MAGN-5174)
                             //Replace this with a log entry notification
@@ -504,44 +504,44 @@ namespace ProtoCore
                         return sv.ToInteger();
                     }
 
-                case (int)PrimitiveType.kTypeNull:
+                case (int)PrimitiveType.Null:
                     {
-                        if (sv.metaData.type != (int)PrimitiveType.kTypeNull)
+                        if (sv.metaData.type != (int)PrimitiveType.Null)
                         {
-                            runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kTypeMismatch, Resources.kFailToConverToNull);
+                            runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.TypeMismatch, Resources.kFailToConverToNull);
                             return StackValue.Null;
                         }
                         return sv;
                     }
 
-                case (int)PrimitiveType.kTypePointer:
+                case (int)PrimitiveType.Pointer:
                     {
-                        if (sv.metaData.type != (int)PrimitiveType.kTypeNull)
+                        if (sv.metaData.type != (int)PrimitiveType.Null)
                         {
-                            runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kTypeMismatch, Resources.kFailToConverToPointer);
+                            runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.TypeMismatch, Resources.kFailToConverToPointer);
                             return StackValue.Null;
                         }
                         return sv;
                     }
 
-                case (int)PrimitiveType.kTypeString:
+                case (int)PrimitiveType.String:
                     {
                         StackValue newSV = sv.ShallowClone();
-                        newSV.metaData = new MetaData { type = (int)PrimitiveType.kTypeString };
-                        if (sv.metaData.type == (int)PrimitiveType.kTypeChar)
+                        newSV.metaData = new MetaData { type = (int)PrimitiveType.String };
+                        if (sv.metaData.type == (int)PrimitiveType.Char)
                         {
-                            char ch = Convert.ToChar(newSV.opdata);
+                            char ch = Convert.ToChar(newSV.CharValue);
                             newSV = StackValue.BuildString(ch.ToString(), rmem.Heap);
                         }
                         return newSV;
                     }
 
-                case (int)PrimitiveType.kTypeVar:
+                case (int)PrimitiveType.Var:
                     {
                         return sv;
                     }
 
-                case (int)PrimitiveType.kTypeArray:
+                case (int)PrimitiveType.Array:
                     {
                         var array = runtimeCore.Heap.ToHeapObject<DSArray>(sv);
                         return array.CopyArray(targetType, runtimeCore);

@@ -90,11 +90,6 @@ limitations under the License.
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
     </Reference>
-    <Reference Include="ProtoInterface, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.105.2.3\lib\net45\RestSharp.dll</HintPath>
       <Private>True</Private>
@@ -116,6 +111,7 @@ limitations under the License.
     <Compile Include="Configuration\DebugSettings.cs" />
     <Compile Include="Configuration\Context.cs" />
     <Compile Include="Core\DynamoMigrator.cs" />
+    <Compile Include="Exceptions\LibraryLoadFailedException.cs" />
     <Compile Include="Scheduler\Disposable.cs" />
     <Compile Include="Engine\LinkedListOfList.cs" />
     <Compile Include="Extensions\EnumExtension.cs" />
@@ -329,6 +325,7 @@ limitations under the License.
     <ProjectReference Include="..\NodeServices\DynamoServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

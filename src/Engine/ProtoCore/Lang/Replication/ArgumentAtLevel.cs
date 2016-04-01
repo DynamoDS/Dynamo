@@ -182,7 +182,7 @@ namespace ProtoCore.Lang.Replication
 
             if (runtimeCore != null && argumentAtLevels.Count(x => x.IsDominant) > 1)
             {
-                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kMoreThanOneDominantList, Resources.MoreThanOneDominantList);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.MoreThanOneDominantList, Resources.MoreThanOneDominantList);
                 return new ArgumentAtLevelStructure(arguments, null);
             }
 

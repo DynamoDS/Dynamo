@@ -28,8 +28,7 @@
             </Setter>
 
             <Style.Triggers>
-                <DataTrigger Binding="{Binding Path=InCanvasSearchViewModel.SearchRootCategories.Count}"
-                                                         Value="0">
+                <DataTrigger Binding="{Binding Path=InCanvasSearchViewModel.SearchRootCategories.Count}" Value="0">
                     <Setter Property="Effect">
                         <Setter.Value>
                             <DropShadowEffect BlurRadius="20" ShadowDepth="0" Opacity="0.7" />
@@ -341,7 +340,7 @@
             </Popup.Resources>
             <ItemsControl Style="{StaticResource WorkspaceContextMenuStyle}">
                 <ItemsControl.Items>
-                    <MenuItem Name="WorkspaceLacingMenu"
+                    <controls:ParentMenuItem x:Name="WorkspaceLacingMenu"
                           Header="{x:Static p:Resources.ContextMenuLacing}">
 
                         <MenuItem IsCheckable="True"
@@ -380,7 +379,7 @@
                             </MenuItem.IsChecked>
                         </MenuItem>
 
-                    </MenuItem>
+                    </controls:ParentMenuItem>
                     <MenuItem IsEnabled="{Binding Path=IsGeometryOperationEnabled}"
                           Header="{x:Static  p:Resources.ContextMenuShowAllGeometry}"
                           Command="{Binding Path=ShowHideAllGeometryPreviewCommand}"
@@ -405,8 +404,7 @@
                           CommandParameter="false"
                           Visibility="{Binding Path=AnyNodeUpstreamVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
 
-                    <MenuItem  Header="{x:Static p:Resources.DynamoViewEditMenuAlignSelection}"
-                           Name="Align">
+                    <controls:ParentMenuItem  Header="{x:Static p:Resources.DynamoViewEditMenuAlignSelection}" x:Name="Align">
                         <MenuItem  Header="{x:Static p:Resources.DynamoViewEditMenuAlignXAverage}"
                                Command="{Binding AlignSelectedCommand}"
                                CommandParameter="HorizontalCenter" />
@@ -431,7 +429,7 @@
                         <MenuItem  Header="{x:Static p:Resources.DynamoViewEditMenuAlignXDistribute}"
                                Command="{Binding AlignSelectedCommand}"
                                CommandParameter="HorizontalDistribute" />
-                    </MenuItem>
+                    </controls:ParentMenuItem>
 
                     <MenuItem  Header="{x:Static p:Resources.ContextMenuNodesFromSelection}"
                            Command="{Binding NodeFromSelectionCommand}" CommandTarget="{Binding ElementName=_this}" />

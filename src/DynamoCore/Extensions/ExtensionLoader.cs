@@ -18,14 +18,16 @@ namespace Dynamo.Extensions
         {
             try
             {
-                var assembly = Assembly.Load(extension.AssemblyPath);
+                var assembly = Assembly.LoadFrom(extension.AssemblyPath);
                 var result = assembly.CreateInstance(extension.TypeName) as IExtension;
                 return result;
             }
-            catch
+            catch(Exception ex)
             {
                 var name = extension.TypeName == null ? "null" : extension.TypeName;
                 Log("Could not create an instance of " + name);
+                Log(ex.Message);
+                Log(ex.StackTrace);
                 return null;
             }
         }
@@ -44,11 +46,13 @@ namespace Dynamo.Extensions
             }
 
             var definition = new ExtensionDefinition();
+            var path = Path.GetDirectoryName(extensionPath);
             foreach (XmlNode item in topNode[0].ChildNodes)
             {
                 if (item.Name == "AssemblyPath")
                 {
-                    definition.AssemblyPath = item.InnerText;
+                    path = Path.Combine(path, item.InnerText);
+                    definition.AssemblyPath = path;
                 }
                 else if (item.Name == "TypeName")
                 {

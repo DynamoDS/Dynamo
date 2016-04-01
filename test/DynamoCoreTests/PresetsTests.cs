@@ -69,6 +69,40 @@ namespace Dynamo.Tests
             return new List<NodeModel>() { numberNode1, numberNode2,addNode };
         }
 
+        [Test]
+        [Category("UnitTest")]
+        public void CanSavePinState()
+        {
+            var model = CurrentDynamoModel;
+            var cbn = new CodeBlockNodeModel(model.LibraryServices);
+            var command = new DynamoModel.CreateNodeCommand(cbn, 0, 0, true, false);
+
+            CurrentDynamoModel.ExecuteCommand(command);
+
+            UpdateCodeBlockNodeContent(cbn, "42");
+            cbn.PreviewPinned = true;
+
+            DynamoSelection.Instance.Selection.Add(cbn);
+            var ids = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
+            model.ExecuteCommand(new DynamoModel.AddPresetCommand("state1", "3", ids));
+
+            UpdateCodeBlockNodeContent(cbn, "146");
+            DynamoSelection.Instance.Selection.Remove(cbn);
+
+            model.CurrentWorkspace.ApplyPreset(model.CurrentWorkspace.Presets.Where(
+               x => x.Name == "state1").First());
+
+            RunCurrentModel();
+
+            Assert.IsTrue(cbn.PreviewPinned);
+        }
+
+        private void UpdateCodeBlockNodeContent(CodeBlockNodeModel cbn, string value)
+        {
+            var command = new DynCmd.UpdateModelValueCommand(Guid.Empty, cbn.GUID, "Code", value);
+            CurrentDynamoModel.ExecuteCommand(command);
+        }
+
 
         [Test]
         [Category("UnitTests")]
