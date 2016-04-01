@@ -39,15 +39,6 @@ namespace CoreNodeModelsWpf.Nodes
                     model.OnNodeModified();
             };
 
-            combo.DropDownClosed += delegate
-            {
-                //disallow selection of nothing
-                if (combo.SelectedIndex == -1)
-                {
-                    model.SelectedIndex = 0;
-                }
-            };
-
             combo.DataContext = model;
             //bind this combo box to the selected item hash
 
