@@ -20,6 +20,7 @@ namespace Dynamo.Graph.Nodes
         ObservableCollection<ConnectorModel> connectors = new ObservableCollection<ConnectorModel>();
         private bool usingDefaultValue;
         private PortData portData;
+        private bool isEnabled = true;
         #endregion
 
         #region public members
@@ -81,7 +82,15 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public bool IsEnabled
         {
-            get; private set;
+            get
+            {
+                return isEnabled;
+            }
+            set
+            {
+                isEnabled = value;
+                RaisePropertyChanged("IsEnabled");
+            }
         }
 
         /// <summary>
