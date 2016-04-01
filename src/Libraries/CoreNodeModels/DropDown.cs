@@ -178,13 +178,14 @@ namespace CoreNodeModels
         public void PopulateItems()
         {
             var currentSelection = string.Empty;
-            if (items.Count != 0 && SelectedIndex > -1)
+            if (SelectedIndex >= 0 && (SelectedIndex < items.Count))
             {
                 currentSelection = items.ElementAt(SelectedIndex).Name;
             }
             var selectionState = PopulateItemsCore(currentSelection);
             if (selectionState == SelectionState.Restore)
             {
+                SelectedIndex = -1;
                 for (int i = 0; i < items.Count; i++)
                 {
                     if ((items.ElementAt(i)).Name.Equals(currentSelection))
