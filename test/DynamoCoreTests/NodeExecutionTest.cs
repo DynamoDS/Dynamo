@@ -349,11 +349,6 @@ namespace Dynamo.Tests
             // value as before, but its real value *should* have been changed.
             AssertPreviewValue(addNode.GUID.ToString(), 0);
             Assert.IsNull(addNode.CachedValue.Data);
-            /*
-            Assert.IsNotNull(addNode.CachedValue.Data);
-            Assert.AreEqual(Convert.ToInt32(addNode.CachedValue.Data),3);
-            Assert.AreEqual(Convert.ToInt32(watchNode.CachedValue), 3);
-            */
         }
 
         [Test]
