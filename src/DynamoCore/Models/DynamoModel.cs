@@ -44,6 +44,7 @@ using Compiler = ProtoAssociative.Compiler;
 using Utils = Dynamo.Graph.Nodes.Utilities;
 using DefaultUpdateManager = Dynamo.Updates.UpdateManager;
 using FunctionGroup = Dynamo.Engine.FunctionGroup;
+using Dynamo.Events;
 
 namespace Dynamo.Models
 {
@@ -741,15 +742,16 @@ namespace Dynamo.Models
         /// 
         private void OnAsyncTaskStateChanged(DynamoScheduler sender, TaskStateChangedEventArgs e)
         {
+            var updateTask = e.Task as UpdateGraphAsyncTask;
             switch (e.CurrentState)
             {
                 case TaskStateChangedEventArgs.State.ExecutionStarting:
-                    if (e.Task is UpdateGraphAsyncTask)
-                        ExecutionEvents.OnGraphPreExecution();
+                    if (updateTask != null)
+                        ExecutionEvents.OnGraphPreExecution(new ExecutionSession(updateTask, this, geometryFactoryPath));
                     break;
 
                 case TaskStateChangedEventArgs.State.ExecutionCompleted:
-                    if (e.Task is UpdateGraphAsyncTask)
+                    if (updateTask != null)
                     {
                         // Record execution time for update graph task.
                         long start = e.Task.ExecutionStartTime.TickCount;
@@ -763,7 +765,7 @@ namespace Dynamo.Models
 
                         Debug.WriteLine(String.Format(Resources.EvaluationCompleted, executionTimeSpan));
 
-                        ExecutionEvents.OnGraphPostExecution();
+                        ExecutionEvents.OnGraphPostExecution(new ExecutionSession(updateTask, this, geometryFactoryPath));
                     }
                     break;
             }

@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-
 using Dynamo;
+using Dynamo.Events;
+using Dynamo.Session;
 using Dynamo.Tests;
-
-using DynamoServices;
-
 using NUnit.Framework;
 
 namespace IntegrationTests
@@ -21,12 +19,12 @@ namespace IntegrationTests
         private static bool postSeen = false;
 
 
-        private static void PreSeen()
+        private static void PreSeen(IExecutionSession session)
         {
             preSeen = true;
         }
 
-        private static void PostSeen()
+        private static void PostSeen(IExecutionSession session)
         {
             postSeen = true;
         }

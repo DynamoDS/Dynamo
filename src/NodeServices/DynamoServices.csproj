@@ -49,6 +49,7 @@
     </Compile>
     <Compile Include="Attributes.cs" />
     <Compile Include="ExecutionEvents.cs" />
+    <Compile Include="ExecutionSession.cs" />
     <Compile Include="GraphicsDataInterfaces.cs" />
     <Compile Include="Interfaces.cs" />
     <Compile Include="MessageEvents.cs" />
