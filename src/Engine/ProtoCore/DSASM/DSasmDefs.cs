@@ -113,6 +113,8 @@ namespace ProtoCore.DSASM
         public const string setexpuid = "setexpuid";
         public const string pushb = "pushb";
         public const string pushvarsize = "pushvarsize";
+        public const string loadelement = "loadelement";
+        public const string setelement = "setelement";
 
         public const string regRX = "_rx";
         public const string regLX = "_lx";

@@ -1465,6 +1465,42 @@ namespace ProtoCore
             AppendInstruction(instr, line, col);
         }
 
+        protected void EmitSetElement(SymbolNode symbol,
+           int blockId,
+           int line = Constants.kInvalidIndex,
+           int col = Constants.kInvalidIndex,
+           int eline = Constants.kInvalidIndex,
+           int ecol = Constants.kInvalidIndex)
+        {
+            Validity.Assert(symbol != null);
+            if (symbol == null)
+            {
+                return;
+            }
+
+            Instruction instr = new Instruction();
+            instr.opCode = OpCode.SETELEMENT;
+            instr.op1 = BuildOperand(symbol);
+            instr.op2 = StackValue.BuildClassIndex(symbol.classScope);
+            instr.op3 = StackValue.BuildBlockIndex(blockId);
+
+            ++pc;
+
+            bool outputBreakpoint = false;
+            DebugProperties.BreakpointOptions options = core.DebuggerProperties.breakOptions;
+            if (options.HasFlag(DebugProperties.BreakpointOptions.EmitPopForTempBreakpoint))
+                outputBreakpoint = true;
+
+            // Do not emit breakpoints for null or var type declarations
+            if (!core.DebuggerProperties.breakOptions.HasFlag(DebugProperties.BreakpointOptions.SuppressNullVarDeclarationBreakpoint))
+            {
+                // Don't need no pop for temp (unless caller demands it).
+                if (outputBreakpoint || !symbol.name.StartsWith("%"))
+                    instr.debug = GetDebugObject(line, col, eline, ecol, pc);
+            }
+            AppendInstruction(instr, line, col);
+        }
+
         protected void EmitPopForSymbol(SymbolNode symbol,
             int blockId,
             int line = ProtoCore.DSASM.Constants.kInvalidIndex, 
@@ -1577,6 +1613,27 @@ namespace ProtoCore
                 if(line > 0 && col > 0)
                     updatePcDictionary(line, col);
             }
+        }
+
+        protected void EmitLoadElement(SymbolNode symbol, int blockId, Node identNode)
+        {
+            SetEntry();
+            Instruction instr = new Instruction();
+            instr.opCode = OpCode.LOADELEMENT;
+            instr.op1 = BuildOperand(symbol);
+            instr.op2 = StackValue.BuildClassIndex(symbol.classScope);
+            instr.op3 = StackValue.BuildBlockIndex(blockId);
+
+            ++pc;
+
+            DebugProperties.BreakpointOptions options = core.DebuggerProperties.breakOptions;
+            if (options.HasFlag(DebugProperties.BreakpointOptions.EmitIdentifierBreakpoint))
+            {
+                instr.debug = GetDebugObject(identNode.line, identNode.col,
+                    identNode.endLine, identNode.endCol, pc);
+            }
+
+            AppendInstruction(instr, identNode.line, identNode.col);
         }
 
         protected void EmitPushForSymbol(SymbolNode symbol, int blockId, ProtoCore.AST.Node identNode)
@@ -2245,14 +2302,14 @@ namespace ProtoCore
 
         protected void EmitPushVarData(int dimensions, int UID = (int)ProtoCore.PrimitiveType.Var, int rank = 0)
         {
-            // TODO Jun: Consider adding the block and dimension information in the instruction instead of storing them on the stack
-
             // TODO Jun: Performance 
             // Is it faster to have a 'pop' specific to arrays to prevent popping dimension for pop to instruction?
-            EmitInstrConsole(ProtoCore.DSASM.kw.push, dimensions + "[dim]");
-            StackValue opdim = StackValue.BuildArrayDimension(dimensions);
-            EmitPush(opdim);
-
+            if (dimensions > 0)
+            {
+                EmitInstrConsole(ProtoCore.DSASM.kw.push, dimensions + "[dim]");
+                StackValue opdim = StackValue.BuildArrayDimension(dimensions);
+                EmitPush(opdim);
+            }
 
             // Push the identifier block information 
             string srank = "";

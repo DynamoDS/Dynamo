@@ -82,6 +82,9 @@ namespace ProtoCore.DSASM
         POPM,
         POPREPGUIDES,   // Pop replication guides from stack and save to the core
 
+        LOADELEMENT,
+        SETELEMENT,
+
         CALL,
         CALLR,
         RETURN,         // Return from function call

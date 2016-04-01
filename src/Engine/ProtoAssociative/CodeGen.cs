@@ -2422,9 +2422,16 @@ namespace ProtoAssociative
                             symbolnode = codeBlock.symbolTable.symbolList[symbolindex];
                         }
 
-                        EmitInstrConsole(ProtoCore.DSASM.kw.pop, t.Value);
-                        EmitPopForSymbol(unboundVariable, runtimeIndex);
-
+                        if (dimensions > 0)
+                        {
+                            EmitInstrConsole(kw.setelement, t.Value);
+                            EmitSetElement(unboundVariable, runtimeIndex);
+                        }
+                        else
+                        {
+                            EmitInstrConsole(kw.pop, t.Value);
+                            EmitPopForSymbol(unboundVariable, runtimeIndex);
+                        }
 
                         nullAssignGraphNode.PushSymbolReference(symbolnode);
                         nullAssignGraphNode.procIndex = globalProcIndex;
@@ -2609,8 +2616,16 @@ namespace ProtoAssociative
                 }
                 else
                 {
-                    EmitInstrConsole(ProtoCore.DSASM.kw.push, t.Value);
-                    EmitPushForSymbol(symbolnode, runtimeIndex, t);
+                    if (dimensions == 0)
+                    {
+                        EmitInstrConsole(kw.push, t.Value);
+                        EmitPushForSymbol(symbolnode, runtimeIndex, t);
+                    }
+                    else
+                    {
+                        EmitInstrConsole(kw.loadelement, t.Value);
+                        EmitLoadElement(symbolnode, runtimeIndex, t);
+                    }
 
                     if (emitReplicationGuide)
                     {
@@ -6111,15 +6126,31 @@ namespace ProtoAssociative
                             symbol = symbolnode.symbolTableIndex;
                             if (t.Name == ProtoCore.DSASM.Constants.kTempArg)
                             {
-                                EmitInstrConsole(ProtoCore.DSASM.kw.pop, t.Name);
-                                EmitPopForSymbol(symbolnode, runtimeIndex);
+                                if (dimensions > 0)
+                                {
+                                    EmitInstrConsole(kw.setelement, t.Value);
+                                    EmitSetElement(symbolnode, runtimeIndex);
+                                }
+                                else
+                                {
+                                    EmitInstrConsole(kw.pop, t.Value);
+                                    EmitPopForSymbol(symbolnode, runtimeIndex);
+                                }
                             }
                             else
                             {
                                 if (core.Options.RunMode != ProtoCore.DSASM.InterpreterMode.Expression)
                                 {
-                                    EmitInstrConsole(ProtoCore.DSASM.kw.pop, t.Name);
-                                    EmitPopForSymbol(symbolnode, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
+                                    if (dimensions > 0)
+                                    {
+                                        EmitInstrConsole(kw.setelement, t.Value);
+                                        EmitSetElement(symbolnode, runtimeIndex);
+                                    }
+                                    else
+                                    {
+                                        EmitInstrConsole(kw.pop, t.Value);
+                                        EmitPopForSymbol(symbolnode, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
+                                    }
                                 }
                                 else
                                 {
@@ -6202,8 +6233,16 @@ namespace ProtoAssociative
 
                         if (core.Options.RunMode != ProtoCore.DSASM.InterpreterMode.Expression)
                         {
-                            EmitInstrConsole(ProtoCore.DSASM.kw.pop, symbolnode.name);
-                            EmitPopForSymbol(symbolnode, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
+                            if (dimensions > 0)
+                            {
+                                EmitInstrConsole(kw.setelement, symbolnode.name);
+                                EmitSetElement(symbolnode, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
+                            }
+                            else
+                            { 
+                                EmitInstrConsole(kw.pop, symbolnode.name);
+                                EmitPopForSymbol(symbolnode, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
+                            }
                         }
                         else
                         {

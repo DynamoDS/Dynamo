@@ -905,8 +905,16 @@ namespace ProtoImperative
                 ProtoCore.Type varType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
                 symbolnode = Allocate(t.Value, globalProcIndex, varType);
 
-                EmitInstrConsole(ProtoCore.DSASM.kw.pop, t.Value);
-                EmitPopForSymbol(symbolnode, runtimeIndex);
+                if (dimensions > 0)
+                {
+                    EmitInstrConsole(kw.setelement, t.Value);
+                    EmitSetElement(symbolnode, runtimeIndex);
+                }
+                else
+                {
+                    EmitInstrConsole(kw.pop, t.Value);
+                    EmitPopForSymbol(symbolnode, runtimeIndex);
+                }
             }
             else
             {
@@ -949,8 +957,16 @@ namespace ProtoImperative
 
             EmitPushVarData(dimensions);
 
-            EmitInstrConsole(ProtoCore.DSASM.kw.push, t.Value);
-            EmitPushForSymbol(symbolnode, runtimeIndex, t);
+            if (dimensions == 0)
+            {
+                EmitInstrConsole(kw.push, t.Value);
+                EmitPushForSymbol(symbolnode, runtimeIndex, t);
+            }
+            else
+            {
+                EmitInstrConsole(kw.loadelement, t.Value);
+                EmitLoadElement(symbolnode, runtimeIndex, t);
+            }
 
             if (core.TypeSystem.IsHigherRank(type.UID, inferedType.UID))
             {
@@ -1975,14 +1991,31 @@ namespace ProtoImperative
                         }
                         castType = symbolnode.staticType;
                         EmitPushVarData(dimensions, castType.UID, castType.rank);
-                        EmitInstrConsole(ProtoCore.DSASM.kw.pop, t.Value);
                         if (parentNode != null)
                         {
-                            EmitPopForSymbol(symbolnode, runtimeIndex, parentNode.line, parentNode.col, parentNode.endLine, parentNode.endCol);
+                            if (dimensions > 0)
+                            {
+                                EmitInstrConsole(kw.setelement, t.Value);
+                                EmitSetElement(symbolnode, runtimeIndex, parentNode.line, parentNode.col, parentNode.endLine, parentNode.endCol);
+                            }
+                            else
+                            {
+                                EmitInstrConsole(kw.pop, t.Value);
+                                EmitPopForSymbol(symbolnode, runtimeIndex, parentNode.line, parentNode.col, parentNode.endLine, parentNode.endCol);
+                            }
                         }
                         else
                         {
-                            EmitPopForSymbol(symbolnode, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
+                            if (dimensions > 0)
+                            {
+                                EmitInstrConsole(kw.setelement, t.Value);
+                                EmitSetElement(symbolnode, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
+                            }
+                            else
+                            {
+                                EmitInstrConsole(kw.pop, t.Value);
+                                EmitPopForSymbol(symbolnode, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
+                            }
                         }
                         
 
