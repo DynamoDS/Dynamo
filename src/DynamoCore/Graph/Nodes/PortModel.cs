@@ -77,6 +77,14 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
+        /// Indicates whether the port is enabled or not.
+        /// </summary>
+        public bool IsEnabled
+        {
+            get; private set;
+        }
+
+        /// <summary>
         /// Center is used by connected connectors to update their shape
         /// The "center" of a port is derived from the type of port and
         /// offsets from the node origin based on the port's index in the 

@@ -45,6 +45,11 @@ namespace Dynamo.ViewModels
             get { return _port.IsConnected; }
         }
 
+        public bool IsEnabled
+        {
+            get { return _port.IsEnabled; }
+        }
+
         public double Height
         {
             get { return _port.Height; }
