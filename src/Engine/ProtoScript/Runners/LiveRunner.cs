@@ -423,9 +423,11 @@ namespace ProtoScript.Runners
             {
                 foreach (var st in deletedSubTrees)
                 {
+                    var deletedBinaryExpressions = new List<AssociativeNode>();
+
                     if (st.AstNodes != null && st.AstNodes.Count > 0)
                     {
-                        csData.DeletedBinaryExprASTNodes.AddRange(st.AstNodes);
+                        deletedBinaryExpressions.AddRange(st.AstNodes);
                     }
                     else
                     {
@@ -436,7 +438,7 @@ namespace ProtoScript.Runners
                         {
                             if (removeSubTree.AstNodes != null)
                             {
-                                csData.DeletedBinaryExprASTNodes.AddRange(removeSubTree.AstNodes);
+                                deletedBinaryExpressions.AddRange(removeSubTree.AstNodes);
                             }
                         }
                     }
@@ -453,10 +455,8 @@ namespace ProtoScript.Runners
                     }
 
                     // Build the nullify ASTs
-                    var nullNodes = BuildNullAssignments(csData.DeletedBinaryExprASTNodes);
-                    deltaAstList.AddRange(nullNodes);
-
-                    foreach (AssociativeNode node in deltaAstList)
+                    var nullNodes = BuildNullAssignments(deletedBinaryExpressions);
+                    foreach (AssociativeNode node in nullNodes)
                     {
                         var bnode = node as BinaryExpressionNode;
                         if (bnode != null)
@@ -464,10 +464,12 @@ namespace ProtoScript.Runners
                             bnode.guid = st.GUID;
                         }
                     }
+                    deltaAstList.AddRange(nullNodes);
 
                     core.BuildStatus.ClearWarningsForGraph(st.GUID);
 
                     runtimeCore.RuntimeStatus.ClearWarningsForGraph(st.GUID);
+                    csData.DeletedBinaryExprASTNodes.AddRange(deletedBinaryExpressions);
                 }
             }
             return deltaAstList;
