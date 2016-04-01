@@ -123,17 +123,22 @@ namespace Dynamo.UI.Controls
             switch (state)
             {
                 case EditorStateMachine.EditorState.Editing:
-                    EnableOutputPorts(false); 
+                    EnableInputOutputPorts(false); 
                     break;
 
                 case EditorStateMachine.EditorState.Commited:
-                    EnableOutputPorts(true); 
+                    EnableInputOutputPorts(true); 
                     break;
             }
         }
 
-        private void EnableOutputPorts(bool isEnabled)
+        private void EnableInputOutputPorts(bool isEnabled)
         {
+            for (int i = 0; i < codeBlockNode.InPorts.Count; i++)
+            {
+                codeBlockNode.InPorts[i].IsEnabled = isEnabled;
+            }
+
             for (int i = 0; i < codeBlockNode.OutPorts.Count; i++)
             {
                 codeBlockNode.OutPorts[i].IsEnabled = isEnabled;
