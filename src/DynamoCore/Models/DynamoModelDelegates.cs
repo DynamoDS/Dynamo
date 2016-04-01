@@ -11,6 +11,12 @@ namespace Dynamo.Models
     public delegate void NodeHandler(NodeModel node);
     public delegate void WorkspaceHandler(WorkspaceModel model);   
     public delegate void ActionHandler(Action action);
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     public delegate void NodeEventHandler(object sender, EventArgs e);
 
     internal delegate void SettingsMigrationHandler(SettingsMigrationEventArgs args);

@@ -977,6 +977,12 @@ namespace Dynamo.Migration
     /// </summary>
     public struct PortId
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="owningNode"></param>
+        /// <param name="portIndex"></param>
+        /// <param name="type"></param>
         public PortId(string owningNode, int portIndex, PortType type)
             : this()
         {
@@ -985,8 +991,19 @@ namespace Dynamo.Migration
             PortType = type;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string OwningNode { get; private set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public int PortIndex { get; private set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public PortType PortType { get; private set; }
     }
 
@@ -1001,6 +1018,10 @@ namespace Dynamo.Migration
         private XmlNode connectorRoot = null;
         private List<XmlElement> migratedNodes = new List<XmlElement>();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="document"></param>
         public NodeMigrationData(XmlDocument document)
         {
             Document = document;
@@ -1091,6 +1112,10 @@ namespace Dynamo.Migration
             return null;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="portId"></param>
         public void RemoveFirstConnector(PortId portId)
         {
             if (connectorRoot == null || (connectorRoot.ChildNodes == null))
@@ -1195,6 +1220,13 @@ namespace Dynamo.Migration
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="startNode"></param>
+        /// <param name="startIndex"></param>
+        /// <param name="endNode"></param>
+        /// <param name="endIndex"></param>
         public void CreateConnector(XmlElement startNode,
             int startIndex, XmlElement endNode, int endIndex)
         {
@@ -1211,6 +1243,13 @@ namespace Dynamo.Migration
             connectorRoot.AppendChild(connector);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="startNodeId"></param>
+        /// <param name="startIndex"></param>
+        /// <param name="endNodeId"></param>
+        /// <param name="endIndex"></param>
         public void CreateConnectorFromId(string startNodeId,
             int startIndex, string endNodeId, int endIndex)
         {
@@ -1227,6 +1266,10 @@ namespace Dynamo.Migration
             connectorRoot.AppendChild(connector);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="connector"></param>
         public void CreateConnector(XmlElement connector)
         {
             connectorRoot.AppendChild(connector);
@@ -1236,6 +1279,10 @@ namespace Dynamo.Migration
 
         #region Node Management Methods
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
         public void AppendNode(XmlElement node)
         {
             migratedNodes.Add(node);
@@ -1245,8 +1292,14 @@ namespace Dynamo.Migration
 
         #region Public Class Properties
 
+        /// <summary>
+        /// 
+        /// </summary>
         public XmlDocument Document { get; private set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IEnumerable<XmlElement> MigratedNodes
         {
             get { return migratedNodes; }
@@ -1271,6 +1324,11 @@ namespace Dynamo.Migration
         /// </summary>
         public Version To { get; private set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
         public NodeMigrationAttribute(string from, string to = "")
         {
             From = new Version(from);

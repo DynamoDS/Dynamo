@@ -25,6 +25,9 @@ using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 
 namespace Dynamo.Graph.Nodes
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public abstract class NodeModel : ModelBase, IRenderPackageSource<NodeModel>, IDisposable
     {
         #region private members
@@ -324,11 +327,17 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IDictionary<int, Tuple<int, NodeModel>> InputNodes
         {
             get { return inputNodes; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IDictionary<int, HashSet<Tuple<int, NodeModel>>> OutputNodes
         {
             get { return outputNodes; }
@@ -505,6 +514,9 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool CanUpdatePeriodically
         {
             get { return canUpdatePeriodically; }
@@ -758,6 +770,9 @@ namespace Dynamo.Graph.Nodes
         }
         #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected NodeModel()
         {
             InPortData = new ObservableCollection<PortData>();
@@ -830,6 +845,11 @@ namespace Dynamo.Graph.Nodes
         ///     Event fired when the node's DesignScript AST should be recompiled
         /// </summary>
         public event Action<NodeModel> Modified;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="forceExecute"></param>
         public virtual void OnNodeModified(bool forceExecute = false)
         {
             if (!RaisesModificationEvents || IsFrozen)
@@ -845,6 +865,10 @@ namespace Dynamo.Graph.Nodes
         /// This event deletes the frozen nodes from AST collection.
         /// </summary>
         public event Action<NodeModel> UpdateASTCollection;
+
+        /// <summary>
+        /// 
+        /// </summary>
         public virtual void OnUpdateASTCollection()
         {
             var handler = UpdateASTCollection;
@@ -1013,6 +1037,11 @@ namespace Dynamo.Graph.Nodes
         ///     Event fired when a new ConnectorModel has been attached to one of this node's inputs.
         /// </summary>
         public event Action<ConnectorModel> ConnectorAdded;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
         protected virtual void OnConnectorAdded(ConnectorModel obj)
         {
             var handler = ConnectorAdded;
@@ -1147,6 +1176,9 @@ namespace Dynamo.Graph.Nodes
             ValidateConnections();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void SelectNeighbors()
         {
             IEnumerable<ConnectorModel> outConnectors = outPorts.SelectMany(x => x.Connectors);
@@ -1161,6 +1193,9 @@ namespace Dynamo.Graph.Nodes
 
         #region Node State
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void ValidateConnections()
         {
             // if there are inputs without connections
@@ -1186,6 +1221,10 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="p"></param>
         public void Error(string p)
         {
             State = ElementState.Error;
@@ -1642,6 +1681,9 @@ namespace Dynamo.Graph.Nodes
 
         #region ISelectable Interface
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override void Deselect()
         {
             ValidateConnections();
@@ -1652,6 +1694,11 @@ namespace Dynamo.Graph.Nodes
 
         #region Command Framework Supporting Methods
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="updateValueParams"></param>
+        /// <returns></returns>
         protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
             string name = updateValueParams.PropertyName;
@@ -1744,6 +1791,11 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         protected internal virtual void OnSave() { }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="context"></param>
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             var helper = new XmlElementHelper(element);
@@ -1787,6 +1839,11 @@ namespace Dynamo.Graph.Nodes
                 OnSave();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nodeElement"></param>
+        /// <param name="context"></param>
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             var helper = new XmlElementHelper(nodeElement);
@@ -1881,23 +1938,44 @@ namespace Dynamo.Graph.Nodes
         [Flags]
         protected enum ExecutionHints
         {
+            /// <summary>
+            /// 
+            /// </summary>
             None = 0,
+
+            /// <summary>
+            /// 
+            /// </summary>
             Modified = 1,       // Marks as modified, but execution is optional if AST is unchanged.
+            
+            /// <summary>
+            /// 
+            /// </summary>
             ForceExecute = 3    // Marks as modified, force execution even if AST is unchanged.
         }
 
         private ExecutionHints executionHint;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsModified
         {
             get { return GetExecutionHintsCore().HasFlag(ExecutionHints.Modified); }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool NeedsForceExecution
         {
             get { return GetExecutionHintsCore().HasFlag(ExecutionHints.ForceExecute); }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="forceExecute"></param>
         public void MarkNodeAsModified(bool forceExecute = false)
         {
             executionHint = ExecutionHints.Modified;
@@ -1906,11 +1984,18 @@ namespace Dynamo.Graph.Nodes
                 executionHint |= ExecutionHints.ForceExecute;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void ClearDirtyFlag()
         {
             executionHint = ExecutionHints.None;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         protected virtual ExecutionHints GetExecutionHintsCore()
         {
             return executionHint;
@@ -2055,12 +2140,27 @@ namespace Dynamo.Graph.Nodes
 
         #region Node Migration Helper Methods
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="nickname"></param>
+        /// <param name="funcName"></param>
+        /// <returns></returns>
         protected static NodeMigrationData MigrateToDsFunction(
             NodeMigrationData data, string nickname, string funcName)
         {
             return MigrateToDsFunction(data, "", nickname, funcName);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="assembly"></param>
+        /// <param name="nickname"></param>
+        /// <param name="funcName"></param>
+        /// <returns></returns>
         protected static NodeMigrationData MigrateToDsFunction(
             NodeMigrationData data, string assembly, string nickname, string funcName)
         {
@@ -2075,6 +2175,14 @@ namespace Dynamo.Graph.Nodes
             return migrationData;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="assembly"></param>
+        /// <param name="nickname"></param>
+        /// <param name="funcName"></param>
+        /// <returns></returns>
         protected static NodeMigrationData MigrateToDsVarArgFunction(
             NodeMigrationData data, string assembly, string nickname, string funcName)
         {
@@ -2091,6 +2199,9 @@ namespace Dynamo.Graph.Nodes
 
         #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool ShouldDisplayPreview
         {
             get
@@ -2099,8 +2210,14 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected bool ShouldDisplayPreviewCore { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public event Action<NodeModel, IEnumerable<IRenderPackage>> RenderPackagesUpdated;
 
         private void OnRenderPackagesUpdated(IEnumerable<IRenderPackage> packages)
@@ -2131,18 +2248,45 @@ namespace Dynamo.Graph.Nodes
         CrossProduct
     };
 
+    /// <summary>
+    /// 
+    /// </summary>
     public enum PortEventType
     {
+        /// <summary>
+        /// 
+        /// </summary>
         MouseEnter,
+        /// <summary>
+        /// 
+        /// </summary>
         MouseLeave,
+        /// <summary>
+        /// 
+        /// </summary>
         MouseLeftButtonDown
     };
 
+    /// <summary>
+    /// 
+    /// </summary>
     public enum PortPosition
     {
+        /// <summary>
+        /// 
+        /// </summary>
         First,
+        /// <summary>
+        /// 
+        /// </summary>
         Top,
+        /// <summary>
+        /// 
+        /// </summary>
         Middle,
+        /// <summary>
+        /// 
+        /// </summary>
         Last
     }
 
@@ -2154,6 +2298,11 @@ namespace Dynamo.Graph.Nodes
         Bottom = 0x2
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     public delegate void PortsChangedHandler(object sender, EventArgs e);
 
     internal delegate void DispatchedToUIThreadHandler(object sender, UIDispatcherEventArgs e);

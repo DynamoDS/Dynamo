@@ -4,9 +4,15 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Graph.Notes
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class NoteModel : ModelBase
     {
-        private string text;      
+        private string text;
+        /// <summary>
+        /// 
+        /// </summary>
         public string Text
         {
             get { return text; }
@@ -17,6 +23,13 @@ namespace Dynamo.Graph.Notes
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="text"></param>
+        /// <param name="guid"></param>
         public NoteModel(double x, double y, string text, Guid guid)
         {
             X = x;
@@ -27,6 +40,11 @@ namespace Dynamo.Graph.Notes
 
         #region Command Framework Supporting Methods
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="updateValueParams"></param>
+        /// <returns></returns>
         protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
             string name = updateValueParams.PropertyName;
@@ -37,11 +55,16 @@ namespace Dynamo.Graph.Notes
             
             Text = value;
             return true;
-        }        
+        }
         #endregion
 
         #region Serialization/Deserialization Methods
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="context"></param>
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             var helper = new XmlElementHelper(element);
@@ -51,6 +74,11 @@ namespace Dynamo.Graph.Notes
             helper.SetAttribute("y", Y);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nodeElement"></param>
+        /// <param name="context"></param>
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             var helper = new XmlElementHelper(nodeElement);

@@ -7,11 +7,34 @@ using Dynamo.Interfaces;
 
 namespace Dynamo.Logging
 {
-    public enum LogLevel{Console, File, Warning}
+    /// <summary>
+    /// 
+    /// </summary>
+    public enum LogLevel
+    {   /// <summary>
+        /// 
+        /// </summary>
+        Console,
+        /// <summary>
+        /// 
+        /// </summary>
+        File,
+        /// <summary>
+        /// 
+        /// </summary>
+        Warning
+    }
     public enum WarningLevel{Mild, Moderate, Error}
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="args"></param>
     public delegate void LogEventHandler(LogEventArgs args);
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class LogEventArgs : EventArgs
     {
         /// <summary>
@@ -24,12 +47,22 @@ namespace Dynamo.Logging
         /// </summary>
         public LogLevel Level { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="level"></param>
         public LogEventArgs(string message, LogLevel level)
         {
             Message = message;
             Level = level;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="level"></param>
         public LogEventArgs(Exception e, LogLevel level)
         {
             Message = e.Message + "\n" + e.StackTrace;

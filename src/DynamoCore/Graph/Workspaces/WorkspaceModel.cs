@@ -2555,6 +2555,10 @@ namespace Dynamo.Graph.Workspaces
         #region ILogSource implementation
         public event Action<ILogMessage> MessageLogged;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
         protected void Log(ILogMessage obj)
         {
             var handler = MessageLogged;

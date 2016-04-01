@@ -7,31 +7,59 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Graph.Nodes
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [AttributeUsage(AttributeTargets.All)]
     public class NodeNameAttribute : Attribute
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="elementName"></param>
         public NodeNameAttribute(string elementName)
         {
             Name = elementName;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string Name { get; set; }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     [AttributeUsage(AttributeTargets.All)]
     public class NodeCategoryAttribute : Attribute
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="category"></param>
         public NodeCategoryAttribute(string category)
         {
             ElementCategory = category;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string ElementCategory { get; set; }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     [AttributeUsage(AttributeTargets.All)]
     public class NodeSearchTagsAttribute : Attribute
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tagsID"></param>
+        /// <param name="resourceType"></param>
         public NodeSearchTagsAttribute(string tagsID, Type resourceType)
         {
             if (resourceType == null)
@@ -50,11 +78,19 @@ namespace Dynamo.Graph.Nodes
                 Tags = new List<String> { tagsID };
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tags"></param>
         public NodeSearchTagsAttribute(params string[] tags)
         {
             Tags = tags.ToList();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public List<string> Tags { get; set; }
     }
 
@@ -77,14 +113,26 @@ namespace Dynamo.Graph.Nodes
         public bool IsInteractive { get; set; }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     [AttributeUsage(AttributeTargets.All)]
     public class NodeDescriptionAttribute : Attribute
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="description"></param>
         public NodeDescriptionAttribute(string description)
         {
             ElementDescription = description;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="descriptionResourceID"></param>
+        /// <param name="resourceType"></param>
         public NodeDescriptionAttribute(string descriptionResourceID, Type resourceType)
         {
             if (resourceType == null)
@@ -103,28 +151,51 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string ElementDescription { get; set; }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     [AttributeUsage(AttributeTargets.All)]
     public class NodeSearchableAttribute : Attribute
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isSearchable"></param>
         public NodeSearchableAttribute(bool isSearchable)
         {
             IsSearchable = isSearchable;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsSearchable { get; set; }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     [AttributeUsage(AttributeTargets.All)]
     public class NodeTypeIdAttribute : Attribute
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="description"></param>
         public NodeTypeIdAttribute(string description)
         {
             Id = description;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string Id { get; set; }
     }
 
@@ -136,11 +207,18 @@ namespace Dynamo.Graph.Nodes
     [AttributeUsage(AttributeTargets.All)]
     public class DoNotLoadOnPlatformsAttribute : Attribute
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="values"></param>
         public DoNotLoadOnPlatformsAttribute(params string[] values)
         {
             Values = values;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string[] Values { get; set; }
     }
 
@@ -159,11 +237,18 @@ namespace Dynamo.Graph.Nodes
     [AttributeUsage(AttributeTargets.All)]
     public class AlsoKnownAsAttribute : Attribute
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="values"></param>
         public AlsoKnownAsAttribute(params string[] values)
         {
             Values = values;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string[] Values { get; set; }
     }
 
@@ -187,11 +272,20 @@ namespace Dynamo.Graph.Nodes
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Property)]
     public sealed class NodeObsoleteAttribute : IsObsoleteAttribute
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
         public NodeObsoleteAttribute(string message)
             : base(message)
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="descriptionResourceID"></param>
+        /// <param name="resourceType"></param>
         public NodeObsoleteAttribute(string descriptionResourceID, Type resourceType)
         {
             if (resourceType == null)

@@ -7,6 +7,9 @@ using ProtoCore.Mirror;
 
 namespace Dynamo.Graph.Nodes
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class NodeModelExtensions
     {
         internal static void VisibleUpstreamNodes(this NodeModel node, List<NodeModel> gathered)
