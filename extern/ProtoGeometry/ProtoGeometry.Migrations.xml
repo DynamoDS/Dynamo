@@ -16,7 +16,11 @@
     <oldName>Autodesk.DesignScript.Geometry.Rectangle.ByWidthHeight</oldName>
     <newName>Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength</newName>
   </priorNameHint>
-   <priorNameHint>
+  <priorNameHint>
+    <oldName>Autodesk.DesignScript.Geometry.EllipseArc.ByPlaneRadiiStartAngleSweepAngle</oldName>
+    <newName>Autodesk.DesignScript.Geometry.EllipseArc.ByPlaneRadiiAngles</newName>
+  </priorNameHint>
+  <priorNameHint>
     <oldName>Autodesk.DesignScript.Geometry.Vector.AngleBetween</oldName>
     <newName>Autodesk.DesignScript.Geometry.Vector.AngleWithVector</newName>
   </priorNameHint>
