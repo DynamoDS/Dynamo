@@ -2109,7 +2109,6 @@ namespace ProtoCore.AST.AssociativeAST
         public int SSAExpressionUID { get; set; }
         public int ExpressionUID { get; set; }
         public int SSASubExpressionID { get; set; }
-        public int modBlkUID { get; set; }
         public Guid guid { get; set; }
         public int OriginalAstID { get; set; }    // The original AST that this Binarynode was derived from
         public bool isSSAAssignment { get; set; }

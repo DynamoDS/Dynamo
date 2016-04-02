@@ -1309,7 +1309,7 @@ namespace ProtoCore.DSASM
             return isInvalid || isPointerModified || isArrayModified || isDataModified || isDoubleDataModified || isTypeModified;
         }
 
-        private int UpdateGraph(int exprUID, int modBlkId, bool isSSAAssign)
+        private int UpdateGraph(int exprUID, bool isSSAAssign)
         {
             List<AssociativeGraph.GraphNode> reachableGraphNodes = null;
             if (runtimeCore.Options.DirectDependencyExecution)
@@ -4533,14 +4533,11 @@ namespace ProtoCore.DSASM
             // This expression ID of this instruction
             int exprID = (int)instruction.op1.IntegerValue;
             // The SSA assignment flag
-            bool isSSA = (1 == instruction.op2.IntegerValue);
-            int modBlkID = (int)instruction.op3.IntegerValue;
-
+            bool isSSA = instruction.op2.BooleanValue;
 
             // The current function and class scope
             int ci = Constants.kInvalidIndex;
             int fi = Constants.kGlobalScope;
-
 
             int classIndex = Constants.kInvalidIndex;
             int functionIndex = Constants.kGlobalScope;
@@ -4607,7 +4604,7 @@ namespace ProtoCore.DSASM
             }
 
             // Find dependent nodes and mark them dirty
-            UpdateGraph(exprID, modBlkID, isSSA);
+            UpdateGraph(exprID, isSSA);
 
             if (runtimeCore.Options.ApplyUpdate)
             {
