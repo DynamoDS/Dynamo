@@ -1411,7 +1411,7 @@
             Get a string representation of the EllipseArc
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.EllipseArc.ByPlaneRadiiStartAngleSweepAngle(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double,System.Double,System.Double)">
+        <member name="M:Autodesk.DesignScript.Geometry.EllipseArc.ByPlaneRadiiAngles(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double,System.Double,System.Double)">
              <summary>
              Create an EllipseArc in a plane with the given the radii along the X and Y axes and the angles to sweep through
              </summary>
@@ -1454,6 +1454,14 @@
         <member name="P:Autodesk.DesignScript.Geometry.EllipseArc.SweepAngle">
              <summary>
              The total sweep angle in degrees
+             </summary>
+            <search>
+            ellipsearc,arcs
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.EllipseArc.Plane">
+             <summary>
+             The plane in which the ellipse lies
              </summary>
             <search>
             ellipsearc,arcs
@@ -3126,49 +3134,49 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.AsPoint">
-            <summary>
-            Get the Point with the same X, Y, and Z component
-            </summary>
+             <summary>
+             Get the Point with the same X, Y, and Z component
+             </summary>
             <search>
             convertopoint,vector2point
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Reverse">
-            <summary>
-            Get the reverse of the vector.  Essentially this negates the X, Y, and Z components of the Vector.
-            </summary>
+             <summary>
+             Get the reverse of the vector.  Essentially this negates the X, Y, and Z components of the Vector.
+             </summary>
             <search>
             backwards,vectorflip
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Add(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Add a vector
-            </summary>
+             <summary>
+             Add a vector
+             </summary>
             <search>
             sum,sumvectors
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Subtract(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Subtract a vector
-            </summary>
+             <summary>
+             Subtract a vector
+             </summary>
             <search>
             substact,diff vectors,between
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Cross(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Form the cross product of two vectors
-            </summary>
+             <summary>
+             Form the cross product of two vectors
+             </summary>
             <search>
             perpendicular
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Dot(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Form the dot product of two vectors
-            </summary>
+             <summary>
+             Form the dot product of two vectors
+             </summary>
             <search>
             project,projectvector,vectorproject,onto
             </search>
@@ -3184,9 +3192,9 @@
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.IsAlmostEqualTo(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Determine whether two vectors ae almost equal
-            </summary>
+             <summary>
+             Determine whether two vectors ae almost equal
+             </summary>
             <search>
             vector approximate,near,same
             </search>
@@ -3197,49 +3205,49 @@
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Rotate(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>
-            Rotates a Vector around an axis by a specified number of degrees
-            </summary>
+             <summary>
+             Rotates a Vector around an axis by a specified number of degrees
+             </summary>
             <search>
             around,axis,degrees
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Rotate(Autodesk.DesignScript.Geometry.Plane,System.Double)">
-            <summary>
-            Rotates a vector around the Plane origin and normal by a specified  degree
-            </summary>
+             <summary>
+             Rotates a vector around the Plane origin and normal by a specified  degree
+             </summary>
             <search>
             around,normal,degrees
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Scale(System.Double)">
-            <summary>
-            Scale Vector uniformly around the origin
-            </summary>
+             <summary>
+             Scale Vector uniformly around the origin
+             </summary>
             <search>
             resize,size
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Scale(System.Double,System.Double,System.Double)">
-            <summary>
-            Scale Vector non-uniformly around the origin
-            </summary>
+             <summary>
+             Scale Vector non-uniformly around the origin
+             </summary>
             <search>
             resize,size,scaleNU,scalenu
             </search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleBetween(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Returns the angle between the two Vectors, in the range [0, 180] degrees.
-            </summary>
+        <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleWithVector(Autodesk.DesignScript.Geometry.Vector)">
+             <summary>
+             Returns the angle between the two Vectors, in the range [0, 180] degrees.
+             </summary>
             <search>
             rotation angle
             </search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleBetween(Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Returns the angle between the two Vectors, in the range [0, 360] degrees. It uses axis of rotation to determine the direction of the angle.
-            </summary>
+        <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleAboutAxis(Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
+             <summary>
+             Returns the angle between the two Vectors, in the range [0, 360] degrees. It uses axis of rotation to determine the direction of the angle.
+             </summary>
             <search>
             rotation angle
             </search>
