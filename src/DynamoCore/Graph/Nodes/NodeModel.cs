@@ -257,7 +257,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Indicates if node preview is pinned
         /// </summary>
-        public bool PreviewPinned { get; private set; }
+        public bool PreviewPinned { get; internal set; }
 
         /// <summary>
         ///     Text that is displayed as this Node's tooltip.
@@ -457,39 +457,6 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// WARNING: This method is meant for unit test only. It directly accesses
-        /// the EngineController for the mirror data without waiting for any 
-        /// possible execution to complete (which, in single-threaded nature of 
-        /// unit test, is an okay thing to do). The right way to get the cached 
-        /// value for a NodeModel is by going through its RequestValueUpdateAsync
-        /// method).
-        /// </summary>
-        /// <param name="engine">Instance of EngineController from which the node
-        /// value is to be retrieved.</param>
-        /// <returns>Returns the MirrorData if the node's value is computed, or 
-        /// null otherwise.</returns>
-        /// 
-        internal MirrorData GetCachedValueFromEngine(EngineController engine)
-        {
-            if (cachedValue != null)
-                return cachedValue;
-
-            // Do not have an identifier for preview right now. For an example,
-            // this can be happening at the beginning of a code block node creation.
-            if (AstIdentifierForPreview.Value == null)
-                return null;
-
-            cachedValue = null;
-
-            var runtimeMirror = engine.GetMirror(AstIdentifierForPreview.Value);
-
-            if (runtimeMirror != null)
-                cachedValue = runtimeMirror.GetData();
-
-            return cachedValue;
-        }
-
-        /// <summary>
         /// This flag is used to determine if a node was involved in a recent execution.
         /// The primary purpose of this flag is to determine if the node's render packages 
         /// should be returned to client browser when it requests for them. This is mainly 
@@ -656,7 +623,7 @@ namespace Dynamo.Graph.Nodes
         /// <returns></returns>
         public virtual ProtoCore.Type GetTypeHintForOutput(int index)
         {
-            return ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeVar);
+            return ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.Var);
         }
     
         /// <summary>
@@ -837,16 +804,6 @@ namespace Dynamo.Graph.Nodes
         public MirrorData GetValue(int outPortIndex, EngineController engine)
         {
             return engine.GetMirror(GetAstIdentifierForOutputIndex(outPortIndex).Value).GetData();
-        }
-
-        public void SetPinStatus(bool pinned)
-        {
-            if (PreviewPinned != pinned)
-            {
-                PreviewPinned = pinned;
-                OnNodeModified();
-            }
-            
         }
 
         /// <summary>
@@ -1764,6 +1721,15 @@ namespace Dynamo.Graph.Nodes
                         IsFrozen = newIsFrozen;
                     }
                     return true;
+
+                case "PreviewPinned":
+                    bool newIsPinned;
+                    if (bool.TryParse(value, out newIsPinned))
+                    {
+                        PreviewPinned = newIsPinned;
+                    }
+                    return true;
+
             }
 
             return base.UpdateValueCore(updateValueParams);
@@ -1954,13 +1920,11 @@ namespace Dynamo.Graph.Nodes
         #region Visualization Related Methods
 
         /// <summary>
-        /// Call this method to asynchronously update the cached MirrorData for 
-        /// this NodeModel through DynamoScheduler. AstIdentifierForPreview is 
-        /// being accessed within this method, therefore the method is typically
-        /// called from the main/UI thread.
+        /// Call this method to update the cached MirrorData for this NodeModel.
+        /// Note this method should be called from scheduler thread. 
         /// </summary>
         /// 
-        internal void RequestValueUpdateAsync(IScheduler scheduler, EngineController engine)
+        internal void RequestValueUpdate(EngineController engine)
         {
             // A NodeModel should have its cachedMirrorData reset when it is 
             // requested to update its value. When the QueryMirrorDataAsyncTask 
@@ -1977,29 +1941,11 @@ namespace Dynamo.Graph.Nodes
             if (string.IsNullOrEmpty(variableName))
                 return;
 
-            var task = new QueryMirrorDataAsyncTask(new QueryMirrorDataParams
+            var runtimeMirror = engine.GetMirror(variableName);
+            if (runtimeMirror != null)
             {
-                Scheduler = scheduler,
-                EngineController = engine,
-                VariableName = variableName
-            });
-
-            task.Completed += QueryMirrorDataAsyncTaskCompleted;
-            scheduler.ScheduleForExecution(task);
-        }
-
-        private void QueryMirrorDataAsyncTaskCompleted(AsyncTask asyncTask)
-        {
-            asyncTask.Completed -= QueryMirrorDataAsyncTaskCompleted;
-
-            var task = asyncTask as QueryMirrorDataAsyncTask;
-            if (task == null)
-            {
-                throw new InvalidOperationException("Expected a " + typeof(QueryMirrorDataAsyncTask).Name
-                    + ", but got a " + asyncTask.GetType().Name);
+                CachedValue = runtimeMirror.GetData();
             }
-
-            this.CachedValue = task.MirrorData;
         }
 
         /// <summary>

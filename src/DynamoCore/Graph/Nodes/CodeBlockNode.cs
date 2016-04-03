@@ -126,6 +126,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Returns the index of the port corresponding to the variable name given
         /// </summary>
+        /// <param name="cbn"></param>
         /// <param name="variableName"> Name of the variable corresponding to an input port </param>
         /// <returns> Index of the required port in the InPorts collection </returns>
         internal static int GetInportIndex(CodeBlockNodeModel cbn, string variableName)
@@ -407,7 +408,7 @@ namespace Dynamo.Graph.Nodes
         /// <returns></returns>
         public override ProtoCore.Type GetTypeHintForOutput(int index)
         {
-            ProtoCore.Type type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
+            ProtoCore.Type type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var);
             var statement = GetStatementForOutput(index);
             if (statement == null)
                 return type;
@@ -451,13 +452,13 @@ namespace Dynamo.Graph.Nodes
                 }
             }
             else if (expr.RightNode is IntNode)
-                return TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt);
+                return TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Integer);
             else if (expr.RightNode is StringNode)
-                return TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString);
+                return TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.String);
             else if (expr.RightNode is DoubleNode)
-                return TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble);
+                return TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double);
             else if (expr.RightNode is StringNode)
-                return TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString);
+                return TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.String);
 
             return type;
         }
@@ -536,8 +537,8 @@ namespace Dynamo.Graph.Nodes
                     var warnings =
                         parseParam.Warnings.Where(
                             w =>
-                                w.ID != WarningID.kIdUnboundIdentifier
-                                    && w.ID != WarningID.kFunctionAlreadyDefined);
+                                w.ID != WarningID.IdUnboundIdentifier
+                                    && w.ID != WarningID.FunctionAlreadyDefined);
 
                     if (warnings.Any())
                     {

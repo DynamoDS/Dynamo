@@ -21,7 +21,10 @@ namespace ProtoFFI
 
         private ExtensionAppLoader()
         {
-            mProtoInterface = typeof(IExtensionApplication).Assembly.GetName().Name;
+            var assembly = typeof(IExtensionApplication).Assembly;
+            mProtoInterface = assembly.GetName().Name;
+            //Let's resolve ProtoInterface, with the assembly implementing IExtensionApplication i.e. DynamoServices
+            mAssemblies.Add("ProtoInterface", assembly);
             Initialize();
         }
 
@@ -37,16 +40,16 @@ namespace ProtoFFI
 
                 switch (session.State)
                 {
-                    case ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin:
+                    case ProtoCore.ExecutionStateEventArgs.State.ExecutionBegin:
                         app.OnBeginExecution(session);
                         break;
-                    case ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd:
+                    case ProtoCore.ExecutionStateEventArgs.State.ExecutionEnd:
                         app.OnEndExecution(session);
                         break;
-                    case ProtoCore.ExecutionStateEventArgs.State.kExecutionBreak:
+                    case ProtoCore.ExecutionStateEventArgs.State.ExecutionBreak:
                         app.OnSuspendExecution(session);
                         break;
-                    case ProtoCore.ExecutionStateEventArgs.State.kExecutionResume:
+                    case ProtoCore.ExecutionStateEventArgs.State.ExecutionResume:
                         app.OnResumeExecution(session);
                         break;
                     default:

@@ -296,6 +296,7 @@ test = trimmedSurface.x;
         }
 
         [Test]
+        [Ignore]
         [Category("ModifierBlock")] 
         public void T009_modifier_test_1_Robert()
         {

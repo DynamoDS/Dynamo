@@ -57,7 +57,6 @@ namespace Dynamo.UI.Controls
         private Canvas hostingCanvas = null;
 
         // Data source and display.
-        private MirrorData mirrorData = null;
         private String cachedSmallContent = null;
         private WatchViewModel cachedLargeContent = null;
 
@@ -73,7 +72,6 @@ namespace Dynamo.UI.Controls
 
         // Queued data refresh
         private bool queuedRefresh;
-        private MirrorData queuedMirrorData;
 
         private static readonly DependencyProperty StaysOpenProperty =
             DependencyProperty.Register("StaysOpen", typeof(bool), typeof(PreviewControl));
@@ -106,7 +104,7 @@ namespace Dynamo.UI.Controls
             if (this.nodeViewModel.PreviewPinned)
             {
                 StaysOpen = true;
-                BindToDataSource(this.nodeViewModel.NodeModel.CachedValue);
+                BindToDataSource();
                 TransitionToState(State.Condensed);
                 TransitionToState(State.Expanded);
             }
@@ -162,12 +160,11 @@ namespace Dynamo.UI.Controls
         /// to. This value can be null to reset the preview control to its 
         /// initial state.</param>
         /// 
-        internal void BindToDataSource(MirrorData mirrorData)
+        internal void BindToDataSource()
         {
             // First detach the bound data from its view.
             ResetContentViews();
 
-            this.mirrorData = mirrorData;
             this.cachedLargeContent = null; // Reset expanded content.
             this.cachedSmallContent = null; // Reset condensed content.
 
@@ -181,6 +178,8 @@ namespace Dynamo.UI.Controls
             {
                 RefreshExpandedDisplay(delegate { BeginViewSizeTransition(ComputeLargeContentSize()); });
             }
+
+            IsDataBound = true;
         }
 
         /// <summary>
@@ -188,9 +187,8 @@ namespace Dynamo.UI.Controls
         /// in transition.  In these situations, we can store the MirrorData and
         /// set a flag to refresh the display.
         /// </summary>
-        internal void EnqueueBindToDataSource(MirrorData mirrorData)
+        internal void RequestForRefresh()
         {
-            this.queuedMirrorData = mirrorData;
             this.queuedRefresh = true;
         }
 
@@ -198,7 +196,7 @@ namespace Dynamo.UI.Controls
 
         #region Public Class Properties
 
-        internal bool IsDataBound { get { return mirrorData != null; } }
+        internal bool IsDataBound { get; set;}
         internal bool IsHidden { get { return currentState == State.Hidden; } }
         internal bool IsCondensed { get { return currentState == State.Condensed; } }
         internal bool IsExpanded { get { return currentState == State.Expanded; } }
@@ -223,8 +221,7 @@ namespace Dynamo.UI.Controls
             if (queuedRefresh)
             {
                 queuedRefresh = false;
-                BindToDataSource(queuedMirrorData);
-                this.queuedMirrorData = null;
+                BindToDataSource();
                 return;
             }
 
@@ -320,6 +317,7 @@ namespace Dynamo.UI.Controls
             RunOnSchedulerSync(
                 () =>
                 {
+                    var mirrorData = nodeViewModel.NodeModel.CachedValue;
                     if (mirrorData != null)
                     {
                         if (mirrorData.IsCollection)
@@ -391,7 +389,7 @@ namespace Dynamo.UI.Controls
                 () =>
                 {
                     newViewModel = nodeViewModel.DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
-                        mirrorData, null, nodeViewModel.NodeModel.AstIdentifierForPreview.Name, false);
+                        nodeViewModel.NodeModel.CachedValue, null, nodeViewModel.NodeModel.AstIdentifierForPreview.Name, false);
                 },
                 (m) =>
                 {
@@ -407,21 +405,27 @@ namespace Dynamo.UI.Controls
                     }
 
                     var watchTree = largeContentGrid.Children[0] as WatchTree;
-                    var rootDataContext = watchTree.DataContext as WatchViewModel;
+                    if (watchTree != null)
+                    {
+                        var rootDataContext = watchTree.DataContext as WatchViewModel;
 
 
-                    cachedLargeContent = newViewModel;
+                        cachedLargeContent = newViewModel;
 
-                    rootDataContext.IsOneRowContent = cachedLargeContent.Children.Count == 0;
-                    rootDataContext.Children.Clear();
-                    rootDataContext.Children.Add(cachedLargeContent);
-
-                    watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty,
-                        new Binding("Children")
+                        if (rootDataContext != null)
                         {
-                            Mode = BindingMode.TwoWay,
-                            Source = rootDataContext
-                        });
+                            rootDataContext.IsOneRowContent = cachedLargeContent.Children.Count == 0;
+                            rootDataContext.Children.Clear();
+                            rootDataContext.Children.Add(cachedLargeContent);
+
+                            watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty,
+                                new Binding("Children")
+                                {
+                                    Mode = BindingMode.TwoWay,
+                                    Source = rootDataContext
+                                });
+                        }
+                    }
                     if (refreshDisplay != null)
                     {
                         refreshDisplay();
@@ -467,30 +471,7 @@ namespace Dynamo.UI.Controls
             SetCurrentStateAndNotify(State.PreTransition);
 
             // Used delay invoke, because TreeView hasn't changed its'appearance with usual Dispatcher call.
-            Dispatcher.DelayInvoke(50, () => RefreshExpandedDisplay(() =>
-            {
-                largeContentGrid.Visibility = Visibility.Visible;
-                bubbleTools.Visibility = Visibility.Visible;
-
-                // The real transition starts
-                SetCurrentStateAndNotify(State.InTransition);
-                var largeContentSize = ComputeLargeContentSize();
-                UpdateAnimatorTargetSize(SizeAnimator.Expansion, largeContentSize);
-
-                // If it's test mode - skip storyboard.
-                if (!DynamoModel.IsTestMode)
-                {
-                    expandStoryboard.Begin(this, true);
-                }
-                else
-                {
-                    largeContentGrid.Opacity = 1.0;
-                    smallContentGrid.Opacity = 0.0;
-                    centralizedGrid.Width = largeContentSize.Width;
-                    centralizedGrid.Height = largeContentSize.Height;
-                    OnPreviewControlExpanded(null, null);
-                }
-            }));
+            Dispatcher.DelayInvoke(50, () => RefreshExpandedDisplay(RefreshExpandedDisplayAction));
         }
 
         private Size ComputeSmallContentSize()
@@ -515,7 +496,8 @@ namespace Dynamo.UI.Controls
 
         private Size ComputeLargeContentSize()
         {
-            this.largeContentGrid.Measure(new Size()
+            largeContentGrid.UpdateLayout();
+            largeContentGrid.Measure(new Size()
             {
                 Width = Configurations.MaxExpandedPreviewWidth,
                 Height = Configurations.MaxExpandedPreviewHeight
@@ -684,31 +666,32 @@ namespace Dynamo.UI.Controls
             // indicate a new transition is about to be started
             SetCurrentStateAndNotify(State.PreTransition);
 
-            RefreshExpandedDisplay(() =>
-                {
-                    largeContentGrid.Visibility = Visibility.Visible;
-                    bubbleTools.Visibility = Visibility.Visible;
+            RefreshExpandedDisplay(RefreshExpandedDisplayAction);
+        }
 
-                    // The real transition starts
-                    SetCurrentStateAndNotify(State.InTransition);
-                    var largeContentSize = ComputeLargeContentSize();
-                    UpdateAnimatorTargetSize(SizeAnimator.Expansion, largeContentSize);                    
+        private void RefreshExpandedDisplayAction()
+        {
+            largeContentGrid.Visibility = Visibility.Visible;
+            bubbleTools.Visibility = Visibility.Visible;
 
-                    // If it's test mode - skip storyboard.
-                    if (!DynamoModel.IsTestMode)
-                    {
-                        expandStoryboard.Begin(this, true);
-                    }
-                    else
-                    {
-                        largeContentGrid.Opacity = 1.0;
-                        smallContentGrid.Opacity = 0.0;
-                        centralizedGrid.Width = largeContentSize.Width;
-                        centralizedGrid.Height = largeContentSize.Height;
-                        OnPreviewControlExpanded(null, null);
-                    }
-                }
-            );
+            // The real transition starts
+            SetCurrentStateAndNotify(State.InTransition);
+            var largeContentSize = ComputeLargeContentSize();
+            UpdateAnimatorTargetSize(SizeAnimator.Expansion, largeContentSize);
+
+            // If it's test mode - skip storyboard.
+            if (!DynamoModel.IsTestMode)
+            {
+                expandStoryboard.Begin(this, true);
+            }
+            else
+            {
+                largeContentGrid.Opacity = 1.0;
+                smallContentGrid.Opacity = 0.0;
+                centralizedGrid.Width = largeContentSize.Width;
+                centralizedGrid.Height = largeContentSize.Height;
+                OnPreviewControlExpanded(null, null);
+            }
         }
 
         private void BeginViewSizeTransition(Size targetSize)

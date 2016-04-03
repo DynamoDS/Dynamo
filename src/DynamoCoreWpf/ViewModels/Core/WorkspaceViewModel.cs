@@ -278,7 +278,6 @@ namespace Dynamo.ViewModels
         public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel dynamoViewModel)
         {
             this.DynamoViewModel = dynamoViewModel;
-            this.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
 
             Model = model;
             stateMachine = new StateMachine(this);
@@ -339,25 +338,6 @@ namespace Dynamo.ViewModels
         {
             RaisePropertyChanged("CanPaste", "CanCopy", "CanCopyOrPaste");
             PasteCommand.RaiseCanExecuteChanged();
-        }
-
-        void RunSettingsViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            // If any property changes on the run settings object
-            // Raise a property change notification for the RunSettingsViewModel
-            // property
-            RaisePropertyChanged("RunSettingsViewModel");
-        }
-
-        void DynamoViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "CurrentSpace":
-                    // When workspace is changed(e.g. from home to custom), close InCanvasSearch.
-                    OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
-                    break;                
-            }
         }
 
         void Connectors_ConnectorAdded(ConnectorModel c)

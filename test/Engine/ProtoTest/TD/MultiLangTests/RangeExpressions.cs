@@ -1124,7 +1124,7 @@ a;b;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.VerifyBuildWarningCount(2);
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kInvalidRangeExpression);
+            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.InvalidRangeExpression);
         }
 
         [Test]
@@ -1876,7 +1876,7 @@ a = 0;
 b = 0..10..a;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kInvalidArguments);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.InvalidArguments);
             thisTest.VerifyRuntimeWarningCount(1);
             thisTest.Verify("b", null);
         }
@@ -2133,6 +2133,42 @@ b = 0..10..a;
             thisTest.Verify("a3", new List<Object>());
 
             thisTest.VerifyRuntimeWarningCount(2);
+        }
+
+        [Test]
+        [Category("Regression")]
+        public void TestRangeExpressionOverLimit01()
+        {
+            string src = @"x = 1..200000000;";
+            thisTest.RunScriptSource(src);
+            thisTest.VerifyRuntimeWarningCount(1);
+        }
+
+        [Test]
+        [Category("Regression")]
+        public void TestRangeExpressionOverLimit02()
+        {
+            string src = @"x = 1..10000000000000000;";
+            thisTest.RunScriptSource(src);
+            thisTest.VerifyRuntimeWarningCount(1);
+        }
+
+        [Test]
+        [Category("Regression")]
+        public void TestRangeExpressionOverLimit03()
+        {
+            string src = @"x = 1..10..#200000000;";
+            thisTest.RunScriptSource(src);
+            thisTest.VerifyRuntimeWarningCount(1);
+        }
+
+        [Test]
+        [Category("Regression")]
+        public void TestRangeExpressionOverLimit04()
+        {
+            string src = @"x = 1..10..0.00000000001;";
+            thisTest.RunScriptSource(src);
+            thisTest.VerifyRuntimeWarningCount(1);
         }
     }
 }

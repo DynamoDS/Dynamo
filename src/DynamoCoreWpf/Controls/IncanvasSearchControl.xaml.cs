@@ -9,9 +9,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
-using Dynamo.Controls;
 using Dynamo.Utilities;
-using Dynamo.Views;
 
 namespace Dynamo.UI.Controls
 {
@@ -29,28 +27,13 @@ namespace Dynamo.UI.Controls
             get { return DataContext as SearchViewModel; }
         }
 
-        private WorkspaceView workspaceView;
-        private DynamoView dynamoView;
-
         public InCanvasSearchControl()
         {
             InitializeComponent();
-
-            Loaded += (sender, e) =>
+            if (Application.Current != null)
             {
-                if (workspaceView == null)
-                {
-                    workspaceView = WpfUtilities.FindUpVisualTree<WorkspaceView>(Parent);
-                }
-
-                if (dynamoView != null) return;
-
-                dynamoView = WpfUtilities.FindUpVisualTree<DynamoView>(Parent);
-                if (dynamoView != null)
-                {
-                    dynamoView.Deactivated += (s, args) => { OnRequestShowInCanvasSearch(ShowHideFlags.Hide); };
-                }
-            };
+                Application.Current.Deactivated += (s, args) => { OnRequestShowInCanvasSearch(ShowHideFlags.Hide); };
+            }
         }
 
         private void OnRequestShowInCanvasSearch(ShowHideFlags flags)
@@ -248,6 +231,8 @@ namespace Dynamo.UI.Controls
             // Make delta less to achieve smooth scrolling and not jump over other elements.
             var delta = e.Delta / 100;
             scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - delta);
+            // do not propagate to child items with scrollable content
+            e.Handled = true;
         }
     }
 }

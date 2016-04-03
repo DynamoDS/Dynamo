@@ -90,14 +90,6 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework">
-      <SpecificVersion>False</SpecificVersion>
-      <NunitPath Condition=" '$(NunitPath)' == '' ">..\..\..\nunit\framework\nunit.framework.dll</NunitPath>
-      <Hintpath>$(NunitPath)</Hintpath>
-      <Private>True</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>AssemblySharedInfo.cs</Link>
     </Compile>

@@ -46,7 +46,7 @@ namespace ProtoCore.DSASM
             Rank = ProtoCore.DSASM.Constants.kDefaultClassRank;
             Symbols = new SymbolTable("classscope", 0);
             DefaultArgExprList = new List<AST.AssociativeAST.AssociativeNode>();
-            ID = (int)PrimitiveType.kInvalidType;
+            ID = (int)PrimitiveType.InvalidType;
 
             // Jun TODO: how significant is runtime index for class procedures?
             int classRuntimProc = ProtoCore.DSASM.Constants.kInvalidIndex;
@@ -56,9 +56,9 @@ namespace ProtoCore.DSASM
 
             // Set default allowed coerce types
             CoerceTypes = new Dictionary<int, int>();
-            CoerceTypes.Add((int)ProtoCore.PrimitiveType.kTypeVar, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
-            CoerceTypes.Add((int)ProtoCore.PrimitiveType.kTypeArray, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
-            CoerceTypes.Add((int)ProtoCore.PrimitiveType.kTypeNull, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
+            CoerceTypes.Add((int)ProtoCore.PrimitiveType.Var, (int)ProtoCore.DSASM.ProcedureDistance.CoerceScore);
+            CoerceTypes.Add((int)ProtoCore.PrimitiveType.Array, (int)ProtoCore.DSASM.ProcedureDistance.CoerceScore);
+            CoerceTypes.Add((int)ProtoCore.PrimitiveType.Null, (int)ProtoCore.DSASM.ProcedureDistance.CoerceScore);
         }
 
         public ClassNode(ClassNode rhs)
@@ -92,34 +92,34 @@ namespace ProtoCore.DSASM
         public bool ConvertibleTo(int type)
         {
             Validity.Assert(null != CoerceTypes);
-            Validity.Assert((int)PrimitiveType.kInvalidType != ID);
+            Validity.Assert((int)PrimitiveType.InvalidType != ID);
 
-            if ((int)PrimitiveType.kTypeNull == ID || CoerceTypes.ContainsKey(type))
+            if ((int)PrimitiveType.Null == ID || CoerceTypes.ContainsKey(type))
             { 
                 return true;
             }
 
             //chars are convertible to string
 
-            else if (ID == (int)PrimitiveType.kTypeChar && type==(int)PrimitiveType.kTypeString)
+            else if (ID == (int)PrimitiveType.Char && type==(int)PrimitiveType.String)
             {
                 return true;
             }
 
             //user defined type to bool
-            else if (ID >=(int)PrimitiveType.kMaxPrimitives && type == (int)PrimitiveType.kTypeBool)
+            else if (ID >=(int)PrimitiveType.MaxPrimitive && type == (int)PrimitiveType.Bool)
             {
                 return true;
             }
                 
                 //string to boolean
 
-            else if (ID == (int)PrimitiveType.kTypeString && type == (int)PrimitiveType.kTypeBool)
+            else if (ID == (int)PrimitiveType.String && type == (int)PrimitiveType.Bool)
             {
                 return true;
             }
             //char to boolean
-            else if (ID == (int)PrimitiveType.kTypeChar && type == (int)PrimitiveType.kTypeBool)
+            else if (ID == (int)PrimitiveType.Char && type == (int)PrimitiveType.Bool)
             {
                 return true;
             }
@@ -130,14 +130,14 @@ namespace ProtoCore.DSASM
         public int GetCoercionScore(int type)
         {
             Validity.Assert(null != CoerceTypes);
-            int score = (int)ProtoCore.DSASM.ProcedureDistance.kNotMatchScore;
+            int score = (int)ProtoCore.DSASM.ProcedureDistance.NotMatchScore;
 
             if (type == ID)
-                return (int)ProtoCore.DSASM.ProcedureDistance.kExactMatchScore;
+                return (int)ProtoCore.DSASM.ProcedureDistance.ExactMatchScore;
 
-            if ((int)PrimitiveType.kTypeNull == ID)
+            if ((int)PrimitiveType.Null == ID)
             {
-                score = (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore;
+                score = (int)ProtoCore.DSASM.ProcedureDistance.CoerceScore;
             }
             else
             {
@@ -153,12 +153,12 @@ namespace ProtoCore.DSASM
 
         public bool IsMyBase(int type)
         {
-            if ((int)PrimitiveType.kInvalidType == type)
+            if ((int)PrimitiveType.InvalidType == type)
                 return false;
 
             foreach (int baseIndex in Bases)
             {
-                Validity.Assert(baseIndex != (int)PrimitiveType.kInvalidType);
+                Validity.Assert(baseIndex != (int)PrimitiveType.InvalidType);
                 if (type == baseIndex)
                     return true;
 
@@ -215,7 +215,7 @@ namespace ProtoCore.DSASM
 
                 if (classScope == ProtoCore.DSASM.Constants.kInvalidIndex)
                 {
-                    isAccessible = (procNode.AccessModifier == CompilerDefinitions.AccessModifier.kPublic);
+                    isAccessible = (procNode.AccessModifier == CompilerDefinitions.AccessModifier.Public);
                 }
                 else if (classScope == myClassIndex) 
                 {
@@ -223,11 +223,11 @@ namespace ProtoCore.DSASM
                 }
                 else if (TypeSystem.classTable.ClassNodes[classScope].IsMyBase(myClassIndex))
                 {
-                    isAccessible = (procNode.AccessModifier != CompilerDefinitions.AccessModifier.kPrivate);
+                    isAccessible = (procNode.AccessModifier != CompilerDefinitions.AccessModifier.Private);
                 }
                 else
                 {
-                    isAccessible = (procNode.AccessModifier == CompilerDefinitions.AccessModifier.kPublic);
+                    isAccessible = (procNode.AccessModifier == CompilerDefinitions.AccessModifier.Public);
                 }
 
                 return procNode;
@@ -540,7 +540,7 @@ namespace ProtoCore.DSASM
 
         public string GetTypeName(int UID)
         {
-            if (UID == (int)PrimitiveType.kInvalidType ||
+            if (UID == (int)PrimitiveType.InvalidType ||
                 UID > ClassNodes.Count)
             {
                 return null;
@@ -574,7 +574,7 @@ namespace ProtoCore.DSASM
                         message += ", " + symbol.FullName;
                     }
 
-                    status.LogWarning(BuildData.WarningID.kMultipleSymbolFound, message, graphNode: graphNode);
+                    status.LogWarning(BuildData.WarningID.MultipleSymbolFound, message, graphNode: graphNode);
                 }
             }
         }

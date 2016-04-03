@@ -139,7 +139,7 @@ namespace Dynamo
                 .Select(node => node.Definition)
                 .Where(def => def.FunctionId != functionId)
                 .Distinct();
-            ReturnType = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
+            ReturnType = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var);
         }
 
         internal static CustomNodeDefinition MakeProxy(Guid functionId, string displayName)

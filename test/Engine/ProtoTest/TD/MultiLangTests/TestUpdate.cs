@@ -210,7 +210,7 @@ d = [ Imperative ]
 e = b;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kCyclicDependency);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.CyclicDependency);
             /*
             Object[] v2 = new Object[] { 3, 4, 5 };
             Object[] v1 = new Object[] { 2, 3, 4 };
@@ -242,7 +242,7 @@ e = c;
 f = d;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kCyclicDependency);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.CyclicDependency);
 
             /*
             thisTest.Verify("d", 3, 0);
@@ -1359,6 +1359,7 @@ c = [Imperative]
         }
 
         [Test]
+        [Ignore]
         [Category("SmokeTest")]
         [Category("ModifierBlock")]
         public void T27_Modifier_Stack_With_Right_Assignment()
@@ -1383,6 +1384,7 @@ f = a3 + 1;";
         }
 
         [Test]
+        [Ignore]
         [Category("SmokeTest")]
         [Category("ModifierBlock")]
         public void T27_Modifier_Stack_With_Function_Call()
@@ -1413,6 +1415,7 @@ f = a3 + 1;
         }
 
         [Test]
+        [Ignore]
         [Category("SmokeTest")]
         [Category("ModifierBlock")] 
         public void T27_Modifier_Stack_With_Function_Call_2()
@@ -1848,6 +1851,7 @@ res = ax.foo(1);
         }
 
         [Test]
+        [Ignore]
         [Category("SmokeTest")]
         [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_Cross_Reference()
@@ -1872,6 +1876,7 @@ b = {
         }
 
         [Test]
+        [Ignore]
         [Category("SmokeTest")]
         [Category("ModifierBlock")] 
         public void T27_Modifier_Stack_Update()
@@ -1921,6 +1926,7 @@ b = {
         }
 
         [Test]
+        [Ignore]
         [Category("SmokeTest")]
         [Category("ModifierBlock")] 
         public void T27_Modifier_Stack_Update_2()
@@ -1997,6 +2003,7 @@ z = a.x;
         }
 
         [Test]
+        [Ignore]
         [Category("SmokeTest")]
         [Category("ModifierBlock")] 
         public void T27_Modifier_Stack_Update_4()
@@ -2019,6 +2026,7 @@ y = 4;";
         }
 
         [Test]
+        [Ignore]
         [Category("SmokeTest")]
         public void T27_Modifier_Stack_With_Array()
         {
@@ -2039,6 +2047,7 @@ b2 = a;";
         }
 
         [Test]
+        [Ignore]
         [Category("SmokeTest")]
         [Category("ModifierBlock")]
         public void T27_Modifier_Stack_With_Array_2()
@@ -2060,6 +2069,7 @@ a = 4;";
         }
 
         [Test]
+        [Ignore]
         [Category("SmokeTest")]
         [Category("ModifierBlock")] 
         public void T27_Modifier_Stack_With_Array_3()
@@ -2089,6 +2099,7 @@ x = [Imperative]
         }
 
         [Test]
+        [Ignore]
         [Category("SmokeTest")]
         [Category("ModifierBlock")] 
         public void T27_Modifier_Stack_Update_5()
@@ -2113,6 +2124,7 @@ y = 2;
         }
 
         [Test]
+        [Ignore]
         [Category("SmokeTest")]
         [Category("ModifierBlock")]
         public void T27_Modifier_Stack_With_Array_4()
@@ -2299,6 +2311,7 @@ a2 = 4;";
 
 
         [Test]
+        [Ignore]
         [Category("SmokeTest")]
         [Category("ModifierBlock")] 
         public void T27_Modifier_Stack_With_Self_Updates()
@@ -2864,6 +2877,7 @@ t3 = t1;";
         }
 
         [Test]
+        [Ignore]
         [Category("SmokeTest")]
         [Category("ModifierBlock")] 
         public void T36_Modifier_Block_Multiple_Updates()
@@ -2881,6 +2895,7 @@ a = { 2 => a1;
         }
 
         [Test]
+        [Ignore]
         [Category("SmokeTest")]
         [Category("ModifierBlock")]
         public void T36_Modifier_Block_Multiple_Updates_2()
@@ -2917,6 +2932,7 @@ testArrayMember2 = c2;";
         }
 
         [Test]
+        [Ignore]
         [Category("SmokeTest")]
         [Category("ModifierBlock")]
         public void T38_Defect_1467059_Modifier_Stack_With_Undefined_Variable()
@@ -2934,6 +2950,7 @@ b1 = 2;";
         }
 
         [Test]
+        [Ignore]
         [Category("SmokeTest")]
         [Category("ModifierBlock")]
         public void T38_Defect_1467059_Modifier_Stack_With_Undefined_Variable_2()
@@ -2955,6 +2972,7 @@ b1 = 2;";
 
 
         [Test]
+        [Ignore]
         [Category("SmokeTest")]
         [Category("ModifierBlock")] [Category("Failure")]
         public void T39_Defect_1465319_Modifier_Stack_Update_Issue()
@@ -2976,6 +2994,7 @@ y1 = 5;";
         }
 
         [Test]
+        [Ignore]
         [Category("SmokeTest")]
         [Category("ModifierBlock")] [Category("Failure")]
         public void T40_Defect_1467057_Modifier_Stack_Cross_Update_Issue()
@@ -2993,6 +3012,7 @@ b = {
         }
 
         [Test]
+        [Ignore]
         [Category("Update")]
         [Category("ModifierBlock")] 
         public void T40_Defect_1467057_Modifier_Stack_Cross_Update_Issue_3()
@@ -3014,6 +3034,7 @@ b = {
         }
 
         [Test]
+        [Ignore]
         [Category("Update")]
         [Category("ModifierBlock")] [Category("Failure")]
         public void T40_Defect_1467088_Modifier_Stack_Cross_Update_Issue()
@@ -3033,6 +3054,7 @@ b = {
         }
 
         [Test]
+        [Ignore]
         [Category("Update")]
         [Category("ModifierBlock")] 
         public void T40_Defect_1467088_Modifier_Stack_Cross_Update_Issue_2()
@@ -3058,6 +3080,7 @@ a = {
         }
 
         [Test]
+        [Ignore]
         [Category("Update")]
         [Category("ModifierBlock")] 
         public void T40_Defect_1467088_Modifier_Stack_Cross_Update_Issue_3()
@@ -3599,7 +3622,7 @@ c = 10;
 ";
             string errmsg = "MAGN-4094 Runtime Cyclic Dependency not detected";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kCyclicDependency);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.CyclicDependency);
             
         }
 
@@ -6405,7 +6428,7 @@ test = b1.y;
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kCyclicDependency);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.CyclicDependency);
         }
 
         [Test]

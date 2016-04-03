@@ -44,6 +44,7 @@ using Dynamo.Wpf.Views.Gallery;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.Views.PackageManager;
 using Dynamo.Views;
+using System.Collections.Generic;
 
 namespace Dynamo.Controls
 {
@@ -133,7 +134,12 @@ namespace Dynamo.Controls
                 dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin += loginService.ShowLogin;
             }
 
-            var viewExtensions = viewExtensionManager.ExtensionLoader.LoadDirectory(dynamoViewModel.Model.PathManager.ViewExtensionsDirectory);
+            var viewExtensions = new List<IViewExtension>();
+            foreach (var dir in dynamoViewModel.Model.PathManager.ViewExtensionsDirectories)
+            {
+                viewExtensions.AddRange(viewExtensionManager.ExtensionLoader.LoadDirectory(dir));
+            }
+
             viewExtensionManager.MessageLogged += Log;
 
             var startupParams = new ViewStartupParams(dynamoViewModel);

@@ -14,7 +14,7 @@ namespace InstallerSpec
         public string Name { get; set; }
         public string FilePath { get; set; }
         public bool DigitalSignature { get; set; }
-        public bool CopyForInstaller { get; set; }
+        public string Version { get; set; }
         public string Author { get; set; }
     }
 
@@ -25,11 +25,11 @@ namespace InstallerSpec
 
         private DynamoCoreVersion DynamoVersion;
 
-        public static DynamoInstallSpec CreateFromPath(string binPath)
+        public static DynamoInstallSpec CreateFromPath(string binPath, string corefile)
         {
             var spec = new DynamoInstallSpec()
             {
-                DynamoVersion = DynamoCoreVersion.FromPath(binPath)
+                DynamoVersion = DynamoCoreVersion.FromPath(binPath, corefile)
             };
 
             var dir = new DirectoryInfo(spec.DynamoVersion.BaseDirectory);
@@ -86,7 +86,7 @@ namespace InstallerSpec
                 { 
                     Name = item.Name, 
                     FilePath = item.FullName.Replace(DynamoVersion.BaseDirectory, @".\"), 
-                    CopyForInstaller = true, 
+                    Version = info != null ? info.FileVersion : "", 
                     DigitalSignature = NeedSignature(info), 
                     Author = info != null ? info.CompanyName : "" 
                 };
@@ -109,16 +109,24 @@ namespace InstallerSpec
         public string BaseVersion { get; private set; }
         public string BaseDirectory { get; private set; }
         
-        public static DynamoCoreVersion FromPath(string binpath)
+        public static DynamoCoreVersion FromPath(string binpath, string corefile)
         {
-            if (!binpath.EndsWith(@"\"))
+            string path = binpath;
+            if (Directory.Exists(binpath))//binpath is a directory
             {
-                binpath += @"\";
+                if (string.IsNullOrEmpty(corefile))
+                {
+                    corefile = "DynamoCore.dll";
+                }
+
+                path = Directory.GetFiles(binpath, corefile, SearchOption.AllDirectories).FirstOrDefault();
             }
-            
-            string path = Path.Combine(binpath, "DynamoCore.dll");
+
             if (!File.Exists(path)) return null; //File is not available
 
+            if (!binpath.EndsWith(@"\"))
+                binpath += @"\";
+            
             var info = FileVersionInfo.GetVersionInfo(path);
             return new DynamoCoreVersion()
             {
@@ -142,12 +150,15 @@ namespace InstallerSpec
 Generates installer spec XML file to be used to create installer and digital 
 signature based on a given folder.
 
-InstallerSpec.exe [binfolder] [xmlfilepath]
+InstallerSpec.exe [binfolder] [xmlfilepath] [corefile]
 
   binfolder     The folder in which all binaries reside. The search will 
                 enumerate this folder as well as all sub-folders.
 
   xmlfilepath   The path to the output XML file path
+
+  corefile      The core file name such as DynamoCore or DynamoRevitDS etc. 
+                to detect the version of the installer.
 ");
                 
                 return;
@@ -165,8 +176,23 @@ InstallerSpec.exe [binfolder] [xmlfilepath]
                 filePath = args[1];
             }
 
-            var installspec = DynamoInstallSpec.CreateFromPath(binpath);
+            var corefile = nArgs > 2 ? args[2] : string.Empty;
+
+            var installspec = DynamoInstallSpec.CreateFromPath(binpath, corefile);
             installspec.Save(filePath);
+
+            var binariestosigntxt = Path.Combine(Path.GetDirectoryName(filePath), @"binariestosign.txt");
+            using (var writer = new StreamWriter(binariestosigntxt))
+            {
+                foreach (var item in installspec.Modules)
+                {
+                    if(item.DigitalSignature)
+                    {
+                        writer.WriteLine(Path.GetFullPath(Path.Combine(binpath, item.FilePath)));
+                    }
+                }
+                writer.Flush();
+            }
         }
 
     }

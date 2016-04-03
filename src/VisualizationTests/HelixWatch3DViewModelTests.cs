@@ -4,9 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using System.Xml;
-using SystemTestServices;
 using CoreNodeModels.Input;
 using Dynamo;
 using Dynamo.Controls;
@@ -19,22 +20,21 @@ using Dynamo.Tests;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Views;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoCoreWpfTests.Utility;
 using DynamoShapeManager;
 using HelixToolkit.Wpf.SharpDX;
 using NUnit.Framework;
 using SharpDX;
+using SystemTestServices;
 using TestServices;
 using Watch3DNodeModels;
 using Watch3DNodeModelsWpf;
-using Color = System.Windows.Media.Color;
-using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
-using Dynamo.Views;
-using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
-using System.Windows.Controls;
-using System.Windows.Input;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
+using Color = System.Windows.Media.Color;
+using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
+using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 
 namespace WpfVisualizationTests
 {
@@ -940,7 +940,7 @@ namespace WpfVisualizationTests
                 nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
                 View.Dispatcher.Invoke(() =>
                 {
-                    nodeView.PreviewControl.BindToDataSource(nodeView.ViewModel.NodeModel.CachedValue);
+                    nodeView.PreviewControl.BindToDataSource();
                     nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Condensed);
                     nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Expanded);
                 });

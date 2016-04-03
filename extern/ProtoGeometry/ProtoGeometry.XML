@@ -1858,7 +1858,7 @@
             Get a string representation of the EllipseArc
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.EllipseArc.ByPlaneRadiiStartAngleSweepAngle(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double,System.Double,System.Double)">
+        <member name="M:Autodesk.DesignScript.Geometry.EllipseArc.ByPlaneRadiiAngles(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double,System.Double,System.Double)">
              <summary>
              Create an EllipseArc in a plane with the given the radii along the X and Y axes and the angles to sweep through
              </summary>
@@ -1901,6 +1901,14 @@
         <member name="P:Autodesk.DesignScript.Geometry.EllipseArc.SweepAngle">
              <summary>
              The total sweep angle in degrees
+             </summary>
+            <search>
+            ellipsearc,arcs
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.EllipseArc.Plane">
+             <summary>
+             The plane in which the ellipse lies
              </summary>
             <search>
             ellipsearc,arcs
@@ -3386,6 +3394,17 @@
              Get the Point with the same X, Y, and Z component
              </summary>
             <search>
+<<<<<<< HEAD
+=======
+            magnitude
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Vector.AsPoint">
+             <summary>
+             Get the Point with the same X, Y, and Z component
+             </summary>
+            <search>
+>>>>>>> 90d2370505a3783e8d5196ad14975248fe6bda27
             convertopoint,vector2point
             </search>
         </member>
@@ -3484,7 +3503,11 @@
             resize,size,scaleNU,scalenu
             </search>
         </member>
+<<<<<<< HEAD
         <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleBetween(Autodesk.DesignScript.Geometry.Vector)">
+=======
+        <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleWithVector(Autodesk.DesignScript.Geometry.Vector)">
+>>>>>>> 90d2370505a3783e8d5196ad14975248fe6bda27
              <summary>
              Returns the angle between the two Vectors, in the range [0, 180] degrees.
              </summary>
@@ -3492,6 +3515,7 @@
             rotation angle
             </search>
         </member>
+<<<<<<< HEAD
         <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleBetween(Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
              <summary>
              Returns the angle between the two Vectors, in the range [0, 360] degrees. It uses axis of rotation to determine the direction of the angle.
@@ -3519,6 +3543,12 @@
              <summary>
              Get the length of the vector - otherwise known as the Euclidean norm
              </summary>
+=======
+        <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleAboutAxis(Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
+             <summary>
+             Returns the angle between the two Vectors, in the range [0, 360] degrees. It uses axis of rotation to determine the direction of the angle.
+             </summary>
+>>>>>>> 90d2370505a3783e8d5196ad14975248fe6bda27
             <search>
             magnitude
             </search>
@@ -3791,7 +3821,21 @@
             Returns the Y Axis scaling of the CoordinateSystem: the length of the Y Axis vector.
             </summary>
         </member>
+<<<<<<< HEAD
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.ZScaleFactor">
+=======
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.FromNativePointer(System.IntPtr)">
+            <summary>
+            This method is meant for internal use only.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.ToNativePointer(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry})">
+            <summary>
+            This method is meant for internal use only.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB">
+>>>>>>> 90d2370505a3783e8d5196ad14975248fe6bda27
             <summary>
             Returns the Z Axis scaling of the CoordinateSystem: the length of the Z Axis vector.
             </summary>

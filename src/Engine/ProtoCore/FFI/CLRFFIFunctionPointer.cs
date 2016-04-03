@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -9,6 +10,46 @@ using ProtoCore.Properties;
 
 namespace ProtoFFI
 {
+    /// <summary>
+    /// FFIParameterInfo wraps ParameterInfo and attributes that applied to
+    /// the parameter.
+    /// </summary>
+    class FFIParameterInfo
+    {
+        /// <summary>
+        /// ParameterInfo
+        /// </summary>
+        public ParameterInfo Info { get; private set; }
+
+        /// <summary>
+        /// Create FFIParameterInfo by ParameterInfo
+        /// </summary>
+        /// <param name="info"></param>
+        public FFIParameterInfo(ParameterInfo info)
+        {
+            Info = info;
+        }
+
+        private bool? keepReference;
+        /// <summary>
+        /// Indicate if the marshaller should keep a reference to this
+        /// parameter in the return object of the corresponding function call.
+        /// </summary>
+        public bool KeepReference
+        {
+            get
+            {
+                if (keepReference.HasValue)
+                {
+                    return keepReference.Value;
+                }
+
+                keepReference = Info.GetCustomAttribute<KeepReferenceAttribute>() != null;
+                return keepReference.Value;
+            }
+        }
+    }
+
     abstract class FFIMemberInfo
     {
         protected MemberInfo Info { get; private set; }
@@ -46,7 +87,7 @@ namespace ProtoFFI
 
         public virtual bool IsStatic { get { return true; } }
 
-        public virtual ParameterInfo[] GetParameters() { return new ParameterInfo[0]; }
+        public virtual FFIParameterInfo[] GetParameters() { return new FFIParameterInfo[0]; }
 
         public abstract object Invoke(object thisObject, object[] parameters);
 
@@ -105,6 +146,8 @@ namespace ProtoFFI
     class FFIMethodInfo : FFIMemberInfo
     {
         private MethodInfo mMethod;
+        private FFIParameterInfo[] mParameterInfos;
+
         public FFIMethodInfo(MethodInfo method)
             : base(method)
         {
@@ -119,9 +162,13 @@ namespace ProtoFFI
             }
         }
 
-        public override ParameterInfo[] GetParameters()
+        public override FFIParameterInfo[] GetParameters()
         {
-            return mMethod.GetParameters();
+            if (mParameterInfos == null)
+            {
+                mParameterInfos = mMethod.GetParameters().Select(p => new FFIParameterInfo(p)).ToArray();
+            }
+            return mParameterInfos;
         }
 
         public override object Invoke(object thisObject, object[] parameters)
@@ -132,6 +179,7 @@ namespace ProtoFFI
 
     class FFIConstructorInfo : FFIMemberInfo
     {
+        private FFIParameterInfo[] mParameterInfos;
         ConstructorInfo mCInfo;
         public FFIConstructorInfo(ConstructorInfo c)
             : base(c)
@@ -139,9 +187,13 @@ namespace ProtoFFI
             mCInfo = c;
         }
 
-        public override ParameterInfo[] GetParameters()
+        public override FFIParameterInfo[] GetParameters()
         {
-            return mCInfo.GetParameters();
+            if (mParameterInfos == null)
+            {
+                mParameterInfos = mCInfo.GetParameters().Select(p => new FFIParameterInfo(p)).ToArray();
+            }
+            return mParameterInfos;
         }
 
         public override object Invoke(object thisObject, object[] parameters)
@@ -188,7 +240,7 @@ namespace ProtoFFI
         private ProtoCore.Type[] GetArgumentTypes(FFIMemberInfo member)
         {
             return member.GetParameters().Select(
-                pi => CLRModuleType.GetProtoCoreType(pi.ParameterType, Module)
+                pi => CLRModuleType.GetProtoCoreType(pi.Info.ParameterType, Module)
                 ).ToArray();
         }
 
@@ -270,9 +322,9 @@ namespace ProtoFFI
             {
                 if (ex.InnerException != null)
                 {
-                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ex.InnerException.Message);
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.InnerException.Message);
                 }
-                dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ex.Message);
+                dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.Message);
             }
             catch (System.Reflection.TargetInvocationException ex)
             {
@@ -288,49 +340,49 @@ namespace ProtoFFI
                             ReflectionInfo.Name, 
                             innerMessage);
 
-                        dsi.LogWarning(ProtoCore.Runtime.WarningID.kInvalidArguments, msg);
+                        dsi.LogWarning(ProtoCore.Runtime.WarningID.InvalidArguments, msg);
                     }
                     else if (exc is System.ArgumentException)
-                        dsi.LogWarning(ProtoCore.Runtime.WarningID.kInvalidArguments, ErrorString(exc));
+                        dsi.LogWarning(ProtoCore.Runtime.WarningID.InvalidArguments, ErrorString(exc));
                     else if (exc is System.NullReferenceException)
-                        dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ErrorString(null));
+                        dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ErrorString(null));
                     else
-                        dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ErrorString(exc));
+                        dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ErrorString(exc));
                 }
                 else
-                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ErrorString(ex));
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ErrorString(ex));
             }
             catch (System.Reflection.TargetParameterCountException ex)
             {
                 if (ex.InnerException != null)
                 {
-                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ex.InnerException.Message);
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.InnerException.Message);
                 }
-                dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ex.Message);
+                dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.Message);
             }
             catch (System.MethodAccessException ex)
             {
                 if (ex.InnerException != null)
                 {
-                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ex.InnerException.Message);
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.InnerException.Message);
                 }
-                dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ex.Message);
+                dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.Message);
             }
             catch (System.InvalidOperationException ex)
             {
                 if (ex.InnerException != null)
                 {
-                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ex.InnerException.Message);
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.InnerException.Message);
                 }
-                dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ex.Message);
+                dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.Message);
             }
             catch (System.NotSupportedException ex)
             {
                 if (ex.InnerException != null)
                 {
-                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ex.InnerException.Message);
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.InnerException.Message);
                 }
-                dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ex.Message);
+                dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.Message);
             }
             catch (ArgumentNullException ex)
             {
@@ -340,24 +392,24 @@ namespace ProtoFFI
                     ReflectionInfo.Name,
                     innerMessage);
 
-                dsi.LogWarning(ProtoCore.Runtime.WarningID.kInvalidArguments, msg);
+                dsi.LogWarning(ProtoCore.Runtime.WarningID.InvalidArguments, msg);
             }
             catch (System.ArgumentException ex)
             {
                 if (ex.InnerException != null)
                 {
-                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kInvalidArguments, ErrorString(ex.InnerException));
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.InvalidArguments, ErrorString(ex.InnerException));
                 }
                 else
-                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kInvalidArguments, ErrorString(ex));
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.InvalidArguments, ErrorString(ex));
             }
             catch (Exception ex)
             {
                 if (ex.InnerException != null)
                 {
-                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kDefault, ErrorString(ex.InnerException));
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.Default, ErrorString(ex.InnerException));
                 }
-                dsi.LogWarning(ProtoCore.Runtime.WarningID.kDefault, ErrorString(ex));
+                dsi.LogWarning(ProtoCore.Runtime.WarningID.Default, ErrorString(ex));
             }
 
             return dsRetValue;
@@ -390,7 +442,7 @@ namespace ProtoFFI
                 catch (InvalidOperationException)
                 {
                     string message = String.Format(Resources.kFFIFailedToObtainThisObject, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
-                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, message);
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, message);
                     return null;
                 }
 
@@ -398,21 +450,28 @@ namespace ProtoFFI
                     return null; //Can't call a method on null object.
             }
 
-            ParameterInfo[] paraminfos = ReflectionInfo.GetParameters();
+            FFIParameterInfo[] paraminfos = ReflectionInfo.GetParameters();
+            List<StackValue> referencedParameters = new List<StackValue>();
+
             for (int i = 0; i < mArgTypes.Length; ++i)
             {
                 // Comment Jun: FFI function stack frames do not contain locals
                 int locals = 0;
-                int relative = 0 - ProtoCore.DSASM.StackFrame.kStackFrameSize - locals - i - 1;
+                int relative = 0 - ProtoCore.DSASM.StackFrame.StackFrameSize - locals - i - 1;
                 StackValue opArg = dsi.runtime.rmem.GetAtRelative(relative);
                 try
                 {
-                    Type paramType = paraminfos[i].ParameterType;
+                    Type paramType = paraminfos[i].Info.ParameterType;
                     object param = null;
                     if (opArg.IsDefaultArgument)
                         param = Type.Missing;
                     else 
                         param = marshaller.UnMarshal(opArg, c, dsi, paramType);
+
+                    if (paraminfos[i].KeepReference && opArg.IsReferenceType)
+                    {
+                        referencedParameters.Add(opArg);
+                    }
 
                     //null is passed for a value type, so we must return null 
                     //rather than interpreting any value from null. fix defect 1462014 
@@ -420,8 +479,8 @@ namespace ProtoFFI
                     {
                         //This is going to cause a cast exception. This is a very frequently called problem, so we want to short-cut the execution
 
-                        dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation,
-                            string.Format(Resources.FailedToCastFromNull, paraminfos[i].ParameterType.Name));
+                        dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation,
+                            string.Format(Resources.FailedToCastFromNull, paraminfos[i].Info.ParameterType.Name));
                         
                             return null;
                         //throw new System.InvalidCastException(string.Format("Null value cannot be cast to {0}", paraminfos[i].ParameterType.Name));
@@ -432,18 +491,50 @@ namespace ProtoFFI
                 }
                 catch (System.InvalidCastException ex)
                 {
-                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ex.Message);
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.Message);
                     return null;
                 }
                 catch (InvalidOperationException)
                 {
-                    string message = String.Format(Resources.kFFIFailedToObtainObject, paraminfos[i].ParameterType.Name, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
-                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, message);
+                    string message = String.Format(Resources.kFFIFailedToObtainObject, paraminfos[i].Info.ParameterType.Name, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, message);
                     return null;
                 }
             }
 
-            return InvokeFunctionPointerNoThrow(c, dsi, thisObject, parameters.Count > 0 ? parameters.ToArray() : null);
+            var ret =  InvokeFunctionPointerNoThrow(c, dsi, thisObject, parameters.Count > 0 ? parameters.ToArray() : null);
+            int count = referencedParameters.Count;
+            if (count > 0 && (ret is StackValue))
+            {
+                // If there is a parameter who has attribute [KeepReference],
+                // it means this parameter will cross the DesignScript boundary
+                // and be referenced by C# object. Therefore, when its DS
+                // wrapper object is out of scope, we shouldn't dispose it;
+                // otherwise that C# object will reference to an invalid object.
+                //
+                // The hack here is to treat it like a property in the return
+                // object. Note all DS wrapper objects are dummy objects who
+                // haven't any members. By allocating extra space on the heap,
+                // we store the reference in the return object so that the
+                // parameter will have the same lifecycle as the return object.
+                var pointer = (StackValue)ret;
+                if (pointer.IsPointer)
+                {
+                    var dsObject = dsi.runtime.rmem.Heap.ToHeapObject<DSObject>(pointer);
+                    if (dsObject != null)
+                    {
+                        int startIndex = dsObject.Count;
+                        dsObject.ExpandBySize(count);
+                        Validity.Assert(dsObject.Count >= referencedParameters.Count);
+
+                        for (int i = 0; i < referencedParameters.Count; i++)
+                        {
+                            dsObject.SetValueAtIndex(startIndex + i, referencedParameters[i], dsi.runtime.RuntimeCore);
+                        }
+                    }
+                } 
+            }
+            return ret;
         }
     }
 
@@ -518,7 +609,7 @@ namespace ProtoFFI
             StackValue propValue = (StackValue)retVal;
             StackValue thisObject = dsi.runtime.rmem.Stack.Last();
 
-            bool isValidPointer = thisObject.IsPointer && thisObject.opdata != Constants.kInvalidIndex;
+            bool isValidPointer = thisObject.IsPointer && thisObject.Pointer != Constants.kInvalidIndex;
             if (isValidPointer && propValue.IsReferenceType)
             {
                 int classIndex = thisObject.metaData.type;

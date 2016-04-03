@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DynamoServices
+namespace Dynamo.Events
 {
     public delegate void WorkspaceAddedEventHandler(WorkspacesModificationEventArgs args);
     public delegate void WorkspaceRemoveStartedEventHandler(WorkspacesModificationEventArgs args);
@@ -15,7 +15,7 @@ namespace DynamoServices
         /// to the DynamoModel's Workspaces collection.
         /// </summary>
         public static event WorkspaceAddedEventHandler WorkspaceAdded;
-        public static void OnWorkspaceAdded(Guid id, string name, Type type)
+        internal static void OnWorkspaceAdded(Guid id, string name, Type type)
         {
             if (WorkspaceAdded != null)
                 WorkspaceAdded(new WorkspacesModificationEventArgs(id, name, type));
@@ -26,7 +26,7 @@ namespace DynamoServices
         /// from the Workspaces collection.
         /// </summary>
         public static event WorkspaceRemoveStartedEventHandler WorkspaceRemoveStarted;
-        public static void OnWorkspaceRemoveStarted(Guid id, string name, Type type)
+        internal static void OnWorkspaceRemoveStarted(Guid id, string name, Type type)
         {
             if (WorkspaceRemoveStarted != null)
                 WorkspaceRemoveStarted(new WorkspacesModificationEventArgs(id, name, type));
@@ -37,7 +37,7 @@ namespace DynamoServices
         /// from the DynamoModel's Workspaces collection.
         /// </summary>
         public static event WorkspaceRemovedEventHandler WorkspaceRemoved;
-        public static void OnWorkspaceRemoved(Guid id, string name, Type type)
+        internal static void OnWorkspaceRemoved(Guid id, string name, Type type)
         {
             if (WorkspaceRemoved != null)
                 WorkspaceRemoved(new WorkspacesModificationEventArgs(id, name, type));
@@ -47,7 +47,7 @@ namespace DynamoServices
         /// An event that is triggered before a workspace is cleared.
         /// </summary>
         public static event WorkspaceClearingEventHandler WorkspaceClearing;
-        public static void OnWorkspaceClearing()
+        internal static void OnWorkspaceClearing()
         {
             if (WorkspaceClearing != null)
                 WorkspaceClearing();
@@ -57,7 +57,7 @@ namespace DynamoServices
         /// An event that is triggered after a workspace is cleared.
         /// </summary>
         public static event WorkspaceClearedEventHandler WorkspaceCleared;
-        public static void OnWorkspaceCleared()
+        internal static void OnWorkspaceCleared()
         {
             if (WorkspaceCleared != null)
                 WorkspaceCleared();

@@ -28,4 +28,12 @@
     <oldName>Autodesk.DesignScript.Geometry.Curve.DivideByLengthFromParameter</oldName>
     <newName>Autodesk.DesignScript.Geometry.Curve.SplitBySegmentLength</newName>
   </priorNameHint>
+  <priorNameHint>
+    <oldName>Autodesk.DesignScript.Geometry.EllipseArc.ByPlaneRadiiStartAngleSweepAngle</oldName>
+    <newName>Autodesk.DesignScript.Geometry.EllipseArc.ByPlaneRadiiAngles</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>Autodesk.DesignScript.Geometry.Vector.AngleBetween</oldName>
+    <newName>Autodesk.DesignScript.Geometry.Vector.AngleWithVector</newName>
+  </priorNameHint>
 </migrations>

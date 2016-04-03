@@ -9,6 +9,7 @@ namespace ProtoTest
     class ModifierStackTests : ProtoTestBase
     {
         [Test]
+        [Ignore]
         [Category("ModifierBlock")] 
         public void SimpleExpr()
         {
@@ -22,6 +23,7 @@ namespace ProtoTest
                         ", core);
         }
         [Test]
+        [Ignore]
         [Category("ModifierBlock")] 
         public void SimpleFuncDef()
         {
@@ -39,6 +41,7 @@ namespace ProtoTest
                         ", core);
         }
         [Test]
+        [Ignore]
         [Category("ModifierBlock")] 
         public void SimpleExprInModifierStack()
         {
@@ -59,6 +62,7 @@ a;
 
         }
         [Test]
+        [Ignore]
         [Category("ModifierBlock")] 
         public void TwoSimpleExprInModifierStack()
         {
@@ -79,6 +83,7 @@ a;
             Assert.IsTrue((Int64)mirror.GetValue("a", 0).Payload == 20);
         }
         [Test]
+        [Ignore]
         [Category("ModifierBlock")]
         public void TwoExprInModifierStackWithOp()
         {
@@ -102,6 +107,7 @@ a;
 
 
         [Test]
+        [Ignore]
         [Category("ModifierBlock")] 
         public void ModifierStackWithName()
         {
@@ -125,6 +131,7 @@ a;ainit;
             Assert.IsTrue((Int64)mirror.GetValue("a", 0).Payload == 6);
         }
         [Test]
+        [Ignore]
         [Category("ModifierBlock")] 
         public void ModifierStackWithTwoNames()
         {
@@ -149,6 +156,7 @@ a;ainit;afirst;
             Assert.IsTrue((Int64)mirror.GetValue("a", 0).Payload == 16);
         }
         [Test]
+        [Ignore]
         [Category("ModifierBlock")]
         public void ModifierStackWithArray()
         {
@@ -178,6 +186,7 @@ afirst;
             Assert.IsTrue((Int64)mirror.GetValue("afirst", 0).Payload == 1);
         }
         [Test]
+        [Ignore]
         [Category("ModifierBlock")] 
         public void ModifierStackWithArrayAndFunction()
         {
@@ -210,6 +219,7 @@ afirst;
         }
 
         [Test]
+        [Ignore]
         [Category("ModifierBlock")] 
         public void ModifierStackWithArrayAndFunction2()
         {
@@ -236,6 +246,7 @@ afirst;
             Assert.IsTrue((Int64)mirror.GetValue("b", 0).Payload == 10);
         }
         [Test]
+        [Ignore]
         [Category("ModifierBlock")] 
         public void ModifierStackWithArrayAndFunctionReplication()
         {

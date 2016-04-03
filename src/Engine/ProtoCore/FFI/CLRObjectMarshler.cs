@@ -43,29 +43,29 @@ namespace ProtoFFI
             ProtoCore.Type protoType = new ProtoCore.Type { rank = 0, UID = (int)type };
             switch (type)
             {
-                case ProtoCore.PrimitiveType.kTypeDouble:
+                case ProtoCore.PrimitiveType.Double:
                     protoType.Name = ProtoCore.DSDefinitions.Keyword.Double;
                     break;
-                case ProtoCore.PrimitiveType.kTypeInt:
+                case ProtoCore.PrimitiveType.Integer:
                     protoType.Name = ProtoCore.DSDefinitions.Keyword.Int;
                     break;
-                case ProtoCore.PrimitiveType.kTypeBool:
+                case ProtoCore.PrimitiveType.Bool:
                     protoType.Name = ProtoCore.DSDefinitions.Keyword.Bool;
                     break;
-                case ProtoCore.PrimitiveType.kTypeChar:
+                case ProtoCore.PrimitiveType.Char:
                     protoType.Name = ProtoCore.DSDefinitions.Keyword.Char;
                     break;
-                case ProtoCore.PrimitiveType.kTypeString:
+                case ProtoCore.PrimitiveType.String:
                     protoType.Name = ProtoCore.DSDefinitions.Keyword.String;
                     break;
-                case ProtoCore.PrimitiveType.kTypePointer:
-                case ProtoCore.PrimitiveType.kTypeVar:
+                case ProtoCore.PrimitiveType.Pointer:
+                case ProtoCore.PrimitiveType.Var:
                     protoType.Name = ProtoCore.DSDefinitions.Keyword.Var;
                     break;
-                case ProtoCore.PrimitiveType.kTypeVoid:
+                case ProtoCore.PrimitiveType.Void:
                     protoType.Name = ProtoCore.DSDefinitions.Keyword.Void;
                     break;
-                case ProtoCore.PrimitiveType.kTypeNull:
+                case ProtoCore.PrimitiveType.Null:
                     protoType.Name = ProtoCore.DSDefinitions.Keyword.Null;
                     break;
                 default:
@@ -77,14 +77,14 @@ namespace ProtoFFI
 
         public static bool IsPrimitiveRange(ProtoCore.PrimitiveType type)
         {
-            return type > ProtoCore.PrimitiveType.kTypeNull && type < ProtoCore.PrimitiveType.kTypeVar;
+            return type > ProtoCore.PrimitiveType.Null && type < ProtoCore.PrimitiveType.Var;
         }
 
         public static bool IsPrimitiveDSType(ProtoCore.Type type)
         {
             if (IsPrimitiveRange((ProtoCore.PrimitiveType)type.UID) && type.IsIndexable == false)
                 return true;
-            else if (type.UID == (int)ProtoCore.PrimitiveType.kTypeChar && type.rank == 1)
+            else if (type.UID == (int)ProtoCore.PrimitiveType.Char && type.rank == 1)
                 return true;
 
             return false;
@@ -92,7 +92,7 @@ namespace ProtoFFI
 
         public static bool IsPrimitiveObjectType(object obj, ProtoCore.Type type)
         {
-            return (obj.GetType().IsValueType || obj.GetType() == typeof(String)) && type.UID == (int)ProtoCore.PrimitiveType.kTypeVar;
+            return (obj.GetType().IsValueType || obj.GetType() == typeof(String)) && type.UID == (int)ProtoCore.PrimitiveType.Var;
         }
     }
 
@@ -106,7 +106,7 @@ namespace ProtoFFI
         public Func<long, object> CastToObject { get; private set; }
         public Func<object, long> CastToLong { get; private set; }
 
-        private static readonly ProtoCore.Type kType = CreateType(ProtoCore.PrimitiveType.kTypeInt);
+        private static readonly ProtoCore.Type kType = CreateType(ProtoCore.PrimitiveType.Integer);
 
         public IntMarshaler(long maxValue, long minValue, Func<long, object> castOperator)
             : base(kType)
@@ -123,13 +123,13 @@ namespace ProtoFFI
 
         public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, Type type)
         {
-            if (dsObject.opdata > MaxValue || dsObject.opdata < MinValue)
+            if (dsObject.IntegerValue > MaxValue || dsObject.IntegerValue< MinValue)
             {
-                string message = String.Format(Resources.kFFIInvalidCast, dsObject.opdata, type.Name, MinValue, MaxValue);
-                dsi.LogWarning(ProtoCore.Runtime.WarningID.kTypeMismatch, message);
+                string message = String.Format(Resources.kFFIInvalidCast, dsObject.IntegerValue, type.Name, MinValue, MaxValue);
+                dsi.LogWarning(ProtoCore.Runtime.WarningID.TypeMismatch, message);
             }
 
-            return CastToObject(dsObject.opdata);
+            return CastToObject(dsObject.IntegerValue);
         }
     }
 
@@ -141,7 +141,7 @@ namespace ProtoFFI
         public double MaxValue { get; private set; }
         public double MinValue { get; private set; }
         public Func<double, object> CastToDouble { get; private set; }
-        private static readonly ProtoCore.Type kType = CreateType(ProtoCore.PrimitiveType.kTypeDouble);
+        private static readonly ProtoCore.Type kType = CreateType(ProtoCore.PrimitiveType.Double);
 
         public FloatMarshaler(double maxValue, double minValue, Func<double, object> castOperator)
             : base(kType)
@@ -158,13 +158,13 @@ namespace ProtoFFI
 
         public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, Type type)
         {
-            if (dsObject.RawDoubleValue > MaxValue || dsObject.RawDoubleValue < MinValue)
+            if (dsObject.DoubleValue > MaxValue || dsObject.DoubleValue < MinValue)
             {
-                string message = String.Format(Resources.kFFIInvalidCast, dsObject.RawDoubleValue, type.Name, MinValue, MaxValue);
-                dsi.LogWarning(ProtoCore.Runtime.WarningID.kTypeMismatch, message);
+                string message = String.Format(Resources.kFFIInvalidCast, dsObject.DoubleValue, type.Name, MinValue, MaxValue);
+                dsi.LogWarning(ProtoCore.Runtime.WarningID.TypeMismatch, message);
             }
 
-            return CastToDouble(dsObject.RawDoubleValue);
+            return CastToDouble(dsObject.DoubleValue);
         }
     }
 
@@ -173,7 +173,7 @@ namespace ProtoFFI
     /// </summary>
     class BoolMarshaler : PrimitiveMarshler
     {
-        private static readonly ProtoCore.Type kType = CreateType(ProtoCore.PrimitiveType.kTypeBool);
+        private static readonly ProtoCore.Type kType = CreateType(ProtoCore.PrimitiveType.Bool);
         public BoolMarshaler() : base(kType) { }
 
         public override StackValue Marshal(object obj, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type type)
@@ -183,7 +183,7 @@ namespace ProtoFFI
 
         public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, Type type)
         {
-            return dsObject.opdata == 0 ? false : true;
+            return dsObject.BooleanValue;
         }
     }
 
@@ -192,7 +192,7 @@ namespace ProtoFFI
     /// </summary>
     class CharMarshaler : PrimitiveMarshler
     {
-        private static readonly ProtoCore.Type kType = CreateType(ProtoCore.PrimitiveType.kTypeChar);
+        private static readonly ProtoCore.Type kType = CreateType(ProtoCore.PrimitiveType.Char);
         public CharMarshaler() : base(kType) { }
 
         public override StackValue Marshal(object obj, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type type)
@@ -202,7 +202,7 @@ namespace ProtoFFI
 
         public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, Type type)
         {
-            return Convert.ToChar(dsObject.opdata);
+            return Convert.ToChar(dsObject.CharValue);
         }
     }
 
@@ -376,7 +376,7 @@ namespace ProtoFFI
         private ProtoCore.Type GetApproxDSType(object obj)
         {
             if (null == obj)
-                return CreateType(ProtoCore.PrimitiveType.kTypeNull);
+                return CreateType(ProtoCore.PrimitiveType.Null);
 
             Type type = obj.GetType();
             if(type == typeof(string))
@@ -386,13 +386,13 @@ namespace ProtoFFI
                 return dsType;
             if (typeof(IEnumerable).IsAssignableFrom(type)) //It's a collection
             {
-                dsType = CreateType(ProtoCore.PrimitiveType.kTypeVar);
+                dsType = CreateType(ProtoCore.PrimitiveType.Var);
                 dsType.rank = ProtoCore.DSASM.Constants.kArbitraryRank;
                 return dsType;
             }
 
             //Else return var type
-            return CreateType(ProtoCore.PrimitiveType.kTypeVar); 
+            return CreateType(ProtoCore.PrimitiveType.Var); 
         }
 
         /// <summary>
@@ -565,7 +565,7 @@ namespace ProtoFFI
     /// </summary>
     class StringMarshaler : PrimitiveMarshler 
     {
-        public static readonly ProtoCore.Type kType = CreateType(ProtoCore.PrimitiveType.kTypeString);
+        public static readonly ProtoCore.Type kType = CreateType(ProtoCore.PrimitiveType.String);
 
         public StringMarshaler() : base(kType) { }
 
@@ -758,7 +758,7 @@ namespace ProtoFFI
             // If the expected type is collection, always marshal to collection
             if (collection)
             {
-                ProtoCore.Type type = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.kTypeVar);
+                ProtoCore.Type type = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.Var);
                 type.rank = ProtoCore.DSASM.Constants.kArbitraryRank;
                 return new CollectionMarshaler(this, type);
             }
@@ -783,7 +783,7 @@ namespace ProtoFFI
         private FFIObjectMarshler GetMarshalerForDsType(ProtoCore.Type dsType, Type objType)
         {
             //Expected DS Type is pointer, so there is no primitive marshaler available.
-            if (!dsType.IsIndexable && dsType.UID == (int)ProtoCore.PrimitiveType.kTypePointer)
+            if (!dsType.IsIndexable && dsType.UID == (int)ProtoCore.PrimitiveType.Pointer)
                 return null;
 
             FFIObjectMarshler marshaler = null;
@@ -797,13 +797,13 @@ namespace ProtoFFI
             //2. If dsType is arbitrary rank collection, marshal based on objType
             //3. If dsType is var, marshal based on objType.
             else if ((dsType.rank == ProtoCore.DSASM.Constants.kArbitraryRank ||
-                dsType.UID == (int)ProtoCore.PrimitiveType.kTypeVar) && typeof(IEnumerable).IsAssignableFrom(objType))
+                dsType.UID == (int)ProtoCore.PrimitiveType.Var) && typeof(IEnumerable).IsAssignableFrom(objType))
                 marshalAsCollection = true;
 
             //4. Else get primitive marshaler for given objType
             if (marshalAsCollection)
                 marshaler = new CollectionMarshaler(this, dsType);
-            else if(dsType.UID != (int)ProtoCore.PrimitiveType.kTypePointer) //Not exported as pointer type
+            else if(dsType.UID != (int)ProtoCore.PrimitiveType.Pointer) //Not exported as pointer type
                 mPrimitiveMarshalers.TryGetValue(objType, out marshaler);
 
             return marshaler;
@@ -850,7 +850,7 @@ namespace ProtoFFI
         /// <returns>ProtoCore.Type</returns>
         public static ProtoCore.Type GetProtoCoreType(Type type)
         {
-            ProtoCore.Type retype = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.kTypeVar);
+            ProtoCore.Type retype = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.Var);
             ComputeDSType(type, ref retype);
             return retype;
         }
@@ -862,7 +862,7 @@ namespace ProtoFFI
         /// <returns>ProtoCore.Type</returns>
         public static ProtoCore.Type GetUserDefinedType(Type type)
         {
-            ProtoCore.Type retype = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.kTypePointer);
+            ProtoCore.Type retype = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.Pointer);
             ComputeDSType(type, ref retype);
             return retype;
         }
@@ -903,7 +903,7 @@ namespace ProtoFFI
                 if (nArgs != 1)
                 {
                     protoCoreType.Name = GetTypeName(type);
-                    protoCoreType.UID = (int)ProtoCore.PrimitiveType.kTypePointer;
+                    protoCoreType.UID = (int)ProtoCore.PrimitiveType.Pointer;
                     return;
                 }
                 Type elemType = args[0];
@@ -921,19 +921,19 @@ namespace ProtoFFI
             }
             else if (type == typeof(object))
             {
-                protoCoreType = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.kTypeVar);
+                protoCoreType = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.Var);
                 protoCoreType.rank = 0; //Initially setup zero rank
             }
             else if (type == typeof(void))
-                protoCoreType = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.kTypeVoid);
-            else if (protoCoreType.UID == (int)ProtoCore.PrimitiveType.kTypePointer)
+                protoCoreType = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.Void);
+            else if (protoCoreType.UID == (int)ProtoCore.PrimitiveType.Pointer)
                 protoCoreType.Name = GetTypeName(type);
             else if (mPrimitiveMarshalers.TryGetValue(type, out marshaler))
                 protoCoreType = marshaler.GetMarshaledType(type);
             else
             {
                 protoCoreType.Name = GetTypeName(type);
-                protoCoreType.UID = (int)ProtoCore.PrimitiveType.kTypePointer;
+                protoCoreType.UID = (int)ProtoCore.PrimitiveType.Pointer;
             }
         }
 
@@ -1329,7 +1329,7 @@ namespace ProtoFFI
     {
         public bool Equals(StackValue x, StackValue y)
         {
-            return x.opdata == y.opdata && x.metaData.type == y.metaData.type;
+            return x.Pointer == y.Pointer && x.metaData.type == y.metaData.type;
         }
 
         public int GetHashCode(StackValue obj)
@@ -1337,7 +1337,7 @@ namespace ProtoFFI
             unchecked
             {
                 var hash = 0;
-                hash = (hash * 397) ^ obj.opdata.GetHashCode();
+                hash = (hash * 397) ^ obj.Pointer.GetHashCode();
                 hash = (hash * 397) ^ obj.metaData.type.GetHashCode();
                 return hash;
             }

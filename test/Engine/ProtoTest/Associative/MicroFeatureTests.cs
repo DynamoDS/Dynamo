@@ -73,11 +73,11 @@ c;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetValue("x").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("y").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("a").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("b").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("c").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            thisTest.Verify("x", null);
+            thisTest.Verify("y", null);
+            thisTest.Verify("a", null);
+            thisTest.Verify("b", null);
+            thisTest.Verify("c", null);
         }
 
         [Test]
@@ -97,7 +97,7 @@ c;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetValue("c").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            thisTest.Verify("c", null);
         }
 
         [Test]
@@ -1713,7 +1713,7 @@ y = foo()[1];
 }
 ";
             thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kOverIndexing);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.OverIndexing);
         }
 
         [Test]
@@ -3192,7 +3192,7 @@ b = 2.1 % 0;
             thisTest.Verify("b", double.NaN);
 
             var warnings = thisTest.GetTestRuntimeCore().RuntimeStatus.Warnings;
-            Assert.IsTrue(warnings.Any(w => w.ID == ProtoCore.Runtime.WarningID.kModuloByZero));
+            Assert.IsTrue(warnings.Any(w => w.ID == ProtoCore.Runtime.WarningID.ModuloByZero));
         }
 
         [Test]
@@ -3958,7 +3958,7 @@ Print(check);
                 ";
             code = string.Format("{0}\n{1}", "import(\"ProtoGeometry.dll\");", code);
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetFirstValue("value").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            thisTest.Verify("value", null);
         }
 
         [Test]
@@ -4615,8 +4615,8 @@ r = foo(3);
             Dictionary<string, Object> context = new Dictionary<string, object>();
             context.Add("x", 1);
             context.Add("y", 2);
-            ProtoScript.Runners.ProtoRunner.ProtoVMState vmstate = runner.PreStart(code, context);
-            runner.RunToNextBreakpoint(vmstate);
+            runner.PreStart(code, context);
+            runner.RunToNextBreakpoint();
         }
 
         [Test]

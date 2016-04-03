@@ -249,6 +249,12 @@ namespace Dynamo.Manipulation
             // so that it always references the current workspace
             WorkspaceModel = wsm;
             manipulatorNodes = new List<NodeModel>();
+
+            // kill all manipulators in current workspace
+            if (manipulatorDaemon != null)
+            {
+                manipulatorDaemon.KillAll();
+            }
         }
 
         private void UpdateManipulators(NotifyCollectionChangedEventArgs e)
@@ -299,8 +305,8 @@ namespace Dynamo.Manipulation
                 node.PropertyChanged += OnNodePropertyChanged;
             }
             
-            //No manipulator for frozen node
-            if (node.IsFrozen) return false;
+            //No manipulator for frozen node or node in state of error
+            if (node.IsFrozen || node.IsInErrorState) return false;
 
             //If the node already has a manipulator, then skip creating new one.
             if (manipulatorDaemon.HasNodeManipulator(node)) return false;
