@@ -3057,9 +3057,6 @@ namespace ProtoCore.DSASM
                 op1.IsStaticVariableIndex ||
                 op1.IsFunctionPointer)
             {
-                // TODO: Jun this is currently unused but required for stack alignment
-                StackValue svType = rmem.Pop();
-
                 StackValue svDim = rmem.Pop();
                 dimensions = svDim.ArrayDimension;
                 blockId = instruction.op3.BlockIndex;
@@ -3322,10 +3319,6 @@ namespace ProtoCore.DSASM
 
         private void SETELEMENT_Helper(Instruction instruction)
         {
-            StackValue svType = rmem.Pop();
-            int staticType = svType.metaData.type;
-            int rank = svType.Rank;
-
             StackValue svDim = rmem.Pop();
             int dimensions = svDim.ArrayDimension;
 
