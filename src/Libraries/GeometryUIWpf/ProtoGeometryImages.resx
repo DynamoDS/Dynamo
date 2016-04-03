@@ -5270,7 +5270,7 @@
         ZRyEENoAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Curve.DivideByDistance.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Curve.PointsAtEqualChordLength.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAPISURBVHhe7ZwxbhNBFIZzhBwhR8gRQomUIh1tDkDh
@@ -5292,7 +5292,7 @@
         cFFAdr4Nrf9RJBpI55XAcqSRL4QQQgghhBBCCCGEEEIIcc3Gxj87A53KRy+sVgAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Curve.DivideByDistance.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Curve.PointsAtEqualChordLength.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAEsSURBVFhH7ZYxCsJAEEVzBI/gETxCLAXBHMFC8Bre
@@ -5303,7 +5303,7 @@
         SqoPZb5TyBYY+7fYWCFbMglU9hXz3odkTc3/EgRXOl8rDmk7QSMAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Curve.SplitByChordLength.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Curve.PointsAtChordLengthFromPoint.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAR5SURBVHhe7ZxPahRBGMVzhBwhR8gR4lIImJ3bOYCL
@@ -5328,7 +5328,7 @@
         wzK0/qJIaSCdVwKnI418IYQQQgghhBBCCCGEEEKIOVtb/wBrmYL7e4ES4gAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Curve.SplitByChordLength.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Curve.PointsAtChordLengthFromPoint.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAFmSURBVFhH7ZY9asNAEIV1BB3BR/ARlDKQQl264C7X
@@ -5340,7 +5340,7 @@
         NWQrgP1XzExDtqoU0NtXDPcAi7Bf/0GDbBVFf4wjcKd8isGOAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Curve.SplitBySegmentLength.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Curve.PointsAtSegmentLengthFromPoint.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAATcSURBVHhe7Z09blNNGIWzBC/BS/ASTIkUpHQ0FF4A
@@ -5367,7 +5367,7 @@
         CCGEEEIIIYQQC46O/gP4VJwqYNoVRgAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Curve.SplitBySegmentLength.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Curve.PointsAtSegmentLengthFromPoint.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAGHSURBVFhH7ZUxSsRAGIVzhBwhR8gRYikoxMpGZA9g
@@ -5380,7 +5380,7 @@
         ADnncsBUUg8RAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Curve.DivideEqually.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Curve.PointsAtEqualSegmentLength.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAATgSURBVHhe7Zw/bhNBHIVzBB/BR/ARQokUpHQ0FD4A
@@ -5407,7 +5407,7 @@
         QgghhBBCCCGEEEIIUTd7e/8Bi/V3ddFEmZkAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Curve.DivideEqually.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Curve.PointsAtEqualSegmentLength.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAGJSURBVFhH7ZYxSsRAGIVzhBwhR8gRYikoxMpGZA9g
@@ -6477,7 +6477,7 @@
         gg==
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Curve.ParameterAtDistance.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Curve.ParameterAtSegmentLength.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAYQSURBVHhe7ZzdUew4EIUJgRAIgRDYx63aB0IgBEIg
@@ -6509,7 +6509,7 @@
         RzFCoVAoFAqFQqFQKBQKhUI71dXVf3PdKV7/Yk6LAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Curve.ParameterAtDistance.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Curve.ParameterAtSegmentLength.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAG/SURBVFhH7ZbBbYNAEEVdgkugBJfgHCPl4BIowSW4
@@ -6926,7 +6926,7 @@
         AAAASUVORK5CYII=
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Curve.PlaneAtDistance.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Curve.PlaneAtSegmentLength.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAhmSURBVHhe7Z3fb1RFHMUJhGAghMagGH2w8UUeG1/6
@@ -6968,7 +6968,7 @@
         ycnJycnJycnJycnJyckpCZo373/JqSkvRSkmMgAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Curve.PlaneAtDistance.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Curve.PlaneAtSegmentLength.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAKiSURBVFhH7ZbNaxNRFMWD0o0u7KKCuCpuFNx0I1kJ
@@ -7044,7 +7044,7 @@
         gg==
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Curve.PointAtDistance.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Curve.PointAtSegmentLength.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAARrSURBVHhe7ZzRTRwxFEUpgRIQFVAC+YyUD0qgBEqg
@@ -7069,7 +7069,7 @@
         QYYQQgghhBBCCCGEEEIIcQ4uLv4As2datGBQ0mIAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Curve.PointAtDistance.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Curve.PointAtSegmentLength.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAFWSURBVFhH7ZbRbYMwFEUZoSNETJAR6GelfHQERugI

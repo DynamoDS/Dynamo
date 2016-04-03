@@ -21,19 +21,23 @@
     <newName>Autodesk.DesignScript.Geometry.Curve.SplitByParameter</newName>
   </priorNameHint>
   <priorNameHint>
-    <oldName>Autodesk.DesignScript.Geometry.Curve.DivideByDistanceFromParameter</oldName>
-    <newName>Autodesk.DesignScript.Geometry.Curve.SplitByChordLength</newName>
-  </priorNameHint>
-  <priorNameHint>
-    <oldName>Autodesk.DesignScript.Geometry.Curve.DivideByLengthFromParameter</oldName>
-    <newName>Autodesk.DesignScript.Geometry.Curve.SplitBySegmentLength</newName>
-  </priorNameHint>
-  <priorNameHint>
     <oldName>Autodesk.DesignScript.Geometry.EllipseArc.ByPlaneRadiiStartAngleSweepAngle</oldName>
     <newName>Autodesk.DesignScript.Geometry.EllipseArc.ByPlaneRadiiAngles</newName>
   </priorNameHint>
   <priorNameHint>
     <oldName>Autodesk.DesignScript.Geometry.Vector.AngleBetween</oldName>
     <newName>Autodesk.DesignScript.Geometry.Vector.AngleWithVector</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>Autodesk.DesignScript.Geometry.Curve.ParameterAtDistance</oldName>
+    <newName>Autodesk.DesignScript.Geometry.Curve.ParameterAtSegmentLength</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>Autodesk.DesignScript.Geometry.Curve.PlaneAtDistance</oldName>
+    <newName>Autodesk.DesignScript.Geometry.Curve.PlaneAtSegmentLength</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>Autodesk.DesignScript.Geometry.Curve.PointAtDistance</oldName>
+    <newName>Autodesk.DesignScript.Geometry.Curve.PointAtSegmentLength</newName>
   </priorNameHint>
 </migrations>
