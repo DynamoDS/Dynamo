@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ProtoCore.Utils;
+using ProtoCore.Exceptions;
 
 namespace ProtoCore.DSASM
 {
@@ -123,7 +124,14 @@ namespace ProtoCore.DSASM
 
                     if (size > allocated)
                     {
-                        ReAllocate(size);
+                        try
+                        {
+                            ReAllocate(size);
+                        }
+                        catch (OutOfMemoryException)
+                        {
+                            throw new RunOutOfMemoryException();
+                        }
                     }
 
                     RightShiftElements(shiftSize);
@@ -137,7 +145,14 @@ namespace ProtoCore.DSASM
             }
             else if (index >= allocated)
             {
-                ReAllocate(index + 1);
+                try
+                {
+                    ReAllocate(index + 1);
+                }
+                catch (OutOfMemoryException)
+                {
+                    throw new RunOutOfMemoryException();
+                }
                 Count = index + 1;
             }
 
@@ -314,16 +329,25 @@ namespace ProtoCore.DSASM
 
         /// <summary>
         /// Allocate an array.
+        ///
+        /// Exceptions: ProtoCore.Exceptions.RunOutOfMemoryException
         /// </summary>
         /// <param name="values">Array elements whose indices are integer</param>
         /// <param name="dict">Array elements whose indices are not integer</param>
         /// <returns></returns>
         public StackValue AllocateArray(StackValue[] values)
         {
-            int index = AllocateInternal(values, PrimitiveType.Array);
-            var heapElement = heapElements[index];
-            heapElement.MetaData = new MetaData { type = (int)PrimitiveType.Array };
-            return StackValue.BuildArrayPointer(index);
+            try
+            {
+                int index = AllocateInternal(values, PrimitiveType.Array);
+                var heapElement = heapElements[index];
+                heapElement.MetaData = new MetaData { type = (int)PrimitiveType.Array };
+                return StackValue.BuildArrayPointer(index);
+            }
+            catch (OutOfMemoryException)
+            {
+                throw new RunOutOfMemoryException();
+            }
         }
 
         /// <summary>
@@ -332,7 +356,7 @@ namespace ProtoCore.DSASM
         /// <param name="values">Values of object properties</param>
         /// <param name="metaData">Object type</param>
         /// <returns></returns>
-        public StackValue AllocatePointer(StackValue[] values, MetaData metaData)
+        private StackValue AllocatePointer(StackValue[] values, MetaData metaData)
         {
             int index = AllocateInternal(values, PrimitiveType.Pointer);
             var heapElement = heapElements[index];
@@ -342,26 +366,44 @@ namespace ProtoCore.DSASM
 
         /// <summary>
         /// Allocate an object pointer.
+        ///
+        /// Exceptions: ProtoCore.Exceptions.RunOutOfMemoryException
         /// </summary>
         /// <param name="values">Values of object properties</param>
         /// <returns></returns>
         public StackValue AllocatePointer(StackValue[] values)
         {
-            return AllocatePointer(values, new MetaData { type = (int)PrimitiveType.Pointer });
+            try
+            {
+                return AllocatePointer(values, new MetaData { type = (int)PrimitiveType.Pointer });
+            }
+            catch (OutOfMemoryException)
+            {
+                throw new RunOutOfMemoryException();
+            }
         }
 
         /// <summary>
         /// Allocate an object pointer.
+        ///
+        /// Exceptions: ProtoCore.Exceptions.RunOutOfMemoryException
         /// </summary>
         /// <param name="size">The size of object properties.</param>
         /// <param name="metadata">Object type</param>
         /// <returns></returns>
         public StackValue AllocatePointer(int size, MetaData metadata)
-        {    
-            int index = AllocateInternal(size, PrimitiveType.Pointer);
-            var hpe = heapElements[index];
-            hpe.MetaData = metadata;
-            return StackValue.BuildPointer(index, metadata);
+        {
+            try
+            {
+                int index = AllocateInternal(size, PrimitiveType.Pointer);
+                var hpe = heapElements[index];
+                hpe.MetaData = metadata;
+                return StackValue.BuildPointer(index, metadata);
+            }
+            catch (OutOfMemoryException)
+            {
+                throw new RunOutOfMemoryException();
+            }
         }
 
         /// <summary>
@@ -394,7 +436,14 @@ namespace ProtoCore.DSASM
         /// <returns></returns>
         public StackValue AllocateFixedString(string str)
         {
-            return AllocateStringInternal(str, true);
+            try
+            {
+                return AllocateStringInternal(str, true);
+            }
+            catch (OutOfMemoryException)
+            {
+                throw new RunOutOfMemoryException();
+            }
         }
 
         /// <summary>
@@ -404,7 +453,14 @@ namespace ProtoCore.DSASM
         /// <returns></returns>
         public StackValue AllocateString(string str)
         {
-            return AllocateStringInternal(str, false);
+            try
+            {
+                return AllocateStringInternal(str, false);
+            }
+            catch (OutOfMemoryException)
+            {
+                throw new RunOutOfMemoryException();
+            }
         }
 
         /// <summary>

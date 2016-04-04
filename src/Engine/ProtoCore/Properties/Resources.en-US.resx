@@ -908,4 +908,7 @@ Parameter name: {0}</value>
   <data name="IndexIntoNonArrayObject" xml:space="preserve">
     <value>No item exists at specified index address</value>
   </data>
+  <data name="RunOutOfMemory" xml:space="preserve">
+    <value>There is not enough memory to allocate object.</value>
+  </data>
 </root>

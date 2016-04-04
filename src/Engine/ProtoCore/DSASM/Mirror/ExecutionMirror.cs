@@ -1374,8 +1374,15 @@ namespace ProtoCore.DSASM.Mirror
 
                 int size = sv.Length;
 
-                StackValue ptr = heap.AllocateArray(sv);
-                return ptr;
+                try
+                {
+                    StackValue ptr = heap.AllocateArray(sv);
+                    return ptr;
+                }
+                catch (RunOutOfMemoryException)
+                {
+                    return StackValue.Null;
+                }
             }
 
             // For non-arrays, there is nothing to repack so just return the original stackvalue

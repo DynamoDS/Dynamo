@@ -2259,6 +2259,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There is not enough memory to allocate object..
+        /// </summary>
+        public static string RunOutOfMemory {
+            get {
+                return ResourceManager.GetString("RunOutOfMemory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;;&apos; is expected.
         /// </summary>
         public static string SemiColonExpected {

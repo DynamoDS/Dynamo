@@ -9,6 +9,7 @@ using Autodesk.DesignScript.Interfaces;
 using ProtoFFI;
 using ProtoCore.Runtime;
 using ProtoCore.Properties;
+using ProtoCore.Exceptions;
 
 namespace ProtoCore.Lang
 {
@@ -448,7 +449,15 @@ namespace ProtoCore.Lang
                         else
                         {
                             var result = runtimeCore.Heap.ToHeapObject<DSArray>(array).Keys.ToArray();
-                            ret = rmem.Heap.AllocateArray(result);
+                            try
+                            {
+                                ret = rmem.Heap.AllocateArray(result);
+                            }
+                            catch (RunOutOfMemoryException)
+                            {
+                                runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                                ret = StackValue.Null;
+                            }
                         }
                         break;
                     }
@@ -463,7 +472,15 @@ namespace ProtoCore.Lang
                         else
                         {
                             var result = runtimeCore.Heap.ToHeapObject<DSArray>(array).Values;
-                            ret = rmem.Heap.AllocateArray(result.ToArray());
+                            try
+                            {
+                                ret = rmem.Heap.AllocateArray(result.ToArray());
+                            }
+                            catch (RunOutOfMemoryException)
+                            {
+                                runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                                ret = StackValue.Null;
+                            }
                         }
                         break;
                     }
@@ -934,17 +951,34 @@ namespace ProtoCore.Lang
                     }
                 }
 
-                rows[i] = runtime.runtime.rmem.Heap.AllocateArray(values);
+                try
+                {
+                    rows[i] = runtime.runtime.rmem.Heap.AllocateArray(values);
+                }
+                catch (RunOutOfMemoryException)
+                {
+                    rows[i] = StackValue.Null;
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                }
             }
-            StackValue result = runtime.runtime.rmem.Heap.AllocateArray(rows);
-            //Judge whether the array needed to be transposed(when Boolean:trans is false) or not(when Boolean:trans is true)
-            if (trans.BooleanValue)
+
+            try
             {
-                return result; 
+                StackValue result = runtime.runtime.rmem.Heap.AllocateArray(rows);
+                //Judge whether the array needed to be transposed(when Boolean:trans is false) or not(when Boolean:trans is true)
+                if (trans.BooleanValue)
+                {
+                    return result;
+                }
+                else
+                {
+                    return ArrayUtilsForBuiltIns.Transpose(result, runtime);
+                }
             }
-            else
+            catch (RunOutOfMemoryException)
             {
-                return ArrayUtilsForBuiltIns.Transpose(result, runtime);
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                return StackValue.Null;
             }
         }
         //Print(msg) & Print(msg, mode)
@@ -1084,7 +1118,15 @@ namespace ProtoCore.Lang
                 }
             }
 
-            return range == null ? StackValue.Null : runtimeCore.RuntimeMemory.Heap.AllocateArray(range);
+            try
+            {
+                return range == null ? StackValue.Null : runtimeCore.RuntimeMemory.Heap.AllocateArray(range);
+            }
+            catch (RunOutOfMemoryException)
+            {
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                return StackValue.Null;
+            }
         }
 
         private static StackValue[] GenerateNumericRange(
@@ -1392,7 +1434,15 @@ namespace ProtoCore.Lang
 
             List<StackValue> newElements = new List<DSASM.StackValue>();
             GetFlattenedArrayElements(sv, runtime, ref newElements);
-            return runtime.runtime.rmem.Heap.AllocateArray(newElements.ToArray());
+            try
+            {
+                return runtime.runtime.rmem.Heap.AllocateArray(newElements.ToArray());
+            }
+            catch (RunOutOfMemoryException)
+            {
+                runtime.runtime.RuntimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                return StackValue.Null;
+            }
         }
 
         internal static StackValue Concat(StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime)
@@ -1404,7 +1454,15 @@ namespace ProtoCore.Lang
             var array1 = heap.ToHeapObject<DSArray>(sv1);
             var array2 = heap.ToHeapObject<DSArray>(sv2);
             var values = array1.Values.Concat(array2.Values).ToArray();
-            return runtime.runtime.rmem.Heap.AllocateArray(values);
+            try
+            {
+                return runtime.runtime.rmem.Heap.AllocateArray(values);
+            }
+            catch (RunOutOfMemoryException)
+            {
+                runtime.runtime.RuntimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                return StackValue.Null;
+            }
         }
 
         private static void GetFlattenedArrayElements(StackValue sv, ProtoCore.DSASM.Interpreter runtime, ref List<StackValue> list)
@@ -1448,7 +1506,15 @@ namespace ProtoCore.Lang
 
             if (svList.Count >= 0)
             {
-                return heap.AllocateArray(svList.ToArray());
+                try
+                {
+                    return heap.AllocateArray(svList.ToArray());
+                }
+                catch (RunOutOfMemoryException)
+                {
+                    runtime.runtime.RuntimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                    return StackValue.Null;
+                }
             }
             //That means an empty array
             else return DSASM.StackValue.Null;
@@ -1489,9 +1555,18 @@ namespace ProtoCore.Lang
                     svList.Add(item1);
                 }
             }
+
             if (svList.Count >= 0)
             {
-                return heap.AllocateArray(svList.ToArray());
+                try
+                {
+                    return heap.AllocateArray(svList.ToArray());
+                }
+                catch (RunOutOfMemoryException)
+                {
+                    runtime.runtime.RuntimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                    return StackValue.Null;
+                }
             }
             //That means an empty array
             else return DSASM.StackValue.Null;
@@ -1739,7 +1814,16 @@ namespace ProtoCore.Lang
                 if (indexCount != indexToBeRemoved)
                     svList.Add(svArray[indexCount]);
             }
-            return runtime.runtime.rmem.Heap.AllocateArray(svList.ToArray());
+
+            try
+            {
+                return runtime.runtime.rmem.Heap.AllocateArray(svList.ToArray());
+            }
+            catch (RunOutOfMemoryException)
+            {
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                return StackValue.Null;
+            }
         }
         //RemoveDuplicate
         internal static StackValue RemoveDuplicates(StackValue sv, ProtoCore.DSASM.Interpreter runtime, ProtoCore.Runtime.Context context)
@@ -1770,7 +1854,16 @@ namespace ProtoCore.Lang
                     svList.Insert(0, outOp);
                 }
             }
-            return runtime.runtime.rmem.Heap.AllocateArray(svList.ToArray());
+
+            try
+            {
+                return runtime.runtime.rmem.Heap.AllocateArray(svList.ToArray());
+            }
+            catch (RunOutOfMemoryException)
+            {
+                runtime.runtime.RuntimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                return StackValue.Null;
+            }
         }
 
         internal static StackValue Equals(StackValue sv1, StackValue sv2, Interpreter runtime, ProtoCore.Runtime.Context context)
@@ -1811,7 +1904,15 @@ namespace ProtoCore.Lang
             }
             if (svList.Count >= 0)
             {
-                return runtime.runtime.rmem.Heap.AllocateArray(svList.ToArray());
+                try
+                {
+                    return runtime.runtime.rmem.Heap.AllocateArray(svList.ToArray());
+                }
+                catch (RunOutOfMemoryException)
+                {
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                    return StackValue.Null;
+                }
             }
             //That means an empty array
             return DSASM.StackValue.Null;
@@ -1846,7 +1947,15 @@ namespace ProtoCore.Lang
             }
             if (svList.Count >= 0)
             {
-                return runtime.runtime.rmem.Heap.AllocateArray(svList.ToArray());
+                try
+                {
+                    return runtime.runtime.rmem.Heap.AllocateArray(svList.ToArray());
+                }
+                catch (RunOutOfMemoryException)
+                {
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                    return StackValue.Null;
+                }
             }
             //That means an empty array
             return DSASM.StackValue.Null;
@@ -1863,7 +1972,15 @@ namespace ProtoCore.Lang
             }
 
             var reverseArray = runtimeCore.Heap.ToHeapObject<DSArray>(sv).Values.Reverse().ToArray();
-            return runtime.runtime.rmem.Heap.AllocateArray(reverseArray);
+            try
+            {
+                return runtime.runtime.rmem.Heap.AllocateArray(reverseArray);
+            }
+            catch (RunOutOfMemoryException)
+            {
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                return StackValue.Null;
+            }
         }
         //Contains & ArrayContainsArray ::: sv1 contains sv2
         internal static bool Contains(StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime)
@@ -2011,7 +2128,15 @@ namespace ProtoCore.Lang
             var svList = runtimeCore.Heap.ToHeapObject<DSArray>(sv).Values.ToArray();
             Array.Sort(svList, new StackValueComparerForDouble(ascending));
 
-            return runtime.runtime.rmem.Heap.AllocateArray(svList);
+            try
+            {
+                return runtime.runtime.rmem.Heap.AllocateArray(svList);
+            }
+            catch (RunOutOfMemoryException)
+            {
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                return StackValue.Null;
+            }
         }
 
         //SortIndexByValue & SortIndexByValueWithMode
@@ -2052,9 +2177,18 @@ namespace ProtoCore.Lang
                 StackValue tsv = DSASM.StackValue.BuildInt(svList[n].Value);
                 sortedIndices[n] = tsv;
             }
-            
-            return runtime.runtime.rmem.Heap.AllocateArray(sortedIndices);
+
+            try
+            {
+                return runtime.runtime.rmem.Heap.AllocateArray(sortedIndices);
+            }
+            catch (RunOutOfMemoryException)
+            {
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                return StackValue.Null;
+            }
         }
+
         //Reorder
         internal static StackValue Reorder(StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime)
         {
@@ -2104,7 +2238,15 @@ namespace ProtoCore.Lang
             }
             if (svList.Count >= 0)
             {
-                return runtime.runtime.rmem.Heap.AllocateArray(svList.ToArray());
+                try
+                {
+                    return runtime.runtime.rmem.Heap.AllocateArray(svList.ToArray());
+                }
+                catch (RunOutOfMemoryException)
+                {
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                    return StackValue.Null;
+                }
             }
             //That means an empty array
             return DSASM.StackValue.Null;
@@ -2167,7 +2309,15 @@ namespace ProtoCore.Lang
                 svList.AddRange(elements.ToList().GetRange(idxToBeInsert, length - idxToBeInsert));
             }
 
-            return runtime.runtime.rmem.Heap.AllocateArray(svList.ToArray());
+            try
+            {
+                return runtime.runtime.rmem.Heap.AllocateArray(svList.ToArray());
+            }
+            catch (RunOutOfMemoryException)
+            {
+                runtime.runtime.RuntimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                return StackValue.Null;
+            }
         }
         //IsUniformDepth
         internal static bool IsUniformDepth(StackValue sv, ProtoCore.DSASM.Interpreter runtime)
@@ -2285,7 +2435,15 @@ namespace ProtoCore.Lang
             //Convert list to Operand
             if (svList.Count >= 0)
             {
-                return runtime.runtime.rmem.Heap.AllocateArray(svList.ToArray());
+                try
+                {
+                    return runtime.runtime.rmem.Heap.AllocateArray(svList.ToArray());
+                }
+                catch (RunOutOfMemoryException)
+                {
+                    runtime.runtime.RuntimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                    return StackValue.Null;
+                }
             }
             //That means an empty array
             return DSASM.StackValue.Null;
@@ -2294,7 +2452,15 @@ namespace ProtoCore.Lang
         {
             for (; countBraces > 0; countBraces--)
             {
-                sv = runtime.runtime.rmem.Heap.AllocateArray(new StackValue[] { sv });
+                try
+                {
+                    sv = runtime.runtime.rmem.Heap.AllocateArray(new StackValue[] { sv });
+                }
+                catch (RunOutOfMemoryException)
+                {
+                    runtime.runtime.RuntimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                    return StackValue.Null;
+                }
             }
             return sv;
         }
@@ -2371,11 +2537,27 @@ namespace ProtoCore.Lang
                     svList2[count2] = element;
                 }
 
-                StackValue finalCol = heap.AllocateArray(svList2);
-                svList1[count1] = finalCol;
+                try
+                {
+                    StackValue finalCol = heap.AllocateArray(svList2);
+                    svList1[count1] = finalCol;
+                }
+                catch (RunOutOfMemoryException)
+                {
+                    runtime.runtime.RuntimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                    svList1[count1] = StackValue.Null;
+                }
             }
 
-            return heap.AllocateArray(svList1);
+            try
+            {
+                return heap.AllocateArray(svList1);
+            }
+            catch (RunOutOfMemoryException)
+            {
+                runtime.runtime.RuntimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                return StackValue.Null;
+            }
         }
 
         internal static StackValue SortPointers(StackValue svFunction, StackValue svArray, Interpreter runtime, StackFrame stackFrame)
@@ -2415,7 +2597,16 @@ namespace ProtoCore.Lang
             }
 
             var heap = runtime.runtime.rmem.Heap;
-            return heap.AllocateArray(svList);
+
+            try
+            {
+                return heap.AllocateArray(svList);
+            }
+            catch (RunOutOfMemoryException)
+            {
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                return StackValue.Null;
+            }
         }
 
         internal static StackValue Evaluate(StackValue function, StackValue parameters, StackValue unpackParams, Interpreter runtime, StackFrame stackFrame)
