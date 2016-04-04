@@ -11,23 +11,23 @@ namespace Dynamo.UI.Controls
     /// </summary>
     internal class EditorStateMachine
     {
-        internal enum EditorState
+        internal enum State
         {
             Editing,
             Commited
         }
 
-        private EditorState state;
+        private State state;
 
         /// <summary>
         /// Event handler for editor state changed.
         /// </summary>
-        public event Action<EditorState> OnStateChanged;
+        internal event Action<State> OnStateChanged;
 
         /// <summary>
         /// Constructor state machine. 
         /// </summary>
-        public EditorStateMachine(EditorState startState)
+        internal EditorStateMachine(State startState)
         {
             state = startState;
         }
@@ -36,7 +36,7 @@ namespace Dynamo.UI.Controls
         /// Transit to the new state.
         /// </summary>
         /// <param name="newState"></param>
-        public void Transit(EditorState newState)
+        internal void Transit(State newState)
         {
             if (state != newState)
             {
@@ -56,7 +56,7 @@ namespace Dynamo.UI.Controls
     {
         private bool createdForNewCodeBlock;
         private readonly CodeBlockNodeModel codeBlockNode;
-        private EditorStateMachine stateMachine = new EditorStateMachine(EditorStateMachine.EditorState.Commited);
+        private EditorStateMachine stateMachine = new EditorStateMachine(EditorStateMachine.State.Commited);
 
         /// <summary>
         /// Create code block editor by the view of code block node.
@@ -110,23 +110,23 @@ namespace Dynamo.UI.Controls
 
             createdForNewCodeBlock = false; // First commit is now over.
 
-            stateMachine.Transit(EditorStateMachine.EditorState.Commited);
+            stateMachine.Transit(EditorStateMachine.State.Commited);
         }
 
         protected override void OnEditorTextChanged()
         {
-            stateMachine.Transit(EditorStateMachine.EditorState.Editing);
+            stateMachine.Transit(EditorStateMachine.State.Editing);
         }
 
-        private void OnEditorStateChanged(EditorStateMachine.EditorState state)
+        private void OnEditorStateChanged(EditorStateMachine.State state)
         {
             switch (state)
             {
-                case EditorStateMachine.EditorState.Editing:
+                case EditorStateMachine.State.Editing:
                     EnableInputOutputPorts(false); 
                     break;
 
-                case EditorStateMachine.EditorState.Commited:
+                case EditorStateMachine.State.Commited:
                     EnableInputOutputPorts(true); 
                     break;
             }
