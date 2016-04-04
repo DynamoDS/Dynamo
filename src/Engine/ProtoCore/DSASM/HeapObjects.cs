@@ -190,20 +190,26 @@ namespace ProtoCore.DSASM
 
 
         /// <summary>
-        /// Get all reference-typed elements in this array.
+        /// Enqueue all reference-typed element.
         /// Note: it is only used by heap manager to do garbage collection.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<StackValue> GetReferenceElements()
+        public void CollectElementsForGC(Queue<StackValue> gcQueue)
         {
-            return Values.Concat(Dict == null ? Dict.Keys : Enumerable.Empty<StackValue>()).Where(s => s.IsReferenceType);
+            var elements = Values.Concat(Dict == null ? Dict.Keys : Enumerable.Empty<StackValue>());
+            foreach (var item in elements)
+            {
+                if (item.IsReferenceType)
+                {
+                    gcQueue.Enqueue(item);
+                }
+            }
         }
 
         /// <summary>
-
-        /// </summary>
         /// <param name="core"></param>
         /// <returns></returns>
+        /// </summary>
         public StackValue CopyArray(RuntimeCore runtimeCore)
         {
             Type anyType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank);

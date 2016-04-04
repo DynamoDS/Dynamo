@@ -621,11 +621,7 @@ namespace ProtoCore.DSASM
                 {
                     var array = ToHeapObject<DSArray>(value);
                     releaseSize += array.MemorySize;
-
-                    foreach (var ele in array.GetReferenceElements())
-                    {
-                        ptrs.Enqueue(ele);
-                    }
+                    array.CollectElementsForGC(ptrs);
                 }
                 else if (value.IsPointer)
                 {
@@ -837,87 +833,6 @@ namespace ProtoCore.DSASM
         {
             gcDebt -= newSize;
             totalAllocated += newSize;
-        }
-
-        public void GCMarkAndSweep(List<StackValue> rootPointers, Executive exe)
-        {
-            if (IsGCRunning)
-                return;
-
-            try
-            {
-                IsGCRunning = true;
-
-                // Mark
-                var count = heapElements.Count;
-                var markBits = new BitArray(count);
-                foreach (var index in fixedHeapElements)
-                {
-                    markBits.Set(index, true); 
-                }
-
-                var workingStack = new Stack<StackValue>(rootPointers);
-                while (workingStack.Any())
-                {
-                    var pointer = workingStack.Pop();
-                    var ptr = (int)pointer.RawData;
-                    if (!pointer.IsReferenceType || markBits.Get(ptr))
-                    {
-                        continue;
-                    }
-
-                    markBits.Set(ptr, true);
-
-                    var heapElement = heapElements[ptr];
-                    IEnumerable<StackValue> subElements = Enumerable.Empty<StackValue>();
-
-                    if (pointer.IsArray)
-                    {
-                        var array = ToHeapObject<DSArray>(pointer);
-                        subElements = array.GetReferenceElements();
-                    }
-                    else
-                    {
-                        subElements = heapElement.Values;
-                    }
-
-                    foreach (var subElement in subElements)
-                    {
-                        if (subElement.IsReferenceType &&
-                            !markBits.Get((int)subElement.RawData))
-                        {
-                            workingStack.Push(subElement);
-                        }
-                    }
-                }
-
-                // Sweep
-                for (int i = 0; i < count; ++i)
-                {
-                    if (markBits.Get(i) || heapElements[i] == null)
-                    {
-                        continue;
-                    }
-
-                    var metaData = heapElements[i].MetaData;
-                    if (metaData.type == (int)PrimitiveType.String)
-                    {
-                        stringTable.TryRemoveString(i);
-                    }
-                    else if (metaData.type >= (int)PrimitiveType.MaxPrimitive)
-                    {
-                        var objPointer = StackValue.BuildPointer(i, metaData);
-                        GCDisposeObject(objPointer, exe);
-                    }
-
-                    heapElements[i] = null;
-                    freeList.Add(i);
-                }
-            }
-            finally
-            {
-                IsGCRunning = false;
-            }
         }
     }
 }
