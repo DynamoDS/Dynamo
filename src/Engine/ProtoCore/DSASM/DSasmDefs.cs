@@ -97,7 +97,6 @@ namespace ProtoCore.DSASM
         public const string push = "push";
         public const string pushm = "pushm";
         public const string pushw = "pushw";
-        public const string pushindex = "pushindex";
         public const string pushdep = "pushdep";
         public const string pushrepguide = "pushguide";
         public const string pushlevel = "pushlevel";

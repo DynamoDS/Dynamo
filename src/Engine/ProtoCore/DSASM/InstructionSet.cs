@@ -74,7 +74,6 @@ namespace ProtoCore.DSASM
         PUSHM,
         PUSHW,
         PUSHDEP,        // Push symbols in left-hand-side identifier list in impertiave langauge block
-        PUSHINDEX,      // Array indexing
         PUSHREPGUIDE,   // Push replicaion guide to the stack
         PUSHLEVEL,      // Push at-level to the stak
         POP,

@@ -3142,26 +3142,6 @@ namespace ProtoCore.DSASM
             ++pc;
         }
 
-        private void PUSHINDEX_Handler(Instruction instruction)
-        {
-            int dimensions = instruction.op1.ArrayDimension;
-            if (dimensions > 0)
-            {
-                List<StackValue> dims = new List<StackValue>();
-                for (int i = 0; i < dimensions; ++i)
-                {
-                    dims.Add(rmem.Pop());
-                }
-                dims.Reverse();
-
-                StackValue arrayPointer = rmem.Pop();
-                StackValue sv = GetIndexedArray(arrayPointer, dims);
-                rmem.Push(sv);
-            }
-
-            ++pc;
-        }
-
         private void PUSHB_Handler(Instruction instruction)
         {
             if (runtimeCore.Options.RunMode != InterpreterMode.Expression)
@@ -4891,12 +4871,6 @@ namespace ProtoCore.DSASM
                 case OpCode.PUSHW:
                     {
                         PUSHW_Handler(instruction);
-                        return;
-                    }
-
-                case OpCode.PUSHINDEX:
-                    {
-                        PUSHINDEX_Handler(instruction);
                         return;
                     }
 

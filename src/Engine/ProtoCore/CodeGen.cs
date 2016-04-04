@@ -1405,17 +1405,6 @@ namespace ProtoCore
             AppendInstruction(instr);
         }
 
-        protected void EmitPushArrayIndex(int dimCount)
-        {
-            SetEntry();
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.PUSHINDEX;
-            instr.op1 = StackValue.BuildArrayDimension(dimCount);
-
-            ++pc;
-            AppendInstruction(instr);
-        }
-        
         protected void EmitPushReplicationGuide(int repGuide, bool isLongest)
         {
             SetEntry();
