@@ -246,7 +246,7 @@ namespace Dynamo.Visualization
         public bool RequiresPerVertexColoration { get; set; }
 
         /// <summary>
-        /// The number of point vertices in the package.
+        /// Returns the number of point vertices in the package divided by 3.
         /// </summary>
         public int PointVertexCount
         {
@@ -254,7 +254,7 @@ namespace Dynamo.Visualization
         }
 
         /// <summary>
-        /// The number of line vertices in the package.
+        /// Returns the number of line vertices in the package divided by 3.
         /// </summary>
         public int LineVertexCount
         {
@@ -262,7 +262,7 @@ namespace Dynamo.Visualization
         }
 
         /// <summary>
-        /// The number of mesh vertices in the package.
+        /// Returns the number of mesh vertices in the package divided by 3.
         /// </summary>
         public int MeshVertexCount
         {
@@ -270,7 +270,7 @@ namespace Dynamo.Visualization
         }
 
         /// <summary>
-        /// A collection of int values representing how many vertices
+        /// Returns the collection of int values representing how many vertices
         /// comprise each line segment in the package.
         /// </summary>
         public IEnumerable<int> LineStripVertexCounts
@@ -279,7 +279,7 @@ namespace Dynamo.Visualization
         }
 
         /// <summary>
-        /// A collection containing all line strip vertices as x1,y1,z1,x2,y2,z2...
+        /// Returns the collection containing all line strip vertices as x1,y1,z1,x2,y2,z2...
         /// </summary>
         public IEnumerable<double> LineStripVertices
         {
@@ -287,7 +287,7 @@ namespace Dynamo.Visualization
         }
 
         /// <summary>
-        /// A collection containing all line strip colors as r1,g1,b1,a1,r2,g2,b2,a2...
+        /// Returns the collection containing all line strip colors as r1,g1,b1,a1,r2,g2,b2,a2...
         /// </summary>
         public IEnumerable<byte> LineStripVertexColors
         {
@@ -295,7 +295,7 @@ namespace Dynamo.Visualization
         }
 
         /// <summary>
-        /// A collection containing all line strip indices.
+        /// Returns the collection containing all line strip indices.
         /// </summary>
         public IEnumerable<int> LineStripIndices
         {
@@ -303,7 +303,7 @@ namespace Dynamo.Visualization
         }
 
         /// <summary>
-        /// A collection containing all mesh vertices as x1,y1,z1,x2,y2,z2...
+        /// Returns the collection containing all mesh vertices as x1,y1,z1,x2,y2,z2...
         /// </summary>
         public IEnumerable<double> MeshVertices
         {
@@ -311,7 +311,7 @@ namespace Dynamo.Visualization
         }
 
         /// <summary>
-        /// A collection containing all mesh vertex colors as r1,g1,b1,a1,r2,g2,b2,a2...
+        /// Returns the collection containing all mesh vertex colors as r1,g1,b1,a1,r2,g2,b2,a2...
         /// </summary>
         public IEnumerable<byte> MeshVertexColors
         {
@@ -319,7 +319,7 @@ namespace Dynamo.Visualization
         }
 
         /// <summary>
-        /// A collection containing all mesh vertex indices.
+        /// Returns the collection containing all mesh vertex indices.
         /// </summary>
         public IEnumerable<int> MeshIndices
         {
@@ -327,7 +327,7 @@ namespace Dynamo.Visualization
         }
 
         /// <summary>
-        /// A collection containing all mesh normals as x1,y1,z1,x2,y2,z2...
+        /// Returns the collection containing all mesh normals as x1,y1,z1,x2,y2,z2...
         /// </summary>
         public IEnumerable<double> MeshNormals
         {
@@ -335,7 +335,7 @@ namespace Dynamo.Visualization
         }
 
         /// <summary>
-        /// A collection containing all mesh texture coordinates as u1,v1,u2,v2...
+        /// Returns the collection containing all mesh texture coordinates as u1,v1,u2,v2...
         /// </summary>
         public IEnumerable<double> MeshTextureCoordinates
         {
@@ -343,7 +343,7 @@ namespace Dynamo.Visualization
         }
 
         /// <summary>
-        /// A collection containing all point vertices as x1,y1,z1,x2,y2,z2...
+        /// Returns the collection containing all point vertices as x1,y1,z1,x2,y2,z2...
         /// </summary>
         public IEnumerable<double> PointVertices
         {
@@ -351,7 +351,7 @@ namespace Dynamo.Visualization
         }
 
         /// <summary>
-        /// A collection containing all mesh vertex colors as r1,g1,b1,a1,r2,g2,b2,a2...
+        /// Returns the collection containing all mesh vertex colors as r1,g1,b1,a1,r2,g2,b2,a2...
         /// </summary>
         public IEnumerable<byte> PointVertexColors
         {
@@ -359,7 +359,7 @@ namespace Dynamo.Visualization
         }
 
         /// <summary>
-        /// A collection containing all mesh vertex indices.
+        /// Returns the collection containing all mesh vertex indices.
         /// </summary>
         public IEnumerable<int> PointIndices
         {
@@ -367,7 +367,7 @@ namespace Dynamo.Visualization
         }
 
         /// <summary>
-        /// A collection of bytes representing RGBA colors. This field can be used to populate textures
+        /// Returns the collection of bytes representing RGBA colors. This field can be used to populate textures
         /// for mapping onto surfaces. Use the ColorsStride property to define the
         /// size of one dimension of the collection.
         /// </summary>
