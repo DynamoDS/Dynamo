@@ -332,8 +332,7 @@ namespace ProtoCore.DSASM
         /// <param name="values">Values of object properties</param>
         /// <param name="metaData">Object type</param>
         /// <returns></returns>
-        public StackValue AllocatePointer(StackValue[] values, 
-                                          MetaData metaData)
+        public StackValue AllocatePointer(StackValue[] values, MetaData metaData)
         {
             int index = AllocateInternal(values, PrimitiveType.Pointer);
             var heapElement = heapElements[index];
@@ -348,9 +347,7 @@ namespace ProtoCore.DSASM
         /// <returns></returns>
         public StackValue AllocatePointer(StackValue[] values)
         {
-            return AllocatePointer(
-                    values, 
-                    new MetaData { type = (int)PrimitiveType.Pointer });
+            return AllocatePointer(values, new MetaData { type = (int)PrimitiveType.Pointer });
         }
 
         /// <summary>
@@ -365,18 +362,6 @@ namespace ProtoCore.DSASM
             var hpe = heapElements[index];
             hpe.MetaData = metadata;
             return StackValue.BuildPointer(index, metadata);
-        }
-
-        /// <summary>
-        /// Allocate an object pointer.
-        /// </summary>
-        /// <param name="size">The size of object properties.</parame
-        /// <returns></returns>
-        public StackValue AllocatePointer(int size)
-        {
-            return AllocatePointer(
-                    size, 
-                    new MetaData { type = (int)PrimitiveType.Pointer });
         }
 
         /// <summary>
