@@ -909,6 +909,6 @@ Parameter name: {0}</value>
     <value>No item exists at specified index address</value>
   </data>
   <data name="RunOutOfMemory" xml:space="preserve">
-    <value>There is not enough memory to allocate object.</value>
+    <value>There is not enough memory to finish the operation.</value>
   </data>
 </root>

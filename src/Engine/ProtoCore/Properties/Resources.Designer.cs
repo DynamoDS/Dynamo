@@ -2259,7 +2259,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There is not enough memory to allocate object..
+        ///   Looks up a localized string similar to There is not enough memory to finish the operation..
         /// </summary>
         public static string RunOutOfMemory {
             get {
