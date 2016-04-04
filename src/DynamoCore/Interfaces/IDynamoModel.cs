@@ -16,45 +16,42 @@ namespace Dynamo.Interfaces
     public interface IDynamoModel : INotifyPropertyChanged
     {
         /// <summary>
-        /// Opened workspaces in Dynamo.
+        /// Represents the Workspaces in Dynamo.
         /// </summary>
         IEnumerable<WorkspaceModel> Workspaces { get; }
 
         /// <summary>
-        /// Workspace, that is currently opened.
+        /// Represents the current workspace.
         /// </summary>
         WorkspaceModel CurrentWorkspace { get; }
 
         /// <summary>
-        /// Event, which is fired when workspace is cleared.
+        /// This event is fired when workspace is cleared.
         /// </summary>
         event Action<WorkspaceModel> WorkspaceCleared;
 
         /// <summary>
-        /// Event, which is fired when Dynamo starting shuting down.
+        /// This event is fired when Dynamo is shutting down.
         /// </summary>
         event DynamoModelHandler ShutdownStarted;
 
         /// <summary>
-        /// Event, which is fired when graph evaluation is comleted.
+        /// This event is fired when graph evaluation is completed.
         /// </summary>
         event EventHandler<EvaluationCompletedEventArgs> EvaluationCompleted;
 
         /// <summary>
-        /// Event, which is fired when new workspace is added.
+        /// This event is fired when a new workspace is added.
         /// </summary>
         event Action<WorkspaceModel> WorkspaceAdded;
 
         /// <summary>
-        /// Event, which is fired when workspace is removed.
+        /// This event is fired when a workspace is removed.
         /// </summary>
         event Action<WorkspaceModel> WorkspaceRemoved;
 
         /// <summary>
-        /// Event that is fired during the opening of the workspace.
-        /// 
-        /// Use the XmlDocument object provided to conduct additional
-        /// workspace opening operations.
+        /// This event is fired when a workspace is opened.
         /// </summary>
         event Action<XmlDocument> WorkspaceOpening;
     }

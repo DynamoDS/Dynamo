@@ -13,9 +13,7 @@ namespace Dynamo.Models
     public delegate void ActionHandler(Action action);
 
     /// <summary>
-    /// Delegate, that is mostly used in workspace events.
-    /// When user tries to do something with node.
-    /// E.g. select it, drag it etc.
+    /// This delegate is used in workspace events.
     /// </summary>
     /// <param name="sender">Object sender</param>
     /// <param name="e">EventArgs</param>

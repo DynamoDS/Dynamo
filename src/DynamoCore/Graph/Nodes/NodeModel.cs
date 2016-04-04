@@ -2132,8 +2132,8 @@ namespace Dynamo.Graph.Nodes
     };
 
     /// <summary>
-    /// Enum, that is used when mouse enters, leaves or clicks port.
-    /// It's used for snapping ports.
+    /// Defines Enum for Mouse events.
+    /// Used in port snapping.
     /// </summary>
     public enum PortEventType
     {

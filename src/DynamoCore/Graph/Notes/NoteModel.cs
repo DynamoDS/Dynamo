@@ -6,15 +6,13 @@ namespace Dynamo.Graph.Notes
 {
     /// <summary>
     /// NoteModel represents notes in Dynamo.
-    /// Dynamo note is little square, where you can write something, 
-    /// that you want to remember or pay someone's attention.
     /// </summary>
     public class NoteModel : ModelBase
     {
         private string text;
       
         /// <summary>
-        /// Text, that is inside note.
+        /// Returns the text inside the note.
         /// </summary>
         public string Text
         {

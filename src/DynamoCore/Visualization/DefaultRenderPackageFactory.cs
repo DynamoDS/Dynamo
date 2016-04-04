@@ -12,7 +12,7 @@ namespace Dynamo.Visualization
     public class DefaultRenderPackageFactory : IRenderPackageFactory
     {
         /// <summary>
-        /// Tessellation parameters.
+        /// Sets or Returns Tessellation parameters.
         /// MaxTessellationDivisions equals 32.
         /// </summary>
         public TessellationParameters TessellationParameters { get; set; }
@@ -26,7 +26,7 @@ namespace Dynamo.Visualization
         }
 
         /// <summary>
-        /// Creates DefaultRenderPackage, the type manufactured by this factory.
+        /// Creates DefaultRenderPackage.
         /// </summary>
         /// <returns>DefaultRenderPackage</returns>
         public IRenderPackage CreateRenderPackage()
@@ -37,7 +37,7 @@ namespace Dynamo.Visualization
 
     /// <summary>
     /// Example implementation of IRenderPackage.
-    /// DefaultRenderPackage can be used as package for your own visualization.
+    /// DefaultRenderPackage can be used as package for your visualization.
     /// </summary>
     public class DefaultRenderPackage : IRenderPackage
     {
@@ -181,7 +181,7 @@ namespace Dynamo.Visualization
         }
 
         /// <summary>
-        /// Set a an array of bytes to be used as a color map.
+        /// Sets an array of bytes that is used as a color map.
         /// </summary>
         /// <param name="colors"></param>
         public void SetColors(byte[] colors)
@@ -223,12 +223,12 @@ namespace Dynamo.Visualization
         public string Description { get; set; }
 
         /// <summary>
-        /// A flag indicating whether the render package is selected.
+        /// Returns true if the render package is selected.
         /// </summary>
         public bool IsSelected { get; set; }
 
         /// <summary>
-        /// A flag indicating whether the render package has data.
+        /// Returns true if the render package has data.
         /// </summary>
         public bool HasRenderingData
         {
@@ -236,13 +236,12 @@ namespace Dynamo.Visualization
         }
 
         /// <summary>
-        /// A flag indicating whether the render package is displaying labels
+        /// Returns true if the render package is displaying labels.
         /// </summary>
         public bool DisplayLabels { get; set; }
 
         /// <summary>
-        /// A flag indicating whether the render package requires 
-        /// per vertex coloration.
+        /// Returns true if the render package requires per vertex coloration
         /// </summary>
         public bool RequiresPerVertexColoration { get; set; }
 

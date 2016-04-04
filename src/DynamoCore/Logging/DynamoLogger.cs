@@ -8,23 +8,23 @@ using Dynamo.Interfaces;
 namespace Dynamo.Logging
 {
     /// <summary>
-    /// The log level at which to log the message.
+    /// Defines the level for log messages. A log message could be a console or file or warning.
     /// </summary>
     public enum LogLevel{Console, File, Warning}
 
     /// <summary>
-    /// The warning level for messages.
+    /// Defines the warning level for log messages.
     /// </summary>
     public enum WarningLevel{Mild, Moderate, Error}
 
     /// <summary>
-    /// Delegate, that takes log event arguments, logs them and return nothing.
+    /// This is a delegate used by Log events.
     /// </summary>
     /// <param name="args">Log event arguments.</param>
     public delegate void LogEventHandler(LogEventArgs args);
 
     /// <summary>
-    /// Event arguments, that are sent to log event handler.
+    /// Represents Event arguments that are passed to log event handler.
     /// </summary>
     public class LogEventArgs : EventArgs
     {

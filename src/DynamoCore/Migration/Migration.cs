@@ -997,12 +997,13 @@ namespace Dynamo.Migration
         public string OwningNode { get; private set; }
 
         /// <summary>
-        /// Index
+        /// Index of the port.
         /// </summary>
         public int PortIndex { get; private set; }
 
         /// <summary>
-        /// PortType
+        /// PortType.
+        /// The port can be incoming or outcoming.
         /// </summary>
         public PortType PortType { get; private set; }
     }

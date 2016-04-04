@@ -13,7 +13,7 @@ namespace Dynamo.Logging
         void Log(string message);
 
         /// <summary>
-        /// Logs some data with an associated tag.
+        /// Logs data with an associated tag.
         /// </summary>
         /// <param name="tag">Tag.</param>
         /// <param name="message">Message to be logged.</param>

@@ -15,8 +15,7 @@ namespace Dynamo.Graph.Nodes
     public enum PortType { Input, Output };
 
     /// <summary>
-    /// PortModel represents Dynamo ports. Dynamo port is little square on node.
-    /// User can connect and disconnect ports and therefore change value of the node.
+    /// PortModel represents Dynamo ports.
     /// </summary>
     public class PortModel : ModelBase
     {
@@ -29,7 +28,7 @@ namespace Dynamo.Graph.Nodes
         #region public members
 
         /// <summary>
-        /// Wires,that are connected to port.
+        /// Returns the connectors between the specified ports.
         /// </summary>
         public ObservableCollection<ConnectorModel> Connectors
         {
@@ -61,6 +60,7 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         /// Type of the port.
+        /// It can be incoming or outcoming.
         /// </summary>
         public PortType PortType
         {
@@ -69,7 +69,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Node, that owns this port.
+        /// Returns the Node.
         /// </summary>
         public NodeModel Owner
         {
@@ -86,11 +86,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// LineIndex is used just in code block nodes.
-        /// A code block node may 
-        /// contain empty lines in it, resulting in one PortModel being spaced out 
-        /// from another one. In such cases, the vertical position of PortModel is 
-        /// dependent of its "LineIndex".
+        /// Returns the LineIndex of that port. The vertical position of PortModel is dependent on LineIndex.
         /// </summary>
         public int LineIndex
         {
@@ -176,8 +172,6 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         /// Based on extensionEdges port is aligned in UI.
-        /// Because of this alignment user can snap ports.
-        /// I.e. connect port even if he didn't click on port directly.
         /// </summary>
         public SnapExtensionEdges extensionEdges { get; set; }
 
@@ -318,11 +312,7 @@ namespace Dynamo.Graph.Nodes
         public AssociativeNode DefaultValue { get; set; }
 
         /// <summary>
-        /// Property, that is used in code block nodes.
-        /// A code block node may 
-        /// contain empty lines in it, resulting in one PortModel being spaced out 
-        /// from another one. In such cases, the vertical position of PortModel is 
-        /// dependent of its "LineIndex".
+        /// This property is used in code block nodes.
         /// </summary>
         public int LineIndex { get; set; }
 

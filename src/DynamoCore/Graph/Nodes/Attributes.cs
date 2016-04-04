@@ -20,7 +20,7 @@ namespace Dynamo.Graph.Nodes
 
     /// <summary>
     ///     The NodeCategoryAttribute attribute allows the node implementer
-    ///     to define in which category node will appear, regardless its namespace. 
+    ///     to define in which category node will appear. 
     /// </summary>
     [AttributeUsage(AttributeTargets.All)]
     public class NodeCategoryAttribute : Attribute
@@ -42,7 +42,7 @@ namespace Dynamo.Graph.Nodes
 
     /// <summary>
     ///     The NodeCategoryAttribute attribute allows the node implementer
-    ///     to define search tags with which user can find node in library search.
+    ///     to define search tags.
     /// </summary>
     [AttributeUsage(AttributeTargets.All)]
     public class NodeSearchTagsAttribute : Attribute
@@ -106,7 +106,7 @@ namespace Dynamo.Graph.Nodes
     }
 
     /// <summary>
-    ///     The NodeCategoryAttribute attribute allows the node implementer
+    ///     The NodeDescriptionAttribute attribute allows the node implementer
     ///     to define node description.
     /// </summary>
     [AttributeUsage(AttributeTargets.All)]
@@ -115,7 +115,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Creates NodeDescriptionAttribute with string.
         /// </summary>
-        /// <param name="description">String description</param>
+        /// <param name="description">String description. E.g. "Get a color given a color range." for ColorRange node.</param>
         public NodeDescriptionAttribute(string description)
         {
             ElementDescription = description;
@@ -145,7 +145,8 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Description of node.
+        /// Description of the node.
+        /// E.g. "Get a color given a color range." for ColorRange node.
         /// </summary>
         public string ElementDescription { get; set; }
     }
@@ -174,8 +175,7 @@ namespace Dynamo.Graph.Nodes
 
     /// <summary>
     ///     The DoNotLoadOnPlatforms attribute allows the node implementer
-    ///     to define an array of contexts in which the node will not
-    ///     be loaded.
+    ///     to define an array of contexts.
     /// </summary>
     [AttributeUsage(AttributeTargets.All)]
     public class DoNotLoadOnPlatformsAttribute : Attribute

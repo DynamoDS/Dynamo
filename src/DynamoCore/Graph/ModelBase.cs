@@ -44,8 +44,7 @@ namespace Dynamo.Graph
     }
 
     /// <summary>
-    /// Abstract class, that is used as base class for all objects with which user can interact in Dynamo.
-    /// Objects like nodes, connectors, ports, annotations etc.
+    /// Base class for all objects with which user can interact in Dynamo.    
     /// </summary>
     public abstract class ModelBase : NotificationObject, ISelectable, ILocatable, ILogSource
     {
@@ -156,7 +155,7 @@ namespace Dynamo.Graph
         }
 
         /// <summary>
-        /// Bool value, that indicates is object is selected or not.
+        /// Returns true if the object is selected otherwise false.
         /// </summary>
         public bool IsSelected
         {
@@ -197,7 +196,8 @@ namespace Dynamo.Graph
         }
 
         /// <summary>
-        /// Selects object.
+        /// This method sets the isSelected property on the object to true.
+        /// E.g. when user clicks on node.
         /// </summary>
         public virtual void Select()
         {
@@ -205,7 +205,8 @@ namespace Dynamo.Graph
         }
 
         /// <summary>
-        /// Deselects object.
+        /// This method sets the isSelected property on the object to false.
+        /// E.g. when user clicks on canvas.
         /// </summary>
         public virtual void Deselect()
         {
@@ -235,8 +236,7 @@ namespace Dynamo.Graph
         }
 
         /// <summary>
-        /// Notifies listeners that is going to be disposed, 
-        /// so that they can free, release, or reset their resources.
+        /// Invokes Dispose on the object.
         /// </summary>
         public virtual void Dispose()
         {
@@ -250,7 +250,7 @@ namespace Dynamo.Graph
         #region Command Framework Supporting Methods
 
         /// <summary>
-        /// Calls protected UpdateValueCore, which updates some property of object.
+        /// Updates object properties.
         /// UpdateValueCore is overridden in derived classes.
         /// </summary>
         /// <param name="updateValueParams">Please see UpdateValueParams for details.</param>
@@ -338,7 +338,7 @@ namespace Dynamo.Graph
         #region ILogSource implementation
 
         /// <summary>
-        /// Event, which is fired, when message should be logged.
+        /// This event is fired when a message is logged.
         /// </summary>
         public event Action<ILogMessage> MessageLogged;
 
