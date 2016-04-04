@@ -1245,6 +1245,7 @@ namespace Dynamo.Tests
         private AsyncTask MakeUpdateGraphAsyncTask()
         {
             var t = new FakeUpdateGraphAsyncTask(MakeAsyncTaskData());
+            t.Initialize(dynamoModel.EngineController, dynamoModel.CurrentWorkspace);
             t.InitializeTestData(); // Just to initialize ModifiedNodes
             return t;
         }
