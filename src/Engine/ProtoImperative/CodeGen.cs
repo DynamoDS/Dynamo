@@ -900,16 +900,8 @@ namespace ProtoImperative
                 ProtoCore.Type varType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
                 symbolnode = Allocate(t.Value, globalProcIndex, varType);
 
-                if (dimensions > 0)
-                {
-                    EmitInstrConsole(kw.setelement, t.Value);
-                    EmitSetElement(symbolnode, runtimeIndex);
-                }
-                else
-                {
-                    EmitInstrConsole(kw.pop, t.Value);
-                    EmitPopForSymbol(symbolnode, runtimeIndex);
-                }
+                EmitInstrConsole(kw.pop, t.Value);
+                EmitPopForSymbol(symbolnode, runtimeIndex);
             }
             else
             {
@@ -932,6 +924,8 @@ namespace ProtoImperative
                 }
             }
 
+            EmitInstrConsole(kw.push, t.Value);
+            EmitPushForSymbol(symbolnode, runtimeIndex, t);
 
             if (null != t.ArrayDimensions)
             {
@@ -950,17 +944,11 @@ namespace ProtoImperative
                 }
             }
 
-            EmitPushDimensions(dimensions);
-
-            if (dimensions == 0)
+            if (dimensions > 0)
             {
-                EmitInstrConsole(kw.push, t.Value);
-                EmitPushForSymbol(symbolnode, runtimeIndex, t);
-            }
-            else
-            {
-                EmitInstrConsole(kw.loadelement, t.Value);
-                EmitLoadElement(symbolnode, runtimeIndex, t);
+                EmitPushDimensions(dimensions);
+                EmitInstrConsole(kw.loadelement);
+                EmitLoadElement();
             }
 
             if (core.TypeSystem.IsHigherRank(type.UID, inferedType.UID))
@@ -1982,31 +1970,33 @@ namespace ProtoImperative
                         {
                             EmitCast(castType.UID, castType.rank);
                         }
-                        EmitPushDimensions(dimensions);
+
                         if (parentNode != null)
                         {
-                            if (dimensions > 0)
-                            {
-                                EmitInstrConsole(kw.setelement, t.Value);
-                                EmitSetElement(symbolnode, runtimeIndex, parentNode.line, parentNode.col, parentNode.endLine, parentNode.endCol);
-                            }
-                            else
+                            if (dimensions == 0)
                             {
                                 EmitInstrConsole(kw.pop, t.Value);
                                 EmitPopForSymbol(symbolnode, runtimeIndex, parentNode.line, parentNode.col, parentNode.endLine, parentNode.endCol);
                             }
+                            else
+                            {
+                                EmitPushDimensions(dimensions);
+                                EmitInstrConsole(kw.setelement, t.Value);
+                                EmitSetElement(symbolnode, runtimeIndex);
+                            }
                         }
                         else
                         {
-                            if (dimensions > 0)
-                            {
-                                EmitInstrConsole(kw.setelement, t.Value);
-                                EmitSetElement(symbolnode, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
-                            }
-                            else
+                            if (dimensions == 0)
                             {
                                 EmitInstrConsole(kw.pop, t.Value);
                                 EmitPopForSymbol(symbolnode, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
+                            }
+                            else
+                            {
+                                EmitPushDimensions(dimensions);
+                                EmitInstrConsole(kw.setelement, t.Value);
+                                EmitSetElement(symbolnode, runtimeIndex);
                             }
                         }
                         

@@ -2398,7 +2398,6 @@ namespace ProtoAssociative
                         ProtoCore.AssociativeGraph.GraphNode nullAssignGraphNode = new ProtoCore.AssociativeGraph.GraphNode();
                         nullAssignGraphNode.updateBlock.startpc = pc;
 
-
                         EmitPushNull();
 
                         // Push the identifier local block  
@@ -2418,16 +2417,8 @@ namespace ProtoAssociative
                             symbolnode = codeBlock.symbolTable.symbolList[symbolindex];
                         }
 
-                        if (dimensions > 0)
-                        {
-                            EmitInstrConsole(kw.setelement, t.Value);
-                            EmitSetElement(unboundVariable, runtimeIndex);
-                        }
-                        else
-                        {
-                            EmitInstrConsole(kw.pop, t.Value);
-                            EmitPopForSymbol(unboundVariable, runtimeIndex);
-                        }
+                        EmitInstrConsole(kw.pop, t.Value);
+                        EmitPopForSymbol(unboundVariable, runtimeIndex);
 
                         nullAssignGraphNode.PushSymbolReference(symbolnode);
                         nullAssignGraphNode.procIndex = globalProcIndex;
@@ -2584,6 +2575,17 @@ namespace ProtoAssociative
                     context.DependentVariablesInScope.Add(dependendNode);
                 }
 
+                if (ProtoCore.DSASM.InterpreterMode.Expression == core.Options.RunMode)
+                {
+                    EmitInstrConsole(ProtoCore.DSASM.kw.pushw, t.Value);
+                    EmitPushForSymbolW(symbolnode, runtimeIndex, t.line, t.col);
+                }
+                else
+                {
+                    EmitInstrConsole(kw.push, t.Value);
+                    EmitPushForSymbol(symbolnode, runtimeIndex, t);
+                }
+
                 bool emitReplicationGuideFlag = emitReplicationGuide;
                 emitReplicationGuide = false;
                 if (null != t.ArrayDimensions)
@@ -2603,24 +2605,14 @@ namespace ProtoAssociative
                     }
                 }
 
-                EmitPushDimensions(dimensions);
 
-                if (ProtoCore.DSASM.InterpreterMode.Expression == core.Options.RunMode)
+                if (ProtoCore.DSASM.InterpreterMode.Expression != core.Options.RunMode)
                 {
-                    EmitInstrConsole(ProtoCore.DSASM.kw.pushw, t.Value);
-                    EmitPushForSymbolW(symbolnode, runtimeIndex, t.line, t.col);
-                }
-                else
-                {
-                    if (dimensions == 0)
+                    if (dimensions > 0)
                     {
-                        EmitInstrConsole(kw.push, t.Value);
-                        EmitPushForSymbol(symbolnode, runtimeIndex, t);
-                    }
-                    else
-                    {
-                        EmitInstrConsole(kw.loadelement, t.Value);
-                        EmitLoadElement(symbolnode, runtimeIndex, t);
+                        EmitPushDimensions(dimensions);
+                        EmitInstrConsole(kw.loadelement);
+                        EmitLoadElement();
                     }
 
                     if (emitReplicationGuide)
@@ -6116,35 +6108,36 @@ namespace ProtoAssociative
                             {
                                 EmitCast(castType.UID, castType.rank);
                             }
-                            EmitPushDimensions(dimensions);
 
                             symbol = symbolnode.symbolTableIndex;
                             if (t.Name == ProtoCore.DSASM.Constants.kTempArg)
                             {
-                                if (dimensions > 0)
-                                {
-                                    EmitInstrConsole(kw.setelement, t.Value);
-                                    EmitSetElement(symbolnode, runtimeIndex);
-                                }
-                                else
+                                if (dimensions == 0)
                                 {
                                     EmitInstrConsole(kw.pop, t.Value);
                                     EmitPopForSymbol(symbolnode, runtimeIndex);
+                                }
+                                else
+                                {
+                                    EmitPushDimensions(dimensions);
+                                    EmitInstrConsole(kw.setelement, t.Value);
+                                    EmitSetElement(symbolnode, runtimeIndex);
                                 }
                             }
                             else
                             {
                                 if (core.Options.RunMode != ProtoCore.DSASM.InterpreterMode.Expression)
                                 {
-                                    if (dimensions > 0)
-                                    {
-                                        EmitInstrConsole(kw.setelement, t.Value);
-                                        EmitSetElement(symbolnode, runtimeIndex);
-                                    }
-                                    else
+                                    if (dimensions == 0)
                                     {
                                         EmitInstrConsole(kw.pop, t.Value);
                                         EmitPopForSymbol(symbolnode, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
+                                    }
+                                    else
+                                    {
+                                        EmitPushDimensions(dimensions);
+                                        EmitInstrConsole(kw.setelement, t.Value);
+                                        EmitSetElement(symbolnode, runtimeIndex);
                                     }
                                 }
                                 else
@@ -6221,19 +6214,19 @@ namespace ProtoAssociative
                         {
                             EmitCast(castType.UID, castType.rank);
                         }
-                        EmitPushDimensions(dimensions);
 
                         if (core.Options.RunMode != ProtoCore.DSASM.InterpreterMode.Expression)
                         {
-                            if (dimensions > 0)
+                            if (dimensions == 0)
                             {
-                                EmitInstrConsole(kw.setelement, symbolnode.name);
-                                EmitSetElement(symbolnode, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
-                            }
-                            else
-                            { 
                                 EmitInstrConsole(kw.pop, symbolnode.name);
                                 EmitPopForSymbol(symbolnode, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
+                            }
+                            else
+                            {
+                                EmitPushDimensions(dimensions);
+                                EmitInstrConsole(kw.setelement, t.Value);
+                                EmitSetElement(symbolnode, runtimeIndex);
                             }
                         }
                         else

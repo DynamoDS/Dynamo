@@ -795,13 +795,18 @@ namespace ProtoCore
                             {
                                 dim = DfsEmitArrayIndexHeap(identnode.ArrayDimensions, graphNode);
                             }
-                            EmitInstrConsole(ProtoCore.DSASM.kw.push, dim + "[dim]");
-                            StackValue dynamicOpdim = StackValue.BuildArrayDimension(dim);
-                            EmitPush(dynamicOpdim);
 
-                            EmitInstrConsole(ProtoCore.DSASM.kw.pushm, identnode.Value + "[dynamic]");
+
+                            EmitInstrConsole(kw.pushm, identnode.Value + "[dynamic]");
                             StackValue dynamicOp = StackValue.BuildDynamic(core.DynamicVariableTable.variableTable.Count - 1);
                             EmitPushm(dynamicOp, symbolnode == null ? globalClassIndex : symbolnode.classScope, DSASM.Constants.kInvalidIndex);
+
+                            if (dim > 0)
+                            {
+                                EmitPushDimensions(dim);
+                                EmitInstrConsole(kw.loadelement);
+                                EmitLoadElement();
+                            }
 
                             lefttype.UID = finalType.UID = (int)PrimitiveType.Var;
                             depth++;
@@ -856,17 +861,17 @@ namespace ProtoCore
                         }
                     }
 
-                    // TODO Jun: Performance. 
-                    // Is it faster to have a 'push' specific to arrays to prevent pushing dimension for push instruction?
-                    EmitInstrConsole(ProtoCore.DSASM.kw.push, dimensions + "[dim]");
-                    StackValue opdim = StackValue.BuildArrayDimension(dimensions);
-                    EmitPush(opdim);
-
-                    
                     if (isLeftidentList || depth == 0)
                     {
-                        EmitInstrConsole(ProtoCore.DSASM.kw.pushm, identnode.Value);
+                        EmitInstrConsole(kw.pushm, identnode.Value);
                         EmitPushm(op, symbolnode == null ? globalClassIndex : symbolnode.classScope, runtimeIndex);
+
+                        if (dimensions > 0)
+                        {
+                            EmitPushDimensions(dimensions);
+                            EmitInstrConsole(kw.loadelement);
+                            EmitLoadElement();
+                        }
                     }
                     else
                     {
@@ -876,6 +881,13 @@ namespace ProtoCore
                         StackValue dynamicOp = StackValue.BuildDynamic(core.DynamicVariableTable.variableTable.Count - 1);
                         EmitInstrConsole(ProtoCore.DSASM.kw.pushm, identnode.Value + "[dynamic]");
                         EmitPushm(dynamicOp, symbolnode == null ? globalClassIndex : symbolnode.classScope, runtimeIndex);
+
+                        if (dimensions > 0)
+                        {
+                            EmitPushDimensions(dimensions);
+                            EmitInstrConsole(kw.loadelement);
+                            EmitLoadElement();
+                        }
                     }
                     depth = depth + 1;
                     finalType = lefttype;
@@ -1603,25 +1615,14 @@ namespace ProtoCore
             }
         }
 
-        protected void EmitLoadElement(SymbolNode symbol, int blockId, Node identNode)
+        protected void EmitLoadElement()
         {
             SetEntry();
             Instruction instr = new Instruction();
             instr.opCode = OpCode.LOADELEMENT;
-            instr.op1 = BuildOperand(symbol);
-            instr.op2 = StackValue.BuildClassIndex(symbol.classScope);
-            instr.op3 = StackValue.BuildBlockIndex(blockId);
 
             ++pc;
-
-            DebugProperties.BreakpointOptions options = core.DebuggerProperties.breakOptions;
-            if (options.HasFlag(DebugProperties.BreakpointOptions.EmitIdentifierBreakpoint))
-            {
-                instr.debug = GetDebugObject(identNode.line, identNode.col,
-                    identNode.endLine, identNode.endCol, pc);
-            }
-
-            AppendInstruction(instr, identNode.line, identNode.col);
+            AppendInstruction(instr);
         }
 
         protected void EmitPushForSymbol(SymbolNode symbol, int blockId, ProtoCore.AST.Node identNode)

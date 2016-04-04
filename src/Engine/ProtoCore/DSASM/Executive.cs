@@ -3045,35 +3045,17 @@ namespace ProtoCore.DSASM
 
         private void LOADELEMENT_Handler(Instruction instruction)
         {
-            int dimensions = 0;
-
-            int blockId = Constants.kInvalidIndex;
-            StackValue op1 = instruction.op1;
-
-            if (op1.IsVariableIndex ||
-                op1.IsMemberVariableIndex ||
-                op1.IsPointer ||
-                op1.IsArray ||
-                op1.IsStaticVariableIndex ||
-                op1.IsFunctionPointer)
-            {
-                StackValue svDim = rmem.Pop();
-                dimensions = svDim.ArrayDimension;
-                blockId = instruction.op3.BlockIndex;
-            }
-
-            // TODO Jun: This entire block that handles arrays shoudl be integrated with getOperandData
-            runtimeVerify(op1.IsVariableIndex || op1.IsMemberVariableIndex || op1.IsArray);
+            int dimensions = rmem.Pop().ArrayDimension;
             var dims = new List<StackValue>();
-
             for (int n = 0; n < dimensions; n++)
             {
                 dims.Add(rmem.Pop());
             }
             dims.Reverse();
 
-            StackValue sv = GetIndexedArray(dims, blockId, instruction.op1, instruction.op2);
-            rmem.Push(sv);
+            StackValue array = rmem.Pop();
+            StackValue element = GetIndexedArray(array, dims);
+            rmem.Push(element);
 
             ++pc;
         }
@@ -3094,11 +3076,19 @@ namespace ProtoCore.DSASM
             }
 
             int fp = runtimeCore.RuntimeMemory.FramePointer;
+
             if (runtimeCore.Options.RunMode == InterpreterMode.Expression && instruction.op1.IsThisPtr)
+            {
                 runtimeCore.RuntimeMemory.FramePointer = runtimeCore.watchFramePointer;
+            }
+
             StackValue opdata1 = GetOperandData(blockId, instruction.op1, instruction.op2);
+
             if (runtimeCore.Options.RunMode == InterpreterMode.Expression && instruction.op1.IsThisPtr)
+            {
                 runtimeCore.RuntimeMemory.FramePointer = fp;
+            }
+
             rmem.Push(opdata1);
 
             ++pc;
@@ -3467,10 +3457,6 @@ namespace ProtoCore.DSASM
             StackValue svBlock = instruction.op2;
             blockId = svBlock.BlockIndex;
 
-            StackValue svType = rmem.Pop();
-            int staticType = svType.metaData.type;
-            int rank = svType.Rank;
-
             StackValue svDim = rmem.Pop();
             int dimensions = svDim.ArrayDimension;
 
@@ -3494,9 +3480,7 @@ namespace ProtoCore.DSASM
             {
                 if (0 == dimensions)
                 {
-                    StackValue coercedValue = TypeSystem.Coerce(svData, staticType, rank, runtimeCore);
-                    tempSvData = coercedValue;
-                    PopTo(blockId, instruction.op1, instruction.op2, coercedValue);
+                    PopTo(blockId, instruction.op1, instruction.op2, svData);
                 }
                 else
                 {
@@ -3521,43 +3505,36 @@ namespace ProtoCore.DSASM
             StackValue svProperty = thisObject.GetValueFromIndex(stackIndex, runtimeCore);
 
             Type targetType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var);
-            if (staticType != (int)PrimitiveType.FunctionPointer)
+            if (dimensions > 0)
             {
-                if (dimensions == 0)
-                {
-                    StackValue coercedType = TypeSystem.Coerce(svData, staticType, rank, runtimeCore);
-                    svData = coercedType;
-                }
-                else
-                {
-                    SymbolNode symbolnode = GetSymbolNode(blockId, classIndex, symbolIndex);
-                    targetType = symbolnode.staticType;
+                SymbolNode symbolnode = GetSymbolNode(blockId, classIndex, symbolIndex);
+                targetType = symbolnode.staticType;
 
-                    if (svProperty.IsArray)
+                if (svProperty.IsArray)
+                {
+                    if (targetType.UID != (int)PrimitiveType.Var || targetType.rank >= 0)
                     {
-                        if (targetType.UID != (int)PrimitiveType.Var || targetType.rank >= 0)
+                        int lhsRepCount = 0;
+                        foreach (var dim in dimList)
                         {
-                            int lhsRepCount = 0;
-                            foreach (var dim in dimList)
+                            if (dim.IsArray)
                             {
-                                if (dim.IsArray)
-                                {
-                                    lhsRepCount++;
-                                }
+                                lhsRepCount++;
                             }
-
-                            if (targetType.rank > 0)
-                            {
-                                targetType.rank = targetType.rank - dimList.Count;
-                                targetType.rank += lhsRepCount;
-
-                                if (targetType.rank < 0)
-                                {
-                                    runtimeCore.RuntimeStatus.LogWarning(WarningID.OverIndexing, Resources.IndexIntoNonArrayObject);
-                                }
-                            }
-
                         }
+
+                        if (targetType.rank > 0)
+                        {
+                            tempSvData = svData;
+                            targetType.rank = targetType.rank - dimList.Count;
+                            targetType.rank += lhsRepCount;
+
+                            if (targetType.rank < 0)
+                            {
+                                runtimeCore.RuntimeStatus.LogWarning(WarningID.OverIndexing, Resources.IndexIntoNonArrayObject);
+                            }
+                        }
+
                     }
                 }
             }
