@@ -82,8 +82,9 @@ namespace ProtoCore.DSASM
         POPM,
         POPREPGUIDES,   // Pop replication guides from stack and save to the core
 
-        LOADELEMENT,
-        SETELEMENT,
+        LOADELEMENT,    // Load array element
+        SETELEMENT,     // Set element
+        SETMEMElEMENT,  // Set element for member variable
 
         CAST,
 
@@ -129,6 +130,7 @@ namespace ProtoCore.DSASM
             newSv.opdata = opdata;
             newSv.metaData = new MetaData { type = metaData.type };
             return newSv;
+
         }
 
         #region Override functions

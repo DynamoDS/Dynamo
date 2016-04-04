@@ -6153,19 +6153,18 @@ namespace ProtoAssociative
                             {
                                 EmitCast(castType.UID, castType.rank);
                             }
-                            EmitPushDimensions(dimensions);
 
-                            EmitInstrConsole(ProtoCore.DSASM.kw.popm, t.Name);
-
-                            if (symbolnode.isStatic)
+                            StackValue operand = symbolnode.isStatic ? StackValue.BuildStaticMemVarIndex(symbol) : StackValue.BuildMemVarIndex(symbol);
+                            if (dimensions == 0)
                             {
-                                var op = StackValue.BuildStaticMemVarIndex(symbol);
-                                EmitPopm(op, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
+                                EmitInstrConsole(kw.popm, t.Name);
+                                EmitPopm(operand, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
                             }
                             else
                             {
-                                var op = StackValue.BuildMemVarIndex(symbol);
-                                EmitPopm(op, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
+                                EmitPushDimensions(dimensions);
+                                EmitInstrConsole(kw.setelement, t.Name);
+                                EmitSetMemElement(operand, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
                             }
                         }
 

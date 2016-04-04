@@ -1937,15 +1937,22 @@ namespace ProtoImperative
                             {
                                 EmitCast(castType.UID, castType.rank);
                             }
-                            EmitPushDimensions(dimensions);
-
-                            EmitInstrConsole(ProtoCore.DSASM.kw.popm, t.Name);
 
                             StackValue operand = symbolnode.isStatic
                                                  ? StackValue.BuildStaticMemVarIndex(symbol)
                                                  : StackValue.BuildMemVarIndex(symbol);
 
-                            EmitPopm(operand, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
+                            if (dimensions == 0)
+                            {
+                                EmitInstrConsole(kw.popm, t.Name);
+                                EmitPopm(operand, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
+                            }
+                            else
+                            {
+                                EmitPushDimensions(dimensions);
+                                EmitInstrConsole(kw.setmemelement, t.Name);
+                                EmitSetMemElement(operand, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
+                            }
                         }
                     }
                     else

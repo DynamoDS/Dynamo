@@ -1676,6 +1676,23 @@ namespace ProtoCore
             AppendInstruction(instr, line, col);
         }
 
+        protected void EmitSetMemElement(StackValue op, int blockId, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
+    int endline = ProtoCore.DSASM.Constants.kInvalidIndex, int endcol = ProtoCore.DSASM.Constants.kInvalidIndex)
+        {
+            SetEntry();
+            Instruction instr = new Instruction();
+            instr.opCode = ProtoCore.DSASM.OpCode.POPM;
+            instr.op1 = op;
+            instr.op2 = StackValue.BuildBlockIndex(blockId);
+
+            ++pc;
+            if (emitDebugInfo)
+            {
+                instr.debug = GetDebugObject(line, col, endline, endcol, pc);
+            }
+            AppendInstruction(instr, line, col);
+        }
+
         protected void EmitPopm(StackValue op, int blockId, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
             int endline = ProtoCore.DSASM.Constants.kInvalidIndex, int endcol = ProtoCore.DSASM.Constants.kInvalidIndex)
         {

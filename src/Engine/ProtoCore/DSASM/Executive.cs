@@ -3448,14 +3448,14 @@ namespace ProtoCore.DSASM
             ++pc;
         }
 
-        protected StackValue POPM_Helper(Instruction instruction, out int blockId, out int classIndex)
+        private void SETMEMELEMENT_Helper(Instruction instruction)
         {
-            classIndex = Constants.kInvalidIndex;
+            int classIndex = Constants.kInvalidIndex;
 
             StackValue op1 = instruction.op1;
 
             StackValue svBlock = instruction.op2;
-            blockId = svBlock.BlockIndex;
+            int blockId = svBlock.BlockIndex;
 
             StackValue svDim = rmem.Pop();
             int dimensions = svDim.ArrayDimension;
@@ -3469,6 +3469,107 @@ namespace ProtoCore.DSASM
             StackValue svData = rmem.Pop();
 
             // The returned stackvalue is used by watch test framework - pratapa
+            svData.metaData.type = exe.TypeSystem.GetType(svData);
+            if (instruction.op1.IsStaticVariableIndex)
+            {
+                PopToIndexedArray(blockId, instruction.op1.SymbolIndex, Constants.kGlobalScope, dimList, svData);
+                ++pc;
+                return;
+            }
+
+            int symbolIndex = instruction.op1.SymbolIndex;
+            classIndex = rmem.GetAtRelative(StackFrame.FrameIndexClassIndex).ClassIndex;
+            int stackIndex = exe.classTable.ClassNodes[classIndex].Symbols.symbolList[symbolIndex].index;
+
+            //==================================================
+            //  1. If allocated... bypass auto allocation
+            //  2. If pointing to a class, just point to the class directly, do not allocate a new pointer
+            //==================================================
+
+            StackValue svThis = rmem.CurrentStackFrame.ThisPtr;
+            var thisObject = rmem.Heap.ToHeapObject<DSObject>(svThis);
+            StackValue svProperty = thisObject.GetValueFromIndex(stackIndex, runtimeCore);
+
+            Type targetType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var);
+            SymbolNode symbolnode = GetSymbolNode(blockId, classIndex, symbolIndex);
+            targetType = symbolnode.staticType;
+
+            if (svProperty.IsArray)
+            {
+                if (targetType.UID != (int)PrimitiveType.Var || targetType.rank >= 0)
+                {
+                    int lhsRepCount = 0;
+                    foreach (var dim in dimList)
+                    {
+                        if (dim.IsArray)
+                        {
+                            lhsRepCount++;
+                        }
+                    }
+
+                    if (targetType.rank > 0)
+                    {
+                        targetType.rank = targetType.rank - dimList.Count;
+                        targetType.rank += lhsRepCount;
+
+                        if (targetType.rank < 0)
+                        {
+                            runtimeCore.RuntimeStatus.LogWarning(WarningID.OverIndexing, Resources.IndexIntoNonArrayObject);
+                        }
+                    }
+
+                }
+            }
+
+            if (svProperty.IsPointer || (svProperty.IsArray && dimensions == 0))
+            {
+                // The data to assign is already a pointer
+                if (svData.IsPointer || svData.IsArray)
+                {
+                    // Assign the src pointer directily to this property
+                    thisObject.SetValueAtIndex(stackIndex, svData, runtimeCore);
+                }
+                else
+                {
+                    StackValue svNewProperty = rmem.Heap.AllocatePointer(new[] { svData });
+                    thisObject.SetValueAtIndex(stackIndex, svNewProperty, runtimeCore);
+                }
+            }
+            else if (svProperty.IsArray)
+            {
+                var propertyArray = rmem.Heap.ToHeapObject<DSArray>(svProperty);
+                propertyArray.SetValueForIndices(dimList, svData, targetType, runtimeCore);
+            }
+            else // This property has NOT been allocated
+            {
+                if (svData.IsPointer || svData.IsArray)
+                {
+                    thisObject.SetValueAtIndex(stackIndex, svData, runtimeCore);
+                }
+                else
+                {
+                    StackValue svNewProperty = rmem.Heap.AllocatePointer(new[] { svData });
+                    thisObject.SetValueAtIndex(stackIndex, svNewProperty, runtimeCore);
+                }
+            }
+
+            ++pc;
+
+            return;
+        }
+
+        protected StackValue POPM_Helper(Instruction instruction, out int blockId, out int classIndex)
+        {
+            classIndex = Constants.kInvalidIndex;
+
+            StackValue op1 = instruction.op1;
+
+            StackValue svBlock = instruction.op2;
+            blockId = svBlock.BlockIndex;
+
+            StackValue svData = rmem.Pop();
+
+            // The returned stackvalue is used by watch test framework - pratapa
             StackValue tempSvData = svData;
 
             svData.metaData.type = exe.TypeSystem.GetType(svData);
@@ -3478,15 +3579,7 @@ namespace ProtoCore.DSASM
 
             if (instruction.op1.IsStaticVariableIndex)
             {
-                if (0 == dimensions)
-                {
-                    PopTo(blockId, instruction.op1, instruction.op2, svData);
-                }
-                else
-                {
-                    PopToIndexedArray(blockId, instruction.op1.SymbolIndex, Constants.kGlobalScope, dimList, svData);
-                }
-
+                PopTo(blockId, instruction.op1, instruction.op2, svData);
                 ++pc;
                 return tempSvData;
             }
@@ -3505,41 +3598,8 @@ namespace ProtoCore.DSASM
             StackValue svProperty = thisObject.GetValueFromIndex(stackIndex, runtimeCore);
 
             Type targetType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var);
-            if (dimensions > 0)
-            {
-                SymbolNode symbolnode = GetSymbolNode(blockId, classIndex, symbolIndex);
-                targetType = symbolnode.staticType;
 
-                if (svProperty.IsArray)
-                {
-                    if (targetType.UID != (int)PrimitiveType.Var || targetType.rank >= 0)
-                    {
-                        int lhsRepCount = 0;
-                        foreach (var dim in dimList)
-                        {
-                            if (dim.IsArray)
-                            {
-                                lhsRepCount++;
-                            }
-                        }
-
-                        if (targetType.rank > 0)
-                        {
-                            tempSvData = svData;
-                            targetType.rank = targetType.rank - dimList.Count;
-                            targetType.rank += lhsRepCount;
-
-                            if (targetType.rank < 0)
-                            {
-                                runtimeCore.RuntimeStatus.LogWarning(WarningID.OverIndexing, Resources.IndexIntoNonArrayObject);
-                            }
-                        }
-
-                    }
-                }
-            }
-
-            if (svProperty.IsPointer || (svProperty.IsArray && dimensions == 0))
+            if (svProperty.IsPointer || svProperty.IsArray)
             {
                 // The data to assign is already a pointer
                 if (svData.IsPointer || svData.IsArray)
@@ -3552,11 +3612,6 @@ namespace ProtoCore.DSASM
                     StackValue svNewProperty = rmem.Heap.AllocatePointer(new [] { svData });
                     thisObject.SetValueAtIndex(stackIndex, svNewProperty, runtimeCore);
                 }
-            }
-            else if (svProperty.IsArray && (dimensions > 0))
-            {
-                var propertyArray = rmem.Heap.ToHeapObject<DSArray>(svProperty);
-                propertyArray.SetValueForIndices(dimList, svData, targetType, runtimeCore);
             }
             else // This property has NOT been allocated
             {
@@ -4884,6 +4939,12 @@ namespace ProtoCore.DSASM
                 case OpCode.SETELEMENT:
                     {
                         SETELEMENT_Helper(instruction);
+                        return;
+                    }
+
+                case OpCode.SETMEMElEMENT:
+                    {
+                        SETMEMELEMENT_Helper(instruction);
                         return;
                     }
 
