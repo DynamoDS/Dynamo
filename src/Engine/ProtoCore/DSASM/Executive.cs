@@ -3232,7 +3232,7 @@ namespace ProtoCore.DSASM
             if (svArrayToIterate.IsArray)
             {
                 var array = rmem.Heap.ToHeapObject<DSArray>(svArrayToIterate);
-                if (array.ToDictionary().Any())
+                if (array.Keys.Any())
                 {
                     key = StackValue.BuildArrayKey(svArrayToIterate, 0);
                     key.metaData = svArrayToIterate.metaData;

@@ -622,13 +622,9 @@ namespace ProtoCore.DSASM
                     var array = ToHeapObject<DSArray>(value);
                     releaseSize += array.MemorySize;
 
-                    foreach (var pair in array.ToDictionary())
+                    foreach (var ele in array.GetReferenceElements())
                     {
-                        if (pair.Key.IsReferenceType)
-                            ptrs.Enqueue(pair.Key);
-
-                        if (pair.Value.IsReferenceType)
-                            ptrs.Enqueue(pair.Value);
+                        ptrs.Enqueue(ele);
                     }
                 }
                 else if (value.IsPointer)
@@ -878,8 +874,7 @@ namespace ProtoCore.DSASM
                     if (pointer.IsArray)
                     {
                         var array = ToHeapObject<DSArray>(pointer);
-                        var dict = array.ToDictionary();
-                        subElements = subElements.Concat(dict.Keys).Concat(dict.Values);
+                        subElements = array.GetReferenceElements();
                     }
                     else
                     {

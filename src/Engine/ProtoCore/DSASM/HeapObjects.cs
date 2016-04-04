@@ -188,8 +188,19 @@ namespace ProtoCore.DSASM
             return dict;
         }
 
+
         /// <summary>
-        /// Simply copy an array.
+        /// Get all reference-typed elements in this array.
+        /// Note: it is only used by heap manager to do garbage collection.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<StackValue> GetReferenceElements()
+        {
+            return Values.Concat(Dict == null ? Dict.Keys : Enumerable.Empty<StackValue>()).Where(s => s.IsReferenceType);
+        }
+
+        /// <summary>
+
         /// </summary>
         /// <param name="core"></param>
         /// <returns></returns>
