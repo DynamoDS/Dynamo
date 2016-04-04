@@ -4,6 +4,10 @@ using Autodesk.DesignScript.Interfaces;
 
 namespace Dynamo.Visualization
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface IRenderPackageSource<T>
     {
         /// <summary>

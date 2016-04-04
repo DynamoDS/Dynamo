@@ -100,10 +100,24 @@ namespace Dynamo.Selection
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public interface ISelectable
     {
+        /// <summary>
+        /// 
+        /// </summary>
         bool IsSelected { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         void Select();
+
+        /// <summary>
+        /// 
+        /// </summary>
         void Deselect();
     }
 

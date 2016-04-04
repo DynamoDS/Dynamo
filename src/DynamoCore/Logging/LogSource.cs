@@ -63,22 +63,39 @@ namespace Dynamo.Logging
         /// </summary>
         public event Action<ILogMessage> MessageLogged;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
         protected void Log(ILogMessage obj)
         {
             var handler = MessageLogged;
             if (handler != null) handler(obj);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="msg"></param>
         protected void Log(string msg)
         {
             Log(LogMessage.Info(msg));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ex"></param>
         protected void Log(Exception ex)
         {
             Log(LogMessage.Error(ex));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <param name="severity"></param>
         protected void Log(string msg, WarningLevel severity)
         {
             switch (severity)

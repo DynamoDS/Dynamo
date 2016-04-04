@@ -12,8 +12,19 @@ namespace Dynamo.Graph.Nodes
     /// <summary>
     /// Interaction logic for dynPort.xaml
     /// </summary>
-    public enum PortType { Input, Output };
+    public enum PortType {
+        /// <summary>
+        /// 
+        /// </summary>
+        Input,
+        /// <summary>
+        /// 
+        /// </summary>
+        Output };
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class PortModel : ModelBase
     {
         #region private fields
@@ -25,17 +36,26 @@ namespace Dynamo.Graph.Nodes
 
         #region public members
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ObservableCollection<ConnectorModel> Connectors
         {
             get { return connectors; }
             set { connectors = value; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string PortName
         {
             get { return portData.NickName; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string ToolTipContent 
         {
             get 
@@ -47,21 +67,33 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public PortType PortType
         {
             get; private set;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public NodeModel Owner
         {
             get; private set;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int Index
         {
             get { return Owner.GetPortModelIndex(this); }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int LineIndex
         {
             get { return portData.LineIndex; }
@@ -159,10 +191,19 @@ namespace Dynamo.Graph.Nodes
             get; private set;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SnapExtensionEdges extensionEdges { get; set; }        
     
         #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="portType"></param>
+        /// <param name="owner"></param>
+        /// <param name="data"></param>
         public PortModel(PortType portType, NodeModel owner, PortData data)
         {
             IsConnected = false;
@@ -256,12 +297,22 @@ namespace Dynamo.Graph.Nodes
 
         #region Serialization/Deserialization Methods
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="context"></param>
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             // We are not deserializing the ports.
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nodeElement"></param>
+        /// <param name="context"></param>
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             // We are not deserializing the ports.
@@ -271,17 +322,49 @@ namespace Dynamo.Graph.Nodes
         #endregion
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class PortData
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public string NickName { get; set; }
-        public string ToolTipString { get; set; }
-        public AssociativeNode DefaultValue { get; set; }
-        public int LineIndex { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public string ToolTipString { get; set; }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        public AssociativeNode DefaultValue { get; set; }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        public int LineIndex { get; set; }
+        
+        /// <summary>
+        /// 
+        /// </summary>
         public double Height { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nickName"></param>
+        /// <param name="tip"></param>
         public PortData(string nickName, string tip) : this(nickName, tip, null) { }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nickName"></param>
+        /// <param name="toolTipString"></param>
+        /// <param name="defaultValue"></param>
         public PortData(string nickName, string toolTipString, AssociativeNode defaultValue)
         {
             NickName = nickName;

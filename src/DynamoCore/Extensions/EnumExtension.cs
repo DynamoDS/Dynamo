@@ -8,16 +8,27 @@ using System.Text;
 
 namespace Dynamo.Extensions
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class EnumDescriptionAttribute : DescriptionAttribute
     {
         private readonly string _resourceKey;
         private readonly ResourceManager _resource;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="resourceKey"></param>
+        /// <param name="resourceType"></param>
         public EnumDescriptionAttribute(string resourceKey, Type resourceType)
         {
             _resource = new ResourceManager(resourceType);
             _resourceKey = resourceKey;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override string Description
         {
             get

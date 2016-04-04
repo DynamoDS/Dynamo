@@ -7,10 +7,36 @@ namespace Dynamo.Logging
     /// </summary>
     public interface ILogger
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
         void Log(string message);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="message"></param>
         void Log(string tag, string message);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="error"></param>
         void LogError(string error);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="warning"></param>
+        /// <param name="level"></param>
         void LogWarning(string warning, WarningLevel level);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
         void Log(Exception e);
     }
 
@@ -19,6 +45,10 @@ namespace Dynamo.Logging
     /// </summary>
     public interface ILogMessage
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logger"></param>
         void Log(ILogger logger);
     }
 

@@ -318,14 +318,17 @@ namespace XmlDocToMarkdown
                 {
                     case 1:
                         str = string.Format(templates[name], vals[0]);
-                        if (name.Equals("returns") && (e.Parent != null))
+                        if (name.Equals("returns") || (name.Equals("summary")))
                         {
-                            switch((string)vals[0])
+                            if (e.Parent != null)
                             {
-                                case "":
-                                case "none":
-                                    Console.WriteLine(e.Parent.FirstAttribute.Value);
-                                    break;
+                                switch ((string)vals[0])
+                                {
+                                    case "":
+                                    case "none":
+                                        Console.WriteLine(name + ": " + e.Parent.FirstAttribute.Value);
+                                        break;
+                                }
                             }
                         }
                         break;
@@ -337,7 +340,7 @@ namespace XmlDocToMarkdown
                         {
                             if (String.IsNullOrEmpty((string)vals[1]))
                             {
-                                Console.WriteLine(e.Parent.FirstAttribute.Value);
+                                Console.WriteLine("param: " + e.Parent.FirstAttribute.Value);
                             }
                         }
                         break;

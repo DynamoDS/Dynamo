@@ -8,7 +8,26 @@ using ProtoCore.Namespace;
 
 namespace Dynamo.Graph
 {
-    public enum SaveContext { File, Copy, Undo, Preset };
+    /// <summary>
+    /// 
+    /// </summary>
+    public enum SaveContext {
+        /// <summary>
+        /// 
+        /// </summary>
+        File,
+        /// <summary>
+        /// 
+        /// </summary>
+        Copy,
+        /// <summary>
+        /// 
+        /// </summary>
+        Undo,
+        /// <summary>
+        /// 
+        /// </summary>
+        Preset };
 
     /// <summary>
     /// This class encapsulates the input parameters that need to be passed into nodes
@@ -40,6 +59,9 @@ namespace Dynamo.Graph
         public ElementResolver ElementResolver { get; private set; }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public abstract class ModelBase : NotificationObject, ISelectable, ILocatable, ILogSource
     {
         /// <summary>
@@ -53,7 +75,10 @@ namespace Dynamo.Graph
         private double y;
         private double height = 100;
         private double width = 100;
-       
+
+        /// <summary>
+        /// 
+        /// </summary>
         public double CenterX
         {
             get { return X + Width / 2; }
@@ -62,6 +87,9 @@ namespace Dynamo.Graph
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public double CenterY
         {
             get { return Y + Height / 2; }
@@ -134,18 +162,32 @@ namespace Dynamo.Graph
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public virtual Rect2D Rect
         {
             get{return new Rect2D(x,y,width,height);}
         }
 
-        public event EventHandler Updated; 
+        /// <summary>
+        /// 
+        /// </summary>
+        public event EventHandler Updated;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
         public void OnUpdated(EventArgs e)
         {
             if (Updated != null)
                 Updated(this, e);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsSelected
         {
             get { return isSelected; }
@@ -156,6 +198,9 @@ namespace Dynamo.Graph
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Guid GUID
         {
             get
@@ -173,21 +218,33 @@ namespace Dynamo.Graph
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected ModelBase()
         {
             GUID = Guid.NewGuid();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public virtual void Select()
         {
             IsSelected = true;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public virtual void Deselect()
         {
             IsSelected = false;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void ReportPosition()
         {
             RaisePropertyChanged("Position");
@@ -206,6 +263,9 @@ namespace Dynamo.Graph
             RaisePropertyChanged("Position");
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public virtual void Dispose()
         {
             var handler = Disposed;
@@ -215,6 +275,11 @@ namespace Dynamo.Graph
 
         #region Command Framework Supporting Methods
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="updateValueParams"></param>
+        /// <returns></returns>
         public bool UpdateValue(UpdateValueParams updateValueParams)
         {
             return UpdateValueCore(updateValueParams);
@@ -260,6 +325,12 @@ namespace Dynamo.Graph
 
         #region Serialization/Deserialization Methods
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="xmlDocument"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public XmlElement Serialize(XmlDocument xmlDocument, SaveContext context)
         {
             var element = CreateElement(xmlDocument, context);
@@ -267,37 +338,75 @@ namespace Dynamo.Graph
             return element;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="context"></param>
         public void Deserialize(XmlElement element, SaveContext context)
         {
             DeserializeCore(element, context);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="xmlDocument"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         protected virtual XmlElement CreateElement(XmlDocument xmlDocument, SaveContext context)
         {
             string typeName = GetType().ToString();
             XmlElement element = xmlDocument.CreateElement(typeName);
             return element;
         }
-        
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="context"></param>
         protected abstract void SerializeCore(XmlElement element, SaveContext context);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nodeElement"></param>
+        /// <param name="context"></param>
         protected abstract void DeserializeCore(XmlElement nodeElement, SaveContext context);
 
         #endregion
 
         #region ILogSource implementation
+        /// <summary>
+        /// 
+        /// </summary>
         public event Action<ILogMessage> MessageLogged;
-
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
         protected void Log(ILogMessage obj)
         {
             var handler = MessageLogged;
             if (handler != null) handler(obj);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="msg"></param>
         protected void Log(string msg)
         {
             Log(LogMessage.Info(msg));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <param name="severity"></param>
         protected void Log(string msg, WarningLevel severity)
         {
             switch (severity)
@@ -313,15 +422,49 @@ namespace Dynamo.Graph
         #endregion
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public interface ILocatable
     {
+        /// <summary>
+        /// 
+        /// </summary>
         double X { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         double Y { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         double Width { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         double Height { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         Rect2D Rect { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         double CenterX { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         double CenterY { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         void ReportPosition();
     }
 }
