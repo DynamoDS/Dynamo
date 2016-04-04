@@ -121,6 +121,14 @@ namespace Dynamo.UI.Controls
         }
 
         /// <summary>
+        /// Derived class overrides this function to handle the text changed event.
+        /// </summary>
+        protected virtual void OnEditorTextChanged()
+        {
+
+        }
+
+        /// <summary>
         /// Update the value of specified property of node to the input code.
         /// </summary>
         /// <param name="property"></param>
@@ -175,6 +183,8 @@ namespace Dynamo.UI.Controls
         {
             if (WatermarkLabel.Visibility == Visibility.Visible)
                 WatermarkLabel.Visibility = Visibility.Collapsed;
+
+            OnEditorTextChanged();
         }
 
         private void OnTextAreaTextEntering(object sender, TextCompositionEventArgs e)

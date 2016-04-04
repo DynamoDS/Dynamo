@@ -38,6 +38,7 @@
               Margin="{Binding Path=MarginThickness}"
               Height="{Binding Path=Height}"
               ToolTipService.ShowDuration="60000"
+              IsEnabled="{Binding Path=IsEnabled}"
              >
 
             <interactivity:Interaction.Triggers>
