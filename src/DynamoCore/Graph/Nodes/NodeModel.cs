@@ -2142,14 +2142,6 @@ namespace Dynamo.Graph.Nodes
         MouseLeftButtonDown
     };
 
-    public enum PortPosition
-    {
-        First,
-        Top,
-        Middle,
-        Last
-    }
-
     [Flags]
     public enum SnapExtensionEdges
     {
@@ -2157,8 +2149,6 @@ namespace Dynamo.Graph.Nodes
         Top = 0x1,
         Bottom = 0x2
     }
-
-    public delegate void PortsChangedHandler(object sender, EventArgs e);
 
     internal delegate void DispatchedToUIThreadHandler(object sender, UIDispatcherEventArgs e);
 

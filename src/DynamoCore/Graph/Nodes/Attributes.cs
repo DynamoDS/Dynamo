@@ -94,17 +94,6 @@ namespace Dynamo.Graph.Nodes
     public class NotSearchableInCustomNodeWorkspace : Attribute
     { }
 
-    [AttributeUsage(AttributeTargets.All)]
-    public class IsInteractiveAttribute : Attribute
-    {
-        public IsInteractiveAttribute(bool isInteractive)
-        {
-            IsInteractive = isInteractive;
-        }
-
-        public bool IsInteractive { get; set; }
-    }
-
     /// <summary>
     ///     The NodeDescriptionAttribute attribute allows the node implementer
     ///     to define node description.
@@ -149,28 +138,6 @@ namespace Dynamo.Graph.Nodes
         /// E.g. "Get a color given a color range." for ColorRange node.
         /// </summary>
         public string ElementDescription { get; set; }
-    }
-
-    [AttributeUsage(AttributeTargets.All)]
-    public class NodeSearchableAttribute : Attribute
-    {
-        public NodeSearchableAttribute(bool isSearchable)
-        {
-            IsSearchable = isSearchable;
-        }
-
-        public bool IsSearchable { get; set; }
-    }
-
-    [AttributeUsage(AttributeTargets.All)]
-    public class NodeTypeIdAttribute : Attribute
-    {
-        public NodeTypeIdAttribute(string description)
-        {
-            Id = description;
-        }
-
-        public string Id { get; set; }
     }
 
     /// <summary>

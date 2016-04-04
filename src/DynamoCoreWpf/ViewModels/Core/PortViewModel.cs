@@ -89,41 +89,7 @@ namespace Dynamo.ViewModels
         }
 
         public PortEventType EventType { get; set; }
-      
-        public PortPosition Position
-        {
-            get
-            {
-                if (PortType == PortType.Input)
-                {
-                    if (_node.InPorts.Count > 1)
-                    {
-                        int pos = _node.InPorts.IndexOf(this);
-                        if (pos == 0) //first port 
-                            return PortPosition.Top;
-                        if (pos == _node.InPorts.Count - 1)
-                            return PortPosition.Last;
-                        return PortPosition.Middle;
-                    }
-                }
 
-                if (PortType == PortType.Output)
-                {
-                    if (_node.OutPorts.Count > 1)
-                    {
-                        int pos = _node.OutPorts.IndexOf(this);                      
-                        if (pos == 0) //first port 
-                            return PortPosition.Top;
-                        if (pos == _node.OutPorts.Count - 1)
-                            return PortPosition.Last;
-                        return PortPosition.Middle;
-                    }
-                }
-
-                return PortPosition.First;
-            }
-
-        }
         #endregion
 
         #region events

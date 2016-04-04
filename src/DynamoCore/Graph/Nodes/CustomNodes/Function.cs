@@ -19,8 +19,6 @@ namespace Dynamo.Graph.Nodes.CustomNodes
     /// </summary>
     [NodeName("Custom Node")]
     [NodeDescription("FunctionDescription",typeof(Dynamo.Properties.Resources))]
-    [IsInteractive(false)]
-    [NodeSearchable(false)]
     [IsMetaNode]
     [AlsoKnownAs("Dynamo.Nodes.Function")]
     public class Function 
@@ -251,7 +249,6 @@ namespace Dynamo.Graph.Nodes.CustomNodes
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("SymbolNodeDescription",typeof(Properties.Resources))]
     [NodeSearchTags("SymbolSearchTags", typeof(Properties.Resources))]
-    [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("Dynamo.Nodes.Symbol")]
@@ -445,7 +442,6 @@ namespace Dynamo.Graph.Nodes.CustomNodes
     [NodeName("Output")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("OutputNodeDescription",typeof(Dynamo.Properties.Resources))]
-    [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("Dynamo.Nodes.Output")]
