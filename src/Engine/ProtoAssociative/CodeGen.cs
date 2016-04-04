@@ -1017,8 +1017,8 @@ namespace ProtoAssociative
                                 if (exprList.ArrayDimensions != null)
                                 {
                                     int dimensions = DfsEmitArrayIndexHeap(exprList.ArrayDimensions, graphNode);
-                                    EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, dimensions.ToString() + "[dim]");
-                                    EmitPushArrayIndex(dimensions);
+                                    EmitPushDimensions(dimensions);
+                                    EmitLoadElement();
                                 }
                             }
                         }
@@ -2611,7 +2611,6 @@ namespace ProtoAssociative
                     if (dimensions > 0)
                     {
                         EmitPushDimensions(dimensions);
-                        EmitInstrConsole(kw.loadelement);
                         EmitLoadElement();
                     }
 
@@ -2789,9 +2788,9 @@ namespace ProtoAssociative
             {
                 if (range.ArrayDimensions != null)
                 {
-                    int dim = DfsEmitArrayIndexHeap(range.ArrayDimensions, graphNode);
-                    EmitInstrConsole(kw.pushindex, dim + "[dim]");
-                    EmitPushArrayIndex(dim);
+                    int dimensions = DfsEmitArrayIndexHeap(range.ArrayDimensions, graphNode);
+                    EmitPushDimensions(dimensions);
+                    EmitLoadElement();
                 }
 
                 if (emitReplicationGuide)
@@ -4340,8 +4339,8 @@ namespace ProtoAssociative
                     emitReplicationGuideFlag = emitReplicationGuide;
                     emitReplicationGuide = false;
                     int dimensions = DfsEmitArrayIndexHeap(fnode.ArrayDimensions, graphNode);
-                    EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, dimensions.ToString() + "[dim]");
-                    EmitPushArrayIndex(dimensions);
+                    EmitPushDimensions(dimensions);
+                    EmitLoadElement();
                     fnode.ArrayDimensions = null;
                     emitReplicationGuide = emitReplicationGuideFlag;
                 }
@@ -6690,7 +6689,8 @@ namespace ProtoAssociative
                 if (subPass != ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier)
                 {
                     int dimensions = DfsEmitArrayIndexHeap(group.ArrayDimensions, graphNode);
-                    EmitPushArrayIndex(dimensions);
+                    EmitPushDimensions(dimensions);
+                    EmitLoadElement();
                 }
             }
 

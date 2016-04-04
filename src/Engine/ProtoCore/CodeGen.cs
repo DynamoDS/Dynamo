@@ -804,7 +804,6 @@ namespace ProtoCore
                             if (dim > 0)
                             {
                                 EmitPushDimensions(dim);
-                                EmitInstrConsole(kw.loadelement);
                                 EmitLoadElement();
                             }
 
@@ -869,7 +868,6 @@ namespace ProtoCore
                         if (dimensions > 0)
                         {
                             EmitPushDimensions(dimensions);
-                            EmitInstrConsole(kw.loadelement);
                             EmitLoadElement();
                         }
                     }
@@ -885,7 +883,6 @@ namespace ProtoCore
                         if (dimensions > 0)
                         {
                             EmitPushDimensions(dimensions);
-                            EmitInstrConsole(kw.loadelement);
                             EmitLoadElement();
                         }
                     }
@@ -1617,6 +1614,8 @@ namespace ProtoCore
 
         protected void EmitLoadElement()
         {
+            EmitInstrConsole(kw.loadelement);
+
             SetEntry();
             Instruction instr = new Instruction();
             instr.opCode = OpCode.LOADELEMENT;
@@ -2112,8 +2111,8 @@ namespace ProtoCore
             if (exprlist.ArrayDimensions != null)
             {
                 int dimensions = DfsEmitArrayIndexHeap(exprlist.ArrayDimensions, graphNode);
-                EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, dimensions.ToString() + "[dim]");
-                EmitPushArrayIndex(dimensions);
+                EmitPushDimensions(dimensions);
+                EmitLoadElement();
             }
 
             var exprNode = node as AST.AssociativeAST.ExprListNode;

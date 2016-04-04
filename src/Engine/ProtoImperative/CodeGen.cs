@@ -947,7 +947,6 @@ namespace ProtoImperative
             if (dimensions > 0)
             {
                 EmitPushDimensions(dimensions);
-                EmitInstrConsole(kw.loadelement);
                 EmitLoadElement();
             }
 
@@ -1277,8 +1276,8 @@ namespace ProtoImperative
             if (fnode != null && fnode.ArrayDimensions != null)
             {
                 int dimensions = DfsEmitArrayIndexHeap(fnode.ArrayDimensions);
-                EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, dimensions.ToString() + "[dim]");
-                EmitPushArrayIndex(dimensions);
+                EmitPushDimensions(dimensions);
+                EmitLoadElement();
                 fnode.ArrayDimensions = null;
             }
 
@@ -2447,8 +2446,8 @@ namespace ProtoImperative
             if (range.ArrayDimensions != null)
             {
                 int dimensions = DfsEmitArrayIndexHeap(range.ArrayDimensions);
-                EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, dimensions.ToString() + "[dim]");
-                EmitPushArrayIndex(dimensions);
+                EmitPushDimensions(dimensions);
+                EmitLoadElement();
             }
         }
 
