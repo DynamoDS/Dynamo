@@ -1924,11 +1924,18 @@ namespace ProtoImperative
                             {
                                 EmitCast(castType.UID, castType.rank);
                             }
-                            EmitPushDimensions(dimensions);
 
-                            EmitInstrConsole(ProtoCore.DSASM.kw.pop, s);
-                            StackValue operand = StackValue.BuildVarIndex(symbol);
-                            EmitPop(operand, symbolnode.classScope, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
+                            if (dimensions == 0)
+                            {
+                                EmitInstrConsole(kw.pop, s);
+                                EmitPopForSymbol(symbolnode, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
+                            }
+                            else
+                            {
+                                EmitPushDimensions(dimensions);
+                                EmitInstrConsole(kw.setelement, t.Name);
+                                EmitSetElement(symbolnode, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
+                            }
                         }
                         else
                         {

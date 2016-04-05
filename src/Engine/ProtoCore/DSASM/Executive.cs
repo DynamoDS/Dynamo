@@ -3166,27 +3166,8 @@ namespace ProtoCore.DSASM
             }
             else
             {
-                var svDim = rmem.Pop();
-                var dim = svDim.ArrayDimension;
-
-                if (dim == 0)
-                {
-                    StackValue opdata1 = GetOperandData(blockId, instruction.op1, instruction.op2);
-                    rmem.Push(opdata1);
-                }
-                else
-                {
-                    var dims = new List<StackValue>();
-
-                    for (int n = 0; n < dim; n++)
-                    {
-                        dims.Add(rmem.Pop());
-                    }
-                    dims.Reverse();
-
-                    StackValue sv = GetIndexedArray(dims, blockId, instruction.op1, instruction.op2);
-                    rmem.Push(sv);
-                }
+                StackValue opdata1 = GetOperandData(blockId, instruction.op1, instruction.op2);
+                rmem.Push(opdata1);
             }
 
             ++pc;
