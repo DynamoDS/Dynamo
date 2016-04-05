@@ -8,16 +8,26 @@ using System.Text;
 
 namespace Dynamo.Extensions
 {
+    /// <summary>
+    ///  This class handles registration, lookup, and disposal of extensions.
+    /// </summary>
     public class ExtensionManager: IExtensionManager, ILogSource
     {
         private readonly List<IExtension> extensions = new List<IExtension>();
         private readonly ExtensionLoader extensionLoader = new ExtensionLoader();
 
+        /// <summary>
+        /// Creates ExtensionManager.
+        /// </summary>
         public ExtensionManager()
         {
             extensionLoader.MessageLogged += Log;
         }
 
+        /// <summary>
+        /// Adds an extension to the current application session.
+        /// </summary>
+        /// <param name="extension">Extension</param>
         public void Add(IExtension extension)
         {
             var fullName = extension.Name + " (id: " + extension.UniqueId + ")";
@@ -37,6 +47,10 @@ namespace Dynamo.Extensions
             }
         }
 
+        /// <summary>
+        /// Removes an extension from the current application session.
+        /// </summary>
+        /// <param name="extension">Extension</param>
         public void Remove(IExtension extension)
         {
             var fullName = extension.Name + " (id: " + extension.UniqueId + ")";
@@ -63,6 +77,9 @@ namespace Dynamo.Extensions
             }
         }
 
+        /// <summary>
+        /// Returns the collection of currently registered extensions
+        /// </summary>
         public IEnumerable<IExtension> Extensions
         {
             get { return extensions; }

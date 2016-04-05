@@ -2,6 +2,9 @@
 
 namespace Dynamo.Configuration
 {
+    /// <summary>
+    /// DebugSettings is used in Dynamo Logger and UI.
+    /// </summary>
     public class DebugSettings : NotificationObject
     {
         private bool showDebugASTs = false;
@@ -20,6 +23,9 @@ namespace Dynamo.Configuration
             }
         }
 
+        /// <summary>
+        /// Shows near node view its AST compiled node.
+        /// </summary>
         internal bool ShowDebugASTs
         {
             get { return showDebugASTs; }
