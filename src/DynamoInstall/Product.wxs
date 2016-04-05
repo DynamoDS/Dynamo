@@ -7,7 +7,7 @@
            Language="1033"
            Version="$(var.FullVersion)"
            Manufacturer="Dynamo"
-           UpgradeCode="{584B3E06-FE7A-4341-8C22-339B00ABD58A}">
+           UpgradeCode="$(var.UpgradeCode)">
 
     <Package Comments="$(var.ProductName) $(var.FullVersion)"
                  Description="Install package for $(var.ProductName)"
@@ -17,9 +17,23 @@
                  Manufacturer="Dynamo"
                  Platform="x64"/>
 
-    <MajorUpgrade AllowSameVersionUpgrades="yes"
-                      Schedule="afterInstallValidate"
-                      DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." />
+    <!-- (1) To prevent downgrades. 
+         If there are any MAJOR.MINOR.BUILD version that is higher installed,
+         prevent current installation.-->
+    <MajorUpgrade AllowSameVersionUpgrades="no"
+                  Schedule="afterInstallValidate"
+                  DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." />
+
+    <!-- (2) To manage same version upgrades/downgrades.
+         The property SELF_FOUND is set when the same MAJOR.MINOR.BUILD version and UpgradeCode is already installed.-->
+    <Upgrade Id="$(var.UpgradeCode)">
+      <UpgradeVersion Property='SELF_FOUND' 
+                      Minimum='$(var.Major).$(var.Minor).$(var.Build)' 
+                      IncludeMinimum='yes' 
+                      Maximum='$(var.Major).$(var.Minor).$(var.Build)' 
+                      IncludeMaximum='yes' 
+                      OnlyDetect='yes' />
+    </Upgrade>
 
     <MediaTemplate EmbedCab="yes" />
 
@@ -27,7 +41,10 @@
     <CustomAction Id="DIRCA_DEFAULT_INSTALLDIR" Property="DYNAMO_INSTALLDIR" Value="[ProgramFiles64Folder][Manufacturer]\$(var.ProductName)\$(var.Major).$(var.Minor)" Execute="immediate" />
     <CustomAction Id="DIRCA_SET_INSTALLDIR" Property="DYNAMO_INSTALLDIR" Value="[INSTALLDIR]\$(var.ProductName)\$(var.Major).$(var.Minor)" Execute="immediate" />
 
+    <CustomAction Id='AlreadyInstalled' Error='[ProductName] is already installed.&#13;&#10;&#13;&#10;Skipping [ProductName] Installation...' />
+    
     <InstallExecuteSequence>
+      <Custom Action='AlreadyInstalled' Before="CostInitialize"><![CDATA[SELF_FOUND]]></Custom>
       <Custom Action="DIRCA_DEFAULT_INSTALLDIR" Before="CostInitialize">INSTALLDIR=""</Custom>
       <Custom Action="DIRCA_SET_INSTALLDIR" Before="CostInitialize"><![CDATA[INSTALLDIR<>""]]></Custom>
     </InstallExecuteSequence>
