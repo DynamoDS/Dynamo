@@ -16,7 +16,7 @@
       <System.Double value="0" />
     </Dynamo.Nodes.DoubleInput>
     <DSCore.File.Filename guid="06751245-56b4-4d48-a4a1-832dc0eca24e" type="DSCore.File.Filename" nickname="File Path" x="547.13285214786" y="167.491111150313" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String>C:\ProgramData\Dynamo\1.0\samples\Data\icosohedron_points.csv</System.String>
+      <System.String>..\..\Data\icosohedron_points.csv</System.String>
     </DSCore.File.Filename>
     <Dynamo.Nodes.DSFunction guid="53ee9988-6ed7-497f-92d8-2132f1a76ae3" type="Dynamo.Nodes.DSFunction" nickname="List.Transpose" x="621.246002241678" y="461.125503329612" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="DSCoreNodes.dll" function="DSCore.List.Transpose@var[]..[]" />
     <Dynamo.Nodes.CodeBlockNodeModel guid="cea06e7f-ebe2-4823-ac60-f77905b03451" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="392.261474160315" y="459.453771319994" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{pt.X,pt.Y,pt.Z};" ShouldFocus="false" />

@@ -376,58 +376,6 @@ namespace ProtoCore.DSASM.Mirror
                 }
             }
 
-            if (svArray.IsArray)
-            {
-                var dict = array.ToDictionary().Where(kvp => !kvp.Key.IsInteger);
-
-                int startIndex = (halfArraySize > 0) ? dict.Count() - halfArraySize : 0;
-                int index = -1;
-
-                foreach (var keyValuePair in dict)
-                {
-                    index++;
-                    if (index < startIndex)
-                    {
-                        continue;
-                    }
-
-                    if (arrayElements.Length > 0)
-                    {
-                        if (forPrint)
-                        {
-                            arrayElements.Append(",");
-                        }
-                        else
-                        {
-                            arrayElements.Append(", ");
-                        }
-                    }
-
-                    StackValue key = keyValuePair.Key;
-                    StackValue value = keyValuePair.Value;
-
-                    if (key.IsArray)
-                    {
-                        arrayElements.Append(GetPointerTrace(key, heap, langblock, pointers, forPrint));
-                    }
-                    else
-                    {
-                        arrayElements.Append(GetStringValue(key, heap, langblock, forPrint));
-                    }
-
-                    arrayElements.Append("=");
-
-                    if (value.IsArray)
-                    {
-                        arrayElements.Append(GetPointerTrace(value, heap, langblock, pointers, forPrint));
-                    }
-                    else
-                    {
-                        arrayElements.Append(GetStringValue(value, heap, langblock, forPrint));
-                    }
-                }
-            }
-
             formatParams.RestoreOutputTraceDepth();
             return arrayElements.ToString();
         }
@@ -1426,8 +1374,15 @@ namespace ProtoCore.DSASM.Mirror
 
                 int size = sv.Length;
 
-                StackValue ptr = heap.AllocateArray(sv);
-                return ptr;
+                try
+                {
+                    StackValue ptr = heap.AllocateArray(sv);
+                    return ptr;
+                }
+                catch (RunOutOfMemoryException)
+                {
+                    return StackValue.Null;
+                }
             }
 
             // For non-arrays, there is nothing to repack so just return the original stackvalue

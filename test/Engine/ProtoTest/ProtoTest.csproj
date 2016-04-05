@@ -132,6 +132,7 @@
     <Compile Include="DebugTests\SetValueTests.cs" />
     <Compile Include="DSASM\ExecutionMirrorTests.cs" />
     <Compile Include="DSASM\HeapMarkSweepTests.cs" />
+    <Compile Include="DSASM\MemorySafetyTest.cs" />
     <Compile Include="DSASM\StackOverflowTests.cs" />
     <Compile Include="FFITests\ArgumentMarshalingTests.cs" />
     <Compile Include="FFITests\ContextInjectionTests.cs" />

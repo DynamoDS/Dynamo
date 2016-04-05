@@ -2501,7 +2501,18 @@ namespace ProtoCore.DSASM
                 }
                 else
                 {
-                    StackValue svArray = rmem.Heap.AllocateArray(new StackValue[] {});
+                    StackValue svArray;
+
+                    try
+                    {
+                        svArray = rmem.Heap.AllocateArray(new StackValue[] { });
+                    }
+                    catch (RunOutOfMemoryException)
+                    {
+                        svArray = StackValue.Null;
+                        runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                    }
+
                     rmem.SetSymbolValue(symbolnode, svArray);
 
                     var array = rmem.Heap.ToHeapObject<DSArray>(svArray);
@@ -3204,7 +3215,7 @@ namespace ProtoCore.DSASM
             if (svArrayToIterate.IsArray)
             {
                 var array = rmem.Heap.ToHeapObject<DSArray>(svArrayToIterate);
-                if (array.ToDictionary().Any())
+                if (array.Keys.Any())
                 {
                     key = StackValue.BuildArrayKey(svArrayToIterate, 0);
                     key.metaData = svArrayToIterate.metaData;
@@ -3511,8 +3522,16 @@ namespace ProtoCore.DSASM
                 }
                 else
                 {
-                    StackValue svNewProperty = rmem.Heap.AllocatePointer(new[] { svData });
-                    thisObject.SetValueAtIndex(stackIndex, svNewProperty, runtimeCore);
+                    try
+                    {
+                        StackValue svNewProperty = rmem.Heap.AllocatePointer(new[] { svData });
+                        thisObject.SetValueAtIndex(stackIndex, svNewProperty, runtimeCore);
+                    }
+                    catch (RunOutOfMemoryException)
+                    {
+                        runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                        thisObject.SetValueAtIndex(stackIndex, StackValue.Null, runtimeCore);
+                    }
                 }
             }
             else if (svProperty.IsArray)
@@ -3601,8 +3620,16 @@ namespace ProtoCore.DSASM
                 }
                 else
                 {
-                    StackValue svNewProperty = rmem.Heap.AllocatePointer(new [] {svData});
-                    thisObject.SetValueAtIndex(stackIndex, svNewProperty, runtimeCore);
+                    try
+                    {
+                        StackValue svNewProperty = rmem.Heap.AllocatePointer(new[] { svData });
+                        thisObject.SetValueAtIndex(stackIndex, svNewProperty, runtimeCore);
+                    }
+                    catch (RunOutOfMemoryException)
+                    {
+                        runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                        thisObject.SetValueAtIndex(stackIndex, StackValue.Null, runtimeCore);
+                    }
                 }
             }
 
@@ -4047,7 +4074,16 @@ namespace ProtoCore.DSASM
                 StackValue value = rmem.Pop();
                 svs[i] = value;
             }
-            StackValue pointer = rmem.Heap.AllocateArray(svs);
+            StackValue pointer;
+            try
+            {
+                pointer = rmem.Heap.AllocateArray(svs);
+            }
+            catch (RunOutOfMemoryException)
+            {
+                pointer = StackValue.Null;
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+            }
 
             if (instruction.op2.IsString)
             {

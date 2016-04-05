@@ -44,7 +44,7 @@
     <Dynamo.Models.ConnectorModel start="1b398dc1-46b3-488c-837b-8136a0bfca0f" start_index="0" end="026aadc9-644e-4e6c-b35c-bf1aec67045c" end_index="2" portType="0" />
   </Connectors>
   <Notes>
-    <Dynamo.Models.NoteModel text="Run this graph the DynamoSample.rvt file in the Samples folder located with your Dynamo installation&#xD;&#xA;C:\ProgramData\Dynamo\(Your Dynamo Version)\samples\Revit" x="-37.9971634784209" y="73.7721428790331" />
+    <Dynamo.Models.NoteModel text="Run this graph the DynamoSample.rvt file in the Samples folder located with your Dynamo installation&#xD;&#xA;C:\ProgramData\Dynamo\Dynamo Revit\(Your Dynamo Version)\samples\Revit" x="-37.9971634784209" y="73.7721428790331" />
     <Dynamo.Models.NoteModel text="Place Family Instances&#xD;&#xA;Most Families Can also be placed by Point location.  Adaptive Components can be placed with multiple points, Structural Framing is placed with Curves" x="869.778801902005" y="377.093042857907" />
     <Dynamo.Models.NoteModel text="Set each Family instance parameter.  Using the same model, parameters can also be read, using an Element.GetParameterByName" x="1831.59820806815" y="386.946364789361" />
     <Dynamo.Models.NoteModel text="Place a number of Solar panels and write unique numbers to their Mark Parameter" x="-38.9063235775512" y="166.989325036607" />

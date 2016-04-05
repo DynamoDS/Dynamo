@@ -7,6 +7,7 @@ using ProtoCore.DSASM;
 using ProtoCore.Utils;
 using Autodesk.DesignScript.Runtime;
 using ProtoCore.Properties;
+using ProtoCore.Exceptions;
 
 namespace ProtoFFI
 {
@@ -524,12 +525,20 @@ namespace ProtoFFI
                     if (dsObject != null)
                     {
                         int startIndex = dsObject.Count;
-                        dsObject.ExpandBySize(count);
-                        Validity.Assert(dsObject.Count >= referencedParameters.Count);
-
-                        for (int i = 0; i < referencedParameters.Count; i++)
+                        try
                         {
-                            dsObject.SetValueAtIndex(startIndex + i, referencedParameters[i], dsi.runtime.RuntimeCore);
+                            dsObject.ExpandBySize(count);
+                            Validity.Assert(dsObject.Count >= referencedParameters.Count);
+
+                            for (int i = 0; i < referencedParameters.Count; i++)
+                            {
+                                dsObject.SetValueAtIndex(startIndex + i, referencedParameters[i], dsi.runtime.RuntimeCore);
+                            }
+                        }
+                        catch (RunOutOfMemoryException)
+                        {
+                            dsi.runtime.RuntimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                            return StackValue.Null;
                         }
                     }
                 } 
