@@ -3052,10 +3052,24 @@ namespace ProtoCore.DSASM
                 dims.Add(rmem.Pop());
             }
             dims.Reverse();
-
             StackValue array = rmem.Pop();
-            StackValue element = GetIndexedArray(array, dims);
-            rmem.Push(element);
+
+            if (instruction.op1.IsVariableIndex ||
+                instruction.op1.IsMemberVariableIndex ||
+                instruction.op1.IsPointer ||
+                instruction.op1.IsArray ||
+                instruction.op1.IsStaticVariableIndex ||
+                instruction.op1.IsFunctionPointer)
+            {
+                int blockId = instruction.op3.BlockIndex;
+                StackValue element = GetIndexedArray(dims, blockId, instruction.op1, instruction.op2);
+                rmem.Push(element);
+            }
+            else
+            {
+                StackValue element = GetIndexedArray(array, dims);
+                rmem.Push(element);
+            }
 
             ++pc;
         }

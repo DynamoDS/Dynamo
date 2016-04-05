@@ -804,7 +804,7 @@ namespace ProtoCore
                             if (dim > 0)
                             {
                                 EmitPushDimensions(dim);
-                                EmitLoadElement();
+                                EmitLoadElement(null, Constants.kInvalidIndex);
                             }
 
                             lefttype.UID = finalType.UID = (int)PrimitiveType.Var;
@@ -868,7 +868,7 @@ namespace ProtoCore
                         if (dimensions > 0)
                         {
                             EmitPushDimensions(dimensions);
-                            EmitLoadElement();
+                            EmitLoadElement(symbolnode, runtimeIndex);
                         }
                     }
                     else
@@ -883,7 +883,7 @@ namespace ProtoCore
                         if (dimensions > 0)
                         {
                             EmitPushDimensions(dimensions);
-                            EmitLoadElement();
+                            EmitLoadElement(null, Constants.kInvalidIndex);
                         }
                     }
                     depth = depth + 1;
@@ -1601,13 +1601,20 @@ namespace ProtoCore
             }
         }
 
-        protected void EmitLoadElement()
+        protected void EmitLoadElement(SymbolNode symbol, int blockId)
         {
             EmitInstrConsole(kw.loadelement);
 
             SetEntry();
             Instruction instr = new Instruction();
             instr.opCode = OpCode.LOADELEMENT;
+
+            if (symbol != null)
+            {
+                instr.op1 = BuildOperand(symbol);
+                instr.op2 = StackValue.BuildClassIndex(symbol.classScope);
+                instr.op3 = StackValue.BuildBlockIndex(blockId);
+            }
 
             ++pc;
             AppendInstruction(instr);
@@ -2101,7 +2108,7 @@ namespace ProtoCore
             {
                 int dimensions = DfsEmitArrayIndexHeap(exprlist.ArrayDimensions, graphNode);
                 EmitPushDimensions(dimensions);
-                EmitLoadElement();
+                EmitLoadElement(null, Constants.kInvalidIndex);
             }
 
             var exprNode = node as AST.AssociativeAST.ExprListNode;

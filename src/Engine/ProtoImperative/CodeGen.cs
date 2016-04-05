@@ -947,7 +947,7 @@ namespace ProtoImperative
             if (dimensions > 0)
             {
                 EmitPushDimensions(dimensions);
-                EmitLoadElement();
+                EmitLoadElement(symbolnode, runtimeIndex);
             }
 
             if (core.TypeSystem.IsHigherRank(type.UID, inferedType.UID))
@@ -1277,7 +1277,7 @@ namespace ProtoImperative
             {
                 int dimensions = DfsEmitArrayIndexHeap(fnode.ArrayDimensions);
                 EmitPushDimensions(dimensions);
-                EmitLoadElement();
+                EmitLoadElement(null, Constants.kInvalidIndex);
                 fnode.ArrayDimensions = null;
             }
 
@@ -2454,7 +2454,7 @@ namespace ProtoImperative
             {
                 int dimensions = DfsEmitArrayIndexHeap(range.ArrayDimensions);
                 EmitPushDimensions(dimensions);
-                EmitLoadElement();
+                EmitLoadElement(null, Constants.kInvalidIndex);
             }
         }
 

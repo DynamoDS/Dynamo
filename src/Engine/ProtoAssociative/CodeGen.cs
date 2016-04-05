@@ -1017,7 +1017,7 @@ namespace ProtoAssociative
                                 {
                                     int dimensions = DfsEmitArrayIndexHeap(exprList.ArrayDimensions, graphNode);
                                     EmitPushDimensions(dimensions);
-                                    EmitLoadElement();
+                                    EmitLoadElement(null, Constants.kInvalidIndex);
                                 }
                             }
                         }
@@ -2610,7 +2610,7 @@ namespace ProtoAssociative
                     if (dimensions > 0)
                     {
                         EmitPushDimensions(dimensions);
-                        EmitLoadElement();
+                        EmitLoadElement(symbolnode, runtimeIndex);
                     }
 
                     if (emitReplicationGuide)
@@ -2789,7 +2789,7 @@ namespace ProtoAssociative
                 {
                     int dimensions = DfsEmitArrayIndexHeap(range.ArrayDimensions, graphNode);
                     EmitPushDimensions(dimensions);
-                    EmitLoadElement();
+                    EmitLoadElement(null, Constants.kInvalidIndex);
                 }
 
                 if (emitReplicationGuide)
@@ -4339,7 +4339,7 @@ namespace ProtoAssociative
                     emitReplicationGuide = false;
                     int dimensions = DfsEmitArrayIndexHeap(fnode.ArrayDimensions, graphNode);
                     EmitPushDimensions(dimensions);
-                    EmitLoadElement();
+                    EmitLoadElement(null, Constants.kInvalidIndex);
                     fnode.ArrayDimensions = null;
                     emitReplicationGuide = emitReplicationGuideFlag;
                 }
@@ -6689,7 +6689,7 @@ namespace ProtoAssociative
                 {
                     int dimensions = DfsEmitArrayIndexHeap(group.ArrayDimensions, graphNode);
                     EmitPushDimensions(dimensions);
-                    EmitLoadElement();
+                    EmitLoadElement(null, Constants.kInvalidIndex);
                 }
             }
 
