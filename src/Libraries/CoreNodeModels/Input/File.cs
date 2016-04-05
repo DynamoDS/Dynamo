@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using Autodesk.DesignScript.Runtime;
 using CoreNodeModels.Properties;
 using Dynamo.Engine.CodeGeneration;
+using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
@@ -15,6 +18,9 @@ namespace CoreNodeModels.Input
     [SupressImportIntoVM]
     public abstract class FileSystemBrowser : String
     {
+        private static readonly string HintPathString = "HintPath";
+        public string HintPath { get; set; }
+
         protected FileSystemBrowser(string tip)
             : base()
         {
@@ -22,6 +28,14 @@ namespace CoreNodeModels.Input
             RegisterAllPorts();
 
             Value = "";
+            HintPath = Value;
+            PropertyChanged += OnPropertyChanged;
+        }
+
+        void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "CachedValue")
+                HintPath = CachedValue.Data as string; //The new value is my hint path.
         }
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, CompilationContext context)
@@ -29,12 +43,41 @@ namespace CoreNodeModels.Input
             if (context == CompilationContext.NodeToCode)
             {
                 var rhs = AstFactory.BuildStringNode(Value.Replace(@"\", @"\\"));
-                var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
-                return new[] { assignment };
+                yield return AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
             }
             else
             {
-                return base.BuildAst(inputAstNodes, context);
+                var ast = new List<AssociativeNode>();
+                ast.Add(AstFactory.BuildStringNode(Value));
+                ast.Add(AstFactory.BuildStringNode(HintPath));
+                yield return
+                    AstFactory.BuildAssignment(
+                        GetAstIdentifierForOutputIndex(0),
+                        AstFactory.BuildFunctionCall<string,string,string>(DSCore.IO.File.AbsolutePath, ast));
+            }
+        }
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); // Base implementation must be called
+
+            if (!string.IsNullOrEmpty(HintPath))
+            {
+                var xmlDocument = element.OwnerDocument;
+                var subNode = xmlDocument.CreateElement(HintPathString);
+                subNode.InnerText = HintPath;
+                element.AppendChild(subNode);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
+        {
+            base.DeserializeCore(nodeElement, context); // Base implementation must be called
+
+            foreach (XmlNode subNode in nodeElement.ChildNodes.Cast<XmlNode>()
+                .Where(subNode => subNode.Name.Equals(HintPathString)))
+            {
+                HintPath = subNode.InnerText;
             }
         }
     }
