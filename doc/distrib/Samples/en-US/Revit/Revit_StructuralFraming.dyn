@@ -39,7 +39,7 @@
   </Connectors>
   <Notes>
     <Dynamo.Models.NoteModel text="Model Curves have been selected and their element IDs saved with this file" x="845.053422827828" y="791.941875641148" />
-    <Dynamo.Models.NoteModel text="Run this graph the DynamoSample.rvt file in the Samples folder located with your Dynamo installation&#xD;&#xA;C:\ProgramData\Dynamo\(Your Dynamo Version)\samples\Revit" x="848.02524188179" y="499.007945832127" />
+    <Dynamo.Models.NoteModel text="Run this graph the DynamoSample.rvt file in the Samples folder located with your Dynamo installation&#xD;&#xA;C:\ProgramData\Dynamo\Dynamo Revit\(Your Dynamo Version)\samples\Revit" x="848.02524188179" y="499.007945832127" />
     <Dynamo.Models.NoteModel text="Geometry is Seperated from Revit Elements" x="1215.43538710581" y="801.487894535261" />
     <Dynamo.Models.NoteModel text="Create Points along the Lines" x="1750.08322987597" y="801.93430473826" />
     <Dynamo.Models.NoteModel text="Place Structural Framing" x="2460.12577622575" y="751.523509343376" />

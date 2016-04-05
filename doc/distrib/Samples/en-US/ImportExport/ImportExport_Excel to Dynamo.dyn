@@ -2,7 +2,7 @@
   <NamespaceResolutionMap />
   <Elements>
     <DSCore.File.Filename guid="ea0babea-4ab0-4aae-9a89-5cd423f67885" type="DSCore.File.Filename" nickname="File Path" x="69.9951477050781" y="128.525" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String>C:\ProgramData\Dynamo\1.0\samples\Data\helix.xlsx</System.String>
+      <System.String>..\..\Data\helix.xlsx</System.String>
     </DSCore.File.Filename>
     <Dynamo.Nodes.StringInput guid="fb5281fe-16ea-4fde-af06-082125e857a9" type="Dynamo.Nodes.StringInput" nickname="String" x="415.730053212046" y="207.783942285196" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.String>helix</System.String>
