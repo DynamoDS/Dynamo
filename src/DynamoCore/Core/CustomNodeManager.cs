@@ -34,6 +34,11 @@ namespace Dynamo.Core
     /// </summary>
     public class CustomNodeManager : LogSourceBase, ICustomNodeSource, ICustomNodeManager
     {
+        /// <summary>
+        /// Creates CustomNodeManager
+        /// </summary>
+        /// <param name="nodeFactory">NodeFactory</param>
+        /// <param name="migrationManager">MigrationManager</param>
         public CustomNodeManager(NodeFactory nodeFactory, MigrationManager migrationManager)
         {
             this.nodeFactory = nodeFactory;

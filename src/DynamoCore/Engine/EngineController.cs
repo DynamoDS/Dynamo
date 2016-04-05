@@ -23,6 +23,11 @@ using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Engine
 {
+    /// <summary>
+    /// This is a delegate used in AstBuilt event.   
+    /// </summary>
+    /// <param name="sender">EngineController</param>
+    /// <param name="e">CompiledEventArgs (include node GUID and list of AST nodes.)</param>
     public delegate void AstBuiltEventHandler(object sender, CompiledEventArgs e);
 
     /// <summary>
@@ -31,8 +36,14 @@ namespace Dynamo.Engine
     /// </summary>
     public class EngineController : LogSourceBase, IAstNodeContainer, IDisposable
     {
+        /// <summary>
+        /// Event is fired, when node has been compiled.
+        /// </summary>
         public event AstBuiltEventHandler AstBuilt;
 
+        /// <summary>
+        /// Event is fired, when UpdateGraphTask is completed.
+        /// </summary>
         public event Action<TraceReconciliationEventArgs> TraceReconcliationComplete;
         private void OnTraceReconciliationComplete(TraceReconciliationEventArgs e)
         {
@@ -49,10 +60,18 @@ namespace Dynamo.Engine
         private SyncDataManager syncDataManager;
         private readonly Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
         private readonly Queue<List<Guid>> previewGraphQueue = new Queue<List<Guid>>();
+
+        /// <summary>
+        /// Bool value indicates if every action should be logged. Useful for debugging.
+        /// </summary>
         public bool VerboseLogging;
 
         private readonly Object macroMutex = new Object();
 
+        /// <summary>
+        /// Static member, that is used in Input/Output nodes of the custom node.
+        /// Compiles Input/Output node.
+        /// </summary>
         public static CompilationServices CompilationServices;
 
         /// <summary>
@@ -98,6 +117,12 @@ namespace Dynamo.Engine
         /// </summary>
         public bool IsDisposed { get; private set; }
 
+        /// <summary>
+        /// Creates EngineController
+        /// </summary>
+        /// <param name="libraryServices"> LibraryServices manages builtin libraries and imported libraries.</param>
+        /// <param name="geometryFactoryFileName">Path to LibG</param>
+        /// <param name="verboseLogging">Bool value indicates if every action should be logged</param>
         public EngineController(LibraryServices libraryServices, string geometryFactoryFileName, bool verboseLogging)
         {
             this.libraryServices = libraryServices;
@@ -117,6 +142,9 @@ namespace Dynamo.Engine
             VerboseLogging = verboseLogging;
         }
 
+        /// <summary>
+        /// Disposes EngineController.
+        /// </summary>
         public void Dispose()
         {
             // This flag must be set immediately
@@ -154,8 +182,8 @@ namespace Dynamo.Engine
         /// <summary>
         /// Get runtime mirror for variable.
         /// </summary>
-        /// <param name="variableName"></param>
-        /// <returns></returns>
+        /// <param name="variableName">Unique ID of AST node</param>
+        /// <returns>RuntimeMirror object reflects status of a single designsript variable</returns>
         public RuntimeMirror GetMirror(string variableName)
         {
             lock (macroMutex)
@@ -586,11 +614,20 @@ namespace Dynamo.Engine
 
         #region Implement IAstNodeContainer interface
 
+        /// <summary>
+        /// Indicates to start compiling a NodeModel to AST nodes.
+        /// </summary>
+        /// <param name="nodeGuid">Node unique ID</param>
         public void OnCompiling(Guid nodeGuid)
         {
             syncDataManager.MarkForAdding(nodeGuid);
         }
 
+        /// <summary>
+        /// Indicates a NodeModel has been compiled to AST nodes. 
+        /// </summary>
+        /// <param name="nodeGuid">Node unique ID</param>
+        /// <param name="astNodes">Resulting AST nodes</param>
         public void OnCompiled(Guid nodeGuid, IEnumerable<AssociativeNode> astNodes)
         {
             var associativeNodes = astNodes as IList<AssociativeNode> ?? astNodes.ToList();
@@ -653,15 +690,28 @@ namespace Dynamo.Engine
 
     }
 
+    /// <summary>
+    /// This class used to precompile code block node.
+    /// It's used as helper for resolving code in Input and Output nodes.
+    /// </summary>
     public class CompilationServices
     {
         private  ProtoCore.Core compilationCore;
 
+        /// <summary>
+        /// Creates CompilationServices.
+        /// </summary>
+        /// <param name="core">Copilation core</param>
         public CompilationServices(ProtoCore.Core core)
         {
             compilationCore = core;
         }
 
+        /// <summary>
+        /// Pre-compiles DS code in code block node.
+        /// </summary>
+        /// <param name="parseParams">Container for compilation related parameters</param>
+        /// <returns>true if code compilation succeeds, false otherwise</returns>
         public bool PreCompileCodeBlock(ref ParseParam parseParams)
         {
             return CompilerUtils.PreCompileCodeBlock(compilationCore, ref parseParams);

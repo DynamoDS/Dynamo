@@ -125,17 +125,29 @@ namespace Dynamo.Models
         #endregion
     }
 
+    /// <summary>
+    /// This class represents arguments sent, when graph evaluation is completed.
+    /// </summary>
     public class EvaluationCompletedEventArgs : EventArgs
     {
         private readonly IOption<Exception> error;
 
+        /// <summary>
+        /// Bool value indicates if evaluation took place regardless from evaluation result.
+        /// </summary>
         public bool EvaluationTookPlace { get; private set; }
 
+        /// <summary>
+        /// Bool value indicates if evaluation succeeded.
+        /// </summary>
         public bool EvaluationSucceeded
         {
             get { return !error.HasValue(); }
         }
 
+        /// <summary>
+        /// Exception thrown during evaluation.
+        /// </summary>
         public Exception Error
         {
             get
@@ -150,6 +162,11 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// Creates EvaluationCompletedEventArgs
+        /// </summary>
+        /// <param name="evaluationTookPlace">Bool value indicates if evaluation took place</param>
+        /// <param name="errorMsg">Exception thrown during evaluation</param>
         public EvaluationCompletedEventArgs(bool evaluationTookPlace, Exception errorMsg = null)
         {
             EvaluationTookPlace = evaluationTookPlace;

@@ -2,6 +2,10 @@
 
 namespace Dynamo.Configuration
 {
+    /// <summary>
+    /// Context in which Dynamo can be run.
+    /// E.g. Revit 2014 or Revit 2015.
+    /// </summary>
     public static class Context
     {
         // TODO: MAGN-7242
