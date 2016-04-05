@@ -3336,7 +3336,6 @@ namespace ProtoCore.DSASM
 
             bool isSSANode = Properties.executingGraphNode != null && Properties.executingGraphNode.IsSSANode();
             StackValue svData = rmem.Pop();
-            StackValue tempSvData = svData;
 
             if (isSSANode)
             {
@@ -3345,8 +3344,14 @@ namespace ProtoCore.DSASM
                 //    %tSSA = %tvar;
                 blockId = runtimeCore.RunningBlock;
             }
+            else
+            {
+                // TODO: We have add a CAST instruction to do type conversion.
+                // Here we don't need to do coerce unless it is an array.
+                svData = TypeSystem.Coerce(svData, (int)PrimitiveType.Var, Constants.kArbitraryRank, runtimeCore);
+            }
 
-            tempSvData = svData;
+            StackValue tempSvData = svData;
             var preValue = PopTo(blockId, instruction.op1, instruction.op2, svData);
 
             if (runtimeCore.Options.ExecuteSSA)
