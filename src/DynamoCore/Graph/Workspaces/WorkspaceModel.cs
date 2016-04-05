@@ -97,7 +97,6 @@ namespace Dynamo.Graph.Workspaces
         ///     Event that is fired when a workspace requests that a Node or Note model is
         ///     centered.
         /// </summary>
-
         public event NodeEventHandler RequestNodeCentered;
 
         /// <summary>
