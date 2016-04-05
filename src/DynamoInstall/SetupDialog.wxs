@@ -3,6 +3,7 @@
   <Fragment>
 
     <Property Id='ARPNOREMOVE'>1</Property>
+    <!--Property Id='ARPNOMODIFY'>1</Property-->
     
     <UI Id="SetupDialogUI">
       <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
@@ -21,9 +22,11 @@
       <DialogRef Id="ResumeDlg" />
       <DialogRef Id="UserExit" />
 
-      <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999">1</Publish>
+      <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return">1</Publish>
 
       <Publish Dialog="SetupTypeDlg" Control="Back" Event="EndDialog" Value="Return">1</Publish>
+
+      <!--Publish Dialog="ProgressDlg" Control="OnExit" Event="EndDialog" Value="Return">1</Publish-->
       
       <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="My_MaintenanceTypeDlg"
                Order="1">WixUI_InstallMode = "Change"</Publish>
@@ -43,8 +46,6 @@
       <Publish Dialog="MaintenanceWelcomeDlg" Control="Next" Event="NewDialog"
                Value="My_MaintenanceTypeDlg">1</Publish>
 
-      <Publish Dialog="My_MaintenanceTypeDlg" Control="ChangeButton" Event="NewDialog"
-               Value="CustomizeDlg">1</Publish>
       <Publish Dialog="My_MaintenanceTypeDlg" Control="RepairButton" Event="NewDialog"
                Value="VerifyReadyDlg">1</Publish>
       <Publish Dialog="My_MaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog"
@@ -54,40 +55,24 @@
 
       <!-- http://devdare.blogspot.sg/2012/10/how-to-force-gui-uninstall-using.html -->
       <Dialog Id="My_MaintenanceTypeDlg" Width="370" Height="270" Title="!(loc.MaintenanceTypeDlg_Title)">
-        <Control Id="ChangeButton" Type="PushButton" X="40" Y="65" Width="80" Height="17" ToolTip="!(loc.MaintenanceTypeDlgChangeButtonTooltip)" Default="yes" Text="!(loc.MaintenanceTypeDlgChangeButton)">
-          <Publish Property="WixUI_InstallMode" Value="Change">1</Publish>
-          <Condition Action="disable">ARPNOMODIFY</Condition>
-        </Control>
-
-        <Control Id="ChangeText" Type="Text" X="60" Y="85" Width="280" Height="20" Text="!(loc.MaintenanceTypeDlgChangeText)">
-          <Condition Action="hide">ARPNOMODIFY</Condition>
-        </Control>
-
-        <Control Id="ChangeDisabledText" Type="Text" X="60" Y="85" Width="280" Height="20" NoPrefix="yes" Text="!(loc.MaintenanceTypeDlgChangeDisabledText)" Hidden="yes">
-          <Condition Action="show">ARPNOMODIFY</Condition>
-        </Control>
-
-        <Control Id="RepairButton" Type="PushButton" X="40" Y="118" Width="80" Height="17" ToolTip="!(loc.MaintenanceTypeDlgRepairButtonTooltip)" Text="!(loc.MaintenanceTypeDlgRepairButton)">
+        <Control Id="RepairButton" Type="PushButton" X="40" Y="65" Width="80" Height="17" ToolTip="!(loc.MaintenanceTypeDlgRepairButtonTooltip)" Text="!(loc.MaintenanceTypeDlgRepairButton)">
           <Publish Property="WixUI_InstallMode" Value="Repair">1</Publish>
           <Condition Action="disable">ARPNOREPAIR</Condition>
         </Control>
 
-        <Control Id="RepairText" Type="Text" X="60" Y="138" Width="280" Height="30" Text="!(loc.MaintenanceTypeDlgRepairText)">
+        <Control Id="RepairText" Type="Text" X="60" Y="85" Width="280" Height="20" Text="!(loc.MaintenanceTypeDlgRepairText)">
           <Condition Action="hide">ARPNOREPAIR</Condition>
         </Control>
 
-        <Control Id="RepairDisabledText" Type="Text" X="60" Y="138" Width="280" Height="30" NoPrefix="yes" Text="!(loc.MaintenanceTypeDlgRepairDisabledText)" Hidden="yes">
+        <Control Id="RepairDisabledText" Type="Text" X="60" Y="85" Width="280" Height="20" NoPrefix="yes" Text="!(loc.MaintenanceTypeDlgRepairDisabledText)" Hidden="yes">
           <Condition Action="show">ARPNOREPAIR</Condition>
         </Control>
 
-        <Control Id="RemoveButton" Type="PushButton" X="40" Y="171" Width="80" Height="17" ToolTip="!(loc.MaintenanceTypeDlgRemoveButtonTooltip)" Text="!(loc.MaintenanceTypeDlgRemoveButton)">
+        <Control Id="RemoveButton" Type="PushButton" X="40" Y="118" Width="80" Height="17" ToolTip="!(loc.MaintenanceTypeDlgRemoveButtonTooltip)" Text="!(loc.MaintenanceTypeDlgRemoveButton)">
           <Publish Property="WixUI_InstallMode" Value="Remove">1</Publish>
         </Control>
 
-        <Control Id="RemoveText" Type="Text" X="60" Y="191" Width="280" Height="20" NoPrefix="yes" Text="!(loc.MaintenanceTypeDlgRemoveText)">
-        </Control>
-        <Control Id="RemoveDisabledText" Type="Text" X="60" Y="191" Width="280" Height="20" NoPrefix="yes" Text="!(loc.MaintenanceTypeDlgRemoveDisabledText)" Hidden="yes">
-          <Condition Action="hide">ARPNOREMOVE</Condition>
+        <Control Id="RemoveText" Type="Text" X="60" Y="138" Width="280" Height="30" Text="!(loc.MaintenanceTypeDlgRemoveText)">
         </Control>
 
         <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)" />
@@ -101,7 +86,25 @@
         <Control Id="Title" Type="Text" X="15" Y="6" Width="340" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.MaintenanceTypeDlgTitle)" />
         <Control Id="Description" Type="Text" X="25" Y="23" Width="340" Height="20" Transparent="yes" NoPrefix="yes" Text="!(loc.MaintenanceTypeDlgDescription)" />
       </Dialog>
-      
+
+      <!-- https://msdn.microsoft.com/en-us/library/windows/desktop/aa372039(v=vs.85).aspx -->
+      <InstallUISequence>
+        <Show Dialog="PrepareDlg" Sequence="140">0</Show>
+        <Show Dialog="WelcomeDlg" Sequence="1230">0</Show>
+        <Show Dialog="ResumeDlg" Sequence="1240">0</Show>
+        <!--Show Dialog="MaintenanceWelcomeDlg" Sequence="1250">0</Show>
+        <Show Dialog="ProgressDlg" Sequence="1280">0</Show-->
+        <Show Dialog="ExitDialog" OnExit="success">0</Show>
+      </InstallUISequence>
+
+      <AdminUISequence>
+        <Show Dialog="PrepareDlg" Sequence="140">0</Show>
+        <Show Dialog="WelcomeDlg" Sequence="1230">0</Show>
+        <Show Dialog="ResumeDlg" Sequence="1240">0</Show>
+        <!--Show Dialog="MaintenanceWelcomeDlg" Sequence="1250">0</Show>
+        <Show Dialog="ProgressDlg" Sequence="1280">0</Show-->
+        <Show Dialog="ExitDialog" OnExit="success">0</Show>
+      </AdminUISequence>
     </UI>
     <UIRef Id="WixUI_Common" />
   </Fragment>
