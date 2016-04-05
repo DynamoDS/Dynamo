@@ -2643,7 +2643,7 @@ z = x[1];
 a:int[] = {false, 2, 3};
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("a", new object[] { false, 2, 3 });
+            thisTest.Verify("a", new object[] { null, 2, 3 });
         }
 
         [Test]
