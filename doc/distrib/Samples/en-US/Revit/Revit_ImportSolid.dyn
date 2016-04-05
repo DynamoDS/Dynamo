@@ -66,7 +66,7 @@
   </Connectors>
   <Notes>
     <Dynamo.Models.NoteModel text="Model Lines have been  pre-selected from Revit, Element IDs saved with the Dynamo file" x="840.039356460182" y="619.823494459318" />
-    <Dynamo.Models.NoteModel text="Run this graph the DynamoSample.rvt file in the Samples folder located with your Dynamo installation&#xD;&#xA;C:\ProgramData\Dynamo\(Your Dynamo Version)\samples\Revit" x="840.055813900441" y="434.806638430955" />
+    <Dynamo.Models.NoteModel text="Run this graph the DynamoSample.rvt file in the Samples folder located with your Dynamo installation&#xD;&#xA;C:\ProgramData\Dynamo\Dynamo Revit\(Your Dynamo Version)\samples\Revit" x="840.055813900441" y="434.806638430955" />
     <Dynamo.Models.NoteModel text="Import a solid form into Revit" x="840.408067932615" y="537.352842271657" />
   </Notes>
   <SessionTraceData>

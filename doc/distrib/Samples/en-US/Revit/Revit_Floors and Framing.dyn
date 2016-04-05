@@ -97,7 +97,7 @@
   <Notes>
     <Dynamo.Models.NoteModel text="Floor Heights" x="-563.406928505052" y="251.520510218171" />
     <Dynamo.Models.NoteModel text="Center Of Folly" x="-563.406928505052" y="-25.4134854699851" />
-    <Dynamo.Models.NoteModel text="Run this graph the DynamoSample.rvt file in the Samples folder located with your Dynamo installation&#xD;&#xA;C:\ProgramData\Dynamo\(Your Dynamo Version)\samples\Revit" x="-563.406928505052" y="-252.424357007108" />
+    <Dynamo.Models.NoteModel text="Run this graph the DynamoSample.rvt file in the Samples folder located with your Dynamo installation&#xD;&#xA;C:\ProgramData\Dynamo\Dynamo Revit\(Your Dynamo Version)\samples\Revit" x="-563.406928505052" y="-252.424357007108" />
     <Dynamo.Models.NoteModel text="This definition creates an architectural folly, using a series of lines and uses them to drive the placement of Structural Framing and Floors." x="-564.534149793641" y="-144.2060623071" />
     <Dynamo.Models.NoteModel text="Make a bunch of polygons" x="-30.4707772197853" y="40.3273986238546" />
     <Dynamo.Models.NoteModel text="Move the Polygons up and rotate" x="938.594305333534" y="-4.61772694548267" />
