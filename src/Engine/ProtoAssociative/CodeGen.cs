@@ -711,7 +711,7 @@ namespace ProtoAssociative
             codeBlock.instrStream.instrList.Add(instr);
         }
 
-        protected void EmitDependency(int exprUID, int modBlkUID, bool isSSAAssign)
+        protected void EmitDependency(int exprUID, bool isSSAAssign)
         {
             SetEntry();
 
@@ -721,8 +721,7 @@ namespace ProtoAssociative
             instr.opCode = ProtoCore.DSASM.OpCode.DEP;
 
             instr.op1 = StackValue.BuildInt(exprUID);
-            instr.op2 = StackValue.BuildInt(isSSAAssign ? 1 : 0);
-            instr.op3 = StackValue.BuildInt(modBlkUID);
+            instr.op2 = StackValue.BuildBoolean(isSSAAssign);
 
             ++pc;
             codeBlock.instrStream.instrList.Add(instr);
@@ -2426,7 +2425,7 @@ namespace ProtoAssociative
                         nullAssignGraphNode.updateBlock.endpc = pc - 1;
 
                         PushGraphNode(nullAssignGraphNode);
-                        EmitDependency(ProtoCore.DSASM.Constants.kInvalidIndex, ProtoCore.DSASM.Constants.kInvalidIndex, false);
+                        EmitDependency(ProtoCore.DSASM.Constants.kInvalidIndex, false);
                     }
 
                     if (isAllocated)
@@ -5597,7 +5596,7 @@ namespace ProtoAssociative
                 ProtoCore.DSASM.SymbolNode firstSymbol = leftNodeRef.nodeList[0].symbol;
                 if (null != firstSymbol)
                 {
-                    EmitDependency(binaryExpr.ExpressionUID, binaryExpr.modBlkUID, false);
+                    EmitDependency(binaryExpr.ExpressionUID, false);
                 }
 
                 if (core.Options.GenerateSSA)
@@ -6177,7 +6176,7 @@ namespace ProtoAssociative
                         {
                             // Dependency graph top level symbol 
                             graphNode.PushSymbolReference(symbolnode);
-                            EmitDependency(bnode.ExpressionUID, bnode.modBlkUID, bnode.isSSAAssignment);
+                            EmitDependency(bnode.ExpressionUID, bnode.isSSAAssignment);
                             functionCallStack.Clear();
                         }
                     }
@@ -6240,7 +6239,7 @@ namespace ProtoAssociative
                         {
                             // Dependency graph top level symbol 
                             graphNode.PushSymbolReference(symbolnode);
-                            EmitDependency(bnode.ExpressionUID, bnode.modBlkUID, bnode.isSSAAssignment);
+                            EmitDependency(bnode.ExpressionUID, bnode.isSSAAssignment);
                             functionCallStack.Clear();
                         }
                     }
@@ -6321,7 +6320,7 @@ namespace ProtoAssociative
                             nullAssignGraphNode1.updateBlock.endpc = pc - 1;
 
                             PushGraphNode(nullAssignGraphNode1);
-                            EmitDependency(ProtoCore.DSASM.Constants.kInvalidIndex, ProtoCore.DSASM.Constants.kInvalidIndex, false);
+                            EmitDependency(ProtoCore.DSASM.Constants.kInvalidIndex, false);
 
 
                             //
@@ -6339,7 +6338,7 @@ namespace ProtoAssociative
                             nullAssignGraphNode2.updateBlock.endpc = pc - 1;
 
                             PushGraphNode(nullAssignGraphNode2);
-                            EmitDependency(ProtoCore.DSASM.Constants.kInvalidIndex, ProtoCore.DSASM.Constants.kInvalidIndex, false);
+                            EmitDependency(ProtoCore.DSASM.Constants.kInvalidIndex, false);
                         }
                     }
                     if (isGraphInScope)
