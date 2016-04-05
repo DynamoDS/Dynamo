@@ -93,7 +93,6 @@ t1 = a;
              ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.VerifyRuntimeWarningCount(1);
             thisTest.Verify("t1", new Object[] { 0, "dummy" });
         }
 

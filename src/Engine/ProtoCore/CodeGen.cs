@@ -825,14 +825,6 @@ namespace ProtoCore
                     // Get the symbols' table index
                     int runtimeIndex = symbolnode.runtimeTableIndex;
 
-                    ProtoCore.DSASM.AddressType operandType = ProtoCore.DSASM.AddressType.Pointer;
-
-                    if (null != identnode.ArrayDimensions)
-                    {
-                        dimensions = DfsEmitArrayIndexHeap(identnode.ArrayDimensions, graphNode);
-                        operandType = ProtoCore.DSASM.AddressType.ArrayPointer;
-                    }
-
                     if (lefttype.rank >= 0)
                     {
                         lefttype.rank -= dimensions;
@@ -865,6 +857,11 @@ namespace ProtoCore
                         EmitInstrConsole(kw.pushm, identnode.Value);
                         EmitPushm(op, symbolnode == null ? globalClassIndex : symbolnode.classScope, runtimeIndex);
 
+                        if (null != identnode.ArrayDimensions)
+                        {
+                            dimensions = DfsEmitArrayIndexHeap(identnode.ArrayDimensions, graphNode);
+                        }
+
                         if (dimensions > 0)
                         {
                             EmitPushDimensions(dimensions);
@@ -879,6 +876,11 @@ namespace ProtoCore
                         StackValue dynamicOp = StackValue.BuildDynamic(core.DynamicVariableTable.variableTable.Count - 1);
                         EmitInstrConsole(ProtoCore.DSASM.kw.pushm, identnode.Value + "[dynamic]");
                         EmitPushm(dynamicOp, symbolnode == null ? globalClassIndex : symbolnode.classScope, runtimeIndex);
+
+                        if (null != identnode.ArrayDimensions)
+                        {
+                            dimensions = DfsEmitArrayIndexHeap(identnode.ArrayDimensions, graphNode);
+                        }
 
                         if (dimensions > 0)
                         {

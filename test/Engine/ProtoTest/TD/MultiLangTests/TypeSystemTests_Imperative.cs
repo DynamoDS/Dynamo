@@ -2323,7 +2323,7 @@ a1;
                 }
                 ";
             var mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.Verify(mirror, "x", new object[] { true, false, true, true });
+            TestFrameWork.Verify(mirror, "x", new object[] { true, false, true, 2 });
         }
 
         [Test]
@@ -2514,7 +2514,7 @@ myRangeExpressionResult ;
             string error = " ";
             var mirror = thisTest.RunScriptSource(code, error);
             thisTest.VerifyRuntimeWarningCount(0);
-            thisTest.Verify("myRangeExpressionResult", new object[] { 0, 1, 2 });
+            thisTest.Verify("myRangeExpressionResult", new object[] { 0, 0.5, 1.0 });
         }
 
         [Test]
