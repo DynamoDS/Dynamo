@@ -257,7 +257,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Indicates if node preview is pinned
         /// </summary>
-        public bool PreviewPinned { get; private set; }
+        public bool PreviewPinned { get; internal set; }
 
         /// <summary>
         ///     Text that is displayed as this Node's tooltip.
@@ -804,16 +804,6 @@ namespace Dynamo.Graph.Nodes
         public MirrorData GetValue(int outPortIndex, EngineController engine)
         {
             return engine.GetMirror(GetAstIdentifierForOutputIndex(outPortIndex).Value).GetData();
-        }
-
-        public void SetPinStatus(bool pinned)
-        {
-            if (PreviewPinned != pinned)
-            {
-                PreviewPinned = pinned;
-                OnNodeModified();
-            }
-            
         }
 
         /// <summary>
@@ -1731,6 +1721,15 @@ namespace Dynamo.Graph.Nodes
                         IsFrozen = newIsFrozen;
                     }
                     return true;
+
+                case "PreviewPinned":
+                    bool newIsPinned;
+                    if (bool.TryParse(value, out newIsPinned))
+                    {
+                        PreviewPinned = newIsPinned;
+                    }
+                    return true;
+
             }
 
             return base.UpdateValueCore(updateValueParams);

@@ -28,8 +28,8 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
-                "EllipseArc.ByPlaneRadiiStartAngleSweepAngle", 
-                "EllipseArc.ByPlaneRadiiStartAngleSweepAngle@Plane,double,double,double,double");
+                "EllipseArc.ByPlaneRadiiAngles",
+                "EllipseArc.ByPlaneRadiiAngles@Plane,double,double,double,double");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 

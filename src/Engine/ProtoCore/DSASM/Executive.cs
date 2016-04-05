@@ -36,21 +36,8 @@ namespace ProtoCore.DSASM
         private InstructionStream istream;
         public RuntimeMemory rmem { get; set; }
 
-        private StackValue AX;
-        private StackValue BX;
-        private StackValue CX;
-        private StackValue DX;
-        protected StackValue EX;
-        protected StackValue FX;
-        private StackValue LX;
         public StackValue RX { get; set; }
-        public StackValue SX { get; set; }
         public StackValue TX { get; set; }
-
-        public void SetAssociativeUpdateRegister(StackValue sv)
-        {
-            LX = sv;
-        }
 
         public InterpreterProperties Properties { get; set; }
 
@@ -265,25 +252,11 @@ namespace ProtoCore.DSASM
             return false;
         }
 
-        private void RestoreRegistersFromStackFrame()
-        {
-            AX = rmem.GetAtRelative(StackFrame.FrameIndexAX);
-            BX = rmem.GetAtRelative(StackFrame.FrameIndexBX);
-            CX = rmem.GetAtRelative(StackFrame.FrameIndexCX);
-            DX = rmem.GetAtRelative(StackFrame.FrameIndexDX);
-            EX = rmem.GetAtRelative(StackFrame.FrameIndexEX);
-            FX = rmem.GetAtRelative(StackFrame.FrameIndexFX);
-            LX = rmem.GetAtRelative(StackFrame.FrameIndexLX);
-            //RX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterRX);
-            SX = rmem.GetAtRelative(StackFrame.FrameIndexSX);
-            TX = rmem.GetAtRelative(StackFrame.FrameIndexTX);
-        }
-
         private void RestoreFromCall()
         {
             int ci = rmem.GetAtRelative(StackFrame.FrameIndexClassIndex).ClassIndex;
             int fi = rmem.GetAtRelative(StackFrame.FrameIndexFunctionIndex).FunctionIndex;
-            int blockId = rmem.GetAtRelative(StackFrame.FrameIndexSX).BlockIndex;
+            int blockId = rmem.GetAtRelative(StackFrame.FrameIndexBlockIndex).BlockIndex;
             if (runtimeCore.Options.RunMode != InterpreterMode.Expression)
             {
                 ReturnSiteGC(blockId, ci, fi);
@@ -293,6 +266,10 @@ namespace ProtoCore.DSASM
             if (procNode.IsConstructor)
             {
                 RX = rmem.GetAtRelative(StackFrame.FrameIndexThisPtr);
+            }
+            else
+            {
+                RX = rmem.Pop();
             }
 
             pc = (int)rmem.GetAtRelative(StackFrame.FrameIndexReturnAddress).IntegerValue;
@@ -322,7 +299,7 @@ namespace ProtoCore.DSASM
                 if (runtimeCore.Options.RunMode != InterpreterMode.Expression)
                 {
                     // Restoring the registers require the current frame pointer of the stack frame 
-                    RestoreRegistersFromStackFrame();
+                    ResumeRegistersFromStackExceptRX();
                     bounceType = (CallingConvention.BounceType)TX.CallType;
                 }
 
@@ -761,8 +738,7 @@ namespace ProtoCore.DSASM
                 runtimeCore.RuntimeStatus);
             Validity.Assert(null != callsite);
 
-            List<StackValue> registers = new List<StackValue>();
-            SaveRegisters(registers);
+            List<StackValue> registers = GetRegisters();
 
             // Get the execution states of the current stackframe
             int currentScopeClass = Constants.kInvalidIndex;
@@ -770,7 +746,7 @@ namespace ProtoCore.DSASM
             GetCallerInformation(out currentScopeClass, out currentScopeFunction);
 
             // Handle execution states at the FEP
-            var stackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, runtimeCore.RunningBlock, fepRun ? StackFrameType.Function : StackFrameType.LanguageBlock, StackFrameType.Function, 0, rmem.FramePointer, registers, 0);
+            var stackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, runtimeCore.RunningBlock, fepRun ? StackFrameType.Function : StackFrameType.LanguageBlock, StackFrameType.Function, 0, rmem.FramePointer, blockDeclId, registers, 0);
             StackValue sv = StackValue.Null;
 
             if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.Expression)
@@ -806,9 +782,6 @@ namespace ProtoCore.DSASM
                                                        hasDebugInfo);
                 }
             }
-
-            SX = StackValue.BuildBlockIndex(blockDeclId);
-            stackFrame.SX = SX;
 
             //Dispatch without recursion tracking 
             explicitCall = false;
@@ -889,10 +862,9 @@ namespace ProtoCore.DSASM
                 return StackValue.Null;
             }
 
-            var registers = new List<StackValue>();
-            SaveRegisters(registers);
+            var registers = GetRegisters();
 
-            var stackFrame = new StackFrame(thisObject, classIndex, procIndex, pc + 1, 0, runtimeCore.RunningBlock, fepRun ? StackFrameType.Function : StackFrameType.LanguageBlock, StackFrameType.Function, 0, rmem.FramePointer, registers, 0);
+            var stackFrame = new StackFrame(thisObject, classIndex, procIndex, pc + 1, 0, runtimeCore.RunningBlock, fepRun ? StackFrameType.Function : StackFrameType.LanguageBlock, StackFrameType.Function, 0, rmem.FramePointer, 0, registers, 0);
 
             var callsite = runtimeCore.RuntimeData.GetCallSite(exe.ExecutingGraphnode,
                                             classIndex,
@@ -920,9 +892,6 @@ namespace ProtoCore.DSASM
                                                    null,
                                                    hasDebugInfo);
             }
-
-            SX = StackValue.BuildBlockIndex(0);
-            stackFrame.SX = SX;
 
             var argumentAtLevels = AtLevelHandler.GetArgumentAtLevelStructure(arguments, atLevels, runtimeCore);
 
@@ -1340,7 +1309,7 @@ namespace ProtoCore.DSASM
             return isInvalid || isPointerModified || isArrayModified || isDataModified || isDoubleDataModified || isTypeModified;
         }
 
-        private int UpdateGraph(int exprUID, int modBlkId, bool isSSAAssign)
+        private int UpdateGraph(int exprUID, bool isSSAAssign)
         {
             List<AssociativeGraph.GraphNode> reachableGraphNodes = null;
             if (runtimeCore.Options.DirectDependencyExecution)
@@ -1359,12 +1328,8 @@ namespace ProtoCore.DSASM
 
             // Mark reachable nodes as dirty
             Validity.Assert(reachableGraphNodes != null);
-            int nextPC = Constants.kInvalidPC;
             if (reachableGraphNodes.Count > 0)
             {
-                // Get the next pc to jump to
-                nextPC = reachableGraphNodes[0].updateBlock.startpc;
-                LX = StackValue.BuildInt(nextPC);
                 for (int n = 0; n < reachableGraphNodes.Count; ++n)
                 {
                     AssociativeGraph.GraphNode gnode = reachableGraphNodes[n];
@@ -1649,15 +1614,7 @@ namespace ProtoCore.DSASM
             int fp = rmem.FramePointer;
             if (fp >= rmem.GlobOffset + StackFrame.StackFrameSize)
             {
-                AX = rmem.GetAtRelative(StackFrame.FrameIndexAX);
-                BX = rmem.GetAtRelative(StackFrame.FrameIndexBX);
-                CX = rmem.GetAtRelative(StackFrame.FrameIndexCX);
-                DX = rmem.GetAtRelative(StackFrame.FrameIndexDX);
-                EX = rmem.GetAtRelative(StackFrame.FrameIndexEX);
-                FX = rmem.GetAtRelative(StackFrame.FrameIndexFX);
-                LX = rmem.GetAtRelative(StackFrame.FrameIndexLX);
                 RX = rmem.GetAtRelative(StackFrame.FrameIndexRX);
-                SX = rmem.GetAtRelative(StackFrame.FrameIndexSX);
                 TX = rmem.GetAtRelative(StackFrame.FrameIndexTX);
             }
         }
@@ -1667,14 +1624,6 @@ namespace ProtoCore.DSASM
             int fp = rmem.FramePointer;
             if (fp >= rmem.GlobOffset + StackFrame.StackFrameSize)
             {
-                AX = rmem.GetAtRelative(StackFrame.FrameIndexAX);
-                BX = rmem.GetAtRelative(StackFrame.FrameIndexBX);
-                CX = rmem.GetAtRelative(StackFrame.FrameIndexCX);
-                DX = rmem.GetAtRelative(StackFrame.FrameIndexDX);
-                EX = rmem.GetAtRelative(StackFrame.FrameIndexEX);
-                FX = rmem.GetAtRelative(StackFrame.FrameIndexFX);
-                LX = rmem.GetAtRelative(StackFrame.FrameIndexLX);
-                SX = rmem.GetAtRelative(StackFrame.FrameIndexSX);
                 TX = rmem.GetAtRelative(StackFrame.FrameIndexTX);
             }
        }
@@ -1684,37 +1633,14 @@ namespace ProtoCore.DSASM
             int fp = rmem.FramePointer;
             if (fp >= rmem.GlobOffset + StackFrame.StackFrameSize)
             {
-                rmem.SetAtRelative(StackFrame.FrameIndexAX, AX);
-                rmem.SetAtRelative(StackFrame.FrameIndexBX, BX);
-                rmem.SetAtRelative(StackFrame.FrameIndexCX, CX);
-                rmem.SetAtRelative(StackFrame.FrameIndexDX, DX);
-                rmem.SetAtRelative(StackFrame.FrameIndexEX, EX);
-                rmem.SetAtRelative(StackFrame.FrameIndexFX, FX);
-                rmem.SetAtRelative(StackFrame.FrameIndexLX, LX);
                 rmem.SetAtRelative(StackFrame.FrameIndexRX, RX);
-                rmem.SetAtRelative(StackFrame.FrameIndexSX, SX);
                 rmem.SetAtRelative(StackFrame.FrameIndexTX, TX);
             }
         }
 
-        public void SaveRegisters(List<StackValue> registers)
+        public List<StackValue> GetRegisters()
         {
-            if (registers != null)
-            {
-                if (registers.Count > 0)
-                    registers.Clear();
-
-                registers.Add(AX);
-                registers.Add(BX);
-                registers.Add(CX);
-                registers.Add(DX);
-                registers.Add(EX);
-                registers.Add(FX);
-                registers.Add(LX);
-                registers.Add(RX);
-                registers.Add(SX);
-                registers.Add(TX);
-            }
+            return new List<StackValue> { RX, TX };
         }
 
         /// <summary>
@@ -2391,35 +2317,8 @@ namespace ProtoCore.DSASM
                 case AddressType.Register:
                     switch (opSymbol.Register)
                     {
-                        case Registers.AX:
-                            data = AX;
-                            break;
-                        case Registers.BX:
-                            data = BX;
-                            break;
-                        case Registers.CX:
-                            data = CX;
-                            break;
-                        case Registers.DX:
-                            data = DX;
-                            break;
-                        case Registers.EX:
-                            data = EX;
-                            break;
-                        case Registers.FX:
-                            data = FX;
-                            break;
-                        case Registers.LX:
-                            data = LX;
-                            break;
                         case Registers.RX:
                             data = RX;
-                            break;
-                        case Registers.SX:
-                            data = SX;
-                            break;
-                        case Registers.TX:
-                            data = TX;
                             break;
                         default:
                             throw new NotImplementedException();
@@ -2531,45 +2430,9 @@ namespace ProtoCore.DSASM
                         StackValue data = opVal;
                         switch (op1.Register)
                         {
-                            case Registers.AX:
-                                opPrev = AX;
-                                AX = data;
-                                break;
-                            case Registers.BX:
-                                opPrev = BX;
-                                BX = data;
-                                break;
-                            case Registers.CX:
-                                opPrev = CX;
-                                CX = data;
-                                break;
-                            case Registers.DX:
-                                opPrev = DX;
-                                DX = data;
-                                break;
-                            case Registers.EX:
-                                opPrev = EX;
-                                EX = data;
-                                break;
-                            case Registers.FX:
-                                opPrev = FX;
-                                FX = data;
-                                break;
                             case Registers.RX:
                                 opPrev = RX;
                                 RX = data;
-                                break;
-                            case Registers.SX:
-                                opPrev = SX;
-                                SX = data;
-                                break;
-                            case Registers.TX:
-                                opPrev = TX;
-                                TX = data;
-                                break;
-                            case Registers.LX:
-                                opPrev = LX;
-                                LX = data;
                                 break;
                             default:
                                 throw new NotImplementedException();
@@ -4238,8 +4101,7 @@ namespace ProtoCore.DSASM
             bounceType = CallingConvention.BounceType.Explicit;
             TX = StackValue.BuildCallingConversion((int)CallingConvention.BounceType.Explicit);
 
-            List<StackValue> registers = new List<StackValue>();
-            SaveRegisters(registers);
+            List<StackValue> registers = GetRegisters();
 
             StackFrameType callerType = (fepRun) ? StackFrameType.Function : StackFrameType.LanguageBlock;
 
@@ -4254,13 +4116,13 @@ namespace ProtoCore.DSASM
 
                 runtimeCore.DebugProps.SetUpBounce(this, blockCaller, returnAddr);
 
-                StackFrame stackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth + 1, framePointer, registers, 0);
+                StackFrame stackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth + 1, framePointer, 0, registers, 0);
                 Language bounceLangauge = exe.instrStreamList[blockId].language;
                 BounceExplicit(blockId, 0, bounceLangauge, stackFrame, runtimeCore.Breakpoints);
             }
             else //if (runtimeCore.Breakpoints == null)
             {
-                StackFrame stackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth + 1, framePointer, registers, 0);
+                StackFrame stackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth + 1, framePointer, 0, registers, 0);
 
                 Language bounceLangauge = exe.instrStreamList[blockId].language;
                 BounceExplicit(blockId, 0, bounceLangauge, stackFrame);
@@ -4282,7 +4144,6 @@ namespace ProtoCore.DSASM
             {
                 rmem.PushConstructBlockId(blockId);
             }
-            SX = svBlock;
 
             ProcedureNode fNode;
             if (ci != Constants.kInvalidIndex)
@@ -4376,10 +4237,8 @@ namespace ProtoCore.DSASM
 
             // On implicit call, the SX is set in JIL Fep
             // On explicit call, the SX should be directly set here
-            SX = StackValue.BuildBlockIndex(blockDecl);
 
-            List<StackValue> registers = new List<StackValue>();
-            SaveRegisters(registers);
+            List<StackValue> registers = GetRegisters();
 
             // Comment Jun: the depth is always 0 for a function call as we are reseting this for each function call
             // This is only incremented for every language block bounce
@@ -4387,7 +4246,8 @@ namespace ProtoCore.DSASM
 
             StackFrameType type = StackFrameType.Function;
 
-            StackFrame stackFrame = new StackFrame(svThisPointer, ci, fi, pc + 1, blockDecl, blockCaller, callerType, type, depth, rmem.FramePointer, registers, 0);
+            StackFrame stackFrame = new StackFrame(svThisPointer, ci, fi, pc + 1, blockDecl, blockCaller, callerType, type, depth, rmem.FramePointer, blockDecl, registers, 0);
+
             rmem.PushFrameForLocals(fNode.LocalCount);
             rmem.PushStackFrame(stackFrame);
 
@@ -4485,13 +4345,10 @@ namespace ProtoCore.DSASM
             }
         }
 
-        private void RETC_Handler()
-        {
-            RETURN_Handler();
-        }
-
         private void RETB_Handler()
         {
+            RX = rmem.Pop();
+
             if (runtimeCore.Options.RunMode != InterpreterMode.Expression)
             {
                 runtimeCore.RuntimeMemory.PopConstructBlockId();
@@ -4535,7 +4392,7 @@ namespace ProtoCore.DSASM
                 if (bounceType == CallingConvention.BounceType.Explicit)
                 {
                     // Restoring the registers require the current frame pointer of the stack frame 
-                    RestoreRegistersFromStackFrame();
+                    ResumeRegistersFromStackExceptRX();
 
                     bounceType = TX.BounceType;
                 }
@@ -4676,14 +4533,11 @@ namespace ProtoCore.DSASM
             // This expression ID of this instruction
             int exprID = (int)instruction.op1.IntegerValue;
             // The SSA assignment flag
-            bool isSSA = (1 == instruction.op2.IntegerValue);
-            int modBlkID = (int)instruction.op3.IntegerValue;
-
+            bool isSSA = instruction.op2.BooleanValue;
 
             // The current function and class scope
             int ci = Constants.kInvalidIndex;
             int fi = Constants.kGlobalScope;
-
 
             int classIndex = Constants.kInvalidIndex;
             int functionIndex = Constants.kGlobalScope;
@@ -4750,7 +4604,7 @@ namespace ProtoCore.DSASM
             }
 
             // Find dependent nodes and mark them dirty
-            UpdateGraph(exprID, modBlkID, isSSA);
+            UpdateGraph(exprID, isSSA);
 
             if (runtimeCore.Options.ApplyUpdate)
             {

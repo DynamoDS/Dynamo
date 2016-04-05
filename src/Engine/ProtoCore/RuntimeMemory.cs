@@ -119,7 +119,8 @@ namespace ProtoCore
                     && Stack[GetRelative(StackFrame.FrameIndexLocalVariableCount)].IsInteger
                     && Stack[GetRelative(StackFrame.FrameIndexExecutionStates)].IsInteger
                     && Stack[GetRelative(StackFrame.FrameIndexStackFrameDepth)].IsInteger
-                    && Stack[GetRelative(StackFrame.FrameIndexFramePointer)].IsInteger;
+                    && Stack[GetRelative(StackFrame.FrameIndexFramePointer)].IsInteger
+                    && Stack[GetRelative(StackFrame.FrameIndexBlockIndex)].IsBlockIndex;
             }
 
             private void PushRegisters(List<StackValue> registers)

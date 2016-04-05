@@ -34,7 +34,7 @@ namespace CoreNodeModels
     {
         protected EnumBase() : base(typeof(T).ToString()) { }
 
-        public override void PopulateItems()
+        protected override SelectionState PopulateItemsCore(string currentSelection)
         {
             Items.Clear();
             foreach (var constant in Enum.GetValues(typeof(T)))
@@ -43,6 +43,7 @@ namespace CoreNodeModels
             }
 
             Items = Items.OrderBy(x => x.Name).ToObservableCollection();
+            return SelectionState.Restore;
         }
     }
 
@@ -57,7 +58,7 @@ namespace CoreNodeModels
             RegisterAllPorts();
         }
 
-        public override void PopulateItems()
+        protected override SelectionState PopulateItemsCore(string currentSelection)
         {
             Items.Clear();
 
@@ -71,6 +72,7 @@ namespace CoreNodeModels
             }
 
             Items = Items.OrderBy(x => x.Name).ToObservableCollection();
+            return SelectionState.Restore;
         }
     }
 }

@@ -80,7 +80,7 @@ namespace Dynamo.Tests
             CurrentDynamoModel.ExecuteCommand(command);
 
             UpdateCodeBlockNodeContent(cbn, "42");
-            cbn.SetPinStatus(true);
+            cbn.PreviewPinned = true;
 
             DynamoSelection.Instance.Selection.Add(cbn);
             var ids = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();

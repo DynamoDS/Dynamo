@@ -103,6 +103,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.en-US.resx</DependentUpon>
     </Compile>
+    <Compile Include="CodeGen_SSA.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

@@ -1847,35 +1847,6 @@ namespace ProtoImperative
                         }
                     }
 
-                    // TODO Jun: Update mechanism work in progress - a flag to manually enable update 
-                    bool enableUpdate = false;
-                    if (enableUpdate)
-                    {
-                        bool isExternal = false; // isAllocated && currentLangBlock != codeBlockId;
-                        //bool isAssociative = ProtoCore.Language.kAssociative == core.exeList[currentLangBlock].language; 
-                        bool isAssociative = false;
-                        if (isExternal && isAssociative)
-                        {
-                            // Check if this is a modifier variable
-                            bool isVariableAModifierStack = false;
-                            if (isVariableAModifierStack)
-                            {
-                                // Check if modifying a named modifier state
-                                bool isNameModifierState = false;
-                                if (isNameModifierState)
-                                {
-                                    //bool isStateIntermediate = false;
-
-                                }
-                                else
-                                {
-
-                                }
-                                //targetLangBlock = blockId;
-                            }
-                        }
-                    }
-
                     int dimensions = 0;
                     if (null != t.ArrayDimensions)
                     {
@@ -2485,8 +2456,7 @@ namespace ProtoImperative
                 if (localProcedure != null)
                 {
                     core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.FunctionAbnormalExit, ProtoCore.Properties.Resources.kInvalidBreakForFunction , core.CurrentDSFileName, node.line, node.col);
-                    EmitPushNull();
-                    EmitReturnToRegister();
+                    EmitReturnNull();
                 }
             }
         }
@@ -2507,8 +2477,7 @@ namespace ProtoImperative
                 if (localProcedure != null)
                 {
                     core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.FunctionAbnormalExit, ProtoCore.Properties.Resources.kInvalidContinueForFunction, core.CurrentDSFileName, node.line, node.col);
-                    EmitPushNull();
-                    EmitReturnToRegister();
+                    EmitReturnNull();
                 }
             }
         }
@@ -2875,108 +2844,93 @@ namespace ProtoImperative
                 EmitSetExpressionUID(core.ExpressionUID++);
         }
 
-        protected override void DfsTraverse(ProtoCore.AST.Node pNode, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null, 
-            ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, ProtoCore.AST.Node parentNode = null)
+        protected override void DfsTraverse(
+            ProtoCore.AST.Node pNode, 
+            ref ProtoCore.Type inferedType, 
+            bool isBooleanOp = false, 
+            ProtoCore.AssociativeGraph.GraphNode graphNode = null, 
+            ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, 
+            ProtoCore.AST.Node parentNode = null)
         {
             ImperativeNode node = pNode as ImperativeNode;
             if (null == node)
                 return;
 
-            if (node is IdentifierNode)
+            switch (node.Kind)
             {
-                EmitIdentifierNode(node, ref inferedType, isBooleanOp, graphNode);
-            }
-            else if (node is IntNode)
-            {
-                EmitIntNode(node, ref inferedType, isBooleanOp);
-            }
-            else if (node is DoubleNode)
-            {
-                EmitDoubleNode(node, ref inferedType, isBooleanOp);
-            }
-            else if (node is BooleanNode)
-            {
-                EmitBooleanNode(node, ref inferedType);
-            }
-            else if (node is CharNode)
-            {
-                EmitCharNode(node, ref inferedType);
-            }
-            else if (node is StringNode)
-            {
-                EmitStringNode(node, ref inferedType);
-            }
-            else if (node is NullNode)
-            {
-                EmitNullNode(node, ref inferedType, isBooleanOp);
-            }
-            else if (node is LanguageBlockNode)
-            {
-                EmitLanguageBlockNode(node, ref inferedType, graphNode);
-            }
-            else if (node is FunctionDefinitionNode)
-            {
-                EmitFunctionDefinitionNode(node, ref inferedType);
-            }
-            else if (node is FunctionCallNode)
-            {
-                EmitFunctionCallNode(node, ref inferedType, isBooleanOp, graphNode, parentNode as BinaryExpressionNode);
-            }
-            else if (node is IfStmtNode)
-            {
-                EmitIfStmtNode(node, ref inferedType, parentNode as BinaryExpressionNode, isBooleanOp, graphNode);
-            }
-            else if (node is WhileStmtNode)
-            {
-                EmitWhileStmtNode(node, ref inferedType, isBooleanOp, graphNode);
-            }
-            else if (node is VarDeclNode)
-            {
-                EmitVarDeclNode(node, ref inferedType, graphNode);
-            }
-            else if (node is ExprListNode)
-            {
-                EmitExprListNode(node, ref inferedType, null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, parentNode);
-            }
-            else if (node is IdentifierListNode)
-            {
-                EmitIdentifierListNode(node, ref inferedType, graphNode, parentNode as BinaryExpressionNode);
-            }
-            else if (node is BinaryExpressionNode)
-            {
-                EmitBinaryExpressionNode(node, ref inferedType, isBooleanOp, graphNode, parentNode as BinaryExpressionNode);
-            }
-            else if (node is UnaryExpressionNode)
-            {
-                EmitUnaryExpressionNode(node, ref inferedType, parentNode as BinaryExpressionNode);
-            }
-            else if (node is ForLoopNode)
-            {
-                EmitForLoopNode(node, ref inferedType, isBooleanOp, graphNode);
-            }
-            else if (node is InlineConditionalNode)
-            {
-                EmitInlineConditionalNode(node, ref inferedType, parentNode as BinaryExpressionNode);
-            }
-            else if (node is RangeExprNode)
-            {
-                EmitRangeExprNode(node, ref inferedType, graphNode);
-            }
-            else if (node is BreakNode)
-            {
-                EmitBreakNode(node);
-            }
-            else if (node is ContinueNode)
-            {
-                EmitContinueNode(node);
-            }
-            else if (node is DefaultArgNode)
-            {
-                EmitDefaultArgNode();
-            }
-            else if (node is GroupExpressionNode)
-            {
-                EmitGropuExpressionNode(node, ref inferedType);
+                case AstKind.Identifier:
+                case AstKind.TypedIdentifier:
+                    EmitIdentifierNode(node, ref inferedType, isBooleanOp, graphNode);
+                    break;
+                case AstKind.Integer:
+                    EmitIntNode(node, ref inferedType, isBooleanOp);
+                    break;
+                case AstKind.Double:
+                    EmitDoubleNode(node, ref inferedType, isBooleanOp);
+                    break;
+                case AstKind.Boolean:
+                    EmitBooleanNode(node, ref inferedType);
+                    break;
+                case AstKind.Char:
+                    EmitCharNode(node, ref inferedType);
+                    break;
+                case AstKind.String:
+                    EmitStringNode(node, ref inferedType);
+                    break;
+                case AstKind.Null:
+                    EmitNullNode(node, ref inferedType, isBooleanOp);
+                    break;
+                case AstKind.LanguageBlock:
+                    EmitLanguageBlockNode(node, ref inferedType, graphNode);
+                    break;
+                case AstKind.FunctionDefinition:
+                    EmitFunctionDefinitionNode(node, ref inferedType);
+                    break;
+                case AstKind.FunctionCall:
+                    EmitFunctionCallNode(node, ref inferedType, isBooleanOp, graphNode, parentNode as BinaryExpressionNode);
+                    break;
+                case AstKind.If:
+                    EmitIfStmtNode(node, ref inferedType, parentNode as BinaryExpressionNode, isBooleanOp, graphNode);
+                    break;
+                case AstKind.While:
+                    EmitWhileStmtNode(node, ref inferedType, isBooleanOp, graphNode);
+                    break;
+                case AstKind.VariableDeclaration:
+                    EmitVarDeclNode(node, ref inferedType, graphNode);
+                    break;
+                case AstKind.ExpressionList:
+                    EmitExprListNode(node, ref inferedType, null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, parentNode);
+                    break;
+                case AstKind.IdentifierList:
+                    EmitIdentifierListNode(node, ref inferedType, graphNode, parentNode as BinaryExpressionNode);
+                    break;
+                case AstKind.BinaryExpression:
+                    EmitBinaryExpressionNode(node, ref inferedType, isBooleanOp, graphNode, parentNode as BinaryExpressionNode);
+                    break;
+                case AstKind.UnaryExpression:
+                    EmitUnaryExpressionNode(node, ref inferedType, parentNode as BinaryExpressionNode);
+                    break;
+                case AstKind.ForLoop:
+                    EmitForLoopNode(node, ref inferedType, isBooleanOp, graphNode);
+                    break;
+                case AstKind.InlineConditional:
+                    EmitInlineConditionalNode(node, ref inferedType, parentNode as BinaryExpressionNode);
+                    break;
+                case AstKind.RangeExpression:
+                    EmitRangeExprNode(node, ref inferedType, graphNode);
+                    break;
+                case AstKind.Break:
+                    EmitBreakNode(node);
+                    break;
+                case AstKind.Continue:
+                    EmitContinueNode(node);
+                    break;
+                case AstKind.DefaultArgument:
+                    EmitDefaultArgNode();
+                    break;
+                case AstKind.GroupExpression:
+                    EmitGropuExpressionNode(node, ref inferedType);
+                    break;
             }
 
             int blockId = codeBlock.codeBlockId; 

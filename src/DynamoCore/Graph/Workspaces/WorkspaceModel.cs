@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.IO;
-using System.Linq;  
+using System.Linq;
 using System.Xml;
 using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Engine.NodeToCode;
+using Dynamo.Events;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
@@ -23,7 +23,6 @@ using Dynamo.Models;
 using Dynamo.Properties;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using DynamoServices;
 using ProtoCore.Namespace;
 using Utils = Dynamo.Graph.Nodes.Utilities;
 
@@ -831,7 +830,7 @@ namespace Dynamo.Graph.Workspaces
         ///     If successful, the CurrentWorkspace.FilePath field is updated as a side effect
         /// </summary>
         /// <param name="newPath">The path to save to</param>
-        /// <param name="core"></param>
+        /// <param name="runtimeCore"></param>
         /// <param name="isBackup">Indicates whether saved workspace is backup or not. If it's not backup,
         /// we should add it to recent files. Otherwise leave it.</param>
         public virtual bool SaveAs(string newPath, ProtoCore.RuntimeCore runtimeCore, bool isBackup = false)
@@ -1450,13 +1449,12 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        //this sets the event on Annotation. This event return the model from the workspace.
-        //When a model is ungrouped from a group, that model will be deleted from that group.
-        //So, when UNDO execution, cannot get that model from that group, it has to get from the workspace.
-        //The below method will set the event on every annotation model, that will return the specific model
-        //from workspace.
+        /// this sets the event on Annotation. This event return the model from the workspace.
+        /// When a model is ungrouped from a group, that model will be deleted from that group.
+        /// So, when UNDO execution, cannot get that model from that group, it has to get from the workspace.
+        /// The below method will set the event on every annotation model, that will return the specific model
+        /// from workspace.
         /// </summary>
-        /// <param name="model">The model.</param>
         private void SetModelEventOnAnnotation()
         {           
             foreach (var model in this.Annotations)
@@ -1585,7 +1583,6 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="name">the name of preset state</param>
         /// <param name="description">a description of what the state does</param>
         /// <param name="currentSelection">a set of NodeModels that are to be serialized in this state</param>
-        /// <param name="id">a GUID id for the state, if not supplied, a new GUID will be generated, cannot be a duplicate</param>
         private PresetModel AddPresetCore(string name, string description, IEnumerable<NodeModel> currentSelection)
         {
             if (currentSelection == null || currentSelection.Count() < 1)

@@ -1617,6 +1617,7 @@ x3 = [Imperative]
         }
 
         [Test]
+        [Ignore]
         [Category("SmokeTest")]
         [Category("ModifierBlock")] 
         public void T028_Modifier_Stack_Simple()

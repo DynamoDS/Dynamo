@@ -1,17 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Windows;
-using System.Windows.Forms;
-using System.Windows.Threading;
-using Dynamo.Configuration;
+﻿using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Exceptions;
 using Dynamo.Graph;
@@ -35,6 +22,19 @@ using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoUtilities;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Windows;
+using System.Windows.Forms;
+using System.Windows.Threading;
 using ISelectable = Dynamo.Selection.ISelectable;
 
 
@@ -1124,16 +1124,27 @@ namespace Dynamo.ViewModels
             }
             catch (Exception e)
             {
-                if (e is FileNotFoundException)
+                if (!DynamoModel.IsTestMode)
                 {
-                    System.Windows.MessageBox.Show(String.Format(Resources.MessageFileNotFound, xmlFilePath));
+                    // Catch all the IO exceptions here. The message provided by .Net is clear enough to indicate the problem in this case.
+                    if (e is IOException)
+                    {
+                        System.Windows.MessageBox.Show(String.Format(e.Message, xmlFilePath));
+                    }
+                    else if (e is System.Xml.XmlException)
+                    {
+                        System.Windows.MessageBox.Show(String.Format(Resources.MessageFailedToOpenCorruptedFile, xmlFilePath));
+                    }
+                    else
+                    {
+                        System.Windows.MessageBox.Show(String.Format(Resources.MessageUnkownErrorOpeningFile, xmlFilePath));
+                    }
+                    model.Logger.Log(e);
                 }
-                else if (e is System.Xml.XmlException)
+                else
                 {
-                    System.Windows.MessageBox.Show(String.Format(Resources.MessageFailedToOpenFile, xmlFilePath));
+                    throw (e);
                 }
-                model.Logger.Log(String.Format(Resources.MessageFailedToOpenFile, xmlFilePath, "\n"));
-                model.Logger.Log(e);
                 return;
             }
             this.ShowStartPage = false; // Hide start page if there's one.

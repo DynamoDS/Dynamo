@@ -11530,6 +11530,7 @@ x3 = [Imperative]
         }
 
         [Test]
+        [Ignore]
         [Category("WatchFx Tests")]
         [Category("ModifierBlock")] 
         public void DebugWatch434_T028_Modifier_Stack_Simple()
@@ -21536,6 +21537,7 @@ n;
         }
 
         [Test]
+        [Ignore]
         [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch772_T011_Defect_ModifierStack()
@@ -21556,6 +21558,7 @@ result = {a1,a2,a3,a4,a5};
         }
 
         [Test]
+        [Ignore]
         [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch773_T011_SomeNulls_ModifierStack()
@@ -21853,6 +21856,7 @@ result =
         }
 
         [Test]
+        [Ignore]
         [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch785_T021_CountTrue_ModifierStack()
@@ -22156,6 +22160,7 @@ result =
         }
 
         [Test]
+        [Ignore]
         [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch797_T032_CountFalse_ModifierStack()
@@ -22430,6 +22435,7 @@ a = {{true},{false},{false},
         }
 
         [Test]
+        [Ignore]
         [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch809_T043_AllFalse_ModifierStack()
@@ -22773,6 +22779,7 @@ result = Sum(a);//12.0";
         }
 
         [Test]
+        [Ignore]
         [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch823_T055_Sum_ModifierStack()
@@ -22985,6 +22992,7 @@ c = Average({m})..Average({n});//3.0,4.0,5.0";
         }
 
         [Test]
+        [Ignore]
         [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch834_T065_Average_ModifierStack()
@@ -42022,6 +42030,7 @@ def foo(x:var)
         }
 
         [Test]
+        [Ignore]
         [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch1531_T10_String_ModifierStack()
@@ -44313,6 +44322,7 @@ e;
 
 
         [Test]
+        [Ignore]
         [Category("WatchFx Tests")]
         [Category("ModifierBlock")] 
         public void DebugWatch1610_T27_Modifier_Stack_Cross_Reference()
@@ -44641,6 +44651,7 @@ x = foo ();
         }
 
         [Test]
+        [Ignore]
         [Category("WatchFx Tests")]
         [Category("ModifierBlock")] 
         public void DebugWatch1616_T27_Modifier_Stack_Update()
@@ -44665,6 +44676,7 @@ dummy = 1;
         }
 
         [Test]
+        [Ignore]
         [Category("WatchFx Tests")]
         [Category("ModifierBlock")]
         public void DebugWatch1617_T27_Modifier_Stack_Update_2()
@@ -44739,6 +44751,7 @@ z = a.x;
         }
 
         [Test]
+        [Ignore]
         [Category("WatchFx Tests")]
         [Category("ModifierBlock")] 
         public void DebugWatch1619_T27_Modifier_Stack_Update_4()
@@ -44759,6 +44772,7 @@ y = 4;";
         }
 
         [Test]
+        [Ignore]
         [Category("WatchFx Tests")]
         [Category("ModifierBlock")] 
         public void DebugWatch1620_T27_Modifier_Stack_Update_5()
@@ -44813,6 +44827,7 @@ y = 2;
         }
 
         [Test]
+        [Ignore]
         [Category("WatchFx Tests")]
         [Category("ModifierBlock")] 
         public void DebugWatch1622_T27_Modifier_Stack_With_Array()
@@ -44831,6 +44846,7 @@ b2 = a;";
         }
 
         [Test]
+        [Ignore]
         [Category("WatchFx Tests")]
         [Category("ModifierBlock")] 
         public void DebugWatch1623_T27_Modifier_Stack_With_Array_2()
@@ -44850,6 +44866,7 @@ a = 4;";
         }
 
         [Test]
+        [Ignore]
         [Category("WatchFx Tests")]
         [Category("ModifierBlock")] 
         public void DebugWatch1624_T27_Modifier_Stack_With_Array_3()
@@ -44874,6 +44891,7 @@ x = [Imperative]
         }
 
         [Test]
+        [Ignore]
         [Category("WatchFx Tests")]
         [Category("ModifierBlock")]
         public void DebugWatch1625_T27_Modifier_Stack_With_Array_4()
@@ -44966,6 +44984,7 @@ b = a;
         }
 
         [Test]
+        [Ignore]
         [Category("WatchFx Tests")]
         [Category("ModifierBlock")]
         public void DebugWatch1628_T27_Modifier_Stack_With_Function_Call()
@@ -44992,6 +45011,7 @@ f = a3 + 1;
         }
 
         [Test]
+        [Ignore]
         [Category("WatchFx Tests")]
         [Category("ModifierBlock")]
         public void DebugWatch1629_T27_Modifier_Stack_With_Function_Call_2()
@@ -45102,6 +45122,7 @@ b = 0.0..a[0]..0.5;
         }
 
         [Test]
+        [Ignore]
         [Category("WatchFx Tests")]
         [Category("ModifierBlock")] 
         public void DebugWatch1632_T27_Modifier_Stack_With_Right_Assignment()
@@ -45123,6 +45144,7 @@ f = a3 + 1;";
         }
 
         [Test]
+        [Ignore]
         [Category("WatchFx Tests")]
         [Category("ModifierBlock")] 
         public void DebugWatch1633_T27_Modifier_Stack_With_Self_Updates()
@@ -45770,6 +45792,7 @@ t3 = t1;";
         }
 
         [Test]
+        [Ignore]
         [Category("WatchFx Tests")]
         [Category("ModifierBlock")] 
         public void DebugWatch1658_T36_Modifier_Block_Multiple_Updates()
@@ -45787,6 +45810,7 @@ a = { 2 => a1;
         }
 
         [Test]
+        [Ignore]
         [Category("WatchFx Tests")]
         [Category("ModifierBlock")] 
         public void DebugWatch1659_T36_Modifier_Block_Multiple_Updates_2()
@@ -45821,6 +45845,7 @@ testArrayMember2 = c2;";
         }
 
         [Test]
+        [Ignore]
         [Category("WatchFx Tests")]
         [Category("ModifierBlock")] 
         public void DebugWatch1661_T38_Defect_1467059_Modifier_Stack_With_Undefined_Variable()
@@ -45837,6 +45862,7 @@ b1 = 2;";
         }
 
         [Test]
+        [Ignore]
         [Category("WatchFx Tests")]
         [Category("ModifierBlock")] 
         public void DebugWatch1662_T38_Defect_1467059_Modifier_Stack_With_Undefined_Variable_2()
@@ -45857,6 +45883,7 @@ b1 = 2;";
         }
 
         [Test]
+        [Ignore]
         [Category("WatchFx Tests")]
         [Category("ModifierBlock")]
         public void DebugWatch1663_T39_Defect_1465319_Modifier_Stack_Update_Issue()
@@ -45878,6 +45905,7 @@ y1 = 5;";
         }
 
         [Test]
+        [Ignore]
         [Category("WatchFx Tests")]
         [Category("ModifierBlock")]
         public void DebugWatch1664_T40_Defect_1467057_Modifier_Stack_Cross_Update_Issue()
@@ -45895,6 +45923,7 @@ b = {
         }
 
         [Test]
+        [Ignore]
         [Category("WatchFx Tests")]
         [Category("ModifierBlock")] 
         public void DebugWatch1665_T40_Defect_1467057_Modifier_Stack_Cross_Update_Issue_2()
@@ -45912,6 +45941,7 @@ b = {
         }
 
         [Test]
+        [Ignore]
         [Category("WatchFx Tests")]
         [Category("ModifierBlock")] 
         public void DebugWatch1666_T40_Defect_1467057_Modifier_Stack_Cross_Update_Issue_3()
@@ -45929,6 +45959,7 @@ b = {
         }
 
         [Test]
+        [Ignore]
         [Category("WatchFx Tests")]
         [Category("ModifierBlock")] 
         public void DebugWatch1667_T40_Defect_1467057_Modifier_Stack_Update_Issue()
@@ -45946,6 +45977,7 @@ b = {
         }
 
         [Test]
+        [Ignore]
         [Category("WatchFx Tests")]
         [Category("ModifierBlock")]
         public void DebugWatch1668_T40_Defect_1467088_Modifier_Stack_Cross_Update_Issue()
@@ -45964,6 +45996,7 @@ b = {
         }
 
         [Test]
+        [Ignore]
         [Category("WatchFx Tests")]
         [Category("ModifierBlock")] 
         public void DebugWatch1670_T40_Defect_1467088_Modifier_Stack_Cross_Update_Issue_3()
@@ -46186,9 +46219,10 @@ x = c1.Pt;
         }
 
         [Test]
+        [Ignore]
         [Category("WatchFx Tests")]
         [Category("ModifierBlock")]
-        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void DebugWatch1679_T54_Defect_1467185_Modifier_Stack()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -46237,9 +46271,10 @@ a =
         }
 
         [Test]
+        [Ignore]
         [Category("WatchFx Tests")]
         [Category("ModifierBlock")]
-        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
+        [Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void DebugWatch1680_T54_Defect_1467185_Modifier_Stack_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -46889,6 +46924,8 @@ test = trimmedSurface.x;
         }
 
         [Test]
+        [Ignore]
+        [Category("ModifierBlock")]
         [Category("WatchFx Tests")]
         public void DebugWatch1695_T009_modifier_test_1_Robert()
         {

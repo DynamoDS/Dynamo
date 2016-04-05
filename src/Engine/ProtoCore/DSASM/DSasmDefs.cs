@@ -112,20 +112,10 @@ namespace ProtoCore.DSASM
         public const string dep = "dep";
         public const string setexpuid = "setexpuid";
         public const string pushb = "pushb";
-
-        // TODO Jun: these are temporary instruction 
         public const string pushvarsize = "pushvarsize";
 
-        public const string regAX = "_ax";
-        public const string regBX = "_bx";
-        public const string regCX = "_cx";
-        public const string regDX = "_dx";
-        public const string regEX = "_ex";
-        public const string regFX = "_fx";
         public const string regRX = "_rx";
-        public const string regSX = "_sx";
         public const string regLX = "_lx";
-        public const string regTX = "_tx";
 
         // TODO: Replace with ProtoCore.DSDefinitions.Keyword struct
         public const string associative = "Associative";
@@ -398,7 +388,6 @@ namespace ProtoCore.DSASM
         public const string kWatchResultVar = "watch_result_var";
         public const string kSSATempPrefix = "%t_";
         public const string kThisPointerArgName = "%thisPtrArg";
-        public const string kTempModifierStateNamePrefix = "%tmp_modifierState_";
         public const string kTempProcLeftVar = "%temp_proc_var_";
         public const string kImportData = "ImportData";
         public const string kTempVarForNonAssignment = "t6BBA4B28C5E54CF89F300D510499A00E_";

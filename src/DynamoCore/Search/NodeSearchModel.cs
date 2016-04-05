@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using System.Linq;
+using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Search.SearchElements;
@@ -62,6 +63,30 @@ namespace Dynamo.Search
             XmlHelper.AddNode(element, "Name", entry.Name);
             XmlHelper.AddNode(element, "Group", entry.Group.ToString());
             XmlHelper.AddNode(element, "Description", entry.Description);
+
+            // If entry has input parameters.
+            if (entry.InputParameters.First().Item2 != Properties.Resources.NoneString)
+            {
+                var inputNode = XmlHelper.AddNode(element, "Inputs");
+                foreach (var parameter in entry.InputParameters)
+                {
+                    var parameterNode = XmlHelper.AddNode(inputNode, "InputParameter");
+                    XmlHelper.AddAttribute(parameterNode, "Name", parameter.Item1);
+                    XmlHelper.AddAttribute(parameterNode, "Type", parameter.Item2);
+                }
+            }
+
+            // If entry has output parameters.
+            if (entry.OutputParameters.First() != Properties.Resources.NoneString)
+            {
+                var inputNode = XmlHelper.AddNode(element, "Outputs");
+                foreach (var parameter in entry.OutputParameters)
+                {
+                    var parameterNode = XmlHelper.AddNode(inputNode, "OutputParameter");
+                    XmlHelper.AddAttribute(parameterNode, "Type", parameter);
+                }
+            }
+
         }
 
         private static void AddCategoryToXml(

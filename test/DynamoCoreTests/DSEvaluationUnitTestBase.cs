@@ -324,6 +324,14 @@ namespace Dynamo.Tests
             return mirror.GetData().Data;
         }
 
+        protected string GetPreviewValueInString(string guid)
+        {
+            string varname = GetVarName(guid);
+            var mirror = GetRuntimeMirror(varname);
+            Assert.IsNotNull(mirror);
+            return mirror.GetStringData();
+        }
+
         private void AssertMirrorData(MirrorData data1, MirrorData data2)
         {
             if (data1.IsNull)

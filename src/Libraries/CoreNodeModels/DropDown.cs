@@ -88,7 +88,7 @@ namespace CoreNodeModels
         protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
             base.SerializeCore(nodeElement, context);
-            nodeElement.SetAttribute("index", SaveSelectedIndex(SelectedIndex, Items));            
+            nodeElement.SetAttribute("index", SaveSelectedIndex(SelectedIndex, Items));
         }
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
@@ -133,20 +133,20 @@ namespace CoreNodeModels
             else
             {
                 var tempIndex = Convert.ToInt32(index);
-                selectedIndex = tempIndex > (items.Count - 1)? 
-                    -1:
-                    tempIndex ;
+                selectedIndex = tempIndex > (items.Count - 1) ?
+                    -1 :
+                    tempIndex;
             }
 
             return selectedIndex;
         }
 
-        protected virtual string SaveSelectedIndex(int index, IList<DynamoDropDownItem> items )
+        protected virtual string SaveSelectedIndex(int index, IList<DynamoDropDownItem> items)
         {
             return SaveSelectedIndexImpl(index, items);
         }
 
-        public static string SaveSelectedIndexImpl(int index, IList<DynamoDropDownItem> items )
+        public static string SaveSelectedIndexImpl(int index, IList<DynamoDropDownItem> items)
         {
             // If nothing is selected or there are no
             // items in the collection, than return -1
@@ -154,7 +154,7 @@ namespace CoreNodeModels
             {
                 return "-1";
             }
-            
+
             var item = items[index];
             return string.Format("{0}:{1}", index, XmlEscape(item.Name));
         }
@@ -175,6 +175,53 @@ namespace CoreNodeModels
             return node.InnerText;
         }
 
-        public abstract void PopulateItems();
+        public void PopulateItems()
+        {
+            var currentSelection = string.Empty;
+            if (SelectedIndex >= 0 && (SelectedIndex < items.Count))
+            {
+                currentSelection = items.ElementAt(SelectedIndex).Name;
+            }
+            var selectionState = PopulateItemsCore(currentSelection);
+            if (selectionState == SelectionState.Restore)
+            {
+                SelectedIndex = -1;
+                for (int i = 0; i < items.Count; i++)
+                {
+                    if ((items.ElementAt(i)).Name.Equals(currentSelection))
+                    {
+                        SelectedIndex = i;
+                    }
+                }
+            }
+        }
+
+        protected enum SelectionState
+        {
+            /// <summary>
+            /// Derived class has determined the best selection. 
+            /// Base class will not attempt to select another item.
+            /// </summary>
+            Done,
+
+            /// <summary>
+            /// Derived class could not determine the right selection
+            /// and it is left to the base class to restore the previous 
+            /// selection if there was one.
+            /// </summary>
+            Restore
+        }
+
+        /// <summary>
+        /// Call this method to allow derived classes to populate the drop down 
+        /// list items. An existing selection is provided as an argument so that
+        /// it can be retained after drop down items are regenerated.
+        /// </summary>
+        /// <param name="currentSelection">Item text of an existing selected 
+        /// drop down item, or string.Empty if there is no existing selection.
+        /// </param>
+        /// <returns>See SelectionState for more information.</returns>
+        protected abstract SelectionState PopulateItemsCore(string currentSelection);
+
     }
 }

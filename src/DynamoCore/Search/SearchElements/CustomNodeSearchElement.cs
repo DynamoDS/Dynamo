@@ -109,7 +109,7 @@ namespace Dynamo.Search.SearchElements
             TryLoadDocumentation();
 
             if (!inputParameters.Any())
-                inputParameters.Add(Tuple.Create("", "none"));
+                inputParameters.Add(Tuple.Create(String.Empty, Properties.Resources.NoneString));
 
             return inputParameters;
         }
@@ -119,7 +119,7 @@ namespace Dynamo.Search.SearchElements
             TryLoadDocumentation();
 
             if (!outputParameters.Any())
-                outputParameters.Add("none");
+                outputParameters.Add(Properties.Resources.NoneString);
 
             return outputParameters;
         }
