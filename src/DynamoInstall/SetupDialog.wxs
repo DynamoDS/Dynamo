@@ -4,6 +4,7 @@
 
     <Property Id='ARPNOREMOVE'>1</Property>
     <!--Property Id='ARPNOMODIFY'>1</Property-->
+    <WixVariable Id="WixUIBannerBmp" Value="..\..\..\..\tools\install\Extra\logo_square_32x32.bmp" />
     
     <UI Id="SetupDialogUI">
       <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
@@ -28,84 +29,52 @@
 
       <!--Publish Dialog="ProgressDlg" Control="OnExit" Event="EndDialog" Value="Return">1</Publish-->
       
-      <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="My_MaintenanceTypeDlg"
+      <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="MyMaintenanceTypeDlg"
                Order="1">WixUI_InstallMode = "Change"</Publish>
       <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="SetupTypeDlg"
                Order="2">WixUI_InstallMode = "InstallCustom"</Publish>
-      <Publish Dialog="CustomizeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+      <Publish Dialog="CustomizeDlg" Control="Next" Event="NewDialog" Value="MyVerifyReadyDlg">1</Publish>
 
-      <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg"
+      <Publish Dialog="MyVerifyReadyDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg"
                Order="1">WixUI_InstallMode = "InstallCustom"</Publish>
-      <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="SetupTypeDlg"
+      <Publish Dialog="MyVerifyReadyDlg" Control="Back" Event="NewDialog" Value="SetupTypeDlg"
                Order="2">WixUI_InstallMode = "InstallTypical" OR WixUI_InstallMode = "InstallComplete"</Publish>
-      <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg"
+      <Publish Dialog="MyVerifyReadyDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg"
                Order="3">WixUI_InstallMode = "Change"</Publish>
-      <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="My_MaintenanceTypeDlg"
+      <Publish Dialog="MyVerifyReadyDlg" Control="Back" Event="NewDialog" Value="MyMaintenanceTypeDlg"
                Order="4">WixUI_InstallMode = "Repair" OR WixUI_InstallMode = "Remove"</Publish>
-
+      
       <Publish Dialog="MaintenanceWelcomeDlg" Control="Next" Event="NewDialog"
-               Value="My_MaintenanceTypeDlg">1</Publish>
+               Value="MyMaintenanceTypeDlg">1</Publish>
 
-      <Publish Dialog="My_MaintenanceTypeDlg" Control="RepairButton" Event="NewDialog"
-               Value="VerifyReadyDlg">1</Publish>
-      <Publish Dialog="My_MaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog"
-               Value="VerifyReadyDlg">1</Publish>
-      <Publish Dialog="My_MaintenanceTypeDlg" Control="Back" Event="NewDialog"
+      <Publish Dialog="MyMaintenanceTypeDlg" Control="RepairButton" Event="NewDialog"
+               Value="MyVerifyReadyDlg">1</Publish>
+      <Publish Dialog="MyMaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog"
+               Value="MyVerifyReadyDlg">1</Publish>
+      <Publish Dialog="MyMaintenanceTypeDlg" Control="Back" Event="NewDialog"
                Value="MaintenanceWelcomeDlg">1</Publish>
-
-      <!-- http://devdare.blogspot.sg/2012/10/how-to-force-gui-uninstall-using.html -->
-      <Dialog Id="My_MaintenanceTypeDlg" Width="370" Height="270" Title="!(loc.MaintenanceTypeDlg_Title)">
-        <Control Id="RepairButton" Type="PushButton" X="40" Y="65" Width="80" Height="17" ToolTip="!(loc.MaintenanceTypeDlgRepairButtonTooltip)" Text="!(loc.MaintenanceTypeDlgRepairButton)">
-          <Publish Property="WixUI_InstallMode" Value="Repair">1</Publish>
-          <Condition Action="disable">ARPNOREPAIR</Condition>
-        </Control>
-
-        <Control Id="RepairText" Type="Text" X="60" Y="85" Width="280" Height="20" Text="!(loc.MaintenanceTypeDlgRepairText)">
-          <Condition Action="hide">ARPNOREPAIR</Condition>
-        </Control>
-
-        <Control Id="RepairDisabledText" Type="Text" X="60" Y="85" Width="280" Height="20" NoPrefix="yes" Text="!(loc.MaintenanceTypeDlgRepairDisabledText)" Hidden="yes">
-          <Condition Action="show">ARPNOREPAIR</Condition>
-        </Control>
-
-        <Control Id="RemoveButton" Type="PushButton" X="40" Y="118" Width="80" Height="17" ToolTip="!(loc.MaintenanceTypeDlgRemoveButtonTooltip)" Text="!(loc.MaintenanceTypeDlgRemoveButton)">
-          <Publish Property="WixUI_InstallMode" Value="Remove">1</Publish>
-        </Control>
-
-        <Control Id="RemoveText" Type="Text" X="60" Y="138" Width="280" Height="30" Text="!(loc.MaintenanceTypeDlgRemoveText)">
-        </Control>
-
-        <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)" />
-        <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Disabled="yes" Text="!(loc.WixUINext)" />
-        <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
-          <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
-        </Control>
-        <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.MaintenanceTypeDlgBannerBitmap)" />
-        <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
-        <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
-        <Control Id="Title" Type="Text" X="15" Y="6" Width="340" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.MaintenanceTypeDlgTitle)" />
-        <Control Id="Description" Type="Text" X="25" Y="23" Width="340" Height="20" Transparent="yes" NoPrefix="yes" Text="!(loc.MaintenanceTypeDlgDescription)" />
-      </Dialog>
-
+      
       <!-- https://msdn.microsoft.com/en-us/library/windows/desktop/aa372039(v=vs.85).aspx -->
       <InstallUISequence>
-        <Show Dialog="PrepareDlg" Sequence="140">0</Show>
+        <!--Show Dialog="PrepareDlg" Sequence="140">0</Show>
         <Show Dialog="WelcomeDlg" Sequence="1230">0</Show>
-        <Show Dialog="ResumeDlg" Sequence="1240">0</Show>
-        <!--Show Dialog="MaintenanceWelcomeDlg" Sequence="1250">0</Show>
-        <Show Dialog="ProgressDlg" Sequence="1280">0</Show-->
+        <Show Dialog="ResumeDlg" Sequence="1240">0</Show-->
+        <Show Dialog="MaintenanceWelcomeDlg" Before="MyMaintenanceTypeDlg">0</Show>
+        <Show Dialog="MyMaintenanceTypeDlg" Sequence="1250">Installed</Show>
+        <!--Show Dialog="ProgressDlg" Sequence="1280">0</Show-->
         <Show Dialog="ExitDialog" OnExit="success">0</Show>
       </InstallUISequence>
 
       <AdminUISequence>
-        <Show Dialog="PrepareDlg" Sequence="140">0</Show>
+        <!--Show Dialog="PrepareDlg" Sequence="140">0</Show>
         <Show Dialog="WelcomeDlg" Sequence="1230">0</Show>
-        <Show Dialog="ResumeDlg" Sequence="1240">0</Show>
-        <!--Show Dialog="MaintenanceWelcomeDlg" Sequence="1250">0</Show>
-        <Show Dialog="ProgressDlg" Sequence="1280">0</Show-->
+        <Show Dialog="ResumeDlg" Sequence="1240">0</Show-->
+        <Show Dialog="MaintenanceWelcomeDlg" Before="MyMaintenanceTypeDlg">0</Show>
+        <Show Dialog="MyMaintenanceTypeDlg" Sequence="1250">Installed</Show>
+        <!--Show Dialog="ProgressDlg" Sequence="1280">0</Show-->
         <Show Dialog="ExitDialog" OnExit="success">0</Show>
       </AdminUISequence>
     </UI>
-    <UIRef Id="WixUI_Common" />
+    <UIRef Id="WixUI_Common" />    
   </Fragment>
 </Wix>

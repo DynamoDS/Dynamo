@@ -28,6 +28,8 @@
     </WixVariables>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="MyMaintenanceTypeDlg.wxs" />
+    <Compile Include="MyVerifyReadyDlg.wxs" />
     <Compile Include="Product.wxs" />
     <Compile Include="Release-autogen.wxs" />
     <Compile Include="SetupDialog.wxs" />
