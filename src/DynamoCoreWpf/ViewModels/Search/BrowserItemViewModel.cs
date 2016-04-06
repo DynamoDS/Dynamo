@@ -13,6 +13,7 @@ using Dynamo.UI;
 using Dynamo.ViewModels;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
+using Dynamo.Wpf.Extensions;
 
 namespace Dynamo.Wpf.ViewModels
 {
@@ -622,17 +623,6 @@ namespace Dynamo.Wpf.ViewModels
         {
             FullCategoryName = Configurations.ClassesDefaultName;
             Parent = parent;
-        }
-    }
-
-    static class ObservableCollectionExtension
-    {
-        public static void TryInsert(this ObservableCollection<ISearchEntryViewModel> items, int index, ISearchEntryViewModel entry)
-        {
-            if (index < items.Count)
-                items.Insert(index, entry);
-            else
-                items.Add(entry);
         }
     }
 }
