@@ -1,9 +1,13 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
-using System.Collections.Generic;
 using System.Linq;
-using DSCore.IO;
+using System.Reflection;
 using CoreNodeModels.Input;
+using DSCore.IO;
+using Dynamo.Events;
+using Dynamo.Session;
+using Moq;
 using NUnit.Framework;
 using Color = DSCore.Color;
 using Directory = System.IO.Directory;
@@ -14,6 +18,12 @@ namespace Dynamo.Tests
 {
     public class FileLibraryTests : UnitTestBase
     {
+        private static void SetActiveSession(IExecutionSession value)
+        {
+            var type = typeof(ExecutionEvents);
+            type.InvokeMember("ActiveSession", BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, null, new[] { value });
+        }
+
         #region FilePaths
         [Test, Category("UnitTests")]
         public void SimpleWrappers()
@@ -55,6 +65,70 @@ namespace Dynamo.Tests
         #endregion
 
         #region Files
+        [Test, Category("UnitTests")]
+        public void File_AbsolutePath_Exists()
+        {
+            Assert.IsNull(ExecutionEvents.ActiveSession);
+            string wspath = Path.Combine(TestDirectory, @"core\files\dummy.dyn");
+            
+            var session = new Mock<IExecutionSession>();
+            session.Setup(s => s.CurrentWorkspacePath).Returns(wspath);
+            SetActiveSession(session.Object);
+            var relativepath = @"images\testImage.jpg";
+            var expectedpath = Path.Combine(TestDirectory, @"core\files", relativepath);
+            Assert.AreEqual(expectedpath, File.AbsolutePath(relativepath));
+            SetActiveSession(null);
+        }
+
+        [Test, Category("UnitTests")]
+        public void File_AbsolutePath_RelativePathDontExist()
+        {
+            Assert.IsNull(ExecutionEvents.ActiveSession);
+            string wspath = Path.Combine(TestDirectory, @"core\files\dummy.dyn");
+
+            var session = new Mock<IExecutionSession>();
+            session.Setup(s => s.CurrentWorkspacePath).Returns(wspath);
+            SetActiveSession(session.Object);
+            var relativepath = @"do not exist\no file.txt";
+            var expectedpath = Path.Combine(TestDirectory, @"core\files", relativepath);
+            Assert.AreEqual(expectedpath, File.AbsolutePath(relativepath));
+            SetActiveSession(null);
+        }
+
+        [Test, Category("UnitTests")]
+        public void File_AbsolutePath_WithValidHintPath_ReturnsHintPath()
+        {
+            Assert.IsNull(ExecutionEvents.ActiveSession);
+            string wspath = Path.Combine(TestDirectory, @"core\files\dummy.dyn");
+
+            var session = new Mock<IExecutionSession>();
+            session.Setup(s => s.CurrentWorkspacePath).Returns(wspath);
+            SetActiveSession(session.Object);
+            var relativepath = @"excel\ascending.xlsx";
+            var hintpath = Path.Combine(TestDirectory, "core", relativepath);
+            Assert.AreEqual(hintpath, File.AbsolutePath(relativepath, hintpath));
+            SetActiveSession(null);
+        }
+
+        [Test, Category("UnitTests")]
+        public void File_AbsolutePath_WithFullPathInput_ReturnsInput()
+        {
+            Assert.IsNull(ExecutionEvents.ActiveSession);
+            string wspath = Path.Combine(TestDirectory, @"core\files\dummy.dyn");
+            var relativepath = @"excel\ascending.xlsx";
+            var hintpath = Path.Combine(TestDirectory, "core", relativepath);
+            Assert.AreEqual(wspath, File.AbsolutePath(wspath, hintpath));
+        }
+
+        [Test, Category("UnitTests")]
+        public void File_AbsolutePath_WithoutSession_ReturnsHintPath()
+        {
+            Assert.IsNull(ExecutionEvents.ActiveSession);
+            var relativepath = @"excel\ascending.xlsx";
+            var hintpath = Path.Combine(TestDirectory, @"do not exist\no file.txt");
+            Assert.AreEqual(hintpath, File.AbsolutePath(relativepath, hintpath));
+        }
+
         [Test, Category("UnitTests")]
         public void File_FromPath()
         {

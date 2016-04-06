@@ -443,7 +443,7 @@ namespace Dynamo.Controls
 
             // If mouse in over node/preview control or preview control is pined, we can not hide preview control.
             if (IsMouseOver || PreviewControl.IsMouseOver || PreviewControl.StaysOpen ||
-                (Mouse.Captured != null && IsMouseInsideNodeOrPreview(e.GetPosition(this)))) return;
+                (Mouse.Captured is DragCanvas && IsMouseInsideNodeOrPreview(e.GetPosition(this)))) return;
 
             // If it's expanded, then first condense it.
             if (PreviewControl.IsExpanded)

@@ -1618,8 +1618,16 @@ namespace ProtoCore
                     retTrace.NestedData[i] = cleanRetTrace;
                 }
 
-                StackValue ret = runtimeCore.RuntimeMemory.Heap.AllocateArray(retSVs);
-                return ret;
+                try
+                {
+                    StackValue ret = runtimeCore.RuntimeMemory.Heap.AllocateArray(retSVs);
+                    return ret;
+                }
+                catch (RunOutOfMemoryException)
+                {
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                    return StackValue.Null;
+                }
             }
             else
             {
@@ -1721,9 +1729,16 @@ namespace ProtoCore
                     retTrace.NestedData[i] = cleanRetTrace;
                 }
 
-
-                StackValue ret = runtimeCore.RuntimeMemory.Heap.AllocateArray(retSVs);
-                return ret;
+                try
+                {
+                    StackValue ret = runtimeCore.RuntimeMemory.Heap.AllocateArray(retSVs);
+                    return ret;
+                }
+                catch (RunOutOfMemoryException)
+                {
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                    return StackValue.Null;
+                }
             }
         }
 
@@ -1873,8 +1888,16 @@ namespace ProtoCore
                 
                 for (int p = 0; p < promotionsRequired; p++)
                 {
-                    StackValue newSV = runtimeCore.RuntimeMemory.Heap.AllocateArray(new StackValue[1] { oldSv });
-                    oldSv = newSV;
+                    try
+                    {
+                        StackValue newSV = runtimeCore.RuntimeMemory.Heap.AllocateArray(new StackValue[1] { oldSv });
+                        oldSv = newSV;
+                    }
+                    catch (RunOutOfMemoryException)
+                    {
+                        runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                        oldSv = StackValue.Null;
+                    }
                 }
 
                 newArgs[i] = oldSv;

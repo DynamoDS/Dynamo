@@ -45,6 +45,10 @@
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Moq, Version=4.2.1507.118, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\src\packages\Moq.4.2.1507.0118\lib\net40\Moq.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>$(NunitPath)\nunit.framework.dll</HintPath>
       <Private>False</Private>

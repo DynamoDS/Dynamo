@@ -100,10 +100,25 @@ namespace Dynamo.Selection
         }
     }
 
+    /// <summary>
+    /// Interface, that provides selectable objects. These are objects, which user can select by mouse.
+    /// E.g. nodes, connectors, groups etc.
+    /// </summary>
     public interface ISelectable
     {
+        /// <summary>
+        /// Bool value indicates if object is selected or not.
+        /// </summary>
         bool IsSelected { get; set; }
+
+        /// <summary>
+        /// Select object.
+        /// </summary>
         void Select();
+
+        /// <summary>
+        /// Deselect object.
+        /// </summary>
         void Deselect();
     }
 
