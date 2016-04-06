@@ -5211,40 +5211,6 @@ namespace ProtoAssociative
                     continue;
                 }
 
-                // TODO: The following implementation is wrong.
-                // Suppose for function call: x = foo().bar(); which converted
-                // to x = %dot(foo(), bar(), ...); the following checking skips
-                // it because %dot() is an internal function. -Yu Ke
-
-                // Do this only for non auto-generated function calls 
-                //if any local var is depend on global var
-                if (core.Options.localDependsOnGlobalSet)
-                {
-                    if (!firstProc.Name.ToCharArray()[0].Equals('_') && !firstProc.Name.ToCharArray()[0].Equals('%'))
-                    {
-                        //for each node
-                        foreach (ProtoCore.AssociativeGraph.GraphNode gNode in codeBlock.instrStream.dependencyGraph.GraphList)
-                        {
-                            if (gNode.updateNodeRefList != null && gNode.updateNodeRefList.Count != 0)
-                            {
-                                if (gNode.procIndex == firstProc.ID && !gNode.updateNodeRefList[0].nodeList[0].symbol.name.ToCharArray()[0].Equals('%'))
-                                {
-                                    foreach (ProtoCore.AssociativeGraph.GraphNode dNode in gNode.dependentList)
-                                    {
-                                        if (dNode.procIndex == ProtoCore.DSASM.Constants.kGlobalScope)
-                                        {
-                                            if (!dNode.updateNodeRefList[0].nodeList[0].symbol.name.ToCharArray()[0].Equals('%'))
-                                            {
-                                                graphNode.PushDependent(dNode);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
                 if (firstProc.ClassID == Constants.kGlobalScope)
                 {
                     graphNode.updateNodeRefList.AddRange(firstProc.UpdatedGlobalVariables);
@@ -5555,43 +5521,6 @@ namespace ProtoAssociative
                 {
                     graphNode.updateNodeRefList.Add(leftNodeArgRef);
                 }
-
-                //
-                // If the lhs of the expression is an identifier list, it could have been modified. 
-                // It must then be a dependent of its own graphnode
-                //
-                //      class C
-                //      {
-                //          x : int;
-                //          constructor C(i:int)
-                //          {
-                //              x = i;
-                //          }
-                //      }
-                //
-                //      i = 10;
-                //      a = C.C(i);
-                //      a.x = 15; -> re-execute this line ... as 'a' was redefined and its members now changed
-                //      val = a.x;
-                //      i = 7;
-                //
-
-                //
-                // If inside a member function, and the lhs is a property, make sure it is not just:
-                //      x = y (this.x = y)
-                //
-
-                if (core.Options.LHSGraphNodeUpdate)
-                {
-                    if (!isThisPtr || graphNode.updateNodeRefList[0].nodeList.Count > 1)
-                    {
-                        ProtoCore.AssociativeGraph.GraphNode dependentNode = new ProtoCore.AssociativeGraph.GraphNode();
-                        dependentNode.isLHSNode = true;
-                        dependentNode.updateNodeRefList.Add(graphNode.updateNodeRefList[0]);
-                        graphNode.dependentList.Add(dependentNode);
-                    }
-                }
-
 
                 ProtoCore.DSASM.SymbolNode firstSymbol = leftNodeRef.nodeList[0].symbol;
                 if (null != firstSymbol)
