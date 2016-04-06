@@ -503,7 +503,7 @@ namespace Dynamo.Wpf.ViewModels
                 if (entry is NodeSearchElementViewModel)
                 {
                     if (nextLargerItemIndex >= 0)
-                        Items.Insert(nextLargerItemIndex + SubCategories.Count, entry);
+                        Items.TryInsert(nextLargerItemIndex + SubCategories.Count, entry);
                     else
                         Items.Add(entry);
                 }
@@ -622,6 +622,17 @@ namespace Dynamo.Wpf.ViewModels
         {
             FullCategoryName = Configurations.ClassesDefaultName;
             Parent = parent;
+        }
+    }
+
+    static class ObservableCollectionExtension
+    {
+        public static void TryInsert(this ObservableCollection<ISearchEntryViewModel> items, int index, ISearchEntryViewModel entry)
+        {
+            if (index < items.Count)
+                items.Insert(index, entry);
+            else
+                items.Add(entry);
         }
     }
 }
