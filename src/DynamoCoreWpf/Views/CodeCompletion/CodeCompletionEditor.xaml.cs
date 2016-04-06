@@ -53,10 +53,10 @@ namespace Dynamo.UI.Controls
             this.dynamoViewModel = nodeViewModel.DynamoViewModel;
             this.DataContext = nodeViewModel.NodeModel;
             this.InnerTextEditor.TextChanged += OnTextChanged;
+            this.InnerTextEditor.TextArea.GotFocus+= OnTextAreaGotFocus; 
             this.InnerTextEditor.TextArea.LostFocus += OnTextAreaLostFocus;
             this.InnerTextEditor.TextArea.TextEntering += OnTextAreaTextEntering;
             this.InnerTextEditor.TextArea.TextEntered += OnTextAreaTextEntered;
-            this.InnerTextEditor.TextArea.GotFocus+= OnFocus; 
 
             CodeHighlightingRuleFactory.CreateHighlightingRules(InnerTextEditor, dynamoViewModel.EngineController);
         }
@@ -126,7 +126,7 @@ namespace Dynamo.UI.Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        protected virtual void OnFocus(object sender, RoutedEventArgs e)
+        protected virtual void OnTextAreaGotFocus(object sender, RoutedEventArgs e)
         {
         }
 
