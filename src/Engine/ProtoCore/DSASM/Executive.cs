@@ -3336,18 +3336,11 @@ namespace ProtoCore.DSASM
         protected StackValue POP_helper(Instruction instruction, out int blockId, out int dimensions)
         {
             dimensions = 0;
-            blockId = Constants.kInvalidIndex;
+            blockId = instruction.op3.BlockIndex;
 
-            if (instruction.op1.IsVariableIndex ||
-                instruction.op1.IsPointer ||
-                instruction.op1.IsArray)
-            {
-                blockId = instruction.op3.BlockIndex;
-            }
-
-            bool isSSANode = Properties.executingGraphNode != null && Properties.executingGraphNode.IsSSANode();
             StackValue svData = rmem.Pop();
 
+            bool isSSANode = Properties.executingGraphNode != null && Properties.executingGraphNode.IsSSANode();
             if (isSSANode)
             {
                 // Double check to avoid the case like
@@ -3355,11 +3348,9 @@ namespace ProtoCore.DSASM
                 //    %tSSA = %tvar;
                 blockId = runtimeCore.RunningBlock;
             }
-            else
+            else if (svData.IsArray)
             {
-                // TODO: We have add a CAST instruction to do type conversion.
-                // Here we don't need to do coerce unless it is an array.
-                svData = TypeSystem.Coerce(svData, (int)PrimitiveType.Var, Constants.kArbitraryRank, runtimeCore);
+                svData = runtimeCore.Heap.ToHeapObject<DSArray>(svData).CopyArray(runtimeCore); ;
             }
 
             StackValue tempSvData = svData;
