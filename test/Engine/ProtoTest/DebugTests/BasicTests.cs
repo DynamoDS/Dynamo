@@ -36,6 +36,7 @@ namespace ProtoTest.DebugTests
 
         [Test]
         [Category("ModifierBlock")] 
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
         public void TestWatchExpression1()
         {
@@ -218,6 +219,7 @@ p = Vector.Vector();
         }
 
         [Test]
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
         public void TestWatchExpression4()
         {
@@ -275,6 +277,7 @@ c = 3;
         }
 
         [Test]
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
         public void TestWatchExpression5()
         {
@@ -520,6 +523,7 @@ bbb = foo();
         }
 
         [Test]
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
         public void TestWatchExpressionInFunctionNestedWithImperativeBlock()
         {
@@ -674,6 +678,7 @@ n = func(1);
         }
 
         [Test]
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
         public void TestWatchExpressionImperative1()
         {
@@ -757,6 +762,7 @@ n = func(1);
         }
 
         [Test]
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
         public void TestWatchExpressionImperative2()
         {
@@ -868,6 +874,7 @@ class Vector
         }
 
         [Test]
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
         public void TestWatchExpressionImperative4()
         {
@@ -2594,6 +2601,7 @@ c2 = [Associative]
         }
 
         [Test]
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
         public void TestWatchExpressionInNestedBlock2()
         {
@@ -8525,6 +8533,8 @@ test = a1.x; //expected : { 1, { 2, { 0, 1 } } }
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("ExpressionInterpreterRunner")]
         [Category("Debugger")]
         public void HighlightingFunctionsInArrayAssociative1_Defect_IDE_578()
         {
@@ -9226,6 +9236,8 @@ b = 2;";
         }
         [Test]
         [Category("Debugger")]
+        [Category("Failure")]
+        [Category("ExpressionInterpreterRunner")]
         public void SteppingOverinline_Imperative_723()
         {
             string src =
@@ -9270,6 +9282,8 @@ b = 2;";
         }
         [Test]
         [Category("Debugger")]
+        [Category("Failure")]
+        [Category("ExpressionInterpreterRunner")]
         public void SteppingOverinline_Imperative_723_2()
         {
             string src =
@@ -9310,6 +9324,8 @@ b = 2;";
         }
         [Test]
         [Category("Debugger")]
+        [Category("Failure")]
+        [Category("ExpressionInterpreterRunner")]
         public void SteppingOverinline_Imperative_723_3()
         {
             string src =
@@ -9354,6 +9370,8 @@ b = 2;";
         }
         [Test]
         [Category("Debugger")]
+        [Category("Failure")]
+        [Category("ExpressionInterpreterRunner")]
         public void SteppingOverinline_Imperative_723_4()
         {
             string src =
@@ -9398,6 +9416,8 @@ b = 2;";
         }
         [Test]
         [Category("Debugger")]
+        [Category("Failure")]
+        [Category("ExpressionInterpreterRunner")]
         public void SteppingOverinline_Imperative_723_5()
         {
             string src =
@@ -9435,6 +9455,8 @@ b = 2;";
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("ExpressionInterpreterRunner")]
         [Category("Debugger")]
         public void SteppingOverinline_Imperative_723_6()
         {
@@ -9785,6 +9807,7 @@ b = 2;";
             TestFrameWork.VerifyRuntimeWarning(runtimeCore, ProtoCore.Runtime.WarningID.CyclicDependency);
         }
         [Test]
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
         public void TestWatchExpressionInNestedBlock2_519()
         {
@@ -10270,6 +10293,7 @@ b = 2;";
         }
 
         [Test]
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
         public void Testprivatememberpropertyinwatch_544()
         {
@@ -10323,6 +10347,7 @@ b = 2;";
         }
 
         [Test]
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
         public void Testprivatememberpropertyinwatch_544_2()
         {
@@ -10499,6 +10524,7 @@ b = 2;";
         }
 
         [Test]
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
         public void Testprivatememberpropertyinwatch_538()
         {
@@ -11972,6 +11998,7 @@ c = 3;
 
         }
         [Test]
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
 
         public void watchinImperative_542_5()
@@ -12015,6 +12042,7 @@ a;b;
         }
 
         [Test]
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
 
         public void watchinImperative_nested_666()
@@ -12065,6 +12093,7 @@ r = 0;
 
         }
         [Test]
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
 
         public void watchinImperative_nested_666_2()
@@ -12125,6 +12154,7 @@ r = 0;
 
         }
         [Test]
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
 
         public void watchinImperative_nested_666_3()
@@ -12582,6 +12612,7 @@ a;
 
         }
         [Test]
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
 
         public void inlineconditional_656_5()
@@ -12684,6 +12715,7 @@ def foo(y : int)
         }
 
         [Test]
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
 
         public void inlineconditional_656_6()
@@ -12789,6 +12821,7 @@ def foo(y : int)
 
         }
         [Test]
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
 
         public void inlineconditional_656_7()
@@ -13246,6 +13279,7 @@ a = x > foo(22) ? foo(1) : A.foo(4);
             TestFrameWork.Verify(mirror, "a", 8, 0);
         }
         [Test]
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
 
         public void inlineconditional_stepnext_656_12()
@@ -13284,6 +13318,7 @@ list3 = GetCoor(list1);
 
         }
         [Test]
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
 
         public void inlineconditional_stepin_656_12()
@@ -13753,6 +13788,7 @@ i[4] = Point.ByCoordinates(0, 5, 1);
 
         }
         [Test]
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
         public void IDE_Debugger_698_3()
         {
@@ -14522,6 +14558,7 @@ myNeTwst = myTest.Transform(1);
         }
 
         [Test]
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
         public void TestWatchExpressionForFFIProperty()
         {
@@ -14550,6 +14587,7 @@ b = 2;
         }
 
         [Test]
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
         public void TestWatchExpressionForFFIProperty_1()
         {
