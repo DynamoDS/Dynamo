@@ -39,6 +39,9 @@ namespace Dynamo.Search
             get { return entryDictionary.Count; }
         }
 
+        /// <summary>
+        /// Event is fired, when entry is added.
+        /// </summary>
         public event Action<V> EntryAdded;
 
         protected virtual void OnEntryAdded(V entry)
@@ -47,6 +50,9 @@ namespace Dynamo.Search
             if (handler != null) handler(entry);
         }
 
+        /// <summary>
+        /// Event is fired, when entry is removed.
+        /// </summary>
         public event Action<V> EntryRemoved;
 
         protected virtual void OnEntryRemoved(V entry)
@@ -55,6 +61,9 @@ namespace Dynamo.Search
             if (handler != null) handler(entry);
         }
 
+        /// <summary>
+        /// Event is fired, when entry is updated.
+        /// </summary>
         public event Action<V> EntryUpdated;
 
         protected virtual void OnEntryUpdated(V entry)

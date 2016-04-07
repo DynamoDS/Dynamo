@@ -85,15 +85,27 @@ namespace Dynamo.Extensions
             get { return extensions; }
         }
 
+        /// <summary>
+        /// Event fired when new extension is added.
+        /// </summary>
         public event Action<IExtension> ExtensionAdded;
 
+        /// <summary>
+        /// Event fired when new extension is removed.
+        /// </summary>
         public event Action<IExtension> ExtensionRemoved;
 
+        /// <summary>
+        /// This loader loads extensions in Dynamo.
+        /// </summary>
         public IExtensionLoader ExtensionLoader
         {
             get { return extensionLoader; }
         }
 
+        /// <summary>
+        /// Disposes loaded extensions.
+        /// </summary>
         public void Dispose()
         {
             while (extensions.Count > 0)
@@ -104,6 +116,9 @@ namespace Dynamo.Extensions
             extensionLoader.MessageLogged -= Log;
         }
 
+        /// <summary>
+        /// Event is fired in order to log message.
+        /// </summary>
         public event Action<ILogMessage> MessageLogged;
 
         private void Log(ILogMessage obj)

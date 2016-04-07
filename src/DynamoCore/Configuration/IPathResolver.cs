@@ -2,6 +2,9 @@
 
 namespace Dynamo.Interfaces
 {
+    /// <summary>
+    /// Interface provides paths to additional assemblies and node directories.
+    /// </summary>
     public interface IPathResolver
     {
         /// <summary>
@@ -57,6 +60,10 @@ namespace Dynamo.Interfaces
         string CommonDataRootFolder { get; }
     }
 
+    /// <summary>
+    /// Interface provides the most common paths.
+    /// E.g. core directory, package directory etc.
+    /// </summary>
     public interface IPathManager
     {
         /// <summary>
