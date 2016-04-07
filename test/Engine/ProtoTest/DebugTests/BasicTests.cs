@@ -2595,7 +2595,6 @@ c2 = [Associative]
         }
 
         [Test]
-        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
         public void TestWatchExpressionInNestedBlock2()
         {
@@ -12024,7 +12023,6 @@ a;b;
         }
 
         [Test]
-        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
 
         public void watchinImperative_nested_666()
@@ -12075,7 +12073,6 @@ r = 0;
 
         }
         [Test]
-        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
 
         public void watchinImperative_nested_666_2()

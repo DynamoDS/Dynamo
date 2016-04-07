@@ -2224,7 +2224,7 @@ namespace ProtoCore.DSASM
                 //runtimeCore.RuntimeMemory = rmem;
                 runtimeCore.RuntimeMemory = rmem;
 
-                bool terminateExec = HandleBreakpoint(breakpoints, instructions, pc);
+                bool terminateExec = HandleBreakpoint(breakpoints, istream.instrList, pc);
                 if (terminateExec)
                 {
                     break;
