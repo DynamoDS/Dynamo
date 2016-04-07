@@ -2131,20 +2131,16 @@ namespace Dynamo.Graph.Nodes
         CrossProduct
     };
 
+    /// <summary>
+    /// Defines Enum for Mouse events.
+    /// Used in port snapping.
+    /// </summary>
     public enum PortEventType
     {
         MouseEnter,
         MouseLeave,
         MouseLeftButtonDown
     };
-
-    public enum PortPosition
-    {
-        First,
-        Top,
-        Middle,
-        Last
-    }
 
     [Flags]
     public enum SnapExtensionEdges
@@ -2153,8 +2149,6 @@ namespace Dynamo.Graph.Nodes
         Top = 0x1,
         Bottom = 0x2
     }
-
-    public delegate void PortsChangedHandler(object sender, EventArgs e);
 
     internal delegate void DispatchedToUIThreadHandler(object sender, UIDispatcherEventArgs e);
 

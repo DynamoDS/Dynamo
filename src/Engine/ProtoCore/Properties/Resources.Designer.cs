@@ -1853,15 +1853,6 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Modifier Blocks are not supported currently.
-        /// </summary>
-        public static string ModifierBlockNotSupported {
-            get {
-                return ResourceManager.GetString("ModifierBlockNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Integer modulo by zero.
         /// </summary>
         public static string ModuloByZero {
@@ -2264,6 +2255,15 @@ namespace ProtoCore.Properties {
         public static string ReturnsTheNumberOfTrueValue {
             get {
                 return ResourceManager.GetString("ReturnsTheNumberOfTrueValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is not enough memory to finish the operation..
+        /// </summary>
+        public static string RunOutOfMemory {
+            get {
+                return ResourceManager.GetString("RunOutOfMemory", resourceCulture);
             }
         }
         

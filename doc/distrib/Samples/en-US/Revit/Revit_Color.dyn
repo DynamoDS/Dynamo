@@ -76,7 +76,7 @@
     <Dynamo.Models.NoteModel guid="92f526cb-3758-48cb-b8b1-09a923f1a09f" text="or" x="1570.75045297809" y="607.326634244679" />
     <Dynamo.Models.NoteModel guid="b08290fb-4e69-41d5-a01c-10bad979b0db" text="Get Walls" x="19.2314877849641" y="557.511150003813" />
     <Dynamo.Models.NoteModel guid="2e6ef76c-6bc9-4fd8-8634-9a35c9504d40" text="Extract Surface Area of Geometry" x="1081.8569802703" y="487.074542902389" />
-    <Dynamo.Models.NoteModel guid="46696f9e-5987-4509-9faa-07e651896032" text="Run this graph the DynamoSample.rvt file in the Samples folder located with your Dynamo installation&#xD;&#xA;C:\ProgramData\Dynamo\(Your Dynamo Version)\samples\Revit" x="18.2593162591187" y="369.046267698358" />
+    <Dynamo.Models.NoteModel guid="46696f9e-5987-4509-9faa-07e651896032" text="Run this graph the DynamoSample.rvt file in the Samples folder located with your Dynamo installation&#xD;&#xA;C:\ProgramData\Dynamo\Dynamo Revit\(Your Dynamo Version)\samples\Revit" x="18.2593162591187" y="369.046267698358" />
     <Dynamo.Models.NoteModel guid="6173a9ee-c7ff-4f03-a05a-33f5b72bc7fd" text="Color Revit Elements based on some measurable criteria" x="18.7578060147432" y="462.762341755763" />
   </Notes>
   <Annotations />

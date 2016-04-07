@@ -126,6 +126,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Returns the index of the port corresponding to the variable name given
         /// </summary>
+        /// <param name="cbn"></param>
         /// <param name="variableName"> Name of the variable corresponding to an input port </param>
         /// <returns> Index of the required port in the InPorts collection </returns>
         internal static int GetInportIndex(CodeBlockNodeModel cbn, string variableName)

@@ -7,6 +7,7 @@ using ProtoCore.DSASM;
 using ProtoCore.Runtime;
 using ProtoCore.Utils;
 using ProtoCore.Properties;
+using ProtoCore.Exceptions;
 
 namespace ProtoCore.Lang
 {
@@ -68,8 +69,16 @@ namespace ProtoCore.Lang
                 var varParams = args.GetRange(paramCount - 1, varParamCount).ToArray();
                 args.RemoveRange(paramCount - 1, varParamCount);
 
-                var packedParams = interpreter.runtime.rmem.Heap.AllocateArray(varParams);
-                args.Add(packedParams);
+                try
+                {
+                    var packedParams = interpreter.runtime.rmem.Heap.AllocateArray(varParams);
+                    args.Add(packedParams);
+                }
+                catch (RunOutOfMemoryException)
+                {
+                    interpreter.runtime.RuntimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                    return StackValue.Null;
+                }
             }
 
             bool isCallingMemberFunciton = procNode.ClassID != Constants.kInvalidIndex 
@@ -102,10 +111,9 @@ namespace ProtoCore.Lang
             interpreter.runtime.TX = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.Implicit);
 
             StackValue svBlockDecl = StackValue.BuildBlockIndex(blockDecl);
-            interpreter.runtime.SX = svBlockDecl;
+            // interpreter.runtime.SX = svBlockDecl;
 
-            List<StackValue> registers = new List<StackValue>();
-            interpreter.runtime.SaveRegisters(registers);
+            List<StackValue> registers = interpreter.runtime.GetRegisters();
             var newStackFrame = new StackFrame(thisPtr, 
                                                classScopeCaller, 
                                                1, 
@@ -116,6 +124,7 @@ namespace ProtoCore.Lang
                                                StackFrameType.Function, 
                                                0,   // depth
                                                framePointer, 
+                                               svBlockDecl.BlockIndex,
                                                registers, 
                                                0);
 

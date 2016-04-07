@@ -93,10 +93,6 @@
     <Reference Include="nunit.framework">
       <HintPath>$(NunitPath)\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="ProtoInterface, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />
@@ -108,7 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
-      <Link>AssemblySharedInfo.cs</Link>
+      <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="Assembler\MicroFeatureTests.cs" />
     <Compile Include="Associative\BuiltinMethodsTest.cs" />
@@ -136,6 +132,7 @@
     <Compile Include="DebugTests\SetValueTests.cs" />
     <Compile Include="DSASM\ExecutionMirrorTests.cs" />
     <Compile Include="DSASM\HeapMarkSweepTests.cs" />
+    <Compile Include="DSASM\MemorySafetyTest.cs" />
     <Compile Include="DSASM\StackOverflowTests.cs" />
     <Compile Include="FFITests\ArgumentMarshalingTests.cs" />
     <Compile Include="FFITests\ContextInjectionTests.cs" />
@@ -234,6 +231,11 @@
     <ProjectReference Include="..\..\..\src\Engine\ProtoScript\ProtoScript.csproj">
       <Project>{A4794476-7D0E-41C0-AD83-4AB929C0A46C}</Project>
       <Name>ProtoScript</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\src\NodeServices\DynamoServices.csproj">
+      <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
+      <Name>DynamoServices</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\FFITarget\FFITarget.csproj">
       <Project>{c70fe632-5500-4c57-b3d6-9b5574137551}</Project>

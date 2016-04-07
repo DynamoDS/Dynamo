@@ -44,10 +44,6 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="ProtoInterface">
-      <HintPath>..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -58,7 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
-      <Link>AssemblySharedInfo.cs</Link>
+      <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="Controls\ExportWithUnitsControl.xaml.cs">
       <DependentUpon>ExportWithUnitsControl.xaml</DependentUpon>
@@ -97,6 +93,11 @@
     <ProjectReference Include="..\..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
       <Name>DynamoUtilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NodeServices\DynamoServices.csproj">
+      <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
+      <Name>DynamoServices</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\CoreNodeModelsWpf\CoreNodeModelsWpf.csproj">
       <Project>{f5932f7d-8e34-4787-80b8-e7f9d996edff}</Project>

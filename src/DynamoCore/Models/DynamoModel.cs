@@ -44,6 +44,7 @@ using Compiler = ProtoAssociative.Compiler;
 using Utils = Dynamo.Graph.Nodes.Utilities;
 using DefaultUpdateManager = Dynamo.Updates.UpdateManager;
 using FunctionGroup = Dynamo.Engine.FunctionGroup;
+using Dynamo.Events;
 
 namespace Dynamo.Models
 {
@@ -530,8 +531,15 @@ namespace Dynamo.Models
             // PackageFolders
             if (PreferenceSettings.CustomPackageFolders.Count == 0)
                 PreferenceSettings.CustomPackageFolders = new List<string> {pathManager.UserDataDirectory};
-            else
-                pathManager.LoadCustomPackageFolders(PreferenceSettings.CustomPackageFolders);
+
+            //Make sure that the default package folder is added in the list if custom packages folder.
+            var userDataFolder = pathManager.GetUserDataFolder(); //Get the default user data path
+            if (Directory.Exists(userDataFolder) && !PreferenceSettings.CustomPackageFolders.Contains(userDataFolder))
+            {
+                PreferenceSettings.CustomPackageFolders.Add(userDataFolder);
+            }
+
+            pathManager.Preferences = PreferenceSettings;
 
 
             SearchModel = new NodeSearchModel();
@@ -735,15 +743,16 @@ namespace Dynamo.Models
         /// 
         private void OnAsyncTaskStateChanged(DynamoScheduler sender, TaskStateChangedEventArgs e)
         {
+            var updateTask = e.Task as UpdateGraphAsyncTask;
             switch (e.CurrentState)
             {
                 case TaskStateChangedEventArgs.State.ExecutionStarting:
-                    if (e.Task is UpdateGraphAsyncTask)
-                        ExecutionEvents.OnGraphPreExecution();
+                    if (updateTask != null)
+                        ExecutionEvents.OnGraphPreExecution(new ExecutionSession(updateTask, this, geometryFactoryPath));
                     break;
 
                 case TaskStateChangedEventArgs.State.ExecutionCompleted:
-                    if (e.Task is UpdateGraphAsyncTask)
+                    if (updateTask != null)
                     {
                         // Record execution time for update graph task.
                         long start = e.Task.ExecutionStartTime.TickCount;
@@ -757,7 +766,7 @@ namespace Dynamo.Models
 
                         Debug.WriteLine(String.Format(Resources.EvaluationCompleted, executionTimeSpan));
 
-                        ExecutionEvents.OnGraphPostExecution();
+                        ExecutionEvents.OnGraphPostExecution(new ExecutionSession(updateTask, this, geometryFactoryPath));
                     }
                     break;
             }
@@ -1061,7 +1070,7 @@ namespace Dynamo.Models
         ///     Register custom node defintion and execute all custom node 
         ///     instances.
         /// </summary>
-        /// <param name="?"></param>
+        /// <param name="definition"></param>
         private void UpdateCustomNodeDefinition(CustomNodeDefinition definition)
         {
             RegisterCustomNodeDefinitionWithEngine(definition);
@@ -1086,7 +1095,7 @@ namespace Dynamo.Models
         /// specified function definition and mark them as modified so that 
         /// their values will be re-queryed.
         /// </summary>
-        /// <param name="functionId"></param>
+        /// <param name="def"></param>
         /// <returns></returns>
         private void MarkAllDependenciesAsModified(CustomNodeDefinition def)
         {
@@ -1173,6 +1182,7 @@ namespace Dynamo.Models
         ///     Opens a Dynamo workspace from a path to an Xml file on disk.
         /// </summary>
         /// <param name="xmlPath"></param>
+        /// <param name="forceManualExecutionMode"></param>
         public void OpenFileFromPath(string xmlPath, bool forceManualExecutionMode = false)
         {
             var xmlDoc = new XmlDocument();
@@ -1547,6 +1557,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="node"></param>
         /// <param name="centered"></param>
+        /// <param name="addToSelection"></param>
         internal void AddNodeToCurrentWorkspace(NodeModel node, bool centered, bool addToSelection = true)
         {
             CurrentWorkspace.AddAndRegisterNode(node, centered);

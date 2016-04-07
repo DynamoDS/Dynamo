@@ -9,7 +9,6 @@ namespace Dynamo.Graph.Nodes
     [NodeDescription("DummyNodeDescription",typeof(Dynamo.Properties.Resources))]
     [IsMetaNode]
     [IsVisibleInDynamoLibrary(false)]
-    [NodeSearchable(false)]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("Dynamo.Nodes.DummyNode")]
     public class DummyNode : NodeModel

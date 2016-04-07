@@ -5,6 +5,7 @@ using System.Text;
 using ProtoCore.Properties;
 using ProtoCore.Runtime;
 using ProtoCore.Utils;
+using ProtoCore.Exceptions;
 
 namespace ProtoCore.DSASM
 {
@@ -163,8 +164,17 @@ namespace ProtoCore.DSASM
 
             if (hasValue)
             {
-                value = heap.AllocateArray(values.ToArray());
-                return true;
+                try
+                {
+                    value = heap.AllocateArray(values.ToArray());
+                    return true;
+                }
+                catch (RunOutOfMemoryException)
+                {
+                    value = StackValue.Null;
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                    return false;
+                }
             }
             else
             {
@@ -188,11 +198,28 @@ namespace ProtoCore.DSASM
             return dict;
         }
 
+
         /// <summary>
-        /// Simply copy an array.
+        /// Enqueue all reference-typed element.
+        /// Note: it is only used by heap manager to do garbage collection.
         /// </summary>
+        /// <returns></returns>
+        public void CollectElementsForGC(Queue<StackValue> gcQueue)
+        {
+            var elements = Values.Concat(Dict == null ? Dict.Keys : Enumerable.Empty<StackValue>());
+            foreach (var item in elements)
+            {
+                if (item.IsReferenceType)
+                {
+                    gcQueue.Enqueue(item);
+                }
+            }
+        }
+
+        /// <summary>
         /// <param name="core"></param>
         /// <returns></returns>
+        /// </summary>
         public StackValue CopyArray(RuntimeCore runtimeCore)
         {
             Type anyType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank);
@@ -229,10 +256,18 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            var svArray = heap.AllocateArray(elements);
-            var array = heap.ToHeapObject<DSArray>(svArray);
-            array.Dict = dict;
-            return svArray;
+            try
+            {
+                var svArray = heap.AllocateArray(elements);
+                var array = heap.ToHeapObject<DSArray>(svArray);
+                array.Dict = dict;
+                return svArray;
+            }
+            catch (RunOutOfMemoryException)
+            {
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                return StackValue.Null;
+            }
         }
 
         /// <summary>
@@ -244,9 +279,17 @@ namespace ProtoCore.DSASM
         /// <returns></returns>
         public StackValue SetValueForIndex(int index, StackValue value, RuntimeCore runtimeCore)
         {
-            index = ExpandByAcessingAt(index);
-            if (index < 0)
-                index += Count;
+            try
+            {
+                index = ExpandByAcessingAt(index);
+                if (index < 0)
+                    index += Count;
+            }
+            catch (RunOutOfMemoryException)
+            {
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                return StackValue.Null;
+            }
 
             if (index >= Count || index < 0)
             {
@@ -310,8 +353,16 @@ namespace ProtoCore.DSASM
                 if (index.IsNumeric)
                 {
                     index = index.ToInteger();
-                    int absIndex = array.ExpandByAcessingAt((int)index.IntegerValue);
-                    svSubArray  = array.GetValueAt(absIndex);
+                    try
+                    {
+                        int absIndex = array.ExpandByAcessingAt((int)index.IntegerValue);
+                        svSubArray = array.GetValueAt(absIndex);
+                    }
+                    catch (RunOutOfMemoryException)
+                    {
+                        runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                        return StackValue.Null;
+                    }
                 }
                 else
                 {
@@ -321,7 +372,15 @@ namespace ProtoCore.DSASM
                 // auto-promotion
                 if (!svSubArray.IsArray)
                 {
-                    svSubArray = heap.AllocateArray(new StackValue[] { svSubArray });
+                    try
+                    {
+                        svSubArray = heap.AllocateArray(new StackValue[] { svSubArray });
+                    }
+                    catch (RunOutOfMemoryException)
+                    {
+                        svSubArray = StackValue.Null;
+                        runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                    }
                     array.SetValueForIndex(index, svSubArray, runtimeCore);
                 }
 
@@ -373,7 +432,15 @@ namespace ProtoCore.DSASM
                 }
 
                 // The returned old values shouldn't have any key-value pairs
-                return heap.AllocateArray(oldValues);
+                try
+                {
+                    return heap.AllocateArray(oldValues);
+                }
+                catch (RunOutOfMemoryException)
+                {
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                    return StackValue.Null;
+                }
             }
             else
             {
@@ -388,7 +455,15 @@ namespace ProtoCore.DSASM
                 }
 
                 // The returned old values shouldn't have any key-value pairs
-                return heap.AllocateArray(oldValues);
+                try
+                {
+                    return heap.AllocateArray(oldValues);
+                }
+                catch (RunOutOfMemoryException)
+                {
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                    return StackValue.Null;
+                }
             }
         }
 
@@ -536,7 +611,15 @@ namespace ProtoCore.DSASM
 
             if (zippedIndices.Length > 1)
             {
-                return runtimeCore.RuntimeMemory.Heap.AllocateArray(values);
+                try
+                {
+                    return runtimeCore.RuntimeMemory.Heap.AllocateArray(values);
+                }
+                catch (RunOutOfMemoryException)
+                {
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                    return StackValue.Null;
+                }
             }
             else
             {
@@ -616,6 +699,22 @@ namespace ProtoCore.DSASM
             StackValue oldValue = GetValueAt(index);
             SetValueAt(index, value);
             return oldValue;
+        }
+
+        /// <summary>
+        /// Expand the memory by specified size so that the object can contain
+        /// extra information.
+        ///
+        /// Exception ProtoCore.Exceptions.RunOutOfMemoryException
+        /// </summary>
+        /// <param name="size"></param>
+        public void ExpandBySize(int size)
+        {
+            if (size <= 0)
+            {
+                throw new ArgumentException("size is less than 0");
+            }
+            ExpandByAcessingAt(Count + size - 1);
         }
     }
 

@@ -171,6 +171,7 @@ namespace Dynamo.Configuration
         /// </summary>
         public bool ShowDetailedLayout { get; set; }
 
+        /// <summary>
         /// Indicates the default state of the "Open in Manual Mode"
         /// checkbox in OpenFileDialog
         /// </summary>

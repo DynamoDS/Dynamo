@@ -176,33 +176,8 @@ public Node root { get; set; }
 
     private bool IsModifierStack()
 	{
-		Token pt = la;
-		if(pt.val != "{")
-		{
-			scanner.ResetPeek();
-			return false;
-		}
-
-		int counter = 1;
-		pt = scanner.Peek();
-		while(counter != 0 && pt.kind != _EOF)
-		{
-			if(pt.val == "{")
-				counter++;
-			else if(pt.val == "}")
-				counter--;
-
-			if(pt.val == ";" && counter == 1)
-			{
-				scanner.ResetPeek();
-				return true;
-			}
-
-			pt = scanner.Peek();
-		}
-		
-		scanner.ResetPeek();
-		return false;
+        // always return false cause we no longer support modifier stack
+        return false;
 	}
 
     private bool IsFunctionCall()
@@ -1155,116 +1130,28 @@ public Node root { get; set; }
 				node = expressionNode; 
 				
 			} else if (IsModifierStack()) {
-				withinModifierCheckScope = false; 
-				
 				Expect(45);
-				ProtoCore.AST.AssociativeAST.ModifierStackNode mstack = new ProtoCore.AST.AssociativeAST.ModifierStackNode();
-				NodeUtils.SetNodeStartLocation(mstack, t);
-				
 				Associative_Expression(out rightNode);
-				if (la.val == "=") 
-				   SynErr(String.Format(Resources.InvalidSymbol, la.val));
-				
-				ProtoCore.AST.AssociativeAST.IdentifierNode identifier = null;
-				
 				if (la.kind == 53) {
 					Get();
 					Expect(1);
-					identifier = mstack.CreateIdentifierNode(t, leftNode);
-					
 				}
-				if (null == identifier)
-				   identifier = mstack.CreateIdentifierNode(leftNode, core);
-				
-				expressionNode.RightNode = rightNode;
-				expressionNode.LeftNode = leftNode; 
-				expressionNode.Optr = Operator.assign;
-				Node elementNode = mstack.AddElementNode(expressionNode, identifier);
-				
-				if (la.val != ";")
-				   SynErr(Resources.SemiColonExpected); 
-				
 				while (!(la.kind == 0 || la.kind == 23)) {SynErr(78); Get();}
 				Expect(23);
-				NodeUtils.SetNodeEndLocation(elementNode, t); 
 				while (StartOf(11)) {
-					bool bHasOperator = false; 
 					Operator op = Operator.add;  
-					int opLine = Constants.kInvalidIndex;
-					int opCol = Constants.kInvalidIndex;
-					
 					if (StartOf(12)) {
-						bHasOperator = true; 
 						Associative_BinaryOps(out op);
-						opLine = t.line;
-						opCol = t.col;
-						
 					}
 					Associative_Expression(out rightNode);
-					if (la.val == "=") 
-					   SynErr(String.Format(Resources.InvalidSymbol, la.val));
-					
-					identifier = null;
-					
 					if (la.kind == 53) {
 						Get();
 						Expect(1);
-						identifier = mstack.CreateIdentifierNode(t, leftNode); 
 					}
-					expressionNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-					if(!bHasOperator)
-					{                                   
-					  expressionNode.RightNode = rightNode;
-					
-					}
-					else
-					{ 
-					  int count = mstack.ElementNodes.Count;
-					  ProtoCore.AST.AssociativeAST.BinaryExpressionNode previousElementNode = mstack.ElementNodes[count - 1] as ProtoCore.AST.AssociativeAST.BinaryExpressionNode;
-					  // Create function call node from binary expression node 
-					  expressionNode.RightNode = GenerateBinaryOperatorMethodCallNode(op, previousElementNode.LeftNode, rightNode);
-					  NodeUtils.SetNodeStartLocation(expressionNode.RightNode, opLine, opCol);
-					  expressionNode.IsModifier = true;
-					}
-					
-					if (null == identifier)
-					   identifier = mstack.CreateIdentifierNode(leftNode, core);
-					
-					expressionNode.LeftNode = leftNode; 
-					expressionNode.Optr = Operator.assign;
-					elementNode = mstack.AddElementNode(expressionNode, identifier);
-					
-					if (la.val != ";")
-					   SynErr(Resources.SemiColonExpected); 
-					
 					while (!(la.kind == 0 || la.kind == 23)) {SynErr(79); Get();}
 					Expect(23);
-					NodeUtils.SetNodeEndLocation(elementNode, t); 
 				}
-				ProtoCore.AST.AssociativeAST.BinaryExpressionNode previousNode = mstack.ElementNodes[mstack.ElementNodes.Count - 1] as ProtoCore.AST.AssociativeAST.BinaryExpressionNode;
-				if (previousNode.LeftNode.Name.Contains(Constants.kTempModifierStateNamePrefix))
-				{
-				   // if a temporary exists for the final state, assign the modifier block variable to the final state directly
-				   expressionNode.RightNode = previousNode.RightNode;
-				
-				   // delete previous temporary node
-				   mstack.ElementNodes.RemoveAt(mstack.ElementNodes.Count - 1);
-				}
-				else // if the final state has a right assigned variable
-				{
-				   expressionNode.RightNode = previousNode.LeftNode;
-				}	
-				expressionNode.LeftNode = leftNode;
-				expressionNode.Optr = Operator.assign;
-				NodeUtils.SetNodeStartLocation(expressionNode, expressionNode.LeftNode);
-				mstack.ElementNodes.Add(expressionNode);
-				
-				node = mstack; 
-				
 				Expect(46);
-				NodeUtils.SetNodeEndLocation(expressionNode, t);
-				NodeUtils.SetNodeEndLocation(mstack, t);
-				
 			} else if (StartOf(4)) {
 				Associative_Expression(out rightNode);
 				expressionNode.LeftNode = leftNode;
@@ -1287,12 +1174,6 @@ public Node root { get; set; }
 			   if (node is ProtoCore.AST.AssociativeAST.BinaryExpressionNode)
 			   {
 			       node.IsModifier = isModifier;   
-			       /*
-			       if ((node as ProtoCore.AST.AssociativeAST.BinaryExpressionNode).RightNode is ProtoCore.AST.AssociativeAST.InlineConditionalNode)
-			       {
-			          node.IsModifier = false;
-			       }                                                             
-			       */
 			   }
 			   isModifier = false;
 			   withinModifierCheckScope = false;

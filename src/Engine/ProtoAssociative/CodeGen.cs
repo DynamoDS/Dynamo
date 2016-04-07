@@ -711,7 +711,7 @@ namespace ProtoAssociative
             codeBlock.instrStream.instrList.Add(instr);
         }
 
-        protected void EmitDependency(int exprUID, int modBlkUID, bool isSSAAssign)
+        protected void EmitDependency(int exprUID, bool isSSAAssign)
         {
             SetEntry();
 
@@ -721,8 +721,7 @@ namespace ProtoAssociative
             instr.opCode = ProtoCore.DSASM.OpCode.DEP;
 
             instr.op1 = StackValue.BuildInt(exprUID);
-            instr.op2 = StackValue.BuildInt(isSSAAssign ? 1 : 0);
-            instr.op3 = StackValue.BuildInt(modBlkUID);
+            instr.op2 = StackValue.BuildBoolean(isSSAAssign);
 
             ++pc;
             codeBlock.instrStream.instrList.Add(instr);
@@ -2049,34 +2048,17 @@ namespace ProtoAssociative
         {
             Validity.Assert(null != astList && null != node);
 
-            switch (node.Kind)
+            if (node.Kind == AstKind.BinaryExpression)
             {
-                case AstKind.BinaryExpression:
-                    {
-                        BinaryExpressionNode bnode = node as BinaryExpressionNode;
-                        if (ProtoCore.DSASM.Operator.assign == bnode.Optr)
-                        {
-                            AssociativeNode lastNode = DFSEmitSplitAssign_AST(bnode.RightNode, ref astList);
-                            var newBNode = AstFactory.BuildBinaryExpression(bnode.LeftNode, lastNode, Operator.assign);
+                BinaryExpressionNode bnode = node as BinaryExpressionNode;
+                if (ProtoCore.DSASM.Operator.assign == bnode.Optr)
+                {
+                    AssociativeNode lastNode = DFSEmitSplitAssign_AST(bnode.RightNode, ref astList);
+                    var newBNode = AstFactory.BuildBinaryExpression(bnode.LeftNode, lastNode, Operator.assign);
 
-                            astList.Add(newBNode);
-                            return bnode.LeftNode;
-                        }
-                        else
-                        {
-                            return node;
-                        }
-                    }
-                case AstKind.ModifierBlock:
-                    {
-                        ModifierStackNode mnode = node as ModifierStackNode;
-
-                        Validity.Assert(mnode.ElementNodes.Count > 0);
-                        BinaryExpressionNode lastNode = mnode.ElementNodes[mnode.ElementNodes.Count - 1] as BinaryExpressionNode;
-
-                        astList.Add(mnode);
-                        return lastNode.LeftNode;
-                    }
+                    astList.Add(newBNode);
+                    return bnode.LeftNode;
+                }
             }
             return node;
         }
@@ -2449,7 +2431,7 @@ namespace ProtoAssociative
                         nullAssignGraphNode.updateBlock.endpc = pc - 1;
 
                         PushGraphNode(nullAssignGraphNode);
-                        EmitDependency(ProtoCore.DSASM.Constants.kInvalidIndex, ProtoCore.DSASM.Constants.kInvalidIndex, false);
+                        EmitDependency(ProtoCore.DSASM.Constants.kInvalidIndex, false);
                     }
 
                     if (isAllocated)
@@ -4396,110 +4378,6 @@ namespace ProtoAssociative
             }
         }
 
-        private void EmitModifierStackNode(AssociativeNode node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None)
-        {
-            if (!IsParsingGlobal() && !IsParsingGlobalFunctionBody() && !IsParsingMemberFunctionBody())
-            {
-                return;
-            }
-
-            AssociativeNode prevElement = null;
-
-            //core.Options.EmitBreakpoints = false;
-            ModifierStackNode m = node as ModifierStackNode;
-
-            int ci = Constants.kInvalidIndex;
-            for(int i = 0; i < m.ElementNodes.Count; ++i)
-            {
-                bool emitBreakpointForPop = false;
-                AssociativeNode modifierNode = m.ElementNodes[i];
-                
-                // Convert Function call nodes into function dot call nodes 
-                if (modifierNode is BinaryExpressionNode)
-                {
-                    BinaryExpressionNode bnode = modifierNode as BinaryExpressionNode;
-                    if (bnode.LeftNode.Name.StartsWith(ProtoCore.DSASM.Constants.kTempModifierStateNamePrefix))
-                    {
-                        emitBreakpointForPop = true;
-                    }
-
-                    if (!ProtoCore.Utils.CoreUtils.IsSSATemp(bnode.LeftNode.Name))
-                    {
-                        prevElement = bnode;
-                    }
-
-                    // Get class index from function call node if it is constructor call
-                    if (bnode.RightNode is FunctionDotCallNode)
-                    {
-                        FunctionDotCallNode fnode = bnode.RightNode as FunctionDotCallNode;
-                        IdentifierNode ident = fnode.DotCall.FormalArguments[0] as IdentifierNode;
-                        string name = "";
-                        if (ident != null)
-                        {
-                            name = ident.Value;
-                        }
-
-                        ci = core.ClassTable.IndexOf(name);
-                        NodeUtils.SetNodeStartLocation(bnode, fnode.DotCall);
-                    }
-                    // Check if the right node of the modifierNode is a FunctionCall node
-                    else if (bnode.RightNode is FunctionCallNode && ci != Constants.kInvalidIndex)
-                    {
-                        FunctionCallNode rnode = bnode.RightNode as FunctionCallNode;
-
-                        if (i >= 1)
-                        {
-                            // Use class index to search for function call node and return procedure node
-                            ProcedureNode procCallNode = core.ClassTable.ClassNodes[ci].GetFirstMemberFunctionBy(rnode.Function.Name, rnode.FormalArguments.Count);
-
-                            // Only if procedure node is non-null do we know its a member function and prefix it with an instance pointer
-                            if (procCallNode != null)
-                            {
-                                ////////////////////////////////      
-                                BinaryExpressionNode previousElementNode = null;
-                                if (core.Options.GenerateSSA)
-                                {
-                                    Validity.Assert(null != prevElement && prevElement is BinaryExpressionNode);
-                                    previousElementNode = prevElement as BinaryExpressionNode; 
-                                }
-                                else
-                                {
-                                    previousElementNode = m.ElementNodes[i - 1] as BinaryExpressionNode;
-                                }
-                                Validity.Assert(null != previousElementNode);
-                                AssociativeNode lhs = previousElementNode.LeftNode;
-                                bnode.RightNode = ProtoCore.Utils.CoreUtils.GenerateCallDotNode(lhs, rnode, core);
-
-                                FunctionDotCallNode fdcNode = bnode.RightNode as FunctionDotCallNode;
-                                if (fdcNode != null)
-                                {
-                                    NodeUtils.SetNodeStartLocation(fdcNode.DotCall, rnode);
-                                }
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    // We should never get here. Fix it!
-                    Validity.Assert(null != "Unknown node type!");
-                }
-
-                DebugProperties.BreakpointOptions oldOptions = core.DebuggerProperties.breakOptions;
-
-                if (emitBreakpointForPop)
-                {
-                    DebugProperties.BreakpointOptions newOptions = oldOptions;
-                    newOptions |= DebugProperties.BreakpointOptions.EmitPopForTempBreakpoint;
-                    core.DebuggerProperties.breakOptions = newOptions;
-                }
-
-                DfsTraverse(modifierNode, ref inferedType, isBooleanOp, graphNode, subPass);
-                core.DebuggerProperties.breakOptions = oldOptions;
-            }
-            //core.Options.EmitBreakpoints = true;
-        }
-
         private void EmitIfStatementNode(AssociativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode = null)
         {
             int bp = (int)ProtoCore.DSASM.Constants.kInvalidIndex;
@@ -5716,7 +5594,7 @@ namespace ProtoAssociative
                 ProtoCore.DSASM.SymbolNode firstSymbol = leftNodeRef.nodeList[0].symbol;
                 if (null != firstSymbol)
                 {
-                    EmitDependency(binaryExpr.ExpressionUID, binaryExpr.modBlkUID, false);
+                    EmitDependency(binaryExpr.ExpressionUID, false);
                 }
 
                 if (core.Options.GenerateSSA)
@@ -6282,7 +6160,7 @@ namespace ProtoAssociative
                         {
                             // Dependency graph top level symbol 
                             graphNode.PushSymbolReference(symbolnode);
-                            EmitDependency(bnode.ExpressionUID, bnode.modBlkUID, bnode.isSSAAssignment);
+                            EmitDependency(bnode.ExpressionUID, bnode.isSSAAssignment);
                             functionCallStack.Clear();
                         }
                     }
@@ -6319,19 +6197,6 @@ namespace ProtoAssociative
                         }
                         castType = symbolnode.staticType;
 
-
-                        if (bnode.IsInputExpression)
-                        {
-                            StackValue regLX = StackValue.BuildRegister(Registers.LX);
-                            EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regLX);
-                            EmitPop(regLX, globalClassIndex);
-
-                            graphNode.updateBlock.updateRegisterStartPC = pc;
-
-                            EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regLX);
-                            EmitPush(regLX);
-                        }
-
                         EmitPushVarData(dimensions, castType.UID, castType.rank);
 
                         if (core.Options.RunMode != ProtoCore.DSASM.InterpreterMode.Expression)
@@ -6352,7 +6217,7 @@ namespace ProtoAssociative
                         {
                             // Dependency graph top level symbol 
                             graphNode.PushSymbolReference(symbolnode);
-                            EmitDependency(bnode.ExpressionUID, bnode.modBlkUID, bnode.isSSAAssignment);
+                            EmitDependency(bnode.ExpressionUID, bnode.isSSAAssignment);
                             functionCallStack.Clear();
                         }
                     }
@@ -6434,7 +6299,7 @@ namespace ProtoAssociative
                             nullAssignGraphNode1.updateBlock.endpc = pc - 1;
 
                             PushGraphNode(nullAssignGraphNode1);
-                            EmitDependency(ProtoCore.DSASM.Constants.kInvalidIndex, ProtoCore.DSASM.Constants.kInvalidIndex, false);
+                            EmitDependency(ProtoCore.DSASM.Constants.kInvalidIndex, false);
 
 
                             //
@@ -6453,7 +6318,7 @@ namespace ProtoAssociative
                             nullAssignGraphNode2.updateBlock.endpc = pc - 1;
 
                             PushGraphNode(nullAssignGraphNode2);
-                            EmitDependency(ProtoCore.DSASM.Constants.kInvalidIndex, ProtoCore.DSASM.Constants.kInvalidIndex, false);
+                            EmitDependency(ProtoCore.DSASM.Constants.kInvalidIndex, false);
                         }
                     }
                     if (isGraphInScope)
@@ -6950,6 +6815,7 @@ namespace ProtoAssociative
             switch (node.Kind)
             {
                 case AstKind.Identifier:
+                case AstKind.TypedIdentifier:
                     EmitIdentifierNode(node, ref inferedType, isBooleanOp, graphNode, subPass, parentNode as BinaryExpressionNode);
                     break;
                 case AstKind.Integer:
@@ -6993,9 +6859,6 @@ namespace ProtoAssociative
                     break;
                 case AstKind.FunctionDotCall:
                     EmitFunctionCallNode(node, ref inferedType, isBooleanOp, graphNode, subPass, parentNode as BinaryExpressionNode);
-                    break;
-                case AstKind.ModifierBlock:
-                    EmitModifierStackNode(node, ref inferedType, isBooleanOp, graphNode, subPass);
                     break;
                 case AstKind.ExpressionList:
                     EmitExprListNode(node, ref inferedType, graphNode, subPass, parentNode);

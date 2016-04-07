@@ -905,8 +905,8 @@ You can always redownload the package.</value>
     <value>{0} failed to uninstall the package: {1}.  The package may need to be reinstalled manually.</value>
     <comment>Message box content</comment>
   </data>
-  <data name="MessageFileNotFound" xml:space="preserve">
-    <value>File not found: {0}</value>
+  <data name="MessageUnkownErrorOpeningFile" xml:space="preserve">
+    <value>Unknown error opening file: {0}</value>
     <comment>Message box content</comment>
   </data>
   <data name="MessageGettingNodeError" xml:space="preserve">
@@ -1527,8 +1527,8 @@ Do you want to install the latest Dynamo update?</value>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>No node could be found with that Id.</value>
   </data>
-  <data name="MessageFailedToOpenFile" xml:space="preserve">
-    <value>Error opening file: {0}</value>
+  <data name="MessageFailedToOpenCorruptedFile" xml:space="preserve">
+    <value>Error opening corrupted file: {0}</value>
     <comment>Message box content</comment>
   </data>
   <data name="MessageFailedToSaveAsImage" xml:space="preserve">

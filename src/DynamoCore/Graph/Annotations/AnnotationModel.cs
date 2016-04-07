@@ -148,7 +148,6 @@ namespace Dynamo.Graph.Annotations
         /// </summary>
         /// <param name="nodes">The nodes.</param>
         /// <param name="notes">The notes.</param>
-        /// <param name="loadFromGraph">This is true when graph is loaded from XML</param>
         public AnnotationModel(IEnumerable<NodeModel> nodes, IEnumerable<NoteModel> notes)
         {                                 
             var nodeModels = nodes as NodeModel[] ?? nodes.ToArray();           
@@ -175,7 +174,7 @@ namespace Dynamo.Graph.Annotations
         /// <summary>
         /// Recalculate the group when a node is disposed
         /// </summary>
-        /// <param name="node">The node.</param>
+        /// <param name="model"></param>
         private void model_Disposed(ModelBase model)
         {
             var modelList = this.SelectedModels.ToList();

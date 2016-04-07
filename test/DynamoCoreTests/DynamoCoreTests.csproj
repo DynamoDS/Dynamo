@@ -62,6 +62,9 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>Properties\AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="AtLevelTest.cs" />
     <Compile Include="MultiOutputNodeTest.cs" />
     <Compile Include="NodeExecutionTest.cs" />

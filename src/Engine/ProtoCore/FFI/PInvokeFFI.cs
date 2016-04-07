@@ -7,6 +7,7 @@ using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using ProtoCore.DSASM;
 using FFICppFunction = ProtoCore.Lang.FFICppFunction2;
+using ProtoCore.Exceptions;
 
 namespace ProtoFFI
 {
@@ -181,13 +182,21 @@ namespace ProtoFFI
 
         private object ConvertCSArrayToDSArray(double[] csArray, ProtoCore.DSASM.Interpreter dsi)
         {
-           
             var runtimeCore = dsi.runtime.RuntimeCore;
             object retVal = null;
 
             var values = csArray.Select(x => StackValue.BuildDouble(x)).ToArray();
-            retVal = runtimeCore.RuntimeMemory.Heap.AllocateArray(values);
-            return retVal;
+
+            try
+            {
+                retVal = runtimeCore.RuntimeMemory.Heap.AllocateArray(values);
+                return retVal;
+            }
+            catch (RunOutOfMemoryException)
+            {
+                dsi.runtime.RuntimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.RunOutOfMemory, ProtoCore.Properties.Resources.RunOutOfMemory);
+                return StackValue.Null;
+            }
         }
 
         #endregion

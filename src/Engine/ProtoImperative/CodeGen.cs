@@ -1847,35 +1847,6 @@ namespace ProtoImperative
                         }
                     }
 
-                    // TODO Jun: Update mechanism work in progress - a flag to manually enable update 
-                    bool enableUpdate = false;
-                    if (enableUpdate)
-                    {
-                        bool isExternal = false; // isAllocated && currentLangBlock != codeBlockId;
-                        //bool isAssociative = ProtoCore.Language.kAssociative == core.exeList[currentLangBlock].language; 
-                        bool isAssociative = false;
-                        if (isExternal && isAssociative)
-                        {
-                            // Check if this is a modifier variable
-                            bool isVariableAModifierStack = false;
-                            if (isVariableAModifierStack)
-                            {
-                                // Check if modifying a named modifier state
-                                bool isNameModifierState = false;
-                                if (isNameModifierState)
-                                {
-                                    //bool isStateIntermediate = false;
-
-                                }
-                                else
-                                {
-
-                                }
-                                //targetLangBlock = blockId;
-                            }
-                        }
-                    }
-
                     int dimensions = 0;
                     if (null != t.ArrayDimensions)
                     {
@@ -2485,8 +2456,7 @@ namespace ProtoImperative
                 if (localProcedure != null)
                 {
                     core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.FunctionAbnormalExit, ProtoCore.Properties.Resources.kInvalidBreakForFunction , core.CurrentDSFileName, node.line, node.col);
-                    EmitPushNull();
-                    EmitReturnToRegister();
+                    EmitReturnNull();
                 }
             }
         }
@@ -2507,8 +2477,7 @@ namespace ProtoImperative
                 if (localProcedure != null)
                 {
                     core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.FunctionAbnormalExit, ProtoCore.Properties.Resources.kInvalidContinueForFunction, core.CurrentDSFileName, node.line, node.col);
-                    EmitPushNull();
-                    EmitReturnToRegister();
+                    EmitReturnNull();
                 }
             }
         }
@@ -2890,6 +2859,7 @@ namespace ProtoImperative
             switch (node.Kind)
             {
                 case AstKind.Identifier:
+                case AstKind.TypedIdentifier:
                     EmitIdentifierNode(node, ref inferedType, isBooleanOp, graphNode);
                     break;
                 case AstKind.Integer:

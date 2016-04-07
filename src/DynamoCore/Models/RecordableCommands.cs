@@ -1378,7 +1378,7 @@ namespace Dynamo.Models
             /// 
             /// </summary>
             /// <param name="workspaceGuid">Guid of the target workspace. Guid.Empty means current workspace</param>
-            /// <param name="modelGuids"></param>
+            /// <param name="modelGuid"></param>
             /// <param name="name"></param>
             /// <param name="value"></param>
             public UpdateModelValueCommand(Guid workspaceGuid, IEnumerable<Guid> modelGuid, string name, string value)

@@ -42,7 +42,7 @@
   </Connectors>
   <Notes>
     <Dynamo.Models.NoteModel text="Model Lines have been  pre-selected from Revit, Element IDs saved with the Dynamo file" x="846.35713721073" y="654.223761308975" />
-    <Dynamo.Models.NoteModel text="Run this graph the DynamoSample.rvt file in the Samples folder located with your Dynamo installation&#xD;&#xA;C:\ProgramData\Dynamo\(Your Dynamo Version)\samples\Revit" x="842.567869344605" y="482.563682447694" />
+    <Dynamo.Models.NoteModel text="Run this graph the DynamoSample.rvt file in the Samples folder located with your Dynamo installation&#xD;&#xA;C:\ProgramData\Dynamo\Dynamo Revit\(Your Dynamo Version)\samples\Revit" x="842.567869344605" y="482.563682447694" />
     <Dynamo.Models.NoteModel text="Place Adaptive Components relative to some elements selected in a Revit file" x="844.780076358333" y="584.597252598125" />
   </Notes>
   <SessionTraceData>
