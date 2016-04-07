@@ -28,8 +28,11 @@
     </WixVariables>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="MaintenanceTypeDlg.wxs" />
+    <Compile Include="VerifyReadyDlg.wxs" />
     <Compile Include="Product.wxs" />
     <Compile Include="Release-autogen.wxs" />
+    <Compile Include="SetupDialog.wxs" />
   </ItemGroup>
   <ItemGroup>
     <WixExtension Include="WixUtilExtension">

@@ -16,7 +16,7 @@
                  Languages="1033"
                  Manufacturer="Dynamo"
                  Platform="x64"/>
-
+   
     <!-- (1) To prevent downgrades. 
          If there are any MAJOR.MINOR.BUILD version that is higher installed,
          prevent current installation.-->
@@ -37,12 +37,14 @@
 
     <MediaTemplate EmbedCab="yes" />
 
+    <UIRef Id="SetupDialogUI" />
+    
     <Property Id="INSTALLDIR"/>
     <CustomAction Id="DIRCA_DEFAULT_INSTALLDIR" Property="DYNAMO_INSTALLDIR" Value="[ProgramFiles64Folder][Manufacturer]\$(var.ProductName)\$(var.Major).$(var.Minor)" Execute="immediate" />
     <CustomAction Id="DIRCA_SET_INSTALLDIR" Property="DYNAMO_INSTALLDIR" Value="[INSTALLDIR]\$(var.ProductName)\$(var.Major).$(var.Minor)" Execute="immediate" />
 
     <CustomAction Id='AlreadyInstalled' Error='[ProductName] is already installed.&#13;&#10;&#13;&#10;Skipping [ProductName] Installation...' />
-    
+
     <InstallExecuteSequence>
       <Custom Action='AlreadyInstalled' Before="CostInitialize"><![CDATA[SELF_FOUND]]></Custom>
       <Custom Action="DIRCA_DEFAULT_INSTALLDIR" Before="CostInitialize">INSTALLDIR=""</Custom>
