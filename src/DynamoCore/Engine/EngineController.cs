@@ -44,7 +44,7 @@ namespace Dynamo.Engine
         /// <summary>
         /// Event is fired, when UpdateGraphTask is completed.
         /// </summary>
-        public event Action<TraceReconciliationEventArgs> TraceReconcliationComplete;
+        internal event Action<TraceReconciliationEventArgs> TraceReconcliationComplete;
         private void OnTraceReconciliationComplete(TraceReconciliationEventArgs e)
         {
             if (TraceReconcliationComplete != null)
@@ -718,7 +718,7 @@ namespace Dynamo.Engine
         }
     }
 
-    public class TraceReconciliationEventArgs : EventArgs
+    internal class TraceReconciliationEventArgs : EventArgs
     {
         /// <summary>
         /// A list of ISerializable items.

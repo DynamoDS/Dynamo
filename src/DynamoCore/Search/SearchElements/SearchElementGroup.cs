@@ -1,5 +1,9 @@
 ﻿namespace Dynamo.Search.SearchElements
 {
+    /// <summary>
+    /// Enum decribes library search element group.
+    /// E.g. Point.ByCoordinates is member of create group.
+    /// </summary>
     public enum SearchElementGroup
     {
         None, Create, Action, Query

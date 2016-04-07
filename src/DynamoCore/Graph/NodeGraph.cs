@@ -13,13 +13,40 @@ using ProtoCore.Namespace;
 
 namespace Dynamo.Graph
 {
+    /// <summary>
+    /// This class is used to load workspace from xml file.
+    /// It loads in Dynamo Nodes, Connectors, Notes etc.
+    /// </summary>
     public class NodeGraph
     {
+        /// <summary>
+        /// Nodes loaded from xml.
+        /// </summary>
         public List<NodeModel> Nodes { get; private set; }
+
+        /// <summary>
+        /// Connectors loaded from xml.
+        /// </summary>
         public List<ConnectorModel> Connectors { get; private set; }
+
+        /// <summary>
+        /// Notes loaded from xml.
+        /// </summary>
         public List<NoteModel> Notes { get; private set; }
+
+        /// <summary>
+        /// Annotations loaded from xml.
+        /// </summary>
         public List<AnnotationModel> Annotations { get; private set; }
+
+        /// <summary>
+        /// Partial class name nodes loaded from xml.
+        /// </summary>
         public ElementResolver ElementResolver { get; private set; }
+
+        /// <summary>
+        /// Presets loaded from xml.
+        /// </summary>
         public List<PresetModel> Presets { get; private set; }
   
         private NodeGraph() { }
@@ -136,6 +163,12 @@ namespace Dynamo.Graph
             return Enumerable.Empty<AnnotationModel>();
         }
 
+        /// <summary>
+        /// Loads presets from xml file for specified nodes. 
+        /// </summary>
+        /// <param name="xmlDoc">DYN file</param>
+        /// <param name="nodesInNodeGraph">node models</param>
+        /// <returns>list of presets</returns>
         public static IEnumerable<PresetModel> LoadPresetsFromXml(XmlDocument xmlDoc, IEnumerable<NodeModel> nodesInNodeGraph)
         {
             XmlNodeList PresetsNodes = xmlDoc.GetElementsByTagName("Presets");

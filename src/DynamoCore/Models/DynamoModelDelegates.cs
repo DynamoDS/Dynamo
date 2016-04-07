@@ -8,6 +8,11 @@ using ProtoScript.Runners;
 namespace Dynamo.Models
 {
     public delegate void DynamoModelHandler(DynamoModel model);
+
+    /// <summary>
+    /// Delegate used in events, when it's requered to send node.
+    /// </summary>
+    /// <param name="node">Node model</param>
     public delegate void NodeHandler(NodeModel node);
     public delegate void WorkspaceHandler(WorkspaceModel model);   
     public delegate void ActionHandler(Action action);

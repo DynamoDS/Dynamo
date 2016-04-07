@@ -17,15 +17,26 @@ namespace Dynamo.Engine
         }
     }
 
+    /// <summary>
+    /// LiveRunnerServices is helper class, that can get mirror data from live runner, update graph etc.
+    /// </summary>
     public class LiveRunnerServices : LogSourceBase, IDisposable
     {
         private readonly ILiveRunner liveRunner;
         
+        /// <summary>
+        /// Creates LiveRunnerServices.
+        /// </summary>
+        /// <param name="controller">Engine controller</param>
+        /// <param name="geometryFactoryFileName">Path to LibG</param>
         public LiveRunnerServices(EngineController controller, string geometryFactoryFileName)
         {
             liveRunner = LiveRunnerFactory.CreateLiveRunner(controller, geometryFactoryFileName);
         }
 
+        /// <summary>
+        /// Disposes liveRunner.
+        /// </summary>
         public void Dispose()
         {
             var disposable = liveRunner as IDisposable;
@@ -33,7 +44,7 @@ namespace Dynamo.Engine
                 disposable.Dispose();
         }
 
-        // To be superceeded by runtime core
+        // To be superseded by runtime core
         public ProtoCore.Core Core
         {
             get
@@ -42,6 +53,9 @@ namespace Dynamo.Engine
             }
         }
 
+        /// <summary>
+        /// RuntimeCore of liveRunner.
+        /// </summary>
         public ProtoCore.RuntimeCore RuntimeCore
         {
             get
@@ -54,9 +68,9 @@ namespace Dynamo.Engine
         /// <summary>
         /// TPDP
         /// </summary>
-        /// <param name="var"></param>
-        /// <param name="verboseLogging"></param>
-        /// <returns></returns>
+        /// <param name="var">AST node id</param>
+        /// <param name="verboseLogging">True, if command should be logged</param>
+        /// <returns>RuntimeMirror</returns>
         internal RuntimeMirror GetMirror(string var, bool verboseLogging)
         {
 

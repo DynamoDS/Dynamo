@@ -982,12 +982,19 @@ namespace Dynamo.Graph.Nodes
         #endregion
     }
 
+    /// <summary>
+    /// Statements are used in CBN in order to create output ports.
+    /// </summary>
     public class Statement
     {
         #region Enums
 
         #region State enum
 
+        /// <summary>
+        /// Enum describes statement state.
+        /// E.g. normal, warning or error.
+        /// </summary>
         public enum State
         {
             Normal,
@@ -999,6 +1006,10 @@ namespace Dynamo.Graph.Nodes
 
         #region StatementType enum
 
+        /// <summary>
+        /// Enum describes statement type.
+        /// Used in order to set correct column to variable.
+        /// </summary>
         public enum StatementType
         {
             None,
@@ -1018,6 +1029,12 @@ namespace Dynamo.Graph.Nodes
         private readonly List<Statement> subStatements = new List<Statement>();
 
         #region Public Methods
+
+        /// <summary>
+        /// Creates Statement from node
+        /// </summary>
+        /// <param name="parsedNode">AST node</param>
+        /// <returns>Statement</returns>
         public static Statement CreateInstance(Node parsedNode)
         {
             if (parsedNode == null)
@@ -1026,6 +1043,12 @@ namespace Dynamo.Graph.Nodes
             return new Statement(parsedNode);
         }
 
+        /// <summary>
+        /// Gets valiables from AST nodes.
+        /// E.g. a+5. Here a is variable.
+        /// </summary>
+        /// <param name="astNode">Ast node</param>
+        /// <param name="refVariableList">list of variables</param>
         public static void GetReferencedVariables(Node astNode, List<Variable> refVariableList)
         {
             //DFS Search to find all identifier nodes
@@ -1120,7 +1143,12 @@ namespace Dynamo.Graph.Nodes
             return names;
         }
 
-        public static StatementType GetStatementType(Node astNode)
+        /// <summary>
+        /// Gets statement type.
+        /// </summary>
+        /// <param name="astNode">AST node</param>
+        /// <returns>StatementType</returns>
+        private static StatementType GetStatementType(Node astNode)
         {
             if (astNode is FunctionDefinitionNode)
                 return StatementType.FuncDeclaration;
@@ -1143,7 +1171,7 @@ namespace Dynamo.Graph.Nodes
             return StatementType.None;
         }
 
-        public static IdentifierNode GetDefinedIdentifier(Node leftNode)
+        private static IdentifierNode GetDefinedIdentifier(Node leftNode)
         {
             if(leftNode is TypedIdentifierNode)
                 return new IdentifierNode(leftNode as IdentifierNode);
@@ -1160,7 +1188,19 @@ namespace Dynamo.Graph.Nodes
 
         #region Properties
 
+        /// <summary>
+        /// Int value indicates where statement started.
+        /// E.g. a+5 StartLine will be 1.
+        /// </summary>
         public int StartLine { get; private set; }
+
+        /// <summary>
+        /// Int value indicates where statement ended.
+        /// E.g.
+        /// a+5
+        /// +6+3;
+        /// Endline will be 2.
+        /// </summary>
         public int EndLine { get; private set; }
 
         public Variable FirstDefinedVariable
@@ -1168,8 +1208,19 @@ namespace Dynamo.Graph.Nodes
             get { return definedVariables.FirstOrDefault(); }
         }
 
+        /// <summary>
+        /// State of the statement.
+        /// </summary>
         public State CurrentState { get; private set; }
+
+        /// <summary>
+        /// Type of the statement.
+        /// </summary>
         public StatementType CurrentType { get; private set; }
+
+        /// <summary>
+        /// AST node.
+        /// </summary>
         public Node AstNode { get; private set; }
 
         #endregion
@@ -1212,17 +1263,32 @@ namespace Dynamo.Graph.Nodes
         #endregion
     }
 
-
+    /// <summary>
+    /// Represents variable in CBN.
+    /// </summary>
     public class Variable
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public int Row { get; private set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public int StartColumn { get; private set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int EndColumn
         {
             get { return StartColumn + Name.Length; }
         }
 
+        /// <summary>
+        /// Name of the variable.
+        /// </summary>
         public string Name { get; private set; }
 
         #region Private Methods
@@ -1239,6 +1305,10 @@ namespace Dynamo.Graph.Nodes
 
         #region Public Methods
 
+        /// <summary>
+        /// Creates Variable
+        /// </summary>
+        /// <param name="identNode">AST node</param>
         public Variable(IdentifierNode identNode)
         {
             if (identNode == null)
@@ -1249,12 +1319,23 @@ namespace Dynamo.Graph.Nodes
             StartColumn = identNode.col;
         }
 
+        /// <summary>
+        /// Creates variable
+        /// </summary>
+        /// <param name="name">Name</param>
+        /// <param name="line">line</param>
         public Variable(string name, int line)
         {
             Name = name;
             Row = line;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="refVar"></param>
+        /// <param name="type"></param>
+        /// <param name="line"></param>
         public static void SetCorrectColumn(List<Variable> refVar, Statement.StatementType type, int line)
         {
             if (refVar == null)

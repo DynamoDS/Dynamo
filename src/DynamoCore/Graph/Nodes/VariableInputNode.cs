@@ -7,6 +7,10 @@ using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Graph.Nodes
 {
+    /// <summary>
+    /// Base class for nodes, that have dinamic incoming ports.
+    /// E.g. list.create. 
+    /// </summary>
     public abstract class VariableInputNode : NodeModel
     {
         protected VariableInputNode()
@@ -108,6 +112,9 @@ namespace Dynamo.Graph.Nodes
         }
     }
 
+    /// <summary>
+    /// Helper class, that processes inputs of VariableInputNode.
+    /// </summary>
     public abstract class VariableInputNodeController
     {
         private readonly NodeModel model;
@@ -178,6 +185,9 @@ namespace Dynamo.Graph.Nodes
                 RemoveInputFromModel();
         }
 
+        /// <summary>
+        /// Called, when node is built.
+        /// </summary>
         public void OnBuilt()
         {
             inputAmtLastBuild = model.InPortData.Count;
@@ -198,12 +208,22 @@ namespace Dynamo.Graph.Nodes
         
         #region Serialization/Deserialization Methods
 
+        /// <summary>
+        /// Serializes object
+        /// </summary>
+        /// <param name="element">xml node</param>
+        /// <param name="context">save context</param>
         public void SerializeCore(XmlElement element, SaveContext context)
         {
             //base.SerializeCore(element, context); //Base implementation must be called
             SerializeInputCount(element, model.InPortData.Count);
         }
 
+        /// <summary>
+        /// Deserializes object
+        /// </summary>
+        /// <param name="element">xml node</param>
+        /// <param name="context">save context</param>
         public void DeserializeCore(XmlElement element, SaveContext context)
         {
             //base.DeserializeCore(element, context); //Base implementation must be called

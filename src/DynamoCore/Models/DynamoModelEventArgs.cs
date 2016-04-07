@@ -146,7 +146,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Exception thrown during evaluation.
+        /// Exception thrown during graph evaluation.
         /// </summary>
         public Exception Error
         {
