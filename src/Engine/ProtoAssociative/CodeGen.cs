@@ -632,7 +632,7 @@ namespace ProtoAssociative
             SetEntry();
 
             Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.ALLOCC;
+            instr.opCode = ProtoCore.DSASM.OpCode.NEWOBJ;
             instr.op1 = StackValue.BuildClassIndex(type);
 
             ++pc;
@@ -1007,7 +1007,7 @@ namespace ProtoAssociative
                                 !isStaticCall &&
                                 !isConstructor)
                             {
-                                EmitInstrConsole(ProtoCore.DSASM.kw.alloca, exprList.Exprs.Count.ToString());
+                                EmitInstrConsole(ProtoCore.DSASM.kw.newarr, exprList.Exprs.Count.ToString());
                                 EmitPopArray(exprList.Exprs.Count);
 
                                 if (exprList.ArrayDimensions != null)
@@ -3667,7 +3667,7 @@ namespace ProtoAssociative
                 //Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex == localProcedure.pc);
                 localProcedure.PC = pc;
 
-                EmitInstrConsole(ProtoCore.DSASM.kw.allocc, localProcedure.Name);
+                EmitInstrConsole(ProtoCore.DSASM.kw.newobj, localProcedure.Name);
                 EmitAllocc(globalClassIndex);
                 setConstructorStartPC = true;
 

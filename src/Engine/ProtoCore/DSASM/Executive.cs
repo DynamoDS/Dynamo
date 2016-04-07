@@ -4765,7 +4765,7 @@ namespace ProtoCore.DSASM
 
             switch (instruction.opCode)
             {
-                case OpCode.ALLOCC:
+                case OpCode.NEWOBJ:
                     {
                         ALLOCC_Handler(instruction);
                         return;
@@ -4950,7 +4950,7 @@ namespace ProtoCore.DSASM
                         return;
                     }
 
-                case OpCode.ALLOCA:
+                case OpCode.NEWARR:
                     {
                         ALLOCA_Handler(instruction);
                         return;

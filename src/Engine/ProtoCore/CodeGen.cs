@@ -1398,7 +1398,7 @@ namespace ProtoCore
         {
             SetEntry();
             Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.ALLOCA;
+            instr.opCode = ProtoCore.DSASM.OpCode.NEWARR;
 
             instr.op1 = StackValue.BuildInt(size);
             instr.op2 = StackValue.BuildArrayPointer(0);
@@ -2103,7 +2103,7 @@ namespace ProtoCore
                 return;
             }
 
-            EmitInstrConsole(ProtoCore.DSASM.kw.alloca, exprlist.Exprs.Count.ToString());
+            EmitInstrConsole(ProtoCore.DSASM.kw.newarr, exprlist.Exprs.Count.ToString());
             EmitPopArray(exprlist.Exprs.Count);
 
             if (exprlist.ArrayDimensions != null)

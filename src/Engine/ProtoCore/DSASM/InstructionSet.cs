@@ -66,8 +66,8 @@ namespace ProtoCore.DSASM
         LE,
 
         // memory allocation
-        ALLOCA,         // Allocate array
-        ALLOCC,         // Allocate object
+        NEWARR,         // Allocate array
+        NEWOBJ,         // Allocate object
 
         PUSH,
         PUSHBLOCK,      // Push construction block id in imperative code
