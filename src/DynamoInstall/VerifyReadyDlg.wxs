@@ -15,10 +15,10 @@
   <Fragment>
 
     <!-- A fully customize VerifyReadyDlg is needed to add Warning Text in Remove Dialog -->
-    <UI Id="MyVerifyReadyDlg">
+    <UI Id="DynamoVerifyReadyDlg">
 
       <!-- https://github.com/wixtoolset/wix3/tree/develop/src/ext/UIExtension/wixlib -->
-      <Dialog Id="MyVerifyReadyDlg" Width="370" Height="270" Title="!(loc.VerifyReadyDlg_Title)" TrackDiskSpace="yes">
+      <Dialog Id="DynamoVerifyReadyDlg" Width="370" Height="270" Title="!(loc.VerifyReadyDlg_Title)" TrackDiskSpace="yes">
         
         <Control Id="Repair" Type="PushButton" X="212" Y="243" Width="80" Height="17" Default="yes" Hidden="yes" Disabled="yes" Text="!(loc.VerifyReadyDlgRepair)">
           <Condition Action="show">WixUI_InstallMode = "Repair"</Condition>

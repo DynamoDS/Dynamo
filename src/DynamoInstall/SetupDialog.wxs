@@ -29,50 +29,44 @@
       <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return">1</Publish>
 
       <Publish Dialog="SetupTypeDlg" Control="Back" Event="EndDialog" Value="Return">1</Publish>
-      
-      <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="MyMaintenanceTypeDlg"
-               Order="1">WixUI_InstallMode = "Change"</Publish>
-      <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="SetupTypeDlg"
-               Order="2">WixUI_InstallMode = "InstallCustom"</Publish>
-      <Publish Dialog="CustomizeDlg" Control="Next" Event="NewDialog" Value="MyVerifyReadyDlg">1</Publish>
 
-      <Publish Dialog="MyVerifyReadyDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg"
-               Order="1">WixUI_InstallMode = "InstallCustom"</Publish>
-      <Publish Dialog="MyVerifyReadyDlg" Control="Back" Event="NewDialog" Value="SetupTypeDlg"
-               Order="2">WixUI_InstallMode = "InstallTypical" OR WixUI_InstallMode = "InstallComplete"</Publish>
-      <Publish Dialog="MyVerifyReadyDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg"
-               Order="3">WixUI_InstallMode = "Change"</Publish>
-      <Publish Dialog="MyVerifyReadyDlg" Control="Back" Event="NewDialog" Value="MyMaintenanceTypeDlg"
-               Order="4">WixUI_InstallMode = "Repair" OR WixUI_InstallMode = "Remove"</Publish>
+      <Publish Dialog="DynamoVerifyReadyDlg" Control="Back" Event="NewDialog" Value="DynamoMaintenanceTypeDlg">
+        WixUI_InstallMode = "Repair" OR WixUI_InstallMode = "Remove"
+      </Publish>
       
       <Publish Dialog="MaintenanceWelcomeDlg" Control="Next" Event="NewDialog"
-               Value="MyMaintenanceTypeDlg">1</Publish>
+               Value="DynamoMaintenanceTypeDlg">1</Publish>
 
-      <Publish Dialog="MyMaintenanceTypeDlg" Control="RepairButton" Event="NewDialog"
-               Value="MyVerifyReadyDlg">1</Publish>
-      <Publish Dialog="MyMaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog"
-               Value="MyVerifyReadyDlg">1</Publish>
-      <Publish Dialog="MyMaintenanceTypeDlg" Control="Back" Event="NewDialog"
-               Value="MaintenanceWelcomeDlg">1</Publish>
+      <Publish Dialog="DynamoMaintenanceTypeDlg" Control="RepairButton" Event="NewDialog"
+               Value="DynamoVerifyReadyDlg">1</Publish>
+      <Publish Dialog="DynamoMaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog"
+               Value="DynamoVerifyReadyDlg">1</Publish>
       
       <!-- Recommended UI Sequence
            https://msdn.microsoft.com/en-us/library/windows/desktop/aa372039(v=vs.85).aspx -->
+      <!-- Skip the following dialogs:
+              Prepare
+              Welcome
+              Disk Cost
+              Maintenance Welcome
+              User Cancel
+              Finish -->
       <InstallUISequence>
-        <!-- Skip Maintenance Welcome Page -->
-        <Show Dialog="MaintenanceWelcomeDlg" Before="MyMaintenanceTypeDlg">0</Show>
-        <Show Dialog="MyMaintenanceTypeDlg" Sequence="1250">Installed</Show>
-        <!-- Skip Finish Page -->
+        <Show Dialog="PrepareDlg" Sequence="1">0</Show>
+        <Show Dialog="WelcomeDlg" Sequence="2">0</Show>
+        <Show Dialog="DiskCostDlg" Sequence="3">0</Show>
+        <Show Dialog="MaintenanceWelcomeDlg" Before="DynamoMaintenanceTypeDlg">0</Show>
+        <Show Dialog="DynamoMaintenanceTypeDlg" Sequence="1250">Installed</Show>
         <Show Dialog="ExitDialog" OnExit="success">0</Show>
-        <!-- Skip Interrupted Page -->
         <Show Dialog="UserExit" OnExit="cancel">0</Show>
       </InstallUISequence>
       <AdminUISequence>
-        <!-- Skip Maintenance Welcome Page -->
-        <Show Dialog="MaintenanceWelcomeDlg" Before="MyMaintenanceTypeDlg">0</Show>
-        <Show Dialog="MyMaintenanceTypeDlg" Sequence="1250">Installed</Show>
-        <!-- Skip Finish Page -->
+        <Show Dialog="PrepareDlg" Sequence="1">0</Show>
+        <Show Dialog="WelcomeDlg" Sequence="2">0</Show>
+        <Show Dialog="DiskCostDlg" Sequence="3">0</Show> 
+        <Show Dialog="MaintenanceWelcomeDlg" Before="DynamoMaintenanceTypeDlg">0</Show>
+        <Show Dialog="DynamoMaintenanceTypeDlg" Sequence="1250">Installed</Show>
         <Show Dialog="ExitDialog" OnExit="success">0</Show>
-        <!-- Skip Interrupted Page -->
         <Show Dialog="UserExit" OnExit="cancel">0</Show>
       </AdminUISequence>
       

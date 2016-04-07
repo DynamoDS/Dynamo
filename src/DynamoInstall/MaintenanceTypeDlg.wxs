@@ -4,10 +4,10 @@
   <Fragment>
     
     <!-- A fully customize MaintenanceTypeDlg is needed because ARPNOREMOVE=1 removes the Remove Button in this dialog -->
-    <UI Id="MyMaintenanceTypeDlg">
+    <UI Id="DynamoMaintenanceTypeDlg">
       
       <!-- https://github.com/wixtoolset/wix3/tree/develop/src/ext/UIExtension/wixlib -->
-      <Dialog Id="MyMaintenanceTypeDlg" Width="370" Height="270" Title="!(loc.MaintenanceTypeDlg_Title)">
+      <Dialog Id="DynamoMaintenanceTypeDlg" Width="370" Height="270" Title="!(loc.MaintenanceTypeDlg_Title)">
         
         <Control Id="RepairButton" Type="PushButton" X="40" Y="65" Width="80" Height="17" ToolTip="!(loc.MaintenanceTypeDlgRepairButtonTooltip)" Text="!(loc.MaintenanceTypeDlgRepairButton)">
           <Publish Property="WixUI_InstallMode" Value="Repair">1</Publish>
@@ -26,7 +26,7 @@
         <Control Id="RemoveText" Type="Text" X="60" Y="138" Width="280" Height="30" Text="!(loc.MaintenanceTypeDlgRemoveText)">
         </Control>
 
-        <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)" />
+        <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Disabled="yes" Text="!(loc.WixUIBack)" />
         <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Disabled="yes" Text="!(loc.WixUINext)" />
         <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
           <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
