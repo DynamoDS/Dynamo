@@ -567,7 +567,7 @@ namespace Dynamo.Controls
 
             bool isInside = IsMouseInsideNodeOrPreview(e.GetPosition(this));
 
-            if (!isInside && previewControl.IsCondensed)
+            if (!isInside && PreviewControl != null && previewControl.IsCondensed)
             {
                 PreviewControl.TransitionToState(PreviewControl.State.Hidden);
             }
