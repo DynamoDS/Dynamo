@@ -2457,35 +2457,10 @@ namespace ProtoCore.DSASM
                 value = StackValue.Null;
             }
 
-            Type t = symbolnode.staticType;
             StackValue ret = StackValue.Null;
             if (value.IsArray)
             {
-                if (t.UID != (int)PrimitiveType.Var || t.rank >= 0)
-                {
-                    int lhsRepCount = 0;
-                    foreach (var dim in dimlist)
-                    {
-                        if (dim.IsArray)
-                        {
-                            lhsRepCount++;
-                        }
-                    }
-
-                    if (t.rank > 0)
-                    {
-                        t.rank = t.rank - dimlist.Count;
-                        t.rank += lhsRepCount;
-
-                        if (t.rank < 0)
-                        {
-                            runtimeCore.RuntimeStatus.LogWarning(WarningID.OverIndexing, Resources.IndexIntoNonArrayObject);
-                        }
-                    }
-
-                }
-
-                ret = runtimeCore.Heap.ToHeapObject<DSArray>(value).SetValueForIndices(dimlist, data, t, runtimeCore);
+                ret = runtimeCore.Heap.ToHeapObject<DSArray>(value).SetValueForIndices(dimlist, data, runtimeCore);
             }
             else if (value.IsString)
             {
@@ -2494,34 +2469,26 @@ namespace ProtoCore.DSASM
             }
             else
             {
-                if (symbolnode.staticType.rank == 0)
+                StackValue svArray;
+
+                try
                 {
-                    rmem.SetSymbolValue(symbolnode, StackValue.Null);
-                    return value;
+                    svArray = rmem.Heap.AllocateArray(new StackValue[] { });
                 }
-                else
+                catch (RunOutOfMemoryException)
                 {
-                    StackValue svArray;
-
-                    try
-                    {
-                        svArray = rmem.Heap.AllocateArray(new StackValue[] { });
-                    }
-                    catch (RunOutOfMemoryException)
-                    {
-                        svArray = StackValue.Null;
-                        runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
-                    }
-
-                    rmem.SetSymbolValue(symbolnode, svArray);
-
-                    var array = rmem.Heap.ToHeapObject<DSArray>(svArray);
-                    if (!value.IsNull)
-                    {
-                        array.SetValueForIndex(0, value, runtimeCore);
-                    }
-                    ret = array.SetValueForIndices(dimlist, data, t, runtimeCore);
+                    svArray = StackValue.Null;
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
                 }
+
+                rmem.SetSymbolValue(symbolnode, svArray);
+
+                var array = rmem.Heap.ToHeapObject<DSArray>(svArray);
+                if (!value.IsNull)
+                {
+                    array.SetValueForIndex(0, value, runtimeCore);
+                }
+                ret = array.SetValueForIndices(dimlist, data, runtimeCore);
             }
 
             if (IsDebugRun())
@@ -3472,36 +3439,7 @@ namespace ProtoCore.DSASM
             var thisObject = rmem.Heap.ToHeapObject<DSObject>(svThis);
             StackValue svProperty = thisObject.GetValueFromIndex(stackIndex, runtimeCore);
 
-            Type targetType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var);
             SymbolNode symbolnode = GetSymbolNode(blockId, classIndex, symbolIndex);
-            targetType = symbolnode.staticType;
-
-            if (svProperty.IsArray)
-            {
-                if (targetType.UID != (int)PrimitiveType.Var || targetType.rank >= 0)
-                {
-                    int lhsRepCount = 0;
-                    foreach (var dim in dimList)
-                    {
-                        if (dim.IsArray)
-                        {
-                            lhsRepCount++;
-                        }
-                    }
-
-                    if (targetType.rank > 0)
-                    {
-                        targetType.rank = targetType.rank - dimList.Count;
-                        targetType.rank += lhsRepCount;
-
-                        if (targetType.rank < 0)
-                        {
-                            runtimeCore.RuntimeStatus.LogWarning(WarningID.OverIndexing, Resources.IndexIntoNonArrayObject);
-                        }
-                    }
-
-                }
-            }
 
             if (svProperty.IsPointer || (svProperty.IsArray && dimensions == 0))
             {
@@ -3528,7 +3466,7 @@ namespace ProtoCore.DSASM
             else if (svProperty.IsArray)
             {
                 var propertyArray = rmem.Heap.ToHeapObject<DSArray>(svProperty);
-                propertyArray.SetValueForIndices(dimList, svData, targetType, runtimeCore);
+                propertyArray.SetValueForIndices(dimList, svData, runtimeCore);
             }
             else // This property has NOT been allocated
             {

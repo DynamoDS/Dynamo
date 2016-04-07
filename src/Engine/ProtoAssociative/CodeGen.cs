@@ -423,7 +423,6 @@ namespace ProtoAssociative
             symbolnode.functionIndex = funcIndex;
             symbolnode.absoluteFunctionIndex = funcIndex;
             symbolnode.datatype = datatype;
-            symbolnode.staticType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank);
             symbolnode.isArgument = false;
             symbolnode.memregion = region;
             symbolnode.classScope = classScope;
@@ -480,7 +479,6 @@ namespace ProtoAssociative
                     staticSymbolnode.isSSATemp = CoreUtils.IsSSATemp(ident);
                     staticSymbolnode.functionIndex = funcIndex;
                     staticSymbolnode.datatype = datatype;
-                    staticSymbolnode.staticType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank);
                     staticSymbolnode.isArgument = false;
                     staticSymbolnode.memregion = region;
                     staticSymbolnode.classScope = classScope;
@@ -543,7 +541,6 @@ namespace ProtoAssociative
                 ident,
                 ProtoCore.DSASM.Constants.kInvalidIndex,
                 funcIndex,
-                datatype,
                 datatype,
                 true,
                 codeBlock.symbolTable.RuntimeIndex,
@@ -3145,10 +3142,6 @@ namespace ProtoAssociative
                         {
                             int rank = vardecl.ArgumentType.rank;
                             prop.datatype = core.TypeSystem.BuildTypeObject(type, rank);
-                            if (type != (int)PrimitiveType.Var || prop.datatype.IsIndexable)
-                            {
-                                prop.staticType = prop.datatype;
-                            }
                         }
                     }
 
