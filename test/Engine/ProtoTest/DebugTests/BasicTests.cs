@@ -9228,7 +9228,6 @@ b = 2;";
         }
         [Test]
         [Category("Debugger")]
-        [Category("ExpressionInterpreterRunner")]
         public void SteppingOverinline_Imperative_723()
         {
             string src =
@@ -9273,7 +9272,6 @@ b = 2;";
         }
         [Test]
         [Category("Debugger")]
-        [Category("ExpressionInterpreterRunner")]
         public void SteppingOverinline_Imperative_723_2()
         {
             string src =
@@ -9314,7 +9312,6 @@ b = 2;";
         }
         [Test]
         [Category("Debugger")]
-        [Category("ExpressionInterpreterRunner")]
         public void SteppingOverinline_Imperative_723_3()
         {
             string src =
@@ -9359,7 +9356,6 @@ b = 2;";
         }
         [Test]
         [Category("Debugger")]
-        [Category("ExpressionInterpreterRunner")]
         public void SteppingOverinline_Imperative_723_4()
         {
             string src =
@@ -9404,7 +9400,6 @@ b = 2;";
         }
         [Test]
         [Category("Debugger")]
-        [Category("ExpressionInterpreterRunner")]
         public void SteppingOverinline_Imperative_723_5()
         {
             string src =
@@ -9442,7 +9437,6 @@ b = 2;";
         }
 
         [Test]
-        [Category("ExpressionInterpreterRunner")]
         [Category("Debugger")]
         public void SteppingOverinline_Imperative_723_6()
         {
