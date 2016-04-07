@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  
   <Fragment>
 
+    <!-- To remove the Uninstall Button in ARP -->
     <Property Id='ARPNOREMOVE'>1</Property>
-    <!--Property Id='ARPNOMODIFY'>1</Property-->
-    <WixVariable Id="WixUIBannerBmp" Value="..\..\..\..\tools\install\Extra\logo_square_32x32.bmp" />
+    
+    <WixVariable Id="WixUIBannerBmp" Value="..\..\..\..\tools\install\Extra\logo_banner.bmp" />
     
     <UI Id="SetupDialogUI">
+      
       <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
       <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
       <TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="9" Bold="yes" />
-
+      <TextStyle Id="WixUI_Font_Red" FaceName="Tahoma" Size="10" Red="255" Green="0" Blue="0"  />
+      
       <Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
-      <Property Id="WixUI_Mode" Value="Mondo" />
 
       <DialogRef Id="ErrorDlg" />
       <DialogRef Id="FatalError" />
@@ -26,8 +29,6 @@
       <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return">1</Publish>
 
       <Publish Dialog="SetupTypeDlg" Control="Back" Event="EndDialog" Value="Return">1</Publish>
-
-      <!--Publish Dialog="ProgressDlg" Control="OnExit" Event="EndDialog" Value="Return">1</Publish-->
       
       <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="MyMaintenanceTypeDlg"
                Order="1">WixUI_InstallMode = "Change"</Publish>
@@ -54,27 +55,31 @@
       <Publish Dialog="MyMaintenanceTypeDlg" Control="Back" Event="NewDialog"
                Value="MaintenanceWelcomeDlg">1</Publish>
       
-      <!-- https://msdn.microsoft.com/en-us/library/windows/desktop/aa372039(v=vs.85).aspx -->
+      <!-- Recommended UI Sequence
+           https://msdn.microsoft.com/en-us/library/windows/desktop/aa372039(v=vs.85).aspx -->
       <InstallUISequence>
-        <!--Show Dialog="PrepareDlg" Sequence="140">0</Show>
-        <Show Dialog="WelcomeDlg" Sequence="1230">0</Show>
-        <Show Dialog="ResumeDlg" Sequence="1240">0</Show-->
+        <!-- Skip Maintenance Welcome Page -->
         <Show Dialog="MaintenanceWelcomeDlg" Before="MyMaintenanceTypeDlg">0</Show>
         <Show Dialog="MyMaintenanceTypeDlg" Sequence="1250">Installed</Show>
-        <!--Show Dialog="ProgressDlg" Sequence="1280">0</Show-->
+        <!-- Skip Finish Page -->
         <Show Dialog="ExitDialog" OnExit="success">0</Show>
+        <!-- Skip Interrupted Page -->
+        <Show Dialog="UserExit" OnExit="cancel">0</Show>
       </InstallUISequence>
-
       <AdminUISequence>
-        <!--Show Dialog="PrepareDlg" Sequence="140">0</Show>
-        <Show Dialog="WelcomeDlg" Sequence="1230">0</Show>
-        <Show Dialog="ResumeDlg" Sequence="1240">0</Show-->
+        <!-- Skip Maintenance Welcome Page -->
         <Show Dialog="MaintenanceWelcomeDlg" Before="MyMaintenanceTypeDlg">0</Show>
         <Show Dialog="MyMaintenanceTypeDlg" Sequence="1250">Installed</Show>
-        <!--Show Dialog="ProgressDlg" Sequence="1280">0</Show-->
+        <!-- Skip Finish Page -->
         <Show Dialog="ExitDialog" OnExit="success">0</Show>
+        <!-- Skip Interrupted Page -->
+        <Show Dialog="UserExit" OnExit="cancel">0</Show>
       </AdminUISequence>
+      
     </UI>
+
     <UIRef Id="WixUI_Common" />    
+    
   </Fragment>
+  
 </Wix>
