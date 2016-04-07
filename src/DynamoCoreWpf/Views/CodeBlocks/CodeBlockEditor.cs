@@ -113,7 +113,7 @@ namespace Dynamo.UI.Controls
             stateMachine.Transit(EditorStateMachine.State.Commited);
         }
 
-        protected override void OnEditorTextChanged()
+        protected override void OnTextAreaGotFocus(object sender, System.Windows.RoutedEventArgs e)
         {
             stateMachine.Transit(EditorStateMachine.State.Editing);
         }
