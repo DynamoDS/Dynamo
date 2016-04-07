@@ -3088,7 +3088,6 @@ namespace ProtoCore.DSASM
 
         private void PUSHW_Handler(Instruction instruction)
         {
-            int dimensions = 0;
             int blockId = Constants.kInvalidIndex;
 
             StackValue op1 = instruction.op1;
@@ -3102,12 +3101,6 @@ namespace ProtoCore.DSASM
                 op1.IsFunctionPointer)
             {
 
-                // TODO: Jun this is currently unused but required for stack alignment
-                StackValue svType = rmem.Pop();
-
-                StackValue svDim = rmem.Pop();
-                dimensions = svDim.ArrayDimension;
-
                 StackValue svBlock = instruction.op3; 
                 blockId = svBlock.BlockIndex;
             }
@@ -3116,17 +3109,7 @@ namespace ProtoCore.DSASM
             if (runtimeCore.Options.RunMode == InterpreterMode.Expression)
                 runtimeCore.RuntimeMemory.FramePointer = runtimeCore.watchFramePointer;
 
-            if (0 == dimensions)
-            {
-                PushW(blockId, op1, op2);
-            }
-            else
-            {
-                // TODO Jun: This entire block that handles arrays shoudl be integrated with getOperandData
-                runtimeVerify(op1.IsVariableIndex || op1.IsMemberVariableIndex || op1.IsArray);
-                StackValue sv = GetIndexedArrayW(dimensions, blockId, op1, op2);
-                rmem.Push(sv);
-            }
+            PushW(blockId, op1, op2);
 
             if (runtimeCore.Options.RunMode == InterpreterMode.Expression)
                 runtimeCore.RuntimeMemory.FramePointer = fp;
@@ -3354,7 +3337,6 @@ namespace ProtoCore.DSASM
 
         private void POPW_Handler(Instruction instruction)
         {
-            int dimensions = 0;
             int blockId = Constants.kInvalidIndex;
             int staticType = (int)PrimitiveType.Var;
             int rank = Constants.kArbitraryRank;
@@ -3362,36 +3344,13 @@ namespace ProtoCore.DSASM
                 instruction.op1.IsPointer ||
                 instruction.op1.IsArray)
             {
-
-                StackValue svType = rmem.Pop();
-                staticType = svType.metaData.type;
-                rank = svType.Rank;
-
-                StackValue svDim = rmem.Pop();
-                dimensions = svDim.ArrayDimension;
-
                 StackValue svBlock = instruction.op3;
                 blockId = svBlock.BlockIndex;
             }
 
-            StackValue svData;
-            if (0 == dimensions)
-            {
-                svData = rmem.Pop();
-                StackValue coercedValue = TypeSystem.Coerce(svData, staticType, rank, runtimeCore);
-                PopToW(blockId, instruction.op1, instruction.op2, coercedValue);
-            }
-            else
-            {
-                List<StackValue> dimList = new List<StackValue>();
-                for (int i = 0; i < dimensions; ++i)
-                {
-                    dimList.Insert(0, rmem.Pop());
-                }
-
-                svData = rmem.Pop();
-                PopToIndexedArray(blockId, instruction.op1.SymbolIndex, instruction.op2.ClassIndex, dimList, svData);
-            }
+            StackValue svData = rmem.Pop();
+            StackValue coercedValue = TypeSystem.Coerce(svData, staticType, rank, runtimeCore);
+            PopToW(blockId, instruction.op1, instruction.op2, coercedValue);
 
             rmem.Heap.GC();
             ++pc;
