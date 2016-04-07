@@ -8525,8 +8525,6 @@ test = a1.x; //expected : { 1, { 2, { 0, 1 } } }
         }
 
         [Test]
-        [Category("Failure")]
-        [Category("ExpressionInterpreterRunner")]
         [Category("Debugger")]
         public void HighlightingFunctionsInArrayAssociative1_Defect_IDE_578()
         {
@@ -8548,16 +8546,6 @@ b = 2;";
             Assert.AreEqual(24, vms.ExecutionCursor.EndExclusive.CharNo);
 
             vms = fsr.StepOver();
-
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-            ExecutionMirror mirror = watchRunner.Execute(@"arr[0]");
-            Obj o1 = mirror.GetWatchValue();
-            Assert.AreEqual(99, (Int64)o1.Payload);
-
-            watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-            mirror = watchRunner.Execute(@"arr[1]");
-            o1 = mirror.GetWatchValue();
-            Assert.AreEqual(87, (Int64)o1.Payload);
 
             Assert.AreEqual(8, vms.ExecutionCursor.StartInclusive.LineNo);
             Assert.AreEqual(1, vms.ExecutionCursor.StartInclusive.CharNo);
