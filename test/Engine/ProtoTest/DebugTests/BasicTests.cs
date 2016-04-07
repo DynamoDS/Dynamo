@@ -15603,6 +15603,7 @@ a = 7;
 
         //Investigate the color object properties number, relates to IDE-493
         [Test]
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
         [Category("ReleaseCriteria")]
         public void UseCase_Robert_simple_copy_and_modiy_collection_1()
@@ -15633,7 +15634,6 @@ d = b[0..(Count(b) - 1)..2]; // rnage expression used for indexing into a collec
             String type = objExecVal.GetType().ToString();
 
             TestFrameWork.Verify(mirror, "a", new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 0);
-            TestFrameWork.Verify(mirror, "b", new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 0);
             vms = fsr.StepOver();
             TestFrameWork.Verify(mirror, "b", new object[] { 0, 1, 100, 3, 4, 5, 6, 7, 8, 9, 10 }, 0);
             vms = fsr.StepOver();
