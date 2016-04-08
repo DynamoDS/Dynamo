@@ -1045,7 +1045,7 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         /// Gets valiables from AST nodes.
-        /// E.g. a+5. Here a is variable.
+        /// E.g. a+5. Here "a" is variable.
         /// </summary>
         /// <param name="astNode">Ast node</param>
         /// <param name="refVariableList">list of variables</param>

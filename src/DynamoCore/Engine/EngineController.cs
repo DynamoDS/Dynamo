@@ -18,7 +18,6 @@ using RuntimeWarning = ProtoCore.Runtime.WarningEntry;
 using ProtoCore.Utils;
 using Dynamo.Engine.NodeToCode;
 using Dynamo.Engine.CodeGeneration;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Engine
@@ -27,7 +26,7 @@ namespace Dynamo.Engine
     /// This is a delegate used in AstBuilt event.   
     /// </summary>
     /// <param name="sender">EngineController</param>
-    /// <param name="e">CompiledEventArgs (include node GUID and list of AST nodes.)</param>
+    /// <param name="e">CompiledEventArgs (include node GUID and list of AST nodes)</param>
     public delegate void AstBuiltEventHandler(object sender, CompiledEventArgs e);
 
     /// <summary>
@@ -199,7 +198,7 @@ namespace Dynamo.Engine
                 }
                 catch (Exception ex)
                 {
-                    Log(string.Format(Properties.Resources.FailedToGetMirrorVariable,variableName,
+                    Log(string.Format(Properties.Resources.FailedToGetMirrorVariable, variableName,
                         ex.Message));
                 }
 
@@ -298,11 +297,11 @@ namespace Dynamo.Engine
             List<Guid> previewGraphData = this.liveRunnerServices.PreviewGraph(graphSyncdata, verboseLogging);
             syncDataManager = tempSyncDataManager;
 
-             lock (previewGraphQueue)
-             {
-                 previewGraphQueue.Enqueue(previewGraphData);
-             }
-            
+            lock (previewGraphQueue)
+            {
+                previewGraphQueue.Enqueue(previewGraphData);
+            }
+
             return previewGraphQueue.Dequeue();
         }
 
@@ -624,7 +623,7 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        /// Indicates a NodeModel has been compiled to AST nodes. 
+        /// Indicates if NodeModel has been compiled to AST nodes. 
         /// </summary>
         /// <param name="nodeGuid">Node unique ID</param>
         /// <param name="astNodes">Resulting AST nodes</param>
@@ -661,11 +660,11 @@ namespace Dynamo.Engine
             node.GetDownstreamNodes(node, gathered);
             foreach (var iNode in gathered)
             {
-                syncDataManager.DeleteNodes(iNode.GUID);               
+                syncDataManager.DeleteNodes(iNode.GUID);
             }
         }
 
-        
+
 
         #region Node2Code
 
@@ -692,11 +691,11 @@ namespace Dynamo.Engine
 
     /// <summary>
     /// This class used to precompile code block node.
-    /// It's used as helper for resolving code in Input and Output nodes.
+    /// Also it's used as helper for resolving code in Input and Output nodes.
     /// </summary>
     public class CompilationServices
     {
-        private  ProtoCore.Core compilationCore;
+        private ProtoCore.Core compilationCore;
 
         /// <summary>
         /// Creates CompilationServices.
@@ -723,7 +722,7 @@ namespace Dynamo.Engine
         /// <summary>
         /// A list of ISerializable items.
         /// </summary>
-        public Dictionary<Guid,List<ISerializable>> CallsiteToOrphanMap { get; private set; }
+        public Dictionary<Guid, List<ISerializable>> CallsiteToOrphanMap { get; private set; }
 
         public TraceReconciliationEventArgs(Dictionary<Guid, List<ISerializable>> callsiteToOrphanMap)
         {

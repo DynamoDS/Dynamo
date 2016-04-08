@@ -15,7 +15,7 @@ namespace Dynamo.Graph
 {
     /// <summary>
     /// This class is used to load workspace from xml file.
-    /// It loads in Dynamo Nodes, Connectors, Notes etc.
+    /// It loads in Dynamo next items: Nodes, Connectors, Notes etc.
     /// </summary>
     public class NodeGraph
     {
@@ -166,7 +166,7 @@ namespace Dynamo.Graph
         /// <summary>
         /// Loads presets from xml file for specified nodes. 
         /// </summary>
-        /// <param name="xmlDoc">DYN file</param>
+        /// <param name="xmlDoc">xml file</param>
         /// <param name="nodesInNodeGraph">node models</param>
         /// <returns>list of presets</returns>
         public static IEnumerable<PresetModel> LoadPresetsFromXml(XmlDocument xmlDoc, IEnumerable<NodeModel> nodesInNodeGraph)

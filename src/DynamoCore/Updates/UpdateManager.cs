@@ -53,7 +53,7 @@ namespace Dynamo.Updates
         IAppVersionInfo UpdateInfo { get; set; }
 
         /// <summary>
-        /// ool value indicates if new version is available.
+        /// Bool value indicates if new version is available.
         /// </summary>
         bool IsUpdateAvailable { get; }
 
@@ -600,6 +600,9 @@ namespace Dynamo.Updates
             }
         }
 
+        /// <summary>
+        /// Bool value indicates if new version is available.
+        /// </summary>
         public bool IsUpdateAvailable
         {
             get
