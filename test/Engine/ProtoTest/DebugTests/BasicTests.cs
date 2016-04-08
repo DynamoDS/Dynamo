@@ -2661,7 +2661,7 @@ c2 = [Associative]
 
             DebugRunner.VMState vms = fsr.Step();
             vms = fsr.Step();
-            Object o = vms.mirror.GetFirstValue("foo").Payload;// .GetDebugValue("foo").Payload;
+            Object o = vms.mirror.GetDebugValue("foo").Payload;// .GetDebugValue("foo").Payload;
             Assert.IsTrue((Int64)o == 5);
         }
 

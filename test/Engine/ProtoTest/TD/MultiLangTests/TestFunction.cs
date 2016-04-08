@@ -254,9 +254,8 @@ a;b;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetFirstValue("a").Payload == 2);
-            Assert.IsTrue((Int64)mirror.GetFirstValue("b").Payload == 2);
-
+            thisTest.Verify("a", 2);
+            thisTest.Verify("b", 2);
         }
 
         [Test]
@@ -299,8 +298,8 @@ a;b;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetFirstValue("a").Payload == 2);
-            Assert.IsTrue((Int64)mirror.GetFirstValue("b").Payload == 2);
+            thisTest.Verify("a", 2);
+            thisTest.Verify("b", 2);
         }
 
         [Test]
@@ -347,8 +346,8 @@ a;b;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetFirstValue("a").Payload == 3);
-            Assert.IsTrue((Int64)mirror.GetFirstValue("b").Payload == 3);
+            thisTest.Verify("a", 3);
+            thisTest.Verify("b", 3);
         }
 
         [Test]
@@ -394,8 +393,8 @@ a;b;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetFirstValue("a").Payload == 3);
-            Assert.IsTrue((Int64)mirror.GetFirstValue("b").Payload == 3);
+            thisTest.Verify("a", 3);
+            thisTest.Verify("b", 3);
         }
 
         [Test]
@@ -540,9 +539,7 @@ a;b;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetFirstValue("b").DsasmValue.IsNull);
-            //});
-
+            thisTest.Verify("b", null);
         }
 
         [Test]
@@ -577,8 +574,7 @@ a;b;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetFirstValue("b").DsasmValue.IsNull);
-            //});
+            thisTest.Verify("b", null);
         }
 
         [Test]
@@ -606,8 +602,7 @@ a;b;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetFirstValue("b").DsasmValue.IsNull);
-            //});
+            thisTest.Verify("b", null);
         }
 
         [Test]
@@ -3433,8 +3428,7 @@ a;
 	a = function1(1,2,3);
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetFirstValue("a").DsasmValue.IsNull);
-            //});
+            thisTest.Verify("a", null);
         }
 
         [Test]
@@ -3450,8 +3444,7 @@ a;
 	a = function(1,2,3);
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetFirstValue("a").DsasmValue.IsNull);
-            //});
+            thisTest.Verify("a", null);
         }
 
         [Test]
